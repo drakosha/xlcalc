@@ -425,8 +425,11 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   return state
 }
 
-/** Правки атомарно, один пересчёт зависимых; изменившиеся ячейки (`s:r:c`). */
-export function applyEdits(state: EngineState, edits: CellEdit[]): string[] {
+/**
+ * Правки атомарно, один пересчёт зависимых; изменившиеся ячейки (`s:r:c`). `withVolatile`: часы
+ * сменились (живая сессия), волатильные ячейки пересчитываются в том же проходе.
+ */
+export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile = false): string[] {
   const track: Tracker = new Map()
   const dirty = new Set<number>()
   const fresh: Formula[] = []
@@ -469,6 +472,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[]): string[] {
   }
   if (structural) rebuildGraph(state)
   for (const f of fresh) dirty.add(f.id)
+  if (withVolatile) for (const id of state.volatile) dirty.add(id)
   // ячейки, бывшие в цикле, пересчитываются, если цикл разорван
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
   recompute(state, dirty, track)
