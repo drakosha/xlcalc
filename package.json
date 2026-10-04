@@ -4,5 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "main": "src/index.ts",
-  "scripts": { "typecheck": "tsc -p ." }
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@formulajs/formulajs": "4.6.1",
+    "hyperformula": "3.4.0"
+  },
+  "devDependencies": {
+    "exceljs": "^4.4.0"
+  }
 }
