@@ -47,7 +47,7 @@ export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCL
 /** Значение после расчёта. Даты выходят серийными номерами, числа округлены до 15 значащих цифр. */
 export type CellValue = Scalar | { error: ErrorCode }
 
-/** Коды проверки формулы. `unsupported`: операция над массивом или внешняя функция не с литералами. */
+/** Коды проверки формулы. `unsupported`: вычисление над массивом или внешняя функция не с литералами. */
 export type CheckCode =
   | 'empty'
   | 'syntax'
