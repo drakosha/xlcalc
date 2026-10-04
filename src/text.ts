@@ -1,0 +1,213 @@
+/**
+ * TEXT по формату Excel (en-US): секции `;` (плюс, минус, ноль, текст), литералы в кавычках и через
+ * `\`, числа (`0`, `#`, `?`, `.`, `,` для разрядов и деления на 1000, `%`), даты и время (`yyyy`,
+ * `yy`, `m`…`mmmm`, `d`…`dddd`, `h`, `hh`, `mm` минуты, `ss`, `AM/PM`), `General` и `@`.
+ * Экспоненты (`E+`), цвета и условия в скобках не поддерживаются: null (адаптер даёт #VALUE!).
+ */
+import { serialToUtcMs } from './model'
+
+type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+function splitSections(fmt: string): string[] {
+  const out: string[] = []
+  let cur = ''
+  let quoted = false
+  for (let i = 0; i < fmt.length; i++) {
+    const ch = fmt[i]
+    if (ch === '"') quoted = !quoted
+    if (ch === '\\' && !quoted && i + 1 < fmt.length) {
+      cur += ch + fmt[++i]
+      continue
+    }
+    if (ch === ';' && !quoted) {
+      out.push(cur)
+      cur = ''
+    } else cur += ch
+  }
+  out.push(cur)
+  return out
+}
+
+function tokenize(sec: string): Tok[] | null {
+  const out: Tok[] = []
+  let i = 0
+  while (i < sec.length) {
+    const ch = sec[i]
+    const rest = sec.slice(i)
+    if (ch === '"') {
+      const j = sec.indexOf('"', i + 1)
+      if (j < 0) return null
+      out.push({ t: 'lit', s: sec.slice(i + 1, j) })
+      i = j + 1
+    } else if (ch === '\\') {
+      out.push({ t: 'lit', s: sec[i + 1] ?? '' })
+      i += 2
+    } else if (ch === '[' || ch === 'E' || ch === 'e' || ch === '*' || ch === '_') {
+      return null
+    } else if (ch === '0' || ch === '#' || ch === '?') {
+      out.push({ t: 'ph', c: ch })
+      i++
+    } else if (ch === '.') {
+      out.push({ t: 'dot' })
+      i++
+    } else if (ch === ',') {
+      out.push({ t: 'comma' })
+      i++
+    } else if (ch === '%') {
+      out.push({ t: 'pct' })
+      i++
+    } else if (/^(AM\/PM|A\/P)/i.test(rest)) {
+      const m = /^(AM\/PM|A\/P)/i.exec(rest)![0]
+      out.push({ t: 'ampm', s: m })
+      i += m.length
+    } else if (/[ymdhs]/i.test(ch)) {
+      let j = i
+      while (j < sec.length && sec[j].toLowerCase() === ch.toLowerCase()) j++
+      out.push({ t: 'date', s: sec.slice(i, j).toLowerCase() })
+      i = j
+    } else {
+      out.push({ t: 'lit', s: ch })
+      i++
+    }
+  }
+  return out
+}
+
+/** Округление половины от нуля по десятичной записи (1.005 → 1.01). */
+function roundHalfUp(abs: number, k: number): string {
+  const shifted = Math.round(Number(`${abs}e${k}`))
+  return Number(`${shifted}e-${k}`).toFixed(k)
+}
+
+function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
+  const dot = toks.findIndex((t) => t.t === 'dot')
+  const intEnd = dot < 0 ? toks.length : dot
+  let scale = 0
+  let grouping = false
+  for (let i = 0; i < intEnd; i++) {
+    if (toks[i].t !== 'comma') continue
+    const before = toks.slice(0, i).some((t) => t.t === 'ph')
+    const after = toks.slice(i + 1, intEnd).some((t) => t.t === 'ph')
+    if (before && after) grouping = true
+    else if (before) scale++
+  }
+  const pct = toks.filter((t) => t.t === 'pct').length
+  let x = Math.abs(v) * Math.pow(100, pct) / Math.pow(1000, scale)
+  const fracPh = dot < 0 ? [] : toks.slice(dot + 1).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
+  const intPh = toks.slice(0, intEnd).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
+  const fixed = roundHalfUp(x, fracPh.length)
+  x = Number(fixed)
+  let [ip, fp = ''] = fixed.split('.')
+  const zeros = intPh.filter((p) => p.c === '0').length
+  if (ip === '0' && zeros === 0) ip = ''
+  ip = ip.padStart(zeros, '0')
+  if (grouping) ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  // целая часть: справа налево по местам цифр, остаток цифр перед первым местом
+  let out = ''
+  let rest = ip
+  const firstPh = toks.findIndex((t, i) => i < intEnd && t.t === 'ph')
+  for (let i = intEnd - 1; i >= 0; i--) {
+    const t = toks[i]
+    if (t.t === 'ph') {
+      const d = rest.length ? rest[rest.length - 1] : t.c === '0' ? '0' : t.c === '?' ? ' ' : ''
+      rest = rest.slice(0, -1)
+      out = (i === firstPh ? rest : '') + d + out
+      if (i === firstPh) rest = ''
+    } else if (t.t === 'lit') out = t.s + out
+    else if (t.t === 'pct') out = '%' + out
+  }
+  if (firstPh < 0) out = ip + out
+  // дробная часть: `#` справа убирает нули, `?` даёт пробел
+  if (dot >= 0) {
+    const digits = fp.split('')
+    for (let k = fracPh.length - 1; k >= 0 && digits[k] === '0' && fracPh[k].c !== '0'; k--) digits[k] = fracPh[k].c === '?' ? ' ' : ''
+    let k = 0
+    out += '.'
+    for (const t of toks.slice(dot + 1)) {
+      if (t.t === 'ph') out += digits[k++] ?? ''
+      else if (t.t === 'lit') out += t.s
+      else if (t.t === 'pct') out += '%'
+    }
+  }
+  const negative = signed && v < 0 && x !== 0
+  return (negative ? '-' : '') + out
+}
+
+function formatDate(serial: number, toks: Tok[]): string | null {
+  if (serial < 0) return null
+  const ms = serialToUtcMs(Math.floor(serial)) + Math.round((serial - Math.floor(serial)) * 86_400) * 1000
+  const d = new Date(ms)
+  const ampm = toks.some((t) => t.t === 'ampm')
+  const Y = d.getUTCFullYear()
+  const M = d.getUTCMonth()
+  const D = d.getUTCDate()
+  const W = d.getUTCDay()
+  const h = d.getUTCHours()
+  const mi = d.getUTCMinutes()
+  const s = d.getUTCSeconds()
+  const two = (n: number) => String(n).padStart(2, '0')
+  let out = ''
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i]
+    if (t.t === 'lit') out += t.s
+    else if (t.t === 'ampm') out += t.s.length > 3 ? (h < 12 ? 'AM' : 'PM') : h < 12 ? 'A' : 'P'
+    else if (t.t === 'date') {
+      const c = t.s[0]
+      if (c === 'y') out += t.s.length <= 2 ? two(Y % 100) : String(Y)
+      else if (c === 'd') out += t.s.length === 1 ? String(D) : t.s.length === 2 ? two(D) : t.s.length === 3 ? DAYS[W].slice(0, 3) : DAYS[W]
+      else if (c === 'h') {
+        const hh = ampm ? h % 12 || 12 : h
+        out += t.s.length === 1 ? String(hh) : two(hh)
+      } else if (c === 's') out += t.s.length === 1 ? String(s) : two(s)
+      else if (c === 'm') {
+        // минуты: после часов или перед секундами (через разделители)
+        const prev = toks.slice(0, i).reverse().find((x) => x.t === 'date')
+        const next = toks.slice(i + 1).find((x) => x.t === 'date')
+        const minutes = t.s.length <= 2 && ((prev?.t === 'date' && prev.s[0] === 'h') || (next?.t === 'date' && next.s[0] === 's'))
+        if (minutes) out += t.s.length === 1 ? String(mi) : two(mi)
+        else out += t.s.length === 1 ? String(M + 1) : t.s.length === 2 ? two(M + 1) : t.s.length === 3 ? MONTHS[M].slice(0, 3) : t.s.length === 4 ? MONTHS[M] : MONTHS[M][0]
+      }
+    } else if (t.t === 'ph') out += t.c === '0' ? '0' : ''
+    else if (t.t === 'dot') out += '.'
+    else if (t.t === 'comma') out += ','
+    else if (t.t === 'pct') out += '%'
+  }
+  return out
+}
+
+/** Число как текст в общем формате: до 15 значащих цифр (как ячейка в Excel без формата). */
+export function generalText(n: number): string {
+  if (n === 0) return '0'
+  return String(Number(n.toPrecision(15)))
+}
+
+/** TEXT(значение, формат); null это неподдерживаемый или неверный формат. */
+export function formatText(value: number | string | boolean, fmt: string): string | null {
+  if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
+  const sections = splitSections(fmt)
+  if (typeof value === 'string') {
+    const n = value.trim() === '' ? NaN : Number(value)
+    if (Number.isNaN(n)) {
+      const textSec = sections.length >= 4 ? sections[3] : sections.find((s) => s.includes('@'))
+      return textSec ? textSec.replace(/@/g, value).replace(/"/g, '') : value
+    }
+    value = n
+  }
+  const v = value
+  let sec = sections[0]
+  let signed = true
+  if (v < 0 && sections.length >= 2 && sections[1] !== '') {
+    sec = sections[1]
+    signed = false
+  } else if (v === 0 && sections.length >= 3 && sections[2] !== '') sec = sections[2]
+  if (/^\s*general\s*$/i.test(sec) || sec === '') return generalText(signed ? v : Math.abs(v))
+  if (sec.trim() === '@') return generalText(v)
+  const toks = tokenize(sec)
+  if (!toks) return null
+  if (toks.some((t) => t.t === 'date' || t.t === 'ampm')) return formatDate(v, toks)
+  if (!toks.some((t) => t.t === 'ph')) return toks.map((t) => (t.t === 'lit' ? t.s : t.t === 'dot' ? '.' : t.t === 'comma' ? ',' : t.t === 'pct' ? '%' : '')).join('')
+  return formatNumber(v, toks, signed)
+}

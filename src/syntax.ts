@@ -427,7 +427,7 @@ function isArea(n: Ast, isRangeName: (name: string) => boolean | undefined): boo
 
 /**
  * Форма аргументов: число аргументов функции и диапазоны только там, где функция их ждёт.
- * Диапазон в скалярном месте это операция над массивом: в этой версии `unsupported`.
+ * Диапазон в скалярном месте значит вычисление над массивом: в этой версии `unsupported`.
  */
 export function checkShape(ast: Ast, src: string, isRangeName: (name: string) => boolean | undefined, external: (fn: string) => boolean): FormulaError | null {
   const at = (needle: string) => Math.max(0, src.toUpperCase().indexOf(needle.toUpperCase()))
@@ -435,7 +435,7 @@ export function checkShape(ast: Ast, src: string, isRangeName: (name: string) =>
     switch (n.k) {
       case 'ref':
       case 'name':
-        return !rangeOk && isArea(n, isRangeName) ? new FormulaError('unsupported', 'a range is used where a single value is expected (array operations are not supported)', at(n.k === 'name' ? n.name : n.ref.text)) : null
+        return !rangeOk && isArea(n, isRangeName) ? new FormulaError('unsupported', 'a range is used where a single value is expected (array arithmetic is not supported)', at(n.k === 'name' ? n.name : n.ref.text)) : null
       case 'paren':
         return visit(n.a, rangeOk)
       case 'un':
