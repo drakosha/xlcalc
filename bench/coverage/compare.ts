@@ -14,6 +14,8 @@ export type Kind =
   | 'другой код ошибки'
   | 'другой тип'
   | 'строка'
+  | 'строка: регистр'
+  | 'строка: формат числа'
   | 'логическое'
   | 'JS Date'
   | 'NaN или бесконечность'
@@ -53,9 +55,23 @@ export function compare(ref: Val, got: Val, threw?: boolean): Verdict {
     if (close(a, b, SOFT)) return { ok: false, soft: true, kind: 'число' }
     return { ok: false, kind: 'число' }
   }
-  if (ref.t === 's') return got.v === ref.v ? { ok: true } : { ok: false, kind: 'строка' }
+  if (ref.t === 's') {
+    const g = got.v as string
+    if (g === ref.v) return { ok: true }
+    if (g.toUpperCase() === ref.v.toUpperCase()) return { ok: false, kind: 'строка: регистр' }
+    return { ok: false, kind: sameNumbers(ref.v, g) ? 'строка: формат числа' : 'строка' }
+  }
   if (ref.t === 'b') return got.v === ref.v ? { ok: true } : { ok: false, kind: 'логическое' }
   return { ok: false, kind: 'прочее' }
+}
+
+/** Строки с одинаковым текстом между числами и равными (с допуском) числами: "1.5+2i" и "1.50000001+2i". */
+function sameNumbers(a: string, b: string): boolean {
+  const re = /-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/g
+  const na = a.match(re) ?? []
+  const nb = b.match(re) ?? []
+  if (!na.length || na.length !== nb.length || a.replace(re, '#') !== b.replace(re, '#')) return false
+  return na.every((x, i) => close(Number(x), Number(nb[i]), TOL))
 }
 
 /** Значение для таблиц отчёта. */
