@@ -1,3 +1,15 @@
+# Покрытие formulajs против Excel
+
+Замер от 5 октября 2026 года, ветка `probe/coverage`. Вопрос: сколько функций `@formulajs/formulajs` 4.6.1 дают тот же ответ, что Excel, если звать их через общий адаптер по правилам рантайма движка (`src/runtime.ts`), и сколько без него. Эталон для движка Excel en-US. Рядом считались Excel ru-RU (для интерфейса с русским вводом) и LibreOffice en-US (оракул тестов движка). Белый список движка замер не трогает.
+
+Поводом стал замер WB1 в the app (`docs/probes/WB1-engine.md`, раздел «Семантика списка»): голая formulajs ошибалась не на простых вызовах, а на краях (шаблоны и даты текстом в условиях, текст и логические в диапазонах, регистр, JS Date в местной зоне). Поэтому здесь на каждую функцию кроме типичных вызовов идут краевые.
+
+Код замера, правила работы с Excel и команда повтора: `bench/coverage/README.md`. Сырые результаты по колонкам: `docs/coverage-formulajs/` (`cases.json` случаи с формулами, `formulajs.json`, `excel-en.json`, `excel-ru.json`, `libreoffice.json`, `summary.json` вердикты по случаям и функциям). Таблицы ниже между метками `auto` пересобирает `npx tsx bench/coverage/run.ts report`.
+
+## Итог
+
+В наборе 402 функции и 5 275 случаев. Через адаптер все случаи совпали с Excel en-US у 97 функций, у 206 совпали обычные случаи, а расходятся краевые, у 96 расходятся уже обычные, 3 функции зависают на огромном аргументе. Голая formulajs полностью совпадает у 54 функций. По случаям адаптер поднимает совпадение с 3 331 до 3 943 (с 63 до 75 процентов); обычных случаев совпало 802 из 965, краевых 3 141 из 4 310. Предложение (последний раздел): 97 функций брать как есть, 49 после общих правил адаптера, 169 после правил адаптера и короткой проверки аргументов на функцию, 84 писать своими, 3 зависающих закрыть стражем.
+
 <!-- auto:summary -->
 | | через адаптер | голая formulajs |
 |---|---|---|
@@ -12,6 +24,17 @@
 Адаптер довёл до полного совпадения 44 функций, где голая formulajs расходится: ACOTH, ATANH, AVEDEV, AVERAGE, BINOM.DIST.RANGE, BINOMDIST, CHOOSE, CHOOSECOLS, CHOOSEROWS, CLEAN, COLUMNS, COSH, DROP, EXP, EXPAND, F.DIST.RT, FIND, FISHER, FIXED, GAMMALN, GAMMALN.PRECISE, ISPMT, LN, LOG, LOG10, MAX, MEDIAN, MIN, NORM.DIST, NORM.S.DIST, NORMDIST, NPV, PDURATION, PHI, PROB, PRODUCT, REPT, ROUNDDOWN, ROUNDUP, ROWS, SINH, SUBTOTAL, SUM, TRIM.
 Хуже голой через адаптер 16: DAYS360 (9 против 10), GCD (8 против 10), IMCSC (6 против 7), IMCSCH (5 против 6), IRR (4 против 5), LCM (6 против 8), MULTINOMIAL (5 против 8), NETWORKDAYS (5 против 6), NETWORKDAYS.INTL (7 против 9), NOT (8 против 9), TBILLEQ (11 против 12), TEXT (8 против 9), VALUE (10 против 11), VLOOKUP (11 против 12), WEEKDAY (9 против 11), WEEKNUM (11 против 12).
 <!-- /auto:summary -->
+
+Основной выигрыш адаптера даёт правило SUM для свёрток (из диапазона только числа, прямой аргумент приводится), перевод JS Date в серийный номер, NaN и бесконечности в `#NUM!` и исключений в `#VALUE!`. Голая formulajs 228 раз отдаёт NaN или бесконечность, 132 раза бросает исключение и 65 раз отдаёт JS Date вместо числа. Через адаптер NaN и JS Date не остаётся; исключения становятся `#VALUE!`, и в 94 случаях Excel отвечает иначе.
+
+У 16 функций адаптер хуже голой formulajs, и это прямые подсказки, какие правила рантайма нельзя распространять на всё:
+- аргумент-дата через `toNum` не принимает текст-дату (`YEAR("2025-01-31")` в Excel 2025, через адаптер `#VALUE!`), а голая formulajs разбирает такой текст сама; это DAY, MONTH, YEAR, WEEKDAY, WEEKNUM, ISOWEEKNUM, DAYS, DAYS360, ACCRINT, COUPDAYS, TBILL* и другие;
+- отбрасывание дробной части у целых аргументов неверно для битовых функций: `BITAND(1,2.7)` в Excel `#NUM!`;
+- правило SUM неверно для GCD, LCM и MULTINOMIAL: Excel на тексте в диапазоне и на логическом даёт `#VALUE!`, на пустом диапазоне 0 или 1;
+- праздники для NETWORKDAYS и WORKDAY formulajs принимает серийными номерами, а двумерный массив JS Date отвергает (`#VALUE!` на обычном случае);
+- `toBool` рантайма принимает текст `"TRUE"`, Excel на `NOT("TRUE")` и `IF("TRUE","yes","no")` даёт `#VALUE!`. Это касается и своей IF движка: `compute` на `IF("TRUE","yes","no")` отдаёт `"yes"` (проверено на текущем `src`).
+
+Виды расхождений по случаям и функциям:
 
 <!-- auto:kinds -->
 | вид расхождения | случаев через адаптер | функций через адаптер | случаев голой | функций голой |
@@ -31,65 +54,37 @@
 | JS Date | 0 | 0 | 65 | 6 |
 <!-- /auto:kinds -->
 
-<!-- auto:tags -->
-| краевой случай | функций | функции |
-|---|---|---|
-| логическое | 65 | ACCRINT, BASE, BESSELI, BESSELJ, BESSELK, BESSELY, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, BINOM.INV, COMBINA, COMPLEX, CONFIDENCE.NORM, CUMIPMT, CUMPRINC, DEC2BIN, DEC2OCT, DELTA, DOLLARDE, DOLLARFR, EFFECT, ERFC, FACTDOUBLE, FVSCHEDULE, GAMMA.INV, GAMMAINV, GESTEP, HEX2BIN, HEX2DEC, HEX2OCT, IMAGINARY, IMCSC, IMREAL, ISEVEN, ISODD, LEFT, LEN, LOGINV, LOGNORM.INV, LOWER, MID, MROUND, NOMINAL, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, QUOTIENT, RANK.AVG, RANK.EQ, REPLACE, RIGHT, SERIESSUM, SQRTPI, T.DIST.2T, T.DIST.RT, T.INV, TDIST, UNICODE, XNPV |
-| пустая ячейка | 54 | ATAN2, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, DDB, F.INV, GAMMA.DIST, HEX2BIN, HEX2DEC, HEX2OCT, HLOOKUP, HYPGEOM.DIST, IFNA, IMARGUMENT, IMCONJUGATE, IMCSC, IMDIV, IMPRODUCT, IMREAL, INDEX, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, MID, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, PPMT, RANK.AVG, RANK.EQ, SERIESSUM, SLN, SMALL, T.DIST.2T, T.DIST.RT, TDIST, TYPE, WEEKDAY, WEEKNUM, XNPV, YEAR |
-| отрицательное | 45 | ACOT, ATAN2, BASE, BETADIST, BETAINV, BINOM.INV, CHISQ.DIST, COMBIN, CONFIDENCE.NORM, CRITBINOM, EXPON.DIST, EXPONDIST, F.DIST, FACT, FACTDOUBLE, GAMMA.DIST, GAMMADIST, HYPGEOMDIST, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, NEGBINOM.DIST, NEGBINOMDIST, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, PERMUT, PERMUTATIONA, PMT, POISSON.DIST, PPMT, PV, RANK.AVG, RANK.EQ, RATE, REPLACE, RRI, STANDARDIZE, SYD, T.DIST.RT, UNICHAR, WEIBULL.DIST |
-| пустой диапазон | 44 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, DEVSQ, FORECAST, FREQUENCY, GCD, GEOMEAN, HARMEAN, INTERCEPT, IRR, KURT, LARGE, LCM, MODE.SNGL, MULTINOMIAL, PEARSON, PERCENTILE.EXC, PERCENTILE.INC, PERCENTRANK.EXC, QUARTILE.EXC, RSQ, SKEW, SKEW.P, SLOPE, SMALL, STDEV.P, STDEV.S, STDEVA, STDEVP, STDEVPA, STEYX, SUMSQ, SUMX2MY2, SUMX2PY2, SUMXMY2, VAR.P, VAR.S, VARA, VARP, VARPA, Z.TEST, ZTEST |
-| большое | 38 | ATAN2, BINOM.DIST, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, COMBIN, COMBINA, COS, COT, COTH, CSC, DEC2BIN, DEC2OCT, F.DIST, F.INV, F.INV.RT, FACT, FACTDOUBLE, FISHERINV, GAMMAINV, HEX2BIN, HYPGEOMDIST, LARGE, MID, PERMUT, PERMUTATIONA, QUOTIENT, RANK.AVG, RANK.EQ, SEC, SIN, T.DIST.2T, T.DIST.RT, TAN, TANH, UNICHAR, WEIBULL.DIST |
-| ноль | 36 | ATAN2, BETADIST, BETAINV, BINOM.INV, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, EOMONTH, EXPON.DIST, EXPONDIST, F.INV, HLOOKUP, INDEX, LOGINV, LOGNORM.INV, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, PERMUT, PPMT, QUOTIENT, RANK.AVG, RANK.EQ, SERIESSUM, SMALL, T.DIST.2T, T.DIST.RT, TDIST, VLOOKUP, WEEKDAY, WEEKNUM, XNPV, YEAR |
-| диапазон: смесь | 31 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, FORECAST, FREQUENCY, GCD, INTERCEPT, IRR, KURT, LCM, MIRR, MODE.SNGL, MULTINOMIAL, PEARSON, PERCENTRANK.EXC, RSQ, SLOPE, SMALL, STDEVA, STDEVPA, STEYX, SUMPRODUCT, SUMX2MY2, SUMX2PY2, SUMXMY2, TEXTJOIN, VARA, VARPA, Z.TEST, ZTEST |
-| дробное | 18 | ATAN2, BETADIST, BITAND, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, CHISQ.DIST.RT, COMBINA, FV, IPMT, LARGE, PERMUT, PV, RANK.AVG, RANK.EQ, T.DIST.2T, T.DIST.RT |
-| пустая строка | 17 | BIN2DEC, BIN2OCT, DATEDIF, HEX2BIN, HEX2DEC, HEX2OCT, IMABS, IMAGINARY, IMCONJUGATE, IMCSC, IMDIV, IMPRODUCT, IMREAL, IMSUB, IMSUM, OCT2BIN, OCT2DEC |
-| разный размер | 15 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, FORECAST, GROWTH, PEARSON, RSQ, SLOPE, STEYX, SUMPRODUCT, SUMX2MY2, SUMX2PY2, SUMXMY2, XNPV |
-| дата текстом ISO | 14 | ACCRINT, COUPDAYS, DATEDIF, DAY, DAYS, EDATE, EOMONTH, ISOWEEKNUM, MONTH, PRICEDISC, WEEKDAY, WEEKNUM, YEAR, YEARFRAC |
-| дата текстом m/d/yyyy | 14 | ACCRINT, COUPDAYS, DATEDIF, DAY, DAYS, EDATE, EOMONTH, ISOWEEKNUM, MONTH, PRICEDISC, WEEKDAY, WEEKNUM, YEAR, YEARFRAC |
-| дата в ячейке | 12 | BETA.INV, COTH, FACT, FACTDOUBLE, FISHERINV, HYPGEOM.DIST, LARGE, RANK.AVG, RANK.EQ, ROUND, T.DIST.RT, TANH |
-| пустая ячейка аргументом | 11 | KURT, MINA, MODE.SNGL, SKEW, SKEW.P, STDEV.S, STDEVA, STDEVPA, VAR.S, VARA, VARPA |
-| текст-число | 10 | ATAN2, BETADIST, BETAINV, CUMIPMT, CUMPRINC, DOLLARDE, NPER, RANK.AVG, RANK.EQ, T.INV.2T |
-| число текстом с точкой | 10 | BITOR, CHISQ.DIST.RT, DOLLARDE, F.DIST, LARGE, RANK.AVG, RANK.EQ, T.DIST.2T, T.INV, T.INV.2T |
-| больше 1 | 10 | CONFIDENCE.NORM, CRITBINOM, LOGINV, LOGNORM.INV, NEGBINOMDIST, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, T.INV.2T |
-| ссылка на текст-число | 10 | KURT, LCM, MAXA, MINA, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P, STDEV.S, VAR.S |
-| пробелы | 9 | DATEDIF, DECIMAL, IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
-| ссылка на логическое | 9 | GCD, KURT, LCM, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P, STDEV.S, VAR.S |
-| ложный 29.02.1900 | 8 | ACCRINT, COUPDAYS, DAY, EDATE, EOMONTH, MONTH, WEEKDAY, YEARFRAC |
-| текст аргументом | 8 | AVERAGEA, MAXA, MINA, MODE.SNGL, STDEVA, STDEVPA, VARA, VARPA |
-| логическое аргументом | 8 | COUNT, GCD, KURT, LCM, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P |
-| регистр | 8 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM, SWITCH |
-| кириллица | 7 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
-| кириллица в ячейке | 7 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
-| текст-число аргументом | 6 | AVERAGEA, COUNT, KURT, MODE.SNGL, SKEW, SKEW.P |
-| отрицательные и дробные | 6 | GCD, HARMEAN, KURT, LCM, MODE.SNGL, MULTINOMIAL |
-| диапазон с ошибкой | 6 | IRR, STDEVA, STDEVPA, TEXTJOIN, VARA, VARPA |
-| текст-число в ячейке | 5 | ATAN2, CUMIPMT, NPER, RANK.AVG, RANK.EQ |
-| текст TRUE | 5 | CHISQ.DIST, IF, IFS, NOT, POISSON.DIST |
-| число | 5 | DATEVALUE, DECIMAL, IMCSC, IMDIV, IMREAL |
-| 01.03.1900 | 4 | COUPDAYS, DAYS, PRICEDISC, YEARFRAC |
-| 28.02.1900 | 3 | COUPDAYS, WEEKDAY, YEARFRAC |
-| високосный 29.02.2024 | 3 | DATEDIF, PRICEDISC, YEARFRAC |
-| время текстом | 3 | HOUR, MINUTE, SECOND |
-| шаблон * | 3 | MINIFS, SEARCH, VLOOKUP |
-| шаблон ? | 3 | MINIFS, SEARCH, VLOOKUP |
-| ошибка на входе | 2 | MATCH, VLOOKUP |
-| #DIV/0! | 2 | MATCH, SWITCH |
-| ноль в known_y | 1 | GROWTH |
-| по убыванию -1 | 1 | MATCH |
-| экранирование ~* | 1 | MINIFS |
-| кириллица без учёта регистра | 1 | MINIFS |
-| дата текстом | 1 | MINIFS |
-| не равно | 1 | MINIFS |
-| пустое условие | 1 | MINIFS |
-| логическое условие | 1 | MINIFS |
-| два условия | 1 | MINIFS |
-| без смены знака | 1 | MIRR |
-| экранирование ~? | 1 | SEARCH |
-| кириллица и регистр | 1 | SWITCH |
-| диапазон | 1 | TYPE |
-| даты не по порядку | 1 | XNPV |
-| поток: смесь | 1 | XNPV |
-<!-- /auto:tags -->
+«Значение вместо ошибки» и «другой код ошибки» почти целиком краевые случаи: Excel проверяет область определения и отвечает `#NUM!`, `#DIV/0!` или `#N/A`, formulajs считает дальше или отвечает другим кодом. «Число» делится на две части: на краях это разная трактовка входа (логическое, пустая ячейка, дата 0 и 60), на обычных случаях это неверная формула или старое имя с чужой семантикой (раздел «Где расходятся обычные случаи»). «Строка: формат числа» означает те же числа в другой записи (комплексные числа formulajs печатает с 17 знаками, Excel с 15), «строка: регистр» означает шестнадцатеричные цифры строчными.
+
+С мягким допуском 1e-6 полностью совпадают ещё три функции: F.INV.RT, GAMMA и TDIST (GAMMA в formulajs точна примерно до 1e-8). XIRR на обычных случаях совпадает только мягко (0,3733625352 против 0,3733625335), но расходится ещё и на краях.
+
+## Как мерили
+
+**Набор.** formulajs отдаёт функцией 406 имён из справочника Excel (имена с точкой берутся по пути: `fj.NORM.S.DIST`). Из них исключены четыре волатильные: NOW, RAND, RANDBETWEEN, TODAY. Функций окружения (CELL, INFO) в formulajs нет. Имена formulajs, которых нет в Excel (синонимы вроде CEILINGMATH и CHIDISTRT), перечислены в конце и в замер не входят. Справочник: страница Microsoft «Excel functions (alphabetical)», 521 имя вместе с вариантами `*B`; сохранён в `bench/coverage/excel-functions.json`.
+
+**Случаи.** Таблица сигнатур (`bench/coverage/signatures.ts`) задаёт для каждой функции виды аргументов и один-семь типичных вызовов, большей частью примеры справочника Excel. Из первого типичного вызова генератор делает краевые случаи, подставляя в аргумент значения по его виду: для чисел текст-число, логическое, пустую ячейку, ошибку на входе, текст, отрицательное, ноль, дробное, большое, текст-число из ячейки, дату, `"1.5"`; для дат ISO-текст, `"1/2/2025"`, 29.02.2024, 28.02.1900, ложное 29.02.1900 (60), 01.03.1900, 0, −1, дату со временем; для текста кириллицу, регистр, число, логическое, пустые, пробелы; для свёрток диапазон-смесь (число, текст-число, текст, логическое, пустая), диапазон с ошибкой, пустой диапазон, логическое и текст аргументом, ссылку на текст-число. Условия (SUMIF и родня) и база данных (D-функции) идут по общему ручному шаблону: шаблоны `*`, `?`, `~*`, кириллица без учёта регистра, «й» и «и», дата текстом, `<>`, пустое условие, ошибка в диапазоне, поле без учёта регистра, номер поля 0. Отбор детерминирован (сид 20261005), до 15 случаев на функцию плюс элементы ответа-массива: медиана 15, у 15 функций меньше восьми (функции без аргументов и функции ссылок). Всего 965 обычных случаев и 4 310 краевых.
+
+**Колонки.**
+- formulajs через адаптер: общие правила `runtime.ts`, разнесённые по видам аргументов. Ошибка в скалярном аргументе и в числовом массиве сразу ответ; число через `toNum`, целое ещё и с отбрасыванием дробной части (как у ROUND), текст через `toText`, логическое через `toBool`; дата в местную полночь JS Date (отрицательная `#NUM!`), время с долей суток; свёртка чисел по правилу SUM; прочие диапазоны двумерными массивами, ошибки внутри объектами ошибок formulajs. Ответ: ошибка в код, Date в серийный номер местной даты, NaN и бесконечность в `#NUM!`, исключение в `#VALUE!`, прочее (null, массив) в `#VALUE!`.
+- formulajs голая: аргументы как лежат в ячейках (одна ячейка значением, диапазон двумерным массивом, пустая `null`, дата серийным номером, ошибка объектом formulajs), ответ как есть.
+- Excel en-US и Excel ru-RU: одна и та же книга, Excel 16.113 на Маке, локаль задана аргументом запуска.
+- LibreOffice en-US: тот же xlsx, профиль en-US, как в `test/oracle.ts`.
+
+**Сравнение.** Числа с допуском |a−b| ≤ 1e-9·max(1,|a|), отдельно мягкий 1e-6; строки и логические точно; ошибки по коду (`ERROR.TYPE` в Excel, а не текст ошибки). Эталон для формул движка Excel en-US. Одна поправка: интерфейс Excel русский, и логическое, ставшее текстом, выходит `ИСТИНА`/`ЛОЖЬ` и при локали en-US; в эталоне такие строки сравниваются как `TRUE`/`FALSE`. Excel с английским интерфейсом я не проверял, поправка опирается на то, что это слово интерфейса, а не локали.
+
+**Книга.** Функции новее Excel 2007 записаны с `_xlfn.` (SORT с `_xlfn._xlws.`); ни одна функция в Excel не дала `#NAME?`, так что список приставок верен. Ответ-массив сравнивается по элементу (`INDEX(F(…),i,j)`) и по размеру (`ROWS`, `COLUMNS`); такие случаи записаны формулой массива, иначе Excel применяет к аргументу TRANSPOSE неявное пересечение. Одномерный массив formulajs считается колонкой.
+
+<!-- auto:meta -->
+- formulajs 4.6.1, Node v26.7.0, часовой пояс Europe/Moscow, расчёт 16.032 с;
+- Excel 16.113.3 на Маке: en-US 16.9 с, ru-RU 16.8 с (14 частей, без учёта перезапуска Excel);
+- LibreOffice 26.2.4.2, профиль en-US, 2.763 с.
+<!-- /auto:meta -->
+
+Полный прогон `run.ts all` с перезапусками Excel занимает около полутора минут (замер в конце работы, в коммите вместе с этим отчётом).
+
+## Таблица по функциям
+
+«Совпало» считается в случаях; «итог» через адаптер: все, только обычные, расходятся обычные, зависает; «мягко ещё N» значит, что N расходящихся случаев совпадают с допуском 1e-6. В последней колонке метки случаев, где адаптер расходится с Excel en-US.
 
 <!-- auto:functions -->
 | функция | категория | случаев | совпало через адаптер | совпало голой | итог через адаптер | вид расхождения через адаптер | на каких случаях |
@@ -498,6 +493,92 @@
 | VALUE | текстовые | 15 | 10 | 11 | расходятся обычные | значение вместо ошибки 3, ошибка вместо значения 2 | обычный; логическое; пустая строка |
 <!-- /auto:functions -->
 
+## Где расходятся краевые случаи
+
+Для 206 функций с совпавшими обычными случаями: на каких краевых случаях они расходятся и у скольких функций.
+
+<!-- auto:tags -->
+| краевой случай | функций | функции |
+|---|---|---|
+| логическое | 65 | ACCRINT, BASE, BESSELI, BESSELJ, BESSELK, BESSELY, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, BINOM.INV, COMBINA, COMPLEX, CONFIDENCE.NORM, CUMIPMT, CUMPRINC, DEC2BIN, DEC2OCT, DELTA, DOLLARDE, DOLLARFR, EFFECT, ERFC, FACTDOUBLE, FVSCHEDULE, GAMMA.INV, GAMMAINV, GESTEP, HEX2BIN, HEX2DEC, HEX2OCT, IMAGINARY, IMCSC, IMREAL, ISEVEN, ISODD, LEFT, LEN, LOGINV, LOGNORM.INV, LOWER, MID, MROUND, NOMINAL, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, QUOTIENT, RANK.AVG, RANK.EQ, REPLACE, RIGHT, SERIESSUM, SQRTPI, T.DIST.2T, T.DIST.RT, T.INV, TDIST, UNICODE, XNPV |
+| пустая ячейка | 54 | ATAN2, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, DDB, F.INV, GAMMA.DIST, HEX2BIN, HEX2DEC, HEX2OCT, HLOOKUP, HYPGEOM.DIST, IFNA, IMARGUMENT, IMCONJUGATE, IMCSC, IMDIV, IMPRODUCT, IMREAL, INDEX, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, MID, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, PPMT, RANK.AVG, RANK.EQ, SERIESSUM, SLN, SMALL, T.DIST.2T, T.DIST.RT, TDIST, TYPE, WEEKDAY, WEEKNUM, XNPV, YEAR |
+| отрицательное | 45 | ACOT, ATAN2, BASE, BETADIST, BETAINV, BINOM.INV, CHISQ.DIST, COMBIN, CONFIDENCE.NORM, CRITBINOM, EXPON.DIST, EXPONDIST, F.DIST, FACT, FACTDOUBLE, GAMMA.DIST, GAMMADIST, HYPGEOMDIST, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, NEGBINOM.DIST, NEGBINOMDIST, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, PERMUT, PERMUTATIONA, PMT, POISSON.DIST, PPMT, PV, RANK.AVG, RANK.EQ, RATE, REPLACE, RRI, STANDARDIZE, SYD, T.DIST.RT, UNICHAR, WEIBULL.DIST |
+| пустой диапазон | 44 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, DEVSQ, FORECAST, FREQUENCY, GCD, GEOMEAN, HARMEAN, INTERCEPT, IRR, KURT, LARGE, LCM, MODE.SNGL, MULTINOMIAL, PEARSON, PERCENTILE.EXC, PERCENTILE.INC, PERCENTRANK.EXC, QUARTILE.EXC, RSQ, SKEW, SKEW.P, SLOPE, SMALL, STDEV.P, STDEV.S, STDEVA, STDEVP, STDEVPA, STEYX, SUMSQ, SUMX2MY2, SUMX2PY2, SUMXMY2, VAR.P, VAR.S, VARA, VARP, VARPA, Z.TEST, ZTEST |
+| большое | 38 | ATAN2, BINOM.DIST, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, COMBIN, COMBINA, COS, COT, COTH, CSC, DEC2BIN, DEC2OCT, F.DIST, F.INV, F.INV.RT, FACT, FACTDOUBLE, FISHERINV, GAMMAINV, HEX2BIN, HYPGEOMDIST, LARGE, MID, PERMUT, PERMUTATIONA, QUOTIENT, RANK.AVG, RANK.EQ, SEC, SIN, T.DIST.2T, T.DIST.RT, TAN, TANH, UNICHAR, WEIBULL.DIST |
+| ноль | 36 | ATAN2, BETADIST, BETAINV, BINOM.INV, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, EOMONTH, EXPON.DIST, EXPONDIST, F.INV, HLOOKUP, INDEX, LOGINV, LOGNORM.INV, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, PERMUT, PPMT, QUOTIENT, RANK.AVG, RANK.EQ, SERIESSUM, SMALL, T.DIST.2T, T.DIST.RT, TDIST, VLOOKUP, WEEKDAY, WEEKNUM, XNPV, YEAR |
+| диапазон: смесь | 31 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, FORECAST, FREQUENCY, GCD, INTERCEPT, IRR, KURT, LCM, MIRR, MODE.SNGL, MULTINOMIAL, PEARSON, PERCENTRANK.EXC, RSQ, SLOPE, SMALL, STDEVA, STDEVPA, STEYX, SUMPRODUCT, SUMX2MY2, SUMX2PY2, SUMXMY2, TEXTJOIN, VARA, VARPA, Z.TEST, ZTEST |
+| дробное | 18 | ATAN2, BETADIST, BITAND, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, CHISQ.DIST.RT, COMBINA, FV, IPMT, LARGE, PERMUT, PV, RANK.AVG, RANK.EQ, T.DIST.2T, T.DIST.RT |
+| пустая строка | 17 | BIN2DEC, BIN2OCT, DATEDIF, HEX2BIN, HEX2DEC, HEX2OCT, IMABS, IMAGINARY, IMCONJUGATE, IMCSC, IMDIV, IMPRODUCT, IMREAL, IMSUB, IMSUM, OCT2BIN, OCT2DEC |
+| разный размер | 15 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, FORECAST, GROWTH, PEARSON, RSQ, SLOPE, STEYX, SUMPRODUCT, SUMX2MY2, SUMX2PY2, SUMXMY2, XNPV |
+| дата текстом ISO | 14 | ACCRINT, COUPDAYS, DATEDIF, DAY, DAYS, EDATE, EOMONTH, ISOWEEKNUM, MONTH, PRICEDISC, WEEKDAY, WEEKNUM, YEAR, YEARFRAC |
+| дата текстом m/d/yyyy | 14 | ACCRINT, COUPDAYS, DATEDIF, DAY, DAYS, EDATE, EOMONTH, ISOWEEKNUM, MONTH, PRICEDISC, WEEKDAY, WEEKNUM, YEAR, YEARFRAC |
+| дата в ячейке | 12 | BETA.INV, COTH, FACT, FACTDOUBLE, FISHERINV, HYPGEOM.DIST, LARGE, RANK.AVG, RANK.EQ, ROUND, T.DIST.RT, TANH |
+| пустая ячейка аргументом | 11 | KURT, MINA, MODE.SNGL, SKEW, SKEW.P, STDEV.S, STDEVA, STDEVPA, VAR.S, VARA, VARPA |
+| текст-число | 10 | ATAN2, BETADIST, BETAINV, CUMIPMT, CUMPRINC, DOLLARDE, NPER, RANK.AVG, RANK.EQ, T.INV.2T |
+| число текстом с точкой | 10 | BITOR, CHISQ.DIST.RT, DOLLARDE, F.DIST, LARGE, RANK.AVG, RANK.EQ, T.DIST.2T, T.INV, T.INV.2T |
+| больше 1 | 10 | CONFIDENCE.NORM, CRITBINOM, LOGINV, LOGNORM.INV, NEGBINOMDIST, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, T.INV.2T |
+| ссылка на текст-число | 10 | KURT, LCM, MAXA, MINA, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P, STDEV.S, VAR.S |
+| пробелы | 9 | DATEDIF, DECIMAL, IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
+| ссылка на логическое | 9 | GCD, KURT, LCM, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P, STDEV.S, VAR.S |
+| ложный 29.02.1900 | 8 | ACCRINT, COUPDAYS, DAY, EDATE, EOMONTH, MONTH, WEEKDAY, YEARFRAC |
+| текст аргументом | 8 | AVERAGEA, MAXA, MINA, MODE.SNGL, STDEVA, STDEVPA, VARA, VARPA |
+| логическое аргументом | 8 | COUNT, GCD, KURT, LCM, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P |
+| регистр | 8 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM, SWITCH |
+| кириллица | 7 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
+| кириллица в ячейке | 7 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
+| текст-число аргументом | 6 | AVERAGEA, COUNT, KURT, MODE.SNGL, SKEW, SKEW.P |
+| отрицательные и дробные | 6 | GCD, HARMEAN, KURT, LCM, MODE.SNGL, MULTINOMIAL |
+| диапазон с ошибкой | 6 | IRR, STDEVA, STDEVPA, TEXTJOIN, VARA, VARPA |
+| текст-число в ячейке | 5 | ATAN2, CUMIPMT, NPER, RANK.AVG, RANK.EQ |
+| текст TRUE | 5 | CHISQ.DIST, IF, IFS, NOT, POISSON.DIST |
+| число | 5 | DATEVALUE, DECIMAL, IMCSC, IMDIV, IMREAL |
+| 01.03.1900 | 4 | COUPDAYS, DAYS, PRICEDISC, YEARFRAC |
+| 28.02.1900 | 3 | COUPDAYS, WEEKDAY, YEARFRAC |
+| високосный 29.02.2024 | 3 | DATEDIF, PRICEDISC, YEARFRAC |
+| время текстом | 3 | HOUR, MINUTE, SECOND |
+| шаблон * | 3 | MINIFS, SEARCH, VLOOKUP |
+| шаблон ? | 3 | MINIFS, SEARCH, VLOOKUP |
+| ошибка на входе | 2 | MATCH, VLOOKUP |
+| #DIV/0! | 2 | MATCH, SWITCH |
+| ноль в known_y | 1 | GROWTH |
+| по убыванию -1 | 1 | MATCH |
+| экранирование ~* | 1 | MINIFS |
+| кириллица без учёта регистра | 1 | MINIFS |
+| дата текстом | 1 | MINIFS |
+| не равно | 1 | MINIFS |
+| пустое условие | 1 | MINIFS |
+| логическое условие | 1 | MINIFS |
+| два условия | 1 | MINIFS |
+| без смены знака | 1 | MIRR |
+| экранирование ~? | 1 | SEARCH |
+| кириллица и регистр | 1 | SWITCH |
+| диапазон | 1 | TYPE |
+| даты не по порядку | 1 | XNPV |
+| поток: смесь | 1 | XNPV |
+<!-- /auto:tags -->
+
+Повторяющиеся причины, по выборке расходящихся случаев:
+- логическое литералом в числовом аргументе: функции из бывшего пакета анализа (BESSEL*, COMPLEX, CONVERT, перевод систем счисления, ACCRINT, CUMIPMT, CUMPRINC, DOLLARDE и другие) в Excel дают `#VALUE!` (37 случаев), обычные математические функции приводят TRUE к 1;
+- область определения: отрицательное, ноль, вероятность больше 1, пустая ячейка как 0 у функций распределений и обратных распределений в Excel дают `#NUM!`, formulajs считает число (40 случаев на отрицательном, 22 на пустой ячейке, 20 на нуле); тригонометрия от 1E10 в Excel `#NUM!`, в formulajs число;
+- пустой диапазон: Excel отвечает `#DIV/0!`, `#NUM!` или `#N/A` в зависимости от функции, formulajs другим кодом или числом;
+- смесь в парных диапазонах (CORREL, SLOPE, PEARSON, COVARIANCE.*): Excel выбрасывает пары, где хотя бы одно значение не число, formulajs отвечает `#VALUE!`; на диапазонах разного размера Excel даёт `#N/A`, formulajs считает по совпавшей части или отвечает `#NUM!`;
+- текст-дата в аргументе-дате и даты у границы 1900 года: серийный номер 60 (ложное 29.02.1900) в JS Date не представим и становится 1 марта, номер 0 Excel трактует как 0 января 1900;
+- код ошибки на неверном входе: комплексные функции (IM*) на тексте, который не комплексное число (кириллица, пробелы), в Excel дают `#NUM!`, в formulajs `#VALUE!`; пустую строку Excel отвергает (`#NUM!`), formulajs считает нулём.
+
+## Где расходятся обычные случаи
+
+96 функций, у которых через адаптер расходится хотя бы один обычный случай (в таблице предложения ниже они разнесены на «своя» и «зависает» вместе с функциями, которые расходятся по смыслу на краях). По группам:
+- старые имена: formulajs подставляет новые функции с другой семантикой. CHIDIST и CHIINV (в Excel правый хвост, в formulajs CHISQ.DIST и CHISQ.INV), FDIST и FINV, TINV (в Excel двусторонний), NORMSDIST и LOGNORMDIST (у старых имён нет аргумента cumulative, formulajs без него считает плотность); TTEST и T.TEST не учитывают число хвостов и тип теста, FTEST и F.TEST отдают не вероятность, CHITEST и CHISQ.TEST округляют ответ до шести знаков (как и LOGEST);
+- база данных: все 12 D-функций. formulajs ждёт базу и условия по колонкам (`database[колонка][строка]`), а диапазон Excel идёт по строкам; номер поля сдвинут на один;
+- условия: SUMIF, SUMIFS, COUNTIF, COUNTIFS, AVERAGEIF, AVERAGEIFS, MAXIFS (и MINIFS на краях): регистр учитывается, шаблонов и дат текстом нет. В движке эти функции уже свои;
+- даты и время: DATE (год от 0 до 1899 и 29.02.1900), TIME (часы больше 24 не заворачиваются), TIMEVALUE (`"2:24 AM"`, `"18:30"` дают `#VALUE!`), DAYS360 (конец февраля), NETWORKDAYS (даты в обратном порядке), NETWORKDAYS.INTL, WORKDAY, WORKDAY.INTL (праздники);
+- финансовые: DB (седьмой период при месяце 7), DISC, TBILLEQ, TBILLPRICE, TBILLYIELD (счёт дней), XIRR;
+- массивы и ссылки: COLUMN и ROW (formulajs получает значения и не знает адреса), LOOKUP в форме массива, SORT (числа сортируются как текст), UNIQUE, MODE.MULT (другой порядок), LINEST и LOGEST (одномерный массив вместо строки), TREND без новых x, AGGREGATE (опция 6 не пропускает ошибки), IFERROR (ссылка на пустую ячейку даёт `null`, адаптер делает из него `#VALUE!`, Excel 0);
+- математика и статистика: ARABIC (строчные), ISO.CEILING (без точности даёт 0), MOD (отрицательный делитель), ROMAN (формы 1 и 4), BETA.DIST (плотность с границами вдвое больше), T.DIST (`#NUM!`), TRIMMEAN, QUARTILE.INC (кварт 0 и 4), PERCENTRANK.INC (код ошибки), ERF с двумя аргументами, CONVERT (`"F"` в `"C"`), GAMMA и CONFIDENCE.T (только мягко);
+- текст: CHAR и CODE (Excel на Маке берёт кодировку Mac, `CHAR(200)` это `»`, `CODE("Ж")` это 134), DOLLAR (отрицательное в скобках), NUMBERVALUE (проценты, пробел-разделитель), SUBSTITUTE (номер вхождения), TEXT (форматы дат), VALUE (время и дата текстом, `"1,5"`).
+
+## Зависания formulajs
+
 <!-- auto:hangs -->
 | случай | формула | что | Excel en-US |
 |---|---|---|---|
@@ -506,8 +587,75 @@
 | CHISQ.INV.RT#15 | `_xlfn.CHISQ.INV.RT(0.050001,10000000000)` | висит дольше 5 с | #NUM |
 <!-- /auto:hangs -->
 
+В текущем наборе formulajs висит на трёх обратных распределениях с числом степеней свободы 1E10; Excel отвечает `#NUM!`. До ограничения краевых значений висели или падали по памяти ещё `BESSELJ(1.9,1E10)`, `CUMPRINC(…,13,1E10,0)`, `WORKDAY(39722,1E10)`, `BIN2OCT("1001",45688)`, `DEC2OCT(58,45688)`, `HEX2BIN("F",45688)`, `HEX2OCT("F",45688)` и `MUNIT(45688)`. Эти аргументы в Excel проверяются сразу; в formulajs это циклы по числу знаков, дней или порядку и массивы по размеру. Если такие функции идут в белый список, перед вызовом нужен страж аргумента.
+
+## LibreOffice против Excel
+
 <!-- auto:libreoffice -->
-LibreOffice расходится с Excel en-US в 1342 случаях из 5275, у 319 функций из 402.
+LibreOffice расходится с Excel en-US в 1342 случаях из 5275, у 319 функций из 402. По видам: другой код ошибки 772, значение вместо ошибки 208, ошибка вместо значения 163, число 153, строка 38, другой тип 6, строка: формат числа 1, логическое 1.
+
+На обычных случаях расходится 56 раз у 36 функций:
+
+| случай | формула | Excel en-US | LibreOffice |
+|---|---|---|---|
+| ACCRINT#2 | `ACCRINT(39508,39691,39569,0.1,1000,2,0,FALSE)` | 16.6666666667 | #VALUE |
+| ACCRINT#3 | `ACCRINT(39512,39691,39569,0.1,1000,2,0,TRUE)` | 15.5555555556 | #VALUE |
+| BESSELJ#1 | `BESSELJ(1.9,2)` | 0.32992582867 | 0.329925727692 |
+| BINOM.DIST.RANGE#1 | `_xlfn.BINOM.DIST.RANGE(60,0.75,48)` | 0.083974967429 | #NAME |
+| BINOM.DIST.RANGE#2 | `_xlfn.BINOM.DIST.RANGE(60,0.75,45,50)` | 0.523629793472 | #NAME |
+| CHAR#3 | `CHAR(200)` | "»" | "�" |
+| CHAR#4 | `CHAR(0)` | #VALUE | "_x0000_" |
+| CODE#3 | `CODE("Ж")` | 134 | 208 |
+| CODE#4 | `CODE("")` | #VALUE | 0 |
+| CONCATENATE#3 | `CONCATENATE(1.5,TRUE)` | "1.5TRUE" | "1.51" |
+| CONVERT#1 | `CONVERT(1,"lbm","kg")` | 0.45359237 | 0.453592309749 |
+| CONVERT#3 | `CONVERT(2.5,"ft","sec")` | #NA | #VALUE |
+| DATE#4 | `DATE(108,1,2)` | 39449 | #VALUE |
+| DATE#5 | `DATE(1900,2,29)` | 60 | 61 |
+| DATEVALUE#4 | `DATEVALUE("2011/02/23")` | 40597 | #VALUE |
+| DGET#1 | `DGET(D!U1:Y7,"Yield",D!AA1:AB2)` | #NUM | #VALUE |
+| DGET#2 | `DGET(D!U1:Y7,4,D!AC1:AC2)` | #NUM | #VALUE |
+| DOLLAR#3 | `DOLLAR(-1234.567,-2)` | "($1,200)" | "-$1,200" |
+| DOLLAR#4 | `DOLLAR(-0.123,4)` | "($0.1230)" | "-$0.1230" |
+| FIND#5 | `FIND("","abc")` | 1 | #VALUE |
+| FLOOR#3 | `FLOOR(2.5,-2)` | #NUM | #VALUE |
+| GAMMA#3 | `_xlfn.GAMMA(0)` | #NUM | #VALUE |
+| GAMMA#4 | `_xlfn.GAMMA(-2)` | #NUM | #VALUE |
+| IMCOSH#1 | `_xlfn.IMCOSH("4+3i")` | "-27.0349456030742+3.85115333481178i" | #NAME |
+| IMCOT#1 | `_xlfn.IMCOT("4+3i")` | "0.00490118239430447-0.999266927805902i" | #NAME |
+| IMCSC#1 | `_xlfn.IMCSC("4+3i")` | "-0.0754898329158637+0.0648774713706355i" | #NAME |
+| IMCSCH#1 | `_xlfn.IMCSCH("4+3i")` | "-0.036275889628626-0.0051744731840194i" | #NAME |
+| IMSEC#1 | `_xlfn.IMSEC("4+3i")` | "-0.0652940278579471-0.0752249603027732i" | #NAME |
+| IMSECH#1 | `_xlfn.IMSECH("4+3i")` | "-0.0362534969158689-0.00516434460775318i" | #NAME |
+| IMSINH#1 | `_xlfn.IMSINH("4+3i")` | "-27.0168132580039+3.85373803791938i" | #NAME |
+| IMTAN#1 | `_xlfn.IMTAN("4+3i")` | "0.00490825806749606+1.00070953606723i" | #NAME |
+| ISO.CEILING#1 | `_xlfn.ISO.CEILING(4.3)` | 5 | #NAME |
+| ISO.CEILING#2 | `_xlfn.ISO.CEILING(-4.3,2)` | -4 | #NAME |
+| ISO.CEILING#3 | `_xlfn.ISO.CEILING(4.3,-2)` | 6 | #NAME |
+| MROUND#4 | `MROUND(5,-2)` | #NUM | 6 |
+| NETWORKDAYS.INTL#1 | `_xlfn.NETWORKDAYS.INTL(38718,38748)` | 22 | #NAME |
+| NETWORKDAYS.INTL#2 | `_xlfn.NETWORKDAYS.INTL(38718,38749,7,D!AP1:AP8)` | 22 | #NAME |
+| NETWORKDAYS.INTL#3 | `_xlfn.NETWORKDAYS.INTL(38718,38749,"0010001")` | 22 | #NAME |
+| NUMBERVALUE#2 | `_xlfn.NUMBERVALUE("3.5%")` | 0.035 | #VALUE |
+| NUMBERVALUE#3 | `_xlfn.NUMBERVALUE("1 234.5")` | 1234.5 | #VALUE |
+| NUMBERVALUE#5 | `_xlfn.NUMBERVALUE("2.5")` | 2.5 | #VALUE |
+| PERCENTILE.EXC#3 | `_xlfn.PERCENTILE.EXC(D!B1:B8,0.05)` | #NUM | #VALUE |
+| PERCENTRANK.EXC#3 | `_xlfn.PERCENTRANK.EXC(D!B1:B8,5.5)` | 0.263 | 0.264 |
+| PERCENTRANK.INC#1 | `_xlfn.PERCENTRANK.INC(D!B1:B8,8)` | 0.285 | 0.286 |
+| PERCENTRANK.INC#2 | `_xlfn.PERCENTRANK.INC(D!B1:B8,5.5,2)` | 0.19 | 0.2 |
+| PERCENTRANK.INC#3 | `_xlfn.PERCENTRANK.INC(D!B1:B8,100)` | #NA | #VALUE |
+| SQRT#2 | `SQRT(-16)` | #NUM | #VALUE |
+| SUBTOTAL#4 | `SUBTOTAL(2,D!D1:D8)` | 3 | 5 |
+| TYPE#3 | `TYPE(TRUE)` | 4 | 1 |
+| UNICHAR#4 | `_xlfn.UNICHAR(0)` | #VALUE | "_x0000_" |
+| UPPER#3 | `UPPER("ß")` | "ß" | "ẞ" |
+| WORKDAY.INTL#1 | `_xlfn.WORKDAY.INTL(40909,90,11)` | 41013 | #NAME |
+| WORKDAY.INTL#2 | `_xlfn.WORKDAY.INTL(40909,30,17)` | 40944 | #NAME |
+| WORKDAY.INTL#3 | `_xlfn.WORKDAY.INTL(40909,30,"0000011",D!AP1:AP8)` | 40949 | #NAME |
+| XIRR#1 | `XIRR(D!J1:J5,D!AU1:AU5)` | 0.373362535238 | 0.373362533519 |
+| XIRR#2 | `XIRR(D!J1:J5,D!AU1:AU5,0.1)` | 0.373362535238 | 0.373362533519 |
+
+Все функции, где LibreOffice расходится хотя бы в одном случае:
 
 | функция | случаев расходится | пример |
 |---|---|---|
@@ -832,6 +980,10 @@ LibreOffice расходится с Excel en-US в 1342 случаях из 5275
 | WORKDAY | 1 из 15 | `WORKDAY(-1,151)`: Excel #NUM, LibreOffice 212 |
 <!-- /auto:libreoffice -->
 
+Как оракул для краевых случаев LibreOffice не годится: в 1 342 случаях из 5 275 он расходится с Excel, 772 из них по коду ошибки (569 раз `#VALUE!` там, где Excel даёт `#NUM!`). Двенадцать функций с приставкой `_xlfn.` (BINOM.DIST.RANGE, ISO.CEILING, NETWORKDAYS.INTL, WORKDAY.INTL и восемь IM*) LibreOffice не узнаёт и отвечает `#NAME?`. На обычных случаях он расходится 56 раз у 36 функций; кроме этих двенадцати сюда входят точность BESSELJ и CONVERT, CHAR и CODE (другая кодировка), DATE у 1900 года, ACCRINT с аргументом calc_method, DOLLAR (минус вместо скобок), FLOOR и GAMMA (код ошибки), XIRR. По функциям белого списка движка LibreOffice расходится с Excel там же, где в WB1 (логическое в диапазоне SUM, текст-число аргументом SUM, DATE у 1900 года), и ещё в SUMIF, SUMIFS и COUNTIFS на условии-числе против текста-числа в диапазоне и на логическом условии; ROUND совпал везде, EOMONTH на обычных случаях, TEXT везде, кроме логического значения.
+
+## Excel ru-RU против en-US
+
 <!-- auto:ru -->
 Excel ru-RU расходится с en-US в 253 случаях у 160 функций (сравниваются ответы Excel как есть, без поправки на ИСТИНА/ЛОЖЬ).
 
@@ -1115,6 +1267,16 @@ Excel ru-RU расходится с en-US в 253 случаях у 160 функ�
 </details>
 <!-- /auto:ru -->
 
+Для интерфейса с русским вводом разница сводится к нескольким правилам:
+- текст вида `"1.5"` в ru-RU становится датой (1 мая текущего года, 46143), поэтому любой текст-число с точкой на русской стороне превращается в число около 46 000 (101 случай у 94 функций); `"1/2/2025"` читается как 1 февраля, а не 2 января (17 случаев у 16 функций дат);
+- число, ставшее текстом, пишется с запятой: CONCATENATE, CONCAT, TEXTJOIN, комплексные функции (`"-27,0349456030742+3,85115333481178i"`), строковые функции от числа;
+- DOLLAR и FIXED в ru-RU дают рубли и пробел-разделитель тысяч (`"1 235 ₽"` вместо `"$1,235"`);
+- TEXT в ru-RU не понимает английские коды: `TEXT(45658,"YYYY-MM-DD")` возвращает `"YYYY-MM-DD"`, а `"$#,##0.00"`, `"0.00"` и `"0.0%"` дают `#VALUE!`;
+- NUMBERVALUE, VALUE, DATEVALUE и TIMEVALUE разбирают текст по локали;
+- SORT сортирует смесь кириллицы и латиницы иначе.
+
+Логическое в тексте выходит `ИСТИНА`/`ЛОЖЬ` в обеих локалях: это язык интерфейса. В эталоне en-US такие ответы сравнивались как `TRUE`/`FALSE`. Таких случаев:
+
 <!-- auto:booltext -->
 Таких случаев 14:
 
@@ -1134,6 +1296,8 @@ Excel ru-RU расходится с en-US в 253 случаях у 160 функ�
 - `UPPER(TRUE)`: Excel "ИСТИНА"
 <!-- /auto:booltext -->
 
+## Функции Excel, которых нет в formulajs
+
 <!-- auto:missing -->
 Всего 115 из 521 функций справочника. Звёздочка: в formulajs это имя есть, но это объект с подфункциями, а не функция (вызвать нельзя).
 
@@ -1152,6 +1316,10 @@ Excel ru-RU расходится с en-US в 253 случаях у 160 функ�
 | веб | 3 | ENCODEURL, FILTERXML, WEBSERVICE |
 | инженерные | 2 | ERF.PRECISE, ERFC.PRECISE |
 <!-- /auto:missing -->
+
+Из нужного движку здесь XLOOKUP и XMATCH, OFFSET и INDIRECT, SEQUENCE, FILTER и SORTBY, LET и LAMBDA. Десять старых статистических имён (STDEV, VAR, MODE, RANK и другие) в formulajs не вызываются: под этими именами там объект с подфункциями `.S`, `.P` и т. п.
+
+Имена formulajs, которых нет в Excel (в замер не входят):
 
 <!-- auto:notinexcel -->
 | имя formulajs | та же реализация, что у функции Excel |
@@ -1198,19 +1366,57 @@ Excel ru-RU расходится с en-US в 253 случаях у 160 функ�
 | WORKDAYINTL | WORKDAY.INTL |
 <!-- /auto:notinexcel -->
 
-<!-- auto:meta -->
-- formulajs 4.6.1, Node v26.7.0, часовой пояс Europe/Moscow, расчёт 16.032 с;
-- Excel 16.113.3 на Маке: en-US 16.9 с, ru-RU 16.8 с (14 частей, без учёта перезапуска Excel);
-- LibreOffice 26.2.4.2, профиль en-US, 2.763 с.
-<!-- /auto:meta -->
+## Предложение
+
+Классы проставлены автоматически по тому, на чём функция расходится через адаптер: «адаптер» значит, что все расхождения в приведении аргументов, пустом вводе, ошибках внутри диапазонов, текст-датах или формате ответа; «адаптер и проверка области» значит, что кроме этого есть расхождения на значениях вне области определения, на датах у границы 1900 года или только по коду ошибки; «своя» значит, что расходятся обычные случаи или краевые по смыслу (шаблоны, регистр, кириллица, порядок дат).
 
 <!-- auto:plan -->
 | предложение | функций | функции |
 |---|---|---|
 | как есть | 97 | BINOMDIST, CEILING, FLOOR, NORMDIST, ISPMT, NPV, PDURATION, ERROR.TYPE, ISBLANK, ISERR, ISERROR, ISLOGICAL, ISNA, ISNONTEXT, ISNUMBER, ISTEXT, N, NA, AND, FALSE, OR, TRUE, XOR, CHOOSE, CHOOSECOLS, CHOOSEROWS, COLUMNS, DROP, EXPAND, HSTACK, ROWS, TAKE, TRANSPOSE, VSTACK, ABS, ACOS, ACOSH, ACOTH, ASIN, ASINH, ATAN, ATANH, CEILING.MATH, CEILING.PRECISE, COSH, CSCH, DEGREES, EVEN, EXP, FLOOR.MATH, FLOOR.PRECISE, INT, LN, LOG, LOG10, MMULT, MUNIT, ODD, PI, POWER, PRODUCT, RADIANS, ROUNDDOWN, ROUNDUP, SECH, SIGN, SINH, SQRT, SUBTOTAL, SUM, TRUNC, AVEDEV, AVERAGE, BINOM.DIST.RANGE, COUNTA, COUNTBLANK, F.DIST.RT, FISHER, GAMMALN, GAMMALN.PRECISE, GAUSS, MAX, MEDIAN, MIN, NORM.DIST, NORM.S.DIST, PHI, PROB, CLEAN, CONCAT, CONCATENATE, EXACT, FIND, FIXED, REPT, T, TRIM |
-| адаптер | 93 | COVAR, STDEVP, VARP, ZTEST, DATEVALUE, HOUR, ISOWEEKNUM, MINUTE, SECOND, BESSELI, BESSELJ, BESSELK, BESSELY, BIN2DEC, BIN2HEX, BIN2OCT, COMPLEX, DELTA, ERFC, GESTEP, HEX2DEC, HEX2OCT, IMAGINARY, IMCSC, IMCSCH, IMREAL, OCT2BIN, OCT2DEC, CUMIPMT, CUMPRINC, DDB, DOLLARDE, DOLLARFR, EFFECT, FVSCHEDULE, IRR, NOMINAL, NPER, SLN, ISEVEN, ISODD, IF, IFNA, IFS, NOT, MROUND, SQRTPI, SUMPRODUCT, SUMSQ, SUMX2MY2, SUMX2PY2, SUMXMY2, AVERAGEA, CORREL, COUNT, COVARIANCE.P, COVARIANCE.S, DEVSQ, FORECAST, FREQUENCY, GAMMA.INV, GEOMEAN, INTERCEPT, MAXA, MINA, PEARSON, PERCENTILE.EXC, PERCENTILE.INC, PERCENTRANK.EXC, QUARTILE.EXC, RSQ, SKEW, SKEW.P, SLOPE, STDEV.P, STDEV.S, STDEVA, STDEVPA, STEYX, T.INV, VAR.P, VAR.S, VARA, VARPA, Z.TEST, LEFT, LEN, LOWER, PROPER, RIGHT, TEXTJOIN, UNICODE, UPPER |
-| адаптер и проверка области | 101 | BETADIST, BETAINV, CRITBINOM, EXPONDIST, GAMMADIST, GAMMAINV, HYPGEOMDIST, LOGINV, NEGBINOMDIST, NORM.INV, NORMSINV, TDIST, DAY, DAYS, EDATE, EOMONTH, MONTH, WEEKDAY, WEEKNUM, YEAR, YEARFRAC, BITAND, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, DEC2BIN, DEC2HEX, DEC2OCT, HEX2BIN, OCT2HEX, ACCRINT, COUPDAYS, FV, IPMT, PMT, PPMT, PRICEDISC, PV, RATE, RRI, SYD, HLOOKUP, INDEX, ACOT, ATAN2, BASE, COMBIN, COMBINA, COS, COT, COTH, CSC, FACT, FACTDOUBLE, GCD, LCM, MULTINOMIAL, QUOTIENT, ROUND, SEC, SERIESSUM, SIN, TAN, TANH, BETA.INV, BINOM.DIST, BINOM.INV, CHISQ.DIST, CHISQ.DIST.RT, CONFIDENCE.NORM, EXPON.DIST, F.DIST, F.INV, F.INV.RT, FISHERINV, GAMMA.DIST, HARMEAN, HYPGEOM.DIST, KURT, LARGE, LOGNORM.DIST, LOGNORM.INV, MODE.SNGL, NEGBINOM.DIST, NORM.S.INV, NORMINV, PERMUT, PERMUTATIONA, POISSON.DIST, RANK.AVG, RANK.EQ, SMALL, STANDARDIZE, T.DIST.2T, T.DIST.RT, T.INV.2T, WEIBULL.DIST, MID, REPLACE, UNICHAR |
-| своя (расходятся по смыслу на краях) | 32 | DATEDIF, IMABS, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN, MIRR, XNPV, TYPE, SWITCH, MATCH, VLOOKUP, DECIMAL, GROWTH, MINIFS, SEARCH |
+| адаптер | 49 | ZTEST, DATEVALUE, HOUR, ISOWEEKNUM, MINUTE, SECOND, BESSELI, BESSELJ, BESSELK, BESSELY, COMPLEX, DELTA, ERFC, GESTEP, CUMIPMT, CUMPRINC, DDB, DOLLARDE, DOLLARFR, EFFECT, FVSCHEDULE, NOMINAL, NPER, ISEVEN, ISODD, IF, IFNA, IFS, NOT, MROUND, SQRTPI, SUMPRODUCT, SUMSQ, AVERAGEA, COUNT, FREQUENCY, GAMMA.INV, MAXA, MINA, T.INV, Z.TEST, LEFT, LEN, LOWER, PROPER, RIGHT, TEXTJOIN, UNICODE, UPPER |
+| адаптер и проверка области | 169 | BETADIST, BETAINV, COVAR, CRITBINOM, EXPONDIST, GAMMADIST, GAMMAINV, HYPGEOMDIST, LOGINV, NEGBINOMDIST, NORM.INV, NORMSINV, STDEVP, TDIST, VARP, DATEDIF, DAY, DAYS, EDATE, EOMONTH, MONTH, WEEKDAY, WEEKNUM, YEAR, YEARFRAC, BIN2DEC, BIN2HEX, BIN2OCT, BITAND, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, DEC2BIN, DEC2HEX, DEC2OCT, HEX2BIN, HEX2DEC, HEX2OCT, IMABS, IMAGINARY, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMCSC, IMCSCH, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMREAL, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN, OCT2BIN, OCT2DEC, OCT2HEX, ACCRINT, COUPDAYS, FV, IPMT, IRR, MIRR, PMT, PPMT, PRICEDISC, PV, RATE, RRI, SLN, SYD, HLOOKUP, INDEX, ACOT, ATAN2, BASE, COMBIN, COMBINA, COS, COT, COTH, CSC, FACT, FACTDOUBLE, GCD, LCM, MULTINOMIAL, QUOTIENT, ROUND, SEC, SERIESSUM, SIN, SUMX2MY2, SUMX2PY2, SUMXMY2, TAN, TANH, BETA.INV, BINOM.DIST, BINOM.INV, CHISQ.DIST, CHISQ.DIST.RT, CONFIDENCE.NORM, CORREL, COVARIANCE.P, COVARIANCE.S, DEVSQ, EXPON.DIST, F.DIST, F.INV, F.INV.RT, FISHERINV, FORECAST, GAMMA.DIST, GEOMEAN, GROWTH, HARMEAN, HYPGEOM.DIST, INTERCEPT, KURT, LARGE, LOGNORM.DIST, LOGNORM.INV, MODE.SNGL, NEGBINOM.DIST, NORM.S.INV, NORMINV, PEARSON, PERCENTILE.EXC, PERCENTILE.INC, PERCENTRANK.EXC, PERMUT, PERMUTATIONA, POISSON.DIST, QUARTILE.EXC, RANK.AVG, RANK.EQ, RSQ, SKEW, SKEW.P, SLOPE, SMALL, STANDARDIZE, STDEV.P, STDEV.S, STDEVA, STDEVPA, STEYX, T.DIST.2T, T.DIST.RT, T.INV.2T, VAR.P, VAR.S, VARA, VARPA, WEIBULL.DIST, MID, REPLACE, UNICHAR |
+| своя (расходятся по смыслу на краях) | 8 | XNPV, TYPE, SWITCH, MATCH, VLOOKUP, DECIMAL, MINIFS, SEARCH |
 | своя (расходятся обычные) | 76 | CHIDIST, CHITEST, FDIST, FINV, FTEST, LOGNORMDIST, NORMSDIST, TINV, TTEST, DAVERAGE, DCOUNT, DCOUNTA, DGET, DMAX, DMIN, DPRODUCT, DSTDEV, DSTDEVP, DSUM, DVAR, DVARP, DATE, DAYS360, NETWORKDAYS, NETWORKDAYS.INTL, TIME, TIMEVALUE, WORKDAY, WORKDAY.INTL, CONVERT, ERF, DB, DISC, TBILLEQ, TBILLPRICE, TBILLYIELD, XIRR, IFERROR, COLUMN, LOOKUP, ROW, SORT, UNIQUE, AGGREGATE, ARABIC, ISO.CEILING, MOD, ROMAN, SUMIF, SUMIFS, AVERAGEIF, AVERAGEIFS, BETA.DIST, CHISQ.TEST, CONFIDENCE.T, COUNTIF, COUNTIFS, F.TEST, GAMMA, LINEST, LOGEST, MAXIFS, MODE.MULT, PERCENTRANK.INC, QUARTILE.INC, T.DIST, T.TEST, TREND, TRIMMEAN, CHAR, CODE, DOLLAR, NUMBERVALUE, SUBSTITUTE, TEXT, VALUE |
 | своя или страж (зависает) | 3 | CHIINV, CHISQ.INV, CHISQ.INV.RT |
 <!-- /auto:plan -->
+
+**Как есть, 97 функций.** Брать в белый список с тестом против Excel, как SUM. Среди них SUM, PRODUCT, AVERAGE, MIN, MAX, MEDIAN, COUNTA, ROUNDDOWN, ROUNDUP, TRUNC, INT, ABS, POWER, SQRT, LN, LOG, EXP, CHOOSE, AND, OR, ISBLANK, ISERROR и другие IS* кроме ISEVEN и ISODD, TRIM, FIND, CONCATENATE, CONCAT, REPT, FIXED, MMULT, TRANSPOSE и функции формы массива (CHOOSECOLS, DROP, EXPAND, HSTACK, TAKE, VSTACK). После любого изменения адаптера их нужно перепроверить тем же замером.
+
+**Починка адаптера, 49 функций.** Правила ниже нужны и этой группе, и следующей; каждое выведено из наблюдённых расхождений:
+1. Приведение по группам, а не одно на всё. Функции пакета анализа (инженерные, часть финансовых) не принимают логическое литералом: `#VALUE!`. Свёртки вида COUNT, AVERAGEA, MAXA, STDEVA приводят текст-число и логическое, данные прямо аргументом, а из ссылки нет. GCD, LCM и MULTINOMIAL не пропускают текст и логическое из диапазона. Текст `"TRUE"` в логическом аргументе это `#VALUE!` (правило касается и `toBool` рантайма).
+2. Текст-дата в аргументе-дате: разбирать по локали (`"2025-01-31"` и `"1/2/2025"` в en-US) до перевода в JS Date.
+3. Пустой ввод: пустой диапазон в статистике даёт `#DIV/0!` (CORREL, SLOPE, COVARIANCE, KURT, SKEW), `#NUM!` (LARGE, SMALL, PERCENTILE, QUARTILE, GEOMEAN, DEVSQ) или `#N/A` (MODE, HARMEAN, PERCENTRANK); ответ `null` formulajs (ссылка на пустую ячейку в IF и IFERROR) это 0, а не `#VALUE!`.
+4. Пары в парных массивах (CORREL, SLOPE, INTERCEPT, PEARSON, RSQ, STEYX, COVARIANCE.*, FORECAST, SUMX2*): выбросить пары, где хотя бы одно значение не число; разный размер `#N/A`.
+5. Формат ответа: шестнадцатеричные цифры заглавными (BIN2HEX, DEC2HEX, OCT2HEX), комплексное число строкой с 15 значащими цифрами (IM*).
+6. Праздники и даты платежей плоским списком серийных номеров, а не двумерным массивом JS Date.
+
+Правила выведены из расхождений, проверочного прогона с ними не было: до включения функции в белый список правило проверяется тем же замером.
+
+**Адаптер и проверка области, 169 функций.** Те же правила плюс проверка аргументов до вызова и код ошибки на неверный вход: область определения распределений (вероятность в (0,1), положительные параметры, целые там, где Excel требует целое), тригонометрия от больших аргументов (в замере 1E10), целые аргументы битовых функций без отбрасывания дробной части, даты 0 и 60, `#NUM!` вместо `#VALUE!` на тексте, который не число в нужной записи (комплексные IM*, перевод систем счисления). Проверка своя на каждую функцию, но короткая; вычисление остаётся за formulajs.
+
+**Своя реализация, 84 функции.** Расходятся обычные случаи (76 функций) или смысл на краях (8), и правило входа этого не чинит: старые имена статистики, D-функции, условия (уже свои в движке), DATE, TIME, TIMEVALUE, DAYS360, NETWORKDAYS, WORKDAY, TEXT, VALUE, NUMBERVALUE, DOLLAR, CHAR, CODE, SUBSTITUTE, MOD, ROMAN, ARABIC, ISO.CEILING, SORT, UNIQUE, LOOKUP, COLUMN, ROW, AGGREGATE, LINEST, LOGEST, TREND, MODE.MULT, XIRR; на краях SWITCH (регистр), MATCH, VLOOKUP и SEARCH (шаблоны, ошибки на входе), DECIMAL, TYPE, XNPV, MINIFS. Для части из них (D-функции: транспонировать базу и сдвинуть номер поля; LINEST, LOGEST, TREND: форма ответа) хватило бы адаптера под одну функцию, но тогда это уже не общий адаптер, а обёртка на функцию.
+
+**Зависает, 3 функции.** CHIINV, CHISQ.INV, CHISQ.INV.RT: страж на число степеней свободы или своя реализация.
+
+## Что не удалось проверить
+
+- Excel только на Маке. CHAR и CODE на Маке работают в кодировке Mac (`CHAR(200)` это `»`), в Excel для Windows ответ другой; вердикт по ним маковский.
+- Интерфейс Excel русский. Логическое в тексте выходит `ИСТИНА`/`ЛОЖЬ` и в en-US; 14 таких случаев сравнены с поправкой на `TRUE`/`FALSE`, Excel с английским интерфейсом не проверялся.
+- en-US задан аргументом `-AppleLocale en_US`, ru-RU системной локалью; другие локали не мерились.
+- Волатильные функции исключены. ROW и COLUMN без аргументов (зависят от ячейки формулы) не проверялись.
+- Размеры массивов из аргумента (MUNIT, EXPAND, TAKE, DROP) проверены только маленькими литералами, большие размеры и даты в этой позиции не проверялись: `MUNIT(45688)` и `MUNIT("1.5")` в ru-RU исчерпали ресурсы Excel и вызвали модальный диалог. У прочих аргументов-размеров и счётчиков «большое» равно 1000.
+- Часовой пояс только Europe/Moscow. Голая formulajs на `DATEVALUE("2025-01-31")` отдаёт полночь UTC (в Москве 03:00); в поясе с отрицательным смещением это был бы предыдущий день, такой прогон не делался.
+- Ответ-массив сравнивался в формуле массива старого вида, растекание (динамические массивы) не мерилось.
+- До 15 случаев на функцию (у функций с ответом-массивом до 19 вместе с элементами ответа): редкие режимы аргументов (базисы счёта дней, типы недель) покрыты одним-двумя вызовами.
+- Правила адаптера из предложения выведены из расхождений и не прогонялись.
+- LibreOffice: символ `CHAR(0)` в его xlsx записан как `_x0000_` и не раскодирован; на вердикт не влияет (в Excel `#VALUE!`).
+
+## Повторить
+
+```sh
+cd xlcalc
+npx tsx bench/coverage/run.ts all
+```
+
+Нужны LibreOffice (`soffice`), Excel для Мака и разрешения на управление Excel и System Events. Перед запуском в Excel не должно быть открытых книг; шаг перезапускает Excel с нужной локалью и оставляет его запущенным без аргументов. Подробности и правила работы с Excel: `bench/coverage/README.md`.

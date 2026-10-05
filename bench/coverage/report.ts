@@ -221,8 +221,18 @@ function blocks(dir: string): Record<string, string> {
     const c = set.cases.find((x) => x.fn === fn && !a.verdicts[x.id].lo.ok)!
     return `${code(c.formula)}: Excel ${show(a.en[c.id])}, LibreOffice ${show(a.lo.values[c.id])}`
   }
+  const loKinds = count(Object.values(a.verdicts).map((v) => (v.lo.ok ? undefined : v.lo.kind)))
+  const loTypical = set.cases.filter((c) => c.kind === 'typical' && !a.verdicts[c.id].lo.ok)
   out.libreoffice = [
-    `LibreOffice расходится с Excel en-US в ${loCases} случаях из ${set.cases.length}, у ${loRows.length} функций из ${rows.length}.`,
+    `LibreOffice расходится с Excel en-US в ${loCases} случаях из ${set.cases.length}, у ${loRows.length} функций из ${rows.length}. По видам: ${kindsText(loKinds)}.`,
+    '',
+    `На обычных случаях расходится ${loTypical.length} раз у ${new Set(loTypical.map((c) => c.fn)).size} функций:`,
+    '',
+    '| случай | формула | Excel en-US | LibreOffice |',
+    '|---|---|---|---|',
+    ...loTypical.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(a.en[c.id]))} | ${esc(show(a.lo.values[c.id]))} |`),
+    '',
+    'Все функции, где LibreOffice расходится хотя бы в одном случае:',
     '',
     '| функция | случаев расходится | пример |',
     '|---|---|---|',
@@ -275,14 +285,16 @@ function blocks(dir: string): Record<string, string> {
 
   // предложение: по классам расхождений через адаптер (формат ответа, класс краевого случая)
   const FIXABLE = new Set(['приведение', 'пустое', 'ошибки', 'диапазоны', 'текст-дата', 'формат'])
-  const DOMAIN = new Set(['область', 'даты 1900'])
+  const DOMAIN = new Set(['область', 'даты 1900', 'код ошибки'])
   const plan = new Map<string, string[]>()
   for (const r of sorted) {
     const fails = set.cases.filter((c) => c.fn === r.fn && !a.verdicts[c.id].adapter.ok)
     const cls = fails.map((c) => {
       const k = a.verdicts[c.id].adapter.kind
       if (k === 'строка: регистр' || k === 'строка: формат числа') return 'формат'
-      return c.kind === 'typical' ? 'обычный' : (TAG_CLASS[c.tag] ?? 'семантика')
+      if (c.kind === 'typical') return 'обычный'
+      if (k === 'другой код ошибки') return 'код ошибки'
+      return TAG_CLASS[c.tag] ?? 'семантика'
     })
     const key =
       r.adapter.status === 'все'
