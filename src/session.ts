@@ -5,18 +5,18 @@
  */
 import type { BookInput, CellChange, CellEdit, Clock, Explanation, ExplainOptions, NameInput, Session, SessionOptions } from './contract.js'
 import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine.js'
-import { nowMs, randomSeed } from './env.js'
+import { currentClock, nowMs } from './env.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, clockSerial, outValue } from './result.js'
 import { sheetKey } from './syntax.js'
 
-function liveClock(): Clock {
-  return { now: new Date().toISOString(), seed: randomSeed() }
-}
-
-export function openSession(book: BookInput, opts: SessionOptions): Session {
-  const live = 'live' in opts
-  let clock: Clock = live ? liveClock() : { ...opts.clock }
+/**
+ * Opens a session. Without options it keeps the clock of the moment it was opened (with a random seed)
+ * until `setClock`; `{ live: true }` takes a fresh clock on every recomputation.
+ */
+export function openSession(book: BookInput, opts: SessionOptions = {}): Session {
+  const live = opts.live === true
+  let clock: Clock = 'clock' in opts && opts.clock ? { ...opts.clock } : currentClock()
   const externals = opts.externals
   let state: EngineState | null = createState(book, { now: clockSerial(clock), seed: clock.seed, externals })
   const st = () => {
@@ -29,7 +29,7 @@ export function openSession(book: BookInput, opts: SessionOptions): Session {
       return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value: outValue(toCellValue(valueAt(s, i, r, c))) }
     })
   const tick = (s: EngineState) => {
-    clock = liveClock()
+    clock = currentClock()
     s.ctx.now = clockSerial(clock)
     s.ctx.seed = clock.seed
   }

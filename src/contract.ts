@@ -82,7 +82,11 @@ export interface Externals {
 }
 
 export interface ComputeOptions {
-  clock: Clock
+  /**
+   * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
+   * pass the `clock` of a result to reproduce that result exactly.
+   */
+  clock?: Clock
   externals?: Externals
 }
 
@@ -175,12 +179,16 @@ export interface Explanation {
   text: string
 }
 
-export type SessionOptions = ({ clock: Clock } | { live: true }) & { externals?: Externals }
+/**
+ * Session options. A session keeps one clock, `clock` or by default the moment of opening and a random
+ * seed, until `setClock`. A live session (`live: true`) takes a fresh clock and a new seed on every
+ * recomputation instead.
+ */
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals }
 
 /**
- * A session over a book. A live session (`live`) takes a fresh clock and a new seed on every
- * recomputation; the current clock of the session (`clock`) is what a saved result should record.
- * A non-live session computes with the clock it was given.
+ * A session over a book: edits recompute only the cells that depend on them. The current clock of the
+ * session (`clock`) is what a saved result should record: a full computation with it gives the same hash.
  */
 export interface Session {
   readonly clock: Clock
@@ -195,10 +203,10 @@ export interface Session {
 }
 
 export interface FormulaEngine {
-  compute(book: BookInput, opts: ComputeOptions): ComputeResult
+  compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
   validateName(name: string): NameCheck
-  openSession(book: BookInput, opts: SessionOptions): Session
+  openSession(book: BookInput, opts?: SessionOptions): Session
 }
 
 export const MAX_FORMULA_LENGTH = 8_192
