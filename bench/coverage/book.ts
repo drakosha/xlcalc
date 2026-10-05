@@ -1,8 +1,8 @@
 /**
  * Синтетическая книга замера в xlsx (ExcelJS, без кэша значений): лист данных `D` и лист случаев `C`.
- * В строке случая: A формула случая, B код типа ответа, C число, D текст, E id случая. B, C и D
- * никогда не дают ошибку, поэтому Excel отдаёт их диапазоном за один вызов без потери позиций
- * (ошибки из `value` диапазона выпадают из списка).
+ * В строке случая: A формула случая (у ответа-массива формула массива), B код типа ответа, C число,
+ * D текст, E id случая. B, C и D никогда не дают ошибку, поэтому Excel отдаёт их диапазоном за один
+ * вызов без потери позиций (ошибки из `value` диапазона выпадают из списка).
  *
  * Код типа в B: 0 число, -1 TRUE, -2 FALSE, -3 текст, -4 прочее, >0 номер ошибки ERROR.TYPE.
  */
@@ -26,7 +26,9 @@ export async function writeBook(cases: Case[], file: string): Promise<void> {
   const c = wb.addWorksheet(CASE_SHEET)
   cases.forEach((x, i) => {
     const r = i + 1
-    c.getCell(`A${r}`).value = { formula: x.formula } as ExcelJS.CellFormulaValue
+    // ответ-массив (INDEX/ROWS/COLUMNS над функцией-массивом): формула массива, как ввод Ctrl+Shift+Enter;
+    // в обычной формуле старого вида Excel применяет к аргументу TRANSPOSE неявное пересечение (#VALUE!)
+    c.getCell(`A${r}`).value = (x.pick === undefined ? { formula: x.formula } : { formula: x.formula, shareType: 'array', ref: `A${r}` }) as ExcelJS.CellFormulaValue
     c.getCell(`B${r}`).value = { formula: `IF(ISERROR(A${r}),ERROR.TYPE(A${r}),IF(ISNUMBER(A${r}),0,IF(ISLOGICAL(A${r}),IF(A${r},-1,-2),IF(ISTEXT(A${r}),-3,-4))))` } as ExcelJS.CellFormulaValue
     c.getCell(`C${r}`).value = { formula: `IF(ISNUMBER(A${r}),A${r},0)` } as ExcelJS.CellFormulaValue
     c.getCell(`D${r}`).value = { formula: `IF(ISTEXT(A${r}),A${r},"")` } as ExcelJS.CellFormulaValue

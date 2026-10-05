@@ -3,7 +3,7 @@
   "formulajs": "4.6.1",
   "node": "v26.7.0",
   "tz": "Europe/Moscow",
-  "seconds": 16.076
+  "seconds": 16.032
  },
  "values": {
   "ABS#1": {
@@ -11983,7 +11983,7 @@
   "DATEVALUE#1": {
    "adapter": {
     "t": "n",
-    "v": 45688.125
+    "v": 45688
    },
    "bare": {
     "t": "date",
@@ -16596,8 +16596,8 @@
   },
   "ERROR.TYPE#1": {
    "adapter": {
-    "t": "e",
-    "v": "NA"
+    "t": "n",
+    "v": 2
    },
    "bare": {
     "t": "n",
@@ -16606,8 +16606,8 @@
   },
   "ERROR.TYPE#2": {
    "adapter": {
-    "t": "e",
-    "v": "NA"
+    "t": "n",
+    "v": 7
    },
    "bare": {
     "t": "n",
@@ -23417,8 +23417,8 @@
   },
   "IF#10": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "2"
    },
    "bare": {
     "t": "s",
@@ -23457,8 +23457,8 @@
   },
   "IF#14": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "n",
+    "v": 0
    },
    "bare": {
     "t": "n",
@@ -23477,8 +23477,8 @@
   },
   "IFERROR#1": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "err"
    },
    "bare": {
     "t": "s",
@@ -23527,8 +23527,8 @@
   },
   "IFERROR#6": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "b",
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -23557,8 +23557,8 @@
   },
   "IFERROR#9": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": ""
    },
    "bare": {
     "t": "s",
@@ -23567,8 +23567,8 @@
   },
   "IFERROR#10": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "err"
    },
    "bare": {
     "t": "s",
@@ -23577,8 +23577,8 @@
   },
   "IFERROR#11": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": ""
    },
    "bare": {
     "t": "s",
@@ -23597,8 +23597,8 @@
   },
   "IFERROR#13": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "2"
    },
    "bare": {
     "t": "s",
@@ -23607,8 +23607,8 @@
   },
   "IFERROR#14": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "n",
+    "v": 45688
    },
    "bare": {
     "t": "n",
@@ -23617,8 +23617,8 @@
   },
   "IFERROR#15": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "abc"
    },
    "bare": {
     "t": "s",
@@ -23627,8 +23627,8 @@
   },
   "IFNA#1": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "nf"
    },
    "bare": {
     "t": "s",
@@ -23638,7 +23638,7 @@
   "IFNA#2": {
    "adapter": {
     "t": "e",
-    "v": "VALUE"
+    "v": "DIV0"
    },
    "bare": {
     "t": "e",
@@ -23677,8 +23677,8 @@
   },
   "IFNA#6": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": ""
    },
    "bare": {
     "t": "s",
@@ -23707,8 +23707,8 @@
   },
   "IFNA#9": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "b",
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -23717,8 +23717,8 @@
   },
   "IFNA#10": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": ""
    },
    "bare": {
     "t": "s",
@@ -23727,8 +23727,8 @@
   },
   "IFNA#11": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "2"
    },
    "bare": {
     "t": "s",
@@ -23738,7 +23738,7 @@
   "IFNA#12": {
    "adapter": {
     "t": "e",
-    "v": "VALUE"
+    "v": "NA"
    },
    "bare": {
     "t": "e",
@@ -23747,8 +23747,8 @@
   },
   "IFNA#13": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "n",
+    "v": 45688
    },
    "bare": {
     "t": "n",
@@ -23757,8 +23757,8 @@
   },
   "IFNA#14": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "abc"
    },
    "bare": {
     "t": "s",
@@ -23767,8 +23767,8 @@
   },
   "IFNA#15": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "2"
    },
    "bare": {
     "t": "s",
@@ -23888,7 +23888,7 @@
   "IFS#12": {
    "adapter": {
     "t": "e",
-    "v": "VALUE"
+    "v": "DIV0"
    },
    "bare": {
     "t": "e",
@@ -27326,7 +27326,7 @@
   "ISBLANK#3": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -27446,7 +27446,7 @@
   "ISERR#6": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -27526,7 +27526,7 @@
   "ISERROR#5": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -27536,7 +27536,7 @@
   "ISERROR#6": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -27856,7 +27856,7 @@
   "ISNA#5": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -27966,7 +27966,7 @@
   "ISNONTEXT#7": {
    "adapter": {
     "t": "b",
-    "v": true
+    "v": false
    },
    "bare": {
     "t": "b",
@@ -27976,7 +27976,7 @@
   "ISNONTEXT#8": {
    "adapter": {
     "t": "b",
-    "v": true
+    "v": false
    },
    "bare": {
     "t": "b",
@@ -28076,7 +28076,7 @@
   "ISNUMBER#9": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -28746,7 +28746,7 @@
   "ISTEXT#7": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -28756,7 +28756,7 @@
   "ISTEXT#8": {
    "adapter": {
     "t": "b",
-    "v": false
+    "v": true
    },
    "bare": {
     "t": "b",
@@ -30795,8 +30795,8 @@
   },
   "LOOKUP#14": {
    "adapter": {
-    "t": "e",
-    "v": "NA"
+    "t": "n",
+    "v": 130
    },
    "bare": {
     "t": "n",
@@ -33397,7 +33397,7 @@
   "N#4": {
    "adapter": {
     "t": "n",
-    "v": 0
+    "v": 45688
    },
    "bare": {
     "t": "n",
@@ -33436,8 +33436,8 @@
   },
   "N#8": {
    "adapter": {
-    "t": "n",
-    "v": 0
+    "t": "e",
+    "v": "NA"
    },
    "bare": {
     "t": "e",
@@ -33446,8 +33446,8 @@
   },
   "N#9": {
    "adapter": {
-    "t": "n",
-    "v": 0
+    "t": "e",
+    "v": "DIV0"
    },
    "bare": {
     "t": "e",
@@ -45885,7 +45885,7 @@
   "SWITCH#11": {
    "adapter": {
     "t": "e",
-    "v": "VALUE"
+    "v": "NA"
    },
    "bare": {
     "t": "e",
@@ -46144,8 +46144,8 @@
   },
   "T#7": {
    "adapter": {
-    "t": "s",
-    "v": ""
+    "t": "e",
+    "v": "NA"
    },
    "bare": {
     "t": "e",
@@ -46154,8 +46154,8 @@
   },
   "T#8": {
    "adapter": {
-    "t": "s",
-    "v": ""
+    "t": "e",
+    "v": "DIV0"
    },
    "bare": {
     "t": "e",
@@ -46175,7 +46175,7 @@
   "T#10": {
    "adapter": {
     "t": "s",
-    "v": ""
+    "v": "2"
    },
    "bare": {
     "t": "s",
@@ -48206,10 +48206,9 @@
   },
   "TEXT#12": {
    "adapter": {
-    "t": "e",
-    "v": "VALUE"
+    "t": "s",
+    "v": "$0.00"
    },
-   "adapterThrew": "TypeError: value$1.startsWith is not a function",
    "bare": {
     "t": "s",
     "v": "$0.00"
@@ -48238,9 +48237,8 @@
   "TEXT#15": {
    "adapter": {
     "t": "e",
-    "v": "VALUE"
+    "v": "NA"
    },
-   "adapterThrew": "TypeError: value$1.startsWith is not a function",
    "bare": {
     "t": "e",
     "v": "NA"
@@ -49628,8 +49626,8 @@
   },
   "TYPE#6": {
    "adapter": {
-    "t": "n",
-    "v": 64
+    "t": "e",
+    "v": "VALUE"
    },
    "bare": {
     "t": "other",
@@ -49639,7 +49637,7 @@
   "TYPE#7": {
    "adapter": {
     "t": "n",
-    "v": 64
+    "v": 16
    },
    "bare": {
     "t": "n",
@@ -49649,7 +49647,7 @@
   "TYPE#8": {
    "adapter": {
     "t": "n",
-    "v": 64
+    "v": 16
    },
    "bare": {
     "t": "n",
@@ -49659,7 +49657,7 @@
   "TYPE#9": {
    "adapter": {
     "t": "n",
-    "v": 64
+    "v": 2
    },
    "bare": {
     "t": "n",
@@ -49669,7 +49667,7 @@
   "TYPE#10": {
    "adapter": {
     "t": "n",
-    "v": 64
+    "v": 2
    },
    "bare": {
     "t": "n",
@@ -49679,7 +49677,7 @@
   "TYPE#11": {
    "adapter": {
     "t": "n",
-    "v": 64
+    "v": 1
    },
    "bare": {
     "t": "n",

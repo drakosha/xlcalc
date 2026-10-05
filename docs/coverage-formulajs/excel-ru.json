@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "ru-RU (системная)",
-  "seconds": 13.3,
+  "seconds": 16.8,
   "parts": 14,
   "done": 14
  },
@@ -19492,36 +19492,36 @@
    "v": "NUM"
   },
   "TRANSPOSE#1": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 4
   },
   "TRANSPOSE#2": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 2
   },
   "TRANSPOSE#3": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 3
   },
   "TRANSPOSE#4": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 2
   },
   "TRANSPOSE#5": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 8
   },
   "TRANSPOSE#6": {
    "t": "e",
-   "v": "VALUE"
+   "v": "REF"
   },
   "TRANSPOSE#7": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 1
   },
   "TRANSPOSE#8": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "n",
+   "v": 8
   },
   "TREND#1": {
    "t": "n",

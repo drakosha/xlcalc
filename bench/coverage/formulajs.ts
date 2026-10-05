@@ -2,18 +2,19 @@
  * Вызов formulajs на случае замера двумя способами.
  *
  * Голая formulajs: аргументы как лежат в ячейках (одна ячейка значением, диапазон двумерным массивом,
- * пустая null, ошибка объектом ошибки formulajs, дата серийным номером), ответ как есть.
+ * пустая null, ошибка объектом ошибки formulajs, дата серийным номером), ответ как есть (Date
+ * отмечается отдельно, с серийным номером по местному времени и долей суток).
  *
  * Через адаптер: общие правила рантайма движка (`src/runtime.ts`), обобщённые по видам аргументов:
  * - ошибка в скалярном аргументе и в числовом диапазоне (виды N, M, D) сразу ответ;
  * - число (`n`, `p`) через toNum, целое (`i`) ещё и с отбрасыванием дробной части (как ROUND),
  *   текст через toText, логическое через toBool;
- * - дата и время (`d`, `t`, `D`): серийный номер в местное время JS Date (полночь плюс доля суток),
+ * - дата (`d`, `D`): серийный номер в местную полночь JS Date, время (`t`) с долей суток;
  *   отрицательный номер это #NUM! (как EOMONTH);
  * - свёртка чисел (`N`): из ссылки только числа, прямой аргумент приводится (правило SUM);
  * - остальные диапазоны двумерными массивами, ошибки внутри объектами ошибок formulajs;
- * - ответ: ошибка formulajs в код, Date в серийный номер, NaN и бесконечность в #NUM!, исключение в
- *   #VALUE!, прочее (массив, undefined) в #VALUE!.
+ * - ответ: ошибка formulajs в код, Date в серийный номер её местной даты, NaN и бесконечность в
+ *   #NUM!, исключение в #VALUE!, прочее (null, undefined, массив) в #VALUE!.
  */
 import * as fj from '@formulajs/formulajs'
 import { dateToSerial } from '../../src/model.js'
@@ -132,7 +133,8 @@ function adaptArg(a: Arg, kind: string): unknown {
       if (isErr(v)) return v
       const n = toNum(v)
       if (isErr(n)) return n
-      return n < 0 ? E.NUM : serialToLocalDate(n)
+      // дата: местная полночь (как EOMONTH в рантайме); время: с долей суток
+      return n < 0 ? E.NUM : serialToLocalDate(kind === 'd' ? Math.floor(n) : n)
     }
     case 's': {
       const v = scalarOf(x)
@@ -164,7 +166,11 @@ function adaptArg(a: Arg, kind: string): unknown {
       if (bad) return bad
       return x.rows.map((r) => r.map((v) => (typeof v === 'number' ? serialToLocalDate(v) : v)))
     }
-    default: // a, c, V, R
+    case 'a':
+    case 'c':
+      if (!isRef(x)) return fjv(x)
+      return x.single ? fjv(x.rows[0][0]) : x.rows.map((r) => r.map(fjv))
+    default: // V, R
       if (!isRef(x)) return fjv(x)
       return x.rows.map((r) => r.map(fjv))
   }
@@ -194,10 +200,10 @@ function rawVal(x: unknown): Val {
   return { t: 'other', v: x === undefined ? 'undefined' : x === null ? 'null' : Array.isArray(x) ? 'array' : typeof x }
 }
 
-/** Ответ через адаптер (правила fromFj рантайма движка). */
+/** Ответ через адаптер (правила fromFj рантайма движка: дата в серийный номер местной полночи). */
 function adapterVal(x: unknown): Val {
   const r = rawVal(x)
-  if (r.t === 'date') return { t: 'n', v: r.v }
+  if (r.t === 'date') return { t: 'n', v: Math.floor(r.v) }
   if (r.t === 'nan') return { t: 'e', v: 'NUM' }
   if (r.t === 'other') return { t: 'e', v: 'VALUE' }
   return r
