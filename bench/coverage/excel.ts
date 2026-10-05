@@ -79,7 +79,44 @@ export async function ensureExcel(locale: Locale): Promise<void> {
   if (localeOf(q.args) !== locale) throw new Error(`Excel запустился не с той локалью: ${q.args}`)
 }
 
-/** Значения формул листа случаев по строкам; книга копируется в песочницу и удаляется после. */
+/**
+ * Окна Excel, которые не окна книг (модальный диалог и т. п.): подроль и текст. Только чтение
+ * через System Events, ничего не нажимается.
+ */
+export function excelDialogs(): { subrole: string; text: string }[] {
+  const script = `tell application "System Events" to tell process "Microsoft Excel"
+  set out to ""
+  repeat with w in windows
+    set sr to ""
+    try
+      set sr to subrole of w
+    end try
+    if sr is not "AXStandardWindow" then
+      set tx to ""
+      try
+        repeat with t in (value of every static text of w)
+          set tx to tx & (t as text) & " "
+        end repeat
+      end try
+      set out to out & sr & "\t" & tx & linefeed
+    end if
+  end repeat
+  return out
+end tell`
+  const out = execFileSync('osascript', ['-e', script], { encoding: 'utf8', timeout: 30_000 })
+  return out
+    .split('\n')
+    .filter((l) => l.trim())
+    .map((l) => {
+      const [subrole, text = ''] = l.split('\t')
+      return { subrole, text: text.trim() }
+    })
+}
+
+/**
+ * Значения формул книги (одна часть замера) по строкам; книга копируется в песочницу и удаляется
+ * после. Часть небольшая, поэтому ожидание ответа Excel короткое (3 минуты).
+ */
 export function runExcel(book: string, n: number): Val[] {
   if (countWorkbooks() !== 0) throw new Error('в Excel есть открытые книги')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
@@ -87,7 +124,7 @@ export function runExcel(book: string, n: number): Val[] {
   try {
     const file = join(dir, 'book.xlsx')
     copyFileSync(book, file)
-    const out = execFileSync('osascript', [SCRIPT, file, String(n)], { encoding: 'utf8', timeout: 900_000, maxBuffer: 1 << 28 })
+    const out = execFileSync('osascript', [SCRIPT, file, String(n)], { encoding: 'utf8', timeout: 180_000, maxBuffer: 1 << 28 })
     const [types, nums, strs] = JSON.parse(out) as [number[][], number[][], string[][]]
     if (types.length !== n || nums.length !== n || strs.length !== n) throw new Error(`Excel отдал ${types.length}/${nums.length}/${strs.length} строк из ${n}`)
     return types.map(([t], i): Val => {
@@ -100,6 +137,5 @@ export function runExcel(book: string, n: number): Val[] {
     })
   } finally {
     rmSync(dir, { recursive: true, force: true })
-    if (countWorkbooks() !== 0) throw new Error('после прогона в Excel осталась открытая книга')
   }
 }

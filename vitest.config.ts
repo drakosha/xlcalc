@@ -7,7 +7,7 @@ const dist = fileURLToPath(new URL('./dist/', import.meta.url))
 
 export default defineConfig({
   test: {
-    include: ['test/**/*.test.ts'],
+    include: ['test/**/*.test.ts', 'bench/**/*.test.ts'],
     testTimeout: 15_000,
   },
   resolve: {

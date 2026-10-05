@@ -10,7 +10,7 @@ on run argv
 	set n to item 2 of argv
 	set hfs to (POSIX file p) as text
 	tell application "Microsoft Excel"
-		with timeout of 600 seconds
+		with timeout of 150 seconds
 			set wb to open workbook workbook file name hfs
 			calculate full
 			set ws to worksheet "C" of wb

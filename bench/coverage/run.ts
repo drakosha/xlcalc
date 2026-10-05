@@ -10,6 +10,7 @@
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
  *
  * FCOV_ONLY=ABS,SUM ограничивает набор функций (пробный прогон): тогда всё пишется в out/.
+ * Excel считается частями до 400 случаев; после каждой части проверяется, нет ли модального окна.
  */
 import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -17,7 +18,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { ensureExcel, excelVersion, runExcel, type Locale } from './excel.js'
+import { ensureExcel, excelDialogs, excelVersion, runExcel, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
 import { writeReport } from './report.js'
@@ -116,14 +117,76 @@ async function stepLo() {
   console.log(`LibreOffice: ${((Date.now() - t0) / 1000).toFixed(1)} с`)
 }
 
+/** Части прогона Excel: подряд по функциям, не больше PART случаев в книге. */
+const PART = 400
+
+function parts(cs: Case[]): Case[][] {
+  const out: Case[][] = []
+  let cur: Case[] = []
+  for (let i = 0; i < cs.length; ) {
+    let j = i
+    while (j < cs.length && cs[j].fn === cs[i].fn) j++
+    if (cur.length && cur.length + (j - i) > PART) {
+      out.push(cur)
+      cur = []
+    }
+    cur.push(...cs.slice(i, j))
+    i = j
+  }
+  if (cur.length) out.push(cur)
+  return out
+}
+
+interface ExcelColumn extends Column {
+  meta: Column['meta'] & { parts: number; done: number; stopped?: string }
+}
+
+/**
+ * Excel частями: перед частью и после неё проверяется, нет ли у Excel окна, которое не окно книги
+ * (модальный диалог). Есть: остановка с текстом диалога и номером части, посчитанные части уже в
+ * файле. Повторный запуск продолжает с первой непосчитанной части (FCOV_FRESH=1 заново).
+ */
 async function stepExcel(locale: Locale) {
   const cs = cases()
-  if (!existsSync(BOOK)) throw new Error('нет книги: сначала шаг cases')
+  const name = `excel-${locale}.json`
+  const file = join(RESULTS, name)
   await ensureExcel(locale)
-  const t0 = Date.now()
-  const vals = runExcel(BOOK, cs.length)
-  save(`excel-${locale}.json`, { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLocale en_US)' : 'ru-RU (системная)', seconds: (Date.now() - t0) / 1000 }, values: byId(cs, vals) })
-  console.log(`Excel ${locale}: ${((Date.now() - t0) / 1000).toFixed(1)} с`)
+  const ps = parts(cs)
+  const col: ExcelColumn =
+    existsSync(file) && !process.env.FCOV_FRESH
+      ? load<ExcelColumn>(name)
+      : { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLocale en_US)' : 'ru-RU (системная)', seconds: 0, parts: ps.length, done: 0 }, values: {} }
+  delete col.meta.stopped
+  const stop = (k: number, why: string) => {
+    col.meta.stopped = `часть ${k + 1} из ${ps.length} (${ps[k][0].id} … ${ps[k][ps[k].length - 1].id}): ${why}`
+    save(name, col)
+    throw new Error(`Excel ${locale}: ${col.meta.stopped}`)
+  }
+  mkdirSync(OUT, { recursive: true })
+  for (let k = 0; k < ps.length; k++) {
+    const part = ps[k]
+    if (part.every((c) => c.id in col.values)) continue
+    const before = excelDialogs()
+    if (before.length) stop(k, `до части у Excel окно не книги: ${before.map((d) => `${d.subrole} «${d.text}»`).join('; ')}`)
+    const book = join(OUT, `part-${locale}-${k + 1}.xlsx`)
+    await writeBook(part, book)
+    const t0 = Date.now()
+    let vals: Val[] | null = null
+    let err = ''
+    try {
+      vals = runExcel(book, part.length)
+    } catch (e) {
+      err = e instanceof Error ? e.message.split('\n')[0] : String(e)
+    }
+    const after = excelDialogs()
+    if (after.length) stop(k, `модальное окно Excel: ${after.map((d) => `${d.subrole} «${d.text}»`).join('; ')}${err ? `; ошибка чтения: ${err}` : ''}`)
+    if (!vals) stop(k, `ошибка чтения: ${err}`)
+    Object.assign(col.values, byId(part, vals!))
+    col.meta.seconds = Math.round((Number(col.meta.seconds) + (Date.now() - t0) / 1000) * 10) / 10
+    col.meta.done = ps.filter((p) => p.every((c) => c.id in col.values)).length
+    save(name, col)
+    console.log(`Excel ${locale}: часть ${k + 1}/${ps.length}, ${part.length} случаев, ${((Date.now() - t0) / 1000).toFixed(1)} с`)
+  }
 }
 
 const step = process.argv[2]

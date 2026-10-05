@@ -7,7 +7,7 @@ import * as fj from '@formulajs/formulajs'
 import { mulberry32 } from '../../src/synth.js'
 import { DATA_SHEET, REGIONS } from './data.js'
 import EXCEL_FUNCTIONS from './excel-functions.json' with { type: 'json' }
-import { SIGNATURES, XLFN, type Arg, type Pick, type Sig } from './signatures.js'
+import { ARRAY_SIZE, SIGNATURES, SIZE_LIMIT, XLFN, type Arg, type Pick, type Sig } from './signatures.js'
 
 export const SEED = 20261005
 export const MAX_CASES = 15
@@ -135,6 +135,13 @@ const RANGE8: Pool = [
   ['пустой диапазон', '@blank'],
   ['разный размер', '@nums1short'],
 ]
+/** Размер массива (ARRAY_SIZE): только маленькие числовые литералы. */
+const SIZE: Pool = [
+  ['отрицательное', -2],
+  ['ноль', 0],
+  ['дробное', 2.7],
+  [`большое (${SIZE_LIMIT})`, SIZE_LIMIT],
+]
 const DATES: Pool = [
   ['праздники: смесь', '@mixed'],
   ['праздники: пустой диапазон', '@blank'],
@@ -205,11 +212,11 @@ function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][
       out.push(list)
       break
     }
-    let pool: Pool = POOLS[k] ?? []
+    let pool: Pool = ARRAY_SIZE[sig.name]?.includes(i) ? SIZE : (POOLS[k] ?? [])
     if (k === 'N' || k === 'M') pool = base[i] === '@nums1' || base[i] === '@nums2' ? RANGE8 : []
     if (k === 'D') pool = base[i] === '@hol' ? DATES : []
     for (const [tag, v] of pool) {
-      if (v === base[i] || sig.skip?.includes(tag)) continue
+      if (v === base[i]) continue
       if (sig.cap && (tag === 'дата в ячейке' || tag === 'число текстом с точкой')) continue
       const big = sig.cap && tag === 'большое'
       const args = [...base]
@@ -314,7 +321,21 @@ export function buildCases(): CaseSet {
       }
     }
   }
+  const bad = sizeGuardViolations(cases)
+  if (bad.length) throw new Error(`size guard: ${bad.join('; ')}`)
   return { cases, inFormulajs, excluded, notInExcel, missing }
+}
+
+/** Случаи, где в позиции размера массива не маленький числовой литерал (см. ARRAY_SIZE). */
+export function sizeGuardViolations(cases: Case[]): string[] {
+  const out: string[] = []
+  for (const c of cases)
+    for (const i of ARRAY_SIZE[c.fn] ?? []) {
+      if (i >= c.args.length) continue
+      const a = c.args[i]
+      if (typeof a !== 'number' || !Number.isFinite(a) || Math.abs(a) > SIZE_LIMIT) out.push(`${c.id} ${c.formula}`)
+    }
+  return out
 }
 
 function pickLabel(p: Pick): string {

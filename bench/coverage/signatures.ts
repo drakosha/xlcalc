@@ -34,8 +34,6 @@ export interface Sig {
   extra?: [string, Arg[], Pick?][]
   /** Без автоматических краевых случаев (условия, база данных: краевые заданы вручную). */
   noAuto?: boolean
-  /** Метки автоматических краевых случаев, которые не берутся (с причиной в комментарии у функции). */
-  skip?: string[]
   /**
    * Аргументы-размеры и счётчики (массивы, повторы, порядок, периоды): «большое» берётся равным
    * CAP вместо 1E10, дата как размер и "1.5" (в ru-RU это дата 46143) не подставляются. Иначе Excel
@@ -100,9 +98,7 @@ s('MMULT', 'M M', [['@m1', '@m2'], ['@m23', '@m1']], { picks: [[1, 1], [2, 2], '
 s('MOD', 'n n', [[3, 2], [-3, 2], [3, -2], [-3, -2]])
 s('MROUND', 'n n', [[10, 3], [-10, -3], [1.3, 0.2], [5, -2]])
 s('MULTINOMIAL', 'N', [[2, 3, 4]], { rep: 1 })
-// MUNIT(45688) (дата как размер) и MUNIT("1.5") в ru-RU (текст становится датой 46143) исчерпывают ресурсы
-// Excel и вызывают модальный диалог: большие размеры не берутся
-s('MUNIT', 'i', [[3]], { picks: [[1, 1], [2, 3], 'rows'], skip: ['большое', 'дата в ячейке', 'число текстом с точкой'] })
+s('MUNIT', 'i', [[3]], { picks: [[1, 1], [2, 3], 'rows'] })
 s('ODD', 'n', [[1.5], [3], [2], [-1], [-2]])
 s('PI', '', [[]])
 s('POWER', 'n n', [[5, 2], [98.6, 3.2], [4, 1.25]])
@@ -531,13 +527,24 @@ for (const name of ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DP
 }
 
 // размеры и счётчики: потолок для краевых значений
-for (const n of ['EXPAND', 'TAKE', 'DROP', 'CHOOSECOLS', 'CHOOSEROWS', 'REPT', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'CUMIPMT', 'CUMPRINC', 'IPMT', 'PPMT', 'ISPMT', 'DB', 'DDB', 'SYD', 'FV', 'PV', 'PMT', 'NPER', 'RATE', 'BASE', 'ROMAN', 'WORKDAY', 'WORKDAY.INTL']) {
+for (const n of ['CHOOSECOLS', 'CHOOSEROWS', 'REPT', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'CUMIPMT', 'CUMPRINC', 'IPMT', 'PPMT', 'ISPMT', 'DB', 'DDB', 'SYD', 'FV', 'PV', 'PMT', 'NPER', 'RATE', 'BASE', 'ROMAN', 'WORKDAY', 'WORKDAY.INTL']) {
   const sig = S.find((x) => x.name === n)
   if (!sig) throw new Error(`cap: no signature ${n}`)
   sig.cap = true
 }
 
 export const SIGNATURES: readonly Sig[] = S
+
+/**
+ * Функции, которые строят массив по размеру из аргумента: позиции аргументов-размеров. В этих
+ * позициях только числовые литералы не больше SIZE_LIMIT по модулю: без ссылок, текста, дат и
+ * логических. MUNIT(45688) (дата как размер) и MUNIT("1.5") в ru-RU (текст стал датой 46143)
+ * исчерпали ресурсы Excel и вызвали модальный диалог; в ru-RU любой текст вида "1.5", "1,5",
+ * "2025-01-01" может стать числом около 45 000–46 000. Страж проверяет все случаи (`cases.ts`,
+ * `cases.test.ts`). SEQUENCE, RANDARRAY и MAKEARRAY в набор не входят (их нет в formulajs).
+ */
+export const ARRAY_SIZE: Readonly<Record<string, readonly number[]>> = { MUNIT: [0], EXPAND: [1, 2], TAKE: [1, 2], DROP: [1, 2] }
+export const SIZE_LIMIT = 100
 
 /**
  * Функции, которые в OOXML пишутся с приставкой (новее Excel 2007). Проверка: Excel даёт `#NAME?`
