@@ -1,8 +1,9 @@
 /**
- * TEXT по формату Excel (en-US): секции `;` (плюс, минус, ноль, текст), литералы в кавычках и через
- * `\`, числа (`0`, `#`, `?`, `.`, `,` для разрядов и деления на 1000, `%`), даты и время (`yyyy`,
- * `yy`, `m`…`mmmm`, `d`…`dddd`, `h`, `hh`, `mm` минуты, `ss`, `AM/PM`), `General` и `@`.
- * Экспоненты (`E+`), цвета и условия в скобках не поддерживаются: null (адаптер даёт #VALUE!).
+ * TEXT with Excel number formats (en-US): `;` sections (positive, negative, zero, text), quoted and
+ * `\`-escaped literals, numbers (`0`, `#`, `?`, `.`, `,` for thousands grouping and scaling by 1000,
+ * `%`), dates and times (`yyyy`, `yy`, `m`…`mmmm`, `d`…`dddd`, `h`, `hh`, `mm` as minutes, `ss`,
+ * `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed conditions are not supported:
+ * null (the caller turns it into #VALUE!).
  */
 import { serialToUtcMs } from './model.js'
 
@@ -76,7 +77,7 @@ function tokenize(sec: string): Tok[] | null {
   return out
 }
 
-/** Округление половины от нуля по десятичной записи (1.005 → 1.01). */
+/** Round half away from zero on the decimal representation (1.005 → 1.01). */
 function roundHalfUp(abs: number, k: number): string {
   const shifted = Math.round(Number(`${abs}e${k}`))
   return Number(`${shifted}e-${k}`).toFixed(k)
@@ -105,7 +106,7 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
   if (ip === '0' && zeros === 0) ip = ''
   ip = ip.padStart(zeros, '0')
   if (grouping) ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  // целая часть: справа налево по местам цифр, остаток цифр перед первым местом
+  // integer part: right to left over digit placeholders, leftover digits go before the first one
   let out = ''
   let rest = ip
   const firstPh = toks.findIndex((t, i) => i < intEnd && t.t === 'ph')
@@ -120,7 +121,7 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
     else if (t.t === 'pct') out = '%' + out
   }
   if (firstPh < 0) out = ip + out
-  // дробная часть: `#` справа убирает нули, `?` даёт пробел
+  // fractional part: trailing `#` drops zeros, `?` gives a space
   if (dot >= 0) {
     const digits = fp.split('')
     for (let k = fracPh.length - 1; k >= 0 && digits[k] === '0' && fracPh[k].c !== '0'; k--) digits[k] = fracPh[k].c === '?' ? ' ' : ''
@@ -163,7 +164,7 @@ function formatDate(serial: number, toks: Tok[]): string | null {
         out += t.s.length === 1 ? String(hh) : two(hh)
       } else if (c === 's') out += t.s.length === 1 ? String(s) : two(s)
       else if (c === 'm') {
-        // минуты: после часов или перед секундами (через разделители)
+        // minutes: after hours or before seconds (across separators)
         const prev = toks.slice(0, i).reverse().find((x) => x.t === 'date')
         const next = toks.slice(i + 1).find((x) => x.t === 'date')
         const minutes = t.s.length <= 2 && ((prev?.t === 'date' && prev.s[0] === 'h') || (next?.t === 'date' && next.s[0] === 's'))
@@ -178,13 +179,13 @@ function formatDate(serial: number, toks: Tok[]): string | null {
   return out
 }
 
-/** Число как текст в общем формате: до 15 значащих цифр (как ячейка в Excel без формата). */
+/** A number as text in the General format: up to 15 significant digits (like an unformatted Excel cell). */
 export function generalText(n: number): string {
   if (n === 0) return '0'
   return String(Number(n.toPrecision(15)))
 }
 
-/** TEXT(значение, формат); null это неподдерживаемый или неверный формат. */
+/** TEXT(value, format); null for an unsupported or invalid format. */
 export function formatText(value: number | string | boolean, fmt: string): string | null {
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
   const sections = splitSections(fmt)

@@ -1,7 +1,7 @@
 /**
- * Сессия: точечный пересчёт зависимых обязан давать то же, что полный расчёт по порядку. 200 правок
- * по сиду (значения справочника, критериев и данных, формулы, неверные формулы, очистка, цикл и его
- * разрыв), после каждой хэш сессии равен хэшу полного `compute` книги с теми же правками.
+ * Session: recomputing only the dependents must give the same as a full computation in order. 200 seeded
+ * edits (values of the lookup table, criteria and data, formulas, invalid formulas, clearing, a cycle and
+ * breaking it); after each one the session hash equals the hash of a full `compute` of the edited book.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, debugGeneratedCode, openSession, type BookInput, type CellEdit, type CellInput } from '../src/index.js'
@@ -25,14 +25,14 @@ function apply(book: BookInput, edits: CellEdit[]): BookInput {
   }
 }
 
-/** Правки по сиду: смесь значений и формул. */
+/** Seeded edits: a mix of values and formulas. */
 function edits(seed: number, count: number, synth: ReturnType<typeof synthBook>): CellEdit[][] {
   const rnd = mulberry32(seed)
   const a = classAEdits(synth, seed, count)
   const formulas: CellInput[] = [
     { formula: `SUMIFS('${S.data}'!D:D,'${S.data}'!B:B,$A3,'${S.data}'!E:E,"расход")` },
     { formula: 'SUM(B3:M3)*2' },
-    { formula: 'SUM(B3:M3),1' }, // неверная: syntax
+    { formula: 'SUM(B3:M3),1' }, // invalid: syntax
     { formula: 'NOPE(1)' },
     { formula: 'ROUND(B3/3,2)' },
   ]
@@ -42,16 +42,16 @@ function edits(seed: number, count: number, synth: ReturnType<typeof synthBook>)
     if (x < 0.4) out.push([a[i]])
     else if (x < 0.6) out.push([classBEdit(synth, seed * 1000 + i)])
     else if (x < 0.8) out.push([{ sheet: S.months, cell: `${'BCDEFGHIJKLMN'[Math.floor(rnd() * 12)]}${3 + Math.floor(rnd() * 5)}`, input: formulas[Math.floor(rnd() * formulas.length)] }])
-    else if (x < 0.85) out.push([{ sheet: S.months, cell: 'P1', input: { formula: 'P2+1' } }, { sheet: S.months, cell: 'P2', input: { formula: 'P1+1' } }]) // цикл
-    else if (x < 0.9) out.push([{ sheet: S.months, cell: 'P2', input: { value: 1 } }]) // разрыв цикла
-    else if (x < 0.95) out.push([{ sheet: S.params, cell: 'B3', input: null }]) // очистка
-    else out.push([a[i], classBEdit(synth, seed * 1000 + i), { sheet: S.items, cell: 'B2', input: { value: 3 } }]) // несколько сразу
+    else if (x < 0.85) out.push([{ sheet: S.months, cell: 'P1', input: { formula: 'P2+1' } }, { sheet: S.months, cell: 'P2', input: { formula: 'P1+1' } }]) // a cycle
+    else if (x < 0.9) out.push([{ sheet: S.months, cell: 'P2', input: { value: 1 } }]) // breaks the cycle
+    else if (x < 0.95) out.push([{ sheet: S.params, cell: 'B3', input: null }]) // clearing
+    else out.push([a[i], classBEdit(synth, seed * 1000 + i), { sheet: S.items, cell: 'B2', input: { value: 3 } }]) // several at once
   }
   return out
 }
 
-describe('сессия', () => {
-  it('200 правок: хэш сессии после каждой равен хэшу полного расчёта', () => {
+describe('session', () => {
+  it('200 edits: after each one the session hash equals the full computation hash', () => {
     const synth = synthBook({ seed: 1, rows: 340 })
     const session = openSession(synth.book, { clock })
     let book = synth.book
@@ -61,13 +61,13 @@ describe('сессия', () => {
       const full = compute(book, { clock })
       const r = session.result()
       expect(r.hash).toBe(full.hash)
-      // изменения сессии согласованы со значениями
+      // the reported changes agree with the values
       for (const ch of changes) expect(r.sheets.find((s) => s.name === ch.sheet)!.cells[ch.cell]?.value ?? null).toEqual(ch.value)
     }
     session.close()
   }, 300_000)
 
-  it('setClock пересчитывает волатильные; setNames пересобирает', () => {
+  it('setClock recomputes volatile cells; setNames rebuilds', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'A1+1' }, A3: { value: 5 }, B1: { formula: 'x*2' } } }], names: [{ name: 'x', ref: "'S'!$A$3" }] }
     const s = openSession(book, { clock })
     expect(s.setClock({ now: '2026-10-05T00:00:00Z', seed: 1 }).map((c) => c.cell).sort()).toEqual(['A1', 'A2'])
@@ -75,7 +75,7 @@ describe('сессия', () => {
     expect(s.setNames([{ name: 'x', ref: "'S'!$A$2" }])).toEqual([{ sheet: 'S', cell: 'B1', value: 2 * (46300 + 1) }])
   })
 
-  it('живая сессия берёт часы на каждый пересчёт; полный расчёт с её часами даёт тот же хэш', () => {
+  it('a live session takes a clock on every recomputation; a full computation with its clock gives the same hash', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'NOW()' }, A2: { formula: 'RAND()' }, A3: { value: 1 }, A4: { formula: 'A3*2' } } }] }
     const s = openSession(book, { live: true })
     const c1 = s.clock
@@ -90,7 +90,7 @@ describe('сессия', () => {
     expect(() => s.setClock(c1)).toThrow()
   })
 
-  it('explain: дерево предшественников с глубиной, потолком узлов и текстом', () => {
+  it('explain: the precedents tree with depth, node limit and text', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { formula: 'SUM(A1:A2)' }, A4: { formula: 'A3*2+A1' } } }] }
     const s = openSession(book, { clock })
     const e = s.explain('S', 'A4')
@@ -105,7 +105,7 @@ describe('сессия', () => {
     expect(t.nodes).toBeLessThanOrEqual(3)
   })
 
-  it('отладочная выгрузка кода в порядке вычисления', () => {
+  it('debug dump of the code in evaluation order', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A2: { formula: 'A1*2' }, A1: { formula: '1+1' } } }] }
     const code = debugGeneratedCode(book, { clock })
     expect(code.indexOf("// 'S'!A1 = 1+1")).toBeLessThan(code.indexOf("// 'S'!A2 = A1*2"))

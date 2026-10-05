@@ -1,7 +1,7 @@
 /**
- * Замер пакета на синтетике в свежем процессе (для `budgets.test.ts`; `--expose-gc`). Методика как в
- * WB1: первый расчёт, затем 1 прогон на прогрев и 5 в зачёт; память это прирост heapUsed и rss против
- * пустого процесса с открытой сессией; 100 правок класса А; 5 правок класса Б; проверка всех формул.
+ * Benchmark of the package on the synthetic book in a fresh process (for `budgets.test.ts`; `--expose-gc`):
+ * the first compute, then 1 warm-up run and 5 measured runs; memory is the heapUsed and rss growth over an
+ * empty process with an open session; 100 class A edits; 5 class B edits; validating all formulas.
  */
 const m0 = process.memoryUsage()
 const rows = Number(process.argv[2] ?? 3400)

@@ -1,39 +1,40 @@
 /**
- * Контракт движка формул `@mike/formula` (подпуть `./contract`; в the app трек «книга», `docs/workbook-design.md`, раздел 5a).
- * Не зависит от реализации: здесь только типы. Любой движок (сейчас компиляция в JS, вариант C
- * замера WB1) стоит за этим контрактом, тесты поведения пакета это его приёмка.
+ * The formula engine contract (subpath `./contract`): types only, no engine code. Any engine
+ * implementation (currently formulas compiled to JS) sits behind this contract; the package's
+ * behaviour tests are its acceptance suite.
  *
- * Формула хранится в поле `formula` без `=`, отдельно от значения: строка из данных никогда не
- * становится формулой. Имена функций английские, разделитель аргументов запятая, десятичная точка.
+ * A formula is stored in the `formula` field without the leading `=`, separately from the value:
+ * a string from data never becomes a formula. Function names are English, arguments are separated
+ * by commas, the decimal separator is a dot.
  */
 
 export type Scalar = number | string | boolean | null
 
 export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
 
-/** Ячейка на входе. Дата приходит явно (`{ date: '2025-01-31' }`) и считается серийным номером Excel. */
+/** An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number. */
 export interface CellInput {
   value?: Scalar | { date: string }
-  /** Текст формулы без `=`. Если есть, `value` не используется. */
+  /** Formula text without `=`. When present, `value` is ignored. */
   formula?: string
-  /** Формат показа, проходит насквозь. */
+  /** Display format, passed through untouched. */
   format?: string
-  /** Произвольные данные ячейки (например, id строк источника), проходят насквозь. */
+  /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
   meta?: JsonValue
 }
 
 export interface SheetInput {
   name: string
-  /** Ячейки по адресу A1 (`B12`). */
+  /** Cells by A1 address (`B12`). */
   cells: Record<string, CellInput>
 }
 
 export interface NameInput {
-  /** Латиница, цифры, `_` и `.`; не адрес ячейки, не R1C1, не TRUE/FALSE. */
+  /** Latin letters, digits, `_` and `.`; not a cell address, not R1C1, not TRUE/FALSE. */
   name: string
-  /** Ссылка с листом: `'Данные'!$D$2:$D$3401`, `'Данные'!$D:$D`. */
+  /** A reference with a sheet: `'Data'!$D$2:$D$3401`, `'Data'!$D:$D`. */
   ref: string
-  /** Лист, на котором имя видно; локальное имя перекрывает глобальное. Без него имя глобальное. */
+  /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
   scope?: string
 }
 
@@ -44,10 +45,10 @@ export interface BookInput {
 
 export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCLE' | 'SPILL' | 'ERROR'
 
-/** Значение после расчёта. Даты выходят серийными номерами, числа округлены до 15 значащих цифр. */
+/** A computed value. Dates come out as serial numbers, numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }
 
-/** Коды проверки формулы. `unsupported`: вычисление над массивом или внешняя функция не с литералами. */
+/** Formula check codes. `unsupported`: array arithmetic, or an external function with non-literal arguments. */
 export type CheckCode =
   | 'empty'
   | 'syntax'
@@ -59,7 +60,7 @@ export type CheckCode =
   | 'unknown_name'
   | 'unsupported'
 
-/** Момент (ISO) и зерно случайности, от которых считаются TODAY, NOW, RAND, RANDBETWEEN. */
+/** The moment (ISO) and the random seed that TODAY, NOW, RAND and RANDBETWEEN are computed from. */
 export interface Clock {
   now: string
   seed: number
@@ -71,9 +72,9 @@ export interface CellRef {
 }
 
 /**
- * Внешние функции (функции пакета, срез после книги): их значения разрешаются заранее, одним
- * запросом, и передаются в расчёт. Ключ вызова это его канонический текст (`BALANCE("2025-01")`),
- * аргументы только литералы.
+ * External functions (host functions evaluated outside the book): their values are resolved in
+ * advance, in one request, and passed to the computation. The key of a call is its canonical text
+ * (`BALANCE("2025-01")`); arguments are literals only.
  */
 export interface Externals {
   functions: string[]
@@ -81,24 +82,28 @@ export interface Externals {
 }
 
 export interface ComputeOptions {
-  clock: Clock
+  /**
+   * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
+   * pass the `clock` of a result to reproduce that result exactly.
+   */
+  clock?: Clock
   externals?: Externals
 }
 
 export interface CellResult {
   value: CellValue
-  /** Канонический текст формулы (лист всегда в кавычках, функции заглавными). */
+  /** Canonical formula text (sheet always quoted, function names upper-case). */
   formula?: string
   format?: string
   meta?: JsonValue
 }
 
-/** Ячейка с ошибкой и её причина: неверная формула (с кодом проверки и местом) или ошибка расчёта. */
+/** A cell with an error and its reason: an invalid formula (with the check code and position) or a computation error. */
 export interface CellIssue extends CellRef {
   error: ErrorCode
   reason: string
   check?: CheckCode
-  /** Позиция в тексте формулы для `check`. */
+  /** Position in the formula text for `check`. */
   at?: number
 }
 
@@ -112,22 +117,22 @@ export interface ComputeResult {
   sheets: { name: string; cells: Record<string, CellResult> }[]
   issues: CellIssue[]
   nameIssues: NameIssue[]
-  /** Ячейки, которые зависят от волатильных функций (прямо или через другие ячейки). */
+  /** Cells that depend on volatile functions (directly or through other cells). */
   volatile: CellRef[]
-  /** Часы, с которыми посчитано (у живой сессии последние). */
+  /** The clock the book was computed with (for a live session, the latest one). */
   clock: Clock
-  /** sha256 канонического текста значений вместе с версией конфигурации движка. */
+  /** sha256 of the canonical text of the values together with the engine configuration version. */
   hash: string
-  /** sha256 входа (листы, ячейки, имена; порядок не важен). */
+  /** sha256 of the input (sheets, cells, names; order does not matter). */
   inputHash: string
   configVersion: string
   ms: number
 }
 
 export interface ValidateContext {
-  /** Листы книги; без них листы не проверяются. */
+  /** Sheets of the book; without them sheets are not checked. */
   sheets?: string[]
-  /** Имена книги; без них имена не проверяются. */
+  /** Names of the book; without them names are not checked. */
   names?: string[]
   externalFunctions?: string[]
 }
@@ -138,7 +143,7 @@ export type ValidateResult =
 
 export type NameCheck = { ok: true } | { ok: false; message: string }
 
-/** Правка ячейки; `input: null` очищает ячейку. */
+/** A cell edit; `input: null` clears the cell. */
 export interface CellEdit extends CellRef {
   input: CellInput | null
 }
@@ -148,20 +153,20 @@ export interface CellChange extends CellRef {
 }
 
 export interface ExplainOptions {
-  /** Глубина по предшественникам, по умолчанию 3. */
+  /** Depth over precedents, 3 by default. */
   depth?: number
-  /** Потолок узлов, по умолчанию 200. */
+  /** Node limit, 200 by default. */
   maxNodes?: number
-  /** Раскрывать диапазоны в непустые ячейки (по умолчанию диапазон один узел). */
+  /** Expand ranges into their non-empty cells (by default a range is a single node). */
   expand?: boolean
 }
 
 export interface ExplainNode {
-  /** `'Лист'!B3` или `'Лист'!D:D`. */
+  /** `'Sheet'!B3` or `'Sheet'!D:D`. */
   ref: string
   value?: CellValue
   formula?: string
-  /** Для диапазона: непустых ячеек. */
+  /** For a range: the number of non-empty cells. */
   cells?: number
   children: ExplainNode[]
 }
@@ -170,22 +175,27 @@ export interface Explanation {
   root: ExplainNode
   nodes: number
   truncated: boolean
-  /** Дерево текстом, для агента. */
+  /** The tree as indented text (for logs or an LLM agent). */
   text: string
 }
 
-export type SessionOptions = ({ clock: Clock } | { live: true }) & { externals?: Externals }
+/**
+ * Session options. A session keeps one clock, `clock` or by default the moment of opening and a random
+ * seed, until `setClock`. A live session (`live: true`) takes a fresh clock and a new seed on every
+ * recomputation instead.
+ */
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals }
 
 /**
- * Сессия над книгой. Живая (`live`) берёт часы и новое зерно на каждый пересчёт; текущие часы
- * сессии (`clock`) записываются в версию. Не живая считает с заданными часами.
+ * A session over a book: edits recompute only the cells that depend on them. The current clock of the
+ * session (`clock`) is what a saved result should record: a full computation with it gives the same hash.
  */
 export interface Session {
   readonly clock: Clock
-  /** Атомарно, один пересчёт; изменившиеся значения. */
+  /** Applied atomically with one recomputation; returns the changed values. */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]
-  /** Только у не живой сессии. */
+  /** Non-live sessions only. */
   setClock(clock: Clock): CellChange[]
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   result(): ComputeResult
@@ -193,10 +203,10 @@ export interface Session {
 }
 
 export interface FormulaEngine {
-  compute(book: BookInput, opts: ComputeOptions): ComputeResult
+  compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
   validateName(name: string): NameCheck
-  openSession(book: BookInput, opts: SessionOptions): Session
+  openSession(book: BookInput, opts?: SessionOptions): Session
 }
 
 export const MAX_FORMULA_LENGTH = 8_192

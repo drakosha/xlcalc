@@ -1,15 +1,16 @@
 /**
- * LibreOffice как оракул в тестах (не в рантайме): книга пишется в xlsx через ExcelJS без кэша
- * значений, `soffice --headless` пересчитывает и сохраняет её в xlsx с кэшем результатов, который
- * читается обратно (без форматов и локали).
+ * LibreOffice as a test oracle (not at runtime): the book is written to xlsx with ExcelJS without cached
+ * values, `soffice --headless` recalculates it and saves an xlsx with cached results, which are read
+ * back (without formats or locale). Only `npm run test:oracle` runs it, to refresh the stored answers in
+ * `test/oracle/libreoffice.json`; the usual tests read that file and need no office suite.
  */
 import ExcelJS from 'exceljs'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { BookInput, CellValue } from '../src/contract.js'
-import { dateToSerial, serialToUtcMs } from '../src/model.js'
+import type { BookInput, CellValue } from '../../src/contract.js'
+import { dateToSerial, serialToUtcMs } from '../../src/model.js'
 
 const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -17,15 +18,15 @@ const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 <item oor:path="/org.openoffice.Setup/L10N"><prop oor:name="ooLocale" oor:op="fuse"><value>en-US</value></prop></item>
 </oor:items>`
 
-/** Функции, которые в OOXML пишутся с префиксом `_xlfn.`. */
+/** Functions written with the `_xlfn.` prefix in OOXML. */
 const XLFN = ['XLOOKUP']
 
-export function hasSoffice(): boolean {
+/** `soffice --version` (for example `LibreOffice 26.2.4.2 …`), or null when soffice is not on PATH. */
+export function sofficeVersion(): string | null {
   try {
-    execFileSync('soffice', ['--version'], { stdio: 'pipe' })
-    return true
+    return execFileSync('soffice', ['--version'], { encoding: 'utf8', stdio: 'pipe' }).trim()
   } catch {
-    return false
+    return null
   }
 }
 
@@ -41,8 +42,8 @@ const ERRORS: Record<string, CellValue> = {
 const unxml = (t: string) => t.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
 
 /**
- * Кэш результатов листа из xlsx LibreOffice. XML читается напрямую: ExcelJS теряет результат формулы,
- * равный 0 или FALSE.
+ * Cached results of a sheet from the LibreOffice xlsx. The XML is read directly: ExcelJS loses a formula
+ * result equal to 0 or FALSE.
  */
 function sheetResults(xml: string): Map<string, CellValue> {
   const out = new Map<string, CellValue>()
@@ -56,10 +57,9 @@ function sheetResults(xml: string): Map<string, CellValue> {
   return out
 }
 
-/** Результаты формул листа `sheet` по адресу; null если soffice нет. */
-export async function oracleValues(book: BookInput, sheet: string): Promise<Map<string, CellValue> | null> {
-  if (!hasSoffice()) return null
-  const dir = mkdtempSync(join(tmpdir(), 'wb1-oracle-'))
+/** Formula results of sheet `sheet` by address, recalculated by LibreOffice. */
+export async function oracleValues(book: BookInput, sheet: string): Promise<Map<string, CellValue>> {
+  const dir = mkdtempSync(join(tmpdir(), 'formula-oracle-'))
   try {
     const wb = new ExcelJS.Workbook()
     for (const s of book.sheets) {
@@ -80,8 +80,8 @@ export async function oracleValues(book: BookInput, sheet: string): Promise<Map<
     mkdirSync(src)
     const file = join(src, 'book.xlsx')
     await wb.xlsx.writeFile(file)
-    // LibreOffice пересчитывает книгу без кэша значений и сохраняет её с результатами
-    // отдельный профиль с локалью en-US: иначе TEXT берёт десятичную запятую системы
+    // LibreOffice recalculates a book without cached values and saves it with the results;
+    // a separate profile with the en-US locale, otherwise TEXT takes the system decimal comma
     const profile = join(dir, 'profile')
     mkdirSync(join(profile, 'user'), { recursive: true })
     writeFileSync(join(profile, 'user', 'registrymodifications.xcu'), PROFILE)

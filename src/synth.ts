@@ -1,8 +1,9 @@
 /**
- * Синтетическая книга по сиду (без реальных данных): лист данных 3 400 × 15 и шесть листов вокруг,
- * около 2 800 SUMIFS и 700 SUM, ссылки на данные тремя способами: целая колонка (`ПоМесяцам`,
- * `ПоНаправлениям`), ограниченный диапазон (`ПоПроектам`), имя (`ПоКатегориям`). Подпуть `./synth`:
- * нужен тестам пакета и харнессу замера в the app; в корень пакета не входит.
+ * A seeded synthetic book (no real data): a 3,400 × 15 data sheet and six sheets around it, about
+ * 2,800 SUMIFS and 700 SUM, referencing the data three ways: whole columns (`ПоМесяцам`,
+ * `ПоНаправлениям`), bounded ranges (`ПоПроектам`), names (`ПоКатегориям`). Sheet names and text are
+ * Cyrillic on purpose. The `./unstable/synth` subpath, for tests and benchmark harnesses: unstable and
+ * outside semver (a change of the generator changes the books it produces).
  */
 import type { BookInput, CellEdit, CellInput } from './contract.js'
 import { formatAddress, indexToCol } from './model.js'
@@ -19,13 +20,13 @@ export function mulberry32(seed: number): () => number {
 
 export interface SynthOptions {
   seed: number
-  /** Строк данных (по умолчанию 3 400; короткая книга тестов 340). */
+  /** Data rows (3,400 by default; the short test book has 340). */
   rows?: number
 }
 
 export interface SynthBook {
   book: BookInput
-  /** Ячейки правки класса А: справочник и критерии, не лист данных. */
+  /** Cells for class A edits: the lookup table and criteria, not the data sheet. */
   classA: { sheet: string; cell: string }[]
   dataRows: number
   items: string[]
@@ -61,7 +62,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
   const cats = Array.from({ length: N_CATS }, (_, i) => `Кат-${String(i + 1).padStart(2, '0')}`)
   const projs = Array.from({ length: N_PROJ }, (_, i) => `П${String(i + 1).padStart(2, '0')}`)
 
-  // ---------- данные ----------
+  // ---------- data ----------
   const data: Record<string, CellInput> = {}
   const header = ['Дата', 'Статья', 'Категория', 'Сумма', 'Направление', 'Проект', 'Примечание', 'Кол-во', 'Цена', 'Срок', 'Флаг', 'Доля', 'Вес', 'Код', 'Остаток']
   header.forEach((h, c) => (data[formatAddress(0, c)] = { value: h }))
@@ -96,7 +97,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
   const col = (c: string) => `${q(S.data)}!$${c}:$${c}`
   const bounded = (c: string) => `${q(S.data)}!$${c}$2:$${c}$${last}`
 
-  // ---------- справочник статей ----------
+  // ---------- item lookup table ----------
   const itemsSheet: Record<string, CellInput> = { A1: { value: 'Статья' }, B1: { value: 'Группа' }, C1: { value: 'Название группы' }, E1: { value: 'Группа' }, F1: { value: 'Название' } }
   for (let g = 0; g < GROUPS; g++) {
     itemsSheet[`E${g + 2}`] = { value: g + 1 }
@@ -108,7 +109,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
     itemsSheet[`C${i + 2}`] = { formula: `XLOOKUP(B${i + 2},$E$2:$E$${GROUPS + 1},$F$2:$F$${GROUPS + 1},"нет")` }
   })
 
-  // ---------- параметры ----------
+  // ---------- parameters ----------
   const P = q(S.params)
   const params: Record<string, CellInput> = {
     A1: { value: 'Начало' },
@@ -121,7 +122,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
     B4: { value: DIRS[1] },
     A5: { value: 'Начало DATE' },
     B5: { formula: 'DATE(2025,1,1)' },
-    // хвост семантики: COUNTIFS с шаблоном, IF, IFERROR, ROUND, TEXT
+    // semantics tail: COUNTIFS with a wildcard, IF, IFERROR, ROUND, TEXT
     A10: { value: 'Чай*' },
     B10: { formula: `COUNTIFS(${col('B')},"Чай*")` },
     B11: { formula: `COUNTIFS(${col('B')},A10,${col('E')},B3)` },
@@ -149,8 +150,8 @@ export function synthBook(opts: SynthOptions): SynthBook {
   }
 
   /**
-   * Лист свода: строки статей по группам с подытогом группы, колонки из `cols`; первая колонка
-   * ссылается на справочник, последняя это SUM по строке.
+   * A pivot sheet: item rows by group with a group subtotal, columns from `cols`; the first column
+   * references the lookup table, the last one is a row SUM.
    */
   const pivot = (name: string, headRows: number, cols: number, head: (c: number, r: number) => CellInput | undefined, cell: (r: number, c: number) => string) => {
     const cells: Record<string, CellInput> = { A1: { value: name } }
@@ -180,7 +181,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
     book.sheets.push({ name, cells })
   }
 
-  // ПоМесяцам: целые колонки; строки 1–2 начало и конец месяца
+  // ПоМесяцам (by month): whole columns; rows 1–2 are the month start and end
   pivot(
     S.months,
     2,
@@ -195,7 +196,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
       return `SUMIFS(${col('D')},${col('B')},$A${r},${col('A')},">="&${L}$1,${col('A')},"<="&${L}$2)`
     },
   )
-  // ПоПроектам: ограниченные диапазоны, проект в строке 1
+  // ПоПроектам (by project): bounded ranges, the project in row 1
   pivot(
     S.projects,
     1,
@@ -206,7 +207,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
       return `SUMIFS(${bounded('D')},${bounded('B')},$A${r},${bounded('F')},${L}$1,${bounded('A')},">="&${P}!$B$1,${bounded('A')},"<="&${P}!$B$2,${bounded('E')},${P}!$B$4)`
     },
   )
-  // ПоКатегориям: имена
+  // ПоКатегориям (by category): names
   pivot(
     S.cats,
     1,
@@ -214,7 +215,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
     (c) => ({ value: cats[c] }),
     (r, c) => `SUMIFS(data_amt,data_item,$A${r},data_cat,${indexToCol(c + 1)}$1,data_dir,${P}!$B$3)`,
   )
-  // ПоНаправлениям: целые колонки; 12 месяцев × 2 направления, строки 1–3 начало, конец, направление
+  // ПоНаправлениям (by direction): whole columns; 12 months × 2 directions, rows 1–3 are start, end, direction
   pivot(
     S.dirs,
     3,
@@ -240,7 +241,7 @@ export function synthBook(opts: SynthOptions): SynthBook {
   return { book, classA, dataRows: n, items }
 }
 
-/** 100 правок класса А по сиду: другое имя статьи, другое начало периода, другое направление. */
+/** 100 seeded class A edits: another item name, another period start, another direction. */
 export function classAEdits(s: SynthBook, seed: number, count = 100): CellEdit[] {
   const rnd = mulberry32(seed)
   const out: CellEdit[] = []
@@ -255,7 +256,7 @@ export function classAEdits(s: SynthBook, seed: number, count = 100): CellEdit[]
   return out
 }
 
-/** Правка класса Б: сумма в случайной строке листа данных. */
+/** A class B edit: an amount in a random row of the data sheet. */
 export function classBEdit(s: SynthBook, seed: number): CellEdit {
   const rnd = mulberry32(seed)
   const row = 2 + Math.floor(rnd() * s.dataRows)

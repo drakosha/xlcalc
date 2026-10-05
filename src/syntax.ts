@@ -1,21 +1,21 @@
 /**
- * Разбор формул: токенизатор, AST, проверка с кодами, канонический текст. От движка не зависит.
+ * Formula parsing: tokenizer, AST, checks with codes, canonical text. Independent of the engine.
  *
- * Хранимый текст формулы без `=`. Канон: имена функций заглавными, лист всегда в кавычках
- * (`'Данные'!A1`), строки с Excel-удвоением `""`, без пробелов.
+ * The stored formula text has no `=`. Canonical form: function names upper-case, the sheet always quoted
+ * (`'Data'!A1`), strings with Excel `""` doubling, no whitespace.
  */
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode, type NameCheck, type ValidateContext, type ValidateResult } from './contract.js'
 import { FUNCTIONS } from './functions.js'
 import { colToIndex, MAX_COLS, MAX_ROWS } from './model.js'
 
 export interface RangeRef {
-  /** Строки и колонки с нуля; у целой колонки r1 = 0, r2 = MAX_ROWS - 1. */
+  /** Zero-based rows and columns; a whole column has r1 = 0, r2 = MAX_ROWS - 1. */
   r1: number
   c1: number
   r2: number
   c2: number
   kind: 'cell' | 'range' | 'cols' | 'rows'
-  /** Исходный текст ссылки без листа (`$D$2:$D$3401`), для канона. */
+  /** Source text of the reference without the sheet (`$D$2:$D$3401`), for the canonical form. */
   text: string
 }
 
@@ -67,7 +67,7 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   ERROR: '#ERROR!',
 }
 
-// ---------- токенизатор ----------
+// ---------- tokenizer ----------
 
 type Tok =
   | { t: 'num'; v: number; at: number }
@@ -107,7 +107,7 @@ function colNo(s: string, at: number): number {
   return n
 }
 
-/** Ссылка без листа с позиции `at` в `rest`, или null. */
+/** A reference without a sheet at position `at` in `rest`, or null. */
 function readRef(rest: string, at: number): { ref: RangeRef; len: number } | null {
   const next = (len: number) => rest[len] ?? ''
   let m = CELL_RANGE.exec(rest)
@@ -182,7 +182,7 @@ function tokenize(src: string): Tok[] {
       i++
       continue
     }
-    // лист с кавычками или без, потом обязательно ссылка
+    // a sheet, quoted or not, must be followed by a reference
     let sheet: string | null = null
     let sm = QUOTED_SHEET.exec(rest)
     if (sm) sheet = sm[1].replaceAll("''", "'")
@@ -230,7 +230,7 @@ function tokenize(src: string): Tok[] {
   return out
 }
 
-// ---------- разбор (рекурсивный спуск) ----------
+// ---------- parsing (recursive descent) ----------
 
 const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-'], ['*', '/'], ['^']]
 
@@ -256,7 +256,7 @@ export function parse(src: string): Ast {
       a = { k: 'bin', op: t.v as BinOp, a, b }
     }
   }
-  // в Excel унарный минус сильнее степени: -2^2 = 4
+  // in Excel unary minus binds tighter than ^: -2^2 = 4
   const unary = (): Ast => {
     const t = peek()
     if (t.t === 'op' && (t.v === '-' || t.v === '+')) {
@@ -346,7 +346,7 @@ function describe(t: Tok): string {
   }
 }
 
-// ---------- обход и печать ----------
+// ---------- traversal and printing ----------
 
 export function walk(ast: Ast, visit: (n: Ast) => void): void {
   visit(ast)
@@ -366,7 +366,7 @@ export function walk(ast: Ast, visit: (n: Ast) => void): void {
   }
 }
 
-/** Листы сравниваются без учёта регистра, как в Excel. */
+/** Sheet names compare case-insensitively, as in Excel. */
 export const sheetKey = (s: string) => s.toLocaleUpperCase('ru-RU')
 
 export const quoteSheet = (s: string) => `'${s.replaceAll("'", "''")}'`
@@ -374,11 +374,11 @@ export const quoteSheet = (s: string) => `'${s.replaceAll("'", "''")}'`
 export interface PrintOptions {
   str?: (s: string) => string
   bool?: (b: boolean) => string
-  /** Имя листа в написании книги. */
+  /** The sheet name as spelled in the book. */
   sheetOf?: (s: string) => string
 }
 
-/** Печать AST; по умолчанию канон. Другие движки (замер в the app, `tools/probes/wb1`) подставляют свои литералы. */
+/** Prints an AST; canonical by default. Adapters for other engines substitute their own literals. */
 export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
   const str = opts.str ?? ((s: string) => `"${s.replaceAll('"', '""')}"`)
   const bool = opts.bool ?? ((b: boolean) => (b ? 'TRUE' : 'FALSE'))
@@ -412,12 +412,12 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
   return go(ast)
 }
 
-/** Канонический хранимый текст (без `=`). */
+/** Canonical stored text (without `=`). */
 export const canonical = (ast: Ast, sheetOf?: (s: string) => string) => printFormula(ast, { sheetOf })
 
-// ---------- проверка ----------
+// ---------- checks ----------
 
-/** Узел-диапазон больше одной ячейки (имя считается по `isRangeName`). */
+/** A range node larger than one cell (a name is judged by `isRangeName`). */
 function isArea(n: Ast, isRangeName: (name: string) => boolean | undefined): boolean {
   if (n.k === 'paren') return isArea(n.a, isRangeName)
   if (n.k === 'ref') return n.ref.kind !== 'cell' && !(n.ref.r1 === n.ref.r2 && n.ref.c1 === n.ref.c2)
@@ -426,8 +426,8 @@ function isArea(n: Ast, isRangeName: (name: string) => boolean | undefined): boo
 }
 
 /**
- * Форма аргументов: число аргументов функции и диапазоны только там, где функция их ждёт.
- * Диапазон в скалярном месте значит вычисление над массивом: в этой версии `unsupported`.
+ * Argument shape: the argument count of each function, and ranges only where the function expects them.
+ * A range in a scalar position means array arithmetic: `unsupported` in this version.
  */
 export function checkShape(ast: Ast, src: string, isRangeName: (name: string) => boolean | undefined, external: (fn: string) => boolean): FormulaError | null {
   const at = (needle: string) => Math.max(0, src.toUpperCase().indexOf(needle.toUpperCase()))
@@ -471,7 +471,7 @@ export function checkShape(ast: Ast, src: string, isRangeName: (name: string) =>
   return visit(ast, false)
 }
 
-/** Проверка формулы: разбор, функции из белого списка или внешние, листы, имена, форма аргументов. */
+/** Formula check: parsing, whitelisted or external functions, sheets, names, argument shape. */
 export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (name: string) => boolean | undefined = () => undefined): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
   let ast: Ast
   try {
@@ -510,7 +510,7 @@ export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (
 const NAME_RE = /^[A-Za-z_][A-Za-z0-9_.]{0,254}$/
 const LOOKS_LIKE_CELL = /^[A-Za-z]{1,3}[0-9]+$|^[Rr][0-9]*[Cc][0-9]*$/
 
-/** Допустимое имя диапазона: латиница, не адрес ячейки, не R1C1, не TRUE/FALSE. */
+/** A valid range name: Latin letters, not a cell address, not R1C1, not TRUE/FALSE. */
 export function validateName(name: string): NameCheck {
   if (!NAME_RE.test(name)) return { ok: false, message: 'a name must start with a latin letter or _ and contain only latin letters, digits, _ and .' }
   if (LOOKS_LIKE_CELL.test(name)) return { ok: false, message: 'a name must not look like a cell address' }

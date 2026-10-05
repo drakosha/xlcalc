@@ -1,4 +1,4 @@
-/** Дочерний процесс тестов детерминизма: хэш синтетики (строк по аргументу) и часовая зона процесса. */
+/** Child process for the determinism tests: the synthetic hash (rows from the argument) and the process time zone. */
 import { libUrl } from './target.js'
 
 const { compute } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')

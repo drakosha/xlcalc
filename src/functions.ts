@@ -1,14 +1,14 @@
 /**
- * Белый список функций: число аргументов и какие аргументы диапазоны. Список закреплён тестом;
- * функция попадает в него только с тестом против документации Excel и оракула.
+ * The function whitelist: argument counts and which arguments are ranges. The list is pinned by a
+ * test; a function gets in only together with a test against Excel documentation and the oracle.
  */
 
 export interface FunctionSpec {
   min: number
   max: number
-  /** Аргумент с этим номером диапазон (в остальных местах диапазон значит вычисление над массивом). */
+  /** Whether the argument at this index is a range (elsewhere a range means array arithmetic). */
   range: (i: number) => boolean
-  /** Чётность числа аргументов (SUMIFS нечётное, COUNTIFS чётное). */
+  /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
   parity?: 'odd' | 'even'
   volatile?: boolean
 }

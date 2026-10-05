@@ -1,12 +1,13 @@
-/** Выдача расчёта по контракту: значения по листам, причины ошибок, волатильные ячейки, хэши. */
+/** The computation result per the contract: values by sheet, error reasons, volatile cells, hashes. */
 import { inputHash, outNumber, valuesHash } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, Clock, ComputeResult } from './contract.js'
 import { issues, sortedCells, toCellValue, valueAt, type EngineState } from './engine.js'
+import { nowMs } from './env.js'
 import { formatAddress, msToSerial, parseAddress } from './model.js'
 
 
-/** Серийный момент часов (UTC); неверный момент это ошибка вызова. */
+/** The clock moment as a serial number (UTC); an invalid moment is a caller error. */
 export function clockSerial(clock: Clock): number {
   const ms = Date.parse(clock.now)
   if (Number.isNaN(ms)) throw new Error(`bad clock.now: ${clock.now}`)
@@ -51,6 +52,6 @@ export function buildResult(state: EngineState, clock: Clock, t0: number): Compu
     hash: valuesHash(values, CONFIG_VERSION),
     inputHash: inputHash(state.input),
     configVersion: CONFIG_VERSION,
-    ms: performance.now() - t0,
+    ms: nowMs() - t0,
   }
 }

@@ -1,4 +1,4 @@
-/** Волатильные функции считаются от часов: момент для TODAY/NOW, зерно и адрес для RAND. */
+/** Volatile functions are computed from the clock: the moment for TODAY/NOW, the seed and the address for RAND. */
 import { describe, expect, it } from 'vitest'
 import { compute, type BookInput } from '../src/index.js'
 
@@ -22,20 +22,20 @@ const book: BookInput = {
 }
 const clock = { now: '2025-01-01T18:00:00Z', seed: 42 }
 
-describe('волатильные функции', () => {
-  it('TODAY и NOW от момента (UTC)', () => {
+describe('volatile functions', () => {
+  it('TODAY and NOW from the moment (UTC)', () => {
     const c = compute(book, { clock }).sheets[0].cells
     expect(c.A1.value).toBe(45658)
     expect(c.A2.value).toBe(45658.75)
     expect(compute(book, { clock: { now: '2025-01-01T23:30:00-03:00', seed: 42 } }).sheets[0].cells.A1.value).toBe(45659)
   })
 
-  it('с одними часами один хэш при любом числе прогонов', () => {
+  it('the same clock gives one hash over any number of runs', () => {
     const hashes = new Set([1, 2, 3, 4, 5].map(() => compute(book, { clock }).hash))
     expect(hashes.size).toBe(1)
   })
 
-  it('RAND от зерна и адреса ячейки', () => {
+  it('RAND from the seed and the cell address', () => {
     const a = compute(book, { clock }).sheets[0].cells
     const b = compute(book, { clock: { ...clock, seed: 43 } }).sheets[0].cells
     expect(a.A3.value).not.toBe(a.A4.value)
@@ -44,7 +44,7 @@ describe('волатильные функции', () => {
     expect([1, 2, 3, 4, 5, 6]).toContain(a.A5.value)
   })
 
-  it('перечислены ячейки, зависящие от волатильных; вызов в строковом литерале не считается', () => {
+  it('cells depending on volatile functions are listed; a call inside a string literal does not count', () => {
     const r = compute(book, { clock })
     expect(r.volatile.map((v) => v.cell)).toEqual(['A1', 'B1', 'A2', 'B2', 'A3', 'A4', 'A5'])
     expect(r.clock).toEqual(clock)

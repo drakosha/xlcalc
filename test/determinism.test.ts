@@ -1,6 +1,6 @@
 /**
- * Детерминизм: хэш не зависит от порядка входа, числа прогонов, процесса и его часовой зоны
- * (formulajs работает с датами через JS Date в местной зоне); копейки не теряются.
+ * Determinism: the hash does not depend on input order, the number of runs, the process or its time zone
+ * (formulajs handles dates through JS Date in the local zone); cents are not lost.
  */
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -30,31 +30,31 @@ function childHash(tz?: string): { hash: string; tz: string; offset: number } {
   return JSON.parse(out.trim().split('\n').at(-1)!)
 }
 
-describe('детерминизм', () => {
+describe('determinism', () => {
   const base = compute(synth.book, { clock }).hash
 
-  it('перемешанный вход и три прогона дают один хэш', () => {
+  it('shuffled input and three runs give one hash', () => {
     for (const seed of [1, 2, 3]) expect(compute(shuffled(synth.book, seed), { clock }).hash).toBe(base)
   })
 
-  it('дочерний процесс даёт тот же хэш', () => {
+  it('a child process gives the same hash', () => {
     expect(childHash().hash).toBe(base)
   }, 60_000)
 
-  it('часовая зона процесса не влияет: Лос-Анджелес, Москва, UTC', () => {
+  it('the process time zone does not matter: Los Angeles, Moscow, UTC', () => {
     const runs = ['America/Los_Angeles', 'Europe/Moscow', 'UTC'].map(childHash)
     expect(runs.map((r) => r.offset)).toEqual([480, -180, 0])
     for (const r of runs) expect(r.hash).toBe(base)
   }, 120_000)
 
-  it('0.1+0.2 в выдаче 0.3; -0 выходит как 0', () => {
+  it('0.1+0.2 comes out as 0.3; -0 comes out as 0', () => {
     const c = compute({ sheets: [{ name: 'S', cells: { A1: { formula: '0.1+0.2' }, A2: { formula: '-0*1' }, A3: { formula: 'A1=0.3' } } }] }, { clock }).sheets[0].cells
     expect(c.A1.value).toBe(0.3)
     expect(Object.is(c.A2.value, -0)).toBe(false)
-    expect(c.A3.value).toBe(false) // внутри расчёт идёт с полной точностью, как в Excel
+    expect(c.A3.value).toBe(false) // internally full precision is kept, as in Excel
   })
 
-  it('сумма 3 400 сумм с копейками, округлённая до копеек, равна сумме в копейках', () => {
+  it('the sum of 3,400 amounts with cents, rounded to cents, equals the sum in cents', () => {
     const rnd = mulberry32(5)
     const cells: Record<string, CellInput> = {}
     let kop = 0n
