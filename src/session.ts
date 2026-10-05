@@ -3,11 +3,11 @@
  * новое зерно на каждый пересчёт; текущие часы (`clock`) пишутся в версию, и полный расчёт с ними
  * даёт тот же хэш.
  */
-import type { BookInput, CellChange, CellEdit, Clock, Explanation, ExplainOptions, NameInput, Session, SessionOptions } from './contract'
-import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine'
-import { formatAddress, parseAddress } from './model'
-import { buildResult, clockSerial, outValue } from './result'
-import { sheetKey } from './syntax'
+import type { BookInput, CellChange, CellEdit, Clock, Explanation, ExplainOptions, NameInput, Session, SessionOptions } from './contract.js'
+import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine.js'
+import { formatAddress, parseAddress } from './model.js'
+import { buildResult, clockSerial, outValue } from './result.js'
+import { sheetKey } from './syntax.js'
 
 function liveClock(): Clock {
   const seed = new Uint32Array(1)

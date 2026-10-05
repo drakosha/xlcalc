@@ -1,17 +1,18 @@
 /**
- * `@app/formula`: движок формул книги. Контракт в `./contract`; реализация (вариант C замера WB1)
- * компилирует формулы в JS и считает по графу ссылок.
+ * `@mike/formula`: движок формул книги. Контракт в `./contract`; реализация (вариант C замера WB1 в the app)
+ * компилирует формулы в JS и считает по графу ссылок. Генератор синтетики в `./synth`, внутренности для
+ * харнессов замера в `./internal`.
  */
-import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract'
-import { openSession } from './session'
-import { createState, debugSource } from './engine'
-import { buildResult, clockSerial } from './result'
-import { validate, validateName as checkName } from './syntax'
+import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
+import { openSession } from './session.js'
+import { createState, debugSource } from './engine.js'
+import { buildResult, clockSerial } from './result.js'
+import { validate, validateName as checkName } from './syntax.js'
 
-export * from './contract'
-export { FUNCTION_NAMES } from './functions'
-export { CONFIG_VERSION } from './config'
-export { openSession } from './session'
+export * from './contract.js'
+export { FUNCTION_NAMES } from './functions.js'
+export { CONFIG_VERSION } from './config.js'
+export { openSession } from './session.js'
 
 export function compute(book: BookInput, opts: ComputeOptions): ComputeResult {
   const t0 = performance.now()

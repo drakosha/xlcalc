@@ -1,6 +1,8 @@
 /** Дочерний процесс тестов детерминизма: хэш синтетики (строк по аргументу) и часовая зона процесса. */
-import { compute } from '../../src/index'
-import { synthBook } from './synth'
+import { libUrl } from './target.js'
+
+const { compute } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
+const { synthBook } = (await import(libUrl('synth.js'))) as typeof import('../../src/synth.js')
 
 const rows = Number(process.argv[2] ?? 340)
 const r = compute(synthBook({ seed: 1, rows }).book, { clock: { now: '2026-10-04T12:00:00Z', seed: 7 } })

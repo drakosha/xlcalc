@@ -1,5 +1,5 @@
 /** Адреса A1 и даты как серийные номера Excel 1900 (внутреннее, не контракт). */
-import type { CellInput, Scalar } from './contract'
+import type { CellInput, Scalar } from './contract.js'
 
 // ---------- адреса ----------
 

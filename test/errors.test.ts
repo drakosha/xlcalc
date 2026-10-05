@@ -1,6 +1,6 @@
 /** Ошибки как значения: код в ячейке, причина в `issues`, неверная формула не роняет расчёт. */
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput, type CellInput } from '../src/index'
+import { compute, type BookInput, type CellInput } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 1 }
 function run(cells: Record<string, CellInput>, extra: BookInput['sheets'] = []) {

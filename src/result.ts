@@ -1,9 +1,9 @@
 /** Выдача расчёта по контракту: значения по листам, причины ошибок, волатильные ячейки, хэши. */
-import { inputHash, outNumber, valuesHash } from './canon'
-import { CONFIG_VERSION } from './config'
-import type { CellResult, CellValue, Clock, ComputeResult } from './contract'
-import { issues, sortedCells, toCellValue, valueAt, type EngineState } from './engine'
-import { formatAddress, msToSerial, parseAddress } from './model'
+import { inputHash, outNumber, valuesHash } from './canon.js'
+import { CONFIG_VERSION } from './config.js'
+import type { CellResult, CellValue, Clock, ComputeResult } from './contract.js'
+import { issues, sortedCells, toCellValue, valueAt, type EngineState } from './engine.js'
+import { formatAddress, msToSerial, parseAddress } from './model.js'
 
 
 /** Серийный момент часов (UTC); неверный момент это ошибка вызова. */

@@ -2,8 +2,8 @@
  * Закрытый список семантики шага 1 (SUM, SUMIFS, COUNTIFS, IF, IFERROR, XLOOKUP, ROUND, EOMONTH,
  * DATE, TEXT) и SUMIF: случаи и ответ по документации Excel; оракул LibreOffice подтверждает.
  */
-import type { BookInput, CellInput, CellValue } from '../src/contract'
-import { dateToSerial } from '../src/model'
+import type { BookInput, CellInput, CellValue } from '../src/contract.js'
+import { dateToSerial } from '../src/model.js'
 
 export const SEM = 'Sem'
 const A = ['Аренда', 'аренда', 'Арендй', 'Арeнда*', 'x*y', 'Чай', 'Чаи'] // в 'Арeнда*' латинская e

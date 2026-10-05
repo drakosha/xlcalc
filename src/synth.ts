@@ -1,10 +1,11 @@
 /**
  * Синтетическая книга по сиду (без реальных данных): лист данных 3 400 × 15 и шесть листов вокруг,
  * около 2 800 SUMIFS и 700 SUM, ссылки на данные тремя способами: целая колонка (`ПоМесяцам`,
- * `ПоНаправлениям`), ограниченный диапазон (`ПоПроектам`), имя (`ПоКатегориям`).
+ * `ПоНаправлениям`), ограниченный диапазон (`ПоПроектам`), имя (`ПоКатегориям`). Подпуть `./synth`:
+ * нужен тестам пакета и харнессу замера в the app; в корень пакета не входит.
  */
-import type { BookInput, CellEdit, CellInput } from '../../src/contract'
-import { formatAddress, indexToCol } from '../../src/model'
+import type { BookInput, CellEdit, CellInput } from './contract.js'
+import { formatAddress, indexToCol } from './model.js'
 
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0

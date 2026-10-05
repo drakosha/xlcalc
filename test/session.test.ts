@@ -4,8 +4,8 @@
  * разрыв), после каждой хэш сессии равен хэшу полного `compute` книги с теми же правками.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, openSession, type BookInput, type CellEdit, type CellInput } from '../src/index'
-import { classAEdits, classBEdit, mulberry32, S, synthBook } from './fixtures/synth'
+import { compute, debugGeneratedCode, openSession, type BookInput, type CellEdit, type CellInput } from '../src/index.js'
+import { classAEdits, classBEdit, mulberry32, S, synthBook } from '../src/synth.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 

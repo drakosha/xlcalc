@@ -5,8 +5,9 @@
  */
 const m0 = process.memoryUsage()
 const rows = Number(process.argv[2] ?? 3400)
-const { compute, openSession, validateFormula } = await import('../../src/index')
-const { synthBook, classAEdits, classBEdit } = await import('./synth')
+const { libUrl } = await import('./target.js')
+const { compute, openSession, validateFormula } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
+const { synthBook, classAEdits, classBEdit } = (await import(libUrl('synth.js'))) as typeof import('../../src/synth.js')
 
 const gc = () => (globalThis as { gc?: () => void }).gc?.()
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]

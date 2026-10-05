@@ -3,9 +3,9 @@
  * подтверждает его, кроме записанных расхождений самого LibreOffice.
  */
 import { beforeAll, describe, expect, it } from 'vitest'
-import { compute, type CellValue } from '../src/index'
-import { hasSoffice, oracleValues } from './oracle'
-import { CASES, semanticsBook } from './semantics-cases'
+import { compute, type CellValue } from '../src/index.js'
+import { hasSoffice, oracleValues } from './oracle.js'
+import { CASES, semanticsBook } from './semantics-cases.js'
 
 /** Где неправ сам LibreOffice (ответ взят по документации Excel). */
 const ORACLE_WRONG: Record<string, string> = {

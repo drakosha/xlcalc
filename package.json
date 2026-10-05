@@ -1,20 +1,58 @@
 {
-  "name": "@app/formula",
+  "name": "@mike/formula",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
+  "description": "Движок формул книги: разбор и проверка формул, компиляция в JS, расчёт по графу ссылок, живая сессия с точечным пересчётом, детерминированный хэш значений",
   "type": "module",
-  "main": "src/index.ts",
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./contract": {
+      "types": "./dist/contract.d.ts",
+      "import": "./dist/contract.js"
+    },
+    "./synth": {
+      "types": "./dist/synth.d.ts",
+      "import": "./dist/synth.js"
+    },
+    "./internal": {
+      "types": "./dist/internal.d.ts",
+      "import": "./dist/internal.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "THIRD_PARTY.md"
+  ],
+  "sideEffects": false,
   "scripts": {
-    "typecheck": "tsc -p ."
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "npm run build && vitest run",
+    "test:dist": "npm run build && FORMULA_TARGET=dist vitest run",
+    "pack:release": "mkdir -p release && npm pack --pack-destination release"
   },
   "dependencies": {
     "@formulajs/formulajs": "4.6.1"
   },
   "devDependencies": {
-    "exceljs": "^4.4.0"
+    "@types/node": "^24.13.2",
+    "exceljs": "^4.4.0",
+    "tsx": "^4.22.4",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
   },
-  "exports": {
-    ".": "./src/index.ts",
-    "./contract": "./src/contract.ts"
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true
   }
 }

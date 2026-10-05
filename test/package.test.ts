@@ -1,18 +1,18 @@
 /**
  * Пакет как отдельная библиотека: белый список функций закреплён, исходники импортируют только свои
- * файлы, `node:*` и зависимости из своего package.json (ничего из `@app/*` и других пакетов репо).
+ * файлы, `node:*` и `@formulajs/formulajs`; HyperFormula (GPL) нет ни в одной зависимости.
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { CONFIG_VERSION, FUNCTION_NAMES } from '../src/index'
-import { FORMULAJS_VERSION } from '../src/config'
+import { CONFIG_VERSION, FUNCTION_NAMES } from '../src/index.js'
+import { FORMULAJS_VERSION } from '../src/config.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { dependencies?: Record<string, string> }
+const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as Record<'dependencies' | 'devDependencies' | 'peerDependencies' | 'optionalDependencies', Record<string, string> | undefined>
 
-/** Список семантики шага 1 (`docs/design-workbook.md`). */
+/** Список семантики шага 1 (the app, `docs/design-workbook.md`). */
 const SEMANTICS = ['SUM', 'SUMIFS', 'COUNTIFS', 'IF', 'IFERROR', 'XLOOKUP', 'ROUND', 'EOMONTH', 'DATE', 'TEXT']
 
 describe('пакет', () => {
@@ -24,6 +24,14 @@ describe('пакет', () => {
   it('версия formulajs в конфигурации совпадает с зависимостью', () => {
     expect(pkg.dependencies?.['@formulajs/formulajs']).toBe(FORMULAJS_VERSION)
     expect(CONFIG_VERSION).toContain(`formulajs@${FORMULAJS_VERSION}`)
+  })
+
+  it('зависимости: только formulajs, HyperFormula нигде', () => {
+    expect(Object.keys(pkg.dependencies ?? {})).toEqual(['@formulajs/formulajs'])
+    expect(pkg.peerDependencies ?? {}).toEqual({})
+    expect(pkg.optionalDependencies ?? {}).toEqual({})
+    expect(Object.keys(pkg.devDependencies ?? {})).not.toContain('hyperformula')
+    expect(readFileSync(join(root, 'package-lock.json'), 'utf8')).not.toMatch(/hyperformula/i)
   })
 
   it('исходники не импортируют ничего вне пакета', () => {

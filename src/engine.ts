@@ -8,11 +8,11 @@
  *
  * Без импорта node:* (хэши считает `index.ts`), чтобы движок можно было исполнить и вне Node.
  */
-import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract'
-import { FUNCTIONS } from './functions'
-import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model'
-import { CErr, E, isErr, makeRuntime, Rng, type Runtime, type RuntimeContext, type SheetData, type V } from './runtime'
-import { canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax'
+import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
+import { FUNCTIONS } from './functions.js'
+import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
+import { CErr, E, isErr, makeRuntime, Rng, type Runtime, type RuntimeContext, type SheetData, type V } from './runtime.js'
+import { canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
 
 interface Formula {
   id: number

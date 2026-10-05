@@ -4,7 +4,7 @@
  * `yy`, `m`…`mmmm`, `d`…`dddd`, `h`, `hh`, `mm` минуты, `ss`, `AM/PM`), `General` и `@`.
  * Экспоненты (`E+`), цвета и условия в скобках не поддерживаются: null (адаптер даёт #VALUE!).
  */
-import { serialToUtcMs } from './model'
+import { serialToUtcMs } from './model.js'
 
 type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
 

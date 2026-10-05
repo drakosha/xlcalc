@@ -1,6 +1,6 @@
 /** Ссылки: кириллические листы, кавычки в критерии, три способа сослаться на колонку, области имён. */
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput } from '../src/index'
+import { compute, type BookInput } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 1 }
 const data = { A1: { value: 'он сказал "да"' }, A2: { value: 'нет' }, A3: { value: 'он сказал "да"' }, B1: { value: 1 }, B2: { value: 2 }, B3: { value: 4 } }

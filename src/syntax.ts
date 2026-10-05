@@ -4,9 +4,9 @@
  * Хранимый текст формулы без `=`. Канон: имена функций заглавными, лист всегда в кавычках
  * (`'Данные'!A1`), строки с Excel-удвоением `""`, без пробелов.
  */
-import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode, type NameCheck, type ValidateContext, type ValidateResult } from './contract'
-import { FUNCTIONS } from './functions'
-import { colToIndex, MAX_COLS, MAX_ROWS } from './model'
+import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode, type NameCheck, type ValidateContext, type ValidateResult } from './contract.js'
+import { FUNCTIONS } from './functions.js'
+import { colToIndex, MAX_COLS, MAX_ROWS } from './model.js'
 
 export interface RangeRef {
   /** Строки и колонки с нуля; у целой колонки r1 = 0, r2 = MAX_ROWS - 1. */
@@ -378,7 +378,7 @@ export interface PrintOptions {
   sheetOf?: (s: string) => string
 }
 
-/** Печать AST; по умолчанию канон. Другие движки (замер в `tools/probes/wb1`) подставляют свои литералы. */
+/** Печать AST; по умолчанию канон. Другие движки (замер в the app, `tools/probes/wb1`) подставляют свои литералы. */
 export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
   const str = opts.str ?? ((s: string) => `"${s.replaceAll('"', '""')}"`)
   const bool = opts.bool ?? ((b: boolean) => (b ? 'TRUE' : 'FALSE'))

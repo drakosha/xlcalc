@@ -5,8 +5,8 @@
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput, type CellInput } from '../src/index'
-import { mulberry32, synthBook } from './fixtures/synth'
+import { compute, type BookInput, type CellInput } from '../src/index.js'
+import { mulberry32, synthBook } from '../src/synth.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const synth = synthBook({ seed: 1, rows: 340 })

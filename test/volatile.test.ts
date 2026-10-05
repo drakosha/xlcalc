@@ -1,6 +1,6 @@
 /** Волатильные функции считаются от часов: момент для TODAY/NOW, зерно и адрес для RAND. */
 import { describe, expect, it } from 'vitest'
-import { compute, type BookInput } from '../src/index'
+import { compute, type BookInput } from '../src/index.js'
 
 const book: BookInput = {
   sheets: [

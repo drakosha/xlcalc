@@ -3,7 +3,7 @@
  * учёта регистра, но с учётом «й»/«и» и «ё»/«е»; шаблоны `*`, `?`, экранирование `~`; числа и ISO-даты
  * в тексте критерия сравниваются как числа; `""` это пустые, `"<>"` непустые.
  */
-import { dateToSerial } from './model'
+import { dateToSerial } from './model.js'
 
 /** Значение ячейки для критерия; ошибки любым объектом. */
 export type CritValue = number | string | boolean | null | object

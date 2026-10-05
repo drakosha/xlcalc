@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canonical, parse, validate, validateName } from '../src/syntax'
+import { canonical, parse, validate, validateName } from '../src/syntax.js'
 
 const ctx = { sheets: ['Данные', 'S'], names: ['data_amt', 'one'] }
 const isRange = (n: string) => (n === 'data_amt' ? true : n === 'one' ? false : undefined)

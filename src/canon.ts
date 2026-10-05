@@ -4,8 +4,8 @@
  * конфигурации движка входит в хэш значений.
  */
 import { createHash } from 'node:crypto'
-import type { BookInput, CellValue } from './contract'
-import { sortAddresses } from './model'
+import type { BookInput, CellValue } from './contract.js'
+import { sortAddresses } from './model.js'
 
 /** Число для выдачи и хэша: 15 значащих цифр, без `-0`. */
 export function outNumber(v: number): number {

@@ -8,10 +8,10 @@
  * Без импорта node:*: код можно собрать в бандл и исполнить вне Node (QuickJS).
  */
 import * as fj from '@formulajs/formulajs'
-import type { CellValue, ErrorCode } from './contract'
-import { buildIndex, collator, matches, parseCrit, select, type Crit, type CritColumn, type CritIndex } from './criteria'
-import { dateToSerial, MAX_ROWS } from './model'
-import { formatText, generalText } from './text'
+import type { CellValue, ErrorCode } from './contract.js'
+import { buildIndex, collator, matches, parseCrit, select, type Crit, type CritColumn, type CritIndex } from './criteria.js'
+import { dateToSerial, MAX_ROWS } from './model.js'
+import { formatText, generalText } from './text.js'
 
 export class CErr {
   constructor(readonly code: ErrorCode) {}

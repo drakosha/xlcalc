@@ -8,8 +8,8 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { BookInput, CellValue } from '../src/contract'
-import { dateToSerial, serialToUtcMs } from '../src/model'
+import type { BookInput, CellValue } from '../src/contract.js'
+import { dateToSerial, serialToUtcMs } from '../src/model.js'
 
 const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
