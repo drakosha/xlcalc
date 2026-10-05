@@ -1,13 +1,13 @@
 /**
- * Канонический текст значений и хэши: построчно по листу и адресу (`"Лист"!E12 n 1234.5`, `s "…"`,
- * `b TRUE`, `e DIV0`), `-0` это 0, нефинитное `#NUM!`, числа округлены до 15 значащих цифр. Версия
- * конфигурации движка входит в хэш значений.
+ * Canonical text of values and the hashes: one line per cell, ordered by sheet and address
+ * (`"Sheet"!E12 n 1234.5`, `s "…"`, `b TRUE`, `e DIV0`); `-0` is 0, non-finite is `#NUM!`, numbers are
+ * rounded to 15 significant digits. The engine configuration version is part of the values hash.
  */
 import { createHash } from 'node:crypto'
 import type { BookInput, CellValue } from './contract.js'
 import { sortAddresses } from './model.js'
 
-/** Число для выдачи и хэша: 15 значащих цифр, без `-0`. */
+/** A number for output and hashing: 15 significant digits, no `-0`. */
 export function outNumber(v: number): number {
   if (v === 0) return 0
   return Number(v.toPrecision(15))
@@ -23,7 +23,7 @@ export function canonValue(v: CellValue): string {
 
 const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
-/** Значения: лист → адрес → значение; пустые не входят. */
+/** Values: sheet → address → value; empty cells are skipped. */
 export function canonText(values: Map<string, Map<string, CellValue>>): string {
   const lines: string[] = []
   for (const sheet of [...values.keys()].sort(byText)) {
@@ -40,7 +40,7 @@ export function valuesHash(values: Map<string, Map<string, CellValue>>, configVe
   return createHash('sha256').update(configVersion).update('\n').update(canonText(values)).digest('hex')
 }
 
-/** JSON с ключами объектов по порядку: порядок полей во входе не влияет на хэш. */
+/** JSON with sorted object keys: the order of fields in the input does not affect the hash. */
 function stableJson(v: unknown): string {
   if (v === null || typeof v !== 'object') return JSON.stringify(v) ?? 'null'
   if (Array.isArray(v)) return `[${v.map(stableJson).join(',')}]`
@@ -52,7 +52,7 @@ function stableJson(v: unknown): string {
     .join(',')}}`
 }
 
-/** Хэш входа: листы по имени, ячейки по адресу, имена по (scope, name). */
+/** Input hash: sheets by name, cells by address, names by (scope, name). */
 export function inputHash(book: BookInput): string {
   const h = createHash('sha256')
   for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {

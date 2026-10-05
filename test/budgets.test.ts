@@ -1,7 +1,7 @@
 /**
- * Бюджеты движка на синтетике (из the app, `docs/design-workbook.md`): холодный расчёт ≤ 1,5 с (медиана),
- * память ≤ 300 МБ (по heapUsed, rss только фиксируется), правка класса А ≤ 100 мс (p95), проверка
- * 3 000 формул ≤ 300 мс. Полная книга (3 400 строк) при `FORMULA_BENCH=1`, короткая (340) всегда.
+ * Engine budgets on the synthetic book: cold compute ≤ 1.5 s (median), memory ≤ 300 MB (heapUsed; rss
+ * is only recorded), class A edit ≤ 100 ms (p95), validating 3,000 formulas ≤ 300 ms. The full book
+ * (3,400 rows) runs with `FORMULA_BENCH=1`, the short one (340 rows) always.
  */
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -26,13 +26,13 @@ function check(r: ReturnType<typeof bench>) {
   expect(r.coldMedianMs).toBeLessThanOrEqual(1500)
   expect(r.heapUsedMB).toBeLessThanOrEqual(300)
   expect(r.editA.p95).toBeLessThanOrEqual(100)
-  // бюджет 300 мс на 3 000 формул, у синтетики 3 907
+  // the budget is 300 ms per 3,000 formulas; the synthetic book has 3,907
   expect(r.validateMedianMs).toBeLessThanOrEqual((300 * r.formulas) / 3000)
 }
 
-describe('бюджеты', () => {
-  it('короткая книга (340 строк)', () => check(bench(340)), 120_000)
-  it.skipIf(process.env.FORMULA_BENCH !== '1')('полная книга (3 400 строк)', () => {
+describe('budgets', () => {
+  it('short book (340 rows)', () => check(bench(340)), 120_000)
+  it.skipIf(process.env.FORMULA_BENCH !== '1')('full book (3,400 rows)', () => {
     const r = bench(3400)
     console.log(JSON.stringify(r))
     check(r)

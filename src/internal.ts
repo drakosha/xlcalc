@@ -1,7 +1,7 @@
 /**
- * Внутренности движка для харнессов замера и адаптеров других движков поверх нашего разбора формул
- * (замер в the app, `tools/probes/wb1`: адаптер HyperFormula, сборка в QuickJS). Это не контракт:
- * состав и сигнатуры меняются без смены мажорной версии. Приложению нужен корень пакета или `./contract`.
+ * Engine internals for benchmark harnesses and for adapters of other engines on top of our formula
+ * parser (an adapter for another engine, a QuickJS bundle). Not part of the contract: contents and
+ * signatures change without a major version bump. Applications need the package root or `./contract`.
  */
 export { valuesHash } from './canon.js'
 export { buildIndex, parseCrit, select, type CritColumn, type CritIndex, type CritValue } from './criteria.js'

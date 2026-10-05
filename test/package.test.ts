@@ -1,6 +1,6 @@
 /**
- * Пакет как отдельная библиотека: белый список функций закреплён, исходники импортируют только свои
- * файлы, `node:*` и `@formulajs/formulajs`; HyperFormula (GPL) нет ни в одной зависимости.
+ * The package as a standalone library: the function whitelist is pinned, the sources import only their own
+ * files, `node:*` and `@formulajs/formulajs`; HyperFormula (GPL) is in no dependency.
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -12,21 +12,21 @@ import { FORMULAJS_VERSION } from '../src/config.js'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as Record<'dependencies' | 'devDependencies' | 'peerDependencies' | 'optionalDependencies', Record<string, string> | undefined>
 
-/** Список семантики шага 1 (the app, `docs/design-workbook.md`). */
+/** The functions whose semantics are checked against Excel documentation. */
 const SEMANTICS = ['SUM', 'SUMIFS', 'COUNTIFS', 'IF', 'IFERROR', 'XLOOKUP', 'ROUND', 'EOMONTH', 'DATE', 'TEXT']
 
-describe('пакет', () => {
-  it('белый список функций', () => {
+describe('package', () => {
+  it('function whitelist', () => {
     expect(FUNCTION_NAMES).toEqual(['COUNTIFS', 'DATE', 'EOMONTH', 'FALSE', 'IF', 'IFERROR', 'NOW', 'RAND', 'RANDBETWEEN', 'ROUND', 'SUM', 'SUMIF', 'SUMIFS', 'TEXT', 'TODAY', 'TRUE', 'XLOOKUP'])
     for (const f of [...SEMANTICS, 'SUMIF']) expect(FUNCTION_NAMES).toContain(f)
   })
 
-  it('версия formulajs в конфигурации совпадает с зависимостью', () => {
+  it('the formulajs version in the configuration matches the dependency', () => {
     expect(pkg.dependencies?.['@formulajs/formulajs']).toBe(FORMULAJS_VERSION)
     expect(CONFIG_VERSION).toContain(`formulajs@${FORMULAJS_VERSION}`)
   })
 
-  it('зависимости: только formulajs, HyperFormula нигде', () => {
+  it('dependencies: only formulajs, HyperFormula nowhere', () => {
     expect(Object.keys(pkg.dependencies ?? {})).toEqual(['@formulajs/formulajs'])
     expect(pkg.peerDependencies ?? {}).toEqual({})
     expect(pkg.optionalDependencies ?? {}).toEqual({})
@@ -34,7 +34,7 @@ describe('пакет', () => {
     expect(readFileSync(join(root, 'package-lock.json'), 'utf8')).not.toMatch(/hyperformula/i)
   })
 
-  it('исходники не импортируют ничего вне пакета', () => {
+  it('sources import nothing outside the package', () => {
     const src = join(root, 'src')
     const allowed = new Set(Object.keys(pkg.dependencies ?? {}))
     const bad: string[] = []

@@ -1,7 +1,7 @@
 /**
- * `@mike/formula`: движок формул книги. Контракт в `./contract`; реализация (вариант C замера WB1 в the app)
- * компилирует формулы в JS и считает по графу ссылок. Генератор синтетики в `./synth`, внутренности для
- * харнессов замера в `./internal`.
+ * `@mike/formula`: a workbook formula engine. The contract is in `./contract`; the implementation compiles
+ * formulas to JS and computes over the reference graph. The synthetic book generator is in `./synth`,
+ * internals for benchmark harnesses in `./internal`.
  */
 import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'
@@ -31,10 +31,10 @@ export function validateName(name: string): NameCheck {
   return checkName(name)
 }
 
-/** Сгенерированный код книги в порядке вычисления: для чтения глазами при отладке, не контракт. */
+/** Generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
 export function debugGeneratedCode(book: BookInput, opts: ComputeOptions): string {
   return debugSource(createState(book, { now: clockSerial(opts.clock), seed: opts.clock.seed, externals: opts.externals }))
 }
 
-/** Реализация контракта одним объектом. */
+/** The contract implementation as one object. */
 export const engine: FormulaEngine = { compute, validateFormula, validateName, openSession }

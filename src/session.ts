@@ -1,7 +1,7 @@
 /**
- * Сессия над книгой: правки атомарно одним пересчётом зависимых. Живая сессия (`live`) берёт часы и
- * новое зерно на каждый пересчёт; текущие часы (`clock`) пишутся в версию, и полный расчёт с ними
- * даёт тот же хэш.
+ * A session over a book: edits are applied atomically with one recomputation of dependents. A live
+ * session (`live`) takes a fresh clock and a new seed on every recomputation; its current clock
+ * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  */
 import type { BookInput, CellChange, CellEdit, Clock, Explanation, ExplainOptions, NameInput, Session, SessionOptions } from './contract.js'
 import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine.js'
@@ -47,7 +47,7 @@ export function openSession(book: BookInput, opts: SessionOptions): Session {
       const old = st()
       if (live) tick(old)
       const next = createState({ sheets: old.input.sheets, names }, { now: clockSerial(clock), seed: clock.seed, externals })
-      // имена меняют граф целиком: книга собирается заново, изменения по всем ячейкам
+      // names change the whole graph: the book is rebuilt, changes are collected over all cells
       const keys: string[] = []
       next.input.sheets.forEach((_, i) => {
         const cols = Math.max(old.ctx.sheets[i].cols.length, next.ctx.sheets[i].cols.length)

@@ -1,12 +1,12 @@
 /**
- * Движок: формулы листа компилируются в JS, ячейки считаются по графу ссылок.
+ * The engine: formulas are compiled to JS, cells are computed over the reference graph.
  *
- * Одна `new Function` на книгу, каждая формула своей функцией (правка формулы в сессии компилирует
- * только её). Код генерирует только пакет: литералы через `JSON.stringify`, вызываются только функции
- * рантайма из белого списка, листы и диапазоны переданы числами. Полный расчёт идёт по
- * топологическому порядку; правка значения пересчитывает только зависимые ячейки.
+ * One `new Function` per book, each formula its own function (editing a formula in a session compiles
+ * only that formula). Only the package generates code: literals go through `JSON.stringify`, only
+ * whitelisted runtime functions are called, sheets and ranges are passed as numbers. A full computation
+ * follows the topological order; editing a value recomputes only the dependent cells.
  *
- * Без импорта node:* (хэши считает `index.ts`), чтобы движок можно было исполнить и вне Node.
+ * No platform imports, so the engine runs outside Node as well.
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
 import { FUNCTIONS } from './functions.js'
@@ -19,10 +19,10 @@ interface Formula {
   s: number
   r: number
   c: number
-  /** Канонический текст. */
+  /** Canonical text. */
   text: string
   refs: Rng[]
-  /** Прямой вызов волатильной функции. */
+  /** Calls a volatile function directly. */
   volatile: boolean
   source: string
   fn: () => V | Rng
@@ -37,14 +37,14 @@ interface Invalid {
 
 interface PreparedName {
   name: string
-  /** Индекс листа области видимости; -1 у глобального. */
+  /** Index of the scope sheet; -1 for a global name. */
   scope: number
   ast: Extract<Ast, { k: 'ref' }>
   area: boolean
 }
 
 export interface EngineOptions {
-  /** Момент часов, серийный номер (UTC). */
+  /** The clock moment, a serial number (UTC). */
   now: number
   seed: number
   externals?: Externals
@@ -59,20 +59,20 @@ export interface EngineState {
   externalFunctions: string[]
   ctx: RuntimeContext
   rt: Runtime
-  /** id → формула; после удаления дыра. */
+  /** id → formula; a hole after deletion. */
   formulas: (Formula | undefined)[]
-  /** `s:r:c` → id формулы. */
+  /** `s:r:c` → formula id. */
   at: Map<string, number>
   invalid: Map<string, Invalid>
   succ: number[][]
-  /** Позиция в топологическом порядке; -1 у ячеек цикла и зависящих от них. */
+  /** Position in the topological order; -1 for cells in a cycle and cells depending on them. */
   topo: number[]
   order: number[]
-  /** Слушатели узких диапазонов: лист → колонка → [r1, r2, id]. */
+  /** Listeners of narrow ranges: sheet → column → [r1, r2, id]. */
   listeners: Map<number, Map<number, [number, number, number][]>>
-  /** Слушатели широких диапазонов (целые строки и больше 64 колонок): лист → [r1, r2, c1, c2, id]. */
+  /** Listeners of wide ranges (whole rows and more than 64 columns): sheet → [r1, r2, c1, c2, id]. */
   wide: Map<number, [number, number, number, number, number][]>
-  /** Формулы, зависящие от волатильных функций (прямо или через другие). */
+  /** Formulas that depend on volatile functions (directly or through others). */
   volatile: Set<number>
 }
 
@@ -94,7 +94,7 @@ export function invalidError(code: CheckCode): ErrorCode {
   return 'ERROR'
 }
 
-/** Текст ссылки для `explain` и причин: `'Лист'!B3`, `'Лист'!D:D`, `'Лист'!A1:C9`. */
+/** Reference text for `explain` and reasons: `'Sheet'!B3`, `'Sheet'!D:D`, `'Sheet'!A1:C9`. */
 export function rngText(sheetNames: string[], g: Rng): string {
   const sheet = quoteSheet(sheetNames[g.s])
   if (g.r1 === 0 && g.r2 === MAX_ROWS - 1) return `${sheet}!${indexToCol(g.c1)}:${indexToCol(g.c2)}`
@@ -103,7 +103,7 @@ export function rngText(sheetNames: string[], g: Rng): string {
   return g.r1 === g.r2 && g.c1 === g.c2 ? `${sheet}!${a}` : `${sheet}!${a}:${formatAddress(g.r2, g.c2)}`
 }
 
-// ---------- подготовка ----------
+// ---------- preparation ----------
 
 function prepareNames(state: Pick<EngineState, 'sheetIdx' | 'sheetNames'>, names: NameInput[]): { names: PreparedName[]; issues: NameIssue[] } {
   const out: PreparedName[] = []
@@ -154,14 +154,14 @@ function nameFor(state: EngineState, here: number, name: string): PreparedName |
   return state.names.find((n) => n.scope === here && n.name.toUpperCase() === up) ?? state.names.find((n) => n.scope === -1 && n.name.toUpperCase() === up)
 }
 
-/** Код JS одной формулы (самодостаточное выражение-фабрика) и её ссылки. */
+/** JS code of one formula (a self-contained factory expression) and its references. */
 function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number): { source: string; refs: Rng[]; volatile: boolean } {
   const refs: Rng[] = []
   const hoisted: Rng[] = []
   let volatile = false
   const sheetOf = (name: string | null) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!)
   const deref = (n: Ast): Ast => (n.k === 'name' ? (nameFor(state, s, n.name)?.ast ?? n) : n)
-  // rangeOk: место, где функция ждёт диапазон (туда идёт объект диапазона, в том числе из одной ячейки)
+  // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
   const go = (n: Ast, rangeOk = false): string => {
     switch (n.k) {
       case 'num':
@@ -228,7 +228,7 @@ function prepare(state: EngineState, s: number, text: string): Prepared {
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
 
-// ---------- граф ----------
+// ---------- graph ----------
 
 function rebuildGraph(state: EngineState) {
   const { formulas } = state
@@ -286,7 +286,7 @@ function rebuildGraph(state: EngineState) {
   const order: number[] = []
   const queue: number[] = []
   formulas.forEach((f, id) => f && indeg[id] === 0 && queue.push(id))
-  // порядок очереди по адресу не нужен: значения от порядка вычисления не зависят
+  // the queue need not be ordered by address: values do not depend on the evaluation order
   while (queue.length) {
     const id = queue.pop()!
     order.push(id)
@@ -310,20 +310,20 @@ function rebuildGraph(state: EngineState) {
   state.volatile = vol
 }
 
-/** Формулы, читающие ячейку (по ссылкам, независимо от того, есть ли в ней что-то). */
+/** Formulas that read a cell (by their references, whether or not the cell holds anything). */
 function listenersOf(state: EngineState, s: number, r: number, c: number, out: Set<number>) {
   for (const [r1, r2, id] of state.listeners.get(s)?.get(c) ?? []) if (r >= r1 && r <= r2) out.add(id)
   for (const [r1, r2, c1, c2, id] of state.wide.get(s) ?? []) if (r >= r1 && r <= r2 && c >= c1 && c <= c2) out.add(id)
 }
 
-// ---------- вычисление ----------
+// ---------- evaluation ----------
 
 function same(a: V, b: V): boolean {
   if (isErr(a) || isErr(b)) return isErr(a) && isErr(b) && a.code === b.code
   return Object.is(a, b) || a === b
 }
 
-/** Сбросить кэши больших диапазонов и индексов, которые задевает ячейка. */
+/** Drops the cached large ranges and indexes that a cell touches. */
 function invalidate(ctx: RuntimeContext, s: number, r: number, c: number) {
   for (const cache of [ctx.flat, ctx.index] as Map<string, unknown>[]) {
     if (cache.size === 0) continue
@@ -356,7 +356,7 @@ function evaluate(state: EngineState, ids: number[], track?: Tracker) {
     else {
       const x = f.fn()
       v = x instanceof Rng ? rt.scalar(x) : x
-      // формула со ссылкой на пустую ячейку даёт 0, как в Excel
+      // a formula referencing an empty cell gives 0, as in Excel
       if (v === null || v === undefined) v = 0
       else if (typeof v === 'number' && !Number.isFinite(v)) v = E.NUM
     }
@@ -370,7 +370,7 @@ function evaluateAll(state: EngineState, track?: Tracker) {
   evaluate(state, cyc, track)
 }
 
-// ---------- сборка ----------
+// ---------- assembly ----------
 
 export function createState(book: BookInput, opts: EngineOptions): EngineState {
   const sheetNames = book.sheets.map((s) => s.name)
@@ -426,8 +426,8 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
 }
 
 /**
- * Правки атомарно, один пересчёт зависимых; изменившиеся ячейки (`s:r:c`). `withVolatile`: часы
- * сменились (живая сессия), волатильные ячейки пересчитываются в том же проходе.
+ * Edits applied atomically, one recomputation of dependents; returns the changed cells (`s:r:c`).
+ * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass.
  */
 export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile = false): string[] {
   const track: Tracker = new Map()
@@ -473,13 +473,13 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
   if (structural) rebuildGraph(state)
   for (const f of fresh) dirty.add(f.id)
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
-  // ячейки, бывшие в цикле, пересчитываются, если цикл разорван
+  // cells that were in a cycle are recomputed in case the cycle is broken
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
   recompute(state, dirty, track)
   return changed(state, track)
 }
 
-/** Пересчёт множества формул и всего, что от них зависит, в топологическом порядке. */
+/** Recomputes a set of formulas and everything that depends on them, in topological order. */
 function recompute(state: EngineState, dirty: Set<number>, track: Tracker) {
   const stack = [...dirty]
   while (stack.length) {
@@ -505,7 +505,7 @@ function changed(state: EngineState, track: Tracker): string[] {
   return out
 }
 
-/** Новые часы: пересчёт волатильных ячеек и зависящих от них. */
+/** A new clock: recomputes volatile cells and their dependents. */
 export function applyClock(state: EngineState, now: number, seed: number): string[] {
   state.ctx.now = now
   state.ctx.seed = seed
@@ -514,7 +514,7 @@ export function applyClock(state: EngineState, now: number, seed: number): strin
   return changed(state, track)
 }
 
-/** Значение ячейки (пустая это null). */
+/** The value of a cell (null when empty). */
 export function valueAt(state: EngineState, s: number, r: number, c: number): V {
   return state.ctx.sheets[s].cols[c]?.[r] ?? null
 }
@@ -523,7 +523,7 @@ export function toCellValue(v: V): CellValue {
   return isErr(v) ? { error: v.code } : v
 }
 
-// ---------- причины ошибок ----------
+// ---------- error reasons ----------
 
 const GENERIC: Record<ErrorCode, string> = {
   DIV0: 'division by zero',
@@ -547,7 +547,7 @@ export interface Issue {
   at?: number
 }
 
-/** Ячейки с ошибкой и причина: проверка формулы, цикл, ошибка от другой ячейки или своя. */
+/** Cells with an error and the reason: a formula check, a cycle, an error from another cell or its own. */
 export function issues(state: EngineState): Issue[] {
   const out: Issue[] = []
   for (const [k, inv] of state.invalid) {
@@ -581,15 +581,15 @@ function errorSource(state: EngineState, f: Formula, code: ErrorCode): string | 
   return null
 }
 
-// ---------- отладка и explain ----------
+// ---------- debugging and explain ----------
 
-/** Сгенерированный код в порядке вычисления, для чтения глазами (не контракт). */
+/** Generated code in evaluation order, for reading (not part of the contract). */
 export function debugSource(state: EngineState): string {
   const lines = [PRELUDE]
   const ids = [...state.order, ...state.formulas.filter((f) => f && state.topo[f.id] < 0).map((f) => f!.id)]
   for (const id of ids) {
     const f = state.formulas[id]!
-    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (цикл)' : ''}`, f.source)
+    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, f.source)
   }
   return lines.join('\n')
 }
@@ -661,7 +661,7 @@ export function explainText(root: ExplainTree): string {
   return lines.join('\n')
 }
 
-/** Ячейки книги по адресу (для выдачи и хэша). */
+/** Cells of the book by address (for output and hashing). */
 export function sortedCells(state: EngineState, s: number): string[] {
   const addrs = new Set(Object.keys(state.input.sheets[s].cells))
   return sortAddresses(addrs)

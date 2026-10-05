@@ -1,7 +1,7 @@
 /**
- * Дымовой тест собранного пакета (`npm run build` перед ним): все подпути `exports` есть в `dist` с
- * `.d.ts`, чистый node импортирует их по имени пакета, хэш синтетики и сессия совпадают с исходниками,
- * внутрь `dist` мимо `exports` не попасть.
+ * Smoke test of the built package (`npm run build` first): every `exports` subpath exists in `dist` with
+ * `.d.ts`, plain node imports them by package name, the synthetic hash and the session match the sources,
+ * and `dist` cannot be reached around `exports`.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
@@ -18,21 +18,21 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
 }
 const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url))
 
-describe('собранный пакет', () => {
-  it('подпути exports: JS и .d.ts в dist', () => {
+describe('built package', () => {
+  it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
     expect(entries.map(([k]) => k)).toEqual(['.', './contract', './synth', './internal'])
     for (const [, target] of entries) {
-      if (typeof target === 'string') throw new Error('ожидается { types, import }')
+      if (typeof target === 'string') throw new Error('expected { types, import }')
       for (const file of [target.types, target.import]) {
         expect(file.startsWith('./dist/'), file).toBe(true)
-        expect(existsSync(join(root, file)), `${file}: нет, сначала npm run build`).toBe(true)
+        expect(existsSync(join(root, file)), `${file}: missing, run npm run build first`).toBe(true)
       }
     }
     expect(pkg.files).toContain('dist')
   })
 
-  it('чистый node импортирует пакет по имени, значения как у исходников', () => {
+  it('plain node imports the package by name, values match the sources', () => {
     const out = JSON.parse(execFileSync(process.execPath, [child], { cwd: root, encoding: 'utf8' }).trim())
     const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
     const synth = synthBook({ seed: 1, rows: 340 })

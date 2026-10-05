@@ -1,5 +1,5 @@
-// Потребитель собранного пакета: чистый node без tsx, импорт по имени пакета (self-reference через
-// `exports`), как его видит проект, поставивший тарбол.
+// A consumer of the built package: plain node without tsx, importing by package name (self-reference
+// through `exports`), the way a project that installed the tarball sees it.
 import { compute, CONFIG_VERSION, engine, FUNCTION_NAMES, openSession, validateFormula } from '@mike/formula'
 import * as contract from '@mike/formula/contract'
 import { createState, parse, valuesHash } from '@mike/formula/internal'

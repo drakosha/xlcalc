@@ -1,11 +1,11 @@
 /**
- * Рантайм движка: модель значений, операторы с приведением типов, ошибки как значения, диапазоны
- * как срезы колонок листа, функции белого списка.
+ * Engine runtime: the value model, operators with type coercion, errors as values, ranges as slices of
+ * sheet columns, the whitelisted functions.
  *
- * Из formulajs берутся только ROUND, EOMONTH, DATE и SUM: на них тест против документации Excel и
- * оракула проходит (DATE, EOMONTH и SUM через адаптер). SUMIF, SUMIFS, COUNTIFS (индекс по
- * критериям), XLOOKUP, TEXT, IF, IFERROR и волатильные свои: в formulajs их нет или они неверны.
- * Без импорта node:*: код можно собрать в бандл и исполнить вне Node (QuickJS).
+ * Only ROUND, EOMONTH, DATE and SUM come from formulajs: they pass the test against Excel documentation
+ * and the oracle (DATE, EOMONTH and SUM through an adapter). SUMIF, SUMIFS, COUNTIFS (with a criteria
+ * index), XLOOKUP, TEXT, IF, IFERROR and the volatile functions are our own: formulajs either lacks them
+ * or gets them wrong. No platform imports: the code can be bundled and run outside Node.
  */
 import * as fj from '@formulajs/formulajs'
 import type { CellValue, ErrorCode } from './contract.js'
@@ -33,15 +33,15 @@ export type V = number | string | boolean | null | CErr
 
 export interface SheetData {
   name: string
-  /** Колонки: cols[c][r]. */
+  /** Columns: cols[c][r]. */
   cols: V[][]
-  /** Занятых строк (максимальный индекс + 1). */
+  /** Occupied rows (highest index + 1). */
   rows: number
 }
 
-/** Прямоугольник листа; целая колонка обрезается по занятым строкам листа при чтении. */
+/** A sheet rectangle; a whole column is cut to the occupied rows of the sheet when read. */
 export class Rng {
-  /** Ключ кэшей значений и индексов критериев. */
+  /** Key for the value and criteria-index caches. */
   readonly key: string
   constructor(
     readonly s: number,
@@ -60,7 +60,7 @@ export const isErr = (x: unknown): x is CErr => x instanceof CErr
 
 const FJ_ERRORS: Record<string, ErrorCode> = { '#DIV/0!': 'DIV0', '#N/A': 'NA', '#NAME?': 'NAME', '#NUM!': 'NUM', '#REF!': 'REF', '#VALUE!': 'VALUE' }
 
-/** Ответ formulajs в нашу модель: Error → ошибка, Date → серийный номер, NaN/∞ → #NUM!. */
+/** A formulajs result in our model: Error → error, Date → serial number, NaN/∞ → #NUM!. */
 function fromFj(x: unknown): V {
   if (x instanceof Error) return E[FJ_ERRORS[x.message] ?? 'ERROR']
   if (x instanceof Date) return localDateToSerial(x)
@@ -69,7 +69,7 @@ function fromFj(x: unknown): V {
   return E.VALUE
 }
 
-/** formulajs читает и пишет даты местными геттерами: серийный номер идёт через местную полночь. */
+/** formulajs reads and writes dates with local-time getters: serial numbers go through local midnight. */
 function localDateToSerial(d: Date): number {
   const p = (n: number, w = 2) => String(n).padStart(w, '0')
   return dateToSerial(`${p(d.getFullYear(), 4)}-${p(d.getMonth() + 1)}-${p(d.getDate())}`)
@@ -81,7 +81,7 @@ function serialToLocalDate(serial: number): Date {
   return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate())
 }
 
-/** formulajs на части входов бросает исключение: это #VALUE!. */
+/** formulajs throws on some inputs: that is #VALUE!. */
 function call(f: (...a: any[]) => unknown, ...a: unknown[]): V {
   try {
     return fromFj(f(...a))
@@ -90,7 +90,7 @@ function call(f: (...a: any[]) => unknown, ...a: unknown[]): V {
   }
 }
 
-// ---------- приведение ----------
+// ---------- coercion ----------
 
 export function toNum(v: V): number | CErr {
   if (typeof v === 'number') return v
@@ -126,23 +126,23 @@ export function fromCellValue(v: CellValue): V {
   return v !== null && typeof v === 'object' ? E[v.error] : v
 }
 
-// ---------- контекст ----------
+// ---------- context ----------
 
 export interface RuntimeContext {
   sheets: SheetData[]
-  /** Момент часов, серийный номер с долей суток (UTC). */
+  /** The clock moment, a serial number with a day fraction (UTC). */
   now: number
   seed: number
-  /** Значения внешних функций по каноническому тексту вызова. */
+  /** External function values by the canonical text of the call. */
   externals: Record<string, CellValue>
-  /** Кэш больших диапазонов (плоские массивы) и индексов критериев; сбрасывается правкой. */
+  /** Cache of large ranges (flat arrays) and criteria indexes; invalidated by edits. */
   flat: Map<string, V[]>
   index: Map<string, CritIndex>
 }
 
 export const BIG_RANGE = 256
 
-/** Псевдослучайное [0, 1) от зерна и адреса ячейки: один и тот же при одних часах. */
+/** Pseudo-random [0, 1) from the seed and the cell address: the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number): number {
   let h = 0x811c9dc5 ^ (seed >>> 0)
   const key = `${sheet}\u0000${row}\u0000${col}`
@@ -169,7 +169,7 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const cell = (s: number, r: number, c: number): V => sheets[s].cols[c]?.[r] ?? null
 
-  /** Значения диапазона построчно; большие кэшируются до правки, которая их задевает. */
+  /** Range values row by row; large ones are cached until an edit touches them. */
   const flat = (g: Rng): V[] => {
     const hit = ctx.flat.get(g.key)
     if (hit) return hit
@@ -184,7 +184,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return out
   }
 
-  // ---------- операторы ----------
+  // ---------- operators ----------
 
   const arith = (a: V, b: V, f: (x: number, y: number) => number): V => {
     if (isErr(a)) return a
@@ -225,7 +225,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     const y = toText(b)
     return isErr(y) ? y : x + y
   }
-  // Excel: числа < текст < логические; текст без учёта регистра; пусто как 0, "" или FALSE
+  // Excel: numbers < text < booleans; text is case-insensitive; blank is 0, "" or FALSE
   const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2)
   const compare = (a: V, b: V): number => {
     if (a === null) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0
@@ -243,7 +243,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0
   }
 
-  /** Значение в скалярном месте: одна ячейка диапазона или #VALUE! (растекания нет). */
+  /** A value in a scalar position: the single cell of a range or #VALUE! (no spilling). */
   const scalar = (x: V | Rng): V => {
     if (!(x instanceof Rng)) return x
     const b = bounds(x)
@@ -251,7 +251,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   }
   const num = (x: V | Rng) => toNum(scalar(x))
 
-  // ---------- критерии ----------
+  // ---------- criteria ----------
 
   const indexOf = (g: Rng): CritIndex => {
     let ix = ctx.index.get(g.key)
@@ -261,7 +261,7 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const asRng = (x: V | Rng): Rng | CErr => (x instanceof Rng ? x : isErr(x) ? x : E.VALUE)
 
-  /** Позиции, где выполнены все пары (диапазон, критерий); #VALUE! при разных размерах. */
+  /** Positions where all (range, criterion) pairs hold; #VALUE! when sizes differ. */
   const pick = (pairs: [V | Rng, V | Rng][], size?: { h: number; w: number }): { sel: number[]; size: { h: number; w: number } } | CErr => {
     const cols: CritColumn[] = []
     let sz = size
@@ -305,7 +305,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return isErr(r) ? r : r.sel.length
   }
 
-  /** SUMIF: диапазон суммы берёт размер диапазона условия от своего левого верхнего угла (как Excel). */
+  /** SUMIF: the sum range takes the size of the criteria range from its own top-left cell (as Excel does). */
   const SUMIF = (range: V | Rng, crit: V | Rng, sum?: V | Rng): V => {
     const cg = asRng(range)
     if (isErr(cg)) return cg
@@ -319,7 +319,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     return sumAt(sized, r.sel)
   }
 
-  /** XLOOKUP: совпадение 0, −1, 1, 2 (шаблон); поиск 1, −1, ±2 (двоичный идёт линейно, ответ тот же на отсортированном). */
+  /** XLOOKUP: match modes 0, −1, 1, 2 (wildcard); search modes 1, −1, ±2 (binary search runs linearly, same answer on sorted data). */
   const XLOOKUP = (key: V | Rng, look: V | Rng, ret: V | Rng, notFound?: V | Rng, matchMode?: V | Rng, searchMode?: V | Rng): V => {
     const k = scalar(key)
     if (isErr(k)) return k
@@ -332,7 +332,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (lb.w !== 1 && lb.h !== 1) return E.VALUE
     const vertical = lb.w === 1
     if ((vertical && rb.h !== lb.h) || (!vertical && rb.w !== lb.w)) return E.VALUE
-    if ((vertical && rb.w !== 1) || (!vertical && rb.h !== 1)) return E.VALUE // результат массивом: растекания нет
+    if ((vertical && rb.w !== 1) || (!vertical && rb.h !== 1)) return E.VALUE // an array result: no spilling
     const mm = matchMode === undefined ? 0 : num(matchMode)
     const sm = searchMode === undefined ? 1 : num(searchMode)
     if (isErr(mm)) return mm
@@ -364,7 +364,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   }
 
   const F: Record<string, (...a: any[]) => V> = {
-    // в диапазоне считаются только числа и ошибки (текст и логические пропускаются), прямой аргумент приводится
+    // in a range only numbers and errors count (text and booleans are skipped); a direct argument is coerced
     SUM: (...a: (V | Rng)[]) => {
       const args: unknown[] = []
       for (const x of a) {
@@ -403,7 +403,7 @@ export function makeRuntime(ctx: RuntimeContext) {
       const a = [y, m, d].map(num)
       for (const x of a) if (isErr(x)) return x
       const [yy, mo, dd] = (a as number[]).map(Math.trunc)
-      // Excel: год 0–1899 прибавляется к 1900; результат до 1900-01-01 это #NUM!
+      // Excel: years 0–1899 are added to 1900; a result before 1900-01-01 is #NUM!
       const year = yy < 1900 ? yy + 1900 : yy
       if (year < 1900 || year > 9999) return E.NUM
       const v = call(fj.DATE, year, mo, dd)

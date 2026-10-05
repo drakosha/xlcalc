@@ -1,11 +1,11 @@
 /**
- * Критерии SUMIF, SUMIFS, COUNTIFS и индекс по ним: строки без
- * учёта регистра, но с учётом «й»/«и» и «ё»/«е»; шаблоны `*`, `?`, экранирование `~`; числа и ISO-даты
- * в тексте критерия сравниваются как числа; `""` это пустые, `"<>"` непустые.
+ * Criteria of SUMIF, SUMIFS, COUNTIFS and an index over them: strings are case-insensitive but
+ * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers and ISO dates in
+ * the criterion text are compared as numbers; `""` matches blanks, `"<>"` non-blanks.
  */
 import { dateToSerial } from './model.js'
 
-/** Значение ячейки для критерия; ошибки любым объектом. */
+/** A cell value for a criterion; errors are any object. */
 export type CritValue = number | string | boolean | null | object
 
 export type Crit =
@@ -16,8 +16,8 @@ export type Crit =
   | { op: string; kind: 'blank' }
 
 /**
- * Порядок строк для `<`/`>`: без учёта регистра, с учётом «й»/«и». В QuickJS нет Intl, там порядок
- * по кодам символов строчных букв (замер в QuickJS справочный).
+ * String order for `<`/`>`: case-insensitive, accent-sensitive. Without `Intl` (QuickJS, for example)
+ * the order falls back to code units of the lower-cased strings.
  */
 export const collator: { compare(a: string, b: string): number } =
   typeof Intl !== 'undefined' ? new Intl.Collator('ru-RU', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
@@ -38,7 +38,7 @@ function wildRe(s: string): RegExp | null {
   return new RegExp(`^${re}$`, 'iu')
 }
 
-/** Критерий из значения (скаляр после вычисления аргумента). */
+/** A criterion from a value (the scalar after evaluating the argument). */
 export function parseCrit(v: number | string | boolean | null): Crit {
   const key = typeof v + ':' + String(v)
   const hit = cache.get(key)
@@ -90,7 +90,7 @@ export function matches(v: CritValue, c: Crit): boolean {
   }
 }
 
-/** Ключ равенства в индексе: строки без учёта регистра, числа, логические. */
+/** Equality key in the index: case-insensitive strings, numbers, booleans. */
 function eqKey(v: CritValue): string | null {
   if (typeof v === 'string') return 's' + v.toLowerCase()
   if (typeof v === 'number') return 'n' + v
@@ -123,13 +123,13 @@ export function buildIndex(flat: readonly CritValue[]): CritIndex {
 export interface CritColumn {
   flat: readonly CritValue[]
   crit: Crit
-  /** Индекс этого диапазона (строится лениво и кэшируется вызывающим). */
+  /** The index of this range (built lazily and cached by the caller). */
   index: () => CritIndex
 }
 
 /**
- * Позиции, где выполнены все критерии. Первый критерий-равенство идёт через индекс, остальные
- * проверяются по кандидатам; без равенства полный проход.
+ * Positions where all criteria hold. The first equality criterion goes through the index, the rest are
+ * checked on its candidates; without an equality criterion it is a full scan.
  */
 export function select(cols: CritColumn[], n: number): number[] {
   let cand: number[] | null = null
