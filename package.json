@@ -61,13 +61,12 @@
   },
   "scripts": {
     "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
-    "prepare": "npm run build",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.build.json --noEmit",
     "test": "npm run build && vitest run",
     "test:dist": "npm run build && FORMULA_TARGET=dist vitest run",
     "test:oracle": "FORMULA_ORACLE=update vitest run test/semantics.test.ts",
     "check:package": "npm run build && publint --strict && attw --pack . --profile esm-only",
-    "pack:release": "mkdir -p release && npm pack --pack-destination release",
+    "pack:release": "npm run build && mkdir -p release && npm pack --pack-destination release",
     "prepublishOnly": "npm run typecheck && npm test && npm run test:dist"
   },
   "dependencies": {

@@ -9,7 +9,7 @@ What it does differently:
 - **A clock for volatile functions.** `TODAY` and `NOW` come from `clock.now` (UTC), `RAND` and `RANDBETWEEN` from `clock.seed` and the cell address. Without a clock the engine takes the current moment and a random seed, and `result.clock` reproduces the result.
 - **A small whitelist of functions, checked against Excel.** 17 functions, each admitted only with test cases whose expected answers come from Excel's documentation and are cross-checked with LibreOffice. Any other function is reported as `unknown_function` (`#NAME?`) rather than computed with different semantics.
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
-- **No Node APIs.** It runs in Node 20.13 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
+- **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
 Function implementations use and build on [formula.js](https://github.com/formulajs/formulajs) (MIT): `ROUND`, `EOMONTH`, `DATE` and `SUM` call formula.js through an adapter that fixes date and type handling, and the other functions are written here where formula.js differs from Excel or lacks them. The fixes are checked against Excel's documented behaviour (see [Functions](#functions)).
 
@@ -19,7 +19,7 @@ Function implementations use and build on [formula.js](https://github.com/formul
 npm install formula-engine
 ```
 
-The package is ESM with TypeScript types included. From CommonJS use `await import('formula-engine')`, or `require()` on Node versions that can require ES modules (20.19+, 22.12+). The only dependency is `@formulajs/formulajs` (MIT), pinned exactly because its version is part of the hash.
+The package is ESM with TypeScript types included. From CommonJS use `await import('formula-engine')`, or `require()` on Node versions that can require ES modules (20.19+ and 22.12+). The only dependency is `@formulajs/formulajs` (MIT), pinned exactly because its version is part of the hash.
 
 ## Quick start
 
@@ -208,12 +208,13 @@ Status: the expected answer of each case (`test/semantics-cases.ts`) comes from 
 ## Development
 
 ```sh
-npm ci                  # installs and builds dist
+npm ci
 npm run typecheck
 npm test                # build, then all tests against src
 npm run test:dist       # build, then all tests against the built dist
 npm run test:oracle     # recalculate the LibreOffice answers with soffice and check them
-npm run check:package   # publint and attw on the packed tarball
+npm run check:package   # build, then publint and attw on the packed tarball
+npm run pack:release    # build, then the tarball in release/
 FORMULA_BENCH=1 npx vitest run test/budgets.test.ts   # budgets on the full synthetic book
 ```
 

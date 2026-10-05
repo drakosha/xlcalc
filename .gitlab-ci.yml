@@ -17,7 +17,7 @@ test:
   image: node:$NODE
   parallel:
     matrix:
-      - NODE: ['20.13.0', '22', '24', '26']
+      - NODE: ['20.19.0', '22', '24', '26']
   script:
     - node --version
     - npm run typecheck
