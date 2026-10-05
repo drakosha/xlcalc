@@ -8,10 +8,10 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { CONFIG_VERSION, FUNCTION_NAMES } from '../src/index.js'
-import { FORMULAJS_VERSION } from '../src/config.js'
+import { FORMULAJS_VERSION, PACKAGE_NAME } from '../src/config.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as Record<'dependencies' | 'devDependencies' | 'peerDependencies' | 'optionalDependencies', Record<string, string> | undefined>
+const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { name: string } & Record<'dependencies' | 'devDependencies' | 'peerDependencies' | 'optionalDependencies', Record<string, string> | undefined>
 
 /** The functions whose semantics are checked against Excel documentation. */
 const SEMANTICS = ['SUM', 'SUMIFS', 'COUNTIFS', 'IF', 'IFERROR', 'XLOOKUP', 'ROUND', 'EOMONTH', 'DATE', 'TEXT']
@@ -20,6 +20,11 @@ describe('package', () => {
   it('function whitelist', () => {
     expect(FUNCTION_NAMES).toEqual(['COUNTIFS', 'DATE', 'EOMONTH', 'FALSE', 'IF', 'IFERROR', 'NOW', 'RAND', 'RANDBETWEEN', 'ROUND', 'SUM', 'SUMIF', 'SUMIFS', 'TEXT', 'TODAY', 'TRUE', 'XLOOKUP'])
     for (const f of [...SEMANTICS, 'SUMIF']) expect(FUNCTION_NAMES).toContain(f)
+  })
+
+  it('the package name in the code matches package.json', () => {
+    expect(PACKAGE_NAME).toBe(pkg.name)
+    expect(CONFIG_VERSION.startsWith(`${pkg.name}/`)).toBe(true)
   })
 
   it('the formulajs version in the configuration matches the dependency', () => {

@@ -2,7 +2,7 @@
  * A seeded synthetic book (no real data): a 3,400 × 15 data sheet and six sheets around it, about
  * 2,800 SUMIFS and 700 SUM, referencing the data three ways: whole columns (`ПоМесяцам`,
  * `ПоНаправлениям`), bounded ranges (`ПоПроектам`), names (`ПоКатегориям`). Sheet names and text are
- * Cyrillic on purpose. `formula-engine/unstable/synth`, for tests and benchmark harnesses: unstable and
+ * Cyrillic on purpose. The `./unstable/synth` subpath, for tests and benchmark harnesses: unstable and
  * outside semver (a change of the generator changes the books it produces).
  */
 import type { BookInput, CellEdit, CellInput } from './contract.js'

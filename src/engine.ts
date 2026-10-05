@@ -9,6 +9,7 @@
  * No platform imports, so the engine runs outside Node as well.
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
+import { PACKAGE_NAME } from './config.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { CErr, E, isErr, makeRuntime, Rng, type Runtime, type RuntimeContext, type SheetData, type V } from './runtime.js'
@@ -221,7 +222,7 @@ function compileSources(rt: Runtime, sources: string[]): (() => V | Rng)[] {
     make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
   } catch (e) {
     // a Content Security Policy without 'unsafe-eval' blocks new Function with an EvalError
-    if (e instanceof EvalError) throw new EvalError("formula-engine compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)", { cause: e })
+    if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)`, { cause: e })
     throw e
   }
   return make({ ...rt, R }) as (() => V | Rng)[]

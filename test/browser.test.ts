@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
 import { compute } from '../src/index.js'
+import { PACKAGE_NAME } from '../src/config.js'
 import { synthBook } from '../src/synth.js'
 import { libUrl } from './fixtures/target.js'
 
@@ -59,6 +60,6 @@ describe('outside Node', () => {
       `try { FormulaEngine.compute({ sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }); 'computed' } catch (e) { e.name + ': ' + e.message }`,
       ctx,
     ) as string
-    expect(out).toBe("EvalError: formula-engine compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)")
+    expect(out).toBe(`EvalError: ${PACKAGE_NAME} compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)`)
   }, 60_000)
 })

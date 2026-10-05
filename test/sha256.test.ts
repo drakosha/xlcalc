@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { compute, type CellValue } from '../src/index.js'
 import { inputHash, valuesHash } from '../src/canon.js'
+import { PACKAGE_NAME } from '../src/config.js'
 import { Sha256 } from '../src/sha256.js'
 import { mulberry32, synthBook } from '../src/synth.js'
 
@@ -75,7 +76,8 @@ describe('sha256', () => {
     // 0.1.0 shipped with this configuration version; the hash of the same values must not move
     expect(valuesHash(values, 'app-formula/1;compiled-js;formulajs@4.6.1;canon15')).toBe('9d7414efbda34a63990b3be2d2d4cf790ab546d87a19e6673a88d22a98f76ea0')
     expect(inputHash(book)).toBe('1fb3575501a5acbff64c388b43b5e3a1176e312243f01de1e4610e4ac7bc67a2')
-    expect(r.configVersion).toBe('formula-engine/1;compiled-js;formulajs@4.6.1;canon15')
+    // the configuration version carries the package name: renaming the package changes this hash too
+    expect(r.configVersion).toBe(`${PACKAGE_NAME}/1;compiled-js;formulajs@4.6.1;canon15`)
     expect(r.hash).toBe('18be025cb4581543a8953790d380ecf9f3383002d8112eb6b15da4f182c0bba3')
   })
 })

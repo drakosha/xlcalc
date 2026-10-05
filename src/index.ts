@@ -1,7 +1,7 @@
 /**
- * formula-engine: a workbook formula engine. The contract (types only) is also available as
- * `formula-engine/contract`; the implementation compiles formulas to JS and computes over the reference
- * graph. `formula-engine/unstable/*` (internals, the synthetic book) is outside semver.
+ * A workbook formula engine (the package root). The contract (types only) is also available as the
+ * `./contract` subpath; the implementation compiles formulas to JS and computes over the reference graph.
+ * The `./unstable/*` subpaths (internals, the synthetic book) are outside semver.
  */
 import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'

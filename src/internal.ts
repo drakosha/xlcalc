@@ -1,7 +1,7 @@
 /**
- * `formula-engine/unstable/internal`: engine internals for benchmark harnesses and for adapters of other
+ * The `./unstable/internal` subpath: engine internals for benchmark harnesses and for adapters of other
  * engines on top of our formula parser. Unstable and outside semver: contents and signatures change in
- * any release. Applications need the package root or `formula-engine/contract`.
+ * any release. Applications need the package root or `./contract`.
  */
 export { valuesHash } from './canon.js'
 export { buildIndex, parseCrit, select, type CritColumn, type CritIndex, type CritValue } from './criteria.js'

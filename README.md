@@ -11,6 +11,8 @@ What it does differently:
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
 - **No Node APIs.** It runs in Node 20.13 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
+Function implementations use and build on [formula.js](https://github.com/formulajs/formulajs) (MIT): `ROUND`, `EOMONTH`, `DATE` and `SUM` call formula.js through an adapter that fixes date and type handling, and the other functions are written here where formula.js differs from Excel or lacks them. The fixes are checked against Excel's documented behaviour (see [Functions](#functions)).
+
 ## Install
 
 ```sh
@@ -219,4 +221,4 @@ The tests cover the whitelist semantics against Excel's documentation and the st
 
 ## License
 
-MIT. Third-party code and licenses: [THIRD_PARTY.md](THIRD_PARTY.md).
+MIT. The function implementations use and build on [formula.js](https://github.com/formulajs/formulajs) (MIT, Copyright (c) 2014 Sutoiku, Inc.), which brings jStat (MIT) and bessel (Apache-2.0); [THIRD_PARTY.md](THIRD_PARTY.md) has their full license texts.
