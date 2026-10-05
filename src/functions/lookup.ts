@@ -1,6 +1,10 @@
 /**
  * Lookup and reference functions.
  *
+ * CHOOSE, COLUMNS and ROWS are ported from formula.js 4.6.1 (https://github.com/formulajs/formulajs),
+ * src/lookup-reference.js: Copyright (c) 2014 Sutoiku, Inc., MIT License (full text in THIRD_PARTY.md).
+ * Changed: arguments are coerced by the engine's argument layer (`src/args.ts`); COLUMNS and ROWS give the
+ * referenced size (a whole column has 1,048,576 rows).
  * XLOOKUP is this engine's own.
  */
 import { gridAt, type FnDef, type Grid } from '../args.js'
@@ -40,5 +44,8 @@ function xlookup(key: V, look: Grid, ret: Grid, notFound?: V, matchMode = 0, sea
 }
 
 export const functions: Record<string, FnDef> = {
+  CHOOSE: { args: 'i a', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
+  COLUMNS: { args: 'G', fn: (g: Grid) => g.cols },
+  ROWS: { args: 'G', fn: (g: Grid) => g.rows },
   XLOOKUP: { args: 'a G G a? n? n?', fn: xlookup },
 }

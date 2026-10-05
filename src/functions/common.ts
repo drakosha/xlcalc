@@ -1,12 +1,24 @@
 /**
  * Numeric helpers shared by the function categories.
  *
- * `roundDigits` is ported from formula.js 4.6.1 (https://github.com/formulajs/formulajs), src/math-trig.js
- * (roundBase): Copyright (c) 2014 Sutoiku, Inc., MIT License (full text in THIRD_PARTY.md). Changed: it
- * shifts the decimal point on the shortest decimal representation of any magnitude (formula.js lost the
- * shift for numbers written with an exponent) and leaves a number that is already whole at that many digits
- * unchanged (Excel: ROUND(2.15, 45688) is 2.15).
+ * `fact`, `combin` and `roundDigits` are ported from formula.js 4.6.1 (https://github.com/formulajs/formulajs),
+ * src/math-trig.js (FACT, COMBIN, roundBase): Copyright (c) 2014 Sutoiku, Inc., MIT License (full text in
+ * THIRD_PARTY.md). Changed: `roundDigits` shifts the decimal point on the shortest decimal
+ * representation of any magnitude (formula.js lost the shift for numbers written with an exponent) and
+ * leaves a number that is already whole at that many digits unchanged (Excel: ROUND(2.15, 45688) is 2.15).
  */
+
+const FACTS: number[] = [1, 1]
+
+/** n! for a whole n ≥ 0, by products as formula.js computes it (Infinity past 170). */
+export function fact(n: number): number {
+  if (n < 0) return NaN
+  for (let k = FACTS.length; k <= n && k <= 171; k++) FACTS[k] = FACTS[k - 1] * k
+  return n > 171 ? Infinity : FACTS[n]
+}
+
+/** The binomial coefficient by factorials, as formula.js COMBIN computes it. */
+export const combin = (n: number, k: number) => fact(n) / (fact(k) * fact(n - k))
 
 /** x with the decimal point moved by k places, computed on its shortest decimal representation (1.005 → 100.5). */
 function shift(x: number, k: number): number {
@@ -21,3 +33,6 @@ export function roundDigits(x: number, digits: number, f: (y: number) => number)
   if (!Number.isFinite(y) || y >= 2 ** 53) return x
   return Math.sign(x) * shift(f(y), -digits)
 }
+
+/** n / s to 15 significant digits, as Excel sees the quotient before CEILING and FLOOR round it (1.5 / 0.1 is 15). */
+export const quotient = (n: number, s: number) => Number((n / s).toPrecision(15))
