@@ -1,0 +1,77 @@
+/**
+ * The coverage measurement's cases computed by this engine and compared with Microsoft Excel. The cases
+ * (`docs/coverage-formulajs/cases.json`), the data sheet they read (`bench/coverage/data.ts`) and Excel's
+ * answers (`docs/coverage-formulajs/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI) are
+ * stored in the repository, so neither Excel nor LibreOffice is needed. Comparison follows the measurement
+ * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
+ * exactly.
+ */
+import { readFileSync } from 'node:fs'
+import { compare } from '../bench/coverage/compare.js'
+import { DATA_SHEET, dataCells, type Cell } from '../bench/coverage/data.js'
+import type { Val } from '../bench/coverage/formulajs.js'
+import type { BookInput, CellInput, CellValue } from '../src/contract.js'
+import { compute } from '../src/index.js'
+
+export interface ExcelCase {
+  id: string
+  fn: string
+  kind: 'typical' | 'edge'
+  tag: string
+  formula: string
+}
+
+const data = (file: string) => JSON.parse(readFileSync(new URL(`../docs/coverage-formulajs/${file}`, import.meta.url), 'utf8'))
+
+export const CASES: ExcelCase[] = (data('cases.json') as { cases: ExcelCase[] }).cases
+export const EXCEL: Record<string, Val> = (data('excel-en.json') as { values: Record<string, Val> }).values
+
+const CASE_SHEET = 'C'
+const ERROR_LITERAL: Record<string, string> = { DIV0: '#DIV/0!', NA: '#N/A', VALUE: '#VALUE!', NUM: '#NUM!', REF: '#REF!', NAME: '#NAME?' }
+
+/** A cell of the measurement's data sheet as engine input: errors as error literals, dates as serial numbers. */
+function dataInput(c: Cell): CellInput {
+  if (typeof c !== 'object') return { value: c }
+  if ('error' in c) return { formula: ERROR_LITERAL[c.error] }
+  if ('date' in c) return { value: c.date }
+  return { value: c.text }
+}
+
+/** The formula as this engine reads it: Excel's storage prefixes of newer functions removed. */
+export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?/g, '')
+
+export function excelBook(cases: readonly ExcelCase[]): BookInput {
+  const d: Record<string, CellInput> = {}
+  for (const [addr, v] of dataCells()) d[addr] = dataInput(v)
+  const c: Record<string, CellInput> = {}
+  cases.forEach((x, i) => (c[`A${i + 1}`] = { formula: engineFormula(x.formula) }))
+  return { sheets: [{ name: DATA_SHEET, cells: d }, { name: CASE_SHEET, cells: c }] }
+}
+
+export function toVal(v: CellValue): Val {
+  if (v === null) return { t: 'n', v: 0 }
+  if (typeof v === 'number') return { t: 'n', v }
+  if (typeof v === 'string') return { t: 's', v }
+  if (typeof v === 'boolean') return { t: 'b', v }
+  return { t: 'e', v: v.error as never }
+}
+
+export interface Outcome {
+  c: ExcelCase
+  excel: Val
+  engine: Val
+  ok: boolean
+}
+
+/** Every case computed in one book and compared with Excel en-US. */
+export function runExcelCases(cases: readonly ExcelCase[] = CASES): Outcome[] {
+  const r = compute(excelBook(cases), { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
+  const cells = r.sheets.find((s) => s.name === CASE_SHEET)!.cells
+  return cases.map((c, i) => {
+    const excel = EXCEL[c.id]
+    const engine = toVal(cells[`A${i + 1}`].value)
+    return { c, excel, engine, ok: compare(excel, engine).ok }
+  })
+}
+
+export const show = (v: Val) => (v.t === 'e' ? `#${v.v}` : JSON.stringify(v.v))
