@@ -210,7 +210,7 @@ function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][
     if (k === 'D') pool = base[i] === '@hol' ? DATES : []
     for (const [tag, v] of pool) {
       if (v === base[i] || sig.skip?.includes(tag)) continue
-      if (sig.cap && tag === 'дата в ячейке') continue
+      if (sig.cap && (tag === 'дата в ячейке' || tag === 'число текстом с точкой')) continue
       const big = sig.cap && tag === 'большое'
       const args = [...base]
       args[i] = big ? CAP : (v as Arg)
