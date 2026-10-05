@@ -6,6 +6,7 @@
 import type { BookInput, CellChange, CellEdit, Clock, Explanation, ExplainOptions, NameInput, Session, SessionOptions } from './contract.js'
 import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine.js'
 import { currentClock, nowMs } from './env.js'
+import { checkAddress, checkBook, checkClock, checkEdits, checkNames, checkSessionOptions, checkSheet } from './input.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, clockSerial, outValue } from './result.js'
 import { sheetKey } from './syntax.js'
@@ -14,10 +15,12 @@ import { sheetKey } from './syntax.js'
  * Opens a session. Without options it keeps the clock of the moment it was opened (with a random seed)
  * until `setClock`; `{ live: true }` takes a fresh clock on every recomputation.
  */
-export function openSession(book: BookInput, opts: SessionOptions = {}): Session {
-  const live = opts.live === true
-  let clock: Clock = 'clock' in opts && opts.clock ? { ...opts.clock } : currentClock()
-  const externals = opts.externals
+export function openSession(book: BookInput, opts?: SessionOptions): Session {
+  const o = checkSessionOptions(opts)
+  checkBook(book)
+  const live = o.live === true
+  let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : currentClock()
+  const externals = o.externals
   let state: EngineState | null = createState(book, { now: clockSerial(clock), seed: clock.seed, externals })
   const st = () => {
     if (!state) throw new Error('session is closed')
@@ -39,11 +42,13 @@ export function openSession(book: BookInput, opts: SessionOptions = {}): Session
     },
     setCells(edits: CellEdit[]) {
       const s = st()
+      checkEdits(edits, (name) => s.sheetIdx.get(sheetKey(name)))
       if (live) tick(s)
       return changes(s, applyEdits(s, edits, live))
     },
     setNames(names: NameInput[]) {
       const old = st()
+      checkNames(names, 'names')
       if (live) tick(old)
       const next = createState({ sheets: old.input.sheets, names }, { now: clockSerial(clock), seed: clock.seed, externals })
       // names change the whole graph: the book is rebuilt, changes are collected over all cells
@@ -63,15 +68,14 @@ export function openSession(book: BookInput, opts: SessionOptions = {}): Session
     },
     setClock(next: Clock) {
       if (live) throw new Error('a live session takes its clock from the system')
-      clock = { ...next }
       const s = st()
+      clock = { ...checkClock(next, 'clock') }
       return changes(s, applyClock(s, clockSerial(clock), clock.seed))
     },
     explain(sheet: string, cell: string, o: ExplainOptions = {}): Explanation {
       const s = st()
-      const i = s.sheetIdx.get(sheetKey(sheet))
-      if (i === undefined) throw new Error(`unknown sheet ${sheet}`)
-      const { row, col } = parseAddress(cell)
+      const i = checkSheet(sheet, (name) => s.sheetIdx.get(sheetKey(name)), 'sheet')
+      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
       const e = explainCell(s, i, row, col, o.depth ?? 3, o.maxNodes ?? 200, o.expand ?? false)
       return { ...e, text: explainText(e.root) }
     },

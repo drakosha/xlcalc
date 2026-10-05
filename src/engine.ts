@@ -216,7 +216,15 @@ const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat
 
 function compileSources(rt: Runtime, sources: string[]): (() => V | Rng)[] {
   const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)
-  return new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`)({ ...rt, R }) as (() => V | Rng)[]
+  let make: (rt: unknown) => unknown
+  try {
+    make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
+  } catch (e) {
+    // a Content Security Policy without 'unsafe-eval' blocks new Function with an EvalError
+    if (e instanceof EvalError) throw new EvalError("formula-engine compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)", { cause: e })
+    throw e
+  }
+  return make({ ...rt, R }) as (() => V | Rng)[]
 }
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }

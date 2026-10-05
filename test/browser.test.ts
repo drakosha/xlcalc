@@ -1,7 +1,9 @@
 /**
  * Outside Node: the library bundled by esbuild for the browser (with formulajs) has no Node built-ins,
  * and the bundle runs in an empty `node:vm` context (only the ECMAScript globals: no `process`, `Buffer`,
- * `require`, `performance` or `crypto`) and gives the same hash as Node.
+ * `require`, `performance` or `crypto`) and gives the same hash as Node. With code generation from strings
+ * disabled, as under a Content Security Policy without 'unsafe-eval', the bundle loads and validates
+ * formulas, and computing fails with a clear EvalError.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -45,5 +47,18 @@ describe('outside Node', () => {
     ) as string
     const expected = compute(synthBook({ seed: 1, rows: 340 }).book, { clock }).hash
     expect(JSON.parse(out)).toEqual({ hash: expected, session: expected, seed: 'number' })
+  }, 60_000)
+
+  it('without code generation from strings (strict CSP) the bundle loads, validates, and compute explains the failure', async () => {
+    const { code } = await bundle()
+    const ctx = createContext({}, { codeGeneration: { strings: false } })
+    expect(() => runInContext('new Function("return 1")', ctx)).toThrow()
+    runInContext(code, ctx)
+    expect(runInContext('FormulaEngine.validateFormula("SUM(A1:A3)*2").ok', ctx)).toBe(true)
+    const out = runInContext(
+      `try { FormulaEngine.compute({ sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }); 'computed' } catch (e) { e.name + ': ' + e.message }`,
+      ctx,
+    ) as string
+    expect(out).toBe("EvalError: formula-engine compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)")
   }, 60_000)
 })
