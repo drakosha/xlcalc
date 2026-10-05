@@ -2,7 +2,7 @@
  "meta": {
   "version": "LibreOffice 26.2.4.2 0229ac93fcf0d7cbc6376066c6f35021cef002dc",
   "locale": "en-US",
-  "seconds": 3.138
+  "seconds": 2.814
  },
  "values": {
   "ABS#1": {
@@ -13362,18 +13362,10 @@
    "v": 1
   },
   "MUNIT#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "MUNIT#13": {
    "t": "n",
    "v": 1
   },
-  "MUNIT#14": {
-   "t": "e",
-   "v": "NA"
-  },
-  "MUNIT#15": {
+  "MUNIT#13": {
    "t": "n",
    "v": 1
   },

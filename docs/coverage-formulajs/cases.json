@@ -41321,21 +41321,6 @@
    "fn": "MUNIT",
    "category": "Math and trigonometry",
    "kind": "edge",
-   "tag": "большое",
-   "args": [
-    10000000000
-   ],
-   "pick": [
-    1,
-    1
-   ],
-   "formula": "INDEX(_xlfn.MUNIT(10000000000),1,1)"
-  },
-  {
-   "id": "MUNIT#13",
-   "fn": "MUNIT",
-   "category": "Math and trigonometry",
-   "kind": "edge",
    "tag": "текст-число в ячейке",
    "args": [
     "@textnum"
@@ -41347,22 +41332,7 @@
    "formula": "INDEX(_xlfn.MUNIT(D!A2),1,1)"
   },
   {
-   "id": "MUNIT#14",
-   "fn": "MUNIT",
-   "category": "Math and trigonometry",
-   "kind": "edge",
-   "tag": "дата в ячейке",
-   "args": [
-    "@date"
-   ],
-   "pick": [
-    1,
-    1
-   ],
-   "formula": "INDEX(_xlfn.MUNIT(D!A6),1,1)"
-  },
-  {
-   "id": "MUNIT#15",
+   "id": "MUNIT#13",
    "fn": "MUNIT",
    "category": "Math and trigonometry",
    "kind": "edge",

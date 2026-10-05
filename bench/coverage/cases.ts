@@ -207,7 +207,7 @@ function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][
     if (k === 'N' || k === 'M') pool = base[i] === '@nums1' || base[i] === '@nums2' ? RANGE8 : []
     if (k === 'D') pool = base[i] === '@hol' ? DATES : []
     for (const [tag, v] of pool) {
-      if (v === base[i]) continue
+      if (v === base[i] || sig.skip?.includes(tag)) continue
       const args = [...base]
       args[i] = v as Arg
       list.push([tag, args])
