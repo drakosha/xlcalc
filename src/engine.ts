@@ -10,7 +10,7 @@
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract'
 import { FUNCTIONS } from './functions'
-import { compareAddress, formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress } from './model'
+import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model'
 import { CErr, E, isErr, makeRuntime, Rng, type Runtime, type RuntimeContext, type SheetData, type V } from './runtime'
 import { canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax'
 
@@ -664,5 +664,5 @@ export function explainText(root: ExplainTree): string {
 /** Ячейки книги по адресу (для выдачи и хэша). */
 export function sortedCells(state: EngineState, s: number): string[] {
   const addrs = new Set(Object.keys(state.input.sheets[s].cells))
-  return [...addrs].sort(compareAddress)
+  return sortAddresses(addrs)
 }

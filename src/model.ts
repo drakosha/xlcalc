@@ -75,3 +75,14 @@ export function msToSerial(ms: number): number {
   const serial = (ms - EPOCH_MS) / DAY_MS
   return serial < 61 ? serial - 1 : serial
 }
+
+/** Адреса по порядку (строка, потом колонка): разбор один раз на адрес, а не на сравнение. */
+export function sortAddresses(addrs: Iterable<string>): string[] {
+  return [...addrs]
+    .map((a) => {
+      const { row, col } = parseAddress(a)
+      return [row * MAX_COLS + col, a] as const
+    })
+    .sort((x, y) => x[0] - y[0])
+    .map((x) => x[1])
+}

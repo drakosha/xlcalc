@@ -8,10 +8,13 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
-    "@formulajs/formulajs": "4.6.1",
-    "hyperformula": "3.4.0"
+    "@formulajs/formulajs": "4.6.1"
   },
   "devDependencies": {
     "exceljs": "^4.4.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./contract": "./src/contract.ts"
   }
 }

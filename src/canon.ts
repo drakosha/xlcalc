@@ -5,7 +5,7 @@
  */
 import { createHash } from 'node:crypto'
 import type { BookInput, CellValue } from './contract'
-import { compareAddress } from './model'
+import { sortAddresses } from './model'
 
 /** Число для выдачи и хэша: 15 значащих цифр, без `-0`. */
 export function outNumber(v: number): number {
@@ -28,7 +28,7 @@ export function canonText(values: Map<string, Map<string, CellValue>>): string {
   const lines: string[] = []
   for (const sheet of [...values.keys()].sort(byText)) {
     const cells = values.get(sheet)!
-    for (const addr of [...cells.keys()].sort(compareAddress)) {
+    for (const addr of sortAddresses(cells.keys())) {
       const v = cells.get(addr)!
       if (v !== null) lines.push(`${JSON.stringify(sheet)}!${addr} ${canonValue(v)}`)
     }
@@ -57,7 +57,7 @@ export function inputHash(book: BookInput): string {
   const h = createHash('sha256')
   for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
-    for (const addr of Object.keys(s.cells).sort(compareAddress)) h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
+    for (const addr of sortAddresses(Object.keys(s.cells))) h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
   }
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
   for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)
