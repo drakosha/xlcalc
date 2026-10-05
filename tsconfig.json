@@ -10,7 +10,8 @@
     "noEmit": true,
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "rootDir": "."
   },
-  "include": ["src", "test", "vitest.config.ts"]
+  "include": ["src", "test", "bench", "vitest.config.ts"]
 }
