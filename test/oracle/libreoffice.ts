@@ -1,15 +1,16 @@
 /**
  * LibreOffice as a test oracle (not at runtime): the book is written to xlsx with ExcelJS without cached
  * values, `soffice --headless` recalculates it and saves an xlsx with cached results, which are read
- * back (without formats or locale).
+ * back (without formats or locale). Only `npm run test:oracle` runs it, to refresh the stored answers in
+ * `test/oracle/libreoffice.json`; the usual tests read that file and need no office suite.
  */
 import ExcelJS from 'exceljs'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { BookInput, CellValue } from '../src/contract.js'
-import { dateToSerial, serialToUtcMs } from '../src/model.js'
+import type { BookInput, CellValue } from '../../src/contract.js'
+import { dateToSerial, serialToUtcMs } from '../../src/model.js'
 
 const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -20,12 +21,12 @@ const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 /** Functions written with the `_xlfn.` prefix in OOXML. */
 const XLFN = ['XLOOKUP']
 
-export function hasSoffice(): boolean {
+/** `soffice --version` (for example `LibreOffice 26.2.4.2 …`), or null when soffice is not on PATH. */
+export function sofficeVersion(): string | null {
   try {
-    execFileSync('soffice', ['--version'], { stdio: 'pipe' })
-    return true
+    return execFileSync('soffice', ['--version'], { encoding: 'utf8', stdio: 'pipe' }).trim()
   } catch {
-    return false
+    return null
   }
 }
 
@@ -56,9 +57,8 @@ function sheetResults(xml: string): Map<string, CellValue> {
   return out
 }
 
-/** Formula results of sheet `sheet` by address; null when soffice is not available. */
-export async function oracleValues(book: BookInput, sheet: string): Promise<Map<string, CellValue> | null> {
-  if (!hasSoffice()) return null
+/** Formula results of sheet `sheet` by address, recalculated by LibreOffice. */
+export async function oracleValues(book: BookInput, sheet: string): Promise<Map<string, CellValue>> {
   const dir = mkdtempSync(join(tmpdir(), 'wb1-oracle-'))
   try {
     const wb = new ExcelJS.Workbook()

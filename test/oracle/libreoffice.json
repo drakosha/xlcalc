@@ -1,0 +1,276 @@
+{
+  "generator": "LibreOffice 26.2.4.2 0229ac93fcf0d7cbc6376066c6f35021cef002dc, soffice --headless, en-US profile",
+  "input": "f012b22f40a8cfde60515d1d89877db50edfd24a1d7e1f1ba80f4d68d013fb6a",
+  "cases": {
+    "s1": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!C1:C7,\">=2025-01-01\")",
+      "value": 94
+    },
+    "s2": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!C1:C7,\">=\"&DATE(2025,1,1))",
+      "value": 94
+    },
+    "s3": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!A1:A7,\"Ар*\")",
+      "value": 15
+    },
+    "s4": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!A1:A7,\"x~*y\")",
+      "value": 16
+    },
+    "s5": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!A1:A7,\"аренда\")",
+      "value": 3
+    },
+    "s6": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!A1:A7,\"Чай\")",
+      "value": 32
+    },
+    "s7": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!A1:A7,\"<>Аренда\")",
+      "value": 124
+    },
+    "s8": {
+      "formula": "SUMIFS(Sem!B1:B7,Sem!A1:A7,\"Ча?\")",
+      "value": 96
+    },
+    "c1": {
+      "formula": "COUNTIFS(Sem!C1:C7,\">=2025-01-01\")",
+      "value": 5
+    },
+    "c2": {
+      "formula": "COUNTIFS(Sem!A1:A7,\"Ар*\",Sem!B1:B7,\">2\")",
+      "value": 2
+    },
+    "c3": {
+      "formula": "COUNTIFS(Sem!A1:A7,\"чаи\")",
+      "value": 1
+    },
+    "x1": {
+      "formula": "XLOOKUP(\"Чаи\",Sem!A1:A7,Sem!B1:B7)",
+      "value": 64
+    },
+    "x2": {
+      "formula": "XLOOKUP(\"нет\",Sem!A1:A7,Sem!B1:B7)",
+      "value": {
+        "error": "NA"
+      }
+    },
+    "x3": {
+      "formula": "XLOOKUP(\"нет\",Sem!A1:A7,Sem!B1:B7,\"пусто\")",
+      "value": "пусто"
+    },
+    "x4": {
+      "formula": "XLOOKUP(\"Ар*\",Sem!A1:A7,Sem!B1:B7,0,2)",
+      "value": 1
+    },
+    "x5": {
+      "formula": "XLOOKUP(\"аренда\",Sem!A1:A7,Sem!B1:B7,0,0,-1)",
+      "value": 2
+    },
+    "r1": {
+      "formula": "ROUND(2.5,0)",
+      "value": 3
+    },
+    "r2": {
+      "formula": "ROUND(-2.5,0)",
+      "value": -3
+    },
+    "r3": {
+      "formula": "ROUND(1.005,2)",
+      "value": 1.01
+    },
+    "r4": {
+      "formula": "ROUND(2.675,2)",
+      "value": 2.68
+    },
+    "r5": {
+      "formula": "ROUND(1234.5678,-2)",
+      "value": 1200
+    },
+    "e1": {
+      "formula": "EOMONTH(DATE(2025,1,31),1)",
+      "value": 45716
+    },
+    "e2": {
+      "formula": "EOMONTH(DATE(2024,1,15),1)",
+      "value": 45351
+    },
+    "e3": {
+      "formula": "EOMONTH(DATE(2025,3,15),-1)",
+      "value": 45716
+    },
+    "e4": {
+      "formula": "EOMONTH(Sem!C2,0)",
+      "value": 45688
+    },
+    "d1": {
+      "formula": "DATE(2025,1,1)",
+      "value": 45658
+    },
+    "d2": {
+      "formula": "DATE(2025,13,1)",
+      "value": 46023
+    },
+    "d3": {
+      "formula": "DATE(2025,1,0)",
+      "value": 45657
+    },
+    "d4": {
+      "formula": "DATE(1900,3,1)",
+      "value": 61
+    },
+    "d5": {
+      "formula": "DATE(1900,2,28)",
+      "value": 60
+    },
+    "t1": {
+      "formula": "TEXT(1234.5,\"0.00\")",
+      "value": "1234.50"
+    },
+    "t2": {
+      "formula": "TEXT(1234567.891,\"#,##0.00\")",
+      "value": "1,234,567.89"
+    },
+    "t3": {
+      "formula": "TEXT(0.256,\"0%\")",
+      "value": "26%"
+    },
+    "t4": {
+      "formula": "TEXT(DATE(2025,1,1),\"YYYY-MM-DD\")",
+      "value": "2025-01-01"
+    },
+    "t5": {
+      "formula": "TEXT(DATE(2025,3,5),\"DD.MM.YYYY\")",
+      "value": "05.03.2025"
+    },
+    "t6": {
+      "formula": "TEXT(-1234.5,\"0\")",
+      "value": "-1235"
+    },
+    "u1": {
+      "formula": "SUM(Sem!D1:D3)",
+      "value": 2
+    },
+    "u2": {
+      "formula": "SUM(\"2\",1)",
+      "value": {
+        "error": "VALUE"
+      }
+    },
+    "u3": {
+      "formula": "SUM(TRUE,1)",
+      "value": 2
+    },
+    "u4": {
+      "formula": "SUM(Sem!B1:B7)",
+      "value": 127
+    },
+    "u5": {
+      "formula": "SUM(1,\"abc\")",
+      "value": {
+        "error": "VALUE"
+      }
+    },
+    "i1": {
+      "formula": "IF(1>2,\"a\",\"b\")",
+      "value": "b"
+    },
+    "i2": {
+      "formula": "IF(\"abc\",1,2)",
+      "value": {
+        "error": "VALUE"
+      }
+    },
+    "i3": {
+      "formula": "IF(0,1)",
+      "value": false
+    },
+    "i4": {
+      "formula": "IF(TRUE,1/0,2)",
+      "value": {
+        "error": "DIV0"
+      }
+    },
+    "i5": {
+      "formula": "IF(FALSE,1/0,2)",
+      "value": 2
+    },
+    "i6": {
+      "formula": "IF(TRUE,\"он сказал \"\"да\"\"\",\"\")",
+      "value": "он сказал \"да\""
+    },
+    "f1": {
+      "formula": "IFERROR(1/0,\"x\")",
+      "value": "x"
+    },
+    "f2": {
+      "formula": "IFERROR(1,\"x\")",
+      "value": 1
+    },
+    "f3": {
+      "formula": "IFERROR(Sem!A99,\"x\")",
+      "value": 0
+    },
+    "m1": {
+      "formula": "SUMIF(Sem!A1:A7,\"Ар*\",Sem!B1:B7)",
+      "value": 15
+    },
+    "m2": {
+      "formula": "SUMIF(Sem!B1:B7,\">10\")",
+      "value": 112
+    },
+    "m3": {
+      "formula": "SUMIF(Sem!C1:C7,\">=2025-01-01\",Sem!B1)",
+      "value": 94
+    },
+    "x6": {
+      "formula": "XLOOKUP(10,Sem!B1:B7,Sem!A1:A7,\"нет\",-1)",
+      "value": "Арeнда*"
+    },
+    "x7": {
+      "formula": "XLOOKUP(10,Sem!B1:B7,Sem!A1:A7,\"нет\",1)",
+      "value": "x*y"
+    },
+    "t7": {
+      "formula": "TEXT(-1234.5,\"0.00;(0.00)\")",
+      "value": "(1234.50)"
+    },
+    "t8": {
+      "formula": "TEXT(0.5,\"#.##\")",
+      "value": ".5"
+    },
+    "t9": {
+      "formula": "TEXT(1234567,\"#,##0,\")",
+      "value": "1,235"
+    },
+    "t10": {
+      "formula": "TEXT(45658.75,\"dd mmm yyyy hh:mm:ss\")",
+      "value": "01 Jan 2025 18:00:00"
+    },
+    "t11": {
+      "formula": "TEXT(45658.75,\"h:mm AM/PM\")",
+      "value": "6:00 PM"
+    },
+    "t12": {
+      "formula": "TEXT(45658,\"mmmm d, yyyy\")",
+      "value": "January 1, 2025"
+    },
+    "t13": {
+      "formula": "TEXT(1234.5,\"\"\"$\"\"#,##0.00\")",
+      "value": "$1,234.50"
+    },
+    "t14": {
+      "formula": "TEXT(12,\"000-00\")",
+      "value": "000-12"
+    },
+    "t15": {
+      "formula": "TEXT(\"abc\",\"0.00\")",
+      "value": "abc"
+    },
+    "t16": {
+      "formula": "TEXT(0.05,\"0.0%\")",
+      "value": "5.0%"
+    }
+  }
+}
