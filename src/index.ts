@@ -1,7 +1,7 @@
 /**
- * `@mike/formula`: a workbook formula engine. The contract is in `./contract`; the implementation compiles
- * formulas to JS and computes over the reference graph. The synthetic book generator is in `./synth`,
- * internals for benchmark harnesses in `./internal`.
+ * formula-engine: a workbook formula engine. The contract (types only) is also available as
+ * `formula-engine/contract`; the implementation compiles formulas to JS and computes over the reference
+ * graph. `formula-engine/unstable/*` (internals, the synthetic book) is outside semver.
  */
 import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'

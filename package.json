@@ -1,28 +1,50 @@
 {
-  "name": "@mike/formula",
-  "version": "0.1.0",
-  "private": true,
-  "description": "Движок формул книги: разбор и проверка формул, компиляция в JS, расчёт по графу ссылок, живая сессия с точечным пересчётом, детерминированный хэш значений",
+  "name": "formula-engine",
+  "version": "0.2.0",
+  "description": "Excel-style formula engine for workbooks: compiles a book's formulas to JavaScript, recalculates incrementally, hashes values deterministically, and checks its function whitelist against Excel semantics",
+  "keywords": [
+    "formula",
+    "formula-engine",
+    "excel",
+    "spreadsheet",
+    "workbook",
+    "xlsx",
+    "calculation",
+    "recalculation",
+    "deterministic",
+    "sumifs",
+    "xlookup"
+  ],
+  "license": "MIT",
+  "author": "Mikhail Kostryukov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drakosha/formula-engine.git"
+  },
+  "homepage": "https://github.com/drakosha/formula-engine#readme",
+  "bugs": {
+    "url": "https://github.com/drakosha/formula-engine/issues"
+  },
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": ">=20.19"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./contract": {
       "types": "./dist/contract.d.ts",
-      "import": "./dist/contract.js"
+      "default": "./dist/contract.js"
     },
-    "./synth": {
-      "types": "./dist/synth.d.ts",
-      "import": "./dist/synth.js"
-    },
-    "./internal": {
+    "./unstable/internal": {
       "types": "./dist/internal.d.ts",
-      "import": "./dist/internal.js"
+      "default": "./dist/internal.js"
+    },
+    "./unstable/synth": {
+      "types": "./dist/synth.d.ts",
+      "default": "./dist/synth.js"
     },
     "./package.json": "./package.json"
   },
@@ -30,24 +52,33 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "CHANGELOG.md",
     "THIRD_PARTY.md"
   ],
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
     "prepare": "npm run build",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.build.json --noEmit",
     "test": "npm run build && vitest run",
     "test:dist": "npm run build && FORMULA_TARGET=dist vitest run",
-    "pack:release": "mkdir -p release && npm pack --pack-destination release"
+    "test:oracle": "FORMULA_ORACLE=update vitest run test/semantics.test.ts",
+    "check:package": "npm run build && publint --strict && attw --pack . --profile esm-only",
+    "pack:release": "mkdir -p release && npm pack --pack-destination release",
+    "prepublishOnly": "npm run typecheck && npm test && npm run test:dist"
   },
   "dependencies": {
     "@formulajs/formulajs": "4.6.1"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@types/node": "^24.13.2",
     "esbuild": "^0.28.2",
     "exceljs": "^4.4.0",
+    "publint": "^0.3.25",
     "tsx": "^4.22.4",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"

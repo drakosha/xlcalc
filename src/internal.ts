@@ -1,7 +1,7 @@
 /**
- * Engine internals for benchmark harnesses and for adapters of other engines on top of our formula
- * parser (an adapter for another engine, a QuickJS bundle). Not part of the contract: contents and
- * signatures change without a major version bump. Applications need the package root or `./contract`.
+ * `formula-engine/unstable/internal`: engine internals for benchmark harnesses and for adapters of other
+ * engines on top of our formula parser. Unstable and outside semver: contents and signatures change in
+ * any release. Applications need the package root or `formula-engine/contract`.
  */
 export { valuesHash } from './canon.js'
 export { buildIndex, parseCrit, select, type CritColumn, type CritIndex, type CritValue } from './criteria.js'

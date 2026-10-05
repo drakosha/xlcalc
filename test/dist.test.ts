@@ -1,7 +1,7 @@
 /**
  * Smoke test of the built package (`npm run build` first): every `exports` subpath exists in `dist` with
  * `.d.ts`, plain node imports them by package name, the synthetic hash and the session match the sources,
- * and `dist` cannot be reached around `exports`.
+ * `dist` cannot be reached around `exports`, and the tarball holds only `dist` and the documents.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
@@ -13,7 +13,7 @@ import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
-  exports: Record<string, string | { types: string; import: string }>
+  exports: Record<string, string | { types: string; default: string }>
   files: string[]
 }
 const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url))
@@ -21,10 +21,10 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './synth', './internal'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth'])
     for (const [, target] of entries) {
-      if (typeof target === 'string') throw new Error('expected { types, import }')
-      for (const file of [target.types, target.import]) {
+      if (typeof target === 'string') throw new Error('expected { types, default }')
+      for (const file of [target.types, target.default]) {
         expect(file.startsWith('./dist/'), file).toBe(true)
         expect(existsSync(join(root, file)), `${file}: missing, run npm run build first`).toBe(true)
       }
@@ -43,9 +43,19 @@ describe('built package', () => {
     session.close()
     expect(out.functions).toBe(17)
     expect(out.engine).toEqual(['compute', 'openSession', 'validateFormula', 'validateName'])
+    expect(out.inputError).toBe('function')
     expect(out.validate).toBe(true)
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])
     expect(out.internal).toEqual(['function', 'function', 'function'])
-    expect(out.deep).toBe('ERR_PACKAGE_PATH_NOT_EXPORTED')
+    expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
+  }, 60_000)
+
+  it('the tarball holds dist, the documents and package.json only', () => {
+    const [packed] = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: root, encoding: 'utf8' })) as { files: { path: string }[] }[]
+    const files = packed.files.map((f) => f.path).sort()
+    expect(files.filter((f) => !f.startsWith('dist/'))).toEqual(['CHANGELOG.md', 'LICENSE', 'README.md', 'THIRD_PARTY.md', 'package.json'])
+    expect(files.filter((f) => f.startsWith('dist/') && !/\.(js|d\.ts)$/.test(f))).toEqual([])
+    expect(files).toContain('dist/index.js')
+    expect(files).toContain('dist/index.d.ts')
   }, 60_000)
 })
