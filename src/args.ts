@@ -17,10 +17,11 @@
  *      argument is coerced like `n`), `A` the AVERAGEA rule (a range gives numbers, booleans as 1/0 and
  *      text as 0; a direct argument is coerced like `n`), `Z` strict (text or a boolean in a range and a
  *      boolean argument are #VALUE!: GCD, LCM, MULTINOMIAL);
- *    - `V` values in order, each range as one segment, so a function can tell a range from a direct
- *      argument (AND, COUNTA, CONCAT); `G` a range as a grid with its referenced size; `M` a numeric
- *      grid (an error inside is the answer); `R` the argument itself, a reference or a value (criteria
- *      functions, which work on the reference through the function context).
+ *    - `V` values in order, errors included, each range as one segment, so a function can tell a range
+ *      from a direct argument (COUNTA counts every direct argument); `G` a range as a grid with its
+ *      referenced size, errors inside kept; `M` a numeric grid (an error inside is the answer); `R` the
+ *      argument itself, a reference or a value (criteria functions, which work on the reference through
+ *      the function context).
  * 2. Date and time text in a date argument (`d`, `t`, `D`) is read as Excel en-US reads it
  *    (`2025-01-31`, `1/31/2025`, `18:30`; see `dates.ts`); a date before 0 or after 9999-12-31 is #NUM!.
  * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Z`, `D`) hold no
