@@ -1,98 +1,222 @@
-# @mike/formula
+# formula-engine
 
-Движок формул для книг из листов: разбирает и проверяет формулы, компилирует книгу в JS, считает по графу ссылок, держит живую сессию с точечным пересчётом и отдаёт детерминированный хэш значений. Формулы в синтаксисе Excel (английские имена функций, запятая между аргументами, десятичная точка), значения как в Excel там, где функция в белом списке.
+A formula engine for spreadsheet-like workbooks in JavaScript. You give it a book (sheets of cells with values and Excel formulas, plus named ranges); it gives back the computed values, the errors with their reasons, and a deterministic hash of the values. Formulas use Excel syntax: English function names, commas between arguments, a decimal point.
 
-Домена здесь нет: на вход книга (листы, ячейки по адресу A1, имена диапазонов), на выход значения, ошибки с причинами и хэш. Откуда книга и куда идут значения, решает хост.
+What it does differently:
 
-## Откуда
+- **Compiles the book to JavaScript.** Each formula becomes a JavaScript function (one `new Function` call per book), and cells are evaluated over the reference graph in topological order. A session keeps the compiled book and recomputes only the cells that depend on an edit. On a synthetic book with 3,400 data rows and 3,907 formulas, mostly SUMIFS over whole columns, a cold compute takes about 0.2 s and an edit of a criterion cell under 10 ms (p95) on an Apple M5 Pro with Node 26; `test/budgets.test.ts` enforces 1.5 s and 100 ms.
+- **Deterministic values and hashes.** The same book with the same clock gives the same values and the same `hash` (SHA-256 of a canonical text of all values plus the engine configuration version), regardless of input order, process or time zone. `inputHash` identifies the input.
+- **A clock for volatile functions.** `TODAY` and `NOW` come from `clock.now` (UTC), `RAND` and `RANDBETWEEN` from `clock.seed` and the cell address. Without a clock the engine takes the current moment and a random seed, and `result.clock` reproduces the result.
+- **A small whitelist of functions, checked against Excel.** 17 functions, each admitted only with test cases whose expected answers come from Excel's documentation and are cross-checked with LibreOffice. Any other function is reported as `unknown_function` (`#NAME?`) rather than computed with different semantics.
+- **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
+- **No Node APIs.** It runs in Node 20.13 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
-Вынесено из the app (`packages/formula`, пакет `@app/formula`), коммит the app `7bae0fb`. История каталога перенесена `git subtree split`, поэтому первые коммиты здесь те же, что в the app (в том числе замер WB1, где сравнивались HyperFormula и компиляция в JS). Почему движок устроен так: в the app `docs/probes/WB1-engine.md` (замер и выбор варианта C) и `docs/workbook-design.md`, разделы 5a и 6.
-
-## Установка
-
-Библиотека приватная, в npm не публикуется. Потребитель ставит тарбол через `file:`:
+## Install
 
 ```sh
-cd xlcalc && npm ci && npm run pack:release
-# в проекте-потребителе (в the app тарбол лежит в vendor/)
-npm install file:../vendor/mike-formula-0.1.0.tgz
+npm install formula-engine
 ```
 
-В тарболе только `dist` (JS и `.d.ts`) и `THIRD_PARTY.md`. Нужен Node 24 или новее. Единственная зависимость `@formulajs/formulajs` 4.6.1, версия закреплена точно: она входит в версию конфигурации и в хэш значений.
+The package is ESM with TypeScript types included. From CommonJS use `await import('formula-engine')`, or `require()` on Node versions that can require ES modules (20.19+, 22.12+). The only dependency is `@formulajs/formulajs` (MIT), pinned exactly because its version is part of the hash.
 
-## Подпути
+## Quick start
 
-| импорт | что даёт |
+```js
+import { compute } from 'formula-engine'
+
+const cells = {
+  A1: { value: 'North' }, B1: { value: 120 },
+  A2: { value: 'South' }, B2: { value: 80 },
+  A3: { value: 'North' }, B3: { value: 45.5 },
+  D1: { formula: 'SUMIFS(B:B,A:A,"North")' },
+  D2: { formula: 'XLOOKUP("South",A1:A3,B1:B3)' },
+  D3: { formula: 'VLOOKUP("South",A1:B3,2)' },
+}
+const { sheets, issues } = compute({ sheets: [{ name: 'Sales', cells }] })
+console.log(sheets[0].cells.D1.value) // → 165.5
+console.log(sheets[0].cells.D2.value) // → 80
+console.log(sheets[0].cells.D3.value, issues[0].reason) // → { error: 'NAME' } unknown function VLOOKUP
+```
+
+A formula is stored without the leading `=` in `formula`, separately from `value`, so a string from your data never turns into a formula. Dates are passed explicitly as `{ date: '2026-01-31' }` and become Excel serial numbers; `format` and `meta` pass through to the result untouched.
+
+## Usage
+
+### Sessions
+
+A session holds a computed book. `setCells` applies edits atomically, recomputes only what depends on them and returns the cells whose values changed; `explain` shows where a value comes from.
+
+```js
+import { openSession } from 'formula-engine'
+
+const session = openSession({
+  sheets: [{
+    name: 'Plan',
+    cells: {
+      A1: { value: 100 }, A2: { value: 250 },
+      B1: { formula: 'SUM(A1:A2)' },
+      B2: { formula: 'ROUND(B1*1.2,0)' },
+    },
+  }],
+})
+
+console.log(session.setCells([{ sheet: 'Plan', cell: 'A2', input: { value: 300 } }]))
+// → [
+//     { sheet: 'Plan', cell: 'A2', value: 300 },
+//     { sheet: 'Plan', cell: 'B1', value: 400 },
+//     { sheet: 'Plan', cell: 'B2', value: 480 }
+//   ]
+console.log(session.explain('Plan', 'B2').text)
+// → 'Plan'!B2 = 480  ← ROUND(B1*1.2,0)
+//     'Plan'!B1 = 400  ← SUM(A1:A2)
+//       'Plan'!A1:A2 (2 cells)
+console.log(session.result().hash === session.result().hash) // → true
+session.close()
+```
+
+`setNames` replaces the named ranges, `result()` returns the same shape as `compute`, and `close()` releases the book. A full `compute` of the edited book with `session.clock` gives the same hash as `session.result()`; the test suite checks this after each of 200 random edits.
+
+### The clock and volatile functions
+
+```js
+import { compute } from 'formula-engine'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'NOW()' }, A3: { formula: 'RANDBETWEEN(1,6)' } } }] }
+
+const fixed = compute(book, { clock: { now: '2026-01-31T18:00:00Z', seed: 42 } })
+console.log(fixed.sheets[0].cells.A1.value, fixed.sheets[0].cells.A2.value) // → 46053 46053.75
+
+const now = compute(book) // the current moment and a random seed
+console.log(compute(book, { clock: now.clock }).hash === now.hash) // → true
+console.log(now.volatile.map((c) => c.cell).join(',')) // → A1,A2,A3
+```
+
+`volatile` lists the cells that depend on volatile functions, directly or through other cells. A session opened without a clock keeps the moment it was opened until `setClock`; `openSession(book, { live: true })` takes a fresh clock on every recomputation instead.
+
+### Checking formulas
+
+`validateFormula` checks a formula without a book: it returns the canonical text (sheet names quoted, function names upper-case) and what the formula uses, or a check code with a message and a position.
+
+```js
+import { validateFormula, validateName } from 'formula-engine'
+
+console.log(validateFormula("sum(Sales!b1:b3, 'Q1 data'!A1)", { sheets: ['Sales', 'Q1 data'] }).canonical)
+// → SUM('Sales'!B1:B3,'Q1 data'!A1)
+const bad = validateFormula('SUM(B1:B3', { sheets: ['Sales'] })
+console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax expected ), found end of formula 9
+console.log(validateName('Q1').ok, validateName('tax_rate').ok) // → false true
+```
+
+Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to another workbook), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (array arithmetic, or an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise.
+
+### Errors
+
+Cell errors come out as `{ error: code }` with codes `DIV0`, `NA`, `NAME`, `NUM`, `REF`, `VALUE`, `CYCLE`, `SPILL` and `ERROR`. Every cell with an error is listed in `issues` with a reason, which names the cell an error came from (`division by zero, from 'S'!A2`). A circular reference gives `#CYCLE!` to the cells in the cycle and to everything that depends on them; the rest of the book is computed.
+
+Input of the wrong shape is a programming error and throws `InputError` (a `TypeError` with `path`), for example `book.sheets[0].cells["b2"]: invalid cell address "b2": expected A1 style such as "B12" (column letters must be upper-case: "B2")`. This covers wrong types, malformed or out-of-grid addresses, duplicate sheet names (compared case-insensitively, as in Excel), unknown fields, bad dates and clocks, and unknown sheets in session edits.
+
+### Named ranges
+
+```js
+import { compute } from 'formula-engine'
+
+const result = compute({
+  sheets: [
+    { name: 'Data', cells: { A1: { value: 'tea' }, B1: { value: 3 }, A2: { value: 'coffee' }, B2: { value: 5 } } },
+    { name: 'Report', cells: { A1: { formula: 'SUMIF(items,"tea",amounts)' } } },
+  ],
+  names: [
+    { name: 'items', ref: "'Data'!$A:$A" },
+    { name: 'amounts', ref: "'Data'!$B:$B" },
+  ],
+})
+console.log(result.sheets[1].cells.A1.value) // → 3
+```
+
+A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in `nameIssues`.
+
+### External functions
+
+Host functions that are not part of the book (a balance from a database, say) can appear in formulas. `validateFormula(text, { externalFunctions: ['BALANCE'] })` returns the canonical text of each call in `externals`; the host resolves the values in advance and passes them to `compute`:
+
+```js
+import { compute } from 'formula-engine'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'BALANCE("2026-01")*2' } } }] }
+const result = compute(book, { externals: { functions: ['BALANCE'], values: { 'BALANCE("2026-01")': 21 } } })
+console.log(result.sheets[0].cells.A1.value) // → 42
+```
+
+Arguments of an external function must be literals; a call without a value gives `#N/A`.
+
+## API
+
+From `formula-engine`:
+
+| export | |
 |---|---|
-| `@mike/formula` | `compute`, `validateFormula`, `validateName`, `openSession`, `engine` (всё одним объектом), `FUNCTION_NAMES`, `CONFIG_VERSION`, `debugGeneratedCode`, и все типы контракта |
-| `@mike/formula/contract` | только контракт: типы и две константы (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`). Без кода движка, его можно импортировать в клиентский код |
-| `@mike/formula/synth` | генератор синтетической книги по сиду (`synthBook`, `classAEdits`, `classBEdit`, `mulberry32`): для тестов и замеров, реальных данных в нём нет |
-| `@mike/formula/internal` | внутренности (разбор в AST, печать формулы, индекс критериев, состояние движка, хэш значений) для харнесса замера и адаптеров других движков. Не контракт: меняется без смены мажорной версии |
+| `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`. Returns `ComputeResult`: `sheets` (values, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `explain(sheet, cell, { depth, maxNodes, expand })`, `result()`, `close()`, `clock`. Options: `clock`, or `live: true`, and `externals` |
+| `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
+| `validateName(name)` | `{ ok: true }` or `{ ok: false, message }` |
+| `engine` | the four functions above as one `FormulaEngine` object |
+| `FUNCTION_NAMES`, `CONFIG_VERSION` | the whitelist; the configuration version that goes into every hash |
+| `InputError` | thrown on input of the wrong shape |
+| `debugGeneratedCode(book, opts?)` | the generated JavaScript in evaluation order, for debugging; not part of the contract |
 
-В `dist` мимо этих подпутей не попасть (`exports` закрывает остальное).
+`formula-engine/contract` exports the types and two constants (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`) without any engine code, for code that only builds books or reads results.
 
-## Контракт
+`formula-engine/unstable/internal` (the parser, the criteria index, engine state) and `formula-engine/unstable/synth` (a seeded synthetic book for tests and benchmarks) exist for benchmark harnesses and adapters of other engines. They are outside semver and change in any release.
 
-Типы в `src/contract.ts`.
+## Functions
 
-- `compute(book, { clock, externals })` считает книгу целиком. Выдача: значения по листам (числа округлены до 15 значащих цифр, даты серийными номерами Excel, `format` и `meta` проходят насквозь, у формулы её канонический текст), ячейки с ошибкой и причиной (`issues`), ошибки имён, ячейки, зависящие от волатильных функций, часы расчёта, `hash` значений, `inputHash` входа, версия конфигурации.
-- `validateFormula(text, { sheets, names, externalFunctions })` даёт канонический текст, функции, листы, имена и вызовы внешних функций или код проверки с сообщением и позицией.
-- `validateName(name)` проверяет имя диапазона.
-- `openSession(book, { clock } | { live: true })`: `setCells` (атомарно, один пересчёт, отдаёт изменившиеся значения), `setNames`, `setClock`, `explain` (дерево предшественников ячейки, с текстом для агента), `result`, `close`. Живая сессия берёт часы и новое зерно на каждый пересчёт.
+| function | implementation | test cases |
+|---|---|---|
+| `SUM` | formulajs through an adapter: in a range only numbers count, a direct argument is coerced | 5 |
+| `SUMIF` | own, through a criteria index | 3 |
+| `SUMIFS` | own, through a criteria index | 8 |
+| `COUNTIFS` | own, through a criteria index | 3 |
+| `IF` | compiled to a branch: the branch not taken is not evaluated | 6 |
+| `IFERROR` | compiled to a branch | 3 |
+| `XLOOKUP` | own: match modes 0, −1, 1, 2 (wildcards); search modes 1, −1, 2, −2 | 7 |
+| `ROUND` | formulajs | 5 |
+| `EOMONTH` | formulajs through an adapter | 4 |
+| `DATE` | formulajs through an adapter | 5 |
+| `TEXT` | own, en-US number, percent, date and time formats | 16 |
+| `TRUE`, `FALSE` | own | |
+| `TODAY`, `NOW`, `RAND`, `RANDBETWEEN` | own, from the clock | volatile tests |
 
-Формула хранится без `=` в поле `formula`, отдельно от значения, поэтому строка из данных никогда не становится формулой. Дата на входе явная: `{ date: '2025-01-31' }`.
+Criteria (`SUMIF`, `SUMIFS`, `COUNTIFS`) compare text case-insensitively but accent-sensitively, support `*`, `?` and `~` escapes, and read numbers and ISO dates inside criterion text as numbers (`">=2026-01-01"`).
 
-Коды проверки: `empty`, `syntax`, `too_long` (длиннее 8 192 знаков), `too_deep` (глубже 64 уровней), `external_ref`, `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (вычисление над массивом, внешняя функция не с литералами). Неверная формула не роняет расчёт: ячейка получает ошибку (`#NAME?` для неизвестной функции и имени, `#REF!` для неизвестного листа и внешней ссылки, иначе `#ERROR!`), причина в `issues`. Цикл даёт `#CYCLE!` ячейкам цикла и всем зависящим от них.
+Status: the expected answer of each case (`test/semantics-cases.ts`) comes from Excel's documentation. LibreOffice 26.2 agrees on 62 of the 65 cases; in the other three LibreOffice itself differs from Excel (dates before 1900-03-01, booleans inside a `SUM` range, a numeric text argument of `SUM`), and the answer follows Excel. The cases have not been run in Microsoft Excel itself. A function joins the whitelist only together with such cases, and a function from formulajs only if its answers pass them.
 
-Детерминизм. Порядок ячеек и листов на входе на результат не влияет. Хэш считается от канонического текста значений построчно (`'Лист'!E12 n 1234.5`), `-0` выходит как 0, нефинитное как `#NUM!`. В хэш входит `CONFIG_VERSION`; она меняется с любым изменением, которое может сдвинуть значения (версия formulajs, правила рантайма, канон). Строка версии осталась от the app (`app-formula/1;…`), чтобы хэши уже посчитанных книг не сдвинулись от переезда. `TODAY` и `NOW` считаются от момента в часах (UTC), `RAND` и `RANDBETWEEN` от зерна и адреса ячейки, результат не зависит от часовой зоны процесса.
+## Limitations
 
-Внешние функции (точка расширения для функций хоста). `validateFormula` с `externalFunctions` отдаёт канонические тексты их вызовов, хост разрешает значения заранее и передаёт в `compute` через `externals.values`. Нет значения: `#N/A`.
+- **No arrays.** Array arithmetic (`A1:A3*2`), array constants (`{1,2}`), dynamic arrays and spilling are not supported: such a formula gets the check code `unsupported` or `syntax` and `#ERROR!`. `#SPILL!` exists as an error code but never occurs.
+- **Content Security Policy.** Compiling uses `new Function`. In a browser with a CSP that does not allow `'unsafe-eval'`, `compute` and `openSession` throw an `EvalError` saying so; `validateFormula`, `validateName` and the types still work.
+- **Known differences from Excel:**
+  - Excel's phantom 1900-02-29 (serial 60) is never produced: `DATE(1900,2,29)` gives 61 (1900-03-01) and `EOMONTH` in February 1900 gives 59, where Excel gives 60. Serial numbers of all other dates match Excel, including those before 1900-03-01.
+  - `XLOOKUP` with binary search (search mode 2 or −2) scans linearly: the same answer on sorted data, where Excel's binary search is defined.
+  - Text order for `<` and `>` uses `Intl.Collator` (case-insensitive, accent-sensitive), which may differ from Excel for some characters; without `Intl` it falls back to comparing lower-cased code units.
+  - `TEXT` knows en-US formats only; exponent formats (`0.00E+00`), colours and bracketed conditions give `#VALUE!`.
+  - `#NULL!` is read as `#ERROR!`.
+- **Syntax.** English function names and separators only (no `;` or decimal commas), no R1C1 references, no references to other workbooks, no 3D references or structured table references. Functions outside the whitelist (`VLOOKUP`, `INDEX`, `INDIRECT`, `OFFSET`, …) give `#NAME?`.
+- **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
 
-## Белый список функций
-
-SUM, SUMIF, SUMIFS, COUNTIFS, IF, IFERROR, XLOOKUP, ROUND, EOMONTH, DATE, TEXT, TRUE, FALSE, TODAY, NOW, RAND, RANDBETWEEN. Список закреплён тестом (`test/package.test.ts`), любая другая функция даёт `unknown_function`.
-
-Из formulajs берутся ROUND, EOMONTH, DATE и SUM: последние три через адаптер (в диапазоне SUM только числа, даты переводятся в местную полночь и обратно). Остальное своё, потому что formulajs на этих функциях неверна против Excel или их в ней нет: SUMIFS и COUNTIFS без шаблонов и с учётом регистра, TEXT неверна на датах, XLOOKUP отсутствует. IF и IFERROR компилируются в ветвление, чтобы ошибка в невыбранной ветке не срабатывала. SUMIF, SUMIFS и COUNTIFS идут через индекс по критериям.
-
-Правило: функция попадает в белый список только вместе с тестом против документации Excel и оракула LibreOffice (`test/semantics-cases.ts`, `test/semantics.test.ts`). Ожидаемое значение пишется по документации Excel; оракул его подтверждает, а там, где неправ сам LibreOffice, расхождение записывается с причиной (сейчас три: даты до 01.03.1900, логические в диапазоне SUM, текст аргументом SUM). Функцию из formulajs можно брать, только если её ответы проходят этот тест.
-
-## Как устроено
-
-Одна `new Function` на книгу, каждая формула своей функцией. Код генерирует только библиотека: литералы проходят `JSON.stringify`, вызываются только функции рантайма из белого списка, текст пользователя попадает в код только строковым литералом. Граф строится по ссылкам AST, диапазон это срез колонки листа (`D:D` берёт занятые строки). `compute` считает все формулы по топологическому порядку, сессия пересчитывает только зависимые от правки; тест «200 правок, после каждой хэш сессии равен хэшу полного расчёта» держит два режима согласованными. Арифметики массивов и растекания нет (`unsupported`).
-
-Код конкретного движка это `config.ts`, `engine.ts` и рантайм (`runtime.ts`, `criteria.ts`, `text.ts`). Контракт и разбор формул (`syntax.ts`) от него не зависят, тесты поведения служат приёмкой для замены движка.
-
-## Сборка и тесты
+## Development
 
 ```sh
-npm ci                  # ставит зависимости и собирает dist (prepare)
+npm ci                  # installs and builds dist
 npm run typecheck
-npm run build           # tsc -p tsconfig.build.json → dist (JS и .d.ts)
-npm test                # сборка, затем все тесты против src
-npm run test:dist       # сборка, затем все тесты против dist (FORMULA_TARGET=dist)
-FORMULA_BENCH=1 npx vitest run test/budgets.test.ts   # бюджеты на полной синтетике
+npm test                # build, then all tests against src
+npm run test:dist       # build, then all tests against the built dist
+npm run test:oracle     # recalculate the LibreOffice answers with soffice and check them
+npm run check:package   # publint and attw on the packed tarball
+FORMULA_BENCH=1 npx vitest run test/budgets.test.ts   # budgets on the full synthetic book
 ```
 
-Что проверяют тесты:
-- семантика белого списка против документации Excel; если в системе есть `soffice`, ещё и против оракула LibreOffice (без него случаи оракула пропускаются);
-- детерминизм: перемешанный вход, дочерний процесс, три часовые зоны (Лос-Анджелес, Москва, UTC), копейки на 3 400 суммах;
-- ссылки, ошибки, волатильные функции, разбор и канон, сессия и `explain`;
-- бюджеты на синтетике: холодный расчёт не дольше 1,5 с (медиана), правка справочника или критерия (класс А) не дольше 100 мс (p95), прирост heapUsed не больше 300 МБ, проверка 3 000 формул не дольше 300 мс. Без переменной гоняется короткая книга (340 строк), с `FORMULA_BENCH=1` и полная (3 400 строк, 3 907 формул);
-- пакет: белый список, версия formulajs в конфигурации, единственная зависимость, HyperFormula нигде, исходники `src` импортируют только свои файлы, `node:*` и formulajs;
-- собранный пакет (`test/dist.test.ts`): у каждого подпути есть JS и `.d.ts`, чистый node без tsx импортирует подпути по имени пакета, хэш синтетики и сессии совпадает с исходниками, глубокий импорт в `dist` закрыт.
+The tests cover the whitelist semantics against Excel's documentation and the stored LibreOffice answers (`test/oracle/libreoffice.json`, refreshed by `npm run test:oracle`, which needs LibreOffice's `soffice` on `PATH`; the usual tests need no office suite); determinism (shuffled input, a child process, three time zones, cents over 3,400 amounts); references, errors, volatile functions, parsing and the canonical form; sessions (200 random edits against full computations) and `explain`; budgets; SHA-256 against test vectors and `node:crypto`; a browser bundle run in an empty JavaScript context and with code generation disabled; the published package (exports, tarball contents, a consumer importing it by name). The code blocks of this README run as a test too.
 
-Режим `test:dist` подменяет импорты `../src/…` в тестах на `dist` и переключает дочерние процессы (`test/fixtures/target.ts`), так что весь набор проверяет и то, что уходит в тарбол.
+## License
 
-## Выпуск
-
-1. Изменения и тесты: `npm test`, `npm run test:dist`, при изменении рантайма и `FORMULA_BENCH=1`.
-2. Версия в `package.json` (`npm version X.Y.Z --no-git-tag-version`), запись в `CHANGELOG.md`, коммит.
-3. Тег `vX.Y.Z` на этом коммите, пуш `master` и тега.
-4. `npm run pack:release` кладёт тарбол в `release/mike-formula-X.Y.Z.tgz` (каталог в git не попадает).
-5. В the app тарбол кладётся в `vendor/`, строка зависимости в `tools/package.json` (и в других пакетах, если движок там нужен) меняется на новый файл, `npm install` обновляет lock; тарбол, `package.json` и lock одним коммитом. Старый тарбол из `vendor/` удаляется тем же коммитом.
-
-Если изменение может сдвинуть значения, поднимается и `CONFIG_VERSION` в `src/config.ts`: тогда хэши книг у потребителя меняются ожидаемо.
-
-## Сторонний код
-
-`THIRD_PARTY.md`: formulajs и её зависимости (MIT, Apache-2.0), exceljs только в тестах. HyperFormula в библиотеку не входит.
+MIT. Third-party code and licenses: [THIRD_PARTY.md](THIRD_PARTY.md).

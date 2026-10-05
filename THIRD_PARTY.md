@@ -1,13 +1,13 @@
-# Сторонний код в `@mike/formula`
+# Third-party code in formula-engine
 
-| пакет | версия | лицензия | зачем |
+| package | version | license | used for |
 |---|---|---|---|
-| `@formulajs/formulajs` | 4.6.1 | MIT | ROUND, EOMONTH, DATE, SUM (через адаптер в `src/runtime.ts`) |
-| `jstat` (зависимость formulajs) | 1.9.6 | MIT | статистика внутри formulajs |
-| `bessel` (зависимость formulajs) | 1.0.2 | Apache-2.0 | функции Бесселя внутри formulajs |
+| `@formulajs/formulajs` | 4.6.1 | MIT | `ROUND`, `EOMONTH`, `DATE`, `SUM` (through the adapter in `src/runtime.ts`) |
+| `jstat` (a dependency of formulajs) | 1.9.6 | MIT | statistics inside formulajs |
+| `bessel` (a dependency of formulajs) | 1.0.2 | Apache-2.0 | Bessel functions inside formulajs |
 
-Все три разрешительные: библиотеку можно распространять отдельно и в составе сервера, сохраняя тексты лицензий.
+All three are permissive licenses: the library can be distributed on its own or inside other software as long as their license texts are kept. They are installed as dependencies, not copied into this package; a bundle that includes formula-engine includes them too.
 
-В тестах (не в коде библиотеки) используется `exceljs` (MIT) для оракула LibreOffice.
+Development only (not in the package): `exceljs` (MIT) writes workbooks for the LibreOffice oracle, `esbuild` (MIT) builds the browser bundle in the tests, plus `vitest`, `tsx`, `typescript`, `publint` and `@arethetypeswrong/cli`.
 
-HyperFormula (GPL-3.0-only) в библиотеку не входит ни в каком виде, тест `test/package.test.ts` это сторожит. В the app она стоит только в devDependencies `tools` для повторения замера WB1 (`tools/probes/wb1/hf-engine.ts`), страж `tools/check-engine-boundary.ts` не пускает её в пакеты `packages/*`. Работа на своём сервере не распространение; если когда-нибудь вернуть HF в рантайм, передача кода или образа третьим лицам потребует GPL для всего сервера или коммерческой лицензии.
+HyperFormula (GPL-3.0) is not used in any form; `test/package.test.ts` checks that it is in no dependency and not in the lock file.
