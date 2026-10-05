@@ -6,6 +6,7 @@
 import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'
 import { createState, debugSource } from './engine.js'
+import { nowMs } from './env.js'
 import { buildResult, clockSerial } from './result.js'
 import { validate, validateName as checkName } from './syntax.js'
 
@@ -15,7 +16,7 @@ export { CONFIG_VERSION } from './config.js'
 export { openSession } from './session.js'
 
 export function compute(book: BookInput, opts: ComputeOptions): ComputeResult {
-  const t0 = performance.now()
+  const t0 = nowMs()
   const state = createState(book, { now: clockSerial(opts.clock), seed: opts.clock.seed, externals: opts.externals })
   return buildResult(state, opts.clock, t0)
 }

@@ -3,6 +3,7 @@ import { inputHash, outNumber, valuesHash } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, Clock, ComputeResult } from './contract.js'
 import { issues, sortedCells, toCellValue, valueAt, type EngineState } from './engine.js'
+import { nowMs } from './env.js'
 import { formatAddress, msToSerial, parseAddress } from './model.js'
 
 
@@ -51,6 +52,6 @@ export function buildResult(state: EngineState, clock: Clock, t0: number): Compu
     hash: valuesHash(values, CONFIG_VERSION),
     inputHash: inputHash(state.input),
     configVersion: CONFIG_VERSION,
-    ms: performance.now() - t0,
+    ms: nowMs() - t0,
   }
 }

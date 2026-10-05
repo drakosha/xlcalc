@@ -1,6 +1,7 @@
 /**
  * The package as a standalone library: the function whitelist is pinned, the sources import only their own
- * files, `node:*` and `@formulajs/formulajs`; HyperFormula (GPL) is in no dependency.
+ * files and `@formulajs/formulajs` (no `node:*`, so the code runs outside Node); HyperFormula (GPL) is in no
+ * dependency.
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -34,7 +35,7 @@ describe('package', () => {
     expect(readFileSync(join(root, 'package-lock.json'), 'utf8')).not.toMatch(/hyperformula/i)
   })
 
-  it('sources import nothing outside the package', () => {
+  it('sources import only their own files and formulajs', () => {
     const src = join(root, 'src')
     const allowed = new Set(Object.keys(pkg.dependencies ?? {}))
     const bad: string[] = []
@@ -43,7 +44,6 @@ describe('package', () => {
       for (const m of text.matchAll(/(?:^|\n)\s*(?:import|export)[^'"\n]*?from\s+'([^']+)'|import\(\s*'([^']+)'\s*\)/g)) {
         const spec = m[1] ?? m[2]
         if (spec.startsWith('./')) continue
-        if (spec.startsWith('node:')) continue
         const name = spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]
         if (allowed.has(name)) continue
         bad.push(`${file}: ${spec}`)

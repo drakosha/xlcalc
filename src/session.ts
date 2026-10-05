@@ -5,14 +5,13 @@
  */
 import type { BookInput, CellChange, CellEdit, Clock, Explanation, ExplainOptions, NameInput, Session, SessionOptions } from './contract.js'
 import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine.js'
+import { nowMs, randomSeed } from './env.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, clockSerial, outValue } from './result.js'
 import { sheetKey } from './syntax.js'
 
 function liveClock(): Clock {
-  const seed = new Uint32Array(1)
-  crypto.getRandomValues(seed)
-  return { now: new Date().toISOString(), seed: seed[0] }
+  return { now: new Date().toISOString(), seed: randomSeed() }
 }
 
 export function openSession(book: BookInput, opts: SessionOptions): Session {
@@ -77,7 +76,7 @@ export function openSession(book: BookInput, opts: SessionOptions): Session {
       return { ...e, text: explainText(e.root) }
     },
     result() {
-      const t0 = performance.now()
+      const t0 = nowMs()
       return buildResult(st(), clock, t0)
     },
     close() {

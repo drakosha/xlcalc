@@ -3,9 +3,9 @@
  * (`"Sheet"!E12 n 1234.5`, `s "…"`, `b TRUE`, `e DIV0`); `-0` is 0, non-finite is `#NUM!`, numbers are
  * rounded to 15 significant digits. The engine configuration version is part of the values hash.
  */
-import { createHash } from 'node:crypto'
 import type { BookInput, CellValue } from './contract.js'
 import { sortAddresses } from './model.js'
+import { Sha256 } from './sha256.js'
 
 /** A number for output and hashing: 15 significant digits, no `-0`. */
 export function outNumber(v: number): number {
@@ -37,7 +37,7 @@ export function canonText(values: Map<string, Map<string, CellValue>>): string {
 }
 
 export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string): string {
-  return createHash('sha256').update(configVersion).update('\n').update(canonText(values)).digest('hex')
+  return new Sha256().update(configVersion).update('\n').update(canonText(values)).hex()
 }
 
 /** JSON with sorted object keys: the order of fields in the input does not affect the hash. */
@@ -54,12 +54,12 @@ function stableJson(v: unknown): string {
 
 /** Input hash: sheets by name, cells by address, names by (scope, name). */
 export function inputHash(book: BookInput): string {
-  const h = createHash('sha256')
+  const h = new Sha256()
   for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
     for (const addr of sortAddresses(Object.keys(s.cells))) h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
   }
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
   for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)
-  return h.digest('hex')
+  return h.hex()
 }
