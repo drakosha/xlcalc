@@ -36,6 +36,11 @@ export interface Sig {
   noAuto?: boolean
   /** Метки автоматических краевых случаев, которые не берутся (с причиной в комментарии у функции). */
   skip?: string[]
+  /**
+   * Аргументы-размеры и счётчики (массивы, повторы, порядок, периоды): «большое» берётся равным
+   * CAP вместо 1E10, дата как размер не подставляется. Иначе Excel рискует исчерпать ресурсы.
+   */
+  cap?: boolean
 }
 
 const S: Sig[] = []
@@ -521,6 +526,13 @@ const DB: [string, Arg[]][] = [
 ]
 for (const name of ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']) {
   S.push({ name, kinds: 'R a R', calls: DB.slice(0, 2).map((x) => x[1]), extra: DB.slice(2), noAuto: true })
+}
+
+// размеры и счётчики: потолок для краевых значений
+for (const n of ['EXPAND', 'TAKE', 'DROP', 'CHOOSECOLS', 'CHOOSEROWS', 'REPT', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'CUMIPMT', 'CUMPRINC', 'IPMT', 'PPMT', 'ISPMT', 'DB', 'DDB', 'SYD', 'FV', 'PV', 'PMT', 'NPER', 'RATE', 'BASE', 'ROMAN']) {
+  const sig = S.find((x) => x.name === n)
+  if (!sig) throw new Error(`cap: no signature ${n}`)
+  sig.cap = true
 }
 
 export const SIGNATURES: readonly Sig[] = S

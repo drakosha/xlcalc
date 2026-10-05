@@ -11,6 +11,8 @@ import { SIGNATURES, XLFN, type Arg, type Pick, type Sig } from './signatures.js
 
 export const SEED = 20261005
 export const MAX_CASES = 15
+/** Потолок «большого» для аргументов-размеров и счётчиков (`Sig.cap`). */
+export const CAP = 1000
 
 export interface Case {
   id: string
@@ -208,9 +210,11 @@ function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][
     if (k === 'D') pool = base[i] === '@hol' ? DATES : []
     for (const [tag, v] of pool) {
       if (v === base[i] || sig.skip?.includes(tag)) continue
+      if (sig.cap && tag === 'дата в ячейке') continue
+      const big = sig.cap && tag === 'большое'
       const args = [...base]
-      args[i] = v as Arg
-      list.push([tag, args])
+      args[i] = big ? CAP : (v as Arg)
+      list.push([big ? `большое (${CAP})` : tag, args])
     }
     if (i > 0) shuffle(list, rnd)
     out.push(list)
