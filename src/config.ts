@@ -3,4 +3,4 @@
  * values (formulajs version, runtime rules, canonical form).
  */
 export const FORMULAJS_VERSION = '4.6.1'
-export const CONFIG_VERSION = `app-formula/1;compiled-js;formulajs@${FORMULAJS_VERSION};canon15`
+export const CONFIG_VERSION = `formula-engine/1;compiled-js;formulajs@${FORMULAJS_VERSION};canon15`

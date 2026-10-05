@@ -1,6 +1,7 @@
 /**
  * The plain-JS SHA-256 against published test vectors and against `node:crypto` (the 0.1.0 engine hashed
- * with it), and the synthetic book hashes pinned to their 0.1.0 values.
+ * with it), and the synthetic book hashes pinned: to their 0.1.0 values, and with the current
+ * configuration version (a change of values or of CONFIG_VERSION has to update this pin consciously).
  */
 import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
@@ -67,12 +68,14 @@ describe('sha256', () => {
     }
   })
 
-  it('the synthetic book hashes are those of 0.1.0', () => {
+  it('the synthetic book hashes: those of 0.1.0, and the current one', () => {
     const { book } = synthBook({ seed: 1 })
     const r = compute(book, { clock: { now: '2026-10-04T12:00:00Z', seed: 7 } })
     const values = new Map(r.sheets.map((s) => [s.name, new Map(Object.entries(s.cells).map(([a, c]): [string, CellValue] => [a, c.value]))]))
     // 0.1.0 shipped with this configuration version; the hash of the same values must not move
     expect(valuesHash(values, 'app-formula/1;compiled-js;formulajs@4.6.1;canon15')).toBe('9d7414efbda34a63990b3be2d2d4cf790ab546d87a19e6673a88d22a98f76ea0')
     expect(inputHash(book)).toBe('1fb3575501a5acbff64c388b43b5e3a1176e312243f01de1e4610e4ac7bc67a2')
+    expect(r.configVersion).toBe('formula-engine/1;compiled-js;formulajs@4.6.1;canon15')
+    expect(r.hash).toBe('18be025cb4581543a8953790d380ecf9f3383002d8112eb6b15da4f182c0bba3')
   })
 })
