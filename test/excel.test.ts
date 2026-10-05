@@ -18,23 +18,6 @@ const NO_CASES: Record<string, string> = {
   RANDBETWEEN: 'volatile, excluded from the measurement; test/volatile.test.ts',
 }
 
-/** Known differences from Excel, by case id: to be fixed, never to be extended. */
-const KNOWN: Record<string, string> = {
-  'COUNTIFS#12': 'a number criterion does not match numeric text',
-  'SUMIF#12': 'a number criterion does not match numeric text',
-  'SUMIFS#12': 'a number criterion does not match numeric text',
-  'DATE#5': 'the phantom 1900-02-29 is not produced',
-  'DATE#8': 'a month out of range gives #VALUE! instead of #NUM!',
-  'EOMONTH#4': 'date text is not read',
-  'EOMONTH#5': 'date text is not read',
-  'EOMONTH#6': 'a month out of range gives #VALUE! instead of #NUM!',
-  'EOMONTH#8': 'serial 60 is read as 1900-03-01',
-  'EOMONTH#13': 'serial 0 is read as 1899-12-31',
-  'ROUND#10': 'a huge number of digits gives #NUM!',
-  'TEXT#8': 'fraction formats are not supported',
-  'TEXT#14': 'an empty format gives the General format',
-}
-
 const covered = FUNCTION_NAMES.filter((f) => !(f in NO_CASES))
 const outcomes = runExcelCases(CASES.filter((c) => covered.includes(c.fn)))
 const byFunction = new Map<string, Outcome[]>()
@@ -52,13 +35,8 @@ describe('acceptance against Excel en-US', () => {
 
   for (const f of covered) {
     it(`${f}: all cases match Excel`, () => {
-      const off = (byFunction.get(f) ?? []).filter((o) => !o.ok && !(o.c.id in KNOWN)).map((o) => `${o.c.id} ${o.c.formula}: Excel ${show(o.excel)}, engine ${show(o.engine)}`)
+      const off = (byFunction.get(f) ?? []).filter((o) => !o.ok).map((o) => `${o.c.id} ${o.c.formula}: Excel ${show(o.excel)}, engine ${show(o.engine)}`)
       expect(off).toEqual([])
     })
   }
-
-  it('the known differences are still differences (remove an entry once it is fixed)', () => {
-    const fixed = outcomes.filter((o) => o.ok && o.c.id in KNOWN).map((o) => o.c.id)
-    expect(fixed).toEqual([])
-  })
 })

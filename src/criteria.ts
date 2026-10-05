@@ -1,7 +1,8 @@
 /**
  * Criteria of SUMIF, SUMIFS, COUNTIFS and an index over them: strings are case-insensitive but
  * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers and ISO dates in
- * the criterion text are compared as numbers; `""` matches blanks, `"<>"` non-blanks.
+ * the criterion text are compared as numbers, and a number criterion's equality also holds for text that
+ * reads as that number; `""` matches blanks, `"<>"` non-blanks.
  */
 import { dateToSerial } from './model.js'
 
@@ -68,9 +69,20 @@ export function parseCrit(v: number | string | boolean | null): Crit {
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 const opOk = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0)
 
+/** Text that reads as a number, as in a criterion (`"2"`, `" 2.50 "`), or null. */
+function numericText(s: string): number | null {
+  const t = s.trim()
+  return NUM_RE.test(t) ? Number(t) : null
+}
+
 export function matches(v: CritValue, c: Crit): boolean {
   switch (c.kind) {
     case 'num':
+      // equality with a number also holds for text that reads as that number (Excel: 2 matches "2")
+      if (typeof v === 'string' && (c.op === '=' || c.op === '<>')) {
+        const n = numericText(v)
+        if (n !== null) return (n === c.n) === (c.op === '=')
+      }
       if (typeof v !== 'number') return c.op === '<>'
       return opOk(c.op, ord(v, c.n))
     case 'bool':
@@ -90,9 +102,12 @@ export function matches(v: CritValue, c: Crit): boolean {
   }
 }
 
-/** Equality key in the index: case-insensitive strings, numbers, booleans. */
+/** Equality key in the index: case-insensitive strings, numbers (and text that reads as a number), booleans. */
 function eqKey(v: CritValue): string | null {
-  if (typeof v === 'string') return 's' + v.toLowerCase()
+  if (typeof v === 'string') {
+    const n = numericText(v)
+    return n === null ? 's' + v.toLowerCase() : 'n' + n
+  }
   if (typeof v === 'number') return 'n' + v
   if (typeof v === 'boolean') return 'b' + v
   return null

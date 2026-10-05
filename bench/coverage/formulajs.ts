@@ -18,7 +18,7 @@
  */
 import * as fj from '@formulajs/formulajs'
 import { dateToSerial } from '../../src/model.js'
-import { CErr, E, isErr, toBool, toNum, toText, type V } from '../../src/runtime.js'
+import { CErr, E, isErr, toBool, toNum, toText, type V } from '../../src/values.js'
 import type { Case } from './cases.js'
 import { kindAt, parseKinds } from './cases.js'
 import { REGIONS, type Cell, type ErrCode } from './data.js'

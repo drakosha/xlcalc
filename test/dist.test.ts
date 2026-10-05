@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { compute, openSession } from '../src/index.js'
+import { compute, FUNCTION_NAMES, openSession } from '../src/index.js'
 import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -41,7 +41,7 @@ describe('built package', () => {
     expect(out.hash).toBe(compute(synth.book, { clock }).hash)
     expect(out.edited).toBe(session.result().hash)
     session.close()
-    expect(out.functions).toBe(17)
+    expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.engine).toEqual(['compute', 'openSession', 'validateFormula', 'validateName'])
     expect(out.inputError).toBe('function')
     expect(out.validate).toBe(true)

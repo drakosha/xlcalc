@@ -1,38 +1,38 @@
 /**
- * The function whitelist: argument counts and which arguments are ranges. The list is pinned by a
- * test; a function gets in only together with a test against Excel documentation and the oracle.
+ * The function whitelist, assembled from the category files in `src/functions/`. A function gets into its
+ * category's registry only when all of its cases in the Excel acceptance test (`test/excel.test.ts`) match
+ * Excel en-US, or with its own semantics tests where the measurement has no cases.
  */
+import { specOf, type FnDef, type FunctionSpec } from './args.js'
+import { functions as database } from './functions/database.js'
+import { functions as date } from './functions/date.js'
+import { functions as engineering } from './functions/engineering.js'
+import { functions as financial } from './functions/financial.js'
+import { functions as information } from './functions/information.js'
+import { functions as logical } from './functions/logical.js'
+import { functions as lookup } from './functions/lookup.js'
+import { functions as math } from './functions/math.js'
+import { functions as statistical } from './functions/statistical.js'
+import { functions as text } from './functions/text.js'
 
-export interface FunctionSpec {
-  min: number
-  max: number
-  /** Whether the argument at this index is a range (elsewhere a range means array arithmetic). */
-  range: (i: number) => boolean
-  /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
-  parity?: 'odd' | 'even'
-  volatile?: boolean
+export type { FunctionSpec } from './args.js'
+
+const CATEGORIES = { database, date, engineering, financial, information, logical, lookup, math, statistical, text }
+
+function assemble(): Record<string, FnDef> {
+  const out: Record<string, FnDef> = {}
+  for (const [category, defs] of Object.entries(CATEGORIES))
+    for (const [name, def] of Object.entries(defs)) {
+      if (out[name]) throw new Error(`function ${name} is defined twice (again in ${category})`)
+      out[name] = def
+    }
+  return out
 }
 
-const none = () => false
+/** Implementations and argument kinds by function name. */
+export const DEFS: Readonly<Record<string, FnDef>> = assemble()
 
-export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = {
-  SUM: { min: 1, max: 255, range: () => true },
-  SUMIF: { min: 2, max: 3, range: (i) => i === 0 || i === 2 },
-  SUMIFS: { min: 3, max: 255, range: (i) => i === 0 || i % 2 === 1, parity: 'odd' },
-  COUNTIFS: { min: 2, max: 254, range: (i) => i % 2 === 0, parity: 'even' },
-  IF: { min: 2, max: 3, range: none },
-  IFERROR: { min: 2, max: 2, range: none },
-  XLOOKUP: { min: 3, max: 6, range: (i) => i === 1 || i === 2 },
-  ROUND: { min: 2, max: 2, range: none },
-  EOMONTH: { min: 2, max: 2, range: none },
-  DATE: { min: 3, max: 3, range: none },
-  TEXT: { min: 2, max: 2, range: none },
-  TRUE: { min: 0, max: 0, range: none },
-  FALSE: { min: 0, max: 0, range: none },
-  TODAY: { min: 0, max: 0, range: none, volatile: true },
-  NOW: { min: 0, max: 0, range: none, volatile: true },
-  RAND: { min: 0, max: 0, range: none, volatile: true },
-  RANDBETWEEN: { min: 2, max: 2, range: none, volatile: true },
-}
+/** Argument counts and range positions by function name, for the parser and the code generator. */
+export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = Object.fromEntries(Object.entries(DEFS).map(([name, def]) => [name, specOf(name, def)]))
 
 export const FUNCTION_NAMES: readonly string[] = Object.keys(FUNCTIONS).sort()

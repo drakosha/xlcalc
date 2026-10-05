@@ -1,9 +1,9 @@
 /**
  * TEXT with Excel number formats (en-US): `;` sections (positive, negative, zero, text), quoted and
  * `\`-escaped literals, numbers (`0`, `#`, `?`, `.`, `,` for thousands grouping and scaling by 1000,
- * `%`), dates and times (`yyyy`, `yy`, `m`…`mmmm`, `d`…`dddd`, `h`, `hh`, `mm` as minutes, `ss`,
- * `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed conditions are not supported:
- * null (the caller turns it into #VALUE!).
+ * `%`), fractions (`# ?/?`, `?/??`, `# ?/8`), dates and times (`yyyy`, `yy`, `m`…`mmmm`, `d`…`dddd`,
+ * `h`, `hh`, `mm` as minutes, `ss`, `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed
+ * conditions are not supported: null (the caller turns it into #VALUE!).
  */
 import { serialToUtcMs } from './model.js'
 
@@ -78,7 +78,7 @@ function tokenize(sec: string): Tok[] | null {
 }
 
 /** Round half away from zero on the decimal representation (1.005 → 1.01). */
-function roundHalfUp(abs: number, k: number): string {
+export function roundHalfUp(abs: number, k: number): string {
   const shifted = Math.round(Number(`${abs}e${k}`))
   return Number(`${shifted}e-${k}`).toFixed(k)
 }
@@ -137,6 +137,59 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
   return (negative ? '-' : '') + out
 }
 
+const isDigitLit = (t: Tok | undefined) => t?.t === 'lit' && /^[0-9]$/.test(t.s)
+
+/**
+ * A fraction: placeholders right before `/` are the numerator, placeholders before them (if any) the
+ * integer part; after `/` either placeholders (the denominator has at most that many digits, the closest
+ * fraction is taken) or a fixed denominator (`?/8`).
+ */
+function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean): string | null {
+  let i = slash - 1
+  while (i >= 0 && toks[i].t === 'ph') i--
+  const numPh = toks.slice(i + 1, slash) as Extract<Tok, { t: 'ph' }>[]
+  const intToks = toks.slice(0, i + 1)
+  const hasInt = intToks.some((t) => t.t === 'ph')
+  let j = slash + 1
+  let fixed = 0
+  const denPh: Extract<Tok, { t: 'ph' }>[] = []
+  if (isDigitLit(toks[j])) {
+    let digits = ''
+    for (; j < toks.length && (isDigitLit(toks[j]) || (toks[j].t === 'ph' && (toks[j] as Extract<Tok, { t: 'ph' }>).c === '0')); j++) digits += toks[j].t === 'lit' ? (toks[j] as Extract<Tok, { t: 'lit' }>).s : '0'
+    fixed = Number(digits)
+  } else for (; j < toks.length && toks[j].t === 'ph'; j++) denPh.push(toks[j] as Extract<Tok, { t: 'ph' }>)
+  if (!numPh.length || (!fixed && !denPh.length)) return null
+  const x = Math.abs(v)
+  let ip = hasInt ? Math.floor(x) : 0
+  const frac = x - ip
+  let num = 0
+  let den = fixed
+  if (fixed) num = Math.round(frac * fixed)
+  else {
+    let best = Infinity
+    for (let d = 1, max = 10 ** denPh.length - 1; d <= max; d++) {
+      const n = Math.round(frac * d)
+      const err = Math.abs(frac - n / d)
+      if (err < best - 1e-12) [best, num, den] = [err, n, d]
+    }
+  }
+  if (hasInt && num === den) [ip, num] = [ip + 1, 0]
+  // unused digit places: `0` gives a zero before the digits, `?` a space (after the denominator's digits)
+  const pad = (s: string, ph: Extract<Tok, { t: 'ph' }>[], left: boolean) => {
+    const free = ph.slice(0, Math.max(0, ph.length - s.length))
+    const zeros = '0'.repeat(free.filter((t) => t.c === '0').length)
+    const spaces = ' '.repeat(free.filter((t) => t.c === '?').length)
+    return left ? spaces + zeros + s : zeros + s + spaces
+  }
+  const intPart = hasInt ? formatNumber(ip, intToks, false)! : intToks.map((t) => (t.t === 'lit' ? t.s : '')).join('')
+  const denText = fixed ? String(fixed) : pad(String(den), denPh, false)
+  const fracText = pad(String(num), numPh, true) + '/' + denText
+  const tail = toks.slice(j).map((t) => (t.t === 'lit' ? t.s : '')).join('')
+  // a whole number: the fraction's place is blank
+  const body = hasInt && num === 0 ? intPart + ' '.repeat(fracText.length) : intPart + fracText
+  return (signed && v < 0 && (ip !== 0 || num !== 0) ? '-' : '') + body + tail
+}
+
 function formatDate(serial: number, toks: Tok[]): string | null {
   if (serial < 0) return null
   const ms = serialToUtcMs(Math.floor(serial)) + Math.round((serial - Math.floor(serial)) * 86_400) * 1000
@@ -188,6 +241,7 @@ export function generalText(n: number): string {
 /** TEXT(value, format); null for an unsupported or invalid format. */
 export function formatText(value: number | string | boolean, fmt: string): string | null {
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
+  if (fmt === '') return ''
   const sections = splitSections(fmt)
   if (typeof value === 'string') {
     const n = value.trim() === '' ? NaN : Number(value)
@@ -210,5 +264,7 @@ export function formatText(value: number | string | boolean, fmt: string): strin
   if (!toks) return null
   if (toks.some((t) => t.t === 'date' || t.t === 'ampm')) return formatDate(v, toks)
   if (!toks.some((t) => t.t === 'ph')) return toks.map((t) => (t.t === 'lit' ? t.s : t.t === 'dot' ? '.' : t.t === 'comma' ? ',' : t.t === 'pct' ? '%' : '')).join('')
+  const slash = toks.findIndex((t, i) => t.t === 'lit' && t.s === '/' && toks[i - 1]?.t === 'ph')
+  if (slash >= 0) return formatFraction(v, toks, slash, signed)
   return formatNumber(v, toks, signed)
 }

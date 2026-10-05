@@ -1,14 +1,15 @@
 /**
- * The package as a standalone library: the function whitelist is pinned, the sources import only their own
- * files and `@formulajs/formulajs` (no `node:*`, so the code runs outside Node); HyperFormula (GPL) is in no
- * dependency.
+ * The package as a standalone library: no runtime dependencies, the sources import only their own files
+ * (no `node:*`, so the code runs outside Node); formula.js is a development dependency of the coverage
+ * measurement only; HyperFormula (GPL) is in no dependency. Which functions are whitelisted is checked
+ * against Excel in `test/excel.test.ts`.
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { CONFIG_VERSION, FUNCTION_NAMES } from '../src/index.js'
-import { FORMULAJS_VERSION, PACKAGE_NAME } from '../src/config.js'
+import { PACKAGE_NAME } from '../src/config.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { name: string } & Record<'dependencies' | 'devDependencies' | 'peerDependencies' | 'optionalDependencies', Record<string, string> | undefined>
@@ -17,8 +18,7 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { na
 const SEMANTICS = ['SUM', 'SUMIFS', 'COUNTIFS', 'IF', 'IFERROR', 'XLOOKUP', 'ROUND', 'EOMONTH', 'DATE', 'TEXT']
 
 describe('package', () => {
-  it('function whitelist', () => {
-    expect(FUNCTION_NAMES).toEqual(['COUNTIFS', 'DATE', 'EOMONTH', 'FALSE', 'IF', 'IFERROR', 'NOW', 'RAND', 'RANDBETWEEN', 'ROUND', 'SUM', 'SUMIF', 'SUMIFS', 'TEXT', 'TODAY', 'TRUE', 'XLOOKUP'])
+  it('function whitelist: the functions with semantics tests of their own are in it', () => {
     for (const f of [...SEMANTICS, 'SUMIF']) expect(FUNCTION_NAMES).toContain(f)
   })
 
@@ -27,31 +27,27 @@ describe('package', () => {
     expect(CONFIG_VERSION.startsWith(`${pkg.name}/`)).toBe(true)
   })
 
-  it('the formulajs version in the configuration matches the dependency', () => {
-    expect(pkg.dependencies?.['@formulajs/formulajs']).toBe(FORMULAJS_VERSION)
-    expect(CONFIG_VERSION).toContain(`formulajs@${FORMULAJS_VERSION}`)
+  it('formula.js is only the measured object of the coverage measurement: a pinned development dependency', () => {
+    expect(pkg.devDependencies?.['@formulajs/formulajs']).toBe('4.6.1')
+    expect(CONFIG_VERSION).not.toMatch(/formulajs/)
   })
 
-  it('dependencies: only formulajs, HyperFormula nowhere', () => {
-    expect(Object.keys(pkg.dependencies ?? {})).toEqual(['@formulajs/formulajs'])
+  it('dependencies: none, HyperFormula nowhere', () => {
+    expect(pkg.dependencies ?? {}).toEqual({})
     expect(pkg.peerDependencies ?? {}).toEqual({})
     expect(pkg.optionalDependencies ?? {}).toEqual({})
     expect(Object.keys(pkg.devDependencies ?? {})).not.toContain('hyperformula')
     expect(readFileSync(join(root, 'package-lock.json'), 'utf8')).not.toMatch(/hyperformula/i)
   })
 
-  it('sources import only their own files and formulajs', () => {
+  it('sources import only their own files', () => {
     const src = join(root, 'src')
-    const allowed = new Set(Object.keys(pkg.dependencies ?? {}))
     const bad: string[] = []
     for (const file of readdirSync(src, { recursive: true, encoding: 'utf8' }).filter((f) => f.endsWith('.ts'))) {
       const text = readFileSync(join(src, file), 'utf8')
       for (const m of text.matchAll(/(?:^|\n)\s*(?:import|export)[^'"\n]*?from\s+'([^']+)'|import\(\s*'([^']+)'\s*\)/g)) {
         const spec = m[1] ?? m[2]
-        if (spec.startsWith('./')) continue
-        const name = spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]
-        if (allowed.has(name)) continue
-        bad.push(`${file}: ${spec}`)
+        if (!/^\.\.?\//.test(spec)) bad.push(`${file}: ${spec}`)
       }
     }
     expect(bad).toEqual([])
