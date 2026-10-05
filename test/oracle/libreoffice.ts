@@ -59,7 +59,7 @@ function sheetResults(xml: string): Map<string, CellValue> {
 
 /** Formula results of sheet `sheet` by address, recalculated by LibreOffice. */
 export async function oracleValues(book: BookInput, sheet: string): Promise<Map<string, CellValue>> {
-  const dir = mkdtempSync(join(tmpdir(), 'wb1-oracle-'))
+  const dir = mkdtempSync(join(tmpdir(), 'formula-oracle-'))
   try {
     const wb = new ExcelJS.Workbook()
     for (const s of book.sheets) {
