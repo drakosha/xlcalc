@@ -52,7 +52,7 @@ export function excelVersion(): string {
  */
 export async function ensureExcel(locale: Locale): Promise<void> {
   const p = excelProcess()
-  if (p && localeOf(p.args) === locale) return
+  if (p && localeOf(p.args) === locale) return closeStartupBook()
   if (p) {
     const n = countWorkbooks()
     if (n !== 0) throw new Error(`в Excel открыто книг: ${n}; перезапуск для локали ${locale} отменён`)
@@ -77,6 +77,20 @@ export async function ensureExcel(locale: Locale): Promise<void> {
   }
   const q = excelProcess()!
   if (localeOf(q.args) !== locale) throw new Error(`Excel запустился не с той локалью: ${q.args}`)
+  closeStartupBook()
+}
+
+/**
+ * При запуске без документа Excel открывает пустую новую книгу («Книга1»): новую книгу без файла и
+ * без правок закрываем без сохранения. Любая другая открытая книга: отказ.
+ */
+function closeStartupBook() {
+  if (countWorkbooks() === 1) {
+    const [name, saved, path] = osa('tell application "Microsoft Excel" to get {name, saved, path} of workbook 1').split(/,\s*/)
+    if (/^(Книга|Book)\d+$/.test(name) && saved === 'true' && !path) osa(`tell application "Microsoft Excel" to close workbook "${name}" saving no`)
+  }
+  const n = countWorkbooks()
+  if (n !== 0) throw new Error(`в Excel открыто книг: ${n} (не пустая новая книга запуска)`)
 }
 
 /**
