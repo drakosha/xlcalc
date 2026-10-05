@@ -15,8 +15,8 @@ interface Col<T = Val> {
   values: Record<string, T>
 }
 
-/** Интерфейс Excel русский: логическое в тексте выходит ИСТИНА/ЛОЖЬ и при локали en-US. */
-const normBool = (v: Val): Val => (v.t === 's' && /ИСТИНА|ЛОЖЬ/.test(v.v) ? { t: 's', v: v.v.replace(/ИСТИНА/g, 'TRUE').replace(/ЛОЖЬ/g, 'FALSE') } : v)
+/** Прежняя колонка en-US, посчитанная с русским интерфейсом Excel: для абзаца о языке интерфейса. */
+const EN_RU_UI = 'excel-en-ru-ui.json'
 
 export type Status = 'все' | 'обычные' | 'расходятся обычные' | 'зависает'
 
@@ -68,8 +68,8 @@ export function analyse(dir: string) {
   const enRaw = load<Col>('excel-en.json')
   const ru = load<Col>('excel-ru.json')
   const lo = load<Col>('libreoffice.json')
-  const en: Record<string, Val> = Object.fromEntries(Object.entries(enRaw.values).map(([k, v]) => [k, normBool(v)]))
-  const boolText = set.cases.filter((c) => enRaw.values[c.id] !== en[c.id])
+  const en = enRaw.values
+  const enRuUi = existsSync(join(dir, EN_RU_UI)) ? load<Col>(EN_RU_UI) : null
 
   const byFn = new Map<string, typeof set.cases>()
   for (const c of set.cases) byFn.set(c.fn, [...(byFn.get(c.fn) ?? []), c])
@@ -101,7 +101,7 @@ export function analyse(dir: string) {
       ru: vr.filter((v) => !v.ok).length,
     })
   }
-  return { set, fj, en, enRaw, ru, lo, rows, verdicts, boolText }
+  return { set, fj, en, enRaw, enRuUi, ru, lo, rows, verdicts }
 }
 
 // ---------- markdown ----------
@@ -245,7 +245,7 @@ function blocks(dir: string): Record<string, string> {
   for (const c of ruCases) ruByTag.set(c.tag, [...(ruByTag.get(c.tag) ?? []), c])
   const ruLine = (c: (typeof ruCases)[number]) => `${code(c.formula)}: ${esc(show(a.enRaw.values[c.id]))} и ${esc(show(a.ru.values[c.id]))}`
   out.ru = [
-    `Excel ru-RU расходится с en-US в ${ruCases.length} случаях у ${new Set(ruCases.map((c) => c.fn)).size} функций (сравниваются ответы Excel как есть, без поправки на ИСТИНА/ЛОЖЬ).`,
+    `Excel ru-RU (русские интерфейс и локаль) расходится с en-US (английские) в ${ruCases.length} случаях у ${new Set(ruCases.map((c) => c.fn)).size} функций.`,
     '',
     '| случай | расходится | функции | пример (en-US и ru-RU) |',
     '|---|---|---|---|',
@@ -260,11 +260,19 @@ function blocks(dir: string): Record<string, string> {
     '</details>',
   ].join('\n')
 
-  out.booltext = [
-    `Таких случаев ${a.boolText.length}:`,
-    '',
-    ...a.boolText.map((c) => `- ${code(c.formula)}: Excel ${esc(show(a.enRaw.values[c.id]))}`),
-  ].join('\n')
+  // язык интерфейса: прежняя колонка en-US (русский интерфейс) против текущей (английский)
+  if (a.enRuUi) {
+    const old = a.enRuUi.values
+    const changed = set.cases.filter((c) => !compare(old[c.id], a.en[c.id]).ok)
+    const before = (k: 'adapter' | 'bare') => set.cases.filter((c) => compare(old[c.id], k === 'adapter' ? a.fj.values[c.id].adapter : a.fj.values[c.id].bare, k === 'adapter' && !!a.fj.values[c.id].adapterThrew).ok).length
+    out.uilang = [
+      `С русским интерфейсом ответ Excel en-US был другим в ${changed.length} случаях у ${new Set(changed.map((c) => c.fn)).size} функций. Совпадение через адаптер по прежней колонке ${before('adapter')} случаев, по новой ${Object.values(a.verdicts).filter((v) => v.adapter.ok).length}; голой ${before('bare')} и ${Object.values(a.verdicts).filter((v) => v.bare.ok).length}.`,
+      '',
+      '| случай | формула | русский интерфейс | английский интерфейс |',
+      '|---|---|---|---|',
+      ...changed.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(old[c.id]))} | ${esc(show(a.en[c.id]))} |`),
+    ].join('\n')
+  }
 
   // нет в formulajs
   const miss = new Map<string, string[]>()

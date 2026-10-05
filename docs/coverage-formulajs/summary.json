@@ -1361,30 +1361,29 @@
    "cases": 15,
    "typical": 2,
    "adapter": {
-    "ok": 13,
+    "ok": 14,
     "okTypical": 2,
     "soft": 0,
     "status": "обычные",
     "kinds": {
-     "значение вместо ошибки": 2
+     "значение вместо ошибки": 1
     },
     "tags": [
-     "текст TRUE",
      "отрицательное"
     ]
    },
    "bare": {
-    "ok": 10,
+    "ok": 11,
     "okTypical": 2,
     "status": "обычные",
     "kinds": {
      "NaN или бесконечность": 2,
      "другой код ошибки": 1,
-     "значение вместо ошибки": 2
+     "значение вместо ошибки": 1
     }
    },
-   "lo": 4,
-   "ru": 0
+   "lo": 3,
+   "ru": 1
   },
   {
    "fn": "CHISQ.DIST.RT",
@@ -1651,7 +1650,7 @@
     }
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "CODE",
@@ -1659,18 +1658,17 @@
    "cases": 12,
    "typical": 4,
    "adapter": {
-    "ok": 7,
+    "ok": 8,
     "okTypical": 3,
     "soft": 0,
     "status": "расходятся обычные",
     "kinds": {
-     "число": 5
+     "число": 4
     },
     "tags": [
      "обычный",
      "кириллица",
      "регистр",
-     "логическое",
      "кириллица в ячейке"
     ]
    },
@@ -1684,7 +1682,7 @@
     }
    },
    "lo": 7,
-   "ru": 0
+   "ru": 5
   },
   {
    "fn": "COLUMN",
@@ -1850,7 +1848,7 @@
     "kinds": {}
    },
    "lo": 3,
-   "ru": 2
+   "ru": 4
   },
   {
    "fn": "CONCATENATE",
@@ -1872,7 +1870,7 @@
     "kinds": {}
    },
    "lo": 2,
-   "ru": 3
+   "ru": 4
   },
   {
    "fn": "CONFIDENCE.NORM",
@@ -5254,27 +5252,23 @@
    "cases": 15,
    "typical": 3,
    "adapter": {
-    "ok": 14,
+    "ok": 15,
     "okTypical": 3,
     "soft": 0,
+    "status": "все",
+    "kinds": {},
+    "tags": []
+   },
+   "bare": {
+    "ok": 14,
+    "okTypical": 3,
     "status": "обычные",
     "kinds": {
      "значение вместо ошибки": 1
-    },
-    "tags": [
-     "текст TRUE"
-    ]
-   },
-   "bare": {
-    "ok": 13,
-    "okTypical": 3,
-    "status": "обычные",
-    "kinds": {
-     "значение вместо ошибки": 2
     }
    },
-   "lo": 1,
-   "ru": 0
+   "lo": 0,
+   "ru": 1
   },
   {
    "fn": "IFERROR",
@@ -5339,27 +5333,23 @@
    "cases": 15,
    "typical": 2,
    "adapter": {
-    "ok": 14,
+    "ok": 15,
     "okTypical": 2,
     "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "значение вместо ошибки": 1
-    },
-    "tags": [
-     "текст TRUE"
-    ]
+    "status": "все",
+    "kinds": {},
+    "tags": []
    },
    "bare": {
-    "ok": 12,
+    "ok": 13,
     "okTypical": 2,
     "status": "обычные",
     "kinds": {
-     "значение вместо ошибки": 3
+     "значение вместо ошибки": 2
     }
    },
-   "lo": 1,
-   "ru": 0
+   "lo": 0,
+   "ru": 1
   },
   {
    "fn": "IMABS",
@@ -6898,27 +6888,23 @@
    "cases": 15,
    "typical": 4,
    "adapter": {
-    "ok": 14,
+    "ok": 15,
     "okTypical": 4,
     "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "строка": 1
-    },
-    "tags": [
-     "логическое"
-    ]
+    "status": "все",
+    "kinds": {},
+    "tags": []
    },
    "bare": {
     "ok": 14,
     "okTypical": 4,
     "status": "обычные",
     "kinds": {
-     "строка": 1
+     "строка: регистр": 1
     }
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "LEN",
@@ -6926,27 +6912,21 @@
    "cases": 12,
    "typical": 4,
    "adapter": {
-    "ok": 11,
+    "ok": 12,
     "okTypical": 4,
     "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "число": 1
-    },
-    "tags": [
-     "логическое"
-    ]
+    "status": "все",
+    "kinds": {},
+    "tags": []
    },
    "bare": {
-    "ok": 11,
+    "ok": 12,
     "okTypical": 4,
-    "status": "обычные",
-    "kinds": {
-     "число": 1
-    }
+    "status": "все",
+    "kinds": {}
    },
    "lo": 1,
-   "ru": 0
+   "ru": 1
   },
   {
    "fn": "LINEST",
@@ -7260,27 +7240,21 @@
    "cases": 11,
    "typical": 2,
    "adapter": {
-    "ok": 10,
+    "ok": 11,
     "okTypical": 2,
     "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "строка": 1
-    },
-    "tags": [
-     "логическое"
-    ]
+    "status": "все",
+    "kinds": {},
+    "tags": []
    },
    "bare": {
-    "ok": 10,
+    "ok": 11,
     "okTypical": 2,
-    "status": "обычные",
-    "kinds": {
-     "строка": 1
-    }
+    "status": "все",
+    "kinds": {}
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "MATCH",
@@ -7437,18 +7411,16 @@
    "cases": 15,
    "typical": 4,
    "adapter": {
-    "ok": 12,
+    "ok": 13,
     "okTypical": 4,
     "soft": 0,
     "status": "обычные",
     "kinds": {
      "ошибка вместо значения": 1,
-     "строка": 1,
      "значение вместо ошибки": 1
     },
     "tags": [
      "пустая ячейка",
-     "логическое",
      "большое"
     ]
    },
@@ -7458,12 +7430,12 @@
     "status": "обычные",
     "kinds": {
      "ошибка вместо значения": 1,
-     "строка": 1,
+     "строка: регистр": 1,
      "значение вместо ошибки": 1
     }
    },
    "lo": 1,
-   "ru": 2
+   "ru": 3
   },
   {
    "fn": "MIN",
@@ -8330,25 +8302,23 @@
    "cases": 9,
    "typical": 2,
    "adapter": {
-    "ok": 8,
-    "okTypical": 2,
-    "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "значение вместо ошибки": 1
-    },
-    "tags": [
-     "текст TRUE"
-    ]
-   },
-   "bare": {
     "ok": 9,
     "okTypical": 2,
+    "soft": 0,
     "status": "все",
-    "kinds": {}
+    "kinds": {},
+    "tags": []
    },
-   "lo": 1,
-   "ru": 0
+   "bare": {
+    "ok": 8,
+    "okTypical": 2,
+    "status": "обычные",
+    "kinds": {
+     "ошибка вместо значения": 1
+    }
+   },
+   "lo": 0,
+   "ru": 1
   },
   {
    "fn": "NPER",
@@ -8917,29 +8887,28 @@
    "cases": 15,
    "typical": 2,
    "adapter": {
-    "ok": 13,
+    "ok": 14,
     "okTypical": 2,
     "soft": 0,
     "status": "обычные",
     "kinds": {
-     "значение вместо ошибки": 2
+     "значение вместо ошибки": 1
     },
     "tags": [
-     "текст TRUE",
      "отрицательное"
     ]
    },
    "bare": {
-    "ok": 12,
+    "ok": 13,
     "okTypical": 2,
     "status": "обычные",
     "kinds": {
-     "значение вместо ошибки": 2,
-     "другой код ошибки": 1
+     "другой код ошибки": 1,
+     "значение вместо ошибки": 1
     }
    },
-   "lo": 2,
-   "ru": 0
+   "lo": 1,
+   "ru": 1
   },
   {
    "fn": "POWER",
@@ -9086,29 +9055,28 @@
    "cases": 13,
    "typical": 4,
    "adapter": {
-    "ok": 8,
+    "ok": 9,
     "okTypical": 1,
     "soft": 0,
     "status": "расходятся обычные",
     "kinds": {
-     "строка": 5
+     "строка": 4
     },
     "tags": [
      "обычный",
-     "регистр",
-     "логическое"
+     "регистр"
     ]
    },
    "bare": {
-    "ok": 8,
+    "ok": 9,
     "okTypical": 1,
     "status": "расходятся обычные",
     "kinds": {
-     "строка": 5
+     "строка": 4
     }
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "PV",
@@ -9369,17 +9337,15 @@
    "cases": 15,
    "typical": 4,
    "adapter": {
-    "ok": 13,
+    "ok": 14,
     "okTypical": 4,
     "soft": 0,
     "status": "обычные",
     "kinds": {
-     "значение вместо ошибки": 1,
-     "строка": 1
+     "значение вместо ошибки": 1
     },
     "tags": [
-     "отрицательное",
-     "логическое"
+     "отрицательное"
     ]
    },
    "bare": {
@@ -9393,7 +9359,7 @@
     }
    },
    "lo": 1,
-   "ru": 2
+   "ru": 3
   },
   {
    "fn": "REPT",
@@ -9417,7 +9383,7 @@
     }
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "RIGHT",
@@ -9425,27 +9391,23 @@
    "cases": 15,
    "typical": 3,
    "adapter": {
-    "ok": 14,
+    "ok": 15,
     "okTypical": 3,
     "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "строка": 1
-    },
-    "tags": [
-     "логическое"
-    ]
+    "status": "все",
+    "kinds": {},
+    "tags": []
    },
    "bare": {
     "ok": 14,
     "okTypical": 3,
     "status": "обычные",
     "kinds": {
-     "строка": 1
+     "строка: регистр": 1
     }
    },
    "lo": 2,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "ROMAN",
@@ -10396,7 +10358,7 @@
     }
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "SUBTOTAL",
@@ -11258,7 +11220,7 @@
     }
    },
    "lo": 3,
-   "ru": 3
+   "ru": 4
   },
   {
    "fn": "TIME",
@@ -11456,7 +11418,7 @@
     }
    },
    "lo": 1,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "TRIMMEAN",
@@ -11646,16 +11608,12 @@
    "cases": 12,
    "typical": 4,
    "adapter": {
-    "ok": 11,
+    "ok": 12,
     "okTypical": 4,
     "soft": 0,
-    "status": "обычные",
-    "kinds": {
-     "число": 1
-    },
-    "tags": [
-     "логическое"
-    ]
+    "status": "все",
+    "kinds": {},
+    "tags": []
    },
    "bare": {
     "ok": 10,
@@ -11666,7 +11624,7 @@
     }
    },
    "lo": 1,
-   "ru": 0
+   "ru": 1
   },
   {
    "fn": "UNIQUE",
@@ -11732,7 +11690,7 @@
     }
    },
    "lo": 2,
-   "ru": 1
+   "ru": 2
   },
   {
    "fn": "VALUE",
@@ -22271,19 +22229,17 @@
   },
   "CHISQ.DIST#10": {
    "adapter": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "lo": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "ошибка вместо значения"
    }
   },
   "CHISQ.DIST#11": {
@@ -24026,7 +23982,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "CLEAN#7": {
@@ -24141,7 +24098,8 @@
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "CODE#4": {
@@ -24173,7 +24131,8 @@
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "CODE#6": {
@@ -24190,7 +24149,8 @@
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "CODE#7": {
@@ -24210,8 +24170,7 @@
   },
   "CODE#8": {
    "adapter": {
-    "ok": false,
-    "kind": "число"
+    "ok": true
    },
    "bare": {
     "ok": false,
@@ -24222,7 +24181,8 @@
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "CODE#9": {
@@ -24282,7 +24242,8 @@
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "COLUMN#1": {
@@ -25179,7 +25140,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "CONCAT#8": {
@@ -25222,7 +25184,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "CONCAT#11": {
@@ -25367,7 +25330,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "CONCATENATE#9": {
@@ -47075,19 +47039,17 @@
   },
   "IF#8": {
    "adapter": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "lo": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "ошибка вместо значения"
    }
   },
   "IF#9": {
@@ -47717,19 +47679,17 @@
   },
   "IFS#8": {
    "adapter": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "lo": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "ошибка вместо значения"
    }
   },
   "IFS#9": {
@@ -56067,19 +56027,19 @@
   },
   "LEFT#9": {
    "adapter": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "bare": {
     "ok": false,
-    "kind": "строка"
+    "kind": "строка: регистр"
    },
    "lo": {
     "ok": false,
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "LEFT#10": {
@@ -56266,19 +56226,18 @@
   },
   "LEN#8": {
    "adapter": {
-    "ok": false,
-    "kind": "число"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "число"
+    "ok": true
    },
    "lo": {
     "ok": false,
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "LEN#9": {
@@ -58466,19 +58425,18 @@
   },
   "LOWER#6": {
    "adapter": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "lo": {
     "ok": false,
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "LOWER#7": {
@@ -59665,19 +59623,19 @@
   },
   "MID#10": {
    "adapter": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "bare": {
     "ok": false,
-    "kind": "строка"
+    "kind": "строка: регистр"
    },
    "lo": {
     "ok": false,
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "MID#11": {
@@ -65154,18 +65112,18 @@
   },
   "NOT#5": {
    "adapter": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "bare": {
-    "ok": true
+    "ok": false,
+    "kind": "ошибка вместо значения"
    },
    "lo": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "ошибка вместо значения"
    }
   },
   "NOT#6": {
@@ -69103,19 +69061,17 @@
   },
   "POISSON.DIST#6": {
    "adapter": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "lo": {
-    "ok": false,
-    "kind": "значение вместо ошибки"
+    "ok": true
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "ошибка вместо значения"
    }
   },
   "POISSON.DIST#7": {
@@ -70390,19 +70346,18 @@
   },
   "PROPER#8": {
    "adapter": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "bare": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "lo": {
     "ok": false,
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "PROPER#9": {
@@ -72366,8 +72321,7 @@
   },
   "REPLACE#11": {
    "adapter": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "bare": {
     "ok": false,
@@ -72378,7 +72332,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "REPLACE#12": {
@@ -72551,7 +72506,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "REPT#9": {
@@ -72753,19 +72709,19 @@
   },
   "RIGHT#8": {
    "adapter": {
-    "ok": false,
-    "kind": "строка"
+    "ok": true
    },
    "bare": {
     "ok": false,
-    "kind": "строка"
+    "kind": "строка: регистр"
    },
    "lo": {
     "ok": false,
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "RIGHT#9": {
@@ -78791,7 +78747,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "SUBSTITUTE#12": {
@@ -84434,7 +84391,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "TEXTJOIN#11": {
@@ -85522,7 +85480,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "TRIM#8": {
@@ -86779,8 +86738,7 @@
   },
   "UNICODE#8": {
    "adapter": {
-    "ok": false,
-    "kind": "число"
+    "ok": true
    },
    "bare": {
     "ok": false,
@@ -86791,7 +86749,8 @@
     "kind": "число"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "число"
    }
   },
   "UNICODE#9": {
@@ -87109,7 +87068,8 @@
     "kind": "строка"
    },
    "ru": {
-    "ok": true
+    "ok": false,
+    "kind": "строка"
    }
   },
   "UPPER#8": {

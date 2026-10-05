@@ -4,7 +4,7 @@
  *   npx tsx bench/coverage/run.ts cases      случаи и книга (bench/coverage/out/book.xlsx)
  *   npx tsx bench/coverage/run.ts fj         formulajs через адаптер и голая
  *   npx tsx bench/coverage/run.ts lo         LibreOffice en-US
- *   npx tsx bench/coverage/run.ts excel en   Excel en-US (перезапускает Excel с -AppleLocale en_US)
+ *   npx tsx bench/coverage/run.ts excel en   Excel en-US (перезапускает Excel с английским интерфейсом и локалью)
  *   npx tsx bench/coverage/run.ts excel ru   Excel ru-RU (перезапускает Excel без аргументов)
  *   npx tsx bench/coverage/run.ts report     сравнение, сводка и таблицы отчёта
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
@@ -155,7 +155,7 @@ async function stepExcel(locale: Locale) {
   const col: ExcelColumn =
     existsSync(file) && !process.env.FCOV_FRESH
       ? load<ExcelColumn>(name)
-      : { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLocale en_US)' : 'ru-RU (системная)', seconds: 0, parts: ps.length, done: 0 }, values: {} }
+      : { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLanguages (en) -AppleLocale en_US)' : 'ru-RU (системные язык и локаль)', seconds: 0, parts: ps.length, done: 0 }, values: {} }
   delete col.meta.stopped
   const stop = (k: number, why: string) => {
     col.meta.stopped = `часть ${k + 1} из ${ps.length} (${ps[k][0].id} … ${ps[k][ps[k].length - 1].id}): ${why}`

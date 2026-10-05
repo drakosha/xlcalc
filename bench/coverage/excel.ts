@@ -1,8 +1,9 @@
 /**
  * Excel на Маке как оракул: книга кладётся в песочницу Excel (там он открывает её без запроса
  * доступа), `excel-read.applescript` открывает, пересчитывает, читает три колонки без ошибок и
- * закрывает без сохранения. Локаль расчёта задаётся аргументом запуска Excel (`-AppleLocale en_US`
- * для en-US, без аргументов системная ru_RU); настройки Excel не меняются.
+ * закрывает без сохранения. Язык интерфейса и локаль расчёта задаются аргументами запуска Excel
+ * (`-AppleLanguages (en) -AppleLocale en_US` для en-US, без аргументов системные ru для ru-RU);
+ * настройки Excel не меняются.
  */
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, rmSync } from 'node:fs'
@@ -40,7 +41,19 @@ function countWorkbooks(): number {
   return Number(osa('tell application "Microsoft Excel" to count workbooks'))
 }
 
-const localeOf = (args: string): Locale => (/-AppleLocale en_US/.test(args) ? 'en' : 'ru')
+/** Режим запущенного Excel: en (английский интерфейс и локаль), ru (системные), иначе прочий. */
+const localeOf = (args: string): Locale | 'other' => {
+  const lang = /-AppleLanguages \(en\)/.test(args)
+  const loc = /-AppleLocale en_US/.test(args)
+  return lang && loc ? 'en' : !lang && !loc && !/-Apple(Languages|Locale)/.test(args) ? 'ru' : 'other'
+}
+
+/**
+ * Аргументы запуска: для en-US английский интерфейс и локаль. Язык интерфейса влияет на расчёт, не
+ * только на показ: с русским интерфейсом текст "TRUE" не логическое (`IF("TRUE",1,2)` это #VALUE!),
+ * а логическое в тексте выходит ИСТИНА; с английским `IF("TRUE",1,2)` это 1.
+ */
+const LAUNCH: Record<Locale, string[]> = { en: ['--args', '-AppleLanguages', '(en)', '-AppleLocale', 'en_US'], ru: [] }
 
 export function excelVersion(): string {
   return osa('tell application "Microsoft Excel" to get version')
@@ -48,7 +61,7 @@ export function excelVersion(): string {
 
 /**
  * Excel с нужной локалью: если запущен с другой, при нуле открытых книг выходит и запускается
- * заново (`open -a`, для en-US с `--args -AppleLocale en_US`). Открытые книги: отказ.
+ * заново (`open -a`, для en-US с `--args -AppleLanguages (en) -AppleLocale en_US`). Открытые книги: отказ.
  */
 export async function ensureExcel(locale: Locale): Promise<void> {
   const p = excelProcess()
@@ -62,7 +75,7 @@ export async function ensureExcel(locale: Locale): Promise<void> {
       await sleep(500)
     }
   }
-  execFileSync('open', ['-a', 'Microsoft Excel', ...(locale === 'en' ? ['--args', '-AppleLocale', 'en_US'] : [])])
+  execFileSync('open', ['-a', 'Microsoft Excel', ...LAUNCH[locale]])
   for (let i = 0; ; i++) {
     if (i > 120) throw new Error('Excel не запустился за 60 с')
     await sleep(500)
