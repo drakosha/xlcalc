@@ -11,8 +11,8 @@
  * base 0 is #NUM! (formula.js read base 0 as 10); POWER(0, negative) is #DIV/0!; PRODUCT of no numbers is 0.
  * SUMIF, SUMIFS, RAND and RANDBETWEEN are this engine's own.
  */
-import type { Cx, FnDef } from '../args.js'
 import { E, isErr, Rng, type CErr, type V } from '../values.js'
+import type { Cx, FnDef } from '../args.js'
 import { quotient, roundDigits } from './common.js'
 
 /** CEILING.MATH and FLOOR.MATH: significance taken as positive; `mode` rounds negative numbers away from zero. */

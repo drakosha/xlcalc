@@ -5,9 +5,9 @@
  * 2014 Sutoiku, Inc., MIT License (full text in THIRD_PARTY.md). Changed: the engine's error values instead
  * of formula.js error objects; ERROR.TYPE knows #SPILL! (9).
  */
+import { E, isErr, type V } from '../values.js'
 import type { FnDef } from '../args.js'
 import type { ErrorCode } from '../contract.js'
-import { E, isErr, type V } from '../values.js'
 
 /** ERROR.TYPE numbers; #ERROR! is how this engine reads #NULL! (1). #CYCLE! never reaches a formula. */
 const ERROR_TYPE: Partial<Record<ErrorCode, number>> = { ERROR: 1, DIV0: 2, VALUE: 3, REF: 4, NAME: 5, NUM: 6, NA: 7, SPILL: 9 }

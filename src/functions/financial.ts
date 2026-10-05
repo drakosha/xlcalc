@@ -6,8 +6,8 @@
  * engine's argument layer (`src/args.ts`); a zero divisor is #DIV/0! (ISPMT with 0 periods, NPV at a rate
  * of −1); PDURATION needs positive values (#NUM!).
  */
-import type { FnDef } from '../args.js'
 import { E } from '../values.js'
+import type { FnDef } from '../args.js'
 
 export const functions: Record<string, FnDef> = {
   ISPMT: { args: 'n i i n', fn: (rate: number, per: number, nper: number, pv: number) => (nper === 0 ? E.DIV0 : pv * rate * (per / nper - 1)) },
