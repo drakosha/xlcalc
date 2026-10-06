@@ -202,8 +202,16 @@ export type CritIndex = Map<string, number[]>
 
 export function buildIndex(flat: readonly CritValue[], rules: CritRules = EN_CRIT): CritIndex {
   const ix: CritIndex = new Map()
+  // a text repeated down a column is read once (a text always has a key)
+  const texts = new Map<string, string>()
+  const textKey = (t: string) => {
+    const k = eqKey(t, rules)!
+    texts.set(t, k)
+    return k
+  }
   for (let i = 0; i < flat.length; i++) {
-    const k = eqKey(flat[i], rules)
+    const v = flat[i]
+    const k = typeof v === 'string' ? (texts.get(v) ?? textKey(v)) : eqKey(v, rules)
     if (k === null) continue
     const list = ix.get(k)
     if (list) list.push(i)
