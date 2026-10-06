@@ -52,7 +52,7 @@ Nothing changes in the graph: a cell still holds one value, the references of a 
 
 ## Compilation and speed
 
-The code generator knows statically whether a node can be an array (`src/arrays/shape.ts`): ranges of several cells in a value position, array constants, functions with an array answer, and what is lifted over them. Only such nodes go through the lifting operators (`L1`, `L2`) and callers (`FL`, `LZ`); a formula without arrays compiles to the same code as before. The shape pass costs about 5 ms on the synthetic book's 3,907 formulas.
+The compiler's walk (`src/exec/walk.ts`), shared by both execution modes, knows statically whether a node can be an array (`src/arrays/shape.ts`): ranges of several cells in a value position, array constants, functions with an array answer, and what is lifted over them. Only such nodes go through the lifting operators (`L1`, `L2`) and callers (`FL`, `LZ`), as closures or as generated text; a formula without arrays compiles to plain scalar code. The shape pass costs about 5 ms on the synthetic book's 3,907 formulas.
 
 ## Checking against Excel
 
