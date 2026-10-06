@@ -20,6 +20,8 @@ export function operators(add: Add) {
   // whole columns: 1,048,576 rows, the blank ones too
   g('SUM(D!B:B*1)', 'SUM(D!B:B+1)', 'COUNT(D!B:B*1)', 'ROWS(D!B:B*1)', 'SUM(D!B:B*D!C:C)', 'SUMPRODUCT((D!B:B>10)*D!C:C)', 'MAX(D!B:B*2)', 'MIN(D!B:B*2)', 'MIN(D!B:B+100)', 'COUNTA(D!B:B*1)')
   g('COLUMNS(D!1:1*0)', 'MATCH(1,(D!B:B>20)*(D!C:C>20),0)', 'MATCH(0,(D!B:B>20)*1,0)', 'XMATCH(1,(D!B:B="")*1)', 'SUM(--(D!B:B=""))', 'AVERAGE(D!B:B*1)')
+  // text order: Latin before Cyrillic, as Excel en-US sorts
+  g('SUM(--({"x*y","Арeнда*","z"}<"Аренда"))', 'SUM(--(D!F1:F7>"x"))', 'SUM(-(D!D1:D8))', 'SUM(D!B1:B8>10)', 'SUMPRODUCT(--(D!F:F="чай"))')
 }
 
 export function constants(add: Add) {

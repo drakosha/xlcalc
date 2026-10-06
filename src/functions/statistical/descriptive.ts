@@ -123,13 +123,15 @@ function mode(grids: Grid[]): V {
 
 /**
  * FREQUENCY: how many numbers of the data fall at or below each bin and above the bins before it (bins taken
- * in sorted order, answered in their own order; a repeated bin counts nothing), and above the last bin.
+ * in sorted order, answered in their own order; a repeated bin counts nothing), and above the last bin. Bins
+ * without numbers are one bin at 0, as in Excel.
  */
 function frequency(data: Grid, bins: Grid): V | Arr {
   const xs = gridNumbers(data)
   if (isErr(xs)) return xs
-  const bs = gridNumbers(bins)
-  if (isErr(bs)) return bs
+  const found = gridNumbers(bins)
+  if (isErr(found)) return found
+  const bs = found.length ? found : [0]
   const order = bs.map((_, i) => i).sort((a, b) => bs[a] - bs[b] || a - b)
   const counts = new Array<number>(bs.length + 1).fill(0)
   for (const x of xs) {

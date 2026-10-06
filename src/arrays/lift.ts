@@ -65,8 +65,12 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
 /** A position past an operand that is not repeated along that dimension: the element there is #N/A. */
 const isOutside = (x: Arr, r: number, c: number) => (x.rows > 1 && r >= x.rows) || (x.cols > 1 && c >= x.cols)
 
-/** The value of a lifted call at one position: an array answer gives its top-left value, a blank cell 0 (it is no longer blank). */
+/**
+ * The value of a lifted call at one position: an array or a reference answer gives its top-left value, and a
+ * blank there stays an empty element (INDEX); a blank value becomes 0 (IF over a blank cell, as in Excel).
+ */
 export function first(x: Val, cell: (g: Rng) => V): V {
-  const v = x instanceof Arr ? x.at(0, 0) : x instanceof Rng ? cell(x) : x
-  return v === null ? 0 : v
+  if (x instanceof Arr) return x.at(0, 0)
+  if (x instanceof Rng) return cell(x)
+  return x === null ? 0 : x
 }

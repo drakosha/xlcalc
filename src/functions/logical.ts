@@ -38,20 +38,17 @@ export const functions: Record<string, FnDef> = {
       return c ? then() : otherwise ? otherwise() : false
     },
   },
-  // the value and the alternative both lift (Excel 365: IFERROR(1,A1:A2) is an array)
   IFERROR: {
-    args: 'a a',
+    args: 'a p',
     lazy: true,
-    liftAt: () => true,
     fn: (value: () => V, alt: () => V) => {
       const v = value()
       return isErr(v) ? alt() : v
     },
   },
   IFNA: {
-    args: 'a a',
+    args: 'a p',
     lazy: true,
-    liftAt: () => true,
     fn: (value: () => V, alt: () => V) => {
       const v = value()
       return isErr(v) && v.code === 'NA' ? alt() : v

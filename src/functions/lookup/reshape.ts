@@ -38,15 +38,21 @@ function part(size: number, n: number | undefined, take: boolean): number[] {
   return n >= 0 ? range(k, size) : range(0, size - k)
 }
 
+/** TAKE and DROP: of a reference a reference (COUNTA skips its blank cells), of an array an array. */
 function takeDrop(take: boolean): FnDef {
   return {
-    args: 'G n n?',
+    args: 'R n n?',
+    cx: true,
     array: true,
-    fn: (g: Grid, rows: number, cols?: number) => {
+    fn: (cx: Cx, x: Arg, rows: number, cols?: number) => {
+      if (isErr(x)) return x
       if (take && (Math.trunc(rows) === 0 || (cols !== undefined && Math.trunc(cols) === 0))) return EMPTY
+      const g = cx.grid(x)
       const rs = part(g.rows, rows, take)
       const cs = part(g.cols, cols, take)
-      return rs.length && cs.length ? pick(fromGrid(g), rs, cs) : EMPTY
+      if (!rs.length || !cs.length) return EMPTY
+      if (x instanceof Rng) return new Rng(x.s, x.r1 + rs[0], x.c1 + cs[0], x.r1 + rs[rs.length - 1], x.c1 + cs[cs.length - 1])
+      return pick(fromGrid(g), rs, cs)
     },
   }
 }

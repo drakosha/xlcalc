@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 118.896,
+  "seconds": 6.779,
   "dynamic": true
  },
  "cases": [
@@ -94,7 +94,7 @@
    "id": "ops#15",
    "group": "ops",
    "fn": "array-ops",
-   "formula": "SUM({1E+308,1E+308}*10)"
+   "formula": "SUM(1E+307*{100,1})"
   },
   {
    "id": "ops#16",
@@ -467,6 +467,36 @@
    "group": "ops",
    "fn": "array-ops",
    "formula": "AVERAGE(D!B:B*1)"
+  },
+  {
+   "id": "ops#78",
+   "group": "ops",
+   "fn": "array-ops",
+   "formula": "SUM(--({\"x*y\",\"Арeнда*\",\"z\"}<\"Аренда\"))"
+  },
+  {
+   "id": "ops#79",
+   "group": "ops",
+   "fn": "array-ops",
+   "formula": "SUM(--(D!F1:F7>\"x\"))"
+  },
+  {
+   "id": "ops#80",
+   "group": "ops",
+   "fn": "array-ops",
+   "formula": "SUM(-(D!D1:D8))"
+  },
+  {
+   "id": "ops#81",
+   "group": "ops",
+   "fn": "array-ops",
+   "formula": "SUM(D!B1:B8>10)"
+  },
+  {
+   "id": "ops#82",
+   "group": "ops",
+   "fn": "array-ops",
+   "formula": "SUMPRODUCT(--(D!F:F=\"чай\"))"
   },
   {
    "id": "const#1",
@@ -985,6 +1015,162 @@
    "formula": "COUNTA(IF(D!K1:K8=\"\",D!K1:K8))"
   },
   {
+   "id": "agg:COUNTA#5",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(IF({1;1},D!K1:K2))"
+  },
+  {
+   "id": "agg:COUNTA#6",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(TRANSPOSE(D!K1:K2))"
+  },
+  {
+   "id": "agg:COUNTA#7",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn.TAKE(D!K1:K8,2))"
+  },
+  {
+   "id": "agg:COUNTA#8",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn.VSTACK(D!K1:K2))"
+  },
+  {
+   "id": "agg:COUNTA#9",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn._xlws.SORT(D!D1:D8))"
+  },
+  {
+   "id": "agg:COUNTA#10",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn._xlws.FILTER(D!D1:D8,{1;1;1;1;1;1;1;1}))"
+  },
+  {
+   "id": "agg:COUNTA#11",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn.CHOOSECOLS(D!K1:K2,1))"
+  },
+  {
+   "id": "agg:COUNTA#12",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(INDEX(D!K1:K8,{1;2}))"
+  },
+  {
+   "id": "agg:COUNTA#13",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(INDEX(D!K1:K8,0,1))"
+  },
+  {
+   "id": "agg:COUNTA#14",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn.UNIQUE(D!K1:K8))"
+  },
+  {
+   "id": "agg:COUNTA#15",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn.TOCOL(D!K1:K3))"
+  },
+  {
+   "id": "agg:COUNTA#16",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(_xlfn.EXPAND(D!K1,2,1,1))"
+  },
+  {
+   "id": "agg:COUNTA#17",
+   "group": "agg:COUNTA",
+   "fn": "COUNTA",
+   "formula": "COUNTA(D!K1:K8*1)"
+  },
+  {
+   "id": "agg:ISBLANK#1",
+   "group": "agg:ISBLANK",
+   "fn": "ISBLANK",
+   "formula": "SUM(--ISNUMBER(IF({1;1},D!K1:K2)))"
+  },
+  {
+   "id": "agg:ISBLANK#2",
+   "group": "agg:ISBLANK",
+   "fn": "ISBLANK",
+   "formula": "INDEX(IF({1;1},D!K1:K2),1)&\"x\""
+  },
+  {
+   "id": "agg:ISBLANK#3",
+   "group": "agg:ISBLANK",
+   "fn": "ISBLANK",
+   "formula": "INDEX(TRANSPOSE(D!K1:K2),1,1)&\"x\""
+  },
+  {
+   "id": "agg:ISBLANK#4",
+   "group": "agg:ISBLANK",
+   "fn": "ISBLANK",
+   "formula": "SUM(--ISBLANK(TRANSPOSE(D!K1:K2)))"
+  },
+  {
+   "id": "agg:ISBLANK#5",
+   "group": "agg:ISBLANK",
+   "fn": "ISBLANK",
+   "formula": "SUM(--ISBLANK(_xlfn._xlws.SORT(D!D1:D8)))"
+  },
+  {
+   "id": "agg:ISBLANK#6",
+   "group": "agg:ISBLANK",
+   "fn": "ISBLANK",
+   "formula": "SUM(--ISBLANK(INDEX(D!K1:K8,{1;2})))"
+  },
+  {
+   "id": "agg:MAXA#1",
+   "group": "agg:MAXA",
+   "fn": "MAXA",
+   "formula": "MAXA({TRUE,-1})"
+  },
+  {
+   "id": "agg:MAXA#2",
+   "group": "agg:MAXA",
+   "fn": "MAXA",
+   "formula": "MAXA(IF(D!B1:B2>0,TRUE))"
+  },
+  {
+   "id": "agg:MINA#1",
+   "group": "agg:MINA",
+   "fn": "MINA",
+   "formula": "MINA({FALSE,1})"
+  },
+  {
+   "id": "agg:STDEVA#1",
+   "group": "agg:STDEVA",
+   "fn": "STDEVA",
+   "formula": "STDEVA({1,TRUE,3})"
+  },
+  {
+   "id": "agg:VARA#1",
+   "group": "agg:VARA",
+   "fn": "VARA",
+   "formula": "VARA({\"a\",2,4})"
+  },
+  {
+   "id": "agg:AVERAGEA#3",
+   "group": "agg:AVERAGEA",
+   "fn": "AVERAGEA",
+   "formula": "AVERAGEA({TRUE})"
+  },
+  {
+   "id": "agg:AVERAGEA#4",
+   "group": "agg:AVERAGEA",
+   "fn": "AVERAGEA",
+   "formula": "AVERAGEA({TRUE,\"x\"})"
+  },
+  {
    "id": "agg:PRODUCT#1",
    "group": "agg:PRODUCT",
    "fn": "PRODUCT",
@@ -1309,6 +1495,12 @@
    "formula": "ROWS(IFERROR(D!B1:B3,0))"
   },
   {
+   "id": "lazy:IFERROR#6",
+   "group": "lazy:IFERROR",
+   "fn": "IFERROR",
+   "formula": "ROWS(IFERROR(1,D!B1:B3))"
+  },
+  {
    "id": "lazy:IFNA#1",
    "group": "lazy:IFNA",
    "fn": "IFNA",
@@ -1411,12 +1603,6 @@
    "formula": "SUM(SUMIF(D!L1:L6,{1,3},D!N1:N6))"
   },
   {
-   "id": "key:SUMIF#2",
-   "group": "key:SUMIF",
-   "fn": "SUMIF",
-   "formula": "SUMIF(D!L1:L6,\">2\",D!N1:N6*2)"
-  },
-  {
    "id": "key:SUMIFS#1",
    "group": "key:SUMIFS",
    "fn": "SUMIFS",
@@ -1433,6 +1619,12 @@
    "group": "key:COUNTIFS",
    "fn": "COUNTIFS",
    "formula": "SUM(COUNTIFS(D!L1:L6,\">\"&{1,5}))"
+  },
+  {
+   "id": "key:COUNTIFS#3",
+   "group": "key:COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "SUM(COUNTIFS(D!L1:L6,{\">1\",\">5\"},D!N1:N6,\"<100\"))"
   },
   {
    "id": "key:AVERAGEIF#1",
@@ -1498,40 +1690,46 @@
    "id": "key:XLOOKUP#1",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "SUM(_xlfn.XLOOKUP({2,8},D!L1:L6,D!N1:N6))"
+   "formula": "ROWS(_xlfn.XLOOKUP(9,D!L1:L6,D!M1:M6,D!B1:B2))"
   },
   {
    "id": "key:XLOOKUP#2",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6),1,2)"
+   "formula": "SUM(_xlfn.XLOOKUP({2,8},D!L1:L6,D!N1:N6))"
   },
   {
    "id": "key:XLOOKUP#3",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "COLUMNS(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6))"
+   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6),1,2)"
   },
   {
    "id": "key:XLOOKUP#4",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6)"
+   "formula": "COLUMNS(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6))"
   },
   {
    "id": "key:XLOOKUP#5",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L8:Q8,D!L9:Q10),2,1)"
+   "formula": "_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6)"
   },
   {
    "id": "key:XLOOKUP#6",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "_xlfn.XLOOKUP(9,D!L1:L6,D!M1:N6)"
+   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L8:Q8,D!L9:Q10),2,1)"
   },
   {
    "id": "key:XLOOKUP#7",
+   "group": "key:XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(9,D!L1:L6,D!M1:N6)"
+  },
+  {
+   "id": "key:XLOOKUP#8",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
    "formula": "INDEX(_xlfn.XLOOKUP(9,D!L1:L6,D!M1:N6,{\"x\",\"y\"}),1,2)"
@@ -1876,46 +2074,58 @@
    "id": "ref:INDEX#14",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "INDEX({1,2;3,4},0,3)"
+   "formula": "SUM(INDEX(D!B1:B8,D!AH2:AH4))"
   },
   {
    "id": "ref:INDEX#15",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!B:B,0,1))"
+   "formula": "INDEX(D!K1:K8*1,1)"
   },
   {
    "id": "ref:INDEX#16",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "ROWS(INDEX(D!B:B,0,1))"
+   "formula": "INDEX({1,2;3,4},0,3)"
   },
   {
    "id": "ref:INDEX#17",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!L1:N6*1,0,1))"
+   "formula": "SUM(INDEX(D!B:B,0,1))"
   },
   {
    "id": "ref:INDEX#18",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!L1:L6,0))"
+   "formula": "ROWS(INDEX(D!B:B,0,1))"
   },
   {
    "id": "ref:INDEX#19",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!L8:Q8,0))"
+   "formula": "SUM(INDEX(D!L1:N6*1,0,1))"
   },
   {
    "id": "ref:INDEX#20",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "INDEX(D!L1:N6,0)"
+   "formula": "SUM(INDEX(D!L1:L6,0))"
   },
   {
    "id": "ref:INDEX#21",
+   "group": "ref:INDEX",
+   "fn": "INDEX",
+   "formula": "SUM(INDEX(D!L8:Q8,0))"
+  },
+  {
+   "id": "ref:INDEX#22",
+   "group": "ref:INDEX",
+   "fn": "INDEX",
+   "formula": "INDEX(D!L1:N6,0)"
+  },
+  {
+   "id": "ref:INDEX#23",
    "group": "ref:INDEX",
    "fn": "INDEX",
    "formula": "SUM(INDEX(D!L1:N6,{1,2,3},1))"
@@ -2365,6 +2575,12 @@
    "formula": "_xlfn.SEQUENCE(1,0)"
   },
   {
+   "id": "fn:SEQUENCE#16",
+   "group": "fn:SEQUENCE",
+   "fn": "SEQUENCE",
+   "formula": "INDEX(_xlfn.SEQUENCE({2;3}),2)"
+  },
+  {
    "id": "fn:CHOOSECOLS#1",
    "group": "fn:CHOOSECOLS",
    "fn": "CHOOSECOLS",
@@ -2653,6 +2869,18 @@
    "formula": "ROWS(_xlfn.TOCOL(AR!F1:F10,3))"
   },
   {
+   "id": "fn:TOCOL#10",
+   "group": "fn:TOCOL",
+   "fn": "TOCOL",
+   "formula": "COUNT(_xlfn.TOCOL(D!B:B,1))"
+  },
+  {
+   "id": "fn:TOCOL#11",
+   "group": "fn:TOCOL",
+   "fn": "TOCOL",
+   "formula": "ROWS(_xlfn.TOCOL(D!B:B,1))"
+  },
+  {
    "id": "fn:TOROW#1",
    "group": "fn:TOROW",
    "fn": "TOROW",
@@ -2827,37 +3055,193 @@
    "formula": "_xlfn.TEXTJOIN(\",\",TRUE,_xlfn._xlws.SORT(D!F1:F7))"
   },
   {
+   "id": "fn:SORT#14",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),1)"
+  },
+  {
+   "id": "fn:SORT#15",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),1)"
+  },
+  {
+   "id": "fn:SORT#16",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),2)"
+  },
+  {
+   "id": "fn:SORT#17",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),2)"
+  },
+  {
+   "id": "fn:SORT#18",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),3)"
+  },
+  {
+   "id": "fn:SORT#19",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),3)"
+  },
+  {
+   "id": "fn:SORT#20",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),4)"
+  },
+  {
+   "id": "fn:SORT#21",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),4)"
+  },
+  {
+   "id": "fn:SORT#22",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),5)"
+  },
+  {
+   "id": "fn:SORT#23",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),5)"
+  },
+  {
+   "id": "fn:SORT#24",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),6)"
+  },
+  {
+   "id": "fn:SORT#25",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),6)"
+  },
+  {
+   "id": "fn:SORT#26",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),7)"
+  },
+  {
+   "id": "fn:SORT#27",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),7)"
+  },
+  {
+   "id": "fn:SORT#28",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),8)"
+  },
+  {
+   "id": "fn:SORT#29",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),8)"
+  },
+  {
+   "id": "fn:SORT#30",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),9)"
+  },
+  {
+   "id": "fn:SORT#31",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),9)"
+  },
+  {
+   "id": "fn:SORT#32",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10),10)"
+  },
+  {
+   "id": "fn:SORT#33",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(AR!F1:F10,1,-1),10)"
+  },
+  {
+   "id": "fn:SORT#34",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(D!E1:E8,1,-1),1)"
+  },
+  {
+   "id": "fn:SORT#35",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "ROWS(_xlfn._xlws.SORT(D!B:B))"
+  },
+  {
+   "id": "fn:SORT#36",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(D!B:B),1)"
+  },
+  {
+   "id": "fn:SORT#37",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(D!B:B,1,-1),1)"
+  },
+  {
+   "id": "fn:SORT#38",
+   "group": "fn:SORT",
+   "fn": "SORT",
+   "formula": "INDEX(_xlfn._xlws.SORT(_xlfn.UNIQUE(D!AS1:AS8)),1)"
+  },
+  {
    "id": "fn:SORTBY#1",
    "group": "fn:SORTBY",
    "fn": "SORTBY",
-   "formula": "INDEX(_xlfn.SORTBY(D!M1:M6,D!N1:N6,-1),1)"
+   "formula": "_xlfn.TEXTJOIN(\",\",TRUE,_xlfn.SORTBY(_xlfn.UNIQUE(AR!B1:B8),COUNTIF(AR!B1:B8,_xlfn.UNIQUE(AR!B1:B8)),-1))"
   },
   {
    "id": "fn:SORTBY#2",
    "group": "fn:SORTBY",
    "fn": "SORTBY",
-   "formula": "_xlfn.TEXTJOIN(\",\",TRUE,_xlfn.SORTBY(AR!A1:A8,AR!B1:B8,1,AR!C1:C8,-1))"
+   "formula": "INDEX(_xlfn.SORTBY(D!M1:M6,D!N1:N6,-1),1)"
   },
   {
    "id": "fn:SORTBY#3",
    "group": "fn:SORTBY",
    "fn": "SORTBY",
-   "formula": "_xlfn.SORTBY(D!M1:M6,D!N1:N5)"
+   "formula": "_xlfn.TEXTJOIN(\",\",TRUE,_xlfn.SORTBY(AR!A1:A8,AR!B1:B8,1,AR!C1:C8,-1))"
   },
   {
    "id": "fn:SORTBY#4",
    "group": "fn:SORTBY",
    "fn": "SORTBY",
-   "formula": "INDEX(_xlfn.SORTBY({\"a\",\"b\",\"c\"},{3,1,2}),1,1)"
+   "formula": "_xlfn.SORTBY(D!M1:M6,D!N1:N5)"
   },
   {
    "id": "fn:SORTBY#5",
    "group": "fn:SORTBY",
    "fn": "SORTBY",
-   "formula": "_xlfn.SORTBY(D!M1:M6,D!N1:N6,0)"
+   "formula": "INDEX(_xlfn.SORTBY({\"a\",\"b\",\"c\"},{3,1,2}),1,1)"
   },
   {
    "id": "fn:SORTBY#6",
+   "group": "fn:SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.SORTBY(D!M1:M6,D!N1:N6,0)"
+  },
+  {
+   "id": "fn:SORTBY#7",
    "group": "fn:SORTBY",
    "fn": "SORTBY",
    "formula": "_xlfn.TEXTJOIN(\",\",TRUE,_xlfn.SORTBY(AR!A1:A8,AR!C1:C8))"
@@ -2908,28 +3292,46 @@
    "id": "fn:UNIQUE#8",
    "group": "fn:UNIQUE",
    "fn": "UNIQUE",
-   "formula": "ROWS(_xlfn.UNIQUE(D!K1:K8))"
+   "formula": "ROWS(_xlfn.UNIQUE(D!B:B))"
   },
   {
    "id": "fn:UNIQUE#9",
    "group": "fn:UNIQUE",
    "fn": "UNIQUE",
-   "formula": "INDEX(_xlfn.UNIQUE(D!D1:D8),5)"
+   "formula": "SUM(_xlfn.UNIQUE(_xlfn._xlws.FILTER(D!AS1:AS8,ISNUMBER(D!AS1:AS8))))"
   },
   {
    "id": "fn:UNIQUE#10",
    "group": "fn:UNIQUE",
    "fn": "UNIQUE",
-   "formula": "ROWS(_xlfn.UNIQUE(D!E1:E8))"
+   "formula": "COUNTA(_xlfn.UNIQUE(_xlfn.TOCOL(AR!A1:B8)))"
   },
   {
    "id": "fn:UNIQUE#11",
    "group": "fn:UNIQUE",
    "fn": "UNIQUE",
-   "formula": "ROWS(_xlfn.UNIQUE(AR!A1:B8))"
+   "formula": "ROWS(_xlfn.UNIQUE(D!K1:K8))"
   },
   {
    "id": "fn:UNIQUE#12",
+   "group": "fn:UNIQUE",
+   "fn": "UNIQUE",
+   "formula": "INDEX(_xlfn.UNIQUE(D!D1:D8),5)"
+  },
+  {
+   "id": "fn:UNIQUE#13",
+   "group": "fn:UNIQUE",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE(D!E1:E8))"
+  },
+  {
+   "id": "fn:UNIQUE#14",
+   "group": "fn:UNIQUE",
+   "fn": "UNIQUE",
+   "formula": "ROWS(_xlfn.UNIQUE(AR!A1:B8))"
+  },
+  {
+   "id": "fn:UNIQUE#15",
    "group": "fn:UNIQUE",
    "fn": "UNIQUE",
    "formula": "_xlfn.TEXTJOIN(\",\",TRUE,_xlfn.UNIQUE(AR!B1:B8))"
@@ -2980,40 +3382,46 @@
    "id": "fn:FILTER#8",
    "group": "fn:FILTER",
    "fn": "FILTER",
-   "formula": "SUM(_xlfn._xlws.FILTER(D!B1:B8,(D!B1:B8>10)*(D!C1:C8<30)))"
+   "formula": "SUM(_xlfn._xlws.FILTER(D!B:B,D!B:B>10))"
   },
   {
    "id": "fn:FILTER#9",
    "group": "fn:FILTER",
    "fn": "FILTER",
-   "formula": "_xlfn._xlws.FILTER(D!B1:B8,D!E1:E8>3)"
+   "formula": "SUM(_xlfn._xlws.FILTER(D!B1:B8,(D!B1:B8>10)*(D!C1:C8<30)))"
   },
   {
    "id": "fn:FILTER#10",
    "group": "fn:FILTER",
    "fn": "FILTER",
-   "formula": "SUM(_xlfn._xlws.FILTER(D!B1:B8,D!D1:D8))"
+   "formula": "_xlfn._xlws.FILTER(D!B1:B8,D!E1:E8>3)"
   },
   {
    "id": "fn:FILTER#11",
    "group": "fn:FILTER",
    "fn": "FILTER",
-   "formula": "_xlfn._xlws.FILTER(D!B1:B8,{1;0;0;0;0;0;0;0})"
+   "formula": "SUM(_xlfn._xlws.FILTER(D!B1:B8,D!D1:D8))"
   },
   {
    "id": "fn:FILTER#12",
    "group": "fn:FILTER",
    "fn": "FILTER",
-   "formula": "_xlfn._xlws.FILTER(5,TRUE)"
+   "formula": "_xlfn._xlws.FILTER(D!B1:B8,{1;0;0;0;0;0;0;0})"
   },
   {
    "id": "fn:FILTER#13",
    "group": "fn:FILTER",
    "fn": "FILTER",
-   "formula": "COUNTA(_xlfn._xlws.FILTER(AR!A1:A8,AR!B1:B8=\"N\"))"
+   "formula": "_xlfn._xlws.FILTER(5,TRUE)"
   },
   {
    "id": "fn:FILTER#14",
+   "group": "fn:FILTER",
+   "fn": "FILTER",
+   "formula": "COUNTA(_xlfn._xlws.FILTER(AR!A1:A8,AR!B1:B8=\"N\"))"
+  },
+  {
+   "id": "fn:FILTER#15",
    "group": "fn:FILTER",
    "fn": "FILTER",
    "formula": "SUM(_xlfn._xlws.FILTER(AR!C1:C8,AR!B1:B8=\"x\",0))"
@@ -3022,40 +3430,82 @@
    "id": "fn:FREQUENCY#1",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
-   "formula": "SUM(FREQUENCY(D!B1:B8,{10,20}))"
+   "formula": "ROWS(FREQUENCY(D!B1:B8,D!K1:K3))"
   },
   {
    "id": "fn:FREQUENCY#2",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
-   "formula": "ROWS(FREQUENCY(D!B1:B8,{10,20}))"
+   "formula": "INDEX(FREQUENCY(D!B1:B8,D!K1:K3),2)"
   },
   {
    "id": "fn:FREQUENCY#3",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
-   "formula": "INDEX(FREQUENCY(D!B1:B8,{20,10}),2)"
+   "formula": "ROWS(FREQUENCY(D!B1:B8,D!AT1:AT4))"
   },
   {
    "id": "fn:FREQUENCY#4",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
-   "formula": "ROWS(FREQUENCY(D!B1:B8,5))"
+   "formula": "INDEX(FREQUENCY(D!B1:B8,D!AT1:AT4),4)"
   },
   {
    "id": "fn:FREQUENCY#5",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
-   "formula": "INDEX(FREQUENCY(D!D1:D8,2),1)"
+   "formula": "ROWS(FREQUENCY(D!B1:B8,D!BH1:BH3))"
   },
   {
    "id": "fn:FREQUENCY#6",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
-   "formula": "INDEX(FREQUENCY(D!B1:B8,D!K1:K3),1)"
+   "formula": "INDEX(FREQUENCY(D!B1:B8,D!BH1:BH3),1)"
   },
   {
    "id": "fn:FREQUENCY#7",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "ROWS(FREQUENCY(D!K1:K3,D!AT1:AT3))"
+  },
+  {
+   "id": "fn:FREQUENCY#8",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "SUM(FREQUENCY(D!B1:B8,{10,20}))"
+  },
+  {
+   "id": "fn:FREQUENCY#9",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "ROWS(FREQUENCY(D!B1:B8,{10,20}))"
+  },
+  {
+   "id": "fn:FREQUENCY#10",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "INDEX(FREQUENCY(D!B1:B8,{20,10}),2)"
+  },
+  {
+   "id": "fn:FREQUENCY#11",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "ROWS(FREQUENCY(D!B1:B8,5))"
+  },
+  {
+   "id": "fn:FREQUENCY#12",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "INDEX(FREQUENCY(D!D1:D8,2),1)"
+  },
+  {
+   "id": "fn:FREQUENCY#13",
+   "group": "fn:FREQUENCY",
+   "fn": "FREQUENCY",
+   "formula": "INDEX(FREQUENCY(D!B1:B8,D!K1:K3),1)"
+  },
+  {
+   "id": "fn:FREQUENCY#14",
    "group": "fn:FREQUENCY",
    "fn": "FREQUENCY",
    "formula": "INDEX(FREQUENCY({1,2,2,3},{2,2}),2)"
@@ -3121,31 +3571,151 @@
    "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,TRUE),4,2)"
   },
   {
+   "id": "fn:LINEST#7",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),1,1)"
+  },
+  {
+   "id": "fn:LINEST#8",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),1,2)"
+  },
+  {
+   "id": "fn:LINEST#9",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),2,1)"
+  },
+  {
+   "id": "fn:LINEST#10",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),2,2)"
+  },
+  {
+   "id": "fn:LINEST#11",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),3,1)"
+  },
+  {
+   "id": "fn:LINEST#12",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),3,2)"
+  },
+  {
+   "id": "fn:LINEST#13",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),4,1)"
+  },
+  {
+   "id": "fn:LINEST#14",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),4,2)"
+  },
+  {
+   "id": "fn:LINEST#15",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),5,1)"
+  },
+  {
+   "id": "fn:LINEST#16",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),5,2)"
+  },
+  {
+   "id": "fn:LINEST#17",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5^{1,2},TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "fn:LINEST#18",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5^{1,2},TRUE,TRUE),2,3)"
+  },
+  {
+   "id": "fn:LINEST#19",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5^{1,2},TRUE,TRUE),3,3)"
+  },
+  {
+   "id": "fn:LINEST#20",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5^{1,2},TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "fn:LINEST#21",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!AZ1:AZ5^{1,2},TRUE,TRUE),5,2)"
+  },
+  {
+   "id": "fn:LINEST#22",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(TRANSPOSE(D!AY1:AY5),TRANSPOSE(D!AZ1:AZ5)),1,1)"
+  },
+  {
+   "id": "fn:LINEST#23",
+   "group": "fn:LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!AY1:AY5,D!B1:B5),1,1)"
+  },
+  {
    "id": "fn:LOGEST#1",
    "group": "fn:LOGEST",
    "fn": "LOGEST",
-   "formula": "INDEX(LOGEST(D!BB1:BB6,D!BC1:BC6,FALSE),1,1)"
+   "formula": "INDEX(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,TRUE),2,1)"
   },
   {
    "id": "fn:LOGEST#2",
    "group": "fn:LOGEST",
    "fn": "LOGEST",
-   "formula": "INDEX(LOGEST(D!BB1:BB6),1,2)"
+   "formula": "INDEX(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,TRUE),3,1)"
   },
   {
    "id": "fn:TREND#1",
    "group": "fn:TREND",
    "fn": "TREND",
-   "formula": "ROWS(TREND(D!AY1:AY5,D!AZ1:AZ5,{6;7;8}))"
+   "formula": "INDEX(TREND(D!AY1:AY5,D!AZ1:AZ5^{1,2},{6,36;7,49}),2)"
+  },
+  {
+   "id": "fn:LOGEST#3",
+   "group": "fn:LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(D!BB1:BB6,D!BC1:BC6,FALSE),1,1)"
+  },
+  {
+   "id": "fn:LOGEST#4",
+   "group": "fn:LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(D!BB1:BB6),1,2)"
   },
   {
    "id": "fn:TREND#2",
    "group": "fn:TREND",
    "fn": "TREND",
-   "formula": "INDEX(TREND(D!AY1:AY5,D!AZ1:AZ5,{6;7;8}),3)"
+   "formula": "ROWS(TREND(D!AY1:AY5,D!AZ1:AZ5,{6;7;8}))"
   },
   {
    "id": "fn:TREND#3",
+   "group": "fn:TREND",
+   "fn": "TREND",
+   "formula": "INDEX(TREND(D!AY1:AY5,D!AZ1:AZ5,{6;7;8}),3)"
+  },
+  {
+   "id": "fn:TREND#4",
    "group": "fn:TREND",
    "fn": "TREND",
    "formula": "TREND(D!AY1:AY5,D!AZ1:AZ5,6)"
@@ -3244,28 +3814,46 @@
    "id": "fn:TEXTSPLIT#14",
    "group": "fn:TEXTSPLIT",
    "fn": "TEXTSPLIT",
-   "formula": "COLUMNS(_xlfn.TEXTSPLIT(AR!H4,\" \",\";\",TRUE))"
+   "formula": "COLUMNS(_xlfn.TEXTSPLIT(\"a1b2c\",{1,2}))"
   },
   {
    "id": "fn:TEXTSPLIT#15",
    "group": "fn:TEXTSPLIT",
    "fn": "TEXTSPLIT",
-   "formula": "INDEX(_xlfn.TEXTSPLIT(AR!H2,\";\",\"|\"),2,1)"
+   "formula": "ROWS(_xlfn.TEXTSPLIT(\"a;;b\",\",\",\";\",TRUE))"
   },
   {
    "id": "fn:TEXTSPLIT#16",
    "group": "fn:TEXTSPLIT",
    "fn": "TEXTSPLIT",
-   "formula": "COLUMNS(_xlfn.TEXTSPLIT(AR!H3,\"-\"))"
+   "formula": "ROWS(_xlfn.TEXTSPLIT(\"a;;b\",\",\",\";\"))"
   },
   {
    "id": "fn:TEXTSPLIT#17",
    "group": "fn:TEXTSPLIT",
    "fn": "TEXTSPLIT",
-   "formula": "_xlfn.TEXTSPLIT(AR!H1,\",\")"
+   "formula": "COLUMNS(_xlfn.TEXTSPLIT(AR!H4,\" \",\";\",TRUE))"
   },
   {
    "id": "fn:TEXTSPLIT#18",
+   "group": "fn:TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "INDEX(_xlfn.TEXTSPLIT(AR!H2,\";\",\"|\"),2,1)"
+  },
+  {
+   "id": "fn:TEXTSPLIT#19",
+   "group": "fn:TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "COLUMNS(_xlfn.TEXTSPLIT(AR!H3,\"-\"))"
+  },
+  {
+   "id": "fn:TEXTSPLIT#20",
+   "group": "fn:TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(AR!H1,\",\")"
+  },
+  {
+   "id": "fn:TEXTSPLIT#21",
    "group": "fn:TEXTSPLIT",
    "fn": "TEXTSPLIT",
    "formula": "ROWS(_xlfn.TEXTSPLIT(\"a,b\",\",\",\",\"))"
@@ -14246,34 +14834,6 @@
    "t": "n",
    "v": 2
   },
-  "key:XLOOKUP#1": {
-   "t": "n",
-   "v": 100
-  },
-  "key:XLOOKUP#2": {
-   "t": "n",
-   "v": 20
-  },
-  "key:XLOOKUP#3": {
-   "t": "n",
-   "v": 2
-  },
-  "key:XLOOKUP#4": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "key:XLOOKUP#5": {
-   "t": "n",
-   "v": 20
-  },
-  "key:XLOOKUP#6": {
-   "t": "e",
-   "v": "NA"
-  },
-  "key:XLOOKUP#7": {
-   "t": "s",
-   "v": "y"
-  },
   "key:XMATCH#1": {
    "t": "n",
    "v": 7
@@ -14497,38 +15057,6 @@
   "ref:INDEX#13": {
    "t": "n",
    "v": 7
-  },
-  "ref:INDEX#14": {
-   "t": "e",
-   "v": "REF"
-  },
-  "ref:INDEX#15": {
-   "t": "n",
-   "v": 114.75
-  },
-  "ref:INDEX#16": {
-   "t": "n",
-   "v": 1048576
-  },
-  "ref:INDEX#17": {
-   "t": "n",
-   "v": 32
-  },
-  "ref:INDEX#18": {
-   "t": "n",
-   "v": 32
-  },
-  "ref:INDEX#19": {
-   "t": "n",
-   "v": 32
-  },
-  "ref:INDEX#20": {
-   "t": "e",
-   "v": "REF"
-  },
-  "ref:INDEX#21": {
-   "t": "n",
-   "v": 6
   },
   "ref:ROW#1": {
    "t": "n",
@@ -15134,30 +15662,6 @@
    "t": "s",
    "v": "x*y,Арeнда*,Аренда,аренда,Арендй,Чаи,Чай"
   },
-  "fn:SORTBY#1": {
-   "t": "s",
-   "v": "thirteen"
-  },
-  "fn:SORTBY#2": {
-   "t": "s",
-   "v": "Eve,Dee,Bob,Ann,Cid,bob,ann,Cid"
-  },
-  "fn:SORTBY#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:SORTBY#4": {
-   "t": "s",
-   "v": "b"
-  },
-  "fn:SORTBY#5": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:SORTBY#6": {
-   "t": "s",
-   "v": "Dee,Cid,Cid,Ann,ann,Eve,bob,Bob"
-  },
   "fn:UNIQUE#1": {
    "t": "s",
    "v": "1,2,a,3,b"
@@ -15186,26 +15690,6 @@
    "t": "e",
    "v": "CALC"
   },
-  "fn:UNIQUE#8": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:UNIQUE#9": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:UNIQUE#10": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:UNIQUE#11": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:UNIQUE#12": {
-   "t": "s",
-   "v": "N,S,E"
-  },
   "fn:FILTER#1": {
    "t": "n",
    "v": 106.25
@@ -15233,62 +15717,6 @@
   "fn:FILTER#7": {
    "t": "n",
    "v": 4
-  },
-  "fn:FILTER#8": {
-   "t": "n",
-   "v": 64.25
-  },
-  "fn:FILTER#9": {
-   "t": "e",
-   "v": "DIV0"
-  },
-  "fn:FILTER#10": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:FILTER#11": {
-   "t": "n",
-   "v": 4
-  },
-  "fn:FILTER#12": {
-   "t": "n",
-   "v": 5
-  },
-  "fn:FILTER#13": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:FILTER#14": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:FREQUENCY#1": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:FREQUENCY#2": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:FREQUENCY#3": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:FREQUENCY#4": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:FREQUENCY#5": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:FREQUENCY#6": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:FREQUENCY#7": {
-   "t": "n",
-   "v": 0
   },
   "fn:MODE.MULT#1": {
    "t": "n",
@@ -15329,26 +15757,6 @@
   "fn:LINEST#6": {
    "t": "n",
    "v": 3
-  },
-  "fn:LOGEST#1": {
-   "t": "n",
-   "v": 2.3003927637437855
-  },
-  "fn:LOGEST#2": {
-   "t": "n",
-   "v": 22291.223298465313
-  },
-  "fn:TREND#1": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TREND#2": {
-   "t": "n",
-   "v": 17.699999999999996
-  },
-  "fn:TREND#3": {
-   "t": "n",
-   "v": 13.499999999999996
   },
   "fn:GROWTH#1": {
    "t": "n",
@@ -15409,26 +15817,6 @@
   "fn:TEXTSPLIT#13": {
    "t": "e",
    "v": "VALUE"
-  },
-  "fn:TEXTSPLIT#14": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TEXTSPLIT#15": {
-   "t": "s",
-   "v": "3"
-  },
-  "fn:TEXTSPLIT#16": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TEXTSPLIT#17": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "fn:TEXTSPLIT#18": {
-   "t": "n",
-   "v": 1
   },
   "fn:RANDARRAY#1": {
    "t": "n",
@@ -22089,10 +22477,606 @@
   "lift:ZTEST#2": {
    "t": "e",
    "v": "SPILL"
+  },
+  "ops#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ops#78": {
+   "t": "n",
+   "v": 3
+  },
+  "ops#79": {
+   "t": "n",
+   "v": 7
+  },
+  "ops#80": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ops#81": {
+   "t": "n",
+   "v": 0
+  },
+  "ops#82": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:COUNTA#5": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#6": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#7": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:COUNTA#8": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#9": {
+   "t": "n",
+   "v": 8
+  },
+  "agg:COUNTA#10": {
+   "t": "n",
+   "v": 8
+  },
+  "agg:COUNTA#11": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#12": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#13": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:COUNTA#14": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:COUNTA#15": {
+   "t": "n",
+   "v": 3
+  },
+  "agg:COUNTA#16": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#17": {
+   "t": "n",
+   "v": 8
+  },
+  "agg:ISBLANK#1": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:ISBLANK#2": {
+   "t": "s",
+   "v": "0x"
+  },
+  "agg:ISBLANK#3": {
+   "t": "s",
+   "v": "x"
+  },
+  "agg:ISBLANK#4": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:ISBLANK#5": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:ISBLANK#6": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:MAXA#1": {
+   "t": "n",
+   "v": -1
+  },
+  "agg:MAXA#2": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:MINA#1": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:STDEVA#1": {
+   "t": "n",
+   "v": 1.4142135623730951
+  },
+  "agg:VARA#1": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:AVERAGEA#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "agg:AVERAGEA#4": {
+   "t": "n",
+   "v": 0
+  },
+  "lazy:IFERROR#6": {
+   "t": "n",
+   "v": 1
+  },
+  "key:COUNTIFS#3": {
+   "t": "n",
+   "v": 5
+  },
+  "key:XLOOKUP#1": {
+   "t": "n",
+   "v": 2
+  },
+  "key:XLOOKUP#2": {
+   "t": "n",
+   "v": 100
+  },
+  "key:XLOOKUP#3": {
+   "t": "n",
+   "v": 20
+  },
+  "key:XLOOKUP#4": {
+   "t": "n",
+   "v": 2
+  },
+  "key:XLOOKUP#5": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "key:XLOOKUP#6": {
+   "t": "n",
+   "v": 20
+  },
+  "key:XLOOKUP#7": {
+   "t": "e",
+   "v": "NA"
+  },
+  "key:XLOOKUP#8": {
+   "t": "s",
+   "v": "y"
+  },
+  "ref:INDEX#14": {
+   "t": "n",
+   "v": 27
+  },
+  "ref:INDEX#15": {
+   "t": "n",
+   "v": 0
+  },
+  "ref:INDEX#16": {
+   "t": "e",
+   "v": "REF"
+  },
+  "ref:INDEX#17": {
+   "t": "n",
+   "v": 114.75
+  },
+  "ref:INDEX#18": {
+   "t": "n",
+   "v": 1048576
+  },
+  "ref:INDEX#19": {
+   "t": "n",
+   "v": 32
+  },
+  "ref:INDEX#20": {
+   "t": "n",
+   "v": 32
+  },
+  "ref:INDEX#21": {
+   "t": "n",
+   "v": 32
+  },
+  "ref:INDEX#22": {
+   "t": "e",
+   "v": "REF"
+  },
+  "ref:INDEX#23": {
+   "t": "n",
+   "v": 6
+  },
+  "fn:SEQUENCE#16": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:TOCOL#10": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:TOCOL#11": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:SORT#14": {
+   "t": "n",
+   "v": -1
+  },
+  "fn:SORT#15": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:SORT#16": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:SORT#17": {
+   "t": "b",
+   "v": true
+  },
+  "fn:SORT#18": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:SORT#19": {
+   "t": "b",
+   "v": false
+  },
+  "fn:SORT#20": {
+   "t": "s",
+   "v": "A"
+  },
+  "fn:SORT#21": {
+   "t": "s",
+   "v": "b"
+  },
+  "fn:SORT#22": {
+   "t": "s",
+   "v": "a"
+  },
+  "fn:SORT#23": {
+   "t": "s",
+   "v": "A"
+  },
+  "fn:SORT#24": {
+   "t": "s",
+   "v": "b"
+  },
+  "fn:SORT#25": {
+   "t": "s",
+   "v": "a"
+  },
+  "fn:SORT#26": {
+   "t": "b",
+   "v": false
+  },
+  "fn:SORT#27": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:SORT#28": {
+   "t": "b",
+   "v": true
+  },
+  "fn:SORT#29": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:SORT#30": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:SORT#31": {
+   "t": "n",
+   "v": -1
+  },
+  "fn:SORT#32": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:SORT#33": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:SORT#34": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "fn:SORT#35": {
+   "t": "n",
+   "v": 1048576
+  },
+  "fn:SORT#36": {
+   "t": "n",
+   "v": -3.5
+  },
+  "fn:SORT#37": {
+   "t": "n",
+   "v": 42
+  },
+  "fn:SORT#38": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:SORTBY#1": {
+   "t": "s",
+   "v": "N,S,E"
+  },
+  "fn:SORTBY#2": {
+   "t": "s",
+   "v": "thirteen"
+  },
+  "fn:SORTBY#3": {
+   "t": "s",
+   "v": "Eve,Dee,Bob,Ann,Cid,bob,ann,Cid"
+  },
+  "fn:SORTBY#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:SORTBY#5": {
+   "t": "s",
+   "v": "b"
+  },
+  "fn:SORTBY#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:SORTBY#7": {
+   "t": "s",
+   "v": "Dee,Cid,Cid,Ann,ann,Eve,bob,Bob"
+  },
+  "fn:UNIQUE#8": {
+   "t": "n",
+   "v": 9
+  },
+  "fn:UNIQUE#9": {
+   "t": "n",
+   "v": 6
+  },
+  "fn:UNIQUE#10": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:UNIQUE#11": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:UNIQUE#12": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:UNIQUE#13": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:UNIQUE#14": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:UNIQUE#15": {
+   "t": "s",
+   "v": "N,S,E"
+  },
+  "fn:FILTER#8": {
+   "t": "n",
+   "v": 106.25
+  },
+  "fn:FILTER#9": {
+   "t": "n",
+   "v": 64.25
+  },
+  "fn:FILTER#10": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "fn:FILTER#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:FILTER#12": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:FILTER#13": {
+   "t": "n",
+   "v": 5
+  },
+  "fn:FILTER#14": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:FILTER#15": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:FREQUENCY#1": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#2": {
+   "t": "n",
+   "v": 7
+  },
+  "fn:FREQUENCY#3": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:FREQUENCY#4": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#5": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#6": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:FREQUENCY#7": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:FREQUENCY#8": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:FREQUENCY#9": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:FREQUENCY#10": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:FREQUENCY#11": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#12": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:FREQUENCY#13": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:FREQUENCY#14": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:LINEST#7": {
+   "t": "n",
+   "v": 2.3454545454545457
+  },
+  "fn:LINEST#8": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:LINEST#9": {
+   "t": "n",
+   "v": 0.08080176743014175
+  },
+  "fn:LINEST#10": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:LINEST#11": {
+   "t": "n",
+   "v": 0.9952751196172249
+  },
+  "fn:LINEST#12": {
+   "t": "n",
+   "v": 0.5992419453700728
+  },
+  "fn:LINEST#13": {
+   "t": "n",
+   "v": 842.582278481012
+  },
+  "fn:LINEST#14": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:LINEST#15": {
+   "t": "n",
+   "v": 302.56363636363636
+  },
+  "fn:LINEST#16": {
+   "t": "n",
+   "v": 1.4363636363636374
+  },
+  "fn:LINEST#17": {
+   "t": "n",
+   "v": 0.14982983545287892
+  },
+  "fn:LINEST#18": {
+   "t": "n",
+   "v": 1.2023785950000474
+  },
+  "fn:LINEST#19": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:LINEST#20": {
+   "t": "n",
+   "v": 70.2727272727271
+  },
+  "fn:LINEST#21": {
+   "t": "n",
+   "v": 0.62857142857143
+  },
+  "fn:LINEST#22": {
+   "t": "n",
+   "v": 2.099999999999999
+  },
+  "fn:LINEST#23": {
+   "t": "n",
+   "v": 0.43327239488117
+  },
+  "fn:LOGEST#1": {
+   "t": "n",
+   "v": 0.0026334028914251303
+  },
+  "fn:LOGEST#2": {
+   "t": "n",
+   "v": 0.9998086197758175
+  },
+  "fn:TREND#1": {
+   "t": "n",
+   "v": 14.600000000000005
+  },
+  "fn:LOGEST#3": {
+   "t": "n",
+   "v": 2.3003927637437855
+  },
+  "fn:LOGEST#4": {
+   "t": "n",
+   "v": 22291.223298465313
+  },
+  "fn:TREND#2": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TREND#3": {
+   "t": "n",
+   "v": 17.699999999999996
+  },
+  "fn:TREND#4": {
+   "t": "n",
+   "v": 13.499999999999996
+  },
+  "fn:TEXTSPLIT#14": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#15": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:TEXTSPLIT#16": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#17": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#18": {
+   "t": "s",
+   "v": "3"
+  },
+  "fn:TEXTSPLIT#19": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#20": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "fn:TEXTSPLIT#21": {
+   "t": "n",
+   "v": 1
   }
- },
- "rejected": [
-  "ops#15",
-  "key:SUMIF#2"
- ]
+ }
 }

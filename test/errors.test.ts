@@ -43,10 +43,12 @@ describe('errors', () => {
     expect(issue('A1')!.reason).toBe('circular reference')
   })
 
-  it('array arithmetic: check code unsupported (no spilling in this version)', () => {
-    const { v, issue } = run({ A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'A1:A2*10' } })
-    expect(v('B1')).toEqual({ error: 'ERROR' })
-    expect(issue('B1')!.check).toBe('unsupported')
+  it('a result that is an array of several values: #SPILL! with the check code unsupported (no spilling yet)', () => {
+    const { v, issue } = run({ A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'A1:A2*10' }, B2: { formula: 'SUM(A1:A2*10)' }, B3: { formula: 'B1+1' }, B4: { formula: 'INDEX(A1:A2*10,0,1)' } })
+    expect([v('B1'), v('B2'), v('B3'), v('B4')]).toEqual([{ error: 'SPILL' }, 30, { error: 'SPILL' }, { error: 'SPILL' }])
+    expect(issue('B1')).toMatchObject({ check: 'unsupported', at: 0, reason: 'the result is an array of 2×1 values: spilling into neighbouring cells is not supported yet; wrap it in a function that takes an array, such as SUM or INDEX' })
+    expect(issue('B3')).toMatchObject({ reason: "array result does not fit, from 'S'!B1" })
+    expect(issue('B3')!.check).toBeUndefined()
   })
 
   it('invalid formulas do not break the computation: a comma outside a function gives syntax', () => {

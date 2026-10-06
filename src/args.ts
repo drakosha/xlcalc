@@ -264,7 +264,8 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   A: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
   D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
-  V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Arr ? x.values() : x),
+  // an empty element of an array counts for COUNTA (as Excel's empty value does): it is read as empty text
+  V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Arr ? x.values().map((v) => (v === null ? '' : v)) : x),
   G: (x, cx) => (isErr(x) ? x : cx.grid(x)),
   M: (x, cx) => {
     if (isErr(x)) return x

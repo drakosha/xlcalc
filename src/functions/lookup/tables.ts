@@ -65,11 +65,8 @@ function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): V | Arr 
   return new Arr(r2 - r1 + 1, c2 - c1 + 1, r2 - r1 + 1, c2 - c1 + 1, v)
 }
 
-/**
- * INDEX: row or column 0 selects all of them, an answer of several cells is a reference (of a reference)
- * or an array; one cell is its value.
- */
-function index(cx: Cx, x: Arg, r: number, c?: number, area?: number): Arg {
+/** INDEX: row or column 0 selects all of them; the answer is a reference (of a reference) or an array (of an array). */
+function index(x: Arg, r: number, c?: number, area?: number): Arg {
   if (isErr(x)) return x
   const rows = x instanceof Rng ? x.r2 - x.r1 + 1 : x instanceof Arr ? x.rows : 1
   const cols = x instanceof Rng ? x.c2 - x.c1 + 1 : x instanceof Arr ? x.cols : 1
@@ -84,16 +81,14 @@ function index(cx: Cx, x: Arg, r: number, c?: number, area?: number): Arg {
   if (r > rows || c > cols) return E.REF
   const [r1, r2] = r ? [r - 1, r - 1] : [0, rows - 1]
   const [c1, c2] = c ? [c - 1, c - 1] : [0, cols - 1]
-  if (x instanceof Rng) {
-    const sub = new Rng(x.s, x.r1 + r1, x.c1 + c1, x.r1 + r2, x.c1 + c2)
-    return r1 === r2 && c1 === c2 ? cx.scalar(sub) : sub
-  }
+  // a reference, one cell too: SUM(INDEX(A1:A3,2)) skips text there, as a range does
+  if (x instanceof Rng) return new Rng(x.s, x.r1 + r1, x.c1 + c1, x.r1 + r2, x.c1 + c2)
   return x instanceof Arr ? slice(x, r1, c1, r2, c2) : x
 }
 
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
-  INDEX: { args: 'R i i? i?', cx: true, array: true, fn: index },
+  INDEX: { args: 'R i i? i?', array: true, fn: index },
   LOOKUP: { args: 'a G G?', fn: lookup },
   MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),
