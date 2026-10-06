@@ -46,18 +46,20 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: `the copy does not fit on ${to} at ${formatAddress(target.r1, target.c1)}` }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const names = sheetNames(book)
-  const source = Object.entries(book.sheets.find((s) => sheetKey(s.name) === fk)!.cells).filter(([addr]) => within(src, addr))
-  const pasted = offsets.map(([r, c]) => shiftRect(src, r, c))
+  const source = Object.entries(book.sheets.find((s) => sheetKey(s.name) === fk)!.cells)
+    .filter(([addr]) => within(src, addr))
+    .map(([addr, cell]) => ({ at: parseAddress(addr), cell }))
+  // the tiles cover the target, or one copy its top-left part
+  const pasted = offsets.length > 1 ? target : shiftRect(src, dr, dc)
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== tk) return s
     const cells: Record<string, CellInput> = {}
-    for (const [addr, cell] of Object.entries(s.cells)) if (!pasted.some((x) => within(x, addr))) cells[addr] = cell
+    for (const [addr, cell] of Object.entries(s.cells)) if (!within(pasted, addr)) cells[addr] = cell
     for (const [r, c] of offsets) {
       const t = copyTransform(r, c)
-      for (const [addr, cell] of source) {
-        const p = parseAddress(addr)
+      for (const { at, cell } of source) {
         const formula = cell.formula === undefined ? undefined : rewriteFormula(cell.formula, to, to, t, names)
-        cells[formatAddress(p.row + r, p.col + c)] = formula === cell.formula ? cell : { ...cell, formula }
+        cells[formatAddress(at.row + r, at.col + c)] = formula === cell.formula ? cell : { ...cell, formula }
       }
     }
     return { name: s.name, cells }
@@ -65,10 +67,10 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const out: BookInput = { sheets }
   if (book.names) {
     const repoint: Transform = { ref: ({ sheet, area }) => (sheetKey(sheet) === fk ? { sheet: to, area } : undefined) }
-    const formulas = source.flatMap(([, c]) => (c.formula === undefined ? [] : [c.formula]))
+    const formulas = source.flatMap(({ cell }) => (cell.formula === undefined ? [] : [cell.formula]))
     const carried = fk === tk ? [] : carryNames(book.names, formulas, from, to, (ref) => rewriteFormula(ref, null, null, repoint, names))
     out.names = carried.length ? [...book.names, ...carried] : book.names
   }
-  const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && pasted.some((x) => within(x, ref.cell)) ? null : ref)
+  const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
   return { ok: true, book: out, mapCell }
 }
