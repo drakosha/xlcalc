@@ -7,7 +7,7 @@ import type { Probe } from '../probes.js'
 import { SHEETS, type Add } from './text/data.js'
 import { lookup } from './text/lookup.js'
 import { database, logical } from './text/other.js'
-import { bytes, strings } from './text/strings.js'
+import { bytes, formats, strings } from './text/strings.js'
 
 export { SHEETS }
 
@@ -19,6 +19,6 @@ export function buildProbes(): Probe[] {
   const add: Add = (fn, ...formulas) => {
     for (const f of formulas) out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: f.replace(XLFN, '_xlfn.$1(') })
   }
-  for (const part of [strings, lookup, database, logical, bytes]) part(add)
+  for (const part of [strings, lookup, database, logical, bytes, formats]) part(add)
   return out
 }

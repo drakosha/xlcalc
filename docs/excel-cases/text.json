@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.619
+  "seconds": 1.546
  },
  "cases": [
   {
@@ -6406,6 +6406,324 @@
    "group": "BAHTTEXT",
    "fn": "BAHTTEXT",
    "formula": "BAHTTEXT(0.21)"
+  },
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234567.891,\"#,##0\")"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234567.891,\"#,##0.00\")"
+  },
+  {
+   "id": "TEXT#3",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234567.891,\"#,##0,\")"
+  },
+  {
+   "id": "TEXT#4",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.1234,\"0.0%\")"
+  },
+  {
+   "id": "TEXT#5",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.1234,\"0%%\")"
+  },
+  {
+   "id": "TEXT#6",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(2.5,\"0\")"
+  },
+  {
+   "id": "TEXT#7",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-2.5,\"0\")"
+  },
+  {
+   "id": "TEXT#8",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.125,\"0.00\")"
+  },
+  {
+   "id": "TEXT#9",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1.005,\"0.00\")"
+  },
+  {
+   "id": "TEXT#10",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.001,\"0.00\")"
+  },
+  {
+   "id": "TEXT#11",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.5,\"#,##0;(#,##0)\")"
+  },
+  {
+   "id": "TEXT#12",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0;-0;\"\"zero\"\"\")"
+  },
+  {
+   "id": "TEXT#13",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-5,\"0;-0;\"\"zero\"\"\")"
+  },
+  {
+   "id": "TEXT#14",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(5,\"\"\"+\"\"0;\"\"-\"\"0\")"
+  },
+  {
+   "id": "TEXT#15",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.5,\"$#,##0.00\")"
+  },
+  {
+   "id": "TEXT#16",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.5,\"$#,##0.00_);($#,##0.00)\")"
+  },
+  {
+   "id": "TEXT#17",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(123456789,\"000-00-0000\")"
+  },
+  {
+   "id": "TEXT#18",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(5,\"00000\")"
+  },
+  {
+   "id": "TEXT#19",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"0.0#\")"
+  },
+  {
+   "id": "TEXT#20",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1,\"#.##\")"
+  },
+  {
+   "id": "TEXT#21",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"#.##\")"
+  },
+  {
+   "id": "TEXT#22",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1.25,\"?.??\")"
+  },
+  {
+   "id": "TEXT#23",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(12.5,\"# ??/??\")"
+  },
+  {
+   "id": "TEXT#24",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75,\"# ?/4\")"
+  },
+  {
+   "id": "TEXT#25",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0\")"
+  },
+  {
+   "id": "TEXT#26",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+20,\"0\")"
+  },
+  {
+   "id": "TEXT#27",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.5,\"#,##0.00 \"\"руб.\"\"\")"
+  },
+  {
+   "id": "TEXT#28",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.5,\"\\€#,##0\")"
+  },
+  {
+   "id": "TEXT#29",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"dddd, mmmm d, yyyy\")"
+  },
+  {
+   "id": "TEXT#30",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"ddd mmm d yy\")"
+  },
+  {
+   "id": "TEXT#31",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"mmmmm\")"
+  },
+  {
+   "id": "TEXT#32",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"d-mmm-yy\")"
+  },
+  {
+   "id": "TEXT#33",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"m/d/yyyy\")"
+  },
+  {
+   "id": "TEXT#34",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658.75,\"h:mm:ss AM/PM\")"
+  },
+  {
+   "id": "TEXT#35",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658.75,\"hh:mm A/P\")"
+  },
+  {
+   "id": "TEXT#36",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658.999999,\"yyyy-mm-dd hh:mm:ss\")"
+  },
+  {
+   "id": "TEXT#37",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"h \"\"h\"\" m \"\"min\"\"\")"
+  },
+  {
+   "id": "TEXT#38",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658.0208333,\"h:mm\")"
+  },
+  {
+   "id": "TEXT#39",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658.0208333,\"mm:ss\")"
+  },
+  {
+   "id": "TEXT#40",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"mm\")"
+  },
+  {
+   "id": "TEXT#41",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"yyyy-mm-dd\")"
+  },
+  {
+   "id": "TEXT#42",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45658,\"General\")"
+  },
+  {
+   "id": "TEXT#43",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.1,\"General\")"
+  },
+  {
+   "id": "TEXT#44",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"@\")"
+  },
+  {
+   "id": "TEXT#45",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0;0;0;\"\"[\"\" @ \"\"]\"\"\")"
+  },
+  {
+   "id": "TEXT#46",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"Привет\",\"@ \"\"мир\"\"\")"
+  },
+  {
+   "id": "TEXT#47",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"12\",\"0.00\")"
+  },
+  {
+   "id": "TEXT#48",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"\",\"0\")"
+  },
+  {
+   "id": "TEXT#49",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(TRUE,\"0\")"
+  },
+  {
+   "id": "TEXT#50",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.5,\"\")"
+  },
+  {
+   "id": "TEXT#51",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(12345.678,\"#,###.#\")"
+  },
+  {
+   "id": "TEXT#52",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.000123,\"0.000000\")"
+  },
+  {
+   "id": "TEXT#53",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.4,\"0\")"
   }
  ],
  "values": {
@@ -9233,6 +9551,102 @@
    "t": "s",
    "v": "a"
   },
+  "LOOKUP#2": {
+   "t": "s",
+   "v": "e"
+  },
+  "LOOKUP#3": {
+   "t": "n",
+   "v": 2
+  },
+  "LOOKUP#4": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#5": {
+   "t": "n",
+   "v": 4
+  },
+  "LOOKUP#6": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#7": {
+   "t": "n",
+   "v": 5
+  },
+  "LOOKUP#8": {
+   "t": "n",
+   "v": 1
+  },
+  "LOOKUP#9": {
+   "t": "b",
+   "v": true
+  },
+  "LOOKUP#10": {
+   "t": "n",
+   "v": 2
+  },
+  "LOOKUP#11": {
+   "t": "n",
+   "v": 1
+  },
+  "LOOKUP#12": {
+   "t": "s",
+   "v": "a"
+  },
+  "LOOKUP#13": {
+   "t": "n",
+   "v": 3
+  },
+  "LOOKUP#14": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#15": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#16": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LOOKUP#17": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LOOKUP#18": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LOOKUP#19": {
+   "t": "n",
+   "v": 6
+  },
+  "LOOKUP#20": {
+   "t": "n",
+   "v": 4
+  },
+  "LOOKUP#21": {
+   "t": "n",
+   "v": 3
+  },
+  "LOOKUP#22": {
+   "t": "n",
+   "v": 3
+  },
+  "LOOKUP#23": {
+   "t": "s",
+   "v": "r4"
+  },
+  "LOOKUP#24": {
+   "t": "s",
+   "v": "r8"
+  },
+  "LOOKUP#25": {
+   "t": "s",
+   "v": "r8"
+  },
   "XMATCH#1": {
    "t": "n",
    "v": 4
@@ -10581,101 +10995,217 @@
    "t": "s",
    "v": "ยี่สิบเอ็ดสตางค์"
   },
-  "LOOKUP#2": {
+  "TEXT#1": {
    "t": "s",
-   "v": "e"
+   "v": "1,234,568"
   },
-  "LOOKUP#3": {
-   "t": "n",
-   "v": 2
-  },
-  "LOOKUP#4": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#5": {
-   "t": "n",
-   "v": 4
-  },
-  "LOOKUP#6": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#7": {
-   "t": "n",
-   "v": 5
-  },
-  "LOOKUP#8": {
-   "t": "n",
-   "v": 1
-  },
-  "LOOKUP#9": {
-   "t": "b",
-   "v": true
-  },
-  "LOOKUP#10": {
-   "t": "n",
-   "v": 2
-  },
-  "LOOKUP#11": {
-   "t": "n",
-   "v": 1
-  },
-  "LOOKUP#12": {
+  "TEXT#2": {
    "t": "s",
-   "v": "a"
+   "v": "1,234,567.89"
   },
-  "LOOKUP#13": {
-   "t": "n",
-   "v": 3
-  },
-  "LOOKUP#14": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#15": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#16": {
-   "t": "e",
-   "v": "NA"
-  },
-  "LOOKUP#17": {
-   "t": "e",
-   "v": "NA"
-  },
-  "LOOKUP#18": {
-   "t": "e",
-   "v": "NA"
-  },
-  "LOOKUP#19": {
-   "t": "n",
-   "v": 6
-  },
-  "LOOKUP#20": {
-   "t": "n",
-   "v": 4
-  },
-  "LOOKUP#21": {
-   "t": "n",
-   "v": 3
-  },
-  "LOOKUP#22": {
-   "t": "n",
-   "v": 3
-  },
-  "LOOKUP#23": {
+  "TEXT#3": {
    "t": "s",
-   "v": "r4"
+   "v": "1,235"
   },
-  "LOOKUP#24": {
+  "TEXT#4": {
    "t": "s",
-   "v": "r8"
+   "v": "12.3%"
   },
-  "LOOKUP#25": {
+  "TEXT#5": {
    "t": "s",
-   "v": "r8"
+   "v": "1234%%"
+  },
+  "TEXT#6": {
+   "t": "s",
+   "v": "3"
+  },
+  "TEXT#7": {
+   "t": "s",
+   "v": "-3"
+  },
+  "TEXT#8": {
+   "t": "s",
+   "v": "0.13"
+  },
+  "TEXT#9": {
+   "t": "s",
+   "v": "1.01"
+  },
+  "TEXT#10": {
+   "t": "s",
+   "v": "0.00"
+  },
+  "TEXT#11": {
+   "t": "s",
+   "v": "(1,235)"
+  },
+  "TEXT#12": {
+   "t": "s",
+   "v": "zero"
+  },
+  "TEXT#13": {
+   "t": "s",
+   "v": "-5"
+  },
+  "TEXT#14": {
+   "t": "s",
+   "v": "+5"
+  },
+  "TEXT#15": {
+   "t": "s",
+   "v": "$1,234.50"
+  },
+  "TEXT#16": {
+   "t": "s",
+   "v": "($1,234.50)"
+  },
+  "TEXT#17": {
+   "t": "s",
+   "v": "123-45-6789"
+  },
+  "TEXT#18": {
+   "t": "s",
+   "v": "00005"
+  },
+  "TEXT#19": {
+   "t": "s",
+   "v": "1.5"
+  },
+  "TEXT#20": {
+   "t": "s",
+   "v": "1."
+  },
+  "TEXT#21": {
+   "t": "s",
+   "v": ".5"
+  },
+  "TEXT#22": {
+   "t": "s",
+   "v": "1.25"
+  },
+  "TEXT#23": {
+   "t": "s",
+   "v": "12  1/2 "
+  },
+  "TEXT#24": {
+   "t": "s",
+   "v": " 3/4"
+  },
+  "TEXT#25": {
+   "t": "s",
+   "v": "1000000000000000"
+  },
+  "TEXT#26": {
+   "t": "s",
+   "v": "100000000000000000000"
+  },
+  "TEXT#27": {
+   "t": "s",
+   "v": "1,234.50 руб."
+  },
+  "TEXT#28": {
+   "t": "s",
+   "v": "€1,235"
+  },
+  "TEXT#29": {
+   "t": "s",
+   "v": "Wednesday, January 1, 2025"
+  },
+  "TEXT#30": {
+   "t": "s",
+   "v": "Wed Jan 1 25"
+  },
+  "TEXT#31": {
+   "t": "s",
+   "v": "J"
+  },
+  "TEXT#32": {
+   "t": "s",
+   "v": "1-Jan-25"
+  },
+  "TEXT#33": {
+   "t": "s",
+   "v": "1/1/2025"
+  },
+  "TEXT#34": {
+   "t": "s",
+   "v": "6:00:00 PM"
+  },
+  "TEXT#35": {
+   "t": "s",
+   "v": "06:00 P"
+  },
+  "TEXT#36": {
+   "t": "s",
+   "v": "2025-01-02 00:00:00"
+  },
+  "TEXT#37": {
+   "t": "s",
+   "v": "12 h 0 min"
+  },
+  "TEXT#38": {
+   "t": "s",
+   "v": "0:30"
+  },
+  "TEXT#39": {
+   "t": "s",
+   "v": "30:00"
+  },
+  "TEXT#40": {
+   "t": "s",
+   "v": "01"
+  },
+  "TEXT#41": {
+   "t": "s",
+   "v": "2025-01-01"
+  },
+  "TEXT#42": {
+   "t": "s",
+   "v": "45658"
+  },
+  "TEXT#43": {
+   "t": "s",
+   "v": "0.1"
+  },
+  "TEXT#44": {
+   "t": "s",
+   "v": "abc"
+  },
+  "TEXT#45": {
+   "t": "s",
+   "v": "[ abc ]"
+  },
+  "TEXT#46": {
+   "t": "s",
+   "v": "Привет мир"
+  },
+  "TEXT#47": {
+   "t": "s",
+   "v": "12.00"
+  },
+  "TEXT#48": {
+   "t": "s",
+   "v": ""
+  },
+  "TEXT#49": {
+   "t": "s",
+   "v": "TRUE"
+  },
+  "TEXT#50": {
+   "t": "s",
+   "v": ""
+  },
+  "TEXT#51": {
+   "t": "s",
+   "v": "12,345.7"
+  },
+  "TEXT#52": {
+   "t": "s",
+   "v": "0.000123"
+  },
+  "TEXT#53": {
+   "t": "s",
+   "v": "0"
   }
  }
 }
