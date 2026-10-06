@@ -4,14 +4,22 @@
  * engine's own (lazy: a branch not taken is not computed).
  */
 import { directError, eachValue, type Arg, type Cx, type FnDef, type Segment } from '../args.js'
+import type { Rules } from '../locale/rules.js'
 import { E, isErr, sameType, type CErr, type V } from '../values.js'
 
-/** The booleans of AND, OR, XOR: numbers and booleans count, text and blanks are skipped (direct text too); none at all is #VALUE!. */
-function booleans(segs: Segment[]): boolean[] | CErr {
+/**
+ * The booleans of AND, OR, XOR: numbers and booleans count, a direct text argument that is the locale's word for
+ * TRUE or FALSE counts as it (the logical-text set), other text and blanks are skipped; none at all is #VALUE!.
+ */
+function booleans(segs: Segment[], rules: Rules): boolean[] | CErr {
   const out: boolean[] = []
-  const e = directError(segs) ?? eachValue(segs, (v) => {
+  const e = directError(segs) ?? eachValue(segs, (v, inRange) => {
     if (isErr(v)) return v
     if (typeof v === 'boolean' || typeof v === 'number') out.push(v !== 0 && v !== false)
+    else if (typeof v === 'string' && !inRange) {
+      const b = rules.toBool(v)
+      if (typeof b === 'boolean') out.push(b)
+    }
   })
   if (e) return e
   return out.length ? out : E.VALUE
@@ -20,8 +28,9 @@ function booleans(segs: Segment[]): boolean[] | CErr {
 const logical = (f: (bs: boolean[]) => boolean): FnDef => ({
   args: 'V',
   rep: 1,
-  fn: (segs: Segment[]) => {
-    const bs = booleans(segs)
+  cx: true,
+  fn: (cx: Cx, segs: Segment[]) => {
+    const bs = booleans(segs, cx.rules)
     return isErr(bs) ? bs : f(bs)
   },
 })
