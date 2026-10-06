@@ -1,7 +1,7 @@
 /**
  * The coverage measurement's cases computed by this engine and compared with Microsoft Excel. The cases
- * (`docs/coverage-formulajs/cases.json`), the data sheet they read (`bench/coverage/data.ts`) and Excel's
- * answers (`docs/coverage-formulajs/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI, dynamic
+ * (`test/excel/coverage/cases.json`), the data sheet they read (`bench/coverage/data.ts`) and Excel's
+ * answers (`test/excel/coverage/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI, dynamic
  * array formulas as Excel 365 writes them) are stored in the repository, so neither Excel nor LibreOffice is needed. Comparison follows the measurement
  * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
  * exactly.
@@ -22,7 +22,7 @@ export interface ExcelCase {
   formula: string
 }
 
-const data = (file: string) => JSON.parse(readFileSync(new URL(`../docs/coverage-formulajs/${file}`, import.meta.url), 'utf8'))
+const data = (file: string) => JSON.parse(readFileSync(new URL(`./excel/coverage/${file}`, import.meta.url), 'utf8'))
 
 export const CASES: ExcelCase[] = (data('cases.json') as { cases: ExcelCase[] }).cases
 export const EXCEL: Record<string, Val> = (data('excel-en.json') as { values: Record<string, Val> }).values

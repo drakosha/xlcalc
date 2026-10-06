@@ -3,12 +3,10 @@
  * (Excel 365): the order in which an operator converts its operands and finds errors, arrays of one value under
  * operators and lifted calls, HSTACK and VSTACK over errors given as values and as references, functions that
  * pass a reference on, VLOOKUP and HLOOKUP lifted by the key with an index array, the argument counts Excel
- * loads. Answers: `docs/excel-cases/core.json`.
+ * loads. Answers: `test/excel/cases/core.json`.
  */
 import type { Probe } from '../probes.js'
 import { collector, type Add } from './arrays/common.js'
-
-export const DYNAMIC = true
 
 /** Operands of each binary operator: a text that is not a number and an error on either side, two errors. */
 const OPERANDS = [['"abc"', 'NA()'], ['NA()', '"abc"'], ['1/0', 'NA()'], ['NA()', '1/0'], ['D!A3', 'D!A8'], ['D!A8', 'D!A3'], ['""', 'NA()'], ['"abc"', '1/0']]

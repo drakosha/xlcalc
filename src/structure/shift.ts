@@ -1,6 +1,6 @@
 /**
  * Inserting and deleting rows and columns, with references adjusted as Excel adjusts them (checked in
- * `docs/excel-struct/rows.json` and `edge.json`): a range grows when rows are inserted inside it and
+ * `test/excel/struct/rows.json` and `edge.json`): a range grows when rows are inserted inside it and
  * shrinks when some of its rows are deleted, a deleted reference becomes `#REF!`, absolute references
  * move too. At the sheet's edge a range ending on the last row keeps ending there, a single cell pushed
  * past it is `#REF!`, and a range over every row is not changed by rows inserted or deleted.

@@ -1,22 +1,22 @@
 /**
- * Лист данных синтетической книги замера (лист `D`): одиночные ячейки для краевых аргументов и
- * диапазоны для функций над массивами. Данные выдуманы, реальных здесь нет.
+ * The data sheet of the measurement's synthetic book (sheet `D`): single cells for edge arguments and ranges for
+ * the functions over arrays. The data are made up; there are no real data here.
  */
 import { dateToSerial } from '../../src/model.js'
 
 export type ErrCode = 'NULL' | 'DIV0' | 'VALUE' | 'REF' | 'NAME' | 'NUM' | 'NA' | 'GETTING_DATA' | 'SPILL' | 'CALC' | 'ERROR'
 
-/** Значение ячейки: дата хранится серийным номером и пишется с форматом даты. */
+/** A cell's value: a date is kept as a serial number and written with a date format. */
 export type Cell = number | string | boolean | { error: ErrCode; formula: string } | { date: number } | { text: string; formula: string }
 
 export const DATA_SHEET = 'D'
 
 export const dt = (iso: string): number => dateToSerial(iso)
 
-/** Именованные места листа: адрес и содержимое (пустые ячейки не пишутся). */
+/** Named places of the sheet: the address and the contents (blank cells are not written). */
 interface Region {
   ref: string
-  /** Значения по строкам (для колонки один элемент в строке). */
+  /** Values by row (one element per row for a column). */
   rows: (Cell | null)[][]
 }
 
@@ -24,7 +24,7 @@ const col = (...xs: (Cell | null)[]) => xs.map((x) => [x])
 const dates = (...xs: string[]) => col(...xs.map((x) => ({ date: dt(x) })))
 
 export const REGIONS: Record<string, Region> = {
-  // одиночные ячейки
+  // single cells
   empty: { ref: 'A1', rows: [[null]] },
   textnum: { ref: 'A2', rows: [['2']] },
   text: { ref: 'A3', rows: [['abc']] },
@@ -40,7 +40,7 @@ export const REGIONS: Record<string, Region> = {
   emptystr: { ref: 'A13', rows: [[{ text: '', formula: '""' }]] },
   ctrl: { ref: 'A14', rows: [[{ text: '\tabc\n', formula: 'CHAR(9)&"abc"&CHAR(10)' }]] },
   datetime: { ref: 'A15', rows: [[45688.75]] },
-  // числовые колонки по 8 строк: взаимозаменяемы в парных функциях
+  // numeric columns of 8 rows: interchangeable in paired functions
   nums1: { ref: 'B1:B8', rows: col(4, 8, 15, 16, 23, 42, -3.5, 10.25) },
   nums2: { ref: 'C1:C8', rows: col(2, 7, 11, 19, 21, 40, -1, 9) },
   mixed: { ref: 'D1:D8', rows: col(1, '2', 'abc', true, null, 5, false, 3.5) },
@@ -48,11 +48,11 @@ export const REGIONS: Record<string, Region> = {
   blank: { ref: 'K1:K8', rows: col(null, null, null, null, null, null, null, null) },
   nums1short: { ref: 'B1:B7', rows: col(4, 8, 15, 16, 23, 42, -3.5) },
   pos: { ref: 'AV1:AV7', rows: col(4, 5, 8, 7, 11, 4, 3) },
-  // критерии: тексты, суммы, даты по 7 строк
-  txt: { ref: 'F1:F7', rows: col('Аренда', 'аренда', 'Арендй', 'Арeнда*', 'x*y', 'Чай', 'Чаи') }, // в 'Арeнда*' латинская e
+  // criteria: texts, amounts, dates of 7 rows
+  txt: { ref: 'F1:F7', rows: col('Аренда', 'аренда', 'Арендй', 'Арeнда*', 'x*y', 'Чай', 'Чаи') }, // the e of 'Арeнда*' is Latin
   amt: { ref: 'G1:G7', rows: col(1, 2, 4, 8, 16, 32, 64) },
   dates: { ref: 'H1:H7', rows: dates('2024-12-31', '2025-01-01', '2025-01-02', '2025-02-01', '2025-03-01', '2024-06-30', '2025-12-31') },
-  // денежные потоки
+  // cash flows
   cf: { ref: 'I1:I5', rows: col(-10000, 3000, 4200, 6800, 1200) },
   xcf: { ref: 'J1:J5', rows: col(-10000, 2750, 4250, 3250, 2750) },
   cfmix: { ref: 'I7:I11', rows: col(-10000, '3000', 4200, null, 6800) },
@@ -60,7 +60,7 @@ export const REGIONS: Record<string, Region> = {
   xcfpos: { ref: 'J7:J11', rows: col(100, 200, 300, 400, 500) },
   xdatesmix: { ref: 'AU7:AU11', rows: dates('2008-03-01', '2008-01-01', '2008-10-30', '2009-02-15', '2009-04-01') },
   xdates: { ref: 'AU1:AU5', rows: dates('2008-01-01', '2008-03-01', '2008-10-30', '2009-02-15', '2009-04-01') },
-  // таблица поиска L:N, ключи по возрастанию
+  // the lookup table L:N, keys ascending
   tbl: {
     ref: 'L1:N6',
     rows: [
@@ -76,7 +76,7 @@ export const REGIONS: Record<string, Region> = {
   lnames: { ref: 'M1:M6', rows: col('one', 'two', 'three', 'five', 'eight', 'thirteen') },
   lvals: { ref: 'N1:N6', rows: col(10, 20, 30, 50, 80, 130) },
   ntbl: { ref: 'M1:N6', rows: [['one', 10], ['two', 20], ['three', 30], ['five', 50], ['eight', 80], ['thirteen', 130]] },
-  // та же таблица по строкам
+  // the same table by rows
   htbl: {
     ref: 'L8:Q10',
     rows: [
@@ -85,11 +85,11 @@ export const REGIONS: Record<string, Region> = {
       [10, 20, 30, 50, 80, 130],
     ],
   },
-  // матрицы
+  // matrices
   m1: { ref: 'P1:Q2', rows: [[1, 2], [3, 4]] },
   m2: { ref: 'R1:S2', rows: [[5, 6], [7, 8]] },
   m23: { ref: 'P4:R5', rows: [[1, 2, 3], [4, 5, 6]] },
-  // база данных (пример справочника Excel) и диапазоны условий
+  // a database (the example of Excel's function reference) and criteria ranges
   db: {
     ref: 'U1:Y7',
     rows: [
@@ -108,7 +108,7 @@ export const REGIONS: Record<string, Region> = {
   critCherry: { ref: 'AE1:AE2', rows: [['Tree'], ['Cherry']] },
   critNone: { ref: 'AF1:AF2', rows: [['Tree'], ['Plum']] },
   critAll: { ref: 'AG1:AG2', rows: [['Tree'], [null]] },
-  // прочие диапазоны
+  // other ranges
   probx: { ref: 'AH1:AH4', rows: col(0, 1, 2, 3) },
   probp: { ref: 'AI1:AI4', rows: col(0.2, 0.3, 0.1, 0.4) },
   actual: { ref: 'AK1:AL3', rows: [[58, 35], [11, 25], [10, 23]] },
@@ -134,7 +134,7 @@ export const REGIONS: Record<string, Region> = {
   texts3: { ref: 'BH1:BH3', rows: col('a', null, 'Б') },
 }
 
-/** Ячейки листа по адресу (A1 → значение); пустые не входят. */
+/** The sheet's cells by address (A1 → value); blanks are left out. */
 export function dataCells(): Map<string, Cell> {
   const out = new Map<string, Cell>()
   for (const [name, r] of Object.entries(REGIONS)) {

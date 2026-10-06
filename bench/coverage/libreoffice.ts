@@ -1,7 +1,7 @@
 /**
- * LibreOffice как пятая колонка: тот же xlsx пересчитывается `soffice --headless` с отдельным
- * профилем en-US (как оракул тестов, `test/oracle.ts`), результаты колонки A листа случаев читаются
- * из XML сохранённой книги.
+ * LibreOffice as the fifth column: the same xlsx is recalculated by `soffice --headless` with a separate en-US
+ * profile (as the tests' oracle, `test/oracle/libreoffice.ts`), and column A of the case sheet is read from the
+ * XML of the saved book.
  */
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -42,7 +42,7 @@ export function libreOfficeVersion(): string {
   return execFileSync('soffice', ['--version'], { encoding: 'utf8' }).trim()
 }
 
-/** Значения колонки A листа случаев по строкам (индекс с 0). */
+/** The values of column A of the case sheet by row (index from 0). */
 export function runLibreOffice(book: string, n: number): Val[] {
   const dir = mkdtempSync(join(tmpdir(), 'fcov-lo-'))
   try {

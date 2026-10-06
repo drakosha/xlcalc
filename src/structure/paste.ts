@@ -1,5 +1,5 @@
 /**
- * The layout of a move or copy, as Excel changes it (checked in `docs/excel-struct/styles.json`): whole rows
+ * The layout of a move or copy, as Excel changes it (checked in `test/excel/struct/styles.json`): whole rows
  * or columns take their entries (height or width, style, format) along; each pasted position shows the style
  * and format its source showed, spelled out on the cell where the rows and columns there would show another;
  * merged areas inside the source go along, a copy takes the part of one it cuts, and those the pasted cells

@@ -1,5 +1,5 @@
 {
-  "name": "formula-engine",
+  "name": "xlcalc",
   "version": "0.2.0",
   "description": "Excel-style formula engine for workbooks: compiles a book's formulas to JavaScript, recalculates incrementally, hashes values deterministically, and checks its function whitelist against Excel semantics",
   "keywords": [
@@ -19,11 +19,11 @@
   "author": "Mikhail Kostryukov",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/drakosha/formula-engine.git"
+    "url": "git+https://github.com/drakosha/xlcalc.git"
   },
-  "homepage": "https://github.com/drakosha/formula-engine#readme",
+  "homepage": "https://github.com/drakosha/xlcalc#readme",
   "bugs": {
-    "url": "https://github.com/drakosha/formula-engine/issues"
+    "url": "https://github.com/drakosha/xlcalc/issues"
   },
   "type": "module",
   "engines": {

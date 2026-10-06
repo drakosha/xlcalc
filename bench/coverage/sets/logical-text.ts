@@ -1,12 +1,10 @@
 /**
  * Excel cases for AND, OR and XOR given the words for TRUE and FALSE as text, directly and in a cell: which
- * text they take as a boolean. Computed in Excel en-US (`docs/excel-cases/logical-text.json`) and ru-RU
- * (`run.ts probes logical-text ru`, `docs/excel-cases/ru-RU/logical-text.json`). The sheet `G` holds text.
+ * text they take as a boolean. Computed in Excel en-US (`test/excel/cases/logical-text.json`) and ru-RU
+ * (`run.ts probes logical-text ru`, `test/excel/cases/ru-RU/logical-text.json`). The sheet `G` holds text.
  * Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'
-
-export const DYNAMIC = true
 
 export const SHEETS: SheetCells = { G: { A1: 'TRUE', A2: 'ИСТИНА', A3: 'FALSE', A4: 'ЛОЖЬ' } }
 

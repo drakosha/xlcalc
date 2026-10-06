@@ -1,7 +1,7 @@
 /**
  * Excel's own formula text in a locale, for the locale data of `src/locale/` and its tests:
  *
- *   npx tsx bench/locale/snapshot.ts ru     Excel with the Russian interface and locale → docs/locale/excel-ru-RU.json
+ *   npx tsx bench/locale/snapshot.ts ru     Excel with the Russian interface and locale → test/excel/locale/ru-RU.json
  *
  * Under the Excel lock, Excel is started in the locale (`ensureExcel`), its international settings are
  * read, and the probe books (`probes.ts`) are opened one part at a time: column A of the case sheet is read

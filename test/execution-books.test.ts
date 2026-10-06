@@ -1,6 +1,6 @@
 /**
  * The two execution modes against each other (`execution-compare.ts`) on every case book: the coverage
- * measurement, the case sets of `docs/excel-cases/`, the probes, the measurement and the sets in ru-RU, the
+ * measurement, the case sets of `test/excel/cases/`, the probes, the measurement and the sets in ru-RU, the
  * semantics cases, the synthetic book, the seeded books of the structure tests, the spill cases and the spill
  * book with its seeded edits, and a book of every kind of compiled node. Values (cell by cell, without
  * tolerance: `Object.is`), issues with their reasons and check codes, volatile cells and hashes are equal.

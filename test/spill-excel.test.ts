@@ -1,5 +1,5 @@
 /**
- * Spilling against Excel en-US (`docs/excel-spill/<set>.json`, from `run.ts spill <set>`): each stored case is
+ * Spilling against Excel en-US (`test/excel/spill/<set>.json`, from `run.ts spill <set>`): each stored case is
  * its generator's current case, and every cell of its rectangles holds what Excel showed (blank or a value;
  * numbers as in the coverage measurement, a volatile case's numbers by type). Two arrays over one cell that do
  * not depend on each other: Excel's choice varies between runs (`order-runs.json` keeps every answer seen),
@@ -14,7 +14,7 @@ import { compute, type ComputeResult } from '../src/index.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
 
-const dir = new URL('../docs/excel-spill/', import.meta.url)
+const dir = new URL('./excel/spill/', import.meta.url)
 const SETS = existsSync(dir)
   ? readdirSync(dir)
       .filter((f) => f.endsWith('.json') && !f.endsWith('-runs.json'))

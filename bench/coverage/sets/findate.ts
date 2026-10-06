@@ -1,15 +1,13 @@
 /**
  * Financial and date functions: cases beyond the coverage measurement (functions formula.js lacks, day-count
  * bases 0–4, frequencies 1/2/4, the 1900 boundary, leap years, month ends, weekend codes, iteration limits).
- * Excel's answers: `npx tsx bench/coverage/run.ts probes findate` → `docs/excel-cases/findate.json`.
+ * Excel's answers: `npx tsx bench/coverage/run.ts probes findate` → `test/excel/cases/findate.json`.
  * Left out (functions not admitted, their Excel answers are in commit 52168a4): COUPDAYS on basis 1 with
  * month-end maturities and VDB inside one period, whose rules were not found. Computed as dynamic array
  * formulas (Excel 365).
  */
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
-
-export const DYNAMIC = true
 
 /** Sheet F: cash flows, dates and holidays with mixed content. */
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {

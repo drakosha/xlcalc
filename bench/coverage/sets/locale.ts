@@ -2,13 +2,11 @@
  * Excel cases for computing by locale (`docs/locale.md`, "Data to measure"): text read as a number, a date, a
  * time or a boolean, numbers and booleans turned into text, TEXT with Russian and English format codes,
  * DOLLAR and FIXED, NUMBERVALUE, complex text, criteria text. Computed in Excel ru-RU
- * (`run.ts probes locale ru`, `docs/excel-cases/ru-RU/locale.json`), checked by `test/excel-ru-probes.test.ts`.
+ * (`run.ts probes locale ru`, `test/excel/cases/ru-RU/locale.json`), checked by `test/excel-ru-probes.test.ts`.
  * The sheet `L` holds the values the criteria count. Sizes are never taken from text. Computed as dynamic
  * array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'
-
-export const DYNAMIC = true
 
 /** L!A1:A16: numbers, dates (46143 is 2026-05-01, 46023 2026-01-01, 45657 2024-12-31), booleans, text that reads as numbers and words, #N/A. */
 export const SHEETS: SheetCells = {

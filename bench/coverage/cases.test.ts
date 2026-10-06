@@ -1,5 +1,5 @@
 /**
- * Генератор случаев замера: страж размеров массивов по всем случаям и полнота набора.
+ * The measurement's case generator: the array-size guard over every case, and the set's completeness.
  */
 import { describe, expect, it } from 'vitest'
 import { arity, buildCases, parseKinds } from './cases.js'
@@ -7,8 +7,8 @@ import { ARRAY_SIZE, SIGNATURES, SIZE_LIMIT } from './signatures.js'
 
 const set = buildCases()
 
-describe('случаи замера покрытия', () => {
-  it('в позиции размера массива только маленькие числовые литералы', () => {
+describe('coverage measurement cases', () => {
+  it('only small number literals in array-size positions', () => {
     const bad: string[] = []
     for (const c of set.cases) {
       for (const i of ARRAY_SIZE[c.fn] ?? []) {
@@ -18,18 +18,18 @@ describe('случаи замера покрытия', () => {
       }
     }
     expect(bad).toEqual([])
-    // в книге аргумент-размер так и записан литералом
+    // in the book the size argument is written as that literal
     for (const c of set.cases.filter((x) => x.fn in ARRAY_SIZE)) expect(c.formula).not.toMatch(/MUNIT\((?!-?[\d.]+\))/)
   })
 
-  it('функции-массивы с целыми аргументами разобраны: размер или индекс', () => {
-    // CHOOSECOLS, CHOOSEROWS и SORT берут номера колонок и строк: массив не больше входного
+  it('array functions with whole-number arguments are sorted out: a size or an index', () => {
+    // CHOOSECOLS, CHOOSEROWS and SORT take column and row numbers: the array is no larger than the input
     const index = ['CHOOSECOLS', 'CHOOSEROWS', 'SORT']
     const withInt = SIGNATURES.filter((s) => s.picks && parseKinds(s).some((k) => k.k === 'i')).map((s) => s.name)
     expect(withInt.sort()).toEqual([...Object.keys(ARRAY_SIZE), ...index].sort())
   })
 
-  it('число аргументов в пределах Excel, на функцию от 1 до 25 случаев', () => {
+  it("argument counts within Excel's, 1 to 25 cases per function", () => {
     const per = new Map<string, number>()
     for (const c of set.cases) per.set(c.fn, (per.get(c.fn) ?? 0) + 1)
     expect(per.size).toBe(402)
@@ -41,7 +41,7 @@ describe('случаи замера покрытия', () => {
     }
   })
 
-  it('детерминизм: тот же сид даёт те же случаи', () => {
+  it('determinism: the same seed gives the same cases', () => {
     expect(buildCases().cases).toEqual(set.cases)
   })
 })

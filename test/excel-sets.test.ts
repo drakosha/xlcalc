@@ -1,5 +1,5 @@
 /**
- * Acceptance against Excel for the case sets in `docs/excel-cases/` (see `test/excel-sets.ts`): each set's
+ * Acceptance against Excel for the case sets in `test/excel/cases/` (see `test/excel-sets.ts`): each set's
  * stored cases equal what its generator builds now, and the engine matches Excel on every case or gives the
  * answer pinned in KNOWN (`test/excel-cases.ts`). Comparison as in the coverage measurement.
  */

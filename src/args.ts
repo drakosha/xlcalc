@@ -4,7 +4,7 @@
  * the group it belongs to. An error in a coerced argument is the answer, without calling the function.
  *
  * The kinds follow the rules derived from the coverage measurement against Excel en-US
- * (`docs/coverage-formulajs.md`, "Предложение"):
+ * (`docs/coverage-formulajs.md`, "Proposal"):
  *
  * 1. Coercion by group, not one rule for all:
  *    - `n` number: a boolean is 1 or 0, a blank 0, text that reads as a number is that number, other text

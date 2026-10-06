@@ -22,7 +22,7 @@ type RestructureResult =
   | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged'; message: string }
 ```
 
-The types are in the contract (`formula-engine/contract`), and `FormulaEngine` has `restructure`.
+The types are in the contract (`xlcalc/contract`), and `FormulaEngine` has `restructure`.
 
 - One function with the operation as data, rather than eight functions: an operation can be stored, sent from the interface to the server and replayed, and the session's method takes the same object. Rows are numbers and columns letters, as in A1 addresses; sheets are matched case-insensitively.
 - The input book is not changed. Sheets, cells and names that the operation does not touch are shared with the input.
@@ -89,7 +89,7 @@ Other shapes were weighed and left:
 
 ## Checked against Excel
 
-`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel (AppleScript, alerts off for the operation, every window that is not a book stops the run) and stores what every sheet shows in `A1:Z60` and the defined names in `docs/excel-struct/<set>.json`; `test/structure-excel.test.ts` compares `restructure` with them without Excel, formulas in Excel's notation with sheet names quoted. A book with styles, columns, rows, merged areas or number formats is written with them (ExcelJS), and the look of `A1:J24` is read back too: for each cell bold, the fill colour and the number format, the widths of the columns and heights of the rows that are not the standard ones, and the merged areas; the test compares the look the engine's book gives, with sizes as Excel 16 for Mac reports them (a width of w characters as (6w − 5)/6, a height in points as pixels, to a quarter). Known differences are listed in `STRUCT_KNOWN` there.
+`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel (AppleScript, alerts off for the operation, every window that is not a book stops the run) and stores what every sheet shows in `A1:Z60` and the defined names in `test/excel/struct/<set>.json`; `test/structure-excel.test.ts` compares `restructure` with them without Excel, formulas in Excel's notation with sheet names quoted. A book with styles, columns, rows, merged areas or number formats is written with them (ExcelJS), and the look of `A1:J24` is read back too: for each cell bold, the fill colour and the number format, the widths of the columns and heights of the rows that are not the standard ones, and the merged areas; the test compares the look the engine's book gives, with sizes as Excel 16 for Mac reports them (a width of w characters as (6w − 5)/6, a height in points as pixels, to a quarter). Known differences are listed in `STRUCT_KNOWN` there.
 
 | set | cases | what |
 |---|---|---|

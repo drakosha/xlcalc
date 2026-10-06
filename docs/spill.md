@@ -1,6 +1,6 @@
 # Spilling
 
-A formula whose result is an array of several values fills the cells to the right of and below its own cell, as in Excel 365 with dynamic arrays. The formula's cell is the array's top-left value; the other cells are values of the book that no input holds. Reference: Excel 16.113 for Mac, en-US, dynamic array formulas; every rule below was measured by the spill sets (`bench/coverage/spill/`, answers in `docs/excel-spill/`): `base` (50 cases), `order` (21 cases, computed four times), `held` (17 held-out cases whose answers were predicted from the rules of the first two and committed before Excel computed them: all 17 as predicted), and for structure operations the struct sets `spill` (8) and `spill-more` (4) in `docs/excel-struct/`.
+A formula whose result is an array of several values fills the cells to the right of and below its own cell, as in Excel 365 with dynamic arrays. The formula's cell is the array's top-left value; the other cells are values of the book that no input holds. Reference: Excel 16.113 for Mac, en-US, dynamic array formulas; every rule below was measured by the spill sets (`bench/coverage/spill/`, answers in `test/excel/spill/`): `base` (50 cases), `order` (21 cases, computed four times), `held` (17 held-out cases whose answers were predicted from the rules of the first two and committed before Excel computed them: all 17 as predicted), and for structure operations the struct sets `spill` (8) and `spill-more` (4) in `test/excel/struct/`.
 
 ## The rules
 

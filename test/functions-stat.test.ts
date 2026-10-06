@@ -1,5 +1,5 @@
 /**
- * Statistical functions beyond their Excel cases (`docs/excel-cases/stat.json`): the special functions
+ * Statistical functions beyond their Excel cases (`test/excel/cases/stat.json`): the special functions
  * against mpmath at 40 digits, the ceilings that turn a long iteration into an answer or #NUM! instead of a
  * hang, and the compatibility names answering as their modern versions.
  */
