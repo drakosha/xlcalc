@@ -143,13 +143,17 @@ function parts(cs: Case[]): Case[][] {
 }
 
 interface ExcelColumn extends Column {
-  meta: Column['meta'] & { parts: number; done: number; stopped?: string }
+  meta: Column['meta'] & { parts: number; done: number; stopped?: string; dynamic?: boolean }
 }
+
+/** Формулы замера в Excel пишутся формулами динамического массива (Excel 365), как в наборах с `DYNAMIC`. */
+const DYNAMIC = true
 
 /**
  * Excel частями: перед частью и после неё проверяется, нет ли у Excel окна, которое не окно книги
  * (модальный диалог). Есть: остановка с текстом диалога и номером части, посчитанные части уже в
- * файле. Повторный запуск продолжает с первой непосчитанной части (FCOV_FRESH=1 заново).
+ * файле. Повторный запуск продолжает с первой непосчитанной части (FCOV_FRESH=1 заново); колонка
+ * формул другого вида (старого или динамического массива) считается заново.
  */
 async function stepExcel(locale: Locale) {
   const cs = cases()
@@ -157,10 +161,11 @@ async function stepExcel(locale: Locale) {
   const file = join(RESULTS, name)
   await ensureExcel(locale)
   const ps = parts(cs)
+  const stored = existsSync(file) && !process.env.FCOV_FRESH ? load<ExcelColumn>(name) : null
   const col: ExcelColumn =
-    existsSync(file) && !process.env.FCOV_FRESH
-      ? load<ExcelColumn>(name)
-      : { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLanguages (en) -AppleLocale en_US)' : 'ru-RU (системные язык и локаль)', seconds: 0, parts: ps.length, done: 0 }, values: {} }
+    stored && (stored.meta.dynamic ?? false) === DYNAMIC
+      ? stored
+      : { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLanguages (en) -AppleLocale en_US)' : 'ru-RU (системные язык и локаль)', seconds: 0, parts: ps.length, done: 0, dynamic: DYNAMIC }, values: {} }
   delete col.meta.stopped
   const stop = (k: number, why: string) => {
     col.meta.stopped = `часть ${k + 1} из ${ps.length} (${ps[k][0].id} … ${ps[k][ps[k].length - 1].id}): ${why}`
@@ -174,7 +179,7 @@ async function stepExcel(locale: Locale) {
     const before = excelDialogs()
     if (before.length) stop(k, `до части у Excel окно не книги: ${before.map((d) => `${d.subrole} «${d.text}»`).join('; ')}`)
     const book = join(OUT, `part-${locale}-${k + 1}.xlsx`)
-    await writeBook(part, book)
+    await writeBook(part, book, {}, { dynamic: DYNAMIC })
     const t0 = Date.now()
     let vals: Val[] | null = null
     let err = ''
