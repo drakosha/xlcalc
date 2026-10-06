@@ -48,9 +48,9 @@ export interface Fuzzed {
   formula: string
 }
 
+/** Each formula draws from its own stream (the batch's seed and its number), so a change to the generator changes only the formulas it touches. */
 export function fuzz(b: Batch): Fuzzed[] {
-  const g = new Gen(b.seed)
-  return Array.from({ length: b.count }, () => g.formula(b.depth))
+  return Array.from({ length: b.count }, (_, k) => new Gen(b.seed ^ Math.imul(k + 1, 0x9e3779b1)).formula(b.depth))
 }
 
 class Gen {
@@ -101,6 +101,8 @@ class Gen {
     const lo = Math.max(min, fn === 'ROW' || fn === 'COLUMN' ? 1 : 0)
     let n = lo + Math.floor(this.rnd() * (Math.min(3, max - lo) + 1))
     if ((parity === 'odd' && n % 2 === 0) || (parity === 'even' && n % 2 === 1)) n = n + 1 <= max ? n + 1 : n - 1
+    // Excel loads SORTBY only with each further by-array followed by its order: 2 arguments or an odd number
+    if (fn === 'SORTBY' && n > 2 && n % 2 === 0) n++
     return n
   }
 

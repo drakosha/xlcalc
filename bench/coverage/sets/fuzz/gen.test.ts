@@ -39,6 +39,7 @@ describe('random formulas', () => {
       return !s || VOLATILE.has(c.name) || n < s.min || n > s.max || (s.parity === 'odd' && n % 2 === 0) || (s.parity === 'even' && n % 2 === 1)
     })
     expect(bad.map((c) => c.name)).toEqual([])
+    expect(calls.filter((c) => c.name === 'SORTBY' && c.args.length > 2 && c.args.length % 2 === 0)).toEqual([])
     // ROW() and COLUMN() answer the case's own row, which differs between Excel's parts and the engine's book
     expect(calls.filter((c) => (c.name === 'ROW' || c.name === 'COLUMN') && !c.args.length)).toEqual([])
   })

@@ -116,10 +116,12 @@ export const isSize = (fn: string, i: number): boolean => {
 
 /**
  * Argument positions Excel takes only as a reference (a formula with an array or a value there does not
- * load): the ranges of the criteria functions, ROW and COLUMN, COUNTBLANK, RANK's list, SUBTOTAL's and
- * AGGREGATE's references. `odd`/`even` cover those positions from `from` on.
+ * load): the ranges of the criteria functions, the database and criteria of the database functions, ROW and
+ * COLUMN, COUNTBLANK, RANK's list, SUBTOTAL's and AGGREGATE's references. `odd`/`even` cover those
+ * positions from `from` on.
  */
 export const REF_ONLY: Readonly<Record<string, { at?: readonly number[]; from?: number; odd?: boolean; even?: boolean }>> = {
+  ...Object.fromEntries(['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP'].map((f) => [f, { at: [0, 2] }])),
   COUNTIF: { at: [0] },
   COUNTIFS: { from: 0, even: true },
   SUMIF: { at: [0, 2] },
