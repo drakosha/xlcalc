@@ -17,7 +17,7 @@ export function buildProbes(): Probe[] {
   for (let n = 1; n <= 127; n++) add('CHAR', `CHAR(${n})`)
   for (let n = 1; n <= 127; n++) add('CODE', `CODE(CHAR(${n}))`)
   // the code taken whole, outside 1–255, numbers and text and blanks as arguments
-  for (const a of ['0', '256', '-1', '65.9', '65.1', '0.5', '0.99999', '255.5', '1E+300', '-0.5', '"65"', '" 65 "', '"6.5E+1"', '"1,5"', '"abc"', '""', 'TRUE', 'FALSE', 'D!A1', 'G!B1', 'G!B2', 'NA()', '1/0'])
+  for (const a of ['0', '256', '-1', '65.9', '65.1', '0.5', '0.99999', '127.9', '1E+300', '-0.5', '"65"', '" 65 "', '"6.5E+1"', '"1,5"', '"abc"', '""', 'TRUE', 'FALSE', 'D!A1', 'G!B1', 'G!B2', 'NA()', '1/0'])
     add('CHAR', `CHAR(${a})`)
   for (const a of ['{65,66,67}', 'G!A1:A2', '{1;127}']) add('CHAR', `TEXTJOIN("|",FALSE,CHAR(${a}))`)
   add('CHAR', 'LEN(CHAR(200))')
