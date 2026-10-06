@@ -335,7 +335,8 @@ Notes on semantics:
   - `XLOOKUP` and `XMATCH` with binary search (search mode 2 or −2) scan linearly: the same answer on sorted data, where Excel's binary search is defined. Match mode 3 (regular expressions) is `#VALUE!`.
   - `LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.
   - Text order for `<`, `>` and sorting uses `Intl.Collator` with the en-US locale (case-insensitive, accent-sensitive; Latin before Cyrillic, as in Excel en-US), which may differ from Excel for some characters; without `Intl` it falls back to comparing lower-cased code units.
-  - `TEXT` knows en-US formats only; exponent formats (`0.00E+00`), colours and bracketed conditions give `#VALUE!`.
+  - `TEXT` reads the format codes of en-US and of ru-RU; exponent formats (`0.00E+00`, `0,00E+00`), colours, elapsed time and bracketed conditions (`[h]:mm`, `[ч]:мм`) give `#VALUE!`.
+  - A second decimal separator among the decimals of a number format (`#,##0,00` in ru-RU) is a literal between digits; Excel shows one digit fewer before it in some numbers (`TEXT(-0.5,"#,##0,00")` is `-,50,00` in Excel and `-,500,00` here).
   - Date text without a year (`1/31`, which Excel completes with the current year) is not read as a date.
   - `#NULL!` is read as `#ERROR!`.
   - `RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.
