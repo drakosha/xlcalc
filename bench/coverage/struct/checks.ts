@@ -1,7 +1,8 @@
 /**
  * Held-out checks of rules that rest on few observations: moves the fitting set did not have (2-D strips,
  * moves onto another sheet's references, a middle block landing past a range's end), deleting and
- * inserting at the sheet's last row and column, copies with mixed `$` and with local names.
+ * inserting at the sheet's last row and column, copies with mixed `$` and with local names, a move of
+ * empty cells over values, a copy that does not fit.
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { RangeRef } from '../../../src/structure/types.js'
@@ -104,5 +105,8 @@ export function buildStructCases(): StructCases {
   copy('copy-local-name-T', 'S!E10', 'T!E10')
   copy('copy-local-name-V', 'S!E10', 'V!E10')
   cases.push({ id: 'move-local-name-T', book: 'copy', op: { op: 'moveRange', from: at('S!E10:F10'), to: { sheet: 'T', cell: 'A1' } } })
+  cases.push({ id: 'move-empty-over-values', book: 'copy', op: { op: 'moveRange', from: at('S!H1:H2'), to: { sheet: 'S', cell: 'A1' } } })
+  // last: Excel refuses a copy that does not fit (an error, if no window)
+  copy('copy-off-sheet', 'S!C10:D10', 'S!XFD20')
   return { books: { window: windowBook(), edge: edgeBook(), copy: copyBook() }, cases }
 }

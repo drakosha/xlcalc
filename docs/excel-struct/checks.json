@@ -3,7 +3,7 @@
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "read": "A1:Z60",
-  "seconds": 44.8
+  "seconds": 6.9
  },
  "books": {
   "window": {
@@ -1053,6 +1053,36 @@
     "to": {
      "sheet": "T",
      "cell": "A1"
+    }
+   }
+  },
+  {
+   "id": "move-empty-over-values",
+   "book": "copy",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "H1:H2"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "A1"
+    }
+   }
+  },
+  {
+   "id": "copy-off-sheet",
+   "book": "copy",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "C10:D10"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "XFD20"
     }
    }
   }
@@ -4218,6 +4248,115 @@
       "A1": "=SUM(loc)+glob",
       "B1": "=SUM(S!A1:A2)+S!A$12"
      }
+    },
+    {
+     "name": "V",
+     "used": "$A$1",
+     "cells": {}
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "glob",
+     "ref": "=S!$A$12"
+    },
+    {
+     "name": "S!loc",
+     "ref": "=S!$A$1:$A$3"
+    },
+    {
+     "name": "V!loc",
+     "ref": "=S!$A$7"
+    },
+    {
+     "name": "loc",
+     "ref": "=S!$A$4"
+    }
+   ]
+  },
+  "move-empty-over-values": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$3:$F$12",
+     "cells": {
+      "A3": "3",
+      "A4": "4",
+      "A5": "5",
+      "A6": "6",
+      "A7": "7",
+      "A8": "8",
+      "A9": "9",
+      "A10": "10",
+      "C10": "=SUM(A$5:A6)",
+      "D10": "=SUM($A5:A$9)",
+      "E10": "=SUM(loc)+glob",
+      "F10": "=SUM(#REF!)+A$12",
+      "A11": "11",
+      "A12": "12"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {}
+    },
+    {
+     "name": "V",
+     "used": "$A$1",
+     "cells": {}
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "glob",
+     "ref": "=S!$A$12"
+    },
+    {
+     "name": "S!loc",
+     "ref": "=S!$A$1:$A$3"
+    },
+    {
+     "name": "V!loc",
+     "ref": "=S!$A$7"
+    },
+    {
+     "name": "loc",
+     "ref": "=S!$A$4"
+    }
+   ]
+  },
+  "copy-off-sheet": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$F$12",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "A3": "3",
+      "A4": "4",
+      "A5": "5",
+      "A6": "6",
+      "A7": "7",
+      "A8": "8",
+      "A9": "9",
+      "A10": "10",
+      "C10": "=SUM(A$5:A6)",
+      "D10": "=SUM($A5:A$9)",
+      "E10": "=SUM(loc)+glob",
+      "F10": "=SUM(A1:A2)+A$12",
+      "A11": "11",
+      "A12": "12"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {}
     },
     {
      "name": "V",

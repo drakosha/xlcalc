@@ -151,6 +151,35 @@ console.log(result.sheets[0].cells.A1.value) // → 42
 
 Arguments of an external function must be literals; a call without a value gives `#N/A`.
 
+### Structure operations
+
+`restructure(book, op)` inserts or deletes rows and columns, moves (cut and paste) or copies (copy and paste, fill) a range, renames or deletes a sheet, and adjusts every reference in formulas and names on every sheet as Excel adjusts it: ranges grow and shrink, lost references become `#REF!`, absolute references move with inserted rows. It returns the new book and `mapCell`, which says where a cell of the old book is now; the input book is not changed.
+
+```js
+import { restructure } from 'formula-engine'
+
+const book = {
+  sheets: [{
+    name: 'Sales',
+    cells: {
+      A1: { value: 120 }, A2: { value: 80 }, A3: { value: 45 },
+      C1: { formula: 'SUM(A1:A3)' }, C2: { formula: 'A3*2' },
+    },
+  }],
+}
+
+const ins = restructure(book, { op: 'insertRows', sheet: 'Sales', row: 2 })
+console.log(ins.book.sheets[0].cells.C1.formula, ins.book.sheets[0].cells.C3.formula) // → SUM(A1:A4) A4*2
+console.log(ins.mapCell({ sheet: 'Sales', cell: 'A3' })) // → { sheet: 'Sales', cell: 'A4' }
+
+const del = restructure(book, { op: 'deleteRows', sheet: 'Sales', row: 3 })
+console.log(del.book.sheets[0].cells.C1.formula, del.book.sheets[0].cells.C2.formula) // → SUM(A1:A2) #REF!*2
+const last = restructure(book, { op: 'deleteSheet', sheet: 'Sales' })
+console.log(last.ok, last.code) // → false last_sheet
+```
+
+The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down), `renameSheet` (`name`) and `deleteSheet`. Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }` with `off_sheet` (cells would leave the sheet), `sheet_name` (an empty or taken name) or `last_sheet`. The rules, and how they were checked against Excel on 118 cases, are in [docs/structure.md](docs/structure.md). The parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
+
 ## API
 
 From `formula-engine`:
@@ -162,6 +191,7 @@ From `formula-engine`:
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name)` | `{ ok: true }` or `{ ok: false, message }` |
 | `engine` | the four functions above as one `FormulaEngine` object |
+| `restructure(book, op)` | one structure operation (`StructureOp`): `{ ok: true, book, mapCell }` or `{ ok: false, code, message }`; [docs/structure.md](docs/structure.md) |
 | `FUNCTION_NAMES`, `CONFIG_VERSION` | the whitelist; the configuration version that goes into every hash |
 | `InputError` | thrown on input of the wrong shape |
 | `debugGeneratedCode(book, opts?)` | the generated JavaScript in evaluation order, for debugging; not part of the contract |
@@ -231,6 +261,7 @@ Notes on semantics:
   - `GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) give the quantile where Excel's iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom) and probabilities near 1 with shapes under 0.03; Excel's own `GAMMA.DIST` at the engine's answer gives the probability back.
   - `BINOM.INV` where alpha equals the probability of no success, (1 − p)^n, exactly: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they part on `BINOM.INV(3,0.25,0.421875)`, 0 in Excel and 1 here.
 - **Syntax.** English function names and separators only (no `;` or decimal commas), no R1C1 references, no references to other workbooks, no 3D references or structured table references. Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LET`, …) give `#NAME?`.
+- **Structure operations.** `restructure` has no session method yet: a session is opened again with the new book. A name whose reference is lost (`'S'!#REF!`) stays in the book, as in Excel, but is reported in `nameIssues`, and formulas using it give `#NAME?` where Excel gives `#REF!`. Inserted rows do not take the format of the row above. A book has no row or column formats, merged cells or conditional formats to move.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
 
 ## Development
