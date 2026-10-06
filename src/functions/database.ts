@@ -4,12 +4,13 @@
  * matches values that begin with it.
  */
 import { gridAt, type FnDef, type Grid } from '../args.js'
-import { matches, parseCrit, type Crit } from '../criteria.js'
+import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import { E, isErr, toBool, toText, type CErr, type V } from '../values.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V): Crit | null {
-  if (v === null || isErr(v)) return null
+  if (v === null) return null
+  if (isErr(v)) return errorCrit(v.code)
   if (typeof v !== 'string' || /^(<=|>=|<>|<|>|=)/.test(v) || v === '') return parseCrit(v)
   const c = parseCrit(v)
   return c.kind === 'str' || c.kind === 'wild' ? parseCrit(v + '*') : c
@@ -22,10 +23,16 @@ function fieldIndex(db: Grid, field: V): number | CErr {
     const i = Math.trunc(Number(field))
     return i >= 1 && i <= db.cols ? i - 1 : E.VALUE
   }
-  const name = (toText(field) as string).toLowerCase()
+  return nameIndex(db, field)
+}
+
+/** The column whose header reads as `name` (any case), or #VALUE!; a criteria header is always a name, 45688 too. */
+function nameIndex(db: Grid, name: V): number | CErr {
+  if (isErr(name)) return name
+  const text = (toText(name) as string).toLowerCase()
   for (let c = 0; c < db.cols; c++) {
     const h = gridAt(db, c)
-    if (typeof h === 'string' ? h.toLowerCase() === name : toText(h) === name) return c
+    if (typeof h === 'string' ? h.toLowerCase() === text : toText(h) === text) return c
   }
   return E.VALUE
 }
@@ -44,7 +51,7 @@ function selected(db: Grid, field: V, criteria: Grid): V[] | CErr {
       const v = gridAt(criteria, r * criteria.cols + c)
       const crit = condition(v)
       if (!crit) continue
-      const at = fieldIndex(db, gridAt(criteria, c))
+      const at = nameIndex(db, gridAt(criteria, c))
       if (!isErr(at)) row.push({ col: at, crit })
       else if (toBool(v) !== true) row.push({ col: -1, crit })
     }

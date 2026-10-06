@@ -2,7 +2,7 @@
  * Criteria of SUMIF, SUMIFS, COUNTIFS and an index over them: strings are case-insensitive but
  * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers and ISO dates in
  * the criterion text are compared as numbers, and a number criterion's equality also holds for text that
- * reads as that number; `""` matches blanks, `"<>"` non-blanks.
+ * reads as that number; `""` matches blanks, `"<>"` non-blanks; an error, or its text, matches that error.
  */
 import { dateToSerial, NUMBER_TEXT, readNumber } from './model.js'
 
@@ -15,6 +15,7 @@ export type Crit =
   | { op: string; kind: 'str'; s: string }
   | { op: string; kind: 'wild'; re: RegExp }
   | { op: string; kind: 'blank' }
+  | { op: string; kind: 'err'; code: string }
 
 /**
  * String order for `<`/`>`: case-insensitive, accent-sensitive. Without `Intl` (QuickJS, for example)
@@ -48,6 +49,22 @@ export function wildRe(s: string, tilde = false): RegExp | null {
   return (tilde ? /[*?~]/ : /[*?]/).test(s) ? new RegExp(`^${wildSource(s)}$`, 'iu') : null
 }
 
+/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers; #ERROR! is how this engine reads #NULL!. */
+const ERRORS: Record<string, [code: string, rank: number]> = {
+  '#NULL!': ['ERROR', 1],
+  '#DIV/0!': ['DIV0', 2],
+  '#VALUE!': ['VALUE', 3],
+  '#REF!': ['REF', 4],
+  '#NAME?': ['NAME', 5],
+  '#NUM!': ['NUM', 6],
+  '#N/A': ['NA', 7],
+  '#SPILL!': ['SPILL', 9],
+}
+const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRORS))
+
+/** A criterion that is an error value: it matches the cells holding that error (Excel: COUNTIF(A1:A9,NA())). */
+export const errorCrit = (code: string): Crit => ({ op: '=', kind: 'err', code })
+
 /** A criterion from a value (the scalar after evaluating the argument). */
 export function parseCrit(v: number | string | boolean | null): Crit {
   const key = typeof v + ':' + String(v)
@@ -63,6 +80,7 @@ export function parseCrit(v: number | string | boolean | null): Crit {
     const rest = m[2]
     const t = rest.trim()
     if (rest === '') c = { op, kind: 'blank' }
+    else if (rest.toUpperCase() in ERRORS) c = { op, kind: 'err', code: ERRORS[rest.toUpperCase()][0] }
     else if (NUMBER_TEXT.test(t)) c = { op, kind: 'num', n: readNumber(t) }
     else if (DATE_RE.test(t)) c = { op, kind: 'num', n: dateToSerial(t) }
     else if (/^(TRUE|FALSE)$/i.test(rest)) c = { op, kind: 'bool', b: rest.toUpperCase() === 'TRUE' }
@@ -104,6 +122,13 @@ export function matches(v: CritValue, c: Crit): boolean {
     case 'wild':
       if (typeof v !== 'string') return c.op === '<>'
       return c.re.test(v) === (c.op === '=')
+    case 'err': {
+      // errors only, never text that reads like one; < and > order errors as ERROR.TYPE does
+      const code = v !== null && typeof v === 'object' ? (v as { code?: string }).code : undefined
+      if (c.op === '=' || c.op === '<>') return (code === c.code) === (c.op === '=')
+      const r = code === undefined ? undefined : ERROR_RANK[code]
+      return r !== undefined && opOk(c.op, ord(r, ERROR_RANK[c.code]))
+    }
     case 'str':
       if (typeof v !== 'string') return c.op === '<>'
       if (c.op === '=' || c.op === '<>') return (v.toLowerCase() === c.s) === (c.op === '=')

@@ -17,18 +17,6 @@ function numbersAt(values: readonly V[], sel: number[]): number[] | CErr {
   return out
 }
 
-/** Excel's error texts, as a criterion of COUNTIF matches the cells holding that error. */
-const ERROR_CODES: Record<string, string> = { '#DIV/0!': 'DIV0', '#N/A': 'NA', '#NAME?': 'NAME', '#NUM!': 'NUM', '#REF!': 'REF', '#VALUE!': 'VALUE' }
-
-/** An error, or its text with `=` or `<>`, as a criterion. */
-function errorCriterion(crit: V): { code: string; eq: boolean } | undefined {
-  if (isErr(crit)) return { code: crit.code, eq: true }
-  if (typeof crit !== 'string') return undefined
-  const m = /^(=|<>)?([\s\S]*)$/.exec(crit)!
-  const code = ERROR_CODES[m[2].toUpperCase()]
-  return code ? { code, eq: m[1] !== '<>' } : undefined
-}
-
 function criteriaPairs(rest: (V | Rng)[]): [V | Rng, V | Rng][] {
   const out: [V | Rng, V | Rng][] = []
   for (let i = 0; i < rest.length; i += 2) out.push([rest[i], rest[i + 1]])
@@ -71,15 +59,9 @@ export const functions: Record<string, FnDef> = {
   COUNTIF: {
     args: 'R a',
     cx: true,
-    fn: (cx: Cx, range: V | Rng, crit: V) => {
+    fn: (cx: Cx, range: V | Rng, crit: V | Rng) => {
       const g = asRng(range)
       if (isErr(g)) return g
-      const e = errorCriterion(crit)
-      if (e) {
-        const grid = cx.grid(g)
-        const n = grid.v.filter((v) => isErr(v) && v.code === e.code).length
-        return e.eq ? n : grid.rows * grid.cols - n
-      }
       const r = cx.select([[g, crit]])
       return isErr(r) ? r : r.sel.length + r.rest
     },
