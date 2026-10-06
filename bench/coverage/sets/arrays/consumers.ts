@@ -16,7 +16,7 @@ export function aggregates(add: Add) {
   // a blank cell inside an array: kept by the functions that reshape, a value once lifted
   g('COUNTA', 'COUNTA(IF({1;1},D!K1:K2))', 'COUNTA(TRANSPOSE(D!K1:K2))', 'COUNTA(TAKE(D!K1:K8,2))', 'COUNTA(VSTACK(D!K1:K2))', 'COUNTA(SORT(D!D1:D8))', 'COUNTA(FILTER(D!D1:D8,{1;1;1;1;1;1;1;1}))')
   g('COUNTA', 'COUNTA(CHOOSECOLS(D!K1:K2,1))', 'COUNTA(INDEX(D!K1:K8,{1;2}))', 'COUNTA(INDEX(D!K1:K8,0,1))', 'COUNTA(UNIQUE(D!K1:K8))', 'COUNTA(TOCOL(D!K1:K3))', 'COUNTA(EXPAND(D!K1,2,1,1))', 'COUNTA(D!K1:K8*1)')
-  g('ISBLANK', 'SUM(--ISNUMBER(IF({1;1},D!K1:K2)))', 'INDEX(IF({1;1},D!K1:K2),1)&"x"', 'INDEX(TRANSPOSE(D!K1:K2),1,1)&"x"', 'SUM(--ISBLANK(TRANSPOSE(D!K1:K2)))', 'SUM(--ISBLANK(SORT(D!D1:D8)))', 'SUM(--ISBLANK(INDEX(D!K1:K8,{1;2})))')
+  add('empty', 'array-empty', 'SUM(--ISNUMBER(IF({1;1},D!K1:K2)))', 'INDEX(IF({1;1},D!K1:K2),1)&"x"', 'INDEX(TRANSPOSE(D!K1:K2),1,1)&"x"', 'SUM(--ISBLANK(TRANSPOSE(D!K1:K2)))', 'SUM(--ISBLANK(SORT(D!D1:D8)))', 'SUM(--ISBLANK(INDEX(D!K1:K8,{1;2})))')
   g('MAXA', 'MAXA({TRUE,-1})', 'MAXA(IF(D!B1:B2>0,TRUE))', 'MAXA({"a",-1})')
   g('MINA', 'MINA({FALSE,1})', 'MINA({"a",1})')
   g('STDEVA', 'STDEVA({1,TRUE,3})', 'STDEVA({"a",2,4})')

@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.239,
+  "seconds": 3.692,
   "dynamic": true
  },
  "cases": [
@@ -1093,39 +1093,39 @@
    "formula": "COUNTA(D!K1:K8*1)"
   },
   {
-   "id": "agg:ISBLANK#1",
-   "group": "agg:ISBLANK",
-   "fn": "ISBLANK",
+   "id": "empty#1",
+   "group": "empty",
+   "fn": "array-empty",
    "formula": "SUM(--ISNUMBER(IF({1;1},D!K1:K2)))"
   },
   {
-   "id": "agg:ISBLANK#2",
-   "group": "agg:ISBLANK",
-   "fn": "ISBLANK",
+   "id": "empty#2",
+   "group": "empty",
+   "fn": "array-empty",
    "formula": "INDEX(IF({1;1},D!K1:K2),1)&\"x\""
   },
   {
-   "id": "agg:ISBLANK#3",
-   "group": "agg:ISBLANK",
-   "fn": "ISBLANK",
+   "id": "empty#3",
+   "group": "empty",
+   "fn": "array-empty",
    "formula": "INDEX(TRANSPOSE(D!K1:K2),1,1)&\"x\""
   },
   {
-   "id": "agg:ISBLANK#4",
-   "group": "agg:ISBLANK",
-   "fn": "ISBLANK",
+   "id": "empty#4",
+   "group": "empty",
+   "fn": "array-empty",
    "formula": "SUM(--ISBLANK(TRANSPOSE(D!K1:K2)))"
   },
   {
-   "id": "agg:ISBLANK#5",
-   "group": "agg:ISBLANK",
-   "fn": "ISBLANK",
+   "id": "empty#5",
+   "group": "empty",
+   "fn": "array-empty",
    "formula": "SUM(--ISBLANK(_xlfn._xlws.SORT(D!D1:D8)))"
   },
   {
-   "id": "agg:ISBLANK#6",
-   "group": "agg:ISBLANK",
-   "fn": "ISBLANK",
+   "id": "empty#6",
+   "group": "empty",
+   "fn": "array-empty",
    "formula": "SUM(--ISBLANK(INDEX(D!K1:K8,{1;2})))"
   },
   {
@@ -3988,13 +3988,13 @@
    "id": "fn:DROP#6",
    "group": "fn:DROP",
    "fn": "DROP",
-   "formula": "SUM(_xlfn.TAKE(_xlfn.SEQUENCE(5),2))"
+   "formula": "COLUMNS(_xlfn.DROP(D!L1:N6,0,-1))"
   },
   {
-   "id": "fn:DROP#7",
-   "group": "fn:DROP",
-   "fn": "DROP",
-   "formula": "COLUMNS(_xlfn.DROP(D!L1:N6,0,-1))"
+   "id": "fn:TAKE#8",
+   "group": "fn:TAKE",
+   "fn": "TAKE",
+   "formula": "SUM(_xlfn.TAKE(_xlfn.SEQUENCE(5),2))"
   },
   {
    "id": "fn:SORTBY#8",
@@ -14844,30 +14844,6 @@
    "t": "n",
    "v": 8
   },
-  "agg:ISBLANK#1": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:ISBLANK#2": {
-   "t": "s",
-   "v": "0x"
-  },
-  "agg:ISBLANK#3": {
-   "t": "s",
-   "v": "x"
-  },
-  "agg:ISBLANK#4": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:ISBLANK#5": {
-   "t": "n",
-   "v": 1
-  },
-  "agg:ISBLANK#6": {
-   "t": "n",
-   "v": 2
-  },
   "agg:MAXA#1": {
    "t": "n",
    "v": -1
@@ -16767,6 +16743,98 @@
   "fn:TEXTSPLIT#21": {
    "t": "n",
    "v": 1
+  },
+  "fn:DROP#5": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:SORTBY#8": {
+   "t": "n",
+   "v": 16
+  },
+  "fn:SORTBY#9": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:SORTBY#10": {
+   "t": "n",
+   "v": 13
+  },
+  "fn:SORTBY#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:SORTBY#12": {
+   "t": "s",
+   "v": "Dee"
+  },
+  "fn:TOROW#5": {
+   "t": "b",
+   "v": true
+  },
+  "fn:TOROW#6": {
+   "t": "e",
+   "v": "CALC"
+  },
+  "fn:TOROW#7": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:WRAPCOLS#6": {
+   "t": "n",
+   "v": 42
+  },
+  "fn:WRAPCOLS#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:WRAPCOLS#8": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:GROWTH#3": {
+   "t": "n",
+   "v": 468536.05418404803
+  },
+  "fn:GROWTH#4": {
+   "t": "n",
+   "v": 1414600.728288447
+  },
+  "fn:TREND#5": {
+   "t": "n",
+   "v": 15.599999999999998
+  },
+  "fn:TREND#6": {
+   "t": "n",
+   "v": 14.072727272727274
+  },
+  "fn:LOGEST#5": {
+   "t": "n",
+   "v": 2.536018829938564
+  },
+  "fn:LOGEST#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "fn:CHOOSEROWS#5": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:CHOOSEROWS#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:CHOOSEROWS#7": {
+   "t": "n",
+   "v": 10
+  },
+  "fn:FILTER#16": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:TEXTSPLIT#22": {
+   "t": "n",
+   "v": 0
   },
   "fn:RANDARRAY#1": {
    "t": "n",
@@ -23428,105 +23496,37 @@
    "t": "e",
    "v": "SPILL"
   },
-  "fn:DROP#5": {
+  "empty#1": {
    "t": "n",
-   "v": 0
+   "v": 2
+  },
+  "empty#2": {
+   "t": "s",
+   "v": "0x"
+  },
+  "empty#3": {
+   "t": "s",
+   "v": "x"
+  },
+  "empty#4": {
+   "t": "n",
+   "v": 2
+  },
+  "empty#5": {
+   "t": "n",
+   "v": 1
+  },
+  "empty#6": {
+   "t": "n",
+   "v": 2
   },
   "fn:DROP#6": {
    "t": "n",
-   "v": 3
-  },
-  "fn:DROP#7": {
-   "t": "n",
    "v": 2
   },
-  "fn:SORTBY#8": {
-   "t": "n",
-   "v": 16
-  },
-  "fn:SORTBY#9": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:SORTBY#10": {
-   "t": "n",
-   "v": 13
-  },
-  "fn:SORTBY#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:SORTBY#12": {
-   "t": "s",
-   "v": "Dee"
-  },
-  "fn:TOROW#5": {
-   "t": "b",
-   "v": true
-  },
-  "fn:TOROW#6": {
-   "t": "e",
-   "v": "CALC"
-  },
-  "fn:TOROW#7": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:WRAPCOLS#6": {
-   "t": "n",
-   "v": 42
-  },
-  "fn:WRAPCOLS#7": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:WRAPCOLS#8": {
+  "fn:TAKE#8": {
    "t": "n",
    "v": 3
-  },
-  "fn:GROWTH#3": {
-   "t": "n",
-   "v": 468536.05418404803
-  },
-  "fn:GROWTH#4": {
-   "t": "n",
-   "v": 1414600.728288447
-  },
-  "fn:TREND#5": {
-   "t": "n",
-   "v": 15.599999999999998
-  },
-  "fn:TREND#6": {
-   "t": "n",
-   "v": 14.072727272727274
-  },
-  "fn:LOGEST#5": {
-   "t": "n",
-   "v": 2.536018829938564
-  },
-  "fn:LOGEST#6": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "fn:CHOOSEROWS#5": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:CHOOSEROWS#6": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:CHOOSEROWS#7": {
-   "t": "n",
-   "v": 10
-  },
-  "fn:FILTER#16": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:TEXTSPLIT#22": {
-   "t": "n",
-   "v": 0
   }
  }
 }

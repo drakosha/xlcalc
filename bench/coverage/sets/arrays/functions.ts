@@ -71,7 +71,8 @@ export function arrayFunctions(add: Add) {
   g('TEXTSPLIT', 'COLUMNS(TEXTSPLIT("a1b2c",{1,2}))', 'ROWS(TEXTSPLIT("a;;b",",",";",TRUE))', 'ROWS(TEXTSPLIT("a;;b",",",";"))')
   g('TEXTSPLIT', 'COLUMNS(TEXTSPLIT(AR!H4," ",";",TRUE))', 'INDEX(TEXTSPLIT(AR!H2,";","|"),2,1)', 'COLUMNS(TEXTSPLIT(AR!H3,"-"))', 'TEXTSPLIT(AR!H1,",")', 'ROWS(TEXTSPLIT("a,b",",",","))')
   // edges of the functions with few cases elsewhere
-  g('DROP', 'COUNTA(DROP(D!K1:K8,6))', 'SUM(TAKE(SEQUENCE(5),2))', 'COLUMNS(DROP(D!L1:N6,0,-1))')
+  g('DROP', 'COUNTA(DROP(D!K1:K8,6))', 'COLUMNS(DROP(D!L1:N6,0,-1))')
+  g('TAKE', 'SUM(TAKE(SEQUENCE(5),2))')
   g('SORTBY', 'INDEX(SORTBY(D!B1:B8,D!E1:E8),3)', 'INDEX(SORTBY(D!L1:N6,D!N1:N6,-1,D!L1:L6,1),2,1)', 'INDEX(SORTBY(D!L8:Q8,D!L10:Q10,-1),1,1)', 'SORTBY(D!L1:L6,D!L8:Q8)', 'INDEX(SORTBY(AR!A1:A8,AR!B1:B8,1,AR!C1:C8,1,AR!D1:D8,-1),1)')
   g('TOROW', 'INDEX(TOROW(D!D1:D8,1),1,4)', 'TOROW(D!K1:K3,1)', 'COLUMNS(TOROW(AR!F1:F10,3,TRUE))')
   g('WRAPCOLS', 'INDEX(WRAPCOLS(D!B1:B8,3),3,2)', 'WRAPCOLS(D!P1:Q2,2)', 'COLUMNS(WRAPCOLS({1,2,3},1))')
