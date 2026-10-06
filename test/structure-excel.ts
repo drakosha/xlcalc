@@ -58,10 +58,11 @@ function nameKey(excel: string): string {
 
 /**
  * Sizes as Excel 16 for Mac reports them with Calibri 11: a column width of w characters (xlsx) as (6w − 5)/6,
- * the width without the padding at 6 pixels a digit; a row height in points as pixels, 4/3 of it.
+ * the width without the padding at 6 pixels a digit; a row height in points as pixels, 4/3 of it, to a quarter
+ * (30 is 40, 24 is 32, 20 is 26.75).
  */
 const shownWidth = (w: number) => Math.round(((6 * w - 5) / 6) * 100) / 100
-const shownHeight = (h: number) => Math.round((h * 4) / 3 * 100) / 100
+const shownHeight = (h: number) => Math.round((h * 16) / 3) / 4
 
 /** The look of a sheet of the book in `look`, as Excel reads it: a cell's style and format, else its row's, else its column's. */
 export function lookOf(book: BookInput, sheet: SheetInput, look: string): SheetLook {

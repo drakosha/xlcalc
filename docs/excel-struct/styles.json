@@ -4,7 +4,7 @@
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "read": "A1:Z60",
   "look": "A1:J24",
-  "seconds": 880.1
+  "seconds": 70.1
  },
  "books": {
   "styled": {
@@ -655,6 +655,51 @@
     "to": {
      "sheet": "S",
      "cell": "B10"
+    }
+   }
+  },
+  {
+   "id": "copy-S!A19:A20-S!B10",
+   "book": "styled",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A19:A20"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "B10"
+    }
+   }
+  },
+  {
+   "id": "copy-S!A1:A3-S!I1",
+   "book": "styled",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A1:A3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "I1"
+    }
+   }
+  },
+  {
+   "id": "copy-S!D:D-S!C1",
+   "book": "styled",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D:D"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "C1"
     }
    }
   },
@@ -15411,6 +15456,1016 @@
       },
       "widths": {
        "C": 19.17,
+       "E": 13.17,
+       "H": 11.17
+      },
+      "heights": {
+       "6": 40,
+       "8": 32
+      },
+      "merges": [
+       "I2:J2",
+       "B10:C11",
+       "A14:A16"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!A1:A12)"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-S!A19:A20-S!B10": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$16",
+     "cells": {
+      "A1": "1",
+      "B1": "10",
+      "F1": "=SUM(A1:A12)",
+      "G1": "=A6+B10",
+      "A2": "2",
+      "B2": "20",
+      "F2": "=SUM(B3:D4)",
+      "G2": "=SUM(H:H)",
+      "I2": "i",
+      "A3": "3",
+      "B3": "30",
+      "C3": "x",
+      "D3": "3.5",
+      "A4": "4",
+      "B4": "40",
+      "C4": "0.25",
+      "A5": "5",
+      "B5": "50",
+      "E5": "e5",
+      "H5": "1.25",
+      "A6": "6",
+      "B6": "60",
+      "A7": "7",
+      "B7": "70",
+      "A8": "8",
+      "B8": "80",
+      "A9": "9",
+      "B9": "90",
+      "A10": "10",
+      "B10": "m",
+      "A11": "11",
+      "A12": "12",
+      "B12": "120",
+      "A14": "a"
+     },
+     "look": {
+      "cells": {
+       "E1": {
+        "bold": true
+       },
+       "H1": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E2": {
+        "bold": true
+       },
+       "H2": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "B3": {
+        "bold": true
+       },
+       "C3": {
+        "fill": "#FFC000"
+       },
+       "D3": {
+        "format": "0.00"
+       },
+       "E3": {
+        "bold": true
+       },
+       "H3": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "B4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "C4": {
+        "bold": true,
+        "fill": "#92D050",
+        "format": "0%"
+       },
+       "D4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "E4": {
+        "bold": true
+       },
+       "H4": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "D5": {
+        "fill": "#00B0F0"
+       },
+       "E5": {
+        "bold": true
+       },
+       "H5": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "A6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "B6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "C6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "D6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "E6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "F6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "G6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "H6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "I6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "J6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "E7": {
+        "bold": true
+       },
+       "H7": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E8": {
+        "bold": true
+       },
+       "H8": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "A9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "B9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "C9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "D9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "E9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "F9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "G9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "H9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "I9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "J9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "E10": {
+        "bold": true
+       },
+       "H10": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E11": {
+        "bold": true
+       },
+       "H11": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E12": {
+        "bold": true
+       },
+       "H12": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E13": {
+        "bold": true
+       },
+       "H13": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E14": {
+        "bold": true
+       },
+       "H14": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E15": {
+        "bold": true
+       },
+       "H15": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E16": {
+        "bold": true
+       },
+       "H16": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E17": {
+        "bold": true
+       },
+       "H17": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E18": {
+        "bold": true
+       },
+       "H18": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E19": {
+        "bold": true
+       },
+       "H19": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E20": {
+        "bold": true
+       },
+       "H20": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E21": {
+        "bold": true
+       },
+       "H21": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E22": {
+        "bold": true
+       },
+       "H22": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E23": {
+        "bold": true
+       },
+       "H23": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E24": {
+        "bold": true
+       },
+       "H24": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       }
+      },
+      "widths": {
+       "C": 19.17,
+       "E": 13.17,
+       "H": 11.17
+      },
+      "heights": {
+       "6": 40,
+       "8": 32
+      },
+      "merges": [
+       "I2:J2",
+       "B10:C11",
+       "A14:A16"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!A1:A12)"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-S!A1:A3-S!I1": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$16",
+     "cells": {
+      "A1": "1",
+      "B1": "10",
+      "F1": "=SUM(A1:A12)",
+      "G1": "=A6+B10",
+      "A2": "2",
+      "B2": "20",
+      "F2": "=SUM(B3:D4)",
+      "G2": "=SUM(H:H)",
+      "I2": "i",
+      "A3": "3",
+      "B3": "30",
+      "C3": "x",
+      "D3": "3.5",
+      "A4": "4",
+      "B4": "40",
+      "C4": "0.25",
+      "A5": "5",
+      "B5": "50",
+      "E5": "e5",
+      "H5": "1.25",
+      "A6": "6",
+      "B6": "60",
+      "A7": "7",
+      "B7": "70",
+      "A8": "8",
+      "B8": "80",
+      "A9": "9",
+      "B9": "90",
+      "A10": "10",
+      "B10": "m",
+      "A11": "11",
+      "A12": "12",
+      "B12": "120",
+      "A14": "a"
+     },
+     "look": {
+      "cells": {
+       "E1": {
+        "bold": true
+       },
+       "H1": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E2": {
+        "bold": true
+       },
+       "H2": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "B3": {
+        "bold": true
+       },
+       "C3": {
+        "fill": "#FFC000"
+       },
+       "D3": {
+        "format": "0.00"
+       },
+       "E3": {
+        "bold": true
+       },
+       "H3": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "B4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "C4": {
+        "bold": true,
+        "fill": "#92D050",
+        "format": "0%"
+       },
+       "D4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "E4": {
+        "bold": true
+       },
+       "H4": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "D5": {
+        "fill": "#00B0F0"
+       },
+       "E5": {
+        "bold": true
+       },
+       "H5": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "A6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "B6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "C6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "D6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "E6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "F6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "G6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "H6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "I6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "J6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "E7": {
+        "bold": true
+       },
+       "H7": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E8": {
+        "bold": true
+       },
+       "H8": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "A9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "B9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "C9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "D9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "E9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "F9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "G9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "H9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "I9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "J9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "E10": {
+        "bold": true
+       },
+       "H10": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E11": {
+        "bold": true
+       },
+       "H11": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E12": {
+        "bold": true
+       },
+       "H12": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E13": {
+        "bold": true
+       },
+       "H13": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E14": {
+        "bold": true
+       },
+       "H14": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E15": {
+        "bold": true
+       },
+       "H15": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E16": {
+        "bold": true
+       },
+       "H16": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E17": {
+        "bold": true
+       },
+       "H17": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E18": {
+        "bold": true
+       },
+       "H18": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E19": {
+        "bold": true
+       },
+       "H19": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E20": {
+        "bold": true
+       },
+       "H20": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E21": {
+        "bold": true
+       },
+       "H21": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E22": {
+        "bold": true
+       },
+       "H22": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E23": {
+        "bold": true
+       },
+       "H23": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E24": {
+        "bold": true
+       },
+       "H24": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       }
+      },
+      "widths": {
+       "C": 19.17,
+       "E": 13.17,
+       "H": 11.17
+      },
+      "heights": {
+       "6": 40,
+       "8": 32
+      },
+      "merges": [
+       "I2:J2",
+       "B10:C11",
+       "A14:A16"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!A1:A12)"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-S!D:D-S!C1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$16",
+     "cells": {
+      "A1": "1",
+      "B1": "10",
+      "F1": "=SUM(A1:A12)",
+      "G1": "=A6+B10",
+      "A2": "2",
+      "B2": "20",
+      "F2": "=SUM(B3:D4)",
+      "G2": "=SUM(H:H)",
+      "I2": "i",
+      "A3": "3",
+      "B3": "30",
+      "C3": "3.5",
+      "D3": "3.5",
+      "A4": "4",
+      "B4": "40",
+      "A5": "5",
+      "B5": "50",
+      "E5": "e5",
+      "H5": "1.25",
+      "A6": "6",
+      "B6": "60",
+      "A7": "7",
+      "B7": "70",
+      "A8": "8",
+      "B8": "80",
+      "A9": "9",
+      "B9": "90",
+      "A10": "10",
+      "B10": "m",
+      "A11": "11",
+      "A12": "12",
+      "B12": "120",
+      "A14": "a"
+     },
+     "look": {
+      "cells": {
+       "E1": {
+        "bold": true
+       },
+       "H1": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E2": {
+        "bold": true
+       },
+       "H2": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "B3": {
+        "bold": true
+       },
+       "C3": {
+        "format": "0.00"
+       },
+       "D3": {
+        "format": "0.00"
+       },
+       "E3": {
+        "bold": true
+       },
+       "H3": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "B4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "C4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "D4": {
+        "bold": true,
+        "fill": "#92D050"
+       },
+       "E4": {
+        "bold": true
+       },
+       "H4": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "C5": {
+        "fill": "#00B0F0"
+       },
+       "D5": {
+        "fill": "#00B0F0"
+       },
+       "E5": {
+        "bold": true
+       },
+       "H5": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "A6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "B6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "C6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "D6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "E6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "F6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "G6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "H6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "I6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "J6": {
+        "fill": "#00B0F0",
+        "format": "0"
+       },
+       "E7": {
+        "bold": true
+       },
+       "H7": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E8": {
+        "bold": true
+       },
+       "H8": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "A9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "B9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "C9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "D9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "E9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "F9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "G9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "H9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "I9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "J9": {
+        "fill": "#FFC000",
+        "format": "0.000"
+       },
+       "E10": {
+        "bold": true
+       },
+       "H10": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E11": {
+        "bold": true
+       },
+       "H11": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E12": {
+        "bold": true
+       },
+       "H12": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E13": {
+        "bold": true
+       },
+       "H13": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E14": {
+        "bold": true
+       },
+       "H14": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E15": {
+        "bold": true
+       },
+       "H15": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E16": {
+        "bold": true
+       },
+       "H16": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E17": {
+        "bold": true
+       },
+       "H17": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E18": {
+        "bold": true
+       },
+       "H18": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E19": {
+        "bold": true
+       },
+       "H19": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E20": {
+        "bold": true
+       },
+       "H20": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E21": {
+        "bold": true
+       },
+       "H21": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E22": {
+        "bold": true
+       },
+       "H22": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E23": {
+        "bold": true
+       },
+       "H23": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       },
+       "E24": {
+        "bold": true
+       },
+       "H24": {
+        "fill": "#FFC000",
+        "format": "0.0"
+       }
+      },
+      "widths": {
        "E": 13.17,
        "H": 11.17
       },

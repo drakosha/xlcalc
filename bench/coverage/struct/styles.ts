@@ -104,6 +104,10 @@ export function buildStructCases(): StructCases {
   copy('S!E:E', 'S!G1')
   copy('S!6:6', 'S!A20')
   move('S!A19:B20', 'S!B10') // onto the whole of B10:C11
+  // copies landing on part of a merged area: its top-left cell, other cells, whole columns
+  copy('S!A19:A20', 'S!B10')
+  copy('S!A1:A3', 'S!I1')
+  copy('S!D:D', 'S!C1')
   // last: the moves and copies that cut a merged area (an error, if no window)
   move('S!B10:B11', 'S!E18')
   copy('S!B10:B11', 'S!E18')
