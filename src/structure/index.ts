@@ -24,7 +24,7 @@ const FIELDS: Record<string, string[]> = {
   insertColumns: ['sheet', 'column', 'count'],
   deleteColumns: ['sheet', 'column', 'count'],
   moveRange: ['from', 'to'],
-  copyRange: ['from', 'to'],
+  copyRange: ['from', 'to', 'withMeta'],
   renameSheet: ['sheet', 'name'],
   deleteSheet: ['sheet'],
 }
@@ -101,7 +101,8 @@ export function applyOp(book: BookInput, op: StructureOp): RestructureResult {
       const fromSheet = named(from.sheet, 'op.from.sheet')
       const src = rangeOf(from.range, 'op.from.range')
       const toSheet = named(to.sheet, 'op.to.sheet')
-      if (o.op === 'copyRange') r = copyRange(book, fromSheet, src, toSheet, rangeOf(to.range, 'op.to.range'))
+      if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
+      if (o.op === 'copyRange') r = copyRange(book, fromSheet, src, toSheet, rangeOf(to.range, 'op.to.range'), o.withMeta === true)
       else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         r = moveRange(book, fromSheet, src, toSheet, at.row, at.col)

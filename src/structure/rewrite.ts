@@ -102,6 +102,7 @@ export function rewriteNames(names: NameInput[] | undefined, t: Transform, sheet
  */
 export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, string>, rename = (name: string) => name): BookInput {
   const out: BookInput = {
+    ...book,
     sheets: book.sheets.map((s) => {
       const name = rename(s.name)
       let cells: Record<string, CellInput> | undefined
@@ -109,7 +110,7 @@ export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, s
         const next = rewriteCell(cell, s.name, name, t, sheets)
         if (next !== cell) (cells ??= { ...s.cells })[addr] = next
       }
-      return cells || name !== s.name ? { name, cells: cells ?? s.cells } : s
+      return cells || name !== s.name ? { ...s, name, cells: cells ?? s.cells } : s
     }),
   }
   const names = rewriteNames(book.names, t, sheets)
