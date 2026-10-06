@@ -2,8 +2,9 @@
  * Information functions. Ported from formula.js 4.6.1 (src/information.js), Copyright (c) 2014 Sutoiku,
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
-import { E, isErr, type Rng, type V } from '../values.js'
-import type { Cx, FnDef } from '../args.js'
+import { Arr } from '../arrays/value.js'
+import { E, isErr, Rng, type V } from '../values.js'
+import type { Arg, Cx, FnDef } from '../args.js'
 import type { ErrorCode } from '../contract.js'
 
 /** ERROR.TYPE numbers; #ERROR! is how this engine reads #NULL! (1). #CYCLE! never reaches a formula. */
@@ -26,8 +27,9 @@ export const functions: Record<string, FnDef> = {
   ISNUMBER: is((v) => typeof v === 'number'),
   ISODD: { args: 'x', fn: (x: number) => Math.trunc(x) % 2 !== 0 },
   ISTEXT: is((v) => typeof v === 'string'),
-  N: { args: 'a', fn: (v: V) => (typeof v === 'number' || isErr(v) ? v : v === true ? 1 : 0) },
+  // a range of several cells gives its top-left cell (an array is lifted)
+  N: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'number' || isErr(v) ? v : v === true ? 1 : 0) },
   NA: { args: '', fn: () => E.NA },
-  // a range of several cells is #VALUE! in a value position (type 16), as in Excel without dynamic arrays
-  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: V | Rng) => typeOf(cx.scalar(x)) },
+  // an array, even of one value, or a range of several cells is type 64
+  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (x instanceof Arr || (x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)) ? 64 : typeOf(cx.scalar(x))) },
 }

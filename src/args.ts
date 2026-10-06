@@ -21,7 +21,9 @@
  *      from a direct argument (COUNTA counts every direct argument); `G` a range as a grid with its
  *      referenced size, errors inside kept; `M` a numeric grid (an error inside is the answer); `R` the
  *      argument itself, a reference or a value (criteria functions, which work on the reference through
- *      the function context).
+ *      the function context); `r` one value that may be a reference (the function gets a reference to one
+ *      or more cells as it is; an array is lifted); `p` any value, reference or array, passed as it is
+ *      unless the call is lifted (CHOOSE, the values of IF and IFS).
  * 2. Date and time text in a date argument (`d`, `t`, `D`) is read as Excel en-US reads it
  *    (`2025-01-31`, `1/31/2025`, `18:30`; see `dates.ts`); a date before 0 or after 9999-12-31 is #NUM!.
  * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Z`, `D`) hold no
@@ -33,8 +35,12 @@
  *    radix digits are upper-case and complex text is written as Excel writes it by the functions themselves
  *    (`functions/engineering/radix.ts`, `complex.ts`).
  * 6. Holidays and payment dates (`D`): a flat list of whole serial numbers.
+ * 7. Arrays (`docs/arrays-incell.md`): the list and grid kinds take an array as they take a range (an
+ *    array's booleans are skipped by `A`, its text counts as 0); a one-value kind given an array or a range
+ *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says.
  */
 import type { ErrorCode } from './contract.js'
+import { Arr } from './arrays/value.js'
 import { MAX_SERIAL, parseDateText } from './dates.js'
 import { E, fitNumber, isErr, Rng, toBool, toNum, toText, type CErr, type V } from './values.js'
 
@@ -48,6 +54,9 @@ export interface Grid {
   w: number
   v: readonly V[]
 }
+
+/** What the runtime passes a function: a value, a reference, or an array. */
+export type Arg = V | Rng | Arr
 
 /** A value from a `V` argument: a direct value, or the values of a range (row by row) as one segment. */
 export type Segment = V | readonly V[]
@@ -71,16 +80,18 @@ export interface Selection {
 export interface Cx {
   /** The clock moment, a serial number with a day fraction (UTC). */
   readonly now: number
-  /** Pseudo-random [0, 1) from the clock seed and a cell. */
-  rand(s: number, r: number, c: number): number
+  /** Pseudo-random [0, 1) from the clock seed, a cell and an element of an array (RANDARRAY). */
+  rand(s: number, r: number, c: number, k?: number): number
   /** Range values row by row (the occupied part); shared with caches, never to be modified. */
   flat(g: Rng): readonly V[]
   /** The same with the cells whose formula calls SUBTOTAL or AGGREGATE blank: SUBTOTAL and AGGREGATE skip them. */
   flatOuter(g: Rng): readonly V[]
   bounds(g: Rng): Bounds
-  /** A value in a scalar position: the single cell of a range, or #VALUE!. */
-  scalar(x: V | Rng): V
-  grid(x: V | Rng): Grid
+  /** A value in a scalar position: the single cell of a range or array, or #VALUE!. */
+  scalar(x: Arg): V
+  grid(x: Arg): Grid
+  /** A reference as an array of its referenced size; values and arrays as they are. */
+  view(x: Arg): V | Arr
   /**
    * Criteria over ranges of one referenced size (else #VALUE!), on different sheets too: the positions
    * (row by row in the referenced width) where every (range, criterion) pair holds within the part any of
@@ -97,7 +108,7 @@ export interface FnDef {
   /** How many of the last kinds repeat (SUM: 1, SUMIFS: 2); the repeated arguments arrive as one array, lists spliced in. */
   rep?: number
   /** The implementation, given the coerced arguments (an omitted optional argument is undefined). */
-  fn: (...a: any[]) => V
+  fn: (...a: any[]) => Arg
   /** The error when all list arguments (`N`, `A`, `Z`, `D`) are empty (rule 3). */
   empty?: ErrorCode
   /** `fn` gets the function context (`Cx`) first. */
@@ -107,14 +118,32 @@ export interface FnDef {
   /** `fn` gets every argument as a function evaluated on demand, without coercion: IF, IFERROR. */
   lazy?: boolean
   volatile?: boolean
+  /** The answer can be an array (`Arr`) or a reference of several cells. */
+  array?: boolean
+  /**
+   * A range of several cells in a one-value argument is lifted like an array, except: `'error'` gives
+   * #VALUE! (Excel 365's Analysis ToolPak functions, `EOMONTH(A1:A2,0)`), `'first'` takes its top-left cell
+   * (N, T), a list names the arguments that give #VALUE! (WORKDAY.INTL). An array is lifted all the same.
+   */
+  ranges?: 'error' | 'first' | readonly number[]
+  /** Lazy functions: the arguments whose array lifts the call (by default the first, IF's condition). */
+  liftAt?: (i: number, n: number) => boolean
 }
 
 /** What the parser and the code generator need to know about a function. */
+/** How an argument takes an array: element by element, arrays only (kind `r`), passed unless lifted (`p`), whole. */
+export type ArgMode = 'lift' | 'array' | 'pass' | 'whole'
+
 export interface FunctionSpec {
   min: number
   max: number
-  /** Whether the argument at this index is a range position (elsewhere a range means array arithmetic). */
+  /** Whether a reference in this argument is passed as a reference (a single cell too). */
   range: (i: number) => boolean
+  mode: (i: number) => ArgMode
+  /** A range of several cells in a lifted argument: lifted, #VALUE!, or its top-left cell. */
+  rangeAt: (i: number) => 'lift' | 'error' | 'first'
+  array?: boolean
+  liftAt?: FnDef['liftAt']
   /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
   parity?: 'odd' | 'even'
   volatile?: boolean
@@ -124,8 +153,9 @@ export interface FunctionSpec {
 
 /** Excel's limit on the number of arguments. */
 const MAX_ARGS = 255
-const RANGE_KINDS = 'NAZVGMRD'
+const RANGE_KINDS = 'NAZVGMRDr'
 const LIST_KINDS = 'NAZD'
+const WHOLE_KINDS = 'NAZVGMRD'
 
 interface Kind {
   k: string
@@ -152,7 +182,13 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     parity = fixed % 2 === 0 ? 'even' : 'odd'
     if ((max - fixed) % 2) max--
   }
-  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell }
+  const mode = (i: number): ArgMode => {
+    const k = kindAt(i)
+    return k === 'r' ? 'array' : k === 'p' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
+  }
+  const { ranges } = def
+  const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')
+  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt }
 }
 
 // ---------- coercion by kind ----------
@@ -177,9 +213,19 @@ const noBool = (v: V): number | CErr => (typeof v === 'boolean' ? E.VALUE : toNu
  * A list kind: a range gives its numbers (through `num`, if given) and its other non-blank cells by
  * `inRange` (a number, an error, or undefined to skip); a direct argument goes through `direct`.
  */
-function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number) => number | CErr) {
-  return (x: V | Rng, cx: Cx): number[] | CErr => {
+function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number) => number | CErr, inArray = inRange) {
+  return (x: Arg, cx: Cx): number[] | CErr => {
     const out: number[] = []
+    if (x instanceof Arr) {
+      for (const v of x.values()) {
+        if (v === null) continue
+        const n = typeof v === 'number' ? (num ? num(v) : v) : inArray(v)
+        if (n === undefined) continue
+        if (isErr(n)) return n
+        out.push(n)
+      }
+      return out
+    }
     if (!(x instanceof Rng)) {
       const n = direct(x)
       if (isErr(n)) return n
@@ -200,7 +246,7 @@ function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | 
 const errOrSkip = (v: V) => (isErr(v) ? v : undefined)
 
 /** Coercion of an argument by kind; a CErr result stops the call, except for the kinds in KEEP_ERRORS. */
-const COERCE: Record<string, (x: V | Rng, cx: Cx) => unknown> = {
+const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   n: (x, cx) => toNum(cx.scalar(x)),
   i: (x, cx) => {
     const n = toNum(cx.scalar(x))
@@ -214,24 +260,27 @@ const COERCE: Record<string, (x: V | Rng, cx: Cx) => unknown> = {
   v: (x, cx) => cx.scalar(x),
   a: (x, cx) => cx.scalar(x),
   N: list(toNum, errOrSkip),
-  A: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0)),
+  // in an array AVERAGEA and its kin skip booleans and count text as 0 (Excel 365)
+  A: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
   D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
-  V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x),
-  G: (x, cx) => (x instanceof Rng || !isErr(x) ? cx.grid(x) : x),
+  V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Arr ? x.values() : x),
+  G: (x, cx) => (isErr(x) ? x : cx.grid(x)),
   M: (x, cx) => {
     if (isErr(x)) return x
     const g = cx.grid(x)
     return g.v.find(isErr) ?? g
   },
   R: (x) => x,
+  r: (x) => x,
+  p: (x) => x,
 }
 
 /** Kinds whose argument may be an error without stopping the call. */
-const KEEP_ERRORS = 'aRV'
+const KEEP_ERRORS = 'aRVrp'
 
 /** The callable the generated code uses for a function: coercion by kind, the call, the answer rules. */
-export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V {
+export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
   const { fn } = def
   if (def.lazy) return def.cx ? (...a) => fn(cx, ...a) : fn
   const kinds = parseKinds(def.args).map((k) => k.k)
@@ -248,7 +297,7 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V {
     let nums = 0
     for (let p = 0; i < a.length; i++, p++) {
       const k = p < kinds.length ? kinds[p] : kinds[fixed + ((p - fixed) % rep)]
-      const v = COERCE[k](a[i] as V | Rng, cx)
+      const v = COERCE[k](a[i] as Arg, cx)
       if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
       if (LIST_KINDS.includes(k)) {
         lists++
@@ -264,7 +313,7 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V {
       while (out.length < head + fixed) out.push(undefined)
       out.push(tail)
     }
-    let r: V
+    let r: V | Arr | Rng
     try {
       r = fn(...out)
     } catch {

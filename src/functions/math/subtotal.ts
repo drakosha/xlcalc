@@ -12,8 +12,9 @@ import { functions as sums } from './sums.js'
 function apply(name: string, xs: number[], k?: number): V {
   const def = name === 'SUM' || name === 'PRODUCT' ? sums[name] : stat[name]
   if (def.empty && !xs.length) return E[def.empty]
-  if (name === 'MODE.SNGL') return def.fn([{ rows: 1, cols: xs.length, h: 1, w: xs.length, v: xs } satisfies Grid])
-  return k === undefined ? def.fn(xs) : def.fn(xs, k)
+  // the statistical functions answer one value
+  if (name === 'MODE.SNGL') return def.fn([{ rows: 1, cols: xs.length, h: 1, w: xs.length, v: xs } satisfies Grid]) as V
+  return (k === undefined ? def.fn(xs) : def.fn(xs, k)) as V
 }
 
 const NAMES = ['AVERAGE', 'COUNT', 'COUNTA', 'MAX', 'MIN', 'PRODUCT', 'STDEV.S', 'STDEV.P', 'SUM', 'VAR.S', 'VAR.P', 'MEDIAN', 'MODE.SNGL', 'LARGE', 'SMALL', 'PERCENTILE.INC', 'QUARTILE.INC', 'PERCENTILE.EXC', 'QUARTILE.EXC']

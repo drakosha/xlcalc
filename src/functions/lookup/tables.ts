@@ -1,11 +1,12 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
-import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
-import { E, isErr, toBool, type Rng, type V } from '../../values.js'
+import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
+import { Arr } from '../../arrays/value.js'
+import { E, isErr, Rng, toBool, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /** Excel reads the index, looks up the key, and only then checks the index against the table. */
 const tableLookup = (horizontal: boolean): FnDef => ({
-  args: 'a G R a?',
+  args: 'a G r a?',
   cx: true,
   fn: (cx: Cx, key: V, table: Grid, idx: V | Rng, approx: V = true): V => {
     const k = keyOf(key)
@@ -32,7 +33,7 @@ const along = (g: Grid): Line => (g.cols > g.rows ? row(g) : column(g))
 function match(cx: Cx, key: V, range: Grid, type: V | Rng = 1): V {
   const k = keyOf(key)
   if (isErr(k)) return k
-  const t = indexArg(cx, type)
+  const t = indexArg(cx, type, 'type')
   if (isErr(t)) return t
   if (range.rows !== 1 && range.cols !== 1) return E.NA
   // the type's sign counts, not its whole part: −0.5 is a descending match
@@ -55,25 +56,45 @@ function lookup(key: V, look: Grid, result?: Grid): V {
   return pos < result.rows * result.cols ? gridAt(result, pos) : E.REF
 }
 
-/** Row or column 0 selects all of them: more than one cell is an array answer (no spilling), #VALUE!. */
-function index(g: Grid, r: number, c?: number, area?: number): V {
+/** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */
+function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): V | Arr {
+  if (r1 === r2 && c1 === c2) return a.at(r1, c1)
+  if (r1 === 0 && c1 === 0 && r2 === a.rows - 1 && c2 === a.cols - 1) return a
+  const v: V[] = []
+  for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) v.push(a.at(r, c))
+  return new Arr(r2 - r1 + 1, c2 - c1 + 1, r2 - r1 + 1, c2 - c1 + 1, v)
+}
+
+/**
+ * INDEX: row or column 0 selects all of them, an answer of several cells is a reference (of a reference)
+ * or an array; one cell is its value.
+ */
+function index(cx: Cx, x: Arg, r: number, c?: number, area?: number): Arg {
+  if (isErr(x)) return x
+  const rows = x instanceof Rng ? x.r2 - x.r1 + 1 : x instanceof Arr ? x.rows : 1
+  const cols = x instanceof Rng ? x.c2 - x.c1 + 1 : x instanceof Arr ? x.cols : 1
   if (area !== undefined && area !== 1) return area < 1 ? E.VALUE : E.REF
   if (c === undefined) {
     // one number indexes a row or a column; in a two-dimensional range Excel answers #REF!
-    if (g.rows > 1 && g.cols > 1) return r < 0 ? E.VALUE : E.REF
-    if (g.rows === 1) [r, c] = [1, r]
+    if (rows > 1 && cols > 1) return r < 0 ? E.VALUE : E.REF
+    if (rows === 1) [r, c] = [1, r]
     else c = 1
   }
   if (r < 0 || c < 0) return E.VALUE
-  if (r > g.rows || c > g.cols) return E.REF
-  if ((r === 0 && g.rows > 1) || (c === 0 && g.cols > 1)) return E.VALUE
-  return gridAt(g, ((r || 1) - 1) * g.cols + (c || 1) - 1)
+  if (r > rows || c > cols) return E.REF
+  const [r1, r2] = r ? [r - 1, r - 1] : [0, rows - 1]
+  const [c1, c2] = c ? [c - 1, c - 1] : [0, cols - 1]
+  if (x instanceof Rng) {
+    const sub = new Rng(x.s, x.r1 + r1, x.c1 + c1, x.r1 + r2, x.c1 + c2)
+    return r1 === r2 && c1 === c2 ? cx.scalar(sub) : sub
+  }
+  return x instanceof Arr ? slice(x, r1, c1, r2, c2) : x
 }
 
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
-  INDEX: { args: 'G i i? i?', fn: index },
+  INDEX: { args: 'R i i? i?', cx: true, array: true, fn: index },
   LOOKUP: { args: 'a G G?', fn: lookup },
-  MATCH: { args: 'a G R?', cx: true, fn: match },
+  MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),
 }

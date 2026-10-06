@@ -10,10 +10,14 @@
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
 import { PACKAGE_NAME } from './config.js'
+import type { Arg } from './args.js'
+import { isMany } from './arrays/lift.js'
+import { shapes } from './arrays/shape.js'
+import { Arr } from './arrays/value.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
-import { canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
+import { ARRAY_RESULT, canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
 import { CErr, E, isErr, Rng, type V } from './values.js'
 
 interface Formula {
@@ -29,7 +33,9 @@ interface Formula {
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
   nested: boolean
   source: string
-  fn: () => V | Rng
+  fn: () => Arg
+  /** Rows and columns of the array result of the latest computation (the cell shows #SPILL!). */
+  spill?: [number, number]
 }
 
 interface Invalid {
@@ -166,14 +172,23 @@ function nameFor(state: EngineState, here: number, name: string): PreparedName |
   return state.names.find((n) => n.scope === here && n.name.toUpperCase() === up) ?? state.names.find((n) => n.scope === -1 && n.name.toUpperCase() === up)
 }
 
-/** JS code of one formula (a self-contained factory expression) and its references. */
+const OPS: Record<string, string> = { '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' }
+
+/**
+ * JS code of one formula (a self-contained factory expression) and its references. Nodes that can be arrays
+ * (`arrays/shape.ts`) go through the lifting operators (`L1`, `L2`) and callers (`FL`, `LZ`); the rest is
+ * plain scalar code. A range of several cells in a one-value position is passed as a reference to be lifted.
+ */
 function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number): { source: string; refs: Rng[]; volatile: boolean; nested: boolean } {
   const refs: Rng[] = []
-  const hoisted: Rng[] = []
+  const hoisted: string[] = []
   let volatile = false
   let nested = false
   const sheetOf = (name: string | null) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!)
   const deref = (n: Ast): Ast => (n.k === 'name' ? (nameFor(state, s, n.name)?.ast ?? n) : n)
+  const shape = shapes(ast, (name) => nameFor(state, s, name)?.area)
+  const many = (n: Ast) => (shape.get(n) ?? 0) > 0
+  const hoist = (code: string) => `h${hoisted.push(code) - 1}`
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
   const go = (n: Ast, rangeOk = false): string => {
     switch (n.k) {
@@ -183,13 +198,16 @@ function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number):
         return JSON.stringify(n.v)
       case 'err':
         return `E.${n.code}`
+      case 'arr': {
+        const v = n.rows.flat().map((x) => (x.k === 'err' ? `E.${x.code}` : JSON.stringify(x.v)))
+        return hoist(`A(${n.rows.length},${n.rows[0].length},[${v.join(',')}])`)
+      }
       case 'ref': {
         const g = new Rng(sheetOf(n.sheet), n.ref.r1, n.ref.c1, n.ref.r2, n.ref.c2)
         refs.push(g)
         if (n.ref.kind === 'cell' && !rangeOk) return `cell(${g.s},${g.r1},${g.c1})`
-        hoisted.push(g)
-        const h = `g${hoisted.length - 1}`
-        return rangeOk ? h : `scalar(${h})`
+        const h = hoist(`R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`)
+        return rangeOk || g.r2 > g.r1 || g.c2 > g.c1 ? h : `scalar(${h})`
       }
       case 'name': {
         const d = deref(n)
@@ -198,37 +216,49 @@ function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number):
       case 'paren':
         return rangeOk ? go(n.a, true) : `(${go(n.a)})`
       case 'un':
-        return n.op === '-' ? `neg(${go(n.a)})` : go(n.a)
+        // unary plus keeps a reference (SUM(+A1:A3) sums the range)
+        if (n.op === '+') return go(n.a)
+        return many(n.a) ? `L1(neg,${go(n.a)})` : `neg(${go(n.a)})`
       case 'pct':
-        return `pct(${go(n.a)})`
+        return many(n.a) ? `L1(pct,${go(n.a)})` : `pct(${go(n.a)})`
       case 'bin': {
         const a = go(n.a)
         const b = go(n.b)
-        const op = ({ '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' } as Record<string, string>)[n.op]
-        return op ? `${op}(${a},${b})` : `cmp(${JSON.stringify(n.op)},${a},${b})`
+        const op = OPS[n.op] ?? `C[${JSON.stringify(n.op)}]`
+        if (many(n.a) || many(n.b)) return `L2(${op},${a},${b})`
+        return OPS[n.op] ? `${op}(${a},${b})` : `cmp(${JSON.stringify(n.op)},${a},${b})`
       }
       case 'fn': {
         const spec = FUNCTIONS[n.name]
         if (!spec) return `ext(${JSON.stringify(canonical(n))})`
         if (spec.volatile) volatile = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') nested = true
-        // lazy functions (IF, IFERROR) get each argument as a function; RAND gets its cell
-        const args = n.args.map((a, i) => (spec.lazy ? `()=>${go(a)}` : go(a, spec.range(i))))
+        const key = /^[A-Z][A-Z0-9_]*$/.test(n.name) ? `.${n.name}` : `[${JSON.stringify(n.name)}]`
+        if (spec.lazy) {
+          // lazy functions (IF, IFERROR) get each argument as a function; lifted when a lifting argument is an array
+          const thunks = n.args.map((a) => `()=>${go(a)}`)
+          const lifts = spec.liftAt ?? ((i: number) => i === 0)
+          const check = n.args.flatMap((a, i) => (many(a) && lifts(i, n.args.length) ? [i] : []))
+          return check.length ? `LZ(${JSON.stringify(n.name)},[${check.join(',')}],${thunks.join(',')})` : `F${key}(${thunks.join(',')})`
+        }
+        const args = n.args.map((a, i) => go(a, spec.range(i)))
+        const lifted = n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole')
+        // RAND gets its cell
         if (spec.cell) args.unshift(String(s), String(r), String(c))
-        const callee = /^[A-Z][A-Z0-9_]*$/.test(n.name) ? `F.${n.name}` : `F[${JSON.stringify(n.name)}]`
-        return `${callee}(${args.join(',')})`
+        return `${lifted ? 'FL' : 'F'}${key}(${args.join(',')})`
       }
     }
   }
   const expr = go(ast)
-  const decl = hoisted.length ? `const ${hoisted.map((g, i) => `g${i}=R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`).join(',')};` : ''
+  const decl = hoisted.length ? `const ${hoisted.map((h, i) => `h${i}=${h}`).join(',')};` : ''
   return { source: `(()=>{${decl}return ()=>${expr}})()`, refs, volatile, nested }
 }
 
-const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,F,ext,E,R}=rt;'
+const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,E,R,A}=rt;'
 
-function compileSources(rt: Runtime, sources: string[]): (() => V | Rng)[] {
+function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
   const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)
+  const A = (rows: number, cols: number, v: V[]) => new Arr(rows, cols, rows, cols, v)
   let make: (rt: unknown) => unknown
   try {
     make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
@@ -237,14 +267,15 @@ function compileSources(rt: Runtime, sources: string[]): (() => V | Rng)[] {
     if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)`, { cause: e })
     throw e
   }
-  return make({ ...rt, R }) as (() => V | Rng)[]
+  return make({ ...rt, R, A }) as (() => Arg)[]
 }
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
 function prepare(state: EngineState, s: number, text: string): Prepared {
   const visible = state.names.filter((n) => n.scope === -1 || n.scope === s).map((n) => n.name)
-  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state, s, name)?.area)
+  // an array result is found when computing (#SPILL!), not refused here
+  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state, s, name)?.area, false)
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
@@ -373,10 +404,15 @@ function evaluate(state: EngineState, ids: number[], track?: Tracker) {
   for (const id of ids) {
     const f = state.formulas[id]!
     let v: V
+    f.spill = undefined
     if (state.topo[id] < 0) v = E.CYCLE
     else {
       const x = f.fn()
-      v = x instanceof Rng ? rt.scalar(x) : x
+      // an array of several values cannot be shown in one cell before spilling: #SPILL!
+      if (isMany(x)) {
+        f.spill = x instanceof Arr ? [x.rows, x.cols] : [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
+        v = E.SPILL
+      } else v = x instanceof Rng || x instanceof Arr ? rt.scalar(x) : x
       // a formula referencing an empty cell gives 0, as in Excel
       if (v === null || v === undefined) v = 0
       else if (typeof v === 'number' && !Number.isFinite(v)) v = E.NUM
@@ -582,6 +618,10 @@ export function issues(state: EngineState): Issue[] {
     if (!f) continue
     const v = valueAt(state, f.s, f.r, f.c)
     if (!isErr(v)) continue
+    if (f.spill) {
+      out.push({ s: f.s, r: f.r, c: f.c, error: v.code, reason: `the result is an array of ${f.spill[0]}×${f.spill[1]} values: ${ARRAY_RESULT}`, check: 'unsupported', at: 0 })
+      continue
+    }
     let reason = GENERIC[v.code]
     if (v.code !== 'CYCLE') {
       const from = errorSource(state, f, v.code)

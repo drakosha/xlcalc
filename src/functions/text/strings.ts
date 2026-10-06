@@ -127,7 +127,8 @@ const strings: Record<string, FnDef> = {
   RIGHT: { args: 's i?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(Math.max(0, s.length - n))) },
   SEARCH: { args: 's s i?', fn: search },
   SUBSTITUTE: { args: 's s s i?', fn: substitute },
-  T: { args: 'a', fn: (v: V) => (typeof v === 'string' || isErr(v) ? v : '') },
+  // a range of several cells gives its top-left cell (an array is lifted)
+  T: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'string' || isErr(v) ? v : '') },
   TEXTJOIN: { args: 'V b V', rep: 1, fn: textjoin },
   // Excel trims spaces only, not tabs or line breaks
   TRIM: { args: 's', fn: (s: string) => s.replace(/ +/g, ' ').replace(/^ | $/g, '') },
