@@ -8,7 +8,7 @@ import type { Probe } from '../probes.js'
 /** Functions newer than Excel 2007: stored with the `_xlfn.` prefix. */
 const XLFN = new Set([
   'ACOT', 'ARABIC', 'BASE', 'BITAND', 'BITLSHIFT', 'BITOR', 'BITRSHIFT', 'BITXOR', 'COMBINA', 'COT', 'COTH', 'CSC', 'DECIMAL',
-  'ERF.PRECISE', 'ERFC.PRECISE', 'IMCOT', 'IMCSCH', 'IMSEC', 'IMSECH', 'IMSINH', 'IMTAN', 'ISO.CEILING', 'PERCENTOF',
+  'ERF.PRECISE', 'ERFC.PRECISE', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMSEC', 'IMSECH', 'IMSINH', 'IMTAN', 'ISO.CEILING', 'PERCENTOF',
   'SEC',
 ])
 
@@ -126,7 +126,7 @@ export function buildProbes(): Probe[] {
   // complex numbers: syntax through IMREAL and IMAGINARY, construction, arithmetic, functions
   for (const t of COMPLEX_TEXTS) for (const fn of ['IMREAL', 'IMAGINARY']) add(fn, JSON.stringify(t))
   each('COMPLEX', ['1,1', '1,-1', '0,-1', '0,0', '-1,0', '1/3,2/3', '1E20,1E-20', '3,4,"I"', '3,4,"J"', '3,4,""', '3,4,D!A1', '3,4,TRUE', '3,4,"k"', '3,4,"ij"', '3,4,1', '0.1+0.2,0', '-0.5,-2.5,"j"', '123456789012345678,1', 'D!A4,1', '"3","4"', '1,1,"j"', '0,1,"j"', '0,-1,"j"', '1E300*10,1', '"abc",1', '3,"abc"'])
-  const single = ['IMABS', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOT', 'IMCSCH', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMTAN']
+  const single = ['IMABS', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMTAN']
   for (const fn of single) each(fn, [...COMPLEX_ARGS, 'D!A4', '"1+j"'])
   each('IMABS', ['"1e308+1e308i"', '"1e-200+1e-200i"', '"-3-4j"'])
   each('IMARGUMENT', ['"-1-0i"', '"1e308+1e308i"', '"-1-i"', '"-1+i"', '"1e-300i"'])
@@ -136,6 +136,7 @@ export function buildProbes(): Probe[] {
   each('IMSIN', ['"1+800i"', '"1E10"', '"134217728"', '"134217727"'])
   each('IMTAN', ['"1+400i"', '"1.5707963267949"', '"134217728"'])
   each('IMCOT', ['"1e-300"', '"1+400i"'])
+  each('IMCOSH', ['"710"', '"1+1E10i"'])
   each('IMSINH', ['"710"', '"-1+2j"'])
   each('IMSQRT', ['"1e308+1e308i"', '"-4"', '"4"', '"-4-0i"', '"i"', '"-1e-300"'])
   each('IMLN', ['"1e308+1e308i"', '"-1-i"', '"1e-300"', '"-0"'])
@@ -255,5 +256,11 @@ export function buildProbes(): Probe[] {
   for (const x of ['1.1E12', '1.15E12', '1.2E12', '1.25E12', '1.3E12', '1.35E12', '1.4E12', '1.45E12', '1.5E12', '1.55E12', '1.6E12', '1.11E12', '1.12E12', '1.125E12', '1.1258E12', '1.1259E12', '1.126E12', '1.13E12', '1.14E12']) add('MOD', `${x},1`)
   for (const fn of ['BESSELJ', 'BESSELY']) each(fn, ['134217727,0', '134217728,0', '-134217728,0', '1E9,1', '134217727.5,1'])
   each('MDETERM', ['D!P1:Q2', 'M!G4:J7', 'M!L1:N3', 'M!L5:N7', 'M!G9:H10', 'M!G12:H13', 'M!G15:H16', 'M!P1:Q3', '5', '"5"', 'D!B1', 'D!A1', 'D!A7', 'M!S10:W14', 'M!L9:N11', 'TRUE', 'D!B1:B8'])
+  // a range in a scalar position: Excel intersects it with the formula's row (#VALUE! here), the engine reads it
+  // as array arithmetic (#ERROR!, a known difference in test/excel-cases.ts)
+  for (const fn of ['BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'BITAND', 'BITOR', 'BITXOR', 'DELTA']) add(fn, 'D!B1:B2,1')
+  for (const fn of [...BIN, 'DEC2BIN', 'DEC2HEX', 'DEC2OCT', 'HEX2BIN', 'HEX2DEC', 'HEX2OCT', 'OCT2BIN', 'OCT2DEC', 'OCT2HEX', ...single]) add(fn, 'D!B1:B2')
+  add('IMDIV', '"1",D!B1:B2')
+  add('IMSUB', 'D!B1:B2,"1"')
   return out
 }

@@ -30,13 +30,12 @@
  * 4. Paired arrays (`pairs`): pairs where either value is not a number are dropped; arrays with different
  *    numbers of values are #N/A.
  * 5. The answer: a non-finite number is #NUM!, one below the smallest normal number is 0 (`fitNumber`);
- *    hexadecimal digits are upper-case (`upperHex`), complex numbers are written as Excel converts
- *    numbers to text (`complexText`).
+ *    radix digits are upper-case and complex text is written as Excel writes it by the functions themselves
+ *    (`functions/engineering/radix.ts`, `complex.ts`).
  * 6. Holidays and payment dates (`D`): a flat list of whole serial numbers.
  */
 import type { ErrorCode } from './contract.js'
 import { MAX_SERIAL, parseDateText } from './dates.js'
-import { generalText } from './format.js'
 import { E, fitNumber, isErr, Rng, toBool, toNum, toText, type CErr, type V } from './values.js'
 
 /** A range (or a single value) as a grid. */
@@ -301,17 +300,6 @@ export function pairs(a: Grid, b: Grid): [number[], number[]] | CErr {
     }
   }
   return [xs, ys]
-}
-
-/** Rule 5: hexadecimal (or any radix) digits upper-case, as Excel writes them. */
-export const upperHex = (s: string) => s.toUpperCase()
-
-/** Rule 5: a complex number as Excel writes it: parts as numbers become text (`generalText`), `i` or `j`, the unit alone for ±1. */
-export function complexText(re: number, im: number, unit: 'i' | 'j' = 'i'): string {
-  if (im === 0) return generalText(re)
-  const imText = im === 1 ? unit : im === -1 ? `-${unit}` : `${generalText(im)}${unit}`
-  if (re === 0) return imText
-  return `${generalText(re)}${im > 0 ? '+' : ''}${imText}`
 }
 
 /** Visits the values of `V` arguments in order, telling whether each came from a range; an error returned by `visit` stops and is returned. */
