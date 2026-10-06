@@ -24,7 +24,7 @@ import { buildCases, type Case, type CaseSet } from './cases.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
-import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
+import { buildProbes, DYNAMIC as PROBES_DYNAMIC, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
 
@@ -208,7 +208,7 @@ async function stepExcel(locale: Locale) {
  */
 async function stepProbes(set?: string) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
-  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS, DYNAMIC: PROBES_DYNAMIC }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = set ?? 'probes'

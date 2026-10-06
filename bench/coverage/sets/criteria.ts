@@ -3,8 +3,11 @@
  * its text in any case (`"#n/a"`), with `=`, `<>` and the order operators, over ranges holding errors, text
  * that reads like an error, blanks and whole columns, and errors in the sum range. The data sheet `D` holds
  * the errors (`D!A7` #DIV/0!, `D!A8` #N/A, `D!E3` #DIV/0!); `CR` holds the values to sum and text cells.
+ * Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe } from '../probes.js'
+
+export const DYNAMIC = true
 
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {
   CR: {

@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.262
+  "seconds": 8.668,
+  "dynamic": true
  },
  "cases": [
   {
@@ -26587,6 +26588,22 @@
    "t": "n",
    "v": 1
   },
+  "COUNTIFS#1": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIFS#2": {
+   "t": "n",
+   "v": 1
+  },
+  "AVERAGEIF#31": {
+   "t": "n",
+   "v": 15
+  },
+  "AVERAGEIFS#15": {
+   "t": "n",
+   "v": 15
+  },
   "BINOM.INV#19": {
    "t": "n",
    "v": 1
@@ -26770,22 +26787,6 @@
   "CHISQ.INV.RT#28": {
    "t": "n",
    "v": 9000220681.408398
-  },
-  "COUNTIFS#1": {
-   "t": "n",
-   "v": 1
-  },
-  "COUNTIFS#2": {
-   "t": "n",
-   "v": 1
-  },
-  "AVERAGEIF#31": {
-   "t": "n",
-   "v": 15
-  },
-  "AVERAGEIFS#15": {
-   "t": "n",
-   "v": 15
   }
  }
 }
