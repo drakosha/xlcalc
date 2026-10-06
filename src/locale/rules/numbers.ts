@@ -5,10 +5,9 @@
  * amount (`1 234,5 ₽`, not with `%`); else a time or a date by the locale's date syntax.
  */
 import { dateTimeWith, timeOf, trimSpaces, unwrap, type DateSyntax } from '../../dates.js'
+import { literal } from '../../criteria.js'
 import { readNumber } from '../../model.js'
 import type { RegionalData } from './data.js'
-
-const literal = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 export function numberReader(data: RegionalData, dates: DateSyntax): (text: string) => number | null {
   const { decimal, group } = data

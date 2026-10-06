@@ -79,7 +79,8 @@ export const EN_CRIT: CritRules = {
 /** Parsed criteria by value, per locale's rules. */
 const caches = new WeakMap<CritRules, Map<string, Crit>>()
 
-const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+/** Text matched literally in a regular expression. */
+export const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /** The regular expression source of a wildcard pattern as Excel reads it: `*` any text, `?` one character, `~` takes the next character as it is (a trailing `~` is dropped). */
 export function wildSource(s: string): string {
