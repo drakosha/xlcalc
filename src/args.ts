@@ -47,8 +47,9 @@
  */
 import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
-import { MAX_SERIAL, parseDateText } from './dates.js'
-import { E, fitNumber, isErr, Rng, toBool, toNum, toText, whole, type CErr, type V } from './values.js'
+import { MAX_SERIAL } from './dates.js'
+import type { Rules } from './locale/rules.js'
+import { E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -86,6 +87,8 @@ export interface Selection {
 export interface Cx {
   /** The clock moment, a serial number with a day fraction (UTC). */
   readonly now: number
+  /** The rules of computation of the book's locale: text as numbers and dates, numbers as text, formats. */
+  readonly rules: Rules
   /** Pseudo-random [0, 1) from the clock seed, a cell and an element of an array (RANDARRAY). */
   rand(s: number, r: number, c: number, k?: number): number
   /** Range values row by row (the occupied part); shared with caches, never to be modified. */
@@ -212,32 +215,34 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
 // ---------- coercion by kind ----------
 
 /** A date argument: a whole serial number, from a number or date text; outside 0…9999-12-31 #NUM!. */
-export function toDate(v: V): number | CErr {
-  const n = toTime(v)
+export function toDate(v: V, rules: Rules): number | CErr {
+  const n = toTime(v, rules)
   return isErr(n) ? n : Math.floor(n)
 }
 
 /** A time or date-time argument: a serial number with a day fraction, from a number or text. */
-export function toTime(v: V): number | CErr {
-  const t = typeof v === 'string' ? parseDateText(v) : null
-  const n = t ?? toNum(v)
+export function toTime(v: V, rules: Rules): number | CErr {
+  const t = typeof v === 'string' ? rules.dateText(v) : null
+  const n = t ?? rules.toNum(v)
   if (isErr(n)) return n
   return n < 0 || n >= MAX_SERIAL + 1 ? E.NUM : n
 }
 
-const noBool = (v: V): number | CErr => (typeof v === 'boolean' ? E.VALUE : toNum(v))
+/** A number where a boolean is #VALUE! (the former Analysis ToolPak's rule). */
+export const noBool = (v: V, rules: Rules): number | CErr => (typeof v === 'boolean' ? E.VALUE : rules.toNum(v))
 
 /**
  * A list kind: a range gives its numbers (through `num`, if given) and its other non-blank cells by
  * `inRange` (a number, an error, or undefined to skip); a direct argument goes through `direct`.
  */
-function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number) => number | CErr, inArray = inRange) {
+function list(direct: (v: V, rules: Rules) => number | CErr, inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number, rules: Rules) => number | CErr, inArray = inRange) {
   return (x: Arg, cx: Cx): number[] | CErr => {
     const out: number[] = []
+    const { rules } = cx
     if (x instanceof Arr) {
       const take = (v: V): CErr | undefined => {
         if (v === null) return
-        const n = typeof v === 'number' ? (num ? num(v) : v) : inArray(v)
+        const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inArray(v)
         if (n === undefined) return
         if (isErr(n)) return n
         out.push(n)
@@ -257,14 +262,14 @@ function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | 
       return out.length > before ? out.concat(new Array<number>(rest - 1).fill(out[before])) : out
     }
     if (!(x instanceof Rng)) {
-      const n = direct(x)
+      const n = direct(x, rules)
       if (isErr(n)) return n
       out.push(n)
       return out
     }
     for (const v of cx.flat(x)) {
       if (v === null) continue
-      const n = typeof v === 'number' ? (num ? num(v) : v) : inRange(v)
+      const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inRange(v)
       if (n === undefined) continue
       if (isErr(n)) return n
       out.push(n)
@@ -276,27 +281,29 @@ function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | 
 const errOrSkip = (v: V) => (isErr(v) ? v : undefined)
 
 /** Coercion of an argument by kind; a CErr result stops the call, except for the kinds in KEEP_ERRORS. */
+const num = (v: V, rules: Rules) => rules.toNum(v)
+
 const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
-  n: (x, cx) => toNum(cx.scalar(x)),
+  n: (x, cx) => cx.rules.toNum(cx.scalar(x)),
   i: (x, cx) => {
-    const n = toNum(cx.scalar(x))
+    const n = cx.rules.toNum(cx.scalar(x))
     return isErr(n) ? n : Math.trunc(n)
   },
   w: (x, cx) => {
-    const n = toNum(cx.scalar(x))
+    const n = cx.rules.toNum(cx.scalar(x))
     return isErr(n) ? n : whole(n)
   },
-  x: (x, cx) => noBool(cx.scalar(x)),
-  d: (x, cx) => toDate(cx.scalar(x)),
-  t: (x, cx) => toTime(cx.scalar(x)),
-  s: (x, cx) => toText(cx.scalar(x)),
-  b: (x, cx) => toBool(cx.scalar(x)),
+  x: (x, cx) => noBool(cx.scalar(x), cx.rules),
+  d: (x, cx) => toDate(cx.scalar(x), cx.rules),
+  t: (x, cx) => toTime(cx.scalar(x), cx.rules),
+  s: (x, cx) => cx.rules.toText(cx.scalar(x)),
+  b: (x, cx) => cx.rules.toBool(cx.scalar(x)),
   v: (x, cx) => cx.scalar(x),
   a: (x, cx) => cx.scalar(x),
-  N: list(toNum, errOrSkip),
+  N: list(num, errOrSkip),
   // in an array MAXA, STDEVA and the like take the numbers only; AVERAGEA (`Y`) counts text there as 0 (Excel 365)
-  A: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, errOrSkip),
-  Y: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
+  A: list(num, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, errOrSkip),
+  Y: list(num, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
   D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
   // an empty element of an array counts for COUNTA (as Excel's empty value does): it is read as empty text

@@ -3,7 +3,7 @@
  * formula) is skipped as nested, as in Excel; there are no hidden rows, so codes 101–111 equal 1–11 and AGGREGATE's
  * options 1, 3, 5, 7 equal 0, 2, 4, 6. This engine's own.
  */
-import { E, isErr, Rng, toNum, whole, type CErr, type V } from '../../values.js'
+import { E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import type { Cx, FnDef, Grid } from '../../args.js'
 import { functions as stat } from '../statistical/descriptive.js'
 import { functions as sums } from './sums.js'
@@ -63,7 +63,7 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng)[]): V {
   if (refs.length !== 2) return E.VALUE
   const r = refs[1]
   const kv = cx.scalar(r instanceof Rng ? new Rng(r.s, r.r1, r.c1, r.r1, r.c1) : r)
-  const k = isErr(kv) ? kv : toNum(kv)
+  const k = isErr(kv) ? kv : cx.rules.toNum(kv)
   return isErr(k) ? E.VALUE : over(cx, c, [refs[0]], skipNested, skipErrors, k)
 }
 

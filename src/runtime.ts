@@ -13,8 +13,9 @@ import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, typ
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
+import type { Rules } from './locale/rules.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
-import { compareOp, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
+import { E, fitNumber, fromCellValue, isErr, Rng, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -29,6 +30,8 @@ export interface RuntimeContext {
   /** The clock moment, a serial number with a day fraction (UTC). */
   now: number
   seed: number
+  /** The rules of computation of the book's locale (operators, criteria, function arguments). */
+  rules: Rules
   /** External function values by the canonical text of the call. */
   externals: Record<string, CellValue>
   /** Cache of large ranges (flat arrays) and criteria indexes; invalidated by edits. */
@@ -56,7 +59,8 @@ export function randAt(seed: number, sheet: string, row: number, col: number, k?
 }
 
 export function makeRuntime(ctx: RuntimeContext) {
-  const { sheets } = ctx
+  const { sheets, rules } = ctx
+  const { toNum, toText, compareOp } = rules
 
   const bounds = (g: Rng) => {
     const sh = sheets[g.s]
@@ -178,7 +182,7 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const indexOf = (g: Rng): CritIndex => {
     let ix = ctx.index.get(g.key)
-    if (!ix) ctx.index.set(g.key, (ix = buildIndex(flat(g))))
+    if (!ix) ctx.index.set(g.key, (ix = buildIndex(flat(g), rules)))
     return ix
   }
 
@@ -205,20 +209,21 @@ export function makeRuntime(ctx: RuntimeContext) {
       if (!(rg instanceof Rng)) return isErr(rg) ? rg : E.VALUE
       if (rg.r2 - rg.r1 + 1 !== rows || rg.c2 - rg.c1 + 1 !== w) return E.VALUE
       const v = scalar(crit)
-      const c = isErr(v) ? errorCrit(v.code) : parseCrit(v)
-      blank &&= matches(null, c)
+      const c = isErr(v) ? errorCrit(v.code) : parseCrit(v, rules)
+      blank &&= matches(null, c, rules)
       h = Math.max(h, bounds(rg).h)
       const f = aligned(rg, w)
-      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg) : () => buildIndex(f) })
+      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg) : () => buildIndex(f, rules) })
     }
     const n = h * w
-    return { sel: select(cols, n), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
+    return { sel: select(cols, n, rules), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
   }
 
   const cx: Cx = {
     get now() {
       return ctx.now
     },
+    rules,
     rand: (s, r, c, k) => randAt(ctx.seed, sheets[s].name, r, c, k),
     flat,
     flatOuter,

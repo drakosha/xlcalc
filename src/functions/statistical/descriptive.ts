@@ -3,10 +3,10 @@
  * come from formula.js 4.6.1 (https://github.com/formulajs/formulajs), src/statistical.js: Copyright (c) 2014
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); empty input, coercion and domain checks follow Excel.
  */
-import { eachValue, type FnDef, type Grid, type Segment } from '../../args.js'
+import { eachValue, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
-import { parseDateText } from '../../dates.js'
-import { E, isErr, toNum, type CErr, type V } from '../../values.js'
+import type { Rules } from '../../locale/rules.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
 import { devsq, gridNumbers, max, mean, min, sorted, sum } from './common.js'
 
 const variance = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : devsq(xs) / (xs.length - ddof))
@@ -142,11 +142,11 @@ function frequency(data: Grid, bins: Grid): V | Arr {
 }
 
 /** COUNT: numbers in ranges; a direct argument counts if it reads as a number (booleans, numeric and date text). */
-function countable(v: V, inRange: boolean): boolean {
+function countable(v: V, inRange: boolean, rules: Rules): boolean {
   if (typeof v === 'number') return true
   if (inRange || v === null || isErr(v)) return false
   if (typeof v === 'boolean') return true
-  return !isErr(toNum(v)) || parseDateText(v) !== null
+  return !isErr(rules.toNum(v)) || rules.dateText(v) !== null
 }
 
 export const functions: Record<string, FnDef> = {
@@ -164,10 +164,11 @@ export const functions: Record<string, FnDef> = {
   COUNT: {
     args: 'V',
     rep: 1,
-    fn: (segs: Segment[]) => {
+    cx: true,
+    fn: (cx: Cx, segs: Segment[]) => {
       let n = 0
       eachValue(segs, (v, inRange) => {
-        if (countable(v, inRange)) n++
+        if (countable(v, inRange, cx.rules)) n++
       })
       return n
     },

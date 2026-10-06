@@ -1,8 +1,9 @@
 /** XLOOKUP and XMATCH, this engine's own. */
-import type { Arg, FnDef, Grid } from '../../args.js'
+import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { wildRe } from '../../criteria.js'
-import { compareValues as compare, E, isErr, Rng, sameType, type V } from '../../values.js'
+import { E, isErr, Rng, sameType, type V } from '../../values.js'
+import type { Compare } from './search.js'
 
 const MATCH_MODES = [0, -1, 1, 2]
 const SEARCH_MODES = [1, -1, 2, -2]
@@ -20,7 +21,7 @@ function blank(look: Grid, searchMode: number): number {
 }
 
 /** Match modes 0, −1, 1, 2 (wildcards, `~` escaping any character); search modes ±1, ±2 (binary search runs linearly: the same answer on sorted data). */
-function xfind(k: V, look: Grid, matchMode: number, searchMode: number): number {
+function xfind(k: V, look: Grid, matchMode: number, searchMode: number, compare: Compare): number {
   if (k === null) return blank(look, searchMode)
   const wild = matchMode === 2 && typeof k === 'string' ? wildRe(k, true) : null
   const n = look.v.length
@@ -56,7 +57,7 @@ function line(ret: Rng | Arr, pos: number, vertical: boolean): Arg {
 }
 
 /** The answer is a row (column) of the return array: several cells when it is wider (taller) than one. */
-function xlookup(key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
+function xlookup(cx: Cx, key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
   if (isErr(key)) return key
   if (isErr(ret)) return ret
   if (look.cols !== 1 && look.rows !== 1) return E.VALUE
@@ -66,20 +67,20 @@ function xlookup(key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, se
   const cols = r instanceof Rng ? r.c2 - r.c1 + 1 : r.cols
   if (vertical ? rows !== look.rows : cols !== look.cols) return E.VALUE
   if (!MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
-  const pos = xfind(key, look, matchMode, searchMode)
+  const pos = xfind(key, look, matchMode, searchMode, cx.rules.compare)
   if (pos < 0) return notFound === undefined ? E.NA : notFound
   return line(r, pos, vertical)
 }
 
-function xmatch(key: V, look: Grid, matchMode = 0, searchMode = 1): V {
+function xmatch(cx: Cx, key: V, look: Grid, matchMode = 0, searchMode = 1): V {
   if (isErr(key)) return key
   if ((look.cols !== 1 && look.rows !== 1) || !MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
-  const pos = xfind(key, look, matchMode, searchMode)
+  const pos = xfind(key, look, matchMode, searchMode, cx.rules.compare)
   return pos < 0 ? E.NA : pos + 1
 }
 
 export const functions: Record<string, FnDef> = {
   // if_not_found is answered as it is, a reference too
-  XLOOKUP: { args: 'a G R P? n? n?', array: true, fn: xlookup },
-  XMATCH: { args: 'a G n? n?', fn: xmatch },
+  XLOOKUP: { args: 'a G R P? n? n?', array: true, cx: true, fn: xlookup },
+  XMATCH: { args: 'a G n? n?', cx: true, fn: xmatch },
 }

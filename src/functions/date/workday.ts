@@ -1,5 +1,6 @@
 /** Workdays: NETWORKDAYS and WORKDAY with weekend codes and holidays. */
-import { toDate, type FnDef, type Segment } from '../../args.js'
+import { toDate, type Cx, type FnDef, type Segment } from '../../args.js'
+import type { Rules } from '../../locale/rules.js'
 import { MAX_SERIAL } from '../../dates.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
@@ -28,14 +29,14 @@ const SAT_SUN = weekendOf(1) as boolean[]
 const allWeekend = (w: boolean[]) => w.every(Boolean)
 
 /** Holidays: whole dates; a boolean is #VALUE! (the ToolPak rule), so is text in a range. */
-function holidaysOf(x: Segment | undefined): number[] | CErr {
+function holidaysOf(x: Segment | undefined, rules: Rules): number[] | CErr {
   const out: number[] = []
   if (x === undefined) return out
   for (const v of Array.isArray(x) ? (x as readonly V[]) : [x as V]) {
     if (v === null && Array.isArray(x)) continue
     if (isErr(v)) return v
     if (typeof v === 'boolean' || (typeof v === 'string' && Array.isArray(x))) return E.VALUE
-    const d = toDate(v)
+    const d = toDate(v, rules)
     if (isErr(d)) return d
     out.push(d)
   }
@@ -78,27 +79,27 @@ function workday(start: number, days: number, weekend: boolean[], holidays: numb
 }
 
 export const functions: Record<string, FnDef> = {
-  NETWORKDAYS: atp('e e V?', (start: number, end: number, h?: Segment) => {
-    const hol = holidaysOf(h)
+  NETWORKDAYS: atp('e e V?', (cx: Cx, start: number, end: number, h?: Segment) => {
+    const hol = holidaysOf(h, cx.rules)
     return isErr(hol) ? hol : networkDays(start, end, SAT_SUN, hol)
-  }),
+  }, { cx: true }),
   // seven weekend days leave no workdays: 0 here, #VALUE! in WORKDAY.INTL
-  'NETWORKDAYS.INTL': atp('e e a? V?', (start: number, end: number, w: V | undefined, h?: Segment) => {
+  'NETWORKDAYS.INTL': atp('e e a? V?', (cx: Cx, start: number, end: number, w: V | undefined, h?: Segment) => {
     const weekend = weekendOf(w)
     if (isErr(weekend)) return weekend
-    const hol = holidaysOf(h)
+    const hol = holidaysOf(h, cx.rules)
     if (isErr(hol)) return hol
     return allWeekend(weekend) ? 0 : networkDays(start, end, weekend, hol)
-  }),
-  WORKDAY: atp('e j V?', (start: number, days: number, h?: Segment) => {
-    const hol = holidaysOf(h)
+  }, { cx: true }),
+  WORKDAY: atp('e j V?', (cx: Cx, start: number, days: number, h?: Segment) => {
+    const hol = holidaysOf(h, cx.rules)
     return isErr(hol) ? hol : workday(start, days, SAT_SUN, hol)
-  }),
-  'WORKDAY.INTL': atp('e j a? V?', (start: number, days: number, w: V | undefined, h?: Segment) => {
+  }, { cx: true }),
+  'WORKDAY.INTL': atp('e j a? V?', (cx: Cx, start: number, days: number, w: V | undefined, h?: Segment) => {
     const weekend = weekendOf(w)
     if (isErr(weekend)) return weekend
     if (allWeekend(weekend)) return E.VALUE
-    const hol = holidaysOf(h)
+    const hol = holidaysOf(h, cx.rules)
     return isErr(hol) ? hol : workday(start, days, weekend, hol)
-  }),
+  }, { cx: true }),
 }

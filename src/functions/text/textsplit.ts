@@ -1,5 +1,5 @@
 /** TEXTSPLIT (Excel 365), this engine's own: text cut by column and row delimiters into an array. */
-import type { FnDef, Segment } from '../../args.js'
+import type { Cx, FnDef, Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { E, isErr, type V } from '../../values.js'
 import { delimiters } from './common.js'
@@ -16,10 +16,10 @@ function next(text: string, from: number, cols: string[], rows: string[]): { at:
   return best
 }
 
-function textsplit(text: string, colSeg: Segment, rowSeg?: Segment, ignoreEmpty = false, mode = 0, pad: V = E.NA): V | Arr {
-  const cols = delimiters(colSeg)
+function textsplit(cx: Cx, text: string, colSeg: Segment, rowSeg?: Segment, ignoreEmpty = false, mode = 0, pad: V = E.NA): V | Arr {
+  const cols = delimiters(colSeg, cx.rules)
   if (isErr(cols)) return cols
-  const rows = rowSeg === undefined ? [] : delimiters(rowSeg)
+  const rows = rowSeg === undefined ? [] : delimiters(rowSeg, cx.rules)
   if (isErr(rows)) return rows
   if (mode !== 0 && mode !== 1) return E.VALUE
   // an empty delimiter anywhere (a blank cell too) is #VALUE!, as in Excel
@@ -44,5 +44,5 @@ function textsplit(text: string, colSeg: Segment, rowSeg?: Segment, ignoreEmpty 
 }
 
 export const functions: Record<string, FnDef> = {
-  TEXTSPLIT: { args: 's V V? b? i? a?', array: true, fn: textsplit },
+  TEXTSPLIT: { args: 's V V? b? i? a?', array: true, cx: true, fn: textsplit },
 }

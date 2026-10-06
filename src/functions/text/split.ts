@@ -1,6 +1,6 @@
 /** TEXTBEFORE and TEXTAFTER, this engine's own (Excel 2024). The delimiter may be several texts (an array or a range). */
-import type { FnDef, Segment } from '../../args.js'
-import { E, isErr, toText, type V } from '../../values.js'
+import type { Cx, FnDef, Segment } from '../../args.js'
+import { E, isErr, type V } from '../../values.js'
 import { delimiters } from './common.js'
 
 type Span = [number, number]
@@ -32,8 +32,9 @@ function occurrence(hay: string, keys: string[], n: number, matchEnd: boolean): 
 
 const around = (after: boolean): FnDef => ({
   args: 's V w? i? i? a?',
-  fn: (text: string, delim: Segment, n = 1, mode = 0, matchEnd = 0, notFound?: V): V => {
-    const keys = delimiters(delim)
+  cx: true,
+  fn: (cx: Cx, text: string, delim: Segment, n = 1, mode = 0, matchEnd = 0, notFound?: V): V => {
+    const keys = delimiters(delim, cx.rules)
     if (isErr(keys)) return keys
     if (n === 0 || (mode !== 0 && mode !== 1) || (matchEnd !== 0 && matchEnd !== 1)) return E.VALUE
     const empty = keys.includes('')
@@ -42,7 +43,7 @@ const around = (after: boolean): FnDef => ({
     if (Math.abs(n) > text.length && !empty) return E.VALUE
     const s = mode ? occurrence(text.toLowerCase(), keys.map((k) => k.toLowerCase()), n, matchEnd === 1) : occurrence(text, keys, n, matchEnd === 1)
     // Excel returns the not-found value as text
-    if (!s) return notFound === undefined ? E.NA : toText(notFound)
+    if (!s) return notFound === undefined ? E.NA : cx.rules.toText(notFound)
     return after ? text.slice(s[1]) : text.slice(0, s[0])
   },
 })

@@ -1,20 +1,19 @@
-/** VALUE and NUMBERVALUE, this engine's own: text read as Excel en-US reads it, checked case by case against Excel. */
-import type { FnDef } from '../../args.js'
-import { textToNumber } from '../../dates.js'
+/** VALUE and NUMBERVALUE, this engine's own: text read by the book's locale, checked case by case against Excel. */
+import type { Cx, FnDef } from '../../args.js'
 import { E, type CErr, type V } from '../../values.js'
 
-function value(v: Exclude<V, CErr>): V {
+function value(cx: Cx, v: Exclude<V, CErr>): V {
   if (typeof v === 'number') return v
   if (v === null) return 0
   if (typeof v === 'boolean') return E.VALUE
-  return textToNumber(v) ?? E.VALUE
+  return cx.rules.valueText(v) ?? E.VALUE
 }
 
 /**
  * Group separators go first (after the decimal one they are #VALUE!), the decimal separator becomes a point
  * and the rest reads as in VALUE; whitespace anywhere is dropped and each trailing `%` divides by 100.
  */
-function numbervalue(text: string, decimal?: string, group?: string): V {
+function numbervalue(cx: Cx, text: string, decimal?: string, group?: string): V {
   if (decimal === '' || group === '') return E.VALUE
   const d = decimal?.[0] ?? '.'
   // a comma as the decimal separator makes the point the default group separator
@@ -27,11 +26,11 @@ function numbervalue(text: string, decimal?: string, group?: string): V {
   const at = s.indexOf(d)
   const frac = at < 0 ? '' : s.slice(at + 1)
   if (frac.includes(d) || frac.includes(g)) return E.VALUE
-  const n = textToNumber((at < 0 ? s : s.slice(0, at)).split(g).join('') + (at < 0 ? '' : '.' + frac))
+  const n = cx.rules.valueText((at < 0 ? s : s.slice(0, at)).split(g).join('') + (at < 0 ? '' : '.' + frac))
   return n === null ? E.VALUE : n / 100 ** pct
 }
 
 export const functions: Record<string, FnDef> = {
-  NUMBERVALUE: { args: 's s? s?', fn: numbervalue },
-  VALUE: { args: 'v', fn: value },
+  NUMBERVALUE: { args: 's s? s?', cx: true, fn: numbervalue },
+  VALUE: { args: 'v', cx: true, fn: value },
 }

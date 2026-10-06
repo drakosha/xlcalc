@@ -12,6 +12,7 @@ import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { FUNCTIONS } from './functions.js'
+import { rulesOf } from './locale/rules.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
@@ -280,7 +281,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
-  const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
+  const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, rules: rulesOf(book.locale), externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
   const rt = makeRuntime(ctx)
   const state: EngineState = {
     input,

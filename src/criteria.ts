@@ -3,6 +3,8 @@
  * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers and ISO dates in
  * the criterion text are compared as numbers, and a number criterion's equality also holds for text that
  * reads as that number; `""` matches blanks, `"<>"` non-blanks; an error, or its text, matches that error.
+ * Numbers, dates and words in the text and the order of text follow the book's locale (`CritRules`, en-US by
+ * default).
  */
 import { dateToSerial, NUMBER_TEXT, readNumber } from './model.js'
 import { to15 } from './values.js'
@@ -25,7 +27,35 @@ export type Crit =
 export const collator: { compare(a: string, b: string): number } =
   typeof Intl !== 'undefined' ? new Intl.Collator('en-US', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
-const cache = new Map<string, Crit>()
+
+/** What criteria read by the locale: numbers, dates and words in a criterion's text, numbers in cell text, the order of text. */
+export interface CritRules {
+  /** A number or a date in a criterion's text (after the operator, trimmed), or null. */
+  critNumber(text: string): number | null
+  /** TRUE or FALSE in a criterion's text (after the operator), or null. */
+  critBool(text: string): boolean | null
+  /** Cell text that a number criterion's equality takes as that number, or null. */
+  cellNumber(text: string): number | null
+  /** The order of two texts for `<` and `>`, and in sorting and lookups: case-insensitive, accent-sensitive. */
+  compareText(a: string, b: string): number
+}
+
+/** Text that reads as a number, as in a criterion (`"2"`, `" 2.50 "`), or null. */
+function numericText(s: string): number | null {
+  const t = s.trim()
+  return NUMBER_TEXT.test(t) ? readNumber(t) : null
+}
+
+/** en-US: decimal numbers and ISO dates in criteria, TRUE and FALSE in any case. */
+export const EN_CRIT: CritRules = {
+  critNumber: (t) => (NUMBER_TEXT.test(t) ? readNumber(t) : DATE_RE.test(t) ? dateToSerial(t) : null),
+  critBool: (t) => (/^(TRUE|FALSE)$/i.test(t) ? t.toUpperCase() === 'TRUE' : null),
+  cellNumber: numericText,
+  compareText: collator.compare,
+}
+
+/** Parsed criteria by value, per locale's rules. */
+const caches = new WeakMap<CritRules, Map<string, Crit>>()
 
 const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -68,7 +98,9 @@ const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRO
 export const errorCrit = (code: string): Crit => ({ op: '=', kind: 'err', code })
 
 /** A criterion from a value (the scalar after evaluating the argument). */
-export function parseCrit(v: number | string | boolean | null): Crit {
+export function parseCrit(v: number | string | boolean | null, rules: CritRules = EN_CRIT): Crit {
+  let cache = caches.get(rules)
+  if (!cache) caches.set(rules, (cache = new Map()))
   const key = typeof v + ':' + String(v)
   const hit = cache.get(key)
   if (hit) return hit
@@ -80,12 +112,12 @@ export function parseCrit(v: number | string | boolean | null): Crit {
     const m = /^(<=|>=|<>|<|>|=)?([\s\S]*)$/.exec(v)!
     const op = m[1] ?? '='
     const rest = m[2]
-    const t = rest.trim()
+    let n: number | null = null
+    let b: boolean | null = null
     if (rest === '') c = { op, kind: 'blank' }
     else if (rest.toUpperCase() in ERRORS) c = { op, kind: 'err', code: ERRORS[rest.toUpperCase()][0] }
-    else if (NUMBER_TEXT.test(t)) c = { op, kind: 'num', n: readNumber(t) }
-    else if (DATE_RE.test(t)) c = { op, kind: 'num', n: dateToSerial(t) }
-    else if (/^(TRUE|FALSE)$/i.test(rest)) c = { op, kind: 'bool', b: rest.toUpperCase() === 'TRUE' }
+    else if ((n = rules.critNumber(rest.trim())) !== null) c = { op, kind: 'num', n }
+    else if ((b = rules.critBool(rest)) !== null) c = { op, kind: 'bool', b }
     else {
       const re = op === '=' || op === '<>' ? wildRe(rest) : null
       c = re ? { op, kind: 'wild', re } : { op, kind: 'str', s: rest.toLowerCase() }
@@ -98,18 +130,12 @@ export function parseCrit(v: number | string | boolean | null): Crit {
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 const opOk = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0)
 
-/** Text that reads as a number, as in a criterion (`"2"`, `" 2.50 "`), or null. */
-function numericText(s: string): number | null {
-  const t = s.trim()
-  return NUMBER_TEXT.test(t) ? readNumber(t) : null
-}
-
-export function matches(v: CritValue, c: Crit): boolean {
+export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): boolean {
   switch (c.kind) {
     case 'num':
       // equality with a number also holds for text that reads as that number (Excel: 2 matches "2")
       if (typeof v === 'string' && (c.op === '=' || c.op === '<>')) {
-        const n = numericText(v)
+        const n = rules.cellNumber(v)
         if (n !== null) return (to15(n) === to15(c.n)) === (c.op === '=')
       }
       if (typeof v !== 'number') return c.op === '<>'
@@ -135,14 +161,14 @@ export function matches(v: CritValue, c: Crit): boolean {
     case 'str':
       if (typeof v !== 'string') return c.op === '<>'
       if (c.op === '=' || c.op === '<>') return (v.toLowerCase() === c.s) === (c.op === '=')
-      return opOk(c.op, collator.compare(v.toLowerCase(), c.s))
+      return opOk(c.op, rules.compareText(v.toLowerCase(), c.s))
   }
 }
 
 /** Equality key in the index: case-insensitive strings, numbers (and text that reads as a number), booleans. */
-function eqKey(v: CritValue): string | null {
+function eqKey(v: CritValue, rules: CritRules): string | null {
   if (typeof v === 'string') {
-    const n = numericText(v)
+    const n = rules.cellNumber(v)
     return n === null ? 's' + v.toLowerCase() : 'n' + to15(n)
   }
   if (typeof v === 'number') return 'n' + to15(v)
@@ -160,10 +186,10 @@ function critKey(c: Crit): string | null {
 
 export type CritIndex = Map<string, number[]>
 
-export function buildIndex(flat: readonly CritValue[]): CritIndex {
+export function buildIndex(flat: readonly CritValue[], rules: CritRules = EN_CRIT): CritIndex {
   const ix: CritIndex = new Map()
   for (let i = 0; i < flat.length; i++) {
-    const k = eqKey(flat[i])
+    const k = eqKey(flat[i], rules)
     if (k === null) continue
     const list = ix.get(k)
     if (list) list.push(i)
@@ -184,7 +210,7 @@ export interface CritColumn {
  * Positions where all criteria hold. The first equality criterion goes through the index, the rest are
  * checked on its candidates; without an equality criterion it is a full scan.
  */
-export function select(cols: CritColumn[], n: number): number[] {
+export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT): number[] {
   let cand: number[] | null = null
   let used = -1
   for (let i = 0; i < cols.length; i++) {
@@ -196,7 +222,7 @@ export function select(cols: CritColumn[], n: number): number[] {
   }
   const out: number[] = []
   const check = (p: number) => {
-    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit)) return
+    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit, rules)) return
     out.push(p)
   }
   if (cand) for (const p of cand) check(p)

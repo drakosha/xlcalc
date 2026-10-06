@@ -4,7 +4,7 @@
  * engine's own (lazy: a branch not taken is not computed).
  */
 import { directError, eachValue, type Arg, type Cx, type FnDef, type Segment } from '../args.js'
-import { compareValues, E, isErr, sameType, toBool, type CErr, type V } from '../values.js'
+import { E, isErr, sameType, type CErr, type V } from '../values.js'
 
 /** The booleans of AND, OR, XOR: numbers and booleans count, text and blanks are skipped (direct text too); none at all is #VALUE!. */
 function booleans(segs: Segment[]): boolean[] | CErr {
@@ -33,8 +33,9 @@ export const functions: Record<string, FnDef> = {
   IF: {
     args: 'a P P?',
     lazy: true,
-    fn: (cond: () => V, then: () => V, otherwise?: () => V) => {
-      const c = toBool(cond())
+    cx: true,
+    fn: (cx: Cx, cond: () => V, then: () => V, otherwise?: () => V) => {
+      const c = cx.rules.toBool(cond())
       if (isErr(c)) return c
       return c ? then() : otherwise ? otherwise() : false
     },
@@ -58,9 +59,10 @@ export const functions: Record<string, FnDef> = {
   IFS: {
     args: 'a P',
     rep: 2,
-    fn: (rest: V[]) => {
+    cx: true,
+    fn: (cx: Cx, rest: V[]) => {
       for (let i = 0; i < rest.length; i += 2) {
-        const c = toBool(rest[i])
+        const c = cx.rules.toBool(rest[i])
         if (isErr(c)) return c
         if (c) return rest[i + 1]
       }
@@ -85,7 +87,7 @@ export const functions: Record<string, FnDef> = {
       for (let i = 0; i + 1 < rest.length; i += 2) {
         const v = cx.scalar(rest[i]()) ?? 0
         if (isErr(v)) return v
-        if (sameType(x, v) && compareValues(x, v) === 0) return rest[i + 1]()
+        if (sameType(x, v) && cx.rules.compare(x, v) === 0) return rest[i + 1]()
       }
       return rest.length % 2 ? rest[rest.length - 1]() : E.NA
     },

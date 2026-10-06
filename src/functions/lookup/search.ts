@@ -1,9 +1,15 @@
-/** How the lookups compare, as in Excel: within a type, text in any case, blanks and errors in the data never match. */
+/**
+ * How the lookups compare, as in Excel: within a type, text in any case by the book's locale (`Compare`,
+ * `Rules.compare`), blanks and errors in the data never match.
+ */
 import { wildRe } from '../../criteria.js'
-import { compareValues as compare, E, isErr, Rng, sameType, toNum, type CErr, type V } from '../../values.js'
+import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
 
 export type Key = Exclude<V, null | CErr>
+
+/** Excel's order of two values that are not errors. */
+export type Compare = (a: V, b: V) => number
 
 /** The lookup value: an error is the answer, a blank is looked up as 0. */
 export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
@@ -11,7 +17,7 @@ export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
 const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
-function exact(k: Key, wild: boolean): (v: V) => boolean {
+function exact(k: Key, wild: boolean, compare: Compare): (v: V) => boolean {
   const re = wild && typeof k === 'string' ? wildRe(k, true) : null
   if (re) return (v) => typeof v === 'string' && re.test(v)
   return (v) => comparable(v, k) && compare(v, k) === 0
@@ -29,7 +35,7 @@ export interface Line {
  * data): past the last non-blank cell it goes back, a blank or another type before it is passed over for the
  * next comparable value, an equal value ends at the last of its run. The last position not greater than k, or −1.
  */
-export function bisect({ at, n, filled }: Line, k: Key): number {
+export function bisect({ at, n, filled }: Line, k: Key, compare: Compare): number {
   let last = filled - 1
   while (last >= 0 && at(last) === null) last--
   let lo = 0
@@ -59,7 +65,7 @@ export function bisect({ at, n, filled }: Line, k: Key): number {
 }
 
 /** Excel's match on descending data scans: the first equal value, else the last value before one that is smaller. */
-function descend({ at, filled }: Line, k: Key): number {
+function descend({ at, filled }: Line, k: Key, compare: Compare): number {
   let found = -1
   for (let i = 0; i < filled; i++) {
     const v = at(i)
@@ -73,10 +79,10 @@ function descend({ at, filled }: Line, k: Key): number {
 }
 
 /** Position on a line: exact (the first match), approximate ascending (1) or descending (−1), or −1. */
-export function find(line: Line, k: Key, mode: number, wild: boolean): number {
-  if (mode > 0) return bisect(line, k)
-  if (mode < 0) return descend(line, k)
-  const test = exact(k, wild)
+export function find(line: Line, k: Key, mode: number, wild: boolean, compare: Compare): number {
+  if (mode > 0) return bisect(line, k, compare)
+  if (mode < 0) return descend(line, k, compare)
+  const test = exact(k, wild, compare)
   for (let i = 0; i < line.filled; i++) if (test(line.at(i))) return i
   return -1
 }
@@ -86,11 +92,11 @@ export function find(line: Line, k: Key, mode: number, wild: boolean): number {
  * in Excel 365; a range of several cells is #REF! for a column index and its top-left cell for a match type.
  */
 export function indexArg(cx: Cx, x: V | Rng, range: 'index' | 'type' = 'index'): number | CErr {
-  if (!(x instanceof Rng)) return toNum(x)
+  if (!(x instanceof Rng)) return cx.rules.toNum(x)
   if (x.r2 > x.r1 || x.c2 > x.c1) {
     if (range === 'index') return E.REF
     x = new Rng(x.s, x.r1, x.c1, x.r1, x.c1)
   }
-  const n = toNum(cx.scalar(x))
+  const n = cx.rules.toNum(cx.scalar(x))
   return isErr(n) ? E.REF : n
 }

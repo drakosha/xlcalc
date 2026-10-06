@@ -26,8 +26,9 @@ export const functions: Record<string, FnDef> = {
   },
   TIMEVALUE: {
     args: 'v',
-    fn: (v: V) => {
-      const t = textDate(v)
+    cx: true,
+    fn: (cx: Cx, v: V) => {
+      const t = textDate(v, cx.rules)
       return isErr(t) ? t : t - Math.floor(t)
     },
   },

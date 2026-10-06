@@ -5,20 +5,20 @@
  */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
-import { collator } from '../../criteria.js'
-import { E, isErr, toBool, toNum, type CErr, type V } from '../../values.js'
+import type { Rules } from '../../locale/rules.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
 
 /** Sort rank of a type: numbers, text, booleans, errors, then blanks. */
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : typeof v === 'boolean' ? 2 : v === null ? 4 : 3)
 
-/** Excel's sort order of two values; `desc` reverses it, blanks stay last. */
-function order(a: V, b: V, desc: boolean): number {
+/** Excel's sort order of two values, text by the book's locale; `desc` reverses it, blanks stay last. */
+function order(a: V, b: V, desc: boolean, rules: Rules): number {
   const ra = rank(a)
   const rb = rank(b)
   if (ra === 4 || rb === 4) return ra - rb
   let c = ra - rb
   if (!c && ra === 0) c = (a as number) - (b as number)
-  else if (!c && ra === 1) c = collator.compare(a as string, b as string)
+  else if (!c && ra === 1) c = rules.compareText(a as string, b as string)
   else if (!c && ra === 2) c = Number(a) - Number(b)
   return desc ? -c : c
 }
@@ -27,11 +27,11 @@ function order(a: V, b: V, desc: boolean): number {
 const lineCount = (a: Arr, byCol: boolean) => (a.fill === null ? (byCol ? a.w : a.h) : byCol ? a.cols : a.rows)
 
 /** Lines sorted by keys: `key(line, k)` is the k-th key value, `desc[k]` its direction; the rest of the lines (blank) last. */
-function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, desc: readonly boolean[]): Arr {
+function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, desc: readonly boolean[], rules: Rules): Arr {
   const n = lineCount(a, byCol)
   const lines = Array.from({ length: n }, (_, i) => i).sort((x, y) => {
     for (let k = 0; k < desc.length; k++) {
-      const c = order(key(x, k), key(y, k), desc[k])
+      const c = order(key(x, k), key(y, k), desc[k], rules)
       if (c) return c
     }
     return x - y
@@ -50,12 +50,12 @@ function lineArr(a: Arr, lines: readonly number[], byCol: boolean): Arr {
 }
 
 /** Sort indexes (1…n) and orders (1 or −1): numbers, an array giving several. */
-function keys(idx: Grid | undefined, ord: Grid | undefined, n: number): { at: number[]; desc: boolean[] } | CErr {
+function keys(idx: Grid | undefined, ord: Grid | undefined, n: number, rules: Rules): { at: number[]; desc: boolean[] } | CErr {
   const nums = (g: Grid | undefined, d: number): number[] | CErr => {
     if (!g) return [d]
     const out: number[] = []
     for (const v of fromGrid(g).values()) {
-      const x = toNum(v)
+      const x = rules.toNum(v)
       if (isErr(x)) return x
       out.push(Math.trunc(x))
     }
@@ -69,28 +69,28 @@ function keys(idx: Grid | undefined, ord: Grid | undefined, n: number): { at: nu
   return { at: at.map((i) => i - 1), desc: at.map((_, k) => (os.length === 1 ? os[0] : (os[k] ?? 1)) === -1) }
 }
 
-function sort(g: Grid, idx?: Grid, ord?: Grid, byCol = false): V | Arr {
+function sort(cx: Cx, g: Grid, idx?: Grid, ord?: Grid, byCol = false): V | Arr {
   const a = fromGrid(g)
-  const k = keys(idx, ord, byCol ? a.rows : a.cols)
+  const k = keys(idx, ord, byCol ? a.rows : a.cols, cx.rules)
   if (isErr(k)) return k
-  return sortLines(a, byCol, (line, j) => (byCol ? a.at(k.at[j], line) : a.at(line, k.at[j])), k.desc)
+  return sortLines(a, byCol, (line, j) => (byCol ? a.at(k.at[j], line) : a.at(line, k.at[j])), k.desc, cx.rules)
 }
 
 /** SORTBY: by-arrays of one column (row) as long as the array's rows (columns), each with an optional order. */
-function sortby(g: Grid, rest: Grid[]): V | Arr {
+function sortby(cx: Cx, g: Grid, rest: Grid[]): V | Arr {
   const a = fromGrid(g)
   const by: Arr[] = []
   const desc: boolean[] = []
   for (let i = 0; i < rest.length; i += 2) {
     by.push(fromGrid(rest[i]))
-    const o = rest[i + 1] ? toNum(fromGrid(rest[i + 1]).at(0, 0)) : 1
+    const o = rest[i + 1] ? cx.rules.toNum(fromGrid(rest[i + 1]).at(0, 0)) : 1
     if (isErr(o)) return o
     if (o !== 1 && o !== -1) return E.VALUE
     desc.push(o === -1)
   }
   const byCol = by[0].rows === 1 && by[0].cols > 1
   for (const b of by) if (byCol ? b.rows !== 1 || b.cols !== a.cols : b.cols !== 1 || b.rows !== a.rows) return E.VALUE
-  return sortLines(a, byCol, (line, k) => (byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc)
+  return sortLines(a, byCol, (line, k) => (byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc, cx.rules)
 }
 
 /** A line's identity for UNIQUE: values by type, text in any case. */
@@ -139,7 +139,7 @@ function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
     const v = byCol ? f.at(0, i) : f.at(i, 0)
     if (isErr(v)) return v
     if (typeof v === 'string') return E.VALUE
-    const b = toBool(v)
+    const b = cx.rules.toBool(v)
     if (isErr(b)) return b
     if (b) kept.push(i)
   }
@@ -149,8 +149,8 @@ function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
 
 export const functions: Record<string, FnDef> = {
   FILTER: { args: 'G R p?', cx: true, array: true, fn: filter },
-  SORT: { args: 'G G? G? b?', array: true, fn: sort },
+  SORT: { args: 'G G? G? b?', array: true, cx: true, fn: sort },
   // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4)
-  SORTBY: { args: 'G G G?', rep: 2, array: true, fn: sortby },
+  SORTBY: { args: 'G G G?', rep: 2, array: true, cx: true, fn: sortby },
   UNIQUE: { args: 'G b? b?', array: true, fn: unique },
 }

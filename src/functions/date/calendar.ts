@@ -1,6 +1,7 @@
 /** Calendar functions in Excel's 1900 system (serial 0 is 1900-01-00, 60 the phantom 1900-02-29). */
-import type { FnDef } from '../../args.js'
-import { addMonths, dayAt, daysInMonth, MAX_SERIAL, parseDateText, serialOf, ymd } from '../../dates.js'
+import type { Cx, FnDef } from '../../args.js'
+import { addMonths, dayAt, daysInMonth, MAX_SERIAL, serialOf, ymd } from '../../dates.js'
+import type { Rules } from '../../locale/rules.js'
 import { E, isErr, WHOLE, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
 import { lastDayExcel } from './daycount.js'
@@ -10,10 +11,10 @@ export const weekday = (serial: number) => (serial + 6) % 7
 
 const serialExcel = (y: number, m: number, d: number) => (y === 1900 && m === 2 && d === 29 ? 60 : serialOf(y, m, d))
 
-/** DATEVALUE and TIMEVALUE take text only. */
-export function textDate(v: V): number | CErr {
+/** DATEVALUE and TIMEVALUE take text only, read by the book's locale. */
+export function textDate(v: V, rules: Rules): number | CErr {
   if (typeof v !== 'string') return E.VALUE
-  return parseDateText(v) ?? E.VALUE
+  return rules.dateText(v) ?? E.VALUE
 }
 
 /** The week (from Monday) belongs to the year of its Thursday. */
@@ -70,8 +71,9 @@ export const functions: Record<string, FnDef> = {
   DATEDIF: { args: 'd d s', fn: dateDif },
   DATEVALUE: {
     args: 'v',
-    fn: (v: V) => {
-      const t = textDate(v)
+    cx: true,
+    fn: (cx: Cx, v: V) => {
+      const t = textDate(v, cx.rules)
       return isErr(t) ? t : Math.floor(t)
     },
   },
