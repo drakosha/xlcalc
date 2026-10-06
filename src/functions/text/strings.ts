@@ -4,11 +4,11 @@
  */
 import { eachValue, type FnDef, type Segment } from '../../args.js'
 import { wildSource } from '../../criteria.js'
-import { E, isErr, toText, type V } from '../../values.js'
-import { capped, MAX_TEXT, texts } from './common.js'
+import { E, isErr, toText, type CErr, type V } from '../../values.js'
+import { capped, MAX_TEXT } from './common.js'
 
-/** The largest start position MID and REPLACE accept. */
-const MAX_POS = 2_147_483_647
+/** The largest position or count MID accepts; REPLACE takes up to Excel's text length. */
+const MAX_INT = 2_147_483_647
 
 /** Case mapping that keeps a character whose mapping is longer (Excel: UPPER("ß") is "ß"). */
 function caseOf(ch: string, upper: boolean): string {
@@ -36,11 +36,11 @@ function proper(s: string): string {
   return out
 }
 
-/** Wildcards and case as in the criteria (`src/criteria.ts`). */
+/** Wildcards as in the criteria (`src/criteria.ts`), but `~` escapes any character, as Excel's SEARCH does. */
 function search(find: string, within: string, start = 1): V {
   if (start < 1 || start > within.length) return E.VALUE
   if (find === '') return start
-  const m = new RegExp(wildSource(find), 'iu').exec(within.slice(start - 1))
+  const m = new RegExp(wildSource(find, true), 'iu').exec(within.slice(start - 1))
   return m ? m.index + start : E.VALUE
 }
 
@@ -48,17 +48,29 @@ function substitute(text: string, old: string, rep: string, instance?: number): 
   if (instance !== undefined && instance < 1) return E.VALUE
   if (old === '') return text
   if (instance === undefined) return capped(text.split(old).join(rep))
-  let at = -old.length
+  // Excel counts overlapping occurrences: the 2nd "aa" in "aaa" starts at the 2nd "a"
+  let at = -1
   for (let k = 0; k < instance; k++) {
-    at = text.indexOf(old, at + old.length)
+    at = text.indexOf(old, at + 1)
     if (at < 0) return text
   }
   return capped(text.slice(0, at) + rep + text.slice(at + old.length))
 }
 
-/** Several delimiters are used in turn; ranges are read row by row. */
+/** A range of delimiters gives each of its cells, used in turn. */
+function delimiters(seg: Segment): string[] | CErr {
+  const out: string[] = []
+  for (const v of Array.isArray(seg) ? (seg as readonly V[]) : [seg as V]) {
+    const t = toText(v)
+    if (isErr(t)) return t
+    out.push(t)
+  }
+  return out
+}
+
+/** Ranges are read row by row. */
 function textjoin(delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
-  const ds = texts(delims)
+  const ds = delimiters(delims)
   if (isErr(ds)) return ds
   const parts: string[] = []
   const e = eachValue(segs, (v) => {
@@ -72,7 +84,7 @@ function textjoin(delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
   return capped(out)
 }
 
-export const functions: Record<string, FnDef> = {
+const strings: Record<string, FnDef> = {
   // Excel removes only codes 0-31
   CLEAN: { args: 's', fn: (s: string) => s.replace(/[\0-\x1F]/g, '') },
   CONCAT: {
@@ -103,12 +115,12 @@ export const functions: Record<string, FnDef> = {
   LOWER: { args: 's', fn: (s: string) => s.toLowerCase() },
   MID: {
     args: 's i i',
-    fn: (s: string, start: number, n: number) => (start < 1 || start > MAX_POS || n < 0 ? E.VALUE : s.substring(start - 1, start - 1 + n)),
+    fn: (s: string, start: number, n: number) => (start < 1 || start > MAX_INT || n < 0 || n > MAX_INT ? E.VALUE : s.substring(start - 1, start - 1 + n)),
   },
   PROPER: { args: 's', fn: proper },
   REPLACE: {
     args: 's i i s',
-    fn: (s: string, start: number, n: number, rep: string) => (start < 1 || start > MAX_POS || n < 0 ? E.VALUE : capped(s.slice(0, start - 1) + rep + s.slice(start - 1 + n))),
+    fn: (s: string, start: number, n: number, rep: string) => (start < 1 || start > MAX_TEXT || n < 0 || n > MAX_TEXT ? E.VALUE : capped(s.slice(0, start - 1) + rep + s.slice(start - 1 + n))),
   },
   REPT: { args: 's i', fn: (s: string, n: number) => (n < 0 || s.length * n > MAX_TEXT ? E.VALUE : s.repeat(n)) },
   RIGHT: { args: 's i?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(Math.max(0, s.length - n))) },
@@ -118,7 +130,20 @@ export const functions: Record<string, FnDef> = {
   TEXTJOIN: { args: 'V b V', rep: 1, fn: textjoin },
   // Excel trims spaces only, not tabs or line breaks
   TRIM: { args: 's', fn: (s: string) => s.replace(/ +/g, ' ').replace(/^ | $/g, '') },
-  UNICHAR: { args: 'i', fn: (n: number) => (n < 1 || n > 0x10ffff ? E.VALUE : n >= 0xd800 && n <= 0xdfff ? E.NA : String.fromCodePoint(n)) },
+  // surrogates and noncharacters (U+FDD0…U+FDEF, U+xFFFE, U+xFFFF) are #N/A in Excel
+  UNICHAR: { args: 'i', fn: (n: number) => (n < 1 || n > 0x10ffff ? E.VALUE : (n >= 0xd800 && n <= 0xdfff) || (n >= 0xfdd0 && n <= 0xfdef) || (n & 0xfffe) === 0xfffe ? E.NA : String.fromCodePoint(n)) },
   UNICODE: { args: 's', fn: (s: string) => (s === '' ? E.VALUE : s.codePointAt(0)!) },
   UPPER: { args: 's', fn: upper },
+}
+
+/** The byte-counting variants count characters, as in Excel without a double-byte language (en-US). */
+export const functions: Record<string, FnDef> = {
+  ...strings,
+  FINDB: strings.FIND,
+  LEFTB: strings.LEFT,
+  LENB: strings.LEN,
+  MIDB: strings.MID,
+  REPLACEB: strings.REPLACE,
+  RIGHTB: strings.RIGHT,
+  SEARCHB: strings.SEARCH,
 }

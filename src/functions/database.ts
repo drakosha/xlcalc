@@ -5,7 +5,7 @@
  */
 import { gridAt, type FnDef, type Grid } from '../args.js'
 import { matches, parseCrit, type Crit } from '../criteria.js'
-import { E, isErr, toText, type CErr, type V } from '../values.js'
+import { E, isErr, toBool, toText, type CErr, type V } from '../values.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V): Crit | null {
@@ -34,24 +34,26 @@ function fieldIndex(db: Grid, field: V): number | CErr {
 function selected(db: Grid, field: V, criteria: Grid): V[] | CErr {
   const col = fieldIndex(db, field)
   if (isErr(col)) return col
-  // criteria columns: the database column each one tests
+  if (criteria.rows < 2) return E.VALUE
+  // the database column each condition tests; under a header that is no field (−1) only TRUE holds, as a computed criterion
   const tests: { col: number; crit: Crit }[][] = []
   // past the occupied part every criteria row is blank: one of them selects every record
   for (let r = 1, end = Math.min(criteria.rows, criteria.h + 1); r < end; r++) {
     const row: { col: number; crit: Crit }[] = []
     for (let c = 0; c < criteria.cols; c++) {
-      const crit = condition(gridAt(criteria, r * criteria.cols + c))
+      const v = gridAt(criteria, r * criteria.cols + c)
+      const crit = condition(v)
       if (!crit) continue
       const at = fieldIndex(db, gridAt(criteria, c))
-      if (isErr(at)) return at
-      row.push({ col: at, crit })
+      if (!isErr(at)) row.push({ col: at, crit })
+      else if (toBool(v) !== true) row.push({ col: -1, crit })
     }
     tests.push(row)
   }
   const out: V[] = []
   for (let r = 1; r < db.h; r++) {
     const rec = (c: number) => gridAt(db, r * db.cols + c)
-    if (tests.some((row) => row.every((t) => matches(rec(t.col), t.crit)))) out.push(rec(col))
+    if (tests.some((row) => row.every((t) => t.col >= 0 && matches(rec(t.col), t.crit)))) out.push(rec(col))
   }
   return out
 }
@@ -82,9 +84,11 @@ const over = (f: (xs: number[]) => V) => dfn((vs) => f(numbers(vs)))
 
 export const functions: Record<string, FnDef> = {
   DAVERAGE: over((xs) => (xs.length ? xs.reduce((s, x) => s + x, 0) / xs.length : E.DIV0)),
-  DCOUNT: over((xs) => xs.length),
+  // DCOUNT passes over errors, the other functions answer with them
+  DCOUNT: dfn((vs) => numbers(vs).length, false),
   DCOUNTA: dfn((vs) => vs.filter((v) => v !== null).length, false),
-  DGET: dfn((vs) => (vs.length === 0 ? E.VALUE : vs.length > 1 ? E.NUM : vs[0]), false),
+  // one record, else #VALUE! (none or a blank field) or #NUM! (several)
+  DGET: dfn((vs) => (vs.length > 1 ? E.NUM : vs.length === 0 || vs[0] === null ? E.VALUE : vs[0]), false),
   DMAX: over((xs) => xs.reduce((m, x) => (x > m ? x : m), xs.length ? -Infinity : 0)),
   DMIN: over((xs) => xs.reduce((m, x) => (x < m ? x : m), xs.length ? Infinity : 0)),
   DPRODUCT: over((xs) => (xs.length ? xs.reduce((p, x) => p * x, 1) : 0)),

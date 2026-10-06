@@ -4,7 +4,7 @@ formula-engine has no runtime dependencies. Part of its code is ported (copied, 
 
 | project | version | license | ported into |
 |---|---|---|---|
-| [formula.js](https://github.com/formulajs/formulajs) (`@formulajs/formulajs`) | 4.6.1 | MIT | `src/functions/math.ts`, `statistical.ts`, `logical.ts`, `information.ts`, `text.ts`, `financial.ts`, `lookup.ts`, `common.ts` (from `src/math-trig.js`, `src/statistical.js`, `src/compatibility.js`, `src/logical.js`, `src/information.js`, `src/text.js`, `src/financial.js`, `src/lookup-reference.js`) |
+| [formula.js](https://github.com/formulajs/formulajs) (`@formulajs/formulajs`) | 4.6.1 | MIT | `src/functions/math.ts`, `statistical.ts`, `logical.ts`, `information.ts`, `text/strings.ts`, `text/numbers.ts`, `financial.ts`, `lookup/reference.ts`, `common.ts` (from `src/math-trig.js`, `src/statistical.js`, `src/compatibility.js`, `src/logical.js`, `src/information.js`, `src/text.js`, `src/financial.js`, `src/lookup-reference.js`) |
 | [jStat](https://github.com/jstat/jstat) (`jstat`) | 1.9.6 | MIT | `src/functions/jstat.ts` (from `src/special.js`, `src/distribution.js`) |
 
 The MIT license asks that the copyright notice and the license text be kept with copies of the code: they are below, and the package ships this file.

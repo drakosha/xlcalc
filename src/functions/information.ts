@@ -2,8 +2,8 @@
  * Information functions. Ported from formula.js 4.6.1 (src/information.js), Copyright (c) 2014 Sutoiku,
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
-import type { Cx, FnDef } from '../args.js'
 import { E, isErr, type Rng, type V } from '../values.js'
+import type { Cx, FnDef } from '../args.js'
 import type { ErrorCode } from '../contract.js'
 
 /** ERROR.TYPE numbers; #ERROR! is how this engine reads #NULL! (1). #CYCLE! never reaches a formula. */

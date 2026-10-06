@@ -48,6 +48,14 @@ const CRITERIA: Record<string, (Cell | null)[]> = {
   AF: ['Tree', '=pineapple'],
   AG: [1, null],
   AH: [1, '>3'],
+  AI: ['Weight', true],
+  AJ: ['Weight', '='],
+  AK: [null, true],
+  AL: ['Weight', '<>'],
+  AM: ['Weight', 1],
+  AN: ['Weight', false],
+  AO: ['Weight', 'TRUE'],
+  AP: ['Weight', true, 'x'],
 }
 
 function database(): Record<string, Cell> {
@@ -63,7 +71,7 @@ export const SHEETS: Record<string, Record<string, Cell>> = {
   T: {
     ...column('A', ['-', '+']),
     ...column('B', ['b', 'c', 'a', 'ab']),
-    ...column('C', ['1\t2', '1 2', ' 12\t', '日本語', 'ｱｲｳ', 'ＡＢＣ１２３', 'abc', 'x\ny']),
+    ...column('C', ['1\t2', '1 2', ' 12\t', '日本語', 'ｱｲｳ', 'ＡＢＣ１２３', 'abc', 'x\ny', '1\n2']),
   },
   L: {
     ...column('A', [0, 1, 2, 2, 2, 5, 8, 13]),
@@ -77,12 +85,27 @@ export const SHEETS: Record<string, Record<string, Cell>> = {
     ...column('O', [50, 40, 30, 20, 10, 0]),
     ...column('Q', ['Ёж', 'еж', 'Йод', 'иод']),
     ...column('S', ['a*c', 'a?c', 'a~c', 'abc']),
+    // unsorted and mixed columns for the approximate (binary) search
+    ...column('U', [7, 3, 9, 1, 5, 8, 2, 6, 4]),
+    ...column('V', [2, 2, 1, 3, 3, 1, 2, 3]),
+    ...column('W', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 4, 4]),
+    ...column('X', ['a', 5, 'c', 2, 'b', 9, 'd', 1, 'e', 7]),
+    ...column('Y', [1, null, null, 4, null, 2, null, null, 9, null, 3]),
+    ...column('Z', [true, 3, false, 'q', 6, 1, 'b', 10]),
+    ...column('AA', [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]),
+    ...column('AB', [5, 5, 5, 5, 5]),
+    ...column('AC', [1, 3, 3, 3, 5, 7, 7, 9]),
+    ...column('AD', [9, 'x', 1, 'y', 5, 'z', 3, 'w', 7]),
+    ...column('AE', [50, 40, 30, 30, 20, 'x', 10, 0]),
+    ...column('AG', ['а', 'б', 'е', 'ё', 'ж', 'й', 'Я']),
+    // row 20: the unsorted column U along a row, row 21 values to read
+    ...Object.fromEntries([7, 3, 9, 1, 5, 8, 2, 6, 4].flatMap((v, i) => [[`${'ABCDEFGHI'[i]}20`, v], [`${'ABCDEFGHI'[i]}21`, `r${i + 1}`]])),
   },
   B: database(),
 }
 
 /** Functions written with the `_xlfn.` prefix in a workbook (newer than Excel 2007). */
-const XLFN = /\b(IFNA|SWITCH|XLOOKUP|XMATCH|NUMBERVALUE|UNICHAR|TEXTJOIN|TEXTBEFORE|TEXTAFTER|VALUETOTEXT|ARRAYTOTEXT|DBCS)\(/g
+const XLFN = /\b(IFNA|SWITCH|XLOOKUP|XMATCH|NUMBERVALUE|UNICHAR|TEXTJOIN|TEXTBEFORE|TEXTAFTER|VALUETOTEXT|ARRAYTOTEXT)\(/g
 
 export function buildProbes(): Probe[] {
   const out: Probe[] = []
@@ -92,8 +115,8 @@ export function buildProbes(): Probe[] {
   const q = (s: string) => `"${s.replace(/"/g, '""')}"`
 
   // ---------- text ----------
-  add('MID', 'MID("abc",32767,1)', 'MID("abc",32768,1)', 'MID("abc",2147483647,1)', 'MID("abc",2147483648,1)', 'MID("abc",1,10000000000)', 'MID("abc",0,1)', 'MID("abc",1,-1)', 'MID("abc",4,1)', 'MID("abc",3,0)', 'MID("Ёлка",2,2)')
-  add('REPLACE', 'REPLACE("abc",4,0,"x")', 'REPLACE("abc",10,1,"x")', 'REPLACE("abc",0,1,"x")', 'REPLACE("abc",1,-1,"x")', 'REPLACE("abc",45688,1,"x")', 'REPLACE("abc",2147483648,1,"x")', 'REPLACE("abc",2,10000000000,"x")', 'REPLACE("Привет",2,2,"ЁЙ")')
+  add('MID', 'MID("abc",1,32768)', 'MID("abc",1,2147483647)', 'MID("abc",1,2147483648)', 'MID("abc",32767,1)', 'MID("abc",32768,1)', 'MID("abc",2147483647,1)', 'MID("abc",2147483648,1)', 'MID("abc",1,10000000000)', 'MID("abc",0,1)', 'MID("abc",1,-1)', 'MID("abc",4,1)', 'MID("abc",3,0)', 'MID("Ёлка",2,2)')
+  add('REPLACE', 'REPLACE("abc",4,0,"x")', 'REPLACE("abc",10,1,"x")', 'REPLACE("abc",0,1,"x")', 'REPLACE("abc",1,-1,"x")', 'REPLACE("abc",45688,1,"x")', 'REPLACE("abc",2147483648,1,"x")', 'REPLACE("abc",2,10000000000,"x")', 'REPLACE("Привет",2,2,"ЁЙ")', 'REPLACE("abc",32767,1,"x")', 'REPLACE("abc",32768,1,"x")', 'REPLACE("abc",1,32767,"x")', 'REPLACE("abc",1,32768,"x")')
   add('SUBSTITUTE', 'SUBSTITUTE("aaa","aa","x",2)', 'SUBSTITUTE("aaaa","aa","x")', 'SUBSTITUTE("aaaa","aa","x",2)', 'SUBSTITUTE("abc","","x")', 'SUBSTITUTE("abc","b","x",0)', 'SUBSTITUTE("abc","B","x")', 'SUBSTITUTE("aXa","a","",2)', 'SUBSTITUTE("ёлка Ёлка","ё","е")', 'SUBSTITUTE("abcb","b","x",1.9)', 'SUBSTITUTE("abc","b","x",-1)', 'SUBSTITUTE("abc","b","x",5)')
   add(
     'SEARCH',
@@ -122,10 +145,15 @@ export function buildProbes(): Probe[] {
     'SEARCH("a*c","xxabxxcxx")',
     'SEARCH(".","a.b")',
     'SEARCH("(","a(b")',
+    'SEARCH("a~","xa~")',
+    'SEARCH("~b","ab")',
+    'SEARCH("a~?","a?")',
+    'SEARCH("~~","a~b")',
   )
   add('PROPER', 'PROPER("don\'t stop")', 'PROPER("o\'neil mc-donald")', 'PROPER("ÉCOLE élève")', 'PROPER("hello_world")', 'PROPER("a.b,c")', 'PROPER("мир-труд май")', 'PROPER("a1b2c3")', 'PROPER("straße")', 'PROPER(T!C8)', 'PROPER("ёЛКА йОД")')
   add('UPPER', 'UPPER("ﬁx")', 'UPPER("straße")', 'UPPER("ёлка йод")', 'UPPER("éàü")', 'UPPER(T!C8)')
-  add('DOLLAR', 'DOLLAR(-0.001)', 'DOLLAR(1E+15,2)', 'DOLLAR(0.5,0)', 'DOLLAR(-0.5,0)', 'DOLLAR(1234.5,-5)', 'DOLLAR(1.005,2)', 'DOLLAR(1,100)', 'DOLLAR(1,101)', 'DOLLAR(1,127)', 'DOLLAR(1,128)', 'DOLLAR(-1234567.891,1)', 'DOLLAR(0.125,2)')
+  add('DOLLAR', 'DOLLAR(-0.001)', 'DOLLAR(1E+15,2)', 'DOLLAR(0.5,0)', 'DOLLAR(-0.5,0)', 'DOLLAR(1234.5,-5)', 'DOLLAR(1.005,2)', 'DOLLAR(1,100)', 'DOLLAR(1,101)', 'DOLLAR(1,127)', 'DOLLAR(1,128)', 'DOLLAR(-1234567.891,1)', 'DOLLAR(0.125,2)', 'DOLLAR(-0.4,0)')
+  add('FIXED', 'FIXED(1,101)', 'FIXED(1,127)', 'FIXED(1,128)', 'FIXED(-0.001,2)', 'FIXED(-0.001)', 'FIXED(-0.4,0)')
   add(
     'NUMBERVALUE',
     ...[
@@ -162,8 +190,26 @@ export function buildProbes(): Probe[] {
       '"1e"',
       '"1,2,3"',
       '"a"',
-      '"1 1/2"',
       '"2025-01-31"',
+      '"12:30 PM"',
+      '"1/2/2025"',
+      '"Jan 31, 2025"',
+      'T!C9',
+      '"$1,234.5"',
+      '"(1,234.5)"',
+      '"1.234,5",","',
+      '"%%5"',
+      '"5%%%"',
+      '"1.5",","',
+      '"1,5",".",";"',
+      '"1.000.000,5",","',
+      '"25:00"',
+      '"1e400"',
+      '"12:30"',
+      '"12:30:15"',
+      '"1:60"',
+      '"%5%"',
+      '"(5)%"',
       '"5 %"',
       '"1,5%",","',
       '"12,5",",","."',
@@ -226,12 +272,57 @@ export function buildProbes(): Probe[] {
       '1.5%%',
       '00012',
       '-0',
+      '12345,678',
+      '1,2345,678',
+      '1,00000',
+      '1,00.5',
+      '1,0000.5',
+      '1,0',
+      '0,000',
+      '100:00',
+      '9999:59',
+      '10000:00',
+      '25:00 PM',
+      '1:60',
+      '1:59:60',
+      '2025-01-31 25:00',
+      '25:00:00',
+      '-1:00',
+      '%(5)',
+      '(%5)',
+      '%%5',
+      '%5%',
+      '$%5',
+      '% 5',
+      '(5)%',
+      '12:30PM',
+      '01,000',
+      '0,123',
+      '1:61',
+      '1:99',
+      '1:100',
+      '1:59:61',
+      '1:59:99',
+      '1:60:00',
+      '0:1440',
+      '9999:59:59',
+      '9999:60',
+      '2025-01-31 9999:00',
+      '1/2/2025 25:00',
+      '2025-01-31 1:60',
+      '1:00:60.5',
+      '12:60 PM',
+      '13:00 PM',
+      '0:00 AM',
+      ':30',
+      '1:5',
+      '1:5:7',
     ].map((a) => `VALUE(${q(a)})`),
     'VALUE(T!C3)',
     'VALUE(T!C2)',
   )
-  add('TEXTJOIN', 'TEXTJOIN(T!A1:A2,TRUE,"a","b","c","d")', 'TEXTJOIN(",",TRUE,"","")', 'TEXTJOIN(",",FALSE,D!K1:K3)', 'TEXTJOIN(",",TRUE,D!K1:K3)', 'TEXTJOIN(",",TRUE,D!P1:Q2)', 'TEXTJOIN(",",FALSE,D!A13,"x")', 'TEXTJOIN(",",TRUE,REPT("a",20000),REPT("b",20000))', 'TEXTJOIN(D!A8,TRUE,"a","b")', 'TEXTJOIN(D!K1:K2,FALSE,"a","b","c")', 'TEXTJOIN(T!A1:A2,TRUE,"a")')
-  add('UNICHAR', 'UNICHAR(55296)', 'UNICHAR(57343)', 'UNICHAR(65535)', 'UNICHAR(1114111)', 'UNICHAR(1114112)', 'UNICHAR(128512)', 'UNICHAR(65534)', 'UNICHAR(160)')
+  add('TEXTJOIN', 'TEXTJOIN(T!A1:A2,TRUE,"a","b","c","d")', 'TEXTJOIN(",",TRUE,"","")', 'TEXTJOIN(",",FALSE,D!K1:K3)', 'TEXTJOIN(",",TRUE,D!K1:K3)', 'TEXTJOIN(",",TRUE,D!P1:Q2)', 'TEXTJOIN(",",FALSE,D!A13,"x")', 'TEXTJOIN(D!A8,TRUE,"a","b")', 'TEXTJOIN(D!K1:K2,FALSE,"a","b","c")', 'TEXTJOIN(T!A1:A2,TRUE,"a")')
+  add('UNICHAR', 'UNICHAR(55296)', 'UNICHAR(57343)', 'UNICHAR(65535)', 'UNICHAR(1114111)', 'UNICHAR(1114112)', 'UNICHAR(128512)', 'UNICHAR(65534)', 'UNICHAR(160)', 'UNICHAR(64976)', 'UNICHAR(65007)', 'UNICHAR(64975)', 'UNICHAR(131070)', 'UNICHAR(1114110)', 'UNICHAR(888)', 'UNICHAR(917504)', 'UNICHAR(327680)', 'UNICHAR(983040)', 'UNICHAR(57344)')
   add(
     'TEXTBEFORE',
     ...[
@@ -255,9 +346,6 @@ export function buildProbes(): Probe[] {
       '"abc","",-2',
       '"aaa","aa",2',
       '"aaaa","aa",2',
-      '"abc",T!B1:B2',
-      '"xabc",T!B3:B4',
-      '"xabc",T!B3:B4,-1',
       '"a-b-c","-",1,2',
       '"a-b-c","-",1,0,2',
       '"","x"',
@@ -270,6 +358,21 @@ export function buildProbes(): Probe[] {
       '"a-b-c",D!A7',
       '"ЁЛКА-ёлка","ё",1,1',
       '"Ёлка","ё"',
+      '"","x",2',
+      '"","",1',
+      '"","",1,0,1',
+      '"","x",-1',
+      '"a","x",2',
+      '"a","x",1,0,1',
+      '"ab","x",2,0,1',
+      '"a-b","x",1,0,0,TRUE',
+      '"a-b","x",1,0,0,D!A1',
+      '"a-b","x",1,0,0,NA()',
+      '"a-b","x",1,0,0,1.5',
+      '"","x",1,0,0,"nf"',
+      '"","",2',
+      '"abc","",4',
+      '"abc","",3',
     ].map((a) => `TEXTBEFORE(${a})`),
   )
   add(
@@ -286,13 +389,15 @@ export function buildProbes(): Probe[] {
       '"abc","",2',
       '"abc","",-1',
       '"abc","",-2',
-      '"xabc",T!B3:B4',
-      '"xabc",T!B3:B4,-1',
       '"aXbXc","x",-1,1',
       '"a-b-c","x",1,0,0,0',
       '"aaaa","aa",-1',
       '"aaa","aa",-1',
       '"a-b-c","-",-2',
+      '"","x"',
+      '"","x",-1',
+      '"a","x",-2',
+      '"","",-1',
     ].map((a) => `TEXTAFTER(${a})`),
   )
   add(
@@ -339,6 +444,21 @@ export function buildProbes(): Probe[] {
     'VLOOKUP("a?c",L!S1:S4,1,FALSE)',
     'VLOOKUP(5,L!A1:B8,-1)',
     'VLOOKUP(TRUE,L!G1:G8,1)',
+    'VLOOKUP(99,L!A1:B8,0,FALSE)',
+    'VLOOKUP(99,L!A1:B8,"abc",FALSE)',
+    'VLOOKUP(5,L!A1:B8,D!A8)',
+    'VLOOKUP(5,L!A1:B8,(D!A7))',
+    'VLOOKUP(5,L!A1:B8,D!A7+0)',
+    'VLOOKUP(5,L!A1:B8,2,D!A8)',
+    'VLOOKUP(5,L!A1:B8,D!L1:L2)',
+    'VLOOKUP(5,L!A1:B8,D!A3)',
+    'VLOOKUP(5,L!A1:B8,2,D!A3)',
+    'VLOOKUP("a~",L!S1:S4,1,FALSE)',
+    'VLOOKUP("~a?c",L!S1:S4,1,FALSE)',
+    ...[0, 2.5, 4, 6, 10].map((k) => `VLOOKUP(${k},L!U1:U9,1)`),
+    ...[2.5, 6].map((k) => `VLOOKUP(${k},L!U:V,2)`),
+    ...[2.5, 6, 10].map((k) => `HLOOKUP(${k},L!A20:I21,2)`),
+    ...[2.5, 6].map((k) => `HLOOKUP(${k},L!20:21,2)`),
   )
   add('HLOOKUP', 'HLOOKUP(100,D!L8:Q10,2)', 'HLOOKUP(5,D!L8:Q10,4)', 'HLOOKUP(5,D!L8:Q10,1.5)', 'HLOOKUP("FIVE",D!L9:Q10,2,FALSE)', 'HLOOKUP("f*",D!L9:Q10,2,FALSE)', 'HLOOKUP(5,D!L8:Q10,NA())', 'HLOOKUP(5,D!8:10,2)', 'HLOOKUP(6,D!L8:Q10,3,TRUE)', 'HLOOKUP(0.5,D!L8:Q10,3)', 'HLOOKUP(D!A8,D!L8:Q10,3)')
   add(
@@ -369,6 +489,9 @@ export function buildProbes(): Probe[] {
     'MATCH(30,L!O1:O6,-1)',
     'MATCH(5,D!L1:L6,NA())',
     'MATCH(NA(),D!L1:L6,1/0)',
+    'MATCH(5,D!L1:L6,D!A8)',
+    'MATCH("a~c",L!S1:S4,0)',
+    'MATCH(5,D!L1:L6,D!A3)',
     // sorted with blanks, errors and mixed types
     ...[0, 1, 2, 4, 6, 8].map((k) => `MATCH(${k},L!I1:I8,1)`),
     ...[2.5, 3, 3.5, 9].map((k) => `MATCH(${k},D!E1:E8,1)`),
@@ -377,6 +500,35 @@ export function buildProbes(): Probe[] {
     ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((k) => `MATCH(${k},L!K1:K7,1)`),
     ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((k) => `MATCH(${k},L!K1:K7,-1)`),
     ...['0', '1', '2', '3', '4', '5', '6', '"a"', '"b"', '"x"', '"z"', 'TRUE', 'FALSE'].map((k) => `MATCH(${k},L!M1:M7,1)`),
+    ...[0, 1, 2, 2.5, 3, 4, 5, 5.5, 6, 7, 8, 9, 10, 11].map((k) => `MATCH(${k},L!U1:U9,1)`),
+    ...[0, 1, 1.5, 2, 2.5, 3, 4].map((k) => `MATCH(${k},L!V1:V8,1)`),
+    ...[0, 3, 4, 4.5, 5, 9, 10, 11].map((k) => `MATCH(${k},L!W1:W12,1)`),
+    ...['0', '1', '2', '3', '5', '6', '8', '9', '10', '"a"', '"b"', '"c"', '"cc"', '"d"', '"z"'].map((k) => `MATCH(${k},L!X1:X10,1)`),
+    ...[0, 1, 2, 3, 4, 5, 9, 10].map((k) => `MATCH(${k},L!Y1:Y11,1)`),
+    ...['0', '1', '3', '6', '10', '11', '"a"', '"b"', '"q"', '"z"', 'TRUE', 'FALSE'].map((k) => `MATCH(${k},L!Z1:Z8,1)`),
+    ...[0, 1, 5, 5.5, 10, 11].map((k) => `MATCH(${k},L!AA1:AA10,1)`),
+    ...[4, 5, 6].map((k) => `MATCH(${k},L!AB1:AB5,1)`),
+    ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((k) => `MATCH(${k},L!AC1:AC8,1)`),
+    ...['0', '1', '2', '5', '7', '9', '10', '"a"', '"x"', '"xx"', '"z"'].map((k) => `MATCH(${k},L!AD1:AD9,1)`),
+    // whole columns and ranges past the used rows of the sheet
+    ...[0, 2.5, 4, 6, 10].map((k) => `MATCH(${k},L!U:U,1)`),
+    ...[0, 2, 3, 5, 10].map((k) => `MATCH(${k},L!Y:Y,1)`),
+    ...['"a"', '"c"', '"z"', '3', '10'].map((k) => `MATCH(${k},L!X:X,1)`),
+    ...[2.5, 6].map((k) => `MATCH(${k},L!U1:U1000,1)`),
+    ...[2.5, 6].map((k) => `MATCH(${k},L!U1:U100000,1)`),
+    'MATCH(4,L!U:U,0)',
+    'MATCH(4,L!U:U,-1)',
+    ...[2.5, 6, 10].map((k) => `MATCH(${k},L!A20:I20,1)`),
+    ...[2.5, 6, 10].map((k) => `MATCH(${k},L!20:20,1)`),
+    ...['"ё"', '"ея"', '"и"', '"Й"', '"я"', '"ЯЯ"', '"а"', '"0"'].map((k) => `MATCH(${k},L!AG1:AG7,1)`),
+    'MATCH("Ё",L!AG1:AG7,0)',
+    // descending order
+    ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((k) => `MATCH(${k},L!U1:U9,-1)`),
+    ...[0, 1, 2, 3, 4].map((k) => `MATCH(${k},L!V1:V8,-1)`),
+    ...['0', '1', '2', '5', '9', '10', '"a"', '"b"', '"z"'].map((k) => `MATCH(${k},L!X1:X10,-1)`),
+    ...[0, 1, 3, 4, 9, 10].map((k) => `MATCH(${k},L!Y1:Y11,-1)`),
+    ...[0, 1, 5, 5.5, 10, 11].map((k) => `MATCH(${k},L!AA1:AA10,-1)`),
+    ...['0', '5', '10', '25', '30', '35', '50', '60', '"x"', '"a"'].map((k) => `MATCH(${k},L!AE1:AE8,-1)`),
   )
   add(
     'LOOKUP',
@@ -396,6 +548,17 @@ export function buildProbes(): Probe[] {
     'LOOKUP("b",L!M1:M7)',
     'LOOKUP(100,L!A:A,L!B:B)',
     'LOOKUP(5,D!L1:L6,D!N1:N6)',
+    'LOOKUP(8,L!A1:A8,L!B3:B4)',
+    'LOOKUP(1,L!A1:A8,L!D1)',
+    'LOOKUP(5,L!A1:A8,L!B1:C1)',
+    'LOOKUP(5,D!L8:Q10,D!L10:Q10)',
+    'LOOKUP(8,L!A1:A8,D!N1:N6)',
+    'LOOKUP(5,D!L1:L6,D!M1:N6)',
+    'LOOKUP(5,D!L1:L6,D!L10:N10)',
+    ...[0, 2.5, 6, 10].map((k) => `LOOKUP(${k},L!U1:U9)`),
+    ...[2.5, 6].map((k) => `LOOKUP(${k},L!U:U,L!V:V)`),
+    ...[2.5, 6].map((k) => `LOOKUP(${k},L!20:20,L!21:21)`),
+    'LOOKUP(6,L!A20:I21)',
   )
   add(
     'XMATCH',
@@ -408,7 +571,6 @@ export function buildProbes(): Probe[] {
     'XMATCH(2,L!A1:A8,0,-1)',
     'XMATCH(5,D!L1:L6,0,2)',
     'XMATCH(5,D!L1:N6)',
-    'XMATCH(5,D!L1:L6,3)',
     'XMATCH(5,D!L1:L6,0,0)',
     'XMATCH(D!A8,D!L1:L6)',
     'XMATCH(D!A1,L!A1:A8)',
@@ -416,7 +578,14 @@ export function buildProbes(): Probe[] {
     'XMATCH(100,D!L1:L6,-1)',
     'XMATCH(-1,D!L1:L6,1)',
     'XMATCH("Ёж",L!Q1:Q4)',
+    'XMATCH(D!A1,L!Y1:Y11)',
+    'XMATCH(D!A1,L!I1:I8,-1)',
+    'XMATCH(D!A1,L!I1:I8,1)',
+    'XMATCH("a~c",L!S1:S4,2)',
+    'XMATCH("a~?c",L!S1:S4,2)',
+    'XMATCH(0,L!Y1:Y11)',
   )
+  add('XLOOKUP', 'XLOOKUP(D!A1,L!Y1:Y11,L!W1:W11)', 'XLOOKUP(D!A1,L!A1:A8,L!B1:B8)', 'XLOOKUP("a~c",L!S1:S4,L!S1:S4,"nf",2)')
   add(
     'INDEX',
     'INDEX(D!L1:N6,2)',
@@ -439,13 +608,15 @@ export function buildProbes(): Probe[] {
     'INDEX(D!L1:L1,0,0)',
     'INDEX(D!E1:E8,3)',
     'INDEX(D!L1:N6,1,1,0)',
+    'INDEX(D!L1:N6,0)',
+    'INDEX(D!L1:L6,"2")',
   )
-  add('ROW', 'ROW()', 'ROW()+1', 'ROW(D!A5:C5)', 'ROW(D!A:A)', 'ROW(D!C10)', 'ROW(D!A1048576)', 'ROW(L!B3)')
+  add('ROW', 'ROW(D!A5:C5)', 'ROW(D!A:A)', 'ROW(D!C10)', 'ROW(D!A1048576)', 'ROW(L!B3)')
   add('COLUMN', 'COLUMN()', 'COLUMN(D!B3:B9)', 'COLUMN(D!3:3)', 'COLUMN(D!XFD1)', 'COLUMN(L!AA1)')
   add(
     'ADDRESS',
     ...['2,3', '2,3,2', '2,3,3', '2,3,4', '2,3,1,FALSE', '2,3,4,FALSE', '2,3,2,FALSE', '2,3,3,FALSE', '1,16384', '1048576,1', '0,1', '1,16385', '1048577,1', '1,1,5', '1,1,0', '2.7,3.9', '"2","3"', 'TRUE,1', '1,1,1,0', '1,27', '1,1,D!A1', '1,1,1,TRUE,D!A1'].map((a) => `ADDRESS(${a})`),
-    ...['Sheet1', 'My Sheet', '1abc', 'A1', 'Лист1', 'a-b', 'a_b', 'a.b', "O'Brien", '', 'R1C1', 'TRUE', '_x', 'abc1', 'XFD1', 'XFE1', 'AAAA1', 'R1', 'C1', 'RC', 'a1b', 'R', 'C'].map((s) => `ADDRESS(1,1,1,TRUE,${q(s)})`),
+    ...['Sheet1', 'My Sheet', '1abc', 'A1', 'Лист1', 'a-b', 'a_b', 'a.b', "O'Brien", '', 'R1C1', 'TRUE', '_x', 'abc1', 'XFD1', 'XFE1', 'AAAA1', 'R1', 'C1', 'RC', 'a1b', 'R', 'C', 'FALSE', 'true', 'A1048577', 'A0', 'r', 'c', 'RC1', 'R1C', 'R1C1x', 'Sheet 1', 'a+b', 'ä', '日本', '2', '_1', '1_', '.a', 'a1.b', 'A01', 'Rabbit', 'Cat', 'Rc', 'R1x', 'C1x', 'Ra', 'Ca', 'RCx', 'R2D2', 'Cx1', 'XFD0', 'B1C', 'RR1'].map((s) => `ADDRESS(1,1,1,TRUE,${q(s)})`),
   )
   add('HYPERLINK', 'HYPERLINK("http://x","name")', 'HYPERLINK("http://x")', 'HYPERLINK("x",5)', 'HYPERLINK("x",D!A1)', 'HYPERLINK(5)', 'HYPERLINK("x",TRUE)', 'HYPERLINK(NA(),"a")', 'HYPERLINK("x",NA())')
 
@@ -464,6 +635,8 @@ export function buildProbes(): Probe[] {
   add('DSUM', 'DSUM(B!A:E,"Profit",B!H1:H2)')
   add('DCOUNTA', 'DCOUNTA(B!A:E,"Tree",B!Z1:Z3)', `DCOUNTA(${db},"Tree",B!G:G)`)
   add('DGET', 'DGET(B!A:E,"Tree",B!Z1:Z3)')
+  for (const b of ['AI1:AI2', 'AJ1:AJ2', 'AK1:AK2', 'AL1:AL2', 'AM1:AM2', 'AN1:AN2', 'AO1:AO2', 'AP1:AP3']) add('DCOUNTA', `DCOUNTA(${db},"Tree",B!${b})`)
+  for (const fn of ['DAVERAGE', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DVAR', 'DVARP']) add(fn, `${fn}(D!E1:E8,1,B!AG1:AG2)`, `${fn}(D!E1:E8,1,B!AH1:AH2)`)
 
   // ---------- logical and information ----------
   add(
@@ -484,26 +657,22 @@ export function buildProbes(): Probe[] {
     'SWITCH("й","и","no","yes")',
     'SWITCH(D!A2,2,"num","text")',
     'SWITCH(0,D!A1,"blank","x")',
+    'SWITCH(D!A1,FALSE,"f","x")',
+    'SWITCH(D!A13,D!A1,"b","x")',
   )
   add('IFNA', 'IFNA(1/0,"x")', 'IFNA(NA(),1/0)', 'IFNA(MATCH(99,D!L1:L6,0),"nf")', 'IFNA(D!A13,"x")')
   add('ISEVEN', 'ISEVEN(-0.5)', 'ISEVEN(D!A9)', 'ISEVEN(-3)')
   add('ISODD', 'ISODD(-1.5)', 'ISODD(D!A3)', 'ISODD(7.9)')
   add('TYPE', 'TYPE(1/0)', 'TYPE(D!A1:A1)', 'TYPE(D!K1:K2)', 'TYPE(NA())', 'TYPE("")', 'TYPE(D!A4)')
 
-  // ---------- exploration (not implemented yet) ----------
-  for (let n = 1; n <= 255; n++) if (n >= 120 || n % 15 === 0) add('CHAR', `CHAR(${n})`)
-  add('CODE', ...['€', 'È', '»', 'Ж', 'é', 'ÿ', 'ß', '😀', 'Ā', 'ł', '‚', '—'].map((c) => `CODE(${q(c)})`))
-  add('LENB', 'LENB("日本")', 'LENB("Привет")', 'LENB(T!C5)', 'LENB(T!C6)')
-  add('LEFTB', 'LEFTB("日本語",2)', 'LEFTB("Привет",3)')
-  add('RIGHTB', 'RIGHTB("日本語",2)')
-  add('MIDB', 'MIDB("日本語",2,1)')
-  add('FINDB', 'FINDB("本","日本語")')
-  add('SEARCHB', 'SEARCHB("本","日本語")')
-  add('REPLACEB', 'REPLACEB("日本語",2,1,"x")')
-  add('ASC', 'ASC(T!C5)', 'ASC(T!C6)', 'ASC("abc")', 'ASC("ＡＢＣ")')
-  add('DBCS', 'DBCS(T!C5)', 'DBCS("abc")', 'DBCS("Привет")')
-  add('JIS', 'JIS("abc")', 'JIS(T!C5)')
-  add('BAHTTEXT', 'BAHTTEXT(1234)', 'BAHTTEXT(0)', 'BAHTTEXT(1.25)', 'BAHTTEXT(-21)', 'BAHTTEXT(1000000)', 'BAHTTEXT(11)', 'BAHTTEXT(101)', 'BAHTTEXT(0.5)')
-  add('PHONETIC', 'PHONETIC(T!C7)', 'PHONETIC(D!B1)', 'PHONETIC(T!C4:C5)', 'PHONETIC(D!A1)')
+  // ---------- byte variants and Thai text ----------
+  add('LENB', 'LENB("日本")', 'LENB("Привет")', 'LENB(T!C5)', 'LENB(T!C6)', 'LENB(12.5)')
+  add('LEFTB', 'LEFTB("日本語",2)', 'LEFTB("Привет",3)', 'LEFTB("abc")')
+  add('RIGHTB', 'RIGHTB("日本語",2)', 'RIGHTB("Привет")')
+  add('MIDB', 'MIDB("日本語",2,1)', 'MIDB("Привет",2,3)')
+  add('FINDB', 'FINDB("本","日本語")', 'FINDB("и","Привет")')
+  add('SEARCHB', 'SEARCHB("本","日本語")', 'SEARCHB("И?","Привет")')
+  add('REPLACEB', 'REPLACEB("日本語",2,1,"x")', 'REPLACEB("Привет",1,2,"x")')
+  add('BAHTTEXT', ...['1234', '0', '1.25', '-21', '1000000', '11', '101', '0.5', '1000001', '21000000', '11000011', '1000000000000', '1.001', '1.005', '0.01', '0.995', '99.999', '1234567.89', '120', '210', '20', '2', '10', '1000001.01', '50000000.5', '-0.004', '111111111111', '100000', '1000011', '0.21'].map((a) => `BAHTTEXT(${a})`))
   return out
 }

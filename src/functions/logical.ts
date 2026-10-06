@@ -68,18 +68,18 @@ export const functions: Record<string, FnDef> = {
   },
   NOT: { args: 'b', fn: (b: boolean) => !b },
   OR: logical((bs) => bs.some(Boolean)),
-  // values match within a type, text in any case; a lone last argument is the default
+  // values match within a type, text in any case, a blank as 0; a lone last argument is the default
   SWITCH: {
     args: 'a a a',
     rep: 1,
     lazy: true,
     fn: (expr: () => V, ...rest: (() => V)[]) => {
-      const x = expr()
+      const x = expr() ?? 0
       if (isErr(x)) return x
       for (let i = 0; i + 1 < rest.length; i += 2) {
-        const v = rest[i]()
+        const v = rest[i]() ?? 0
         if (isErr(v)) return v
-        if (x === null ? v === null : v !== null && sameType(x, v) && compareValues(x, v) === 0) return rest[i + 1]()
+        if (sameType(x, v) && compareValues(x, v) === 0) return rest[i + 1]()
       }
       return rest.length % 2 ? rest[rest.length - 1]() : E.NA
     },

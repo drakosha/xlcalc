@@ -3,12 +3,20 @@
  * (src/lookup-reference.js), Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); the rest is
  * this engine's own (formula.js gets values, not references).
  */
+import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { FnDef, Grid } from '../../args.js'
-import { indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
-import { E, isErr, Rng, type V } from '../../values.js'
+import { E, isErr, Rng, toText, type V } from '../../values.js'
 
-/** Excel quotes a sheet name that is not a plain name or that reads as a cell address. */
-const sheetPrefix = (s: string) => (/^[\p{L}_][\p{L}\p{N}_.]*$/u.test(s) && !/^[A-Za-z]{1,3}\d+$/.test(s) && !/^R\d*C\d*$/i.test(s) ? s : `'${s.replace(/'/g, "''")}'`)
+/** A name that reads as an A1 address within the grid, an R1C1 reference or a boolean. */
+function referenceLike(s: string): boolean {
+  const a1 = /^([A-Za-z]{1,3})(\d+)$/.exec(s)
+  if (a1) return colToIndex(a1[1]) < MAX_COLS && Number(a1[2]) >= 1 && Number(a1[2]) <= MAX_ROWS
+  // R1C1: a name starting with R, C or RC followed by a digit, or just R, C, RC
+  return /^(RC?|C)(\d|$)/i.test(s) || /^(TRUE|FALSE)$/i.test(s)
+}
+
+/** Excel quotes a sheet name unless it is empty or a plain name that does not read as a reference. */
+const sheetPrefix = (s: string) => (s === '' || (/^[\p{L}_][\p{L}\p{N}_.]*$/u.test(s) && !referenceLike(s)) ? s : `'${s.replace(/'/g, "''")}'`)
 
 function address(r: number, c: number, abs = 1, a1 = true, sheet?: string): V {
   if (r < 1 || r > MAX_ROWS || c < 1 || c > MAX_COLS || abs < 1 || abs > 4) return E.VALUE
@@ -35,8 +43,8 @@ export const functions: Record<string, FnDef> = {
   COLUMN: position(false),
   // the referenced size: a whole column has 1,048,576 rows
   COLUMNS: { args: 'G', fn: (g: Grid) => g.cols },
-  // the value of a cell is its friendly name, else the link
-  HYPERLINK: { args: 'v v?', fn: (link: V, name?: V) => (name === undefined ? link : name) },
+  // the value of a cell is its friendly name as given, else the link as text
+  HYPERLINK: { args: 'v v?', fn: (link: V, name?: V) => (name === undefined ? toText(link) : name) },
   ROW: position(true),
   ROWS: { args: 'G', fn: (g: Grid) => g.rows },
 }
