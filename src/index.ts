@@ -16,6 +16,8 @@ export { FUNCTION_NAMES } from './functions.js'
 export { CONFIG_VERSION } from './config.js'
 export { openSession } from './session.js'
 export { InputError } from './input.js'
+export { restructure } from './structure/index.js'
+export type { RangeRef, RestructureResult, StructureOp, StructureRefusal } from './structure/types.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
