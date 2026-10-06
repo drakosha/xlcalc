@@ -1,6 +1,7 @@
 /**
  * The Excel 1900 date system in the functions: serial numbers and calendar dates, with Excel's day 0
- * (1900-01-00) and its phantom 1900-02-29 (serial 60), and date, time and number text as Excel en-US reads it.
+ * (1900-01-00) and its phantom 1900-02-29 (serial 60), and date, time and number text as Excel en-US reads it;
+ * the times and the frame of date text are shared with the other locales (`DateSyntax`, `locale/rules/`).
  */
 import { readNumber } from './model.js'
 
@@ -46,7 +47,39 @@ export function addMonths(y: number, m: number, months: number): { y: number; m:
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 const MONTH_RE = '(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)'
-const TIME_RE = '(\\d{1,4}):(\\d+)(?::(\\d+(?:\\.\\d+)?))?(?:\\s*([ap]m))?|(\\d{1,2})\\s*([ap]m)'
+
+/** How a locale reads date text: the date part (lower case, single spaces) and the decimal separator of seconds. */
+export interface DateSyntax {
+  date(s: string): number | null
+  decimal: string
+}
+
+/** The patterns of time text by the decimal separator of seconds: a time in date text, date text and its time, VALUE's time, VALUE's date and time. */
+interface TimePatterns {
+  time: RegExp
+  split: RegExp
+  value: RegExp
+  dateTime: RegExp
+}
+
+const PATTERNS = new Map<string, TimePatterns>()
+
+/** The patterns for a decimal separator, built once: `18:30`, `6:30:15 PM`, `6 PM`, seconds with decimals. */
+function patterns(decimal: string): TimePatterns {
+  let p = PATTERNS.get(decimal)
+  if (!p) {
+    const d = `\\${decimal}`
+    const t = `(\\d{1,4}):(\\d+)(?::(\\d+(?:${d}\\d+)?))?(?:\\s*([ap]m))?|(\\d{1,2})\\s*([ap]m)`
+    p = {
+      time: new RegExp(`^(?:${t})$`),
+      split: new RegExp(`^(.*?)(?:[ t](${t}))?$`),
+      value: new RegExp(`^(\\d+):(\\d+)(?::(\\d+(?:${d}\\d+)?))?(?: ([ap]m))?$`, 'i'),
+      dateTime: new RegExp(`^(.*\\S) +(\\d+:\\d+(?::\\d+(?:${d}\\d+)?)?(?: [ap]m)?)$`, 'i'),
+    }
+    PATTERNS.set(decimal, p)
+  }
+  return p
+}
 const DATE_FORMS: [RegExp, (m: RegExpExecArray) => [string, string, string]][] = [
   [/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/, (m) => [m[1], m[2], m[3]]],
   [/^(\d{1,2})\/(\d{1,2})\/(\d{4}|\d{2})$/, (m) => [m[3], m[1], m[2]]],
@@ -55,30 +88,34 @@ const DATE_FORMS: [RegExp, (m: RegExpExecArray) => [string, string, string]][] =
 ]
 
 /** A year as typed: two digits are 1930–2029, as in Excel. */
-const fullYear = (s: string) => (s.length > 2 ? Number(s) : Number(s) + (Number(s) < 30 ? 2000 : 1900))
+export const fullYear = (s: string) => (s.length > 2 ? Number(s) : Number(s) + (Number(s) < 30 ? 2000 : 1900))
+
+/** The serial number of a calendar date from 1900 to 9999, the phantom 1900-02-29 too; null if there is no such date. */
+export function calendarDate(y: number, mo: number, d: number): number | null {
+  if (y < 1900 || y > 9999 || mo < 1 || mo > 12 || d < 1) return null
+  if (y === 1900 && mo === 2 && d === 29) return 60
+  return d > daysInMonth(y, mo) ? null : serialOf(y, mo, d)
+}
 
 function dateText(s: string): number | null {
   for (const [re, parts] of DATE_FORMS) {
     const m = re.exec(s)
     if (!m) continue
     const [ys, ms, ds] = parts(m)
-    const y = fullYear(ys)
-    const mo = /^\d+$/.test(ms) ? Number(ms) : MONTHS.indexOf(ms.slice(0, 3)) + 1
-    const d = Number(ds)
-    if (y < 1900 || y > 9999 || mo < 1 || mo > 12 || d < 1) return null
-    if (y === 1900 && mo === 2 && d === 29) return 60
-    return d > daysInMonth(y, mo) ? null : serialOf(y, mo, d)
+    return calendarDate(fullYear(ys), /^\d+$/.test(ms) ? Number(ms) : MONTHS.indexOf(ms.slice(0, 3)) + 1, Number(ds))
   }
   return null
 }
 
-function timeText(s: string): number | null {
-  const m = new RegExp(`^(?:${TIME_RE})$`).exec(s)
+const EN_DATES: DateSyntax = { date: dateText, decimal: '.' }
+
+function timeText(s: string, decimal: string): number | null {
+  const m = patterns(decimal).time.exec(s)
   if (!m) return null
   const ampm = m[4] ?? m[6]
   let h = Number(m[1] ?? m[5])
   const mi = Number(m[2] ?? 0)
-  const sec = Number(m[3] ?? 0)
+  const sec = Number((m[3] ?? '0').replace(decimal, '.'))
   // Excel en-US: with AM/PM hours 0–12 and minutes and seconds below 60; without, up to 9999 hours and any minutes and seconds
   if (ampm) {
     if (h > 12 || mi > 59 || sec >= 60) return null
@@ -93,16 +130,19 @@ function timeText(s: string): number | null {
  * alone (`18:30`, `6:30:15 PM`, `6 PM`). The serial number with a day fraction, or null. Forms without a
  * year (`1/31`, which Excel completes with the current year) are not read.
  */
-export function parseDateText(text: string): number | null {
+export const parseDateText = (text: string): number | null => parseDateWith(text, EN_DATES)
+
+/** Date or time text in a date or time argument by a locale's syntax: a date optionally followed by a time, or a time alone. */
+export function parseDateWith(text: string, syn: DateSyntax): number | null {
   const s = text.trim().toLowerCase().replace(/\s+/g, ' ')
   if (s === '') return null
-  const time = timeText(s)
+  const time = timeText(s, syn.decimal)
   if (time !== null) return time
-  const split = new RegExp(`^(.*?)(?:[ t](${TIME_RE}))?$`).exec(s)!
-  const date = dateText(split[1])
+  const split = patterns(syn.decimal).split.exec(s)!
+  const date = syn.date(split[1])
   if (date === null) return null
   if (split[2] === undefined) return date
-  const t = timeText(split[2])
+  const t = timeText(split[2], syn.decimal)
   return t === null ? null : date + t
 }
 
@@ -112,18 +152,17 @@ export function parseDateText(text: string): number | null {
 const GROUPED = /^((?!0+,)\d+(?:,\d{3,})*|)(\.\d*)?$/
 
 /** Excel trims spaces only, not tabs or line breaks. */
-const trimSpaces = (s: string) => s.replace(/^ +| +$/g, '')
+export const trimSpaces = (s: string) => s.replace(/^ +| +$/g, '')
 
-/** VALUE's time: minutes and seconds past 59 carry (`1:61`), up to 9,999 hours; with ` AM`/` PM` a clock time. */
-const TIME = /^(\d+):(\d+)(?::(\d+(?:\.\d+)?))?(?: ([ap]m))?$/i
 const MAX_TIME = 10_000 / 24
 
-function timeOf(s: string): number | null {
-  const m = TIME.exec(s)
+/** VALUE's time, seconds with the decimal separator: minutes and seconds past 59 carry (`1:61`), up to 9,999 hours; with ` AM`/` PM` a clock time. */
+export function timeOf(s: string, decimal: string): number | null {
+  const m = patterns(decimal).value.exec(s)
   if (!m) return null
   let h = Number(m[1])
   const mi = Number(m[2])
-  const sec = Number(m[3] ?? 0)
+  const sec = Number((m[3] ?? '0').replace(decimal, '.'))
   if (m[4]) {
     if (h > 12 || mi > 59 || sec >= 60) return null
     h = (h % 12) + (m[4].toLowerCase() === 'pm' ? 12 : 0)
@@ -132,15 +171,15 @@ function timeOf(s: string): number | null {
   return t < MAX_TIME ? t : null
 }
 
-/** Date text, optionally followed by a time that may run past 24 hours (`2025-01-31 25:00`). */
-function dateTime(s: string): number | null {
-  const m = /^(.*\S) +(\d+:\d+(?::\d+(?:\.\d+)?)?(?: [ap]m)?)$/i.exec(s)
+/** VALUE's date text by a locale's syntax, optionally followed by a time that may run past 24 hours (`2025-01-31 25:00`). */
+export function dateTimeWith(s: string, syn: DateSyntax): number | null {
+  const m = patterns(syn.decimal).dateTime.exec(s)
   if (m) {
-    const d = m[1].includes(':') ? null : parseDateText(m[1])
-    const t = timeOf(m[2])
+    const d = m[1].includes(':') ? null : parseDateWith(m[1], syn)
+    const t = timeOf(m[2], syn.decimal)
     return d === null || t === null ? null : d + t
   }
-  return s.includes(':') || /\d[ap]m$/i.test(s) ? null : parseDateText(s)
+  return s.includes(':') || /\d[ap]m$/i.test(s) ? null : parseDateWith(s, syn)
 }
 
 /**
@@ -172,7 +211,7 @@ export function textToNumber(text: string): number | null {
   else if (!sign[2] && !paren) {
     const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
     if (frac && Number(frac[3]) > 0) n = Number(frac[1]) + Number(frac[2]) / Number(frac[3])
-    else if (!sign[1] && !sign[3] && !percent) return timeOf(s) ?? dateTime(s)
+    else if (!sign[1] && !sign[3] && !percent) return timeOf(s, '.') ?? dateTimeWith(s, EN_DATES)
   }
   if (n === null || !Number.isFinite(n)) return null
   if (percent) n /= 100

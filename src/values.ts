@@ -83,27 +83,38 @@ export function toBool(v: V): boolean | CErr {
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2)
 
 /**
- * Excel's order of two values that are not errors: numbers < text < booleans, text case-insensitive
- * (`collator`); a blank is 0, "" or FALSE, as the other side requires.
+ * Excel's order of two values that are not errors, with `text` the order of text (case-insensitive, by
+ * locale): numbers < text < booleans; a blank is 0, "" or FALSE, as the other side requires.
  */
-export function compareValues(a: V, b: V): number {
-  if (a === null) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0
-  if (b === null) b = typeof a === 'string' ? '' : typeof a === 'boolean' ? false : 0
-  const ra = rank(a)
-  const rb = rank(b)
-  if (ra !== rb) return ra - rb
-  if (typeof a === 'string') return collator.compare(a, b as string)
-  return (a as number) < (b as number) ? -1 : (a as number) > (b as number) ? 1 : 0
+export function compareWith(text: (a: string, b: string) => number): (a: V, b: V) => number {
+  return (a, b) => {
+    if (a === null) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0
+    if (b === null) b = typeof a === 'string' ? '' : typeof a === 'boolean' ? false : 0
+    const ra = rank(a)
+    const rb = rank(b)
+    if (ra !== rb) return ra - rb
+    if (typeof a === 'string') return text(a, b as string)
+    return (a as number) < (b as number) ? -1 : (a as number) > (b as number) ? 1 : 0
+  }
 }
+
+/** Excel en-US's order of two values that are not errors (`collator`). */
+export const compareValues = compareWith(collator.compare)
 
 /** A number to 15 significant digits, as Excel compares numbers and reads them in INT and its kin (`1-2^-52` is 1 there). */
 export const to15 = (x: number): number => (Number.isInteger(x) && Math.abs(x) < 1e15 ? x : Number(x.toPrecision(15)))
 
 /**
- * The order of the comparison operators (`=`, `<` and the rest): numbers equal to 15 significant digits are
- * equal (`0.1+0.2=0.3` is TRUE), as in Excel; lookups, sorting and UNIQUE compare exactly (`compareValues`).
+ * The order of the comparison operators (`=`, `<` and the rest) over `compare`: numbers equal to 15 significant
+ * digits are equal (`0.1+0.2=0.3` is TRUE), as in Excel; lookups, sorting and UNIQUE compare exactly.
  */
-export const compareOp = (a: V, b: V): number => compareValues(typeof a === 'number' ? to15(a) : a, typeof b === 'number' ? to15(b) : b)
+export const operatorOrder =
+  (compare: (a: V, b: V) => number) =>
+  (a: V, b: V): number =>
+    compare(typeof a === 'number' ? to15(a) : a, typeof b === 'number' ? to15(b) : b)
+
+/** The comparison operators' order in en-US. */
+export const compareOp = operatorOrder(compareValues)
 
 /** Excel's tolerance of a whole-number argument: a number less than 2^-22 short of an integer is that integer. */
 export const WHOLE = 2 ** -22
