@@ -7,7 +7,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput, CellInput } from '../src/contract.js'
-import { dataSheet, engineFormula } from './excel-cases.js'
+import { caseCells, dataSheet, engineFormula } from './excel-cases.js'
 
 export interface StoredSet {
   name: string
@@ -32,9 +32,12 @@ export const loadSet = async (name: string) => (await import(`../bench/coverage/
 
 const input = (v: SheetCells[string][string]): CellInput => (typeof v === 'object' ? { formula: engineFormula(v.formula) } : { value: v })
 
-/** Cases on sheet C (the last one) in a book as sent to Excel: the measurement's data sheet D and the set's own sheets beside them. */
+/**
+ * Cases on sheet C (the last one) in a book as sent to Excel: the measurement's data sheet D and the set's own
+ * sheets beside them. As in Excel's book, every case has a neighbour on its right and the last one a value
+ * below it, so an array answer cannot spill (`#SPILL!`).
+ */
 export function caseBook(probes: readonly Probe[], sheets: SheetCells = {}): BookInput {
   const own = Object.entries(sheets).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, input(v)])) }))
-  const cases = Object.fromEntries(probes.map((p, i): [string, CellInput] => [`A${i + 1}`, { formula: engineFormula(p.formula) }]))
-  return { sheets: [dataSheet(), ...own, { name: 'C', cells: cases }] }
+  return { sheets: [dataSheet(), ...own, { name: 'C', cells: caseCells(probes.map((p) => engineFormula(p.formula))) }] }
 }

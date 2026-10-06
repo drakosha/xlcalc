@@ -47,7 +47,7 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
     const tok = toks[k]
     let end = toks[k + 1].at
     while (end > tok.at && SPACE.has(text[end - 1])) end--
-    const now = tok.t === 'ref' ? refText(tok, text.slice(tok.at, end), host, moved, t, sheets) : tok.t === 'err' && tok.sheet !== undefined ? errText(tok.sheet, t, sheets) : undefined
+    const now = tok.t === 'ref' ? refText(tok, text.slice(tok.at, end), host, moved, t, sheets) : tok.t === 'err' && tok.sheet !== undefined ? errText(tok.sheet, tok.ref ?? '', t, sheets) : undefined
     if (now === undefined) continue
     out += text.slice(pos, tok.at) + now
     pos = end
@@ -55,25 +55,30 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
   return pos === 0 ? text : out + text.slice(pos)
 }
 
-/** The new text of a reference token, undefined when it stays as written. */
+/**
+ * The new text of a reference token, undefined when it stays as written. A spill reference (`E2#`) moves as
+ * its cell and keeps its `#`, lost too (`#REF!#`, as Excel writes it).
+ */
 function refText(tok: Extract<Tok, { t: 'ref' }>, written: string, host: string | null, moved: string | null, t: Transform, sheets: Map<string, string>): string | undefined {
   const target = tok.sheet === null ? host : (sheets.get(sheetKey(tok.sheet)) ?? null)
   if (target === null) return undefined
   const area = decode(tok.ref)
   const o = t.ref({ sheet: target, area })
+  const spill = tok.ref.spill ? '#' : ''
   // without its sheet a reference points to the formula's sheet: a formula moved elsewhere spells it out
-  const prefix = (sheet: string) => (tok.sheet !== null && sheet === target ? written.slice(0, written.length - tok.ref.text.length) : tok.sheet !== null || !same(sheet, moved ?? host) ? `${quoteSheet(sheet)}!` : '')
-  if (o === undefined) return tok.sheet === null && !same(target, moved ?? host) ? prefix(target) + tok.ref.text : undefined
-  if (o === 'gone') return `#REF!${tok.ref.text}`
-  if (o === 'lost') return `${prefix(target)}#REF!`
-  const next = prefix(o.sheet) + (sameArea(o.area, area) ? tok.ref.text : encode(o.area))
+  const prefix = (sheet: string) => (tok.sheet !== null && sheet === target ? written.slice(0, written.length - tok.ref.text.length - spill.length) : tok.sheet !== null || !same(sheet, moved ?? host) ? `${quoteSheet(sheet)}!` : '')
+  if (o === undefined) return tok.sheet === null && !same(target, moved ?? host) ? prefix(target) + tok.ref.text + spill : undefined
+  if (o === 'gone') return `#REF!${tok.ref.text}${spill}`
+  if (o === 'lost') return `${prefix(target)}#REF!${spill}`
+  const next = prefix(o.sheet) + (sameArea(o.area, area) ? tok.ref.text : encode(o.area)) + spill
   return next === written ? undefined : next
 }
 
-function errText(name: string, t: Transform, sheets: Map<string, string>): string | undefined {
+/** `'S'!#REF!` (`tail`: `#` of a lost spill reference) on a renamed or deleted sheet. */
+function errText(name: string, tail: string, t: Transform, sheets: Map<string, string>): string | undefined {
   const next = t.sheet?.(sheets.get(sheetKey(name)) ?? name)
   if (next === undefined) return undefined
-  return next === null ? '#REF!#REF!' : `${quoteSheet(next)}!#REF!`
+  return (next === null ? '#REF!#REF!' : `${quoteSheet(next)}!#REF!`) + tail
 }
 
 /** A cell with its formula rewritten; the same object when nothing changed. */

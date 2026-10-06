@@ -4,7 +4,6 @@
  * The stored formula text has no `=`. Canonical form: function names upper-case, the sheet always quoted
  * (`'Data'!A1`), strings with Excel `""` doubling, no whitespace.
  */
-import { shapes } from './arrays/shape.js'
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode, type NameCheck, type ValidateContext, type ValidateResult } from './contract.js'
 import { FUNCTIONS } from './functions.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from './model.js'
@@ -18,13 +17,15 @@ export interface RangeRef {
   kind: 'cell' | 'range' | 'cols' | 'rows'
   /** Source text of the reference without the sheet (`$D$2:$D$3401`), for the canonical form. */
   text: string
+  /** A spill reference (`E2#`, a cell): the range the cell's array spilled into. */
+  spill?: true
 }
 
 export type Ast =
   | { k: 'num'; v: number }
   | { k: 'str'; v: string }
   | { k: 'bool'; v: boolean }
-  /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`. */
+  /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`, `#REF!#` (a spill reference). */
   | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string }
   | { k: 'ref'; sheet: string | null; ref: RangeRef }
   | { k: 'name'; name: string }
@@ -148,6 +149,14 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
   return null
 }
 
+/** The length of a reference read at `at`, marking it a spill reference when `#` follows a cell (`E2#`). */
+function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at: number): number {
+  if (next !== '#') return r.len
+  if (r.ref.kind !== 'cell') bad(at, 'a spill reference (#) follows a single cell')
+  r.ref.spill = true
+  return r.len + 1
+}
+
 const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%']
 
 export function tokenize(src: string): Tok[] {
@@ -182,10 +191,11 @@ export function tokenize(src: string): Tok[] {
     if (ch === '#') {
       const lit = Object.keys(ERROR_LITERALS).find((e) => rest.toUpperCase().startsWith(e))
       if (!lit) bad(i, 'unknown error literal')
-      // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`
-      const tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : undefined)) : undefined
+      // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`; a lost spill reference ends in `#`
+      let tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : '')) : ''
+      if (lit === '#REF!' && src[i + 5 + tail.length] === '#') tail += '#'
       out.push({ t: 'err', code: ERROR_LITERALS[lit], at: i, ...(tail ? { ref: tail } : {}) })
-      i += lit.length + (tail?.length ?? 0)
+      i += lit.length + tail.length
       continue
     }
     if (ch === '[') bad(i, 'external workbook reference', 'external_ref')
@@ -200,16 +210,17 @@ export function tokenize(src: string): Tok[] {
     if (sm) sheet = sm[1].replaceAll("''", "'")
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
     if (sm && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
-      // a reference Excel lost on a sheet that is still there: `'S'!#REF!`
-      out.push({ t: 'err', code: 'REF', sheet: sheet!, at: i })
-      i += sm[0].length + 5
+      // a reference Excel lost on a sheet that is still there: `'S'!#REF!`, `'S'!#REF!#`
+      const spill = src[i + sm[0].length + 5] === '#'
+      out.push({ t: 'err', code: 'REF', sheet: sheet!, at: i, ...(spill ? { ref: '#' } : {}) })
+      i += sm[0].length + 5 + (spill ? 1 : 0)
       continue
     }
     if (sm) {
       const r = readRef(src.slice(i + sm[0].length), i)
       if (!r) bad(i + sm[0].length, 'reference expected after sheet name')
       out.push({ t: 'ref', sheet, ref: r.ref, at: i })
-      i += sm[0].length + r.len
+      i += sm[0].length + spilled(r, src[i + sm[0].length + r.len], i)
       continue
     }
     if (ch === "'") bad(i, 'quoted sheet name without reference')
@@ -217,7 +228,7 @@ export function tokenize(src: string): Tok[] {
       const r = readRef(rest, i)
       if (r) {
         out.push({ t: 'ref', sheet: null, ref: r.ref, at: i })
-        i += r.len
+        i += spilled(r, src[i + r.len], i)
         continue
       }
     }
@@ -443,7 +454,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'err':
         return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + ERROR_TEXT[n.code] + (n.ref ?? '')
       case 'ref':
-        return n.sheet === null ? n.ref.text : `${quoteSheet(sheetOf(n.sheet))}!${n.ref.text}`
+        return (n.sheet === null ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.ref.text + (n.ref.spill ? '#' : '')
       case 'name':
         return n.name
       case 'fn':
@@ -467,9 +478,6 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
 export const canonical = (ast: Ast, sheetOf?: (s: string) => string) => printFormula(ast, { sheetOf })
 
 // ---------- checks ----------
-
-/** Why a formula whose result is an array of several values gets `unsupported` (and its cell #SPILL!). */
-export const ARRAY_RESULT = 'spilling into neighbouring cells is not supported yet; wrap it in a function that takes an array, such as SUM or INDEX'
 
 /** Argument counts of each function; literal arguments of external functions. */
 export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
@@ -507,12 +515,8 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
   return visit(ast)
 }
 
-/**
- * Formula check: parsing, whitelisted or external functions, sheets, names, argument counts, and (unless
- * `arrayResult` is false, as in `compute`, which gives such a cell #SPILL! when computed) a result that is
- * an array of several values whatever the data.
- */
-export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (name: string) => boolean | undefined = () => undefined, arrayResult = true): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
+/** Formula check: parsing, whitelisted or external functions, sheets, names, argument counts. */
+export function validate(text: string, ctx: ValidateContext = {}): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
   let ast: Ast
   try {
     ast = parse(text)
@@ -544,7 +548,6 @@ export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (
   }
   const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !FUNCTIONS[f])
   if (calls) return { ok: false, code: calls.code, message: calls.message, at: calls.at }
-  if (arrayResult && shapes(ast, isRangeName).get(ast) === 2) return { ok: false, code: 'unsupported', message: `the result is an array: ${ARRAY_RESULT}`, at: 0 }
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)] }
 }
 

@@ -52,7 +52,9 @@ describe('volatile functions', () => {
     // the value RAND had before RANDARRAY drew from the same function
     expect(v(a, 'A1')).toBe(0.0295275952666998)
     expect(v(a, 'B1')).not.toBe(v(a, 'B2'))
-    expect([v(a, 'B3'), v(a, 'B4'), v(a, 'B5')]).toEqual([0, true, { error: 'SPILL' }])
+    expect([v(a, 'B3'), v(a, 'B4')]).toEqual([0, true])
+    // RANDARRAY(2) spills into B6
+    for (const cell of ['B5', 'B6']) expect(v(a, cell)).toBeTypeOf('number')
     expect(run(42).hash).toBe(a.hash)
     expect(v(run(43), 'B1')).not.toBe(v(a, 'B1'))
     expect(a.volatile.map((c) => c.cell)).toEqual(['A1', 'B1', 'B2', 'B3', 'B4', 'B5'])

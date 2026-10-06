@@ -14,6 +14,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
+import { fileFormula, markDynamic } from './spill.js'
 import type { BookInput, CellStyle, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
@@ -123,22 +124,27 @@ function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.
   }
 }
 
-/** The book as xlsx: values and formulas (no cached results), names with their scope, the layout of a styled book. */
-async function writeBook(c: StructCase, book: BookInput, file: string): Promise<void> {
+/**
+ * The book as xlsx: values and formulas (no cached results; spill references as Excel stores them), names with
+ * their scope, the layout of a styled book; with `dynamic`, formulas as dynamic array formulas (Excel 365).
+ */
+async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: boolean): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const s of book.sheets) {
     const ws = wb.addWorksheet(s.name)
     for (const [addr, cell] of Object.entries(s.cells)) {
       if (cell.value !== null && typeof cell.value === 'object') throw new Error(`${c.id}: dates are not used in structure cases`)
-      ws.getCell(addr).value = (cell.formula !== undefined ? { formula: cell.formula } : (cell.value ?? null)) as ExcelJS.CellValue
+      const formula = cell.formula === undefined ? undefined : { formula: fileFormula(cell.formula), ...(dynamic ? { shareType: 'array', ref: addr } : {}) }
+      ws.getCell(addr).value = (formula ?? cell.value ?? null) as ExcelJS.CellValue
     }
     if (styled(book)) writeLayout(c, book, s, ws)
   }
   // ExcelJS keeps names in a cell matrix (no whole columns, no scope): its model is replaced by ours
   const index = new Map(book.sheets.map((s, i) => [s.name, i]))
-  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [n.ref], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
+  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
   Object.defineProperty(wb.definedNames, 'model', { get: () => names })
   await wb.xlsx.writeFile(file)
+  if (dynamic) await markDynamic(file, book.sheets.length)
 }
 
 /**
@@ -224,7 +230,7 @@ function lookOf([cells, widths, heights]: RawLook): SheetLook {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
-async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswer> {
+async function runCase(c: StructCase, book: BookInput, dynamic: boolean): Promise<ExcelStructAnswer> {
   const before = dialogText()
   if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
   if (Number(execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to count workbooks'], { encoding: 'utf8' }).trim()) !== 0) throw new Error('Excel has open books')
@@ -232,7 +238,7 @@ async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswe
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
-    await writeBook(c, book, file)
+    await writeBook(c, book, file, dynamic)
     const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
     const look = styled(book) ? lookArgs() : ['', '', '']
     const child = spawn('osascript', [SCRIPT, file, c.op.op, ...opArgs(c), READ, extra, ...look])
@@ -280,7 +286,7 @@ async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswe
 export async function stepStruct(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./struct/${set}.js`)) as StructSet
-  const { books, cases } = mod.buildStructCases()
+  const { books, cases, dynamic = false } = mod.buildStructCases()
   const target = join(ROOT, `docs/excel-struct/${set}.json`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
   // an answer is kept when its case and the case's book are unchanged
@@ -292,7 +298,7 @@ export async function stepStruct(set: string): Promise<void> {
   mkdirSync(join(ROOT, 'docs/excel-struct'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: LOOK } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, books, cases, answers }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), answers }, null, 1) + '\n')
   }
   await ensureExcel('en')
   let done = 0
@@ -300,7 +306,7 @@ export async function stepStruct(set: string): Promise<void> {
     const only = process.env.FSTRUCT_ONLY?.split(',')
     for (const c of cases) {
       if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c, books[c.book])
+      answers[c.id] = await runCase(c, books[c.book], dynamic)
       done++
     }
   } finally {

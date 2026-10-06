@@ -42,7 +42,7 @@ describe('arrays beyond the Excel cases', () => {
       { sheet: 'S', cell: 'C1', value: { error: 'SPILL' } },
       { sheet: 'S', cell: 'C2', value: { error: 'SPILL' } },
     ])
-    expect(s.result().issues.find((i) => i.cell === 'C1')).toMatchObject({ check: 'unsupported', error: 'SPILL' })
+    expect(s.result().issues.find((i) => i.cell === 'C1')).toMatchObject({ error: 'SPILL', reason: "the array of 2×1 values cannot spill: 'S'!C2 is not empty" })
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).map((c) => [c.cell, c.value])).toEqual([['A1', 2], ['C1', 6], ['C2', 12]])
     expect(s.result().issues).toEqual([])
   })

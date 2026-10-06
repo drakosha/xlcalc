@@ -1,6 +1,6 @@
 # Arrays inside a cell
 
-Design of array values inside a formula, before spilling. Reference semantics: Excel 365 with dynamic arrays (Excel 16.113 for Mac is one), en-US; every rule below that is not plain Excel documentation was measured by the `arrays` case set. The contract (`src/contract.ts`) does not change: every cell still holds one value.
+Design of array values inside a formula; a formula whose result is an array spills, as `docs/spill.md` describes. Reference semantics: Excel 365 with dynamic arrays (Excel 16.113 for Mac is one), en-US; every rule below that is not plain Excel documentation was measured by the `arrays` case set.
 
 ## The array value
 
@@ -32,9 +32,7 @@ Measured exceptions, all from the `lift` cases, which give every whitelisted fun
 
 ## A formula whose result is an array
 
-Before spilling, a formula whose result is an array of more than one value gives `#SPILL!`, with an issue that names the size and has the check code `unsupported` ("the result is an array of 3×1 values: spilling into neighbouring cells is not supported yet; wrap it in a function that takes an array, such as SUM or INDEX"). This is what Excel shows when the cells an array would spill into are not empty, so the engine behaves as Excel does on a sheet where every neighbour is taken; when spilling arrives, the same cells start spilling where there is room. The alternatives are worse: the top-left value hides the problem (the decision of 06.10), `#VALUE!` is Excel's answer to other things, `#ERROR!` loses the reason.
-
-`compute` finds this when the cell is computed, so a result that is an array only for some data (`INDEX(A1:C3,0,B1)`, `IF(B1,A1:A3,0)`, `UNIQUE(A1:A9)`, `SEQUENCE(B1)`) is treated the same as one that always is. `validateFormula` answers `unsupported` with the same message where the result is an array whatever the data (a range of several cells or an array constant reaching the top through operators and lifted arguments, `ROW(A1:A3)`), as it did for array arithmetic before.
+It spills into the cells to its right and below, or gives `#SPILL!` with the cell in its way: `docs/spill.md`. Before spilling (until 07.10) such a formula gave `#SPILL!` everywhere, with the check code `unsupported`, and `validateFormula` refused a result that is an array whatever the data; both are gone. `compute` finds an array result when the cell is computed, so a result that is an array only for some data (`INDEX(A1:C3,0,B1)`, `SEQUENCE(B1)`) spills like one that always is.
 
 ## Array constants
 
@@ -48,7 +46,7 @@ An empty array (`FILTER` with nothing kept, `TAKE` of zero rows, `DROP` of every
 
 ## Graph and recomputation
 
-Nothing changes in the graph: a cell still holds one value, the references of a formula are the references in its text, and an array lives only while its formula runs. A session recomputes a formula with arrays like any other; the session test runs edits with array formulas against full computations.
+An array inside a formula lives only while its formula runs; a spilled one puts its formula before the formulas reading its range (`docs/spill.md`). A session recomputes a formula with arrays like any other; the session tests run edits with array formulas and with spills against full computations.
 
 ## Compilation and speed
 
@@ -58,7 +56,7 @@ The compiler's walk (`src/exec/walk.ts`), shared by both execution modes, knows 
 
 The case set `bench/coverage/sets/arrays.ts` is computed in Excel as dynamic array formulas. The harness writes a case formula as Excel 365 saves one: `<c cm="1"><f t="array" ref="A1">…</f>` plus `xl/metadata.xml` with the `XLDAPR` metadata type and `dynamicArrayProperties fDynamic="1"` (the layout XlsxWriter also writes). A first run confirmed the difference: `SUM(IF(D!B1:B8>0,D!B1:B8))` is 114.75 as an old formula (implicit intersection) and 118.25 as a dynamic one, `ROW(D!C1:C8)` is 1 and `#SPILL!`. The `_xlfn._xlws.` prefixes only name newer functions and do not make a formula dynamic; a scalar wrapper alone does not either, an old formula still intersects inside it (`SUM(D!B1:B8*2)` in row 2 is 16). A Ctrl+Shift+Enter array formula (what the coverage measurement used for array answers) evaluates the same way inside, but keeps the top-left value of an array answer instead of spilling, so it cannot check the rule above.
 
-A case whose answer is an array is checked through a scalar wrapper (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or at the top level, where both Excel and the engine give `#SPILL!`: in the case book every neighbour of a case is taken, and a value under the last case blocks a downward spill.
+A case whose answer is an array is checked through a scalar wrapper (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or at the top level, where both Excel and the engine give `#SPILL!`: in the case book every neighbour of a case is taken, and a value under the last case blocks a downward spill (the engine's case books keep a value right of each case and under the last, `caseCells` in `test/excel-cases.ts`).
 
 The coverage measurement's Excel columns (en-US and ru-RU) and the `text` and `matheng` sets are computed as dynamic array formulas too since 06.10. Measured again, 9 of the measurement's 5,275 answers changed in each column and 10 of the sets' 4,392, all where an old formula intersected a range with its row or showed the first value of an array (`ROW(D!C1:C8)` was 1, `TYPE(D!B1:B8)` 16, `INDEX(D!L1:N6,0,3)` `#VALUE!`); the 19 cases kept in `KNOWN` for that (`legacyFormula`) leave it: 18 match Excel as they are, `text:VLOOKUP#39` (`VLOOKUP(5,L!A1:B8,D!L1:L2)`, `#SPILL!`) after `VLOOKUP` and `HLOOKUP` learned an index array. The old columns stay as `docs/coverage-formulajs/excel-en-legacy.json` and `excel-ru-legacy.json`. The sets `criteria`, `findate`, `stat` and `subtotal` and the probes followed (06.10, the `parity/core` branch): of their 5,824 answers one changed, `AGGREGATE(14,6,T!M1:M10,T!A1:A3)`, `#VALUE!` by implicit intersection before and 9 now (a range as `k` gives its top-left cell, which the engine now does), so all acceptance is on Excel 365 formulas.
 

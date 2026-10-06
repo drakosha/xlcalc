@@ -14,8 +14,8 @@ import { E, Rng, type V } from '../values.js'
 export interface CodegenContext {
   /** The index of a sheet (null: the formula's own). */
   sheet(name: string | null): number
-  /** A name visible from the formula's sheet: its reference (or `#REF!` when lost), and whether it has several cells. */
-  name(name: string): { ast: Extract<Ast, { k: 'ref' | 'err' }>; area: boolean } | undefined
+  /** A name visible from the formula's sheet: its reference (or `#REF!` when lost). */
+  name(name: string): { ast: Extract<Ast, { k: 'ref' | 'err' }> } | undefined
 }
 
 export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
@@ -33,6 +33,8 @@ export interface Backend<T> {
   /** An array constant, built once per compiled formula. */
   array(a: Arr): T
   cell(s: number, r: number, c: number): T
+  /** A spill reference (`E2#`): the range the cell's array spilled into, the cell alone, or #REF!. */
+  spill(s: number, r: number, c: number): T
   /** A constant range, built once per compiled formula; `one`: a single cell in a one-value position. */
   range(g: Rng, one: boolean): T
   unary(op: 'neg' | 'pct', a: T, lift: boolean): T
@@ -61,7 +63,7 @@ export interface FormulaInfo {
 export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: number, b: Backend<T>): FormulaInfo & { code: T } {
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
   const deref = (n: Ast): Ast => (n.k === 'name' ? (ctx.name(n.name)?.ast ?? n) : n)
-  const shape = shapes(ast, (name) => ctx.name(name)?.area)
+  const shape = shapes(ast, (name) => ctx.name(name)?.ast)
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
   const go = (n: Ast, rangeOk = false): T => {
@@ -79,6 +81,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'ref': {
         const g = new Rng(ctx.sheet(n.sheet), n.ref.r1, n.ref.c1, n.ref.r2, n.ref.c2)
         info.refs.push(g)
+        if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
       }
