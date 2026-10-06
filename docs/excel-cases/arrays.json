@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 6.779,
+  "seconds": 2.115,
   "dynamic": true
  },
  "cases": [
@@ -1141,10 +1141,22 @@
    "formula": "MAXA(IF(D!B1:B2>0,TRUE))"
   },
   {
+   "id": "agg:MAXA#3",
+   "group": "agg:MAXA",
+   "fn": "MAXA",
+   "formula": "MAXA({\"a\",-1})"
+  },
+  {
    "id": "agg:MINA#1",
    "group": "agg:MINA",
    "fn": "MINA",
    "formula": "MINA({FALSE,1})"
+  },
+  {
+   "id": "agg:MINA#2",
+   "group": "agg:MINA",
+   "fn": "MINA",
+   "formula": "MINA({\"a\",1})"
   },
   {
    "id": "agg:STDEVA#1",
@@ -1153,10 +1165,40 @@
    "formula": "STDEVA({1,TRUE,3})"
   },
   {
+   "id": "agg:STDEVA#2",
+   "group": "agg:STDEVA",
+   "fn": "STDEVA",
+   "formula": "STDEVA({\"a\",2,4})"
+  },
+  {
+   "id": "agg:STDEVPA#1",
+   "group": "agg:STDEVPA",
+   "fn": "STDEVPA",
+   "formula": "STDEVPA({\"a\",2,4})"
+  },
+  {
+   "id": "agg:STDEVPA#2",
+   "group": "agg:STDEVPA",
+   "fn": "STDEVPA",
+   "formula": "STDEVPA({TRUE,2,4})"
+  },
+  {
    "id": "agg:VARA#1",
    "group": "agg:VARA",
    "fn": "VARA",
    "formula": "VARA({\"a\",2,4})"
+  },
+  {
+   "id": "agg:VARA#2",
+   "group": "agg:VARA",
+   "fn": "VARA",
+   "formula": "VARA({TRUE,2,4})"
+  },
+  {
+   "id": "agg:VARPA#1",
+   "group": "agg:VARPA",
+   "fn": "VARPA",
+   "formula": "VARPA({\"a\",2,4})"
   },
   {
    "id": "agg:AVERAGEA#3",
@@ -1171,25 +1213,85 @@
    "formula": "AVERAGEA({TRUE,\"x\"})"
   },
   {
+   "id": "agg:AVERAGEA#5",
+   "group": "agg:AVERAGEA",
+   "fn": "AVERAGEA",
+   "formula": "AVERAGEA({\"a\",2,4})"
+  },
+  {
+   "id": "agg:AVERAGEA#6",
+   "group": "agg:AVERAGEA",
+   "fn": "AVERAGEA",
+   "formula": "AVERAGEA(D!D1:D8*1)"
+  },
+  {
+   "id": "agg:AVERAGEA#7",
+   "group": "agg:AVERAGEA",
+   "fn": "AVERAGEA",
+   "formula": "AVERAGEA(IFERROR(D!D1:D8*1,\"t\"))"
+  },
+  {
+   "id": "agg:TEXTJOIN#1",
+   "group": "agg:TEXTJOIN",
+   "fn": "TEXTJOIN",
+   "formula": "_xlfn.TEXTJOIN(\",\",FALSE,TRANSPOSE(D!K1:K2))"
+  },
+  {
+   "id": "agg:TEXTJOIN#2",
+   "group": "agg:TEXTJOIN",
+   "fn": "TEXTJOIN",
+   "formula": "_xlfn.TEXTJOIN(\",\",TRUE,TRANSPOSE(D!K1:K2))"
+  },
+  {
+   "id": "agg:COUNT#3",
+   "group": "agg:COUNT",
+   "fn": "COUNT",
+   "formula": "COUNT(TRANSPOSE(D!K1:K2))"
+  },
+  {
+   "id": "agg:COUNT#4",
+   "group": "agg:COUNT",
+   "fn": "COUNT",
+   "formula": "SUM(TRANSPOSE(D!K1:K2)+1)"
+  },
+  {
+   "id": "agg:AND#1",
+   "group": "agg:AND",
+   "fn": "AND",
+   "formula": "AND(TRANSPOSE(D!AW1:AW4))"
+  },
+  {
+   "id": "agg:CHOOSE#1",
+   "group": "agg:CHOOSE",
+   "fn": "CHOOSE",
+   "formula": "COUNTA(CHOOSE({1;1},D!K1:K2))"
+  },
+  {
+   "id": "agg:CHOOSE#2",
+   "group": "agg:CHOOSE",
+   "fn": "CHOOSE",
+   "formula": "INDEX(CHOOSE({1;1},D!K1:K2),1)&\"x\""
+  },
+  {
    "id": "agg:PRODUCT#1",
    "group": "agg:PRODUCT",
    "fn": "PRODUCT",
    "formula": "PRODUCT(D!B1:B2*{1;2})"
   },
   {
-   "id": "agg:AND#1",
+   "id": "agg:AND#2",
    "group": "agg:AND",
    "fn": "AND",
    "formula": "AND(D!B1:B8>0)"
   },
   {
-   "id": "agg:AND#2",
+   "id": "agg:AND#3",
    "group": "agg:AND",
    "fn": "AND",
    "formula": "AND({TRUE,1,\"x\"})"
   },
   {
-   "id": "agg:AND#3",
+   "id": "agg:AND#4",
    "group": "agg:AND",
    "fn": "AND",
    "formula": "AND(IF(D!B1:B8>0,TRUE,\"x\"))"
@@ -1237,31 +1339,31 @@
    "formula": "_xlfn.CONCAT(D!K1:K3&\"-\")"
   },
   {
-   "id": "agg:TEXTJOIN#1",
+   "id": "agg:TEXTJOIN#3",
    "group": "agg:TEXTJOIN",
    "fn": "TEXTJOIN",
    "formula": "_xlfn.TEXTJOIN(\",\",TRUE,{1,2;3,4})"
   },
   {
-   "id": "agg:TEXTJOIN#2",
+   "id": "agg:TEXTJOIN#4",
    "group": "agg:TEXTJOIN",
    "fn": "TEXTJOIN",
    "formula": "_xlfn.TEXTJOIN(\"-\",FALSE,IF(D!B1:B8>10,D!B1:B8,\"\"))"
   },
   {
-   "id": "agg:TEXTJOIN#3",
+   "id": "agg:TEXTJOIN#5",
    "group": "agg:TEXTJOIN",
    "fn": "TEXTJOIN",
    "formula": "_xlfn.TEXTJOIN(\",\",TRUE,D!AS1:AS8&\"\")"
   },
   {
-   "id": "agg:TEXTJOIN#4",
+   "id": "agg:TEXTJOIN#6",
    "group": "agg:TEXTJOIN",
    "fn": "TEXTJOIN",
    "formula": "_xlfn.TEXTJOIN(\",\",TRUE,TEXT(D!B1:B3,\"0.0\"))"
   },
   {
-   "id": "agg:TEXTJOIN#5",
+   "id": "agg:TEXTJOIN#7",
    "group": "agg:TEXTJOIN",
    "fn": "TEXTJOIN",
    "formula": "_xlfn.TEXTJOIN({\"-\",\"+\"},TRUE,{1,2,3})"
@@ -1690,46 +1792,52 @@
    "id": "key:XLOOKUP#1",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "ROWS(_xlfn.XLOOKUP(9,D!L1:L6,D!M1:M6,D!B1:B2))"
+   "formula": "SUM(_xlfn.XLOOKUP(2,D!L1:L6,D!D1:D6))"
   },
   {
    "id": "key:XLOOKUP#2",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "SUM(_xlfn.XLOOKUP({2,8},D!L1:L6,D!N1:N6))"
+   "formula": "ROWS(_xlfn.XLOOKUP(9,D!L1:L6,D!M1:M6,D!B1:B2))"
   },
   {
    "id": "key:XLOOKUP#3",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6),1,2)"
+   "formula": "SUM(_xlfn.XLOOKUP({2,8},D!L1:L6,D!N1:N6))"
   },
   {
    "id": "key:XLOOKUP#4",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "COLUMNS(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6))"
+   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6),1,2)"
   },
   {
    "id": "key:XLOOKUP#5",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6)"
+   "formula": "COLUMNS(_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6))"
   },
   {
    "id": "key:XLOOKUP#6",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L8:Q8,D!L9:Q10),2,1)"
+   "formula": "_xlfn.XLOOKUP(2,D!L1:L6,D!M1:N6)"
   },
   {
    "id": "key:XLOOKUP#7",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
-   "formula": "_xlfn.XLOOKUP(9,D!L1:L6,D!M1:N6)"
+   "formula": "INDEX(_xlfn.XLOOKUP(2,D!L8:Q8,D!L9:Q10),2,1)"
   },
   {
    "id": "key:XLOOKUP#8",
+   "group": "key:XLOOKUP",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(9,D!L1:L6,D!M1:N6)"
+  },
+  {
+   "id": "key:XLOOKUP#9",
    "group": "key:XLOOKUP",
    "fn": "XLOOKUP",
    "formula": "INDEX(_xlfn.XLOOKUP(9,D!L1:L6,D!M1:N6,{\"x\",\"y\"}),1,2)"
@@ -2074,58 +2182,70 @@
    "id": "ref:INDEX#14",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!B1:B8,D!AH2:AH4))"
+   "formula": "SUM(INDEX(D!D1:D8,2))"
   },
   {
    "id": "ref:INDEX#15",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "INDEX(D!K1:K8*1,1)"
+   "formula": "INDEX(D!D1:D8,2)+0"
   },
   {
    "id": "ref:INDEX#16",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "INDEX({1,2;3,4},0,3)"
+   "formula": "SUM(INDEX(D!B1:B8,D!AH2:AH4))"
   },
   {
    "id": "ref:INDEX#17",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!B:B,0,1))"
+   "formula": "INDEX(D!K1:K8*1,1)"
   },
   {
    "id": "ref:INDEX#18",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "ROWS(INDEX(D!B:B,0,1))"
+   "formula": "INDEX({1,2;3,4},0,3)"
   },
   {
    "id": "ref:INDEX#19",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!L1:N6*1,0,1))"
+   "formula": "SUM(INDEX(D!B:B,0,1))"
   },
   {
    "id": "ref:INDEX#20",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!L1:L6,0))"
+   "formula": "ROWS(INDEX(D!B:B,0,1))"
   },
   {
    "id": "ref:INDEX#21",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "SUM(INDEX(D!L8:Q8,0))"
+   "formula": "SUM(INDEX(D!L1:N6*1,0,1))"
   },
   {
    "id": "ref:INDEX#22",
    "group": "ref:INDEX",
    "fn": "INDEX",
-   "formula": "INDEX(D!L1:N6,0)"
+   "formula": "SUM(INDEX(D!L1:L6,0))"
   },
   {
    "id": "ref:INDEX#23",
+   "group": "ref:INDEX",
+   "fn": "INDEX",
+   "formula": "SUM(INDEX(D!L8:Q8,0))"
+  },
+  {
+   "id": "ref:INDEX#24",
+   "group": "ref:INDEX",
+   "fn": "INDEX",
+   "formula": "INDEX(D!L1:N6,0)"
+  },
+  {
+   "id": "ref:INDEX#25",
    "group": "ref:INDEX",
    "fn": "INDEX",
    "formula": "SUM(INDEX(D!L1:N6,{1,2,3},1))"
@@ -13906,6 +14026,10 @@
    "t": "e",
    "v": "DIV0"
   },
+  "ops#15": {
+   "t": "e",
+   "v": "NUM"
+  },
   "ops#16": {
    "t": "n",
    "v": -1
@@ -14153,6 +14277,26 @@
   "ops#77": {
    "t": "n",
    "v": 0.00010943412780761719
+  },
+  "ops#78": {
+   "t": "n",
+   "v": 3
+  },
+  "ops#79": {
+   "t": "n",
+   "v": 7
+  },
+  "ops#80": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ops#81": {
+   "t": "n",
+   "v": 0
+  },
+  "ops#82": {
+   "t": "n",
+   "v": 1
   },
   "const#1": {
    "t": "n",
@@ -14498,21 +14642,113 @@
    "t": "n",
    "v": 8
   },
+  "agg:COUNTA#5": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#6": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#7": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:COUNTA#8": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#9": {
+   "t": "n",
+   "v": 8
+  },
+  "agg:COUNTA#10": {
+   "t": "n",
+   "v": 8
+  },
+  "agg:COUNTA#11": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#12": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#13": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:COUNTA#14": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:COUNTA#15": {
+   "t": "n",
+   "v": 3
+  },
+  "agg:COUNTA#16": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:COUNTA#17": {
+   "t": "n",
+   "v": 8
+  },
+  "agg:ISBLANK#1": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:ISBLANK#2": {
+   "t": "s",
+   "v": "0x"
+  },
+  "agg:ISBLANK#3": {
+   "t": "s",
+   "v": "x"
+  },
+  "agg:ISBLANK#4": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:ISBLANK#5": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:ISBLANK#6": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:MAXA#1": {
+   "t": "n",
+   "v": -1
+  },
+  "agg:MAXA#2": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:MINA#1": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:STDEVA#1": {
+   "t": "n",
+   "v": 1.4142135623730951
+  },
+  "agg:VARA#1": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:AVERAGEA#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "agg:AVERAGEA#4": {
+   "t": "n",
+   "v": 0
+  },
   "agg:PRODUCT#1": {
    "t": "n",
    "v": 64
-  },
-  "agg:AND#1": {
-   "t": "b",
-   "v": false
-  },
-  "agg:AND#2": {
-   "t": "b",
-   "v": true
-  },
-  "agg:AND#3": {
-   "t": "b",
-   "v": true
   },
   "agg:OR#1": {
    "t": "b",
@@ -14541,26 +14777,6 @@
   "agg:CONCAT#4": {
    "t": "s",
    "v": "---"
-  },
-  "agg:TEXTJOIN#1": {
-   "t": "s",
-   "v": "1,2,3,4"
-  },
-  "agg:TEXTJOIN#2": {
-   "t": "s",
-   "v": "--15-16-23-42--10.25"
-  },
-  "agg:TEXTJOIN#3": {
-   "t": "s",
-   "v": "1,2,2,a,A,3,1,b"
-  },
-  "agg:TEXTJOIN#4": {
-   "t": "s",
-   "v": "4.0,8.0,15.0"
-  },
-  "agg:TEXTJOIN#5": {
-   "t": "s",
-   "v": "1-2+3"
   },
   "agg:SUMPRODUCT#1": {
    "t": "n",
@@ -14714,6 +14930,10 @@
    "t": "n",
    "v": 3
   },
+  "lazy:IFERROR#6": {
+   "t": "n",
+   "v": 1
+  },
   "lazy:IFNA#1": {
    "t": "n",
    "v": 14
@@ -14793,6 +15013,10 @@
   "key:COUNTIFS#2": {
    "t": "n",
    "v": 7
+  },
+  "key:COUNTIFS#3": {
+   "t": "n",
+   "v": 5
   },
   "key:AVERAGEIF#1": {
    "t": "n",
@@ -15354,6 +15578,10 @@
    "t": "e",
    "v": "CALC"
   },
+  "fn:SEQUENCE#16": {
+   "t": "n",
+   "v": 1
+  },
   "fn:CHOOSECOLS#1": {
    "t": "n",
    "v": 2
@@ -15546,6 +15774,14 @@
    "t": "n",
    "v": 8
   },
+  "fn:TOCOL#10": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:TOCOL#11": {
+   "t": "n",
+   "v": 8
+  },
   "fn:TOROW#1": {
    "t": "n",
    "v": 6
@@ -15662,6 +15898,134 @@
    "t": "s",
    "v": "x*y,Арeнда*,Аренда,аренда,Арендй,Чаи,Чай"
   },
+  "fn:SORT#14": {
+   "t": "n",
+   "v": -1
+  },
+  "fn:SORT#15": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:SORT#16": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:SORT#17": {
+   "t": "b",
+   "v": true
+  },
+  "fn:SORT#18": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:SORT#19": {
+   "t": "b",
+   "v": false
+  },
+  "fn:SORT#20": {
+   "t": "s",
+   "v": "A"
+  },
+  "fn:SORT#21": {
+   "t": "s",
+   "v": "b"
+  },
+  "fn:SORT#22": {
+   "t": "s",
+   "v": "a"
+  },
+  "fn:SORT#23": {
+   "t": "s",
+   "v": "A"
+  },
+  "fn:SORT#24": {
+   "t": "s",
+   "v": "b"
+  },
+  "fn:SORT#25": {
+   "t": "s",
+   "v": "a"
+  },
+  "fn:SORT#26": {
+   "t": "b",
+   "v": false
+  },
+  "fn:SORT#27": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:SORT#28": {
+   "t": "b",
+   "v": true
+  },
+  "fn:SORT#29": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:SORT#30": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:SORT#31": {
+   "t": "n",
+   "v": -1
+  },
+  "fn:SORT#32": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:SORT#33": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:SORT#34": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "fn:SORT#35": {
+   "t": "n",
+   "v": 1048576
+  },
+  "fn:SORT#36": {
+   "t": "n",
+   "v": -3.5
+  },
+  "fn:SORT#37": {
+   "t": "n",
+   "v": 42
+  },
+  "fn:SORT#38": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:SORTBY#1": {
+   "t": "s",
+   "v": "N,S,E"
+  },
+  "fn:SORTBY#2": {
+   "t": "s",
+   "v": "thirteen"
+  },
+  "fn:SORTBY#3": {
+   "t": "s",
+   "v": "Eve,Dee,Bob,Ann,Cid,bob,ann,Cid"
+  },
+  "fn:SORTBY#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:SORTBY#5": {
+   "t": "s",
+   "v": "b"
+  },
+  "fn:SORTBY#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:SORTBY#7": {
+   "t": "s",
+   "v": "Dee,Cid,Cid,Ann,ann,Eve,bob,Bob"
+  },
   "fn:UNIQUE#1": {
    "t": "s",
    "v": "1,2,a,3,b"
@@ -15690,6 +16054,38 @@
    "t": "e",
    "v": "CALC"
   },
+  "fn:UNIQUE#8": {
+   "t": "n",
+   "v": 9
+  },
+  "fn:UNIQUE#9": {
+   "t": "n",
+   "v": 6
+  },
+  "fn:UNIQUE#10": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:UNIQUE#11": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:UNIQUE#12": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:UNIQUE#13": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:UNIQUE#14": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:UNIQUE#15": {
+   "t": "s",
+   "v": "N,S,E"
+  },
   "fn:FILTER#1": {
    "t": "n",
    "v": 106.25
@@ -15717,6 +16113,94 @@
   "fn:FILTER#7": {
    "t": "n",
    "v": 4
+  },
+  "fn:FILTER#8": {
+   "t": "n",
+   "v": 106.25
+  },
+  "fn:FILTER#9": {
+   "t": "n",
+   "v": 64.25
+  },
+  "fn:FILTER#10": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "fn:FILTER#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "fn:FILTER#12": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:FILTER#13": {
+   "t": "n",
+   "v": 5
+  },
+  "fn:FILTER#14": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:FILTER#15": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:FREQUENCY#1": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#2": {
+   "t": "n",
+   "v": 7
+  },
+  "fn:FREQUENCY#3": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:FREQUENCY#4": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#5": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#6": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:FREQUENCY#7": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:FREQUENCY#8": {
+   "t": "n",
+   "v": 8
+  },
+  "fn:FREQUENCY#9": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:FREQUENCY#10": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:FREQUENCY#11": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:FREQUENCY#12": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:FREQUENCY#13": {
+   "t": "n",
+   "v": 1
+  },
+  "fn:FREQUENCY#14": {
+   "t": "n",
+   "v": 0
   },
   "fn:MODE.MULT#1": {
    "t": "n",
@@ -15757,6 +16241,106 @@
   "fn:LINEST#6": {
    "t": "n",
    "v": 3
+  },
+  "fn:LINEST#7": {
+   "t": "n",
+   "v": 2.3454545454545457
+  },
+  "fn:LINEST#8": {
+   "t": "n",
+   "v": 0
+  },
+  "fn:LINEST#9": {
+   "t": "n",
+   "v": 0.08080176743014175
+  },
+  "fn:LINEST#10": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:LINEST#11": {
+   "t": "n",
+   "v": 0.9952751196172249
+  },
+  "fn:LINEST#12": {
+   "t": "n",
+   "v": 0.5992419453700728
+  },
+  "fn:LINEST#13": {
+   "t": "n",
+   "v": 842.582278481012
+  },
+  "fn:LINEST#14": {
+   "t": "n",
+   "v": 4
+  },
+  "fn:LINEST#15": {
+   "t": "n",
+   "v": 302.56363636363636
+  },
+  "fn:LINEST#16": {
+   "t": "n",
+   "v": 1.4363636363636374
+  },
+  "fn:LINEST#17": {
+   "t": "n",
+   "v": 0.14982983545287892
+  },
+  "fn:LINEST#18": {
+   "t": "n",
+   "v": 1.2023785950000474
+  },
+  "fn:LINEST#19": {
+   "t": "e",
+   "v": "NA"
+  },
+  "fn:LINEST#20": {
+   "t": "n",
+   "v": 70.2727272727271
+  },
+  "fn:LINEST#21": {
+   "t": "n",
+   "v": 0.62857142857143
+  },
+  "fn:LINEST#22": {
+   "t": "n",
+   "v": 2.099999999999999
+  },
+  "fn:LINEST#23": {
+   "t": "n",
+   "v": 0.43327239488117
+  },
+  "fn:LOGEST#1": {
+   "t": "n",
+   "v": 0.0026334028914251303
+  },
+  "fn:LOGEST#2": {
+   "t": "n",
+   "v": 0.9998086197758175
+  },
+  "fn:TREND#1": {
+   "t": "n",
+   "v": 14.600000000000005
+  },
+  "fn:LOGEST#3": {
+   "t": "n",
+   "v": 2.3003927637437855
+  },
+  "fn:LOGEST#4": {
+   "t": "n",
+   "v": 22291.223298465313
+  },
+  "fn:TREND#2": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TREND#3": {
+   "t": "n",
+   "v": 17.699999999999996
+  },
+  "fn:TREND#4": {
+   "t": "n",
+   "v": 13.499999999999996
   },
   "fn:GROWTH#1": {
    "t": "n",
@@ -15817,6 +16401,38 @@
   "fn:TEXTSPLIT#13": {
    "t": "e",
    "v": "VALUE"
+  },
+  "fn:TEXTSPLIT#14": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#15": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:TEXTSPLIT#16": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#17": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#18": {
+   "t": "s",
+   "v": "3"
+  },
+  "fn:TEXTSPLIT#19": {
+   "t": "n",
+   "v": 3
+  },
+  "fn:TEXTSPLIT#20": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "fn:TEXTSPLIT#21": {
+   "t": "n",
+   "v": 1
   },
   "fn:RANDARRAY#1": {
    "t": "n",
@@ -22478,605 +23094,189 @@
    "t": "e",
    "v": "SPILL"
   },
-  "ops#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "ops#78": {
-   "t": "n",
-   "v": 3
-  },
-  "ops#79": {
-   "t": "n",
-   "v": 7
-  },
-  "ops#80": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "ops#81": {
-   "t": "n",
-   "v": 0
-  },
-  "ops#82": {
-   "t": "n",
-   "v": 1
-  },
-  "agg:COUNTA#5": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:COUNTA#6": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:COUNTA#7": {
-   "t": "n",
-   "v": 0
-  },
-  "agg:COUNTA#8": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:COUNTA#9": {
-   "t": "n",
-   "v": 8
-  },
-  "agg:COUNTA#10": {
-   "t": "n",
-   "v": 8
-  },
-  "agg:COUNTA#11": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:COUNTA#12": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:COUNTA#13": {
-   "t": "n",
-   "v": 0
-  },
-  "agg:COUNTA#14": {
-   "t": "n",
-   "v": 1
-  },
-  "agg:COUNTA#15": {
-   "t": "n",
-   "v": 3
-  },
-  "agg:COUNTA#16": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:COUNTA#17": {
-   "t": "n",
-   "v": 8
-  },
-  "agg:ISBLANK#1": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:ISBLANK#2": {
-   "t": "s",
-   "v": "0x"
-  },
-  "agg:ISBLANK#3": {
-   "t": "s",
-   "v": "x"
-  },
-  "agg:ISBLANK#4": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:ISBLANK#5": {
-   "t": "n",
-   "v": 1
-  },
-  "agg:ISBLANK#6": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:MAXA#1": {
+  "agg:MAXA#3": {
    "t": "n",
    "v": -1
   },
-  "agg:MAXA#2": {
-   "t": "n",
-   "v": 0
-  },
-  "agg:MINA#1": {
+  "agg:MINA#2": {
    "t": "n",
    "v": 1
   },
-  "agg:STDEVA#1": {
+  "agg:STDEVA#2": {
    "t": "n",
    "v": 1.4142135623730951
   },
-  "agg:VARA#1": {
-   "t": "n",
-   "v": 2
-  },
-  "agg:AVERAGEA#3": {
-   "t": "e",
-   "v": "DIV0"
-  },
-  "agg:AVERAGEA#4": {
-   "t": "n",
-   "v": 0
-  },
-  "lazy:IFERROR#6": {
+  "agg:STDEVPA#1": {
    "t": "n",
    "v": 1
   },
-  "key:COUNTIFS#3": {
+  "agg:STDEVPA#2": {
    "t": "n",
-   "v": 5
+   "v": 1
+  },
+  "agg:VARA#2": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:VARPA#1": {
+   "t": "n",
+   "v": 1
+  },
+  "agg:AVERAGEA#5": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:AVERAGEA#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "agg:AVERAGEA#7": {
+   "t": "n",
+   "v": 1.5625
+  },
+  "agg:TEXTJOIN#1": {
+   "t": "s",
+   "v": ","
+  },
+  "agg:TEXTJOIN#2": {
+   "t": "s",
+   "v": ""
+  },
+  "agg:COUNT#3": {
+   "t": "n",
+   "v": 0
+  },
+  "agg:COUNT#4": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:AND#1": {
+   "t": "b",
+   "v": false
+  },
+  "agg:CHOOSE#1": {
+   "t": "n",
+   "v": 2
+  },
+  "agg:CHOOSE#2": {
+   "t": "s",
+   "v": "0x"
+  },
+  "agg:AND#2": {
+   "t": "b",
+   "v": false
+  },
+  "agg:AND#3": {
+   "t": "b",
+   "v": true
+  },
+  "agg:AND#4": {
+   "t": "b",
+   "v": true
+  },
+  "agg:TEXTJOIN#3": {
+   "t": "s",
+   "v": "1,2,3,4"
+  },
+  "agg:TEXTJOIN#4": {
+   "t": "s",
+   "v": "--15-16-23-42--10.25"
+  },
+  "agg:TEXTJOIN#5": {
+   "t": "s",
+   "v": "1,2,2,a,A,3,1,b"
+  },
+  "agg:TEXTJOIN#6": {
+   "t": "s",
+   "v": "4.0,8.0,15.0"
+  },
+  "agg:TEXTJOIN#7": {
+   "t": "s",
+   "v": "1-2+3"
   },
   "key:XLOOKUP#1": {
    "t": "n",
-   "v": 2
+   "v": 0
   },
   "key:XLOOKUP#2": {
    "t": "n",
-   "v": 100
+   "v": 2
   },
   "key:XLOOKUP#3": {
    "t": "n",
-   "v": 20
+   "v": 100
   },
   "key:XLOOKUP#4": {
    "t": "n",
-   "v": 2
+   "v": 20
   },
   "key:XLOOKUP#5": {
+   "t": "n",
+   "v": 2
+  },
+  "key:XLOOKUP#6": {
    "t": "e",
    "v": "SPILL"
   },
-  "key:XLOOKUP#6": {
+  "key:XLOOKUP#7": {
    "t": "n",
    "v": 20
   },
-  "key:XLOOKUP#7": {
+  "key:XLOOKUP#8": {
    "t": "e",
    "v": "NA"
   },
-  "key:XLOOKUP#8": {
+  "key:XLOOKUP#9": {
    "t": "s",
    "v": "y"
   },
   "ref:INDEX#14": {
    "t": "n",
-   "v": 27
+   "v": 0
   },
   "ref:INDEX#15": {
    "t": "n",
-   "v": 0
+   "v": 2
   },
   "ref:INDEX#16": {
-   "t": "e",
-   "v": "REF"
+   "t": "n",
+   "v": 27
   },
   "ref:INDEX#17": {
    "t": "n",
-   "v": 114.75
+   "v": 0
   },
   "ref:INDEX#18": {
-   "t": "n",
-   "v": 1048576
+   "t": "e",
+   "v": "REF"
   },
   "ref:INDEX#19": {
    "t": "n",
-   "v": 32
+   "v": 114.75
   },
   "ref:INDEX#20": {
    "t": "n",
-   "v": 32
+   "v": 1048576
   },
   "ref:INDEX#21": {
    "t": "n",
    "v": 32
   },
   "ref:INDEX#22": {
-   "t": "e",
-   "v": "REF"
+   "t": "n",
+   "v": 32
   },
   "ref:INDEX#23": {
    "t": "n",
-   "v": 6
+   "v": 32
   },
-  "fn:SEQUENCE#16": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:TOCOL#10": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:TOCOL#11": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:SORT#14": {
-   "t": "n",
-   "v": -1
-  },
-  "fn:SORT#15": {
+  "ref:INDEX#24": {
    "t": "e",
-   "v": "NA"
+   "v": "REF"
   },
-  "fn:SORT#16": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:SORT#17": {
-   "t": "b",
-   "v": true
-  },
-  "fn:SORT#18": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:SORT#19": {
-   "t": "b",
-   "v": false
-  },
-  "fn:SORT#20": {
-   "t": "s",
-   "v": "A"
-  },
-  "fn:SORT#21": {
-   "t": "s",
-   "v": "b"
-  },
-  "fn:SORT#22": {
-   "t": "s",
-   "v": "a"
-  },
-  "fn:SORT#23": {
-   "t": "s",
-   "v": "A"
-  },
-  "fn:SORT#24": {
-   "t": "s",
-   "v": "b"
-  },
-  "fn:SORT#25": {
-   "t": "s",
-   "v": "a"
-  },
-  "fn:SORT#26": {
-   "t": "b",
-   "v": false
-  },
-  "fn:SORT#27": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:SORT#28": {
-   "t": "b",
-   "v": true
-  },
-  "fn:SORT#29": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:SORT#30": {
-   "t": "e",
-   "v": "NA"
-  },
-  "fn:SORT#31": {
-   "t": "n",
-   "v": -1
-  },
-  "fn:SORT#32": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:SORT#33": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:SORT#34": {
-   "t": "e",
-   "v": "DIV0"
-  },
-  "fn:SORT#35": {
-   "t": "n",
-   "v": 1048576
-  },
-  "fn:SORT#36": {
-   "t": "n",
-   "v": -3.5
-  },
-  "fn:SORT#37": {
-   "t": "n",
-   "v": 42
-  },
-  "fn:SORT#38": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:SORTBY#1": {
-   "t": "s",
-   "v": "N,S,E"
-  },
-  "fn:SORTBY#2": {
-   "t": "s",
-   "v": "thirteen"
-  },
-  "fn:SORTBY#3": {
-   "t": "s",
-   "v": "Eve,Dee,Bob,Ann,Cid,bob,ann,Cid"
-  },
-  "fn:SORTBY#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:SORTBY#5": {
-   "t": "s",
-   "v": "b"
-  },
-  "fn:SORTBY#6": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:SORTBY#7": {
-   "t": "s",
-   "v": "Dee,Cid,Cid,Ann,ann,Eve,bob,Bob"
-  },
-  "fn:UNIQUE#8": {
-   "t": "n",
-   "v": 9
-  },
-  "fn:UNIQUE#9": {
+  "ref:INDEX#25": {
    "t": "n",
    "v": 6
-  },
-  "fn:UNIQUE#10": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:UNIQUE#11": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:UNIQUE#12": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:UNIQUE#13": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:UNIQUE#14": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:UNIQUE#15": {
-   "t": "s",
-   "v": "N,S,E"
-  },
-  "fn:FILTER#8": {
-   "t": "n",
-   "v": 106.25
-  },
-  "fn:FILTER#9": {
-   "t": "n",
-   "v": 64.25
-  },
-  "fn:FILTER#10": {
-   "t": "e",
-   "v": "DIV0"
-  },
-  "fn:FILTER#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "fn:FILTER#12": {
-   "t": "n",
-   "v": 4
-  },
-  "fn:FILTER#13": {
-   "t": "n",
-   "v": 5
-  },
-  "fn:FILTER#14": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:FILTER#15": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:FREQUENCY#1": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:FREQUENCY#2": {
-   "t": "n",
-   "v": 7
-  },
-  "fn:FREQUENCY#3": {
-   "t": "n",
-   "v": 4
-  },
-  "fn:FREQUENCY#4": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:FREQUENCY#5": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:FREQUENCY#6": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:FREQUENCY#7": {
-   "t": "n",
-   "v": 4
-  },
-  "fn:FREQUENCY#8": {
-   "t": "n",
-   "v": 8
-  },
-  "fn:FREQUENCY#9": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:FREQUENCY#10": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:FREQUENCY#11": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:FREQUENCY#12": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:FREQUENCY#13": {
-   "t": "n",
-   "v": 1
-  },
-  "fn:FREQUENCY#14": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:LINEST#7": {
-   "t": "n",
-   "v": 2.3454545454545457
-  },
-  "fn:LINEST#8": {
-   "t": "n",
-   "v": 0
-  },
-  "fn:LINEST#9": {
-   "t": "n",
-   "v": 0.08080176743014175
-  },
-  "fn:LINEST#10": {
-   "t": "e",
-   "v": "NA"
-  },
-  "fn:LINEST#11": {
-   "t": "n",
-   "v": 0.9952751196172249
-  },
-  "fn:LINEST#12": {
-   "t": "n",
-   "v": 0.5992419453700728
-  },
-  "fn:LINEST#13": {
-   "t": "n",
-   "v": 842.582278481012
-  },
-  "fn:LINEST#14": {
-   "t": "n",
-   "v": 4
-  },
-  "fn:LINEST#15": {
-   "t": "n",
-   "v": 302.56363636363636
-  },
-  "fn:LINEST#16": {
-   "t": "n",
-   "v": 1.4363636363636374
-  },
-  "fn:LINEST#17": {
-   "t": "n",
-   "v": 0.14982983545287892
-  },
-  "fn:LINEST#18": {
-   "t": "n",
-   "v": 1.2023785950000474
-  },
-  "fn:LINEST#19": {
-   "t": "e",
-   "v": "NA"
-  },
-  "fn:LINEST#20": {
-   "t": "n",
-   "v": 70.2727272727271
-  },
-  "fn:LINEST#21": {
-   "t": "n",
-   "v": 0.62857142857143
-  },
-  "fn:LINEST#22": {
-   "t": "n",
-   "v": 2.099999999999999
-  },
-  "fn:LINEST#23": {
-   "t": "n",
-   "v": 0.43327239488117
-  },
-  "fn:LOGEST#1": {
-   "t": "n",
-   "v": 0.0026334028914251303
-  },
-  "fn:LOGEST#2": {
-   "t": "n",
-   "v": 0.9998086197758175
-  },
-  "fn:TREND#1": {
-   "t": "n",
-   "v": 14.600000000000005
-  },
-  "fn:LOGEST#3": {
-   "t": "n",
-   "v": 2.3003927637437855
-  },
-  "fn:LOGEST#4": {
-   "t": "n",
-   "v": 22291.223298465313
-  },
-  "fn:TREND#2": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TREND#3": {
-   "t": "n",
-   "v": 17.699999999999996
-  },
-  "fn:TREND#4": {
-   "t": "n",
-   "v": 13.499999999999996
-  },
-  "fn:TEXTSPLIT#14": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TEXTSPLIT#15": {
-   "t": "n",
-   "v": 2
-  },
-  "fn:TEXTSPLIT#16": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TEXTSPLIT#17": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TEXTSPLIT#18": {
-   "t": "s",
-   "v": "3"
-  },
-  "fn:TEXTSPLIT#19": {
-   "t": "n",
-   "v": 3
-  },
-  "fn:TEXTSPLIT#20": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "fn:TEXTSPLIT#21": {
-   "t": "n",
-   "v": 1
   }
  }
 }

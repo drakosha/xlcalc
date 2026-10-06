@@ -160,7 +160,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   AVERAGE: { args: 'N', rep: 1, empty: 'DIV0', fn: mean },
-  AVERAGEA: { args: 'A', rep: 1, empty: 'DIV0', fn: mean },
+  AVERAGEA: { args: 'Y', rep: 1, empty: 'DIV0', fn: mean },
   COUNT: {
     args: 'V',
     rep: 1,

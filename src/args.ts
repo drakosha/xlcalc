@@ -14,8 +14,8 @@
  *      Excel en-US with the English UI); `v` any value (an error stops the call); `a` any value, errors
  *      included (ISERROR, IFS);
  *    - lists of numbers from ranges and arguments: `N` the SUM rule (a range gives its numbers, a direct
- *      argument is coerced like `n`), `A` the AVERAGEA rule (a range gives numbers, booleans as 1/0 and
- *      text as 0; a direct argument is coerced like `n`), `Z` strict (text or a boolean in a range and a
+ *      argument is coerced like `n`), `A` the MAXA rule (a range gives numbers, booleans as 1/0 and
+ *      text as 0; a direct argument is coerced like `n`), `Y` the same for AVERAGEA, `Z` strict (text or a boolean in a range and a
  *      boolean argument are #VALUE!: GCD, LCM, MULTINOMIAL);
  *    - `V` values in order, errors included, each range as one segment, so a function can tell a range
  *      from a direct argument (COUNTA counts every direct argument); `G` a range as a grid with its
@@ -35,8 +35,8 @@
  *    radix digits are upper-case and complex text is written as Excel writes it by the functions themselves
  *    (`functions/engineering/radix.ts`, `complex.ts`).
  * 6. Holidays and payment dates (`D`): a flat list of whole serial numbers.
- * 7. Arrays (`docs/arrays-incell.md`): the list and grid kinds take an array as they take a range (an
- *    array's booleans are skipped by `A`, its text counts as 0); a one-value kind given an array or a range
+ * 7. Arrays (`docs/arrays-incell.md`): the list and grid kinds take an array as they take a range (`A`
+ *    takes only an array's numbers, `Y` counts its text as 0); a one-value kind given an array or a range
  *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says.
  */
 import type { ErrorCode } from './contract.js'
@@ -153,9 +153,9 @@ export interface FunctionSpec {
 
 /** Excel's limit on the number of arguments. */
 const MAX_ARGS = 255
-const RANGE_KINDS = 'NAZVGMRDr'
-const LIST_KINDS = 'NAZD'
-const WHOLE_KINDS = 'NAZVGMRD'
+const RANGE_KINDS = 'NAYZVGMRDr'
+const LIST_KINDS = 'NAYZD'
+const WHOLE_KINDS = 'NAYZVGMRD'
 
 interface Kind {
   k: string
@@ -260,8 +260,9 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   v: (x, cx) => cx.scalar(x),
   a: (x, cx) => cx.scalar(x),
   N: list(toNum, errOrSkip),
-  // in an array AVERAGEA and its kin skip booleans and count text as 0 (Excel 365)
-  A: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
+  // in an array MAXA, STDEVA and the like take the numbers only; AVERAGEA (`Y`) counts text there as 0 (Excel 365)
+  A: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, errOrSkip),
+  Y: list(toNum, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
   D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
   // an empty element of an array counts for COUNTA (as Excel's empty value does): it is read as empty text

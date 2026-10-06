@@ -1,5 +1,5 @@
 /** XLOOKUP and XMATCH, this engine's own. */
-import type { Arg, Cx, FnDef, Grid } from '../../args.js'
+import type { Arg, FnDef, Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { wildRe } from '../../criteria.js'
 import { compareValues as compare, E, isErr, Rng, sameType, type V } from '../../values.js'
@@ -45,19 +45,18 @@ function xfind(k: V, look: Grid, matchMode: number, searchMode: number): number 
   return pos
 }
 
-/** Row (column) `pos` of the return array: a reference of a reference, else an array; one cell is its value. */
-function line(cx: Cx, ret: Rng | Arr, pos: number, vertical: boolean): Arg {
+/** Row (column) `pos` of the return array: a reference of a reference (one cell too: SUM skips text there), else an array. */
+function line(ret: Rng | Arr, pos: number, vertical: boolean): Arg {
   if (ret instanceof Arr) {
     const n = vertical ? ret.cols : ret.rows
     const v = Array.from({ length: n }, (_, i) => (vertical ? ret.at(pos, i) : ret.at(i, pos)))
     return n === 1 ? v[0] : vertical ? new Arr(1, n, 1, n, v) : new Arr(n, 1, n, 1, v)
   }
-  const g = vertical ? new Rng(ret.s, ret.r1 + pos, ret.c1, ret.r1 + pos, ret.c2) : new Rng(ret.s, ret.r1, ret.c1 + pos, ret.r2, ret.c1 + pos)
-  return g.r1 === g.r2 && g.c1 === g.c2 ? cx.scalar(g) : g
+  return vertical ? new Rng(ret.s, ret.r1 + pos, ret.c1, ret.r1 + pos, ret.c2) : new Rng(ret.s, ret.r1, ret.c1 + pos, ret.r2, ret.c1 + pos)
 }
 
 /** The answer is a row (column) of the return array: several cells when it is wider (taller) than one. */
-function xlookup(cx: Cx, key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
+function xlookup(key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
   if (isErr(key)) return key
   if (isErr(ret)) return ret
   if (look.cols !== 1 && look.rows !== 1) return E.VALUE
@@ -69,7 +68,7 @@ function xlookup(cx: Cx, key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode
   if (!MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
   const pos = xfind(key, look, matchMode, searchMode)
   if (pos < 0) return notFound === undefined ? E.NA : notFound
-  return line(cx, r, pos, vertical)
+  return line(r, pos, vertical)
 }
 
 function xmatch(key: V, look: Grid, matchMode = 0, searchMode = 1): V {
@@ -80,6 +79,6 @@ function xmatch(key: V, look: Grid, matchMode = 0, searchMode = 1): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  XLOOKUP: { args: 'a G R p? n? n?', cx: true, array: true, fn: xlookup },
+  XLOOKUP: { args: 'a G R p? n? n?', array: true, fn: xlookup },
   XMATCH: { args: 'a G n? n?', fn: xmatch },
 }
