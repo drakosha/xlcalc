@@ -1,12 +1,12 @@
 /**
  * Criteria of SUMIF, SUMIFS, COUNTIFS and an index over them: strings are case-insensitive but
- * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers and ISO dates in
- * the criterion text are compared as numbers, and a number criterion's equality also holds for text that
- * reads as that number; `""` matches blanks, `"<>"` non-blanks; an error, or its text, matches that error.
- * Numbers, dates and words in the text and the order of text follow the book's locale (`CritRules`, en-US by
- * default).
+ * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers, dates and times in
+ * the criterion text are compared as numbers, and a number criterion's `=` also holds for text that reads as
+ * that number (as VALUE reads it), while its `<>` holds for all text; `""` matches blanks, `"<>"` non-blanks;
+ * an error, or its text, matches that error. Numbers, dates and words in the text and the order of text
+ * follow the book's locale (`CritRules`, en-US by default).
  */
-import { dateToSerial, NUMBER_TEXT, readNumber } from './model.js'
+import { textToNumber } from './dates.js'
 import { to15 } from './values.js'
 
 /** A cell value for a criterion; errors are any object. */
@@ -26,7 +26,6 @@ export type Crit =
  */
 export const collator: { compare(a: string, b: string): number } =
   typeof Intl !== 'undefined' ? new Intl.Collator('en-US', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 /** What criteria read by the locale: numbers, dates and words in a criterion's text, numbers in cell text, the order of text. */
 export interface CritRules {
@@ -40,17 +39,11 @@ export interface CritRules {
   compareText(a: string, b: string): number
 }
 
-/** Text that reads as a number, as in a criterion (`"2"`, `" 2.50 "`), or null. */
-function numericText(s: string): number | null {
-  const t = s.trim()
-  return NUMBER_TEXT.test(t) ? readNumber(t) : null
-}
-
-/** en-US: decimal numbers and ISO dates in criteria, TRUE and FALSE in any case. */
+/** en-US: numbers, dates and times in criteria and in cell text as VALUE reads them, TRUE and FALSE in any case. */
 export const EN_CRIT: CritRules = {
-  critNumber: (t) => (NUMBER_TEXT.test(t) ? readNumber(t) : DATE_RE.test(t) ? dateToSerial(t) : null),
+  critNumber: textToNumber,
   critBool: (t) => (/^(TRUE|FALSE)$/i.test(t) ? t.toUpperCase() === 'TRUE' : null),
-  cellNumber: numericText,
+  cellNumber: (s) => (/\d/.test(s) ? textToNumber(s) : null),
   compareText: collator.compare,
 }
 
@@ -133,10 +126,10 @@ const opOk = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c 
 export function matches(v: CritValue, c: Crit, rules: CritRules = EN_CRIT): boolean {
   switch (c.kind) {
     case 'num':
-      // equality with a number also holds for text that reads as that number (Excel: 2 matches "2")
-      if (typeof v === 'string' && (c.op === '=' || c.op === '<>')) {
+      // equality with a number also holds for text that reads as that number (Excel: 2 matches "2"), while `<>` takes all text
+      if (typeof v === 'string' && c.op === '=') {
         const n = rules.cellNumber(v)
-        if (n !== null) return (to15(n) === to15(c.n)) === (c.op === '=')
+        if (n !== null) return to15(n) === to15(c.n)
       }
       if (typeof v !== 'number') return c.op === '<>'
       // numbers equal to 15 significant digits are equal, as with the comparison operators
