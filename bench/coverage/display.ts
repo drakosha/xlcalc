@@ -2,8 +2,8 @@
  * Cell display against Excel: each case of `display/<set>.ts` is a cell with a number format in a column of
  * a given width; Excel shows the book and the text of every case's cell (`string value`, VBA's `Range.Text`)
  * is read back with the colour of its display format's font. `npx tsx bench/coverage/run.ts display <set>`
- * stores the answers of Excel en-US in `docs/excel-display/<set>.json`, `display <set> ru` those of Excel ru-RU
- * in `docs/excel-display/ru-RU/<set>.json`; `test/display-excel.test.ts` compares the engine with them.
+ * stores the answers of Excel en-US in `test/excel/display/<set>.json`, `display <set> ru` those of Excel ru-RU
+ * in `test/excel/display/ru-RU/<set>.json`; `test/display-excel.test.ts` compares the engine with them.
  * Cases go into books of at most `PART` cells, one column per width; a rerun keeps the answers of unchanged
  * cases (`FCOV_FRESH=1` runs every case again). A book Excel refuses to load (its repair window is declined, as
  * the `probes` step does) is halved down to the refused cases, which the step names.
@@ -42,7 +42,7 @@ export interface StoredDisplay {
 }
 
 /** Where the answers of a set are stored for a locale. */
-export const displayFile = (set: string, locale: Locale) => join(ROOT, `docs/excel-display/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
+export const displayFile = (set: string, locale: Locale) => join(ROOT, `test/excel/display/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
 
 /** The address of each case: columns by width and span (from B, one empty column between them), cases down from row 1. */
 function place(cases: DisplayCase[]): Map<string, { row: number; col: number }> {

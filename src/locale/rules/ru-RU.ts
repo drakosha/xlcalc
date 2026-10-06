@@ -1,7 +1,7 @@
 /**
  * ru-RU's rules of computation: Excel 16.113 for Mac with the Russian interface and locale. Separators, the
- * currency and the format codes are Excel's international settings (`docs/locale/excel-ru-RU.json`); the names
- * and the rest were measured (`docs/excel-cases/ru-RU/locale.json`).
+ * currency and the format codes are Excel's international settings (`test/excel/locale/ru-RU.json`); the names
+ * and the rest were measured (`test/excel/cases/ru-RU/locale.json`).
  */
 import { ruRU } from '../ru-RU.js'
 import type { RegionalData } from './data.js'
