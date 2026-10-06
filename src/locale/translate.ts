@@ -71,7 +71,8 @@ export interface Translated {
 export function translate(src: string, from: Side, to: Side, offset = 0): Translated | Fail {
   const pieces = lex(src, from.syn, from.errors, from.num)
   if (!Array.isArray(pieces)) return fail(offset + pieces.at, pieces.message)
-  const special = new Set([to.syn.decimal, to.syn.list, to.syn.arrayColumn, to.syn.arrayRow])
+  // characters with a meaning on the other side: in an array constant its separators, elsewhere the list separator
+  const special = [new Set([to.syn.decimal, to.syn.list]), new Set([to.syn.decimal, to.syn.arrayColumn, to.syn.arrayRow])]
   const out: Piece[] = []
   for (const p of pieces) {
     let text = p.text
@@ -85,7 +86,7 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
       const w = from.word.get(text.toUpperCase())
       if (w === undefined && p.arr) return fail(offset + p.at, `unexpected ${JSON.stringify(text)} in an array constant`)
       text = w ?? text
-    } else if (special.has(text)) return fail(offset + p.at, `unexpected ${JSON.stringify(text)}`) // `,` outside a number in ru-RU
+    } else if (special[p.arr ? 1 : 0].has(text)) return fail(offset + p.at, `unexpected ${JSON.stringify(text)}`) // `,` outside a number in ru-RU
     out.push({ ...p, text })
   }
   const formula = out.map((p) => p.text).join('')

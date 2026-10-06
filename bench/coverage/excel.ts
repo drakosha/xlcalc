@@ -222,7 +222,7 @@ export function runExcel(book: string, n: number): Val[] {
 }
 
 /** Окно «We found a problem with some content»: Excel не читает книгу целиком, обычно из-за формулы, которую он не принимает при загрузке. */
-const REPAIR = /problem with some content|проблем\S* с содержим/i
+const REPAIR = /problem with some content|проблем\S* с содержим|ошибка в части содержимого/i
 
 /** Закрывает окно восстановления книги кнопкой No; другие окна не трогает. */
 export function declineRepair(): boolean {
@@ -238,7 +238,11 @@ export function declineRepair(): boolean {
     end repeat
     if tx contains "problem with some content" or tx contains "содержим" then
       repeat with b in (buttons of w)
-        if name of b is in {"No", "Нет"} then click b
+        if name of b is in {"No", "Нет"} then
+          click b
+          -- the window is gone: the list of windows is stale
+          return
+        end if
       end repeat
     end if
   end repeat

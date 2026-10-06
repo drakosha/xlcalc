@@ -5,6 +5,7 @@
  * text, in order. The scanner here is independent of the library's lexer, so the tests compare two readings.
  */
 import { readFileSync } from 'node:fs'
+import { NOT_IN_BOOKS } from './probes.js'
 
 export interface Snapshot {
   meta: { excel: string; mode: string; date: string; seconds: number }
@@ -12,8 +13,10 @@ export interface Snapshot {
   international: Record<string, string | number | boolean>
   /** Functions of the reference list (`bench/coverage/excel-functions.json`). */
   functions: string[]
-  /** Probes Excel does not load. */
+  /** Probes Excel does not load (it rejects the book). */
   rejected: string[]
+  /** Probes whose formula Excel deletes when loading the book. */
+  dropped: string[]
   /** By probe id: Excel's English formula text and its local text, without `=`. */
   formulas: Record<string, [string, string]>
 }
@@ -24,7 +27,8 @@ export const loadSnapshot = (tag: string): Snapshot => JSON.parse(readFileSync(s
 
 /** JSON with one formula per line, so a new snapshot diffs line by line. */
 export function serialize(s: Snapshot): string {
-  const head = JSON.stringify({ meta: s.meta, international: s.international, functions: s.functions, rejected: s.rejected }, null, 1).slice(0, -2)
+  const international = Object.fromEntries(Object.entries(s.international).sort(([a], [b]) => (a < b ? -1 : 1)))
+  const head = JSON.stringify({ meta: s.meta, international, functions: s.functions, rejected: s.rejected, dropped: s.dropped }, null, 1).slice(0, -2)
   const lines = Object.entries(s.formulas).map(([id, pair]) => ` ${JSON.stringify(id)}: ${JSON.stringify(pair)}`)
   return `${head},\n "formulas": {\n${lines.join(',\n')}\n }\n}\n`
 }
@@ -41,6 +45,8 @@ export interface Derived {
   functions: Record<string, string>
   /** Functions of the list this Excel does not know: their local text keeps the `_xlfn.` prefix. */
   unknown: string[]
+  /** Functions whose formula Excel deletes when loading a book (CALL, REGISTER.ID). */
+  dropped: string[]
   /** Anything that does not fit: calls that do not pair, two local names for one function, functions never seen. */
   problems: string[]
 }
@@ -73,11 +79,12 @@ export function derive(s: Snapshot): Derived {
       local.set(fn, b[i])
     })
   }
+  const isDropped = (f: string) => NOT_IN_BOOKS.includes(f) || s.dropped.includes(`fn:${f}`)
   const functions: Record<string, string> = {}
   for (const f of s.functions) {
     const l = local.get(f)
     if (l !== undefined) functions[f] = l
-    else if (!unknown.has(f)) problems.push(`${f}: no call seen`)
+    else if (!unknown.has(f) && !isDropped(f)) problems.push(`${f}: no call seen`)
   }
   const errors: Record<string, string> = {}
   for (const [id, [en, loc]] of Object.entries(s.formulas)) if (id.startsWith('err:')) errors[en] = loc
@@ -91,6 +98,7 @@ export function derive(s: Snapshot): Derived {
     errors,
     functions,
     unknown: s.functions.filter((f) => unknown.has(f) && !local.has(f)),
+    dropped: s.functions.filter(isDropped),
     problems,
   }
 }

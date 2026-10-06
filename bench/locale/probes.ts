@@ -19,6 +19,12 @@ export const SHEETS: SheetCells = { ...PROBE_SHEETS, 'Мой лист': { A1: 1,
 const never = (f: string) => `IF(FALSE,${f},0)`
 const lambda = (params: string[], body: string) => `_xlfn.LAMBDA(${params.map((p) => `_xlpm.${p}`).join(',')},${body.replace(/\b([a-z])\b/g, '_xlpm.$1')})`
 
+/**
+ * Functions Excel deletes from a workbook it loads (they call code outside Excel), and in some books asks
+ * to repair the book for them: their local names cannot be read from a book.
+ */
+export const NOT_IN_BOOKS = ['CALL', 'REGISTER.ID']
+
 /** A call of each function without a case in the measurement. */
 const CALLS: Record<string, string> = {
   ACCRINTM: 'ACCRINTM(39539,39614,0.1,1000)',
@@ -31,7 +37,6 @@ const CALLS: Record<string, string> = {
   BAHTTEXT: 'BAHTTEXT(1)',
   BYCOL: `_xlfn.BYCOL(D!B1:C2,${lambda(['c'], 'SUM(c)')})`,
   BYROW: `_xlfn.BYROW(D!B1:C2,${lambda(['r'], 'SUM(r)')})`,
-  CALL: never('CALL("a","b","c")'),
   CELL: 'CELL("row",D!A1)',
   CONFIDENCE: 'CONFIDENCE(0.05,2.5,50)',
   COUPDAYBS: 'COUPDAYBS(40568,40862,2,1)',
@@ -108,7 +113,6 @@ const CALLS: Record<string, string> = {
   REGEXEXTRACT: '_xlfn.REGEXEXTRACT("abc","b")',
   REGEXREPLACE: '_xlfn.REGEXREPLACE("abc","b","x")',
   REGEXTEST: '_xlfn.REGEXTEST("abc","b")',
-  'REGISTER.ID': never('REGISTER.ID("a","b")'),
   REPLACEB: 'REPLACEB("abc",1,1,"x")',
   RIGHTB: 'RIGHTB("abc",1)',
   RTD: never('RTD("a","","b")'),
@@ -187,7 +191,7 @@ export function buildProbes(): Probes {
   const measured = json<{ cases: { id: string; fn: string; formula: string }[] }>('docs/coverage-formulajs/cases.json').cases
   const probes = json<{ cases: Probe[] }>('docs/excel-probes.json').cases
   const inMeasurement = new Set(measured.flatMap((c) => called(c.formula)))
-  const missing = functions.filter((f) => !inMeasurement.has(f))
+  const missing = functions.filter((f) => !inMeasurement.has(f) && !NOT_IN_BOOKS.includes(f))
   const unknown = missing.filter((f) => !(f in CALLS))
   if (unknown.length) throw new Error(`no call for ${unknown.join(', ')}`)
   const own: Probe[] = [

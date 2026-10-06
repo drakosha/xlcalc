@@ -9,6 +9,7 @@
  * Before and after each part Excel is checked for windows that are not workbooks; one there stops the run
  * (nothing is clicked), except Excel's "problem with some content" window when it rejects a book: it is
  * closed (No) and the part is split down to the formulas Excel does not load, which are listed in `rejected`.
+ * A formula Excel deletes while loading (CALL) leaves an empty cell and is listed in `dropped`.
  * Then `npx tsx bench/locale/generate.ts ru` writes the locale file. `LOCALE_PARTS=2` runs only the first
  * parts, into `bench/coverage/out/` (a trial).
  */
@@ -26,10 +27,7 @@ const HERE = fileURLToPath(new URL('.', import.meta.url))
 const OUT = join(HERE, '../coverage/out')
 const TAGS: Record<Locale, string> = { en: 'en-US', ru: 'ru-RU' }
 
-const stripEq = (f: unknown) => {
-  if (typeof f !== 'string' || !f.startsWith('=')) throw new Error(`not a formula: ${JSON.stringify(f)}`)
-  return f.slice(1)
-}
+const stripEq = (f: unknown) => (typeof f === 'string' && f.startsWith('=') ? f.slice(1) : null)
 
 function windows(when: string): void {
   const d = excelDialogs()
@@ -48,6 +46,7 @@ async function snapshot(locale: Locale): Promise<void> {
   const international = JSON.parse(execFileSync('osascript', [join(HERE, 'excel-international.applescript')], { encoding: 'utf8', timeout: 60_000 })) as Snapshot['international']
   const formulas: Snapshot['formulas'] = {}
   const rejected: string[] = []
+  const dropped: string[] = []
   mkdirSync(OUT, { recursive: true })
   const run = async (cases: Probe[], label: string): Promise<void> => {
     windows(`part ${label}`)
@@ -58,8 +57,15 @@ async function snapshot(locale: Locale): Promise<void> {
     const out = await runScriptWatched(join(HERE, 'excel-formulas.applescript'), book, sent.length)
     windows(`after part ${label}`)
     if (out !== 'rejected') {
-      const [en, loc] = JSON.parse(out) as [string[][], string[][]]
-      cases.forEach((c, i) => (formulas[c.id] = [stripEq(en[i][0]), stripEq(loc[i][0])]))
+      writeFileSync(book.replace(/\.xlsx$/, '.json'), out)
+      const [en, loc] = JSON.parse(out) as [unknown[][], unknown[][]]
+      cases.forEach((c, i) => {
+        // a formula Excel deletes when loading the book (CALL) leaves an empty cell
+        if (en[i][0] === '' && loc[i][0] === '') return void dropped.push(c.id)
+        const pair = [stripEq(en[i][0]), stripEq(loc[i][0])]
+        if (pair[0] === null || pair[1] === null) throw new Error(`${c.id} ${c.formula}: Excel gives ${JSON.stringify([en[i][0], loc[i][0]])}`)
+        formulas[c.id] = pair as [string, string]
+      })
       return
     }
     if (cases.length === 1) {
@@ -80,11 +86,12 @@ async function snapshot(locale: Locale): Promise<void> {
     functions,
     formulas,
     rejected,
+    dropped,
   }
   const file = trial ? join(OUT, `excel-${tag}.trial.json`) : fileURLToPath(snapshotFile(tag))
   mkdirSync(join(file, '..'), { recursive: true })
   writeFileSync(file, serialize(snap))
-  console.log(`${Object.keys(formulas).length} formulas, ${rejected.length} rejected → ${file}`)
+  console.log(`${Object.keys(formulas).length} formulas, ${rejected.length} rejected, ${dropped.length} dropped → ${file}`)
 }
 
 await withExcelLock(() => snapshot((process.argv[2] ?? 'ru') as Locale))
