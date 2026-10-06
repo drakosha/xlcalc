@@ -1,6 +1,6 @@
 # Locales
 
-Excel depends on its language and regional settings in two ways: it shows and reads formulas in the user's language, and it computes some values by the regional rules (text read as a number or a date, numbers and booleans turned into text, format codes, currency). Books keep formulas in the invariant form of xlsx files (English names, `,` between arguments, `.` as the decimal separator) whatever the locale. Part 1 (done) covers formula text; part 2 (planned) covers computation.
+Excel depends on its language and regional settings in two ways: it shows and reads formulas in the user's language, and it computes some values by the regional rules (text read as a number or a date, numbers and booleans turned into text, format codes, currency). Books keep formulas in the invariant form of xlsx files (English names, `,` between arguments, `.` as the decimal separator) whatever the locale. Part 1 covers formula text, part 2 computation; both are done for en-US and ru-RU.
 
 ## Part 1: formula text (done)
 
@@ -10,93 +10,75 @@ The ru-RU data come from Excel 16.113 for Mac with the Russian interface and loc
 
 Tests: `test/locale.test.ts` (behaviour), `test/locale-excel.test.ts` (the data equal what Excel's text gives; both translations reproduce Excel's text of all 6,381 formulas), `test/locale-roundtrip.test.ts` (the 15,266 canonical formulas of the measurement, the case sets and the probes come back unchanged from ru-RU and en-US).
 
-## Part 2: computing by a book's locale (plan)
+## Part 2: computing by a book's locale (done)
 
 ### Where the locale lives
 
-Proposal: a field of the book, `BookInput.locale?: string`, a BCP 47 tag of a built-in locale (`'en-US'` by default, `'ru-RU'`).
+A book carries its locale: `BookInput.locale?: string`, a BCP 47 tag of one of the package's locales (`'en-US'` by default, `'ru-RU'`). An xlsx file stores no calculation locale, so the same file gives different values in Excel on a Russian and on an English machine (`VALUE("1.5")` is 1.5 or 46143); a book that carries its locale gives the same values to everyone, while each viewer still sees formulas in their own language through `toLocal`. A session takes the locale with the book.
 
-The locale of computation belongs to the book, not to the viewer or to the call. An xlsx file stores no calculation locale, so the same file gives different values in Excel on a Russian and on an English machine (`VALUE("1.5")` is 1.5 or 46143); a book that carries its locale gives the same values to everyone, while each viewer still sees formulas in their own language through `toLocal`. An option of `compute` would repeat Excel's problem: values would depend on who computes. A session takes the locale with the book; another locale is another session.
+The field is a tag, not a `Locale` object: `checkBook` looks it up in `LOCALES` (`src/locale/registry.ts`, one line per locale file) and an unknown tag is an `InputError` at `book.locale`. A host may still build `Locale` objects of its own for formula text; computation takes only the package's locales.
 
-The field is a tag, not a `Locale` object: the engine resolves it in a registry of the package's locales (`LOCALES` in `src/locale/index.ts`, one line per locale file), and an unknown tag is an `InputError`. Locales of formula text stay objects that any host may build; a host-built locale for computation is a question below.
+Hashes: `inputHash` takes the line `L "<tag>"` after the style table when the tag is given and is not `en-US`; the values `hash` takes `;locale=<tag>` after the configuration version under the same condition (`src/canon.ts`, `valuesHash`). Books without the field, and en-US books, hash as before: the synthetic book keeps `8d63bad2c247ae26…` (pinned in `test/sha256.test.ts`) and `CONFIG_VERSION` is unchanged.
 
-Hashes: `inputHash` takes the tag when it is given and not `en-US`; the values `hash` takes `;locale=<tag>` after the configuration version under the same condition. Books without the field, and en-US books, hash as now: the synthetic book keeps `8d63bad2c247ae26…`, and `CONFIG_VERSION` does not change, because en-US semantics do not.
+### The rules of a locale
 
-### What depends on the locale
+`src/locale/rules.ts` defines `Rules`, one object per book, and assembles it: `EN_US` is the engine's own en-US code (`values.ts`, `dates.ts`, `format.ts`, `criteria.ts`), unchanged; another locale is built by `regionalRules` (`src/locale/rules/regional.ts`) from its data (`RegionalData`; ru-RU's in `rules/ru-RU.ts`: separators, currency, month and day names, TEXT's codes, the collation tag, and the formula-text `Locale` for TRUE, FALSE and error texts) and the book's clock. The pieces of a day-month-year locale: `rules/numbers.ts` (number text), `rules/dates.ts` (the date part of date text; times and the frame of date text are shared with en-US in `dates.ts`), `rules/format.ts` (TEXT's codes, read into the tokens `format.ts` formats). A new locale with ru-RU's shape is a data file and a line in `REGIONAL`.
 
-The measurement (`docs/coverage-formulajs.md`, "Excel ru-RU против en-US") has 280 cases where Excel ru-RU differs from en-US; 272 of them are in 166 whitelisted functions (the other 8 are `CODE` and `SORT`). By mechanism, each case counted once under its main one:
+The engine builds the rules when it creates a book's state (`rulesOf` in `createState`) and passes them on:
 
-| mechanism | place in the engine | cases | Excel ru-RU |
-|---|---|---|---|
-| A. numeric text in a numeric argument | `values.ts` `toNum`, `args.ts` kinds `n`, `i`, `x` | 125 | `"1,5"` is 1.5; `"1.5"` is a date without a year (1 May of the current year, 46143 in 2026); `"0.5"` is no date and no number, `#VALUE!` |
-| B. date text | `dates.ts` `parseDateText`, kinds `d`, `t`, `D` | 17 | day before month: `"1/2/2025"` is 1 February; English month names are not read (`DATEVALUE("22-MAY-2011")` is `#VALUE!`) |
-| C1. number to text | `format.ts` `generalText`, `values.ts` `toText` | 20 | decimal comma: `CONCATENATE("a",12.5)` is `a12,5` |
-| C2. boolean to text | `values.ts` `toText` | 17 | `ИСТИНА`, `ЛОЖЬ`: `LEN(TRUE)` is 6 |
-| D. text to boolean | `values.ts` `toBool` | 5 | `"ИСТИНА"` is TRUE, `"TRUE"` is `#VALUE!` (`IF("TRUE",1,2)`) |
-| E. TEXT format codes | `format.ts` `formatText` | 11 | Russian codes (`ДД.ММ.ГГГГ`, `ч:мм`, `# ##0,00`); English ones are literals or `#VALUE!` (`TEXT(45658,"YYYY-MM-DD")` is `YYYY-MM-DD`, `TEXT(1234.5,"0.00")` is `#VALUE!`) |
-| F. DOLLAR, FIXED | `functions/text/numbers.ts` | 24 | `1 235 ₽`, `-1 200 ₽`, `1 234,6` (space between thousands, comma) |
-| G. VALUE, NUMBERVALUE, DATEVALUE, TIMEVALUE | `functions/text/value.ts` | 11 | read by A and B; NUMBERVALUE's default separators are `,` and space |
-| H. complex numbers as text | `functions/engineering/complex.ts` | 42 | `IMSUM(12.5,"5-3i")` is `17,5-3i` |
+- to the operators (`&`, arithmetic on text, comparisons) and to criteria selection through `RuntimeContext.rules` (`runtime.ts`);
+- to every function through `Cx.rules`: the argument kinds of `args.ts` coerce with it, and the functions that read or write text themselves are declared with `cx: true` (`TEXT`, `DOLLAR`, `FIXED`, `VALUE`, `NUMBERVALUE`, `DATEVALUE`, `TIMEVALUE`, the complex functions, `CONCAT`, `TEXTJOIN`, `VALUETOTEXT`, `ARRAYTOTEXT`, the lookups and sorting for the text order, `IF`, `IFS`, `AND`, `OR`, `XOR`, the database functions, the ToolPak wrapper `atp`, and the rest that coerced on their own);
+- code outside a book (the parser, `unstable/internal`'s criteria index) works by en-US.
 
-Outside the measurement's differences, the same rules reach operators (`&`, arithmetic and comparison on text in `runtime.ts`), criteria text (`">1,5"`, dates in criteria, `criteria.ts`), and the order of text: `criteria.ts` compares text with `Intl.Collator('ru-RU')` for every book now, which puts Cyrillic before Latin as Excel ru-RU does in `SORT`, while Excel en-US puts Latin first. `CHAR` and `CODE` follow the platform and language (Mac Roman, Mac Cyrillic) and could join the whitelist with a code page per locale.
+### What depends on the locale, and the ru-RU rules
 
-### What the locale object gets
+The measurement (`docs/coverage-formulajs.md`, "Excel ru-RU против en-US") has 280 cases where Excel ru-RU differs from en-US, 272 of them in whitelisted functions; the `locale` set (1,109 cases computed in Excel ru-RU) measured the rules behind them. By mechanism:
 
-`Locale` gains the rules of computation, generated like the formula data. Shared with part 1: the decimal separator and the words TRUE and FALSE (Excel uses the same in `TRUE&""`).
+| mechanism | ru-RU, as Excel 16.113 for Mac computes | where |
+|---|---|---|
+| A. numeric text | `1 234,5`, `1 2345` (a plain space before groups of three digits or more; a no-break space is no separator), `,5`, `(1,5)`, `1,5%`, `%(1,5)`, `1,5E+3`, `1 1/2`, `1 234,5 ₽` (the ruble after the amount, not with `%`); `$`, `р.`, `1.234,5` are no numbers | `rules/numbers.ts` |
+| B. date and time text | day-month-year with `.`, `/` or `-` (`31.01.2025`, `1/2/2025` is 1 February, `31.01.25`); `2025-01-31`, `2025.1.31`; a month by three letters or more of its nominative name, any case (`31 январь 2025`, `31.янв.2025`, `15 июн. 2025`, `сентяб`; not the genitive `января`, not English names); `янв 2025` and `янв-25` are the 1st; two numbers are a day and a month of the clock's year (`1.5`, `15 янв`), or a month and a year when the second is past 12 (`1.13` is January 2013, `1.2025`); times as in en-US with a decimal comma in seconds (`18:30:15,5`) and the English `AM`/`PM` | `rules/dates.ts`, `dates.ts` |
+| C1, H. numbers as text | General with a decimal comma: `a1,5`, `1,23456789012345E+20`; complex parts the same (`1,5-2,25i`) | `regional.ts`, `complex.ts` |
+| C2, D. booleans | `ИСТИНА`, `ЛОЖЬ` both ways, any case when read; `"TRUE"` is #VALUE! where a boolean is expected | `regional.ts` |
+| E. TEXT codes | `Д`, `Г`, `ч`, `с` in either case; `М` the month, or minutes after hours or before seconds; `м` always minutes; `,` the decimal point, a space the group separator (grouping between placeholders, scaling by 1000 after them; before `₽` a literal), `Основной` the General format, among literals too; Latin letters are literals (`yyyy` stays `yyyy`); month names nominative (`январь`, short `янв`, `февр`, `сент`, `нояб`), days `пятница`, `Пт`; a format with a point before a digit placeholder, or a space in a fraction, is #VALUE! whatever the value | `rules/format.ts`, `format.ts` |
+| F. DOLLAR, FIXED | `1 234,57 ₽`, `-1 234,57 ₽`, `-0,00 ₽` (a minus, even rounded to zero), `1 234 567,89` | `functions/text/numbers.ts` with the locale's data |
+| G. VALUE and the like | by A and B; NUMBERVALUE's defaults are the locale's (`,` and a space), the rest of its text read as VALUE reads it (`NUMBERVALUE("1.5")` is a date) | `functions/text/value.ts`, `functions/date/` |
+| H. complex text | each part read as VALUE reads it (`IMSUM("1.5+2i")` is `46143+2i`) | `complex.ts` (`Rules.complexPart`) |
+| errors, arrays | error texts by the formula-text locale (`#Н/Д`), in VALUETOTEXT, ARRAYTOTEXT and criteria; ARRAYTOTEXT writes `{1,5;2:ИСТИНА}` and `1,5; 2` | `regional.ts`, `astext.ts`, `criteria.ts` |
+| criteria | numbers, dates and words of the locale in criterion text and in cell text (`">1,5"`, `">=01.01.2026"`, `"01.05"`, `"ИСТИНА"`; `"TRUE"` is text) | `criteria.ts` (`CritRules`) |
 
-- `groupSeparator`: ` ` in ru-RU (a plain space in Excel for Mac).
-- `dateOrder` (`'mdy'`, `'dmy'`, `'ymd'`), date and time separators, the month and weekday names Excel reads and writes (full and short, with the case forms `ММММ` gives), what a year-less date means.
-- `formatCodes`: year, month, day, hour, minute, second (`Г`, `М`, `Д`, `ч`, `м`, `с`), the name of the General format (`Основной`).
-- `currency`: symbol, position, space, the negative form, digits (`1 234,57 ₽`, `-1 200 ₽`).
-- `collation`: the `Intl.Collator` tag that orders text as this Excel does.
-- `codePage` for `CHAR` and `CODE`, if they join the whitelist.
+### Dates without a year and the clock
 
-The international settings in `docs/locale/excel-ru-RU.json` already give the separators, the date order (1, day-month-year), the format codes, the currency symbol and its position. The rest needs a set of probes computed in Excel ru-RU (see "Data to measure").
+Excel completes a date without a year with the current year; the engine takes the year of the book's clock (`Clock.now`), so a book's values stay a function of its input and clock. Whether a cell reads the year depends on the data (`VALUE(A1)` reads it only when A1 holds such text), so it is found while computing: the rules read the year through a `RulesClock` that the engine creates per book (`createState`), and reading it sets a flag. `evaluate` clears the flag before each formula and records the formulas that set it in `EngineState.clocked`; `volatile` is the closure of the volatile functions and these formulas over their dependents, so `setClock` and live sessions recompute them, and `ComputeResult.volatile` lists them. The cost is one flag write and one read per formula computed.
 
-### How each place gets the rules
+Caches would hide a read: a criterion parsed once and an index built once serve later formulas without reading the year again. So a parsed criterion or a criteria index whose building read the year is not cached (`readsClock` in `rules/data.ts`, `parseCrit`, the runtime's `indexOf`); each formula that needs it reads the year itself. Such books are rare, and the rest are cached as before. `test/locale-clock.test.ts` checks that a session after `setClock` equals a full computation with the same clock, also through repeated criteria and a shared index.
 
-The engine builds one rules object per book from the locale, as `translate.ts` builds its tables: `toNum`, `toText`, `toBool`, `parseDate`, `formatText`, `compareText`, the currency and fixed formats. The functions in `values.ts`, `dates.ts` and `format.ts` become methods of the en-US rules, with the same code and results, so callers outside a book (the parser, the criteria index) keep working. Inside a book the rules reach:
+### Text order
 
-- function arguments through `Cx` (`cx.rules`): `args.ts` coerces every kind with `cx` at hand already, so `n`, `i`, `x`, `d`, `t`, `s`, `b` and the lists change in one place;
-- operators through the compiled book: `runtime.ts` helpers for `&`, arithmetic on text and comparisons are created per book with its rules;
-- functions that format or parse on their own (`TEXT`, `DOLLAR`, `FIXED`, `VALUE` and the rest, the complex functions) through `cx.rules`, declared with `cx: true`;
-- criteria through the rules passed to `parseCrit` and `select`.
+Excel en-US sorts Latin before Cyrillic, ru-RU Cyrillic before Latin; both compare case-insensitively and accent-sensitively (`ё` after `е`, `й` after `и`, equal neither). The `collation` set (174 cases of operators, SORT, criteria, MATCH and UNIQUE on mixed scripts, computed in both) matches `Intl.Collator` with the locale's tag (`en-US`, `ru-RU`) and `sensitivity: 'accent'` on every case; the order comes from `Rules.compareText` for operators, criteria, lookups and sorting.
 
-### Contract change
+### What the measurement showed besides the locale
 
-One `contract:` commit: `BookInput.locale?: string` with its JSDoc (a tag of the package's locales, `en-US` by default; it changes computed values, not formula text), `checkBook` checks the tag, `inputHash` and `valuesHash` take it as above, the README's API and Limitations sections say so.
+Some differences came from rules of Excel that the engine had wrong in en-US too, measured in both locales and fixed for both:
+
+- criteria read their text and a cell's text as VALUE does, and a number criterion's `<>` holds for all text (`criteria-text` set, 37 cases in each locale);
+- AND, OR and XOR take a direct text argument that is a boolean word as that boolean (`logical-text`, 51 cases each);
+- DATE takes a day outside −32768…32767 as 32767, a month of 32767 or more is #NUM! (`date-day`, en-US; ru-RU's `DATE(2025,1,"1.5")` led to it);
+- TEXT rounds a number multiplied by `%` or scaled to 15 significant digits first (`format-scale`, en-US; `TEXT(0.285,"0%")` is `29%`).
 
 ### Acceptance
 
-`test/excel-ru.test.ts`: the measurement's book with `locale: 'ru-RU'` and a clock in 2026 (Excel computed `excel-ru.json` on 5 October 2026, so a year-less date is in 2026), every whitelisted function's cases against `docs/coverage-formulajs/excel-ru.json` with the same comparison as `test/excel.test.ts`; cases that still differ go to a `KNOWN` list with reasons, as for en-US. The probes of the data step below get the same test. en-US tests and hashes do not change.
+`test/excel-ru.test.ts` computes the measurement's book with `locale: 'ru-RU'` and the clock of the case books (2026, the year Excel computed `excel-ru.json` in) and compares every whitelisted function's cases with `docs/coverage-formulajs/excel-ru.json` as `test/excel.test.ts` does; `test/excel-ru-probes.test.ts` does the same for the sets in `docs/excel-cases/ru-RU/` (`locale`, `collation`, `criteria-text`, `logical-text`; `run.ts probes <set> ru` computes a set in Excel ru-RU). Known differences are pinned in `RU_KNOWN` (`test/excel-ru-cases.ts`) with README lines: the four en-US `gammaInvConvergence` cases of the measurement, `#NULL!` read as `#ERROR!` (1), exponent formats and elapsed time in TEXT, unsupported in both locales (5), and a second decimal separator among a format's decimals (1). en-US acceptance is unchanged, with the new en-US sets added.
 
-### Order of work, after the arrays branch is merged
+## Decisions
 
-The rules thread through `engine.ts`, `runtime.ts` and `args.ts`, which `arrays/incell` rewrites, so the work starts on top of it.
+The questions of the plan, with the answers taken as defaults (each is a local change if it is decided otherwise):
 
-1. The contract commit and the registry of locales; the field does nothing yet (tests: tag check, hashes, en-US unchanged).
-2. Rules object with the en-US methods, passed through `Cx` and the runtime; no value changes (all tests and the synthetic hash as before).
-3. ru-RU rules by mechanism, each step with its cases from `excel-ru.json`: A and B with `dates.ts` taking the order and names (142 cases), C1, C2 and H through one number-to-text rule (79), D (5), F (24), G (11), E (11, the largest change: the format tokenizer reads the locale's codes).
-4. Text order by locale, after measuring en-US order on mixed scripts; criteria text.
-
-### Data to measure
-
-A set of probes computed in Excel ru-RU, stored like `docs/excel-cases/`, with a step that runs a set in either locale (`run.ts probes` runs en-US only now):
-
-- date text: `31.01.2025`, `31/01/2025`, `31-01-2025`, `2025-01-31`, `31 января 2025`, `31.янв.2025`, `янв 2025`, `1.5`, `1.5.25`, times with and without AM/PM;
-- numeric text: `1 234,5` (space and no-break space), `1234,5 ₽`, `(1,5)`, `1,5%`, `1,5E+3`, `1.234,5`;
-- TEXT with Russian codes and with English ones: dates, times, numbers, percent, currency, `Основной`, month and weekday names;
-- criteria: `">1,5"`, `">=01.01.2026"`, `"=ИСТИНА"`;
-- the order of mixed Cyrillic and Latin text in `MATCH` and comparisons, in ru-RU and en-US;
-- `CHAR` and `CODE` over 1–255 if they are to join the whitelist.
-
-## Questions
-
-1. The book's locale as a field of `BookInput` (proposed) or as an option of `compute` and `openSession`?
-2. Only the package's locales for computation (a tag), or also a host's own `Locale` object? The object would need its data checked and a hash of its rules in `hash`.
-3. Hashes: take the tag only when it is not `en-US`, so existing hashes stay (proposed)?
-4. A date without a year (`"1.5"` in ru-RU is 1 May of the current year, 101 cases of the measurement): follow Excel with the clock's year, which makes such cells depend on the clock like `TODAY`, or keep them `#VALUE!` as en-US does now with `"1/31"`?
-5. Excel for Mac is the reference for ru-RU (array constants `{1;2:3;4}`, `CODE` in Mac Cyrillic). Excel for Windows may differ in these details; is the Mac enough, or is a Windows measurement needed?
-6. `validateLocalFormula` messages name functions in English (`ROUND takes 2 arguments` for `ОКРУГЛ(1,5)`); positions are in the typed text. Should messages use the locale's names?
-7. `toInvariant` also reads English function names, TRUE/FALSE and error texts in Russian text, which Excel ru-RU does not. Keep this leniency?
-8. `CHAR` and `CODE`: with a code page per locale they could join the whitelist; worth it?
+1. The locale is a field of the book, `BookInput.locale`, not an option of `compute` or `openSession`.
+2. Only the package's locales compute (a tag); a host's own `Locale` object is for formula text only. Accepting one would need its rules data checked and hashed.
+3. Hashes take the tag only when it is not en-US, so existing hashes stay and `CONFIG_VERSION` does not change.
+4. A date without a year follows Excel with the clock's year, and such cells depend on the clock as described above.
+5. Excel for Mac is the reference for ru-RU; a measurement in Excel for Windows is not done.
+6. `validateLocalFormula` messages stay English (`ROUND takes 2 arguments` for `ОКРУГЛ(1,5)`), positions in the typed text; Russian messages can come with an interface.
+7. `toInvariant` keeps reading English function names, TRUE/FALSE and error texts in Russian text.
+8. `CHAR` and `CODE` stay out of the whitelist until a code page per locale is decided (Mac Roman, Mac Cyrillic, Windows-1251 differ).

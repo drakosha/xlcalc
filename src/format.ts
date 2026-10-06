@@ -1,20 +1,51 @@
 /**
- * TEXT with Excel number formats (en-US): `;` sections (positive, negative, zero, text), quoted and
- * `\`-escaped literals, numbers (`0`, `#`, `?`, `.`, `,` for thousands grouping and scaling by 1000,
- * `%`), fractions (`# ?/?`, `?/??`, `# ?/8`), dates and times (`yyyy`, `yy`, `m`…`mmmm`, `d`…`dddd`,
- * `h`, `hh`, `mm` as minutes, `ss`, `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed
- * conditions are not supported: null (the caller turns it into #VALUE!).
+ * TEXT with Excel number formats: `;` sections (positive, negative, zero, text), quoted and `\`-escaped
+ * literals, numbers (`0`, `#`, `?`, the decimal point, the group separator for thousands grouping and scaling
+ * by 1000, `%`), fractions (`# ?/?`, `?/??`, `# ?/8`), dates and times (`yyyy`, `yy`, `m`…`mmmm`,
+ * `d`…`dddd`, `h`, `hh`, `mm` as minutes, `ss`, `AM/PM`), `General` and `@`. A locale reads its own codes
+ * (`Dialect.tokenize`, en-US here) and writes its own separators and names (`Style`). Exponents (`E+`),
+ * colours and bracketed conditions are not supported: null (the caller turns it into #VALUE!).
  */
 import { roundDigits } from './functions/common.js'
 import { textToNumber, ymd } from './dates.js'
 import { NUMBER_TEXT, readNumber } from './model.js'
 
-type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
+/**
+ * A token of a format section: `dot` the decimal point, `comma` the group separator (grouping or scaling),
+ * a date part by its en-US letters (`n` minutes whatever stands around them), `general` the General format.
+ */
+export type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string } | { t: 'general' }
+
+/** How formatted text writes what a format does not spell out: separators, month and day names, General and `@`. */
+export interface Style {
+  decimal: string
+  group: string
+  months: readonly string[]
+  monthsShort: readonly string[]
+  days: readonly string[]
+  daysShort: readonly string[]
+  /** A number in the General format. */
+  general(n: number): string
+  /** A number as `@` shows it. */
+  text(n: number): string
+}
+
+/** How TEXT reads a format and a value in a locale. */
+export interface Dialect {
+  style: Style
+  /** A section's tokens; null for a format not supported here. */
+  tokenize(section: string): Tok[] | null
+  /** Whether the locale refuses the format whatever the value (#VALUE!); en-US refuses none before reading it. */
+  refuses?(sections: string[]): boolean
+  /** Text read as a number, or null. */
+  number(text: string): number | null
+  bool(b: boolean): string
+}
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-function splitSections(fmt: string): string[] {
+export function splitSections(fmt: string): string[] {
   const out: string[] = []
   let cur = ''
   let quoted = false
@@ -34,7 +65,9 @@ function splitSections(fmt: string): string[] {
   return out
 }
 
+/** An en-US section's tokens. */
 function tokenize(sec: string): Tok[] | null {
+  if (/^\s*general\s*$/i.test(sec)) return [{ t: 'general' }]
   const out: Tok[] = []
   let i = 0
   while (i < sec.length) {
@@ -84,7 +117,7 @@ export function roundHalfUp(abs: number, k: number): string {
   return roundDigits(abs, k, Math.round).toFixed(k)
 }
 
-function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
+function formatNumber(v: number, toks: Tok[], signed: boolean, style: Style): string | null {
   const dot = toks.findIndex((t) => t.t === 'dot')
   const intEnd = dot < 0 ? toks.length : dot
   let scale = 0
@@ -99,7 +132,8 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
   // commas after the decimal digits scale too (`0.0,,` shows millions)
   for (let i = intEnd + 1; i < toks.length; i++) if (toks[i].t === 'comma' && !toks.slice(i + 1).some((t) => t.t === 'ph')) scale++
   const pct = toks.filter((t) => t.t === 'pct').length
-  let x = Math.abs(v) * Math.pow(100, pct) / Math.pow(1000, scale)
+  // a percent or a scale is applied to 15 significant digits, as Excel shows the product (0.285 is 29%)
+  let x = pct || scale ? Number(((Math.abs(v) * Math.pow(100, pct)) / Math.pow(1000, scale)).toPrecision(15)) : Math.abs(v)
   const fracPh = dot < 0 ? [] : toks.slice(dot + 1).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
   const intPh = toks.slice(0, intEnd).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
   const fixed = roundHalfUp(x, fracPh.length)
@@ -108,7 +142,7 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
   const zeros = intPh.filter((p) => p.c === '0').length
   if (ip === '0' && zeros === 0) ip = ''
   ip = ip.padStart(zeros, '0')
-  if (grouping) ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  if (grouping) ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, style.group)
   // integer part: right to left over digit placeholders, leftover digits go before the first one
   let out = ''
   let rest = ip
@@ -129,7 +163,7 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
     const digits = fp.split('')
     for (let k = fracPh.length - 1; k >= 0 && digits[k] === '0' && fracPh[k].c !== '0'; k--) digits[k] = fracPh[k].c === '?' ? ' ' : ''
     let k = 0
-    out += '.'
+    out += style.decimal
     for (const t of toks.slice(dot + 1)) {
       if (t.t === 'ph') out += digits[k++] ?? ''
       else if (t.t === 'lit') out += t.s
@@ -147,7 +181,7 @@ const isDigitLit = (t: Tok | undefined) => t?.t === 'lit' && /^[0-9]$/.test(t.s)
  * integer part; after `/` either placeholders (the denominator has at most that many digits, the closest
  * fraction is taken) or a fixed denominator (`?/8`).
  */
-function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean): string | null {
+function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, style: Style): string | null {
   let i = slash - 1
   while (i >= 0 && toks[i].t === 'ph') i--
   const numPh = toks.slice(i + 1, slash) as Extract<Tok, { t: 'ph' }>[]
@@ -184,7 +218,7 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean):
     const spaces = ' '.repeat(free.filter((t) => t.c === '?').length)
     return left ? spaces + zeros + s : zeros + s + spaces
   }
-  const intPart = hasInt ? formatNumber(ip, intToks, false)! : intToks.map((t) => (t.t === 'lit' ? t.s : '')).join('')
+  const intPart = hasInt ? formatNumber(ip, intToks, false, style)! : intToks.map((t) => (t.t === 'lit' ? t.s : '')).join('')
   const denText = fixed ? String(fixed) : pad(String(den), denPh, false)
   const fracText = pad(String(num), numPh, true) + '/' + denText
   const tail = toks.slice(j).map((t) => (t.t === 'lit' ? t.s : '')).join('')
@@ -193,7 +227,7 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean):
   return (signed && v < 0 && (ip !== 0 || num !== 0) ? '-' : '') + body + tail
 }
 
-function formatDate(serial: number, toks: Tok[]): string | null {
+function formatDate(serial: number, toks: Tok[], style: Style): string | null {
   if (serial < 0) return null
   let day = Math.floor(serial)
   let secs = Math.round((serial - day) * 86_400)
@@ -215,26 +249,28 @@ function formatDate(serial: number, toks: Tok[]): string | null {
     else if (t.t === 'date') {
       const c = t.s[0]
       if (c === 'y') out += t.s.length <= 2 ? two(Y % 100) : String(Y)
-      else if (c === 'd') out += t.s.length === 1 ? String(D) : t.s.length === 2 ? two(D) : t.s.length === 3 ? DAYS[W].slice(0, 3) : DAYS[W]
+      else if (c === 'd') out += t.s.length === 1 ? String(D) : t.s.length === 2 ? two(D) : t.s.length === 3 ? style.daysShort[W] : style.days[W]
       else if (c === 'h') {
         const hh = ampm ? h % 12 || 12 : h
         out += t.s.length === 1 ? String(hh) : two(hh)
       } else if (c === 's') out += t.s.length === 1 ? String(s) : two(s)
+      else if (c === 'n') out += t.s.length === 1 ? String(mi) : two(mi)
       else if (c === 'm') {
         // minutes: after hours or before seconds (across separators)
         const prev = toks.slice(0, i).reverse().find((x) => x.t === 'date')
         const next = toks.slice(i + 1).find((x) => x.t === 'date')
         const minutes = t.s.length <= 2 && ((prev?.t === 'date' && prev.s[0] === 'h') || (next?.t === 'date' && next.s[0] === 's'))
         if (minutes) out += t.s.length === 1 ? String(mi) : two(mi)
-        else out += t.s.length === 1 ? String(M + 1) : t.s.length === 2 ? two(M + 1) : t.s.length === 3 ? MONTHS[M].slice(0, 3) : t.s.length === 4 ? MONTHS[M] : MONTHS[M][0]
+        else out += t.s.length === 1 ? String(M + 1) : t.s.length === 2 ? two(M + 1) : t.s.length === 3 ? style.monthsShort[M] : t.s.length === 4 ? style.months[M] : style.months[M][0]
       }
-    } else if (t.t === 'ph') out += t.c === '0' ? '0' : ''
-    else if (t.t === 'dot') out += '.'
-    else if (t.t === 'comma') out += ','
-    else if (t.t === 'pct') out += '%'
+    } else out += plain(t, style)
   }
   return out
 }
+
+/** A token outside numbers as text: a literal, a separator, `%`; a digit placeholder outside a number shows 0 or nothing. */
+const plain = (t: Tok, style: Style): string =>
+  t.t === 'lit' ? t.s : t.t === 'ph' ? (t.c === '0' ? '0' : '') : t.t === 'dot' ? style.decimal : t.t === 'comma' ? style.group : t.t === 'pct' ? '%' : ''
 
 /**
  * A number as text the way Excel converts one (`&`, CONCAT, text arguments): rounded to 15 significant
@@ -278,14 +314,37 @@ export function generalFormat(n: number): string {
   return n < 0 ? '-' + text : text
 }
 
-/** TEXT(value, format); null for an unsupported or invalid format. */
-export function formatText(value: number | string | boolean, fmt: string): string | null {
-  if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
-  if (fmt === '') return ''
+/** Excel en-US with the English interface. */
+const EN: Dialect = {
+  style: {
+    decimal: '.',
+    group: ',',
+    months: MONTHS,
+    monthsShort: MONTHS.map((m) => m.slice(0, 3)),
+    days: DAYS,
+    daysShort: DAYS.map((d) => d.slice(0, 3)),
+    general: generalFormat,
+    text: generalText,
+  },
+  tokenize,
+  number: (text) => {
+    const t = text.trim()
+    return NUMBER_TEXT.test(t) ? readNumber(t) : textToNumber(text)
+  },
+  bool: (b) => (b ? 'TRUE' : 'FALSE'),
+}
+
+/** TEXT(value, format) in en-US; null for an unsupported or invalid format. */
+export const formatText = (value: number | string | boolean, fmt: string): string | null => formatWith(value, fmt, EN)
+
+/** TEXT(value, format) in a locale's dialect; null for an unsupported or invalid format. */
+export function formatWith(value: number | string | boolean, fmt: string, d: Dialect): string | null {
   const sections = splitSections(fmt)
+  if (d.refuses?.(sections)) return null
+  if (typeof value === 'boolean') return d.bool(value)
+  if (fmt === '') return ''
   if (typeof value === 'string') {
-    const t = value.trim()
-    const n = NUMBER_TEXT.test(t) ? readNumber(t) : (textToNumber(value) ?? NaN)
+    const n = d.number(value) ?? NaN
     if (Number.isNaN(n)) {
       const textSec = sections.length >= 4 ? sections[3] : sections.find((s) => s.includes('@'))
       return textSec !== undefined ? textSec.replace(/@/g, value).replace(/"/g, '') : value
@@ -301,13 +360,15 @@ export function formatText(value: number | string | boolean, fmt: string): strin
   } else if (v === 0 && sections.length >= 3) sec = sections[2]
   // an empty section shows nothing (`0;` hides negative numbers)
   if (sec === '') return ''
-  if (/^\s*general\s*$/i.test(sec)) return generalFormat(signed ? v : Math.abs(v))
-  if (sec.trim() === '@') return generalText(v)
-  const toks = tokenize(sec)
+  const { style } = d
+  if (sec.trim() === '@') return style.text(v)
+  const toks = d.tokenize(sec)
   if (!toks) return null
-  if (toks.some((t) => t.t === 'date' || t.t === 'ampm')) return formatDate(v, toks)
-  if (!toks.some((t) => t.t === 'ph')) return toks.map((t) => (t.t === 'lit' ? t.s : t.t === 'dot' ? '.' : t.t === 'comma' ? ',' : t.t === 'pct' ? '%' : '')).join('')
+  // General among literals (`General "pcs"`): the other tokens are written as they stand
+  if (toks.some((t) => t.t === 'general')) return toks.map((t) => (t.t === 'general' ? style.general(signed ? v : Math.abs(v)) : plain(t, style))).join('')
+  if (toks.some((t) => t.t === 'date' || t.t === 'ampm')) return formatDate(v, toks, style)
+  if (!toks.some((t) => t.t === 'ph')) return toks.map((t) => plain(t, style)).join('')
   const slash = toks.findIndex((t, i) => t.t === 'lit' && t.s === '/' && toks[i - 1]?.t === 'ph')
-  if (slash >= 0) return formatFraction(v, toks, slash, signed)
-  return formatNumber(v, toks, signed)
+  if (slash >= 0) return formatFraction(v, toks, slash, signed, style)
+  return formatNumber(v, toks, signed, style)
 }

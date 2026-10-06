@@ -2,9 +2,9 @@
  * Text functions on strings. Ported from formula.js 4.6.1 (src/text.js), Copyright (c) 2014 Sutoiku, Inc.,
  * MIT License (THIRD_PARTY.md); fixed against Excel en-US, see the comments.
  */
-import { directError, eachValue, type FnDef, type Segment } from '../../args.js'
+import { directError, eachValue, type Cx, type FnDef, type Segment } from '../../args.js'
 import { wildSource } from '../../criteria.js'
-import { E, isErr, toText, type V } from '../../values.js'
+import { E, isErr, type V } from '../../values.js'
 import { capped, delimiters, joined, MAX_TEXT } from './common.js'
 
 /** The largest position or count MID accepts; REPLACE takes up to Excel's text length. */
@@ -58,12 +58,12 @@ function substitute(text: string, old: string, rep: string, instance?: number): 
 }
 
 /** Ranges are read row by row; several delimiters are used in turn. */
-function textjoin(delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
-  const ds = delimiters(delims)
+function textjoin(cx: Cx, delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
+  const ds = delimiters(delims, cx.rules)
   if (isErr(ds)) return ds
   const parts: string[] = []
   const e = directError(segs) ?? eachValue(segs, (v) => {
-    const t = toText(v)
+    const t = cx.rules.toText(v)
     if (isErr(t)) return t
     if (!(ignoreEmpty && t === '')) parts.push(t)
   })
@@ -79,10 +79,11 @@ const strings: Record<string, FnDef> = {
   CONCAT: {
     args: 'V',
     rep: 1,
-    fn: (segs: Segment[]) => {
+    cx: true,
+    fn: (cx: Cx, segs: Segment[]) => {
       let out = ''
       const e = directError(segs) ?? eachValue(segs, (v) => {
-        const t = toText(v)
+        const t = cx.rules.toText(v)
         if (isErr(t)) return t
         out += t
       })
@@ -118,7 +119,7 @@ const strings: Record<string, FnDef> = {
   SUBSTITUTE: { args: 's s s w?', fn: substitute },
   // a range of several cells gives its top-left cell (an array is lifted)
   T: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'string' || isErr(v) ? v : '') },
-  TEXTJOIN: { args: 'V b V', rep: 1, fn: textjoin },
+  TEXTJOIN: { args: 'V b V', rep: 1, cx: true, fn: textjoin },
   // Excel trims spaces only, not tabs or line breaks
   TRIM: { args: 's', fn: (s: string) => s.replace(/ +/g, ' ').replace(/^ | $/g, '') },
   // surrogates and noncharacters (U+FDD0…U+FDEF, U+xFFFE, U+xFFFF) are #N/A in Excel

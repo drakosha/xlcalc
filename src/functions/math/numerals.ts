@@ -1,6 +1,7 @@
 /** BASE, DECIMAL, ROMAN (five forms) and ARABIC with Excel's limits. This engine's own. */
-import { E, isErr, toNum, type CErr, type V } from '../../values.js'
-import type { FnDef } from '../../args.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
+import type { Cx, FnDef } from '../../args.js'
+import type { Rules } from '../../locale/rules.js'
 
 /** Excel's limit for the length of text arguments here. */
 const MAX_LEN = 255
@@ -51,15 +52,15 @@ function roman(n: number, form: number): string {
 }
 
 /** ROMAN's form: a number from 0 to 4; TRUE is 0 and FALSE 4. */
-function formOf(v: V | undefined): number | CErr {
+function formOf(v: V | undefined, rules: Rules): number | CErr {
   if (v === undefined || v === true) return 0
   if (v === false) return 4
-  const f = toNum(v)
+  const f = rules.toNum(v)
   return isErr(f) ? f : Math.trunc(f)
 }
 
-function toRoman(n: number, form?: V): string | CErr {
-  const f = formOf(form)
+function toRoman(cx: Cx, n: number, form?: V): string | CErr {
+  const f = formOf(form, cx.rules)
   if (isErr(f)) return f
   const x = Math.trunc(n)
   return x < 0 || x > 3999 || f < 0 || f > 4 ? E.VALUE : roman(x, f)
@@ -90,5 +91,5 @@ export const functions: Record<string, FnDef> = {
   ARABIC: { args: 's', fn: arabic },
   BASE: { args: 'n n n?', fn: base },
   DECIMAL: { args: 's n', fn: decimal },
-  ROMAN: { args: 'n v?', fn: toRoman },
+  ROMAN: { args: 'n v?', cx: true, fn: toRoman },
 }

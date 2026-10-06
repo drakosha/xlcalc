@@ -4,9 +4,9 @@
  * this engine's own (formula.js gets values, not references).
  */
 import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
-import type { FnDef, Grid } from '../../args.js'
+import type { Cx, FnDef, Grid } from '../../args.js'
 import { arr } from '../../arrays/value.js'
-import { E, isErr, Rng, toText, type V } from '../../values.js'
+import { E, isErr, Rng, type V } from '../../values.js'
 
 /** A name that reads as an A1 address within the grid, an R1C1 reference or a boolean. */
 function referenceLike(s: string): boolean {
@@ -51,7 +51,7 @@ export const functions: Record<string, FnDef> = {
   // the referenced size: a whole column has 1,048,576 rows
   COLUMNS: { args: 'G', fn: (g: Grid) => g.cols },
   // the value of a cell is its friendly name as given, else the link as text
-  HYPERLINK: { args: 'v v?', fn: (link: V, name?: V) => (name === undefined ? toText(link) : name) },
+  HYPERLINK: { args: 'v v?', cx: true, fn: (cx: Cx, link: V, name?: V) => (name === undefined ? cx.rules.toText(link) : name) },
   ROW: position(true),
   ROWS: { args: 'G', fn: (g: Grid) => g.rows },
 }

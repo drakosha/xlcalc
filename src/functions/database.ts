@@ -5,41 +5,42 @@
  */
 import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
-import { E, isErr, Rng, toBool, toText, whole, type CErr, type V } from '../values.js'
+import type { Rules } from '../locale/rules.js'
+import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
-function condition(v: V): Crit | null {
+function condition(v: V, rules: Rules): Crit | null {
   if (v === null) return null
   if (isErr(v)) return errorCrit(v.code)
-  if (typeof v !== 'string' || /^(<=|>=|<>|<|>|=)/.test(v) || v === '') return parseCrit(v)
-  const c = parseCrit(v)
-  return c.kind === 'str' || c.kind === 'wild' ? parseCrit(v + '*') : c
+  if (typeof v !== 'string' || /^(<=|>=|<>|<|>|=)/.test(v) || v === '') return parseCrit(v, rules)
+  const c = parseCrit(v, rules)
+  return c.kind === 'str' || c.kind === 'wild' ? parseCrit(v + '*', rules) : c
 }
 
 /** The column of a field name (any case) or number in the header row, or #VALUE!. */
-function fieldIndex(db: Grid, field: V): number | CErr {
+function fieldIndex(db: Grid, field: V, rules: Rules): number | CErr {
   if (isErr(field)) return field
   if (typeof field === 'number' || typeof field === 'boolean') {
     const i = whole(Number(field))
     return i >= 1 && i <= db.cols ? i - 1 : E.VALUE
   }
-  return nameIndex(db, field)
+  return nameIndex(db, field, rules)
 }
 
 /** The column whose header reads as `name` (any case), or #VALUE!; a criteria header is always a name, 45688 too. */
-function nameIndex(db: Grid, name: V): number | CErr {
+function nameIndex(db: Grid, name: V, rules: Rules): number | CErr {
   if (isErr(name)) return name
-  const text = (toText(name) as string).toLowerCase()
+  const text = (rules.toText(name) as string).toLowerCase()
   for (let c = 0; c < db.cols; c++) {
     const h = gridAt(db, c)
-    if (typeof h === 'string' ? h.toLowerCase() === text : toText(h) === text) return c
+    if (typeof h === 'string' ? h.toLowerCase() === text : rules.toText(h) === text) return c
   }
   return E.VALUE
 }
 
 /** The field's values in the records selected by the criteria; a database or criteria without a row under the header is #VALUE!. */
-function selected(db: Grid, field: V, criteria: Grid): V[] | CErr {
-  const col = fieldIndex(db, field)
+function selected(db: Grid, field: V, criteria: Grid, rules: Rules): V[] | CErr {
+  const col = fieldIndex(db, field, rules)
   if (isErr(col)) return col
   if (db.rows < 2 || criteria.rows < 2) return E.VALUE
   // the database column each condition tests; under a header that is no field (−1) only TRUE holds, as a computed criterion
@@ -49,18 +50,18 @@ function selected(db: Grid, field: V, criteria: Grid): V[] | CErr {
     const row: { col: number; crit: Crit }[] = []
     for (let c = 0; c < criteria.cols; c++) {
       const v = gridAt(criteria, r * criteria.cols + c)
-      const crit = condition(v)
+      const crit = condition(v, rules)
       if (!crit) continue
-      const at = nameIndex(db, gridAt(criteria, c))
+      const at = nameIndex(db, gridAt(criteria, c), rules)
       if (!isErr(at)) row.push({ col: at, crit })
-      else if (toBool(v) !== true) row.push({ col: -1, crit })
+      else if (rules.toBool(v) !== true) row.push({ col: -1, crit })
     }
     tests.push(row)
   }
   const out: V[] = []
   for (let r = 1; r < db.h; r++) {
     const rec = (c: number) => gridAt(db, r * db.cols + c)
-    if (tests.some((row) => row.every((t) => t.col >= 0 && matches(rec(t.col), t.crit)))) out.push(rec(col))
+    if (tests.some((row) => row.every((t) => t.col >= 0 && matches(rec(t.col), t.crit, rules)))) out.push(rec(col))
   }
   return out
 }
@@ -89,7 +90,7 @@ const dfn = (f: (vs: V[]) => V, errors = true): FnDef => ({
   args: 'G r G',
   cx: true,
   fn: (cx: Cx, db: Grid, field: V | Rng, criteria: Grid) => {
-    const vs = selected(db, fieldOf(cx, field), criteria)
+    const vs = selected(db, fieldOf(cx, field), criteria, cx.rules)
     if (isErr(vs)) return vs
     if (errors) {
       const e = vs.find(isErr)

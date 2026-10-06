@@ -5,7 +5,8 @@
 import { pairs, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
-import { E, isErr, Rng, toNum, type CErr, type V } from '../../values.js'
+import type { Rules } from '../../locale/rules.js'
+import { E, isErr, Rng, type CErr, type V } from '../../values.js'
 
 /** The sum of the numbers at the selected positions; an error there is the answer. */
 function sumAt(values: readonly V[], sel: number[]): V {
@@ -81,7 +82,7 @@ function term(x: number, p: number): number | CErr {
   return x < 0 && !Number.isInteger(p) ? 0 : Math.pow(x, p)
 }
 
-function seriessum(x: number, n: number, m: number, coefs: Segment): V {
+function seriessum(cx: Cx, x: number, n: number, m: number, coefs: Segment): V {
   // a range gives its numbers in order, blanks left out; text or a boolean there is #VALUE!
   const cs: number[] = []
   if (Array.isArray(coefs)) {
@@ -91,7 +92,7 @@ function seriessum(x: number, n: number, m: number, coefs: Segment): V {
       else if (v !== null) return E.VALUE
     }
   } else {
-    const c = typeof coefs === 'boolean' ? E.VALUE : toNum(coefs as V)
+    const c = typeof coefs === 'boolean' ? E.VALUE : cx.rules.toNum(coefs as V)
     if (isErr(c)) return c
     cs.push(c)
   }
@@ -105,8 +106,8 @@ function seriessum(x: number, n: number, m: number, coefs: Segment): V {
 }
 
 /** PERCENTOF's sum: a range gives its numbers, a direct argument is coerced; an error in a range or array is #NUM!, a direct one itself (Excel). */
-function percentSum(s: Segment): number | CErr {
-  if (!Array.isArray(s)) return toNum(s as V)
+function percentSum(s: Segment, rules: Rules): number | CErr {
+  if (!Array.isArray(s)) return rules.toNum(s as V)
   let acc = 0
   for (const v of s as readonly V[]) {
     if (isErr(v)) return E.NUM
@@ -118,16 +119,17 @@ function percentSum(s: Segment): number | CErr {
 export const functions: Record<string, FnDef> = {
   PERCENTOF: {
     args: 'V V',
-    fn: (part: Segment, all: Segment) => {
-      const a = percentSum(part)
+    cx: true,
+    fn: (cx: Cx, part: Segment, all: Segment) => {
+      const a = percentSum(part, cx.rules)
       if (isErr(a)) return a
-      const b = percentSum(all)
+      const b = percentSum(all, cx.rules)
       if (isErr(b)) return b
       return b === 0 ? E.DIV0 : a / b
     },
   },
   PRODUCT: { args: 'N', rep: 1, fn: (xs: number[]) => (xs.length ? xs.reduce((p, x) => p * x, 1) : 0) },
-  SERIESSUM: { args: 'x x x V', fn: seriessum },
+  SERIESSUM: { args: 'x x x V', cx: true, fn: seriessum },
   SUM: { args: 'N', rep: 1, fn: (xs: number[]) => xs.reduce((s, x) => s + x, 0) },
   // the sum range takes the size of the criteria range from its own top-left cell, as in Excel
   SUMIF: {

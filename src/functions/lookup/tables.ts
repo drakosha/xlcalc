@@ -1,7 +1,8 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { arr, Arr } from '../../arrays/value.js'
-import { E, isErr, Rng, toBool, toNum, whole, type CErr, type V } from '../../values.js'
+import type { Rules } from '../../locale/rules.js'
+import { E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /**
@@ -21,25 +22,25 @@ const tableLookup = (horizontal: boolean): FnDef => ({
     const many = idx instanceof Arr || (idx instanceof Rng && (idx.r2 > idx.r1 || idx.c2 > idx.c1))
     const n = many ? 0 : indexArg(cx, idx as V | Rng)
     if (isErr(n)) return n
-    const a = toBool(approx)
+    const a = cx.rules.toBool(approx)
     if (isErr(a)) return a
-    const pos = find(horizontal ? row(table) : column(table), k, a ? 1 : 0, true)
+    const pos = find(horizontal ? row(table) : column(table), k, a ? 1 : 0, true, cx.rules.compare)
     if (pos < 0) return E.NA
     const size = horizontal ? table.rows : table.cols
     const bad = (i: number) => (i < 1 ? E.VALUE : i > size ? E.REF : undefined)
     const cell = (i: number) => gridAt(table, horizontal ? (i - 1) * table.cols + pos : pos * table.cols + i - 1)
-    if (many) return lineAt(cx.view(idx) as Arr, bad, cell)
+    if (many) return lineAt(cx.view(idx) as Arr, bad, cell, cx.rules)
     const i = whole(n)
     return bad(i) ?? cell(i)
   },
 })
 
 /** The found line at every number of an index array, row by row; an error or text that is not a number is #REF!. */
-function lineAt(idx: Arr, bad: (i: number) => CErr | undefined, cell: (i: number) => V): CErr | Arr {
+function lineAt(idx: Arr, bad: (i: number) => CErr | undefined, cell: (i: number) => V, rules: Rules): CErr | Arr {
   const out: V[] = []
   for (let r = 0; r < idx.rows; r++)
     for (let c = 0; c < idx.cols; c++) {
-      const n = toNum(idx.at(r, c))
+      const n = rules.toNum(idx.at(r, c))
       if (isErr(n)) return E.REF
       const i = whole(n)
       const e = bad(i)
@@ -62,7 +63,7 @@ function match(cx: Cx, key: V, range: Grid, type: V | Rng = 1): V {
   if (isErr(t)) return t
   if (range.rows !== 1 && range.cols !== 1) return E.NA
   // the type's sign counts, not its whole part: −0.5 is a descending match
-  const pos = find(along(range), k, Math.sign(t), true)
+  const pos = find(along(range), k, Math.sign(t), true, cx.rules.compare)
   return pos < 0 ? E.NA : pos + 1
 }
 
@@ -71,10 +72,10 @@ function match(cx: Cx, key: V, range: Grid, type: V | Rng = 1): V {
  * Past the end of the result Excel reads further cells; here that is #REF!, since a session recomputes a
  * formula only for edits inside its references.
  */
-function lookup(key: V, look: Grid, result?: Grid): V {
+function lookup(cx: Cx, key: V, look: Grid, result?: Grid): V {
   const k = keyOf(key)
   if (isErr(k)) return k
-  const pos = bisect(along(look), k)
+  const pos = bisect(along(look), k, cx.rules.compare)
   if (pos < 0) return E.NA
   if (result === undefined) return gridAt(look, look.cols > look.rows ? (look.rows - 1) * look.cols + pos : pos * look.cols + look.cols - 1)
   if (result.rows > 1 && result.cols > 1) return E.NA
@@ -115,7 +116,7 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
   INDEX: { args: 'R w w? w?', array: true, fn: index },
-  LOOKUP: { args: 'a G G?', fn: lookup },
+  LOOKUP: { args: 'a G G?', cx: true, fn: lookup },
   MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),
 }

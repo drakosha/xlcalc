@@ -50,60 +50,85 @@ const MIN_NORMAL = 2.2250738585072014e-308
 /** A computed number as Excel keeps it: a non-finite one is #NUM!, one below the smallest normal number is 0. */
 export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)
 
-export function toNum(v: V): number | CErr {
-  if (typeof v === 'number') return v
-  if (v === null) return 0
-  if (typeof v === 'boolean') return v ? 1 : 0
-  if (isErr(v)) return v
-  // decimal text first (the common case), else as VALUE reads it: `$1,000`, `50%`, dates and times
-  const t = v.trim()
-  return NUMBER_TEXT.test(t) ? readNumber(t) : (textToNumber(v) ?? E.VALUE)
+/**
+ * The coercions of a locale: `toNum` (operators and numeric arguments; text through `number`), `toText`
+ * (`&` and text arguments; booleans by `words`, numbers through `numberText`), `toBool` (text that is one of
+ * `words`, any case).
+ */
+export function coercions(number: (text: string) => number | null, words: { readonly TRUE: string; readonly FALSE: string }, numberText: (n: number) => string) {
+  const T = words.TRUE.toUpperCase()
+  const F = words.FALSE.toUpperCase()
+  return {
+    toNum(v: V): number | CErr {
+      if (typeof v === 'number') return v
+      if (v === null) return 0
+      if (typeof v === 'boolean') return v ? 1 : 0
+      if (isErr(v)) return v
+      return number(v) ?? E.VALUE
+    },
+    toText(v: V): string | CErr {
+      if (typeof v === 'string') return v
+      if (v === null) return ''
+      if (typeof v === 'boolean') return v ? words.TRUE : words.FALSE
+      if (isErr(v)) return v
+      return numberText(v)
+    },
+    toBool(v: V): boolean | CErr {
+      if (typeof v === 'boolean') return v
+      if (typeof v === 'number') return v !== 0
+      if (v === null) return false
+      if (isErr(v)) return v
+      const u = v.toUpperCase()
+      return u === T ? true : u === F ? false : E.VALUE
+    },
+  }
 }
 
-export function toText(v: V): string | CErr {
-  if (typeof v === 'string') return v
-  if (v === null) return ''
-  if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE'
-  if (isErr(v)) return v
-  return generalText(v)
-}
-
-/** Text "TRUE" and "FALSE" are booleans, as in Excel en-US with the English UI. */
-export function toBool(v: V): boolean | CErr {
-  if (typeof v === 'boolean') return v
-  if (typeof v === 'number') return v !== 0
-  if (v === null) return false
-  if (isErr(v)) return v
-  const u = v.toUpperCase()
-  if (u === 'TRUE') return true
-  if (u === 'FALSE') return false
-  return E.VALUE
-}
+/** en-US with the English UI: decimal text first (the common case), else as VALUE reads it (`$1,000`, `50%`, dates and times); TRUE and FALSE. */
+export const { toNum, toText, toBool } = coercions(
+  (text) => {
+    const t = text.trim()
+    return NUMBER_TEXT.test(t) ? readNumber(t) : textToNumber(text)
+  },
+  { TRUE: 'TRUE', FALSE: 'FALSE' },
+  generalText,
+)
 
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2)
 
 /**
- * Excel's order of two values that are not errors: numbers < text < booleans, text case-insensitive
- * (`collator`); a blank is 0, "" or FALSE, as the other side requires.
+ * Excel's order of two values that are not errors, with `text` the order of text (case-insensitive, by
+ * locale): numbers < text < booleans; a blank is 0, "" or FALSE, as the other side requires.
  */
-export function compareValues(a: V, b: V): number {
-  if (a === null) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0
-  if (b === null) b = typeof a === 'string' ? '' : typeof a === 'boolean' ? false : 0
-  const ra = rank(a)
-  const rb = rank(b)
-  if (ra !== rb) return ra - rb
-  if (typeof a === 'string') return collator.compare(a, b as string)
-  return (a as number) < (b as number) ? -1 : (a as number) > (b as number) ? 1 : 0
+export function compareWith(text: (a: string, b: string) => number): (a: V, b: V) => number {
+  return (a, b) => {
+    if (a === null) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0
+    if (b === null) b = typeof a === 'string' ? '' : typeof a === 'boolean' ? false : 0
+    const ra = rank(a)
+    const rb = rank(b)
+    if (ra !== rb) return ra - rb
+    if (typeof a === 'string') return text(a, b as string)
+    return (a as number) < (b as number) ? -1 : (a as number) > (b as number) ? 1 : 0
+  }
 }
+
+/** Excel en-US's order of two values that are not errors (`collator`). */
+export const compareValues = compareWith(collator.compare)
 
 /** A number to 15 significant digits, as Excel compares numbers and reads them in INT and its kin (`1-2^-52` is 1 there). */
 export const to15 = (x: number): number => (Number.isInteger(x) && Math.abs(x) < 1e15 ? x : Number(x.toPrecision(15)))
 
 /**
- * The order of the comparison operators (`=`, `<` and the rest): numbers equal to 15 significant digits are
- * equal (`0.1+0.2=0.3` is TRUE), as in Excel; lookups, sorting and UNIQUE compare exactly (`compareValues`).
+ * The order of the comparison operators (`=`, `<` and the rest) over `compare`: numbers equal to 15 significant
+ * digits are equal (`0.1+0.2=0.3` is TRUE), as in Excel; lookups, sorting and UNIQUE compare exactly.
  */
-export const compareOp = (a: V, b: V): number => compareValues(typeof a === 'number' ? to15(a) : a, typeof b === 'number' ? to15(b) : b)
+export const operatorOrder =
+  (compare: (a: V, b: V) => number) =>
+  (a: V, b: V): number =>
+    compare(typeof a === 'number' ? to15(a) : a, typeof b === 'number' ? to15(b) : b)
+
+/** The comparison operators' order in en-US. */
+export const compareOp = operatorOrder(compareValues)
 
 /** Excel's tolerance of a whole-number argument: a number less than 2^-22 short of an integer is that integer. */
 export const WHOLE = 2 ** -22

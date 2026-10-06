@@ -12,6 +12,9 @@ import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type Formula
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
 import { FUNCTIONS } from './functions.js'
 import { rebuildGraph } from './graph.js'
+import { ymd } from './dates.js'
+import { rulesOf } from './locale/rules.js'
+import type { RulesClock } from './locale/rules/data.js'
 import { formatAddress, inputScalar, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
@@ -72,8 +75,10 @@ export interface EngineState {
   listeners: Map<number, Map<number, [number, number, number][]>>
   /** Listeners of wide ranges (whole rows and more than 64 columns): sheet → [r1, r2, c1, c2, id]. */
   wide: Map<number, [number, number, number, number, number][]>
-  /** Formulas that depend on volatile functions (directly or through others). */
+  /** Formulas that depend on volatile functions or on `clocked` formulas (directly or through others). */
   volatile: Set<number>
+  /** Formulas whose latest computation read the clock's year (date text without a year, by the book's locale). */
+  clocked: Set<number>
   spills: Spills
 }
 
@@ -123,10 +128,19 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
+  // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
+  const clock: RulesClock = {
+    read: false,
+    year: () => {
+      clock.read = true
+      return ymd(Math.floor(ctx.now)).y
+    },
+  }
   const ctx: RuntimeContext = {
     sheets: sheetNames.map(emptySheet),
     now: opts.now,
     seed: opts.seed,
+    rules: rulesOf(book.locale, clock),
     externals: opts.externals?.values ?? {},
     flat: new Map(),
     index: new Map(),
@@ -154,6 +168,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     listeners: new Map(),
     wide: new Map(),
     volatile: new Set(),
+    clocked: new Set(),
     spills: newSpills(),
   }
   const pending: Formula[] = []
@@ -210,6 +225,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       endSpill(state, state.formulas[old]!, track, false)
       state.formulas[old] = undefined
+      state.clocked.delete(old)
       state.at.delete(k)
       structural = true
     }

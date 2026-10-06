@@ -1,0 +1,522 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (системные язык и локаль)",
+  "seconds": 5.084,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "AND#1",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"TRUE\")"
+  },
+  {
+   "id": "AND#2",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"true\")"
+  },
+  {
+   "id": "AND#3",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"FALSE\")"
+  },
+  {
+   "id": "AND#4",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"ИСТИНА\")"
+  },
+  {
+   "id": "AND#5",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"истина\")"
+  },
+  {
+   "id": "AND#6",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"ЛОЖЬ\")"
+  },
+  {
+   "id": "AND#7",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\" TRUE\")"
+  },
+  {
+   "id": "AND#8",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"TRUE\",FALSE)"
+  },
+  {
+   "id": "AND#9",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"FALSE\",TRUE)"
+  },
+  {
+   "id": "AND#10",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"ИСТИНА\",FALSE)"
+  },
+  {
+   "id": "AND#11",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(\"ЛОЖЬ\",TRUE)"
+  },
+  {
+   "id": "AND#12",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(G!A1)"
+  },
+  {
+   "id": "AND#13",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(G!A2)"
+  },
+  {
+   "id": "AND#14",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(G!A1:A4)"
+  },
+  {
+   "id": "AND#15",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND(G!A1,TRUE)"
+  },
+  {
+   "id": "AND#16",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND({\"TRUE\"})"
+  },
+  {
+   "id": "AND#17",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND({\"ИСТИНА\",TRUE})"
+  },
+  {
+   "id": "OR#1",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"TRUE\")"
+  },
+  {
+   "id": "OR#2",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"true\")"
+  },
+  {
+   "id": "OR#3",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"FALSE\")"
+  },
+  {
+   "id": "OR#4",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"ИСТИНА\")"
+  },
+  {
+   "id": "OR#5",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"истина\")"
+  },
+  {
+   "id": "OR#6",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"ЛОЖЬ\")"
+  },
+  {
+   "id": "OR#7",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\" TRUE\")"
+  },
+  {
+   "id": "OR#8",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"TRUE\",FALSE)"
+  },
+  {
+   "id": "OR#9",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"FALSE\",TRUE)"
+  },
+  {
+   "id": "OR#10",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"ИСТИНА\",FALSE)"
+  },
+  {
+   "id": "OR#11",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(\"ЛОЖЬ\",TRUE)"
+  },
+  {
+   "id": "OR#12",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(G!A1)"
+  },
+  {
+   "id": "OR#13",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(G!A2)"
+  },
+  {
+   "id": "OR#14",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(G!A1:A4)"
+  },
+  {
+   "id": "OR#15",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR(G!A1,TRUE)"
+  },
+  {
+   "id": "OR#16",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR({\"TRUE\"})"
+  },
+  {
+   "id": "OR#17",
+   "group": "OR",
+   "fn": "OR",
+   "formula": "OR({\"ИСТИНА\",TRUE})"
+  },
+  {
+   "id": "XOR#1",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"TRUE\")"
+  },
+  {
+   "id": "XOR#2",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"true\")"
+  },
+  {
+   "id": "XOR#3",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"FALSE\")"
+  },
+  {
+   "id": "XOR#4",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"ИСТИНА\")"
+  },
+  {
+   "id": "XOR#5",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"истина\")"
+  },
+  {
+   "id": "XOR#6",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"ЛОЖЬ\")"
+  },
+  {
+   "id": "XOR#7",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\" TRUE\")"
+  },
+  {
+   "id": "XOR#8",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"TRUE\",FALSE)"
+  },
+  {
+   "id": "XOR#9",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"FALSE\",TRUE)"
+  },
+  {
+   "id": "XOR#10",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"ИСТИНА\",FALSE)"
+  },
+  {
+   "id": "XOR#11",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(\"ЛОЖЬ\",TRUE)"
+  },
+  {
+   "id": "XOR#12",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(G!A1)"
+  },
+  {
+   "id": "XOR#13",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(G!A2)"
+  },
+  {
+   "id": "XOR#14",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(G!A1:A4)"
+  },
+  {
+   "id": "XOR#15",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR(G!A1,TRUE)"
+  },
+  {
+   "id": "XOR#16",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR({\"TRUE\"})"
+  },
+  {
+   "id": "XOR#17",
+   "group": "XOR",
+   "fn": "XOR",
+   "formula": "_xlfn.XOR({\"ИСТИНА\",TRUE})"
+  }
+ ],
+ "values": {
+  "AND#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#4": {
+   "t": "b",
+   "v": true
+  },
+  "AND#5": {
+   "t": "b",
+   "v": true
+  },
+  "AND#6": {
+   "t": "b",
+   "v": false
+  },
+  "AND#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#8": {
+   "t": "b",
+   "v": false
+  },
+  "AND#9": {
+   "t": "b",
+   "v": true
+  },
+  "AND#10": {
+   "t": "b",
+   "v": false
+  },
+  "AND#11": {
+   "t": "b",
+   "v": false
+  },
+  "AND#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#15": {
+   "t": "b",
+   "v": true
+  },
+  "AND#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AND#17": {
+   "t": "b",
+   "v": true
+  },
+  "OR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#4": {
+   "t": "b",
+   "v": true
+  },
+  "OR#5": {
+   "t": "b",
+   "v": true
+  },
+  "OR#6": {
+   "t": "b",
+   "v": false
+  },
+  "OR#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#8": {
+   "t": "b",
+   "v": false
+  },
+  "OR#9": {
+   "t": "b",
+   "v": true
+  },
+  "OR#10": {
+   "t": "b",
+   "v": true
+  },
+  "OR#11": {
+   "t": "b",
+   "v": true
+  },
+  "OR#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#15": {
+   "t": "b",
+   "v": true
+  },
+  "OR#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OR#17": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#4": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#5": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#6": {
+   "t": "b",
+   "v": false
+  },
+  "XOR#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#8": {
+   "t": "b",
+   "v": false
+  },
+  "XOR#9": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#10": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#11": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#15": {
+   "t": "b",
+   "v": true
+  },
+  "XOR#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XOR#17": {
+   "t": "b",
+   "v": true
+  }
+ }
+}

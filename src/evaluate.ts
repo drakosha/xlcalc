@@ -6,7 +6,7 @@
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import { key, type EngineState, type Formula } from './engine.js'
-import { readersOf, rebuildGraph, successors } from './graph.js'
+import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { describeAt, endSpill, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
@@ -62,9 +62,13 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
 
 function evaluate(state: EngineState, ids: number[], t?: Tracker) {
   const { rt, spills } = state
+  // a formula that reads the clock's year joins the volatile ones; one that no longer does leaves them
+  const { clock } = state.ctx.rules
+  let clocked = false
   for (const id of ids) {
     const f = state.formulas[id]!
     spills.done.set(id, ++spills.step)
+    if (clock) clock.read = false
     let v: V
     if (state.topo[id] < 0) {
       endSpill(state, f, t, true)
@@ -77,8 +81,14 @@ function evaluate(state: EngineState, ids: number[], t?: Tracker) {
         v = shown(x instanceof Rng || x instanceof Arr ? rt.scalar(x) : x)
       }
     }
+    if (clock && clock.read !== state.clocked.has(id)) {
+      if (clock.read) state.clocked.add(id)
+      else state.clocked.delete(id)
+      clocked = true
+    }
     write(state, f.s, f.r, f.c, v, t)
   }
+  if (clocked) markVolatile(state)
 }
 
 /** Formulas in a cycle (computed after the others). */

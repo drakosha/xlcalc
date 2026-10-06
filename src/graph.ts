@@ -88,8 +88,13 @@ export function rebuildGraph(state: EngineState) {
   order.forEach((id, i) => (topo[id] = i))
   state.topo = topo
   state.order = order
+  markVolatile(state)
+}
+
+/** The formulas that depend on the clock: volatile functions and the year of dates without one (`clocked`), and the formulas over them. */
+export function markVolatile(state: EngineState) {
   const vol = new Set<number>()
-  const stack = formulas.filter((f): f is Formula => !!f?.volatile).map((f) => f.id)
+  const stack = [...state.formulas.filter((f): f is Formula => !!f?.volatile).map((f) => f.id), ...state.clocked]
   while (stack.length) {
     const id = stack.pop()!
     if (vol.has(id)) continue

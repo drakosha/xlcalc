@@ -1,6 +1,6 @@
 /** Factorials, binomial coefficients, GCD and LCM with Excel's argument checks. This engine's own. */
 import { gridAt, type Arg, type Cx, type FnDef } from '../../args.js'
-import { E, isErr, toNum, whole, type CErr, type V } from '../../values.js'
+import { E, isErr, whole, type CErr, type V } from '../../values.js'
 import { fact } from '../common.js'
 
 /** Excel: COMBIN and COMBINA take n below 2^31 − 1. */
@@ -57,7 +57,7 @@ function wholes(cx: Cx, args: readonly Arg[]): number[] | CErr {
     const end = Math.min(n, g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
     for (let i = 0; i < end; i++) {
       const v: V = gridAt(g, i)
-      const x = typeof v === 'boolean' ? E.VALUE : toNum(v)
+      const x = typeof v === 'boolean' ? E.VALUE : cx.rules.toNum(v)
       if (isErr(x)) return x
       negative ||= x < 0
       out.push(Math.trunc(x))

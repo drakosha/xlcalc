@@ -1,11 +1,11 @@
 /**
  * COMPLEX and the IM* functions. Formulas of IMCOS … IMTAN, IMPOWER, IMSQRT ported from formula.js 4.6.1
  * (src/engineering.js), Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); fixed against Excel en-US.
+ * Complex text is read and written with the decimal separator of the book's locale (`Cx.rules`).
  */
-import { gridAt, type FnDef, type Grid } from '../../args.js'
-import { textToNumber } from '../../dates.js'
+import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
+import type { Rules } from '../../locale/rules.js'
 import { atp } from '../date/atp.js'
-import { readNumber } from '../../model.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
 
 type Unit = '' | 'i' | 'j'
@@ -22,46 +22,51 @@ const MAX_TEXT = 9.99999999999999e307
 /** Excel's limit for the sine and cosine of a real argument. */
 const MAX_TRIG = 2 ** 27
 
-const NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/
-
-/** Complex text as Excel reads it: spaces ignored, `a`, `bi`, `a±bi` (i or j; b may carry its own sign; `i` is 1i); null if not one. */
-function parseComplex(text: string): Complex | null {
-  const s = text.replaceAll(' ', '')
-  const num = (t: string): [number, string] | null => {
-    const m = NUMBER.exec(t)
-    if (!m) return null
-    const n = readNumber(m[0])
-    return Math.abs(n) > MAX_TEXT ? null : [n, t.slice(m[0].length)]
-  }
-  const isUnit = (u: string): u is 'i' | 'j' => u === 'i' || u === 'j'
-  const first = num(s)
-  if (!first) {
-    const m = /^([+-]?)([ij])$/.exec(s)
-    return m ? { re: 0, im: m[1] === '-' ? -1 : 1, unit: m[2] as Unit } : null
-  }
-  const [a, rest] = first
-  if (rest === '') return { re: a, im: 0, unit: '' }
-  if (isUnit(rest)) return { re: 0, im: a, unit: rest }
-  const sign = rest[0] === '-' ? -1 : rest[0] === '+' ? 1 : 0
-  if (!sign) return null
-  const tail = rest.slice(1)
-  if (isUnit(tail)) return { re: a, im: sign, unit: tail }
-  const second = num(tail)
-  return second && isUnit(second[1]) ? { re: a, im: sign * second[0], unit: second[1] } : null
+/** Where complex text splits into the real part and the imaginary one: the last sign past the first character that is no exponent's, or −1. */
+function splitAt(s: string): number {
+  for (let i = s.length - 1; i > 0; i--) if ((s[i] === '+' || s[i] === '-') && s[i - 1] !== 'e' && s[i - 1] !== 'E') return i
+  return -1
 }
 
 /**
- * An argument: a number is real, a blank 0, a boolean #VALUE!; text is complex, else a real number as VALUE reads
- * it when no sign follows the first character (`"$1,000"`, `"50%"`, `"18:30"`, `"1/2/2025"`; not `"2025-01-31"`),
- * else #NUM!, as in Excel.
+ * Complex text as Excel reads it: spaces ignored, `a`, `bi`, `a±bi` (i or j; b may carry its own sign; `i` is 1i),
+ * each part a real number as the locale reads one in complex text (`Rules.complexPart`: ru-RU reads `1.5` there as
+ * a date, as VALUE does); null if not one.
  */
-function toComplex(v: V): Complex | CErr {
+function parseComplex(text: string, rules: Rules): Complex | null {
+  const s = text.replaceAll(' ', '')
+  const part = (t: string): number | null => {
+    const n = rules.complexPart(t)
+    return n === null || Math.abs(n) > MAX_TEXT ? null : n
+  }
+  const unit = s.at(-1)
+  if (unit !== 'i' && unit !== 'j') {
+    const re = splitAt(s) < 0 ? part(s) : null
+    return re === null ? null : { re, im: 0, unit: '' }
+  }
+  const body = s.slice(0, -1)
+  let at = splitAt(body)
+  // `a+-b`: the imaginary part's own sign follows the one that splits
+  if (at > 1 && (body[at - 1] === '+' || body[at - 1] === '-')) at--
+  const re = at < 0 ? 0 : part(body.slice(0, at))
+  const coef = at < 0 ? body : body.slice(at + 1)
+  const sign = at >= 0 && body[at] === '-' ? -1 : 1
+  const im = coef === '' || coef === '+' ? 1 : coef === '-' ? -1 : part(coef)
+  return re === null || im === null ? null : { re, im: sign * im, unit }
+}
+
+/**
+ * An argument: a number is real, a blank 0, a boolean #VALUE!; text is a real number as VALUE reads it when no
+ * sign follows the first character (`"$1,000"`, `"50%"`, `"18:30"`, `"1/2/2025"`; not `"2025-01-31"`), else complex
+ * text, else #NUM!, as in Excel.
+ */
+function toComplex(v: V, rules: Rules): Complex | CErr {
   if (isErr(v)) return v
   if (typeof v === 'boolean') return E.VALUE
   if (v === null) return { re: 0, im: 0, unit: '' }
   if (typeof v === 'number') return { re: v, im: 0, unit: '' }
-  const n = /[+-]/.test(v.trim().slice(1)) ? null : textToNumber(v)
-  const z = parseComplex(v) ?? (n === null ? null : { re: n, im: 0, unit: '' as const })
+  const n = /[+-]/.test(v.trim().slice(1)) ? null : rules.valueText(v)
+  const z = n === null ? parseComplex(v, rules) : { re: n, im: 0, unit: '' as const }
   // −0 is 0 (IMARGUMENT("-1-0i") is π)
   return z ? { re: z.re + 0, im: z.im + 0, unit: z.unit } : E.NUM
 }
@@ -78,7 +83,7 @@ function unitOf(zs: readonly Complex[]): 'i' | 'j' | null {
 }
 
 /** A part as Excel writes it in complex text: 15 significant digits, positional up to 21 characters (the General rule of `&` with 20). */
-function partText(n: number): string {
+function partText(n: number, rules: Rules): string {
   if (n === 0) return '0'
   const [m, e] = Math.abs(n).toExponential(14).split('e')
   const exp = Number(e)
@@ -86,19 +91,19 @@ function partText(n: number): string {
   const fixed =
     exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
   const text = fixed.length <= 21 ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
-  return n < 0 ? '-' + text : text
+  return (n < 0 ? '-' + text : text).replace('.', rules.decimal)
 }
 
 /** The text of re + im·unit; a part that overflows is #NUM!. */
-function complexText(re: number, im: number, unit: 'i' | 'j'): string | CErr {
+function complexText(re: number, im: number, unit: 'i' | 'j', rules: Rules): string | CErr {
   const r = fitNumber(re)
   const i = fitNumber(im)
   if (isErr(r)) return r
   if (isErr(i)) return i
-  if (i === 0) return partText(r)
-  const it = partText(i)
+  if (i === 0) return partText(r, rules)
+  const it = partText(i, rules)
   const imText = it === '1' ? unit : it === '-1' ? `-${unit}` : `${it}${unit}`
-  return r === 0 ? imText : `${partText(r)}${i > 0 ? '+' : ''}${imText}`
+  return r === 0 ? imText : `${partText(r, rules)}${i > 0 ? '+' : ''}${imText}`
 }
 
 /** a / b by Smith's method; null for b = 0. */
@@ -167,12 +172,13 @@ function powerOf(r: number, n: number): number {
 function unary(f: (x: number, y: number) => [number, number] | null, trig?: 're' | 'im'): FnDef {
   return {
     args: 'v',
-    fn: (v: V) => {
-      const z = toComplex(v)
+    cx: true,
+    fn: (cx: Cx, v: V) => {
+      const z = toComplex(v, cx.rules)
       if (isErr(z)) return z
       if (trig && Math.abs(z[trig]) >= MAX_TRIG) return E.NUM
       const w = f(z.re, z.im)
-      return w ? complexText(w[0], w[1], z.unit || 'i') : E.NUM
+      return w ? complexText(w[0], w[1], z.unit || 'i', cx.rules) : E.NUM
     },
   }
 }
@@ -184,13 +190,13 @@ const log = (x: number, y: number): [number, number] | null => (x === 0 && y ===
 const ZERO: Complex = { re: 0, im: 0, unit: '' }
 
 /** The complex numbers of arguments and ranges in order, blank cells as 0; an error or invalid text stops. */
-function collect(grids: readonly Grid[]): Complex[] | CErr {
+function collect(grids: readonly Grid[], rules: Rules): Complex[] | CErr {
   const out: Complex[] = []
   for (const g of grids) {
     const n = g.rows * g.cols
     const filled = g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w
     for (let i = 0; i < Math.min(n, filled); i++) {
-      const z = toComplex(gridAt(g, i))
+      const z = toComplex(gridAt(g, i), rules)
       if (isErr(z)) return z
       out.push(z)
     }
@@ -204,30 +210,31 @@ function collect(grids: readonly Grid[]): Complex[] | CErr {
 function binary(f: (a: Complex, b: Complex) => [number, number] | null): FnDef {
   return {
     args: 'v v',
-    fn: (x: V, y: V) => {
-      const a = toComplex(x)
+    cx: true,
+    fn: (cx: Cx, x: V, y: V) => {
+      const a = toComplex(x, cx.rules)
       if (isErr(a)) return a
-      const b = toComplex(y)
+      const b = toComplex(y, cx.rules)
       if (isErr(b)) return b
       const unit = unitOf([a, b])
       const w = unit && f(a, b)
-      return w ? complexText(w[0], w[1], unit!) : E.NUM
+      return w ? complexText(w[0], w[1], unit!, cx.rules) : E.NUM
     },
   }
 }
 
 /** Excel reads the suffix first: a suffix other than i, j or blank is #VALUE! whatever the parts are. */
-const SUFFIX = { first: [2], check: { 2: (s: V) => (s === null || s === '' || s === 'i' || s === 'j' ? undefined : E.VALUE) } }
+const SUFFIX = { first: [2], check: { 2: (s: V) => (s === null || s === '' || s === 'i' || s === 'j' ? undefined : E.VALUE) }, cx: true }
 
-const complex = (re: number, im: number, suffix?: V): V => complexText(re, im, suffix === 'j' ? 'j' : 'i')
+const complex = (cx: Cx, re: number, im: number, suffix?: V): V => complexText(re, im, suffix === 'j' ? 'j' : 'i', cx.rules)
 
-function power(v: V, n: number): V {
-  const z = toComplex(v)
+function power(cx: Cx, v: V, n: number): V {
+  const z = toComplex(v, cx.rules)
   if (isErr(z)) return z
   if (z.re === 0 && z.im === 0) return n > 0 ? '0' : E.NUM
   const p = powerOf(Math.sqrt(z.re * z.re + z.im * z.im), n)
   const t = argument(z.re, z.im) * n
-  return complexText(p * Math.cos(t), p * Math.sin(t), z.unit || 'i')
+  return complexText(p * Math.cos(t), p * Math.sin(t), z.unit || 'i', cx.rules)
 }
 
 /** IMSQRT: the modulus as formula.js computes it, underflowing for tiny parts (Excel: IMSQRT("-1e-300") is "0"). */
@@ -240,8 +247,9 @@ function sqrt(x: number, y: number): [number, number] {
 
 const part = (f: (z: Complex) => V): FnDef => ({
   args: 'v',
-  fn: (v: V) => {
-    const z = toComplex(v)
+  cx: true,
+  fn: (cx: Cx, v: V) => {
+    const z = toComplex(v, cx.rules)
     return isErr(z) ? z : f(z)
   },
 })
@@ -268,12 +276,13 @@ export const functions: Record<string, FnDef> = {
     const w = log(x, y)
     return w && [w[0] / LN2, w[1] / LN2]
   }),
-  IMPOWER: { args: 'v x', fn: power },
+  IMPOWER: { args: 'v x', cx: true, fn: power },
   IMPRODUCT: {
     args: 'G',
     rep: 1,
-    fn: (grids: Grid[]) => {
-      const zs = collect(grids)
+    cx: true,
+    fn: (cx: Cx, grids: Grid[]) => {
+      const zs = collect(grids, cx.rules)
       if (isErr(zs)) return zs
       const unit = unitOf(zs)
       if (!unit) return E.VALUE
@@ -281,7 +290,7 @@ export const functions: Record<string, FnDef> = {
       let im = 0
       for (const z of zs) [re, im] = [re * z.re - im * z.im, re * z.im + im * z.re]
       // Excel: an overflowing product is #VALUE!
-      return Number.isFinite(re) && Number.isFinite(im) ? complexText(re, im, unit) : E.VALUE
+      return Number.isFinite(re) && Number.isFinite(im) ? complexText(re, im, unit, cx.rules) : E.VALUE
     },
   },
   IMREAL: part((z) => z.re),
@@ -297,8 +306,9 @@ export const functions: Record<string, FnDef> = {
   IMSUM: {
     args: 'G',
     rep: 1,
-    fn: (grids: Grid[]) => {
-      const zs = collect(grids)
+    cx: true,
+    fn: (cx: Cx, grids: Grid[]) => {
+      const zs = collect(grids, cx.rules)
       if (isErr(zs)) return zs
       const unit = unitOf(zs)
       if (!unit) return E.VALUE
@@ -306,6 +316,7 @@ export const functions: Record<string, FnDef> = {
         zs.reduce((s, z) => s + z.re, 0),
         zs.reduce((s, z) => s + z.im, 0),
         unit,
+        cx.rules,
       )
     },
   },

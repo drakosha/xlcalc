@@ -1,9 +1,9 @@
 /**
  * The two execution modes against each other (`execution-compare.ts`) on every case book: the coverage
- * measurement, the case sets of `docs/excel-cases/`, the probes, the semantics cases, the synthetic book,
- * the seeded books of the structure tests, the spill cases and the spill book with its seeded edits, and a book
- * of every kind of compiled node. Values (cell by cell, without tolerance: `Object.is`), issues with their
- * reasons and check codes, volatile cells and hashes are equal.
+ * measurement, the case sets of `docs/excel-cases/`, the probes, the measurement and the sets in ru-RU, the
+ * semantics cases, the synthetic book, the seeded books of the structure tests, the spill cases and the spill
+ * book with its seeded edits, and a book of every kind of compiled node. Values (cell by cell, without
+ * tolerance: `Object.is`), issues with their reasons and check codes, volatile cells and hashes are equal.
  */
 import { runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
@@ -11,6 +11,7 @@ import { buildProbes, PROBE_SHEETS } from '../bench/coverage/probes.js'
 import type { BookInput, CellInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { CASES, excelBook } from './excel-cases.js'
+import { RU_SETS } from './excel-ru-cases.js'
 import { caseBook, loadSet, SETS } from './excel-sets.js'
 import { byClosures, byEval, ctx, expectSame, strict } from './execution-compare.js'
 import { randomBook } from './seeded-books.js'
@@ -26,6 +27,11 @@ const BOOKS: [string, BookInput][] = [
     return [`the case set ${s.name}`, caseBook(mod.buildProbes(), mod.SHEETS)]
   }))),
   ['the probes', caseBook(buildProbes(), PROBE_SHEETS)],
+  ['the coverage measurement in ru-RU', { ...excelBook(CASES), locale: 'ru-RU' }],
+  ...(await Promise.all(RU_SETS.map(async (s): Promise<[string, BookInput]> => {
+    const mod = await loadSet(s.name)
+    return [`the case set ${s.name} in ru-RU`, { ...caseBook(mod.buildProbes(), mod.SHEETS), locale: 'ru-RU' }]
+  }))),
   ['the semantics cases', semanticsBook(SEMANTICS)],
   ['the synthetic book', synthBook({ seed: 1, rows: 3400 }).book],
   ['the spill book', spillBook()],

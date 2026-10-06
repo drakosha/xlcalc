@@ -10,6 +10,7 @@
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
  *   npx tsx bench/coverage/run.ts probes     пробы Excel en-US вне замера (probes.ts) в docs/excel-probes.json
  *   npx tsx bench/coverage/run.ts probes X   набор sets/X.ts в docs/excel-cases/X.json (тест test/excel-sets.test.ts)
+ *   npx tsx bench/coverage/run.ts probes X ru   тот же набор в Excel ru-RU в docs/excel-cases/ru-RU/X.json (тест test/excel-ru-probes.test.ts)
  *   npx tsx bench/coverage/run.ts struct X   операции над структурой struct/X.ts в docs/excel-struct/X.json (тест test/structure-excel.test.ts)
  *
  * FCOV_ONLY=ABS,SUM ограничивает набор функций (пробный прогон): тогда всё пишется в out/.
@@ -147,6 +148,9 @@ interface ExcelColumn extends Column {
   meta: Column['meta'] & { parts: number; done: number; stopped?: string; dynamic?: boolean }
 }
 
+/** Локаль в метаданных файла ответов. */
+const LOCALE_META: Record<Locale, string> = { en: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', ru: 'ru-RU (системные язык и локаль)' }
+
 /** Формулы замера в Excel пишутся формулами динамического массива (Excel 365), как в наборах с `DYNAMIC`. */
 const DYNAMIC = true
 
@@ -166,7 +170,7 @@ async function stepExcel(locale: Locale) {
   const col: ExcelColumn =
     stored && (stored.meta.dynamic ?? false) === DYNAMIC
       ? stored
-      : { meta: { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLanguages (en) -AppleLocale en_US)' : 'ru-RU (системные язык и локаль)', seconds: 0, parts: ps.length, done: 0, dynamic: DYNAMIC }, values: {} }
+      : { meta: { version: excelVersion(), locale: LOCALE_META[locale], seconds: 0, parts: ps.length, done: 0, dynamic: DYNAMIC }, values: {} }
   delete col.meta.stopped
   const stop = (k: number, why: string) => {
     col.meta.stopped = `часть ${k + 1} из ${ps.length} (${ps[k][0].id} … ${ps[k][ps[k].length - 1].id}): ${why}`
@@ -201,19 +205,20 @@ async function stepExcel(locale: Locale) {
 }
 
 /**
- * Пробы в Excel en-US частями по PART, с той же проверкой модальных окон до и после части. Без имени
- * набора это `probes.ts` и `docs/excel-probes.json`; с именем `<set>` генератор `sets/<set>.ts`
+ * Пробы в Excel частями по PART, с той же проверкой модальных окон до и после части. Без имени
+ * набора это `probes.ts` и `docs/excel-probes.json` (только en-US); с именем `<set>` генератор `sets/<set>.ts`
  * (экспорт `buildProbes()`, если нужны листы данных, `SHEETS`, и `DYNAMIC`, если формулы динамического массива)
- * и ответы в `docs/excel-cases/<set>.json`.
+ * и ответы в `docs/excel-cases/<set>.json` для en-US, в `docs/excel-cases/ru-RU/<set>.json` для ru-RU.
  * Наборы нужны, чтобы параллельные ветки добавляли свои случаи, не трогая общие файлы.
  */
-async function stepProbes(set?: string) {
+async function stepProbes(set: string | undefined, locale: Locale) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
+  if (set === undefined && locale !== 'en') throw new Error('пробы probes.ts считаются только в en-US; набор в ru-RU: probes <набор> ru')
   const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS, DYNAMIC: PROBES_DYNAMIC }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
-  const tag = set ?? 'probes'
-  const target = set ? join(ROOT, `docs/excel-cases/${set}.json`) : join(ROOT, 'docs/excel-probes.json')
+  const tag = `${set ?? 'probes'}-${locale}`
+  const target = !set ? join(ROOT, 'docs/excel-probes.json') : join(ROOT, `docs/excel-cases/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
   // продолжение: ответы, чья формула не изменилась, берутся из файла (FCOV_FRESH=1 заново)
   const read = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { meta: { dynamic?: boolean }; cases: Probe[]; values: Record<string, Val> }) : null
   // ответы формул другого вида (старого или динамического массива) не годятся
@@ -224,7 +229,7 @@ async function stepProbes(set?: string) {
   const rejected: Probe[] = []
   const t0 = Date.now()
   const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000, ...(mod.DYNAMIC ? { dynamic: true } : {}) }
+    const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, ...(mod.DYNAMIC ? { dynamic: true } : {}) }
     writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
   // книга, которую Excel не читает, делится пополам до формулы-виновника
@@ -246,7 +251,7 @@ async function stepProbes(set?: string) {
     await run(cases.slice(0, mid), `${label}a`)
     await run(cases.slice(mid), `${label}b`)
   }
-  await ensureExcel('en')
+  await ensureExcel(locale)
   mkdirSync(OUT, { recursive: true })
   mkdirSync(dirname(target), { recursive: true })
   for (let k = 0; k * PART < ps.length; k++) {
@@ -267,7 +272,7 @@ else if (step === 'fj') await stepFj()
 else if (step === 'lo') await stepLo()
 else if (step === 'excel') await withExcelLock(() => stepExcel(process.argv[3] as Locale))
 else if (step === 'report') writeReport(RESULTS, ONLY !== undefined)
-else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3]))
+else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
 else if (step === 'all') {
@@ -280,7 +285,7 @@ else if (step === 'all') {
   })
   writeReport(RESULTS, ONLY !== undefined)
 } else {
-  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes [набор] | struct набор')
+  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes [набор [ru]] | struct набор')
   process.exit(2)
 }
 console.log(`готово за ${((Date.now() - t0) / 1000).toFixed(1)} с`)

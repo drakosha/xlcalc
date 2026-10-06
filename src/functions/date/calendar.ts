@@ -1,6 +1,7 @@
 /** Calendar functions in Excel's 1900 system (serial 0 is 1900-01-00, 60 the phantom 1900-02-29). */
-import type { FnDef } from '../../args.js'
-import { addMonths, dayAt, daysInMonth, MAX_SERIAL, parseDateText, serialOf, ymd } from '../../dates.js'
+import type { Cx, FnDef } from '../../args.js'
+import { addMonths, dayAt, daysInMonth, MAX_SERIAL, serialOf, ymd } from '../../dates.js'
+import type { Rules } from '../../locale/rules.js'
 import { E, isErr, WHOLE, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
 import { lastDayExcel } from './daycount.js'
@@ -10,10 +11,10 @@ export const weekday = (serial: number) => (serial + 6) % 7
 
 const serialExcel = (y: number, m: number, d: number) => (y === 1900 && m === 2 && d === 29 ? 60 : serialOf(y, m, d))
 
-/** DATEVALUE and TIMEVALUE take text only. */
-export function textDate(v: V): number | CErr {
+/** DATEVALUE and TIMEVALUE take text only, read by the book's locale. */
+export function textDate(v: V, rules: Rules): number | CErr {
   if (typeof v !== 'string') return E.VALUE
-  return parseDateText(v) ?? E.VALUE
+  return rules.dateText(v) ?? E.VALUE
 }
 
 /** The week (from Monday) belongs to the year of its Thursday. */
@@ -54,13 +55,15 @@ function dateDif(start: number, end: number, unit: string): number | CErr {
 
 export const functions: Record<string, FnDef> = {
   // years 0–1899 are added to 1900; month and day roll over, so DATE(1900,2,29) is 60; a day below zero
-  // rounds down, after the whole-number tolerance (DATE(2025,1,-1.9999997) is December 29)
+  // rounds down, after the whole-number tolerance (DATE(2025,1,-1.9999997) is December 29); a day outside
+  // −32768…32767 is 32767 and a month from 32767 up #NUM!, as Excel's 16-bit arguments (the date-day set)
   DATE: {
     args: 'w w n',
     fn: (y: number, m: number, day: number) => {
-      const d = Math.floor(day + WHOLE)
+      const whole = Math.floor(day + WHOLE)
+      const d = whole < -32768 || whole > 32767 ? 32767 : whole
       const year = y >= 0 && y < 1900 ? y + 1900 : y
-      if (year < 1900 || year > 9999) return E.NUM
+      if (year < 1900 || year > 9999 || m >= 32767) return E.NUM
       const first = addMonths(year, m, 0)
       if (first.y < 1899 || first.y > 9999) return E.NUM
       const serial = serialOf(first.y, first.m, 1) + d - 1
@@ -70,8 +73,9 @@ export const functions: Record<string, FnDef> = {
   DATEDIF: { args: 'd d s', fn: dateDif },
   DATEVALUE: {
     args: 'v',
-    fn: (v: V) => {
-      const t = textDate(v)
+    cx: true,
+    fn: (cx: Cx, v: V) => {
+      const t = textDate(v, cx.rules)
       return isErr(t) ? t : Math.floor(t)
     },
   },

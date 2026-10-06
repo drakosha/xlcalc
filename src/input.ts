@@ -6,6 +6,7 @@
 import type { BookInput, CellEdit, CellInput, CellStyle, Clock, ComputeOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
+import { LOCALES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import type { Axis } from './structure/area.js'
 import { sheetKey } from './syntax.js'
@@ -248,7 +249,9 @@ function checkMerges(v: unknown, path: string) {
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale'])
+  if (book.locale !== undefined && !LOCALES.has(checkString(book.locale, `${path}.locale`)))
+    throw new InputError(`${path}.locale`, `unknown locale ${JSON.stringify(book.locale)} (expected ${[...LOCALES.keys()].join(', ')})`)
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {

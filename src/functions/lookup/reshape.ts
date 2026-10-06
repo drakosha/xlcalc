@@ -6,7 +6,8 @@
 import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
 import { isMany } from '../../arrays/lift.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
-import { E, isErr, Rng, toNum, type CErr, type V } from '../../values.js'
+import type { Rules } from '../../locale/rules.js'
+import { E, isErr, Rng, type CErr, type V } from '../../values.js'
 
 /** Rows `rs` and columns `cs` (zero-based) of an array. */
 function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
@@ -18,11 +19,11 @@ function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
 const range = (from: number, to: number) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i)
 
 /** CHOOSECOLS/CHOOSEROWS indexes: numbers (an array gives each of its values), negative from the end, 0 or past the end #VALUE!. */
-function indexes(segs: readonly Segment[], n: number): number[] | CErr {
+function indexes(segs: readonly Segment[], n: number, rules: Rules): number[] | CErr {
   const out: number[] = []
   for (const s of segs)
     for (const v of Array.isArray(s) ? (s as readonly V[]) : [s as V]) {
-      const k = toNum(v)
+      const k = rules.toNum(v)
       if (isErr(k)) return k
       const i = Math.trunc(k)
       if (i === 0 || Math.abs(i) > n) return E.VALUE
@@ -139,12 +140,12 @@ function transpose(a: Arr): Arr {
 }
 
 export const functions: Record<string, FnDef> = {
-  CHOOSECOLS: { args: 'G V', rep: 1, array: true, fn: (g: Grid, segs: Segment[]) => {
-    const cs = indexes(segs, g.cols)
+  CHOOSECOLS: { args: 'G V', rep: 1, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
+    const cs = indexes(segs, g.cols, cx.rules)
     return isErr(cs) ? cs : pick(fromGrid(g), range(0, g.rows), cs)
   } },
-  CHOOSEROWS: { args: 'G V', rep: 1, array: true, fn: (g: Grid, segs: Segment[]) => {
-    const rs = indexes(segs, g.rows)
+  CHOOSEROWS: { args: 'G V', rep: 1, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
+    const rs = indexes(segs, g.rows, cx.rules)
     return isErr(rs) ? rs : pick(fromGrid(g), rs, range(0, g.cols))
   } },
   DROP: takeDrop(false),
