@@ -58,17 +58,22 @@ function takeDrop(take: boolean): FnDef {
   }
 }
 
-/** An argument of HSTACK, VSTACK: a value, a reference or an array, as an array (an error is a 1 × 1 one). */
+/** An argument of HSTACK, VSTACK: a value, a reference or an array, as an array. */
 const stackPart = (cx: Cx, x: Arg): Arr => (x instanceof Arr ? x : x instanceof Rng ? fromGrid(cx.grid(x)) : new Arr(1, 1, 1, 1, [x]))
 
-/** Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. */
+/**
+ * Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. An error given as a
+ * value is the answer (the first in order); a reference to an error cell is stacked, as in Excel.
+ */
 function stack(across: boolean): FnDef {
   return {
-    args: 'p',
+    args: 'P',
     rep: 1,
     cx: true,
     array: true,
     fn: (cx: Cx, xs: Arg[]) => {
+      const e = xs.find(isErr)
+      if (e) return e
       const parts = xs.map((x) => stackPart(cx, x))
       const rows = across ? Math.max(...parts.map((p) => p.rows)) : parts.reduce((s, p) => s + p.rows, 0)
       const cols = across ? parts.reduce((s, p) => s + p.cols, 0) : Math.max(...parts.map((p) => p.cols))

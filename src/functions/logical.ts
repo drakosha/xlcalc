@@ -3,7 +3,7 @@
  * (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); IF, IFERROR, IFNA, SWITCH, TRUE and FALSE are this
  * engine's own (lazy: a branch not taken is not computed).
  */
-import { directError, eachValue, type FnDef, type Segment } from '../args.js'
+import { directError, eachValue, type Arg, type Cx, type FnDef, type Segment } from '../args.js'
 import { compareValues, E, isErr, sameType, toBool, type CErr, type V } from '../values.js'
 
 /** The booleans of AND, OR, XOR: numbers and booleans count, text and blanks are skipped (direct text too); none at all is #VALUE!. */
@@ -29,8 +29,9 @@ const logical = (f: (bs: boolean[]) => boolean): FnDef => ({
 export const functions: Record<string, FnDef> = {
   AND: logical((bs) => bs.every(Boolean)),
   FALSE: { args: '', fn: () => false },
+  // the branch taken as it is, a reference too (SUM(IF(TRUE,A2)) skips text in A2)
   IF: {
-    args: 'a p p?',
+    args: 'a P P?',
     lazy: true,
     fn: (cond: () => V, then: () => V, otherwise?: () => V) => {
       const c = toBool(cond())
@@ -55,7 +56,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   IFS: {
-    args: 'a p',
+    args: 'a P',
     rep: 2,
     fn: (rest: V[]) => {
       for (let i = 0; i < rest.length; i += 2) {
@@ -69,17 +70,20 @@ export const functions: Record<string, FnDef> = {
   NOT: { args: 'b', fn: (b: boolean) => !b },
   OR: logical((bs) => bs.some(Boolean)),
   // values match within a type, text in any case, a blank as 0; a lone last argument is the default;
-  // the expression and the values to match lift, the results do not
+  // the expression and the values to match lift, the results do not; a result is answered as it is, a
+  // reference too (the values to match come the same way and are read as values); 126 pairs at most
   SWITCH: {
-    args: 'a a a',
+    args: 'a P P',
     rep: 1,
+    max: 254,
     lazy: true,
+    cx: true,
     liftAt: (i, n) => i === 0 || (i % 2 === 1 && i < n - 1),
-    fn: (expr: () => V, ...rest: (() => V)[]) => {
+    fn: (cx: Cx, expr: () => V, ...rest: (() => Arg)[]) => {
       const x = expr() ?? 0
       if (isErr(x)) return x
       for (let i = 0; i + 1 < rest.length; i += 2) {
-        const v = rest[i]() ?? 0
+        const v = cx.scalar(rest[i]()) ?? 0
         if (isErr(v)) return v
         if (sameType(x, v) && compareValues(x, v) === 0) return rest[i + 1]()
       }

@@ -79,6 +79,7 @@ function xmatch(key: V, look: Grid, matchMode = 0, searchMode = 1): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  XLOOKUP: { args: 'a G R p? n? n?', array: true, fn: xlookup },
+  // if_not_found is answered as it is, a reference too
+  XLOOKUP: { args: 'a G R P? n? n?', array: true, fn: xlookup },
   XMATCH: { args: 'a G n? n?', fn: xmatch },
 }
