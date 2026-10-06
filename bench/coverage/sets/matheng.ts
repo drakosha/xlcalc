@@ -8,7 +8,7 @@ import type { Probe } from '../probes.js'
 /** Functions newer than Excel 2007: stored with the `_xlfn.` prefix. */
 const XLFN = new Set([
   'ACOT', 'ARABIC', 'BASE', 'BITAND', 'BITLSHIFT', 'BITOR', 'BITRSHIFT', 'BITXOR', 'COMBINA', 'COT', 'COTH', 'CSC', 'DECIMAL',
-  'ERF.PRECISE', 'ERFC.PRECISE', 'IMCOT', 'IMCSCH', 'IMSEC', 'IMSECH', 'IMSINH', 'IMTAN', 'ISO.CEILING', 'PERCENTOF',
+  'ERF.PRECISE', 'ERFC.PRECISE', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMSEC', 'IMSECH', 'IMSINH', 'IMTAN', 'ISO.CEILING', 'PERCENTOF',
   'SEC',
 ])
 
@@ -126,7 +126,7 @@ export function buildProbes(): Probe[] {
   // complex numbers: syntax through IMREAL and IMAGINARY, construction, arithmetic, functions
   for (const t of COMPLEX_TEXTS) for (const fn of ['IMREAL', 'IMAGINARY']) add(fn, JSON.stringify(t))
   each('COMPLEX', ['1,1', '1,-1', '0,-1', '0,0', '-1,0', '1/3,2/3', '1E20,1E-20', '3,4,"I"', '3,4,"J"', '3,4,""', '3,4,D!A1', '3,4,TRUE', '3,4,"k"', '3,4,"ij"', '3,4,1', '0.1+0.2,0', '-0.5,-2.5,"j"', '123456789012345678,1', 'D!A4,1', '"3","4"', '1,1,"j"', '0,1,"j"', '0,-1,"j"', '1E300*10,1', '"abc",1', '3,"abc"'])
-  const single = ['IMABS', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOT', 'IMCSCH', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMTAN']
+  const single = ['IMABS', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMTAN']
   for (const fn of single) each(fn, [...COMPLEX_ARGS, 'D!A4', '"1+j"'])
   each('IMABS', ['"1e308+1e308i"', '"1e-200+1e-200i"', '"-3-4j"'])
   each('IMARGUMENT', ['"-1-0i"', '"1e308+1e308i"', '"-1-i"', '"-1+i"', '"1e-300i"'])
@@ -136,6 +136,7 @@ export function buildProbes(): Probe[] {
   each('IMSIN', ['"1+800i"', '"1E10"', '"134217728"', '"134217727"'])
   each('IMTAN', ['"1+400i"', '"1.5707963267949"', '"134217728"'])
   each('IMCOT', ['"1e-300"', '"1+400i"'])
+  each('IMCOSH', ['"710"', '"1+1E10i"'])
   each('IMSINH', ['"710"', '"-1+2j"'])
   each('IMSQRT', ['"1e308+1e308i"', '"-4"', '"4"', '"-4-0i"', '"i"', '"-1e-300"'])
   each('IMLN', ['"1e308+1e308i"', '"-1-i"', '"1e-300"', '"-0"'])

@@ -1,6 +1,7 @@
 /**
- * Сравнение ответа с эталоном: числа с допуском |a−b| ≤ 1e-9·max(1,|a|) (мягкий 1e-6), строки,
- * логические и ошибки (по коду) точно. Несовпадение получает вид.
+ * Сравнение ответа с эталоном: числа с допуском |a−b| ≤ 1e-9·max(1,|a|) (мягкий 1e-6), комплексные числа
+ * текстом (эталон с мнимой единицей) по частям с тем же допуском, прочие строки, логические и ошибки (по коду)
+ * точно. Несовпадение получает вид.
  */
 import type { Val } from './formulajs.js'
 
@@ -57,12 +58,34 @@ export function compare(ref: Val, got: Val, threw?: boolean): Verdict {
   }
   if (ref.t === 's') {
     const g = got.v as string
-    if (g === ref.v) return { ok: true }
+    if (g === ref.v || sameComplex(ref.v, g, TOL)) return { ok: true }
     if (g !== ref.v && g.toUpperCase() === ref.v) return { ok: false, kind: 'строка: регистр' }
     return { ok: false, kind: sameNumbers(ref.v, g) ? 'строка: формат числа' : 'строка' }
   }
   if (ref.t === 'b') return got.v === ref.v ? { ok: true } : { ok: false, kind: 'логическое' }
   return { ok: false, kind: 'прочее' }
+}
+
+const NUM = '\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?'
+/** Комплексное число в записи Excel с мнимой единицей: `3+4i`, `-0.5-2.5j`, `4i`, `-i`, `1E+21+i`. */
+const COMPLEX = new RegExp(`^(?:(-?${NUM})([+-])|(-?))(${NUM})?([ij])$`)
+
+function complexParts(s: string): [number, number, string] | null {
+  const m = COMPLEX.exec(s)
+  if (!m) return null
+  const sign = (m[2] ?? m[3]) === '-' ? -1 : 1
+  return [m[1] === undefined ? 0 : Number(m[1]), sign * (m[4] === undefined ? 1 : Number(m[4])), m[5]]
+}
+
+/**
+ * Комплексный ответ (эталон с мнимой единицей) совпадает по частям с допуском и по единице: последняя из 15
+ * значащих цифр зависит от библиотеки синусов (Excel на Маке берёт libm Apple, V8 свою). Строка без мнимой
+ * единицы сравнивается точно: числа текстом (TEXT, &, BASE с нулями слева) должны совпадать знак в знак.
+ */
+function sameComplex(ref: string, got: string, tol: number): boolean {
+  const a = complexParts(ref)
+  const b = complexParts(got)
+  return !!a && !!b && a[2] === b[2] && close(a[0], b[0], tol) && close(a[1], b[1], tol)
 }
 
 /** Регистр: formulajs отдаёт строчными то, что Excel пишет заглавными (шестнадцатеричные цифры). Числа: строки с одинаковым текстом между числами и равными (с допуском) числами: "1.5+2i" и "1.50000001+2i". */

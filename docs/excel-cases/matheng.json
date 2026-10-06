@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.825
+  "seconds": 2.406
  },
  "cases": [
   {
@@ -8346,6 +8346,78 @@
    "formula": "IMCOS(\"1+j\")"
   },
   {
+   "id": "IMCOSH#1",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"1+i\")"
+  },
+  {
+   "id": "IMCOSH#2",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"-1\")"
+  },
+  {
+   "id": "IMCOSH#3",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"i\")"
+  },
+  {
+   "id": "IMCOSH#4",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"-i\")"
+  },
+  {
+   "id": "IMCOSH#5",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"0\")"
+  },
+  {
+   "id": "IMCOSH#6",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"3-4i\")"
+  },
+  {
+   "id": "IMCOSH#7",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"-2.5+0.5j\")"
+  },
+  {
+   "id": "IMCOSH#8",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"1e-10+i\")"
+  },
+  {
+   "id": "IMCOSH#9",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(5)"
+  },
+  {
+   "id": "IMCOSH#10",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(-5.5)"
+  },
+  {
+   "id": "IMCOSH#11",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(D!A4)"
+  },
+  {
+   "id": "IMCOSH#12",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"1+j\")"
+  },
+  {
    "id": "IMCOT#1",
    "group": "IMCOT",
    "fn": "IMCOT",
@@ -8416,6 +8488,78 @@
    "group": "IMCOT",
    "fn": "IMCOT",
    "formula": "_xlfn.IMCOT(\"1+j\")"
+  },
+  {
+   "id": "IMCSC#1",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"1+i\")"
+  },
+  {
+   "id": "IMCSC#2",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"-1\")"
+  },
+  {
+   "id": "IMCSC#3",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"i\")"
+  },
+  {
+   "id": "IMCSC#4",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"-i\")"
+  },
+  {
+   "id": "IMCSC#5",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"0\")"
+  },
+  {
+   "id": "IMCSC#6",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"3-4i\")"
+  },
+  {
+   "id": "IMCSC#7",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"-2.5+0.5j\")"
+  },
+  {
+   "id": "IMCSC#8",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"1e-10+i\")"
+  },
+  {
+   "id": "IMCSC#9",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(5)"
+  },
+  {
+   "id": "IMCSC#10",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(-5.5)"
+  },
+  {
+   "id": "IMCSC#11",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(D!A4)"
+  },
+  {
+   "id": "IMCSC#12",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(\"1+j\")"
   },
   {
    "id": "IMCSCH#1",
@@ -9376,6 +9520,18 @@
    "group": "IMCOT",
    "fn": "IMCOT",
    "formula": "_xlfn.IMCOT(\"1+400i\")"
+  },
+  {
+   "id": "IMCOSH#13",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"710\")"
+  },
+  {
+   "id": "IMCOSH#14",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(\"1+1E10i\")"
   },
   {
    "id": "IMSINH#13",
@@ -30837,6 +30993,38 @@
    "t": "e",
    "v": "NUM"
   },
+  "MOD#77": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#78": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#79": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#80": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#81": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#82": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#83": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#84": {
+   "t": "e",
+   "v": "NUM"
+  },
   "BESSELJ#155": {
    "t": "n",
    "v": -0.00006084365248836347
@@ -30945,35 +31133,107 @@
    "t": "e",
    "v": "VALUE"
   },
-  "MOD#77": {
-   "t": "n",
-   "v": 0
+  "IMCOSH#1": {
+   "t": "s",
+   "v": "0.833730025131149+0.988897705762865i"
   },
-  "MOD#78": {
-   "t": "n",
-   "v": 0
+  "IMCOSH#2": {
+   "t": "s",
+   "v": "1.54308063481524"
   },
-  "MOD#79": {
-   "t": "n",
-   "v": 0
+  "IMCOSH#3": {
+   "t": "s",
+   "v": "0.54030230586814"
   },
-  "MOD#80": {
-   "t": "n",
-   "v": 0
+  "IMCOSH#4": {
+   "t": "s",
+   "v": "0.54030230586814"
   },
-  "MOD#81": {
+  "IMCOSH#5": {
+   "t": "s",
+   "v": "1"
+  },
+  "IMCOSH#6": {
+   "t": "s",
+   "v": "-6.58066304055116+7.58155274274655i"
+  },
+  "IMCOSH#7": {
+   "t": "s",
+   "v": "5.38159031181664-2.90062254198806j"
+  },
+  "IMCOSH#8": {
+   "t": "s",
+   "v": "0.54030230586814+8.41470984807897E-11i"
+  },
+  "IMCOSH#9": {
+   "t": "s",
+   "v": "74.2099485247878"
+  },
+  "IMCOSH#10": {
+   "t": "s",
+   "v": "122.348009517829"
+  },
+  "IMCOSH#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCOSH#12": {
+   "t": "s",
+   "v": "0.833730025131149+0.988897705762865j"
+  },
+  "IMCSC#1": {
+   "t": "s",
+   "v": "0.621518017170428-0.303931001628427i"
+  },
+  "IMCSC#2": {
+   "t": "s",
+   "v": "-1.18839510577812"
+  },
+  "IMCSC#3": {
+   "t": "s",
+   "v": "-0.850918128239322i"
+  },
+  "IMCSC#4": {
+   "t": "s",
+   "v": "0.850918128239322i"
+  },
+  "IMCSC#5": {
    "t": "e",
    "v": "NUM"
   },
-  "MOD#82": {
+  "IMCSC#6": {
+   "t": "s",
+   "v": "0.0051744731840194-0.036275889628626i"
+  },
+  "IMCSC#7": {
+   "t": "s",
+   "v": "-1.07168944442822+0.662960237405746j"
+  },
+  "IMCSC#8": {
+   "t": "s",
+   "v": "1.11728552744927E-10-0.850918128239322i"
+  },
+  "IMCSC#9": {
+   "t": "s",
+   "v": "-1.04283521277141"
+  },
+  "IMCSC#10": {
+   "t": "s",
+   "v": "1.41735342936147"
+  },
+  "IMCSC#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCSC#12": {
+   "t": "s",
+   "v": "0.621518017170428-0.303931001628427j"
+  },
+  "IMCOSH#13": {
    "t": "e",
    "v": "NUM"
   },
-  "MOD#83": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "MOD#84": {
+  "IMCOSH#14": {
    "t": "e",
    "v": "NUM"
   }

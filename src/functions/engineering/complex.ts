@@ -246,7 +246,9 @@ export const functions: Record<string, FnDef> = {
   IMARGUMENT: part((z) => (z.re === 0 && z.im === 0 ? E.DIV0 : Math.atan2(z.im, z.re))),
   IMCONJUGATE: unary((x, y) => [x, -y]),
   IMCOS: unary(cos, 're'),
+  IMCOSH: unary(cosh, 'im'),
   IMCOT: unary(cot, 're'),
+  IMCSC: unary((x, y) => naive(1, 0, ...sin(x, y)), 're'),
   IMCSCH: unary((x, y) => {
     const d = ch(2 * x) - Math.cos(2 * y)
     return [(2 * sh(x) * Math.cos(y)) / d, (-2 * ch(x) * Math.sin(y)) / d]
