@@ -25,17 +25,28 @@ export const collator: { compare(a: string, b: string): number } =
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const cache = new Map<string, Crit>()
 
-function wildRe(s: string): RegExp | null {
-  if (!/[*?~]/.test(s)) return null
+const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+/**
+ * The regular expression source of a wildcard pattern: `*` any text, `?` one character, `~` escapes `*`,
+ * `?` and `~`; with `anyEscape`, `~` escapes any character and a trailing `~` is dropped (Excel's SEARCH and lookups).
+ */
+export function wildSource(s: string, anyEscape = false): string {
   let re = ''
   for (let i = 0; i < s.length; i++) {
     const ch = s[i]
-    if (ch === '~' && i + 1 < s.length && '*?~'.includes(s[i + 1])) re += '\\' + s[++i]
+    if (ch === '~' && anyEscape) re += i + 1 < s.length ? literal(s[++i]) : ''
+    else if (ch === '~' && i + 1 < s.length && '*?~'.includes(s[i + 1])) re += '\\' + s[++i]
     else if (ch === '*') re += '[\\s\\S]*'
     else if (ch === '?') re += '[\\s\\S]'
     else re += ch.replace(/[.+^${}()|[\]\\]/g, '\\$&')
   }
-  return new RegExp(`^${re}$`, 'iu')
+  return re
+}
+
+/** A whole-text, case-insensitive matcher for a pattern with wildcards; null for a pattern without them. */
+export function wildRe(s: string, anyEscape = false): RegExp | null {
+  return /[*?~]/.test(s) ? new RegExp(`^${wildSource(s, anyEscape)}$`, 'iu') : null
 }
 
 /** A criterion from a value (the scalar after evaluating the argument). */
