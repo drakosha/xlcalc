@@ -1,6 +1,5 @@
 /** What the engine keeps about spilled arrays (`docs/spill.md`): where they spilled, what waits, why not. */
 import type { Rect } from '../structure/area.js'
-import type { V } from '../values.js'
 import type { Fill } from './fill.js'
 import { Occupied } from './occupied.js'
 

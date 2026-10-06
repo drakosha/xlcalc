@@ -23,11 +23,14 @@ export function outValue(v: CellValue): CellValue {
 
 const rangeText = (x: { r1: number; c1: number; r2: number; c2: number }) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`
 
+/** A spilled formula's range and the value of its unstored cells. */
+const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: rangeText(x), spillFill: outValue(toCellValue(x.fills[0].v)) } : { spill: rangeText(x) })
+
 /** A formula's spill (`spill`, `spillFill`) or a spilled cell's formula (`spillOf`), as results and changes show them. */
 export function spillFields(state: EngineState, s: number, r: number, c: number): Pick<CellResult, 'spill' | 'spillFill' | 'spillOf'> {
   const id = state.at.get(key(s, r, c))
   const x = id === undefined ? undefined : state.spills.on.get(id)
-  if (x) return x.fills.length ? { spill: rangeText(x), spillFill: outValue(toCellValue(x.fills[0].v)) } : { spill: rangeText(x) }
+  if (x) return anchorFields(x)
   const o = ownerOf(state, s, r, c)
   return o ? { spillOf: formatAddress(o.r1, o.c1) } : {}
 }
@@ -62,8 +65,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number): Compu
       if (inCell.meta !== undefined) out.meta = inCell.meta
       const x = id === undefined ? undefined : state.spills.on.get(id)
       if (x) {
-        out.spill = rangeText(x)
-        if (x.fills.length) out.spillFill = outValue(toCellValue(x.fills[0].v))
+        Object.assign(out, anchorFields(x))
         for (const f of x.fills) fills.push({ sheet: sheet.name, range: rangeText(f), value: out.spillFill! })
       }
       const from = spill.get(addr)
