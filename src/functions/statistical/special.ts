@@ -48,7 +48,7 @@ export function dpois(x: number, m: number): number {
   return Math.exp(-stirlerr(x) - bd0(x, m)) / Math.sqrt(2 * Math.PI * x)
 }
 
-/** The gamma density with shape a and scale b at x > 0, in Loader's form (as R's dgamma). */
+/** The gamma density with shape a and scale b at x > 0, through the Poisson density. */
 export const dgamma = (x: number, a: number, b = 1) => (a < 1 ? (dpois(a, x / b) * a) / x : dpois(a - 1, x / b) / b)
 
 /** C(n, x) p^x q^(n−x) for real 0 ≤ x ≤ n, with q = 1 − p given separately. */

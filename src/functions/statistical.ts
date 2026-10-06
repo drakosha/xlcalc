@@ -12,7 +12,7 @@ import { functions as tests } from './statistical/tests.js'
  * Computed, but Excel fails on a few extreme cases (#NUM! where the quantile exists, a tie BINOM.INV breaks
  * the other way): outside the whitelist until those cases are listed as known differences.
  */
-const PENDING = new Set(['BINOM.INV', 'CHIINV', 'CHISQ.INV', 'CHISQ.INV.RT', 'GAMMA.INV', 'GAMMAINV'])
+const PENDING = new Set<string>(['BINOM.INV', 'CHIINV', 'CHISQ.INV', 'CHISQ.INV.RT', 'GAMMA.INV', 'GAMMAINV'])
 
 const all: Record<string, FnDef> = { ...descriptive, ...conditional, ...distributions, ...inverse, ...tests, ...regression, ...compatibility }
 

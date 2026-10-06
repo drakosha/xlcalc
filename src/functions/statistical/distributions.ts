@@ -129,7 +129,7 @@ export function negbinomDist(f: number, s: number, p: number, cumulative: boolea
   return cumulative ? ibeta(p, 1 - p, s, f + 1)[0] : (s / (s + f)) * dbinom(s, s + f, p, 1 - p)
 }
 
-/** P(X = k) for k successes in a sample of n from N items with K successes (R's dhyper by binomial densities). */
+/** P(X = k) for k successes in a sample of n from N items with K successes (a ratio of binomial densities, Loader). */
 function hypgeomPdf(k: number, n: number, K: number, N: number): number {
   if (k < Math.max(0, n - N + K) || k > Math.min(n, K)) return 0
   const p = n / N
