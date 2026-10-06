@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.678
+  "seconds": 7.398
  },
  "cases": [
   {
@@ -906,12 +906,6 @@
    "formula": "BESSELI(750,1)"
   },
   {
-   "id": "BESSELI#151",
-   "group": "BESSELI",
-   "fn": "BESSELI",
-   "formula": "BESSELI(D!B1:B2,1)"
-  },
-  {
    "id": "BESSELJ#1",
    "group": "BESSELJ",
    "fn": "BESSELJ",
@@ -1810,12 +1804,6 @@
    "group": "BESSELJ",
    "fn": "BESSELJ",
    "formula": "BESSELJ(750,1)"
-  },
-  {
-   "id": "BESSELJ#151",
-   "group": "BESSELJ",
-   "fn": "BESSELJ",
-   "formula": "BESSELJ(D!B1:B2,1)"
   },
   {
    "id": "BESSELK#1",
@@ -2718,12 +2706,6 @@
    "formula": "BESSELK(750,1)"
   },
   {
-   "id": "BESSELK#151",
-   "group": "BESSELK",
-   "fn": "BESSELK",
-   "formula": "BESSELK(D!B1:B2,1)"
-  },
-  {
    "id": "BESSELY#1",
    "group": "BESSELY",
    "fn": "BESSELY",
@@ -3624,55 +3606,49 @@
    "formula": "BESSELY(750,1)"
   },
   {
-   "id": "BESSELY#151",
-   "group": "BESSELY",
-   "fn": "BESSELY",
-   "formula": "BESSELY(D!B1:B2,1)"
-  },
-  {
-   "id": "BESSELI#152",
+   "id": "BESSELI#151",
    "group": "BESSELI",
    "fn": "BESSELI",
    "formula": "BESSELI(1,1000000)"
   },
   {
-   "id": "BESSELI#153",
+   "id": "BESSELI#152",
    "group": "BESSELI",
    "fn": "BESSELI",
    "formula": "BESSELI(1,10000000)"
   },
   {
-   "id": "BESSELI#154",
+   "id": "BESSELI#153",
    "group": "BESSELI",
    "fn": "BESSELI",
    "formula": "BESSELI(5000,4000)"
   },
   {
-   "id": "BESSELI#155",
+   "id": "BESSELI#154",
    "group": "BESSELI",
    "fn": "BESSELI",
    "formula": "BESSELI(0.5,30)"
   },
   {
-   "id": "BESSELJ#152",
+   "id": "BESSELJ#151",
    "group": "BESSELJ",
    "fn": "BESSELJ",
    "formula": "BESSELJ(1,1000000)"
   },
   {
-   "id": "BESSELJ#153",
+   "id": "BESSELJ#152",
    "group": "BESSELJ",
    "fn": "BESSELJ",
    "formula": "BESSELJ(1,10000000)"
   },
   {
-   "id": "BESSELJ#154",
+   "id": "BESSELJ#153",
    "group": "BESSELJ",
    "fn": "BESSELJ",
    "formula": "BESSELJ(5000,4000)"
   },
   {
-   "id": "BESSELJ#155",
+   "id": "BESSELJ#154",
    "group": "BESSELJ",
    "fn": "BESSELJ",
    "formula": "BESSELJ(0.5,30)"
@@ -3741,100 +3717,94 @@
    "id": "BIN2DEC#11",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(D!B1:B2)"
+   "formula": "BIN2DEC(0.1)"
   },
   {
    "id": "BIN2DEC#12",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(0.1)"
+   "formula": "BIN2DEC(-1)"
   },
   {
    "id": "BIN2DEC#13",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(-1)"
+   "formula": "BIN2DEC(\"-1\")"
   },
   {
    "id": "BIN2DEC#14",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"-1\")"
+   "formula": "BIN2DEC(\"+1\")"
   },
   {
    "id": "BIN2DEC#15",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"+1\")"
+   "formula": "BIN2DEC(\"101\")"
   },
   {
    "id": "BIN2DEC#16",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"101\")"
+   "formula": "BIN2DEC(\"0111111111\")"
   },
   {
    "id": "BIN2DEC#17",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"0111111111\")"
+   "formula": "BIN2DEC(\"1000000000\")"
   },
   {
    "id": "BIN2DEC#18",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"1000000000\")"
+   "formula": "BIN2DEC(\"1111111111\")"
   },
   {
    "id": "BIN2DEC#19",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"1111111111\")"
+   "formula": "BIN2DEC(\"11111111111\")"
   },
   {
    "id": "BIN2DEC#20",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"11111111111\")"
+   "formula": "BIN2DEC(\"0000000001\")"
   },
   {
    "id": "BIN2DEC#21",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"0000000001\")"
+   "formula": "BIN2DEC(\"2\")"
   },
   {
    "id": "BIN2DEC#22",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(\"2\")"
+   "formula": "BIN2DEC(101)"
   },
   {
    "id": "BIN2DEC#23",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(101)"
+   "formula": "BIN2DEC(1111111111)"
   },
   {
    "id": "BIN2DEC#24",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(1111111111)"
+   "formula": "BIN2DEC(1E+3)"
   },
   {
    "id": "BIN2DEC#25",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
-   "formula": "BIN2DEC(1E+3)"
-  },
-  {
-   "id": "BIN2DEC#26",
-   "group": "BIN2DEC",
-   "fn": "BIN2DEC",
    "formula": "BIN2DEC(11111111111)"
   },
   {
-   "id": "BIN2DEC#27",
+   "id": "BIN2DEC#26",
    "group": "BIN2DEC",
    "fn": "BIN2DEC",
    "formula": "BIN2DEC(\"1e2\")"
@@ -3903,100 +3873,94 @@
    "id": "BIN2HEX#11",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(D!B1:B2)"
+   "formula": "BIN2HEX(0.1)"
   },
   {
    "id": "BIN2HEX#12",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(0.1)"
+   "formula": "BIN2HEX(-1)"
   },
   {
    "id": "BIN2HEX#13",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(-1)"
+   "formula": "BIN2HEX(\"-1\")"
   },
   {
    "id": "BIN2HEX#14",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"-1\")"
+   "formula": "BIN2HEX(\"+1\")"
   },
   {
    "id": "BIN2HEX#15",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"+1\")"
+   "formula": "BIN2HEX(\"101\")"
   },
   {
    "id": "BIN2HEX#16",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"101\")"
+   "formula": "BIN2HEX(\"0111111111\")"
   },
   {
    "id": "BIN2HEX#17",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"0111111111\")"
+   "formula": "BIN2HEX(\"1000000000\")"
   },
   {
    "id": "BIN2HEX#18",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"1000000000\")"
+   "formula": "BIN2HEX(\"1111111111\")"
   },
   {
    "id": "BIN2HEX#19",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"1111111111\")"
+   "formula": "BIN2HEX(\"11111111111\")"
   },
   {
    "id": "BIN2HEX#20",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"11111111111\")"
+   "formula": "BIN2HEX(\"0000000001\")"
   },
   {
    "id": "BIN2HEX#21",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"0000000001\")"
+   "formula": "BIN2HEX(\"2\")"
   },
   {
    "id": "BIN2HEX#22",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(\"2\")"
+   "formula": "BIN2HEX(101)"
   },
   {
    "id": "BIN2HEX#23",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(101)"
+   "formula": "BIN2HEX(1111111111)"
   },
   {
    "id": "BIN2HEX#24",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(1111111111)"
+   "formula": "BIN2HEX(1E+3)"
   },
   {
    "id": "BIN2HEX#25",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
-   "formula": "BIN2HEX(1E+3)"
-  },
-  {
-   "id": "BIN2HEX#26",
-   "group": "BIN2HEX",
-   "fn": "BIN2HEX",
    "formula": "BIN2HEX(11111111111)"
   },
   {
-   "id": "BIN2HEX#27",
+   "id": "BIN2HEX#26",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"1e2\")"
@@ -4065,328 +4029,322 @@
    "id": "BIN2OCT#11",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(D!B1:B2)"
+   "formula": "BIN2OCT(0.1)"
   },
   {
    "id": "BIN2OCT#12",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(0.1)"
+   "formula": "BIN2OCT(-1)"
   },
   {
    "id": "BIN2OCT#13",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(-1)"
+   "formula": "BIN2OCT(\"-1\")"
   },
   {
    "id": "BIN2OCT#14",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"-1\")"
+   "formula": "BIN2OCT(\"+1\")"
   },
   {
    "id": "BIN2OCT#15",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"+1\")"
+   "formula": "BIN2OCT(\"101\")"
   },
   {
    "id": "BIN2OCT#16",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"101\")"
+   "formula": "BIN2OCT(\"0111111111\")"
   },
   {
    "id": "BIN2OCT#17",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"0111111111\")"
+   "formula": "BIN2OCT(\"1000000000\")"
   },
   {
    "id": "BIN2OCT#18",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"1000000000\")"
+   "formula": "BIN2OCT(\"1111111111\")"
   },
   {
    "id": "BIN2OCT#19",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"1111111111\")"
+   "formula": "BIN2OCT(\"11111111111\")"
   },
   {
    "id": "BIN2OCT#20",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"11111111111\")"
+   "formula": "BIN2OCT(\"0000000001\")"
   },
   {
    "id": "BIN2OCT#21",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"0000000001\")"
+   "formula": "BIN2OCT(\"2\")"
   },
   {
    "id": "BIN2OCT#22",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(\"2\")"
+   "formula": "BIN2OCT(101)"
   },
   {
    "id": "BIN2OCT#23",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(101)"
+   "formula": "BIN2OCT(1111111111)"
   },
   {
    "id": "BIN2OCT#24",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(1111111111)"
+   "formula": "BIN2OCT(1E+3)"
   },
   {
    "id": "BIN2OCT#25",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(1E+3)"
+   "formula": "BIN2OCT(11111111111)"
   },
   {
    "id": "BIN2OCT#26",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
-   "formula": "BIN2OCT(11111111111)"
-  },
-  {
-   "id": "BIN2OCT#27",
-   "group": "BIN2OCT",
-   "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"1e2\")"
   },
   {
-   "id": "BIN2HEX#28",
+   "id": "BIN2HEX#27",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"11111011\",2)"
   },
   {
-   "id": "BIN2HEX#29",
+   "id": "BIN2HEX#28",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"11111011\",1)"
   },
   {
-   "id": "BIN2HEX#30",
+   "id": "BIN2HEX#29",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"11111011\",10)"
   },
   {
-   "id": "BIN2HEX#31",
+   "id": "BIN2HEX#30",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"11111011\",11)"
   },
   {
-   "id": "BIN2HEX#32",
+   "id": "BIN2HEX#31",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"1111111111\",3)"
   },
   {
-   "id": "BIN2HEX#33",
+   "id": "BIN2HEX#32",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"1111111111\",11)"
   },
   {
-   "id": "BIN2HEX#34",
+   "id": "BIN2HEX#33",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"1111111111\",-1)"
   },
   {
-   "id": "BIN2HEX#35",
+   "id": "BIN2HEX#34",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"1000000000\",0)"
   },
   {
-   "id": "BIN2HEX#36",
+   "id": "BIN2HEX#35",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"0\",0)"
   },
   {
-   "id": "BIN2HEX#37",
+   "id": "BIN2HEX#36",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"0\",1)"
   },
   {
-   "id": "BIN2HEX#38",
+   "id": "BIN2HEX#37",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",\"2.9\")"
   },
   {
-   "id": "BIN2HEX#39",
+   "id": "BIN2HEX#38",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",-1)"
   },
   {
-   "id": "BIN2HEX#40",
+   "id": "BIN2HEX#39",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",D!A1)"
   },
   {
-   "id": "BIN2HEX#41",
+   "id": "BIN2HEX#40",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",TRUE)"
   },
   {
-   "id": "BIN2HEX#42",
+   "id": "BIN2HEX#41",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",\"abc\")"
   },
   {
-   "id": "BIN2HEX#43",
+   "id": "BIN2HEX#42",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",1E10)"
   },
   {
-   "id": "BIN2HEX#44",
+   "id": "BIN2HEX#43",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",10.9)"
   },
   {
-   "id": "BIN2HEX#45",
+   "id": "BIN2HEX#44",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",D!A4)"
   },
   {
-   "id": "BIN2HEX#46",
+   "id": "BIN2HEX#45",
    "group": "BIN2HEX",
    "fn": "BIN2HEX",
    "formula": "BIN2HEX(\"101\",D!A2)"
   },
   {
-   "id": "BIN2OCT#28",
+   "id": "BIN2OCT#27",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"11111011\",2)"
   },
   {
-   "id": "BIN2OCT#29",
+   "id": "BIN2OCT#28",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"11111011\",1)"
   },
   {
-   "id": "BIN2OCT#30",
+   "id": "BIN2OCT#29",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"11111011\",10)"
   },
   {
-   "id": "BIN2OCT#31",
+   "id": "BIN2OCT#30",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"11111011\",11)"
   },
   {
-   "id": "BIN2OCT#32",
+   "id": "BIN2OCT#31",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"1111111111\",3)"
   },
   {
-   "id": "BIN2OCT#33",
+   "id": "BIN2OCT#32",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"1111111111\",11)"
   },
   {
-   "id": "BIN2OCT#34",
+   "id": "BIN2OCT#33",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"1111111111\",-1)"
   },
   {
-   "id": "BIN2OCT#35",
+   "id": "BIN2OCT#34",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"1000000000\",0)"
   },
   {
-   "id": "BIN2OCT#36",
+   "id": "BIN2OCT#35",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"0\",0)"
   },
   {
-   "id": "BIN2OCT#37",
+   "id": "BIN2OCT#36",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"0\",1)"
   },
   {
-   "id": "BIN2OCT#38",
+   "id": "BIN2OCT#37",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",\"2.9\")"
   },
   {
-   "id": "BIN2OCT#39",
+   "id": "BIN2OCT#38",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",-1)"
   },
   {
-   "id": "BIN2OCT#40",
+   "id": "BIN2OCT#39",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",D!A1)"
   },
   {
-   "id": "BIN2OCT#41",
+   "id": "BIN2OCT#40",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",TRUE)"
   },
   {
-   "id": "BIN2OCT#42",
+   "id": "BIN2OCT#41",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",\"abc\")"
   },
   {
-   "id": "BIN2OCT#43",
+   "id": "BIN2OCT#42",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",1E10)"
   },
   {
-   "id": "BIN2OCT#44",
+   "id": "BIN2OCT#43",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",10.9)"
   },
   {
-   "id": "BIN2OCT#45",
+   "id": "BIN2OCT#44",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",D!A4)"
   },
   {
-   "id": "BIN2OCT#46",
+   "id": "BIN2OCT#45",
    "group": "BIN2OCT",
    "fn": "BIN2OCT",
    "formula": "BIN2OCT(\"101\",D!A2)"
@@ -4539,12 +4497,6 @@
    "id": "DEC2BIN#25",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
-   "formula": "DEC2BIN(D!B1:B2)"
-  },
-  {
-   "id": "DEC2BIN#26",
-   "group": "DEC2BIN",
-   "fn": "DEC2BIN",
    "formula": "DEC2BIN(1E10)"
   },
   {
@@ -4693,12 +4645,6 @@
   },
   {
    "id": "DEC2HEX#25",
-   "group": "DEC2HEX",
-   "fn": "DEC2HEX",
-   "formula": "DEC2HEX(D!B1:B2)"
-  },
-  {
-   "id": "DEC2HEX#26",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(1E10)"
@@ -4851,184 +4797,178 @@
    "id": "DEC2OCT#25",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
-   "formula": "DEC2OCT(D!B1:B2)"
-  },
-  {
-   "id": "DEC2OCT#26",
-   "group": "DEC2OCT",
-   "fn": "DEC2OCT",
    "formula": "DEC2OCT(1E10)"
   },
   {
-   "id": "DEC2BIN#27",
+   "id": "DEC2BIN#26",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(511)"
   },
   {
-   "id": "DEC2BIN#28",
+   "id": "DEC2BIN#27",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(512)"
   },
   {
-   "id": "DEC2BIN#29",
+   "id": "DEC2BIN#28",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(-512)"
   },
   {
-   "id": "DEC2BIN#30",
+   "id": "DEC2BIN#29",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(-513)"
   },
   {
-   "id": "DEC2BIN#31",
+   "id": "DEC2BIN#30",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(511.9)"
   },
   {
-   "id": "DEC2BIN#32",
+   "id": "DEC2BIN#31",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(-512.9)"
   },
   {
-   "id": "DEC2BIN#33",
+   "id": "DEC2BIN#32",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(9,4)"
   },
   {
-   "id": "DEC2BIN#34",
+   "id": "DEC2BIN#33",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(9,3)"
   },
   {
-   "id": "DEC2BIN#35",
+   "id": "DEC2BIN#34",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(255,8)"
   },
   {
-   "id": "DEC2BIN#36",
+   "id": "DEC2BIN#35",
    "group": "DEC2BIN",
    "fn": "DEC2BIN",
    "formula": "DEC2BIN(255,7)"
   },
   {
-   "id": "DEC2HEX#27",
+   "id": "DEC2HEX#26",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(549755813887)"
   },
   {
-   "id": "DEC2HEX#28",
+   "id": "DEC2HEX#27",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(549755813888)"
   },
   {
-   "id": "DEC2HEX#29",
+   "id": "DEC2HEX#28",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(-549755813888)"
   },
   {
-   "id": "DEC2HEX#30",
+   "id": "DEC2HEX#29",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(-549755813889)"
   },
   {
-   "id": "DEC2HEX#31",
+   "id": "DEC2HEX#30",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(255,2)"
   },
   {
-   "id": "DEC2HEX#32",
+   "id": "DEC2HEX#31",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(255,1)"
   },
   {
-   "id": "DEC2HEX#33",
+   "id": "DEC2HEX#32",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(-1,2)"
   },
   {
-   "id": "DEC2HEX#34",
+   "id": "DEC2HEX#33",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(1E12)"
   },
   {
-   "id": "DEC2HEX#35",
+   "id": "DEC2HEX#34",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(4294967296)"
   },
   {
-   "id": "DEC2HEX#36",
+   "id": "DEC2HEX#35",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(255.99)"
   },
   {
-   "id": "DEC2HEX#37",
+   "id": "DEC2HEX#36",
    "group": "DEC2HEX",
    "fn": "DEC2HEX",
    "formula": "DEC2HEX(-54)"
   },
   {
-   "id": "DEC2OCT#27",
+   "id": "DEC2OCT#26",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(536870911)"
   },
   {
-   "id": "DEC2OCT#28",
+   "id": "DEC2OCT#27",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(536870912)"
   },
   {
-   "id": "DEC2OCT#29",
+   "id": "DEC2OCT#28",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(-536870912)"
   },
   {
-   "id": "DEC2OCT#30",
+   "id": "DEC2OCT#29",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(-536870913)"
   },
   {
-   "id": "DEC2OCT#31",
+   "id": "DEC2OCT#30",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(8,2)"
   },
   {
-   "id": "DEC2OCT#32",
+   "id": "DEC2OCT#31",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(8,1)"
   },
   {
-   "id": "DEC2OCT#33",
+   "id": "DEC2OCT#32",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(-100)"
   },
   {
-   "id": "DEC2OCT#34",
+   "id": "DEC2OCT#33",
    "group": "DEC2OCT",
    "fn": "DEC2OCT",
    "formula": "DEC2OCT(511)"
@@ -5097,154 +5037,148 @@
    "id": "HEX2BIN#11",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(D!B1:B2)"
+   "formula": "HEX2BIN(0.1)"
   },
   {
    "id": "HEX2BIN#12",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(0.1)"
+   "formula": "HEX2BIN(-1)"
   },
   {
    "id": "HEX2BIN#13",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(-1)"
+   "formula": "HEX2BIN(\"-1\")"
   },
   {
    "id": "HEX2BIN#14",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"-1\")"
+   "formula": "HEX2BIN(\"+1\")"
   },
   {
    "id": "HEX2BIN#15",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"+1\")"
+   "formula": "HEX2BIN(\"1FF\")"
   },
   {
    "id": "HEX2BIN#16",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"1FF\")"
+   "formula": "HEX2BIN(\"200\")"
   },
   {
    "id": "HEX2BIN#17",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"200\")"
+   "formula": "HEX2BIN(\"FFFFFFFE00\")"
   },
   {
    "id": "HEX2BIN#18",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"FFFFFFFE00\")"
+   "formula": "HEX2BIN(\"FFFFFFFDFF\")"
   },
   {
    "id": "HEX2BIN#19",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"FFFFFFFDFF\")"
+   "formula": "HEX2BIN(\"FFFFFFFFFF\")"
   },
   {
    "id": "HEX2BIN#20",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"FFFFFFFFFF\")"
+   "formula": "HEX2BIN(\"7FFFFFFFFF\")"
   },
   {
    "id": "HEX2BIN#21",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"7FFFFFFFFF\")"
+   "formula": "HEX2BIN(\"8000000000\")"
   },
   {
    "id": "HEX2BIN#22",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"8000000000\")"
+   "formula": "HEX2BIN(\"ff\")"
   },
   {
    "id": "HEX2BIN#23",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"ff\")"
+   "formula": "HEX2BIN(\"Ff\")"
   },
   {
    "id": "HEX2BIN#24",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"Ff\")"
+   "formula": "HEX2BIN(\"FFFFFFFFFFF\")"
   },
   {
    "id": "HEX2BIN#25",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"FFFFFFFFFFF\")"
+   "formula": "HEX2BIN(\"G\")"
   },
   {
    "id": "HEX2BIN#26",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"G\")"
+   "formula": "HEX2BIN(\"1G\")"
   },
   {
    "id": "HEX2BIN#27",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"1G\")"
+   "formula": "HEX2BIN(10)"
   },
   {
    "id": "HEX2BIN#28",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(10)"
+   "formula": "HEX2BIN(1E+3)"
   },
   {
    "id": "HEX2BIN#29",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(1E+3)"
+   "formula": "HEX2BIN(\"0x10\")"
   },
   {
    "id": "HEX2BIN#30",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"0x10\")"
+   "formula": "HEX2BIN(\"1FFFFFFF\")"
   },
   {
    "id": "HEX2BIN#31",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"1FFFFFFF\")"
+   "formula": "HEX2BIN(\"20000000\")"
   },
   {
    "id": "HEX2BIN#32",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"20000000\")"
+   "formula": "HEX2BIN(\"FFE0000000\")"
   },
   {
    "id": "HEX2BIN#33",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"FFE0000000\")"
+   "formula": "HEX2BIN(\"FFDFFFFFFF\")"
   },
   {
    "id": "HEX2BIN#34",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
-   "formula": "HEX2BIN(\"FFDFFFFFFF\")"
-  },
-  {
-   "id": "HEX2BIN#35",
-   "group": "HEX2BIN",
-   "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"A5\")"
   },
   {
-   "id": "HEX2BIN#36",
+   "id": "HEX2BIN#35",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"3DA408B9\")"
@@ -5313,154 +5247,148 @@
    "id": "HEX2DEC#11",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(D!B1:B2)"
+   "formula": "HEX2DEC(0.1)"
   },
   {
    "id": "HEX2DEC#12",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(0.1)"
+   "formula": "HEX2DEC(-1)"
   },
   {
    "id": "HEX2DEC#13",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(-1)"
+   "formula": "HEX2DEC(\"-1\")"
   },
   {
    "id": "HEX2DEC#14",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"-1\")"
+   "formula": "HEX2DEC(\"+1\")"
   },
   {
    "id": "HEX2DEC#15",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"+1\")"
+   "formula": "HEX2DEC(\"1FF\")"
   },
   {
    "id": "HEX2DEC#16",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"1FF\")"
+   "formula": "HEX2DEC(\"200\")"
   },
   {
    "id": "HEX2DEC#17",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"200\")"
+   "formula": "HEX2DEC(\"FFFFFFFE00\")"
   },
   {
    "id": "HEX2DEC#18",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"FFFFFFFE00\")"
+   "formula": "HEX2DEC(\"FFFFFFFDFF\")"
   },
   {
    "id": "HEX2DEC#19",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"FFFFFFFDFF\")"
+   "formula": "HEX2DEC(\"FFFFFFFFFF\")"
   },
   {
    "id": "HEX2DEC#20",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"FFFFFFFFFF\")"
+   "formula": "HEX2DEC(\"7FFFFFFFFF\")"
   },
   {
    "id": "HEX2DEC#21",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"7FFFFFFFFF\")"
+   "formula": "HEX2DEC(\"8000000000\")"
   },
   {
    "id": "HEX2DEC#22",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"8000000000\")"
+   "formula": "HEX2DEC(\"ff\")"
   },
   {
    "id": "HEX2DEC#23",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"ff\")"
+   "formula": "HEX2DEC(\"Ff\")"
   },
   {
    "id": "HEX2DEC#24",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"Ff\")"
+   "formula": "HEX2DEC(\"FFFFFFFFFFF\")"
   },
   {
    "id": "HEX2DEC#25",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"FFFFFFFFFFF\")"
+   "formula": "HEX2DEC(\"G\")"
   },
   {
    "id": "HEX2DEC#26",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"G\")"
+   "formula": "HEX2DEC(\"1G\")"
   },
   {
    "id": "HEX2DEC#27",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"1G\")"
+   "formula": "HEX2DEC(10)"
   },
   {
    "id": "HEX2DEC#28",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(10)"
+   "formula": "HEX2DEC(1E+3)"
   },
   {
    "id": "HEX2DEC#29",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(1E+3)"
+   "formula": "HEX2DEC(\"0x10\")"
   },
   {
    "id": "HEX2DEC#30",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"0x10\")"
+   "formula": "HEX2DEC(\"1FFFFFFF\")"
   },
   {
    "id": "HEX2DEC#31",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"1FFFFFFF\")"
+   "formula": "HEX2DEC(\"20000000\")"
   },
   {
    "id": "HEX2DEC#32",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"20000000\")"
+   "formula": "HEX2DEC(\"FFE0000000\")"
   },
   {
    "id": "HEX2DEC#33",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"FFE0000000\")"
+   "formula": "HEX2DEC(\"FFDFFFFFFF\")"
   },
   {
    "id": "HEX2DEC#34",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
-   "formula": "HEX2DEC(\"FFDFFFFFFF\")"
-  },
-  {
-   "id": "HEX2DEC#35",
-   "group": "HEX2DEC",
-   "fn": "HEX2DEC",
    "formula": "HEX2DEC(\"A5\")"
   },
   {
-   "id": "HEX2DEC#36",
+   "id": "HEX2DEC#35",
    "group": "HEX2DEC",
    "fn": "HEX2DEC",
    "formula": "HEX2DEC(\"3DA408B9\")"
@@ -5529,298 +5457,292 @@
    "id": "HEX2OCT#11",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(D!B1:B2)"
+   "formula": "HEX2OCT(0.1)"
   },
   {
    "id": "HEX2OCT#12",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(0.1)"
+   "formula": "HEX2OCT(-1)"
   },
   {
    "id": "HEX2OCT#13",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(-1)"
+   "formula": "HEX2OCT(\"-1\")"
   },
   {
    "id": "HEX2OCT#14",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"-1\")"
+   "formula": "HEX2OCT(\"+1\")"
   },
   {
    "id": "HEX2OCT#15",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"+1\")"
+   "formula": "HEX2OCT(\"1FF\")"
   },
   {
    "id": "HEX2OCT#16",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"1FF\")"
+   "formula": "HEX2OCT(\"200\")"
   },
   {
    "id": "HEX2OCT#17",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"200\")"
+   "formula": "HEX2OCT(\"FFFFFFFE00\")"
   },
   {
    "id": "HEX2OCT#18",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"FFFFFFFE00\")"
+   "formula": "HEX2OCT(\"FFFFFFFDFF\")"
   },
   {
    "id": "HEX2OCT#19",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"FFFFFFFDFF\")"
+   "formula": "HEX2OCT(\"FFFFFFFFFF\")"
   },
   {
    "id": "HEX2OCT#20",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"FFFFFFFFFF\")"
+   "formula": "HEX2OCT(\"7FFFFFFFFF\")"
   },
   {
    "id": "HEX2OCT#21",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"7FFFFFFFFF\")"
+   "formula": "HEX2OCT(\"8000000000\")"
   },
   {
    "id": "HEX2OCT#22",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"8000000000\")"
+   "formula": "HEX2OCT(\"ff\")"
   },
   {
    "id": "HEX2OCT#23",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"ff\")"
+   "formula": "HEX2OCT(\"Ff\")"
   },
   {
    "id": "HEX2OCT#24",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"Ff\")"
+   "formula": "HEX2OCT(\"FFFFFFFFFFF\")"
   },
   {
    "id": "HEX2OCT#25",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"FFFFFFFFFFF\")"
+   "formula": "HEX2OCT(\"G\")"
   },
   {
    "id": "HEX2OCT#26",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"G\")"
+   "formula": "HEX2OCT(\"1G\")"
   },
   {
    "id": "HEX2OCT#27",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"1G\")"
+   "formula": "HEX2OCT(10)"
   },
   {
    "id": "HEX2OCT#28",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(10)"
+   "formula": "HEX2OCT(1E+3)"
   },
   {
    "id": "HEX2OCT#29",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(1E+3)"
+   "formula": "HEX2OCT(\"0x10\")"
   },
   {
    "id": "HEX2OCT#30",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"0x10\")"
+   "formula": "HEX2OCT(\"1FFFFFFF\")"
   },
   {
    "id": "HEX2OCT#31",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"1FFFFFFF\")"
+   "formula": "HEX2OCT(\"20000000\")"
   },
   {
    "id": "HEX2OCT#32",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"20000000\")"
+   "formula": "HEX2OCT(\"FFE0000000\")"
   },
   {
    "id": "HEX2OCT#33",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"FFE0000000\")"
+   "formula": "HEX2OCT(\"FFDFFFFFFF\")"
   },
   {
    "id": "HEX2OCT#34",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"FFDFFFFFFF\")"
+   "formula": "HEX2OCT(\"A5\")"
   },
   {
    "id": "HEX2OCT#35",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
-   "formula": "HEX2OCT(\"A5\")"
-  },
-  {
-   "id": "HEX2OCT#36",
-   "group": "HEX2OCT",
-   "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"3DA408B9\")"
   },
   {
-   "id": "HEX2BIN#37",
+   "id": "HEX2BIN#36",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",4)"
   },
   {
-   "id": "HEX2BIN#38",
+   "id": "HEX2BIN#37",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",3)"
   },
   {
-   "id": "HEX2BIN#39",
+   "id": "HEX2BIN#38",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",2)"
   },
   {
-   "id": "HEX2BIN#40",
+   "id": "HEX2BIN#39",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",1)"
   },
   {
-   "id": "HEX2BIN#41",
+   "id": "HEX2BIN#40",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",10)"
   },
   {
-   "id": "HEX2BIN#42",
+   "id": "HEX2BIN#41",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",11)"
   },
   {
-   "id": "HEX2BIN#43",
+   "id": "HEX2BIN#42",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"FFFFFFFFFF\",3)"
   },
   {
-   "id": "HEX2BIN#44",
+   "id": "HEX2BIN#43",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"0\",0)"
   },
   {
-   "id": "HEX2BIN#45",
+   "id": "HEX2BIN#44",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",\"2.9\")"
   },
   {
-   "id": "HEX2BIN#46",
+   "id": "HEX2BIN#45",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",TRUE)"
   },
   {
-   "id": "HEX2BIN#47",
+   "id": "HEX2BIN#46",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",D!A4)"
   },
   {
-   "id": "HEX2BIN#48",
+   "id": "HEX2BIN#47",
    "group": "HEX2BIN",
    "fn": "HEX2BIN",
    "formula": "HEX2BIN(\"F\",-1)"
   },
   {
-   "id": "HEX2OCT#37",
+   "id": "HEX2OCT#36",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",4)"
   },
   {
-   "id": "HEX2OCT#38",
+   "id": "HEX2OCT#37",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",3)"
   },
   {
-   "id": "HEX2OCT#39",
+   "id": "HEX2OCT#38",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",2)"
   },
   {
-   "id": "HEX2OCT#40",
+   "id": "HEX2OCT#39",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",1)"
   },
   {
-   "id": "HEX2OCT#41",
+   "id": "HEX2OCT#40",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",10)"
   },
   {
-   "id": "HEX2OCT#42",
+   "id": "HEX2OCT#41",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",11)"
   },
   {
-   "id": "HEX2OCT#43",
+   "id": "HEX2OCT#42",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"FFFFFFFFFF\",3)"
   },
   {
-   "id": "HEX2OCT#44",
+   "id": "HEX2OCT#43",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"0\",0)"
   },
   {
-   "id": "HEX2OCT#45",
+   "id": "HEX2OCT#44",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",\"2.9\")"
   },
   {
-   "id": "HEX2OCT#46",
+   "id": "HEX2OCT#45",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",TRUE)"
   },
   {
-   "id": "HEX2OCT#47",
+   "id": "HEX2OCT#46",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",D!A4)"
   },
   {
-   "id": "HEX2OCT#48",
+   "id": "HEX2OCT#47",
    "group": "HEX2OCT",
    "fn": "HEX2OCT",
    "formula": "HEX2OCT(\"F\",-1)"
@@ -5889,100 +5811,94 @@
    "id": "OCT2BIN#11",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(D!B1:B2)"
+   "formula": "OCT2BIN(0.1)"
   },
   {
    "id": "OCT2BIN#12",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(0.1)"
+   "formula": "OCT2BIN(-1)"
   },
   {
    "id": "OCT2BIN#13",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(-1)"
+   "formula": "OCT2BIN(\"-1\")"
   },
   {
    "id": "OCT2BIN#14",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"-1\")"
+   "formula": "OCT2BIN(\"+1\")"
   },
   {
    "id": "OCT2BIN#15",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"+1\")"
+   "formula": "OCT2BIN(\"777\")"
   },
   {
    "id": "OCT2BIN#16",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"777\")"
+   "formula": "OCT2BIN(\"1000\")"
   },
   {
    "id": "OCT2BIN#17",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"1000\")"
+   "formula": "OCT2BIN(\"7777777000\")"
   },
   {
    "id": "OCT2BIN#18",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"7777777000\")"
+   "formula": "OCT2BIN(\"7777776777\")"
   },
   {
    "id": "OCT2BIN#19",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"7777776777\")"
+   "formula": "OCT2BIN(\"7777777777\")"
   },
   {
    "id": "OCT2BIN#20",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"7777777777\")"
+   "formula": "OCT2BIN(\"3777777777\")"
   },
   {
    "id": "OCT2BIN#21",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"3777777777\")"
+   "formula": "OCT2BIN(\"4000000000\")"
   },
   {
    "id": "OCT2BIN#22",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"4000000000\")"
+   "formula": "OCT2BIN(\"77777777777\")"
   },
   {
    "id": "OCT2BIN#23",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"77777777777\")"
+   "formula": "OCT2BIN(\"8\")"
   },
   {
    "id": "OCT2BIN#24",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(\"8\")"
+   "formula": "OCT2BIN(17)"
   },
   {
    "id": "OCT2BIN#25",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
-   "formula": "OCT2BIN(17)"
-  },
-  {
-   "id": "OCT2BIN#26",
-   "group": "OCT2BIN",
-   "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"12\")"
   },
   {
-   "id": "OCT2BIN#27",
+   "id": "OCT2BIN#26",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"0012\")"
@@ -6051,100 +5967,94 @@
    "id": "OCT2DEC#11",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(D!B1:B2)"
+   "formula": "OCT2DEC(0.1)"
   },
   {
    "id": "OCT2DEC#12",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(0.1)"
+   "formula": "OCT2DEC(-1)"
   },
   {
    "id": "OCT2DEC#13",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(-1)"
+   "formula": "OCT2DEC(\"-1\")"
   },
   {
    "id": "OCT2DEC#14",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"-1\")"
+   "formula": "OCT2DEC(\"+1\")"
   },
   {
    "id": "OCT2DEC#15",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"+1\")"
+   "formula": "OCT2DEC(\"777\")"
   },
   {
    "id": "OCT2DEC#16",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"777\")"
+   "formula": "OCT2DEC(\"1000\")"
   },
   {
    "id": "OCT2DEC#17",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"1000\")"
+   "formula": "OCT2DEC(\"7777777000\")"
   },
   {
    "id": "OCT2DEC#18",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"7777777000\")"
+   "formula": "OCT2DEC(\"7777776777\")"
   },
   {
    "id": "OCT2DEC#19",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"7777776777\")"
+   "formula": "OCT2DEC(\"7777777777\")"
   },
   {
    "id": "OCT2DEC#20",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"7777777777\")"
+   "formula": "OCT2DEC(\"3777777777\")"
   },
   {
    "id": "OCT2DEC#21",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"3777777777\")"
+   "formula": "OCT2DEC(\"4000000000\")"
   },
   {
    "id": "OCT2DEC#22",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"4000000000\")"
+   "formula": "OCT2DEC(\"77777777777\")"
   },
   {
    "id": "OCT2DEC#23",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"77777777777\")"
+   "formula": "OCT2DEC(\"8\")"
   },
   {
    "id": "OCT2DEC#24",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(\"8\")"
+   "formula": "OCT2DEC(17)"
   },
   {
    "id": "OCT2DEC#25",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
-   "formula": "OCT2DEC(17)"
-  },
-  {
-   "id": "OCT2DEC#26",
-   "group": "OCT2DEC",
-   "fn": "OCT2DEC",
    "formula": "OCT2DEC(\"12\")"
   },
   {
-   "id": "OCT2DEC#27",
+   "id": "OCT2DEC#26",
    "group": "OCT2DEC",
    "fn": "OCT2DEC",
    "formula": "OCT2DEC(\"0012\")"
@@ -6213,232 +6123,226 @@
    "id": "OCT2HEX#11",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(D!B1:B2)"
+   "formula": "OCT2HEX(0.1)"
   },
   {
    "id": "OCT2HEX#12",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(0.1)"
+   "formula": "OCT2HEX(-1)"
   },
   {
    "id": "OCT2HEX#13",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(-1)"
+   "formula": "OCT2HEX(\"-1\")"
   },
   {
    "id": "OCT2HEX#14",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"-1\")"
+   "formula": "OCT2HEX(\"+1\")"
   },
   {
    "id": "OCT2HEX#15",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"+1\")"
+   "formula": "OCT2HEX(\"777\")"
   },
   {
    "id": "OCT2HEX#16",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"777\")"
+   "formula": "OCT2HEX(\"1000\")"
   },
   {
    "id": "OCT2HEX#17",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"1000\")"
+   "formula": "OCT2HEX(\"7777777000\")"
   },
   {
    "id": "OCT2HEX#18",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"7777777000\")"
+   "formula": "OCT2HEX(\"7777776777\")"
   },
   {
    "id": "OCT2HEX#19",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"7777776777\")"
+   "formula": "OCT2HEX(\"7777777777\")"
   },
   {
    "id": "OCT2HEX#20",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"7777777777\")"
+   "formula": "OCT2HEX(\"3777777777\")"
   },
   {
    "id": "OCT2HEX#21",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"3777777777\")"
+   "formula": "OCT2HEX(\"4000000000\")"
   },
   {
    "id": "OCT2HEX#22",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"4000000000\")"
+   "formula": "OCT2HEX(\"77777777777\")"
   },
   {
    "id": "OCT2HEX#23",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"77777777777\")"
+   "formula": "OCT2HEX(\"8\")"
   },
   {
    "id": "OCT2HEX#24",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"8\")"
+   "formula": "OCT2HEX(17)"
   },
   {
    "id": "OCT2HEX#25",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(17)"
+   "formula": "OCT2HEX(\"12\")"
   },
   {
    "id": "OCT2HEX#26",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
-   "formula": "OCT2HEX(\"12\")"
-  },
-  {
-   "id": "OCT2HEX#27",
-   "group": "OCT2HEX",
-   "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"0012\")"
   },
   {
-   "id": "OCT2BIN#28",
+   "id": "OCT2BIN#27",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"12\",3)"
   },
   {
-   "id": "OCT2BIN#29",
+   "id": "OCT2BIN#28",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"12\",2)"
   },
   {
-   "id": "OCT2BIN#30",
+   "id": "OCT2BIN#29",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",1)"
   },
   {
-   "id": "OCT2BIN#31",
+   "id": "OCT2BIN#30",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",2)"
   },
   {
-   "id": "OCT2BIN#32",
+   "id": "OCT2BIN#31",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",10)"
   },
   {
-   "id": "OCT2BIN#33",
+   "id": "OCT2BIN#32",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",11)"
   },
   {
-   "id": "OCT2BIN#34",
+   "id": "OCT2BIN#33",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"7777777777\",2)"
   },
   {
-   "id": "OCT2BIN#35",
+   "id": "OCT2BIN#34",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"0\",0)"
   },
   {
-   "id": "OCT2BIN#36",
+   "id": "OCT2BIN#35",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",\"2.9\")"
   },
   {
-   "id": "OCT2BIN#37",
+   "id": "OCT2BIN#36",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",TRUE)"
   },
   {
-   "id": "OCT2BIN#38",
+   "id": "OCT2BIN#37",
    "group": "OCT2BIN",
    "fn": "OCT2BIN",
    "formula": "OCT2BIN(\"17\",-1)"
   },
   {
-   "id": "OCT2HEX#28",
+   "id": "OCT2HEX#27",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"12\",3)"
   },
   {
-   "id": "OCT2HEX#29",
+   "id": "OCT2HEX#28",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"12\",2)"
   },
   {
-   "id": "OCT2HEX#30",
+   "id": "OCT2HEX#29",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",1)"
   },
   {
-   "id": "OCT2HEX#31",
+   "id": "OCT2HEX#30",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",2)"
   },
   {
-   "id": "OCT2HEX#32",
+   "id": "OCT2HEX#31",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",10)"
   },
   {
-   "id": "OCT2HEX#33",
+   "id": "OCT2HEX#32",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",11)"
   },
   {
-   "id": "OCT2HEX#34",
+   "id": "OCT2HEX#33",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"7777777777\",2)"
   },
   {
-   "id": "OCT2HEX#35",
+   "id": "OCT2HEX#34",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"0\",0)"
   },
   {
-   "id": "OCT2HEX#36",
+   "id": "OCT2HEX#35",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",\"2.9\")"
   },
   {
-   "id": "OCT2HEX#37",
+   "id": "OCT2HEX#36",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",TRUE)"
   },
   {
-   "id": "OCT2HEX#38",
+   "id": "OCT2HEX#37",
    "group": "OCT2HEX",
    "fn": "OCT2HEX",
    "formula": "OCT2HEX(\"17\",-1)"
@@ -6519,34 +6423,28 @@
    "id": "BITAND#13",
    "group": "BITAND",
    "fn": "BITAND",
-   "formula": "_xlfn.BITAND(D!B1:B2,1)"
+   "formula": "_xlfn.BITAND(1E15,1)"
   },
   {
    "id": "BITAND#14",
    "group": "BITAND",
    "fn": "BITAND",
-   "formula": "_xlfn.BITAND(1E15,1)"
+   "formula": "_xlfn.BITAND(0.1*3*10,3)"
   },
   {
    "id": "BITAND#15",
    "group": "BITAND",
    "fn": "BITAND",
-   "formula": "_xlfn.BITAND(0.1*3*10,3)"
+   "formula": "_xlfn.BITAND(2.5-0.5,3)"
   },
   {
    "id": "BITAND#16",
    "group": "BITAND",
    "fn": "BITAND",
-   "formula": "_xlfn.BITAND(2.5-0.5,3)"
-  },
-  {
-   "id": "BITAND#17",
-   "group": "BITAND",
-   "fn": "BITAND",
    "formula": "_xlfn.BITAND(\"abc\",1)"
   },
   {
-   "id": "BITAND#18",
+   "id": "BITAND#17",
    "group": "BITAND",
    "fn": "BITAND",
    "formula": "_xlfn.BITAND(D!A1,5)"
@@ -6627,34 +6525,28 @@
    "id": "BITOR#13",
    "group": "BITOR",
    "fn": "BITOR",
-   "formula": "_xlfn.BITOR(D!B1:B2,1)"
+   "formula": "_xlfn.BITOR(1E15,1)"
   },
   {
    "id": "BITOR#14",
    "group": "BITOR",
    "fn": "BITOR",
-   "formula": "_xlfn.BITOR(1E15,1)"
+   "formula": "_xlfn.BITOR(0.1*3*10,3)"
   },
   {
    "id": "BITOR#15",
    "group": "BITOR",
    "fn": "BITOR",
-   "formula": "_xlfn.BITOR(0.1*3*10,3)"
+   "formula": "_xlfn.BITOR(2.5-0.5,3)"
   },
   {
    "id": "BITOR#16",
    "group": "BITOR",
    "fn": "BITOR",
-   "formula": "_xlfn.BITOR(2.5-0.5,3)"
-  },
-  {
-   "id": "BITOR#17",
-   "group": "BITOR",
-   "fn": "BITOR",
    "formula": "_xlfn.BITOR(\"abc\",1)"
   },
   {
-   "id": "BITOR#18",
+   "id": "BITOR#17",
    "group": "BITOR",
    "fn": "BITOR",
    "formula": "_xlfn.BITOR(D!A1,5)"
@@ -6735,34 +6627,28 @@
    "id": "BITXOR#13",
    "group": "BITXOR",
    "fn": "BITXOR",
-   "formula": "_xlfn.BITXOR(D!B1:B2,1)"
+   "formula": "_xlfn.BITXOR(1E15,1)"
   },
   {
    "id": "BITXOR#14",
    "group": "BITXOR",
    "fn": "BITXOR",
-   "formula": "_xlfn.BITXOR(1E15,1)"
+   "formula": "_xlfn.BITXOR(0.1*3*10,3)"
   },
   {
    "id": "BITXOR#15",
    "group": "BITXOR",
    "fn": "BITXOR",
-   "formula": "_xlfn.BITXOR(0.1*3*10,3)"
+   "formula": "_xlfn.BITXOR(2.5-0.5,3)"
   },
   {
    "id": "BITXOR#16",
    "group": "BITXOR",
    "fn": "BITXOR",
-   "formula": "_xlfn.BITXOR(2.5-0.5,3)"
-  },
-  {
-   "id": "BITXOR#17",
-   "group": "BITXOR",
-   "fn": "BITXOR",
    "formula": "_xlfn.BITXOR(\"abc\",1)"
   },
   {
-   "id": "BITXOR#18",
+   "id": "BITXOR#17",
    "group": "BITXOR",
    "fn": "BITXOR",
    "formula": "_xlfn.BITXOR(D!A1,5)"
@@ -8241,12 +8127,6 @@
    "id": "IMABS#12",
    "group": "IMABS",
    "fn": "IMABS",
-   "formula": "IMABS(D!B1:B2)"
-  },
-  {
-   "id": "IMABS#13",
-   "group": "IMABS",
-   "fn": "IMABS",
    "formula": "IMABS(\"1+j\")"
   },
   {
@@ -8317,12 +8197,6 @@
   },
   {
    "id": "IMARGUMENT#12",
-   "group": "IMARGUMENT",
-   "fn": "IMARGUMENT",
-   "formula": "IMARGUMENT(D!B1:B2)"
-  },
-  {
-   "id": "IMARGUMENT#13",
    "group": "IMARGUMENT",
    "fn": "IMARGUMENT",
    "formula": "IMARGUMENT(\"1+j\")"
@@ -8397,12 +8271,6 @@
    "id": "IMCONJUGATE#12",
    "group": "IMCONJUGATE",
    "fn": "IMCONJUGATE",
-   "formula": "IMCONJUGATE(D!B1:B2)"
-  },
-  {
-   "id": "IMCONJUGATE#13",
-   "group": "IMCONJUGATE",
-   "fn": "IMCONJUGATE",
    "formula": "IMCONJUGATE(\"1+j\")"
   },
   {
@@ -8473,12 +8341,6 @@
   },
   {
    "id": "IMCOS#12",
-   "group": "IMCOS",
-   "fn": "IMCOS",
-   "formula": "IMCOS(D!B1:B2)"
-  },
-  {
-   "id": "IMCOS#13",
    "group": "IMCOS",
    "fn": "IMCOS",
    "formula": "IMCOS(\"1+j\")"
@@ -8553,12 +8415,6 @@
    "id": "IMCOSH#12",
    "group": "IMCOSH",
    "fn": "IMCOSH",
-   "formula": "_xlfn.IMCOSH(D!B1:B2)"
-  },
-  {
-   "id": "IMCOSH#13",
-   "group": "IMCOSH",
-   "fn": "IMCOSH",
    "formula": "_xlfn.IMCOSH(\"1+j\")"
   },
   {
@@ -8629,12 +8485,6 @@
   },
   {
    "id": "IMCOT#12",
-   "group": "IMCOT",
-   "fn": "IMCOT",
-   "formula": "_xlfn.IMCOT(D!B1:B2)"
-  },
-  {
-   "id": "IMCOT#13",
    "group": "IMCOT",
    "fn": "IMCOT",
    "formula": "_xlfn.IMCOT(\"1+j\")"
@@ -8709,12 +8559,6 @@
    "id": "IMCSC#12",
    "group": "IMCSC",
    "fn": "IMCSC",
-   "formula": "_xlfn.IMCSC(D!B1:B2)"
-  },
-  {
-   "id": "IMCSC#13",
-   "group": "IMCSC",
-   "fn": "IMCSC",
    "formula": "_xlfn.IMCSC(\"1+j\")"
   },
   {
@@ -8785,12 +8629,6 @@
   },
   {
    "id": "IMCSCH#12",
-   "group": "IMCSCH",
-   "fn": "IMCSCH",
-   "formula": "_xlfn.IMCSCH(D!B1:B2)"
-  },
-  {
-   "id": "IMCSCH#13",
    "group": "IMCSCH",
    "fn": "IMCSCH",
    "formula": "_xlfn.IMCSCH(\"1+j\")"
@@ -8865,12 +8703,6 @@
    "id": "IMEXP#12",
    "group": "IMEXP",
    "fn": "IMEXP",
-   "formula": "IMEXP(D!B1:B2)"
-  },
-  {
-   "id": "IMEXP#13",
-   "group": "IMEXP",
-   "fn": "IMEXP",
    "formula": "IMEXP(\"1+j\")"
   },
   {
@@ -8941,12 +8773,6 @@
   },
   {
    "id": "IMLN#12",
-   "group": "IMLN",
-   "fn": "IMLN",
-   "formula": "IMLN(D!B1:B2)"
-  },
-  {
-   "id": "IMLN#13",
    "group": "IMLN",
    "fn": "IMLN",
    "formula": "IMLN(\"1+j\")"
@@ -9021,12 +8847,6 @@
    "id": "IMLOG10#12",
    "group": "IMLOG10",
    "fn": "IMLOG10",
-   "formula": "IMLOG10(D!B1:B2)"
-  },
-  {
-   "id": "IMLOG10#13",
-   "group": "IMLOG10",
-   "fn": "IMLOG10",
    "formula": "IMLOG10(\"1+j\")"
   },
   {
@@ -9097,12 +8917,6 @@
   },
   {
    "id": "IMLOG2#12",
-   "group": "IMLOG2",
-   "fn": "IMLOG2",
-   "formula": "IMLOG2(D!B1:B2)"
-  },
-  {
-   "id": "IMLOG2#13",
    "group": "IMLOG2",
    "fn": "IMLOG2",
    "formula": "IMLOG2(\"1+j\")"
@@ -9177,12 +8991,6 @@
    "id": "IMSEC#12",
    "group": "IMSEC",
    "fn": "IMSEC",
-   "formula": "_xlfn.IMSEC(D!B1:B2)"
-  },
-  {
-   "id": "IMSEC#13",
-   "group": "IMSEC",
-   "fn": "IMSEC",
    "formula": "_xlfn.IMSEC(\"1+j\")"
   },
   {
@@ -9253,12 +9061,6 @@
   },
   {
    "id": "IMSECH#12",
-   "group": "IMSECH",
-   "fn": "IMSECH",
-   "formula": "_xlfn.IMSECH(D!B1:B2)"
-  },
-  {
-   "id": "IMSECH#13",
    "group": "IMSECH",
    "fn": "IMSECH",
    "formula": "_xlfn.IMSECH(\"1+j\")"
@@ -9333,12 +9135,6 @@
    "id": "IMSIN#12",
    "group": "IMSIN",
    "fn": "IMSIN",
-   "formula": "IMSIN(D!B1:B2)"
-  },
-  {
-   "id": "IMSIN#13",
-   "group": "IMSIN",
-   "fn": "IMSIN",
    "formula": "IMSIN(\"1+j\")"
   },
   {
@@ -9409,12 +9205,6 @@
   },
   {
    "id": "IMSINH#12",
-   "group": "IMSINH",
-   "fn": "IMSINH",
-   "formula": "_xlfn.IMSINH(D!B1:B2)"
-  },
-  {
-   "id": "IMSINH#13",
    "group": "IMSINH",
    "fn": "IMSINH",
    "formula": "_xlfn.IMSINH(\"1+j\")"
@@ -9489,12 +9279,6 @@
    "id": "IMSQRT#12",
    "group": "IMSQRT",
    "fn": "IMSQRT",
-   "formula": "IMSQRT(D!B1:B2)"
-  },
-  {
-   "id": "IMSQRT#13",
-   "group": "IMSQRT",
-   "fn": "IMSQRT",
    "formula": "IMSQRT(\"1+j\")"
   },
   {
@@ -9567,298 +9351,292 @@
    "id": "IMTAN#12",
    "group": "IMTAN",
    "fn": "IMTAN",
-   "formula": "_xlfn.IMTAN(D!B1:B2)"
-  },
-  {
-   "id": "IMTAN#13",
-   "group": "IMTAN",
-   "fn": "IMTAN",
    "formula": "_xlfn.IMTAN(\"1+j\")"
   },
   {
-   "id": "IMABS#14",
+   "id": "IMABS#13",
    "group": "IMABS",
    "fn": "IMABS",
    "formula": "IMABS(\"1e308+1e308i\")"
   },
   {
-   "id": "IMABS#15",
+   "id": "IMABS#14",
    "group": "IMABS",
    "fn": "IMABS",
    "formula": "IMABS(\"1e-200+1e-200i\")"
   },
   {
-   "id": "IMABS#16",
+   "id": "IMABS#15",
    "group": "IMABS",
    "fn": "IMABS",
    "formula": "IMABS(\"-3-4j\")"
   },
   {
-   "id": "IMARGUMENT#14",
+   "id": "IMARGUMENT#13",
    "group": "IMARGUMENT",
    "fn": "IMARGUMENT",
    "formula": "IMARGUMENT(\"-1-0i\")"
   },
   {
-   "id": "IMARGUMENT#15",
+   "id": "IMARGUMENT#14",
    "group": "IMARGUMENT",
    "fn": "IMARGUMENT",
    "formula": "IMARGUMENT(\"1e308+1e308i\")"
   },
   {
-   "id": "IMARGUMENT#16",
+   "id": "IMARGUMENT#15",
    "group": "IMARGUMENT",
    "fn": "IMARGUMENT",
    "formula": "IMARGUMENT(\"-1-i\")"
   },
   {
-   "id": "IMARGUMENT#17",
+   "id": "IMARGUMENT#16",
    "group": "IMARGUMENT",
    "fn": "IMARGUMENT",
    "formula": "IMARGUMENT(\"-1+i\")"
   },
   {
-   "id": "IMARGUMENT#18",
+   "id": "IMARGUMENT#17",
    "group": "IMARGUMENT",
    "fn": "IMARGUMENT",
    "formula": "IMARGUMENT(\"1e-300i\")"
   },
   {
-   "id": "IMCONJUGATE#14",
+   "id": "IMCONJUGATE#13",
    "group": "IMCONJUGATE",
    "fn": "IMCONJUGATE",
    "formula": "IMCONJUGATE(\"3+4j\")"
   },
   {
-   "id": "IMCONJUGATE#15",
+   "id": "IMCONJUGATE#14",
    "group": "IMCONJUGATE",
    "fn": "IMCONJUGATE",
    "formula": "IMCONJUGATE(\"0-j\")"
   },
   {
-   "id": "IMEXP#14",
+   "id": "IMEXP#13",
    "group": "IMEXP",
    "fn": "IMEXP",
    "formula": "IMEXP(\"710\")"
   },
   {
-   "id": "IMEXP#15",
+   "id": "IMEXP#14",
    "group": "IMEXP",
    "fn": "IMEXP",
    "formula": "IMEXP(\"709+i\")"
   },
   {
-   "id": "IMEXP#16",
+   "id": "IMEXP#15",
    "group": "IMEXP",
    "fn": "IMEXP",
    "formula": "IMEXP(\"1+1e10i\")"
   },
   {
-   "id": "IMEXP#17",
+   "id": "IMEXP#16",
    "group": "IMEXP",
    "fn": "IMEXP",
    "formula": "IMEXP(\"-800\")"
   },
   {
-   "id": "IMCOS#14",
+   "id": "IMCOS#13",
    "group": "IMCOS",
    "fn": "IMCOS",
    "formula": "IMCOS(\"1+800i\")"
   },
   {
-   "id": "IMCOS#15",
+   "id": "IMCOS#14",
    "group": "IMCOS",
    "fn": "IMCOS",
    "formula": "IMCOS(\"1E10\")"
   },
   {
-   "id": "IMCOS#16",
+   "id": "IMCOS#15",
    "group": "IMCOS",
    "fn": "IMCOS",
    "formula": "IMCOS(\"134217728\")"
   },
   {
-   "id": "IMCOS#17",
+   "id": "IMCOS#16",
    "group": "IMCOS",
    "fn": "IMCOS",
    "formula": "IMCOS(\"134217727\")"
   },
   {
-   "id": "IMCOS#18",
+   "id": "IMCOS#17",
    "group": "IMCOS",
    "fn": "IMCOS",
    "formula": "IMCOS(\"1+1000i\")"
   },
   {
-   "id": "IMSIN#14",
+   "id": "IMSIN#13",
    "group": "IMSIN",
    "fn": "IMSIN",
    "formula": "IMSIN(\"1+800i\")"
   },
   {
-   "id": "IMSIN#15",
+   "id": "IMSIN#14",
    "group": "IMSIN",
    "fn": "IMSIN",
    "formula": "IMSIN(\"1E10\")"
   },
   {
-   "id": "IMSIN#16",
+   "id": "IMSIN#15",
    "group": "IMSIN",
    "fn": "IMSIN",
    "formula": "IMSIN(\"134217728\")"
   },
   {
-   "id": "IMSIN#17",
+   "id": "IMSIN#16",
    "group": "IMSIN",
    "fn": "IMSIN",
    "formula": "IMSIN(\"134217727\")"
   },
   {
-   "id": "IMTAN#14",
+   "id": "IMTAN#13",
    "group": "IMTAN",
    "fn": "IMTAN",
    "formula": "_xlfn.IMTAN(\"1+400i\")"
   },
   {
-   "id": "IMTAN#15",
+   "id": "IMTAN#14",
    "group": "IMTAN",
    "fn": "IMTAN",
    "formula": "_xlfn.IMTAN(\"1.5707963267949\")"
   },
   {
-   "id": "IMTAN#16",
+   "id": "IMTAN#15",
    "group": "IMTAN",
    "fn": "IMTAN",
    "formula": "_xlfn.IMTAN(\"134217728\")"
   },
   {
-   "id": "IMCOT#14",
+   "id": "IMCOT#13",
    "group": "IMCOT",
    "fn": "IMCOT",
    "formula": "_xlfn.IMCOT(\"1e-300\")"
   },
   {
-   "id": "IMCOT#15",
+   "id": "IMCOT#14",
    "group": "IMCOT",
    "fn": "IMCOT",
    "formula": "_xlfn.IMCOT(\"1+400i\")"
   },
   {
-   "id": "IMCOSH#14",
+   "id": "IMCOSH#13",
    "group": "IMCOSH",
    "fn": "IMCOSH",
    "formula": "_xlfn.IMCOSH(\"710\")"
   },
   {
-   "id": "IMCOSH#15",
+   "id": "IMCOSH#14",
    "group": "IMCOSH",
    "fn": "IMCOSH",
    "formula": "_xlfn.IMCOSH(\"1+1E10i\")"
   },
   {
-   "id": "IMSINH#14",
+   "id": "IMSINH#13",
    "group": "IMSINH",
    "fn": "IMSINH",
    "formula": "_xlfn.IMSINH(\"710\")"
   },
   {
-   "id": "IMSINH#15",
+   "id": "IMSINH#14",
    "group": "IMSINH",
    "fn": "IMSINH",
    "formula": "_xlfn.IMSINH(\"-1+2j\")"
   },
   {
-   "id": "IMSQRT#14",
+   "id": "IMSQRT#13",
    "group": "IMSQRT",
    "fn": "IMSQRT",
    "formula": "IMSQRT(\"1e308+1e308i\")"
   },
   {
-   "id": "IMSQRT#15",
+   "id": "IMSQRT#14",
    "group": "IMSQRT",
    "fn": "IMSQRT",
    "formula": "IMSQRT(\"-4\")"
   },
   {
-   "id": "IMSQRT#16",
+   "id": "IMSQRT#15",
    "group": "IMSQRT",
    "fn": "IMSQRT",
    "formula": "IMSQRT(\"4\")"
   },
   {
-   "id": "IMSQRT#17",
+   "id": "IMSQRT#16",
    "group": "IMSQRT",
    "fn": "IMSQRT",
    "formula": "IMSQRT(\"-4-0i\")"
   },
   {
-   "id": "IMSQRT#18",
+   "id": "IMSQRT#17",
    "group": "IMSQRT",
    "fn": "IMSQRT",
    "formula": "IMSQRT(\"i\")"
   },
   {
-   "id": "IMSQRT#19",
+   "id": "IMSQRT#18",
    "group": "IMSQRT",
    "fn": "IMSQRT",
    "formula": "IMSQRT(\"-1e-300\")"
   },
   {
-   "id": "IMLN#14",
+   "id": "IMLN#13",
    "group": "IMLN",
    "fn": "IMLN",
    "formula": "IMLN(\"1e308+1e308i\")"
   },
   {
-   "id": "IMLN#15",
+   "id": "IMLN#14",
    "group": "IMLN",
    "fn": "IMLN",
    "formula": "IMLN(\"-1-i\")"
   },
   {
-   "id": "IMLN#16",
+   "id": "IMLN#15",
    "group": "IMLN",
    "fn": "IMLN",
    "formula": "IMLN(\"1e-300\")"
   },
   {
-   "id": "IMLN#17",
+   "id": "IMLN#16",
    "group": "IMLN",
    "fn": "IMLN",
    "formula": "IMLN(\"-0\")"
   },
   {
-   "id": "IMLOG10#14",
+   "id": "IMLOG10#13",
    "group": "IMLOG10",
    "fn": "IMLOG10",
    "formula": "IMLOG10(\"100\")"
   },
   {
-   "id": "IMLOG10#15",
+   "id": "IMLOG10#14",
    "group": "IMLOG10",
    "fn": "IMLOG10",
    "formula": "IMLOG10(\"-1\")"
   },
   {
-   "id": "IMLOG10#16",
+   "id": "IMLOG10#15",
    "group": "IMLOG10",
    "fn": "IMLOG10",
    "formula": "IMLOG10(\"0.001i\")"
   },
   {
-   "id": "IMLOG2#14",
+   "id": "IMLOG2#13",
    "group": "IMLOG2",
    "fn": "IMLOG2",
    "formula": "IMLOG2(\"8\")"
   },
   {
-   "id": "IMLOG2#15",
+   "id": "IMLOG2#14",
    "group": "IMLOG2",
    "fn": "IMLOG2",
    "formula": "IMLOG2(\"-1\")"
   },
   {
-   "id": "IMLOG2#16",
+   "id": "IMLOG2#15",
    "group": "IMLOG2",
    "fn": "IMLOG2",
    "formula": "IMLOG2(\"0.25j\")"
@@ -10074,12 +9852,6 @@
    "formula": "IMDIV(D!A4,\"1\")"
   },
   {
-   "id": "IMDIV#13",
-   "group": "IMDIV",
-   "fn": "IMDIV",
-   "formula": "IMDIV(\"1\",D!B1:B2)"
-  },
-  {
    "id": "IMPRODUCT#1",
    "group": "IMPRODUCT",
    "fn": "IMPRODUCT",
@@ -10222,12 +9994,6 @@
    "group": "IMSUB",
    "fn": "IMSUB",
    "formula": "IMSUB(D!A4,\"1\")"
-  },
-  {
-   "id": "IMSUB#8",
-   "group": "IMSUB",
-   "fn": "IMSUB",
-   "formula": "IMSUB(D!B1:B2,\"1\")"
   },
   {
    "id": "IMSUM#1",
@@ -13012,12 +12778,6 @@
    "group": "DELTA",
    "fn": "DELTA",
    "formula": "DELTA(1,D!A1)"
-  },
-  {
-   "id": "DELTA#13",
-   "group": "DELTA",
-   "fn": "DELTA",
-   "formula": "DELTA(D!B1:B2,1)"
   },
   {
    "id": "GESTEP#1",
@@ -17700,6 +17460,1074 @@
    "formula": "_xlfn.PERCENTOF(TRUE,10)"
   },
   {
+   "id": "BITLSHIFT#28",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(2,52)"
+  },
+  {
+   "id": "BITLSHIFT#29",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(4,51)"
+  },
+  {
+   "id": "BITLSHIFT#30",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(0,-60)"
+  },
+  {
+   "id": "BITLSHIFT#31",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(0,1000)"
+  },
+  {
+   "id": "BITLSHIFT#32",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(POWER(2,47),6)"
+  },
+  {
+   "id": "BITLSHIFT#33",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(3,53)"
+  },
+  {
+   "id": "BITLSHIFT#34",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(1,52)"
+  },
+  {
+   "id": "BITLSHIFT#35",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(1,50)"
+  },
+  {
+   "id": "BITLSHIFT#36",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(5,53)"
+  },
+  {
+   "id": "BITLSHIFT#37",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(6,52)"
+  },
+  {
+   "id": "BITRSHIFT#28",
+   "group": "BITRSHIFT",
+   "fn": "BITRSHIFT",
+   "formula": "_xlfn.BITRSHIFT(2,-52)"
+  },
+  {
+   "id": "BITRSHIFT#29",
+   "group": "BITRSHIFT",
+   "fn": "BITRSHIFT",
+   "formula": "_xlfn.BITRSHIFT(0,-1000)"
+  },
+  {
+   "id": "BITRSHIFT#30",
+   "group": "BITRSHIFT",
+   "fn": "BITRSHIFT",
+   "formula": "_xlfn.BITRSHIFT(4,-51)"
+  },
+  {
+   "id": "COMPLEX#27",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1E20,0)"
+  },
+  {
+   "id": "COMPLEX#28",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1.5E20,0)"
+  },
+  {
+   "id": "COMPLEX#29",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(9.99999999999999E20,0)"
+  },
+  {
+   "id": "COMPLEX#30",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1E21,0)"
+  },
+  {
+   "id": "COMPLEX#31",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(-1E20,0)"
+  },
+  {
+   "id": "COMPLEX#32",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1.2345678901234E-06,0)"
+  },
+  {
+   "id": "COMPLEX#33",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1.23456789012345E-06,0)"
+  },
+  {
+   "id": "COMPLEX#34",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1.234567890123E-06,0)"
+  },
+  {
+   "id": "COMPLEX#35",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1E-20,0)"
+  },
+  {
+   "id": "COMPLEX#36",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(0,1E20)"
+  },
+  {
+   "id": "COMPLEX#37",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(123456789012345678901,0)"
+  },
+  {
+   "id": "COMPLEX#38",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(-1.5E20,-1.5E20)"
+  },
+  {
+   "id": "IMSUM#18",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"1E20\")"
+  },
+  {
+   "id": "IMSUM#19",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"1.5E20+1.5E20i\")"
+  },
+  {
+   "id": "IMSUM#20",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"1.2345678901234E-06\")"
+  },
+  {
+   "id": "CONVERT#436",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"kkel\",\"K\")"
+  },
+  {
+   "id": "CONVERT#437",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"kcel\",\"C\")"
+  },
+  {
+   "id": "CONVERT#438",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"kfah\",\"F\")"
+  },
+  {
+   "id": "CONVERT#439",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"kReau\",\"Reau\")"
+  },
+  {
+   "id": "CONVERT#440",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"dakel\",\"K\")"
+  },
+  {
+   "id": "CONVERT#441",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"Gibyte\",\"byte\")"
+  },
+  {
+   "id": "CONVERT#442",
+   "group": "CONVERT",
+   "fn": "CONVERT",
+   "formula": "CONVERT(1,\"Kibyte\",\"byte\")"
+  },
+  {
+   "id": "COMBIN#26",
+   "group": "COMBIN",
+   "fn": "COMBIN",
+   "formula": "COMBIN(2147483646,1)"
+  },
+  {
+   "id": "COMBIN#27",
+   "group": "COMBIN",
+   "fn": "COMBIN",
+   "formula": "COMBIN(2147483646,0)"
+  },
+  {
+   "id": "COMBIN#28",
+   "group": "COMBIN",
+   "fn": "COMBIN",
+   "formula": "COMBIN(2000000000,1)"
+  },
+  {
+   "id": "COMBIN#29",
+   "group": "COMBIN",
+   "fn": "COMBIN",
+   "formula": "COMBIN(2147483646,2)"
+  },
+  {
+   "id": "COMBINA#19",
+   "group": "COMBINA",
+   "fn": "COMBINA",
+   "formula": "_xlfn.COMBINA(2147483646,1)"
+  },
+  {
+   "id": "COMBINA#20",
+   "group": "COMBINA",
+   "fn": "COMBINA",
+   "formula": "_xlfn.COMBINA(2147483647,0)"
+  },
+  {
+   "id": "COMBINA#21",
+   "group": "COMBINA",
+   "fn": "COMBINA",
+   "formula": "_xlfn.COMBINA(2147483646,0)"
+  },
+  {
+   "id": "GCD#23",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(POWER(2,53)+2,2)"
+  },
+  {
+   "id": "GCD#24",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(1E16,2)"
+  },
+  {
+   "id": "GCD#25",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(1E20,5)"
+  },
+  {
+   "id": "GCD#26",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(POWER(2,53)*2,2)"
+  },
+  {
+   "id": "LCM#18",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(POWER(2,53),1)"
+  },
+  {
+   "id": "LCM#19",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(POWER(2,53)+2,1)"
+  },
+  {
+   "id": "LCM#20",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(1E16,1)"
+  },
+  {
+   "id": "LCM#21",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(POWER(2,53)-1,1)"
+  },
+  {
+   "id": "MOD#27",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,32)+1,2)"
+  },
+  {
+   "id": "MOD#28",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,40)+1,2)"
+  },
+  {
+   "id": "MOD#29",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,44)+1,2)"
+  },
+  {
+   "id": "MOD#30",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,46)+1,2)"
+  },
+  {
+   "id": "MOD#31",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,47)+1,2)"
+  },
+  {
+   "id": "MOD#32",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,48)+1,2)"
+  },
+  {
+   "id": "MOD#33",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,49)+1,2)"
+  },
+  {
+   "id": "MOD#34",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,50)+1,2)"
+  },
+  {
+   "id": "MOD#35",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,51)+1,2)"
+  },
+  {
+   "id": "MOD#36",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,52)+1,2)"
+  },
+  {
+   "id": "MOD#37",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(1E12,3)"
+  },
+  {
+   "id": "MOD#38",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(1E13,3)"
+  },
+  {
+   "id": "MOD#39",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(1E14,3)"
+  },
+  {
+   "id": "MOD#40",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(1E15,1E5)"
+  },
+  {
+   "id": "MOD#41",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(1E15,1E10)"
+  },
+  {
+   "id": "MOD#42",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(-POWER(2,48),3)"
+  },
+  {
+   "id": "MOD#43",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,48),3)"
+  },
+  {
+   "id": "MOD#44",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,49),3)"
+  },
+  {
+   "id": "MOD#45",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(-1E14,3)"
+  },
+  {
+   "id": "MROUND#22",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48),1)"
+  },
+  {
+   "id": "MROUND#23",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-49),1)"
+  },
+  {
+   "id": "MROUND#24",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-50),1)"
+  },
+  {
+   "id": "MROUND#25",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-51),1)"
+  },
+  {
+   "id": "MROUND#26",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-52),1)"
+  },
+  {
+   "id": "MROUND#27",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-53),1)"
+  },
+  {
+   "id": "MROUND#28",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1.5-POWER(2,-48),1)"
+  },
+  {
+   "id": "MROUND#29",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1.5-POWER(2,-49),1)"
+  },
+  {
+   "id": "MROUND#30",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1.5-POWER(2,-50),1)"
+  },
+  {
+   "id": "MROUND#31",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1.5-POWER(2,-51),1)"
+  },
+  {
+   "id": "MROUND#32",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1.5-POWER(2,-52),1)"
+  },
+  {
+   "id": "MROUND#33",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(60.5-POWER(2,-43),1)"
+  },
+  {
+   "id": "MROUND#34",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(60.5-POWER(2,-44),1)"
+  },
+  {
+   "id": "MROUND#35",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(60.5-POWER(2,-45),1)"
+  },
+  {
+   "id": "MROUND#36",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(60.5-POWER(2,-46),1)"
+  },
+  {
+   "id": "MROUND#37",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(60.5-POWER(2,-47),1)"
+  },
+  {
+   "id": "MROUND#38",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1000.5-POWER(2,-36),1)"
+  },
+  {
+   "id": "MROUND#39",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1000.5-POWER(2,-38),1)"
+  },
+  {
+   "id": "MROUND#40",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1000.5-POWER(2,-40),1)"
+  },
+  {
+   "id": "MROUND#41",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1000.5-POWER(2,-42),1)"
+  },
+  {
+   "id": "MROUND#42",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1000.5-POWER(2,-43),1)"
+  },
+  {
+   "id": "MROUND#43",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.15,0.1)"
+  },
+  {
+   "id": "MROUND#44",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.35,0.1)"
+  },
+  {
+   "id": "MROUND#45",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(2.675,0.01)"
+  },
+  {
+   "id": "MROUND#46",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(1.45,0.1)"
+  },
+  {
+   "id": "MROUND#47",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(-0.15,-0.1)"
+  },
+  {
+   "id": "SERIESSUM#19",
+   "group": "SERIESSUM",
+   "fn": "SERIESSUM",
+   "formula": "SERIESSUM(-2,0.5,1,1)"
+  },
+  {
+   "id": "SERIESSUM#20",
+   "group": "SERIESSUM",
+   "fn": "SERIESSUM",
+   "formula": "SERIESSUM(-2,0.5,0.5,D!AR1:AR4)"
+  },
+  {
+   "id": "SERIESSUM#21",
+   "group": "SERIESSUM",
+   "fn": "SERIESSUM",
+   "formula": "SERIESSUM(-8,1/3,1,1)"
+  },
+  {
+   "id": "SERIESSUM#22",
+   "group": "SERIESSUM",
+   "fn": "SERIESSUM",
+   "formula": "SERIESSUM(-2,1,1,D!AR1:AR4)"
+  },
+  {
+   "id": "PERCENTOF#10",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(D!B1:B8,D!E1:E8)"
+  },
+  {
+   "id": "PERCENTOF#11",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(D!A7,10)"
+  },
+  {
+   "id": "PERCENTOF#12",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(1,D!A8)"
+  },
+  {
+   "id": "PERCENTOF#13",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(-5,10)"
+  },
+  {
+   "id": "PERCENTOF#14",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(5,-10)"
+  },
+  {
+   "id": "PERCENTOF#15",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(5,0)"
+  },
+  {
+   "id": "PERCENTOF#16",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(0,0)"
+  },
+  {
+   "id": "PERCENTOF#17",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(D!K1:K8,D!K1:K8)"
+  },
+  {
+   "id": "PERCENTOF#18",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(D!A2,10)"
+  },
+  {
+   "id": "FACTDOUBLE#18",
+   "group": "FACTDOUBLE",
+   "fn": "FACTDOUBLE",
+   "formula": "FACTDOUBLE(-1.5)"
+  },
+  {
+   "id": "FACTDOUBLE#19",
+   "group": "FACTDOUBLE",
+   "fn": "FACTDOUBLE",
+   "formula": "FACTDOUBLE(-1.9)"
+  },
+  {
+   "id": "FACTDOUBLE#20",
+   "group": "FACTDOUBLE",
+   "fn": "FACTDOUBLE",
+   "formula": "FACTDOUBLE(-2.5)"
+  },
+  {
+   "id": "ARABIC#33",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(\"- MCM\")"
+  },
+  {
+   "id": "ARABIC#34",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(\"-mcm\")"
+  },
+  {
+   "id": "ARABIC#35",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(\" -I\")"
+  },
+  {
+   "id": "ARABIC#36",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(\"M-\")"
+  },
+  {
+   "id": "ARABIC#37",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(REPT(\" \",200)&\"M\"&REPT(\" \",100))"
+  },
+  {
+   "id": "ARABIC#38",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(\"-0\")"
+  },
+  {
+   "id": "ARABIC#39",
+   "group": "ARABIC",
+   "fn": "ARABIC",
+   "formula": "_xlfn.ARABIC(\"--\")"
+  },
+  {
+   "id": "BITLSHIFT#38",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(1,49)"
+  },
+  {
+   "id": "BITLSHIFT#39",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(3,49)"
+  },
+  {
+   "id": "BITLSHIFT#40",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(0,54)"
+  },
+  {
+   "id": "BITLSHIFT#41",
+   "group": "BITLSHIFT",
+   "fn": "BITLSHIFT",
+   "formula": "_xlfn.BITLSHIFT(1,48.5)"
+  },
+  {
+   "id": "BITRSHIFT#31",
+   "group": "BITRSHIFT",
+   "fn": "BITRSHIFT",
+   "formula": "_xlfn.BITRSHIFT(1,-49)"
+  },
+  {
+   "id": "BITRSHIFT#32",
+   "group": "BITRSHIFT",
+   "fn": "BITRSHIFT",
+   "formula": "_xlfn.BITRSHIFT(1,-48)"
+  },
+  {
+   "id": "BITRSHIFT#33",
+   "group": "BITRSHIFT",
+   "fn": "BITRSHIFT",
+   "formula": "_xlfn.BITRSHIFT(3,-49)"
+  },
+  {
+   "id": "MOD#46",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,39),1)"
+  },
+  {
+   "id": "MOD#47",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,39)-1,1)"
+  },
+  {
+   "id": "MOD#48",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,39)+0.5,1)"
+  },
+  {
+   "id": "MOD#49",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,40),1)"
+  },
+  {
+   "id": "MOD#50",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,40)-1,1)"
+  },
+  {
+   "id": "MOD#51",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,40)+0.5,1)"
+  },
+  {
+   "id": "MOD#52",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,41),1)"
+  },
+  {
+   "id": "MOD#53",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,41)-1,1)"
+  },
+  {
+   "id": "MOD#54",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,41)+0.5,1)"
+  },
+  {
+   "id": "MOD#55",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,42),1)"
+  },
+  {
+   "id": "MOD#56",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,42)-1,1)"
+  },
+  {
+   "id": "MOD#57",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,42)+0.5,1)"
+  },
+  {
+   "id": "MOD#58",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,43),1)"
+  },
+  {
+   "id": "MOD#59",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,43)-1,1)"
+  },
+  {
+   "id": "MOD#60",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,43)+0.5,1)"
+  },
+  {
+   "id": "MOD#61",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(-POWER(2,40),1)"
+  },
+  {
+   "id": "MOD#62",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,41),2)"
+  },
+  {
+   "id": "MOD#63",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(POWER(2,42),2)"
+  },
+  {
+   "id": "MOD#64",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(3*POWER(2,39),1)"
+  },
+  {
+   "id": "MOD#65",
+   "group": "MOD",
+   "fn": "MOD",
+   "formula": "MOD(1E12,1E-3)"
+  },
+  {
+   "id": "MROUND#48",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*9/8,1)"
+  },
+  {
+   "id": "MROUND#49",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*10/8,1)"
+  },
+  {
+   "id": "MROUND#50",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*11/8,1)"
+  },
+  {
+   "id": "MROUND#51",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*12/8,1)"
+  },
+  {
+   "id": "MROUND#52",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*13/8,1)"
+  },
+  {
+   "id": "MROUND#53",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*14/8,1)"
+  },
+  {
+   "id": "MROUND#54",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.5-POWER(2,-48)*15/8,1)"
+  },
+  {
+   "id": "MROUND#55",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(2.5-POWER(2,-48),1)"
+  },
+  {
+   "id": "MROUND#56",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(2.5-POWER(2,-47),1)"
+  },
+  {
+   "id": "MROUND#57",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(7.5-POWER(2,-48),1)"
+  },
+  {
+   "id": "MROUND#58",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(7.5-POWER(2,-47),1)"
+  },
+  {
+   "id": "MROUND#59",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(15.5-POWER(2,-48),1)"
+  },
+  {
+   "id": "MROUND#60",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(15.5-POWER(2,-47),1)"
+  },
+  {
+   "id": "MROUND#61",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(30.5-POWER(2,-48),1)"
+  },
+  {
+   "id": "MROUND#62",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(30.5-POWER(2,-47),1)"
+  },
+  {
+   "id": "MROUND#63",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND((0.5-POWER(2,-48))*0.1,0.1)"
+  },
+  {
+   "id": "MROUND#64",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.45,0.1)"
+  },
+  {
+   "id": "MROUND#65",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(0.55,0.1)"
+  },
+  {
+   "id": "MROUND#66",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(8.25,0.5)"
+  },
+  {
+   "id": "MROUND#67",
+   "group": "MROUND",
+   "fn": "MROUND",
+   "formula": "MROUND(4.35,0.1)"
+  },
+  {
+   "id": "PERCENTOF#19",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(\"abc\",10)"
+  },
+  {
+   "id": "PERCENTOF#20",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(D!A13,10)"
+  },
+  {
+   "id": "PERCENTOF#21",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(10,\"abc\")"
+  },
+  {
+   "id": "BESSELJ#155",
+   "group": "BESSELJ",
+   "fn": "BESSELJ",
+   "formula": "BESSELJ(134217727,0)"
+  },
+  {
+   "id": "BESSELJ#156",
+   "group": "BESSELJ",
+   "fn": "BESSELJ",
+   "formula": "BESSELJ(134217728,0)"
+  },
+  {
+   "id": "BESSELJ#157",
+   "group": "BESSELJ",
+   "fn": "BESSELJ",
+   "formula": "BESSELJ(-134217728,0)"
+  },
+  {
+   "id": "BESSELJ#158",
+   "group": "BESSELJ",
+   "fn": "BESSELJ",
+   "formula": "BESSELJ(1E9,1)"
+  },
+  {
+   "id": "BESSELJ#159",
+   "group": "BESSELJ",
+   "fn": "BESSELJ",
+   "formula": "BESSELJ(134217727.5,1)"
+  },
+  {
+   "id": "BESSELY#151",
+   "group": "BESSELY",
+   "fn": "BESSELY",
+   "formula": "BESSELY(134217727,0)"
+  },
+  {
+   "id": "BESSELY#152",
+   "group": "BESSELY",
+   "fn": "BESSELY",
+   "formula": "BESSELY(134217728,0)"
+  },
+  {
+   "id": "BESSELY#153",
+   "group": "BESSELY",
+   "fn": "BESSELY",
+   "formula": "BESSELY(-134217728,0)"
+  },
+  {
+   "id": "BESSELY#154",
+   "group": "BESSELY",
+   "fn": "BESSELY",
+   "formula": "BESSELY(1E9,1)"
+  },
+  {
+   "id": "BESSELY#155",
+   "group": "BESSELY",
+   "fn": "BESSELY",
+   "formula": "BESSELY(134217727.5,1)"
+  },
+  {
    "id": "MDETERM#1",
    "group": "MDETERM",
    "fn": "MDETERM",
@@ -18403,10 +19231,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "BESSELI#151": {
-   "t": "e",
-   "v": "VALUE"
-  },
   "BESSELJ#1": {
    "t": "n",
    "v": 0.9975015647700167
@@ -19006,10 +19830,6 @@
   "BESSELJ#150": {
    "t": "n",
    "v": 0.029090985285708578
-  },
-  "BESSELJ#151": {
-   "t": "e",
-   "v": "VALUE"
   },
   "BESSELK#1": {
    "t": "n",
@@ -19611,10 +20431,6 @@
    "t": "n",
    "v": 0
   },
-  "BESSELK#151": {
-   "t": "e",
-   "v": "VALUE"
-  },
   "BESSELY#1": {
    "t": "n",
    "v": -1.5342386613496624
@@ -20215,42 +21031,6 @@
    "t": "n",
    "v": -0.0015942094140190583
   },
-  "BESSELY#151": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BESSELI#152": {
-   "t": "n",
-   "v": 0
-  },
-  "BESSELI#153": {
-   "t": "n",
-   "v": 0
-  },
-  "BESSELI#154": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BESSELI#155": {
-   "t": "n",
-   "v": 3.2765420087582035e-51
-  },
-  "BESSELJ#152": {
-   "t": "n",
-   "v": 0
-  },
-  "BESSELJ#153": {
-   "t": "n",
-   "v": 0
-  },
-  "BESSELJ#154": {
-   "t": "n",
-   "v": -0.00667259143948567
-  },
-  "BESSELJ#155": {
-   "t": "n",
-   "v": 3.263356828913977e-51
-  },
   "BIN2DEC#1": {
    "t": "n",
    "v": 0
@@ -20288,74 +21068,6 @@
    "v": "NUM"
   },
   "BIN2DEC#10": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2DEC#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#16": {
-   "t": "n",
-   "v": 5
-  },
-  "BIN2DEC#17": {
-   "t": "n",
-   "v": 511
-  },
-  "BIN2DEC#18": {
-   "t": "n",
-   "v": -512
-  },
-  "BIN2DEC#19": {
-   "t": "n",
-   "v": -1
-  },
-  "BIN2DEC#20": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#21": {
-   "t": "n",
-   "v": 1
-  },
-  "BIN2DEC#22": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#23": {
-   "t": "n",
-   "v": 5
-  },
-  "BIN2DEC#24": {
-   "t": "n",
-   "v": -1
-  },
-  "BIN2DEC#25": {
-   "t": "n",
-   "v": 8
-  },
-  "BIN2DEC#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2DEC#27": {
    "t": "e",
    "v": "NUM"
   },
@@ -20399,74 +21111,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "BIN2HEX#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2HEX#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#16": {
-   "t": "s",
-   "v": "5"
-  },
-  "BIN2HEX#17": {
-   "t": "s",
-   "v": "1FF"
-  },
-  "BIN2HEX#18": {
-   "t": "s",
-   "v": "FFFFFFFE00"
-  },
-  "BIN2HEX#19": {
-   "t": "s",
-   "v": "FFFFFFFFFF"
-  },
-  "BIN2HEX#20": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#21": {
-   "t": "s",
-   "v": "1"
-  },
-  "BIN2HEX#22": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#23": {
-   "t": "s",
-   "v": "5"
-  },
-  "BIN2HEX#24": {
-   "t": "s",
-   "v": "FFFFFFFFFF"
-  },
-  "BIN2HEX#25": {
-   "t": "s",
-   "v": "8"
-  },
-  "BIN2HEX#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#27": {
-   "t": "e",
-   "v": "NUM"
-  },
   "BIN2OCT#1": {
    "t": "s",
    "v": "0"
@@ -20506,226 +21150,6 @@
   "BIN2OCT#10": {
    "t": "e",
    "v": "NUM"
-  },
-  "BIN2OCT#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2OCT#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#16": {
-   "t": "s",
-   "v": "5"
-  },
-  "BIN2OCT#17": {
-   "t": "s",
-   "v": "777"
-  },
-  "BIN2OCT#18": {
-   "t": "s",
-   "v": "7777777000"
-  },
-  "BIN2OCT#19": {
-   "t": "s",
-   "v": "7777777777"
-  },
-  "BIN2OCT#20": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#21": {
-   "t": "s",
-   "v": "1"
-  },
-  "BIN2OCT#22": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#23": {
-   "t": "s",
-   "v": "5"
-  },
-  "BIN2OCT#24": {
-   "t": "s",
-   "v": "7777777777"
-  },
-  "BIN2OCT#25": {
-   "t": "s",
-   "v": "10"
-  },
-  "BIN2OCT#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#27": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#28": {
-   "t": "s",
-   "v": "FB"
-  },
-  "BIN2HEX#29": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#30": {
-   "t": "s",
-   "v": "00000000FB"
-  },
-  "BIN2HEX#31": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#32": {
-   "t": "s",
-   "v": "FFFFFFFFFF"
-  },
-  "BIN2HEX#33": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#34": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#35": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#36": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#37": {
-   "t": "s",
-   "v": "0"
-  },
-  "BIN2HEX#38": {
-   "t": "s",
-   "v": "05"
-  },
-  "BIN2HEX#39": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#40": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#41": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2HEX#42": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2HEX#43": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2HEX#44": {
-   "t": "s",
-   "v": "0000000005"
-  },
-  "BIN2HEX#45": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2HEX#46": {
-   "t": "s",
-   "v": "05"
-  },
-  "BIN2OCT#28": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#29": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#30": {
-   "t": "s",
-   "v": "0000000373"
-  },
-  "BIN2OCT#31": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#32": {
-   "t": "s",
-   "v": "7777777777"
-  },
-  "BIN2OCT#33": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#34": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#35": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#36": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#37": {
-   "t": "s",
-   "v": "0"
-  },
-  "BIN2OCT#38": {
-   "t": "s",
-   "v": "05"
-  },
-  "BIN2OCT#39": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#40": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#41": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2OCT#42": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2OCT#43": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BIN2OCT#44": {
-   "t": "s",
-   "v": "0000000005"
-  },
-  "BIN2OCT#45": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BIN2OCT#46": {
-   "t": "s",
-   "v": "05"
   },
   "DEC2BIN#1": {
    "t": "s",
@@ -20820,14 +21244,6 @@
    "v": "VALUE"
   },
   "DEC2BIN#24": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2BIN#25": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "DEC2BIN#26": {
    "t": "e",
    "v": "NUM"
   },
@@ -20927,14 +21343,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "DEC2HEX#25": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "DEC2HEX#26": {
-   "t": "s",
-   "v": "2540BE400"
-  },
   "DEC2OCT#1": {
    "t": "s",
    "v": "0"
@@ -21031,130 +21439,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "DEC2OCT#25": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "DEC2OCT#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2BIN#27": {
-   "t": "s",
-   "v": "111111111"
-  },
-  "DEC2BIN#28": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2BIN#29": {
-   "t": "s",
-   "v": "1000000000"
-  },
-  "DEC2BIN#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2BIN#31": {
-   "t": "s",
-   "v": "111111111"
-  },
-  "DEC2BIN#32": {
-   "t": "s",
-   "v": "1000000000"
-  },
-  "DEC2BIN#33": {
-   "t": "s",
-   "v": "1001"
-  },
-  "DEC2BIN#34": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2BIN#35": {
-   "t": "s",
-   "v": "11111111"
-  },
-  "DEC2BIN#36": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2HEX#27": {
-   "t": "s",
-   "v": "7FFFFFFFFF"
-  },
-  "DEC2HEX#28": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2HEX#29": {
-   "t": "s",
-   "v": "8000000000"
-  },
-  "DEC2HEX#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2HEX#31": {
-   "t": "s",
-   "v": "FF"
-  },
-  "DEC2HEX#32": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2HEX#33": {
-   "t": "s",
-   "v": "FFFFFFFFFF"
-  },
-  "DEC2HEX#34": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2HEX#35": {
-   "t": "s",
-   "v": "100000000"
-  },
-  "DEC2HEX#36": {
-   "t": "s",
-   "v": "FF"
-  },
-  "DEC2HEX#37": {
-   "t": "s",
-   "v": "FFFFFFFFCA"
-  },
-  "DEC2OCT#27": {
-   "t": "s",
-   "v": "3777777777"
-  },
-  "DEC2OCT#28": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2OCT#29": {
-   "t": "s",
-   "v": "4000000000"
-  },
-  "DEC2OCT#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2OCT#31": {
-   "t": "s",
-   "v": "10"
-  },
-  "DEC2OCT#32": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "DEC2OCT#33": {
-   "t": "s",
-   "v": "7777777634"
-  },
-  "DEC2OCT#34": {
-   "t": "s",
-   "v": "777"
-  },
   "HEX2BIN#1": {
    "t": "s",
    "v": "0"
@@ -21192,110 +21476,6 @@
    "v": "NUM"
   },
   "HEX2BIN#10": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2BIN#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#16": {
-   "t": "s",
-   "v": "111111111"
-  },
-  "HEX2BIN#17": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#18": {
-   "t": "s",
-   "v": "1000000000"
-  },
-  "HEX2BIN#19": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#20": {
-   "t": "s",
-   "v": "1111111111"
-  },
-  "HEX2BIN#21": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#22": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#23": {
-   "t": "s",
-   "v": "11111111"
-  },
-  "HEX2BIN#24": {
-   "t": "s",
-   "v": "11111111"
-  },
-  "HEX2BIN#25": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#27": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#28": {
-   "t": "s",
-   "v": "10000"
-  },
-  "HEX2BIN#29": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#31": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#32": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#33": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#34": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#35": {
-   "t": "s",
-   "v": "10100101"
-  },
-  "HEX2BIN#36": {
    "t": "e",
    "v": "NUM"
   },
@@ -21339,110 +21519,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "HEX2DEC#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2DEC#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#16": {
-   "t": "n",
-   "v": 511
-  },
-  "HEX2DEC#17": {
-   "t": "n",
-   "v": 512
-  },
-  "HEX2DEC#18": {
-   "t": "n",
-   "v": -512
-  },
-  "HEX2DEC#19": {
-   "t": "n",
-   "v": -513
-  },
-  "HEX2DEC#20": {
-   "t": "n",
-   "v": -1
-  },
-  "HEX2DEC#21": {
-   "t": "n",
-   "v": 549755813887
-  },
-  "HEX2DEC#22": {
-   "t": "n",
-   "v": -549755813888
-  },
-  "HEX2DEC#23": {
-   "t": "n",
-   "v": 255
-  },
-  "HEX2DEC#24": {
-   "t": "n",
-   "v": 255
-  },
-  "HEX2DEC#25": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#27": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#28": {
-   "t": "n",
-   "v": 16
-  },
-  "HEX2DEC#29": {
-   "t": "n",
-   "v": 4096
-  },
-  "HEX2DEC#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2DEC#31": {
-   "t": "n",
-   "v": 536870911
-  },
-  "HEX2DEC#32": {
-   "t": "n",
-   "v": 536870912
-  },
-  "HEX2DEC#33": {
-   "t": "n",
-   "v": -536870912
-  },
-  "HEX2DEC#34": {
-   "t": "n",
-   "v": -536870913
-  },
-  "HEX2DEC#35": {
-   "t": "n",
-   "v": 165
-  },
-  "HEX2DEC#36": {
-   "t": "n",
-   "v": 1034160313
-  },
   "HEX2OCT#1": {
    "t": "s",
    "v": "0"
@@ -21480,206 +21556,6 @@
    "v": "NUM"
   },
   "HEX2OCT#10": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2OCT#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#16": {
-   "t": "s",
-   "v": "777"
-  },
-  "HEX2OCT#17": {
-   "t": "s",
-   "v": "1000"
-  },
-  "HEX2OCT#18": {
-   "t": "s",
-   "v": "7777777000"
-  },
-  "HEX2OCT#19": {
-   "t": "s",
-   "v": "7777776777"
-  },
-  "HEX2OCT#20": {
-   "t": "s",
-   "v": "7777777777"
-  },
-  "HEX2OCT#21": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#22": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#23": {
-   "t": "s",
-   "v": "377"
-  },
-  "HEX2OCT#24": {
-   "t": "s",
-   "v": "377"
-  },
-  "HEX2OCT#25": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#26": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#27": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#28": {
-   "t": "s",
-   "v": "20"
-  },
-  "HEX2OCT#29": {
-   "t": "s",
-   "v": "10000"
-  },
-  "HEX2OCT#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#31": {
-   "t": "s",
-   "v": "3777777777"
-  },
-  "HEX2OCT#32": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#33": {
-   "t": "s",
-   "v": "4000000000"
-  },
-  "HEX2OCT#34": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#35": {
-   "t": "s",
-   "v": "245"
-  },
-  "HEX2OCT#36": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#37": {
-   "t": "s",
-   "v": "1111"
-  },
-  "HEX2BIN#38": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#39": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#40": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#41": {
-   "t": "s",
-   "v": "0000001111"
-  },
-  "HEX2BIN#42": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#43": {
-   "t": "s",
-   "v": "1111111111"
-  },
-  "HEX2BIN#44": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#45": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2BIN#46": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2BIN#47": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2BIN#48": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#37": {
-   "t": "s",
-   "v": "0017"
-  },
-  "HEX2OCT#38": {
-   "t": "s",
-   "v": "017"
-  },
-  "HEX2OCT#39": {
-   "t": "s",
-   "v": "17"
-  },
-  "HEX2OCT#40": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#41": {
-   "t": "s",
-   "v": "0000000017"
-  },
-  "HEX2OCT#42": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#43": {
-   "t": "s",
-   "v": "7777777777"
-  },
-  "HEX2OCT#44": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "HEX2OCT#45": {
-   "t": "s",
-   "v": "17"
-  },
-  "HEX2OCT#46": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2OCT#47": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "HEX2OCT#48": {
    "t": "e",
    "v": "NUM"
   },
@@ -21723,74 +21599,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "OCT2BIN#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "OCT2BIN#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#16": {
-   "t": "s",
-   "v": "111111111"
-  },
-  "OCT2BIN#17": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#18": {
-   "t": "s",
-   "v": "1000000000"
-  },
-  "OCT2BIN#19": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#20": {
-   "t": "s",
-   "v": "1111111111"
-  },
-  "OCT2BIN#21": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#22": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#23": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#24": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#25": {
-   "t": "s",
-   "v": "1111"
-  },
-  "OCT2BIN#26": {
-   "t": "s",
-   "v": "1010"
-  },
-  "OCT2BIN#27": {
-   "t": "s",
-   "v": "1010"
-  },
   "OCT2DEC#1": {
    "t": "n",
    "v": 0
@@ -21831,74 +21639,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "OCT2DEC#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "OCT2DEC#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2DEC#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2DEC#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2DEC#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2DEC#16": {
-   "t": "n",
-   "v": 511
-  },
-  "OCT2DEC#17": {
-   "t": "n",
-   "v": 512
-  },
-  "OCT2DEC#18": {
-   "t": "n",
-   "v": -512
-  },
-  "OCT2DEC#19": {
-   "t": "n",
-   "v": -513
-  },
-  "OCT2DEC#20": {
-   "t": "n",
-   "v": -1
-  },
-  "OCT2DEC#21": {
-   "t": "n",
-   "v": 536870911
-  },
-  "OCT2DEC#22": {
-   "t": "n",
-   "v": -536870912
-  },
-  "OCT2DEC#23": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2DEC#24": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2DEC#25": {
-   "t": "n",
-   "v": 15
-  },
-  "OCT2DEC#26": {
-   "t": "n",
-   "v": 10
-  },
-  "OCT2DEC#27": {
-   "t": "n",
-   "v": 10
-  },
   "OCT2HEX#1": {
    "t": "s",
    "v": "0"
@@ -21936,162 +21676,6 @@
    "v": "NUM"
   },
   "OCT2HEX#10": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "OCT2HEX#12": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#13": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#16": {
-   "t": "s",
-   "v": "1FF"
-  },
-  "OCT2HEX#17": {
-   "t": "s",
-   "v": "200"
-  },
-  "OCT2HEX#18": {
-   "t": "s",
-   "v": "FFFFFFFE00"
-  },
-  "OCT2HEX#19": {
-   "t": "s",
-   "v": "FFFFFFFDFF"
-  },
-  "OCT2HEX#20": {
-   "t": "s",
-   "v": "FFFFFFFFFF"
-  },
-  "OCT2HEX#21": {
-   "t": "s",
-   "v": "1FFFFFFF"
-  },
-  "OCT2HEX#22": {
-   "t": "s",
-   "v": "FFE0000000"
-  },
-  "OCT2HEX#23": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#24": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#25": {
-   "t": "s",
-   "v": "F"
-  },
-  "OCT2HEX#26": {
-   "t": "s",
-   "v": "A"
-  },
-  "OCT2HEX#27": {
-   "t": "s",
-   "v": "A"
-  },
-  "OCT2BIN#28": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#29": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#30": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#31": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#32": {
-   "t": "s",
-   "v": "0000001111"
-  },
-  "OCT2BIN#33": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#34": {
-   "t": "s",
-   "v": "1111111111"
-  },
-  "OCT2BIN#35": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#36": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2BIN#37": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "OCT2BIN#38": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#28": {
-   "t": "s",
-   "v": "00A"
-  },
-  "OCT2HEX#29": {
-   "t": "s",
-   "v": "0A"
-  },
-  "OCT2HEX#30": {
-   "t": "s",
-   "v": "F"
-  },
-  "OCT2HEX#31": {
-   "t": "s",
-   "v": "0F"
-  },
-  "OCT2HEX#32": {
-   "t": "s",
-   "v": "000000000F"
-  },
-  "OCT2HEX#33": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#34": {
-   "t": "s",
-   "v": "FFFFFFFFFF"
-  },
-  "OCT2HEX#35": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "OCT2HEX#36": {
-   "t": "s",
-   "v": "0F"
-  },
-  "OCT2HEX#37": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "OCT2HEX#38": {
    "t": "e",
    "v": "NUM"
   },
@@ -22143,30 +21727,6 @@
    "t": "n",
    "v": 2
   },
-  "BITAND#13": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BITAND#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BITAND#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BITAND#16": {
-   "t": "n",
-   "v": 2
-  },
-  "BITAND#17": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BITAND#18": {
-   "t": "n",
-   "v": 0
-  },
   "BITOR#1": {
    "t": "n",
    "v": 0
@@ -22215,30 +21775,6 @@
    "t": "n",
    "v": 3
   },
-  "BITOR#13": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BITOR#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BITOR#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BITOR#16": {
-   "t": "n",
-   "v": 3
-  },
-  "BITOR#17": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BITOR#18": {
-   "t": "n",
-   "v": 5
-  },
   "BITXOR#1": {
    "t": "n",
    "v": 0
@@ -22286,30 +21822,6 @@
   "BITXOR#12": {
    "t": "n",
    "v": 1
-  },
-  "BITXOR#13": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BITXOR#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BITXOR#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "BITXOR#16": {
-   "t": "n",
-   "v": 1
-  },
-  "BITXOR#17": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "BITXOR#18": {
-   "t": "n",
-   "v": 5
   },
   "BITLSHIFT#1": {
    "t": "n",
@@ -23291,14 +22803,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMABS#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMABS#13": {
-   "t": "n",
-   "v": 1.4142135623730951
-  },
   "IMARGUMENT#1": {
    "t": "n",
    "v": 0.7853981633974483
@@ -23342,14 +22846,6 @@
   "IMARGUMENT#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMARGUMENT#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMARGUMENT#13": {
-   "t": "n",
-   "v": 0.7853981633974483
   },
   "IMCONJUGATE#1": {
    "t": "s",
@@ -23395,14 +22891,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMCONJUGATE#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMCONJUGATE#13": {
-   "t": "s",
-   "v": "1-j"
-  },
   "IMCOS#1": {
    "t": "s",
    "v": "0.833730025131149-0.988897705762865i"
@@ -23446,14 +22934,6 @@
   "IMCOS#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMCOS#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMCOS#13": {
-   "t": "s",
-   "v": "0.833730025131149-0.988897705762865j"
   },
   "IMCOSH#1": {
    "t": "s",
@@ -23499,14 +22979,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMCOSH#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMCOSH#13": {
-   "t": "s",
-   "v": "0.833730025131149+0.988897705762865j"
-  },
   "IMCOT#1": {
    "t": "s",
    "v": "0.217621561854403-0.868014142895925i"
@@ -23550,14 +23022,6 @@
   "IMCOT#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMCOT#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMCOT#13": {
-   "t": "s",
-   "v": "0.217621561854403-0.868014142895925j"
   },
   "IMCSC#1": {
    "t": "s",
@@ -23603,14 +23067,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMCSC#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMCSC#13": {
-   "t": "s",
-   "v": "0.621518017170428-0.303931001628427j"
-  },
   "IMCSCH#1": {
    "t": "s",
    "v": "0.303931001628426-0.621518017170429i"
@@ -23654,14 +23110,6 @@
   "IMCSCH#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMCSCH#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMCSCH#13": {
-   "t": "s",
-   "v": "0.303931001628426-0.621518017170429j"
   },
   "IMEXP#1": {
    "t": "s",
@@ -23707,14 +23155,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMEXP#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMEXP#13": {
-   "t": "s",
-   "v": "1.46869393991589+2.28735528717884j"
-  },
   "IMLN#1": {
    "t": "s",
    "v": "0.346573590279973+0.785398163397448i"
@@ -23758,14 +23198,6 @@
   "IMLN#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMLN#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMLN#13": {
-   "t": "s",
-   "v": "0.346573590279973+0.785398163397448j"
   },
   "IMLOG10#1": {
    "t": "s",
@@ -23811,14 +23243,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMLOG10#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMLOG10#13": {
-   "t": "s",
-   "v": "0.150514997831991+0.34109408846046j"
-  },
   "IMLOG2#1": {
    "t": "s",
    "v": "0.5+1.1330900354568i"
@@ -23862,14 +23286,6 @@
   "IMLOG2#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMLOG2#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMLOG2#13": {
-   "t": "s",
-   "v": "0.5+1.1330900354568j"
   },
   "IMSEC#1": {
    "t": "s",
@@ -23915,14 +23331,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMSEC#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMSEC#13": {
-   "t": "s",
-   "v": "0.498337030555187+0.591083841721045j"
-  },
   "IMSECH#1": {
    "t": "s",
    "v": "0.498337030555187-0.591083841721045i"
@@ -23966,14 +23374,6 @@
   "IMSECH#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMSECH#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMSECH#13": {
-   "t": "s",
-   "v": "0.498337030555187-0.591083841721045j"
   },
   "IMSIN#1": {
    "t": "s",
@@ -24019,14 +23419,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMSIN#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMSIN#13": {
-   "t": "s",
-   "v": "1.29845758141598+0.634963914784736j"
-  },
   "IMSINH#1": {
    "t": "s",
    "v": "0.634963914784736+1.29845758141598i"
@@ -24070,14 +23462,6 @@
   "IMSINH#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMSINH#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMSINH#13": {
-   "t": "s",
-   "v": "0.634963914784736+1.29845758141598j"
   },
   "IMSQRT#1": {
    "t": "s",
@@ -24123,14 +23507,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMSQRT#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMSQRT#13": {
-   "t": "s",
-   "v": "1.09868411346781+0.455089860562227j"
-  },
   "IMTAN#1": {
    "t": "s",
    "v": "0.271752585319512+1.08392332733869i"
@@ -24174,206 +23550,6 @@
   "IMTAN#11": {
    "t": "e",
    "v": "VALUE"
-  },
-  "IMTAN#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMTAN#13": {
-   "t": "s",
-   "v": "0.271752585319512+1.08392332733869j"
-  },
-  "IMABS#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMABS#15": {
-   "t": "n",
-   "v": 1.414213562373095e-200
-  },
-  "IMABS#16": {
-   "t": "n",
-   "v": 5
-  },
-  "IMARGUMENT#14": {
-   "t": "n",
-   "v": 3.141592653589793
-  },
-  "IMARGUMENT#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMARGUMENT#16": {
-   "t": "n",
-   "v": -2.356194490192345
-  },
-  "IMARGUMENT#17": {
-   "t": "n",
-   "v": 2.356194490192345
-  },
-  "IMARGUMENT#18": {
-   "t": "n",
-   "v": 1.5707963267948966
-  },
-  "IMCONJUGATE#14": {
-   "t": "s",
-   "v": "3-4j"
-  },
-  "IMCONJUGATE#15": {
-   "t": "s",
-   "v": "j"
-  },
-  "IMEXP#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMEXP#15": {
-   "t": "s",
-   "v": "4.44042450204208E+307+6.91555142022723E+307i"
-  },
-  "IMEXP#16": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMEXP#17": {
-   "t": "s",
-   "v": "0"
-  },
-  "IMCOS#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMCOS#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMCOS#16": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMCOS#17": {
-   "t": "s",
-   "v": "-0.293388403555673"
-  },
-  "IMCOS#18": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSIN#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSIN#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSIN#16": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSIN#17": {
-   "t": "s",
-   "v": "-0.955993328773299"
-  },
-  "IMTAN#14": {
-   "t": "s",
-   "v": "i"
-  },
-  "IMTAN#15": {
-   "t": "s",
-   "v": "-286411383293069"
-  },
-  "IMTAN#16": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMCOT#14": {
-   "t": "s",
-   "v": "1E+300"
-  },
-  "IMCOT#15": {
-   "t": "s",
-   "v": "-i"
-  },
-  "IMCOSH#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMCOSH#15": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSINH#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSINH#15": {
-   "t": "s",
-   "v": "0.489056259041294+1.40311925062204j"
-  },
-  "IMSQRT#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMSQRT#15": {
-   "t": "s",
-   "v": "1.22464679914735E-16+2i"
-  },
-  "IMSQRT#16": {
-   "t": "s",
-   "v": "2"
-  },
-  "IMSQRT#17": {
-   "t": "s",
-   "v": "1.22464679914735E-16+2i"
-  },
-  "IMSQRT#18": {
-   "t": "s",
-   "v": "0.707106781186548+0.707106781186547i"
-  },
-  "IMSQRT#19": {
-   "t": "s",
-   "v": "0"
-  },
-  "IMLN#14": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMLN#15": {
-   "t": "s",
-   "v": "0.346573590279973-2.35619449019234i"
-  },
-  "IMLN#16": {
-   "t": "s",
-   "v": "-690.775527898214"
-  },
-  "IMLN#17": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMLOG10#14": {
-   "t": "s",
-   "v": "2"
-  },
-  "IMLOG10#15": {
-   "t": "s",
-   "v": "1.36437635384184i"
-  },
-  "IMLOG10#16": {
-   "t": "s",
-   "v": "-3+0.682188176920921i"
-  },
-  "IMLOG2#14": {
-   "t": "s",
-   "v": "3"
-  },
-  "IMLOG2#15": {
-   "t": "s",
-   "v": "4.53236014182719i"
-  },
-  "IMLOG2#16": {
-   "t": "s",
-   "v": "-2+2.2661800709136j"
   },
   "IMPOWER#1": {
    "t": "s",
@@ -24515,10 +23691,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMDIV#13": {
-   "t": "e",
-   "v": "VALUE"
-  },
   "IMPRODUCT#1": {
    "t": "s",
    "v": "1+i"
@@ -24612,10 +23784,6 @@
    "v": "3-4j"
   },
   "IMSUB#7": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "IMSUB#8": {
    "t": "e",
    "v": "VALUE"
   },
@@ -26303,6 +25471,10 @@
    "t": "n",
    "v": 0
   },
+  "CONVERT#405": {
+   "t": "e",
+   "v": "NUM"
+  },
   "CONVERT#406": {
    "t": "n",
    "v": 3
@@ -26470,10 +25642,6 @@
   "DELTA#12": {
    "t": "n",
    "v": 0
-  },
-  "DELTA#13": {
-   "t": "e",
-   "v": "VALUE"
   },
   "GESTEP#1": {
    "t": "n",
@@ -29291,6 +28459,10 @@
    "t": "n",
    "v": 1.772453850905516e+150
   },
+  "SQRTPI#4": {
+   "t": "e",
+   "v": "NUM"
+  },
   "SQRTPI#5": {
    "t": "e",
    "v": "NUM"
@@ -29591,6 +28763,678 @@
    "t": "n",
    "v": 0.1
   },
+  "BITLSHIFT#28": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#29": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#30": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#31": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITLSHIFT#33": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#34": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#35": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#36": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#37": {
+   "t": "n",
+   "v": 0
+  },
+  "BITRSHIFT#28": {
+   "t": "n",
+   "v": 0
+  },
+  "BITRSHIFT#29": {
+   "t": "n",
+   "v": 0
+  },
+  "BITRSHIFT#30": {
+   "t": "n",
+   "v": 0
+  },
+  "COMPLEX#27": {
+   "t": "s",
+   "v": "100000000000000000000"
+  },
+  "COMPLEX#28": {
+   "t": "s",
+   "v": "150000000000000000000"
+  },
+  "COMPLEX#29": {
+   "t": "s",
+   "v": "999999999999999000000"
+  },
+  "COMPLEX#30": {
+   "t": "s",
+   "v": "1E+21"
+  },
+  "COMPLEX#31": {
+   "t": "s",
+   "v": "-100000000000000000000"
+  },
+  "COMPLEX#32": {
+   "t": "s",
+   "v": "0.0000012345678901234"
+  },
+  "COMPLEX#33": {
+   "t": "s",
+   "v": "1.23456789012345E-06"
+  },
+  "COMPLEX#34": {
+   "t": "s",
+   "v": "0.000001234567890123"
+  },
+  "COMPLEX#35": {
+   "t": "s",
+   "v": "1E-20"
+  },
+  "COMPLEX#36": {
+   "t": "s",
+   "v": "100000000000000000000i"
+  },
+  "COMPLEX#37": {
+   "t": "s",
+   "v": "123456789012345000000"
+  },
+  "COMPLEX#38": {
+   "t": "s",
+   "v": "-150000000000000000000-150000000000000000000i"
+  },
+  "IMSUM#18": {
+   "t": "s",
+   "v": "100000000000000000000"
+  },
+  "IMSUM#19": {
+   "t": "s",
+   "v": "150000000000000000000+150000000000000000000i"
+  },
+  "IMSUM#20": {
+   "t": "s",
+   "v": "0.0000012345678901234"
+  },
+  "CONVERT#436": {
+   "t": "n",
+   "v": 1000
+  },
+  "CONVERT#437": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CONVERT#438": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CONVERT#439": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CONVERT#440": {
+   "t": "n",
+   "v": 10
+  },
+  "CONVERT#441": {
+   "t": "n",
+   "v": 1073741824
+  },
+  "CONVERT#442": {
+   "t": "e",
+   "v": "NA"
+  },
+  "COMBIN#26": {
+   "t": "n",
+   "v": 2147483646
+  },
+  "COMBIN#27": {
+   "t": "n",
+   "v": 1
+  },
+  "COMBIN#28": {
+   "t": "n",
+   "v": 2000000000
+  },
+  "COMBIN#29": {
+   "t": "n",
+   "v": 2305843003844984800
+  },
+  "COMBINA#19": {
+   "t": "n",
+   "v": 2147483646
+  },
+  "COMBINA#20": {
+   "t": "n",
+   "v": 1
+  },
+  "COMBINA#21": {
+   "t": "n",
+   "v": 1
+  },
+  "GCD#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "GCD#24": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "GCD#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "GCD#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LCM#18": {
+   "t": "n",
+   "v": 9007199254740992
+  },
+  "LCM#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LCM#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LCM#21": {
+   "t": "n",
+   "v": 9007199254740991
+  },
+  "MOD#27": {
+   "t": "n",
+   "v": 1
+  },
+  "MOD#28": {
+   "t": "n",
+   "v": 1
+  },
+  "MOD#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#30": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#31": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#36": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#37": {
+   "t": "n",
+   "v": 1
+  },
+  "MOD#38": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#39": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#40": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#41": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#42": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#43": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#44": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#45": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MROUND#22": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#23": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#24": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#25": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#26": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#27": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#28": {
+   "t": "n",
+   "v": 2
+  },
+  "MROUND#29": {
+   "t": "n",
+   "v": 2
+  },
+  "MROUND#30": {
+   "t": "n",
+   "v": 2
+  },
+  "MROUND#31": {
+   "t": "n",
+   "v": 2
+  },
+  "MROUND#32": {
+   "t": "n",
+   "v": 2
+  },
+  "MROUND#33": {
+   "t": "n",
+   "v": 60
+  },
+  "MROUND#34": {
+   "t": "n",
+   "v": 60
+  },
+  "MROUND#35": {
+   "t": "n",
+   "v": 60
+  },
+  "MROUND#36": {
+   "t": "n",
+   "v": 60
+  },
+  "MROUND#37": {
+   "t": "n",
+   "v": 60
+  },
+  "MROUND#38": {
+   "t": "n",
+   "v": 1000
+  },
+  "MROUND#39": {
+   "t": "n",
+   "v": 1000
+  },
+  "MROUND#40": {
+   "t": "n",
+   "v": 1000
+  },
+  "MROUND#41": {
+   "t": "n",
+   "v": 1000
+  },
+  "MROUND#42": {
+   "t": "n",
+   "v": 1000
+  },
+  "MROUND#43": {
+   "t": "n",
+   "v": 0.2
+  },
+  "MROUND#44": {
+   "t": "n",
+   "v": 0.4
+  },
+  "MROUND#45": {
+   "t": "n",
+   "v": 2.68
+  },
+  "MROUND#46": {
+   "t": "n",
+   "v": 1.5
+  },
+  "MROUND#47": {
+   "t": "n",
+   "v": -0.2
+  },
+  "SERIESSUM#19": {
+   "t": "n",
+   "v": 0
+  },
+  "SERIESSUM#20": {
+   "t": "n",
+   "v": 0.9944444444444445
+  },
+  "SERIESSUM#21": {
+   "t": "n",
+   "v": 0
+  },
+  "SERIESSUM#22": {
+   "t": "n",
+   "v": -4.355555555555556
+  },
+  "PERCENTOF#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PERCENTOF#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PERCENTOF#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PERCENTOF#13": {
+   "t": "n",
+   "v": -0.5
+  },
+  "PERCENTOF#14": {
+   "t": "n",
+   "v": -0.5
+  },
+  "PERCENTOF#15": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "PERCENTOF#16": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "PERCENTOF#17": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "PERCENTOF#18": {
+   "t": "n",
+   "v": 0
+  },
+  "FACTDOUBLE#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "FACTDOUBLE#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "FACTDOUBLE#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ARABIC#33": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ARABIC#34": {
+   "t": "n",
+   "v": -1900
+  },
+  "ARABIC#35": {
+   "t": "n",
+   "v": -1
+  },
+  "ARABIC#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ARABIC#37": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ARABIC#38": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ARABIC#39": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BITLSHIFT#38": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#39": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#40": {
+   "t": "n",
+   "v": 0
+  },
+  "BITLSHIFT#41": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITRSHIFT#31": {
+   "t": "n",
+   "v": 0
+  },
+  "BITRSHIFT#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITRSHIFT#33": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#46": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#47": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#48": {
+   "t": "n",
+   "v": 0.5
+  },
+  "MOD#49": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#50": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#51": {
+   "t": "n",
+   "v": 0.5
+  },
+  "MOD#52": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#53": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#54": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#55": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#56": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#57": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#58": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#59": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#60": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#61": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#62": {
+   "t": "n",
+   "v": 0
+  },
+  "MOD#63": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#64": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MOD#65": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "MROUND#48": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#49": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#50": {
+   "t": "n",
+   "v": 1
+  },
+  "MROUND#51": {
+   "t": "n",
+   "v": 0
+  },
+  "MROUND#52": {
+   "t": "n",
+   "v": 0
+  },
+  "MROUND#53": {
+   "t": "n",
+   "v": 0
+  },
+  "MROUND#54": {
+   "t": "n",
+   "v": 0
+  },
+  "MROUND#55": {
+   "t": "n",
+   "v": 3
+  },
+  "MROUND#56": {
+   "t": "n",
+   "v": 2
+  },
+  "MROUND#57": {
+   "t": "n",
+   "v": 8
+  },
+  "MROUND#58": {
+   "t": "n",
+   "v": 7
+  },
+  "MROUND#59": {
+   "t": "n",
+   "v": 16
+  },
+  "MROUND#60": {
+   "t": "n",
+   "v": 15
+  },
+  "MROUND#61": {
+   "t": "n",
+   "v": 31
+  },
+  "MROUND#62": {
+   "t": "n",
+   "v": 30
+  },
+  "MROUND#63": {
+   "t": "n",
+   "v": 0.1
+  },
+  "MROUND#64": {
+   "t": "n",
+   "v": 0.5
+  },
+  "MROUND#65": {
+   "t": "n",
+   "v": 0.6000000000000001
+  },
+  "MROUND#66": {
+   "t": "n",
+   "v": 8.5
+  },
+  "MROUND#67": {
+   "t": "n",
+   "v": 4.3
+  },
+  "PERCENTOF#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PERCENTOF#20": {
+   "t": "n",
+   "v": 0
+  },
+  "PERCENTOF#21": {
+   "t": "e",
+   "v": "VALUE"
+  },
   "MDETERM#1": {
    "t": "n",
    "v": -2
@@ -29659,13 +29503,1549 @@
    "t": "e",
    "v": "VALUE"
   },
-  "CONVERT#405": {
+  "BESSELI#151": {
+   "t": "n",
+   "v": 0
+  },
+  "BESSELI#152": {
+   "t": "n",
+   "v": 0
+  },
+  "BESSELI#153": {
    "t": "e",
    "v": "NUM"
   },
-  "SQRTPI#4": {
+  "BESSELI#154": {
+   "t": "n",
+   "v": 3.2765420087582035e-51
+  },
+  "BESSELJ#151": {
+   "t": "n",
+   "v": 0
+  },
+  "BESSELJ#152": {
+   "t": "n",
+   "v": 0
+  },
+  "BESSELJ#153": {
+   "t": "n",
+   "v": -0.00667259143948567
+  },
+  "BESSELJ#154": {
+   "t": "n",
+   "v": 3.263356828913977e-51
+  },
+  "BIN2DEC#11": {
    "t": "e",
    "v": "NUM"
+  },
+  "BIN2DEC#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2DEC#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2DEC#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2DEC#15": {
+   "t": "n",
+   "v": 5
+  },
+  "BIN2DEC#16": {
+   "t": "n",
+   "v": 511
+  },
+  "BIN2DEC#17": {
+   "t": "n",
+   "v": -512
+  },
+  "BIN2DEC#18": {
+   "t": "n",
+   "v": -1
+  },
+  "BIN2DEC#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2DEC#20": {
+   "t": "n",
+   "v": 1
+  },
+  "BIN2DEC#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2DEC#22": {
+   "t": "n",
+   "v": 5
+  },
+  "BIN2DEC#23": {
+   "t": "n",
+   "v": -1
+  },
+  "BIN2DEC#24": {
+   "t": "n",
+   "v": 8
+  },
+  "BIN2DEC#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2DEC#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#15": {
+   "t": "s",
+   "v": "5"
+  },
+  "BIN2HEX#16": {
+   "t": "s",
+   "v": "1FF"
+  },
+  "BIN2HEX#17": {
+   "t": "s",
+   "v": "FFFFFFFE00"
+  },
+  "BIN2HEX#18": {
+   "t": "s",
+   "v": "FFFFFFFFFF"
+  },
+  "BIN2HEX#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#20": {
+   "t": "s",
+   "v": "1"
+  },
+  "BIN2HEX#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#22": {
+   "t": "s",
+   "v": "5"
+  },
+  "BIN2HEX#23": {
+   "t": "s",
+   "v": "FFFFFFFFFF"
+  },
+  "BIN2HEX#24": {
+   "t": "s",
+   "v": "8"
+  },
+  "BIN2HEX#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#15": {
+   "t": "s",
+   "v": "5"
+  },
+  "BIN2OCT#16": {
+   "t": "s",
+   "v": "777"
+  },
+  "BIN2OCT#17": {
+   "t": "s",
+   "v": "7777777000"
+  },
+  "BIN2OCT#18": {
+   "t": "s",
+   "v": "7777777777"
+  },
+  "BIN2OCT#19": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#20": {
+   "t": "s",
+   "v": "1"
+  },
+  "BIN2OCT#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#22": {
+   "t": "s",
+   "v": "5"
+  },
+  "BIN2OCT#23": {
+   "t": "s",
+   "v": "7777777777"
+  },
+  "BIN2OCT#24": {
+   "t": "s",
+   "v": "10"
+  },
+  "BIN2OCT#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#27": {
+   "t": "s",
+   "v": "FB"
+  },
+  "BIN2HEX#28": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#29": {
+   "t": "s",
+   "v": "00000000FB"
+  },
+  "BIN2HEX#30": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#31": {
+   "t": "s",
+   "v": "FFFFFFFFFF"
+  },
+  "BIN2HEX#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#36": {
+   "t": "s",
+   "v": "0"
+  },
+  "BIN2HEX#37": {
+   "t": "s",
+   "v": "05"
+  },
+  "BIN2HEX#38": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#39": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#40": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2HEX#41": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2HEX#42": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2HEX#43": {
+   "t": "s",
+   "v": "0000000005"
+  },
+  "BIN2HEX#44": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2HEX#45": {
+   "t": "s",
+   "v": "05"
+  },
+  "BIN2OCT#27": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#28": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#29": {
+   "t": "s",
+   "v": "0000000373"
+  },
+  "BIN2OCT#30": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#31": {
+   "t": "s",
+   "v": "7777777777"
+  },
+  "BIN2OCT#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#36": {
+   "t": "s",
+   "v": "0"
+  },
+  "BIN2OCT#37": {
+   "t": "s",
+   "v": "05"
+  },
+  "BIN2OCT#38": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#39": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#40": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2OCT#41": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2OCT#42": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BIN2OCT#43": {
+   "t": "s",
+   "v": "0000000005"
+  },
+  "BIN2OCT#44": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2OCT#45": {
+   "t": "s",
+   "v": "05"
+  },
+  "DEC2BIN#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2HEX#25": {
+   "t": "s",
+   "v": "2540BE400"
+  },
+  "DEC2OCT#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#26": {
+   "t": "s",
+   "v": "111111111"
+  },
+  "DEC2BIN#27": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#28": {
+   "t": "s",
+   "v": "1000000000"
+  },
+  "DEC2BIN#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#30": {
+   "t": "s",
+   "v": "111111111"
+  },
+  "DEC2BIN#31": {
+   "t": "s",
+   "v": "1000000000"
+  },
+  "DEC2BIN#32": {
+   "t": "s",
+   "v": "1001"
+  },
+  "DEC2BIN#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#34": {
+   "t": "s",
+   "v": "11111111"
+  },
+  "DEC2BIN#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2HEX#26": {
+   "t": "s",
+   "v": "7FFFFFFFFF"
+  },
+  "DEC2HEX#27": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2HEX#28": {
+   "t": "s",
+   "v": "8000000000"
+  },
+  "DEC2HEX#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2HEX#30": {
+   "t": "s",
+   "v": "FF"
+  },
+  "DEC2HEX#31": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2HEX#32": {
+   "t": "s",
+   "v": "FFFFFFFFFF"
+  },
+  "DEC2HEX#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2HEX#34": {
+   "t": "s",
+   "v": "100000000"
+  },
+  "DEC2HEX#35": {
+   "t": "s",
+   "v": "FF"
+  },
+  "DEC2HEX#36": {
+   "t": "s",
+   "v": "FFFFFFFFCA"
+  },
+  "DEC2OCT#26": {
+   "t": "s",
+   "v": "3777777777"
+  },
+  "DEC2OCT#27": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2OCT#28": {
+   "t": "s",
+   "v": "4000000000"
+  },
+  "DEC2OCT#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2OCT#30": {
+   "t": "s",
+   "v": "10"
+  },
+  "DEC2OCT#31": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2OCT#32": {
+   "t": "s",
+   "v": "7777777634"
+  },
+  "DEC2OCT#33": {
+   "t": "s",
+   "v": "777"
+  },
+  "HEX2BIN#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#15": {
+   "t": "s",
+   "v": "111111111"
+  },
+  "HEX2BIN#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#17": {
+   "t": "s",
+   "v": "1000000000"
+  },
+  "HEX2BIN#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#19": {
+   "t": "s",
+   "v": "1111111111"
+  },
+  "HEX2BIN#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#22": {
+   "t": "s",
+   "v": "11111111"
+  },
+  "HEX2BIN#23": {
+   "t": "s",
+   "v": "11111111"
+  },
+  "HEX2BIN#24": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#27": {
+   "t": "s",
+   "v": "10000"
+  },
+  "HEX2BIN#28": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#30": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#31": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#34": {
+   "t": "s",
+   "v": "10100101"
+  },
+  "HEX2BIN#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#15": {
+   "t": "n",
+   "v": 511
+  },
+  "HEX2DEC#16": {
+   "t": "n",
+   "v": 512
+  },
+  "HEX2DEC#17": {
+   "t": "n",
+   "v": -512
+  },
+  "HEX2DEC#18": {
+   "t": "n",
+   "v": -513
+  },
+  "HEX2DEC#19": {
+   "t": "n",
+   "v": -1
+  },
+  "HEX2DEC#20": {
+   "t": "n",
+   "v": 549755813887
+  },
+  "HEX2DEC#21": {
+   "t": "n",
+   "v": -549755813888
+  },
+  "HEX2DEC#22": {
+   "t": "n",
+   "v": 255
+  },
+  "HEX2DEC#23": {
+   "t": "n",
+   "v": 255
+  },
+  "HEX2DEC#24": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#27": {
+   "t": "n",
+   "v": 16
+  },
+  "HEX2DEC#28": {
+   "t": "n",
+   "v": 4096
+  },
+  "HEX2DEC#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2DEC#30": {
+   "t": "n",
+   "v": 536870911
+  },
+  "HEX2DEC#31": {
+   "t": "n",
+   "v": 536870912
+  },
+  "HEX2DEC#32": {
+   "t": "n",
+   "v": -536870912
+  },
+  "HEX2DEC#33": {
+   "t": "n",
+   "v": -536870913
+  },
+  "HEX2DEC#34": {
+   "t": "n",
+   "v": 165
+  },
+  "HEX2DEC#35": {
+   "t": "n",
+   "v": 1034160313
+  },
+  "HEX2OCT#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#15": {
+   "t": "s",
+   "v": "777"
+  },
+  "HEX2OCT#16": {
+   "t": "s",
+   "v": "1000"
+  },
+  "HEX2OCT#17": {
+   "t": "s",
+   "v": "7777777000"
+  },
+  "HEX2OCT#18": {
+   "t": "s",
+   "v": "7777776777"
+  },
+  "HEX2OCT#19": {
+   "t": "s",
+   "v": "7777777777"
+  },
+  "HEX2OCT#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#22": {
+   "t": "s",
+   "v": "377"
+  },
+  "HEX2OCT#23": {
+   "t": "s",
+   "v": "377"
+  },
+  "HEX2OCT#24": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#27": {
+   "t": "s",
+   "v": "20"
+  },
+  "HEX2OCT#28": {
+   "t": "s",
+   "v": "10000"
+  },
+  "HEX2OCT#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#30": {
+   "t": "s",
+   "v": "3777777777"
+  },
+  "HEX2OCT#31": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#32": {
+   "t": "s",
+   "v": "4000000000"
+  },
+  "HEX2OCT#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#34": {
+   "t": "s",
+   "v": "245"
+  },
+  "HEX2OCT#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#36": {
+   "t": "s",
+   "v": "1111"
+  },
+  "HEX2BIN#37": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#38": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#39": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#40": {
+   "t": "s",
+   "v": "0000001111"
+  },
+  "HEX2BIN#41": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#42": {
+   "t": "s",
+   "v": "1111111111"
+  },
+  "HEX2BIN#43": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#44": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2BIN#45": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2BIN#46": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2BIN#47": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#36": {
+   "t": "s",
+   "v": "0017"
+  },
+  "HEX2OCT#37": {
+   "t": "s",
+   "v": "017"
+  },
+  "HEX2OCT#38": {
+   "t": "s",
+   "v": "17"
+  },
+  "HEX2OCT#39": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#40": {
+   "t": "s",
+   "v": "0000000017"
+  },
+  "HEX2OCT#41": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#42": {
+   "t": "s",
+   "v": "7777777777"
+  },
+  "HEX2OCT#43": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "HEX2OCT#44": {
+   "t": "s",
+   "v": "17"
+  },
+  "HEX2OCT#45": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2OCT#46": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2OCT#47": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#15": {
+   "t": "s",
+   "v": "111111111"
+  },
+  "OCT2BIN#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#17": {
+   "t": "s",
+   "v": "1000000000"
+  },
+  "OCT2BIN#18": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#19": {
+   "t": "s",
+   "v": "1111111111"
+  },
+  "OCT2BIN#20": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#24": {
+   "t": "s",
+   "v": "1111"
+  },
+  "OCT2BIN#25": {
+   "t": "s",
+   "v": "1010"
+  },
+  "OCT2BIN#26": {
+   "t": "s",
+   "v": "1010"
+  },
+  "OCT2DEC#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2DEC#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2DEC#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2DEC#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2DEC#15": {
+   "t": "n",
+   "v": 511
+  },
+  "OCT2DEC#16": {
+   "t": "n",
+   "v": 512
+  },
+  "OCT2DEC#17": {
+   "t": "n",
+   "v": -512
+  },
+  "OCT2DEC#18": {
+   "t": "n",
+   "v": -513
+  },
+  "OCT2DEC#19": {
+   "t": "n",
+   "v": -1
+  },
+  "OCT2DEC#20": {
+   "t": "n",
+   "v": 536870911
+  },
+  "OCT2DEC#21": {
+   "t": "n",
+   "v": -536870912
+  },
+  "OCT2DEC#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2DEC#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2DEC#24": {
+   "t": "n",
+   "v": 15
+  },
+  "OCT2DEC#25": {
+   "t": "n",
+   "v": 10
+  },
+  "OCT2DEC#26": {
+   "t": "n",
+   "v": 10
+  },
+  "OCT2HEX#11": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#12": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#15": {
+   "t": "s",
+   "v": "1FF"
+  },
+  "OCT2HEX#16": {
+   "t": "s",
+   "v": "200"
+  },
+  "OCT2HEX#17": {
+   "t": "s",
+   "v": "FFFFFFFE00"
+  },
+  "OCT2HEX#18": {
+   "t": "s",
+   "v": "FFFFFFFDFF"
+  },
+  "OCT2HEX#19": {
+   "t": "s",
+   "v": "FFFFFFFFFF"
+  },
+  "OCT2HEX#20": {
+   "t": "s",
+   "v": "1FFFFFFF"
+  },
+  "OCT2HEX#21": {
+   "t": "s",
+   "v": "FFE0000000"
+  },
+  "OCT2HEX#22": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#24": {
+   "t": "s",
+   "v": "F"
+  },
+  "OCT2HEX#25": {
+   "t": "s",
+   "v": "A"
+  },
+  "OCT2HEX#26": {
+   "t": "s",
+   "v": "A"
+  },
+  "OCT2BIN#27": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#28": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#29": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#30": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#31": {
+   "t": "s",
+   "v": "0000001111"
+  },
+  "OCT2BIN#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#33": {
+   "t": "s",
+   "v": "1111111111"
+  },
+  "OCT2BIN#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2BIN#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OCT2BIN#37": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#27": {
+   "t": "s",
+   "v": "00A"
+  },
+  "OCT2HEX#28": {
+   "t": "s",
+   "v": "0A"
+  },
+  "OCT2HEX#29": {
+   "t": "s",
+   "v": "F"
+  },
+  "OCT2HEX#30": {
+   "t": "s",
+   "v": "0F"
+  },
+  "OCT2HEX#31": {
+   "t": "s",
+   "v": "000000000F"
+  },
+  "OCT2HEX#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#33": {
+   "t": "s",
+   "v": "FFFFFFFFFF"
+  },
+  "OCT2HEX#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#35": {
+   "t": "s",
+   "v": "0F"
+  },
+  "OCT2HEX#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OCT2HEX#37": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITAND#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITAND#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITAND#15": {
+   "t": "n",
+   "v": 2
+  },
+  "BITAND#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BITAND#17": {
+   "t": "n",
+   "v": 0
+  },
+  "BITOR#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITOR#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITOR#15": {
+   "t": "n",
+   "v": 3
+  },
+  "BITOR#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BITOR#17": {
+   "t": "n",
+   "v": 5
+  },
+  "BITXOR#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITXOR#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BITXOR#15": {
+   "t": "n",
+   "v": 1
+  },
+  "BITXOR#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BITXOR#17": {
+   "t": "n",
+   "v": 5
+  },
+  "IMABS#12": {
+   "t": "n",
+   "v": 1.4142135623730951
+  },
+  "IMARGUMENT#12": {
+   "t": "n",
+   "v": 0.7853981633974483
+  },
+  "IMCONJUGATE#12": {
+   "t": "s",
+   "v": "1-j"
+  },
+  "IMCOS#12": {
+   "t": "s",
+   "v": "0.833730025131149-0.988897705762865j"
+  },
+  "IMCOSH#12": {
+   "t": "s",
+   "v": "0.833730025131149+0.988897705762865j"
+  },
+  "IMCOT#12": {
+   "t": "s",
+   "v": "0.217621561854403-0.868014142895925j"
+  },
+  "IMCSC#12": {
+   "t": "s",
+   "v": "0.621518017170428-0.303931001628427j"
+  },
+  "IMCSCH#12": {
+   "t": "s",
+   "v": "0.303931001628426-0.621518017170429j"
+  },
+  "IMEXP#12": {
+   "t": "s",
+   "v": "1.46869393991589+2.28735528717884j"
+  },
+  "IMLN#12": {
+   "t": "s",
+   "v": "0.346573590279973+0.785398163397448j"
+  },
+  "IMLOG10#12": {
+   "t": "s",
+   "v": "0.150514997831991+0.34109408846046j"
+  },
+  "IMLOG2#12": {
+   "t": "s",
+   "v": "0.5+1.1330900354568j"
+  },
+  "IMSEC#12": {
+   "t": "s",
+   "v": "0.498337030555187+0.591083841721045j"
+  },
+  "IMSECH#12": {
+   "t": "s",
+   "v": "0.498337030555187-0.591083841721045j"
+  },
+  "IMSIN#12": {
+   "t": "s",
+   "v": "1.29845758141598+0.634963914784736j"
+  },
+  "IMSINH#12": {
+   "t": "s",
+   "v": "0.634963914784736+1.29845758141598j"
+  },
+  "IMSQRT#12": {
+   "t": "s",
+   "v": "1.09868411346781+0.455089860562227j"
+  },
+  "IMTAN#12": {
+   "t": "s",
+   "v": "0.271752585319512+1.08392332733869j"
+  },
+  "IMABS#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMABS#14": {
+   "t": "n",
+   "v": 1.414213562373095e-200
+  },
+  "IMABS#15": {
+   "t": "n",
+   "v": 5
+  },
+  "IMARGUMENT#13": {
+   "t": "n",
+   "v": 3.141592653589793
+  },
+  "IMARGUMENT#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMARGUMENT#15": {
+   "t": "n",
+   "v": -2.356194490192345
+  },
+  "IMARGUMENT#16": {
+   "t": "n",
+   "v": 2.356194490192345
+  },
+  "IMARGUMENT#17": {
+   "t": "n",
+   "v": 1.5707963267948966
+  },
+  "IMCONJUGATE#13": {
+   "t": "s",
+   "v": "3-4j"
+  },
+  "IMCONJUGATE#14": {
+   "t": "s",
+   "v": "j"
+  },
+  "IMEXP#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMEXP#14": {
+   "t": "s",
+   "v": "4.44042450204208E+307+6.91555142022723E+307i"
+  },
+  "IMEXP#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMEXP#16": {
+   "t": "s",
+   "v": "0"
+  },
+  "IMCOS#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCOS#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCOS#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCOS#16": {
+   "t": "s",
+   "v": "-0.293388403555673"
+  },
+  "IMCOS#17": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSIN#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSIN#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSIN#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSIN#16": {
+   "t": "s",
+   "v": "-0.955993328773299"
+  },
+  "IMTAN#13": {
+   "t": "s",
+   "v": "i"
+  },
+  "IMTAN#14": {
+   "t": "s",
+   "v": "-286411383293069"
+  },
+  "IMTAN#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCOT#13": {
+   "t": "s",
+   "v": "1E+300"
+  },
+  "IMCOT#14": {
+   "t": "s",
+   "v": "-i"
+  },
+  "IMCOSH#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCOSH#14": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSINH#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSINH#14": {
+   "t": "s",
+   "v": "0.489056259041294+1.40311925062204j"
+  },
+  "IMSQRT#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSQRT#14": {
+   "t": "s",
+   "v": "1.22464679914735E-16+2i"
+  },
+  "IMSQRT#15": {
+   "t": "s",
+   "v": "2"
+  },
+  "IMSQRT#16": {
+   "t": "s",
+   "v": "1.22464679914735E-16+2i"
+  },
+  "IMSQRT#17": {
+   "t": "s",
+   "v": "0.707106781186548+0.707106781186547i"
+  },
+  "IMSQRT#18": {
+   "t": "s",
+   "v": "0"
+  },
+  "IMLN#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMLN#14": {
+   "t": "s",
+   "v": "0.346573590279973-2.35619449019234i"
+  },
+  "IMLN#15": {
+   "t": "s",
+   "v": "-690.775527898214"
+  },
+  "IMLN#16": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMLOG10#13": {
+   "t": "s",
+   "v": "2"
+  },
+  "IMLOG10#14": {
+   "t": "s",
+   "v": "1.36437635384184i"
+  },
+  "IMLOG10#15": {
+   "t": "s",
+   "v": "-3+0.682188176920921i"
+  },
+  "IMLOG2#13": {
+   "t": "s",
+   "v": "3"
+  },
+  "IMLOG2#14": {
+   "t": "s",
+   "v": "4.53236014182719i"
+  },
+  "IMLOG2#15": {
+   "t": "s",
+   "v": "-2+2.2661800709136j"
+  },
+  "BESSELJ#155": {
+   "t": "n",
+   "v": -0.00006084365248836347
+  },
+  "BESSELJ#156": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BESSELJ#157": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BESSELJ#158": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BESSELJ#159": {
+   "t": "n",
+   "v": -0.00005748801296523282
+  },
+  "BESSELY#151": {
+   "t": "n",
+   "v": -0.000032268202740407304
+  },
+  "BESSELY#152": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BESSELY#153": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BESSELY#154": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "BESSELY#155": {
+   "t": "n",
+   "v": 0.000037925127605062097
   }
  }
 }

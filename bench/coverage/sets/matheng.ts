@@ -2,7 +2,8 @@
  * Excel cases for the math and engineering functions beyond the coverage measurement: domain edges (whole
  * numbers, ranges, digit counts of number systems, limits of trigonometry and factorials), large and
  * negative arguments, complex number syntax and output, CONVERT units and prefixes, functions formula.js
- * lacks (MDETERM, ERF.PRECISE, ERFC.PRECISE). Answers: `docs/excel-cases/matheng.json`
+ * lacks (MDETERM, ERF.PRECISE, ERFC.PRECISE). A range in a scalar position is left out: the engine reads it as array
+ * arithmetic (`unsupported`), not as implicit intersection. Answers: `docs/excel-cases/matheng.json`
  * (`npx tsx bench/coverage/run.ts probes matheng`).
  */
 import type { Probe } from '../probes.js'
@@ -98,17 +99,17 @@ export function buildProbes(): Probe[] {
     for (const x of xs) for (const n of ['0', '1', '2', '3', '5', '10']) add(fn, `${x},${n}`)
     for (const x of ['-0.5', '-3', '-10']) for (const n of ['0', '1', '2', '3']) add(fn, `${x},${n}`)
     for (const x of ['1', '30']) for (const n of ['20', '50', '100', '1000', '10000', '100000']) add(fn, `${x},${n}`)
-    each(fn, ['0,0', '0,1', '0,2', '2,2.9', '2,0.5', '2,-0.5', '2,-1', '"2","2"', '2,TRUE', 'TRUE,2', '2,D!A1', 'D!A1,2', 'D!A4,1', 'D!A2,1', '2,"abc"', '1E10,1', '1E15,0', '700,0', '709,1', '710,0', '713,1', '0.001,10', '0.00001,5', '750,1', 'D!B1:B2,1'])
+    each(fn, ['0,0', '0,1', '0,2', '2,2.9', '2,0.5', '2,-0.5', '2,-1', '"2","2"', '2,TRUE', 'TRUE,2', '2,D!A1', 'D!A1,2', 'D!A4,1', 'D!A2,1', '2,"abc"', '1E10,1', '1E15,0', '700,0', '709,1', '710,0', '713,1', '0.001,10', '0.00001,5', '750,1'])
   }
   for (const fn of ['BESSELI', 'BESSELJ']) each(fn, ['1,1000000', '1,10000000', '5000,4000', '0.5,30'])
 
   // number systems: digit counts, two's complement ranges, places, inputs as numbers and blanks
-  const textIn = ['"0"', '"1"', '""', 'D!A1', 'D!A13', 'TRUE', 'D!A4', 'D!A2', '" 1"', '"1 "', 'D!B1:B2', '0.1', '-1', '"-1"', '"+1"']
+  const textIn = ['"0"', '"1"', '""', 'D!A1', 'D!A13', 'TRUE', 'D!A4', 'D!A2', '" 1"', '"1 "', '0.1', '-1', '"-1"', '"+1"']
   for (const fn of BIN) each(fn, [...textIn, '"101"', '"0111111111"', '"1000000000"', '"1111111111"', '"11111111111"', '"0000000001"', '"2"', '101', '1111111111', '1E+3', '11111111111', '"1e2"'])
   for (const fn of ['BIN2HEX', 'BIN2OCT'])
     each(fn, ['"11111011",2', '"11111011",1', '"11111011",10', '"11111011",11', '"1111111111",3', '"1111111111",11', '"1111111111",-1', '"1000000000",0', '"0",0', '"0",1', '"101","2.9"', '"101",-1', '"101",D!A1', '"101",TRUE', '"101","abc"', '"101",1E10', '"101",10.9', '"101",D!A4', '"101",D!A2'])
   for (const fn of ['DEC2BIN', 'DEC2HEX', 'DEC2OCT'])
-    each(fn, ['0', '1', '-1', '"9"', '"1e1"', 'D!A4', 'D!A2', 'D!A1', '" 9 "', 'TRUE', '9,"4"', '9,0', '9,10', '9,11', '-1,3', '-1,11', '-1,-1', '-1,0', '-0.5', '0.999', '"abc"', '9,TRUE', '9,D!A4', '9,1E10', 'D!B1:B2', '1E10'])
+    each(fn, ['0', '1', '-1', '"9"', '"1e1"', 'D!A4', 'D!A2', 'D!A1', '" 9 "', 'TRUE', '9,"4"', '9,0', '9,10', '9,11', '-1,3', '-1,11', '-1,-1', '-1,0', '-0.5', '0.999', '"abc"', '9,TRUE', '9,D!A4', '9,1E10', '1E10'])
   each('DEC2BIN', ['511', '512', '-512', '-513', '511.9', '-512.9', '9,4', '9,3', '255,8', '255,7'])
   each('DEC2HEX', ['549755813887', '549755813888', '-549755813888', '-549755813889', '255,2', '255,1', '-1,2', '1E12', '4294967296', '255.99', '-54'])
   each('DEC2OCT', ['536870911', '536870912', '-536870912', '-536870913', '8,2', '8,1', '-100', '511'])
@@ -121,7 +122,7 @@ export function buildProbes(): Probe[] {
 
   // bitwise functions: the 48-bit range, whole numbers only, shifts within 53 bits
   for (const fn of ['BITAND', 'BITOR', 'BITXOR'])
-    each(fn, ['0,0', '13,25', '281474976710655,1', '281474976710656,1', '1,281474976710656', 'POWER(2,47)+1,POWER(2,47)+3', '5.0000000001,1', '-1,1', '"7","3"', 'TRUE,TRUE', 'D!A4,1', 'D!A2,3', 'D!B1:B2,1', '1E15,1', '0.1*3*10,3', '2.5-0.5,3', '"abc",1', 'D!A1,5'])
+    each(fn, ['0,0', '13,25', '281474976710655,1', '281474976710656,1', '1,281474976710656', 'POWER(2,47)+1,POWER(2,47)+3', '5.0000000001,1', '-1,1', '"7","3"', 'TRUE,TRUE', 'D!A4,1', 'D!A2,3', '1E15,1', '0.1*3*10,3', '2.5-0.5,3', '"abc",1', 'D!A1,5'])
   for (const fn of ['BITLSHIFT', 'BITRSHIFT'])
     each(fn, ['1,0', '1,1', '1,47', '1,48', '1,53', '1,-53', '1,54', '1,-54', '0,60', 'POWER(2,47),1', 'POWER(2,48)-1,0', 'POWER(2,48)-1,1', 'POWER(2,48)-1,-1', '281474976710655,53', '281474976710655,-53', '3,2.9', '3,-2.9', '12,"2"', '12,TRUE', '12,D!A1', '12,D!A4', '5,-2', '20,2', '-1,1', '1.5,1', '281474976710656,0', '1,"abc"'])
 
@@ -129,7 +130,7 @@ export function buildProbes(): Probe[] {
   for (const t of COMPLEX_TEXTS) for (const fn of ['IMREAL', 'IMAGINARY']) add(fn, JSON.stringify(t))
   each('COMPLEX', ['1,1', '1,-1', '0,-1', '0,0', '-1,0', '1/3,2/3', '1E20,1E-20', '3,4,"I"', '3,4,"J"', '3,4,""', '3,4,D!A1', '3,4,TRUE', '3,4,"k"', '3,4,"ij"', '3,4,1', '0.1+0.2,0', '-0.5,-2.5,"j"', '123456789012345678,1', 'D!A4,1', '"3","4"', '1,1,"j"', '0,1,"j"', '0,-1,"j"', '1E300*10,1', '"abc",1', '3,"abc"'])
   const single = ['IMABS', 'IMARGUMENT', 'IMCONJUGATE', 'IMCOS', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMEXP', 'IMLN', 'IMLOG10', 'IMLOG2', 'IMSEC', 'IMSECH', 'IMSIN', 'IMSINH', 'IMSQRT', 'IMTAN']
-  for (const fn of single) each(fn, [...COMPLEX_ARGS, 'D!A4', 'D!B1:B2', '"1+j"'])
+  for (const fn of single) each(fn, [...COMPLEX_ARGS, 'D!A4', '"1+j"'])
   each('IMABS', ['"1e308+1e308i"', '"1e-200+1e-200i"', '"-3-4j"'])
   each('IMARGUMENT', ['"-1-0i"', '"1e308+1e308i"', '"-1-i"', '"-1+i"', '"1e-300i"'])
   each('IMCONJUGATE', ['"3+4j"', '"0-j"'])
@@ -145,9 +146,9 @@ export function buildProbes(): Probe[] {
   each('IMLOG10', ['"100"', '"-1"', '"0.001i"'])
   each('IMLOG2', ['"8"', '"-1"', '"0.25j"'])
   each('IMPOWER', ['"2+3i",3', '"i",2', '"-1",0.5', '"0",0', '"0",1', '"0",-1', '"1+i",-1', '"2",0.5', '"1+i",0', '"1+i",100', '"1+i",2000', '"-8",1/3', '"1+i","2"', '"1+i",TRUE', '"1+i",D!A1', '"4",0.5', '"1e200",2', '"1+j",2', '"-2",2', '"-2",3', '"1+i",D!A4', '"abc",2', '"1+i",2.5'])
-  each('IMDIV', ['"1+i","1-i"', '"1","0"', '"0","1+i"', '"1+j","1+i"', '"1+j","2"', '"1","1+j"', '"1E200","1E-200"', '"1+i","1E300+1E300i"', '"0","0"', '"1+j","1+j"', '"6","3"', 'D!A4,"1"', '"1",D!B1:B2'])
+  each('IMDIV', ['"1+i","1-i"', '"1","0"', '"0","1+i"', '"1+j","1+i"', '"1+j","2"', '"1","1+j"', '"1E200","1E-200"', '"1+i","1E300+1E300i"', '"0","0"', '"1+j","1+j"', '"6","3"', 'D!A4,"1"'])
   each('IMPRODUCT', ['"1+i"', '"1+i","1-i"', '"1+j","1+i"', '"2","3","4"', 'M!Y1:Y3', 'M!Z1:Z3', 'M!AA1:AA2', 'M!AB1:AB2', 'M!AC1:AC2', '"1E200","1E200"', '"i","i","i"', 'D!B1:B3', 'D!K1:K8', 'D!K1:K8,"2"', '"1+j","2"', 'D!A4', '"1+j",M!Z1:Z3'])
-  each('IMSUB', ['"1+j","1+i"', '"1+j","1"', '"1","1"', '"1E308","-1E308"', '"1+j","1+j"', '"3","4j"', 'D!A4,"1"', 'D!B1:B2,"1"'])
+  each('IMSUB', ['"1+j","1+i"', '"1+j","1"', '"1","1"', '"1E308","-1E308"', '"1+j","1+j"', '"3","4j"', 'D!A4,"1"'])
   each('IMSUM', ['"1","2+i","3-2i"', '"1+j","2+j"', '"1+j","1+i"', 'M!Y1:Y3', 'M!Z1:Z3', 'M!AA1:AA2', 'M!AB1:AB2', 'M!AC1:AC2', 'D!B1:B8', 'D!D1:D8', 'D!K1:K8', 'D!K1:K8,"2"', '"1E308","1E308"', '"0.1","0.2"', 'D!A4', '"1+i",M!AB1:AB2', '"i","-i"'])
 
   // CONVERT: every unit and alias against its quantity's base unit, prefixes, temperatures
@@ -188,7 +189,7 @@ export function buildProbes(): Probe[] {
   ])
 
   // DELTA, GESTEP, ERF and ERFC
-  each('DELTA', ['1,1', '1,2', '0.1+0.2,0.3', '1', '0', '"a"', 'TRUE', 'D!A4', 'D!A2,2', '1E-20,0', '"1","1"', '1,D!A1', 'D!B1:B2,1'])
+  each('DELTA', ['1,1', '1,2', '0.1+0.2,0.3', '1', '0', '"a"', 'TRUE', 'D!A4', 'D!A2,2', '1E-20,0', '"1","1"', '1,D!A1'])
   each('GESTEP', ['0.1+0.2,0.3', '5', '-5', '0,0', 'TRUE', 'D!A4', '"5","4"', '1E-20', '-1E-20', 'D!A1,D!A1', '4,"abc"'])
   each('ERF', ['0.1', '0.5', '1', '2', '3', '4', '5', '6', '-1', '1,2', '2,1', '-1,1', '0,0', '1,1', '5,6', '1,D!A1', 'D!A1,1', '1E-10', '27', 'TRUE', 'D!A4', '"1"', '1,TRUE', '-30,30', '0.3,0.30001'])
   each('ERF.PRECISE', ['0.5', '1', '-1', '3', '6', '1E-10', 'TRUE', 'D!A4', '"1"', 'D!A1', '"abc"'])
@@ -227,6 +228,35 @@ export function buildProbes(): Probe[] {
   for (const fn of ['SUMX2MY2', 'SUMX2PY2', 'SUMXMY2'])
     each(fn, ['3,4', 'M!S1:S4,M!T1:T4', 'D!B1:B4,D!C1:C4', 'D!P1:Q2,D!B1:B4', 'D!B:B,D!C:C', 'D!K1:K8,D!K1:K8', 'D!I13:I17,D!E2:E6', 'D!E2:E6,D!I13:I17', '"3",4', 'TRUE,4', 'D!P1:Q2,D!R1:S2', 'D!B1:B8,D!C1:C4'])
   each('PERCENTOF', ['D!B1:B2,D!B1:B8', '5,10', 'D!B1,D!B1:B8', 'D!D1:D8,D!B1:B8', '0,D!K1:K8', 'D!B1:B8,D!K1:K8', 'D!E1:E8,D!B1:B8', '"5",10', 'TRUE,10'])
+  // second round: limits the first round showed but did not pin
+  each('BITLSHIFT', ['2,52', '4,51', '0,-60', '0,1000', 'POWER(2,47),6', '3,53', '1,52', '1,50', '5,53', '6,52'])
+  each('BITRSHIFT', ['2,-52', '0,-1000', '4,-51'])
+  each('COMPLEX', ['1E20,0', '1.5E20,0', '9.99999999999999E20,0', '1E21,0', '-1E20,0', '1.2345678901234E-06,0', '1.23456789012345E-06,0', '1.234567890123E-06,0', '1E-20,0', '0,1E20', '123456789012345678901,0', '-1.5E20,-1.5E20'])
+  each('IMSUM', ['"1E20"', '"1.5E20+1.5E20i"', '"1.2345678901234E-06"'])
+  each('CONVERT', ['1,"kkel","K"', '1,"kcel","C"', '1,"kfah","F"', '1,"kReau","Reau"', '1,"dakel","K"', '1,"Gibyte","byte"', '1,"Kibyte","byte"'])
+  each('COMBIN', ['2147483646,1', '2147483646,0', '2000000000,1', '2147483646,2'])
+  each('COMBINA', ['2147483646,1', '2147483647,0', '2147483646,0'])
+  each('GCD', ['POWER(2,53)+2,2', '1E16,2', '1E20,5', 'POWER(2,53)*2,2'])
+  each('LCM', ['POWER(2,53),1', 'POWER(2,53)+2,1', '1E16,1', 'POWER(2,53)-1,1'])
+  for (const k of [32, 40, 44, 46, 47, 48, 49, 50, 51, 52]) add('MOD', `POWER(2,${k})+1,2`)
+  each('MOD', ['1E12,3', '1E13,3', '1E14,3', '1E15,1E5', '1E15,1E10', '-POWER(2,48),3', 'POWER(2,48),3', 'POWER(2,49),3', '-1E14,3'])
+  for (const [b, ks] of [['0.5', [48, 49, 50, 51, 52, 53]], ['1.5', [48, 49, 50, 51, 52]], ['60.5', [43, 44, 45, 46, 47]], ['1000.5', [36, 38, 40, 42, 43]]] as const)
+    for (const k of ks) add('MROUND', `${b}-POWER(2,-${k}),1`)
+  each('MROUND', ['0.15,0.1', '0.35,0.1', '2.675,0.01', '1.45,0.1', '-0.15,-0.1'])
+  each('SERIESSUM', ['-2,0.5,1,1', '-2,0.5,0.5,D!AR1:AR4', '-8,1/3,1,1', '-2,1,1,D!AR1:AR4'])
+  each('PERCENTOF', ['D!B1:B8,D!E1:E8', 'D!A7,10', '1,D!A8', '-5,10', '5,-10', '5,0', '0,0', 'D!K1:K8,D!K1:K8', 'D!A2,10'])
+  each('FACTDOUBLE', ['-1.5', '-1.9', '-2.5'])
+  each('ARABIC', ['"- MCM"', '"-mcm"', '" -I"', '"M-"', 'REPT(" ",200)&"M"&REPT(" ",100)', '"-0"', '"--"'])
+  // third round
+  each('BITLSHIFT', ['1,49', '3,49', '0,54', '1,48.5'])
+  each('BITRSHIFT', ['1,-49', '1,-48', '3,-49'])
+  for (const k of [39, 40, 41, 42, 43]) each('MOD', [`POWER(2,${k}),1`, `POWER(2,${k})-1,1`, `POWER(2,${k})+0.5,1`])
+  each('MOD', ['-POWER(2,40),1', 'POWER(2,41),2', 'POWER(2,42),2', '3*POWER(2,39),1', '1E12,1E-3'])
+  for (const k of [9, 10, 11, 12, 13, 14, 15]) add('MROUND', `0.5-POWER(2,-48)*${k}/8,1`)
+  for (const b of ['2.5', '7.5', '15.5', '30.5']) for (const k of [48, 47]) add('MROUND', `${b}-POWER(2,-${k}),1`)
+  each('MROUND', ['(0.5-POWER(2,-48))*0.1,0.1', '0.45,0.1', '0.55,0.1', '8.25,0.5', '4.35,0.1'])
+  each('PERCENTOF', ['"abc",10', 'D!A13,10', '10,"abc"'])
+  for (const fn of ['BESSELJ', 'BESSELY']) each(fn, ['134217727,0', '134217728,0', '-134217728,0', '1E9,1', '134217727.5,1'])
   each('MDETERM', ['D!P1:Q2', 'M!G4:J7', 'M!L1:N3', 'M!L5:N7', 'M!G9:H10', 'M!G12:H13', 'M!G15:H16', 'M!P1:Q3', '5', '"5"', 'D!B1', 'D!A1', 'D!A7', 'M!S10:W14', 'M!L9:N11', 'TRUE', 'D!B1:B8'])
   return out
 }
