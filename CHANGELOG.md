@@ -16,6 +16,7 @@ Breaking changes:
 
 Added:
 
+- `restructure(book, op)`: inserting and deleting rows and columns, moving (cut and paste) and copying (copy and paste, fill) ranges, renaming and deleting sheets, with references in formulas and names adjusted as Excel adjusts them; it returns the new book and `mapCell` (where an old cell is now), or `{ ok: false, code, message }` where Excel refuses. Checked against Excel en-US on 118 cases (`docs/excel-struct/`, `test/structure-excel.test.ts`; `npx tsx bench/coverage/run.ts struct <set>` refreshes them); the rules are in `docs/structure.md`. Types `StructureOp`, `RangeRef`, `RestructureResult`, `StructureRefusal`.
 - 90 functions, ported from formula.js and matching Excel en-US on all of the coverage measurement's cases: `ABS`, `ACOS`, `ACOSH`, `ACOTH`, `AND`, `ASIN`, `ASINH`, `ATAN`, `ATANH`, `AVEDEV`, `AVERAGE`, `BINOM.DIST.RANGE`, `BINOMDIST`, `CEILING`, `CEILING.MATH`, `CEILING.PRECISE`, `CHOOSE`, `CLEAN`, `COLUMNS`, `CONCAT`, `CONCATENATE`, `COSH`, `COUNTA`, `COUNTBLANK`, `CSCH`, `DEGREES`, `ERROR.TYPE`, `EVEN`, `EXACT`, `EXP`, `F.DIST.RT`, `FIND`, `FISHER`, `FIXED`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `GAMMALN`, `GAMMALN.PRECISE`, `GAUSS`, `IFS`, `INT`, `ISBLANK`, `ISERR`, `ISERROR`, `ISLOGICAL`, `ISNA`, `ISNONTEXT`, `ISNUMBER`, `ISPMT`, `ISTEXT`, `LEFT`, `LEN`, `LN`, `LOG`, `LOG10`, `LOWER`, `MAX`, `MEDIAN`, `MIN`, `N`, `NA`, `NORM.DIST`, `NORM.S.DIST`, `NORMDIST`, `NOT`, `NPV`, `ODD`, `OR`, `PDURATION`, `PHI`, `PI`, `POWER`, `PROB`, `PRODUCT`, `RADIANS`, `REPT`, `RIGHT`, `ROUNDDOWN`, `ROUNDUP`, `ROWS`, `SECH`, `SIGN`, `SINH`, `SQRT`, `T`, `TRIM`, `TRUNC`, `UNICODE`, `XOR`. The whitelist has 107 functions.
 - `test/excel.test.ts`: every whitelisted function is computed on the coverage measurement's cases and compared with Excel en-US (answers stored in `docs/coverage-formulajs/excel-en.json`); a function is in the whitelist only if all of its cases match.
 - `test/excel-probes.test.ts`: 959 probes of rules outside single functions (numbers as text, TEXT General, long literals, subnormal results, criteria over whole columns) against Excel en-US's answers in `docs/excel-probes.json` (`npx tsx bench/coverage/run.ts probes` refreshes them).
@@ -23,6 +24,7 @@ Added:
 
 Changed:
 
+- The lost references Excel writes, `'S'!#REF!`, `#REF!A1` (after deleting a sheet) and `#REF!#REF!`, are read as `#REF!` and printed back as written; they were syntax errors (`#ERROR!`). A sheet in `'S'!#REF!` that the book lacks is `unknown_sheet`.
 - Functions are organised by category in `src/functions/`, on a shared argument layer (`src/args.ts`) that coerces arguments by kind for every function of a group: numbers, text, booleans, dates with en-US date text, lists by the SUM, AVERAGEA and strict rules, values with their origin, grids, paired arrays, holidays.
 - `XLOOKUP` compares the referenced sizes of its ranges: whole columns of sheets with different numbers of rows work (they gave `#VALUE!`).
 
