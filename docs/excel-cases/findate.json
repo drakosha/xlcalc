@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 0.413
+  "seconds": 1.733
  },
  "cases": [
   {
@@ -9652,6 +9652,48 @@
    "group": "DATEVALUE",
    "fn": "DATEVALUE",
    "formula": "DATEVALUE(\"1/31/2025 25:00:00\")"
+  },
+  {
+   "id": "RATE#19",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(10,-100,1000)"
+  },
+  {
+   "id": "RATE#20",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(10,-100,1000,0,1)"
+  },
+  {
+   "id": "RATE#21",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(10,-100,1000,0,1,0)"
+  },
+  {
+   "id": "RATE#22",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(12,-100,1200)"
+  },
+  {
+   "id": "RATE#23",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(5,-200,1000,0,1)"
+  },
+  {
+   "id": "RATE#24",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(10,-100,1000,0,0,0.05)"
+  },
+  {
+   "id": "RATE#25",
+   "group": "RATE",
+   "fn": "RATE",
+   "formula": "RATE(24,-50,1200,0,0)"
   }
  ],
  "values": {
@@ -16086,6 +16128,34 @@
   "DATEVALUE#18": {
    "t": "n",
    "v": 45689
+  },
+  "RATE#19": {
+   "t": "n",
+   "v": -1.963351707292562e-10
+  },
+  "RATE#20": {
+   "t": "n",
+   "v": -1.487997633973174e-9
+  },
+  "RATE#21": {
+   "t": "n",
+   "v": 0
+  },
+  "RATE#22": {
+   "t": "n",
+   "v": -4.3434156497998736e-10
+  },
+  "RATE#23": {
+   "t": "n",
+   "v": -1.6302285183735498e-9
+  },
+  "RATE#24": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "RATE#25": {
+   "t": "n",
+   "v": -7.391387586912676e-10
   }
  }
 }
