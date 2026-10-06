@@ -3,8 +3,7 @@
  * moved cells, to the overwritten ones and inside the moved formulas; relative, absolute and mixed parts
  * of copied formulas, copies past the sheet's edge, tiling.
  */
-import type { BookInput, CellInput } from '../../../src/contract.js'
-import type { RangeRef } from '../../../src/structure/types.js'
+import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
 import { baseBook, type StructCase, type StructCases } from './cases.js'
 
 const f = (formula: string): CellInput => ({ formula })

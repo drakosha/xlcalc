@@ -4,13 +4,12 @@
  * is a whole multiple of the source's size is tiled with copies, any other is pasted once at its top-left
  * cell, as Excel's Range.Copy does. Empty source cells clear the cells they land on.
  */
-import type { BookInput, CellInput, CellRef } from '../contract.js'
+import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { isFull, LIMIT, span, type Area, type Axis, type Bound, type Rect } from './area.js'
 import { carryNames, shiftRect, within } from './move.js'
 import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
-import type { RestructureResult } from './types.js'
 
 /** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
 function copyTransform(dr: number, dc: number): Transform {

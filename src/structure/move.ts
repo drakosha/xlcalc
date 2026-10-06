@@ -4,12 +4,11 @@
  * Excel on every range of a 12-row window under 20 moves (`docs/excel-struct/moves.json`, see
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
-import type { BookInput, CellInput, CellRef, NameInput } from '../contract.js'
+import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
 import { contains, hi, isFull, lo, meets, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
 import { rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
-import type { RestructureResult } from './types.js'
 
 type Pair = [number, number]
 

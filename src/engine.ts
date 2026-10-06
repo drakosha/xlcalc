@@ -277,7 +277,7 @@ function listenersOf(state: EngineState, s: number, r: number, c: number, out: S
 
 // ---------- evaluation ----------
 
-function same(a: V, b: V): boolean {
+export function same(a: V, b: V): boolean {
   if (isErr(a) || isErr(b)) return isErr(a) && isErr(b) && a.code === b.code
   return Object.is(a, b) || a === b
 }
@@ -340,8 +340,9 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   const sheetNames = book.sheets.map((s) => s.name)
   const sheetIdx = new Map(sheetNames.map((n, i) => [sheetKey(n), i]))
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
-  const input: BookInput = { sheets: book.sheets.map((s) => ({ name: s.name, cells: { ...s.cells } })), names: [...(book.names ?? [])] }
-  const { names, issues } = prepareNames({ sheetIdx, sheetNames }, input.names!)
+  // the state's own copy of the cells (edits change it); the layout and the styles are shared
+  const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
+  const { names, issues } = prepareNames({ sheetIdx, sheetNames }, input.names ?? [])
   const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
   const rt = makeRuntime(ctx)
   const state: EngineState = {

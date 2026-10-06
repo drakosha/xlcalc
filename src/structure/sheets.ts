@@ -3,10 +3,9 @@
  * names; a delete turns references to it into `#REF!` followed by the reference (`#REF!A1`, as Excel
  * writes it), drops the names local to it and keeps the global ones with their reference lost.
  */
-import type { BookInput, CellRef } from '../contract.js'
+import type { BookInput, CellRef, RestructureResult } from '../contract.js'
 import { sheetKey } from '../syntax.js'
 import { rewriteBook, sheetNames, type Transform } from './rewrite.js'
-import type { RestructureResult } from './types.js'
 
 export function renameSheet(book: BookInput, sheet: string, name: string): RestructureResult {
   const key = sheetKey(sheet)
