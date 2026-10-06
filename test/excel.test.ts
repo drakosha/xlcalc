@@ -37,7 +37,7 @@ describe('acceptance against Excel en-US', () => {
 
   for (const f of covered) {
     it(`${f}: all cases match Excel`, () => {
-      const off = (byFunction.get(f) ?? []).filter((o) => !o.ok).map((o) => `${o.c.id} ${o.c.formula}: Excel ${show(o.excel)}, engine ${show(o.engine)}`)
+      const off = (byFunction.get(f) ?? []).filter((o) => !o.ok).map((o) => `${o.c.id} ${o.c.formula}: Excel ${show(o.excel)}, engine ${show(o.engine)}${o.why ? ` (${o.why})` : ''}`)
       expect(off).toEqual([])
     })
   }
