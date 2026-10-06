@@ -13,7 +13,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
-import { declineRepair, ensureExcel, excelDialogs, excelVersion } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import type { BookInput, CellStyle, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
@@ -222,15 +222,6 @@ function lookOf([cells, widths, heights]: RawLook): SheetLook {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-/** Windows that are not books; System Events fails with -1719 when a window closes while it lists them, then it asks again. */
-function dialogText(): string {
-  for (let i = 0; ; i++)
-    try {
-      return excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
-    } catch (e) {
-      if (i >= 2 || !String((e as { stderr?: string }).stderr).includes('(-1719)')) throw e
-    }
-}
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswer> {
