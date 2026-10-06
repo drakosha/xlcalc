@@ -48,10 +48,12 @@ describe('determinism', () => {
   }, 120_000)
 
   it('0.1+0.2 comes out as 0.3; -0 comes out as 0', () => {
-    const c = compute({ sheets: [{ name: 'S', cells: { A1: { formula: '0.1+0.2' }, A2: { formula: '-0*1' }, A3: { formula: 'A1=0.3' } } }] }, { clock }).sheets[0].cells
+    const c = compute({ sheets: [{ name: 'S', cells: { A1: { formula: '0.1+0.2' }, A2: { formula: '-0*1' }, A3: { formula: 'A1=0.3' }, A4: { formula: '(A1-0.3)*1E+17' } } }] }, { clock }).sheets[0].cells
     expect(c.A1.value).toBe(0.3)
     expect(Object.is(c.A2.value, -0)).toBe(false)
-    expect(c.A3.value).toBe(false) // internally full precision is kept, as in Excel
+    // internally full precision is kept, and = compares to 15 significant digits, as in Excel (the near-integer set)
+    expect(c.A3.value).toBe(true)
+    expect(c.A4.value).toBeCloseTo(5.551, 3)
   })
 
   it('the sum of 3,400 amounts with cents, rounded to cents, equals the sum in cents', () => {

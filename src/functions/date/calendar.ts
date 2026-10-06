@@ -1,7 +1,7 @@
 /** Calendar functions in Excel's 1900 system (serial 0 is 1900-01-00, 60 the phantom 1900-02-29). */
 import type { FnDef } from '../../args.js'
-import { addMonths, daysInMonth, MAX_SERIAL, parseDateText, serialOf, ymd } from '../../dates.js'
-import { E, isErr, type CErr, type V } from '../../values.js'
+import { addMonths, dayAt, daysInMonth, MAX_SERIAL, parseDateText, serialOf, ymd } from '../../dates.js'
+import { E, isErr, WHOLE, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
 import { lastDayExcel } from './daycount.js'
 
@@ -53,10 +53,12 @@ function dateDif(start: number, end: number, unit: string): number | CErr {
 }
 
 export const functions: Record<string, FnDef> = {
-  // years 0–1899 are added to 1900; month and day roll over, so DATE(1900,2,29) is 60
+  // years 0–1899 are added to 1900; month and day roll over, so DATE(1900,2,29) is 60; a day below zero
+  // rounds down, after the whole-number tolerance (DATE(2025,1,-1.9999997) is December 29)
   DATE: {
-    args: 'i i i',
-    fn: (y: number, m: number, d: number) => {
+    args: 'w w n',
+    fn: (y: number, m: number, day: number) => {
+      const d = Math.floor(day + WHOLE)
       const year = y >= 0 && y < 1900 ? y + 1900 : y
       if (year < 1900 || year > 9999) return E.NUM
       const first = addMonths(year, m, 0)
@@ -73,7 +75,7 @@ export const functions: Record<string, FnDef> = {
       return isErr(t) ? t : Math.floor(t)
     },
   },
-  DAY: { args: 'd', fn: (s: number) => ymd(s).d },
+  DAY: { args: 't', fn: (t: number) => ymd(dayAt(t)).d },
   DAYS: { args: 'd d', fn: (end: number, start: number) => end - start },
   // the day clamped to the target month; serial 0 is day 0 of January 1900
   EDATE: atp('e j', (start: number, months: number) => {
@@ -91,11 +93,11 @@ export const functions: Record<string, FnDef> = {
     return serialOf(t.y, t.m, daysInMonth(t.y, t.m))
   }),
   ISOWEEKNUM: { args: 'd', fn: isoWeek },
-  MONTH: { args: 'd', fn: (s: number) => ymd(s).m },
+  MONTH: { args: 't', fn: (t: number) => ymd(dayAt(t)).m },
   WEEKDAY: {
-    args: 'd i?',
-    fn: (s: number, type = 1) => {
-      const w = weekday(s)
+    args: 't w?',
+    fn: (t: number, type = 1) => {
+      const w = weekday(dayAt(t))
       if (type === 1) return w + 1
       if (type === 2) return ((w + 6) % 7) + 1
       if (type === 3) return (w + 6) % 7
@@ -111,5 +113,5 @@ export const functions: Record<string, FnDef> = {
     const jan1 = serialOf(ymd(s).y, 1, 1)
     return Math.floor((s - jan1 + ((weekday(jan1) - first + 7) % 7)) / 7) + 1
   }),
-  YEAR: { args: 'd', fn: (s: number) => ymd(s).y },
+  YEAR: { args: 't', fn: (t: number) => ymd(dayAt(t)).y },
 }

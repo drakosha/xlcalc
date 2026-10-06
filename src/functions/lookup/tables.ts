@@ -1,7 +1,7 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { arr, Arr } from '../../arrays/value.js'
-import { E, isErr, Rng, toBool, toNum, type CErr, type V } from '../../values.js'
+import { E, isErr, Rng, toBool, toNum, whole, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /**
@@ -29,7 +29,7 @@ const tableLookup = (horizontal: boolean): FnDef => ({
     const bad = (i: number) => (i < 1 ? E.VALUE : i > size ? E.REF : undefined)
     const cell = (i: number) => gridAt(table, horizontal ? (i - 1) * table.cols + pos : pos * table.cols + i - 1)
     if (many) return lineAt(cx.view(idx) as Arr, bad, cell)
-    const i = Math.trunc(n)
+    const i = whole(n)
     return bad(i) ?? cell(i)
   },
 })
@@ -41,7 +41,7 @@ function lineAt(idx: Arr, bad: (i: number) => CErr | undefined, cell: (i: number
     for (let c = 0; c < idx.cols; c++) {
       const n = toNum(idx.at(r, c))
       if (isErr(n)) return E.REF
-      const i = Math.trunc(n)
+      const i = whole(n)
       const e = bad(i)
       if (e) return e
       out.push(cell(i))
@@ -114,7 +114,7 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
 
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
-  INDEX: { args: 'R i i? i?', array: true, fn: index },
+  INDEX: { args: 'R w w? w?', array: true, fn: index },
   LOOKUP: { args: 'a G G?', fn: lookup },
   MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),

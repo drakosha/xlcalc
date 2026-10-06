@@ -24,6 +24,9 @@ export const isLeap = (y: number) => (y % 4 === 0 && y % 100 !== 0) || y % 400 =
 export const daysInMonth = (y: number, m: number) => [31, isLeap(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1]
 
 /** Year, month and day of a serial number in Excel's calendar: 0 is 1900-01-00, 60 is 1900-02-29. */
+/** The day of a date-time serial as DAY, MONTH, YEAR and WEEKDAY read it: to the nearest second first (0.4 s before midnight is the next day). */
+export const dayAt = (t: number): number => Math.floor(Math.round(t * 86_400) / 86_400)
+
 export function ymd(serial: number): { y: number; m: number; d: number } {
   const s = Math.floor(serial)
   if (s === 0) return { y: 1900, m: 1, d: 0 }

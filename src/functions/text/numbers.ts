@@ -19,7 +19,7 @@ function fixedDigits(x: number, decimals: number, commas: boolean): { text: stri
 
 export const functions: Record<string, FnDef> = {
   DOLLAR: {
-    args: 'n i?',
+    args: 'n w?',
     fn: (x: number, decimals = 2) => {
       if (decimals > 127) return E.VALUE
       const { text } = fixedDigits(x, decimals, true)
@@ -28,7 +28,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   FIXED: {
-    args: 'n i? b?',
+    args: 'n w? b?',
     fn: (x: number, decimals = 2, noCommas = false) => {
       if (decimals > 127) return E.VALUE
       const { text, zero } = fixedDigits(x, decimals, !noCommas)

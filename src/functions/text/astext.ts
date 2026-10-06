@@ -31,6 +31,6 @@ function arraytotext(g: Grid, format = 0): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  ARRAYTOTEXT: { args: 'G i?', fn: arraytotext },
-  VALUETOTEXT: { args: 'a i?', fn: valuetotext },
+  ARRAYTOTEXT: { args: 'G w?', fn: arraytotext },
+  VALUETOTEXT: { args: 'a w?', fn: valuetotext },
 }

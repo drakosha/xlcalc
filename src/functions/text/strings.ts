@@ -93,14 +93,14 @@ const strings: Record<string, FnDef> = {
   CONCATENATE: { args: 's', rep: 1, fn: (ts: string[]) => ts.join('').slice(0, MAX_TEXT) },
   EXACT: { args: 's s', fn: (a: string, b: string) => a === b },
   FIND: {
-    args: 's s i?',
+    args: 's s w?',
     fn: (find: string, within: string, start = 1) => {
       if (start < 1 || start > within.length) return E.VALUE
       const at = within.indexOf(find, start - 1)
       return at < 0 ? E.VALUE : at + 1
     },
   },
-  LEFT: { args: 's i?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(0, n)) },
+  LEFT: { args: 's w?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(0, n)) },
   LEN: { args: 's', fn: (s: string) => s.length },
   LOWER: { args: 's', fn: (s: string) => s.toLowerCase() },
   MID: {
@@ -109,13 +109,13 @@ const strings: Record<string, FnDef> = {
   },
   PROPER: { args: 's', fn: proper },
   REPLACE: {
-    args: 's i i s',
+    args: 's w w s',
     fn: (s: string, start: number, n: number, rep: string) => (start < 1 || start > MAX_TEXT || n < 0 || n > MAX_TEXT ? E.VALUE : capped(s.slice(0, start - 1) + rep + s.slice(start - 1 + n))),
   },
   REPT: { args: 's i', fn: (s: string, n: number) => (n < 0 || s.length * n > MAX_TEXT ? E.VALUE : s.repeat(n)) },
-  RIGHT: { args: 's i?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(Math.max(0, s.length - n))) },
-  SEARCH: { args: 's s i?', fn: search },
-  SUBSTITUTE: { args: 's s s i?', fn: substitute },
+  RIGHT: { args: 's w?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(Math.max(0, s.length - n))) },
+  SEARCH: { args: 's s w?', fn: search },
+  SUBSTITUTE: { args: 's s s w?', fn: substitute },
   // a range of several cells gives its top-left cell (an array is lifted)
   T: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'string' || isErr(v) ? v : '') },
   TEXTJOIN: { args: 'V b V', rep: 1, fn: textjoin },

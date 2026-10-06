@@ -8,7 +8,10 @@
  *
  * 1. Coercion by group, not one rule for all:
  *    - `n` number: a boolean is 1 or 0, a blank 0, text that reads as a number is that number, other text
- *      #VALUE!; `i` the same, truncated to an integer; `x` the same, but a boolean is #VALUE! (functions
+ *      #VALUE!; `i` the same, truncated to an integer; `w` the same, read with Excel's tolerance of whole
+ *      numbers (`whole` in values.ts: less than 2^-22 short of an integer is that integer; LEFT, INDEX,
+ *      ROUND's digits, DATE and the others the `near-integer` set measured), while `i` truncates as MID, REPT,
+ *      CHOOSE, ROUNDDOWN's digits and the statistical counts do; `x` the same as `n`, but a boolean is #VALUE! (functions
  *      of the former Analysis ToolPak: engineering and part of the financial ones);
  *    - `s` text (a number in the General format, TRUE/FALSE); `b` boolean (text "TRUE"/"FALSE" too, as in
  *      Excel en-US with the English UI); `v` any value (an error stops the call); `a` any value, errors
@@ -45,7 +48,7 @@
 import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL, parseDateText } from './dates.js'
-import { E, fitNumber, isErr, Rng, toBool, toNum, toText, type CErr, type V } from './values.js'
+import { E, fitNumber, isErr, Rng, toBool, toNum, toText, whole, type CErr, type V } from './values.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -278,6 +281,10 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   i: (x, cx) => {
     const n = toNum(cx.scalar(x))
     return isErr(n) ? n : Math.trunc(n)
+  },
+  w: (x, cx) => {
+    const n = toNum(cx.scalar(x))
+    return isErr(n) ? n : whole(n)
   },
   x: (x, cx) => noBool(cx.scalar(x)),
   d: (x, cx) => toDate(cx.scalar(x)),

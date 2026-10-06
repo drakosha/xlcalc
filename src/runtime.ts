@@ -14,7 +14,7 @@ import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
-import { compareValues, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
+import { compareOp, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -154,7 +154,7 @@ export function makeRuntime(ctx: RuntimeContext) {
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
-    const c = compareValues(a, b)
+    const c = compareOp(a, b)
     return op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0
   }
 

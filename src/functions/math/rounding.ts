@@ -2,7 +2,7 @@
  * Rounding. CEILING … TRUNC ported from formula.js 4.6.1 (src/math-trig.js, src/compatibility.js), Copyright (c)
  * 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); ISO.CEILING and MROUND this engine's own.
  */
-import { E, type CErr } from '../../values.js'
+import { E, to15, type CErr } from '../../values.js'
 import type { FnDef } from '../../args.js'
 import { quotient, roundDigits } from '../common.js'
 
@@ -35,9 +35,10 @@ export const functions: Record<string, FnDef> = {
       return Math.ceil(quotient(n, s)) * s
     },
   },
-  'CEILING.MATH': { args: 'n n? i?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, true) },
+  'CEILING.MATH': { args: 'n n? w?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, true) },
   'CEILING.PRECISE': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, true) },
-  EVEN: { args: 'n', fn: (x: number) => roundMath(x, 2, 1, true) },
+  // the next even number away from zero, exactly (EVEN(2+2^-51) is 4)
+  EVEN: { args: 'n', fn: (x: number) => (x < 0 ? -2 : 2) * Math.ceil(Math.abs(x) / 2) },
   FLOOR: {
     args: 'n n',
     fn: (n: number, s: number) => {
@@ -46,9 +47,10 @@ export const functions: Record<string, FnDef> = {
       return Math.floor(quotient(n, s)) * s
     },
   },
-  'FLOOR.MATH': { args: 'n n? i?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, false) },
+  'FLOOR.MATH': { args: 'n n? w?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, false) },
   'FLOOR.PRECISE': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, false) },
-  INT: { args: 'n', fn: Math.floor },
+  // INT, ROUNDDOWN, ROUNDUP and TRUNC read the number to 15 significant digits (INT(1-2^-52) is 1)
+  INT: { args: 'n', fn: (x: number) => Math.floor(to15(x)) },
   'ISO.CEILING': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, true) },
   MROUND: { args: 'x x', fn: mround },
   ODD: {
@@ -59,8 +61,8 @@ export const functions: Record<string, FnDef> = {
       return x >= 0 ? t : -t
     },
   },
-  ROUND: { args: 'n i', fn: (x: number, d: number) => roundDigits(x, d, Math.round) },
-  ROUNDDOWN: { args: 'n i', fn: (x: number, d: number) => roundDigits(x, d, Math.floor) },
-  ROUNDUP: { args: 'n i', fn: (x: number, d: number) => roundDigits(x, d, Math.ceil) },
-  TRUNC: { args: 'n i?', fn: (x: number, d = 0) => roundDigits(x, d, Math.floor) },
+  ROUND: { args: 'n w', fn: (x: number, d: number) => roundDigits(x, d, Math.round) },
+  ROUNDDOWN: { args: 'n i', fn: (x: number, d: number) => roundDigits(to15(x), d, Math.floor) },
+  ROUNDUP: { args: 'n i', fn: (x: number, d: number) => roundDigits(to15(x), d, Math.ceil) },
+  TRUNC: { args: 'n i?', fn: (x: number, d = 0) => roundDigits(to15(x), d, Math.floor) },
 }

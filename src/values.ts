@@ -96,6 +96,24 @@ export function compareValues(a: V, b: V): number {
   return (a as number) < (b as number) ? -1 : (a as number) > (b as number) ? 1 : 0
 }
 
+/** A number to 15 significant digits, as Excel compares numbers and reads them in INT and its kin (`1-2^-52` is 1 there). */
+export const to15 = (x: number): number => (Number.isInteger(x) && Math.abs(x) < 1e15 ? x : Number(x.toPrecision(15)))
+
+/**
+ * The order of the comparison operators (`=`, `<` and the rest): numbers equal to 15 significant digits are
+ * equal (`0.1+0.2=0.3` is TRUE), as in Excel; lookups, sorting and UNIQUE compare exactly (`compareValues`).
+ */
+export const compareOp = (a: V, b: V): number => compareValues(typeof a === 'number' ? to15(a) : a, typeof b === 'number' ? to15(b) : b)
+
+/** Excel's tolerance of a whole-number argument: a number less than 2^-22 short of an integer is that integer. */
+export const WHOLE = 2 ** -22
+
+/**
+ * A whole-number argument as Excel reads most of them (LEFT, INDEX, ROUND's digits, DATE, measured by the
+ * `near-integer` set): toward zero after adding the tolerance to the magnitude (`LEFT("abc",0.9999999)` is "a").
+ */
+export const whole = (x: number, tolerance = WHOLE): number => (x < 0 ? 0 - Math.trunc(tolerance - x) : Math.trunc(x + tolerance))
+
 /** Whether two non-blank values are of the same type for comparison (number, text, boolean). */
 export const sameType = (a: V, b: V) => rank(a) === rank(b)
 

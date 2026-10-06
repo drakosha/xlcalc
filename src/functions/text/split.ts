@@ -31,7 +31,7 @@ function occurrence(hay: string, keys: string[], n: number, matchEnd: boolean): 
 }
 
 const around = (after: boolean): FnDef => ({
-  args: 's V i? i? i? a?',
+  args: 's V w? i? i? a?',
   fn: (text: string, delim: Segment, n = 1, mode = 0, matchEnd = 0, notFound?: V): V => {
     const keys = delimiters(delim)
     if (isErr(keys)) return keys

@@ -45,7 +45,7 @@ export const functions: Record<string, FnDef> = {
   RANK: descriptive['RANK.EQ'],
   STDEV: descriptive['STDEV.S'],
   STDEVP: descriptive['STDEV.P'],
-  TDIST: { args: 'n i i', fn: tdist },
+  TDIST: { args: 'n i w', fn: tdist },
   TINV: inverse['T.INV.2T'],
   TTEST: tests['T.TEST'],
   VAR: descriptive['VAR.S'],
