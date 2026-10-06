@@ -3,8 +3,9 @@
  * Excel applies the operation to the book and the formulas of every sheet and the defined names are read
  * back (`excel-struct.applescript`). `npx tsx bench/coverage/run.ts struct <set>` runs the cases of
  * `struct/<set>.ts` and stores the answers in `docs/excel-struct/<set>.json`;
- * `test/structure-excel.test.ts` compares `restructure` with them without Excel. `FSTRUCT_ONLY=id,id` runs
- * only those cases, `FCOV_FRESH=1` runs every case again.
+ * `test/structure-excel.test.ts` compares `restructure` with them without Excel. A book with styles, columns,
+ * rows, merged areas or number formats is written with them, and the look of `LOOK` is read back too.
+ * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -13,7 +14,9 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { declineRepair, ensureExcel, excelDialogs, excelVersion } from './excel.js'
-import type { BookInput } from '../../src/contract.js'
+import type { BookInput, CellStyle, SheetInput } from '../../src/contract.js'
+import { lines } from '../../src/layout/spans.js'
+import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -24,11 +27,29 @@ const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp
 /** The rectangle read on every sheet after the operation; a case keeps its cells inside it or lists them in `extra`. */
 export const READ = 'A1:Z60'
 
+/** The rectangle whose look is read on every sheet of a styled book; a case keeps its styles inside it. */
+export const LOOK = 'A1:J24'
+
+/** What a cell looks like in the short signature: bold, the fill colour, the number format; left out when plain. */
+export interface CellLook {
+  bold?: true
+  fill?: string
+  format?: string
+}
+
+/** The look of `LOOK` on a sheet: cells that are not plain, the columns and rows not of the standard size, merged areas meeting it. */
+export interface SheetLook {
+  cells: Record<string, CellLook>
+  widths: Record<string, number>
+  heights: Record<string, number>
+  merges: string[]
+}
+
 export interface ExcelStructAnswer {
   /** Excel's error when it refused the operation (AppleScript error number and text). */
   error?: string
-  /** What Excel shows in each non-empty cell of `READ` (`=SUM(A1:A3)`, `5`), and the sheet's used range. */
-  sheets: { name: string; used: string; cells: Record<string, string> }[]
+  /** What Excel shows in each non-empty cell of `READ` (`=SUM(A1:A3)`, `5`), the sheet's used range, and the look of a styled book. */
+  sheets: { name: string; used: string; cells: Record<string, string>; look?: SheetLook }[]
   extra: { sheet: string; cell: string; text: string }[]
   /** `name` is `Sheet!name` for a local name; `ref` as Excel shows it (`=S!$A$5`). */
   names: { name: string; ref: string }[]
@@ -39,7 +60,70 @@ export interface StoredStruct extends StructCases {
   answers: Record<string, ExcelStructAnswer>
 }
 
-/** The book as xlsx: values and formulas (no cached results), names with their scope. */
+/** A book has styles to write and a look to read. */
+export const styled = (book: BookInput) =>
+  !!book.styles?.length || book.sheets.some((s) => s.columns || s.rows || s.merges || Object.values(s.cells).some((c) => c.style !== undefined || c.format !== undefined))
+
+const argb = (color: string) => ({ argb: `FF${color.slice(1).toUpperCase()}` })
+
+/** A style and a number format as ExcelJS takes them; a font keeps the default Calibri 11. */
+function excelStyle(st: CellStyle | undefined, format: string | undefined): Partial<ExcelJS.Style> {
+  const out: Partial<ExcelJS.Style> = {}
+  if (format !== undefined) out.numFmt = format
+  if (st?.font) {
+    const { color, ...f } = st.font
+    out.font = { name: 'Calibri', size: 11, ...f, ...(color ? { color: argb(color) } : {}) }
+  }
+  if (st?.fill) out.fill = { type: 'pattern', pattern: 'solid', fgColor: argb(st.fill.color) }
+  if (st?.border) out.border = Object.fromEntries(Object.entries(st.border).map(([side, l]) => [side, { style: l.style, ...(l.color ? { color: argb(l.color) } : {}) }]))
+  if (st?.alignment) {
+    // ExcelJS spells xlsx's vertical center `middle` and has no `general` (the default)
+    const { wrap, vertical, horizontal, ...a } = st.alignment
+    out.alignment = { ...a, ...(wrap !== undefined ? { wrapText: wrap } : {}), ...(vertical ? { vertical: vertical === 'center' ? 'middle' : vertical } : {}), ...(horizontal && horizontal !== 'general' ? { horizontal } : {}) }
+  }
+  return out
+}
+
+/**
+ * Columns, rows and the cells' own style and format of a sheet. ExcelJS writes a column with a style and
+ * no width as width 9, and drops a row with a style and neither a height nor cells: cases avoid both.
+ */
+function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.Worksheet) {
+  const style = (i: number | undefined) => (i === undefined ? undefined : book.styles![i])
+  const cols = lines(s.columns, 'c')
+  const rows = lines(s.rows, 'r')
+  for (const [lo, hi, e] of cols) {
+    if (e.width === undefined) throw new Error(`${c.id}: column ${indexToCol(lo)} has no width (ExcelJS would write 9)`)
+    for (let i = lo; i <= hi; i++) Object.assign(ws.getColumn(i + 1), { width: e.width, style: excelStyle(style(e.style), e.format) })
+  }
+  const filled = new Set(Object.keys(s.cells).map((a) => parseAddress(a).row))
+  for (const [lo, hi, e] of rows)
+    for (let i = lo; i <= hi; i++) {
+      if (e.height === undefined && !filled.has(i)) throw new Error(`${c.id}: row ${i + 1} has neither a height nor cells (ExcelJS would drop it)`)
+      // the row's own style, without passing it to its cells as ExcelJS's setters do
+      Object.assign(ws.getRow(i + 1), { style: excelStyle(style(e.style), e.format) }, e.height === undefined ? {} : { height: e.height })
+    }
+  // Excel takes an empty cell's whole format from its row, else its column, where a cell here takes its style
+  // and its number format separately: a row with only one of them crossing a formatted column could part on that
+  for (const [lo, , r] of rows)
+    if ((r.style === undefined) !== (r.format === undefined) && cols.some(([, , k]) => k.style !== undefined || k.format !== undefined)) throw new Error(`${c.id}: row ${lo + 1} has only a style or a format, and a column is formatted`)
+  // a cell without its own style or format shows its row's, else its column's
+  for (const [addr, cell] of Object.entries(s.cells)) {
+    const { row, col } = parseAddress(addr)
+    const r = rows.find(([lo, hi]) => row >= lo && row <= hi)?.[2]
+    const k = cols.find(([lo, hi]) => col >= lo && col <= hi)?.[2]
+    ws.getCell(addr).style = excelStyle(style(cell.style ?? r?.style ?? k?.style), cell.format ?? r?.format ?? k?.format)
+  }
+  // ExcelJS gives every cell of a merged area the style of its top-left cell: cases keep them equal
+  const look = (addr: string) => JSON.stringify(ws.getCell(addr).style ?? {})
+  for (const m of s.merges ?? []) {
+    const [a, b] = m.split(':').map(parseAddress)
+    for (let r = a.row; r <= b.row; r++) for (let k = a.col; k <= b.col; k++) if (look(formatAddress(r, k)) !== look(formatAddress(a.row, a.col))) throw new Error(`${c.id}: ${formatAddress(r, k)} of the merged area ${m} has a style of its own`)
+    ws.mergeCells(m)
+  }
+}
+
+/** The book as xlsx: values and formulas (no cached results), names with their scope, the layout of a styled book. */
 async function writeBook(c: StructCase, book: BookInput, file: string): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const s of book.sheets) {
@@ -48,6 +132,7 @@ async function writeBook(c: StructCase, book: BookInput, file: string): Promise<
       if (cell.value !== null && typeof cell.value === 'object') throw new Error(`${c.id}: dates are not used in structure cases`)
       ws.getCell(addr).value = (cell.formula !== undefined ? { formula: cell.formula } : (cell.value ?? null)) as ExcelJS.CellValue
     }
+    if (styled(book)) writeLayout(c, book, s, ws)
   }
   // ExcelJS keeps names in a cell matrix (no whole columns, no scope): its model is replaced by ours
   const index = new Map(book.sheets.map((s, i) => [s.name, i]))
@@ -108,8 +193,44 @@ function cellsOf(rows: unknown): Record<string, string> {
   return out
 }
 
+/** The cells, columns and rows of `LOOK` as AppleScript arguments (lines). */
+function lookArgs(): [string, string, string] {
+  const [a, b] = LOOK.split(':').map(parseAddress)
+  const cells: string[] = []
+  for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) cells.push(formatAddress(r, c))
+  const cols = Array.from({ length: b.col - a.col + 1 }, (_, i) => indexToCol(a.col + i))
+  const rows = Array.from({ length: b.row - a.row + 1 }, (_, i) => String(a.row + i + 1))
+  return [cells.join('\n'), cols.join('\n'), rows.join('\n')]
+}
+
+type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number][], [string, boolean, number][]]
+
+/** Excel's look of a sheet: a white fill is no fill (cases do not use white), sizes of the standard size are left out. */
+function lookOf([cells, widths, heights]: RawLook): SheetLook {
+  const hex = (rgb: number[]) => `#${rgb.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`
+  const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
+  for (const [addr, bold, rgb, format, merge] of cells) {
+    const fill = hex(rgb)
+    const look: CellLook = { ...(bold ? { bold: true } : {}), ...(fill !== '#FFFFFF' ? { fill } : {}), ...(format !== 'General' ? { format } : {}) }
+    if (Object.keys(look).length) out.cells[addr] = look
+    const m = merge.replaceAll('$', '')
+    if (m && !out.merges.includes(m)) out.merges.push(m)
+  }
+  for (const [col, std, w] of widths) if (!std) out.widths[col] = w
+  for (const [row, std, h] of heights) if (!std) out.heights[row] = h
+  return out
+}
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-const dialogText = () => excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
+/** Windows that are not books; System Events fails with -1719 when a window closes while it lists them, then it asks again. */
+function dialogText(): string {
+  for (let i = 0; ; i++)
+    try {
+      return excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
+    } catch (e) {
+      if (i >= 2 || !String((e as { stderr?: string }).stderr).includes('(-1719)')) throw e
+    }
+}
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswer> {
@@ -122,7 +243,8 @@ async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswe
     const file = join(dir, 'book.xlsx')
     await writeBook(c, book, file)
     const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
-    const child = spawn('osascript', [SCRIPT, file, c.op.op, ...opArgs(c), READ, extra])
+    const look = styled(book) ? lookArgs() : ['', '', '']
+    const child = spawn('osascript', [SCRIPT, file, c.op.op, ...opArgs(c), READ, extra, ...look])
     let out = ''
     let err = ''
     child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
@@ -135,10 +257,10 @@ async function runCase(c: StructCase, book: BookInput): Promise<ExcelStructAnswe
         const after = dialogText()
         if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
         if (code !== 0) throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { error: string; sheets: [string, string, unknown][]; extra: [string, string, string][]; names: [string, string][] }
+        const raw = JSON.parse(out) as { error: string; sheets: [string, string, unknown, RawLook | ''][]; extra: [string, string, string][]; names: [string, string][] }
         return {
           ...(raw.error ? { error: raw.error } : {}),
-          sheets: raw.sheets.map(([name, used, f]) => ({ name, used, cells: cellsOf(f) })),
+          sheets: raw.sheets.map(([name, used, f, look]) => ({ name, used, cells: cellsOf(f), ...(look ? { look: lookOf(look) } : {}) })),
           extra: raw.extra.map(([sheet, cell, text]) => ({ sheet, cell, text })),
           names: raw.names.map(([name, ref]) => ({ name, ref })),
         }
@@ -178,7 +300,7 @@ export async function stepStruct(set: string): Promise<void> {
   const t0 = Date.now()
   mkdirSync(join(ROOT, 'docs/excel-struct'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, seconds: Math.round((Date.now() - t0) / 100) / 10 }
+    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: LOOK } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, books, cases, answers }, null, 1) + '\n')
   }
   await ensureExcel('en')

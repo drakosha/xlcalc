@@ -6,6 +6,7 @@
  */
 import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'
+import { restructure } from './structure/index.js'
 import { createState, debugSource } from './engine.js'
 import { currentClock, nowMs } from './env.js'
 import { checkBook, checkComputeOptions, checkString, checkValidateContext } from './input.js'
@@ -19,7 +20,6 @@ export { openSession } from './session.js'
 export { InputError } from './input.js'
 export { enUS, ruRU, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 export { restructure } from './structure/index.js'
-export type { RangeRef, RestructureResult, StructureOp, StructureRefusal } from './structure/types.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
@@ -55,4 +55,4 @@ export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): stri
 }
 
 /** The contract implementation as one object. */
-export const engine: FormulaEngine = { compute, validateFormula, validateName, openSession }
+export const engine: FormulaEngine = { compute, validateFormula, validateName, openSession, restructure }

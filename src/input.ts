@@ -3,8 +3,11 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CellEdit, CellInput, Clock, ComputeOptions, Execution, Externals, NameInput, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CellEdit, CellInput, CellStyle, Clock, ComputeOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
+import { overlapping, parseMerge } from './layout/merges.js'
+import { parseSpan } from './layout/spans.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
+import type { Axis } from './structure/area.js'
 import { sheetKey } from './syntax.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
@@ -66,9 +69,16 @@ export function checkAddress(addr: unknown, path: string): string {
   return addr
 }
 
-export function checkCell(v: unknown, path: string): CellInput {
+/** A style number of a book with `styles` styles. */
+function checkStyleIndex(v: unknown, path: string, styles: number) {
+  if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles)
+    throw new InputError(path, styles ? `expected the index of a style of the book, 0 to ${styles - 1}, got ${what(v)}` : `the book has no styles, got ${what(v)}`)
+}
+
+/** A cell of a book with `styles` styles. */
+export function checkCell(v: unknown, path: string, styles: number): CellInput {
   const c = object(v, path, 'a cell object such as { value: 1 } or { formula: "A1*2" }')
-  for (const k in c) if (k !== 'value' && k !== 'formula' && k !== 'format' && k !== 'meta') onlyKeys(c, path, ['value', 'formula', 'format', 'meta'])
+  onlyKeys(c, path, CELL_FIELDS)
   const value = c.value
   if (value !== undefined && value !== null && typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'boolean') {
     if (!isObject(value) || Object.keys(value).length !== 1 || typeof value.date !== 'string')
@@ -81,6 +91,7 @@ export function checkCell(v: unknown, path: string): CellInput {
   }
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
   if (c.format !== undefined && typeof c.format !== 'string') checkString(c.format, `${path}.format`)
+  if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   return c as CellInput
 }
 
@@ -99,39 +110,168 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
+const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta']
+
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
-function plainCell(c: unknown): boolean {
+function plainCell(c: unknown, styles: number): boolean {
   if (!isObject(c)) return false
   for (const k in c) {
     const v = c[k]
     if (k === 'meta') continue
     if (k === 'value' && (v === null || v === undefined || typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean')) continue
     if ((k === 'formula' || k === 'format') && (v === undefined || typeof v === 'string')) continue
+    if (k === 'style' && Number.isInteger(v) && (v as number) >= 0 && (v as number) < styles) continue
     return false
   }
   return true
 }
 
-/** The book: sheets with unique names (case-insensitive, as in Excel), cells by A1 address, names. */
+/** Why Excel would not take a sheet name, or null: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end. */
+export function sheetNameProblem(name: string): string | null {
+  if (name === '') return 'a sheet name must not be empty'
+  if (name.length > 31) return `a sheet name has at most 31 characters, ${JSON.stringify(name)} has ${name.length}`
+  const bad = /[:\\/?*[\]]/.exec(name)
+  if (bad) return `a sheet name must not contain ${JSON.stringify(bad[0])} (Excel forbids : \\ / ? * [ ])`
+  if (name.startsWith("'") || name.endsWith("'")) return 'a sheet name must not begin or end with an apostrophe'
+  return null
+}
+
+const COLOR = /^#[0-9A-Fa-f]{6}$/
+
+function checkColor(v: unknown, path: string) {
+  if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a colour such as "#FF0000", got ${what(v)}`)
+}
+
+function checkOneOf(v: unknown, path: string, values: readonly string[]) {
+  if (!values.includes(v as string)) throw new InputError(path, `expected one of ${values.map((x) => JSON.stringify(x)).join(', ')}, got ${what(v)}`)
+}
+
+function checkBoolean(v: unknown, path: string) {
+  if (typeof v !== 'boolean') throw new InputError(path, `expected a boolean, got ${what(v)}`)
+}
+
+function checkNumber(v: unknown, path: string, min: number, max: number, integer = false) {
+  if (typeof v !== 'number' || !Number.isFinite(v) || v < min || v > max || (integer && !Number.isInteger(v)))
+    throw new InputError(path, `expected ${integer ? 'an integer' : 'a number'} from ${min} to ${max}, got ${what(v)}`)
+}
+
+const LINES = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
+
+function checkStyle(v: unknown, p: string): CellStyle {
+  const s = object(v, p, 'a style such as { font: { bold: true } }')
+  onlyKeys(s, p, ['font', 'fill', 'border', 'alignment'])
+  if (s.font !== undefined) {
+    const f = object(s.font, `${p}.font`, 'a font such as { bold: true }')
+    onlyKeys(f, `${p}.font`, ['name', 'size', 'bold', 'italic', 'underline', 'strike', 'color'])
+    if (f.name !== undefined) checkString(f.name, `${p}.font.name`)
+    if (f.size !== undefined) checkNumber(f.size, `${p}.font.size`, 1, 409)
+    for (const k of ['bold', 'italic', 'strike']) if (f[k] !== undefined) checkBoolean(f[k], `${p}.font.${k}`)
+    if (f.underline !== undefined) checkOneOf(f.underline, `${p}.font.underline`, ['single', 'double'])
+    if (f.color !== undefined) checkColor(f.color, `${p}.font.color`)
+  }
+  if (s.fill !== undefined) {
+    const f = object(s.fill, `${p}.fill`, 'a fill such as { color: "#FFC000" }')
+    onlyKeys(f, `${p}.fill`, ['color'])
+    checkColor(f.color, `${p}.fill.color`)
+  }
+  if (s.border !== undefined) {
+    const b = object(s.border, `${p}.border`, 'a border such as { bottom: { style: "thin" } }')
+    onlyKeys(b, `${p}.border`, ['top', 'right', 'bottom', 'left'])
+    for (const [side, l] of Object.entries(b)) {
+      const lp = `${p}.border.${side}`
+      const line = object(l, lp, 'a line such as { style: "thin", color: "#000000" }')
+      onlyKeys(line, lp, ['style', 'color'])
+      checkOneOf(line.style, `${lp}.style`, LINES)
+      if (line.color !== undefined) checkColor(line.color, `${lp}.color`)
+    }
+  }
+  if (s.alignment !== undefined) {
+    const a = object(s.alignment, `${p}.alignment`, 'an alignment such as { horizontal: "center" }')
+    onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent'])
+    if (a.horizontal !== undefined) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed'])
+    if (a.vertical !== undefined) checkOneOf(a.vertical, `${p}.alignment.vertical`, ['top', 'center', 'bottom', 'justify', 'distributed'])
+    if (a.wrap !== undefined) checkBoolean(a.wrap, `${p}.alignment.wrap`)
+    if (a.indent !== undefined) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
+  }
+  return s as CellStyle
+}
+
+export function checkStyles(v: unknown, path: string): CellStyle[] {
+  return array(v, path, 'an array of styles').map((s, i) => checkStyle(s, `${path}[${i}]`))
+}
+
+const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such as "C" or a span such as "B:D"' }, r: { size: 'height', max: 409, what: 'rows', key: 'a row number such as "5" or a span such as "5:9"' } } as const
+
+/** A column or row entry, or a patch of one (fields may be null). */
+function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
+  const { size, max } = LINE[axis]
+  const o = object(v, p, `an object such as { ${size}: 20 }`)
+  onlyKeys(o, p, [size, 'style', 'format'])
+  const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
+  field(size, (x, path) => checkNumber(x, path, 0, max))
+  field('style', (x, path) => checkStyleIndex(x, path, styles))
+  field('format', checkString)
+}
+
+/** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
+function checkSpan(key: unknown, path: string, axis: Axis): [number, number] {
+  const sp = typeof key === 'string' ? parseSpan(key, axis) : null
+  if (!sp) throw new InputError(path, `expected ${LINE[axis].key} within the sheet, got ${what(key)}`)
+  return sp
+}
+
+function checkLines(v: unknown, path: string, axis: Axis, styles: number) {
+  const map = object(v, path, `${LINE[axis].what} by ${LINE[axis].key}`)
+  const spans = Object.entries(map).map(([key, e]): [number, number, string] => {
+    const p = `${path}[${JSON.stringify(key)}]`
+    checkLine(e, p, axis, styles, false)
+    return [...checkSpan(key, p, axis), key]
+  })
+  spans.sort((a, b) => a[0] - b[0])
+  for (let i = 1; i < spans.length; i++) if (spans[i][0] <= spans[i - 1][1]) throw new InputError(path, `${JSON.stringify(spans[i][2])} overlaps ${JSON.stringify(spans[i - 1][2])}`)
+}
+
+function checkMerges(v: unknown, path: string) {
+  const list = array(v, path, 'an array of merged areas such as ["B2:D3"]')
+  const xs = list.map((m, i) => {
+    const x = typeof m === 'string' ? parseMerge(m) : null
+    if (!x) throw new InputError(`${path}[${i}]`, `expected a merged area such as "B2:D3" (top-left to bottom-right, two cells or more), got ${what(m)}`)
+    return x
+  })
+  const o = overlapping(xs)
+  if (o) throw new InputError(`${path}[${o[1]}]`, `${list[o[1]]} overlaps ${list[o[0]]}`)
+}
+
+/**
+ * The book: sheets with unique names by Excel's rules (compared case-insensitively), cells by A1 address,
+ * columns, rows and merged areas, names, styles.
+ */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
+  onlyKeys(book, path, ['sheets', 'names', 'styles'])
+  const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges'])
     const name = checkString(sheet.name, `${p}.name`)
-    if (name === '') throw new InputError(`${p}.name`, 'a sheet name must not be empty')
+    const problem = sheetNameProblem(name)
+    if (problem) throw new InputError(`${p}.name`, problem)
     const dup = seen.get(sheetKey(name))
     if (dup) throw new InputError(`${p}.name`, `duplicate sheet name ${JSON.stringify(name)}: ${path}.sheets[${dup.i}] is ${JSON.stringify(dup.name)} (sheet names are case-insensitive)`)
     seen.set(sheetKey(name), { name, i })
     const cells = object(sheet.cells, `${p}.cells`, 'an object of cells by address such as { A1: { value: 1 } }')
     for (const addr of Object.keys(cells)) {
       const cell = cells[addr]
-      if (SURE_ADDRESS.test(addr) && plainCell(cell)) continue
+      if (SURE_ADDRESS.test(addr) && plainCell(cell, styles)) continue
       const cp = `${p}.cells[${JSON.stringify(addr)}]`
       checkAddress(addr, cp)
-      checkCell(cell, cp)
+      checkCell(cell, cp, styles)
     }
+    if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
+    if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
+    if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   return book as unknown as BookInput
@@ -184,8 +324,8 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   return o as SessionOptions
 }
 
-/** Edits: each names a sheet of the book (`sheetIndex` resolves it) and a valid address. */
-export function checkEdits(v: unknown, sheetIndex: (name: string) => number | undefined, path = 'edits'): CellEdit[] {
+/** Edits: each names a sheet of the book (`sheetIndex` resolves it) and a valid address; the book has `styles` styles. */
+export function checkEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): CellEdit[] {
   return array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
     const p = `${path}[${i}]`
     const o = object(e, p, 'an edit such as { sheet: "Sheet1", cell: "A1", input: { value: 1 } }')
@@ -193,8 +333,28 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
     checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
     checkAddress(o.cell, `${p}.cell`)
     if (o.input === undefined) throw new InputError(`${p}.input`, 'expected a cell object, or null to clear the cell')
-    if (o.input !== null) checkCell(o.input, `${p}.input`)
+    if (o.input !== null) checkCell(o.input, `${p}.input`, styles)
     return o as unknown as CellEdit
+  })
+}
+
+/** Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows or merged areas. */
+export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
+  return array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
+    const p = `${path}[${i}]`
+    const o = object(e, p, 'a layout edit such as { sheet: "Sheet1", columns: "C", set: { width: 20 } }')
+    checkSheet(o.sheet, sheetIndex, `${p}.sheet`)
+    if (o.merges !== undefined) {
+      onlyKeys(o, p, ['sheet', 'merges'])
+      checkMerges(o.merges, `${p}.merges`)
+      return o as unknown as LayoutEdit
+    }
+    const axis: Axis = o.rows !== undefined ? 'r' : 'c'
+    const lines = axis === 'r' ? 'rows' : 'columns'
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows or merges)' : '')
+    checkSpan(o[lines], `${p}.${lines}`, axis)
+    checkLine(o.set, `${p}.set`, axis, styles, true)
+    return o as unknown as LayoutEdit
   })
 }
 

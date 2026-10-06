@@ -14,8 +14,8 @@ import { E, Rng, type V } from '../values.js'
 export interface CodegenContext {
   /** The index of a sheet (null: the formula's own). */
   sheet(name: string | null): number
-  /** A name visible from the formula's sheet: its reference, and whether it has several cells. */
-  name(name: string): { ast: Extract<Ast, { k: 'ref' }>; area: boolean } | undefined
+  /** A name visible from the formula's sheet: its reference (or `#REF!` when lost), and whether it has several cells. */
+  name(name: string): { ast: Extract<Ast, { k: 'ref' | 'err' }>; area: boolean } | undefined
 }
 
 export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'

@@ -4,12 +4,12 @@
  * Excel on every range of a 12-row window under 20 moves (`docs/excel-struct/moves.json`, see
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
-import type { BookInput, CellInput, CellRef, NameInput } from '../contract.js'
+import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
 import { contains, hi, isFull, lo, meets, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
+import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
-import type { RestructureResult } from './types.js'
 
 type Pair = [number, number]
 
@@ -137,6 +137,9 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   const [dr, dc] = [row - src.r1, col - src.c1]
   const dst = shiftRect(src, dr, dc)
   if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: `the range does not fit on ${to} at ${formatAddress(row, col)}` }
+  const paste: Paste = { from, src, to, area: dst, offsets: [[dr, dc]], move: true }
+  const refused = mergeRefusal(book, paste)
+  if (refused) return { ok: false, code: 'merged', message: refused }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const t = moveTransform(from, src, to, dr, dc)
   const names = sheetNames(book)
@@ -157,16 +160,17 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
         cells[addr] = next
       }
     }
-    return changed ? { name: s.name, cells } : s
+    return changed ? { ...s, cells } : s
   })
   Object.assign(sheets.find((s) => sheetKey(s.name) === tk)!.cells, moved)
-  const out: BookInput = { sheets }
+  const out: BookInput = { ...book, sheets }
   let nm = rewriteNames(book.names, t, names)
   if (nm && fk !== tk) {
     const carried = carryNames(nm, formulas, from, to, (ref) => ref)
     if (carried.length) nm = [...nm, ...carried]
   }
   if (nm) out.names = nm
+  pasteLayout(book, out, paste)
   const mapCell = (ref: CellRef): CellRef | null => {
     const k = sheetKey(ref.sheet)
     if (k === fk && within(src, ref.cell)) {

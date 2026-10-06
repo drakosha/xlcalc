@@ -34,12 +34,16 @@ describe('restructure', () => {
     ])
   })
 
-  it('cells keep their format and meta when they move; inserted rows are empty', () => {
+  it('cells keep their format and meta when they move; copies have no meta unless withMeta', () => {
     const r = ok(book(), { op: 'insertRows', sheet: 'S', row: 2 })
     expect(cells(r.book).A6).toEqual({ value: 5, format: '0.00', meta: { id: 7 } })
     expect(Object.keys(cells(r.book)).sort()).toEqual(['A1', 'A6', 'B1', 'B3', 'B4'])
+    const m = ok(book(), { op: 'moveRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'Лист 2', cell: 'C1' } })
+    expect(cells(m.book, 'Лист 2').C1).toEqual(cells(book()).A5)
     const c = ok(book(), { op: 'copyRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'Лист 2', range: 'C1:C2' } })
-    expect([cells(c.book, 'Лист 2').C1, cells(c.book, 'Лист 2').C2]).toEqual([cells(book()).A5, cells(book()).A5])
+    expect([cells(c.book, 'Лист 2').C1, cells(c.book, 'Лист 2').C2]).toEqual([{ value: 5, format: '0.00' }, { value: 5, format: '0.00' }])
+    const w = ok(book(), { op: 'copyRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'Лист 2', range: 'C1' }, withMeta: true })
+    expect(cells(w.book, 'Лист 2').C1).toEqual(cells(book()).A5)
   })
 
   it('does not change the input book and shares what it does not change', () => {
@@ -123,6 +127,8 @@ describe('restructure', () => {
     fails({ op: 'deleteSheet', sheet: 'S', count: 1 }, 'op: unknown field "count" (expected op, sheet)')
     fails({ op: 'moveRange', from: { sheet: 'S', range: 'A1:' }, to: { sheet: 'S', cell: 'B1' } }, 'op.from.range: expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got "A1:"')
     fails({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', cell: 'B1' } }, 'op.to: unknown field "cell" (expected sheet, range)')
+    fails({ op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', range: 'B1' }, withMeta: 1 }, 'op.withMeta: expected a boolean, got 1')
+    fails({ op: 'moveRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', cell: 'B1' }, withMeta: true }, 'op: unknown field "withMeta" (expected op, from, to)')
     const r = ok(book(), { op: 'insertRows', sheet: 'S', row: 1 })
     expect(() => r.mapCell({ sheet: 'S', cell: 'a1' })).toThrow(InputError)
     expect(() => r.mapCell({ sheet: 'Нет', cell: 'A1' })).toThrow('ref.sheet: unknown sheet "Нет"')

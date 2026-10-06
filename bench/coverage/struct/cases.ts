@@ -5,8 +5,7 @@
  * local names. No formula is inside a range it reads, before or after any operation of the sets, so
  * Excel never meets a circular reference.
  */
-import type { BookInput, CellInput, CellRef } from '../../../src/contract.js'
-import type { StructureOp } from '../../../src/structure/types.js'
+import type { BookInput, CellInput, CellRef, StructureOp } from '../../../src/contract.js'
 
 export interface StructCase {
   id: string

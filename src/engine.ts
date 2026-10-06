@@ -7,14 +7,15 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameInput, NameIssue } from './contract.js'
+import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue } from './contract.js'
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
-import { ARRAY_RESULT, canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
+import { nameFor, prepareNames, type PreparedName } from './names.js'
+import { ARRAY_RESULT, canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { CErr, E, isErr, Rng, type V } from './values.js'
 
 interface Formula extends FormulaCode {
@@ -33,14 +34,6 @@ interface Invalid {
   message: string
   at: number
   error: ErrorCode
-}
-
-interface PreparedName {
-  name: string
-  /** Index of the scope sheet; -1 for a global name. */
-  scope: number
-  ast: Extract<Ast, { k: 'ref' }>
-  area: boolean
 }
 
 export interface EngineOptions {
@@ -116,59 +109,9 @@ export function rngText(sheetNames: string[], g: Rng): string {
 
 // ---------- preparation ----------
 
-function prepareNames(state: Pick<EngineState, 'sheetIdx' | 'sheetNames'>, names: NameInput[]): { names: PreparedName[]; issues: NameIssue[] } {
-  const out: PreparedName[] = []
-  const issues: NameIssue[] = []
-  const seen = new Set<string>()
-  for (const n of names) {
-    const issue = (reason: string) => issues.push({ name: n.name, ...(n.scope ? { scope: n.scope } : {}), reason })
-    const ok = validateName(n.name)
-    if (!ok.ok) {
-      issue(ok.message)
-      continue
-    }
-    const scope = n.scope === undefined ? -1 : (state.sheetIdx.get(sheetKey(n.scope)) ?? -2)
-    if (scope === -2) {
-      issue(`unknown scope sheet ${n.scope}`)
-      continue
-    }
-    const dup = `${scope}:${n.name.toUpperCase()}`
-    if (seen.has(dup)) {
-      issue('duplicate name')
-      continue
-    }
-    seen.add(dup)
-    let ast: Ast
-    try {
-      ast = parse(n.ref)
-    } catch (e) {
-      if (!(e instanceof FormulaError)) throw e
-      issue(`bad reference: ${e.message}`)
-      continue
-    }
-    if (ast.k !== 'ref' || ast.sheet === null) {
-      issue('a name must reference a cell or a range with a sheet')
-      continue
-    }
-    if (!state.sheetIdx.has(sheetKey(ast.sheet))) {
-      issue(`unknown sheet ${ast.sheet}`)
-      continue
-    }
-    const ref = ast.ref
-    out.push({ name: n.name, scope, ast, area: ref.kind !== 'cell' && !(ref.r1 === ref.r2 && ref.c1 === ref.c2) })
-  }
-  return { names: out, issues }
-}
-
-function nameFor(state: EngineState, here: number, name: string): PreparedName | undefined {
-  const up = name.toUpperCase()
-  return state.names.find((n) => n.scope === here && n.name.toUpperCase() === up) ?? state.names.find((n) => n.scope === -1 && n.name.toUpperCase() === up)
-}
-
-
 export const codegenContext = (state: EngineState, s: number): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
-  name: (name) => nameFor(state, s, name),
+  name: (name) => nameFor(state.names, s, name),
 })
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
@@ -176,7 +119,7 @@ type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Inv
 function prepare(state: EngineState, s: number, text: string): Prepared {
   const visible = state.names.filter((n) => n.scope === -1 || n.scope === s).map((n) => n.name)
   // an array result is found when computing (#SPILL!), not refused here
-  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state, s, name)?.area, false)
+  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state.names, s, name)?.area, false)
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
@@ -271,7 +214,7 @@ function listenersOf(state: EngineState, s: number, r: number, c: number, out: S
 
 // ---------- evaluation ----------
 
-function same(a: V, b: V): boolean {
+export function same(a: V, b: V): boolean {
   if (isErr(a) || isErr(b)) return isErr(a) && isErr(b) && a.code === b.code
   return Object.is(a, b) || a === b
 }
@@ -334,8 +277,9 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   const sheetNames = book.sheets.map((s) => s.name)
   const sheetIdx = new Map(sheetNames.map((n, i) => [sheetKey(n), i]))
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
-  const input: BookInput = { sheets: book.sheets.map((s) => ({ name: s.name, cells: { ...s.cells } })), names: [...(book.names ?? [])] }
-  const { names, issues } = prepareNames({ sheetIdx, sheetNames }, input.names!)
+  // the state's own copy of the cells (edits change it); the layout and the styles are shared
+  const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
+  const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
   const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
   const rt = makeRuntime(ctx)
   const state: EngineState = {

@@ -5,12 +5,12 @@
  * move too. At the sheet's edge a range ending on the last row keeps ending there, a single cell pushed
  * past it is `#REF!`, and a range over every row is not changed by rows inserted or deleted.
  */
-import type { BookInput, CellInput, CellRef } from '../contract.js'
+import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { LIMIT, withSpan, type Axis } from './area.js'
+import { formatBefore, shiftLines, shiftMerges } from './layout.js'
 import { rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
-import type { RestructureResult } from './types.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
 export function insertSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
@@ -50,8 +50,9 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
 }
 
 /**
- * Inserts (`n` > 0) or deletes (`n` < 0) rows or columns at index `at` of `sheet`. Inserting refuses when
- * a cell would leave the sheet, as Excel does for cells that are not empty.
+ * Inserts (`n` > 0) or deletes (`n` < 0) rows or columns at index `at` of `sheet`, with the sheet's layout.
+ * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
+ * not empty).
  */
 export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n: number): RestructureResult {
   const count = Math.abs(n)
@@ -65,10 +66,13 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
     return axis === 'r' ? formatAddress(i, p.col) : formatAddress(p.row, i)
   }
   const target = book.sheets.find((s) => sheetKey(s.name) === sheetKey(sheet))!
+  const lines = axis === 'r' ? 'rows' : 'columns'
   if (n > 0) {
     const off = Object.keys(target.cells).find((a) => pos(a) >= max - count)
-    if (off) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${axis === 'r' ? 'rows' : 'columns'} would push ${target.name}!${off} off the sheet` }
+    if (off) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push ${target.name}!${off} off the sheet` }
   }
+  const merges = shiftMerges(target.merges, axis, at, n)
+  if (merges === null) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push a merged area of ${target.name} off the sheet` }
   const t = shiftTransform(target.name, axis, at, count, n > 0 ? insertSpan : deleteSpan)
   const names = sheetNames(book)
   const sheets = book.sheets.map((s) => {
@@ -86,9 +90,14 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
         else if (i >= at + count) cells[place(addr, i - count)] = next
       }
     }
-    return changed ? { name: s.name, cells } : s
+    if (!moving) return changed ? { ...s, cells } : s
+    // the new lines take the format of the line before them
+    if (n > 0) Object.assign(cells, formatBefore(s, axis, at, n))
+    const layout = { ...s, cells, [lines]: shiftLines(s[lines], axis, at, n), merges }
+    for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] === undefined) delete layout[k]
+    return layout
   })
-  const out: BookInput = { sheets }
+  const out: BookInput = { ...book, sheets }
   const nm = rewriteNames(book.names, t, names)
   if (nm) out.names = nm
   const key = sheetKey(target.name)

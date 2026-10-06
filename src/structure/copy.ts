@@ -4,13 +4,13 @@
  * is a whole multiple of the source's size is tiled with copies, any other is pasted once at its top-left
  * cell, as Excel's Range.Copy does. Empty source cells clear the cells they land on.
  */
-import type { BookInput, CellInput, CellRef } from '../contract.js'
+import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { isFull, LIMIT, span, type Area, type Axis, type Bound, type Rect } from './area.js'
 import { carryNames, shiftRect, within } from './move.js'
+import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
-import type { RestructureResult } from './types.js'
 
 /** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
 function copyTransform(dr: number, dc: number): Transform {
@@ -39,18 +39,28 @@ function tiles(src: Rect, target: Rect): [number, number][] {
   return out
 }
 
-/** Copy `src` of sheet `from` to `target` of sheet `to`. */
-export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect): RestructureResult {
+/** A copied cell without its `meta` (rows of a source a host keeps by `meta` are not copied with the cell). */
+const withoutMeta = (cell: CellInput): CellInput => {
+  if (cell.meta === undefined) return cell
+  const { meta: _, ...rest } = cell
+  return rest
+}
+
+/** Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. */
+export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean): RestructureResult {
   const offsets = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: `the copy does not fit on ${to} at ${formatAddress(target.r1, target.c1)}` }
+  // the tiles cover the target, or one copy its top-left part
+  const pasted = offsets.length > 1 ? target : shiftRect(src, dr, dc)
+  const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
+  const refused = mergeRefusal(book, paste)
+  if (refused) return { ok: false, code: 'merged', message: refused }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const names = sheetNames(book)
   const source = Object.entries(book.sheets.find((s) => sheetKey(s.name) === fk)!.cells)
     .filter(([addr]) => within(src, addr))
-    .map(([addr, cell]) => ({ at: parseAddress(addr), cell }))
-  // the tiles cover the target, or one copy its top-left part
-  const pasted = offsets.length > 1 ? target : shiftRect(src, dr, dc)
+    .map(([addr, cell]) => ({ at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== tk) return s
     const cells: Record<string, CellInput> = {}
@@ -62,15 +72,16 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
         cells[formatAddress(at.row + r, at.col + c)] = formula === cell.formula ? cell : { ...cell, formula }
       }
     }
-    return { name: s.name, cells }
+    return { ...s, cells }
   })
-  const out: BookInput = { sheets }
+  const out: BookInput = { ...book, sheets }
   if (book.names) {
     const repoint: Transform = { ref: ({ sheet, area }) => (sheetKey(sheet) === fk ? { sheet: to, area } : undefined) }
     const formulas = source.flatMap(({ cell }) => (cell.formula === undefined ? [] : [cell.formula]))
     const carried = fk === tk ? [] : carryNames(book.names, formulas, from, to, (ref) => rewriteFormula(ref, null, null, repoint, names))
     out.names = carried.length ? [...book.names, ...carried] : book.names
   }
+  pasteLayout(book, out, paste)
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
   return { ok: true, book: out, mapCell }
 }

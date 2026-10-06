@@ -5,9 +5,12 @@
  * Excel writes references (`A1:A1048576` is `A:A`), with sheet names quoted.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import type { ExcelStructAnswer, StoredStruct } from '../bench/coverage/struct.js'
-import type { BookInput, CellInput } from '../src/contract.js'
-import { formatAddress, parseAddress } from '../src/model.js'
+import type { CellLook, ExcelStructAnswer, SheetLook, StoredStruct } from '../bench/coverage/struct.js'
+import type { BookInput, CellInput, SheetInput } from '../src/contract.js'
+import { mergeText, parseMerge } from '../src/layout/merges.js'
+import { lineAt } from '../src/layout/spans.js'
+import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
+import { meets } from '../src/structure/area.js'
 import { decode, encode } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
 
@@ -53,8 +56,56 @@ function nameKey(excel: string): string {
   return `${sheetKey(scope)}|${excel.slice(i + 1).toUpperCase()}`
 }
 
-/** Differences between a book and Excel's answer, as `place: Excel … , engine …` lines. */
-export function differences(book: BookInput, a: ExcelStructAnswer, read: string): string[] {
+/**
+ * Sizes as Excel 16 for Mac reports them with Calibri 11: a column width of w characters (xlsx) as (6w − 5)/6,
+ * the width without the padding at 6 pixels a digit; a row height in points as pixels, 4/3 of it, to a quarter
+ * (30 is 40, 24 is 32, 20 is 26.75).
+ */
+const shownWidth = (w: number) => Math.round(((6 * w - 5) / 6) * 100) / 100
+const shownHeight = (h: number) => Math.round((h * 16) / 3) / 4
+
+/** The look of a sheet of the book in `look`, as Excel reads it: a cell's style and format, else its row's, else its column's. */
+export function lookOf(book: BookInput, sheet: SheetInput, look: string): SheetLook {
+  const [a, b] = look.split(':').map(parseAddress)
+  const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
+  for (let r = a.row; r <= b.row; r++)
+    for (let c = a.col; c <= b.col; c++) {
+      const addr = formatAddress(r, c)
+      const [cell, row, col] = [sheet.cells[addr], lineAt(sheet.rows, 'r', r), lineAt(sheet.columns, 'c', c)]
+      const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
+      const format = cell?.format ?? row?.format ?? col?.format
+      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format } : {}) }
+      if (Object.keys(l).length) out.cells[addr] = l
+    }
+  for (let c = a.col; c <= b.col; c++) {
+    const w = lineAt(sheet.columns, 'c', c)?.width
+    if (w !== undefined) out.widths[indexToCol(c)] = shownWidth(w)
+  }
+  for (let r = a.row; r <= b.row; r++) {
+    const h = lineAt(sheet.rows, 'r', r)?.height
+    if (h !== undefined) out.heights[String(r + 1)] = shownHeight(h)
+  }
+  const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
+  out.merges = (sheet.merges ?? []).filter((m) => meets(parseMerge(m)!, window)).map((m) => mergeText(parseMerge(m)!))
+  return out
+}
+
+/** Differences of looks, as `place: Excel …, engine …` lines. */
+function lookDifferences(name: string, excel: SheetLook, ours: SheetLook): string[] {
+  const out: string[] = []
+  const diff = (what: string, x: Record<string, unknown>, y: Record<string, unknown>) => {
+    for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) if (JSON.stringify(x[k] ?? null) !== JSON.stringify(y[k] ?? null)) out.push(`'${name}' ${what} ${k}: Excel ${JSON.stringify(x[k] ?? null)}, engine ${JSON.stringify(y[k] ?? null)}`)
+  }
+  diff('look', excel.cells, ours.cells)
+  diff('width', excel.widths, ours.widths)
+  diff('height', excel.heights, ours.heights)
+  const [x, y] = [[...excel.merges].sort(), [...ours.merges].sort()]
+  if (JSON.stringify(x) !== JSON.stringify(y)) out.push(`'${name}' merges: Excel ${JSON.stringify(x)}, engine ${JSON.stringify(y)}`)
+  return out
+}
+
+/** Differences between a book and Excel's answer, as `place: Excel … , engine …` lines; `look` for a styled book. */
+export function differences(book: BookInput, a: ExcelStructAnswer, read: string, look?: string): string[] {
   const out: string[] = []
   const [r0, r1] = read.split(':').map(parseAddress)
   const inRead = (addr: string) => {
@@ -75,6 +126,7 @@ export function differences(book: BookInput, a: ExcelStructAnswer, read: string)
     // Excel's used range must lie in the read rectangle unless the case reads extra cells
     const used = s.used.replaceAll('$', '').split(':')
     if (!a.extra.length && !used.every((x) => /^[A-Z]+\d+$/.test(x) && inRead(x))) out.push(`'${s.name}': Excel's used range ${s.used} is outside ${read}`)
+    if (s.look && look) out.push(...lookDifferences(s.name, s.look, lookOf(book, ours, look)))
   }
   for (const e of a.extra) {
     const c = book.sheets.find((x) => x.name === e.sheet)?.cells[e.cell]

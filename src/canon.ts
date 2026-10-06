@@ -4,7 +4,9 @@
  * rounded to 15 significant digits. The engine configuration version is part of the values hash.
  */
 import type { BookInput, CellValue } from './contract.js'
-import { sortAddresses } from './model.js'
+import { lines, spanKey } from './layout/spans.js'
+import { compareAddress, sortAddresses } from './model.js'
+import type { Axis } from './structure/area.js'
 import { Sha256 } from './sha256.js'
 
 /** A number for output and hashing: 15 significant digits, no `-0`. */
@@ -52,14 +54,29 @@ function stableJson(v: unknown): string {
     .join(',')}}`
 }
 
-/** Input hash: sheets by name, cells by address, names by (scope, name). */
+/** Lines of a sheet's columns or rows in order (`C 2 {...}`, `R 5 {...}`); none without them. */
+function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis: Axis): string[] {
+  return lines(map, axis).map(([lo, hi, v]) => `${tag} ${spanKey(lo, hi, axis)} ${stableJson(v)}\n`)
+}
+
+/**
+ * Input hash: sheets by name, cells by address, names by (scope, name). Columns, rows, merged areas (in
+ * order) and the style table come after their sheet and the names when there are any, so a book without
+ * them hashes as before they existed.
+ */
 export function inputHash(book: BookInput): string {
   const h = new Sha256()
   for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
     for (const addr of sortAddresses(Object.keys(s.cells))) h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
+    for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
+    for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
   }
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
   for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)
+  if (book.styles?.length) h.update(`Y ${stableJson(book.styles)}\n`)
   return h.hex()
 }
+
+/** Merged areas by their top-left cell. */
+const compareMerges = (a: string, b: string) => compareAddress(a.split(':')[0], b.split(':')[0])

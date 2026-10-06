@@ -2,9 +2,11 @@
 -- cells and the defined names, close without saving. Alerts are off around the operation (deleting a
 -- sheet asks for confirmation otherwise); an operation Excel refuses comes back as `error`, not a dialog.
 -- Arguments: book path (inside Excel's sandbox), op, sheet, range (cells of the rows or columns to insert
--- or delete; whole rows and columns written as cell ranges), target sheet or new name, target range, the rectangle to read on every sheet, extra cells as lines "sheet<TAB>address".
--- Output: JSON {"error": text, "sheets": [[name, used range, formulas of the rectangle]],
--- "extra": [[sheet, address, formula]], "names": [[name, references]]}.
+-- or delete; whole rows and columns written as cell ranges), target sheet or new name, target range, the rectangle to read on every sheet, extra cells as lines "sheet<TAB>address",
+-- and for a styled book the cells, columns and rows whose look is read (lines; empty otherwise).
+-- Output: JSON {"error": text, "sheets": [[name, used range, formulas of the rectangle, look or ""]],
+-- "extra": [[sheet, address, formula]], "names": [[name, references]]}; a look is
+-- [[[address, bold, fill colour, number format, merged area or ""]], [[column, standard width, width]], [[row, standard height, height]]].
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -18,6 +20,9 @@ on run argv
 	set argTo to item 6 of argv
 	set rect to item 7 of argv
 	set extraText to item 8 of argv
+	set lookCells to paragraphs of item 9 of argv
+	set lookCols to paragraphs of item 10 of argv
+	set lookRows to paragraphs of item 11 of argv
 	set hfs to (POSIX file p) as text
 	set opError to ""
 	set readError to ""
@@ -64,7 +69,29 @@ on run argv
 					set u to get address ur
 					set stage to "formulas"
 					set f to formula of (range rect of w)
-					set end of sheetsOut to {name of w, u, f}
+					set lk to ""
+					if (count of lookCells) > 0 then
+						set stage to "look"
+						set cl to {}
+						repeat with ad in lookCells
+							set rg to range (ad as text) of w
+							set ma to ""
+							if merge cells of rg then set ma to (get address of merge area of rg)
+							set end of cl to {ad as text, bold of font object of rg, color of interior object of rg, number format of rg, ma}
+						end repeat
+						set wl to {}
+						repeat with cc in lookCols
+							set rg to range ((cc as text) & "1") of w
+							set end of wl to {cc as text, use standard width of rg, column width of rg}
+						end repeat
+						set hl to {}
+						repeat with rr in lookRows
+							set rg to range ("A" & (rr as text)) of w
+							set end of hl to {rr as text, use standard height of rg, row height of rg}
+						end repeat
+						set lk to {cl, wl, hl}
+					end if
+					set end of sheetsOut to {name of w, u, f, lk}
 				end repeat
 				set stage to "extra"
 				repeat with ln in paragraphs of extraText
