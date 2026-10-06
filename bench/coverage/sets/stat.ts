@@ -325,6 +325,9 @@ export function buildProbes(): Probe[] {
   // ---------- second round: what the first one raised ----------
   // an error as a criterion, or its text, matches the cells holding that error
   each(['COUNTIF'], [['D!E1:E8', '"#DIV/0!"'], ['D!E1:E8', '"=#DIV/0!"'], ['D!E1:E8', '"<>#DIV/0!"'], ['D!A7:A8', 'D!A8'], ['D!A7:A8', '"#N/A"']])
+  each(['COUNTIFS'], [['D!E1:E8', 'D!A7'], ['D!E1:E8', '"#DIV/0!"', 'D!B1:B8', '">0"']])
+  each(['AVERAGEIF'], [['D!E1:E8', 'D!A7', 'D!B1:B8']])
+  each(['AVERAGEIFS'], [['D!B1:B8', 'D!E1:E8', '"#DIV/0!"']])
   // BINOM.INV at exact ties of the cumulative probability
   for (const [n, a] of [[1, '0.5'], [2, '0.25'], [2, '0.75'], [3, '0.125'], [3, '0.5'], [4, '0.0625'], [4, '0.3125'], [10, '0.0107421875'], [10, '0.0546875']] as const)
     add('BINOM.INV', [n, '0.5', a])

@@ -98,6 +98,8 @@ export const REASONS = {
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
     '`GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) give the quantile where Excel\'s iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom) and probabilities near 1 with shapes under 0.03; Excel\'s own `GAMMA.DIST` at the engine\'s answer gives the probability back.',
+  errorCriterion:
+    '`COUNTIFS`, `AVERAGEIF`, `AVERAGEIFS` (and `SUMIF`, `SUMIFS`, `MAXIFS`, `MINIFS`) with an error as a criterion, or its text (`"#DIV/0!"`), give that error or match nothing; Excel matches the cells holding that error. `COUNTIF` does as Excel.',
   binomInvTie:
     '`BINOM.INV` where alpha equals the probability of no success, (1 − p)^n, exactly: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they part on `BINOM.INV(3,0.25,0.421875)`, 0 in Excel and 1 here.',
 } as const
@@ -132,6 +134,10 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat:GAMMAINV#16': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990052413.58303 } },
   'stat:GAMMAINV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
   'stat:BINOM.INV#30': { reason: 'binomInvTie', engine: { t: 'n', v: 1 } },
+  'stat:COUNTIFS#1': { reason: 'errorCriterion', engine: { t: 'e', v: 'DIV0' } },
+  'stat:COUNTIFS#2': { reason: 'errorCriterion', engine: { t: 'n', v: 0 } },
+  'stat:AVERAGEIF#31': { reason: 'errorCriterion', engine: { t: 'e', v: 'DIV0' } },
+  'stat:AVERAGEIFS#15': { reason: 'errorCriterion', engine: { t: 'e', v: 'DIV0' } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN, differs from Excel and gives exactly the pinned answer. */
