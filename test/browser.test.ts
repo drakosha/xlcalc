@@ -56,6 +56,7 @@ describe('outside Node', () => {
     expect(() => runInContext('new Function("return 1")', ctx)).toThrow()
     runInContext(code, ctx)
     expect(runInContext('FormulaEngine.validateFormula("SUM(A1:A3)*2").ok', ctx)).toBe(true)
+    expect(runInContext('FormulaEngine.toLocal("SUM(A1:A3,1.5)", FormulaEngine.ruRU).formula', ctx)).toBe('СУММ(A1:A3;1,5)')
     const out = runInContext(
       `try { FormulaEngine.compute({ sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }); 'computed' } catch (e) { e.name + ': ' + e.message }`,
       ctx,

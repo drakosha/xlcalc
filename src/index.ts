@@ -16,6 +16,7 @@ export { FUNCTION_NAMES } from './functions.js'
 export { CONFIG_VERSION } from './config.js'
 export { openSession } from './session.js'
 export { InputError } from './input.js'
+export { enUS, ruRU, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
