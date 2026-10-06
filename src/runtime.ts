@@ -6,7 +6,7 @@
  */
 import { makeCaller, type Arg, type Cx, type Grid } from './args.js'
 import { liftCaller, liftLazy } from './arrays/call.js'
-import { isMany, liftN } from './arrays/lift.js'
+import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
@@ -120,9 +120,8 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   // ---------- operators ----------
 
+  // the left operand is converted before the right one counts: `"abc"-NA()` is #VALUE!, as in Excel
   const arith = (a: V, b: V, f: (x: number, y: number) => number | CErr): V => {
-    if (isErr(a)) return a
-    if (isErr(b)) return b
     const x = toNum(a)
     if (isErr(x)) return x
     const y = toNum(b)
@@ -161,15 +160,16 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   // ---------- operators over arrays (the code generator uses them where an operand can be an array) ----------
 
-  const one = (x: Arg): Arg => (x instanceof Arr || x instanceof Rng) && !isMany(x) ? scalar(x) : x
+  // a one-cell reference is its value; any array, a 1 × 1 one too, lifts the operator
+  const one = (x: Arg): Arg => (x instanceof Rng && !lifts(x) ? scalar(x) : x)
   const L1 = (f: (a: V) => V, x: Arg): Arg => {
     const a = one(x)
-    return isMany(a) ? liftN([view(a)], ([v]) => f(v)) : f(a as V)
+    return lifts(a) ? liftN([view(a)], ([v]) => f(v)) : f(a as V)
   }
   const L2 = (f: (a: V, b: V) => V, x: Arg, y: Arg): Arg => {
     const a = one(x)
     const b = one(y)
-    return isMany(a) || isMany(b) ? liftN([view(a), view(b)], ([u, v]) => f(u, v)) : f(a as V, b as V)
+    return lifts(a) || lifts(b) ? liftN([view(a), view(b)], ([u, v]) => f(u, v)) : f(a as V, b as V)
   }
   /** Comparisons by operator, for L2. */
   const C: Record<string, (a: V, b: V) => V> = Object.fromEntries(['=', '<>', '<', '>', '<=', '>='].map((op) => [op, (a: V, b: V) => cmp(op, a, b)]))

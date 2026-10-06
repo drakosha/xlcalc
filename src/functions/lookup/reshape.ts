@@ -4,6 +4,7 @@
  * here (`EMPTY`).
  */
 import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
+import { isMany } from '../../arrays/lift.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
 import { E, isErr, Rng, toNum, type CErr, type V } from '../../values.js'
 
@@ -159,7 +160,8 @@ export const functions: Record<string, FnDef> = {
   TAKE: takeDrop(true),
   TOCOL: flatten(true),
   TOROW: flatten(false),
-  TRANSPOSE: { args: 'G', array: true, fn: (g: Grid) => transpose(fromGrid(g)) },
+  // a value or a one-cell reference is that value (TYPE(TRANSPOSE(5)) is 1), an array of one value stays an array
+  TRANSPOSE: { args: 'R', cx: true, array: true, fn: (cx: Cx, x: Arg) => (x instanceof Arr || isMany(x) ? transpose(fromGrid(cx.grid(x))) : cx.scalar(x)) },
   VSTACK: stack(false),
   WRAPCOLS: wrap(false),
   WRAPROWS: wrap(true),

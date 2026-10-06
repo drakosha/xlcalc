@@ -80,8 +80,7 @@ function lookup(key: V, look: Grid, result?: Grid): V {
 }
 
 /** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */
-function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): V | Arr {
-  if (r1 === r2 && c1 === c2) return a.at(r1, c1)
+function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): Arr {
   if (r1 === 0 && c1 === 0 && r2 === a.rows - 1 && c2 === a.cols - 1) return a
   const v: V[] = []
   for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) v.push(a.at(r, c))
@@ -106,7 +105,9 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
   const [c1, c2] = c ? [c - 1, c - 1] : [0, cols - 1]
   // a reference, one cell too: SUM(INDEX(A1:A3,2)) skips text there, as a range does
   if (x instanceof Rng) return new Rng(x.s, x.r1 + r1, x.c1 + c1, x.r1 + r2, x.c1 + c2)
-  return x instanceof Arr ? slice(x, r1, c1, r2, c2) : x
+  // an element of an array is a value; a line selected by 0 stays an array, 1 × 1 too (TYPE(INDEX({1;2},1,0)+0) is 64)
+  if (x instanceof Arr) return r && c ? x.at(r1, c1) : slice(x, r1, c1, r2, c2)
+  return x
 }
 
 export const functions: Record<string, FnDef> = {
