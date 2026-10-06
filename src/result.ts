@@ -49,7 +49,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number): Compu
     nameIssues: state.nameIssues,
     volatile,
     clock: { ...clock },
-    hash: valuesHash(values, CONFIG_VERSION),
+    hash: valuesHash(values, CONFIG_VERSION, state.input.locale),
     inputHash: inputHash(state.input),
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,

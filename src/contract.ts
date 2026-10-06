@@ -109,6 +109,13 @@ export interface BookInput {
   names?: NameInput[]
   /** The cell styles that cells, rows and columns refer to by index. */
   styles?: CellStyle[]
+  /**
+   * The locale the book is computed in, a BCP 47 tag of one of the package's locales: `'en-US'` (the
+   * default) or `'ru-RU'`. It changes computed values as Excel's regional settings do (text read as a
+   * number or a date, numbers and booleans turned into text, `TEXT` format codes, currency), not the formula
+   * text: formulas stay invariant, and `toLocal` shows them in a locale. An unknown tag is an `InputError`.
+   */
+  locale?: string
 }
 
 /** `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`). */
