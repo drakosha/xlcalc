@@ -39,7 +39,8 @@ interface PreparedName {
   name: string
   /** Index of the scope sheet; -1 for a global name. */
   scope: number
-  ast: Extract<Ast, { k: 'ref' }>
+  /** The reference, or `#REF!` when Excel lost it (`'S'!#REF!`, `#REF!A1`). */
+  ast: Extract<Ast, { k: 'ref' | 'err' }>
   area: boolean
 }
 
@@ -144,6 +145,11 @@ function prepareNames(state: Pick<EngineState, 'sheetIdx' | 'sheetNames'>, names
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
       issue(`bad reference: ${e.message}`)
+      continue
+    }
+    // a reference Excel lost stays a name, as in Excel: formulas using it give #REF!
+    if (ast.k === 'err' && ast.code === 'REF') {
+      out.push({ name: n.name, scope, ast, area: false })
       continue
     }
     if (ast.k !== 'ref' || ast.sheet === null) {
