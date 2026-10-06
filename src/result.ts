@@ -2,7 +2,8 @@
 import { inputHash, outNumber, valuesHash } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, Clock, ComputeResult } from './contract.js'
-import { issues, sortedCells, toCellValue, valueAt, type EngineState } from './engine.js'
+import { sortedCells, toCellValue, valueAt, type EngineState } from './engine.js'
+import { issues } from './issues.js'
 import { nowMs } from './env.js'
 import { formatAddress, msToSerial, parseAddress } from './model.js'
 

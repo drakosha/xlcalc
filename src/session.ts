@@ -4,7 +4,8 @@
  * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  */
 import type { BookInput, CellChange, CellEdit, CellStyle, Clock, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
-import { applyClock, applyEdits, createState, explainCell, explainText, toCellValue, valueAt, type EngineState } from './engine.js'
+import { applyClock, applyEdits, createState, toCellValue, valueAt, type EngineState } from './engine.js'
+import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'

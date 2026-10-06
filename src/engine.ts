@@ -12,13 +12,14 @@ import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { FUNCTIONS } from './functions.js'
-import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
+import { listenersOf, rebuildGraph } from './graph.js'
+import { formatAddress, inputScalar, MAX_COLS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
-import { ARRAY_RESULT, canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
+import { canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { CErr, E, isErr, Rng, type V } from './values.js'
 
-interface Formula extends FormulaCode {
+export interface Formula extends FormulaCode {
   id: number
   s: number
   r: number
@@ -72,8 +73,7 @@ export interface EngineState {
   volatile: Set<number>
 }
 
-const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
-const WIDE = 64
+export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
 
 /** Marks or unmarks a cell whose formula calls SUBTOTAL or AGGREGATE. */
 function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean) {
@@ -98,15 +98,6 @@ export function invalidError(code: CheckCode): ErrorCode {
   return 'ERROR'
 }
 
-/** Reference text for `explain` and reasons: `'Sheet'!B3`, `'Sheet'!D:D`, `'Sheet'!A1:C9`. */
-export function rngText(sheetNames: string[], g: Rng): string {
-  const sheet = quoteSheet(sheetNames[g.s])
-  if (g.r1 === 0 && g.r2 === MAX_ROWS - 1) return `${sheet}!${indexToCol(g.c1)}:${indexToCol(g.c2)}`
-  if (g.c1 === 0 && g.c2 === MAX_COLS - 1) return `${sheet}!${g.r1 + 1}:${g.r2 + 1}`
-  const a = formatAddress(g.r1, g.c1)
-  return g.r1 === g.r2 && g.c1 === g.c2 ? `${sheet}!${a}` : `${sheet}!${a}:${formatAddress(g.r2, g.c2)}`
-}
-
 // ---------- preparation ----------
 
 export const codegenContext = (state: EngineState, s: number): CodegenContext => ({
@@ -122,94 +113,6 @@ function prepare(state: EngineState, s: number, text: string): Prepared {
   const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state.names, s, name)?.area, false)
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
-}
-
-// ---------- graph ----------
-
-function rebuildGraph(state: EngineState) {
-  const { formulas } = state
-  const at = new Map<number, Map<number, { r: number; id: number }[]>>()
-  for (const f of formulas) {
-    if (!f) continue
-    let bySheet = at.get(f.s)
-    if (!bySheet) at.set(f.s, (bySheet = new Map()))
-    let col = bySheet.get(f.c)
-    if (!col) bySheet.set(f.c, (col = []))
-    col.push({ r: f.r, id: f.id })
-  }
-  for (const bySheet of at.values()) for (const col of bySheet.values()) col.sort((a, b) => a.r - b.r)
-  const lowerBound = (col: { r: number }[], r: number) => {
-    let lo = 0
-    let hi = col.length
-    while (lo < hi) {
-      const mid = (lo + hi) >> 1
-      if (col[mid].r < r) lo = mid + 1
-      else hi = mid
-    }
-    return lo
-  }
-  const succ: number[][] = formulas.map(() => [])
-  const indeg = new Array<number>(formulas.length).fill(0)
-  const listeners: EngineState['listeners'] = new Map()
-  const wide: EngineState['wide'] = new Map()
-  for (const f of formulas) {
-    if (!f) continue
-    for (const g of f.refs) {
-      if (g.c2 - g.c1 >= WIDE) {
-        let w = wide.get(g.s)
-        if (!w) wide.set(g.s, (w = []))
-        w.push([g.r1, g.r2, g.c1, g.c2, f.id])
-      } else {
-        let ls = listeners.get(g.s)
-        if (!ls) listeners.set(g.s, (ls = new Map()))
-        for (let c = g.c1; c <= g.c2; c++) {
-          let lc = ls.get(c)
-          if (!lc) ls.set(c, (lc = []))
-          lc.push([g.r1, g.r2, f.id])
-        }
-      }
-      const bySheet = at.get(g.s)
-      if (!bySheet) continue
-      for (const [c, col] of bySheet) {
-        if (c < g.c1 || c > g.c2) continue
-        for (let i = lowerBound(col, g.r1); i < col.length && col[i].r <= g.r2; i++) {
-          succ[col[i].id].push(f.id)
-          indeg[f.id]++
-        }
-      }
-    }
-  }
-  const order: number[] = []
-  const queue: number[] = []
-  formulas.forEach((f, id) => f && indeg[id] === 0 && queue.push(id))
-  // the queue need not be ordered by address: values do not depend on the evaluation order
-  while (queue.length) {
-    const id = queue.pop()!
-    order.push(id)
-    for (const n of succ[id]) if (--indeg[n] === 0) queue.push(n)
-  }
-  const topo = new Array<number>(formulas.length).fill(-1)
-  order.forEach((id, i) => (topo[id] = i))
-  state.succ = succ
-  state.topo = topo
-  state.order = order
-  state.listeners = listeners
-  state.wide = wide
-  const vol = new Set<number>()
-  const stack = formulas.filter((f): f is Formula => !!f?.volatile).map((f) => f.id)
-  while (stack.length) {
-    const id = stack.pop()!
-    if (vol.has(id)) continue
-    vol.add(id)
-    stack.push(...succ[id])
-  }
-  state.volatile = vol
-}
-
-/** Formulas that read a cell (by their references, whether or not the cell holds anything). */
-function listenersOf(state: EngineState, s: number, r: number, c: number, out: Set<number>) {
-  for (const [r1, r2, id] of state.listeners.get(s)?.get(c) ?? []) if (r >= r1 && r <= r2) out.add(id)
-  for (const [r1, r2, c1, c2, id] of state.wide.get(s) ?? []) if (r >= r1 && r <= r2 && c >= c1 && c <= c2) out.add(id)
 }
 
 // ---------- evaluation ----------
@@ -427,69 +330,6 @@ export function toCellValue(v: V): CellValue {
   return isErr(v) ? { error: v.code } : v
 }
 
-// ---------- error reasons ----------
-
-const GENERIC: Record<ErrorCode, string> = {
-  DIV0: 'division by zero',
-  NA: 'value not found',
-  NAME: 'unknown function or name',
-  NUM: 'number out of range',
-  REF: 'invalid reference',
-  VALUE: 'wrong type of value',
-  CYCLE: 'circular reference',
-  SPILL: 'array result does not fit',
-  CALC: 'empty array or text too long',
-  ERROR: 'error',
-}
-
-export interface Issue {
-  s: number
-  r: number
-  c: number
-  error: ErrorCode
-  reason: string
-  check?: CheckCode
-  at?: number
-}
-
-/** Cells with an error and the reason: a formula check, a cycle, an error from another cell or its own. */
-export function issues(state: EngineState): Issue[] {
-  const out: Issue[] = []
-  for (const [k, inv] of state.invalid) {
-    const [s, r, c] = k.split(':').map(Number)
-    out.push({ s, r, c, error: inv.error, reason: inv.message, check: inv.code, at: inv.at })
-  }
-  for (const f of state.formulas) {
-    if (!f) continue
-    const v = valueAt(state, f.s, f.r, f.c)
-    if (!isErr(v)) continue
-    if (f.spill) {
-      out.push({ s: f.s, r: f.r, c: f.c, error: v.code, reason: `the result is an array of ${f.spill[0]}×${f.spill[1]} values: ${ARRAY_RESULT}`, check: 'unsupported', at: 0 })
-      continue
-    }
-    let reason = GENERIC[v.code]
-    if (v.code !== 'CYCLE') {
-      const from = errorSource(state, f, v.code)
-      if (from) reason = `${GENERIC[v.code]}, from ${from}`
-      else if (v.code === 'NA' && f.external) reason = 'value not found (or no value for an external call)'
-    }
-    out.push({ s: f.s, r: f.r, c: f.c, error: v.code, reason })
-  }
-  return out.sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
-}
-
-function errorSource(state: EngineState, f: Formula, code: ErrorCode): string | null {
-  for (const g of f.refs) {
-    const flat = state.rt.flat(g)
-    const b = state.rt.bounds(g)
-    for (let i = 0; i < flat.length; i++) {
-      const v = flat[i]
-      if (isErr(v) && v.code === code) return `${quoteSheet(state.sheetNames[g.s])}!${formatAddress(b.r1 + Math.floor(i / b.w), b.c1 + (i % b.w))}`
-    }
-  }
-  return null
-}
-
 // ---------- debugging and explain ----------
 
 /** Generated code in evaluation order, for reading (not part of the contract). */
@@ -500,73 +340,6 @@ export function debugSource(state: EngineState): string {
     const f = state.formulas[id]!
     lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, f.source!)
   }
-  return lines.join('\n')
-}
-
-export interface ExplainTree {
-  ref: string
-  value?: CellValue
-  formula?: string
-  cells?: number
-  children: ExplainTree[]
-}
-
-export function explainCell(state: EngineState, s: number, r: number, c: number, depth: number, maxNodes: number, expand: boolean): { root: ExplainTree; nodes: number; truncated: boolean } {
-  let nodes = 0
-  let truncated = false
-  const visit = (s: number, r: number, c: number, d: number): ExplainTree => {
-    nodes++
-    const id = state.at.get(key(s, r, c))
-    const f = id === undefined ? undefined : state.formulas[id]
-    const node: ExplainTree = { ref: `${quoteSheet(state.sheetNames[s])}!${formatAddress(r, c)}`, value: toCellValue(valueAt(state, s, r, c)), children: [] }
-    const inv = state.invalid.get(key(s, r, c))
-    if (inv) node.formula = state.input.sheets[s].cells[formatAddress(r, c)]?.formula
-    if (!f) return node
-    node.formula = f.text
-    if (d <= 0) {
-      if (f.refs.length) truncated = true
-      return node
-    }
-    for (const g of f.refs) {
-      if (nodes >= maxNodes) {
-        truncated = true
-        break
-      }
-      if (g.r1 === g.r2 && g.c1 === g.c2) {
-        node.children.push(visit(g.s, g.r1, g.c1, d - 1))
-        continue
-      }
-      const b = state.rt.bounds(g)
-      const flat = state.rt.flat(g)
-      const filled: number[] = []
-      flat.forEach((v, i) => v !== null && filled.push(i))
-      nodes++
-      const rn: ExplainTree = { ref: rngText(state.sheetNames, g), cells: filled.length, children: [] }
-      node.children.push(rn)
-      if (!expand) continue
-      for (const i of filled) {
-        if (nodes >= maxNodes) {
-          truncated = true
-          break
-        }
-        rn.children.push(visit(g.s, b.r1 + Math.floor(i / b.w), b.c1 + (i % b.w), d - 2))
-      }
-    }
-    return node
-  }
-  const root = visit(s, r, c, depth)
-  return { root, nodes, truncated }
-}
-
-export function explainText(root: ExplainTree): string {
-  const fmt = (v: CellValue | undefined) => (v === undefined ? '' : v !== null && typeof v === 'object' ? `#${v.error}` : JSON.stringify(v))
-  const lines: string[] = []
-  const go = (n: ExplainTree, indent: string) => {
-    const head = n.cells !== undefined ? `${n.ref} (${n.cells} cells)` : `${n.ref} = ${fmt(n.value)}`
-    lines.push(`${indent}${head}${n.formula ? `  ← ${n.formula}` : ''}`)
-    for (const ch of n.children) go(ch, indent + '  ')
-  }
-  go(root, '')
   return lines.join('\n')
 }
 
