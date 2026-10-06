@@ -1,7 +1,4 @@
-/**
- * BITAND, BITOR, BITXOR, BITLSHIFT, BITRSHIFT on whole numbers of 48 bits. This engine's own (formula.js used
- * JavaScript's 32-bit operators).
- */
+/** BITAND, BITOR, BITXOR, BITLSHIFT, BITRSHIFT on 48-bit whole numbers. This engine's own. */
 import { E, type CErr } from '../../values.js'
 import type { FnDef } from '../../args.js'
 

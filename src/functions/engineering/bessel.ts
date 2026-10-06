@@ -1,10 +1,6 @@
 /**
- * BESSELI, BESSELJ, BESSELK, BESSELY.
- *
- * Ported from bessel 1.0.2 (https://github.com/SheetJS/bessel), bessel.js: Copyright (C) 2013-present
- * SheetJS, Apache License 2.0 (THIRD_PARTY.md). Changed to Excel's results: J1 above 8 with Excel's polynomial,
- * I_n by a longer recurrence (Excel's start 2(n + ⌊√40n⌋), exact at x = 30 and 100), I0 and I1 of negative x; Excel's argument checks; orders
- * whose answer underflows are 0 without iterating, and the order loops are capped.
+ * BESSELI, BESSELJ, BESSELK, BESSELY. Ported from bessel 1.0.2 (bessel.js), Copyright (C) 2013-present SheetJS,
+ * Apache License 2.0 (THIRD_PARTY.md). Changed: Excel's J1 above 8 and start of the I recurrence, argument checks, loop caps.
  */
 import { E } from '../../values.js'
 import { gammaln } from '../jstat.js'

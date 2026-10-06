@@ -1,10 +1,6 @@
 /**
- * COMPLEX and the IM* functions.
- *
- * The formulas of IMCOS … IMTAN, IMPOWER and IMSQRT are ported from formula.js 4.6.1 (src/engineering.js), MIT,
- * Copyright (c) 2014 Sutoiku, Inc. (THIRD_PARTY.md). Changed: Excel's syntax of complex text and its way of
- * writing one; quotients by Smith's method (no overflow in IMTAN("1+400i")); logarithms of the modulus by
- * `hypot`; Excel's argument checks and error codes.
+ * COMPLEX and the IM* functions. Formulas of IMCOS … IMTAN, IMPOWER, IMSQRT ported from formula.js 4.6.1
+ * (src/engineering.js), Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); fixed against Excel en-US.
  */
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { readNumber } from '../../model.js'
@@ -26,11 +22,8 @@ const MAX_TRIG = 2 ** 27
 
 const NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/
 
-/**
- * Complex text as Excel reads it, spaces ignored: `a`, `bi`, `a+bi`, `a-bi` (with `j` for `i`, and a sign of b's
- * own after the operator), the coefficient 1 implied (`i`, `-j`, `3+i`). Null if it is not one.
- */
-export function parseComplex(text: string): Complex | null {
+/** Complex text as Excel reads it: spaces ignored, `a`, `bi`, `a±bi` (i or j; b may carry its own sign; `i` is 1i); null if not one. */
+function parseComplex(text: string): Complex | null {
   const s = text.replaceAll(' ', '')
   const num = (t: string): [number, string] | null => {
     const m = NUMBER.exec(t)

@@ -1,8 +1,6 @@
 /**
- * ERF, ERFC, ERF.PRECISE, ERFC.PRECISE.
- *
- * The Chebyshev fit of erfc is ported from jStat 1.9.6 (src/special.js, erf), MIT, Copyright (c) 2013 jStat
- * (THIRD_PARTY.md); taken out here so that erfc keeps its relative precision far in the tail.
+ * ERF, ERFC, ERF.PRECISE, ERFC.PRECISE. The erfc fit ported from jStat 1.9.6 (src/special.js), Copyright (c) 2013
+ * jStat, MIT License (THIRD_PARTY.md), kept apart so that erfc stays precise in the tail.
  */
 const COF = [
   -1.3026537197817094, 6.4196979235649026e-1, 1.9476473204185836e-2, -9.561514786808631e-3, -9.46595344482036e-4, 3.66839497852761e-4, 4.2523324806907e-5, -2.0278578112534e-5,
