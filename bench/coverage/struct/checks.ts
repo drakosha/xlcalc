@@ -4,8 +4,7 @@
  * inserting at the sheet's last row and column, copies with mixed `$` and with local names, a move of
  * empty cells over values, a copy that does not fit.
  */
-import type { BookInput, CellInput } from '../../../src/contract.js'
-import type { RangeRef } from '../../../src/structure/types.js'
+import type { BookInput, CellInput, RangeRef } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 
 const f = (formula: string): CellInput => ({ formula })

@@ -17,16 +17,81 @@ export interface CellInput {
   value?: Scalar | { date: string }
   /** Formula text without `=`. When present, `value` is ignored. */
   formula?: string
-  /** Display format, passed through untouched. */
+  /** Display format, passed through untouched. Without it a cell shows its row's format, else its column's. */
   format?: string
+  /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
+  style?: number
   /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
   meta?: JsonValue
+}
+
+/** A colour, `#RRGGBB`. */
+export type Color = string
+
+/** A font; what a style leaves out is the book's default font. */
+export interface FontStyle {
+  name?: string
+  /** Points, 1 to 409. */
+  size?: number
+  bold?: boolean
+  italic?: boolean
+  underline?: 'single' | 'double'
+  strike?: boolean
+  color?: Color
+}
+
+/** One side of a cell's border; the kinds are xlsx's. */
+export interface BorderLine {
+  style: 'thin' | 'medium' | 'thick' | 'dotted' | 'dashed' | 'double' | 'hair' | 'mediumDashed' | 'dashDot' | 'mediumDashDot' | 'dashDotDot' | 'mediumDashDotDot' | 'slantDashDot'
+  color?: Color
+}
+
+export interface AlignmentStyle {
+  horizontal?: 'general' | 'left' | 'center' | 'right' | 'fill' | 'justify' | 'centerContinuous' | 'distributed'
+  vertical?: 'top' | 'center' | 'bottom' | 'justify' | 'distributed'
+  wrap?: boolean
+  /** Indent level, 0 to 250. */
+  indent?: number
+}
+
+/**
+ * A cell style of the book's table (`BookInput.styles`), as an xlsx cell format without its number format
+ * (that is the cell's `format`). Styles do not take part in computation or in the values hash.
+ */
+export interface CellStyle {
+  font?: FontStyle
+  /** A solid fill. */
+  fill?: { color: Color }
+  border?: { top?: BorderLine; right?: BorderLine; bottom?: BorderLine; left?: BorderLine }
+  alignment?: AlignmentStyle
+}
+
+/** Columns of a sheet, as xlsx `<col>`: the width, and the style and format of their cells that have none. */
+export interface ColumnInput {
+  /** In characters of the default font's digit, as xlsx stores it, 0 to 255. */
+  width?: number
+  style?: number
+  format?: string
+}
+
+/** Rows of a sheet, as xlsx `<row>`: the height, and the style and format of their cells that have none. */
+export interface RowInput {
+  /** Points, 0 to 409. */
+  height?: number
+  style?: number
+  format?: string
 }
 
 export interface SheetInput {
   name: string
   /** Cells by A1 address (`B12`). */
   cells: Record<string, CellInput>
+  /** Columns by letters, one (`C`) or a span (`B:D`) as xlsx `<col min max>`; spans do not overlap. */
+  columns?: Record<string, ColumnInput>
+  /** Rows by number, one (`5`) or a span (`5:9`); spans do not overlap. */
+  rows?: Record<string, RowInput>
+  /** Merged areas (`B2:D3`), as xlsx `<mergeCell>`: two cells or more each, none overlapping another. */
+  merges?: string[]
 }
 
 export interface NameInput {
@@ -39,8 +104,11 @@ export interface NameInput {
 }
 
 export interface BookInput {
+  /** Excel's rules for sheet names: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end. */
   sheets: SheetInput[]
   names?: NameInput[]
+  /** The cell styles that cells, rows and columns refer to by index. */
+  styles?: CellStyle[]
 }
 
 /** `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`). */
@@ -137,7 +205,7 @@ export interface ComputeResult {
   clock: Clock
   /** sha256 of the canonical text of the values together with the engine configuration version. */
   hash: string
-  /** sha256 of the input (sheets, cells, names; order does not matter). */
+  /** sha256 of the input (sheets, cells, names, and styles, columns, rows and merged areas when there are any; order does not matter). */
   inputHash: string
   configVersion: string
   ms: number
@@ -201,17 +269,111 @@ export interface Explanation {
  */
 export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution }
 
+/** A rectangle on a sheet: `B2`, `B2:D9`, whole columns `B:D` or whole rows `2:9` (no `$`, no sheet). */
+export interface RangeRef {
+  sheet: string
+  range: string
+}
+
+/**
+ * One structure operation (`restructure`). Rows are 1-based numbers and columns are letters, as in A1
+ * addresses; `count` is 1 by default; sheets are matched case-insensitively.
+ */
+export type StructureOp =
+  /** Inserts `count` rows before `row`: rows from `row` on move down; the new rows take the format of the row above. */
+  | { op: 'insertRows'; sheet: string; row: number; count?: number }
+  /** Deletes rows `row` … `row + count - 1`: the rows below move up. */
+  | { op: 'deleteRows'; sheet: string; row: number; count?: number }
+  /** Inserts `count` columns before `column`: columns from `column` on move right; the new ones take the format of the column on the left. */
+  | { op: 'insertColumns'; sheet: string; column: string; count?: number }
+  /** Deletes `count` columns from `column` on: the columns to the right move left. */
+  | { op: 'deleteColumns'; sheet: string; column: string; count?: number }
+  /** Cut and paste: the range moves so that its top-left cell lands on `to`, replacing what was there; cells keep their `meta`. */
+  | { op: 'moveRange'; from: RangeRef; to: CellRef }
+  /**
+   * Copy and paste: the range is pasted at `to`; a target that is a whole multiple of the source's size is
+   * tiled with copies (fill down and fill right are copies of the first row or column). Copies have no
+   * `meta` unless `withMeta`.
+   */
+  | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean }
+  /** A new name by Excel's rules (see `BookInput.sheets`) that no other sheet has. */
+  | { op: 'renameSheet'; sheet: string; name: string }
+  | { op: 'deleteSheet'; sheet: string }
+
+/** Why Excel would refuse an operation. */
+export type StructureRefusal =
+  /** Cells would leave the sheet (past XFD or row 1,048,576), or a paste does not fit. */
+  | 'off_sheet'
+  /** A new sheet name that breaks Excel's rules or is taken (sheet names compare case-insensitively). */
+  | 'sheet_name'
+  /** The only sheet of a book cannot be deleted. */
+  | 'last_sheet'
+  /** A move or copy would cut through a merged area, at its source or where it lands. */
+  | 'merged'
+
+export type RestructureResult =
+  | {
+      ok: true
+      /** The new book; the input book is not changed, unchanged sheets and cells are shared. */
+      book: BookInput
+      /** Where a cell of the old book is now; null if it was deleted or overwritten. */
+      mapCell(ref: CellRef): CellRef | null
+    }
+  | { ok: false; code: StructureRefusal; message: string }
+
+/** `Session.restructure`: the operation's result and the values it changed. */
+export type SessionRestructureResult =
+  | {
+      ok: true
+      /** The session's book after the operation (as `book()` returns it). */
+      book: BookInput
+      mapCell(ref: CellRef): CellRef | null
+      /**
+       * Cells whose value differs from the one their old cell (`mapCell`) had, by new address; a cell no old
+       * cell came to counts as empty before. An interface that moves its shown values by `mapCell` and applies
+       * these has the new values.
+       */
+      changes: CellChange[]
+    }
+  | { ok: false; code: StructureRefusal; message: string }
+
+/** Fields to change on columns or rows: a value sets the field, null removes it, a field left out stays. */
+export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
+
+/** A change of a sheet's layout. */
+export type LayoutEdit =
+  /** Columns `C` or `B:D`; the patch applies to each of them. */
+  | { sheet: string; columns: string; set: LinePatch<ColumnInput> }
+  /** Rows `5` or `5:9`; the patch applies to each of them. */
+  | { sheet: string; rows: string; set: LinePatch<RowInput> }
+  /** All the merged areas of the sheet. */
+  | { sheet: string; merges: string[] }
+
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
  * session (`clock`) is what a saved result should record: a full computation with it gives the same hash.
  */
 export interface Session {
   readonly clock: Clock
-  /** Applied atomically with one recomputation; returns the changed values. */
+  /**
+   * Applied atomically with one recomputation; returns the changed values. An edit that keeps the cell's
+   * value and formula (a new `style`, `format` or `meta`) recomputes nothing.
+   */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]
   /** Non-live sessions only. */
   setClock(clock: Clock): CellChange[]
+  /** A structure operation on the session's book, recomputed; refused as `restructure` refuses it. */
+  restructure(op: StructureOp): SessionRestructureResult
+  /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing. */
+  setStyles(styles: CellStyle[]): void
+  /** Column widths, row heights, row and column styles and formats, merged areas; applied atomically. Recomputes nothing. */
+  setLayout(edits: LayoutEdit[]): void
+  /**
+   * The session's book with every change so far: what a host saves as a version. Its objects are the
+   * session's own and later calls change them, so do not modify it; serialize or copy what must stay.
+   */
+  book(): BookInput
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   result(): ComputeResult
   close(): void
@@ -222,6 +384,7 @@ export interface FormulaEngine {
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
   validateName(name: string): NameCheck
   openSession(book: BookInput, opts?: SessionOptions): Session
+  restructure(book: BookInput, op: StructureOp): RestructureResult
 }
 
 export const MAX_FORMULA_LENGTH = 8_192

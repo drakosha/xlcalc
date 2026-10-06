@@ -25,4 +25,18 @@ describe('lost references', () => {
       [{ error: 'REF' }, '#REF!#REF!+1'],
     ])
   })
+
+  it('a name whose reference is lost gives #REF! where it is used, as in Excel, and is no name issue', () => {
+    const r = compute({
+      sheets: [{ name: 'S', cells: { A1: { formula: 'gone' }, A2: { formula: 'SUM(gone,1)' }, A3: { formula: 'deleted*2' }, A4: { formula: 'IFERROR(both,7)' }, A5: { formula: 'SUMIF(loc,">0")' }, A6: { formula: 'ERROR.TYPE(gone)' } } }],
+      names: [
+        { name: 'gone', ref: "'S'!#REF!" },
+        { name: 'deleted', ref: '#REF!$A$5' },
+        { name: 'both', ref: '#REF!#REF!' },
+        { name: 'loc', ref: "'S'!#REF!", scope: 'S' },
+      ],
+    })
+    expect(r.nameIssues).toEqual([])
+    expect(Object.values(r.sheets[0].cells).map((c) => c.value)).toEqual([{ error: 'REF' }, { error: 'REF' }, { error: 'REF' }, 7, { error: 'REF' }, 4])
+  })
 })
