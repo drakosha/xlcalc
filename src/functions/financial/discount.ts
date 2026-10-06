@@ -37,7 +37,8 @@ function atMaturity(settlement: number, maturity: number, issue: number, basis: 
 }
 
 export const functions: Record<string, FnDef> = {
-  ACCRINTM: atp('e e x x? j?', (issue: number, settlement: number, rate: number, par = 1000, basis = 0) =>
+  // par is required: Excel rejects ACCRINTM with three arguments
+  ACCRINTM: atp('e e x x j?', (issue: number, settlement: number, rate: number, par: number, basis = 0) =>
     bad(issue, settlement, basis, rate, par) ? E.NUM : par * rate * yearFrac(issue, settlement, basis),
   ),
   DISC: onYears((years, pr, redemption) => (redemption - pr) / redemption / years),

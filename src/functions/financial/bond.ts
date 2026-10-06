@@ -5,7 +5,7 @@ import { E } from '../../values.js'
 import { atp } from '../date/atp.js'
 import { validBasis } from '../date/daycount.js'
 import { addMonths, daysInMonth } from '../../dates.js'
-import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, periodOf, serialOfYmd, type Ymd } from './coupon.js'
+import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, normalDays, periodOf, serialOfYmd, type Ymd } from './coupon.js'
 
 /** The date `months` earlier, the day clamped to the month. */
 function monthsBack(x: Ymd, months: number): Ymd {
@@ -73,7 +73,7 @@ export const functions: Record<string, FnDef> = {
     const anchor = ymd(first)
     const start = ymd(issue)
     const end = ymd(settlement)
-    const normal = (basis === 3 ? 365 : 360) / freq
+    const normal = normalDays(basis, freq)
     // the odd first period's length counts its days on bases 1 and 4; later ones on basis 1 only, back from their end
     const nl = (k: number, q0: Ymd, q1: Ymd) => {
       if (basis === 1) return k < 0 ? daysBetween(q0, q1, 1) : serialOfYmd(q1) - serialOfYmd(monthsBack(q1, 12 / freq))

@@ -46,7 +46,11 @@ export const functions: Record<string, FnDef> = {
     let book = cost - dep
     let rest = book - salvage
     const n = Math.trunc(period)
+    // past the life's end nothing is left
+    if (n > last) return 0
     for (let k = 0; k < n; k++) {
+      // once the rounded amount is 0 nothing changes until the last two years
+      if (dep === 0 && k > 0 && k + 2 < last) k = Math.min(n, last - 2) - 1
       if (k + 1 === last) {
         book = 0
         continue
@@ -76,14 +80,12 @@ export const functions: Record<string, FnDef> = {
       if (month < 1 || month > 12 || life <= 0 || period <= 0 || period > life + (month < 12 ? 1 : 0)) return E.NUM
       if (cost === 0) return 0
       const rate = round(1 - Math.pow(salvage / cost, 1 / life), 3)
-      let total = (cost * rate * month) / 12
-      let dep = total
-      for (let p = 2; p <= Math.trunc(period); p++) {
-        dep = (cost - total) * rate
-        if (p > life) dep = (dep * (12 - month)) / 12
-        total += dep
-      }
-      return dep
+      const first = (cost * rate * month) / 12
+      const p = Math.trunc(period)
+      if (p <= 1) return first
+      // the book value declines geometrically after the first year
+      const dep = (cost - first) * Math.pow(1 - rate, p - 2) * rate
+      return p > life ? (dep * (12 - month)) / 12 : dep
     },
   },
   DDB: {

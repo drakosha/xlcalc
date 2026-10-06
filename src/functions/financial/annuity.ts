@@ -40,17 +40,20 @@ function tens(f: number): number {
   return p
 }
 
-/** CUMIPMT and CUMPRINC: rate, nper and pv positive, 1 ≤ start ≤ end ≤ nper, type exactly 0 or 1; whole periods from ⌈start⌉ to ⌊end⌋. */
+/** CUMIPMT and CUMPRINC: rate, nper and pv positive, 1 ≤ start ≤ end ≤ nper, type exactly 0 or 1; whole periods ⌈start⌉…⌊end⌋, the principal summed as a geometric series. */
 function cumulative(k: 0 | 1) {
   return atp('x x x x x x', (rate: number, nper: number, pv: number, start: number, end: number, type: number) => {
     if (rate <= 0 || nper <= 0 || pv <= 0 || start < 1 || end < start || end > nper || (type !== 0 && type !== 1)) return E.NUM
-    let sum = 0
-    for (let per = Math.ceil(start); per <= Math.floor(end); per++) {
-      const x = parts(rate, per, nper, pv, 0, type)
-      if (isErr(x)) return x
-      sum += x[k]
-    }
-    return sum
+    const a = Math.ceil(start)
+    const b = Math.floor(end)
+    if (a > b) return 0
+    const p = pmt(rate, nper, pv, 0, type)
+    // with payments in advance the first payment is all principal and the series starts at the second
+    const first = type && a === 1 ? p : 0
+    const from = a + (first ? 1 : 0)
+    const unit = (-pv * rate) / (Math.pow(1 + rate, nper) - 1)
+    const principal = first + (from > b ? 0 : (unit * Math.pow(1 + rate, from - 1 - type) * (Math.pow(1 + rate, b - from + 1) - 1)) / rate)
+    return k ? principal : (b - a + 1) * p - principal
   })
 }
 
