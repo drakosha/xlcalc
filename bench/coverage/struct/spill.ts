@@ -9,7 +9,7 @@ import type { StructCase, StructCases } from './cases.js'
 const f = (formula: string): CellInput => ({ formula })
 
 /** S: E2 spills E2:E4, B1 spills B1:C1, readers of both; T: readers from another sheet; a name over E2#. */
-function spillBook(): BookInput {
+export function spillBook(): BookInput {
   return {
     sheets: [
       {
@@ -31,9 +31,6 @@ function spillBook(): BookInput {
     names: [{ name: 'sp', ref: "'S'!$E$2#" }],
   }
 }
-
-/** The book of the spill cases. */
-export { spillBook }
 
 export function buildStructCases(): StructCases {
   const cases: StructCase[] = []
