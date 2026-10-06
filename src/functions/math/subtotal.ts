@@ -58,9 +58,11 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng)[]): V {
   const skipNested = o < 4
   const skipErrors = o % 4 >= 2
   if (c <= 13) return over(cx, c, refs, skipNested, skipErrors)
-  // LARGE … QUARTILE.EXC: one array and k, a number (an error there is #VALUE!, as in Excel)
+  // LARGE … QUARTILE.EXC: one array and k, a number (an error there is #VALUE!, as in Excel); a range as k
+  // gives its top-left cell (Excel 365: AGGREGATE(14,6,M1:M10,A1:A3) is LARGE with k from A1)
   if (refs.length !== 2) return E.VALUE
-  const kv = cx.scalar(refs[1])
+  const r = refs[1]
+  const kv = cx.scalar(r instanceof Rng ? new Rng(r.s, r.r1, r.c1, r.r1, r.c1) : r)
   const k = isErr(kv) ? kv : toNum(kv)
   return isErr(k) ? E.VALUE : over(cx, c, [refs[0]], skipNested, skipErrors, k)
 }
