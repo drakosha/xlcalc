@@ -36,7 +36,7 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
       return check.length ? `LZ(${JSON.stringify(name)},[${check.join(',')}],${thunks.join(',')})` : `F${key(name)}(${thunks.join(',')})`
     },
     external: (text) => `ext(${JSON.stringify(text)})`,
-    deref: (a) => `scalar(${a})`,
+    read: (a) => `scalar(${a})`,
     source: (root) => `(()=>{${hoisted.length ? `const ${hoisted.map((h, i) => `h${i}=${h}`).join(',')};` : ''}return ()=>${root}})()`,
   }
 }

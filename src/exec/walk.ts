@@ -41,7 +41,7 @@ export interface Backend<T> {
   /** A lazy function (IF, IFERROR): each argument computed on demand; `check`, the positions that can lift it. */
   lazy(name: string, args: T[], check: number[]): T
   /** The value of a call that may answer a one-cell reference (CHOOSE, IF) where one value goes. */
-  deref(code: T): T
+  read(code: T): T
   /** An external function, by the canonical text of its call. */
   external(text: string): T
 }
@@ -116,7 +116,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           code = b.call(n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
         }
         // a reference answered where one value goes is read here; a range position takes it as a reference
-        return spec.refs && !rangeOk && !many(n) ? b.deref(code) : code
+        return spec.refs && !rangeOk && !many(n) ? b.read(code) : code
       }
     }
   }
