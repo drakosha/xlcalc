@@ -5,7 +5,9 @@
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
-import type { Probe } from '../bench/coverage/probes.js'
+import type { Probe, SheetCells } from '../bench/coverage/probes.js'
+import type { BookInput, CellInput } from '../src/contract.js'
+import { dataSheet, engineFormula } from './excel-cases.js'
 
 export interface StoredSet {
   name: string
@@ -24,3 +26,15 @@ export const SETS: StoredSet[] = existsSync(dir)
 
 /** Functions that some set has cases for (`fn` of its cases). */
 export const SET_FUNCTIONS: ReadonlySet<string> = new Set(SETS.flatMap((s) => s.cases.flatMap((c) => (c.fn ? [c.fn] : []))))
+
+/** A case set's generator. */
+export const loadSet = async (name: string) => (await import(`../bench/coverage/sets/${name}.ts`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
+
+const input = (v: SheetCells[string][string]): CellInput => (typeof v === 'object' ? { formula: engineFormula(v.formula) } : { value: v })
+
+/** Cases on sheet C (the last one) in a book as sent to Excel: the measurement's data sheet D and the set's own sheets beside them. */
+export function caseBook(probes: readonly Probe[], sheets: SheetCells = {}): BookInput {
+  const own = Object.entries(sheets).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, input(v)])) }))
+  const cases = Object.fromEntries(probes.map((p, i): [string, CellInput] => [`A${i + 1}`, { formula: engineFormula(p.formula) }]))
+  return { sheets: [dataSheet(), ...own, { name: 'C', cells: cases }] }
+}

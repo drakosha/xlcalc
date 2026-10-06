@@ -176,9 +176,12 @@ export function verdict(key: string, fn: string | undefined, excel: Val, engine:
   return engine.t === known.engine.t && engine.v === known.engine.v ? { ok: true } : { ok: false, why: `KNOWN pins ${show(known.engine)}` }
 }
 
+/** The clock of every case book: the volatile functions' cases do not depend on it. */
+export const CLOCK = { now: '2026-10-05T12:00:00Z', seed: 1 }
+
 /** Every case computed in one book and compared with Excel en-US. */
 export function runExcelCases(cases: readonly ExcelCase[] = CASES): Outcome[] {
-  const r = compute(excelBook(cases), { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
+  const r = compute(excelBook(cases), { clock: CLOCK })
   const cells = r.sheets.find((s) => s.name === CASE_SHEET)!.cells
   return cases.map((c, i) => {
     const excel = EXCEL[c.id]

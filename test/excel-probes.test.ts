@@ -11,15 +11,14 @@ import { describe, expect, it } from 'vitest'
 import { compare } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { buildProbes, PROBE_SHEETS, type Probe } from '../bench/coverage/probes.js'
-import { compute, type CellInput } from '../src/index.js'
-import { engineFormula, show, toVal } from './excel-cases.js'
+import { compute } from '../src/index.js'
+import { CLOCK, show, toVal } from './excel-cases.js'
+import { caseBook } from './excel-sets.js'
 
 const stored = JSON.parse(readFileSync(new URL('../docs/excel-probes.json', import.meta.url), 'utf8')) as { cases: Probe[]; values: Record<string, Val> }
 const probes = buildProbes()
 
-const sheets = Object.entries(PROBE_SHEETS).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]): [string, CellInput] => [a, { value: v }])) }))
-const cases = { name: 'C', cells: Object.fromEntries(probes.map((p, i): [string, CellInput] => [`A${i + 1}`, { formula: engineFormula(p.formula) }])) }
-const result = compute({ sheets: [...sheets, cases] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } }).sheets.at(-1)!.cells
+const result = compute(caseBook(probes, PROBE_SHEETS), { clock: CLOCK }).sheets.at(-1)!.cells
 
 describe('acceptance against Excel en-US: probes', () => {
   it('the stored Excel answers are for the current probes', () => {

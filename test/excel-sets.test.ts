@@ -5,19 +5,15 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import type { Probe, SheetCells } from '../bench/coverage/probes.js'
-import { compute, type CellInput } from '../src/index.js'
-import { CASES, dataSheet, engineFormula, KNOWN, REASONS, show, toVal, verdict } from './excel-cases.js'
+import { compute } from '../src/index.js'
+import { CASES, CLOCK, KNOWN, REASONS, show, toVal, verdict } from './excel-cases.js'
 import { OPEN } from './excel-open.js'
-import { SETS } from './excel-sets.js'
+import { caseBook, loadSet, SETS } from './excel-sets.js'
 
 for (const set of SETS) {
-  const mod = (await import(`../bench/coverage/sets/${set.name}.ts`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
+  const mod = await loadSet(set.name)
   const probes = mod.buildProbes()
-  const sheets = Object.entries(mod.SHEETS ?? {}).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]): [string, CellInput] => [a, typeof v === 'object' ? { formula: engineFormula(v.formula) } : { value: v }])) }))
-  const cases = { name: 'C', cells: Object.fromEntries(probes.map((p, i): [string, CellInput] => [`A${i + 1}`, { formula: engineFormula(p.formula) }])) }
-  // as the book sent to Excel: the measurement's data sheet D, the set's own sheets, the cases on C
-  const result = compute({ sheets: [dataSheet(), ...sheets, cases] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } }).sheets.at(-1)!.cells
+  const result = compute(caseBook(probes, mod.SHEETS), { clock: CLOCK }).sheets.at(-1)!.cells
 
   describe(`acceptance against Excel en-US: set ${set.name}`, () => {
     it('the stored Excel answers are for the current cases', () => {
