@@ -1,0 +1,312 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.297,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "DATE#1",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,32766)"
+  },
+  {
+   "id": "DATE#2",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,32767)"
+  },
+  {
+   "id": "DATE#3",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,32768)"
+  },
+  {
+   "id": "DATE#4",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,32769)"
+  },
+  {
+   "id": "DATE#5",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,40000)"
+  },
+  {
+   "id": "DATE#6",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,46143)"
+  },
+  {
+   "id": "DATE#7",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,65535)"
+  },
+  {
+   "id": "DATE#8",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,65536)"
+  },
+  {
+   "id": "DATE#9",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,65537)"
+  },
+  {
+   "id": "DATE#10",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,100000)"
+  },
+  {
+   "id": "DATE#11",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,1E+10)"
+  },
+  {
+   "id": "DATE#12",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-32767)"
+  },
+  {
+   "id": "DATE#13",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-32768)"
+  },
+  {
+   "id": "DATE#14",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-32769)"
+  },
+  {
+   "id": "DATE#15",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-40000)"
+  },
+  {
+   "id": "DATE#16",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-65536)"
+  },
+  {
+   "id": "DATE#17",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-100000)"
+  },
+  {
+   "id": "DATE#18",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,32767.5)"
+  },
+  {
+   "id": "DATE#19",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,32768.5)"
+  },
+  {
+   "id": "DATE#20",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,-32768.5)"
+  },
+  {
+   "id": "DATE#21",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1950,7,32767)"
+  },
+  {
+   "id": "DATE#22",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1950,7,32768)"
+  },
+  {
+   "id": "DATE#23",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1950,7,-32768)"
+  },
+  {
+   "id": "DATE#24",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1950,7,-32769)"
+  },
+  {
+   "id": "DATE#25",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32767,1)"
+  },
+  {
+   "id": "DATE#26",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32768,1)"
+  },
+  {
+   "id": "DATE#27",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,-32768,1)"
+  },
+  {
+   "id": "DATE#28",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,-32769,1)"
+  },
+  {
+   "id": "DATE#29",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,1000,1)"
+  },
+  {
+   "id": "DATE#30",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,-1000,1)"
+  }
+ ],
+ "values": {
+  "DATE#1": {
+   "t": "n",
+   "v": 78423
+  },
+  "DATE#2": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#3": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#4": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#5": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#6": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#7": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#8": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#9": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#10": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#11": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#12": {
+   "t": "n",
+   "v": 12890
+  },
+  "DATE#13": {
+   "t": "n",
+   "v": 12889
+  },
+  "DATE#14": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#15": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#16": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#17": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#18": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#19": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#20": {
+   "t": "n",
+   "v": 78424
+  },
+  "DATE#21": {
+   "t": "n",
+   "v": 51211
+  },
+  "DATE#22": {
+   "t": "n",
+   "v": 51211
+  },
+  "DATE#23": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#24": {
+   "t": "n",
+   "v": 51211
+  },
+  "DATE#25": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#27": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#28": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#29": {
+   "t": "n",
+   "v": 66932
+  },
+  "DATE#30": {
+   "t": "n",
+   "v": 6058
+  }
+ }
+}
