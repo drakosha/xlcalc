@@ -4,7 +4,7 @@
 
 Поводом стал замер WB1 в the app (`docs/probes/WB1-engine.md`, раздел «Семантика списка»): голая formulajs ошибалась не на простых вызовах, а на краях (шаблоны и даты текстом в условиях, текст и логические в диапазонах, регистр, JS Date в местной зоне). Поэтому здесь на каждую функцию кроме типичных вызовов идут краевые.
 
-Код замера, правила работы с Excel и команда повтора: `bench/coverage/README.md`. Сырые результаты по колонкам: `docs/coverage-formulajs/` (`cases.json` случаи с формулами, `formulajs.json`, `excel-en.json`, `excel-ru.json`, `libreoffice.json`, `summary.json` вердикты по случаям и функциям; прежние колонки Excel `excel-en-legacy.json`, `excel-ru-legacy.json`, `excel-en-ru-ui.json` удалены, они в истории git на коммите `85522cf`). Таблицы ниже между метками `auto` пересобирает `npx tsx bench/coverage/run.ts report`.
+Код замера, правила работы с Excel и команда повтора: `bench/coverage/README.md`. Сырые результаты по колонкам: `test/excel/coverage/` (`cases.json` случаи с формулами, `excel-en.json`, `excel-ru.json`) и `bench/coverage/data/` (`formulajs.json`, `libreoffice.json`, `summary.json` вердикты по случаям и функциям; прежние колонки Excel `excel-en-legacy.json`, `excel-ru-legacy.json`, `excel-en-ru-ui.json` удалены, они в истории git на коммите `85522cf`). Таблицы ниже между метками `auto` пересобирает `npx tsx bench/coverage/run.ts report`.
 
 ## Итог
 

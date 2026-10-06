@@ -1,6 +1,6 @@
 /**
  * Acceptance against Excel ru-RU on the coverage measurement: every whitelisted function's cases computed in a
- * ru-RU book and compared with `docs/coverage-formulajs/excel-ru.json`, as `excel.test.ts` does for en-US.
+ * ru-RU book and compared with `test/excel/coverage/excel-ru.json`, as `excel.test.ts` does for en-US.
  * Known differences are pinned in `RU_KNOWN` (`excel-ru-cases.ts`).
  */
 import { readFileSync } from 'node:fs'

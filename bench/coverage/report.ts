@@ -5,7 +5,6 @@
  * трогается.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
 import type { CaseSet } from './cases.js'
 import { compare, show, type Kind, type Verdict } from './compare.js'
 import type { FjResult, Val } from './formulajs.js'
@@ -58,8 +57,9 @@ const count = <T extends string>(xs: (T | undefined)[]) => {
   return out
 }
 
-export function analyse(dir: string) {
-  const load = <T>(n: string) => JSON.parse(readFileSync(join(dir, n), 'utf8')) as T
+/** `at` gives the path of a measurement file by name. */
+export function analyse(at: (name: string) => string) {
+  const load = <T>(n: string) => JSON.parse(readFileSync(at(n), 'utf8')) as T
   const set = load<CaseSet>('cases.json')
   const fj = load<Col<FjResult>>('formulajs.json')
   const enRaw = load<Col>('excel-en.json')
@@ -127,8 +127,8 @@ function kindsText(k: Partial<Record<Kind, number>>): string {
     .join(', ')
 }
 
-function blocks(dir: string): Record<string, string> {
-  const a = analyse(dir)
+function blocks(at: (name: string) => string): Record<string, string> {
+  const a = analyse(at)
   const { rows, set } = a
   const st = (sel: (r: FnRow) => Status) => {
     const c = count(rows.map(sel))
@@ -309,14 +309,13 @@ function blocks(dir: string): Record<string, string> {
     `- ${String(a.lo.meta.version).split(' ').slice(0, 2).join(' ')}, профиль en-US, ${a.lo.meta.seconds} с.`,
   ].join('\n')
 
-  writeFileSync(join(dir, 'summary.json'), JSON.stringify({ rows, verdicts: a.verdicts }, null, 1) + '\n')
+  writeFileSync(at('summary.json'), JSON.stringify({ rows, verdicts: a.verdicts }, null, 1) + '\n')
   return out
 }
 
 /** Пересобирает блоки отчёта; без отчёта создаёт заготовку со всеми блоками. */
-export function writeReport(dir: string, pilot: boolean): void {
-  const b = blocks(dir)
-  const md = pilot ? join(dir, 'report.md') : join(dir, '../coverage-formulajs.md')
+export function writeReport(at: (name: string) => string, md: string): void {
+  const b = blocks(at)
   let text = existsSync(md) ? readFileSync(md, 'utf8') : Object.keys(b).map((k) => `<!-- auto:${k} -->\n<!-- /auto:${k} -->\n`).join('\n')
   for (const [k, v] of Object.entries(b)) {
     const re = new RegExp(`<!-- auto:${k} -->[\\s\\S]*?<!-- /auto:${k} -->`)

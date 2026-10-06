@@ -1,8 +1,8 @@
 /**
  * Excel cases for criteria over text cells that read as numbers, dates or booleans: which text a number
  * criterion's `=` and `<>` take as that number, and whether `"TRUE"` is a boolean criterion. Computed in Excel
- * en-US (`docs/excel-cases/criteria-text.json`) and ru-RU (`run.ts probes criteria-text ru`,
- * `docs/excel-cases/ru-RU/criteria-text.json`). The sheet `N` holds one value per cell, each read alone.
+ * en-US (`test/excel/cases/criteria-text.json`) and ru-RU (`run.ts probes criteria-text ru`,
+ * `test/excel/cases/ru-RU/criteria-text.json`). The sheet `N` holds one value per cell, each read alone.
  * Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'

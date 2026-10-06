@@ -1,7 +1,7 @@
 /**
  * Excel cases for DATE with a day far out of its month: how far Excel lets the day roll over (a date text that
  * reads as a serial number makes such a day, `DATE(2025,1,"1.5")` in ru-RU). Computed as dynamic array formulas
- * (Excel 365), in Excel en-US (`docs/excel-cases/date-day.json`).
+ * (Excel 365), in Excel en-US (`test/excel/cases/date-day.json`).
  */
 import type { Probe } from '../probes.js'
 

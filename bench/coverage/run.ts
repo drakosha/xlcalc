@@ -1,5 +1,5 @@
 /**
- * Замер покрытия formulajs против Excel. Шаги (каждый пишет свой JSON в `docs/coverage-formulajs/`):
+ * Замер покрытия formulajs против Excel. Шаги (каждый пишет свой JSON, см. `resultFile`):
  *
  *   npx tsx bench/coverage/run.ts cases      случаи и книга (bench/coverage/out/book.xlsx)
  *   npx tsx bench/coverage/run.ts fj         formulajs через адаптер и голая
@@ -8,10 +8,10 @@
  *   npx tsx bench/coverage/run.ts excel ru   Excel ru-RU (перезапускает Excel без аргументов)
  *   npx tsx bench/coverage/run.ts report     сравнение, сводка и таблицы отчёта
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
- *   npx tsx bench/coverage/run.ts probes     пробы Excel en-US вне замера (probes.ts) в docs/excel-probes.json
- *   npx tsx bench/coverage/run.ts probes X   набор sets/X.ts в docs/excel-cases/X.json (тест test/excel-sets.test.ts)
- *   npx tsx bench/coverage/run.ts probes X ru   тот же набор в Excel ru-RU в docs/excel-cases/ru-RU/X.json (тест test/excel-ru-probes.test.ts)
- *   npx tsx bench/coverage/run.ts struct X   операции над структурой struct/X.ts в docs/excel-struct/X.json (тест test/structure-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts probes     пробы Excel en-US вне замера (probes.ts) в test/excel/probes.json
+ *   npx tsx bench/coverage/run.ts probes X   набор sets/X.ts в test/excel/cases/X.json (тест test/excel-sets.test.ts)
+ *   npx tsx bench/coverage/run.ts probes X ru   тот же набор в Excel ru-RU в test/excel/cases/ru-RU/X.json (тест test/excel-ru-probes.test.ts)
+ *   npx tsx bench/coverage/run.ts struct X   операции над структурой struct/X.ts в test/excel/struct/X.json (тест test/structure-excel.test.ts)
  *
  * FCOV_ONLY=ABS,SUM ограничивает набор функций (пробный прогон): тогда всё пишется в out/.
  * Excel считается частями до 400 случаев; после каждой части проверяется, нет ли модального окна.
@@ -34,8 +34,12 @@ const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const ONLY = process.env.FCOV_ONLY?.split(',').filter(Boolean)
 const OUT = join(HERE, 'out')
-export const RESULTS = ONLY ? OUT : join(ROOT, 'docs/coverage-formulajs')
 const BOOK = join(OUT, 'book.xlsx')
+/** The measurement files the tests read; the rest (formulajs, LibreOffice, the summary) only feed the report. */
+const TESTED = ['cases.json', 'excel-en.json', 'excel-ru.json']
+/** A measurement file: under test/excel/coverage if the tests read it, else under bench/coverage/data; all in out/ on a trial run. */
+const resultFile = (name: string) => join(ONLY ? OUT : TESTED.includes(name) ? join(ROOT, 'test/excel/coverage') : join(HERE, 'data'), name)
+const REPORT = ONLY ? join(OUT, 'report.md') : join(ROOT, 'docs/coverage-formulajs.md')
 
 export interface Column<T = Val> {
   meta: Record<string, string | number | boolean>
@@ -43,10 +47,10 @@ export interface Column<T = Val> {
 }
 
 const save = (name: string, data: unknown) => {
-  mkdirSync(RESULTS, { recursive: true })
-  writeFileSync(join(RESULTS, name), JSON.stringify(data, null, 1) + '\n')
+  mkdirSync(dirname(resultFile(name)), { recursive: true })
+  writeFileSync(resultFile(name), JSON.stringify(data, null, 1) + '\n')
 }
-export const load = <T>(name: string): T => JSON.parse(readFileSync(join(RESULTS, name), 'utf8')) as T
+const load = <T>(name: string): T => JSON.parse(readFileSync(resultFile(name), 'utf8')) as T
 
 function caseSet(): CaseSet {
   const set = buildCases()
@@ -66,7 +70,7 @@ const cases = (): Case[] => load<CaseSet>('cases.json').cases
 /** formulajs в дочернем процессе: зависший случай (дольше 5 с) убивается и помечается. */
 async function stepFj() {
   const cs = cases()
-  const file = join(RESULTS, 'cases.json')
+  const file = resultFile('cases.json')
   const out: Record<string, FjResult> = {}
   const t0 = Date.now()
   let start = 0
@@ -163,7 +167,7 @@ const DYNAMIC = true
 async function stepExcel(locale: Locale) {
   const cs = cases()
   const name = `excel-${locale}.json`
-  const file = join(RESULTS, name)
+  const file = resultFile(name)
   await ensureExcel(locale)
   const ps = parts(cs)
   const stored = existsSync(file) && !process.env.FCOV_FRESH ? load<ExcelColumn>(name) : null
@@ -206,9 +210,9 @@ async function stepExcel(locale: Locale) {
 
 /**
  * Пробы в Excel частями по PART, с той же проверкой модальных окон до и после части. Без имени
- * набора это `probes.ts` и `docs/excel-probes.json` (только en-US); с именем `<set>` генератор `sets/<set>.ts`
+ * набора это `probes.ts` и `test/excel/probes.json` (только en-US); с именем `<set>` генератор `sets/<set>.ts`
  * (экспорт `buildProbes()`, если нужны листы данных, `SHEETS`, и `DYNAMIC`, если формулы динамического массива)
- * и ответы в `docs/excel-cases/<set>.json` для en-US, в `docs/excel-cases/ru-RU/<set>.json` для ru-RU.
+ * и ответы в `test/excel/cases/<set>.json` для en-US, в `test/excel/cases/ru-RU/<set>.json` для ru-RU.
  * Наборы нужны, чтобы параллельные ветки добавляли свои случаи, не трогая общие файлы.
  */
 async function stepProbes(set: string | undefined, locale: Locale) {
@@ -218,7 +222,7 @@ async function stepProbes(set: string | undefined, locale: Locale) {
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = `${set ?? 'probes'}-${locale}`
-  const target = !set ? join(ROOT, 'docs/excel-probes.json') : join(ROOT, `docs/excel-cases/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
+  const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/cases/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
   // продолжение: ответы, чья формула не изменилась, берутся из файла (FCOV_FRESH=1 заново)
   const read = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { meta: { dynamic?: boolean }; cases: Probe[]; values: Record<string, Val> }) : null
   // ответы формул другого вида (старого или динамического массива) не годятся
@@ -271,7 +275,7 @@ if (step === 'cases') await stepCases()
 else if (step === 'fj') await stepFj()
 else if (step === 'lo') await stepLo()
 else if (step === 'excel') await withExcelLock(() => stepExcel(process.argv[3] as Locale))
-else if (step === 'report') writeReport(RESULTS, ONLY !== undefined)
+else if (step === 'report') writeReport(resultFile, REPORT)
 else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
@@ -283,7 +287,7 @@ else if (step === 'all') {
     await stepExcel('en')
     await stepExcel('ru')
   })
-  writeReport(RESULTS, ONLY !== undefined)
+  writeReport(resultFile, REPORT)
 } else {
   console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes [набор [ru]] | struct набор')
   process.exit(2)

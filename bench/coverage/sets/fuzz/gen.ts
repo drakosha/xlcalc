@@ -32,7 +32,7 @@ const WHOLE = 'NAYZVGMRDp'
 
 /** Arguments of every function's typical call (the measurement's first typical case, else the array set's or the fuzz's base). */
 function typicalArgs(): Map<string, string[]> {
-  const cases = JSON.parse(readFileSync(new URL('../../../../docs/coverage-formulajs/cases.json', import.meta.url), 'utf8')) as { cases: Case[] }
+  const cases = JSON.parse(readFileSync(new URL('../../../../test/excel/coverage/cases.json', import.meta.url), 'utf8')) as { cases: Case[] }
   const out = new Map<string, string[]>()
   for (const c of cases.cases) if (c.kind === 'typical' && !out.has(c.fn)) out.set(c.fn, c.args.map(renderArg))
   for (const [fn, call] of Object.entries({ ...BASE, ...FUZZ_BASE })) if (!out.has(fn)) out.set(fn, splitArgs(call.slice(fn.length + 1, -1)))

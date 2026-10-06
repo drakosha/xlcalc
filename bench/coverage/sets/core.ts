@@ -3,7 +3,7 @@
  * (Excel 365): the order in which an operator converts its operands and finds errors, arrays of one value under
  * operators and lifted calls, HSTACK and VSTACK over errors given as values and as references, functions that
  * pass a reference on, VLOOKUP and HLOOKUP lifted by the key with an index array, the argument counts Excel
- * loads. Answers: `docs/excel-cases/core.json`.
+ * loads. Answers: `test/excel/cases/core.json`.
  */
 import type { Probe } from '../probes.js'
 import { collector, type Add } from './arrays/common.js'

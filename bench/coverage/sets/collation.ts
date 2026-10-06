@@ -1,8 +1,8 @@
 /**
  * Excel cases for the order of text on mixed Cyrillic and Latin letters (no punctuation): comparison operators,
  * SORT, criteria with `<` and `>`, exact matches and UNIQUE on letters with and without accents. Computed in
- * Excel en-US (`docs/excel-cases/collation.json`) and ru-RU (`run.ts probes collation ru`,
- * `docs/excel-cases/ru-RU/collation.json`): the order is one of the rules of a locale. The sheet `O` holds the
+ * Excel en-US (`test/excel/cases/collation.json`) and ru-RU (`run.ts probes collation ru`,
+ * `test/excel/cases/ru-RU/collation.json`): the order is one of the rules of a locale. The sheet `O` holds the
  * words. Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'

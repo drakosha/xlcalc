@@ -1,7 +1,7 @@
 /**
  * Cut and paste. A reference inside the moved range follows it; one inside the overwritten cells is
  * `#REF!`. A range with one end among the moved or the overwritten cells is adjusted by rules fitted to
- * Excel on every range of a 12-row window under 20 moves (`docs/excel-struct/moves.json`, see
+ * Excel on every range of a 12-row window under 20 moves (`test/excel/struct/moves.json`, see
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
 import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'

@@ -1,5 +1,5 @@
 /**
- * Excel's answers to structure operations (`docs/excel-struct/<set>.json`, from `run.ts struct <set>`)
+ * Excel's answers to structure operations (`test/excel/struct/<set>.json`, from `run.ts struct <set>`)
  * and the comparison with `restructure`: what each cell shows (`=formula` or the value) in the read
  * rectangle of every sheet, the extra cells, the sheets and the names. Formulas are compared in the form
  * Excel writes references (`A1:A1048576` is `A:A`), with sheet names quoted.
@@ -14,7 +14,7 @@ import { meets } from '../src/structure/area.js'
 import { decode, encode } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
 
-const dir = new URL('../docs/excel-struct/', import.meta.url)
+const dir = new URL('./excel/struct/', import.meta.url)
 
 export const STRUCT_SETS: (StoredStruct & { name: string })[] = existsSync(dir)
   ? readdirSync(dir)

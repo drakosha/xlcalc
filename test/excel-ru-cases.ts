@@ -1,7 +1,7 @@
 /**
  * Acceptance against Excel ru-RU (Excel 16.113 for Mac with the Russian interface and locale): the coverage
- * measurement's cases computed in a book with `locale: 'ru-RU'` against `docs/coverage-formulajs/excel-ru.json`,
- * and the case sets computed in ru-RU (`docs/excel-cases/ru-RU/`, `run.ts probes <set> ru`). The clock is in
+ * measurement's cases computed in a book with `locale: 'ru-RU'` against `test/excel/coverage/excel-ru.json`,
+ * and the case sets computed in ru-RU (`test/excel/cases/ru-RU/`, `run.ts probes <set> ru`). The clock is in
  * 2026, the year Excel computed them in, so date text without a year is in 2026. Comparison as for en-US;
  * known differences are pinned here with their reasons, as `KNOWN` does for en-US.
  */
@@ -12,9 +12,9 @@ import { compute } from '../src/index.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal, type ExcelCase } from './excel-cases.js'
 import { caseBook, loadSet, type StoredSet } from './excel-sets.js'
 
-export const RU_EXCEL: Record<string, Val> = (JSON.parse(readFileSync(new URL('../docs/coverage-formulajs/excel-ru.json', import.meta.url), 'utf8')) as { values: Record<string, Val> }).values
+export const RU_EXCEL: Record<string, Val> = (JSON.parse(readFileSync(new URL('./excel/coverage/excel-ru.json', import.meta.url), 'utf8')) as { values: Record<string, Val> }).values
 
-const dir = new URL('../docs/excel-cases/ru-RU/', import.meta.url)
+const dir = new URL('./excel/cases/ru-RU/', import.meta.url)
 
 /** The case sets computed in Excel ru-RU. */
 export const RU_SETS: StoredSet[] = existsSync(dir)

@@ -1,7 +1,7 @@
 /**
  * The random check: formulas generated from the whitelist (`./fuzz/`), deterministic by seed, computed as
  * dynamic array formulas (Excel 365). A case's id is `<batch>#<n>`, its `fn` the function of the outer call.
- * Answers: `docs/excel-cases/fuzz.json`.
+ * Answers: `test/excel/cases/fuzz.json`.
  */
 import type { Probe } from '../probes.js'
 import { xl } from './arrays/common.js'

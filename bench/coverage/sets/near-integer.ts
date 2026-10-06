@@ -3,7 +3,7 @@
  * below (above) an integer as that integer. The sheet NI holds exact values near 1, 2, 3, 10, 10^6, 10^15, a
  * date serial, negative ones and 0.3 (`near-integer/values.ts`); the cases read them in whole-number arguments,
  * INT and its kin, MOD, comparisons, criteria and lookups, as text and as dates, first on a ladder of relative
- * distances (`ladder.ts`), then around the boundaries it found (`fine.ts`, `tolerance.ts`). Answers: `docs/excel-cases/near-integer.json`.
+ * distances (`ladder.ts`), then around the boundaries it found (`fine.ts`, `tolerance.ts`). Answers: `test/excel/cases/near-integer.json`.
  */
 import type { Probe, SheetCells } from '../probes.js'
 import { collector } from './arrays/common.js'

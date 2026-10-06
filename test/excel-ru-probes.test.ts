@@ -1,5 +1,5 @@
 /**
- * Acceptance against Excel ru-RU on the case sets computed in ru-RU (`docs/excel-cases/ru-RU/`): the locale set
+ * Acceptance against Excel ru-RU on the case sets computed in ru-RU (`test/excel/cases/ru-RU/`): the locale set
  * (text as numbers, dates and booleans, numbers as text, TEXT codes, DOLLAR, FIXED, NUMBERVALUE, complex text,
  * criteria), the order of text, criteria over text cells, AND/OR/XOR with words as text. Each set's stored cases
  * equal its generator's; known differences are pinned in `RU_KNOWN` (`excel-ru-cases.ts`).

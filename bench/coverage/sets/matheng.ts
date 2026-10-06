@@ -1,7 +1,7 @@
 /**
  * Excel cases for the math and engineering functions beyond the coverage measurement: domain edges, large and
  * negative arguments, complex text, CONVERT units, functions formula.js lacks; a few with a range in a one-value
- * argument. Computed as dynamic array formulas (Excel 365). Answers: `docs/excel-cases/matheng.json`.
+ * argument. Computed as dynamic array formulas (Excel 365). Answers: `test/excel/cases/matheng.json`.
  */
 import type { Probe } from '../probes.js'
 

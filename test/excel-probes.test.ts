@@ -3,7 +3,7 @@
  * arguments, TEXT with General), number literals and numeric text longer than 15 significant digits,
  * criteria over whole columns of sheets with different numbers of rows. The cases come from
  * `bench/coverage/probes.ts`; Excel 16.113's answers (en-US locale, English UI) are stored in
- * `docs/excel-probes.json` (`npx tsx bench/coverage/run.ts probes` refreshes them). Comparison as in the
+ * `test/excel/probes.json` (`npx tsx bench/coverage/run.ts probes` refreshes them). Comparison as in the
  * coverage measurement.
  */
 import { readFileSync } from 'node:fs'
@@ -15,7 +15,7 @@ import { compute } from '../src/index.js'
 import { CLOCK, show, toVal } from './excel-cases.js'
 import { caseBook } from './excel-sets.js'
 
-const stored = JSON.parse(readFileSync(new URL('../docs/excel-probes.json', import.meta.url), 'utf8')) as { cases: Probe[]; values: Record<string, Val> }
+const stored = JSON.parse(readFileSync(new URL('./excel/probes.json', import.meta.url), 'utf8')) as { cases: Probe[]; values: Record<string, Val> }
 const probes = buildProbes()
 
 const result = compute(caseBook(probes, PROBE_SHEETS), { clock: CLOCK }).sheets.at(-1)!.cells

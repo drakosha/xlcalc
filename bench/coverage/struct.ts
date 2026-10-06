@@ -2,7 +2,7 @@
  * Structure operations against Excel en-US: each case is a small book and one operation (`StructureOp`);
  * Excel applies the operation to the book and the formulas of every sheet and the defined names are read
  * back (`excel-struct.applescript`). `npx tsx bench/coverage/run.ts struct <set>` runs the cases of
- * `struct/<set>.ts` and stores the answers in `docs/excel-struct/<set>.json`;
+ * `struct/<set>.ts` and stores the answers in `test/excel/struct/<set>.json`;
  * `test/structure-excel.test.ts` compares `restructure` with them without Excel. A book with styles, columns,
  * rows, merged areas or number formats is written with them, and the look of `LOOK` is read back too.
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
@@ -287,7 +287,7 @@ export async function stepStruct(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./struct/${set}.js`)) as StructSet
   const { books, cases, dynamic = false } = mod.buildStructCases()
-  const target = join(ROOT, `docs/excel-struct/${set}.json`)
+  const target = join(ROOT, `test/excel/struct/${set}.json`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
   // an answer is kept when its case and the case's book are unchanged
   const key = (c: StructCase, bs: Record<string, BookInput>) => JSON.stringify([c, bs[c.book]])
@@ -295,7 +295,7 @@ export async function stepStruct(set: string): Promise<void> {
   const answers: Record<string, ExcelStructAnswer> = {}
   for (const c of cases) if (prev?.answers[c.id] && same.get(c.id) === key(c, books)) answers[c.id] = prev.answers[c.id]
   const t0 = Date.now()
-  mkdirSync(join(ROOT, 'docs/excel-struct'), { recursive: true })
+  mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: LOOK } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), answers }, null, 1) + '\n')
