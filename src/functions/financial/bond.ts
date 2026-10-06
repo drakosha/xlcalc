@@ -2,8 +2,8 @@
 import type { FnDef } from '../../args.js'
 import { ymd } from '../../dates.js'
 import { E } from '../../values.js'
-import { atp } from '../date/atp.js'
-import { validBasis } from '../date/daycount.js'
+import { atp, need } from '../date/atp.js'
+import { basisFirst, validBasis, validFreq } from '../date/daycount.js'
 import { addMonths, daysInMonth } from '../../dates.js'
 import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, normalDays, periodOf, serialOfYmd, type Ymd } from './coupon.js'
 
@@ -66,10 +66,14 @@ export function solveDecreasing(f: (x: number) => number, guess: number, lo: num
   return (a + b) / 2
 }
 
+/** DURATION and MDURATION check the frequency as they read it; PRICE and YIELD read the basis first. */
+const FREQ_READ = { check: { 4: need(validFreq) } }
+const PRICE_READ = { first: [6], check: { 6: need(validBasis), 5: need(validFreq) } }
+
 export const functions: Record<string, FnDef> = {
   // quasi-coupon periods anchored at first_interest, whole ones counting 1; calc_method FALSE counts the days in one piece
   ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par: number, freq: number, basis = 0, calc = true) => {
-    if (rate <= 0 || par <= 0 || (freq !== 1 && freq !== 2 && freq !== 4) || !validBasis(basis) || issue >= settlement) return E.NUM
+    if (rate <= 0 || par <= 0 || !validBasis(basis) || issue >= settlement) return E.NUM
     const anchor = ymd(first)
     const start = ymd(issue)
     const end = ymd(settlement)
@@ -90,16 +94,16 @@ export const functions: Record<string, FnDef> = {
       sum += lo === q0 && hi === q1 ? 1 : daysBetween(lo, hi, basis) / nl(k, q0, q1)
     }
     return (par * rate * sum) / freq
-  }),
+  }, { check: { 5: need(validFreq) } }),
   DURATION: atp('e e x x j j?', (settlement: number, maturity: number, rate: number, yld: number, freq: number, basis = 0) =>
     badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 ? E.NUM : duration(settlement, maturity, rate, yld, freq, basis),
-  ),
+  FREQ_READ),
   MDURATION: atp('e e x x j j?', (settlement: number, maturity: number, rate: number, yld: number, freq: number, basis = 0) =>
     badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 ? E.NUM : duration(settlement, maturity, rate, yld, freq, basis) / (1 + yld / freq),
-  ),
+  FREQ_READ),
   PRICE: atp('e e x x x j j?', (settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) =>
     badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 || redemption <= 0 ? E.NUM : price(settlement, maturity, rate, yld, redemption, freq, basis),
-  ),
+  PRICE_READ),
   // one coupon left: Excel's closed form; else the yield at which PRICE gives `pr`
   YIELD: atp('e e x x x j j?', (settlement: number, maturity: number, rate: number, pr: number, redemption: number, freq: number, basis = 0) => {
     if (badCoupon(settlement, maturity, freq, basis) || rate < 0 || pr <= 0 || redemption <= 0) return E.NUM
@@ -110,5 +114,5 @@ export const functions: Record<string, FnDef> = {
       return ((redemption / 100 + rate / freq - paid) / paid) * ((freq * e) / dsc)
     }
     return solveDecreasing((y) => price(settlement, maturity, rate, y, redemption, freq, basis) - pr, rate || 0.05, -freq + 1e-9) ?? E.NUM
-  }),
+  }, PRICE_READ),
 }

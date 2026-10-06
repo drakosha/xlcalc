@@ -3,6 +3,7 @@
  * (src/engineering.js), Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); fixed against Excel en-US.
  */
 import { gridAt, type FnDef, type Grid } from '../../args.js'
+import { atp } from '../date/atp.js'
 import { readNumber } from '../../model.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
 
@@ -209,10 +210,10 @@ function binary(f: (a: Complex, b: Complex) => [number, number] | null): FnDef {
   }
 }
 
-function complex(re: number, im: number, suffix?: V): V {
-  if (suffix !== undefined && suffix !== null && suffix !== '' && suffix !== 'i' && suffix !== 'j') return E.VALUE
-  return complexText(re, im, suffix === 'j' ? 'j' : 'i')
-}
+/** Excel reads the suffix first: a suffix other than i, j or blank is #VALUE! whatever the parts are. */
+const SUFFIX = { first: [2], check: { 2: (s: V) => (s === null || s === '' || s === 'i' || s === 'j' ? undefined : E.VALUE) } }
+
+const complex = (re: number, im: number, suffix?: V): V => complexText(re, im, suffix === 'j' ? 'j' : 'i')
 
 function power(v: V, n: number): V {
   const z = toComplex(v)
@@ -240,7 +241,7 @@ const part = (f: (z: Complex) => V): FnDef => ({
 })
 
 export const functions: Record<string, FnDef> = {
-  COMPLEX: { args: 'x x v?', fn: complex },
+  COMPLEX: atp('x x v?', complex, SUFFIX),
   IMABS: part((z) => Math.hypot(z.re, z.im)),
   IMAGINARY: part((z) => z.im),
   IMARGUMENT: part((z) => (z.re === 0 && z.im === 0 ? E.DIV0 : Math.atan2(z.im, z.re))),

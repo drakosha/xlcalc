@@ -5,19 +5,25 @@
  * read through a function that takes an array, some join two calls with an operator.
  */
 import { readFileSync } from 'node:fs'
-import { DEFS, FUNCTION_NAMES, FUNCTIONS } from '../../../../src/functions.js'
 import { mulberry32 } from '../../../../src/synth.js'
 import { renderArg, type Case } from '../../cases.js'
 import EXCEL_FUNCTIONS from '../../excel-functions.json' with { type: 'json' }
 import { BASE, splitArgs } from '../arrays/lift.js'
 import { FUZZ_BASE, isRefOnly, isSize, KIND_CATEGORY, KIND_MIX, POOLS, type Mix } from './pools.js'
+import SPEC_JSON from './spec.json' with { type: 'json' }
 
 /** Volatile functions: their answers change between Excel and the engine. */
 export const VOLATILE: ReadonlySet<string> = new Set(['NOW', 'TODAY', 'RAND', 'RANDBETWEEN', 'RANDARRAY'])
 
-const NAMES = FUNCTION_NAMES.filter((f) => !VOLATILE.has(f))
+/**
+ * The whitelist without volatile functions, with argument kinds and counts as the engine declared them when
+ * batch 1 was generated (`spec.json`): a later change to a function's kinds must not change stored formulas.
+ */
+const SPEC: Readonly<Record<string, { args: string; rep?: number; min: number; max: number; parity?: 'odd' | 'even'; array?: boolean }>> = SPEC_JSON as never
+
+const NAMES = Object.keys(SPEC)
 const CATEGORY = new Map(EXCEL_FUNCTIONS.map((x) => [x.name, x.category]))
-const ARRAY_FNS = NAMES.filter((f) => DEFS[f].array)
+const ARRAY_FNS = NAMES.filter((f) => SPEC[f].array)
 const OPS = ['+', '-', '*', '/', '^', '&', '=', '<>', '<', '>', '<=', '>=']
 /** Readers of a result that may be an array: all its values as text, a sum, its size, its first value. */
 const WRAPPERS: readonly ((x: string) => string)[] = [(x) => `TEXTJOIN(";",FALSE,${x})`, (x) => `SUM(${x})`, (x) => `ROWS(${x})`, (x) => `COLUMNS(${x})`, (x) => `INDEX(${x},1,1)`]
@@ -81,8 +87,8 @@ class Gen {
   private call(fn: string, depth: number): string {
     const base = TYPICAL.get(fn)
     const n = base && this.chance(0.6) ? base.length : this.count(fn)
-    const kinds = DEFS[fn].args.split(' ').filter(Boolean).map((k) => k[0])
-    const rep = DEFS[fn].rep ?? 0
+    const kinds = SPEC[fn].args.split(' ').filter(Boolean).map((k) => k[0])
+    const rep = SPEC[fn].rep ?? 0
     const kindAt = (i: number) => (i < kinds.length ? kinds[i] : kinds[kinds.length - rep + ((i - kinds.length + rep) % rep)])
     const args: string[] = []
     for (let i = 0; i < n; i++) {
@@ -96,7 +102,7 @@ class Gen {
 
   /** A number of arguments within the spec: the required ones and up to three more, of the right parity. */
   private count(fn: string): number {
-    const { min, max, parity } = FUNCTIONS[fn]
+    const { min, max, parity } = SPEC[fn]
     // ROW() and COLUMN() answer the formula's own cell, which differs between Excel's parts and the engine's book
     const lo = Math.max(min, fn === 'ROW' || fn === 'COLUMN' ? 1 : 0)
     let n = lo + Math.floor(this.rnd() * (Math.min(3, max - lo) + 1))

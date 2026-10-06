@@ -3,7 +3,7 @@
  * Ported from formula.js 4.6.1 (src/financial.js), Copyright (c) 2014 Sutoiku, Inc., MIT; fixed against Excel.
  */
 import { E, isErr, type CErr } from '../../values.js'
-import type { FnDef } from '../../args.js'
+import { coerce, type Arg, type Cx, type FnDef } from '../../args.js'
 import { atp } from '../date/atp.js'
 
 export function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number {
@@ -81,10 +81,18 @@ export const functions: Record<string, FnDef> = {
   }),
   EFFECT: atp('x j', (rate: number, n: number) => (rate <= 0 || n < 1 ? E.NUM : Math.pow(1 + rate / n, n) - 1)),
   FV: { args: 'n n n n? n?', fn: (rate: number, nper: number, p: number, pv = 0, type?: number) => fv(rate, nper, p, pv, t01(type)) },
-  // blanks in the schedule are 0, text and booleans #VALUE!
-  FVSCHEDULE: atp('x Z', (principal: number, rates: number[]) => rates.reduce((acc, r) => acc * (1 + r), principal)),
+  // blanks in the schedule are 0, text and booleans #VALUE!; the principal is read first
+  FVSCHEDULE: {
+    args: 'x R',
+    cx: true,
+    fn: (cx: Cx, principal: number, schedule: Arg) => {
+      const rates = coerce('Z', schedule, cx) as number[] | CErr
+      return isErr(rates) ? rates : rates.reduce((acc, r) => acc * (1 + r), principal)
+    },
+  },
   IPMT: { args: 'n n n n n? n?', fn: (rate: number, per: number, nper: number, pv: number, fvalue = 0, type?: number) => ipmt(rate, per, nper, pv, fvalue, t01(type)) },
-  ISPMT: { args: 'n i i n', fn: (rate: number, per: number, nper: number, pv: number) => (nper === 0 ? E.DIV0 : pv * rate * (per / nper - 1)) },
+  // the period and the count of periods are not truncated: ISPMT(0.1,1.5,4,1000) is -62.5
+  ISPMT: { args: 'n n n n', fn: (rate: number, per: number, nper: number, pv: number) => (nper === 0 ? E.DIV0 : pv * rate * (per / nper - 1)) },
   NOMINAL: atp('x j', (rate: number, n: number) => (rate <= 0 || n < 1 ? E.NUM : (Math.pow(1 + rate, 1 / n) - 1) * n)),
   NPER: {
     args: 'n n n n? n?',

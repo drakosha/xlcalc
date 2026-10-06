@@ -2,8 +2,8 @@
 import type { FnDef } from '../../args.js'
 import { addMonths, daysInMonth, serialOf, ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
-import { atp } from '../date/atp.js'
-import { days30, validBasis, type Ymd } from '../date/daycount.js'
+import { atp, need } from '../date/atp.js'
+import { days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
 
 export type { Ymd }
 
@@ -59,7 +59,7 @@ export function coupons(settlement: number, maturity: number, freq: number): Cou
 
 /** Argument checks shared by the coupon and bond functions. */
 export const badCoupon = (settlement: number, maturity: number, freq: number, basis: number) =>
-  settlement >= maturity || (freq !== 1 && freq !== 2 && freq !== 4) || !validBasis(basis)
+  settlement >= maturity || !validFreq(freq) || !validBasis(basis)
 
 /** Days from a coupon date to settlement (A) by basis; actual days are serial differences. */
 const daysFrom = (c: Coupons, basis: number) => (basis === 0 || basis === 4 ? daysBetween(c.pcd, c.settle, basis) : c.settlement - serialOfYmd(c.pcd))
@@ -83,10 +83,11 @@ export function bondDays(c: Coupons, basis: number, freq: number) {
   return { e, a, dsc: e - a }
 }
 
+/** The COUP* functions check each argument as they read it: the dates' order, then the frequency, then the basis. */
 function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr): FnDef {
-  return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) =>
-    badCoupon(settlement, maturity, freq, basis) ? E.NUM : answer(coupons(settlement, maturity, freq), basis, freq),
-  )
+  return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) => answer(coupons(settlement, maturity, freq), basis, freq), {
+    check: { 1: need((maturity, a) => a[0] < maturity), 2: need(validFreq), 3: need(validBasis) },
+  })
 }
 
 export const functions: Record<string, FnDef> = {

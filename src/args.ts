@@ -291,8 +291,13 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   p: (x) => x,
 }
 
+/** An argument coerced by kind inside a function that reads it after others (FVSCHEDULE's schedule after the principal). */
+export const coerce = (kind: string, x: Arg, cx: Cx): unknown => COERCE[kind](x, cx)
+
 /** Kinds whose argument may be an error without stopping the call. */
 const KEEP_ERRORS = 'aRVrp'
+/** Lists and arrays are read after the one-value arguments, as Excel reads them: `LARGE(A1:A9,"x")` is #VALUE! even with an error in A1:A9. */
+const LATE_KINDS = 'NAYZDMG'
 
 /** The callable the generated code uses for a function: coercion by kind, the call, the answer rules. */
 export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
@@ -302,18 +307,27 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
   const rep = def.rep ?? 0
   const fixed = kinds.length - rep
   const head = (def.cx ? 1 : 0) + (def.cell ? 3 : 0)
+  const kindAt = (p: number) => (p < kinds.length ? kinds[p] : kinds[fixed + ((p - fixed) % rep)])
   return (...a: unknown[]) => {
     const out: unknown[] = []
     if (def.cx) out.push(cx)
-    let i = 0
-    if (def.cell) for (; i < 3; i++) out.push(a[i])
+    const cells = def.cell ? 3 : 0
+    for (let i = 0; i < cells; i++) out.push(a[i])
+    const vals: unknown[] = new Array(a.length - cells)
+    for (const late of [false, true])
+      for (let p = 0; p < vals.length; p++) {
+        const k = kindAt(p)
+        if (LATE_KINDS.includes(k) !== late) continue
+        const v = COERCE[k](a[cells + p] as Arg, cx)
+        if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
+        vals[p] = v
+      }
     const tail: unknown[] = []
     let lists = 0
     let nums = 0
-    for (let p = 0; i < a.length; i++, p++) {
-      const k = p < kinds.length ? kinds[p] : kinds[fixed + ((p - fixed) % rep)]
-      const v = COERCE[k](a[i] as Arg, cx)
-      if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
+    for (let p = 0; p < vals.length; p++) {
+      const k = kindAt(p)
+      const v = vals[p]
       if (LIST_KINDS.includes(k)) {
         lists++
         nums += (v as number[]).length
