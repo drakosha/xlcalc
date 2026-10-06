@@ -13,8 +13,8 @@
  *      ROUND's digits, DATE and the others the `near-integer` set measured), while `i` truncates as MID, REPT,
  *      CHOOSE, ROUNDDOWN's digits and the statistical counts do; `x` the same as `n`, but a boolean is #VALUE! (functions
  *      of the former Analysis ToolPak: engineering and part of the financial ones);
- *    - `s` text (a number in the General format, TRUE/FALSE); `b` boolean (text "TRUE"/"FALSE" too, as in
- *      Excel en-US with the English UI); `v` any value (an error stops the call); `a` any value, errors
+ *    - `s` text (a number in the General format, TRUE/FALSE, by the book's locale); `b` boolean (text
+ *      "TRUE"/"FALSE" too in en-US, "ИСТИНА"/"ЛОЖЬ" in ru-RU); `v` any value (an error stops the call); `a` any value, errors
  *      included (ISERROR, IFS);
  *    - lists of numbers from ranges and arguments: `N` the SUM rule (a range gives its numbers, a direct
  *      argument is coerced like `n`), `A` the MAXA rule (a range gives numbers, booleans as 1/0 and
@@ -30,8 +30,9 @@
  *      `if_empty`); `P` the same with a reference passed on as a reference, one cell too, for a function
  *      that answers it (CHOOSE, the values of IF, IFS and SWITCH, HSTACK: `SUM(IF(TRUE,A2))` skips text in
  *      A2, as Excel does); where the answer goes to a one-value position it is read as a value.
- * 2. Date and time text in a date argument (`d`, `t`, `D`) is read as Excel en-US reads it
- *    (`2025-01-31`, `1/31/2025`, `18:30`; see `dates.ts`); a date before 0 or after 9999-12-31 is #NUM!.
+ * 2. Date and time text in a date argument (`d`, `t`, `D`) is read as Excel reads it in the book's locale
+ *    (`Cx.rules`; en-US: `2025-01-31`, `1/31/2025`, `18:30`, see `dates.ts`); a date before 0 or after
+ *    9999-12-31 is #NUM!. Text, numbers and booleans in every kind are coerced by the locale's rules too.
  * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Z`, `D`) hold no
  *    numbers at all (AVERAGE #DIV/0!, MEDIAN #NUM!, MODE #N/A); a blank cell as a whole answer is null,
  *    which a cell shows as 0.
