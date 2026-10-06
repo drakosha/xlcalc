@@ -1,22 +1,21 @@
 /** Workdays: NETWORKDAYS and WORKDAY with weekend codes and holidays. */
-import type { FnDef } from '../../args.js'
+import { toDate, type FnDef, type Segment } from '../../args.js'
 import { MAX_SERIAL } from '../../dates.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { atp } from './atp.js'
 import { weekday } from './calendar.js'
 
-/** Weekend mask (index 0 Sunday) by code 1–7, 11–17 or seven 0/1 from Monday; an error there is #NUM! in Excel. */
+/** Weekend mask (index 0 Sunday) by code 1–7, 11–17 or seven 0/1 from Monday; Excel answers an error there with #NUM!. */
 function weekendOf(w: V | undefined): boolean[] | CErr {
   const mask = [false, false, false, false, false, false, false]
-  if (w === undefined || w === null) w = 1
+  if (w === undefined) return weekendOf(1)
   if (isErr(w)) return E.NUM
-  if (typeof w === 'boolean') return E.VALUE
   if (typeof w === 'string') {
-    if (!/^[01]{7}$/.test(w) || w === '1111111') return E.VALUE
+    if (!/^[01]{7}$/.test(w)) return E.VALUE
     for (let i = 0; i < 7; i++) mask[(i + 1) % 7] = w[i] === '1'
     return mask
   }
-  const k = Math.trunc(w)
+  const k = Math.trunc(Number(w))
   if (k >= 1 && k <= 7) {
     mask[(k + 5) % 7] = true
     mask[(k + 6) % 7] = true
@@ -26,6 +25,22 @@ function weekendOf(w: V | undefined): boolean[] | CErr {
 }
 
 const SAT_SUN = weekendOf(1) as boolean[]
+const allWeekend = (w: boolean[]) => w.every(Boolean)
+
+/** Holidays: whole dates; a boolean is #VALUE! (the ToolPak rule), so is text in a range. */
+function holidaysOf(x: Segment | undefined): number[] | CErr {
+  const out: number[] = []
+  if (x === undefined) return out
+  for (const v of Array.isArray(x) ? (x as readonly V[]) : [x as V]) {
+    if (v === null && Array.isArray(x)) continue
+    if (isErr(v)) return v
+    if (typeof v === 'boolean' || (typeof v === 'string' && Array.isArray(x))) return E.VALUE
+    const d = toDate(v)
+    if (isErr(d)) return d
+    out.push(d)
+  }
+  return out
+}
 
 /** Inclusive count, negative when `end` is earlier. */
 function networkDays(start: number, end: number, weekend: boolean[], holidays: number[] = []): number {
@@ -63,14 +78,27 @@ function workday(start: number, days: number, weekend: boolean[], holidays: numb
 }
 
 export const functions: Record<string, FnDef> = {
-  NETWORKDAYS: atp('e e D?', (start: number, end: number, hol?: number[]) => networkDays(start, end, SAT_SUN, hol)),
-  'NETWORKDAYS.INTL': atp('e e a? D?', (start: number, end: number, w: V | undefined, hol?: number[]) => {
-    const weekend = weekendOf(w)
-    return isErr(weekend) ? weekend : networkDays(start, end, weekend, hol)
+  NETWORKDAYS: atp('e e V?', (start: number, end: number, h?: Segment) => {
+    const hol = holidaysOf(h)
+    return isErr(hol) ? hol : networkDays(start, end, SAT_SUN, hol)
   }),
-  WORKDAY: atp('e j D?', (start: number, days: number, hol?: number[]) => workday(start, days, SAT_SUN, hol)),
-  'WORKDAY.INTL': atp('e j a? D?', (start: number, days: number, w: V | undefined, hol?: number[]) => {
+  // seven weekend days leave no workdays: 0 here, #VALUE! in WORKDAY.INTL
+  'NETWORKDAYS.INTL': atp('e e a? V?', (start: number, end: number, w: V | undefined, h?: Segment) => {
     const weekend = weekendOf(w)
-    return isErr(weekend) ? weekend : workday(start, days, weekend, hol)
+    if (isErr(weekend)) return weekend
+    const hol = holidaysOf(h)
+    if (isErr(hol)) return hol
+    return allWeekend(weekend) ? 0 : networkDays(start, end, weekend, hol)
+  }),
+  WORKDAY: atp('e j V?', (start: number, days: number, h?: Segment) => {
+    const hol = holidaysOf(h)
+    return isErr(hol) ? hol : workday(start, days, SAT_SUN, hol)
+  }),
+  'WORKDAY.INTL': atp('e j a? V?', (start: number, days: number, w: V | undefined, h?: Segment) => {
+    const weekend = weekendOf(w)
+    if (isErr(weekend)) return weekend
+    if (allWeekend(weekend)) return E.VALUE
+    const hol = holidaysOf(h)
+    return isErr(hol) ? hol : workday(start, days, weekend, hol)
   }),
 }

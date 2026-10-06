@@ -6,18 +6,17 @@ import type { FnDef } from '../../args.js'
 import { E, isErr, type CErr } from '../../values.js'
 import { atp } from '../date/atp.js'
 
-/** (1+rate)^n through a logarithm, as Excel: a negative base is #NUM! even for a whole n. */
-export const grow = (rate: number, n: number) => (1 + rate < 0 ? NaN : Math.pow(1 + rate, n))
-
 export function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number {
   if (rate === 0) return -(pv + pmt * nper)
-  const term = grow(rate, nper)
+  const term = Math.pow(1 + rate, nper)
   return -(pv * term + (pmt * (1 + rate * type) * (term - 1)) / rate)
 }
 
+/** Excel's PMT is #NUM! for a rate of −1 or less (FV and PV are not). */
 export function pmt(rate: number, nper: number, pv: number, fv: number, type: number): number {
+  if (rate <= -1) return NaN
   if (rate === 0) return -(pv + fv) / nper
-  const term = grow(rate, nper)
+  const term = Math.pow(1 + rate, nper)
   return (-(pv * term + fv) * rate) / ((1 + rate * type) * (term - 1))
 }
 
@@ -27,7 +26,7 @@ function parts(rate: number, per: number, nper: number, pv: number, fvalue: numb
   const p = pmt(rate, nper, pv, fvalue, type)
   if (!Number.isFinite(p)) return E.NUM
   if (rate === 0 || (type && per === 1)) return [0, p]
-  const principal = ((-(pv + fvalue) * rate) / (grow(rate, nper) - 1)) * grow(rate, per - 1 - type)
+  const principal = ((-(pv + fvalue) * rate) / (Math.pow(1 + rate, nper) - 1)) * Math.pow(1 + rate, per - 1 - type)
   return [p - principal, principal]
 }
 
@@ -41,15 +40,15 @@ function tens(f: number): number {
   return p
 }
 
-/** CUMIPMT and CUMPRINC: rate, nper and pv positive, 1 ≤ start ≤ end ≤ nper, type 0 or 1. */
-function cumulative(part: (rate: number, per: number, nper: number, pv: number, type: number) => number | CErr) {
-  return atp('x x x j j j', (rate: number, nper: number, pv: number, start: number, end: number, type: number) => {
+/** CUMIPMT and CUMPRINC: rate, nper and pv positive, 1 ≤ start ≤ end ≤ nper, type exactly 0 or 1; whole periods from ⌈start⌉ to ⌊end⌋. */
+function cumulative(k: 0 | 1) {
+  return atp('x x x x x x', (rate: number, nper: number, pv: number, start: number, end: number, type: number) => {
     if (rate <= 0 || nper <= 0 || pv <= 0 || start < 1 || end < start || end > nper || (type !== 0 && type !== 1)) return E.NUM
     let sum = 0
-    for (let per = start; per <= end; per++) {
-      const x = part(rate, per, nper, pv, type)
-      if (typeof x !== 'number') return x
-      sum += x
+    for (let per = Math.ceil(start); per <= Math.floor(end); per++) {
+      const x = parts(rate, per, nper, pv, 0, type)
+      if (isErr(x)) return x
+      sum += x[k]
     }
     return sum
   })
@@ -63,8 +62,8 @@ const ipmt = part(0)
 const ppmt = part(1)
 
 export const functions: Record<string, FnDef> = {
-  CUMIPMT: cumulative((rate, per, nper, pv, type) => ipmt(rate, per, nper, pv, 0, type)),
-  CUMPRINC: cumulative((rate, per, nper, pv, type) => ppmt(rate, per, nper, pv, 0, type)),
+  CUMIPMT: cumulative(0),
+  CUMPRINC: cumulative(1),
   DOLLARDE: atp('x j', (x: number, f: number) => {
     if (f < 0) return E.NUM
     if (f < 1) return E.DIV0
@@ -87,7 +86,8 @@ export const functions: Record<string, FnDef> = {
   NPER: {
     args: 'n n n n? n?',
     fn: (rate: number, p: number, pv: number, fvalue = 0, type?: number) => {
-      if (rate === 0) return p === 0 ? E.NUM : -(pv + fvalue) / p
+      if (rate === 0) return p === 0 ? E.DIV0 : -(pv + fvalue) / p
+      if (rate <= -1) return E.NUM
       const t = t01(type)
       return Math.log((p * (1 + rate * t) - fvalue * rate) / (pv * rate + p * (1 + rate * t))) / Math.log(1 + rate)
     },
@@ -112,8 +112,8 @@ export const functions: Record<string, FnDef> = {
     args: 'n n n n? n?',
     fn: (rate: number, nper: number, p: number, fvalue = 0, type?: number) => {
       if (rate === 0) return -(fvalue + p * nper)
-      const term = grow(rate, nper)
-      return -(fvalue + (p * (1 + rate * t01(type)) * (term - 1)) / rate) / term
+      const term = Math.pow(1 + rate, nper)
+      return term === 0 ? E.DIV0 : -(fvalue + (p * (1 + rate * t01(type)) * (term - 1)) / rate) / term
     },
   },
   RRI: { args: 'n n n', fn: (nper: number, pv: number, fv: number) => (nper <= 0 || pv === 0 ? E.NUM : Math.pow(fv / pv, 1 / nper) - 1) },

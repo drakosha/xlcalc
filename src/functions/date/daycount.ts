@@ -47,8 +47,8 @@ export function dayNum(x: Ymd): number {
   return Math.round(t.getTime() / 86_400_000) + 25_569
 }
 
-/** Actual/actual between ordered dates: 365 or 366 within a year, else the average year of the span. */
-function actualYears(start: number, end: number): number {
+/** The actual/actual year between ordered dates: 365 or 366 within a year, else the span's average by the real calendar. */
+export function yearLength(start: number, end: number): number {
   const a = ymd(start)
   const b = ymd(end)
   if (a.y === b.y || (b.y === a.y + 1 && (a.m > b.m || (a.m === b.m && a.d >= b.d)))) {
@@ -58,17 +58,16 @@ function actualYears(start: number, end: number): number {
       a.y === b.y
         ? isLeap(a.y)
         : (isLeap(a.y) && start < mar1a && end >= mar1a) || (isLeap(b.y) && end >= mar1b && start < mar1b)
-    return (end - start) / (leap || (b.m === 2 && b.d === 29) ? 366 : 365)
+    return leap || (b.m === 2 && b.d === 29) ? 366 : 365
   }
-  // the average year by the real calendar, as the ToolPak counts it
-  return (end - start) / ((dayNum({ y: b.y + 1, m: 1, d: 1 }) - dayNum({ y: a.y, m: 1, d: 1 })) / (b.y - a.y + 1))
+  return (dayNum({ y: b.y + 1, m: 1, d: 1 }) - dayNum({ y: a.y, m: 1, d: 1 })) / (b.y - a.y + 1)
 }
 
 /** Years between two dates (either order) by basis: 0 US 30/360, 1 actual/actual, 2 actual/360, 3 actual/365, 4 European 30/360. */
 export function yearFrac(start: number, end: number, basis: number): number {
   if (start > end) [start, end] = [end, start]
   if (basis === 0) return days30(ymd(start), ymd(end)) / 360
-  if (basis === 1) return actualYears(start, end)
+  if (basis === 1) return (end - start) / yearLength(start, end)
   if (basis === 2) return (end - start) / 360
   if (basis === 3) return (end - start) / 365
   return days360(start, end, true) / 360

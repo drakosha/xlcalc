@@ -84,15 +84,12 @@ export const functions: Record<string, FnDef> = {
     return serial < 0 || serial > MAX_SERIAL ? E.NUM : serial
   }),
   // the start month in Excel's calendar (serial 60 is February 1900), the last day by the real one
-  EOMONTH: {
-    args: 'd i',
-    fn: (start: number, months: number) => {
-      const s = ymd(start)
-      const t = addMonths(s.y, s.m, months)
-      if (t.y < 1900 || t.y > 9999) return E.NUM
-      return serialOf(t.y, t.m, daysInMonth(t.y, t.m))
-    },
-  },
+  EOMONTH: atp('e j', (start: number, months: number) => {
+    const s = ymd(start)
+    const t = addMonths(s.y, s.m, months)
+    if (t.y < 1900 || t.y > 9999) return E.NUM
+    return serialOf(t.y, t.m, daysInMonth(t.y, t.m))
+  }),
   ISOWEEKNUM: { args: 'd', fn: isoWeek },
   MONTH: { args: 'd', fn: (s: number) => ymd(s).m },
   WEEKDAY: {

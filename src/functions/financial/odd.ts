@@ -24,12 +24,12 @@ function oddFirstPrice(settlement: number, maturity: number, issue: number, firs
   let odd = 0
   let accrued = 0
   for (let k = ki; k < 0; k++) {
-    const nl = periodDays(q(k), q(k + 1), basis, freq)
+    const nl = periodDays(q(k), basis, freq)
     const from = later(iss, q(k))
     odd += daysBetween(from, q(k + 1), basis) / nl
     if (k <= ks) accrued += daysBetween(from, earlier(settle, q(k + 1)), basis) / nl
   }
-  const t = -(ks + 1) + daysBetween(settle, q(ks + 1), basis) / periodDays(q(ks), q(ks + 1), basis, freq)
+  const t = -(ks + 1) + daysBetween(settle, q(ks + 1), basis) / periodDays(q(ks), basis, freq)
   const v = 1 + yld / freq
   let p = (coupon * odd) / Math.pow(v, t) + redemption / Math.pow(v, t + n)
   for (let j = 1; j <= n; j++) p += coupon / Math.pow(v, t + j)
@@ -47,7 +47,8 @@ function oddLast(settlement: number, maturity: number, last: number, freq: numbe
   for (let k = 0; cmp(couponDate(l, k, freq), mat) < 0; k++) {
     const q0 = couponDate(l, k, freq)
     const q1 = couponDate(l, k + 1, freq)
-    const nl = periodDays(q0, q1, basis, freq)
+    // bases 1–3 all count actual periods here, as Excel does
+    const nl = basis >= 1 && basis <= 3 ? daysBetween(q0, q1, 1) : periodDays(q0, basis, freq)
     const end = earlier(q1, mat)
     dc += daysBetween(q0, end, basis) / nl
     if (cmp(settle, q0) > 0) a += daysBetween(q0, earlier(settle, end), basis) / nl

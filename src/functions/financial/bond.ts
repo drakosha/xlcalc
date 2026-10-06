@@ -4,12 +4,19 @@ import { ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp } from '../date/atp.js'
 import { validBasis } from '../date/daycount.js'
-import { badCoupon, cmp, couponDate, couponDays, coupons, daysBetween, periodDays, periodOf } from './coupon.js'
+import { addMonths, daysInMonth } from '../../dates.js'
+import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, periodOf, serialOfYmd, type Ymd } from './coupon.js'
+
+/** The date `months` earlier, the day clamped to the month. */
+function monthsBack(x: Ymd, months: number): Ymd {
+  const t = addMonths(x.y, x.m, -months)
+  return { y: t.y, m: t.m, d: Math.min(x.d, daysInMonth(t.y, t.m)) }
+}
 
 /** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
 function price(settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis: number): number {
   const c = coupons(settlement, maturity, freq)
-  const { e, a, dsc } = couponDays(c, basis, freq)
+  const { e, a, dsc } = bondDays(c, basis, freq)
   const coupon = (100 * rate) / freq
   if (c.n === 1) return (redemption + coupon) / (1 + ((dsc / e) * yld) / freq) - (coupon * a) / e
   const v = 1 + yld / freq
@@ -21,7 +28,7 @@ function price(settlement: number, maturity: number, rate: number, yld: number, 
 /** Macaulay duration in years. */
 function duration(settlement: number, maturity: number, rate: number, yld: number, freq: number, basis: number): number {
   const c = coupons(settlement, maturity, freq)
-  const { e, dsc } = couponDays(c, basis, freq)
+  const { e, dsc } = bondDays(c, basis, freq)
   const v = 1 + yld / freq
   let pv = 0
   let weighted = 0
@@ -60,12 +67,19 @@ export function solveDecreasing(f: (x: number) => number, guess: number, lo: num
 }
 
 export const functions: Record<string, FnDef> = {
-  // the accrual from issue (or from first_interest, calc_method FALSE) in quasi-coupon periods anchored at first_interest; whole periods count 1
+  // quasi-coupon periods anchored at first_interest, whole ones counting 1; calc_method FALSE counts the days in one piece
   ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par: number, freq: number, basis = 0, calc = true) => {
     if (rate <= 0 || par <= 0 || (freq !== 1 && freq !== 2 && freq !== 4) || !validBasis(basis) || issue >= settlement) return E.NUM
     const anchor = ymd(first)
-    const start = ymd(calc || settlement <= first ? issue : first)
+    const start = ymd(issue)
     const end = ymd(settlement)
+    const normal = (basis === 3 ? 365 : 360) / freq
+    // the odd first period's length counts its days on bases 1 and 4; later ones on basis 1 only, back from their end
+    const nl = (k: number, q0: Ymd, q1: Ymd) => {
+      if (basis === 1) return k < 0 ? daysBetween(q0, q1, 1) : serialOfYmd(q1) - serialOfYmd(monthsBack(q1, 12 / freq))
+      return basis === 4 && k < 0 && cmp(end, q1) >= 0 ? daysBetween(q0, q1, 4) : normal
+    }
+    if (!calc && settlement > first) return (par * rate * daysBetween(start, end, basis)) / freq / (basis === 1 ? nl(-1, couponDate(anchor, -1, freq), anchor) : normal)
     let sum = 0
     for (let k = periodOf(anchor, start, freq); ; k++) {
       const q0 = couponDate(anchor, k, freq)
@@ -73,7 +87,7 @@ export const functions: Record<string, FnDef> = {
       const q1 = couponDate(anchor, k + 1, freq)
       const lo = cmp(start, q0) > 0 ? start : q0
       const hi = cmp(end, q1) < 0 ? end : q1
-      sum += lo === q0 && hi === q1 ? 1 : daysBetween(lo, hi, basis) / periodDays(q0, q1, basis, freq)
+      sum += lo === q0 && hi === q1 ? 1 : daysBetween(lo, hi, basis) / nl(k, q0, q1)
     }
     return (par * rate * sum) / freq
   }),
@@ -91,7 +105,7 @@ export const functions: Record<string, FnDef> = {
     if (badCoupon(settlement, maturity, freq, basis) || rate < 0 || pr <= 0 || redemption <= 0) return E.NUM
     const c = coupons(settlement, maturity, freq)
     if (c.n === 1) {
-      const { e, a, dsc } = couponDays(c, basis, freq)
+      const { e, a, dsc } = bondDays(c, basis, freq)
       const paid = pr / 100 + ((a / e) * rate) / freq
       return ((redemption / 100 + rate / freq - paid) / paid) * ((freq * e) / dsc)
     }
