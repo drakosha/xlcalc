@@ -53,7 +53,9 @@ describe('built package', () => {
 
   it('the attribution of ported code stays at the top of its built file', () => {
     const dir = join(root, 'src/functions')
-    const ported = readdirSync(dir).filter((f) => readFileSync(join(dir, f), 'utf8').includes('Copyright (c)'))
+    // category files and their subdirectories (src/functions/text/*.ts and the like)
+    const files = readdirSync(dir, { recursive: true, encoding: 'utf8' }).filter((f) => f.endsWith('.ts'))
+    const ported = files.filter((f) => readFileSync(join(dir, f), 'utf8').includes('Copyright (c)'))
     expect(ported.length).toBeGreaterThan(0)
     for (const f of ported) {
       const built = readFileSync(join(root, 'dist/functions', f.replace(/\.ts$/, '.js')), 'utf8')
