@@ -6,7 +6,7 @@
  * настройки Excel не меняются.
  */
 import { execFileSync } from 'node:child_process'
-import { copyFileSync, mkdirSync, rmSync } from 'node:fs'
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -22,6 +22,56 @@ const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url
 const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+const LOCK = join(homedir(), '.cache/formula-engine-excel.lock')
+
+const alive = (pid: number) => {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Excel один на машину, а прогоны из разных worktree идут параллельно: перезапуск под другую
+ * локаль посреди чужого прогона ломает оба. Блокировка каталогом (mkdir атомарен), в нём pid
+ * владельца; брошенную блокировку мёртвого процесса забираем. Ждём до 60 минут.
+ */
+export async function withExcelLock<T>(fn: () => Promise<T>): Promise<T> {
+  mkdirSync(join(homedir(), '.cache'), { recursive: true })
+  const until = Date.now() + 60 * 60_000
+  let said = false
+  for (;;) {
+    try {
+      mkdirSync(LOCK)
+      writeFileSync(join(LOCK, 'pid'), String(process.pid))
+      break
+    } catch {
+      let owner = NaN
+      try {
+        owner = Number(readFileSync(join(LOCK, 'pid'), 'utf8'))
+      } catch {}
+      if (Number.isFinite(owner) && !alive(owner)) {
+        rmSync(LOCK, { recursive: true, force: true })
+        continue
+      }
+      if (Date.now() > until) throw new Error(`Excel занят процессом ${owner} дольше 60 минут (${LOCK})`)
+      if (!said) console.log(`Excel занят процессом ${owner}, жду очереди`)
+      said = true
+      await sleep(2000)
+    }
+  }
+  const release = () => rmSync(LOCK, { recursive: true, force: true })
+  process.once('exit', release)
+  try {
+    return await fn()
+  } finally {
+    release()
+    process.removeListener('exit', release)
+  }
+}
 
 /** Процесс Excel и его аргументы; null если не запущен. */
 export function excelProcess(): { pid: number; args: string } | null {

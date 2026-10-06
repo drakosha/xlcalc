@@ -1,0 +1,8 @@
+# Case sets
+
+Excel-verified cases beyond the coverage measurement, one file per set, so parallel branches never edit the same file.
+
+- `bench/coverage/sets/<name>.ts` exports `buildProbes(): Probe[]` (each case with `fn` set to the function it checks) and, if needed, `SHEETS`: extra data sheets as `{ sheet: { A1: value } }`. Sheet names `D` (the measurement's data sheet, also available to sets) and `C` (cases) are taken.
+- `npx tsx bench/coverage/run.ts probes <name>` runs the cases in Excel en-US (English UI) under the Excel lock and stores the answers in `docs/excel-cases/<name>.json`.
+- `test/excel-sets.test.ts` checks that the stored cases equal the generator's and that the engine matches Excel on every case; `test/excel.test.ts` counts a whitelisted function as covered if a set has cases for it.
+- Size arguments of functions that build arrays (MUNIT, SEQUENCE, EXPAND and the like) take only small numeric literals: a date or numeric text there can exhaust Excel and block it with a modal dialog.

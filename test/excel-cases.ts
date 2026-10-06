@@ -40,12 +40,17 @@ function dataInput(c: Cell): CellInput {
 /** The formula as this engine reads it: Excel's storage prefixes of newer functions removed. */
 export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?/g, '')
 
-export function excelBook(cases: readonly ExcelCase[]): BookInput {
+/** The measurement's data sheet, as in every book sent to Excel. */
+export function dataSheet(): BookInput['sheets'][number] {
   const d: Record<string, CellInput> = {}
   for (const [addr, v] of dataCells()) d[addr] = dataInput(v)
+  return { name: DATA_SHEET, cells: d }
+}
+
+export function excelBook(cases: readonly ExcelCase[]): BookInput {
   const c: Record<string, CellInput> = {}
   cases.forEach((x, i) => (c[`A${i + 1}`] = { formula: engineFormula(x.formula) }))
-  return { sheets: [{ name: DATA_SHEET, cells: d }, { name: CASE_SHEET, cells: c }] }
+  return { sheets: [dataSheet(), { name: CASE_SHEET, cells: c }] }
 }
 
 export function toVal(v: CellValue): Val {

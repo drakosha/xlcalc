@@ -9,6 +9,8 @@ export interface Probe {
   id: string
   group: string
   formula: string
+  /** Функция, которую случай проверяет (в наборах `sets/*`): по нему приёмка видит, что у функции есть случаи. */
+  fn?: string
 }
 
 /** Листы данных проб: S2!A1:A5 = 1…5, S3!B1:B3 = 1, −1, 1. */

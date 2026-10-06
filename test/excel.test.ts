@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import { FUNCTION_NAMES } from '../src/index.js'
 import { FUNCTIONS } from '../src/functions.js'
 import { CASES, EXCEL, runExcelCases, show, type Outcome } from './excel-cases.js'
+import { SET_FUNCTIONS } from './excel-sets.js'
 
 /** Whitelisted functions the measurement has no cases for, and why. */
 const NO_CASES: Record<string, string> = {
@@ -28,8 +29,8 @@ describe('acceptance against Excel en-US', () => {
     expect(CASES.filter((c) => !EXCEL[c.id]).map((c) => c.id)).toEqual([])
   })
 
-  it('every whitelisted function has cases, or is listed with the reason why not', () => {
-    expect(covered.filter((f) => !byFunction.has(f))).toEqual([])
+  it('every whitelisted function has cases (measurement or a case set), or is listed with the reason why not', () => {
+    expect(covered.filter((f) => !byFunction.has(f) && !SET_FUNCTIONS.has(f))).toEqual([])
     for (const f of Object.keys(NO_CASES)) expect(FUNCTIONS[f], f).toBeDefined()
   })
 

@@ -9,20 +9,21 @@
  *   npx tsx bench/coverage/run.ts report     сравнение, сводка и таблицы отчёта
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
  *   npx tsx bench/coverage/run.ts probes     пробы Excel en-US вне замера (probes.ts) в docs/excel-probes.json
+ *   npx tsx bench/coverage/run.ts probes X   набор sets/X.ts в docs/excel-cases/X.json (тест test/excel-sets.test.ts)
  *
  * FCOV_ONLY=ABS,SUM ограничивает набор функций (пробный прогон): тогда всё пишется в out/.
  * Excel считается частями до 400 случаев; после каждой части проверяется, нет ли модального окна.
  */
 import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { ensureExcel, excelDialogs, excelVersion, runExcel, type Locale } from './excel.js'
+import { ensureExcel, excelDialogs, excelVersion, runExcel, withExcelLock, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
-import { buildProbes, PROBE_SHEETS } from './probes.js'
+import { buildProbes, PROBE_SHEETS, type Probe } from './probes.js'
 import { writeReport } from './report.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -191,9 +192,17 @@ async function stepExcel(locale: Locale) {
   }
 }
 
-/** Пробы (probes.ts) в Excel en-US частями по PART, с той же проверкой модальных окон до и после части. */
-async function stepProbes() {
-  const ps = buildProbes()
+/**
+ * Пробы в Excel en-US частями по PART, с той же проверкой модальных окон до и после части. Без имени
+ * набора это `probes.ts` и `docs/excel-probes.json`; с именем `<set>` генератор `sets/<set>.ts`
+ * (экспорт `buildProbes()` и, если нужны листы данных, `SHEETS`) и ответы в `docs/excel-cases/<set>.json`.
+ * Наборы нужны, чтобы параллельные ветки добавляли свои случаи, не трогая общие файлы.
+ */
+async function stepProbes(set?: string) {
+  if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
+  const mod: { buildProbes: () => Probe[]; SHEETS?: Record<string, Record<string, number | string | boolean>> } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const ps = mod.buildProbes()
+  const sheets = mod.SHEETS ?? {}
   await ensureExcel('en')
   const values: Record<string, Val> = {}
   const t0 = Date.now()
@@ -203,8 +212,8 @@ async function stepProbes() {
     const dialogs = () => excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
     const before = dialogs()
     if (before) throw new Error(`пробы, часть ${k + 1}: до части у Excel окно не книги: ${before}`)
-    const book = join(OUT, `probes-${k + 1}.xlsx`)
-    await writeBook(part, book, PROBE_SHEETS)
+    const book = join(OUT, `${set ?? 'probes'}-${k + 1}.xlsx`)
+    await writeBook(part, book, sheets)
     let vals: Val[] | null = null
     let err = ''
     try {
@@ -218,7 +227,9 @@ async function stepProbes() {
     console.log(`пробы: часть ${k + 1}, ${part.length} случаев`)
   }
   const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000 }
-  writeFileSync(join(ROOT, 'docs/excel-probes.json'), JSON.stringify({ meta, cases: ps, values }, null, 1) + '\n')
+  const target = set ? join(ROOT, `docs/excel-cases/${set}.json`) : join(ROOT, 'docs/excel-probes.json')
+  mkdirSync(dirname(target), { recursive: true })
+  writeFileSync(target, JSON.stringify({ meta, cases: ps, values }, null, 1) + '\n')
 }
 
 const step = process.argv[2]
@@ -226,18 +237,20 @@ const t0 = Date.now()
 if (step === 'cases') await stepCases()
 else if (step === 'fj') await stepFj()
 else if (step === 'lo') await stepLo()
-else if (step === 'excel') await stepExcel(process.argv[3] as Locale)
+else if (step === 'excel') await withExcelLock(() => stepExcel(process.argv[3] as Locale))
 else if (step === 'report') writeReport(RESULTS, ONLY !== undefined)
-else if (step === 'probes') await stepProbes()
+else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
   await stepLo()
-  await stepExcel('en')
-  await stepExcel('ru')
+  await withExcelLock(async () => {
+    await stepExcel('en')
+    await stepExcel('ru')
+  })
   writeReport(RESULTS, ONLY !== undefined)
 } else {
-  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes')
+  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes [набор]')
   process.exit(2)
 }
 console.log(`готово за ${((Date.now() - t0) / 1000).toFixed(1)} с`)
