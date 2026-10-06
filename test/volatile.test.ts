@@ -44,6 +44,20 @@ describe('volatile functions', () => {
     expect([1, 2, 3, 4, 5, 6]).toContain(a.A5.value)
   })
 
+  it('RANDARRAY: each element from the seed, the cell and its position; RAND keeps its value', () => {
+    const cells = { A1: { formula: 'RAND()' }, B1: { formula: 'INDEX(RANDARRAY(3),1)' }, B2: { formula: 'INDEX(RANDARRAY(3),2)' }, B3: { formula: 'SUM(MOD(RANDARRAY(4,5,1,6,TRUE),1))' }, B4: { formula: 'MIN(RANDARRAY(4,5,1,6,TRUE))>=1' }, B5: { formula: 'RANDARRAY(2)' } }
+    const run = (seed: number) => compute({ sheets: [{ name: 'S', cells }] }, { clock: { ...clock, seed } })
+    const a = run(42)
+    const v = (r: typeof a, cell: string) => r.sheets[0].cells[cell].value
+    // the value RAND had before RANDARRAY drew from the same function
+    expect(v(a, 'A1')).toBe(0.0295275952666998)
+    expect(v(a, 'B1')).not.toBe(v(a, 'B2'))
+    expect([v(a, 'B3'), v(a, 'B4'), v(a, 'B5')]).toEqual([0, true, { error: 'SPILL' }])
+    expect(run(42).hash).toBe(a.hash)
+    expect(v(run(43), 'B1')).not.toBe(v(a, 'B1'))
+    expect(a.volatile.map((c) => c.cell)).toEqual(['A1', 'B1', 'B2', 'B3', 'B4', 'B5'])
+  })
+
   it('cells depending on volatile functions are listed; a call inside a string literal does not count', () => {
     const r = compute(book, { clock })
     expect(r.volatile.map((v) => v.cell)).toEqual(['A1', 'B1', 'A2', 'B2', 'A3', 'A4', 'A5'])

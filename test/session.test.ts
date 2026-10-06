@@ -1,7 +1,8 @@
 /**
  * Session: recomputing only the dependents must give the same as a full computation in order. 200 seeded
- * edits (values of the lookup table, criteria and data, formulas, invalid formulas, clearing, a cycle and
- * breaking it); after each one the session hash equals the hash of a full `compute` of the edited book.
+ * edits (values of the lookup table, criteria and data, formulas with and without arrays, invalid formulas,
+ * clearing, a cycle and breaking it); after each one the session hash equals the hash of a full `compute`
+ * of the edited book.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, debugGeneratedCode, openSession, type BookInput, type CellEdit, type CellInput } from '../src/index.js'
@@ -35,6 +36,12 @@ function edits(seed: number, count: number, synth: ReturnType<typeof synthBook>)
     { formula: 'SUM(B3:M3),1' }, // invalid: syntax
     { formula: 'NOPE(1)' },
     { formula: 'ROUND(B3/3,2)' },
+    // arrays: lifted operators and functions, functions with an array answer, an array result (#SPILL!)
+    { formula: 'SUMPRODUCT((B4:M4>0)*B4:M4)' },
+    { formula: 'MAX(IF(B5:M5>100,B5:M5,0))+SUM(B6:M6*{1,0,1,0,1,0,1,0,1,0,1,0})' },
+    { formula: 'INDEX(SORT(B4:M4,1,-1,TRUE),1,1)+COUNTA(UNIQUE(B5:M5,TRUE))' },
+    { formula: `SUM(FILTER('${S.data}'!D2:D40,'${S.data}'!D2:D40>0,0))` },
+    { formula: 'B4:M4*2' },
   ]
   const out: CellEdit[][] = []
   for (let i = 0; i < count; i++) {

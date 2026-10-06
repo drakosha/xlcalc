@@ -119,7 +119,7 @@ const LEGACY_SPILL = [
 ]
 
 /** Cases whose answer is an empty array. */
-const EMPTY = ['measurement:DROP#15', 'measurement:TAKE#9', ...['SEQUENCE#6', 'SEQUENCE#15', 'TAKE#4', 'DROP#2', 'TOCOL#5', 'UNIQUE#7', 'FILTER#4', 'RANDARRAY#7'].map((id) => `arrays:fn:${id}`)]
+const EMPTY = ['measurement:DROP#15', 'measurement:TAKE#9', ...['SEQUENCE#6', 'SEQUENCE#15', 'TAKE#4', 'DROP#2', 'TOCOL#5', 'TOROW#6', 'UNIQUE#7', 'FILTER#4', 'RANDARRAY#7'].map((id) => `arrays:fn:${id}`)]
 
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
   ...Object.fromEntries(LEGACY_SPILL.map((k) => [k, { reason: 'legacyFormula' as const, engine: SPILL }])),
