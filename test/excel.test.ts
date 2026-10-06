@@ -32,6 +32,8 @@ describe('acceptance against Excel en-US', () => {
   it('every whitelisted function has cases (measurement or a case set), or is listed with the reason why not', () => {
     expect(covered.filter((f) => !byFunction.has(f) && !SET_FUNCTIONS.has(f))).toEqual([])
     for (const f of Object.keys(NO_CASES)) expect(FUNCTIONS[f], f).toBeDefined()
+    // a function that has cases now leaves the list, so the cases count for it
+    expect(Object.keys(NO_CASES).filter((f) => CASES.some((c) => c.fn === f) || SET_FUNCTIONS.has(f))).toEqual([])
   })
 
   for (const f of covered) {
