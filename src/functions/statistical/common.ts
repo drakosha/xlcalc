@@ -1,6 +1,6 @@
 /** Helpers shared by the statistical function files. */
 import { pairs, type Grid } from '../../args.js'
-import { E, isErr, type CErr } from '../../values.js'
+import { isErr, type CErr } from '../../values.js'
 
 export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
 export const mean = (xs: readonly number[]) => sum(xs) / xs.length
@@ -43,6 +43,3 @@ export function gridNumbers(g: Grid): number[] | CErr {
 export function numberPairs(a: Grid, b: Grid): [number[], number[]] | CErr {
   return gridError(a) ?? gridError(b) ?? pairs(a, b)
 }
-
-/** Whether a computed answer is a number Excel shows (not NaN, not infinite). */
-export const finite = (x: number): number | CErr => (Number.isFinite(x) ? x : E.NUM)

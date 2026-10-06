@@ -11,18 +11,18 @@ import { combin } from '../common.js'
 import { betaPrefix, dbinom, dgamma, dpois, gammaPQ, ibeta, lbeta, normCdf, normPdf } from './special.js'
 
 /** Excel's ceiling on degrees of freedom of the chi-squared, t and F distributions. */
-export const MAX_DF = 1e10
+const MAX_DF = 1e10
 /** Counts at or past 2^31 − 1 are #NUM! in BINOM.DIST, PERMUT and PERMUTATIONA. */
 export const MAX_COUNT = 2147483647
 
-export function normDist(x: number, m: number, sd: number, cumulative: boolean): V {
+function normDist(x: number, m: number, sd: number, cumulative: boolean): V {
   if (sd <= 0) return E.NUM
   const z = (x - m) / sd
   if (cumulative) return normCdf(z)[0]
   return Number.isFinite(z * z) ? normPdf(z) / sd : E.NUM
 }
 
-export const normSDist = (z: number, cumulative: boolean) => normDist(z, 0, 1, cumulative)
+const normSDist = (z: number, cumulative: boolean) => normDist(z, 0, 1, cumulative)
 
 export function lognormDist(x: number, m: number, sd: number, cumulative: boolean): V {
   if (x <= 0 || sd <= 0) return E.NUM
@@ -30,7 +30,7 @@ export function lognormDist(x: number, m: number, sd: number, cumulative: boolea
   return cumulative ? normCdf(z)[0] : normPdf(z) / (x * sd)
 }
 
-export function exponDist(x: number, rate: number, cumulative: boolean): V {
+function exponDist(x: number, rate: number, cumulative: boolean): V {
   if (x < 0 || rate <= 0) return E.NUM
   const t = rate * x
   if (!Number.isFinite(t)) return E.NUM
@@ -38,7 +38,7 @@ export function exponDist(x: number, rate: number, cumulative: boolean): V {
 }
 
 /** WEIBULL.DIST as Excel computes it: the density is α x^(α−1)/β^α e^(−t), #DIV/0! when β^α vanishes, #NUM! when a power overflows, 0 at 0. */
-export function weibullDist(x: number, alpha: number, beta: number, cumulative: boolean): V {
+function weibullDist(x: number, alpha: number, beta: number, cumulative: boolean): V {
   if (x < 0 || alpha <= 0 || beta <= 0) return E.NUM
   const t = (x / beta) ** alpha
   if (cumulative) return Number.isFinite(t) ? -Math.expm1(-t) : E.NUM
@@ -49,7 +49,7 @@ export function weibullDist(x: number, alpha: number, beta: number, cumulative: 
   return Number.isFinite(ba) && Number.isFinite(xa) && Number.isFinite(t) ? ((alpha * xa) / ba) * Math.exp(-t) : E.NUM
 }
 
-export function gammaDist(x: number, a: number, b: number, cumulative: boolean): V {
+function gammaDist(x: number, a: number, b: number, cumulative: boolean): V {
   if (x < 0 || a <= 0 || b <= 0) return E.NUM
   if (cumulative) return gammaPQ(a, x / b)[0]
   if (x === 0) return a <= 1 ? E.NUM : 0
@@ -59,7 +59,7 @@ export function gammaDist(x: number, a: number, b: number, cumulative: boolean):
 /** Degrees of freedom: truncated, from 1 to 10^10. */
 export const badDf = (df: number) => df < 1 || df > MAX_DF
 
-export function chisqDist(x: number, df: number, cumulative: boolean): V {
+function chisqDist(x: number, df: number, cumulative: boolean): V {
   if (x < 0 || badDf(df)) return E.NUM
   if (cumulative) return gammaPQ(df / 2, x / 2)[0]
   // the density at 0: infinite for 1 degree of freedom, ½ for 2
@@ -67,7 +67,7 @@ export function chisqDist(x: number, df: number, cumulative: boolean): V {
   return dgamma(x, df / 2, 2)
 }
 
-export const chisqDistRt = (x: number, df: number): V => (x < 0 || badDf(df) ? E.NUM : gammaPQ(df / 2, x / 2)[1])
+const chisqDistRt = (x: number, df: number): V => (x < 0 || badDf(df) ? E.NUM : gammaPQ(df / 2, x / 2)[1])
 
 /** [P(T ≤ t), P(T > t)] for Student's t. */
 export function tCdf(t: number, df: number): [number, number] {
@@ -82,7 +82,7 @@ export function tPdf(t: number, df: number): number {
   return betaPrefix(df / (df + t2), t2 / (df + t2), df / 2, 0.5) / Math.abs(t)
 }
 
-export function tDist(t: number, df: number, cumulative: boolean): V {
+function tDist(t: number, df: number, cumulative: boolean): V {
   if (!Number.isFinite(t * t)) return E.NUM
   if (cumulative) return badDf(df) ? E.NUM : tCdf(t, df)[0]
   // Excel divides by the degrees of freedom first: 0 is #DIV/0!
@@ -90,22 +90,22 @@ export function tDist(t: number, df: number, cumulative: boolean): V {
   return df < 1 ? E.NUM : tPdf(t, df)
 }
 
-export const tDistRt = (t: number, df: number): V => (!Number.isFinite(t * t) || badDf(df) ? E.NUM : tCdf(t, df)[1])
-export const tDist2T = (t: number, df: number): V => (t < 0 || !Number.isFinite(t * t) || badDf(df) ? E.NUM : 2 * tCdf(t, df)[1])
+const tDistRt = (t: number, df: number): V => (!Number.isFinite(t * t) || badDf(df) ? E.NUM : tCdf(t, df)[1])
+const tDist2T = (t: number, df: number): V => (t < 0 || !Number.isFinite(t * t) || badDf(df) ? E.NUM : 2 * tCdf(t, df)[1])
 
 /** [P(F ≤ x), P(F > x)] for the F distribution. */
 export const fCdf = (x: number, d1: number, d2: number) => ibeta((d1 * x) / (d1 * x + d2), d2 / (d1 * x + d2), d1 / 2, d2 / 2)
 
 export const fPdf = (x: number, d1: number, d2: number) => betaPrefix((d1 * x) / (d1 * x + d2), d2 / (d1 * x + d2), d1 / 2, d2 / 2) / x
 
-export function fDist(x: number, d1: number, d2: number, cumulative: boolean): V {
+function fDist(x: number, d1: number, d2: number, cumulative: boolean): V {
   if (x < 0 || badDf(d1) || badDf(d2)) return E.NUM
   if (cumulative) return fCdf(x, d1, d2)[0]
   if (x === 0) return d1 === 1 ? E.NUM : d1 === 2 ? 1 : 0
   return fPdf(x, d1, d2)
 }
 
-export const fDistRt = (x: number, d1: number, d2: number): V => (x < 0 || badDf(d1) || badDf(d2) ? E.NUM : fCdf(x, d1, d2)[1])
+const fDistRt = (x: number, d1: number, d2: number): V => (x < 0 || badDf(d1) || badDf(d2) ? E.NUM : fCdf(x, d1, d2)[1])
 
 export function betaDist(x: number, a: number, b: number, cumulative: boolean, lo = 0, hi = 1): V {
   if (a <= 0 || b <= 0 || lo >= hi || x < lo || x > hi) return E.NUM
@@ -117,7 +117,7 @@ export function betaDist(x: number, a: number, b: number, cumulative: boolean, l
   return betaPrefix(z, y, a, b) / (z * y) / (hi - lo)
 }
 
-export function binomDist(k: number, n: number, p: number, cumulative: boolean): V {
+function binomDist(k: number, n: number, p: number, cumulative: boolean): V {
   if (k < 0 || k > n || n >= MAX_COUNT || p < 0 || p > 1) return E.NUM
   if (!cumulative) return dbinom(k, n, p, 1 - p)
   if (k === n || p === 0) return 1
@@ -163,20 +163,20 @@ export function hypgeomDist(k: number, n: number, K: number, N: number, cumulati
   return 1 - acc
 }
 
-export function poissonDist(x: number, m: number, cumulative: boolean): V {
+function poissonDist(x: number, m: number, cumulative: boolean): V {
   if (x < 0 || m < 0) return E.NUM
   if (!cumulative) return dpois(x, m)
   return m === 0 ? 1 : gammaPQ(x + 1, m)[1]
 }
 
-export function permut(n: number, k: number): V {
+function permut(n: number, k: number): V {
   if (n < 0 || k < 0 || n < k || n >= MAX_COUNT) return E.NUM
   let r = 1
   for (let i = 0; i < k && Number.isFinite(r); i++) r *= n - i
   return r
 }
 
-export const permutationA = (n: number, k: number): V => (n < 0 || k < 0 || n >= MAX_COUNT ? E.NUM : n ** k)
+const permutationA = (n: number, k: number): V => (n < 0 || k < 0 || n >= MAX_COUNT ? E.NUM : n ** k)
 
 export const functions: Record<string, FnDef> = {
   'BETA.DIST': { args: 'n n n b n? n?', fn: betaDist },

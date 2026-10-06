@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.722
+  "seconds": 0.542
  },
  "cases": [
   {
@@ -15774,36 +15774,6 @@
    "formula": "COUNTIF(D!A7:A8,\"#N/A\")"
   },
   {
-   "id": "COUNTIFS#1",
-   "group": "COUNTIFS",
-   "fn": "COUNTIFS",
-   "formula": "COUNTIFS(D!E1:E8,D!A7)"
-  },
-  {
-   "id": "COUNTIFS#2",
-   "group": "COUNTIFS",
-   "fn": "COUNTIFS",
-   "formula": "COUNTIFS(D!E1:E8,\"#DIV/0!\",D!B1:B8,\">0\")"
-  },
-  {
-   "id": "SUMIF#1",
-   "group": "SUMIF",
-   "fn": "SUMIF",
-   "formula": "SUMIF(D!E1:E8,D!A7,D!B1:B8)"
-  },
-  {
-   "id": "SUMIF#2",
-   "group": "SUMIF",
-   "fn": "SUMIF",
-   "formula": "SUMIF(D!E1:E8,\"<>#DIV/0!\",D!B1:B8)"
-  },
-  {
-   "id": "AVERAGEIF#31",
-   "group": "AVERAGEIF",
-   "fn": "AVERAGEIF",
-   "formula": "AVERAGEIF(D!E1:E8,D!A7,D!B1:B8)"
-  },
-  {
    "id": "BINOM.INV#19",
    "group": "BINOM.INV",
    "fn": "BINOM.INV",
@@ -26592,26 +26562,6 @@
   "COUNTIF#25": {
    "t": "n",
    "v": 1
-  },
-  "COUNTIFS#1": {
-   "t": "n",
-   "v": 1
-  },
-  "COUNTIFS#2": {
-   "t": "n",
-   "v": 1
-  },
-  "SUMIF#1": {
-   "t": "n",
-   "v": 15
-  },
-  "SUMIF#2": {
-   "t": "n",
-   "v": 99.75
-  },
-  "AVERAGEIF#31": {
-   "t": "n",
-   "v": 15
   },
   "BINOM.INV#19": {
    "t": "n",

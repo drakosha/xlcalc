@@ -10,7 +10,7 @@ import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, isErr, type V } from '../../values.js'
 import { devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
 
-export function chisqTest(actual: Grid, expected: Grid): V {
+function chisqTest(actual: Grid, expected: Grid): V {
   const err = gridError(actual) ?? gridError(expected)
   if (err) return err
   const n = actual.rows * actual.cols
@@ -30,7 +30,7 @@ export function chisqTest(actual: Grid, expected: Grid): V {
   return gammaPQ(df / 2, x2 / 2)[1]
 }
 
-export function fTest(a: number[], b: number[]): V {
+function fTest(a: number[], b: number[]): V {
   if (a.length < 2 || b.length < 2) return E.DIV0
   const va = devsq(a) / (a.length - 1)
   const vb = devsq(b) / (b.length - 1)
@@ -39,7 +39,7 @@ export function fTest(a: number[], b: number[]): V {
   return 2 * Math.min(up, 1 - up)
 }
 
-export function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
+function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
   if ((tails !== 1 && tails !== 2) || type < 1 || type > 3) return E.NUM
   let t: number
   let df: number
@@ -78,7 +78,7 @@ export function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
   return tails * tCdf(Math.abs(t), df)[1]
 }
 
-export function zTest(xs: number[], x: number, sigma?: number): V {
+function zTest(xs: number[], x: number, sigma?: number): V {
   const n = xs.length
   if (!n) return E.NA
   if (sigma !== undefined && sigma <= 0) return E.NUM

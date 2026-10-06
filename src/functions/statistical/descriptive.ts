@@ -34,12 +34,12 @@ function interpolate(s: number[], h: number): number {
   return s[i] + (h - i) * (s[i + 1] - s[i])
 }
 
-export function percentileInc(xs: number[], k: number): V {
+function percentileInc(xs: number[], k: number): V {
   if (k < 0 || k > 1) return E.NUM
   return interpolate(sorted(xs), k * (xs.length - 1))
 }
 
-export function percentileExc(xs: number[], k: number): V {
+function percentileExc(xs: number[], k: number): V {
   const n = xs.length
   // Excel compares k with 1/(n+1) and n/(n+1), not the rank with 1 and n
   if (k < 1 / (n + 1) || k > n / (n + 1)) return E.NUM
@@ -47,8 +47,8 @@ export function percentileExc(xs: number[], k: number): V {
 }
 
 // the quart is checked before it is truncated: QUARTILE(x, -0.5) is #NUM!, QUARTILE(x, 4.9) the maximum
-export const quartileInc = (xs: number[], q: number): V => (q < 0 || q >= 5 ? E.NUM : percentileInc(xs, Math.trunc(q) / 4))
-export const quartileExc = (xs: number[], q: number): V => (q < 1 || q >= 4 ? E.NUM : percentileExc(xs, Math.trunc(q) / 4))
+const quartileInc = (xs: number[], q: number): V => (q < 0 || q >= 5 ? E.NUM : percentileInc(xs, Math.trunc(q) / 4))
+const quartileExc = (xs: number[], q: number): V => (q < 1 || q >= 4 ? E.NUM : percentileExc(xs, Math.trunc(q) / 4))
 
 /** PERCENTRANK: the rank of x among the data, interpolated, truncated (not rounded) to `digits`. */
 function percentRank(xs: number[], x: number, digits = 3, exclusive: boolean): V {
@@ -67,8 +67,8 @@ function percentRank(xs: number[], x: number, digits = 3, exclusive: boolean): V
   return Math.floor(Number((r * p).toPrecision(15))) / p
 }
 
-export const percentRankInc = (xs: number[], x: number, digits?: number) => percentRank(xs, x, digits, false)
-export const percentRankExc = (xs: number[], x: number, digits?: number) => percentRank(xs, x, digits, true)
+const percentRankInc = (xs: number[], x: number, digits?: number) => percentRank(xs, x, digits, false)
+const percentRankExc = (xs: number[], x: number, digits?: number) => percentRank(xs, x, digits, true)
 
 /** RANK's order: a number or a boolean; text, even "0", is #VALUE!. */
 function descending(order: V): boolean | V {
@@ -89,8 +89,8 @@ function rank(x: number, xs: number[], order: V | undefined, average: boolean): 
   return average ? before + (equal + 1) / 2 : before + 1
 }
 
-export const rankEq = (x: number, xs: number[], order?: V) => rank(x, xs, order, false)
-export const rankAvg = (x: number, xs: number[], order?: V) => rank(x, xs, order, true)
+const rankEq = (x: number, xs: number[], order?: V) => rank(x, xs, order, false)
+const rankAvg = (x: number, xs: number[], order?: V) => rank(x, xs, order, true)
 
 /**
  * MODE: the most frequent number, the first to occur among equals; text and booleans are skipped even as

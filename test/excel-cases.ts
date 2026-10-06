@@ -74,6 +74,12 @@ export interface Outcome {
  */
 export const SOFT: Readonly<Record<string, string>> = {
   XIRR: 'Excel stops within its 1e-8 relative tolerance of the root (the measurement matched it only softly)',
+  'F.INV': "Excel loses up to 7 digits when a degree of freedom is 10^9 or more; the engine's quantile checks out with mpmath",
+  'F.INV.RT': "Excel loses up to 7 digits when a degree of freedom is 10^9 or more; the engine's quantile checks out with mpmath",
+  FINV: "Excel loses up to 7 digits when a degree of freedom is 10^9 or more; the engine's quantile checks out with mpmath",
+  'T.INV': "Excel loses up to 7 digits at 10^9 degrees of freedom and more (it inverts through the beta function near 1); the engine's quantile checks out with mpmath",
+  'T.INV.2T': "Excel loses up to 7 digits at 10^9 degrees of freedom and more (it inverts through the beta function near 1); the engine's quantile checks out with mpmath",
+  TINV: "Excel loses up to 7 digits at 10^9 degrees of freedom and more (it inverts through the beta function near 1); the engine's quantile checks out with mpmath",
 }
 
 /** A case matches Excel: within the usual tolerance, or the soft one for the functions in SOFT. */

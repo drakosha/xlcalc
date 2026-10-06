@@ -9,11 +9,10 @@ import { functions as regression } from './statistical/regression.js'
 import { functions as tests } from './statistical/tests.js'
 
 /**
- * Computed, but Excel's answer differs on a few extreme cases where Excel itself fails (#NUM! where the
- * quantile exists, digits lost at 10^9 degrees of freedom): outside the whitelist until those cases are
- * listed as known differences.
+ * Computed, but Excel fails on a few extreme cases (#NUM! where the quantile exists, a tie BINOM.INV breaks
+ * the other way): outside the whitelist until those cases are listed as known differences.
  */
-const PENDING = new Set(['BINOM.INV', 'CHIINV', 'CHISQ.INV', 'CHISQ.INV.RT', 'F.INV', 'F.INV.RT', 'FINV', 'GAMMA.INV', 'GAMMAINV', 'T.INV', 'T.INV.2T', 'TINV'])
+const PENDING = new Set(['BINOM.INV', 'CHIINV', 'CHISQ.INV', 'CHISQ.INV.RT', 'GAMMA.INV', 'GAMMAINV'])
 
 const all: Record<string, FnDef> = { ...descriptive, ...conditional, ...distributions, ...inverse, ...tests, ...regression, ...compatibility }
 

@@ -22,7 +22,7 @@ export function gammaInv(p: number, q: number, a: number): number {
 }
 
 /** z with I_z(a, b) = p, q = 1 − p. */
-export function betaInv(p: number, q: number, a: number, b: number): number {
+function betaInv(p: number, q: number, a: number, b: number): number {
   const z0 = ibetainvStart(p, q, a, b)
   const lower = p <= q
   const f = (z: number) => {
@@ -34,7 +34,7 @@ export function betaInv(p: number, q: number, a: number, b: number): number {
 }
 
 /** x with P(F ≤ x) = p, q = 1 − p, from the start of the beta quantile. */
-export function fInv(p: number, q: number, d1: number, d2: number): number {
+function fInv(p: number, q: number, d1: number, d2: number): number {
   const z0 = Math.min(Math.max(ibetainvStart(p, q, d1 / 2, d2 / 2), 1e-300), 1 - 1e-16)
   const lower = p <= q
   const f = (x: number) => {
@@ -45,7 +45,7 @@ export function fInv(p: number, q: number, d1: number, d2: number): number {
 }
 
 /** t > 0 with P(T > t) = q: closed forms for 1 and 2 degrees of freedom, else from the normal deviate (Cornish–Fisher). */
-export function tUpperInv(q: number, df: number): number {
+function tUpperInv(q: number, df: number): number {
   if (df === 1) return 1 / Math.tan(Math.PI * q)
   if (df === 2) return (1 - 2 * q) / Math.sqrt(2 * q * (1 - q))
   const z = -normInv(q)
@@ -54,13 +54,13 @@ export function tUpperInv(q: number, df: number): number {
 }
 
 /** Student's t quantile of the lower tail probability p. */
-export function tInv(p: number, df: number): number {
+function tInv(p: number, df: number): number {
   if (p === 0.5) return 0
   return p < 0.5 ? -tUpperInv(p, df) : tUpperInv(1 - p, df)
 }
 
 /** T.INV.2T: p up to 2, past 1 the negative quantile. */
-export function tInv2T(p: number, df: number): V {
+function tInv2T(p: number, df: number): V {
   if (p <= 0 || p >= 2 || badDf(df)) return E.NUM
   if (p === 1) return 0
   return p < 1 ? tUpperInv(p / 2, df) : -tUpperInv(1 - p / 2, df)
@@ -68,9 +68,9 @@ export function tInv2T(p: number, df: number): V {
 
 const unit = (p: number) => p > 0 && p < 1
 
-export const normSInv = (p: number): V => (unit(p) ? normInv(p) : E.NUM)
-export const normInvExcel = (p: number, m: number, sd: number): V => (unit(p) && sd > 0 ? m + sd * normInv(p) : E.NUM)
-export const lognormInv = (p: number, m: number, sd: number): V => (unit(p) && sd > 0 ? Math.exp(m + sd * normInv(p)) : E.NUM)
+const normSInv = (p: number): V => (unit(p) ? normInv(p) : E.NUM)
+const normInvExcel = (p: number, m: number, sd: number): V => (unit(p) && sd > 0 ? m + sd * normInv(p) : E.NUM)
+const lognormInv = (p: number, m: number, sd: number): V => (unit(p) && sd > 0 ? Math.exp(m + sd * normInv(p)) : E.NUM)
 
 export function gammaInvExcel(p: number, a: number, b: number): V {
   if (p < 0 || p >= 1 || a <= 0 || b <= 0) return E.NUM
@@ -86,12 +86,12 @@ export function chisqInvRt(q: number, df: number): V {
   return 2 * gammaInv(1 - q, q, df / 2)
 }
 
-export const tInvExcel = (p: number, df: number): V => (unit(p) && !badDf(df) ? tInv(p, df) : E.NUM)
+const tInvExcel = (p: number, df: number): V => (unit(p) && !badDf(df) ? tInv(p, df) : E.NUM)
 
-export const fInvExcel = (p: number, d1: number, d2: number): V => (p < 0 || p >= 1 || badDf(d1) || badDf(d2) ? E.NUM : p === 0 ? 0 : fInv(p, 1 - p, d1, d2))
-export const fInvRt = (q: number, d1: number, d2: number): V => (q <= 0 || q > 1 || badDf(d1) || badDf(d2) ? E.NUM : q === 1 ? 0 : fInv(1 - q, q, d1, d2))
+const fInvExcel = (p: number, d1: number, d2: number): V => (p < 0 || p >= 1 || badDf(d1) || badDf(d2) ? E.NUM : p === 0 ? 0 : fInv(p, 1 - p, d1, d2))
+const fInvRt = (q: number, d1: number, d2: number): V => (q <= 0 || q > 1 || badDf(d1) || badDf(d2) ? E.NUM : q === 1 ? 0 : fInv(1 - q, q, d1, d2))
 
-export function betaInvExcel(p: number, a: number, b: number, lo = 0, hi = 1): V {
+function betaInvExcel(p: number, a: number, b: number, lo = 0, hi = 1): V {
   if (!unit(p) || a <= 0 || b <= 0 || lo >= hi) return E.NUM
   return lo + betaInv(p, 1 - p, a, b) * (hi - lo)
 }
@@ -100,7 +100,7 @@ export function betaInvExcel(p: number, a: number, b: number, lo = 0, hi = 1): V
  * The smallest k whose cumulative binomial probability reaches alpha. Excel compares the first term,
  * q^n as exp(n ln q), strictly: BINOM.INV(10,0.5,0.5^10) is 1, BINOM.INV(3,0.5,0.125) is 0 (exp gives a bit more).
  */
-export function binomInv(n: number, p: number, alpha: number): V {
+function binomInv(n: number, p: number, alpha: number): V {
   if (n < 0 || n >= MAX_COUNT || !unit(p) || !unit(alpha)) return E.NUM
   const q = 1 - p
   if (Math.exp(n * Math.log(q)) > alpha) return 0
@@ -115,7 +115,7 @@ export function binomInv(n: number, p: number, alpha: number): V {
 }
 
 /** CONFIDENCE.T: the half-width of the t interval. */
-export function confidenceT(alpha: number, sd: number, n: number): V {
+function confidenceT(alpha: number, sd: number, n: number): V {
   if (!unit(alpha) || sd <= 0 || n < 1) return E.NUM
   if (n === 1) return E.DIV0
   const t = tInv2T(alpha, n - 1)
@@ -123,7 +123,7 @@ export function confidenceT(alpha: number, sd: number, n: number): V {
 }
 
 // through 1 − α/2 as Excel, rounding included: CONFIDENCE(1E-10,1,10) is 2.045029491302821
-export const confidenceNorm = (alpha: number, sd: number, n: number): V => (!unit(alpha) || sd <= 0 || n < 1 ? E.NUM : (normInv(1 - alpha / 2) * sd) / Math.sqrt(n))
+const confidenceNorm = (alpha: number, sd: number, n: number): V => (!unit(alpha) || sd <= 0 || n < 1 ? E.NUM : (normInv(1 - alpha / 2) * sd) / Math.sqrt(n))
 
 export const functions: Record<string, FnDef> = {
   'BETA.INV': { args: 'n n n n? n?', fn: betaInvExcel },

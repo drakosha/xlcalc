@@ -4,7 +4,7 @@ formula-engine has no runtime dependencies. Part of its code is ported (copied, 
 
 | project | version | license | ported into |
 |---|---|---|---|
-| [formula.js](https://github.com/formulajs/formulajs) (`@formulajs/formulajs`) | 4.6.1 | MIT | `src/functions/math/arithmetic.ts`, `math/rounding.ts`, `math/sums.ts`, `math/trig.ts`, `engineering/complex.ts`, `statistical.ts`, `logical.ts`, `information.ts`, `text/strings.ts`, `text/numbers.ts`, `financial/annuity.ts`, `financial/depreciation.ts`, `lookup/reference.ts`, `common.ts` (from `src/math-trig.js`, `src/statistical.js`, `src/compatibility.js`, `src/logical.js`, `src/information.js`, `src/text.js`, `src/financial.js`, `src/lookup-reference.js`) |
+| [formula.js](https://github.com/formulajs/formulajs) (`@formulajs/formulajs`) | 4.6.1 | MIT | `src/functions/math/arithmetic.ts`, `math/rounding.ts`, `math/sums.ts`, `math/trig.ts`, `engineering/complex.ts`, `statistical/descriptive.ts`, `statistical/distributions.ts`, `statistical/regression.ts`, `statistical/tests.ts`, `logical.ts`, `information.ts`, `text/strings.ts`, `text/numbers.ts`, `financial/annuity.ts`, `financial/depreciation.ts`, `lookup/reference.ts`, `common.ts` (from `src/math-trig.js`, `src/statistical.js`, `src/compatibility.js`, `src/logical.js`, `src/information.js`, `src/text.js`, `src/financial.js`, `src/lookup-reference.js`) |
 | [jStat](https://github.com/jstat/jstat) (`jstat`) | 1.9.6 | MIT | `src/functions/jstat.ts`, `engineering/erf.ts` (from `src/special.js`, `src/distribution.js`) |
 | [bessel](https://github.com/SheetJS/bessel) (`bessel`) | 1.0.2 | Apache-2.0 | `src/functions/engineering/bessel.ts` (from `bessel.js`) |
 
