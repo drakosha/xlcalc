@@ -1,7 +1,7 @@
 /**
  * The formula engine contract (subpath `./contract`): types only, no engine code. Any engine
- * implementation (currently formulas compiled to JS) sits behind this contract; the package's
- * behaviour tests are its acceptance suite.
+ * implementation (currently formulas compiled to closures or to JS text) sits behind this contract; the
+ * package's behaviour tests are its acceptance suite.
  *
  * A formula is stored in the `formula` field without the leading `=`, separately from the value:
  * a string from data never becomes a formula. Function names are English, arguments are separated
@@ -85,6 +85,14 @@ export interface Externals {
   values?: Record<string, CellValue>
 }
 
+/**
+ * How formulas run; values, issues and hashes are the same either way. `closures` (the default) builds each
+ * formula as a tree of JavaScript closures and generates no code, so it works under a Content Security
+ * Policy without 'unsafe-eval'. `eval` generates JavaScript text and compiles it with `new Function`, which
+ * such a policy blocks (computing then throws an `EvalError`).
+ */
+export type Execution = 'closures' | 'eval'
+
 export interface ComputeOptions {
   /**
    * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
@@ -92,6 +100,8 @@ export interface ComputeOptions {
    */
   clock?: Clock
   externals?: Externals
+  /** `closures` by default. */
+  execution?: Execution
 }
 
 export interface CellResult {
@@ -186,9 +196,10 @@ export interface Explanation {
 /**
  * Session options. A session keeps one clock, `clock` or by default the moment of opening and a random
  * seed, until `setClock`. A live session (`live: true`) takes a fresh clock and a new seed on every
- * recomputation instead.
+ * recomputation instead. Edits are compiled in the `execution` the session was opened with (`closures` by
+ * default).
  */
-export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals }
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution }
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the

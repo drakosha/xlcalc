@@ -20,6 +20,7 @@ Breaking changes:
 
 Added:
 
+- The option `execution` of `compute` and `openSession` (type `Execution`): `'closures'`, the default, runs each formula as a tree of JavaScript closures and generates no code, so the engine computes under a Content Security Policy without `'unsafe-eval'`; `'eval'` compiles the book's formulas to JavaScript text with one `new Function`, as before. Values, issues and hashes are the same in both, and a session compiles edits in the mode it was opened with.
 - Array constants `{1,2;3,4}` (rows by `;`, values by `,`: numbers, text, booleans, errors).
 - 28 functions with an array answer, usable inside a formula (`SUM(UNIQUE(...))`, `INDEX(SORT(...),1,1)`, `COUNTA(FILTER(...))`) and matching Excel en-US on all of their cases: `CHOOSECOLS`, `CHOOSEROWS`, `DROP`, `EXPAND`, `FILTER`, `FREQUENCY`, `GROWTH`, `HSTACK`, `LINEST`, `LOGEST`, `MINVERSE`, `MMULT`, `MODE.MULT`, `MUNIT`, `RANDARRAY` (volatile, drawn from the clock seed, the cell and the element), `SEQUENCE`, `SORT`, `SORTBY`, `TAKE`, `TEXTSPLIT`, `TOCOL`, `TOROW`, `TRANSPOSE`, `TREND`, `UNIQUE`, `VSTACK`, `WRAPCOLS`, `WRAPROWS`. An empty answer is `#CALC!`, as in Excel. The whitelist has 465 functions.
 - `TEXTBEFORE` and `TEXTAFTER` take several delimiters (an array or a range).
