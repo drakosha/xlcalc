@@ -157,9 +157,9 @@ function closeStartupBook() {
 }
 
 /**
- * Окна Excel, которые не окна книг (модальный диалог и т. п.): подроль и текст. Только чтение
- * через System Events, ничего не нажимается.
- * System Events fails with -1719 when a book's window closes while it lists them: then it asks again (three times at most).
+ * Excel's windows that are not book windows (a modal dialog and the like): subrole and text, read through
+ * System Events, nothing is clicked. System Events fails with -1719 when a book's window closes while it
+ * lists them: then it asks again, three times at most.
  */
 export function excelDialogs(): { subrole: string; text: string }[] {
   for (let i = 0; ; i++)
