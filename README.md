@@ -11,7 +11,7 @@ What it does differently:
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
 - **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
-Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT) and [jStat](https://github.com/jstat/jstat) (MIT), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
+Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT), [jStat](https://github.com/jstat/jstat) (MIT) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
 
 ## Install
 
@@ -174,7 +174,7 @@ From `formula-engine`:
 
 The whitelist, by category (`FUNCTION_NAMES` has it in code):
 
-- Math and trigonometry: `ABS`, `ACOS`, `ACOSH`, `ACOTH`, `ASIN`, `ASINH`, `ATAN`, `ATANH`, `CEILING`, `CEILING.MATH`, `CEILING.PRECISE`, `COSH`, `CSCH`, `DEGREES`, `EVEN`, `EXP`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `INT`, `LN`, `LOG`, `LOG10`, `ODD`, `PI`, `POWER`, `PRODUCT`, `RADIANS`, `RAND`, `RANDBETWEEN`, `ROUND`, `ROUNDDOWN`, `ROUNDUP`, `SECH`, `SIGN`, `SINH`, `SQRT`, `SUM`, `SUMIF`, `SUMIFS`, `TRUNC`
+- Math and trigonometry: `ABS`, `ACOS`, `ACOSH`, `ACOT`, `ACOTH`, `ARABIC`, `ASIN`, `ASINH`, `ATAN`, `ATAN2`, `ATANH`, `BASE`, `CEILING`, `CEILING.MATH`, `CEILING.PRECISE`, `COMBIN`, `COMBINA`, `COS`, `COSH`, `COT`, `COTH`, `CSC`, `CSCH`, `DECIMAL`, `DEGREES`, `EVEN`, `EXP`, `FACT`, `FACTDOUBLE`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `GCD`, `INT`, `ISO.CEILING`, `LCM`, `LN`, `LOG`, `LOG10`, `MDETERM`, `MOD`, `MROUND`, `MULTINOMIAL`, `ODD`, `PERCENTOF`, `PI`, `POWER`, `PRODUCT`, `QUOTIENT`, `RADIANS`, `RAND`, `RANDBETWEEN`, `ROMAN`, `ROUND`, `ROUNDDOWN`, `ROUNDUP`, `SEC`, `SECH`, `SERIESSUM`, `SIGN`, `SIN`, `SINH`, `SQRT`, `SQRTPI`, `SUM`, `SUMIF`, `SUMIFS`, `SUMPRODUCT`, `SUMSQ`, `SUMX2MY2`, `SUMX2PY2`, `SUMXMY2`, `TAN`, `TANH`, `TRUNC`
 
 - Statistical: `AVEDEV`, `AVERAGE`, `BINOM.DIST.RANGE`, `BINOMDIST`, `COUNTA`, `COUNTBLANK`, `COUNTIFS`, `F.DIST.RT`, `FISHER`, `GAMMALN`, `GAMMALN.PRECISE`, `GAUSS`, `MAX`, `MEDIAN`, `MIN`, `NORM.DIST`, `NORM.S.DIST`, `NORMDIST`, `PHI`, `PROB`
 
@@ -191,6 +191,8 @@ The whitelist, by category (`FUNCTION_NAMES` has it in code):
 - Lookup and reference: `ADDRESS`, `CHOOSE`, `COLUMN`, `COLUMNS`, `HLOOKUP`, `HYPERLINK`, `INDEX`, `LOOKUP`, `MATCH`, `ROW`, `ROWS`, `VLOOKUP`, `XLOOKUP`, `XMATCH`
 
 - Database: `DAVERAGE`, `DCOUNT`, `DCOUNTA`, `DGET`, `DMAX`, `DMIN`, `DPRODUCT`, `DSTDEV`, `DSTDEVP`, `DSUM`, `DVAR`, `DVARP`
+
+- Engineering: `BESSELI`, `BESSELJ`, `BESSELK`, `BESSELY`, `BIN2DEC`, `BIN2HEX`, `BIN2OCT`, `BITAND`, `BITLSHIFT`, `BITOR`, `BITRSHIFT`, `BITXOR`, `COMPLEX`, `CONVERT`, `DEC2BIN`, `DEC2HEX`, `DEC2OCT`, `DELTA`, `ERF`, `ERF.PRECISE`, `ERFC`, `ERFC.PRECISE`, `GESTEP`, `HEX2BIN`, `HEX2DEC`, `HEX2OCT`, `IMABS`, `IMAGINARY`, `IMARGUMENT`, `IMCONJUGATE`, `IMCOS`, `IMCOT`, `IMCSCH`, `IMDIV`, `IMEXP`, `IMLN`, `IMLOG10`, `IMLOG2`, `IMPOWER`, `IMPRODUCT`, `IMREAL`, `IMSEC`, `IMSECH`, `IMSIN`, `IMSINH`, `IMSQRT`, `IMSUB`, `IMSUM`, `IMTAN`, `OCT2BIN`, `OCT2DEC`, `OCT2HEX`
 
 Status: every function in the list matches Excel en-US on all of its cases in the coverage measurement (`docs/coverage-formulajs.md`) and in the Excel case sets (`docs/excel-cases/`), which also cover the functions formula.js lacks (`XLOOKUP`, `XMATCH`, `TEXTBEFORE`, `ADDRESS` and others). `TODAY`, `NOW`, `RAND` and `RANDBETWEEN` (volatile) have their own semantics and clock tests instead.
 
@@ -245,4 +247,4 @@ Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical
 
 ## License
 
-MIT. Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT, Copyright (c) 2014 Sutoiku, Inc.) and [jStat](https://github.com/jstat/jstat) (MIT, Copyright (c) 2013 jStat); [THIRD_PARTY.md](THIRD_PARTY.md) has their license texts and the files they are in.
+MIT. Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT, Copyright (c) 2014 Sutoiku, Inc.), [jStat](https://github.com/jstat/jstat) (MIT, Copyright (c) 2013 jStat) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0, Copyright (C) 2013-present SheetJS); [THIRD_PARTY.md](THIRD_PARTY.md) has their license texts and the files they are in.
