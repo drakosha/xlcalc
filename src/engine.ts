@@ -8,30 +8,22 @@
  * No platform imports, so the engine runs outside Node as well.
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
-import type { Arg } from './args.js'
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { codegen, compileSources, PRELUDE, type CodegenContext } from './compile.js'
+import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { ARRAY_RESULT, canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
 import { CErr, E, isErr, Rng, type V } from './values.js'
 
-interface Formula {
+interface Formula extends FormulaCode {
   id: number
   s: number
   r: number
   c: number
   /** Canonical text. */
   text: string
-  refs: Rng[]
-  /** Calls a volatile function directly. */
-  volatile: boolean
-  /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
-  nested: boolean
-  source: string
-  fn: () => Arg
   /** Rows and columns of the array result of the latest computation (the cell shows #SPILL!). */
   spill?: [number, number]
 }
@@ -67,6 +59,7 @@ export interface EngineState {
   externalFunctions: string[]
   ctx: RuntimeContext
   rt: Runtime
+  compiler: Compiler
   /** id → formula; a hole after deletion. */
   formulas: (Formula | undefined)[]
   /** `s:r:c` → formula id. */
@@ -342,6 +335,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   const input: BookInput = { sheets: book.sheets.map((s) => ({ name: s.name, cells: { ...s.cells } })), names: [...(book.names ?? [])] }
   const { names, issues } = prepareNames({ sheetIdx, sheetNames }, input.names!)
   const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
+  const rt = makeRuntime(ctx)
   const state: EngineState = {
     input,
     sheetNames,
@@ -350,7 +344,8 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     nameIssues: issues,
     externalFunctions: (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f]),
     ctx,
-    rt: makeRuntime(ctx),
+    rt,
+    compiler: makeCompiler(rt),
     formulas: [],
     at: new Map(),
     invalid: new Map(),
@@ -361,7 +356,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     wide: new Map(),
     volatile: new Set(),
   }
-  const pending: Omit<Formula, 'fn'>[] = []
+  const pending: Formula[] = []
   input.sheets.forEach((sheet, s) => {
     for (const [addr, cellIn] of Object.entries(sheet.cells)) {
       const { row, col } = parseAddress(addr)
@@ -376,13 +371,13 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
         put(ctx.sheets[s], row, col, E[p.invalid.error])
         continue
       }
-      const g = codegen(codegenContext(state, s), p.ast, s, row, col)
-      pending.push({ id: pending.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, nested: g.nested, source: g.source })
+      const g = state.compiler.formula(codegenContext(state, s), p.ast, s, row, col)
+      pending.push({ id: pending.length, s, r: row, c: col, text: p.text, ...g })
       if (g.nested) mark(ctx, s, row, col, true)
     }
   })
-  const fns = compileSources(state.rt, pending.map((p) => p.source))
-  state.formulas = pending.map((p, i) => ({ ...p, fn: fns[i] }))
+  state.compiler.link(pending)
+  state.formulas = pending
   for (const f of state.formulas) state.at.set(key(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
   evaluateAll(state)
@@ -423,8 +418,8 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
         write(state, s, row, col, E[p.invalid.error], track)
         continue
       }
-      const g = codegen(codegenContext(state, s), p.ast, s, row, col)
-      const f = { id: state.formulas.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, nested: g.nested, source: g.source, fn: () => null as V }
+      const g = state.compiler.formula(codegenContext(state, s), p.ast, s, row, col)
+      const f: Formula = { id: state.formulas.length, s, r: row, c: col, text: p.text, ...g }
       if (g.nested) mark(state.ctx, s, row, col, true)
       state.formulas.push(f)
       state.at.set(k, f.id)
@@ -432,10 +427,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
       structural = true
     } else write(state, s, row, col, input ? inputScalar(input.value) : null, track)
   }
-  if (fresh.length) {
-    const fns = compileSources(state.rt, fresh.map((f) => f.source))
-    fresh.forEach((f, i) => (f.fn = fns[i]))
-  }
+  state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
   for (const f of fresh) dirty.add(f.id)
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
@@ -533,7 +525,7 @@ export function issues(state: EngineState): Issue[] {
     if (v.code !== 'CYCLE') {
       const from = errorSource(state, f, v.code)
       if (from) reason = `${GENERIC[v.code]}, from ${from}`
-      else if (v.code === 'NA' && /ext\(/.test(f.source)) reason = 'value not found (or no value for an external call)'
+      else if (v.code === 'NA' && f.external) reason = 'value not found (or no value for an external call)'
     }
     out.push({ s: f.s, r: f.r, c: f.c, error: v.code, reason })
   }
@@ -560,7 +552,7 @@ export function debugSource(state: EngineState): string {
   const ids = [...state.order, ...state.formulas.filter((f) => f && state.topo[f.id] < 0).map((f) => f!.id)]
   for (const id of ids) {
     const f = state.formulas[id]!
-    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, f.source)
+    lines.push(`// ${quoteSheet(state.sheetNames[f.s])}!${formatAddress(f.r, f.c)} = ${f.text}${state.topo[id] < 0 ? '  (cycle)' : ''}`, f.source!)
   }
   return lines.join('\n')
 }
