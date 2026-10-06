@@ -355,6 +355,30 @@ export function formats(add: Add) {
       ['12345.678', '#,###.#'],
       ['0.000123', '0.000000'],
       ['-0.4', '0'],
+      // scaling commas after the decimal part, Excel's calendar at 0 and 60, empty sections
+      ['1234567.891', '#,##0.0,,'],
+      ['1234567.891', '0.00,'],
+      ['1500', '0.0,"K"'],
+      ['1234567.891', '0.0,, "M"'],
+      ['-1234567', '#,##0.0,;(#,##0.0,)'],
+      ['60', 'yyyy-mm-dd'],
+      ['0', 'yyyy-mm-dd'],
+      ['0', 'dddd mmmm d'],
+      ['60', 'dddd'],
+      ['59', 'yyyy-mm-dd ddd'],
+      ['61', 'yyyy-mm-dd ddd'],
+      ['1', 'dddd'],
+      ['0.5', 'yyyy-mm-dd hh:mm'],
+      ['60.75', 'm/d/yyyy h:mm AM/PM'],
+      ['-1', '0;'],
+      ['1', ';;'],
+      ['0', '0;0;'],
+      ['0', '0;'],
+      ['-1', ';0'],
+      ['1', ';0'],
+      ['"abc"', '0;0;0;'],
+      ['"abc"', ';;;'],
+      ['-1', '0;;0'],
     ].map(([v, f]) => `TEXT(${v},${q(f)})`),
   )
 }
@@ -369,4 +393,17 @@ export function bytes(add: Add) {
   add('SEARCHB', 'SEARCHB("本","日本語")', 'SEARCHB("И?","Привет")')
   add('REPLACEB', 'REPLACEB("日本語",2,1,"x")', 'REPLACEB("Привет",1,2,"x")')
   add('BAHTTEXT', ...['1234', '0', '1.25', '-21', '1000000', '11', '101', '0.5', '1000001', '21000000', '11000011', '1000000000000', '1.001', '1.005', '0.01', '0.995', '99.999', '1234567.89', '120', '210', '20', '2', '10', '1000001.01', '50000000.5', '-0.004', '111111111111', '100000', '1000011', '0.21'].map((a) => `BAHTTEXT(${a})`))
+}
+
+/** Tildes: criteria compare text without `*` and `?` as it is, lookups and SEARCH read `~` as an escape. */
+export function tildes(add: Add) {
+  const patterns = ['a~~c', '~~', '~~~~', '~', 'a~c', '~~*', '*~~', 'a~~*', '*~~c', 'a~~?', '?~~', '~~a', 'a~~', 'a~*', '~*', '*~', 'a~b*', '*a~', '*a', 'a~?c', '~~?', '?~']
+  add('COUNTIFS', ...patterns.map((t) => `COUNTIFS(T!D1:D11,${q(t)})`), ...['=a~~c', '<>a~~c', '<>a~*'].map((t) => `COUNTIFS(T!D1:D11,${q(t)})`))
+  add('MATCH', ...patterns.map((t) => `MATCH(${q(t)},T!D1:D11,0)`))
+  add('XMATCH', ...patterns.map((t) => `XMATCH(${q(t)},T!D1:D11,2)`))
+  add('SEARCH', ...[['~~', '~x'], ['x~~', 'x~'], ['~~', 'a'], ['~~~', 'a~b'], ['~~~~', 'a~~b'], ['~~*', 'a~b'], ['*~~', 'a~b'], ['~', '~'], ['a~', 'a'], ['~~?', 'x~yz']].map(([f, w]) => `SEARCH(${q(f)},${q(w)})`))
+  // results past 32,767 characters
+  add('CONCATENATE', 'CONCATENATE(REPT("a",20000),REPT("b",20000))')
+  add('SUBSTITUTE', 'SUBSTITUTE(REPT("a",20000),"a","bb")')
+  add('REPLACE', 'REPLACE(REPT("a",30000),1,0,REPT("b",3000))')
 }
