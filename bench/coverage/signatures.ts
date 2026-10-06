@@ -47,9 +47,9 @@ const each = (names: string[], kinds: string, calls: Arg[][], o: Partial<Sig> = 
 
 /** CHISQ.TEST and CHITEST: edge cases. */
 const CHI: [string, Arg[]][] = [
-  ['диапазон: смесь', ['@actualmix', '@expected']],
-  ['диапазон с ошибкой', ['@actualerr', '@expected']],
-  ['разный размер', ['@actual', '@m1']],
+  ['range: mixed', ['@actualmix', '@expected']],
+  ['range with an error', ['@actualerr', '@expected']],
+  ['different size', ['@actual', '@m1']],
 ]
 
 // ---------- math and trigonometry ----------
@@ -145,7 +145,7 @@ s('CORREL', 'M M', [['@nums1', '@nums2']])
 s('COUNT', 'V', [['@nums1'], [1, 2, 3]], { rep: 1 })
 s('COUNTA', 'V', [['@nums1'], [1, 'x', true]], { rep: 1 })
 s('COUNTBLANK', 'R', [['@mixed'], ['@blank']], {
-  extra: [['диапазон с ошибкой', ['@witherr']], ['одна пустая ячейка', ['@empty']], ['пустая строка формулой', ['@emptystr']], ['тексты', ['@txt']], ['одна ячейка с датой', ['@date']]],
+  extra: [['range with an error', ['@witherr']], ['one blank cell', ['@empty']], ['empty string from a formula', ['@emptystr']], ['texts', ['@txt']], ['one cell with a date', ['@date']]],
 })
 each(['COVARIANCE.P', 'COVARIANCE.S'], 'M M', [['@nums1', '@nums2']])
 s('DEVSQ', 'N', [['@nums1'], [4, 5, 8, 7, 11, 4, 3]], { rep: 1 })
@@ -168,7 +168,7 @@ s('GAUSS', 'n', [[2]])
 s('GEOMEAN', 'N', [['@pos'], [4, 5, 8, 7, 11, 4, 3]], { rep: 1 })
 s('GROWTH', 'M M? M? b?', [['@gy', '@gx', '@gnew'], ['@gy', '@gx']], {
   picks: [[1, 1], [2, 1], 'rows'],
-  extra: [['без known_x', ['@gy']], ['без константы', ['@gy', '@gx', '@gnew', false]], ['разный размер', ['@gy', '@lx']], ['ноль в known_y', ['@probx', '@lx']]],
+  extra: [['without known_x', ['@gy']], ['without the constant', ['@gy', '@gx', '@gnew', false]], ['different size', ['@gy', '@lx']], ['zero in known_y', ['@probx', '@lx']]],
 })
 s('HARMEAN', 'N', [['@pos'], [4, 5, 8, 7, 11, 4, 3]], { rep: 1 })
 s('HYPGEOM.DIST', 'i i i i b', [[1, 4, 8, 20, true], [1, 4, 8, 20, false]])
@@ -222,7 +222,7 @@ s('T.INV.2T', 'p n', [[0.546449, 60]])
 s('T.TEST', 'M M i i', [['@nums1', '@nums2', 2, 1], ['@nums1', '@nums2', 1, 2], ['@nums1', '@nums2', 2, 3]])
 s('TREND', 'M M? M? b?', [['@ly', '@lx', '@lnew'], ['@ly', '@lx']], {
   picks: [[1, 1], [2, 1], 'rows'],
-  extra: [['без known_x', ['@ly']], ['без константы', ['@ly', '@lx', '@lnew', false]], ['разный размер', ['@ly', '@gx']], ['текст в known_y', ['@cfmix', '@lx']]],
+  extra: [['without known_x', ['@ly']], ['without the constant', ['@ly', '@lx', '@lnew', false]], ['different size', ['@ly', '@gx']], ['text in known_y', ['@cfmix', '@lx']]],
 })
 s('TRIMMEAN', 'N p', [['@nums1', 0.2], ['@nums1', 0.25]])
 s('WEIBULL.DIST', 'n n n b', [[105, 20, 100, true], [105, 20, 100, false]])
@@ -353,10 +353,10 @@ s('FV', 'n n n n? i?', [[0.005, 10, -200, -500, 1], [0.01, 12, -1000], [0.11 / 1
 s('FVSCHEDULE', 'n M', [[1, '@sched']])
 s('IPMT', 'n i n n n? i?', [[0.1 / 12, 1, 36, 8000], [0.1, 3, 3, 8000]])
 s('IRR', 'M n?', [['@cf'], ['@cf', 0.1]], {
-  extra: [['диапазон: смесь', ['@cfmix']], ['диапазон с ошибкой', ['@cferr']], ['без смены знака', ['@xcfpos']], ['догадка -0.5', ['@cf', -0.5]], ['пустой диапазон', ['@blank']]],
+  extra: [['range: mixed', ['@cfmix']], ['range with an error', ['@cferr']], ['no sign change', ['@xcfpos']], ['guess -0.5', ['@cf', -0.5]], ['blank range', ['@blank']]],
 })
 s('ISPMT', 'n i i n', [[0.1 / 12, 1, 36, 8000000], [0.1, 1, 3, 8000000]])
-s('MIRR', 'M n n', [['@cf', 0.1, 0.12]], { extra: [['диапазон: смесь', ['@cfmix', 0.1, 0.12]], ['диапазон с ошибкой', ['@cferr', 0.1, 0.12]], ['без смены знака', ['@xcfpos', 0.1, 0.12]]] })
+s('MIRR', 'M n n', [['@cf', 0.1, 0.12]], { extra: [['range: mixed', ['@cfmix', 0.1, 0.12]], ['range with an error', ['@cferr', 0.1, 0.12]], ['no sign change', ['@xcfpos', 0.1, 0.12]]] })
 s('NOMINAL', 'n i', [[0.053543, 4]])
 s('NPER', 'n n n n? i?', [[0.01, -100, -1000, 10000, 1], [0.01, -100, -1000, 10000], [0.01, -100, -1000]])
 s('NPV', 'n N', [[0.1, -10000, 3000, 4200, 6800], [0.08, '@cf']], { rep: 1 })
@@ -373,9 +373,9 @@ s('TBILLEQ', 'd d n', [[dt('2008-03-31'), dt('2008-06-01'), 0.0914]])
 s('TBILLPRICE', 'd d n', [[dt('2008-03-31'), dt('2008-06-01'), 0.09]])
 s('TBILLYIELD', 'd d n', [[dt('2008-03-31'), dt('2008-06-01'), 98.45]])
 s('XIRR', 'M D n?', [['@xcf', '@xdates'], ['@xcf', '@xdates', 0.1]], {
-  extra: [['без смены знака', ['@xcfpos', '@xdates']], ['даты не по порядку', ['@xcf', '@xdatesmix']], ['разный размер', ['@xcf', '@hol']], ['догадка -0.5', ['@xcf', '@xdates', -0.5]], ['поток с ошибкой', ['@cferr', '@xdates']], ['поток: смесь', ['@cfmix', '@xdates']]],
+  extra: [['no sign change', ['@xcfpos', '@xdates']], ['dates out of order', ['@xcf', '@xdatesmix']], ['different size', ['@xcf', '@hol']], ['guess -0.5', ['@xcf', '@xdates', -0.5]], ['cash flow with an error', ['@cferr', '@xdates']], ['cash flow: mixed', ['@cfmix', '@xdates']]],
 })
-s('XNPV', 'n M D', [[0.09, '@xcf', '@xdates']], { extra: [['даты не по порядку', [0.09, '@xcf', '@xdatesmix']], ['разный размер', [0.09, '@xcf', '@hol']], ['поток: смесь', [0.09, '@cfmix', '@xdates']]] })
+s('XNPV', 'n M D', [[0.09, '@xcf', '@xdates']], { extra: [['dates out of order', [0.09, '@xcf', '@xdatesmix']], ['different size', [0.09, '@xcf', '@hol']], ['cash flow: mixed', [0.09, '@cfmix', '@xdates']]] })
 
 // ---------- information ----------
 s('ERROR.TYPE', 'a', [['@div0'], ['@na']])
@@ -384,12 +384,12 @@ s('ISEVEN', 'n', [[-1], [2.5], [5]])
 s('ISODD', 'n', [[-1], [2.5], [5]])
 s('N', 'a', [[7], ['Even'], [true], ['@date']])
 s('NA', '', [[]])
-s('TYPE', 'a', [[2], ['abc'], [true]], { extra: [['диапазон', ['@nums1']]] })
+s('TYPE', 'a', [[2], ['abc'], [true]], { extra: [['range', ['@nums1']]] })
 
 // ---------- logical ----------
-s('AND', 'V', [[true, true], [true, false], [2, 1]], { rep: 1, extra: [['диапазон логических', ['@alltrue']], ['диапазон с текстом и пустыми', ['@logic']]] })
-s('OR', 'V', [[false, true], [false, false]], { rep: 1, extra: [['диапазон с текстом и пустыми', ['@logic']]] })
-s('XOR', 'V', [[true, false], [true, true]], { rep: 1, extra: [['диапазон с текстом и пустыми', ['@logic']]] })
+s('AND', 'V', [[true, true], [true, false], [2, 1]], { rep: 1, extra: [['range of booleans', ['@alltrue']], ['range with text and blanks', ['@logic']]] })
+s('OR', 'V', [[false, true], [false, false]], { rep: 1, extra: [['range with text and blanks', ['@logic']]] })
+s('XOR', 'V', [[true, false], [true, true]], { rep: 1, extra: [['range with text and blanks', ['@logic']]] })
 s('FALSE', '', [[]])
 s('TRUE', '', [[]])
 s('IF', 'b a a?', [[true, 'yes', 'no'], [false, 1, 2], [false, 1]])
@@ -399,53 +399,53 @@ s('IFS', 'b a', [[false, 1, true, 2], [false, 1, false, 2]], { rep: 2 })
 s('NOT', 'b', [[false], [true]])
 s('SWITCH', 'a a a', [[2, 1, 'one', 2, 'two', 'other'], [3, 1, 'one', 2, 'two', 'other'], [3, 1, 'one', 2, 'two']], {
   rep: 2,
-  extra: [['регистр', ['b', 'a', 'A', 'B', 'BB']], ['кириллица и регистр', ['мир', 'МИР', 1, 0]]],
+  extra: [['case', ['b', 'a', 'A', 'B', 'BB']], ['Cyrillic and case', ['мир', 'МИР', 1, 0]]],
 })
 
 // ---------- lookup and reference ----------
 s('CHOOSE', 'i a', [[2, 'a', 'b', 'c'], [1.9, 'a', 'b'], [4, 'a', 'b']], { rep: 1 })
 s('CHOOSECOLS', 'R i', [['@tbl', 1, 3], ['@tbl', -1]], { rep: 1, picks: [[1, 1], [2, 2], 'cols'] })
 s('CHOOSEROWS', 'R i', [['@tbl', 1, 3], ['@tbl', -1]], { rep: 1, picks: [[1, 1], [2, 2], 'rows'] })
-s('COLUMN', 'R', [['@nums1'], ['@tbl']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']]] })
-s('COLUMNS', 'R', [['@tbl'], ['@nums1']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']], ['пустой диапазон', ['@blank']]] })
+s('COLUMN', 'R', [['@nums1'], ['@tbl']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']]] })
+s('COLUMNS', 'R', [['@tbl'], ['@nums1']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']], ['blank range', ['@blank']]] })
 s('DROP', 'R i i?', [['@tbl', 2], ['@tbl', 0, 1], ['@tbl', -1, -1]], { picks: [[1, 1], [2, 2], 'rows', 'cols'] })
 s('EXPAND', 'R i i? a?', [['@m1', 3, 3, 0], ['@m1', 3, 3]], { picks: [[1, 1], [3, 3], 'rows'] })
 s('HLOOKUP', 'a R i b?', [[5, '@htbl', 2, false], [4, '@htbl', 3], [4, '@htbl', 3, false], [0, '@htbl', 2]], {
-  extra: [['текст без учёта регистра', ['FIVE', '@htbl', 3, false]], ['шаблон *', ['th*', '@htbl', 3, false]]],
+  extra: [['text, any case', ['FIVE', '@htbl', 3, false]], ['wildcard *', ['th*', '@htbl', 3, false]]],
 })
 s('HSTACK', 'R', [['@m1', '@m2']], {
   rep: 1,
   picks: [[1, 1], [2, 4], 'cols'],
-  extra: [['разная высота: дополнение #N/A', ['@m1', '@lkeys'], [3, 1]], ['разная высота: строк', ['@m1', '@lkeys'], 'rows'], ['пустые ячейки', ['@m1', '@mixed'], [5, 3]], ['текст', ['@m1', '@lnames'], [2, 3]]],
+  extra: [['different height: #N/A padding', ['@m1', '@lkeys'], [3, 1]], ['different height: rows', ['@m1', '@lkeys'], 'rows'], ['blank cells', ['@m1', '@mixed'], [5, 3]], ['text', ['@m1', '@lnames'], [2, 3]]],
 })
 s('INDEX', 'R i i?', [['@tbl', 2, 3], ['@nums1', 3], ['@tbl', 7, 1], ['@htbl', 2, 4]])
 s('LOOKUP', 'a R R?', [[4.19, '@lkeys', '@lvals'], [5, '@lkeys', '@lnames'], [0, '@lkeys', '@lvals'], [100, '@lkeys', '@lvals'], [5, '@tbl']])
 s('MATCH', 'a R i?', [[5, '@lkeys', 0], [4, '@lkeys'], [100, '@lkeys', 1]], {
-  extra: [['текст без учёта регистра', ['THREE', '@lnames', 0]], ['шаблон *', ['th*', '@lnames', 0]], ['шаблон ?', ['f?ve', '@lnames', 0]], ['по убыванию -1', [4, '@lvals', -1]]],
+  extra: [['text, any case', ['THREE', '@lnames', 0]], ['wildcard *', ['th*', '@lnames', 0]], ['wildcard ?', ['f?ve', '@lnames', 0]], ['descending -1', [4, '@lvals', -1]]],
 })
-s('ROW', 'R', [['@nums2'], ['@tbl']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']]] })
-s('ROWS', 'R', [['@tbl'], ['@nums1']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']], ['пустой диапазон', ['@blank']]] })
+s('ROW', 'R', [['@nums2'], ['@tbl']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']]] })
+s('ROWS', 'R', [['@tbl'], ['@nums1']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']], ['blank range', ['@blank']]] })
 s('SORT', 'R i? i? b?', [['@nums1'], ['@nums1', 1, -1], ['@txt'], ['@tbl', 2, 1]], { picks: [[1, 1], [2, 1], [7, 1], 'rows'] })
 s('TAKE', 'R i i?', [['@tbl', 2], ['@tbl', -2, 2]], { picks: [[1, 1], [2, 2], 'rows', 'cols'] })
 s('TRANSPOSE', 'R', [['@m23'], ['@nums1']], { picks: [[1, 2], [2, 1], 'rows', 'cols'] })
 s('UNIQUE', 'R b? b?', [['@uniq'], ['@uniq', false, true]], {
   picks: [[1, 1], [4, 1], 'rows'],
-  extra: [['регистр: a и A одно значение', ['@uniq'], [5, 1]], ['по колонкам', ['@htbl', true], 'cols'], ['кириллица и регистр', ['@txt'], 'rows'], ['пустые ячейки', ['@mixed'], 'rows']],
+  extra: [['case: a and A one value', ['@uniq'], [5, 1]], ['by columns', ['@htbl', true], 'cols'], ['Cyrillic and case', ['@txt'], 'rows'], ['blank cells', ['@mixed'], 'rows']],
 })
 s('VLOOKUP', 'a R i b?', [[5, '@tbl', 2, false], [4, '@tbl', 3], [4, '@tbl', 3, false], [0, '@tbl', 2]], {
-  extra: [['текст без учёта регистра', ['FIVE', '@ntbl', 2, false]], ['шаблон *', ['th*', '@ntbl', 2, false]], ['шаблон ?', ['f?ve', '@ntbl', 2, false]]],
+  extra: [['text, any case', ['FIVE', '@ntbl', 2, false]], ['wildcard *', ['th*', '@ntbl', 2, false]], ['wildcard ?', ['f?ve', '@ntbl', 2, false]]],
 })
 s('VSTACK', 'R', [['@m1', '@m2']], {
   rep: 1,
   picks: [[1, 1], [4, 2], 'rows'],
-  extra: [['разная ширина: дополнение #N/A', ['@m1', '@m23'], [1, 3]], ['разная ширина: колонок', ['@m1', '@m23'], 'cols'], ['пустые ячейки', ['@lkeys', '@mixed'], [11, 1]], ['текст', ['@m1', '@htbl'], [4, 1]]],
+  extra: [['different width: #N/A padding', ['@m1', '@m23'], [1, 3]], ['different width: columns', ['@m1', '@m23'], 'cols'], ['blank cells', ['@lkeys', '@mixed'], [11, 1]], ['text', ['@m1', '@htbl'], [4, 1]]],
 })
 
 // ---------- text ----------
 s('CHAR', 'i', [[65], [33], [200], [0], [256]])
 s('CLEAN', 's', [['@ctrl'], ['abc']])
 s('CODE', 's', [['A'], ['!'], ['Ж'], ['']])
-s('CONCAT', 'V', [['a', 'b', 'c'], ['@texts3']], { rep: 1, extra: [['диапазон: смесь', ['@mixed']]] })
+s('CONCAT', 'V', [['a', 'b', 'c'], ['@texts3']], { rep: 1, extra: [['range: mixed', ['@mixed']]] })
 s('CONCATENATE', 's', [['a', 'b'], ['Привет', ' ', 'Мир'], [1.5, true]], { rep: 1 })
 s('DOLLAR', 'n i?', [[1234.567, 2], [1234.567, -2], [-1234.567, -2], [-0.123, 4], [99.888]])
 s('EXACT', 's s', [['word', 'word'], ['Word', 'word'], ['w ord', 'word'], ['Привет', 'привет']])
@@ -461,12 +461,12 @@ s('REPLACE', 's i i s', [['abcdefghijk', 6, 5, '*'], ['2009', 3, 2, '10'], ['123
 s('REPT', 's i', [['*-', 3], ['-', 10], ['ab', 0]])
 s('RIGHT', 's i?', [['Sale Price', 5], ['Stock Number'], ['Привет', 2]])
 s('SEARCH', 's s i?', [['e', 'Statements', 6], ['margin', 'Profit Margin'], ['МИР', 'Привет мир']], {
-  extra: [['шаблон ?', ['p?o', 'Profit']], ['шаблон *', ['M*n', 'Profit Margin']], ['экранирование ~?', ['~?', 'a?b']]],
+  extra: [['wildcard ?', ['p?o', 'Profit']], ['wildcard *', ['M*n', 'Profit Margin']], ['escaped ~?', ['~?', 'a?b']]],
 })
 s('SUBSTITUTE', 's s s i?', [['Sales Data', 'Sales', 'Cost'], ['Quarter 1, 2008', '1', '2', 1], ['Quarter 1, 2011', '1', '2', 3], ['aaa', 'a', 'b', 2], ['Привет', 'п', 'П']])
 s('T', 'a', [['Rainfall'], [19], [true]])
 s('TEXT', 'a s', [[1234.567, '$#,##0.00'], [45658, 'YYYY-MM-DD'], [0.285, '0.0%'], [45658, 'dd.mm.yyyy'], [1234.5, '0.00'], [-5, '0'], [45688.75, 'h:mm AM/PM'], [4.34, '# ?/?']])
-s('TEXTJOIN', 's b V', [[', ', true, 'a', '', 'b'], [', ', false, 'a', '', 'b'], ['-', true, '@texts3']], { rep: 1, extra: [['диапазон: смесь', [' ', true, '@mixed']]] })
+s('TEXTJOIN', 's b V', [[', ', true, 'a', '', 'b'], [', ', false, 'a', '', 'b'], ['-', true, '@texts3']], { rep: 1, extra: [['range: mixed', [' ', true, '@mixed']]] })
 s('TRIM', 's', [['  First Quarter Earnings  '], ['a   b'], ['Привет  мир']])
 s('UNICHAR', 'i', [[66], [32], [1046], [0]])
 s('UNICODE', 's', [['B'], [' '], ['Ж'], ['']])
@@ -476,21 +476,21 @@ s('VALUE', 's', [['$1,000'], ['16:48:00'], ['1.5'], ['1,5'], ['10%'], ['1e3'], [
 // ---------- criteria (SUMIF and its kin): a shared template ----------
 /** Triples (criteria range, criterion, value range) with a tag; the first two are typical. */
 const CRIT: [string, Arg[]][] = [
-  ['обычный', ['@amt', '>4', '@amt']],
-  ['обычный', ['@txt', 'Аренда', '@amt']],
-  ['шаблон *', ['@txt', 'Ар*', '@amt']],
-  ['экранирование ~*', ['@txt', 'x~*y', '@amt']],
-  ['шаблон ?', ['@txt', 'Ча?', '@amt']],
-  ['кириллица без учёта регистра', ['@txt', 'аренда', '@amt']],
-  ['«й» и «и» различаются', ['@txt', 'Чай', '@amt']],
-  ['дата текстом', ['@dates', '>=2025-01-01', '@amt']],
-  ['дата числом', ['@dates', '>45658', '@amt']],
-  ['не равно', ['@txt', '<>Аренда', '@amt']],
-  ['пустое условие', ['@mixed', '', '@nums1']],
-  ['число против текста-числа', ['@mixed', 2, '@nums1']],
-  ['логическое условие', ['@mixed', true, '@nums1']],
-  ['ошибка в диапазоне условия', ['@witherr', '>1', '@nums1']],
-  ['ничего не подошло', ['@txt', 'нет', '@amt']],
+  ['typical', ['@amt', '>4', '@amt']],
+  ['typical', ['@txt', 'Аренда', '@amt']],
+  ['wildcard *', ['@txt', 'Ар*', '@amt']],
+  ['escaped ~*', ['@txt', 'x~*y', '@amt']],
+  ['wildcard ?', ['@txt', 'Ча?', '@amt']],
+  ['Cyrillic, any case', ['@txt', 'аренда', '@amt']],
+  ['й and и differ', ['@txt', 'Чай', '@amt']],
+  ['date text', ['@dates', '>=2025-01-01', '@amt']],
+  ['date as a number', ['@dates', '>45658', '@amt']],
+  ['not equal', ['@txt', '<>Аренда', '@amt']],
+  ['empty criterion', ['@mixed', '', '@nums1']],
+  ['number against numeric text', ['@mixed', 2, '@nums1']],
+  ['boolean criterion', ['@mixed', true, '@nums1']],
+  ['error in the criteria range', ['@witherr', '>1', '@nums1']],
+  ['nothing matches', ['@txt', 'нет', '@amt']],
 ]
 const critCase = (shape: (r: Arg, c: Arg, v: Arg) => Arg[]) => CRIT.map(([tag, [r, c, v]]) => [tag, shape(r, c, v)] as [string, Arg[]])
 const critSig = (name: string, kinds: string, shape: (r: Arg, c: Arg, v: Arg) => Arg[], rep?: number) => {
@@ -505,21 +505,21 @@ critSig('AVERAGEIFS', 'R R c', (r, c, v) => [v, r, c], 2)
 critSig('MAXIFS', 'R R c', (r, c, v) => [v, r, c], 2)
 critSig('MINIFS', 'R R c', (r, c, v) => [v, r, c], 2)
 critSig('COUNTIFS', 'R c', (r, c) => [r, c], 2)
-for (const n of ['SUMIFS', 'AVERAGEIFS', 'MAXIFS', 'MINIFS']) S.find((x) => x.name === n)!.extra!.push(['два условия', ['@amt', '@txt', 'Ар*', '@amt', '>1']])
-S.find((x) => x.name === 'COUNTIFS')!.extra!.push(['два условия', ['@txt', 'Ар*', '@amt', '>1']])
+for (const n of ['SUMIFS', 'AVERAGEIFS', 'MAXIFS', 'MINIFS']) S.find((x) => x.name === n)!.extra!.push(['two criteria', ['@amt', '@txt', 'Ар*', '@amt', '>1']])
+S.find((x) => x.name === 'COUNTIFS')!.extra!.push(['two criteria', ['@txt', 'Ар*', '@amt', '>1']])
 
 // ---------- databases: a shared template ----------
 const DB: [string, Arg[]][] = [
-  ['обычный', ['@db', 'Yield', '@critApple']],
-  ['обычный', ['@db', 4, '@critPear']],
-  ['поле без учёта регистра', ['@db', 'profit', '@critApple']],
-  ['шаблон в условии', ['@db', 'Profit', '@critWild']],
-  ['одна строка', ['@db', 'Age', '@critCherry']],
-  ['ничего не подошло', ['@db', 'Yield', '@critNone']],
-  ['пустое условие (все строки)', ['@db', 'Height', '@critAll']],
-  ['номер поля 0', ['@db', 0, '@critPear']],
-  ['нет такого поля', ['@db', 'Weight', '@critPear']],
-  ['поле текстом-заголовком', ['@db', 'Tree', '@critPear']],
+  ['typical', ['@db', 'Yield', '@critApple']],
+  ['typical', ['@db', 4, '@critPear']],
+  ['field, any case', ['@db', 'profit', '@critApple']],
+  ['wildcard in the criterion', ['@db', 'Profit', '@critWild']],
+  ['one row', ['@db', 'Age', '@critCherry']],
+  ['nothing matches', ['@db', 'Yield', '@critNone']],
+  ['empty criterion (all rows)', ['@db', 'Height', '@critAll']],
+  ['field number 0', ['@db', 0, '@critPear']],
+  ['no such field', ['@db', 'Weight', '@critPear']],
+  ['field as header text', ['@db', 'Tree', '@critPear']],
 ]
 for (const name of ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']) {
   S.push({ name, kinds: 'R a R', calls: DB.slice(0, 2).map((x) => x[1]), extra: DB.slice(2), noAuto: true })

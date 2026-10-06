@@ -9,20 +9,20 @@ export const TOL = 1e-9
 export const SOFT = 1e-6
 
 export type Kind =
-  | 'число'
-  | 'ошибка вместо значения'
-  | 'значение вместо ошибки'
-  | 'другой код ошибки'
-  | 'другой тип'
-  | 'строка'
-  | 'строка: регистр'
-  | 'строка: формат числа'
-  | 'логическое'
+  | 'number'
+  | 'error instead of a value'
+  | 'value instead of an error'
+  | 'other error code'
+  | 'other type'
+  | 'string'
+  | 'string: case'
+  | 'string: number format'
+  | 'boolean'
   | 'JS Date'
-  | 'NaN или бесконечность'
-  | 'исключение'
-  | 'зависает'
-  | 'прочее'
+  | 'NaN or infinity'
+  | 'exception'
+  | 'hangs'
+  | 'other'
 
 export interface Verdict {
   ok: boolean
@@ -35,35 +35,35 @@ const close = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol * Ma
 
 /** `got` against the reference `ref`; `threw`: the #VALUE! answer came from a formulajs exception. */
 export function compare(ref: Val, got: Val, threw?: boolean): Verdict {
-  if (got.t === 'other' && (got.v === 'hang' || got.v === 'crash')) return { ok: false, kind: 'зависает' }
-  if (got.t === 'throw') return { ok: false, kind: 'исключение' }
-  if (got.t === 'nan') return { ok: false, kind: 'NaN или бесконечность' }
+  if (got.t === 'other' && (got.v === 'hang' || got.v === 'crash')) return { ok: false, kind: 'hangs' }
+  if (got.t === 'throw') return { ok: false, kind: 'exception' }
+  if (got.t === 'nan') return { ok: false, kind: 'NaN or infinity' }
   if (got.t === 'date') {
     // bare formulajs: a date as a JS object; its value is compared apart in the report
     return { ok: false, kind: 'JS Date' }
   }
-  if (got.t === 'other') return { ok: false, kind: 'прочее' }
+  if (got.t === 'other') return { ok: false, kind: 'other' }
   if (ref.t === 'e') {
-    if (got.t !== 'e') return { ok: false, kind: 'значение вместо ошибки' }
-    return got.v === ref.v ? { ok: true } : { ok: false, kind: threw ? 'исключение' : 'другой код ошибки' }
+    if (got.t !== 'e') return { ok: false, kind: 'value instead of an error' }
+    return got.v === ref.v ? { ok: true } : { ok: false, kind: threw ? 'exception' : 'other error code' }
   }
-  if (got.t === 'e') return { ok: false, kind: threw ? 'исключение' : 'ошибка вместо значения' }
-  if (ref.t !== got.t) return { ok: false, kind: 'другой тип' }
+  if (got.t === 'e') return { ok: false, kind: threw ? 'exception' : 'error instead of a value' }
+  if (ref.t !== got.t) return { ok: false, kind: 'other type' }
   if (ref.t === 'n') {
     const a = ref.v
     const b = got.v as number
     if (close(a, b, TOL)) return { ok: true }
-    if (close(a, b, SOFT)) return { ok: false, soft: true, kind: 'число' }
-    return { ok: false, kind: 'число' }
+    if (close(a, b, SOFT)) return { ok: false, soft: true, kind: 'number' }
+    return { ok: false, kind: 'number' }
   }
   if (ref.t === 's') {
     const g = got.v as string
     if (g === ref.v || sameComplex(ref.v, g, TOL)) return { ok: true }
-    if (g !== ref.v && g.toUpperCase() === ref.v) return { ok: false, kind: 'строка: регистр' }
-    return { ok: false, kind: sameNumbers(ref.v, g) ? 'строка: формат числа' : 'строка' }
+    if (g !== ref.v && g.toUpperCase() === ref.v) return { ok: false, kind: 'string: case' }
+    return { ok: false, kind: sameNumbers(ref.v, g) ? 'string: number format' : 'string' }
   }
-  if (ref.t === 'b') return got.v === ref.v ? { ok: true } : { ok: false, kind: 'логическое' }
-  return { ok: false, kind: 'прочее' }
+  if (ref.t === 'b') return got.v === ref.v ? { ok: true } : { ok: false, kind: 'boolean' }
+  return { ok: false, kind: 'other' }
 }
 
 const NUM = '\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?'
@@ -100,7 +100,7 @@ function sameNumbers(a: string, b: string): boolean {
 
 /** A value for the report's tables. */
 export function show(v: Val | undefined): string {
-  if (!v) return 'нет'
+  if (!v) return 'none'
   switch (v.t) {
     case 'n':
       return String(Number(v.v.toPrecision(12)))

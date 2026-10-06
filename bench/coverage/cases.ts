@@ -32,120 +32,120 @@ export const VOLATILE = ['NOW', 'RAND', 'RANDBETWEEN', 'TODAY']
 type Pool = [string, Arg | Arg[]][]
 
 const NUM: Pool = [
-  ['текст-число', '3'],
-  ['логическое', true],
-  ['пустая ячейка', '@empty'],
-  ['ошибка на входе', '@div0'],
-  ['текст', 'abc'],
-  ['отрицательное', -2.5],
-  ['ноль', 0],
-  ['дробное', 0.75],
-  ['большое', 1e10],
-  ['текст-число в ячейке', '@textnum'],
-  ['дата в ячейке', '@date'],
-  ['число текстом с точкой', '1.5'],
+  ['numeric text', '3'],
+  ['boolean', true],
+  ['blank cell', '@empty'],
+  ['error input', '@div0'],
+  ['text', 'abc'],
+  ['negative', -2.5],
+  ['zero', 0],
+  ['fractional', 0.75],
+  ['large', 1e10],
+  ['numeric text in a cell', '@textnum'],
+  ['date in a cell', '@date'],
+  ['number text with a point', '1.5'],
 ]
-const INT: Pool = NUM.map(([t, v]) => (t === 'дробное' ? [t, 2.7] : [t, v]))
+const INT: Pool = NUM.map(([t, v]) => (t === 'fractional' ? [t, 2.7] : [t, v]))
 const PROB: Pool = [
-  ['текст-число', '0.5'],
-  ['логическое', true],
-  ['пустая ячейка', '@empty'],
-  ['ошибка на входе', '@div0'],
-  ['текст', 'abc'],
-  ['отрицательное', -0.1],
-  ['ноль', 0],
-  ['больше 1', 1.5],
-  ['число текстом с точкой', '0.25'],
+  ['numeric text', '0.5'],
+  ['boolean', true],
+  ['blank cell', '@empty'],
+  ['error input', '@div0'],
+  ['text', 'abc'],
+  ['negative', -0.1],
+  ['zero', 0],
+  ['above 1', 1.5],
+  ['number text with a point', '0.25'],
 ]
 const DATE: Pool = [
-  ['дата текстом ISO', '2025-01-31'],
-  ['дата текстом m/d/yyyy', '1/2/2025'],
-  ['високосный 29.02.2024', 45351],
-  ['ложный 29.02.1900', 60],
-  ['28.02.1900', 59],
-  ['01.03.1900', 61],
-  ['ноль', 0],
-  ['отрицательное', -1],
-  ['дата со временем', '@datetime'],
-  ['пустая ячейка', '@empty'],
-  ['ошибка на входе', '@div0'],
-  ['текст', 'abc'],
-  ['логическое', true],
+  ['ISO date text', '2025-01-31'],
+  ['m/d/yyyy date text', '1/2/2025'],
+  ['leap day 2024-02-29', 45351],
+  ['false leap day 1900-02-29', 60],
+  ['1900-02-28', 59],
+  ['1900-03-01', 61],
+  ['zero', 0],
+  ['negative', -1],
+  ['date with a time', '@datetime'],
+  ['blank cell', '@empty'],
+  ['error input', '@div0'],
+  ['text', 'abc'],
+  ['boolean', true],
 ]
 const TIME: Pool = [
-  ['время текстом', '18:30'],
-  ['ноль', 0],
-  ['дата со временем', '@datetime'],
-  ['отрицательное', -0.5],
-  ['больше суток', 1.25],
-  ['пустая ячейка', '@empty'],
-  ['ошибка на входе', '@div0'],
-  ['текст', 'abc'],
-  ['логическое', true],
+  ['time text', '18:30'],
+  ['zero', 0],
+  ['date with a time', '@datetime'],
+  ['negative', -0.5],
+  ['over a day', 1.25],
+  ['blank cell', '@empty'],
+  ['error input', '@div0'],
+  ['text', 'abc'],
+  ['boolean', true],
 ]
 const TEXT: Pool = [
-  ['кириллица', 'Привет Мир'],
-  ['регистр', 'пРИВЕТ мИР'],
-  ['число', 12.5],
-  ['логическое', true],
-  ['пустая ячейка', '@empty'],
-  ['пустая строка', ''],
-  ['ошибка на входе', '@na'],
-  ['пробелы', '  a  b  '],
-  ['кириллица в ячейке', '@cyr'],
+  ['Cyrillic', 'Привет Мир'],
+  ['case', 'пРИВЕТ мИР'],
+  ['number', 12.5],
+  ['boolean', true],
+  ['blank cell', '@empty'],
+  ['empty string', ''],
+  ['error input', '@na'],
+  ['spaces', '  a  b  '],
+  ['Cyrillic in a cell', '@cyr'],
 ]
 const BOOL: Pool = [
-  ['число 0', 0],
-  ['число 2', 2],
-  ['текст TRUE', 'TRUE'],
-  ['текст', 'abc'],
-  ['пустая ячейка', '@empty'],
-  ['ошибка на входе', '@div0'],
-  ['логическое в ячейке', '@true'],
-  ['ЛОЖЬ', false],
+  ['number 0', 0],
+  ['number 2', 2],
+  ['text TRUE', 'TRUE'],
+  ['text', 'abc'],
+  ['blank cell', '@empty'],
+  ['error input', '@div0'],
+  ['boolean in a cell', '@true'],
+  ['FALSE', false],
 ]
 const ANY: Pool = [
-  ['число', 2.5],
-  ['текст', 'abc'],
-  ['пустая ячейка', '@empty'],
-  ['логическое', true],
+  ['number', 2.5],
+  ['text', 'abc'],
+  ['blank cell', '@empty'],
+  ['boolean', true],
   ['#N/A', '@na'],
   ['#DIV/0!', '@div0'],
-  ['пустая строка в ячейке', '@emptystr'],
-  ['текст-число в ячейке', '@textnum'],
-  ['дата в ячейке', '@date'],
+  ['empty string in a cell', '@emptystr'],
+  ['numeric text in a cell', '@textnum'],
+  ['date in a cell', '@date'],
 ]
 /** A tail of variable length (SUM and its kin): the whole tail is replaced by a list. */
 const TAIL: Pool = [
-  ['диапазон: смесь', ['@mixed']],
-  ['диапазон с ошибкой', ['@witherr']],
-  ['пустой диапазон', ['@blank']],
-  ['текст-число аргументом', ['2', 1]],
-  ['логическое аргументом', [true, 1]],
-  ['текст аргументом', ['abc', 1]],
-  ['ссылка на текст-число', ['@textnum', 1]],
-  ['ссылка на логическое', ['@true', 1]],
-  ['пустая ячейка аргументом', ['@empty', 1]],
-  ['отрицательные и дробные', [-2.5, 0.75, 0]],
+  ['range: mixed', ['@mixed']],
+  ['range with an error', ['@witherr']],
+  ['blank range', ['@blank']],
+  ['numeric text argument', ['2', 1]],
+  ['boolean argument', [true, 1]],
+  ['text argument', ['abc', 1]],
+  ['reference to numeric text', ['@textnum', 1]],
+  ['reference to a boolean', ['@true', 1]],
+  ['blank cell argument', ['@empty', 1]],
+  ['negative and fractional', [-2.5, 0.75, 0]],
 ]
 /** One range in place of an array (LARGE, PERCENTILE, CORREL): only instead of a column of 8 numbers. */
 const RANGE8: Pool = [
-  ['диапазон: смесь', '@mixed'],
-  ['диапазон с ошибкой', '@witherr'],
-  ['пустой диапазон', '@blank'],
-  ['разный размер', '@nums1short'],
+  ['range: mixed', '@mixed'],
+  ['range with an error', '@witherr'],
+  ['blank range', '@blank'],
+  ['different size', '@nums1short'],
 ]
 /** An array size (ARRAY_SIZE): small number literals only. */
 const SIZE: Pool = [
-  ['отрицательное', -2],
-  ['ноль', 0],
-  ['дробное', 2.7],
-  [`большое (${SIZE_LIMIT})`, SIZE_LIMIT],
+  ['negative', -2],
+  ['zero', 0],
+  ['fractional', 2.7],
+  [`large (${SIZE_LIMIT})`, SIZE_LIMIT],
 ]
 const DATES: Pool = [
-  ['праздники: смесь', '@mixed'],
-  ['праздники: пустой диапазон', '@blank'],
-  ['праздники с ошибкой', '@witherr'],
+  ['holidays: mixed', '@mixed'],
+  ['holidays: blank range', '@blank'],
+  ['holidays with an error', '@witherr'],
 ]
 
 const POOLS: Record<string, Pool> = { n: NUM, i: INT, p: PROB, d: DATE, t: TIME, s: TEXT, b: BOOL, a: ANY }
@@ -217,11 +217,11 @@ function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][
     if (k === 'D') pool = base[i] === '@hol' ? DATES : []
     for (const [tag, v] of pool) {
       if (v === base[i]) continue
-      if (sig.cap && (tag === 'дата в ячейке' || tag === 'число текстом с точкой')) continue
-      const big = sig.cap && tag === 'большое'
+      if (sig.cap && (tag === 'date in a cell' || tag === 'number text with a point')) continue
+      const big = sig.cap && tag === 'large'
       const args = [...base]
       args[i] = big ? CAP : (v as Arg)
-      list.push([big ? `большое (${CAP})` : tag, args])
+      list.push([big ? `large (${CAP})` : tag, args])
     }
     if (i > 0) shuffle(list, rnd)
     out.push(list)
@@ -285,9 +285,9 @@ export function buildCases(): CaseSet {
     .map((name) => ({ name, same: byFn.get(paths.get(name)!)!.filter((q) => q !== name && excel.has(q)) }))
   const missing = EXCEL_FUNCTIONS.filter((x) => !paths.has(x.name)).map((x) => {
     const v = getFj(x.name)
-    return { fn: x.name, category: x.category, note: v !== undefined ? 'в formulajs это не функция, а объект с подфункциями' : undefined }
+    return { fn: x.name, category: x.category, note: v !== undefined ? 'in formulajs an object of subfunctions, not a function' : undefined }
   })
-  const excluded = VOLATILE.map((fn) => ({ fn, why: 'волатильная' }))
+  const excluded = VOLATILE.map((fn) => ({ fn, why: 'volatile' }))
 
   const sigs = new Map(SIGNATURES.map((s) => [s.name, s]))
   const want = inFormulajs.filter((n) => !VOLATILE.includes(n))
@@ -307,7 +307,7 @@ export function buildCases(): CaseSet {
     const edges = sig.noAuto || !sig.calls.length ? [] : autoEdges(sig, sig.calls[0], rnd).map((g) => g.filter(([, a]) => !seen.has(JSON.stringify(a.map(norm)))))
     const auto = pickEdges(edges, budget)
     const all: ['typical' | 'edge', string, Arg[], Pick?][] = [
-      ...sig.calls.map((a) => ['typical', 'обычный', a] as ['typical', string, Arg[]]),
+      ...sig.calls.map((a) => ['typical', 'typical', a] as ['typical', string, Arg[]]),
       ...[...extra, ...auto].map(([t, a, p]) => ['edge', t, a, p] as ['edge', string, Arg[], Pick?]),
     ]
     let k = 0
@@ -339,5 +339,5 @@ export function sizeGuardViolations(cases: Case[]): string[] {
 }
 
 function pickLabel(p: Pick): string {
-  return p === 'rows' ? 'число строк' : p === 'cols' ? 'число колонок' : `элемент ${p[0]},${p[1]}`
+  return p === 'rows' ? 'row count' : p === 'cols' ? 'column count' : `element ${p[0]},${p[1]}`
 }
