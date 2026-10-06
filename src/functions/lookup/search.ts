@@ -25,10 +25,9 @@ export interface Line {
 }
 
 /**
- * Excel's approximate match on ascending data, a binary search over the referenced positions: past the last
- * non-blank cell it moves down, a blank or another type before it is passed over for the nearest comparable
- * value above (else below), and an equal value ends the search at the last of its run. The last position
- * not greater than the key, or −1. Fitted to Excel's answers on unsorted, mixed and whole-column data.
+ * Excel's binary search over the referenced positions (fitted to its answers on unsorted, mixed and whole-column
+ * data): past the last non-blank cell it goes back, a blank or another type before it is passed over for the
+ * next comparable value, an equal value ends at the last of its run. The last position not greater than k, or −1.
  */
 export function bisect({ at, n, filled }: Line, k: Key): number {
   let last = filled - 1
