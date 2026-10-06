@@ -1,7 +1,7 @@
 /**
- * Случаи замера из таблицы сигнатур: типичные вызовы, ручные краевые и автоматические краевые
- * (подстановка в аргумент значений по его виду). Отбор детерминирован (сид фиксирован), на функцию
- * до 15 случаев, кроме функций с большим числом типичных вызовов.
+ * The measurement's cases from the signature table: typical calls, hand-written edge cases and automatic edge
+ * cases (values put into an argument by its kind). The choice is deterministic (a fixed seed), up to 15 cases
+ * per function except for functions with many typical calls.
  */
 import * as fj from '@formulajs/formulajs'
 import { mulberry32 } from '../../src/synth.js'
@@ -11,14 +11,14 @@ import { ARRAY_SIZE, SIGNATURES, SIZE_LIMIT, XLFN, type Arg, type Pick, type Sig
 
 export const SEED = 20261005
 export const MAX_CASES = 15
-/** Потолок «большого» для аргументов-размеров и счётчиков (`Sig.cap`). */
+/** The ceiling of "large" for size and count arguments (`Sig.cap`). */
 export const CAP = 1000
 
 export interface Case {
   id: string
   fn: string
   category: string
-  /** typical: типичный вызов; edge: краевой. */
+  /** typical: a typical call; edge: an edge case. */
   kind: 'typical' | 'edge'
   tag: string
   args: Arg[]
@@ -26,7 +26,7 @@ export interface Case {
   formula: string
 }
 
-/** Волатильные: исключены из замера. */
+/** Volatile: left out of the measurement. */
 export const VOLATILE = ['NOW', 'RAND', 'RANDBETWEEN', 'TODAY']
 
 type Pool = [string, Arg | Arg[]][]
@@ -115,7 +115,7 @@ const ANY: Pool = [
   ['текст-число в ячейке', '@textnum'],
   ['дата в ячейке', '@date'],
 ]
-/** Хвост переменной длины (SUM и родня): весь хвост заменяется списком. */
+/** A tail of variable length (SUM and its kin): the whole tail is replaced by a list. */
 const TAIL: Pool = [
   ['диапазон: смесь', ['@mixed']],
   ['диапазон с ошибкой', ['@witherr']],
@@ -128,14 +128,14 @@ const TAIL: Pool = [
   ['пустая ячейка аргументом', ['@empty', 1]],
   ['отрицательные и дробные', [-2.5, 0.75, 0]],
 ]
-/** Один диапазон на месте массива (LARGE, PERCENTILE, CORREL): только вместо колонки из 8 чисел. */
+/** One range in place of an array (LARGE, PERCENTILE, CORREL): only instead of a column of 8 numbers. */
 const RANGE8: Pool = [
   ['диапазон: смесь', '@mixed'],
   ['диапазон с ошибкой', '@witherr'],
   ['пустой диапазон', '@blank'],
   ['разный размер', '@nums1short'],
 ]
-/** Размер массива (ARRAY_SIZE): только маленькие числовые литералы. */
+/** An array size (ARRAY_SIZE): small number literals only. */
 const SIZE: Pool = [
   ['отрицательное', -2],
   ['ноль', 0],
@@ -162,7 +162,7 @@ export function parseKinds(sig: Sig): Kind[] {
     .map((t) => ({ k: t[0], optional: t.endsWith('?') }))
 }
 
-/** Вид аргумента на позиции i с учётом повторяющегося хвоста. */
+/** The argument kind at position i, the repeating tail counted. */
 export function kindAt(sig: Sig, kinds: Kind[], i: number): string {
   if (i < kinds.length) return kinds[i].k
   const rep = sig.rep ?? 0
@@ -171,7 +171,7 @@ export function kindAt(sig: Sig, kinds: Kind[], i: number): string {
   return kinds[start + ((i - start) % rep)].k
 }
 
-/** Число аргументов по Excel: обязательные виды до необязательных; хвост до 255. */
+/** Excel's argument counts: the required kinds before the optional ones; a tail up to 255. */
 export function arity(sig: Sig): { min: number; max: number } {
   const kinds = parseKinds(sig)
   return { min: kinds.filter((x) => !x.optional).length, max: sig.rep ? 255 : kinds.length }
@@ -198,7 +198,7 @@ export function renderFormula(fn: string, args: Arg[], pick?: Pick): string {
   return `INDEX(${call},${pick[0]},${pick[1]})`
 }
 
-/** Автоматические краевые варианты по позициям аргументов базового вызова. */
+/** Automatic edge variants by argument position of the base call. */
 function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][] {
   const kinds = parseKinds(sig)
   const out: [string, Arg[]][][] = []
@@ -207,7 +207,7 @@ function autoEdges(sig: Sig, base: Arg[], rnd: () => number): [string, Arg[]][][
     const k = kindAt(sig, kinds, i)
     const list: [string, Arg[]][] = []
     if ((k === 'N' || k === 'V') && sig.rep === 1 && i === tailStart) {
-      // хвост целиком
+      // the whole tail
       for (const [tag, v] of TAIL) list.push([tag, [...base.slice(0, i), ...(v as Arg[])]])
       out.push(list)
       break
@@ -236,7 +236,7 @@ function shuffle<T>(xs: T[], rnd: () => number) {
   }
 }
 
-/** Отбор: первый аргумент по два варианта за круг, остальные по одному (порядок перемешан сидом). */
+/** The choice: two variants of the first argument per round, one of each other (the order shuffled by the seed). */
 function pickEdges(groups: [string, Arg[]][][], budget: number): [string, Arg[]][] {
   const out: [string, Arg[]][] = []
   const idx = groups.map(() => 0)
@@ -251,12 +251,12 @@ function pickEdges(groups: [string, Arg[]][][], budget: number): [string, Arg[]]
 
 export interface CaseSet {
   cases: Case[]
-  /** Имена Excel, которые formulajs отдаёт функцией (замеряемый набор до исключений). */
+  /** Excel names formulajs has as functions (the measured set before exclusions). */
   inFormulajs: string[]
   excluded: { fn: string; why: string }[]
-  /** Имена formulajs, которых нет в Excel: синонимы и имена с точкой не по Excel. */
+  /** formulajs names Excel lacks: synonyms and dotted names not as in Excel. */
   notInExcel: { name: string; same: string[] }[]
-  /** Функции Excel, которых нет в formulajs (или в formulajs это не функция). */
+  /** Excel functions formulajs lacks (or has as something other than a function). */
   missing: { fn: string; category: string; note?: string }[]
 }
 
@@ -264,7 +264,7 @@ const getFj = (path: string): unknown => path.split('.').reduce<any>((o, k) => (
 
 export function buildCases(): CaseSet {
   const excel = new Map(EXCEL_FUNCTIONS.map((x) => [x.name, x]))
-  // все вызываемые пути formulajs
+  // every callable path of formulajs
   const paths = new Map<string, Function>()
   const walk = (o: any, prefix: string, depth: number) => {
     for (const k of Object.keys(o)) {
@@ -326,7 +326,7 @@ export function buildCases(): CaseSet {
   return { cases, inFormulajs, excluded, notInExcel, missing }
 }
 
-/** Случаи, где в позиции размера массива не маленький числовой литерал (см. ARRAY_SIZE). */
+/** Cases with something other than a small number literal in an array-size position (see ARRAY_SIZE). */
 export function sizeGuardViolations(cases: Case[]): string[] {
   const out: string[] = []
   for (const c of cases)
