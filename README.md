@@ -8,7 +8,7 @@ What it does differently:
 - **Deterministic values and hashes.** The same book with the same clock gives the same values and the same `hash` (SHA-256 of a canonical text of all values plus the engine configuration version), regardless of input order, process or time zone. `inputHash` identifies the input.
 - **A clock for volatile functions.** `TODAY` and `NOW` come from `clock.now` (UTC), `RAND` and `RANDBETWEEN` from `clock.seed` and the cell address. Without a clock the engine takes the current moment and a random seed, and `result.clock` reproduces the result.
 - **A whitelist of functions, checked against Microsoft Excel.** A function is admitted only when it gives Excel's answer on every one of its test cases, typical calls and edge cases (text and booleans in numeric arguments, blanks, errors, date text, ranges with mixed content), computed in Excel 16 with the en-US locale; [Functions](#functions) has the list. Any other function is reported as `unknown_function` (`#NAME?`) rather than computed with different semantics.
-- **Arrays inside a formula.** Operators and functions work element by element over ranges and arrays with Excel 365's rules (`SUM(B:B*C:C)`, `SUMPRODUCT((A1:A9="x")*B1:B9)`, `SUM(IF(A1:A9>0,A1:A9))`), array constants `{1,2;3,4}` are read, and functions with an array answer (`SORT`, `FILTER`, `UNIQUE`, `SEQUENCE`, `MMULT`, …) can be used inside a formula. A cell still holds one value: a formula whose result is an array of several values gives `#SPILL!` (spilling is not supported yet, see [Arrays](#arrays)).
+- **Arrays inside a formula.** Operators and functions work element by element over ranges and arrays with Excel 365's rules (`SUM(B:B*C:C)`, `SUMPRODUCT((A1:A9="x")*B1:B9)`, `SUM(IF(A1:A9>0,A1:A9))`), array constants `{1,2;3,4}` are read, and functions with an array answer (`SORT`, `FILTER`, `UNIQUE`, `SEQUENCE`, `MMULT`, …) can be used inside a formula. A formula whose result is an array spills into the cells to its right and below, as in Excel 365 (`#SPILL!` where they are taken), and `E2#` refers to the range it filled (see [Arrays](#arrays)).
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
 - **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
@@ -100,7 +100,7 @@ console.log(session.book().sheets[0])
 //   }
 ```
 
-`restructure(op)` takes the operations of [Structure operations](#structure-operations) and recomputes; besides `restructure`'s result it returns `changes`, the cells whose value differs from the one `mapCell` carried there, so an interface that moves its shown values by `mapCell` and applies `changes` is up to date. It builds the state again, at the cost of a cold computation (190 ms for the 3,400-row synthetic book). Styles change through the session and recompute nothing: a cell's `style` (or `format`, `meta`) through `setCells`, the style table through `setStyles`, column widths, row heights, row and column styles and formats and merged areas through `setLayout`.
+`restructure(op)` takes the operations of [Structure operations](#structure-operations) and recomputes; besides `restructure`'s result it returns `changes`, the cells whose value differs from the one `mapCell` carried there, so an interface that moves its shown values by `mapCell` and applies `changes` is up to date. It builds the state again, at the cost of a cold computation (190 ms for the 3,400-row synthetic book). Styles change through the session and recompute nothing: a cell's `style` (or `format`, `meta`) through `setCells`, the style table through `setStyles`, column widths, row heights, row and column styles and formats and merged areas through `setLayout`; only a merged area added or removed over an array's spill range recomputes that array, and `setLayout` returns the changes.
 
 ### The clock and volatile functions
 
@@ -121,7 +121,7 @@ console.log(now.volatile.map((c) => c.cell).join(',')) // → A1,A2,A3
 
 ### Arrays
 
-A range or an array constant where a function takes one value, or under an operator, is computed element by element, and functions that take ranges take arrays the same way. A formula whose result is an array of several values cannot be shown in one cell before spilling: it gives `#SPILL!`, the issue says why, with the check code `unsupported`.
+A range or an array constant where a function takes one value, or under an operator, is computed element by element, and functions that take ranges take arrays the same way. A formula whose result is an array of several values spills: its cell shows the first value and the cells to its right and below the others, as in Excel 365. In the result a spilled cell has `spillOf`, the formula's address, and the formula has `spill`, the range it fills; `E2#` refers to that range. Where a cell of the range holds a value or a formula, or a merged area meets it, the formula gives `#SPILL!` and its issue names the cell.
 
 ```js
 import { compute } from 'formula-engine'
@@ -129,18 +129,21 @@ import { compute } from 'formula-engine'
 const cells = {
   A1: { value: 3 }, A2: { value: 5 }, A3: { value: 8 },
   B1: { formula: 'SUM(A1:A3*2)' },
-  B2: { formula: 'INDEX(SORT(A1:A3,1,-1),1)' },
-  B3: { formula: 'SUMPRODUCT((A1:A3>4)*A1:A3)' },
-  B4: { formula: 'A1:A3*2' },
+  B2: { formula: 'SUMPRODUCT((A1:A3>4)*A1:A3)' },
+  C1: { formula: 'SORT(A1:A3,1,-1)' },
+  D1: { formula: 'SUM(C1#)' },
+  E1: { formula: 'A1:A3*2' },
+  E3: { value: 'x' },
 }
 const r = compute({ sheets: [{ name: 'S', cells }] })
-console.log(r.sheets[0].cells.B1.value, r.sheets[0].cells.B2.value, r.sheets[0].cells.B3.value) // → 32 8 13
-console.log(r.sheets[0].cells.B4.value, r.issues[0].check) // → { error: 'SPILL' } unsupported
-console.log(r.issues[0].reason)
-// → the result is an array of 3×1 values: spilling into neighbouring cells is not supported yet; wrap it in a function that takes an array, such as SUM or INDEX
+const out = r.sheets[0].cells
+console.log(out.B1.value, out.B2.value, out.D1.value) // → 32 13 16
+console.log(out.C1, out.C2) // → { value: 8, formula: 'SORT(A1:A3,1,-1)', spill: 'C1:C3' } { value: 5, spillOf: 'C1' }
+console.log(out.E1.value, r.issues[0].reason)
+// → { error: 'SPILL' } the array of 3×1 values cannot spill: 'S'!E3 is not empty
 ```
 
-The design and the measured rules are in `docs/arrays-incell.md`.
+A spilled cell is a value of the book: it is in `sheets[].cells` and in the hash. An array of more than 65,536 values, such as `A:A*2` (1,048,576 rows), lists its cells up to where the rest holds one value and gives that value as the formula's `spillFill` (0 below the data). The design is in `docs/arrays-incell.md`, spilling and the rules measured in Excel in `docs/spill.md`.
 
 ### Checking formulas
 
@@ -156,7 +159,7 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax expected 
 console.log(validateName('Q1').ok, validateName('tax_rate').ok) // → false true
 ```
 
-Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to another workbook), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (a result that is an array of several values whatever the data, such as `A1:A3*2` or `ROW(A1:A3)`, or an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise; a formula whose result is an array is computed and gives `#SPILL!` with the check code `unsupported` in its issue, also when the result is an array only for the data at hand (`INDEX(A1:C3,0,B1)`).
+Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to another workbook), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
 
 ### Errors
 
@@ -247,7 +250,7 @@ console.log(last.ok, last.code) // → false last_sheet
 
 The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names) and `deleteSheet`. Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }` with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, or one another sheet has), `last_sheet` or `merged` (a move cutting a merged area, a copy landing on part of one). A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
 
-A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. The rules, and how they were checked against Excel on 182 cases (64 with styles), are in [docs/structure.md](docs/structure.md).
+A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. The rules, and how they were checked against Excel on 194 cases (64 with styles, 12 with spill references), are in [docs/structure.md](docs/structure.md).
 
 ## API
 
@@ -256,7 +259,7 @@ From `formula-engine`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`). Returns `ComputeResult`: `sheets` (values, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)`, `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `result()`, `close()`, `clock`. Options: `clock`, or `live: true`, `externals` and `execution`; edits are compiled in the session's execution mode |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `result()`, `close()`, `clock`. Options: `clock`, or `live: true`, `externals` and `execution`; edits are compiled in the session's execution mode |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name)` | `{ ok: true }` or `{ ok: false, message }` |
 | `toLocal(formula, locale)`, `toInvariant(text, locale)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)) |
@@ -296,7 +299,7 @@ The whitelist, by category (`FUNCTION_NAMES` has it in code):
 
 - Engineering: `BESSELI`, `BESSELJ`, `BESSELK`, `BESSELY`, `BIN2DEC`, `BIN2HEX`, `BIN2OCT`, `BITAND`, `BITLSHIFT`, `BITOR`, `BITRSHIFT`, `BITXOR`, `COMPLEX`, `CONVERT`, `DEC2BIN`, `DEC2HEX`, `DEC2OCT`, `DELTA`, `ERF`, `ERF.PRECISE`, `ERFC`, `ERFC.PRECISE`, `GESTEP`, `HEX2BIN`, `HEX2DEC`, `HEX2OCT`, `IMABS`, `IMAGINARY`, `IMARGUMENT`, `IMCONJUGATE`, `IMCOS`, `IMCOSH`, `IMCOT`, `IMCSC`, `IMCSCH`, `IMDIV`, `IMEXP`, `IMLN`, `IMLOG10`, `IMLOG2`, `IMPOWER`, `IMPRODUCT`, `IMREAL`, `IMSEC`, `IMSECH`, `IMSIN`, `IMSINH`, `IMSQRT`, `IMSUB`, `IMSUM`, `IMTAN`, `OCT2BIN`, `OCT2DEC`, `OCT2HEX`
 
-Status: checked against Excel on 26,695 cases: the coverage measurement (5,275), the case sets (16,461), the probes (959) and the random check (4,000), all with Excel's answers stored in this repository.
+Status: checked against Excel on 26,695 cases: the coverage measurement (5,275), the case sets (16,461), the probes (959) and the random check (4,000), all with Excel's answers stored in this repository; spilling on 88 more (`docs/spill.md`).
 
 Every function in the list matches Excel en-US on all of its cases in the coverage measurement (`docs/coverage-formulajs.md`) and in the Excel case sets (`docs/excel-cases/`), which also cover the functions formula.js lacks (`XLOOKUP`, `XMATCH`, `TEXTBEFORE`, `ADDRESS` and others), with two kinds of exceptions, both listed in `test/excel-cases.ts`: `XIRR` matches within 1e-6 relative (`SOFT`: Excel stops its iteration within 1e-8 of the root, the engine finds the root), and so do the t and F quantiles (`T.INV`, `T.INV.2T`, `TINV`, `F.INV`, `F.INV.RT`, `FINV`), where Excel loses up to 7 digits at 10^9 degrees of freedom and more, and a few cases differ knowingly (`KNOWN`: the engine's answer is pinned by the tests and the reason is in [Known differences](#limitations)); a difference the random check finds outside the functions (operators, the array layer) is pinned as open in `test/excel-open.ts` until it is fixed (none is open now). `TODAY`, `NOW`, `RAND` and `RANDBETWEEN` (volatile) have their own semantics and clock tests instead; `RANDARRAY` has Excel cases on what does not depend on the draw (sizes, bounds, whole numbers) and clock tests.
 
@@ -329,7 +332,7 @@ Notes on semantics:
 
 ## Limitations
 
-- **No spilling.** A cell holds one value: a formula whose result is an array of several values (`A1:A3*2`, `SORT(A1:A9)`) gives `#SPILL!`, with the check code `unsupported` in its issue, as Excel shows when the cells it would spill into are taken; `validateFormula` answers `unsupported` where the result is an array whatever the data. A 1 × 1 array is its value. There are no spill references (`E2#`), `LET` or `LAMBDA`.
+- **Spilling.** Of two arrays over one cell that do not depend on each other, the engine always lets the lower one spill; Excel's choice varies between runs (`docs/spill.md`). An array whose size depends on a volatile draw spills by the engine's clock (Excel can give `#SPILL!`). A cycle through a spill range is `#CYCLE!`. There are no `LET`, `LAMBDA` or tables.
 - **Content Security Policy.** Only `execution: 'eval'` uses `new Function`: in a browser with a CSP that does not allow `'unsafe-eval'`, `compute` and `openSession` in that mode throw an `EvalError` saying so. The default `closures` mode generates no code and computes under such a policy.
 - **Known differences from Excel:**
   - `XLOOKUP` and `XMATCH` with binary search (search mode 2 or −2) scan linearly: the same answer on sorted data, where Excel's binary search is defined. Match mode 3 (regular expressions) is `#VALUE!`.
