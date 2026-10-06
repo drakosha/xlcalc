@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "ru-RU (системные язык и локаль)",
-  "seconds": 2.029,
+  "seconds": 5.513,
   "dynamic": true
  },
  "cases": [
@@ -130,6 +130,66 @@
    "id": "criteria#25",
    "group": "criteria",
    "formula": "COUNTIF(N!H1,\"<>0.5\")"
+  },
+  {
+   "id": "criteria#26",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\">=1/1/2025\")"
+  },
+  {
+   "id": "criteria#27",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"1/31/2025\")"
+  },
+  {
+   "id": "criteria#28",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"Jan 31, 2025\")"
+  },
+  {
+   "id": "criteria#29",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"<2025-02-01\")"
+  },
+  {
+   "id": "criteria#30",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"31.01.2025\")"
+  },
+  {
+   "id": "criteria#31",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"31 янв 2025\")"
+  },
+  {
+   "id": "criteria#32",
+   "group": "criteria",
+   "formula": "COUNTIF(N!P1,\"50%\")"
+  },
+  {
+   "id": "criteria#33",
+   "group": "criteria",
+   "formula": "COUNTIF(N!Q1,\"$1,000\")"
+  },
+  {
+   "id": "criteria#34",
+   "group": "criteria",
+   "formula": "COUNTIF(N!Q1,\"1,000\")"
+  },
+  {
+   "id": "criteria#35",
+   "group": "criteria",
+   "formula": "COUNTIF(N!Q1,\"1 000\")"
+  },
+  {
+   "id": "criteria#36",
+   "group": "criteria",
+   "formula": "COUNTIF(N!P1,\"1/2\")"
+  },
+  {
+   "id": "criteria#37",
+   "group": "criteria",
+   "formula": "COUNTIF(N!P1,\">1 1/4\")"
   }
  ],
  "values": {
@@ -232,6 +292,54 @@
   "criteria#25": {
    "t": "n",
    "v": 1
+  },
+  "criteria#26": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#27": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#28": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#29": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#30": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#31": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#32": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#33": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#34": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#35": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#36": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#37": {
+   "t": "n",
+   "v": 0
   }
  }
 }
