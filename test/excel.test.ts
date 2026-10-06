@@ -10,9 +10,8 @@ import { FUNCTIONS } from '../src/functions.js'
 import { CASES, EXCEL, runExcelCases, show, type Outcome } from './excel-cases.js'
 import { SET_FUNCTIONS } from './excel-sets.js'
 
-/** Whitelisted functions the measurement has no cases for, and why. */
+/** Whitelisted functions without cases in the measurement or a case set, and why. */
 const NO_CASES: Record<string, string> = {
-  XLOOKUP: 'formula.js 4.6.1 has no XLOOKUP, so the measurement does not cover it; test/semantics-cases.ts does',
   TODAY: 'volatile, excluded from the measurement; test/volatile.test.ts',
   NOW: 'volatile, excluded from the measurement; test/volatile.test.ts',
   RAND: 'volatile, excluded from the measurement; test/volatile.test.ts',
