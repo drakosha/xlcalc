@@ -10,7 +10,7 @@ import { buildIndex, matches, parseCrit, select, type CritColumn, type CritIndex
 import { DEFS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_ROWS } from './model.js'
-import { compareValues, E, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
+import { compareValues, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -99,7 +99,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     const y = toNum(b)
     if (isErr(y)) return y
     const z = f(x, y)
-    return isErr(z) || Number.isFinite(z) ? z : E.NUM
+    return isErr(z) ? z : fitNumber(z)
   }
   const add = (a: V, b: V) => arith(a, b, (x, y) => x + y)
   const sub = (a: V, b: V) => arith(a, b, (x, y) => x - y)

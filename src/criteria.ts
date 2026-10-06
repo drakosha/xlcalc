@@ -4,7 +4,7 @@
  * the criterion text are compared as numbers, and a number criterion's equality also holds for text that
  * reads as that number; `""` matches blanks, `"<>"` non-blanks.
  */
-import { dateToSerial } from './model.js'
+import { dateToSerial, NUMBER_TEXT, readNumber } from './model.js'
 
 /** A cell value for a criterion; errors are any object. */
 export type CritValue = number | string | boolean | null | object
@@ -22,7 +22,6 @@ export type Crit =
  */
 export const collator: { compare(a: string, b: string): number } =
   typeof Intl !== 'undefined' ? new Intl.Collator('ru-RU', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
-const NUM_RE = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const cache = new Map<string, Crit>()
 
@@ -54,7 +53,7 @@ export function parseCrit(v: number | string | boolean | null): Crit {
     const rest = m[2]
     const t = rest.trim()
     if (rest === '') c = { op, kind: 'blank' }
-    else if (NUM_RE.test(t)) c = { op, kind: 'num', n: Number(t) }
+    else if (NUMBER_TEXT.test(t)) c = { op, kind: 'num', n: readNumber(t) }
     else if (DATE_RE.test(t)) c = { op, kind: 'num', n: dateToSerial(t) }
     else if (/^(TRUE|FALSE)$/i.test(rest)) c = { op, kind: 'bool', b: rest.toUpperCase() === 'TRUE' }
     else {
@@ -72,7 +71,7 @@ const opOk = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c 
 /** Text that reads as a number, as in a criterion (`"2"`, `" 2.50 "`), or null. */
 function numericText(s: string): number | null {
   const t = s.trim()
-  return NUM_RE.test(t) ? Number(t) : null
+  return NUMBER_TEXT.test(t) ? readNumber(t) : null
 }
 
 export function matches(v: CritValue, c: Crit): boolean {

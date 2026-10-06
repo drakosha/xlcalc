@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { complexText, makeCaller, numberText, pairs, specOf, type FnDef, type Grid } from '../src/args.js'
+import { complexText, makeCaller, pairs, specOf, type FnDef, type Grid } from '../src/args.js'
 import { createState } from '../src/engine.js'
 import { E, isErr, Rng, type V } from '../src/values.js'
 
@@ -124,8 +124,6 @@ describe('argument layer', () => {
       const im = imText === '' || imText === '+' ? 1 : imText === '-' ? -1 : Number(imText)
       expect(complexText(Number(reText), im, unit), t).toBe(t)
     }
-    expect(numberText(1e15)).toBe('1E+15')
-    expect(numberText(123456789012345)).toBe('123456789012345')
   })
 
   it('rule 6: holidays as whole serial numbers; text or a boolean in the list is #VALUE!', () => {

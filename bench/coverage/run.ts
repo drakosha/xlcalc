@@ -8,6 +8,7 @@
  *   npx tsx bench/coverage/run.ts excel ru   Excel ru-RU (перезапускает Excel без аргументов)
  *   npx tsx bench/coverage/run.ts report     сравнение, сводка и таблицы отчёта
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
+ *   npx tsx bench/coverage/run.ts probes     пробы Excel en-US вне замера (probes.ts) в docs/excel-probes.json
  *
  * FCOV_ONLY=ABS,SUM ограничивает набор функций (пробный прогон): тогда всё пишется в out/.
  * Excel считается частями до 400 случаев; после каждой части проверяется, нет ли модального окна.
@@ -21,6 +22,7 @@ import { buildCases, type Case, type CaseSet } from './cases.js'
 import { ensureExcel, excelDialogs, excelVersion, runExcel, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
+import { buildProbes, PROBE_SHEETS } from './probes.js'
 import { writeReport } from './report.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -189,6 +191,36 @@ async function stepExcel(locale: Locale) {
   }
 }
 
+/** Пробы (probes.ts) в Excel en-US частями по PART, с той же проверкой модальных окон до и после части. */
+async function stepProbes() {
+  const ps = buildProbes()
+  await ensureExcel('en')
+  const values: Record<string, Val> = {}
+  const t0 = Date.now()
+  mkdirSync(OUT, { recursive: true })
+  for (let k = 0; k * PART < ps.length; k++) {
+    const part = ps.slice(k * PART, (k + 1) * PART)
+    const dialogs = () => excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
+    const before = dialogs()
+    if (before) throw new Error(`пробы, часть ${k + 1}: до части у Excel окно не книги: ${before}`)
+    const book = join(OUT, `probes-${k + 1}.xlsx`)
+    await writeBook(part, book, PROBE_SHEETS)
+    let vals: Val[] | null = null
+    let err = ''
+    try {
+      vals = runExcel(book, part.length)
+    } catch (e) {
+      err = e instanceof Error ? e.message.split('\n')[0] : String(e)
+    }
+    const after = dialogs()
+    if (after || !vals) throw new Error(`пробы, часть ${k + 1}: ${after ? `модальное окно Excel: ${after}` : ''}${err ? ` ошибка чтения: ${err}` : ''}`)
+    part.forEach((p, i) => (values[p.id] = vals![i]))
+    console.log(`пробы: часть ${k + 1}, ${part.length} случаев`)
+  }
+  const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000 }
+  writeFileSync(join(ROOT, 'docs/excel-probes.json'), JSON.stringify({ meta, cases: ps, values }, null, 1) + '\n')
+}
+
 const step = process.argv[2]
 const t0 = Date.now()
 if (step === 'cases') await stepCases()
@@ -196,6 +228,7 @@ else if (step === 'fj') await stepFj()
 else if (step === 'lo') await stepLo()
 else if (step === 'excel') await stepExcel(process.argv[3] as Locale)
 else if (step === 'report') writeReport(RESULTS, ONLY !== undefined)
+else if (step === 'probes') await stepProbes()
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -204,7 +237,7 @@ else if (step === 'all') {
   await stepExcel('ru')
   writeReport(RESULTS, ONLY !== undefined)
 } else {
-  console.error('шаг: cases | fj | lo | excel en|ru | report | all')
+  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes')
   process.exit(2)
 }
 console.log(`готово за ${((Date.now() - t0) / 1000).toFixed(1)} с`)

@@ -5,7 +5,8 @@
  * `h`, `hh`, `mm` as minutes, `ss`, `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed
  * conditions are not supported: null (the caller turns it into #VALUE!).
  */
-import { serialToUtcMs } from './model.js'
+import { roundDigits } from './functions/common.js'
+import { NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
 
 type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
 
@@ -79,8 +80,7 @@ function tokenize(sec: string): Tok[] | null {
 
 /** Round half away from zero on the decimal representation (1.005 → 1.01). */
 export function roundHalfUp(abs: number, k: number): string {
-  const shifted = Math.round(Number(`${abs}e${k}`))
-  return Number(`${shifted}e-${k}`).toFixed(k)
+  return roundDigits(abs, k, Math.round).toFixed(k)
 }
 
 function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
@@ -232,10 +232,46 @@ function formatDate(serial: number, toks: Tok[]): string | null {
   return out
 }
 
-/** A number as text in the General format: up to 15 significant digits (like an unformatted Excel cell). */
+/**
+ * A number as text the way Excel converts one (`&`, CONCAT, text arguments): rounded to 15 significant
+ * digits, in positional notation unless that takes more than 20 characters (the sign aside), else in
+ * scientific notation with an exponent of two digits at least (`1E+20`, `7.4500104300146E-06`).
+ */
 export function generalText(n: number): string {
   if (n === 0) return '0'
-  return String(Number(n.toPrecision(15)))
+  const [m, e] = Math.abs(n).toExponential(14).split('e')
+  const exp = Number(e)
+  const digits = m.replace('.', '').replace(/0+$/, '')
+  const fixed =
+    exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
+  const text = fixed.length <= 20 ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
+  return n < 0 ? '-' + text : text
+}
+
+/**
+ * A number in the General format of TEXT: at most 11 characters, the sign aside. Positional when that
+ * shows all of the number's 15 significant digits or as many as scientific notation would (a fraction
+ * keeps up to 9 decimals, `0.000123457`), else scientific with the mantissa rounded to fit
+ * (`1.23457E-05`, `1E+11`).
+ */
+export function generalFormat(n: number): string {
+  if (n === 0) return '0'
+  const a = Math.abs(n)
+  const [m, ex] = a.toExponential(14).split('e')
+  const e = Number(ex)
+  const need = m.replace('.', '').replace(/0+$/, '').length
+  const sciCap = 11 - 3 - Math.max(2, String(Math.abs(e)).length)
+  const fixedCap = e >= 0 ? (e < 11 ? Math.max(10, e + 1) : 0) : 10 + e
+  let text: string | null = null
+  if (fixedCap > 0 && (need <= fixedCap || fixedCap >= sciCap)) {
+    const fixed = roundHalfUp(a, e >= 0 ? Math.max(0, 9 - e) : 9).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
+    if (fixed.length <= 11) text = fixed
+  }
+  if (text === null) {
+    const [sm, se] = a.toExponential(sciCap - 1).split('e')
+    text = `${sm.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')}E${se[0]}${se.slice(1).padStart(2, '0')}`
+  }
+  return n < 0 ? '-' + text : text
 }
 
 /** TEXT(value, format); null for an unsupported or invalid format. */
@@ -244,7 +280,8 @@ export function formatText(value: number | string | boolean, fmt: string): strin
   if (fmt === '') return ''
   const sections = splitSections(fmt)
   if (typeof value === 'string') {
-    const n = value.trim() === '' ? NaN : Number(value)
+    const t = value.trim()
+    const n = NUMBER_TEXT.test(t) ? readNumber(t) : NaN
     if (Number.isNaN(n)) {
       const textSec = sections.length >= 4 ? sections[3] : sections.find((s) => s.includes('@'))
       return textSec ? textSec.replace(/@/g, value).replace(/"/g, '') : value
@@ -258,7 +295,7 @@ export function formatText(value: number | string | boolean, fmt: string): strin
     sec = sections[1]
     signed = false
   } else if (v === 0 && sections.length >= 3 && sections[2] !== '') sec = sections[2]
-  if (/^\s*general\s*$/i.test(sec) || sec === '') return generalText(signed ? v : Math.abs(v))
+  if (/^\s*general\s*$/i.test(sec) || sec === '') return generalFormat(signed ? v : Math.abs(v))
   if (sec.trim() === '@') return generalText(v)
   const toks = tokenize(sec)
   if (!toks) return null

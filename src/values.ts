@@ -5,6 +5,7 @@
 import type { CellValue, ErrorCode } from './contract.js'
 import { collator } from './criteria.js'
 import { generalText } from './format.js'
+import { NUMBER_TEXT, readNumber } from './model.js'
 
 export class CErr {
   constructor(readonly code: ErrorCode) {}
@@ -41,15 +42,19 @@ export class Rng {
 
 export const isErr = (x: unknown): x is CErr => x instanceof CErr
 
+/** The smallest positive normal double: Excel has no smaller numbers (subnormal results are 0). */
+const MIN_NORMAL = 2.2250738585072014e-308
+
+/** A computed number as Excel keeps it: a non-finite one is #NUM!, one below the smallest normal number is 0. */
+export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)
+
 export function toNum(v: V): number | CErr {
   if (typeof v === 'number') return v
   if (v === null) return 0
   if (typeof v === 'boolean') return v ? 1 : 0
   if (isErr(v)) return v
   const t = v.trim()
-  if (t === '') return E.VALUE
-  const n = Number(t)
-  return Number.isFinite(n) ? n : E.VALUE
+  return NUMBER_TEXT.test(t) ? readNumber(t) : E.VALUE
 }
 
 export function toText(v: V): string | CErr {

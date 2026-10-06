@@ -8,7 +8,7 @@
 npx tsx bench/coverage/run.ts all
 ```
 
-Шаг `all` делает по очереди: случаи и книгу, formulajs, LibreOffice, Excel en-US, Excel ru-RU, отчёт. Каждый шаг можно запускать отдельно (`cases`, `fj`, `lo`, `excel en`, `excel ru`, `report`), каждый пишет свой JSON в `docs/coverage-formulajs/`. Пробный прогон на нескольких функциях: `FCOV_ONLY=SUM,TEXT npx tsx bench/coverage/run.ts cases`, потом нужные шаги; тогда всё пишется в `bench/coverage/out/` (в git не попадает). Тест генератора: `npx vitest run bench/coverage`.
+Отдельный шаг `probes` считает в Excel en-US пробы вне замера (`probes.ts`: число в текст, TEXT с General, длинные литералы, условия по целым колонкам разных листов) и пишет случаи с ответами в `docs/excel-probes.json`; их сверяет `test/excel-probes.test.ts`. Шаг `all` делает по очереди: случаи и книгу, formulajs, LibreOffice, Excel en-US, Excel ru-RU, отчёт. Каждый шаг можно запускать отдельно (`cases`, `fj`, `lo`, `excel en`, `excel ru`, `report`), каждый пишет свой JSON в `docs/coverage-formulajs/`. Пробный прогон на нескольких функциях: `FCOV_ONLY=SUM,TEXT npx tsx bench/coverage/run.ts cases`, потом нужные шаги; тогда всё пишется в `bench/coverage/out/` (в git не попадает). Тест генератора: `npx vitest run bench/coverage`.
 
 Нужны: Node 24+, `soffice` в PATH (LibreOffice), Excel для Мака (замер делался на 16.113) и разрешение на управление Excel и System Events из терминала (Автоматизация и Универсальный доступ в настройках macOS).
 

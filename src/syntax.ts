@@ -6,7 +6,7 @@
  */
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode, type NameCheck, type ValidateContext, type ValidateResult } from './contract.js'
 import { FUNCTIONS } from './functions.js'
-import { colToIndex, MAX_COLS, MAX_ROWS } from './model.js'
+import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from './model.js'
 
 export interface RangeRef {
   /** Zero-based rows and columns; a whole column has r1 = 0, r2 = MAX_ROWS - 1. */
@@ -205,7 +205,7 @@ function tokenize(src: string): Tok[] {
     }
     const nm = NUMBER.exec(rest)
     if (nm) {
-      out.push({ t: 'num', v: Number(nm[0]), at: i })
+      out.push({ t: 'num', v: readNumber(nm[0]), at: i })
       i += nm[0].length
       continue
     }

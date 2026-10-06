@@ -29,13 +29,15 @@
  *    which a cell shows as 0.
  * 4. Paired arrays (`pairs`): pairs where either value is not a number are dropped; arrays with different
  *    numbers of values are #N/A.
- * 5. The answer: a non-finite number is #NUM!; hexadecimal digits are upper-case (`upperHex`), complex
- *    numbers are written with 15 significant digits (`complexText`).
+ * 5. The answer: a non-finite number is #NUM!, one below the smallest normal number is 0 (`fitNumber`);
+ *    hexadecimal digits are upper-case (`upperHex`), complex numbers are written as Excel converts
+ *    numbers to text (`complexText`).
  * 6. Holidays and payment dates (`D`): a flat list of whole serial numbers.
  */
 import type { ErrorCode } from './contract.js'
 import { MAX_SERIAL, parseDateText } from './dates.js'
-import { E, isErr, Rng, toBool, toNum, toText, type CErr, type V } from './values.js'
+import { generalText } from './format.js'
+import { E, fitNumber, isErr, Rng, toBool, toNum, toText, type CErr, type V } from './values.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -268,7 +270,7 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V {
       // a defect in one function must not abort the whole book
       return E.VALUE
     }
-    return typeof r === 'number' && !Number.isFinite(r) ? E.NUM : r
+    return typeof r === 'number' ? fitNumber(r) : r
   }
 }
 
@@ -304,24 +306,12 @@ export function pairs(a: Grid, b: Grid): [number[], number[]] | CErr {
 /** Rule 5: hexadecimal (or any radix) digits upper-case, as Excel writes them. */
 export const upperHex = (s: string) => s.toUpperCase()
 
-/**
- * A number as Excel writes it inside a function's text answer: 15 significant digits, scientific
- * notation (`7.45330634426085E-06`) below 1E-5 and from 1E+15 on.
- */
-export function numberText(x: number): string {
-  const p = Number(x.toPrecision(15))
-  const a = Math.abs(p)
-  if (a === 0 || (a >= 1e-5 && a < 1e15)) return String(p)
-  const [m, e] = p.toExponential().split('e')
-  return `${m}E${e[0]}${e.slice(1).padStart(2, '0')}`
-}
-
-/** Rule 5: a complex number as Excel writes it: parts by `numberText`, `i` or `j`, the unit alone for ±1. */
+/** Rule 5: a complex number as Excel writes it: parts as numbers become text (`generalText`), `i` or `j`, the unit alone for ±1. */
 export function complexText(re: number, im: number, unit: 'i' | 'j' = 'i'): string {
-  if (im === 0) return numberText(re)
-  const imText = im === 1 ? unit : im === -1 ? `-${unit}` : `${numberText(im)}${unit}`
+  if (im === 0) return generalText(re)
+  const imText = im === 1 ? unit : im === -1 ? `-${unit}` : `${generalText(im)}${unit}`
   if (re === 0) return imText
-  return `${numberText(re)}${im > 0 ? '+' : ''}${imText}`
+  return `${generalText(re)}${im > 0 ? '+' : ''}${imText}`
 }
 
 /** Visits the values of `V` arguments in order, telling whether each came from a range; an error returned by `visit` stops and is returned. */
