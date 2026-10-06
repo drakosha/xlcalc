@@ -1,7 +1,7 @@
 /**
  * More spill references under structure operations, on the book of `spill.ts`: copies (a relative and an
- * absolute `E2#`), renaming and deleting the anchors' sheet. Not computed in Excel yet: Excel stopped on a
- * recovery window (06.10) before they ran; the engine's answers are pinned in `test/spill-structure.test.ts`.
+ * absolute `E2#`), renaming and deleting the anchors' sheet (`#REF!E2#`). A set of its own because Excel
+ * stopped on a recovery window (06.10) before they ran with `spill.ts`; they were computed on 07.10.
  */
 import { spillBook } from './spill.js'
 import type { StructCase, StructCases } from './cases.js'
