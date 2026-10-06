@@ -36,11 +36,11 @@ function proper(s: string): string {
   return out
 }
 
-/** Wildcards as in the criteria (`src/criteria.ts`), but `~` escapes any character, as Excel's SEARCH does. */
+/** Wildcards as in the criteria (`src/criteria.ts`); a `~` alone is an escape too. */
 function search(find: string, within: string, start = 1): V {
   if (start < 1 || start > within.length) return E.VALUE
   if (find === '') return start
-  const m = new RegExp(wildSource(find, true), 'iu').exec(within.slice(start - 1))
+  const m = new RegExp(wildSource(find), 'iu').exec(within.slice(start - 1))
   return m ? m.index + start : E.VALUE
 }
 
