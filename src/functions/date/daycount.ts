@@ -4,7 +4,7 @@ import { daysInMonth, isLeap, serialOf, ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp } from './atp.js'
 
-type Ymd = { y: number; m: number; d: number }
+export type Ymd = { y: number; m: number; d: number }
 
 /** Excel's calendar has 1900-02-29. */
 export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 29 : daysInMonth(y, m))
@@ -40,6 +40,13 @@ export function days30(a: Ymd, b: Ymd): number {
   return (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
 }
 
+/** Days since 1899-12-30 in the real calendar; an impossible day rolls over (1900-02-29 is 1900-03-01). */
+export function dayNum(x: Ymd): number {
+  const t = new Date(0)
+  t.setUTCFullYear(x.y, x.m - 1, x.d)
+  return Math.round(t.getTime() / 86_400_000) + 25_569
+}
+
 /** Actual/actual between ordered dates: 365 or 366 within a year, else the average year of the span. */
 function actualYears(start: number, end: number): number {
   const a = ymd(start)
@@ -53,7 +60,8 @@ function actualYears(start: number, end: number): number {
         : (isLeap(a.y) && start < mar1a && end >= mar1a) || (isLeap(b.y) && end >= mar1b && start < mar1b)
     return (end - start) / (leap || (b.m === 2 && b.d === 29) ? 366 : 365)
   }
-  return (end - start) / ((serialOf(b.y + 1, 1, 1) - serialOf(a.y, 1, 1)) / (b.y - a.y + 1))
+  // the average year by the real calendar, as the ToolPak counts it
+  return (end - start) / ((dayNum({ y: b.y + 1, m: 1, d: 1 }) - dayNum({ y: a.y, m: 1, d: 1 })) / (b.y - a.y + 1))
 }
 
 /** Years between two dates (either order) by basis: 0 US 30/360, 1 actual/actual, 2 actual/360, 3 actual/365, 4 European 30/360. */
