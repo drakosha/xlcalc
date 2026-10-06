@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CellEdit, CellInput, Clock, ComputeOptions, Externals, NameInput, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CellEdit, CellInput, Clock, ComputeOptions, Execution, Externals, NameInput, SessionOptions, ValidateContext } from './contract.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { sheetKey } from './syntax.js'
 
@@ -154,25 +154,33 @@ function checkExternals(v: unknown, path: string): Externals {
   return e as unknown as Externals
 }
 
+const EXECUTIONS: readonly Execution[] = ['closures', 'eval']
+
+function checkExecution(v: unknown, path: string) {
+  if (!EXECUTIONS.includes(v as Execution)) throw new InputError(path, `expected "closures" or "eval", got ${what(v)}`)
+}
+
 const CLOCK_HINT = ' (pass the clock as { clock: { now, seed } })'
 
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyKeys(o, path, ['clock', 'externals'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyKeys(o, path, ['clock', 'externals', 'execution'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
+  if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
   return o as ComputeOptions
 }
 
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyKeys(o, path, ['clock', 'live', 'externals'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined && typeof o.live !== 'boolean') throw new InputError(`${path}.live`, `expected a boolean, got ${what(o.live)}`)
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
+  if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
   return o as SessionOptions
 }
 

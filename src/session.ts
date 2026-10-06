@@ -20,8 +20,8 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
   checkBook(book)
   const live = o.live === true
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : currentClock()
-  const externals = o.externals
-  let state: EngineState | null = createState(book, { now: clockSerial(clock), seed: clock.seed, externals })
+  const { externals, execution } = o
+  let state: EngineState | null = createState(book, { now: clockSerial(clock), seed: clock.seed, externals, execution })
   const st = () => {
     if (!state) throw new Error('session is closed')
     return state
@@ -50,7 +50,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       const old = st()
       checkNames(names, 'names')
       if (live) tick(old)
-      const next = createState({ sheets: old.input.sheets, names }, { now: clockSerial(clock), seed: clock.seed, externals })
+      const next = createState({ sheets: old.input.sheets, names }, { now: clockSerial(clock), seed: clock.seed, externals, execution })
       // names change the whole graph: the book is rebuilt, changes are collected over all cells
       const keys: string[] = []
       next.input.sheets.forEach((_, i) => {
