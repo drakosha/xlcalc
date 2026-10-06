@@ -18,6 +18,11 @@ export interface CodegenContext {
   name(name: string): { ast: Extract<Ast, { k: 'ref' }>; area: boolean } | undefined
 }
 
+export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
+
+/** The runtime's arithmetic and text operators by symbol; comparisons go through `cmp` (lifted: `C`). */
+export const OPERATORS: Partial<Record<BinOp, Operator>> = { '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' }
+
 /**
  * Code of one node in a mode. `lift`: an operand or a one-value argument can be an array, so the node goes
  * through the lifting operators (`L1`, `L2`) or callers (`FL`, `LZ`); otherwise it is plain scalar code.

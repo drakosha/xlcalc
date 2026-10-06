@@ -8,9 +8,7 @@ import { Arr } from '../arrays/value.js'
 import { PACKAGE_NAME } from '../config.js'
 import type { Runtime } from '../runtime.js'
 import { isErr, Rng, type V } from '../values.js'
-import type { Backend } from './walk.js'
-
-const OPS: Record<string, string> = { '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' }
+import { OPERATORS, type Backend } from './walk.js'
 
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 
@@ -28,9 +26,9 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
     },
     unary: (op, a, lift) => (lift ? `L1(${op},${a})` : `${op}(${a})`),
     binary: (op, a, b, lift) => {
-      const f = OPS[op] ?? `C[${JSON.stringify(op)}]`
-      if (lift) return `L2(${f},${a},${b})`
-      return OPS[op] ? `${f}(${a},${b})` : `cmp(${JSON.stringify(op)},${a},${b})`
+      const f = OPERATORS[op]
+      if (lift) return `L2(${f ?? `C[${JSON.stringify(op)}]`},${a},${b})`
+      return f ? `${f}(${a},${b})` : `cmp(${JSON.stringify(op)},${a},${b})`
     },
     call: (name, args, lift) => `${lift ? 'FL' : 'F'}${key(name)}(${args.join(',')})`,
     lazy: (name, args, check) => {
