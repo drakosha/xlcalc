@@ -1,4 +1,4 @@
-# formula-engine
+# xlcalc
 
 A formula engine for spreadsheet-like workbooks in JavaScript. You give it a book (sheets of cells with values and Excel formulas, plus named ranges); it gives back the computed values, the errors with their reasons, and a deterministic hash of the values. Formulas use Excel syntax: English function names, commas between arguments, a decimal point; [Localization](#localization) shows them and reads them in another language, as Excel does.
 
@@ -17,15 +17,15 @@ Function implementations are ported from [formula.js](https://github.com/formula
 ## Install
 
 ```sh
-npm install formula-engine
+npm install xlcalc
 ```
 
-The package is ESM with TypeScript types included. From CommonJS use `await import('formula-engine')`, or `require()` on Node versions that can require ES modules (20.19+ and 22.12+). It has no dependencies.
+The package is ESM with TypeScript types included. From CommonJS use `await import('xlcalc')`, or `require()` on Node versions that can require ES modules (20.19+ and 22.12+). It has no dependencies.
 
 ## Quick start
 
 ```js
-import { compute } from 'formula-engine'
+import { compute } from 'xlcalc'
 
 const cells = {
   A1: { value: 'North' }, B1: { value: 120 },
@@ -50,7 +50,7 @@ A formula is stored without the leading `=` in `formula`, separately from `value
 A session holds a computed book. `setCells` applies edits atomically, recomputes only what depends on them and returns the cells whose values changed; `explain` shows where a value comes from.
 
 ```js
-import { openSession } from 'formula-engine'
+import { openSession } from 'xlcalc'
 
 const session = openSession({
   sheets: [{
@@ -82,7 +82,7 @@ session.close()
 A session also restructures its book and keeps its styles, so a host can hold the book in the session alone and save `book()` as a version (the session's own objects: do not modify them).
 
 ```js
-import { openSession } from 'formula-engine'
+import { openSession } from 'xlcalc'
 
 const session = openSession({
   sheets: [{ name: 'Plan', cells: { A1: { value: 100 }, A2: { value: 250 }, A3: { formula: 'SUM(A1:A2)', style: 0 } } }],
@@ -105,7 +105,7 @@ console.log(session.book().sheets[0])
 ### The clock and volatile functions
 
 ```js
-import { compute } from 'formula-engine'
+import { compute } from 'xlcalc'
 
 const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'NOW()' }, A3: { formula: 'RANDBETWEEN(1,6)' } } }] }
 
@@ -124,7 +124,7 @@ console.log(now.volatile.map((c) => c.cell).join(',')) // → A1,A2,A3
 A range or an array constant where a function takes one value, or under an operator, is computed element by element, and functions that take ranges take arrays the same way. A formula whose result is an array of several values spills: its cell shows the first value and the cells to its right and below the others, as in Excel 365. In the result a spilled cell has `spillOf`, the formula's address, and the formula has `spill`, the range it fills; `E2#` refers to that range. Where a cell of the range holds a value or a formula, or a merged area meets it, the formula gives `#SPILL!` and its issue names the cell.
 
 ```js
-import { compute } from 'formula-engine'
+import { compute } from 'xlcalc'
 
 const cells = {
   A1: { value: 3 }, A2: { value: 5 }, A3: { value: 8 },
@@ -150,7 +150,7 @@ A spilled cell is a value of the book: it is in `sheets[].cells` and in the hash
 `validateFormula` checks a formula without a book: it returns the canonical text (sheet names quoted, function names upper-case) and what the formula uses, or a check code with a message and a position.
 
 ```js
-import { validateFormula, validateName } from 'formula-engine'
+import { validateFormula, validateName } from 'xlcalc'
 
 console.log(validateFormula("sum(Sales!b1:b3, 'Q1 data'!A1)", { sheets: ['Sales', 'Q1 data'] }).canonical)
 // → SUM('Sales'!B1:B3,'Q1 data'!A1)
@@ -170,7 +170,7 @@ Input of the wrong shape is a programming error and throws `InputError` (a `Type
 ### Named ranges
 
 ```js
-import { compute } from 'formula-engine'
+import { compute } from 'xlcalc'
 
 const result = compute({
   sheets: [
@@ -192,7 +192,7 @@ A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global 
 Host functions that are not part of the book (a balance from a database, say) can appear in formulas. `validateFormula(text, { externalFunctions: ['BALANCE'] })` returns the canonical text of each call in `externals`; the host resolves the values in advance and passes them to `compute`:
 
 ```js
-import { compute } from 'formula-engine'
+import { compute } from 'xlcalc'
 
 const book = { sheets: [{ name: 'S', cells: { A1: { formula: 'BALANCE("2026-01")*2' } } }] }
 const result = compute(book, { externals: { functions: ['BALANCE'], values: { 'BALANCE("2026-01")': 21 } } })
@@ -206,7 +206,7 @@ Arguments of an external function must be literals; a call without a value gives
 Books store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are typed and shown, as Excel shows them in another language. The package has `ruRU` (Excel with the Russian interface) and `enUS`; a locale is a plain object (the `Locale` type), so another language is another object of the same shape.
 
 ```js
-import { ruRU, toInvariant, toLocal, validateLocalFormula } from 'formula-engine'
+import { ruRU, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'
 
 console.log(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU).formula) // → ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)
 console.log(toInvariant('=СУММ(A1:A3;1,5)', ruRU).formula) // → SUM(A1:A3,1.5)
@@ -222,7 +222,7 @@ The ru-RU data come from Excel itself. `bench/locale/snapshot.ts` opens books wi
 A book is computed in its own locale, `BookInput.locale` (`'en-US'` by default, or `'ru-RU'`), as Excel computes with those regional settings, whoever opens the book; a viewer still sees the formulas in their own language through `toLocal`. The locale changes how text reads as a number, a date or a boolean, how numbers and booleans become text, `TEXT`'s format codes, `DOLLAR` and `FIXED`, error texts, the words and numbers in criteria and the order of text:
 
 ```js
-import { compute } from 'formula-engine'
+import { compute } from 'xlcalc'
 
 const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { formula: 'TEXT(45688.75,"ДД ММММ ГГГГ ч:мм")' }, A4: { formula: 'DOLLAR(-1234.567)' }, A5: { formula: 'VALUE("1.5")' } }
 const r = compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells }] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
@@ -238,7 +238,7 @@ In ru-RU, as Excel 16.113 for Mac with the Russian interface and locale computes
 `restructure(book, op)` inserts or deletes rows and columns, moves (cut and paste) or copies (copy and paste, fill) a range, renames or deletes a sheet, and adjusts every reference in formulas and names on every sheet as Excel adjusts it: ranges grow and shrink, lost references become `#REF!`, absolute references move with inserted rows. It returns the new book and `mapCell`, which says where a cell of the old book is now; the input book is not changed.
 
 ```js
-import { restructure } from 'formula-engine'
+import { restructure } from 'xlcalc'
 
 const book = {
   sheets: [{
@@ -266,7 +266,7 @@ A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid 
 
 ## API
 
-From `formula-engine`:
+From `xlcalc`:
 
 | export | |
 |---|---|
@@ -283,9 +283,9 @@ From `formula-engine`:
 | `InputError` | thrown on input of the wrong shape |
 | `debugGeneratedCode(book, opts?)` | the JavaScript that the `eval` mode generates, in evaluation order, for debugging; not part of the contract |
 
-`formula-engine/contract` exports the types and two constants (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`) without any engine code, for code that only builds books or reads results.
+`xlcalc/contract` exports the types and two constants (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`) without any engine code, for code that only builds books or reads results.
 
-`formula-engine/unstable/internal` (the parser, the criteria index, engine state) and `formula-engine/unstable/synth` (a seeded synthetic book for tests and benchmarks) exist for benchmark harnesses and adapters of other engines. They are outside semver and change in any release.
+`xlcalc/unstable/internal` (the parser, the criteria index, engine state) and `xlcalc/unstable/synth` (a seeded synthetic book for tests and benchmarks) exist for benchmark harnesses and adapters of other engines. They are outside semver and change in any release.
 
 ## Functions
 

@@ -23,7 +23,7 @@ const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-const LOCK = join(homedir(), '.cache/formula-engine-excel.lock')
+const LOCK = join(homedir(), '.cache/xlcalc-excel.lock')
 
 const alive = (pid: number) => {
   try {

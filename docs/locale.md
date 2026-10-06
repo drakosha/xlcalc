@@ -18,7 +18,7 @@ A book carries its locale: `BookInput.locale?: string`, a BCP 47 tag of one of t
 
 The field is a tag, not a `Locale` object: `checkBook` looks it up in `LOCALES` (`src/locale/registry.ts`, one line per locale file) and an unknown tag is an `InputError` at `book.locale`. A host may still build `Locale` objects of its own for formula text; computation takes only the package's locales.
 
-Hashes: `inputHash` takes the line `L "<tag>"` after the style table when the tag is given and is not `en-US`; the values `hash` takes `;locale=<tag>` after the configuration version under the same condition (`src/canon.ts`, `valuesHash`). Books without the field, and en-US books, hash as before: the synthetic book keeps `8d63bad2c247ae26…` (pinned in `test/sha256.test.ts`) and `CONFIG_VERSION` is unchanged.
+Hashes: `inputHash` takes the line `L "<tag>"` after the style table when the tag is given and is not `en-US`; the values `hash` takes `;locale=<tag>` after the configuration version under the same condition (`src/canon.ts`, `valuesHash`). Books without the field, and en-US books, hash as before (the synthetic book's hash is pinned in `test/sha256.test.ts`), and `CONFIG_VERSION` did not change for locales.
 
 ### The rules of a locale
 

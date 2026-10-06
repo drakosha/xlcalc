@@ -22,7 +22,7 @@ type RestructureResult =
   | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged'; message: string }
 ```
 
-The types are in the contract (`formula-engine/contract`), and `FormulaEngine` has `restructure`.
+The types are in the contract (`xlcalc/contract`), and `FormulaEngine` has `restructure`.
 
 - One function with the operation as data, rather than eight functions: an operation can be stored, sent from the interface to the server and replayed, and the session's method takes the same object. Rows are numbers and columns letters, as in A1 addresses; sheets are matched case-insensitively.
 - The input book is not changed. Sheets, cells and names that the operation does not touch are shared with the input.
