@@ -1,7 +1,7 @@
 /**
  * Excel cases for the math and engineering functions beyond the coverage measurement: domain edges, large and
- * negative arguments, complex text, CONVERT units, functions formula.js lacks. A range in a scalar position is
- * left out (the engine reads it as array arithmetic). Answers: `docs/excel-cases/matheng.json`.
+ * negative arguments, complex text, CONVERT units, functions formula.js lacks; a few with a range in a one-value
+ * argument (formulas of the old kind here; the array set checks that as Excel 365). Answers: `docs/excel-cases/matheng.json`.
  */
 import type { Probe } from '../probes.js'
 
@@ -256,8 +256,8 @@ export function buildProbes(): Probe[] {
   for (const x of ['1.1E12', '1.15E12', '1.2E12', '1.25E12', '1.3E12', '1.35E12', '1.4E12', '1.45E12', '1.5E12', '1.55E12', '1.6E12', '1.11E12', '1.12E12', '1.125E12', '1.1258E12', '1.1259E12', '1.126E12', '1.13E12', '1.14E12']) add('MOD', `${x},1`)
   for (const fn of ['BESSELJ', 'BESSELY']) each(fn, ['134217727,0', '134217728,0', '-134217728,0', '1E9,1', '134217727.5,1'])
   each('MDETERM', ['D!P1:Q2', 'M!G4:J7', 'M!L1:N3', 'M!L5:N7', 'M!G9:H10', 'M!G12:H13', 'M!G15:H16', 'M!P1:Q3', '5', '"5"', 'D!B1', 'D!A1', 'D!A7', 'M!S10:W14', 'M!L9:N11', 'TRUE', 'D!B1:B8'])
-  // a range in a scalar position: Excel intersects it with the formula's row (#VALUE! here), the engine reads it
-  // as array arithmetic (#ERROR!, a known difference in test/excel-cases.ts)
+  // a range in a one-value argument: as old formulas Excel intersects it with the formula's row (#VALUE! here);
+  // Excel 365 refuses it with #VALUE! too, except the BIT functions, which lift it (KNOWN, legacyFormula)
   for (const fn of ['BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'BITAND', 'BITOR', 'BITXOR', 'DELTA']) add(fn, 'D!B1:B2,1')
   for (const fn of [...BIN, 'DEC2BIN', 'DEC2HEX', 'DEC2OCT', 'HEX2BIN', 'HEX2DEC', 'HEX2OCT', 'OCT2BIN', 'OCT2DEC', 'OCT2HEX', ...single]) add(fn, 'D!B1:B2')
   add('IMDIV', '"1",D!B1:B2')

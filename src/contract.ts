@@ -43,12 +43,16 @@ export interface BookInput {
   names?: NameInput[]
 }
 
-export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCLE' | 'SPILL' | 'ERROR'
+/** `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`). */
+export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
 
 /** A computed value. Dates come out as serial numbers, numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }
 
-/** Formula check codes. `unsupported`: array arithmetic, or an external function with non-literal arguments. */
+/**
+ * Formula check codes. `unsupported`: a result that is an array of several values (no spilling yet: the cell
+ * gets #SPILL!), or an external function with non-literal arguments.
+ */
 export type CheckCode =
   | 'empty'
   | 'syntax'

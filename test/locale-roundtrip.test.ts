@@ -1,7 +1,7 @@
 /**
  * The round trip: every formula of the coverage measurement, the Excel case sets and the probes, in the
  * engine's canonical form, shown in a locale and read back, is the same text. A formula the parser does
- * not take yet (array constants) goes round as it is written.
+ * not take goes round as it is written.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'

@@ -4,10 +4,13 @@
  * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
  * be bundled and run outside Node.
  */
-import { makeCaller, type Cx, type Grid } from './args.js'
+import { makeCaller, type Arg, type Cx, type Grid } from './args.js'
+import { liftCaller, liftLazy } from './arrays/call.js'
+import { isMany, liftN } from './arrays/lift.js'
+import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
-import { DEFS } from './functions.js'
+import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
@@ -37,10 +40,10 @@ export interface RuntimeContext {
 
 export const BIG_RANGE = 256
 
-/** Pseudo-random [0, 1) from the seed and the cell address: the same for the same clock. */
-export function randAt(seed: number, sheet: string, row: number, col: number): number {
+/** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
+export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {
   let h = 0x811c9dc5 ^ (seed >>> 0)
-  const key = `${sheet}\u0000${row}\u0000${col}`
+  const key = k === undefined ? `${sheet}\u0000${row}\u0000${col}` : `${sheet}\u0000${row}\u0000${col}\u0000${k}`
   for (let i = 0; i < key.length; i++) {
     h ^= key.charCodeAt(i)
     h = Math.imul(h, 0x01000193)
@@ -95,17 +98,24 @@ export function makeRuntime(ctx: RuntimeContext) {
     return out ?? flat(g)
   }
 
-  /** A value in a scalar position: the single cell of a range or #VALUE! (no spilling). */
-  const scalar = (x: V | Rng): V => {
+  /** A value in a scalar position: the single cell of a range or array, else #VALUE!. */
+  const scalar = (x: Arg): V => {
+    if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : E.VALUE
     if (!(x instanceof Rng)) return x
-    const b = bounds(x)
-    return b.h === 1 && b.w === 1 ? cell(x.s, b.r1, b.c1) : E.VALUE
+    return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
   }
 
-  const grid = (x: V | Rng): Grid => {
-    if (!(x instanceof Rng)) return { rows: 1, cols: 1, h: 1, w: 1, v: [x] }
+  /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are. */
+  const view = (x: Arg): V | Arr => {
+    if (!(x instanceof Rng)) return x
     const b = bounds(x)
-    return { rows: x.r2 - x.r1 + 1, cols: x.c2 - x.c1 + 1, h: b.h, w: b.w, v: flat(x) }
+    return new Arr(x.r2 - x.r1 + 1, x.c2 - x.c1 + 1, b.h, b.w, flat(x))
+  }
+
+  const grid = (x: Arg): Grid => {
+    if (x instanceof Arr) return x.fill === null ? x : x.full()
+    const a = view(x)
+    return a instanceof Arr ? a : { rows: 1, cols: 1, h: 1, w: 1, v: [a] }
   }
 
   // ---------- operators ----------
@@ -148,6 +158,21 @@ export function makeRuntime(ctx: RuntimeContext) {
     const c = compareValues(a, b)
     return op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0
   }
+
+  // ---------- operators over arrays (the code generator uses them where an operand can be an array) ----------
+
+  const one = (x: Arg): Arg => (x instanceof Arr || x instanceof Rng) && !isMany(x) ? scalar(x) : x
+  const L1 = (f: (a: V) => V, x: Arg): Arg => {
+    const a = one(x)
+    return isMany(a) ? liftN([view(a)], ([v]) => f(v)) : f(a as V)
+  }
+  const L2 = (f: (a: V, b: V) => V, x: Arg, y: Arg): Arg => {
+    const a = one(x)
+    const b = one(y)
+    return isMany(a) || isMany(b) ? liftN([view(a), view(b)], ([u, v]) => f(u, v)) : f(a as V, b as V)
+  }
+  /** Comparisons by operator, for L2. */
+  const C: Record<string, (a: V, b: V) => V> = Object.fromEntries(['=', '<>', '<', '>', '<=', '>='].map((op) => [op, (a: V, b: V) => cmp(op, a, b)]))
 
   // ---------- criteria ----------
 
@@ -194,21 +219,29 @@ export function makeRuntime(ctx: RuntimeContext) {
     get now() {
       return ctx.now
     },
-    rand: (s, r, c) => randAt(ctx.seed, sheets[s].name, r, c),
+    rand: (s, r, c, k) => randAt(ctx.seed, sheets[s].name, r, c, k),
     flat,
     flatOuter,
     bounds,
     scalar,
     grid,
+    view,
     select: select_,
   }
 
-  const F: Record<string, (...a: any[]) => V> = {}
-  for (const [name, def] of Object.entries(DEFS)) F[name] = makeCaller(def, cx)
+  const F: Record<string, (...a: any[]) => Arg> = {}
+  /** The callers that lift a call over arrays in one-value arguments (non-lazy functions). */
+  const FL: Record<string, (...a: any[]) => Arg> = {}
+  for (const [name, def] of Object.entries(DEFS)) {
+    F[name] = makeCaller(def, cx)
+    if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
+  }
+  /** A lazy function whose lifting arguments at `check` can be arrays. */
+  const LZ = (name: string, check: number[], ...thunks: (() => Arg)[]): Arg => liftLazy(F[name], FUNCTIONS[name], check, thunks, cx)
 
   const ext = (key: string): V => (key in ctx.externals ? fromCellValue(ctx.externals[key]) : E.NA)
 
-  return { cell, flat, bounds, scalar, add, sub, mul, div, pow, neg, pct, cat, cmp, F, ext, E, cx }
+  return { cell, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

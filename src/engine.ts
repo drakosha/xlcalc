@@ -1,19 +1,21 @@
 /**
- * The engine: formulas are compiled to JS, cells are computed over the reference graph.
+ * The engine: formulas are compiled to JS (`compile.ts`), cells are computed over the reference graph.
  *
  * One `new Function` per book, each formula its own function (editing a formula in a session compiles
- * only that formula). Only the package generates code: literals go through `JSON.stringify`, only
- * whitelisted runtime functions are called, sheets and ranges are passed as numbers. A full computation
- * follows the topological order; editing a value recomputes only the dependent cells.
+ * only that formula). A full computation follows the topological order; editing a value recomputes only
+ * the dependent cells.
  *
  * No platform imports, so the engine runs outside Node as well.
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
-import { PACKAGE_NAME } from './config.js'
+import type { Arg } from './args.js'
+import { isMany } from './arrays/lift.js'
+import { Arr } from './arrays/value.js'
+import { codegen, compileSources, PRELUDE, type CodegenContext } from './compile.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
-import { canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
+import { ARRAY_RESULT, canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
 import { CErr, E, isErr, Rng, type V } from './values.js'
 
 interface Formula {
@@ -29,7 +31,9 @@ interface Formula {
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
   nested: boolean
   source: string
-  fn: () => V | Rng
+  fn: () => Arg
+  /** Rows and columns of the array result of the latest computation (the cell shows #SPILL!). */
+  spill?: [number, number]
 }
 
 interface Invalid {
@@ -166,85 +170,18 @@ function nameFor(state: EngineState, here: number, name: string): PreparedName |
   return state.names.find((n) => n.scope === here && n.name.toUpperCase() === up) ?? state.names.find((n) => n.scope === -1 && n.name.toUpperCase() === up)
 }
 
-/** JS code of one formula (a self-contained factory expression) and its references. */
-function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number): { source: string; refs: Rng[]; volatile: boolean; nested: boolean } {
-  const refs: Rng[] = []
-  const hoisted: Rng[] = []
-  let volatile = false
-  let nested = false
-  const sheetOf = (name: string | null) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!)
-  const deref = (n: Ast): Ast => (n.k === 'name' ? (nameFor(state, s, n.name)?.ast ?? n) : n)
-  // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
-  const go = (n: Ast, rangeOk = false): string => {
-    switch (n.k) {
-      case 'num':
-      case 'str':
-      case 'bool':
-        return JSON.stringify(n.v)
-      case 'err':
-        return `E.${n.code}`
-      case 'ref': {
-        const g = new Rng(sheetOf(n.sheet), n.ref.r1, n.ref.c1, n.ref.r2, n.ref.c2)
-        refs.push(g)
-        if (n.ref.kind === 'cell' && !rangeOk) return `cell(${g.s},${g.r1},${g.c1})`
-        hoisted.push(g)
-        const h = `g${hoisted.length - 1}`
-        return rangeOk ? h : `scalar(${h})`
-      }
-      case 'name': {
-        const d = deref(n)
-        return d.k === 'name' ? 'E.NAME' : go(d, rangeOk)
-      }
-      case 'paren':
-        return rangeOk ? go(n.a, true) : `(${go(n.a)})`
-      case 'un':
-        return n.op === '-' ? `neg(${go(n.a)})` : go(n.a)
-      case 'pct':
-        return `pct(${go(n.a)})`
-      case 'bin': {
-        const a = go(n.a)
-        const b = go(n.b)
-        const op = ({ '+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '^': 'pow', '&': 'cat' } as Record<string, string>)[n.op]
-        return op ? `${op}(${a},${b})` : `cmp(${JSON.stringify(n.op)},${a},${b})`
-      }
-      case 'fn': {
-        const spec = FUNCTIONS[n.name]
-        if (!spec) return `ext(${JSON.stringify(canonical(n))})`
-        if (spec.volatile) volatile = true
-        if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') nested = true
-        // lazy functions (IF, IFERROR) get each argument as a function; RAND gets its cell
-        const args = n.args.map((a, i) => (spec.lazy ? `()=>${go(a)}` : go(a, spec.range(i))))
-        if (spec.cell) args.unshift(String(s), String(r), String(c))
-        const callee = /^[A-Z][A-Z0-9_]*$/.test(n.name) ? `F.${n.name}` : `F[${JSON.stringify(n.name)}]`
-        return `${callee}(${args.join(',')})`
-      }
-    }
-  }
-  const expr = go(ast)
-  const decl = hoisted.length ? `const ${hoisted.map((g, i) => `g${i}=R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`).join(',')};` : ''
-  return { source: `(()=>{${decl}return ()=>${expr}})()`, refs, volatile, nested }
-}
 
-const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,F,ext,E,R}=rt;'
-
-function compileSources(rt: Runtime, sources: string[]): (() => V | Rng)[] {
-  const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)
-  let make: (rt: unknown) => unknown
-  try {
-    make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
-  } catch (e) {
-    // a Content Security Policy without 'unsafe-eval' blocks new Function with an EvalError
-    if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)`, { cause: e })
-    throw e
-  }
-  return make({ ...rt, R }) as (() => V | Rng)[]
-}
+const codegenContext = (state: EngineState, s: number): CodegenContext => ({
+  sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
+  name: (name) => nameFor(state, s, name),
+})
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
 function prepare(state: EngineState, s: number, text: string): Prepared {
   const visible = state.names.filter((n) => n.scope === -1 || n.scope === s).map((n) => n.name)
-  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state, s, name)?.area)
+  // an array result is found when computing (#SPILL!), not refused here
+  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state, s, name)?.area, false)
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
@@ -373,10 +310,15 @@ function evaluate(state: EngineState, ids: number[], track?: Tracker) {
   for (const id of ids) {
     const f = state.formulas[id]!
     let v: V
+    f.spill = undefined
     if (state.topo[id] < 0) v = E.CYCLE
     else {
       const x = f.fn()
-      v = x instanceof Rng ? rt.scalar(x) : x
+      // an array of several values cannot be shown in one cell before spilling: #SPILL!
+      if (isMany(x)) {
+        f.spill = x instanceof Arr ? [x.rows, x.cols] : [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
+        v = E.SPILL
+      } else v = x instanceof Rng || x instanceof Arr ? rt.scalar(x) : x
       // a formula referencing an empty cell gives 0, as in Excel
       if (v === null || v === undefined) v = 0
       else if (typeof v === 'number' && !Number.isFinite(v)) v = E.NUM
@@ -434,7 +376,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
         put(ctx.sheets[s], row, col, E[p.invalid.error])
         continue
       }
-      const g = codegen(state, p.ast, s, row, col)
+      const g = codegen(codegenContext(state, s), p.ast, s, row, col)
       pending.push({ id: pending.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, nested: g.nested, source: g.source })
       if (g.nested) mark(ctx, s, row, col, true)
     }
@@ -481,7 +423,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
         write(state, s, row, col, E[p.invalid.error], track)
         continue
       }
-      const g = codegen(state, p.ast, s, row, col)
+      const g = codegen(codegenContext(state, s), p.ast, s, row, col)
       const f = { id: state.formulas.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, nested: g.nested, source: g.source, fn: () => null as V }
       if (g.nested) mark(state.ctx, s, row, col, true)
       state.formulas.push(f)
@@ -558,6 +500,7 @@ const GENERIC: Record<ErrorCode, string> = {
   VALUE: 'wrong type of value',
   CYCLE: 'circular reference',
   SPILL: 'array result does not fit',
+  CALC: 'empty array or text too long',
   ERROR: 'error',
 }
 
@@ -582,6 +525,10 @@ export function issues(state: EngineState): Issue[] {
     if (!f) continue
     const v = valueAt(state, f.s, f.r, f.c)
     if (!isErr(v)) continue
+    if (f.spill) {
+      out.push({ s: f.s, r: f.r, c: f.c, error: v.code, reason: `the result is an array of ${f.spill[0]}×${f.spill[1]} values: ${ARRAY_RESULT}`, check: 'unsupported', at: 0 })
+      continue
+    }
     let reason = GENERIC[v.code]
     if (v.code !== 'CYCLE') {
       const from = errorSource(state, f, v.code)

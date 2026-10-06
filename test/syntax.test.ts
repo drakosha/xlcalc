@@ -54,17 +54,21 @@ describe('formula parsing', () => {
     expect(!r.ok && r.message).toBe('ROUND takes 2 arguments, got 1')
   })
 
-  it('a range in a scalar position: unsupported', () => {
-    expect(code('A1:A3*2')).toBe('unsupported')
-    expect(code('ROUND(A1:A3,0)')).toBe('unsupported')
-    expect(code('A1:A3')).toBe('unsupported')
-    expect(code('SUMIFS(A:A,B:B,C1:C2)')).toBe('unsupported')
-    expect(code('data_amt+1')).toBe('unsupported')
-    expect(code('one+1')).toBe('ok')
-    expect(code('A1:A1*2')).toBe('ok')
-    expect(code('SUM(A1:A3)*2')).toBe('ok')
-    expect(code('SUMIFS(A:A,B:B,C1)')).toBe('ok')
-    expect(code('XLOOKUP(A1,B:B,C:C)')).toBe('ok')
+  it('a result that is an array of several values whatever the data: unsupported', () => {
+    for (const f of ['A1:A3*2', 'ROUND(A1:A3,0)', 'A1:A3', 'SUMIFS(A:A,B:B,C1:C2)', 'data_amt+1', '{1,2}', 'ROW(A1:A3)', 'BESSELJ(A1:A2+0,1)', 'IF({TRUE,FALSE},1,2)', 'CHOOSE(1,A1:A2,B1:B2)'])
+      expect(code(f), f).toBe('unsupported')
+    // one value, or an array only depending on the data (checked when computed)
+    for (const f of ['one+1', 'A1:A1*2', 'SUM(A1:A3)*2', 'SUM(A1:A3*2)', 'SUMIFS(A:A,B:B,C1)', 'XLOOKUP(A1,B:B,C:C)', '{1}', 'ROW(A1:C1)', 'INDEX(A1:C3,0,1)', 'BESSELJ(A1:A2,1)', 'IF(A1,A1:A2,0)', 'CHOOSE(2,A1:A2,B1)', 'N(A1:A3)'])
+      expect(code(f), f).toBe('ok')
+    const r = validate('A1:A3*2', ctx)
+    expect(!r.ok && r.message).toBe('the result is an array: spilling into neighbouring cells is not supported yet; wrap it in a function that takes an array, such as SUM or INDEX')
+  })
+
+  it('array constants: rows by ;, values by , ; numbers with a sign, text, booleans, errors', () => {
+    expect(canonical(parse('SUM({1,-2.5;"a""b",true;#N/A,+3})'))).toBe('SUM({1,-2.5;"a""b",TRUE;#N/A,3})')
+    for (const f of ['{1,2;3}', '{}', '{A1}', '{1+2}', '{{1}}', '{1;}', 'SUM({1,2)', '1;2']) expect(code(f), f).toBe('syntax')
+    const r = validate('{1,2;3}', ctx)
+    expect(!r.ok && r.message).toBe('the rows of an array constant must have the same number of values')
   })
 
   it('an error points at the position', () => {

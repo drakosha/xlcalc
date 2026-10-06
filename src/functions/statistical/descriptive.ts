@@ -4,9 +4,10 @@
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); empty input, coercion and domain checks follow Excel.
  */
 import { eachValue, type FnDef, type Grid, type Segment } from '../../args.js'
+import { Arr } from '../../arrays/value.js'
 import { parseDateText } from '../../dates.js'
-import { E, isErr, toNum, type V } from '../../values.js'
-import { devsq, max, mean, min, sorted, sum } from './common.js'
+import { E, isErr, toNum, type CErr, type V } from '../../values.js'
+import { devsq, gridNumbers, max, mean, min, sorted, sum } from './common.js'
 
 const variance = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : devsq(xs) / (xs.length - ddof))
 const stdev = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : Math.sqrt(devsq(xs) / (xs.length - ddof)))
@@ -93,12 +94,11 @@ const rankEq = (x: number, xs: number[], order?: V) => rank(x, xs, order, false)
 const rankAvg = (x: number, xs: number[], order?: V) => rank(x, xs, order, true)
 
 /**
- * MODE: the most frequent number, the first to occur among equals; text and booleans are skipped even as
- * direct arguments, but a reference to one blank cell is #VALUE!.
+ * MODE: the most frequent numbers (seen more than once), in the order they first occur; text and booleans are
+ * skipped even as direct arguments, but a reference to one blank cell is #VALUE!; none is #N/A.
  */
-function mode(grids: Grid[]): V {
+function modes(grids: Grid[]): number[] | CErr {
   const counts = new Map<number, number>()
-  let best: number | undefined
   let top = 1
   for (const g of grids) {
     if (g.rows * g.cols === 1 && (g.v[0] ?? null) === null) return E.VALUE
@@ -107,16 +107,38 @@ function mode(grids: Grid[]): V {
       if (typeof v !== 'number') continue
       const c = (counts.get(v) ?? 0) + 1
       counts.set(v, c)
-      if (c > top) {
-        top = c
-        best = v
-      }
+      if (c > top) top = c
     }
   }
-  if (best === undefined) return E.NA
-  // among values reaching the top count, the one that occurs first
-  for (const g of grids) for (const v of g.v) if (typeof v === 'number' && counts.get(v) === top) return v
-  return best
+  if (top === 1) return E.NA
+  const out = new Set<number>()
+  for (const g of grids) for (const v of g.v) if (typeof v === 'number' && counts.get(v) === top) out.add(v)
+  return [...out]
+}
+
+function mode(grids: Grid[]): V {
+  const m = modes(grids)
+  return isErr(m) ? m : m[0]
+}
+
+/**
+ * FREQUENCY: how many numbers of the data fall at or below each bin and above the bins before it (bins taken
+ * in sorted order, answered in their own order; a repeated bin counts nothing), and above the last bin. Bins
+ * without numbers are one bin at 0, as in Excel.
+ */
+function frequency(data: Grid, bins: Grid): V | Arr {
+  const xs = gridNumbers(data)
+  if (isErr(xs)) return xs
+  const found = gridNumbers(bins)
+  if (isErr(found)) return found
+  const bs = found.length ? found : [0]
+  const order = bs.map((_, i) => i).sort((a, b) => bs[a] - bs[b] || a - b)
+  const counts = new Array<number>(bs.length + 1).fill(0)
+  for (const x of xs) {
+    const k = order.find((i) => x <= bs[i])
+    counts[k ?? bs.length]++
+  }
+  return new Arr(counts.length, 1, counts.length, 1, counts)
 }
 
 /** COUNT: numbers in ranges; a direct argument counts if it reads as a number (booleans, numeric and date text). */
@@ -138,7 +160,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   AVERAGE: { args: 'N', rep: 1, empty: 'DIV0', fn: mean },
-  AVERAGEA: { args: 'A', rep: 1, empty: 'DIV0', fn: mean },
+  AVERAGEA: { args: 'Y', rep: 1, empty: 'DIV0', fn: mean },
   COUNT: {
     args: 'V',
     rep: 1,
@@ -196,7 +218,17 @@ export const functions: Record<string, FnDef> = {
   MEDIAN: { args: 'N', rep: 1, empty: 'NUM', fn: median },
   MIN: { args: 'N', rep: 1, fn: (xs: number[]) => (xs.length ? min(xs) : 0) },
   MINA: { args: 'A', rep: 1, fn: (xs: number[]) => (xs.length ? min(xs) : 0) },
+  'MODE.MULT': {
+    args: 'G',
+    rep: 1,
+    array: true,
+    fn: (grids: Grid[]) => {
+      const m = modes(grids)
+      return isErr(m) ? m : new Arr(m.length, 1, m.length, 1, m)
+    },
+  },
   'MODE.SNGL': { args: 'G', rep: 1, fn: mode },
+  FREQUENCY: { args: 'G G', array: true, fn: frequency },
   'PERCENTILE.EXC': { args: 'N n', empty: 'NUM', fn: percentileExc },
   'PERCENTILE.INC': { args: 'N n', empty: 'NUM', fn: percentileInc },
   'PERCENTRANK.EXC': { args: 'N n i?', empty: 'NA', fn: percentRankExc },

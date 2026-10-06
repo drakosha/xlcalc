@@ -4,6 +4,7 @@
  * The stored formula text has no `=`. Canonical form: function names upper-case, the sheet always quoted
  * (`'Data'!A1`), strings with Excel `""` doubling, no whitespace.
  */
+import { shapes } from './arrays/shape.js'
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH, type CheckCode, type ErrorCode, type NameCheck, type ValidateContext, type ValidateResult } from './contract.js'
 import { FUNCTIONS } from './functions.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from './model.js'
@@ -32,6 +33,11 @@ export type Ast =
   | { k: 'pct'; a: Ast }
   | { k: 'bin'; op: BinOp; a: Ast; b: Ast }
   | { k: 'paren'; a: Ast }
+  /** An array constant `{1,2;3,4}`: rows of numbers, text, booleans and errors. */
+  | { k: 'arr'; rows: Lit[][] }
+
+/** A value of an array constant. */
+export type Lit = Extract<Ast, { k: 'num' | 'str' | 'bool' | 'err' }>
 
 export type BinOp = '+' | '-' | '*' | '/' | '^' | '&' | '=' | '<>' | '<' | '>' | '<=' | '>='
 
@@ -65,6 +71,7 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   VALUE: '#VALUE!',
   CYCLE: '#CYCLE!',
   SPILL: '#SPILL!',
+  CALC: '#CALC!',
   ERROR: '#ERROR!',
 }
 
@@ -81,9 +88,12 @@ export type Tok =
   | { t: '('; at: number }
   | { t: ')'; at: number }
   | { t: ','; at: number }
+  | { t: '{' | '}' | ';'; at: number }
   | { t: 'eof'; at: number }
 
-const IDENT = /^[\p{L}_\\][\p{L}\p{N}_.]*/u
+/** An identifier (function or name): a letter, `_` or `\`, then letters, digits, `_` and `.`; the locale lexer reads the same. */
+export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.]*'
+const IDENT = new RegExp(`^${IDENT_RULE}`, 'u')
 const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
 const UNQUOTED_SHEET = /^([\p{L}_][\p{L}\p{N}_.]*)!/u
 const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\$?)([0-9]+))?/
@@ -179,8 +189,7 @@ export function tokenize(src: string): Tok[] {
       continue
     }
     if (ch === '[') bad(i, 'external workbook reference', 'external_ref')
-    if (ch === '{') bad(i, 'array constants are not supported')
-    if (ch === '(' || ch === ')' || ch === ',') {
+    if (ch === '(' || ch === ')' || ch === ',' || ch === '{' || ch === '}' || ch === ';') {
       out.push({ t: ch, at: i } as Tok)
       i++
       continue
@@ -308,6 +317,8 @@ export function parse(src: string): Ast {
         expect(')')
         return { k: 'paren', a }
       }
+      case '{':
+        return constant(t.at)
       case 'fn': {
         expect('(')
         enter(t.at)
@@ -329,6 +340,35 @@ export function parse(src: string): Ast {
       default:
         return bad(t.at, t.t === 'eof' ? 'unexpected end of formula' : `unexpected ${describe(t)}`)
     }
+  }
+  // rows separated by `;`, values by `,`, all rows of one length, as Excel requires
+  const constant = (at: number): Ast => {
+    const rows: Lit[][] = [[]]
+    for (;;) {
+      rows.at(-1)!.push(literal())
+      const t = toks[p++]
+      if (t.t === ',') continue
+      if (t.t === ';') {
+        rows.push([])
+        continue
+      }
+      if (t.t !== '}') bad(t.at, `expected , ; or } in an array constant, found ${describe(t)}`)
+      break
+    }
+    if (rows.some((r) => r.length !== rows[0].length)) bad(at, 'the rows of an array constant must have the same number of values')
+    return { k: 'arr', rows }
+  }
+  const literal = (): Lit => {
+    const t = toks[p++]
+    if (t.t === 'op' && (t.v === '-' || t.v === '+') && toks[p].t === 'num') {
+      const n = toks[p++] as { v: number }
+      return { k: 'num', v: t.v === '-' ? -n.v : n.v }
+    }
+    if (t.t === 'num') return { k: 'num', v: t.v }
+    if (t.t === 'str') return { k: 'str', v: t.v }
+    if (t.t === 'err' && t.sheet === undefined && t.ref === undefined) return { k: 'err', code: t.code }
+    if (t.t === 'ident' && /^(TRUE|FALSE)$/i.test(t.v)) return { k: 'bool', v: t.v.toUpperCase() === 'TRUE' }
+    return bad(t.at, `an array constant holds numbers, text, booleans and errors only, found ${describe(t)}`)
   }
   const expect = (k: '(' | ')') => {
     const t = toks[p]
@@ -416,6 +456,8 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
         return go(n.a) + n.op + go(n.b)
       case 'paren':
         return `(${go(n.a)})`
+      case 'arr':
+        return `{${n.rows.map((r) => r.map(go).join(',')).join(';')}}`
     }
   }
   return go(ast)
@@ -426,32 +468,20 @@ export const canonical = (ast: Ast, sheetOf?: (s: string) => string) => printFor
 
 // ---------- checks ----------
 
-/** A range node larger than one cell (a name is judged by `isRangeName`). */
-function isArea(n: Ast, isRangeName: (name: string) => boolean | undefined): boolean {
-  if (n.k === 'paren') return isArea(n.a, isRangeName)
-  if (n.k === 'ref') return n.ref.kind !== 'cell' && !(n.ref.r1 === n.ref.r2 && n.ref.c1 === n.ref.c2)
-  if (n.k === 'name') return isRangeName(n.name) === true
-  return false
-}
+/** Why a formula whose result is an array of several values gets `unsupported` (and its cell #SPILL!). */
+export const ARRAY_RESULT = 'spilling into neighbouring cells is not supported yet; wrap it in a function that takes an array, such as SUM or INDEX'
 
-/**
- * Argument shape: the argument count of each function, and ranges only where the function expects them.
- * A range in a scalar position means array arithmetic: `unsupported` in this version.
- */
-export function checkShape(ast: Ast, src: string, isRangeName: (name: string) => boolean | undefined, external: (fn: string) => boolean): FormulaError | null {
+/** Argument counts of each function; literal arguments of external functions. */
+export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
   const at = (needle: string) => Math.max(0, src.toUpperCase().indexOf(needle.toUpperCase()))
-  const visit = (n: Ast, rangeOk: boolean): FormulaError | null => {
+  const visit = (n: Ast): FormulaError | null => {
     switch (n.k) {
-      case 'ref':
-      case 'name':
-        return !rangeOk && isArea(n, isRangeName) ? new FormulaError('unsupported', 'a range is used where a single value is expected (array arithmetic is not supported)', at(n.k === 'name' ? n.name : n.ref.text)) : null
       case 'paren':
-        return visit(n.a, rangeOk)
       case 'un':
       case 'pct':
-        return visit(n.a, false)
+        return visit(n.a)
       case 'bin':
-        return visit(n.a, false) ?? visit(n.b, false)
+        return visit(n.a) ?? visit(n.b)
       case 'fn': {
         if (external(n.name)) {
           for (const a of n.args) {
@@ -467,8 +497,8 @@ export function checkShape(ast: Ast, src: string, isRangeName: (name: string) =>
           const count = spec.min === spec.max ? `${spec.min}` : `${spec.min} to ${spec.max}${spec.parity ? ` (${spec.parity})` : ''}`
           return new FormulaError('syntax', `${n.name} takes ${count} arguments, got ${k}`, at(n.name))
         }
-        for (let i = 0; i < k; i++) {
-          const e = visit(n.args[i], spec.range(i))
+        for (const a of n.args) {
+          const e = visit(a)
           if (e) return e
         }
         return null
@@ -477,11 +507,15 @@ export function checkShape(ast: Ast, src: string, isRangeName: (name: string) =>
         return null
     }
   }
-  return visit(ast, false)
+  return visit(ast)
 }
 
-/** Formula check: parsing, whitelisted or external functions, sheets, names, argument shape. */
-export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (name: string) => boolean | undefined = () => undefined): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
+/**
+ * Formula check: parsing, whitelisted or external functions, sheets, names, argument counts, and (unless
+ * `arrayResult` is false, as in `compute`, which gives such a cell #SPILL! when computed) a result that is
+ * an array of several values whatever the data.
+ */
+export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (name: string) => boolean | undefined = () => undefined, arrayResult = true): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
   let ast: Ast
   try {
     ast = parse(text)
@@ -511,8 +545,9 @@ export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (
     const known = new Set(ctx.names.map((n) => n.toUpperCase()))
     for (const n of names) if (!known.has(n.toUpperCase())) return fail('unknown_name', `unknown name ${n}`, n)
   }
-  const shape = checkShape(ast, text, isRangeName, (f) => externalSet.has(f) && !FUNCTIONS[f])
-  if (shape) return { ok: false, code: shape.code, message: shape.message, at: shape.at }
+  const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !FUNCTIONS[f])
+  if (calls) return { ok: false, code: calls.code, message: calls.message, at: calls.at }
+  if (arrayResult && shapes(ast, isRangeName).get(ast) === 2) return { ok: false, code: 'unsupported', message: `the result is an array: ${ARRAY_RESULT}`, at: 0 }
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)] }
 }
 

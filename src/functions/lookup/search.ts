@@ -81,10 +81,16 @@ export function find(line: Line, k: Key, mode: number, wild: boolean): number {
   return -1
 }
 
-/** A column index or match type: a cell that is no number gives #REF!, a value that is none its own error, as in Excel. */
-export function indexArg(cx: Cx, x: V | Rng): number | CErr {
+/**
+ * A column index or match type: a cell that is no number gives #REF!, a value that is none its own error, as
+ * in Excel 365; a range of several cells is #REF! for a column index and its top-left cell for a match type.
+ */
+export function indexArg(cx: Cx, x: V | Rng, range: 'index' | 'type' = 'index'): number | CErr {
   if (!(x instanceof Rng)) return toNum(x)
-  if (x.r2 > x.r1 || x.c2 > x.c1) return E.VALUE
+  if (x.r2 > x.r1 || x.c2 > x.c1) {
+    if (range === 'index') return E.REF
+    x = new Rng(x.s, x.r1, x.c1, x.r1, x.c1)
+  }
   const n = toNum(cx.scalar(x))
   return isErr(n) ? E.REF : n
 }

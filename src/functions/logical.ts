@@ -30,7 +30,7 @@ export const functions: Record<string, FnDef> = {
   AND: logical((bs) => bs.every(Boolean)),
   FALSE: { args: '', fn: () => false },
   IF: {
-    args: 'a a a?',
+    args: 'a p p?',
     lazy: true,
     fn: (cond: () => V, then: () => V, otherwise?: () => V) => {
       const c = toBool(cond())
@@ -39,7 +39,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   IFERROR: {
-    args: 'a a',
+    args: 'a p',
     lazy: true,
     fn: (value: () => V, alt: () => V) => {
       const v = value()
@@ -47,7 +47,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   IFNA: {
-    args: 'a a',
+    args: 'a p',
     lazy: true,
     fn: (value: () => V, alt: () => V) => {
       const v = value()
@@ -55,7 +55,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   IFS: {
-    args: 'a a',
+    args: 'a p',
     rep: 2,
     fn: (rest: V[]) => {
       for (let i = 0; i < rest.length; i += 2) {
@@ -68,11 +68,13 @@ export const functions: Record<string, FnDef> = {
   },
   NOT: { args: 'b', fn: (b: boolean) => !b },
   OR: logical((bs) => bs.some(Boolean)),
-  // values match within a type, text in any case, a blank as 0; a lone last argument is the default
+  // values match within a type, text in any case, a blank as 0; a lone last argument is the default;
+  // the expression and the values to match lift, the results do not
   SWITCH: {
     args: 'a a a',
     rep: 1,
     lazy: true,
+    liftAt: (i, n) => i === 0 || (i % 2 === 1 && i < n - 1),
     fn: (expr: () => V, ...rest: (() => V)[]) => {
       const x = expr() ?? 0
       if (isErr(x)) return x

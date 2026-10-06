@@ -22,7 +22,7 @@ export type Crit =
  * the order falls back to code units of the lower-cased strings.
  */
 export const collator: { compare(a: string, b: string): number } =
-  typeof Intl !== 'undefined' ? new Intl.Collator('ru-RU', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
+  typeof Intl !== 'undefined' ? new Intl.Collator('en-US', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const cache = new Map<string, Crit>()
 
@@ -59,6 +59,7 @@ const ERRORS: Record<string, [code: string, rank: number]> = {
   '#NUM!': ['NUM', 6],
   '#N/A': ['NA', 7],
   '#SPILL!': ['SPILL', 9],
+  '#CALC!': ['CALC', 14],
 }
 const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRORS))
 

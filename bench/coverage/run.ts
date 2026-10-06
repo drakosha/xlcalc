@@ -197,25 +197,28 @@ async function stepExcel(locale: Locale) {
 /**
  * Пробы в Excel en-US частями по PART, с той же проверкой модальных окон до и после части. Без имени
  * набора это `probes.ts` и `docs/excel-probes.json`; с именем `<set>` генератор `sets/<set>.ts`
- * (экспорт `buildProbes()` и, если нужны листы данных, `SHEETS`) и ответы в `docs/excel-cases/<set>.json`.
+ * (экспорт `buildProbes()`, если нужны листы данных, `SHEETS`, и `DYNAMIC`, если формулы динамического массива)
+ * и ответы в `docs/excel-cases/<set>.json`.
  * Наборы нужны, чтобы параллельные ветки добавляли свои случаи, не трогая общие файлы.
  */
 async function stepProbes(set?: string) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
-  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = set ?? 'probes'
   const target = set ? join(ROOT, `docs/excel-cases/${set}.json`) : join(ROOT, 'docs/excel-probes.json')
   // продолжение: ответы, чья формула не изменилась, берутся из файла (FCOV_FRESH=1 заново)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { cases: Probe[]; values: Record<string, Val> }) : null
+  const read = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { meta: { dynamic?: boolean }; cases: Probe[]; values: Record<string, Val> }) : null
+  // ответы формул другого вида (старого или динамического массива) не годятся
+  const prev = read && (read.meta.dynamic ?? false) === (mod.DYNAMIC ?? false) ? read : null
   const was = new Map(prev?.cases.map((c) => [c.id, c.formula]) ?? [])
   const values: Record<string, Val> = {}
   for (const p of ps) if (prev?.values[p.id] && was.get(p.id) === p.formula) values[p.id] = prev.values[p.id]
   const rejected: Probe[] = []
   const t0 = Date.now()
   const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000 }
+    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000, ...(mod.DYNAMIC ? { dynamic: true } : {}) }
     writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
   // книга, которую Excel не читает, делится пополам до формулы-виновника
@@ -226,7 +229,7 @@ async function stepProbes(set?: string) {
     const book = join(OUT, `${tag}-${label}.xlsx`)
     // скрипт чтения ждёт колонку не короче двух ячеек: одиночный случай дополняется пустышкой
     const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
-    await writeBook(sent, book, sheets)
+    await writeBook(sent, book, sheets, { dynamic: mod.DYNAMIC })
     const vals = await runExcelWatched(book, sent.length)
     if (vals !== 'rejected') return void cases.forEach((p, i) => (values[p.id] = vals[i]))
     if (cases.length === 1) {

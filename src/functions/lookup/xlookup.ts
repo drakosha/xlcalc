@@ -1,7 +1,8 @@
 /** XLOOKUP and XMATCH, this engine's own. */
-import { gridAt, type FnDef, type Grid } from '../../args.js'
+import type { Arg, FnDef, Grid } from '../../args.js'
+import { Arr } from '../../arrays/value.js'
 import { wildRe } from '../../criteria.js'
-import { compareValues as compare, E, isErr, sameType, type V } from '../../values.js'
+import { compareValues as compare, E, isErr, Rng, sameType, type V } from '../../values.js'
 
 const MATCH_MODES = [0, -1, 1, 2]
 const SEARCH_MODES = [1, -1, 2, -2]
@@ -44,15 +45,30 @@ function xfind(k: V, look: Grid, matchMode: number, searchMode: number): number 
   return pos
 }
 
-function xlookup(key: V, look: Grid, ret: Grid, notFound?: V, matchMode = 0, searchMode = 1): V {
+/** Row (column) `pos` of the return array: a reference of a reference (one cell too: SUM skips text there), else an array. */
+function line(ret: Rng | Arr, pos: number, vertical: boolean): Arg {
+  if (ret instanceof Arr) {
+    const n = vertical ? ret.cols : ret.rows
+    const v = Array.from({ length: n }, (_, i) => (vertical ? ret.at(pos, i) : ret.at(i, pos)))
+    return n === 1 ? v[0] : vertical ? new Arr(1, n, 1, n, v) : new Arr(n, 1, n, 1, v)
+  }
+  return vertical ? new Rng(ret.s, ret.r1 + pos, ret.c1, ret.r1 + pos, ret.c2) : new Rng(ret.s, ret.r1, ret.c1 + pos, ret.r2, ret.c1 + pos)
+}
+
+/** The answer is a row (column) of the return array: several cells when it is wider (taller) than one. */
+function xlookup(key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
   if (isErr(key)) return key
+  if (isErr(ret)) return ret
   if (look.cols !== 1 && look.rows !== 1) return E.VALUE
   const vertical = look.cols === 1
-  if (vertical ? ret.rows !== look.rows || ret.cols !== 1 : ret.cols !== look.cols || ret.rows !== 1) return E.VALUE // an array result: no spilling
+  const r = ret instanceof Rng || ret instanceof Arr ? ret : new Arr(1, 1, 1, 1, [ret])
+  const rows = r instanceof Rng ? r.r2 - r.r1 + 1 : r.rows
+  const cols = r instanceof Rng ? r.c2 - r.c1 + 1 : r.cols
+  if (vertical ? rows !== look.rows : cols !== look.cols) return E.VALUE
   if (!MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
   const pos = xfind(key, look, matchMode, searchMode)
   if (pos < 0) return notFound === undefined ? E.NA : notFound
-  return gridAt(ret, pos)
+  return line(r, pos, vertical)
 }
 
 function xmatch(key: V, look: Grid, matchMode = 0, searchMode = 1): V {
@@ -63,6 +79,6 @@ function xmatch(key: V, look: Grid, matchMode = 0, searchMode = 1): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  XLOOKUP: { args: 'a G G a? n? n?', fn: xlookup },
+  XLOOKUP: { args: 'a G R p? n? n?', array: true, fn: xlookup },
   XMATCH: { args: 'a G n? n?', fn: xmatch },
 }

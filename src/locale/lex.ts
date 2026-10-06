@@ -1,9 +1,10 @@
 /**
  * The lexer of formula text for translation between locales. It does not parse: it only finds the pieces a
- * locale changes (numbers, function names, TRUE and FALSE, error literals, separators) and copies the rest
- * (strings, sheet names, references, operators, whitespace) as raw pieces, so text the engine cannot parse
- * yet (array constants) translates too. Every character of the text belongs to exactly one piece.
+ * locale changes (numbers, function names, TRUE and FALSE, error literals, separators, those of array
+ * constants too) and copies the rest (strings, sheet names, references, operators, whitespace) as raw pieces,
+ * so text the engine cannot parse translates as well. Every character of the text belongs to exactly one piece.
  */
+import { IDENT_RULE } from '../syntax.js'
 
 /** Separators of formula text on one side of a translation. */
 export interface Syntax {
@@ -35,8 +36,8 @@ export interface LexFail {
   message: string
 }
 
-// the identifier rule of the engine's tokenizer (`syntax.ts`)
-const IDENT = /[\p{L}_\\][\p{L}\p{N}_.]*/uy
+// the identifier rule of the engine's tokenizer
+const IDENT = new RegExp(IDENT_RULE, 'uy')
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 

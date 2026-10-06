@@ -5,6 +5,7 @@
  */
 import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { FnDef, Grid } from '../../args.js'
+import { arr } from '../../arrays/value.js'
 import { E, isErr, Rng, toText, type V } from '../../values.js'
 
 /** A name that reads as an A1 address within the grid, an R1C1 reference or a boolean. */
@@ -26,20 +27,26 @@ function address(r: number, c: number, abs = 1, a1 = true, sheet?: string): V {
   return sheet === undefined ? ref : `${sheetPrefix(sheet)}!${ref}`
 }
 
-/** Of the formula's cell without an argument, else the reference's first row (column), as Excel shows it in the cell. */
+/** Of the formula's cell without an argument, else the reference's rows (columns): a vertical (horizontal) array of several. */
 const position = (row: boolean): FnDef => ({
   args: 'R?',
   cell: true,
+  array: true,
   fn: (_s: number, r: number, c: number, ref?: V | Rng) => {
     if (ref === undefined) return (row ? r : c) + 1
-    if (ref instanceof Rng) return (row ? ref.r1 : ref.c1) + 1
-    return isErr(ref) ? ref : E.VALUE
+    if (!(ref instanceof Rng)) return isErr(ref) ? ref : E.VALUE
+    const from = (row ? ref.r1 : ref.c1) + 1
+    const n = row ? ref.r2 - ref.r1 + 1 : ref.c2 - ref.c1 + 1
+    if (n === 1) return from
+    const v = Array.from({ length: n }, (_, i) => from + i)
+    return row ? arr(n, 1, v) : arr(1, n, v)
   },
 })
 
 export const functions: Record<string, FnDef> = {
   ADDRESS: { args: 'i i i? b? s?', fn: address },
-  CHOOSE: { args: 'i a', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
+  // the chosen value as it is, a reference too (SUMIF(CHOOSE(1,A1:A9,B1:B9),">2"))
+  CHOOSE: { args: 'i p', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
   COLUMN: position(false),
   // the referenced size: a whole column has 1,048,576 rows
   COLUMNS: { args: 'G', fn: (g: Grid) => g.cols },

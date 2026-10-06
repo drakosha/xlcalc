@@ -1,7 +1,7 @@
 /** VALUETOTEXT and ARRAYTOTEXT, this engine's own (Excel 2021): format 0 concise, 1 strict (text quoted). */
-import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
+import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { ERROR_TEXT } from '../../syntax.js'
-import { E, isErr, Rng, toText, type V } from '../../values.js'
+import { E, isErr, toText, type V } from '../../values.js'
 import { capped, MAX_TEXT } from './common.js'
 
 const asText = (v: V, strict: boolean): string => {
@@ -10,11 +10,9 @@ const asText = (v: V, strict: boolean): string => {
   return toText(v) as string
 }
 
-/** A reference to more than one cell has an array answer, which is not supported (no spilling). */
-function valuetotext(cx: Cx, x: V | Rng, format = 0): V {
+function valuetotext(x: V, format = 0): V {
   if (format !== 0 && format !== 1) return E.VALUE
-  if (x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)) return E.VALUE
-  return asText(cx.scalar(x), format === 1)
+  return asText(x, format === 1)
 }
 
 function arraytotext(g: Grid, format = 0): V {
@@ -34,5 +32,5 @@ function arraytotext(g: Grid, format = 0): V {
 
 export const functions: Record<string, FnDef> = {
   ARRAYTOTEXT: { args: 'G i?', fn: arraytotext },
-  VALUETOTEXT: { args: 'R i?', cx: true, fn: valuetotext },
+  VALUETOTEXT: { args: 'a i?', fn: valuetotext },
 }
