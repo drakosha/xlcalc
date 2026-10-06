@@ -1,10 +1,7 @@
 /**
- * Excel cases for the math and engineering functions beyond the coverage measurement: domain edges (whole
- * numbers, ranges, digit counts of number systems, limits of trigonometry and factorials), large and
- * negative arguments, complex number syntax and output, CONVERT units and prefixes, functions formula.js
- * lacks (MDETERM, ERF.PRECISE, ERFC.PRECISE). A range in a scalar position is left out: the engine reads it as array
- * arithmetic (`unsupported`), not as implicit intersection. Answers: `docs/excel-cases/matheng.json`
- * (`npx tsx bench/coverage/run.ts probes matheng`).
+ * Excel cases for the math and engineering functions beyond the coverage measurement: domain edges, large and
+ * negative arguments, complex text, CONVERT units, functions formula.js lacks. A range in a scalar position is
+ * left out (the engine reads it as array arithmetic). Answers: `docs/excel-cases/matheng.json`.
  */
 import type { Probe } from '../probes.js'
 
