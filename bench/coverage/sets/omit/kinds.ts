@@ -1,0 +1,95 @@
+/**
+ * An omitted argument by kind, hand-picked where the answer tells the rules apart: a number 0, text "", FALSE, the
+ * function's default; an omitted last argument beside the call without it; the lazy functions' branches, lists,
+ * references, the newer functions, lifting and LET.
+ */
+import type { Add } from '../arrays/common.js'
+import { xlpm } from '../let/xlpm.js'
+
+export function kinds(add: Add) {
+  const g = (fn: string, ...fs: string[]) => add(`kind:${fn}`, fn, ...fs)
+  // the lazy functions: a branch or value left out
+  g('IF', 'IF(TRUE,)', 'IF(FALSE,1,)', 'IF(FALSE,1)', 'IF(,1,2)', 'IF(TRUE,,1)', 'TYPE(IF(TRUE,))', 'ISBLANK(IF(TRUE,))', 'IF(TRUE,)&"x"', 'ISLOGICAL(IF(TRUE,))', 'SUM(IF({TRUE,FALSE},,1))', 'IF({TRUE,FALSE},,1)')
+  g('IFERROR', 'IFERROR(1/0,)', 'IFERROR(,1)', 'TYPE(IFERROR(1/0,))')
+  g('IFNA', 'IFNA(NA(),)', 'IFNA(,1)')
+  g('CHOOSE', 'CHOOSE(2,1,)', 'CHOOSE(,1,2)', 'CHOOSE(1,,2)&"x"')
+  g('SWITCH', 'SWITCH(1,1,)', 'SWITCH(9,1,2,)', 'SWITCH(,0,"zero","other")', 'SWITCH(,"","empty","other")')
+  g('IFS', 'IFS(TRUE,)', 'IFS(,1,TRUE,2)')
+  // numbers: an omitted number against 0 and the default
+  g('ROUND', 'ROUND(1.5,)', 'ROUND(,1)', 'ROUND(2.567,)')
+  g('LOG', 'LOG(8,)', 'LOG(8)', 'LOG(,2)')
+  g('POWER', 'POWER(,2)', 'POWER(2,)')
+  g('DATE', 'DATE(2020,,1)', 'DATE(,1,1)', 'DATE(2020,1,)')
+  g('LEFT', 'LEFT("abc",)', 'LEFT("abc")', 'LEFT(,1)')
+  g('RIGHT', 'RIGHT("abc",)', 'RIGHT("abc")')
+  g('MID', 'MID("abc",,1)', 'MID("abc",2,)')
+  g('FIND', 'FIND("b","abc",)', 'FIND("b","abc")', 'FIND(,"abc")')
+  g('SUBSTITUTE', 'SUBSTITUTE("aaa","a","b",)', 'SUBSTITUTE("aaa","a","b")', 'SUBSTITUTE("abc","b",)', 'SUBSTITUTE("abc",,"x")')
+  g('REPT', 'REPT("ab",)', 'REPT(,2)')
+  g('INDEX', 'SUM(INDEX(D!B1:C8,,2))', 'SUM(INDEX(D!B1:C8,2,))', 'INDEX(D!B1:B8,3,)', 'INDEX(D!B1:C8,,2)', 'INDEX({1,2;3,4},,2)')
+  g('FIXED', 'FIXED(1234.567,)', 'FIXED(1234.567)', 'FIXED(1234.567,1,)', 'FIXED(1234.567,1)')
+  g('ERF', 'ERF(1,)', 'ERF(1)')
+  g('DEC2BIN', 'DEC2BIN(5,)', 'DEC2BIN(5)')
+  g('WEEKNUM', 'WEEKNUM(45688,)', 'WEEKNUM(45688)')
+  g('BASE', 'BASE(10,2,)', 'BASE(10,2)')
+  g('CEILING.MATH', 'CEILING.MATH(2.5,)', 'CEILING.MATH(2.5)', 'CEILING.MATH(-2.5,1,)')
+  g('PMT', 'PMT(0.05,10,1000,,1)', 'PMT(0.05,10,1000,0,1)', 'PMT(0.05,10,1000,)')
+  g('NORM.DIST', 'NORM.DIST(1,0,1,)', 'NORM.DIST(1,,1,TRUE)')
+  // text: an omitted text against ""
+  g('CONCAT', 'CONCAT(,"a")', 'CONCAT("a",)', 'CONCAT(,)')
+  g('CONCATENATE', 'CONCATENATE(,"a")')
+  g('TEXTJOIN', 'TEXTJOIN(,TRUE,"a","b")', 'TEXTJOIN("-",,"a","","b")', 'TEXTJOIN("-",TRUE,"a",,"b")', 'TEXTJOIN("-",FALSE,"a",,"b")')
+  g('EXACT', 'EXACT(,"")', 'EXACT(,0)')
+  g('TEXT', 'TEXT(1.5,)', 'TEXT(,"0.0")')
+  g('NUMBERVALUE', 'NUMBERVALUE("1.5",,)', 'NUMBERVALUE("1,5",",",)')
+  g('COMPLEX', 'COMPLEX(1,1,)', 'COMPLEX(1,1)')
+  g('HYPERLINK', 'HYPERLINK("http://example.com",)', 'HYPERLINK("http://example.com")')
+  // booleans: an omitted boolean against FALSE and the default
+  g('VLOOKUP', 'VLOOKUP(4,D!L1:N6,2,)', 'VLOOKUP(4,D!L1:N6,2)', 'VLOOKUP(5,D!L1:N6,2,)')
+  g('HLOOKUP', 'HLOOKUP(4,D!L8:Q10,2,)', 'HLOOKUP(4,D!L8:Q10,2)')
+  g('MATCH', 'MATCH(4,D!L1:L6,)', 'MATCH(4,D!L1:L6)', 'MATCH(15,D!B1:B8,)')
+  g('ADDRESS', 'ADDRESS(2,3,)', 'ADDRESS(2,3,,FALSE)', 'ADDRESS(2,3,1,)', 'ADDRESS(2,3,1,TRUE,)')
+  g('AND', 'AND(TRUE,)', 'AND(,)', 'AND(TRUE,,TRUE)')
+  g('OR', 'OR(FALSE,)', 'OR(TRUE,)')
+  g('XOR', 'XOR(TRUE,)')
+  // lists: an omitted value in SUM, COUNT, COUNTA, AVERAGE and their kin
+  g('SUM', 'SUM(1,,2)', 'SUM(,)', 'SUM(D!B1:B8,)')
+  g('COUNT', 'COUNT(1,,2)', 'COUNT(,)', 'COUNT(D!B1:B8,)')
+  g('COUNTA', 'COUNTA(1,,2)', 'COUNTA(,)', 'COUNTA(D!K1:K8,)')
+  g('AVERAGE', 'AVERAGE(1,,2)', 'AVERAGE(4,)')
+  g('AVERAGEA', 'AVERAGEA(1,,2)')
+  g('MAX', 'MAX(-1,)')
+  g('MAXA', 'MAXA(-1,)')
+  g('MIN', 'MIN(1,)')
+  g('PRODUCT', 'PRODUCT(2,)')
+  g('GCD', 'GCD(4,)')
+  g('MEDIAN', 'MEDIAN(1,,5)')
+  g('STDEV.S', 'STDEV.S(1,,2)')
+  g('SUMPRODUCT', 'SUMPRODUCT(D!B1:B3,)', 'SUMPRODUCT(,)')
+  // references: an omitted range or criterion
+  g('SUMIF', 'SUMIF(D!B1:B8,">10",)', 'SUMIF(D!B1:B8,)', 'SUMIF(D!K1:K8,,D!B1:B8)')
+  g('COUNTIF', 'COUNTIF(D!B1:B8,)', 'COUNTIF(D!K1:K8,)', 'COUNTIF(D!A12:A13,)')
+  g('SUMIFS', 'SUMIFS(D!B1:B8,D!B1:B8,)', 'SUMIFS(D!B1:B8,D!K1:K8,)')
+  g('AGGREGATE', 'AGGREGATE(9,,D!B1:B8)', 'AGGREGATE(14,,D!B1:B8,1)')
+  g('DSUM', 'DSUM(D!U1:Y7,,D!AA1:AB2)')
+  // the newer functions: an omitted argument where they have a default
+  g('XLOOKUP', 'XLOOKUP(4,D!L1:L6,D!M1:M6,)', 'XLOOKUP(4,D!L1:L6,D!M1:M6)', 'XLOOKUP(4,D!L1:L6,D!M1:M6,,-1)', 'XLOOKUP(4,D!L1:L6,D!M1:M6,,)', 'XLOOKUP(5,D!L1:L6,D!M1:M6,,,-1)')
+  g('XMATCH', 'XMATCH(4,D!L1:L6,)', 'XMATCH(4,D!L1:L6,,)', 'XMATCH(4,D!L1:L6,-1,)')
+  g('SEQUENCE', 'SUM(SEQUENCE(3,,5))', 'SEQUENCE(3,,5)', 'SUM(SEQUENCE(2,2,,))', 'SUM(SEQUENCE(2,2,1,))', 'SUM(SEQUENCE(,2))')
+  g('SORT', 'INDEX(SORT(D!B1:B8,,-1),1)', 'INDEX(SORT(D!B1:B8,,),1)', 'INDEX(SORT(D!B1:C8,2,,),1,1)')
+  g('TEXTSPLIT', 'TEXTSPLIT("a,b",",",,,1)', 'TEXTSPLIT("a,,b",",",,)', 'COLUMNS(TEXTSPLIT("a,,b",",",,))', 'COLUMNS(TEXTSPLIT("a,,b",","))', 'ROWS(TEXTSPLIT("a;b",",",";",,,))')
+  g('TEXTBEFORE', 'TEXTBEFORE("a-b-c","-",)', 'TEXTBEFORE("a-b-c","-")', 'TEXTBEFORE("a-b-c","-",,,,"z")', 'TEXTAFTER("a-b-c","-",,)')
+  g('UNIQUE', 'ROWS(UNIQUE(D!AS1:AS8,,))', 'ROWS(UNIQUE(D!AS1:AS8))', 'ROWS(UNIQUE(D!AS1:AS8,,TRUE))')
+  g('TAKE', 'ROWS(TAKE(D!B1:C8,,1))', 'COLUMNS(TAKE(D!B1:C8,,1))', 'ROWS(DROP(D!B1:C8,,1))')
+  g('EXPAND', 'INDEX(EXPAND({1},2,,0),2,1)', 'INDEX(EXPAND({1},2,2,),2,2)', 'INDEX(EXPAND({1},2,2),2,2)')
+  g('WRAPROWS', 'INDEX(WRAPROWS({1,2,3},2,),2,2)', 'INDEX(WRAPROWS({1,2,3},2),2,2)')
+  g('FILTER', 'FILTER(D!B1:B8,D!B1:B8>100,)', 'FILTER(D!B1:B8,D!B1:B8>100)', 'SUM(FILTER(D!B1:B8,D!B1:B8>20,))')
+  g('HSTACK', 'SUM(HSTACK(1,,2))', 'COUNTA(HSTACK(1,,2))', 'INDEX(HSTACK(1,,2),1,2)', 'TYPE(INDEX(HSTACK(1,,2),1,2))', 'ROWS(VSTACK(1,))')
+  g('CHOOSECOLS', 'COLUMNS(CHOOSECOLS(D!B1:C8,1,))')
+  g('WORKDAY.INTL', 'WORKDAY.INTL(DATE(2025,1,1),5,)', 'WORKDAY.INTL(DATE(2025,1,1),5)', 'WORKDAY.INTL(DATE(2025,1,1),5,,D!AP1:AP8)')
+  g('NETWORKDAYS', 'NETWORKDAYS(DATE(2025,1,1),DATE(2025,1,31),)', 'NETWORKDAYS.INTL(DATE(2025,1,1),DATE(2025,1,31),)')
+  // lifting and LET
+  g('ROUND', 'SUM(ROUND({1.5,2.5},))', 'ROUND({1.5,2.5},)')
+  g('LEFT', 'SUM(LEN(LEFT({"ab","cd"},)))')
+  g('LET', xlpm('LET(x,1,y,2,IF(TRUE,,x+y))'), xlpm('LET(x,"a",CONCAT(x,,x))'))
+}

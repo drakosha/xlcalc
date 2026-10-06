@@ -96,20 +96,26 @@ function baseCall(fn: string, typical: Map<string, string>): string[] | null {
   return splitArgs(text.slice(fn.length + 1, -1))
 }
 
+/** The typical calls' arguments of the whitelisted functions that have one, the volatile ones left out, in the whitelist's order. */
+export function typicalCalls(): Map<string, string[]> {
+  const cases = JSON.parse(readFileSync(new URL('../../../../test/excel/coverage/cases.json', import.meta.url), 'utf8')) as { cases: { fn: string; kind: string; formula: string }[] }
+  const typical = new Map<string, string>()
+  for (const c of cases.cases) if (c.kind === 'typical' && !typical.has(c.fn)) typical.set(c.fn, c.formula)
+  const out = new Map<string, string[]>()
+  for (const fn of FUNCTION_NAMES) {
+    const args = SKIP.has(fn) ? null : baseCall(fn, typical)
+    if (args) out.set(fn, args)
+  }
+  return out
+}
+
 /** A range of several cells as an argument: those positions take ranges, they are not lifted. */
 const AREA = /^(?:'[^']+'|\w+)!\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?\d+$/
 
 export function lift(add: Add) {
-  const cases = JSON.parse(readFileSync(new URL('../../../../test/excel/coverage/cases.json', import.meta.url), 'utf8')) as { cases: { fn: string; kind: string; formula: string }[] }
-  const typical = new Map<string, string>()
-  for (const c of cases.cases) if (c.kind === 'typical' && !typical.has(c.fn)) typical.set(c.fn, c.formula)
-  for (const fn of FUNCTION_NAMES) {
-    if (SKIP.has(fn)) continue
-    const args = baseCall(fn, typical)
-    if (!args) continue
+  for (const [fn, args] of typicalCalls())
     args.forEach((a, i) => {
       if (AREA.test(a)) return
       for (const v of ['D!B1:B2', '{1;2}']) add(`lift:${fn}`, fn, `${fn}(${args.map((x, j) => (j === i ? v : x)).join(',')})`)
     })
-  }
 }
