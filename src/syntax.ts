@@ -23,7 +23,8 @@ export type Ast =
   | { k: 'num'; v: number }
   | { k: 'str'; v: string }
   | { k: 'bool'; v: boolean }
-  | { k: 'err'; code: ErrorCode }
+  /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`. */
+  | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string }
   | { k: 'ref'; sheet: string | null; ref: RangeRef }
   | { k: 'name'; name: string }
   | { k: 'fn'; name: string; args: Ast[] }
@@ -69,10 +70,10 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
 
 // ---------- tokenizer ----------
 
-type Tok =
+export type Tok =
   | { t: 'num'; v: number; at: number }
   | { t: 'str'; v: string; at: number }
-  | { t: 'err'; code: ErrorCode; at: number }
+  | { t: 'err'; code: ErrorCode; at: number; sheet?: string; ref?: string }
   | { t: 'ref'; sheet: string | null; ref: RangeRef; at: number }
   | { t: 'ident'; v: string; at: number }
   | { t: 'fn'; v: string; at: number }
@@ -139,7 +140,7 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
 
 const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%']
 
-function tokenize(src: string): Tok[] {
+export function tokenize(src: string): Tok[] {
   const out: Tok[] = []
   let i = 0
   while (i < src.length) {
@@ -171,8 +172,10 @@ function tokenize(src: string): Tok[] {
     if (ch === '#') {
       const lit = Object.keys(ERROR_LITERALS).find((e) => rest.toUpperCase().startsWith(e))
       if (!lit) bad(i, 'unknown error literal')
-      out.push({ t: 'err', code: ERROR_LITERALS[lit], at: i })
-      i += lit.length
+      // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`
+      const tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : undefined)) : undefined
+      out.push({ t: 'err', code: ERROR_LITERALS[lit], at: i, ...(tail ? { ref: tail } : {}) })
+      i += lit.length + (tail?.length ?? 0)
       continue
     }
     if (ch === '[') bad(i, 'external workbook reference', 'external_ref')
@@ -187,6 +190,12 @@ function tokenize(src: string): Tok[] {
     let sm = QUOTED_SHEET.exec(rest)
     if (sm) sheet = sm[1].replaceAll("''", "'")
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
+    if (sm && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
+      // a reference Excel lost on a sheet that is still there: `'S'!#REF!`
+      out.push({ t: 'err', code: 'REF', sheet: sheet!, at: i })
+      i += sm[0].length + 5
+      continue
+    }
     if (sm) {
       const r = readRef(src.slice(i + sm[0].length), i)
       if (!r) bad(i + sm[0].length, 'reference expected after sheet name')
@@ -284,7 +293,7 @@ export function parse(src: string): Ast {
       case 'str':
         return { k: 'str', v: t.v }
       case 'err':
-        return { k: 'err', code: t.code }
+        return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}) }
       case 'ref':
         return { k: 'ref', sheet: t.sheet, ref: t.ref }
       case 'ident': {
@@ -392,7 +401,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'bool':
         return bool(n.v)
       case 'err':
-        return ERROR_TEXT[n.code]
+        return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + ERROR_TEXT[n.code] + (n.ref ?? '')
       case 'ref':
         return n.sheet === null ? n.ref.text : `${quoteSheet(sheetOf(n.sheet))}!${n.ref.text}`
       case 'name':
@@ -489,7 +498,7 @@ export function validate(text: string, ctx: ValidateContext = {}, isRangeName: (
     if (n.k === 'fn') {
       functions.add(n.name)
       if (externalSet.has(n.name) && !FUNCTIONS[n.name]) externals.push(canonical(n))
-    } else if (n.k === 'ref' && n.sheet !== null) sheets.add(n.sheet)
+    } else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined)) sheets.add(n.sheet!)
     else if (n.k === 'name') names.add(n.name)
   })
   const fail = (code: CheckCode, message: string, needle: string) => ({ ok: false as const, code, message, at: Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase())) })
