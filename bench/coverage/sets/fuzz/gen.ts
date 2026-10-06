@@ -17,7 +17,7 @@ export const VOLATILE: ReadonlySet<string> = new Set(['NOW', 'TODAY', 'RAND', 'R
 
 /**
  * The whitelist without volatile functions, with argument kinds and counts as the engine declared them when
- * batch 1 was generated (`spec.json`): a later change to a function's kinds must not change stored formulas.
+ * the random check began (`spec.json`): a later change to a function's kinds must not change stored formulas.
  */
 const SPEC: Readonly<Record<string, { args: string; rep?: number; min: number; max: number; parity?: 'odd' | 'even'; array?: boolean }>> = SPEC_JSON as never
 
