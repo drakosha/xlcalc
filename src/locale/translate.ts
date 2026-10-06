@@ -52,8 +52,9 @@ export function sides(loc: Locale): Sides {
       num: numberRule(local),
       errors: byLength([...errors.map((e) => e[1]), ...ERROR_LITERALS]),
       fn: upperKeys(swap(fns)),
-      word: upperKeys([...swap(bools), ...same(['TRUE', 'FALSE'])]),
-      err: upperKeys([...swap(errors), ...same(ERROR_LITERALS)]),
+      // the locale's own words win over the English ones
+      word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
+      err: upperKeys([...same(ERROR_LITERALS), ...swap(errors)]),
     },
   }
 }
@@ -92,12 +93,11 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
   const formula = out.map((p) => p.text).join('')
   // reading the output on the other side must give the same pieces
   const again = lex(formula, to.syn, to.errors, to.num)
-  if (Array.isArray(again)) {
-    const bad = out.findIndex((p, i) => again[i]?.k !== p.k || again[i].text !== p.text)
-    if (bad >= 0 || again.length !== out.length) {
-      const p = pieces[bad >= 0 ? bad : out.length - 1]
-      return fail(offset + p.at, `${JSON.stringify(p.text)} cannot be written in ${to.name}`)
-    }
+  const read = Array.isArray(again) ? again : []
+  const bad = out.findIndex((p, i) => read[i]?.k !== p.k || read[i].text !== p.text)
+  if (bad >= 0 || read.length !== out.length) {
+    const p = pieces[bad >= 0 ? bad : out.length - 1]
+    return fail(offset + p.at, `${JSON.stringify(p.text)} cannot be written in ${to.name}`)
   }
   const starts: number[] = []
   let pos = 0
