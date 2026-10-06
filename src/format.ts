@@ -6,7 +6,8 @@
  * conditions are not supported: null (the caller turns it into #VALUE!).
  */
 import { roundDigits } from './functions/common.js'
-import { NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
+import { ymd } from './dates.js'
+import { NUMBER_TEXT, readNumber } from './model.js'
 
 type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
 
@@ -95,6 +96,8 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
     if (before && after) grouping = true
     else if (before) scale++
   }
+  // commas after the decimal digits scale too (`0.0,,` shows millions)
+  for (let i = intEnd + 1; i < toks.length; i++) if (toks[i].t === 'comma' && !toks.slice(i + 1).some((t) => t.t === 'ph')) scale++
   const pct = toks.filter((t) => t.t === 'pct').length
   let x = Math.abs(v) * Math.pow(100, pct) / Math.pow(1000, scale)
   const fracPh = dot < 0 ? [] : toks.slice(dot + 1).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
@@ -192,16 +195,17 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean):
 
 function formatDate(serial: number, toks: Tok[]): string | null {
   if (serial < 0) return null
-  const ms = serialToUtcMs(Math.floor(serial)) + Math.round((serial - Math.floor(serial)) * 86_400) * 1000
-  const d = new Date(ms)
+  let day = Math.floor(serial)
+  let secs = Math.round((serial - day) * 86_400)
+  if (secs >= 86_400) [day, secs] = [day + 1, secs - 86_400]
   const ampm = toks.some((t) => t.t === 'ampm')
-  const Y = d.getUTCFullYear()
-  const M = d.getUTCMonth()
-  const D = d.getUTCDate()
-  const W = d.getUTCDay()
-  const h = d.getUTCHours()
-  const mi = d.getUTCMinutes()
-  const s = d.getUTCSeconds()
+  // Excel's calendar: day 0 is 1900-01-00, day 60 the phantom 1900-02-29, day 1 a Sunday
+  const { y: Y, m, d: D } = ymd(day)
+  const M = m - 1
+  const W = (day + 6) % 7
+  const h = Math.floor(secs / 3600)
+  const mi = Math.floor(secs / 60) % 60
+  const s = secs % 60
   const two = (n: number) => String(n).padStart(2, '0')
   let out = ''
   for (let i = 0; i < toks.length; i++) {
@@ -284,18 +288,20 @@ export function formatText(value: number | string | boolean, fmt: string): strin
     const n = NUMBER_TEXT.test(t) ? readNumber(t) : NaN
     if (Number.isNaN(n)) {
       const textSec = sections.length >= 4 ? sections[3] : sections.find((s) => s.includes('@'))
-      return textSec ? textSec.replace(/@/g, value).replace(/"/g, '') : value
+      return textSec !== undefined ? textSec.replace(/@/g, value).replace(/"/g, '') : value
     }
     value = n
   }
   const v = value
   let sec = sections[0]
   let signed = true
-  if (v < 0 && sections.length >= 2 && sections[1] !== '') {
+  if (v < 0 && sections.length >= 2) {
     sec = sections[1]
     signed = false
-  } else if (v === 0 && sections.length >= 3 && sections[2] !== '') sec = sections[2]
-  if (/^\s*general\s*$/i.test(sec) || sec === '') return generalFormat(signed ? v : Math.abs(v))
+  } else if (v === 0 && sections.length >= 3) sec = sections[2]
+  // an empty section shows nothing (`0;` hides negative numbers)
+  if (sec === '') return ''
+  if (/^\s*general\s*$/i.test(sec)) return generalFormat(signed ? v : Math.abs(v))
   if (sec.trim() === '@') return generalText(v)
   const toks = tokenize(sec)
   if (!toks) return null
