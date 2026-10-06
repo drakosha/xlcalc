@@ -6,31 +6,14 @@
  * computes in the default `closures` mode with the same hash, and `execution: 'eval'` fails with a clear
  * EvalError.
  */
-import { build } from 'esbuild'
-import { fileURLToPath } from 'node:url'
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
 import { compute } from '../src/index.js'
 import { PACKAGE_NAME } from '../src/config.js'
 import { synthBook } from '../src/synth.js'
-import { libUrl } from './fixtures/target.js'
+import { bundle } from './fixtures/bundle.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
-
-async function bundle(): Promise<{ code: string; inputs: string[] }> {
-  const r = await build({
-    stdin: { contents: `export * from ${JSON.stringify(fileURLToPath(libUrl('index.js')))}\nexport { synthBook } from ${JSON.stringify(fileURLToPath(libUrl('synth.js')))}`, loader: 'ts', resolveDir: fileURLToPath(new URL('..', import.meta.url)) },
-    bundle: true,
-    platform: 'browser',
-    format: 'iife',
-    globalName: 'FormulaEngine',
-    target: 'es2020',
-    write: false,
-    metafile: true,
-    logLevel: 'silent',
-  })
-  return { code: r.outputFiles[0].text, inputs: Object.keys(r.metafile.inputs) }
-}
 
 describe('outside Node', () => {
   it('the browser bundle has no Node built-ins and runs in an empty vm context with the same hash', async () => {
