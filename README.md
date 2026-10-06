@@ -216,7 +216,7 @@ Notes on semantics:
 - **Known differences from Excel:**
   - `XLOOKUP` and `XMATCH` with binary search (search mode 2 or −2) scan linearly: the same answer on sorted data, where Excel's binary search is defined. Match mode 3 (regular expressions) is `#VALUE!`.
   - `INDEX` returns a value, not a reference: a whole row or column (`INDEX(A1:C3,0,2)`) is `#VALUE!` even inside `SUM`, which in Excel sums it. `ROW` and `COLUMN` of several rows or columns give the first one, as the cell shows it; Excel passes the whole list to an enclosing function (`SUM(ROW(A1:A3))` is 6 there).
-  - `CONCAT` and `TEXTJOIN` longer than 32,767 characters are `#VALUE!`; Excel answers `#CALC!`, which this engine has no code for.
+  - `CONCAT` and `TEXTJOIN` longer than 32,767 characters are `#VALUE!`; Excel answers `#CALC!`, which this engine has no code for. `&` and `CONCATENATE` cut the text at 32,767 characters, as Excel does.
   - `TEXTBEFORE` and `TEXTAFTER` take one delimiter (there are no array constants).
   - `LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.
   - Text order for `<` and `>` uses `Intl.Collator` (case-insensitive, accent-sensitive), which may differ from Excel for some characters; without `Intl` it falls back to comparing lower-cased code units.

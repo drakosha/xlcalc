@@ -9,6 +9,7 @@ import type { CellValue } from './contract.js'
 import { buildIndex, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
 import { DEFS } from './functions.js'
 import { power } from './functions/math.js'
+import { MAX_TEXT } from './functions/text/common.js'
 import { MAX_ROWS } from './model.js'
 import { compareValues, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
 
@@ -114,11 +115,14 @@ export function makeRuntime(ctx: RuntimeContext) {
     const x = toNum(a)
     return isErr(x) ? x : x / 100
   }
+  // Excel cuts the joined text at its limit of 32,767 characters
   const cat = (a: V, b: V): V => {
     const x = toText(a)
     if (isErr(x)) return x
     const y = toText(b)
-    return isErr(y) ? y : x + y
+    if (isErr(y)) return y
+    const s = x + y
+    return s.length > MAX_TEXT ? s.slice(0, MAX_TEXT) : s
   }
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a

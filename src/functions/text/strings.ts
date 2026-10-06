@@ -100,7 +100,8 @@ const strings: Record<string, FnDef> = {
       return e ?? capped(out)
     },
   },
-  CONCATENATE: { args: 's', rep: 1, fn: (ts: string[]) => capped(ts.join('')) },
+  // like &, Excel cuts the text at 32,767 characters (CONCAT and TEXTJOIN refuse it)
+  CONCATENATE: { args: 's', rep: 1, fn: (ts: string[]) => ts.join('').slice(0, MAX_TEXT) },
   EXACT: { args: 's s', fn: (a: string, b: string) => a === b },
   FIND: {
     args: 's s i?',

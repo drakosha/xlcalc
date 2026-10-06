@@ -15,6 +15,10 @@ function values(formulas: string[], cells: Record<string, CellInput> = {}): Cell
 }
 
 describe('text functions beyond the Excel cases', () => {
+  it('& and CONCATENATE cut the text at 32,767 characters, other functions refuse a longer result', () => {
+    expect(values(['LEN(REPT("a",20000)&REPT("b",20000))', 'RIGHT(CONCATENATE(REPT("a",20000),"xyz",REPT("b",20000)),1)', 'LEN(REPT("a",32767)&"")'])).toEqual([32767, 'b', 32767])
+  })
+
   it('results longer than 32,767 characters are #VALUE! (Excel: #CALC! for CONCAT and TEXTJOIN)', () => {
     expect(values(['CONCAT(REPT("a",20000),REPT("b",20000))', 'TEXTJOIN(",",TRUE,REPT("a",20000),REPT("b",20000))', 'SUBSTITUTE(REPT("a",20000),"a","bb")', 'REPLACE(REPT("a",30000),1,0,REPT("b",3000))', 'LEN(TEXTJOIN(",",TRUE,REPT("a",16383),REPT("b",16383)))'])).toEqual([
       err('VALUE'),
