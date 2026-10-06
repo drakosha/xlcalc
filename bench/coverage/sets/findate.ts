@@ -2,6 +2,9 @@
  * Financial and date functions: cases beyond the coverage measurement (functions formula.js lacks, day-count
  * bases 0–4, frequencies 1/2/4, the 1900 boundary, leap years, month ends, weekend codes, iteration limits).
  * Excel's answers: `npx tsx bench/coverage/run.ts probes findate` → `docs/excel-cases/findate.json`.
+ * Left out (functions not admitted; their Excel answers are in commit 52168a4): COUPDAYS on basis 1 with
+ * month-end maturities and VDB inside one period, whose rules were not found; RATE at a root of exactly 0,
+ * where Excel answers its own rounding noise (±2e-9) or #NUM! depending on the guess.
  */
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
@@ -152,7 +155,7 @@ export function buildProbes(): Probe[] {
 
   // ---------- iterative rates ----------
   for (const g of [-0.99, -0.9, -0.5, -0.3, 0, 0.5, 1, 2, 5, 10]) add('RATE', 48, -200, 8000, 0, 0, g)
-  for (const [nper, p, pv, fv, t] of [[360, -500, 100000, 0, 0], [10, -100, 1000, 0, 1], [10, 0, -1000, 2000, 0], [2.5, -100, 200, 0, 0], [12, 100, -1000, 0, 0], [1, -110, 100, 0, 0], [5, 100, 100, 100, 0], [300, -1, 100, 0, 0], [24, -1000, 20000, -5000, 1]])
+  for (const [nper, p, pv, fv, t] of [[360, -500, 100000, 0, 0], [10, 0, -1000, 2000, 0], [2.5, -100, 200, 0, 0], [12, 100, -1000, 0, 0], [1, -110, 100, 0, 0], [5, 100, 100, 100, 0], [300, -1, 100, 0, 0], [24, -1000, 20000, -5000, 1]])
     add('RATE', nper, p, pv, fv, t)
   for (const g of [-0.9, -0.5, 0, 0.5, 1, 5]) add('IRR', 'F!A1:A6', g)
   for (const r of ['F!B1:B6', 'F!I1:I13', 'D!E1:E8', 'D!I1:I3', 'F!A1:A2', 'F!E1:E2', 'F!H1:H2', '-100', 'D!B1:C8']) add('IRR', r)
@@ -179,13 +182,6 @@ export function buildProbes(): Probe[] {
   for (const args of [[2400, 300, 10, 11], [2400, 300, 10, 1.5], [2400, 300, 10, 0.5], [2400, 300, 10, 10.5], [2400, 300, 1, 1], [2400, 300, 1.5, 1], [2400, 300, 10, 2, 10], [2400, 300, 10, 3, 1.5], [-2400, 300, 10, 1], [2400, 0, 10, 10]])
     add('DDB', ...args)
   for (const args of [[30000, 7500, 10, 1.5], [30000, 7500, 10.5, 10.5], [30000, 7500, 10, 0.5], [30000, 7500, 10, 'D!A2']]) add('SYD', ...args)
-  for (const args of [
-    [2400, 300, 3650, 0, 1], [2400, 300, 120, 0, 1], [2400, 300, 10, 0, 1], [2400, 300, 120, 6, 18], [2400, 300, 120, 6, 18, 1.5], [2400, 300, 10, 0, 0.875, 1.5],
-    [2400, 300, 10, 0, 10], [2400, 300, 10, 5, 10], [2400, 300, 10, 2.5, 7.5], [2400, 300, 10, 0, 10, 2, true], [2400, 300, 10, 3.5, 9.25, 2, true], [2400, 300, 10, 8, 10, 3],
-    [2400, 0, 5, 0, 5, 1], [2400, 300, 10, 0, 11], [2400, 300, 10, 4, 3], [2400, 300, 10, -1, 3], [2400, 300, 10.5, 0, 10.5], [2400, 300, 10, 9.5, 10], [10000, 1000, 5, 1, 4, 1.5, false],
-    [2400, 300, 10, 0, 1, 0], [2400, 3000, 10, 0, 5], ['TRUE', 0, 10, 0, 1], [2400, 300, 10, 0, 1, 2, '"abc"'],
-  ])
-    add('VDB', ...args)
   const purchased = D(2008, 8, 19)
   const firstPer = D(2008, 12, 31)
   for (const [cost, sal, per, rate, basis] of [
@@ -208,7 +204,7 @@ export function buildProbes(): Probe[] {
     [D(2011, 3, 1), D(2015, 2, 28), 2], [D(2012, 2, 29), D(2015, 8, 31), 2], [D(2011, 8, 31), D(2015, 2, 28), 2], [D(2011, 5, 15), D(2011, 11, 15), 2], [D(2011, 11, 14), D(2011, 11, 15), 2],
     [D(2008, 2, 15), D(2017, 11, 15), 2], [D(2011, 9, 30), D(2012, 3, 31), 4], [D(2011, 12, 31), D(2012, 6, 30), 2], ['60', D(2011, 11, 15), 2], ['59', D(2011, 11, 15), 2], ['61', D(2011, 11, 15), 2],
   ]
-  for (const [s, m, f] of coupCases) for (const basis of [0, 1, 2, 3, 4]) for (const fn of ['COUPDAYBS', 'COUPDAYS', 'COUPDAYSNC']) add(fn, s, m, f, basis)
+  for (const [s, m, f] of coupCases) for (const basis of [0, 1, 2, 3, 4]) for (const fn of ['COUPDAYBS', 'COUPDAYSNC']) add(fn, s, m, f, basis)
   for (const [s, m, f] of coupCases) for (const fn of ['COUPNCD', 'COUPNUM', 'COUPPCD']) add(fn, s, m, f, 0)
   for (const fn of ['COUPDAYBS', 'COUPDAYSNC', 'COUPNCD', 'COUPNUM', 'COUPPCD']) {
     add(fn, D(2011, 1, 25), D(2011, 11, 15), 2)
@@ -313,10 +309,6 @@ export function buildProbes(): Probe[] {
   add('TBILLYIELD', D(2008, 3, 31), D(2008, 6, 1), 200)
 
   // ---------- second round: rules the first answers left open ----------
-  // COUPDAYS on actual/actual around month ends: maturities on days 28–31 and settlements through two years
-  for (const m of [D(2015, 8, 31), D(2015, 8, 30), D(2015, 8, 28), D(2015, 2, 28), D(2016, 2, 29), D(2015, 6, 30), D(2015, 5, 31), D(2015, 11, 30), D(2015, 12, 31), D(2015, 9, 30), D(2015, 3, 31)])
-    for (const [y, mo, d] of [[2011, 1, 15], [2011, 2, 28], [2011, 3, 15], [2011, 5, 31], [2011, 6, 30], [2011, 8, 31], [2011, 9, 15], [2011, 11, 30], [2011, 12, 31], [2012, 2, 29], [2012, 3, 1], [2012, 4, 30], [2012, 8, 30]])
-      for (const f of [1, 2, 4]) add('COUPDAYS', D(y, mo, d), m, f, 1)
   // hours past 23 in time text
   for (const t of ['"25:00"', '"99:59"', '"9999:00"', '"10000:00"', '"24:00:00"', '"23:60"', '"1:60"', '"25:00 PM"', '"13:00 PM"', '"0:00 AM"']) add('TIMEVALUE', t)
   for (const t of ['"2025-01-31 48:00"', '"2025-01-31 24:00"', '"25:00"', '"12/31/9999 23:00"', '"12/31/9999 24:00"']) add('DATEVALUE', t)
@@ -329,11 +321,6 @@ export function buildProbes(): Probe[] {
   add('XIRR', 'D!K1:K2', 'F!F1:F2')
   add('XNPV', 0.1, 'D!K1:K2', 'F!F1:F2')
   add('XNPV', 0.1, 'F!B1:B2', 'F!F1:F2')
-  // VDB near the end of life and in fractional periods
-  for (const [s, e] of [[9, 10], [9, 9.5], [9.25, 10], [9.75, 10], [8.5, 9], [8.5, 10], [0, 9.5], [5.5, 6], [1.5, 2], [6.5, 7], [7.5, 8], [8, 8.5], [8.9, 9.1]]) add('VDB', 2400, 300, 10, s, e)
-  for (const [s, e] of [[9.5, 10], [8.5, 9]]) add('VDB', 2400, 300, 10, s, e, 2, true)
-  add('VDB', 2400, 300, 10, 2.5, 3.5, 1.5)
-  add('VDB', 2400, 0, 10, 9.5, 10)
   // AMORDEGRC: coefficients by asset life and the last periods
   for (const rate of [0.5, 0.45, 0.4, 0.35, 1 / 3, 0.3, 0.26, 0.25, 0.24, 0.22, 0.21, 0.2, 0.17, 1 / 6, 0.16, 0.15, 0.1]) add('AMORDEGRC', 2400, purchased, firstPer, 300, 1, rate, 0)
   for (let p = 0; p <= 11; p++) add('AMORDEGRC', 10000, purchased, firstPer, 0, p, 0.12, 0)
@@ -352,5 +339,10 @@ export function buildProbes(): Probe[] {
   add('WORKDAY.INTL', 45688, 10, '"1111111"')
   add('NETWORKDAYS.INTL', 45658, 45688, 'TRUE')
   add('WORKDAY.INTL', 45688, 10, 'FALSE')
+
+  // ---------- third round: limits of time text ----------
+  for (const t of ['"1:61"', '"1:99"', '"1:100"', '"1:00:60"', '"1:00:61"', '"1:00:99"', '"0 PM"', '"0:30 PM"', '"12:60 PM"', '"9999:59:59"', '"99999:00"', '"1:2"', '"1:2:3"', '"24:00 AM"', '"10:60"', '"0:00:00.5"', '"1:00:59.99"'])
+    add('TIMEVALUE', t)
+  for (const t of ['"2025-01-31 9999:00"', '"2025-01-31 10:60"', '"1/31/2025 25:00:00"']) add('DATEVALUE', t)
   return out
 }

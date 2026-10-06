@@ -5,10 +5,13 @@ import { E, type CErr } from '../../values.js'
 import { atp } from '../date/atp.js'
 import { validBasis } from '../date/daycount.js'
 import { solveDecreasing } from './bond.js'
-import { cmp, couponDate, daysBetween, periodDays, periodOf, type Ymd } from './coupon.js'
+import { cmp, couponDate, daysBetween, normalDays, periodOf, type Ymd } from './coupon.js'
 
 const badFreq = (freq: number, basis: number) => (freq !== 1 && freq !== 2 && freq !== 4) || !validBasis(basis)
 const later = (a: Ymd, b: Ymd) => (cmp(a, b) > 0 ? a : b)
+
+/** A quasi-coupon period's normal length (`actual`: bases 1–3 count actual days, as ODDL* do in Excel). */
+const normal = (q0: Ymd, q1: Ymd, basis: number, freq: number, actual = basis === 1) => (actual ? daysBetween(q0, q1, 1) : normalDays(basis, freq))
 const earlier = (a: Ymd, b: Ymd) => (cmp(a, b) < 0 ? a : b)
 
 /** ODDFPRICE at yield `yld`: quasi-coupon periods counted back from the first coupon. */
@@ -16,7 +19,13 @@ function oddFirstPrice(settlement: number, maturity: number, issue: number, firs
   const f1 = ymd(first)
   const iss = ymd(issue)
   const settle = ymd(settlement)
-  const q = (k: number) => couponDate(f1, k, freq)
+  // memoized: whole periods are told by identity below
+  const dates = new Map<number, Ymd>()
+  const q = (k: number) => {
+    let d = dates.get(k)
+    if (!d) dates.set(k, (d = couponDate(f1, k, freq)))
+    return d
+  }
   const coupon = (100 * rate) / freq
   const n = periodOf(f1, ymd(maturity), freq)
   const ki = periodOf(f1, iss, freq)
@@ -24,12 +33,13 @@ function oddFirstPrice(settlement: number, maturity: number, issue: number, firs
   let odd = 0
   let accrued = 0
   for (let k = ki; k < 0; k++) {
-    const nl = periodDays(q(k), basis, freq)
+    const nl = normal(q(k), q(k + 1), basis, freq)
     const from = later(iss, q(k))
-    odd += daysBetween(from, q(k + 1), basis) / nl
+    // a whole quasi-coupon period adds one coupon to the odd one; accrued interest still counts its days
+    odd += from === q(k) ? 1 : daysBetween(from, q(k + 1), basis) / nl
     if (k <= ks) accrued += daysBetween(from, earlier(settle, q(k + 1)), basis) / nl
   }
-  const t = -(ks + 1) + daysBetween(settle, q(ks + 1), basis) / periodDays(q(ks), basis, freq)
+  const t = -(ks + 1) + daysBetween(settle, q(ks + 1), basis) / normal(q(ks), q(ks + 1), basis, freq)
   const v = 1 + yld / freq
   let p = (coupon * odd) / Math.pow(v, t) + redemption / Math.pow(v, t + n)
   for (let j = 1; j <= n; j++) p += coupon / Math.pow(v, t + j)
@@ -44,11 +54,11 @@ function oddLast(settlement: number, maturity: number, last: number, freq: numbe
   let dc = 0
   let a = 0
   let dsc = 0
-  for (let k = 0; cmp(couponDate(l, k, freq), mat) < 0; k++) {
-    const q0 = couponDate(l, k, freq)
-    const q1 = couponDate(l, k + 1, freq)
-    // bases 1–3 all count actual periods here, as Excel does
-    const nl = basis >= 1 && basis <= 3 ? daysBetween(q0, q1, 1) : periodDays(q0, basis, freq)
+  // quasi-coupon dates keep the last coupon's day, month ends or not
+  for (let k = 0; cmp(couponDate(l, k, freq, false), mat) < 0; k++) {
+    const q0 = couponDate(l, k, freq, false)
+    const q1 = couponDate(l, k + 1, freq, false)
+    const nl = normal(q0, q1, basis, freq, basis >= 1 && basis <= 3)
     const end = earlier(q1, mat)
     dc += daysBetween(q0, end, basis) / nl
     if (cmp(settle, q0) > 0) a += daysBetween(q0, earlier(settle, end), basis) / nl

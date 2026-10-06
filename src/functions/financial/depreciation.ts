@@ -1,9 +1,9 @@
 /**
  * Depreciation. DB, DDB, SLN and SYD follow formula.js 4.6.1 (src/financial.js), Copyright (c) 2014
- * Sutoiku, Inc., MIT; fixed against Excel. VDB, AMORDEGRC and AMORLINC are this engine's own.
+ * Sutoiku, Inc., MIT; fixed against Excel. AMORDEGRC and AMORLINC are this engine's own.
  */
-import type { FnDef } from '../../args.js'
 import { E } from '../../values.js'
+import type { FnDef } from '../../args.js'
 import { roundDigits } from '../common.js'
 import { atp } from '../date/atp.js'
 import { isLeap, ymd } from '../../dates.js'
@@ -21,24 +21,6 @@ function ddb(cost: number, salvage: number, life: number, period: number, factor
   } else before = cost * Math.pow(1 - rate, period - 1)
   const after = cost * Math.pow(1 - rate, period)
   return Math.max(0, after < salvage ? before - salvage : before - after)
-}
-
-/** VDB's schedule: declining balance, switching to straight line once that beats the unclamped declining amount. */
-function schedule(cost: number, salvage: number, life: number, factor: number, noSwitch: boolean, periods: number): number[] {
-  const out: number[] = []
-  let book = cost
-  let sl: number | null = null
-  for (let p = 1; p <= periods; p++) {
-    if (noSwitch) out.push(ddb(cost, salvage, life, p, factor))
-    else {
-      const d = book * Math.min(factor / life, 1)
-      if (sl === null && (book - salvage) / (life - p + 1) > d) sl = (book - salvage) / (life - p + 1)
-      const dep = sl ?? Math.min(d, book - salvage)
-      out.push(dep)
-      book -= dep
-    }
-  }
-  return out
 }
 
 /** The French methods' first period: the year fraction to the first period's end (on basis 1 in the purchase year's days); none at all counts as a full year. */
@@ -114,16 +96,5 @@ export const functions: Record<string, FnDef> = {
     args: 'n n n n',
     fn: (cost: number, salvage: number, life: number, per: number) =>
       salvage < 0 || life <= 0 || per <= 0 || per > life ? E.NUM : ((cost - salvage) * (life - per + 1) * 2) / (life * (life + 1)),
-  },
-  // fractional start and end take the matching share of their periods
-  VDB: {
-    args: 'n n n n n n? b?',
-    fn: (cost: number, salvage: number, life: number, start: number, end: number, factor = 2, noSwitch = false) => {
-      if (cost < 0 || salvage < 0 || life <= 0 || start < 0 || end < start || end > life || factor < 0) return E.NUM
-      const deps = schedule(cost, salvage, life, factor, noSwitch, Math.ceil(end))
-      let sum = 0
-      for (let p = Math.floor(start) + 1; p <= Math.ceil(end); p++) sum += deps[p - 1] * (Math.min(end, p) - Math.max(start, p - 1))
-      return sum
-    },
   },
 }

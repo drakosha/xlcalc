@@ -42,7 +42,7 @@ export function addMonths(y: number, m: number, months: number): { y: number; m:
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 const MONTH_RE = '(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)'
-const TIME_RE = '(\\d{1,2}):(\\d{2})(?::(\\d{2}(?:\\.\\d+)?))?(?:\\s*([ap]m))?|(\\d{1,2})\\s*([ap]m)'
+const TIME_RE = '(\\d{1,4}):(\\d+)(?::(\\d+(?:\\.\\d+)?))?(?:\\s*([ap]m))?|(\\d{1,2})\\s*([ap]m)'
 const DATE_FORMS: [RegExp, (m: RegExpExecArray) => [string, string, string]][] = [
   [/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/, (m) => [m[1], m[2], m[3]]],
   [/^(\d{1,2})\/(\d{1,2})\/(\d{4}|\d{2})$/, (m) => [m[3], m[1], m[2]]],
@@ -75,11 +75,11 @@ function timeText(s: string): number | null {
   let h = Number(m[1] ?? m[5])
   const mi = Number(m[2] ?? 0)
   const sec = Number(m[3] ?? 0)
-  if (mi > 59 || sec >= 60) return null
+  // Excel en-US: with AM/PM hours 0–12 and minutes and seconds below 60; without, up to 9999 hours and any minutes and seconds
   if (ampm) {
-    if (h < 1 || h > 12) return null
+    if (h > 12 || mi > 59 || sec >= 60) return null
     h = (h % 12) + (ampm === 'pm' ? 12 : 0)
-  } else if (h > 23) return null
+  }
   return (h * 3600 + mi * 60 + sec) / 86_400
 }
 

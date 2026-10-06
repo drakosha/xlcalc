@@ -2,8 +2,8 @@
  * Annuities, interest rates and dollar fractions.
  * Ported from formula.js 4.6.1 (src/financial.js), Copyright (c) 2014 Sutoiku, Inc., MIT; fixed against Excel.
  */
-import type { FnDef } from '../../args.js'
 import { E, isErr, type CErr } from '../../values.js'
+import type { FnDef } from '../../args.js'
 import { atp } from '../date/atp.js'
 
 export function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number {

@@ -3,7 +3,7 @@ import type { FnDef } from '../../args.js'
 import { addMonths, daysInMonth, serialOf, ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
 import { atp } from '../date/atp.js'
-import { dayNum, days30, validBasis, type Ymd } from '../date/daycount.js'
+import { days30, validBasis, type Ymd } from '../date/daycount.js'
 
 export type { Ymd }
 
@@ -19,11 +19,11 @@ export function daysBetween(a: Ymd, b: Ymd, basis: number): number {
   return serialOfYmd(b) - serialOfYmd(a)
 }
 
-/** Coupon dates `k` periods from `anchor`; an anchor on a month's last day keeps months' last days. */
-export function couponDate(anchor: Ymd, k: number, freq: number): Ymd {
+/** Coupon dates `k` periods from `anchor`; an anchor on a month's last day keeps months' last days (unless `eom` is false). */
+export function couponDate(anchor: Ymd, k: number, freq: number, eom = true): Ymd {
   const t = addMonths(anchor.y, anchor.m, (k * 12) / freq)
   const last = daysInMonth(t.y, t.m)
-  return { y: t.y, m: t.m, d: anchor.d === daysInMonth(anchor.y, anchor.m) ? last : Math.min(anchor.d, last) }
+  return { y: t.y, m: t.m, d: eom && anchor.d === daysInMonth(anchor.y, anchor.m) ? last : Math.min(anchor.d, last) }
 }
 
 /** The coupon period around `x` on the schedule of `anchor`: k with date(k) ≤ x < date(k+1). */
@@ -34,19 +34,15 @@ export function periodOf(anchor: Ymd, x: Ymd, freq: number): number {
   return k
 }
 
-/** E on actual/actual: from the period's start to the same day 12/freq months on, clamped to the month (Excel ignores month ends here). */
-export function periodDays(start: Ymd, basis: number, freq: number): number {
-  if (basis !== 1) return (basis === 3 ? 365 : 360) / freq
-  const t = addMonths(start.y, start.m, 12 / freq)
-  return serialOf(t.y, t.m, Math.min(start.d, daysInMonth(t.y, t.m))) - serialOfYmd(start)
-}
+/** The normal coupon period in days on the 30/360 and actual/360, actual/365 bases. */
+export const normalDays = (basis: number, freq: number) => (basis === 3 ? 365 : 360) / freq
 
 export interface Coupons {
   settlement: number
   settle: Ymd
-  /** Before serial 0 the previous coupon date is day 0 (1900-01-00), as in Excel; `early` keeps the real one. */
+  /** Before serial 0 the previous coupon date is day 0 (1900-01-00), as in Excel (`early`). */
   pcd: Ymd
-  early?: Ymd
+  early?: boolean
   ncd: Ymd
   /** Coupons from settlement to maturity; 0 when the previous coupon date is before 1900. */
   n: number
@@ -58,7 +54,7 @@ export function coupons(settlement: number, maturity: number, freq: number): Cou
   const k = periodOf(mat, settle, freq)
   const pcd = couponDate(mat, k, freq)
   const ncd = couponDate(mat, k + 1, freq)
-  return serialOfYmd(pcd) < 0 ? { settlement, settle, pcd: ymd(0), early: pcd, ncd, n: 0 } : { settlement, settle, pcd, ncd, n: -k }
+  return serialOfYmd(pcd) < 0 ? { settlement, settle, pcd: ymd(0), early: true, ncd, n: 0 } : { settlement, settle, pcd, ncd, n: -k }
 }
 
 /** Argument checks shared by the coupon and bond functions. */
@@ -71,19 +67,18 @@ const daysFrom = (c: Coupons, basis: number) => (basis === 0 || basis === 4 ? da
 /** 30/360 with no month-end rule: Excel's COUPDAYSNC on basis 0 when the previous coupon date is before 1900. */
 const plain360 = (a: Ymd, b: Ymd) => (b.y - a.y) * 360 + (b.m - a.m) * 30 + b.d - a.d
 
-/** E, A and DSC as the COUP* functions answer them (COUPDAYSNC on basis 0 is E − A). */
+/** A and DSC as COUPDAYBS and COUPDAYSNC answer them; DSC on basis 0 is the normal period less A. */
 export function couponDays(c: Coupons, basis: number, freq: number) {
-  const e = c.early && basis === 1 ? dayNum(couponDate(c.early, 1, freq)) - dayNum(c.early) : periodDays(c.pcd, basis, freq)
   const a = daysFrom(c, basis)
   let dsc: number
-  if (basis === 0) dsc = c.early ? plain360(c.settle, c.ncd) : e - a
+  if (basis === 0) dsc = c.early ? plain360(c.settle, c.ncd) : normalDays(0, freq) - a
   else dsc = basis === 4 ? daysBetween(c.settle, c.ncd, 4) : serialOfYmd(c.ncd) - c.settlement
-  return { e, a, dsc }
+  return { a, dsc }
 }
 
 /** E, A and DSC as PRICE, YIELD and DURATION take them: E on basis 1 is the actual period, DSC = E − A. */
 export function bondDays(c: Coupons, basis: number, freq: number) {
-  const e = basis === 1 ? serialOfYmd(c.ncd) - serialOfYmd(c.pcd) : periodDays(c.pcd, basis, freq)
+  const e = basis === 1 ? serialOfYmd(c.ncd) - serialOfYmd(c.pcd) : normalDays(basis, freq)
   const a = daysFrom(c, basis)
   return { e, a, dsc: e - a }
 }
@@ -96,7 +91,6 @@ function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr
 
 export const functions: Record<string, FnDef> = {
   COUPDAYBS: coup((c, basis, freq) => couponDays(c, basis, freq).a),
-  COUPDAYS: coup((c, basis, freq) => couponDays(c, basis, freq).e),
   COUPDAYSNC: coup((c, basis, freq) => couponDays(c, basis, freq).dsc),
   COUPNCD: coup((c) => serialOfYmd(c.ncd)),
   COUPNUM: coup((c) => c.n || E.NUM),
