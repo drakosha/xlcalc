@@ -156,8 +156,10 @@ export interface FunctionSpec {
   refs: boolean
   /** Arguments taken whole that a lifted call reads by their top-left value. */
   liftFirst: readonly number[]
-  /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
-  parity?: 'odd' | 'even'
+  /** Whether a call with `k` arguments is one Excel loads: within min…max, repeated pairs complete (SUMIFS 3, 5, …; SORTBY 2, 3, 5, …). */
+  takes: (k: number) => boolean
+  /** The counts it takes, for a message ("3 to 255 (odd)"). */
+  counts: string
   volatile?: boolean
   lazy?: boolean
   cell?: boolean
@@ -189,18 +191,19 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   const kindAt = (i: number) => (i < kinds.length ? kinds[i].k : kinds[fixed + ((i - fixed) % rep)].k)
   const min = kinds.filter((k) => !k.optional).length
   let max = rep ? (def.max ?? MAX_ARGS) : kinds.length
-  let parity: FunctionSpec['parity']
-  if (rep === 2) {
-    parity = fixed % 2 === 0 ? 'even' : 'odd'
-    if ((max - fixed) % 2) max--
-  }
+  // past the declared kinds, repeated groups come whole (an optional one inside the first group may be left out)
+  const whole = (k: number) => k <= kinds.length || (k - fixed) % rep === 0
+  if (rep && !whole(max)) max--
+  const parity = rep === 2 ? (fixed % 2 ? 'odd' : 'even') : ''
+  const range = min === max ? `${min}` : `${min} to ${max}`
+  const counts = !parity ? range : min < kinds.length ? `${min}, or ${parity} ${min + 1} to ${max}` : `${range} (${parity})`
   const mode = (i: number): ArgMode => {
     const k = kindAt(i)
     return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
   }
   const { ranges } = def
   const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')
-  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0), refs: kinds.some((k) => k.k === 'P'), liftFirst: def.liftFirst ?? [] }
+  return { min, max, takes: (k) => k >= min && k <= max && whole(k), counts, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0), refs: kinds.some((k) => k.k === 'P'), liftFirst: def.liftFirst ?? [] }
 }
 
 // ---------- coercion by kind ----------

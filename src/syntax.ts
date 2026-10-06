@@ -493,10 +493,7 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
         const spec = FUNCTIONS[n.name]
         if (!spec) return null
         const k = n.args.length
-        if (k < spec.min || k > spec.max || (spec.parity === 'odd' && k % 2 === 0) || (spec.parity === 'even' && k % 2 === 1)) {
-          const count = spec.min === spec.max ? `${spec.min}` : `${spec.min} to ${spec.max}${spec.parity ? ` (${spec.parity})` : ''}`
-          return new FormulaError('syntax', `${n.name} takes ${count} arguments, got ${k}`, at(n.name))
-        }
+        if (!spec.takes(k)) return new FormulaError('syntax', `${n.name} takes ${spec.counts} arguments, got ${k}`, at(n.name))
         for (const a of n.args) {
           const e = visit(a)
           if (e) return e
