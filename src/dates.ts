@@ -182,16 +182,11 @@ export function dateTimeWith(s: string, syn: DateSyntax): number | null {
   return s.includes(':') || /\d[ap]m$/i.test(s) ? null : parseDateWith(s, syn)
 }
 
-/**
- * Text as a number, as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`,
- * parentheses, commas, exponent, one `%` at either end, `1 1/2`; else a time or a date. Null if it is none.
- */
-export function textToNumber(text: string): number | null {
-  let s = trimSpaces(text)
-  if (s === '') return null
+/** Parentheses and the percent sign around number text (trimmed), in either order: `(5%)`, `(5)%`, `%(5)`. */
+export function unwrap(text: string): { s: string; paren: boolean; percent: boolean } {
+  let s = text
   let paren = false
   let percent = false
-  // parentheses and the percent sign in either order: `(5%)`, `(5)%`, `%(5)`
   for (;;) {
     if (!paren && s.startsWith('(') && s.endsWith(')')) [paren, s] = [true, s.slice(1, -1)]
     else if (!percent && s.startsWith('%')) [percent, s] = [true, s.slice(1)]
@@ -199,6 +194,17 @@ export function textToNumber(text: string): number | null {
     else break
     s = trimSpaces(s)
   }
+  return { s, paren, percent }
+}
+
+/**
+ * Text as a number, as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`,
+ * parentheses, commas, exponent, one `%` at either end, `1 1/2`; else a time or a date. Null if it is none.
+ */
+export function textToNumber(text: string): number | null {
+  const t = trimSpaces(text)
+  if (t === '') return null
+  const { s, paren, percent } = unwrap(t)
   const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/.exec(s)!
   if (sign[1] && sign[3]) return null
   const negative = (sign[1] || sign[3]) === '-'

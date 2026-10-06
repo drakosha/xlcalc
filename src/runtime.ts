@@ -14,6 +14,7 @@ import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import type { Rules } from './locale/rules.js'
+import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { E, fitNumber, fromCellValue, isErr, Rng, type CErr, type V } from './values.js'
 
@@ -180,9 +181,12 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   // ---------- criteria ----------
 
+  // an index that read the clock's year (text dates without one) is built again by each formula, so each reads it
   const indexOf = (g: Rng): CritIndex => {
-    let ix = ctx.index.get(g.key)
-    if (!ix) ctx.index.set(g.key, (ix = buildIndex(flat(g), rules)))
+    const hit = ctx.index.get(g.key)
+    if (hit) return hit
+    const [ix, clocked] = readsClock(rules.clock, () => buildIndex(flat(g), rules))
+    if (!clocked) ctx.index.set(g.key, ix)
     return ix
   }
 

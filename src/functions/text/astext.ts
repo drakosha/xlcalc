@@ -1,12 +1,14 @@
-/** VALUETOTEXT and ARRAYTOTEXT, this engine's own (Excel 2021): format 0 concise, 1 strict (text quoted). */
+/**
+ * VALUETOTEXT and ARRAYTOTEXT, this engine's own (Excel 2021): format 0 concise, 1 strict (text quoted); numbers,
+ * booleans, error texts and the separators by the book's locale (`{1,5;2:ИСТИНА}` in ru-RU).
+ */
 import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
-import { ERROR_TEXT } from '../../syntax.js'
 import { E, isErr, type V } from '../../values.js'
 import { capped, MAX_TEXT } from './common.js'
 
 const asText = (v: V, strict: boolean, rules: Rules): string => {
-  if (isErr(v)) return ERROR_TEXT[v.code]
+  if (isErr(v)) return rules.errorText(v.code)
   if (typeof v === 'string') return strict ? `"${v.replace(/"/g, '""')}"` : v
   return rules.toText(v) as string
 }
@@ -19,11 +21,12 @@ function valuetotext(cx: Cx, x: V, format = 0): V {
 function arraytotext(cx: Cx, g: Grid, format = 0): V {
   if (format !== 0 && format !== 1) return E.VALUE
   const strict = format === 1
+  const { listSeparator, arrayColumnSeparator, arrayRowSeparator } = cx.rules.locale
   if (g.rows * g.cols > MAX_TEXT) return E.VALUE
   let out = strict ? '{' : ''
   for (let r = 0; r < g.rows; r++) {
     for (let c = 0; c < g.cols; c++) {
-      if (r || c) out += strict ? (c ? ',' : ';') : ', '
+      if (r || c) out += strict ? (c ? arrayColumnSeparator : arrayRowSeparator) : `${listSeparator} `
       out += asText(gridAt(g, r * g.cols + c), strict, cx.rules)
     }
     if (out.length > MAX_TEXT) return E.VALUE

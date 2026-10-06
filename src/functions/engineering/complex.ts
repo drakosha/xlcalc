@@ -6,7 +6,6 @@
 import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { atp } from '../date/atp.js'
-import { readNumber } from '../../model.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
 
 type Unit = '' | 'i' | 'j'
@@ -23,42 +22,43 @@ const MAX_TEXT = 9.99999999999999e307
 /** Excel's limit for the sine and cosine of a real argument. */
 const MAX_TRIG = 2 ** 27
 
-/** A real number at the start of complex text, by decimal separator. */
-const NUMBER: Record<string, RegExp> = {
-  '.': /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/,
-  ',': /^[+-]?(?:\d+,?\d*|,\d+)(?:[eE][+-]?\d+)?/,
-}
-
-/** Complex text as Excel reads it: spaces ignored, `a`, `bi`, `a±bi` (i or j; b may carry its own sign; `i` is 1i); null if not one. */
-function parseComplex(text: string, rules: Rules): Complex | null {
-  const s = text.replaceAll(' ', '')
-  const num = (t: string): [number, string] | null => {
-    const m = NUMBER[rules.decimal].exec(t)
-    if (!m) return null
-    const n = readNumber(m[0].replace(rules.decimal, '.'))
-    return Math.abs(n) > MAX_TEXT ? null : [n, t.slice(m[0].length)]
-  }
-  const isUnit = (u: string): u is 'i' | 'j' => u === 'i' || u === 'j'
-  const first = num(s)
-  if (!first) {
-    const m = /^([+-]?)([ij])$/.exec(s)
-    return m ? { re: 0, im: m[1] === '-' ? -1 : 1, unit: m[2] as Unit } : null
-  }
-  const [a, rest] = first
-  if (rest === '') return { re: a, im: 0, unit: '' }
-  if (isUnit(rest)) return { re: 0, im: a, unit: rest }
-  const sign = rest[0] === '-' ? -1 : rest[0] === '+' ? 1 : 0
-  if (!sign) return null
-  const tail = rest.slice(1)
-  if (isUnit(tail)) return { re: a, im: sign, unit: tail }
-  const second = num(tail)
-  return second && isUnit(second[1]) ? { re: a, im: sign * second[0], unit: second[1] } : null
+/** Where complex text splits into the real part and the imaginary one: the last sign past the first character that is no exponent's, or −1. */
+function splitAt(s: string): number {
+  for (let i = s.length - 1; i > 0; i--) if ((s[i] === '+' || s[i] === '-') && s[i - 1] !== 'e' && s[i - 1] !== 'E') return i
+  return -1
 }
 
 /**
- * An argument: a number is real, a blank 0, a boolean #VALUE!; text is complex, else a real number as VALUE reads
- * it when no sign follows the first character (`"$1,000"`, `"50%"`, `"18:30"`, `"1/2/2025"`; not `"2025-01-31"`),
- * else #NUM!, as in Excel.
+ * Complex text as Excel reads it: spaces ignored, `a`, `bi`, `a±bi` (i or j; b may carry its own sign; `i` is 1i),
+ * each part a real number as the locale reads one in complex text (`Rules.complexPart`: ru-RU reads `1.5` there as
+ * a date, as VALUE does); null if not one.
+ */
+function parseComplex(text: string, rules: Rules): Complex | null {
+  const s = text.replaceAll(' ', '')
+  const part = (t: string): number | null => {
+    const n = rules.complexPart(t)
+    return n === null || Math.abs(n) > MAX_TEXT ? null : n
+  }
+  const unit = s.at(-1)
+  if (unit !== 'i' && unit !== 'j') {
+    const re = splitAt(s) < 0 ? part(s) : null
+    return re === null ? null : { re, im: 0, unit: '' }
+  }
+  const body = s.slice(0, -1)
+  let at = splitAt(body)
+  // `a+-b`: the imaginary part's own sign follows the one that splits
+  if (at > 1 && (body[at - 1] === '+' || body[at - 1] === '-')) at--
+  const re = at < 0 ? 0 : part(body.slice(0, at))
+  const coef = at < 0 ? body : body.slice(at + 1)
+  const sign = at >= 0 && body[at] === '-' ? -1 : 1
+  const im = coef === '' || coef === '+' ? 1 : coef === '-' ? -1 : part(coef)
+  return re === null || im === null ? null : { re, im: sign * im, unit }
+}
+
+/**
+ * An argument: a number is real, a blank 0, a boolean #VALUE!; text is a real number as VALUE reads it when no
+ * sign follows the first character (`"$1,000"`, `"50%"`, `"18:30"`, `"1/2/2025"`; not `"2025-01-31"`), else complex
+ * text, else #NUM!, as in Excel.
  */
 function toComplex(v: V, rules: Rules): Complex | CErr {
   if (isErr(v)) return v
@@ -66,7 +66,7 @@ function toComplex(v: V, rules: Rules): Complex | CErr {
   if (v === null) return { re: 0, im: 0, unit: '' }
   if (typeof v === 'number') return { re: v, im: 0, unit: '' }
   const n = /[+-]/.test(v.trim().slice(1)) ? null : rules.valueText(v)
-  const z = parseComplex(v, rules) ?? (n === null ? null : { re: n, im: 0, unit: '' as const })
+  const z = n === null ? parseComplex(v, rules) : { re: n, im: 0, unit: '' as const }
   // −0 is 0 (IMARGUMENT("-1-0i") is π)
   return z ? { re: z.re + 0, im: z.im + 0, unit: z.unit } : E.NUM
 }

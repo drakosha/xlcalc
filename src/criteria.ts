@@ -7,6 +7,7 @@
  * follow the book's locale (`CritRules`, en-US by default).
  */
 import { textToNumber } from './dates.js'
+import { readsClock, type RulesClock } from './locale/rules/data.js'
 import { to15 } from './values.js'
 
 /** A cell value for a criterion; errors are any object. */
@@ -21,11 +22,34 @@ export type Crit =
   | { op: string; kind: 'err'; code: string }
 
 /**
- * String order for `<`/`>`: case-insensitive, accent-sensitive. Without `Intl` (QuickJS, for example)
- * the order falls back to code units of the lower-cased strings.
+ * String order for `<`/`>` by an `Intl.Collator` locale tag: case-insensitive, accent-sensitive. Without `Intl`
+ * (QuickJS, for example) the order falls back to code units of the lower-cased strings.
  */
-export const collator: { compare(a: string, b: string): number } =
-  typeof Intl !== 'undefined' ? new Intl.Collator('en-US', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
+export const textOrder = (tag: string): ((a: string, b: string) => number) =>
+  typeof Intl !== 'undefined' ? new Intl.Collator(tag, { sensitivity: 'accent' }).compare : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0)
+
+/** en-US's order of text: Latin before Cyrillic, as Excel en-US sorts. */
+export const collator = { compare: textOrder('en-US') }
+
+/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers; #ERROR! is how this engine reads #NULL!. */
+const ERRORS: Record<string, [code: string, rank: number]> = {
+  '#NULL!': ['ERROR', 1],
+  '#DIV/0!': ['DIV0', 2],
+  '#VALUE!': ['VALUE', 3],
+  '#REF!': ['REF', 4],
+  '#NAME?': ['NAME', 5],
+  '#NUM!': ['NUM', 6],
+  '#N/A': ['NA', 7],
+  '#SPILL!': ['SPILL', 9],
+  '#CALC!': ['CALC', 14],
+}
+const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRORS))
+
+/** A criterion's error text by a locale's error texts (`'#N/A': '#Н/Д'`; one not given keeps its English text): the error code, or undefined. */
+export function errorWords(local: Readonly<Record<string, string>>): (text: string) => string | undefined {
+  const words = new Map(Object.entries(ERRORS).map(([text, [code]]) => [(local[text] ?? text).toUpperCase(), code]))
+  return (text) => words.get(text.toUpperCase())
+}
 
 /** What criteria read by the locale: numbers, dates and words in a criterion's text, numbers in cell text, the order of text. */
 export interface CritRules {
@@ -37,6 +61,10 @@ export interface CritRules {
   cellNumber(text: string): number | null
   /** The order of two texts for `<` and `>`, and in sorting and lookups: case-insensitive, accent-sensitive. */
   compareText(a: string, b: string): number
+  /** An error's text in a criterion (any case): the error code, or undefined. */
+  critError(text: string): string | undefined
+  /** The clock a date without a year reads: a criterion or an index that read it is not cached. */
+  readonly clock?: RulesClock
 }
 
 /** en-US: numbers, dates and times in criteria and in cell text as VALUE reads them, TRUE and FALSE in any case. */
@@ -45,6 +73,7 @@ export const EN_CRIT: CritRules = {
   critBool: (t) => (/^(TRUE|FALSE)$/i.test(t) ? t.toUpperCase() === 'TRUE' : null),
   cellNumber: (s) => (/\d/.test(s) ? textToNumber(s) : null),
   compareText: collator.compare,
+  critError: errorWords({}),
 }
 
 /** Parsed criteria by value, per locale's rules. */
@@ -73,20 +102,6 @@ export function wildRe(s: string, tilde = false): RegExp | null {
   return (tilde ? /[*?~]/ : /[*?]/).test(s) ? new RegExp(`^${wildSource(s)}$`, 'iu') : null
 }
 
-/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers; #ERROR! is how this engine reads #NULL!. */
-const ERRORS: Record<string, [code: string, rank: number]> = {
-  '#NULL!': ['ERROR', 1],
-  '#DIV/0!': ['DIV0', 2],
-  '#VALUE!': ['VALUE', 3],
-  '#REF!': ['REF', 4],
-  '#NAME?': ['NAME', 5],
-  '#NUM!': ['NUM', 6],
-  '#N/A': ['NA', 7],
-  '#SPILL!': ['SPILL', 9],
-  '#CALC!': ['CALC', 14],
-}
-const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRORS))
-
 /** A criterion that is an error value: it matches the cells holding that error (Excel: COUNTIF(A1:A9,NA())). */
 export const errorCrit = (code: string): Crit => ({ op: '=', kind: 'err', code })
 
@@ -97,6 +112,12 @@ export function parseCrit(v: number | string | boolean | null, rules: CritRules 
   const key = typeof v + ':' + String(v)
   const hit = cache.get(key)
   if (hit) return hit
+  const [c, clocked] = readsClock(rules.clock, () => critOf(v, rules))
+  if (!clocked) cache.set(key, c)
+  return c
+}
+
+function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
   let c: Crit
   if (typeof v === 'number') c = { op: '=', kind: 'num', n: v }
   else if (typeof v === 'boolean') c = { op: '=', kind: 'bool', b: v }
@@ -107,8 +128,9 @@ export function parseCrit(v: number | string | boolean | null, rules: CritRules 
     const rest = m[2]
     let n: number | null = null
     let b: boolean | null = null
+    let code: string | undefined
     if (rest === '') c = { op, kind: 'blank' }
-    else if (rest.toUpperCase() in ERRORS) c = { op, kind: 'err', code: ERRORS[rest.toUpperCase()][0] }
+    else if ((code = rules.critError(rest)) !== undefined) c = { op, kind: 'err', code }
     else if ((n = rules.critNumber(rest.trim())) !== null) c = { op, kind: 'num', n }
     else if ((b = rules.critBool(rest)) !== null) c = { op, kind: 'bool', b }
     else {
@@ -116,7 +138,6 @@ export function parseCrit(v: number | string | boolean | null, rules: CritRules 
       c = re ? { op, kind: 'wild', re } : { op, kind: 'str', s: rest.toLowerCase() }
     }
   }
-  cache.set(key, c)
   return c
 }
 

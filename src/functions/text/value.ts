@@ -10,14 +10,16 @@ function value(cx: Cx, v: Exclude<V, CErr>): V {
 }
 
 /**
- * Group separators go first (after the decimal one they are #VALUE!), the decimal separator becomes a point
- * and the rest reads as in VALUE; whitespace anywhere is dropped and each trailing `%` divides by 100.
+ * Group separators go first (after the decimal one they are #VALUE!), the decimal separator becomes the
+ * locale's and the rest reads as in VALUE; whitespace anywhere is dropped and each trailing `%` divides by 100.
+ * The separators default to the locale's.
  */
 function numbervalue(cx: Cx, text: string, decimal?: string, group?: string): V {
   if (decimal === '' || group === '') return E.VALUE
-  const d = decimal?.[0] ?? '.'
-  // a comma as the decimal separator makes the point the default group separator
-  const g = group?.[0] ?? (d === ',' ? '.' : ',')
+  const { rules } = cx
+  const d = decimal?.[0] ?? rules.decimal
+  // the locale's group separator as the decimal one makes its decimal separator the default group separator
+  const g = group?.[0] ?? (d === rules.group ? rules.decimal : rules.group)
   if (d === g) return E.VALUE
   let s = text.replace(/[ \t\n\r]/g, '')
   if (s === '') return 0
@@ -26,7 +28,7 @@ function numbervalue(cx: Cx, text: string, decimal?: string, group?: string): V 
   const at = s.indexOf(d)
   const frac = at < 0 ? '' : s.slice(at + 1)
   if (frac.includes(d) || frac.includes(g)) return E.VALUE
-  const n = cx.rules.valueText((at < 0 ? s : s.slice(0, at)).split(g).join('') + (at < 0 ? '' : '.' + frac))
+  const n = rules.valueText((at < 0 ? s : s.slice(0, at)).split(g).join('') + (at < 0 ? '' : rules.decimal + frac))
   return n === null ? E.VALUE : n / 100 ** pct
 }
 

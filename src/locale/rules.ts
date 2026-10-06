@@ -5,15 +5,22 @@
  * book (`rulesOf`) and passes it to the operators and criteria (`runtime.ts`) and to functions (`Cx.rules`);
  * code outside a book (the parser, the criteria index of `unstable/internal`) works by en-US.
  */
+import type { ErrorCode } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { parseDateText, textToNumber } from '../dates.js'
 import { formatText, generalText } from '../format.js'
+import { NUMBER_TEXT, readNumber } from '../model.js'
+import { ERROR_TEXT } from '../syntax.js'
 import { compareOp, compareValues, toBool, toNum, toText, type CErr, type V } from '../values.js'
-import { DEFAULT_LOCALE } from './registry.js'
+import { enUS } from './en-US.js'
+import type { RegionalData, RulesClock } from './rules/data.js'
+import { regionalRules } from './rules/regional.js'
+import { RU_RU } from './rules/ru-RU.js'
+import type { Locale } from './types.js'
 
 export interface Rules extends CritRules {
-  /** The locale's tag. */
-  readonly tag: string
+  /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
+  readonly locale: Locale
   /** The decimal and group separators of numbers in text (FIXED, DOLLAR, NUMBERVALUE's defaults). */
   readonly decimal: string
   readonly group: string
@@ -37,12 +44,16 @@ export interface Rules extends CritRules {
   compare(a: V, b: V): number
   /** The order of the comparison operators: `compare` with numbers equal to 15 significant digits. */
   compareOp(a: V, b: V): number
+  /** An error as text (VALUETOTEXT, ARRAYTOTEXT). */
+  errorText(code: ErrorCode): string
+  /** A real number in complex text (`1.5` in `1.5+2i`), or null. */
+  complexPart(text: string): number | null
 }
 
 /** Excel en-US with the English interface: the engine's own rules since the first release. */
 export const EN_US: Rules = {
   ...EN_CRIT,
-  tag: DEFAULT_LOCALE,
+  locale: enUS,
   decimal: '.',
   group: ',',
   currency: { symbol: '$', before: true, space: '', negative: '()' },
@@ -55,7 +66,15 @@ export const EN_US: Rules = {
   formatText,
   compare: compareValues,
   compareOp,
+  errorText: (code) => ERROR_TEXT[code],
+  complexPart: (t) => (NUMBER_TEXT.test(t) ? readNumber(t) : null),
 }
 
-/** The rules of a book in the locale `tag` (one of `LOCALES`). */
-export const rulesOf = (_tag: string | undefined): Rules => EN_US
+/** The data of the locales other than en-US, by tag (one line per locale of `LOCALES`). */
+export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([['ru-RU', RU_RU]])
+
+/** The rules of a book in the locale `tag` (one of `LOCALES`; en-US without one), reading `clock` for dates without a year. */
+export function rulesOf(tag: string | undefined, clock: RulesClock): Rules {
+  const data = tag === undefined ? undefined : REGIONAL.get(tag)
+  return data ? regionalRules(data, clock) : EN_US
+}
