@@ -225,6 +225,7 @@ Notes on semantics:
   - `TEXT` knows en-US formats only; exponent formats (`0.00E+00`), colours and bracketed conditions give `#VALUE!`.
   - Date text without a year (`1/31`, which Excel completes with the current year) is not read as a date.
   - `#NULL!` is read as `#ERROR!`.
+  - A range where a function takes one value (`BESSELJ(A1:A2,1)`) is array arithmetic for this engine, `#ERROR!` with the check code `unsupported` until arrays are supported; Excel intersects it with the formula's row or column and gives `#VALUE!` where they do not meet.
   - `RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.
 - **Syntax.** English function names and separators only (no `;` or decimal commas), no R1C1 references, no references to other workbooks, no 3D references or structured table references. Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LET`, …) give `#NAME?`.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.

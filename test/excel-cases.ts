@@ -86,6 +86,8 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
+  rangeAsScalar:
+    'A range where a function takes one value (`BESSELJ(A1:A2,1)`) is array arithmetic for this engine, `#ERROR!` with the check code `unsupported` until arrays are supported; Excel intersects it with the formula\'s row or column and gives `#VALUE!` where they do not meet.',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
 } as const
@@ -95,7 +97,11 @@ export const REASONS = {
  * set's name): the engine's answer the tests pin instead of Excel's. An entry whose case matches Excel fails
  * the tests, so the list stays current.
  */
+/** Cases of the `matheng` set with a range in a scalar position. */
+const RANGE_AS_SCALAR = ['BESSELI#155', 'BESSELJ#160', 'BESSELK#151', 'BESSELY#156', 'BITAND#18', 'BITOR#18', 'BITXOR#18', 'DELTA#13', 'BIN2DEC#27', 'BIN2HEX#46', 'BIN2OCT#46', 'DEC2BIN#36', 'DEC2HEX#37', 'DEC2OCT#34', 'HEX2BIN#48', 'HEX2DEC#36', 'HEX2OCT#48', 'OCT2BIN#38', 'OCT2DEC#27', 'OCT2HEX#38', 'IMABS#16', 'IMARGUMENT#18', 'IMCONJUGATE#15', 'IMCOS#18', 'IMCOSH#15', 'IMCOT#15', 'IMCSC#13', 'IMCSCH#13', 'IMEXP#17', 'IMLN#17', 'IMLOG10#16', 'IMLOG2#16', 'IMSEC#13', 'IMSECH#13', 'IMSIN#17', 'IMSINH#15', 'IMSQRT#19', 'IMTAN#16', 'IMDIV#13', 'IMSUB#8']
+
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
+  ...Object.fromEntries(RANGE_AS_SCALAR.map((id) => [`matheng:${id}`, { reason: 'rangeAsScalar' as const, engine: { t: 'e', v: 'ERROR' } as Val }])),
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

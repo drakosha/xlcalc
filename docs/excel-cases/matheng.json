@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.406
+  "seconds": 2.455
  },
  "cases": [
   {
@@ -18742,6 +18742,246 @@
    "group": "MDETERM",
    "fn": "MDETERM",
    "formula": "MDETERM(D!B1:B8)"
+  },
+  {
+   "id": "BESSELI#155",
+   "group": "BESSELI",
+   "fn": "BESSELI",
+   "formula": "BESSELI(D!B1:B2,1)"
+  },
+  {
+   "id": "BESSELJ#160",
+   "group": "BESSELJ",
+   "fn": "BESSELJ",
+   "formula": "BESSELJ(D!B1:B2,1)"
+  },
+  {
+   "id": "BESSELK#151",
+   "group": "BESSELK",
+   "fn": "BESSELK",
+   "formula": "BESSELK(D!B1:B2,1)"
+  },
+  {
+   "id": "BESSELY#156",
+   "group": "BESSELY",
+   "fn": "BESSELY",
+   "formula": "BESSELY(D!B1:B2,1)"
+  },
+  {
+   "id": "BITAND#18",
+   "group": "BITAND",
+   "fn": "BITAND",
+   "formula": "_xlfn.BITAND(D!B1:B2,1)"
+  },
+  {
+   "id": "BITOR#18",
+   "group": "BITOR",
+   "fn": "BITOR",
+   "formula": "_xlfn.BITOR(D!B1:B2,1)"
+  },
+  {
+   "id": "BITXOR#18",
+   "group": "BITXOR",
+   "fn": "BITXOR",
+   "formula": "_xlfn.BITXOR(D!B1:B2,1)"
+  },
+  {
+   "id": "DELTA#13",
+   "group": "DELTA",
+   "fn": "DELTA",
+   "formula": "DELTA(D!B1:B2,1)"
+  },
+  {
+   "id": "BIN2DEC#27",
+   "group": "BIN2DEC",
+   "fn": "BIN2DEC",
+   "formula": "BIN2DEC(D!B1:B2)"
+  },
+  {
+   "id": "BIN2HEX#46",
+   "group": "BIN2HEX",
+   "fn": "BIN2HEX",
+   "formula": "BIN2HEX(D!B1:B2)"
+  },
+  {
+   "id": "BIN2OCT#46",
+   "group": "BIN2OCT",
+   "fn": "BIN2OCT",
+   "formula": "BIN2OCT(D!B1:B2)"
+  },
+  {
+   "id": "DEC2BIN#36",
+   "group": "DEC2BIN",
+   "fn": "DEC2BIN",
+   "formula": "DEC2BIN(D!B1:B2)"
+  },
+  {
+   "id": "DEC2HEX#37",
+   "group": "DEC2HEX",
+   "fn": "DEC2HEX",
+   "formula": "DEC2HEX(D!B1:B2)"
+  },
+  {
+   "id": "DEC2OCT#34",
+   "group": "DEC2OCT",
+   "fn": "DEC2OCT",
+   "formula": "DEC2OCT(D!B1:B2)"
+  },
+  {
+   "id": "HEX2BIN#48",
+   "group": "HEX2BIN",
+   "fn": "HEX2BIN",
+   "formula": "HEX2BIN(D!B1:B2)"
+  },
+  {
+   "id": "HEX2DEC#36",
+   "group": "HEX2DEC",
+   "fn": "HEX2DEC",
+   "formula": "HEX2DEC(D!B1:B2)"
+  },
+  {
+   "id": "HEX2OCT#48",
+   "group": "HEX2OCT",
+   "fn": "HEX2OCT",
+   "formula": "HEX2OCT(D!B1:B2)"
+  },
+  {
+   "id": "OCT2BIN#38",
+   "group": "OCT2BIN",
+   "fn": "OCT2BIN",
+   "formula": "OCT2BIN(D!B1:B2)"
+  },
+  {
+   "id": "OCT2DEC#27",
+   "group": "OCT2DEC",
+   "fn": "OCT2DEC",
+   "formula": "OCT2DEC(D!B1:B2)"
+  },
+  {
+   "id": "OCT2HEX#38",
+   "group": "OCT2HEX",
+   "fn": "OCT2HEX",
+   "formula": "OCT2HEX(D!B1:B2)"
+  },
+  {
+   "id": "IMABS#16",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(D!B1:B2)"
+  },
+  {
+   "id": "IMARGUMENT#18",
+   "group": "IMARGUMENT",
+   "fn": "IMARGUMENT",
+   "formula": "IMARGUMENT(D!B1:B2)"
+  },
+  {
+   "id": "IMCONJUGATE#15",
+   "group": "IMCONJUGATE",
+   "fn": "IMCONJUGATE",
+   "formula": "IMCONJUGATE(D!B1:B2)"
+  },
+  {
+   "id": "IMCOS#18",
+   "group": "IMCOS",
+   "fn": "IMCOS",
+   "formula": "IMCOS(D!B1:B2)"
+  },
+  {
+   "id": "IMCOSH#15",
+   "group": "IMCOSH",
+   "fn": "IMCOSH",
+   "formula": "_xlfn.IMCOSH(D!B1:B2)"
+  },
+  {
+   "id": "IMCOT#15",
+   "group": "IMCOT",
+   "fn": "IMCOT",
+   "formula": "_xlfn.IMCOT(D!B1:B2)"
+  },
+  {
+   "id": "IMCSC#13",
+   "group": "IMCSC",
+   "fn": "IMCSC",
+   "formula": "_xlfn.IMCSC(D!B1:B2)"
+  },
+  {
+   "id": "IMCSCH#13",
+   "group": "IMCSCH",
+   "fn": "IMCSCH",
+   "formula": "_xlfn.IMCSCH(D!B1:B2)"
+  },
+  {
+   "id": "IMEXP#17",
+   "group": "IMEXP",
+   "fn": "IMEXP",
+   "formula": "IMEXP(D!B1:B2)"
+  },
+  {
+   "id": "IMLN#17",
+   "group": "IMLN",
+   "fn": "IMLN",
+   "formula": "IMLN(D!B1:B2)"
+  },
+  {
+   "id": "IMLOG10#16",
+   "group": "IMLOG10",
+   "fn": "IMLOG10",
+   "formula": "IMLOG10(D!B1:B2)"
+  },
+  {
+   "id": "IMLOG2#16",
+   "group": "IMLOG2",
+   "fn": "IMLOG2",
+   "formula": "IMLOG2(D!B1:B2)"
+  },
+  {
+   "id": "IMSEC#13",
+   "group": "IMSEC",
+   "fn": "IMSEC",
+   "formula": "_xlfn.IMSEC(D!B1:B2)"
+  },
+  {
+   "id": "IMSECH#13",
+   "group": "IMSECH",
+   "fn": "IMSECH",
+   "formula": "_xlfn.IMSECH(D!B1:B2)"
+  },
+  {
+   "id": "IMSIN#17",
+   "group": "IMSIN",
+   "fn": "IMSIN",
+   "formula": "IMSIN(D!B1:B2)"
+  },
+  {
+   "id": "IMSINH#15",
+   "group": "IMSINH",
+   "fn": "IMSINH",
+   "formula": "_xlfn.IMSINH(D!B1:B2)"
+  },
+  {
+   "id": "IMSQRT#19",
+   "group": "IMSQRT",
+   "fn": "IMSQRT",
+   "formula": "IMSQRT(D!B1:B2)"
+  },
+  {
+   "id": "IMTAN#16",
+   "group": "IMTAN",
+   "fn": "IMTAN",
+   "formula": "_xlfn.IMTAN(D!B1:B2)"
+  },
+  {
+   "id": "IMDIV#13",
+   "group": "IMDIV",
+   "fn": "IMDIV",
+   "formula": "IMDIV(\"1\",D!B1:B2)"
+  },
+  {
+   "id": "IMSUB#8",
+   "group": "IMSUB",
+   "fn": "IMSUB",
+   "formula": "IMSUB(D!B1:B2,\"1\")"
   }
  ],
  "values": {
@@ -24305,6 +24545,54 @@
    "t": "s",
    "v": "0.833730025131149-0.988897705762865j"
   },
+  "IMCOSH#1": {
+   "t": "s",
+   "v": "0.833730025131149+0.988897705762865i"
+  },
+  "IMCOSH#2": {
+   "t": "s",
+   "v": "1.54308063481524"
+  },
+  "IMCOSH#3": {
+   "t": "s",
+   "v": "0.54030230586814"
+  },
+  "IMCOSH#4": {
+   "t": "s",
+   "v": "0.54030230586814"
+  },
+  "IMCOSH#5": {
+   "t": "s",
+   "v": "1"
+  },
+  "IMCOSH#6": {
+   "t": "s",
+   "v": "-6.58066304055116+7.58155274274655i"
+  },
+  "IMCOSH#7": {
+   "t": "s",
+   "v": "5.38159031181664-2.90062254198806j"
+  },
+  "IMCOSH#8": {
+   "t": "s",
+   "v": "0.54030230586814+8.41470984807897E-11i"
+  },
+  "IMCOSH#9": {
+   "t": "s",
+   "v": "74.2099485247878"
+  },
+  "IMCOSH#10": {
+   "t": "s",
+   "v": "122.348009517829"
+  },
+  "IMCOSH#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCOSH#12": {
+   "t": "s",
+   "v": "0.833730025131149+0.988897705762865j"
+  },
   "IMCOT#1": {
    "t": "s",
    "v": "0.217621561854403-0.868014142895925i"
@@ -24352,6 +24640,54 @@
   "IMCOT#12": {
    "t": "s",
    "v": "0.217621561854403-0.868014142895925j"
+  },
+  "IMCSC#1": {
+   "t": "s",
+   "v": "0.621518017170428-0.303931001628427i"
+  },
+  "IMCSC#2": {
+   "t": "s",
+   "v": "-1.18839510577812"
+  },
+  "IMCSC#3": {
+   "t": "s",
+   "v": "-0.850918128239322i"
+  },
+  "IMCSC#4": {
+   "t": "s",
+   "v": "0.850918128239322i"
+  },
+  "IMCSC#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCSC#6": {
+   "t": "s",
+   "v": "0.0051744731840194-0.036275889628626i"
+  },
+  "IMCSC#7": {
+   "t": "s",
+   "v": "-1.07168944442822+0.662960237405746j"
+  },
+  "IMCSC#8": {
+   "t": "s",
+   "v": "1.11728552744927E-10-0.850918128239322i"
+  },
+  "IMCSC#9": {
+   "t": "s",
+   "v": "-1.04283521277141"
+  },
+  "IMCSC#10": {
+   "t": "s",
+   "v": "1.41735342936147"
+  },
+  "IMCSC#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCSC#12": {
+   "t": "s",
+   "v": "0.621518017170428-0.303931001628427j"
   },
   "IMCSCH#1": {
    "t": "s",
@@ -24992,6 +25328,14 @@
   "IMCOT#14": {
    "t": "s",
    "v": "-i"
+  },
+  "IMCOSH#13": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMCOSH#14": {
+   "t": "e",
+   "v": "NUM"
   },
   "IMSINH#13": {
    "t": "e",
@@ -31133,109 +31477,165 @@
    "t": "e",
    "v": "VALUE"
   },
-  "IMCOSH#1": {
-   "t": "s",
-   "v": "0.833730025131149+0.988897705762865i"
-  },
-  "IMCOSH#2": {
-   "t": "s",
-   "v": "1.54308063481524"
-  },
-  "IMCOSH#3": {
-   "t": "s",
-   "v": "0.54030230586814"
-  },
-  "IMCOSH#4": {
-   "t": "s",
-   "v": "0.54030230586814"
-  },
-  "IMCOSH#5": {
-   "t": "s",
-   "v": "1"
-  },
-  "IMCOSH#6": {
-   "t": "s",
-   "v": "-6.58066304055116+7.58155274274655i"
-  },
-  "IMCOSH#7": {
-   "t": "s",
-   "v": "5.38159031181664-2.90062254198806j"
-  },
-  "IMCOSH#8": {
-   "t": "s",
-   "v": "0.54030230586814+8.41470984807897E-11i"
-  },
-  "IMCOSH#9": {
-   "t": "s",
-   "v": "74.2099485247878"
-  },
-  "IMCOSH#10": {
-   "t": "s",
-   "v": "122.348009517829"
-  },
-  "IMCOSH#11": {
+  "BESSELI#155": {
    "t": "e",
    "v": "VALUE"
   },
-  "IMCOSH#12": {
-   "t": "s",
-   "v": "0.833730025131149+0.988897705762865j"
-  },
-  "IMCSC#1": {
-   "t": "s",
-   "v": "0.621518017170428-0.303931001628427i"
-  },
-  "IMCSC#2": {
-   "t": "s",
-   "v": "-1.18839510577812"
-  },
-  "IMCSC#3": {
-   "t": "s",
-   "v": "-0.850918128239322i"
-  },
-  "IMCSC#4": {
-   "t": "s",
-   "v": "0.850918128239322i"
-  },
-  "IMCSC#5": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "IMCSC#6": {
-   "t": "s",
-   "v": "0.0051744731840194-0.036275889628626i"
-  },
-  "IMCSC#7": {
-   "t": "s",
-   "v": "-1.07168944442822+0.662960237405746j"
-  },
-  "IMCSC#8": {
-   "t": "s",
-   "v": "1.11728552744927E-10-0.850918128239322i"
-  },
-  "IMCSC#9": {
-   "t": "s",
-   "v": "-1.04283521277141"
-  },
-  "IMCSC#10": {
-   "t": "s",
-   "v": "1.41735342936147"
-  },
-  "IMCSC#11": {
+  "BESSELJ#160": {
    "t": "e",
    "v": "VALUE"
   },
-  "IMCSC#12": {
-   "t": "s",
-   "v": "0.621518017170428-0.303931001628427j"
-  },
-  "IMCOSH#13": {
+  "BESSELK#151": {
    "t": "e",
-   "v": "NUM"
+   "v": "VALUE"
   },
-  "IMCOSH#14": {
+  "BESSELY#156": {
    "t": "e",
-   "v": "NUM"
+   "v": "VALUE"
+  },
+  "BITAND#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BITOR#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BITXOR#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DELTA#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2DEC#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2HEX#46": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "BIN2OCT#46": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DEC2BIN#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DEC2HEX#37": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DEC2OCT#34": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2BIN#48": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2DEC#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2OCT#48": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OCT2BIN#38": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OCT2DEC#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "OCT2HEX#38": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMABS#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMARGUMENT#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCONJUGATE#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCOS#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCOSH#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCOT#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCSC#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMCSCH#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMEXP#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMLN#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMLOG10#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMLOG2#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMSEC#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMSECH#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMSIN#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMSINH#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMSQRT#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMTAN#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMDIV#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IMSUB#8": {
+   "t": "e",
+   "v": "VALUE"
   }
  }
 }
