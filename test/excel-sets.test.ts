@@ -4,10 +4,9 @@
  * as in the coverage measurement.
  */
 import { describe, expect, it } from 'vitest'
-import { compare } from '../bench/coverage/compare.js'
 import type { Probe } from '../bench/coverage/probes.js'
 import { compute, type CellInput } from '../src/index.js'
-import { dataSheet, engineFormula, show, toVal } from './excel-cases.js'
+import { dataSheet, engineFormula, matches, show, toVal } from './excel-cases.js'
 import { SETS } from './excel-sets.js'
 
 type Sheets = Record<string, Record<string, number | string | boolean>>
@@ -30,7 +29,7 @@ for (const set of SETS) {
       it(`${group}: all cases match Excel`, () => {
         const off = probes
           .map((p, i) => ({ p, engine: toVal(result[`A${i + 1}`].value), excel: set.values[p.id] }))
-          .filter((o) => (o.p.fn ?? o.p.group) === group && !compare(o.excel, o.engine).ok)
+          .filter((o) => (o.p.fn ?? o.p.group) === group && !matches(o.p.fn, o.excel, o.engine))
           .map((o) => `${o.p.id} ${o.p.formula}: Excel ${show(o.excel)}, engine ${show(o.engine)}`)
         expect(off).toEqual([])
       })

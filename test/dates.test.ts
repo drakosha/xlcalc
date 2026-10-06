@@ -26,9 +26,13 @@ describe('1900 date system', () => {
     expect(parseDateText('12 AM')).toBe(0)
     expect(parseDateText('2025-01-31T18:00')).toBe(45688.75)
     expect(parseDateText('1/31/2025 6 PM')).toBe(45688.75)
+    // past 23 hours and 59 minutes without AM/PM, as Excel en-US reads them
+    expect(parseDateText('25:00')).toBeCloseTo(25 / 24, 12)
+    expect(parseDateText('10:60')).toBeCloseTo(11 / 24, 12)
+    expect(parseDateText('0 PM')).toBe(0.5)
   })
 
   it('what is not a date: impossible dates and times, no year, other text', () => {
-    for (const f of ['2/29/2025', '13/1/2025', '1/31', '25:00', '10:60', 'abc', '', '1899-12-31', '45688']) expect(parseDateText(f), f).toBeNull()
+    for (const f of ['2/29/2025', '13/1/2025', '1/31', '13:00 PM', '12:60 PM', '10000:00', 'abc', '', '1899-12-31', '45688']) expect(parseDateText(f), f).toBeNull()
   })
 })

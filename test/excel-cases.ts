@@ -68,6 +68,20 @@ export interface Outcome {
   ok: boolean
 }
 
+/**
+ * Functions compared with the measurement's soft tolerance |a−b| ≤ 1e-6·max(1,|a|), and why: Excel's own
+ * iteration stops short of the root, which the engine finds exactly (`docs/coverage-formulajs.md`).
+ */
+export const SOFT: Readonly<Record<string, string>> = {
+  XIRR: 'Excel stops within its 1e-8 relative tolerance of the root (the measurement matched it only softly)',
+}
+
+/** A case matches Excel: within the usual tolerance, or the soft one for the functions in SOFT. */
+export function matches(fn: string | undefined, excel: Val, engine: Val): boolean {
+  const v = compare(excel, engine)
+  return v.ok || (fn !== undefined && fn in SOFT && v.soft === true)
+}
+
 /** Every case computed in one book and compared with Excel en-US. */
 export function runExcelCases(cases: readonly ExcelCase[] = CASES): Outcome[] {
   const r = compute(excelBook(cases), { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
@@ -75,7 +89,7 @@ export function runExcelCases(cases: readonly ExcelCase[] = CASES): Outcome[] {
   return cases.map((c, i) => {
     const excel = EXCEL[c.id]
     const engine = toVal(cells[`A${i + 1}`].value)
-    return { c, excel, engine, ok: compare(excel, engine).ok }
+    return { c, excel, engine, ok: matches(c.fn, excel, engine) }
   })
 }
 
