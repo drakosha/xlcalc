@@ -14,7 +14,7 @@ const STRUCT_KNOWN: Readonly<Record<string, string[]>> = {}
 
 describe('structure operations against Excel en-US', () => {
   it('every set has its cases answered', () => {
-    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['checks', 'edge', 'move', 'moves', 'rows', 'sheets'])
+    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['checks', 'edge', 'move', 'moves', 'rows', 'sheets', 'styles'])
   })
 
   it('every STRUCT_KNOWN entry names an existing case', () => {
@@ -39,6 +39,7 @@ for (const set of STRUCT_SETS) {
       expect(built.cases.filter((c) => !set.answers[c.id])).toEqual([])
     })
 
+    const look = set.meta.look === undefined ? undefined : String(set.meta.look)
     for (const c of set.cases) {
       it(`${c.id}: as Excel`, () => {
         const a = set.answers[c.id]
@@ -46,10 +47,10 @@ for (const set of STRUCT_SETS) {
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           // Excel left the book as it was
-          expect(differences(set.books[c.book], a, String(set.meta.read))).toEqual([])
+          expect(differences(set.books[c.book], a, String(set.meta.read), look)).toEqual([])
           return
         }
-        expect(r.ok && differences(r.book, a, String(set.meta.read))).toEqual(STRUCT_KNOWN[`${set.name}:${c.id}`] ?? [])
+        expect(r.ok && differences(r.book, a, String(set.meta.read), look)).toEqual(STRUCT_KNOWN[`${set.name}:${c.id}`] ?? [])
       })
     }
   })
