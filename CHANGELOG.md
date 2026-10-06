@@ -24,6 +24,7 @@ Breaking changes:
 - Criteria read numbers, dates and times in their text and in the text of cells as `VALUE` does, and a number criterion's `<>` holds for all text, as Excel en-US does (the `criteria-text` set): `COUNTIF(A1,">=1/1/2025")` and `COUNTIF(A1,"Jan 31, 2025")` compare dates (they compared text), `COUNTIF(A1,"$1,000")` matches 1000, `COUNTIF(A1,0.5)` counts a cell holding the text `50%`, `COUNTIF(A1,"2025-01-31")` a cell holding that text, and `COUNTIF(A1,"<>2")` counts the text `2` (it did not).
 - `DATE` keeps Excel's limits on its arguments (the `date-day` set): a day outside −32768…32767 is taken as 32767 (`DATE(2025,1,40000)` is 78424, it was 85657), a month of 32767 or more is `#NUM!`.
 - `AND`, `OR` and `XOR` take a direct text argument `"TRUE"` or `"FALSE"` (any case) as that boolean, as Excel en-US does (the `logical-text` set): `OR("TRUE")` is TRUE (it was `#VALUE!`); text in cells and arrays is still skipped.
+- `TEXT` rounds a number that `%` or a thousands scale multiplies as Excel shows the product, to 15 significant digits, before the format's own rounding (the `format-scale` set): `TEXT(0.285,"0%")` is `29%` (it was `28%`), `TEXT(0.145,"0%")` `15%`.
 - `validateFormula` (and `compute`, with `#ERROR!`) refuses the argument counts Excel does not load: `SORTBY` with 4, 6… arguments (each further by-array needs its order), `SWITCH` with more than 126 pairs; the check code is `syntax`.
 
 Added:

@@ -132,7 +132,8 @@ function formatNumber(v: number, toks: Tok[], signed: boolean, style: Style): st
   // commas after the decimal digits scale too (`0.0,,` shows millions)
   for (let i = intEnd + 1; i < toks.length; i++) if (toks[i].t === 'comma' && !toks.slice(i + 1).some((t) => t.t === 'ph')) scale++
   const pct = toks.filter((t) => t.t === 'pct').length
-  let x = Math.abs(v) * Math.pow(100, pct) / Math.pow(1000, scale)
+  // a percent or a scale is applied to 15 significant digits, as Excel shows the product (0.285 is 29%)
+  let x = pct || scale ? Number(((Math.abs(v) * Math.pow(100, pct)) / Math.pow(1000, scale)).toPrecision(15)) : Math.abs(v)
   const fracPh = dot < 0 ? [] : toks.slice(dot + 1).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
   const intPh = toks.slice(0, intEnd).filter((t): t is Extract<Tok, { t: 'ph' }> => t.t === 'ph')
   const fixed = roundHalfUp(x, fracPh.length)
