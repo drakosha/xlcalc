@@ -8,7 +8,7 @@ import { Arr } from './arrays/value.js'
 import { key, type EngineState, type Formula } from './engine.js'
 import { readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
-import { describeAt, endSpill, spill } from './spill/place.js'
+import { describeAt, endSpill, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
 import { E, isErr, Rng, type V } from './values.js'
@@ -88,10 +88,23 @@ export function evaluateAll(state: EngineState, t?: Tracker) {
   settle(state, [state.order, cyclic(state)], t)
 }
 
-/** Recomputes a set of formulas and everything that depends on them, in topological order. */
+/**
+ * Recomputes a set of formulas and everything that depends on them, in topological order. Where a cycle runs
+ * through a spill range, before or after, everything is computed again from no spills, as a new state is: what
+ * such a cycle holds depends on which arrays spilled first.
+ */
 export function recompute(state: EngineState, dirty: Set<number>, t: Tracker) {
+  const before = spillCycle(state)
   settle(state, ordered(state, dirty), t)
+  if (!before && !spillCycle(state)) return
+  for (const id of [...state.spills.on.keys()]) release(state, id, t)
+  for (const m of [state.spills.claims, state.spills.wait, state.spills.why]) m.clear()
+  rebuildGraph(state)
+  evaluateAll(state, t)
 }
+
+/** A formula in a cycle keeps the range it spilled into (its claim): a cycle runs through a spill range. */
+const spillCycle = (state: EngineState) => [...state.spills.claims.keys()].some((id) => state.topo[id] < 0)
 
 /** The formulas of `dirty` and what depends on them: in topological order, then those in a cycle. */
 function ordered(state: EngineState, dirty: Set<number>): [number[], number[]] {

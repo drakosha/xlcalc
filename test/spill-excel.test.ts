@@ -8,12 +8,11 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { compare } from '../bench/coverage/compare.js'
-import type { Val } from '../bench/coverage/formulajs.js'
 import type { SpillAnswer, StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import { compute, type ComputeResult } from '../src/index.js'
 import { formatAddress, parseAddress } from '../src/model.js'
-import { toVal } from './excel-cases.js'
+import { shownValue } from './spill-shown.js'
 
 const dir = new URL('../docs/excel-spill/', import.meta.url)
 const SETS = existsSync(dir)
@@ -27,20 +26,6 @@ const RUNS = JSON.parse(readFileSync(new URL('order-runs.json', dir), 'utf8')) a
 const KNOWN: Readonly<Record<string, string>> = {
   'base:cross': 'two independent arrays over one cell: in the set order the same pair (cross-C1-A2-row-first) let either spill',
   'base:cross-rect': 'two independent arrays over one cell: Excel lets either spill, the set order shows it for 11 pairs',
-}
-
-/** What a cell of the result shows: its value, a large array's unstored cells their fill, else blank. */
-export function shownValue(r: ComputeResult, sheet: string, addr: string): Val | null {
-  const cells = r.sheets.find((s) => s.name === sheet)!.cells
-  const c = cells[addr]
-  if (c) return c.value === null ? null : toVal(c.value)
-  const { row, col } = parseAddress(addr)
-  for (const x of Object.values(cells)) {
-    if (x.spillFill === undefined) continue
-    const [p, q] = x.spill!.split(':').map(parseAddress)
-    if (row >= p.row && row <= q.row && col >= p.col && col <= q.col) return toVal(x.spillFill)
-  }
-  return null
 }
 
 /** Cells of the case's rectangles where the engine does not show Excel's answer. */

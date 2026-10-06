@@ -2,6 +2,7 @@
 import type { CellValue } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
+import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
 import type { Rng } from './values.js'
 
@@ -19,6 +20,8 @@ export interface ExplainTree {
   value?: CellValue
   formula?: string
   cells?: number
+  /** A cell an array spilled into: the array's formula cell, which is the node's child. */
+  spillOf?: string
   children: ExplainTree[]
 }
 
@@ -32,6 +35,12 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
     const node: ExplainTree = { ref: `${quoteSheet(state.sheetNames[s])}!${formatAddress(r, c)}`, value: toCellValue(valueAt(state, s, r, c)), children: [] }
     const inv = state.invalid.get(key(s, r, c))
     if (inv) node.formula = state.input.sheets[s].cells[formatAddress(r, c)]?.formula
+    const owner = f ? undefined : ownerOf(state, s, r, c)
+    if (owner) {
+      node.spillOf = `${quoteSheet(state.sheetNames[s])}!${formatAddress(owner.r1, owner.c1)}`
+      if (d > 0) node.children.push(visit(s, owner.r1, owner.c1, d - 1))
+      else truncated = true
+    }
     if (!f) return node
     node.formula = f.text
     if (d <= 0) {
@@ -74,7 +83,7 @@ export function explainText(root: ExplainTree): string {
   const lines: string[] = []
   const go = (n: ExplainTree, indent: string) => {
     const head = n.cells !== undefined ? `${n.ref} (${n.cells} cells)` : `${n.ref} = ${fmt(n.value)}`
-    lines.push(`${indent}${head}${n.formula ? `  ← ${n.formula}` : ''}`)
+    lines.push(`${indent}${head}${n.formula ? `  ← ${n.formula}` : n.spillOf ? `  ← spilled from ${n.spillOf}` : ''}`)
     for (const ch of n.children) go(ch, indent + '  ')
   }
   go(root, '')

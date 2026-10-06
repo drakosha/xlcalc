@@ -4,14 +4,15 @@
  * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  */
 import type { BookInput, CellChange, CellEdit, CellStyle, Clock, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
-import { applyClock, applyEdits, createState, toCellValue, valueAt, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyMerges, createState, toCellValue, valueAt, type EngineState } from './engine.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { movedChanges } from './session/moved.js'
+import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
-import { buildResult, clockSerial, outValue } from './result.js'
+import { buildResult, clockSerial, outValue, spillFields } from './result.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { sheetKey } from './syntax.js'
 
@@ -36,7 +37,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
   const changes = (s: EngineState, keys: string[]): CellChange[] =>
     keys.map((k) => {
       const [i, r, c] = k.split(':').map(Number)
-      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value: outValue(toCellValue(valueAt(s, i, r, c))) }
+      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value: outValue(toCellValue(valueAt(s, i, r, c))), ...spillFields(s, i, r, c) }
     })
   const tick = (s: EngineState) => {
     clock = currentClock()
@@ -60,19 +61,9 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       const old = st()
       checkNames(names, 'names')
       if (live) tick(old)
+      // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
       const next = build({ ...old.input, names })
-      // names change the whole graph: the book is rebuilt, changes are collected over all cells
-      const keys: string[] = []
-      next.input.sheets.forEach((_, i) => {
-        const cols = Math.max(old.ctx.sheets[i].cols.length, next.ctx.sheets[i].cols.length)
-        const rows = Math.max(old.ctx.sheets[i].rows, next.ctx.sheets[i].rows)
-        for (let c = 0; c < cols; c++)
-          for (let r = 0; r < rows; r++) {
-            const a = toCellValue(valueAt(old, i, r, c))
-            const b = toCellValue(valueAt(next, i, r, c))
-            if (JSON.stringify(a) !== JSON.stringify(b)) keys.push(`${i}:${r}:${c}`)
-          }
-      })
+      const keys = movedChanges(old, next, (ref) => ref)
       state = next
       return changes(next, keys)
     },
@@ -100,8 +91,16 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     },
     setLayout(edits: LayoutEdit[]) {
       const s = st()
+      const before = s.input.sheets.map((x) => new Set(x.merges ?? []))
       applyLayout(s.input, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)), (name) => sheetIndex(s)(name)!)
-      return []
+      // merged areas added or removed: the arrays whose range they meet spill or stop
+      const keys = new Set<string>()
+      s.input.sheets.forEach((x, i) => {
+        const now = new Set(x.merges ?? [])
+        const moved = [...before[i]].filter((m) => !now.has(m)).concat([...now].filter((m) => !before[i].has(m)))
+        if (moved.length) for (const k of applyMerges(s, i, moved.map((m) => parseMerge(m)!))) keys.add(k)
+      })
+      return changes(s, [...keys])
     },
     book() {
       return st().input
