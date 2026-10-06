@@ -101,6 +101,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     setLayout(edits: LayoutEdit[]) {
       const s = st()
       applyLayout(s.input, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)), (name) => sheetIndex(s)(name)!)
+      return []
     },
     book() {
       return st().input

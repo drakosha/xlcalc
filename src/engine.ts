@@ -8,16 +8,15 @@
  * No platform imports, so the engine runs outside Node as well.
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue } from './contract.js'
-import { isMany } from './arrays/lift.js'
-import { Arr } from './arrays/value.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
+import { changed, evaluateAll, put, recompute, write, type Tracker } from './evaluate.js'
 import { FUNCTIONS } from './functions.js'
 import { listenersOf, rebuildGraph } from './graph.js'
 import { formatAddress, inputScalar, MAX_COLS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
-import { CErr, E, isErr, Rng, type V } from './values.js'
+import { CErr, E, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
   id: number
@@ -87,10 +86,6 @@ function emptySheet(name: string): SheetData {
   return { name, cols: [], rows: 0 }
 }
 
-function put(sh: SheetData, r: number, c: number, v: V) {
-  ;(sh.cols[c] ??= [])[r] = v
-  if (r + 1 > sh.rows) sh.rows = r + 1
-}
 
 export function invalidError(code: CheckCode): ErrorCode {
   if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
@@ -113,65 +108,6 @@ function prepare(state: EngineState, s: number, text: string): Prepared {
   const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state.names, s, name)?.area, false)
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
-}
-
-// ---------- evaluation ----------
-
-export function same(a: V, b: V): boolean {
-  if (isErr(a) || isErr(b)) return isErr(a) && isErr(b) && a.code === b.code
-  return Object.is(a, b) || a === b
-}
-
-/** Drops the cached large ranges and indexes that a cell touches. */
-function invalidate(ctx: RuntimeContext, s: number, r: number, c: number) {
-  for (const cache of [ctx.flat, ctx.index] as Map<string, unknown>[]) {
-    if (cache.size === 0) continue
-    for (const k of cache.keys()) {
-      const [ks, r1, c1, r2, c2] = k.split(':').map(Number)
-      if (ks === s && r >= r1 && r <= r2 && c >= c1 && c <= c2) cache.delete(k)
-    }
-  }
-}
-
-type Tracker = Map<string, V>
-
-function write(state: EngineState, s: number, r: number, c: number, v: V, track?: Tracker): boolean {
-  const sh = state.ctx.sheets[s]
-  const old = sh.cols[c]?.[r] ?? null
-  if (same(old, v)) return false
-  const k = key(s, r, c)
-  if (track && !track.has(k)) track.set(k, old)
-  put(sh, r, c, v)
-  invalidate(state.ctx, s, r, c)
-  return true
-}
-
-function evaluate(state: EngineState, ids: number[], track?: Tracker) {
-  const { rt } = state
-  for (const id of ids) {
-    const f = state.formulas[id]!
-    let v: V
-    f.spill = undefined
-    if (state.topo[id] < 0) v = E.CYCLE
-    else {
-      const x = f.fn()
-      // an array of several values cannot be shown in one cell before spilling: #SPILL!
-      if (isMany(x)) {
-        f.spill = x instanceof Arr ? [x.rows, x.cols] : [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
-        v = E.SPILL
-      } else v = x instanceof Rng || x instanceof Arr ? rt.scalar(x) : x
-      // a formula referencing an empty cell gives 0, as in Excel
-      if (v === null || v === undefined) v = 0
-      else if (typeof v === 'number' && !Number.isFinite(v)) v = E.NUM
-    }
-    write(state, f.s, f.r, f.c, v, track)
-  }
-}
-
-function evaluateAll(state: EngineState, track?: Tracker) {
-  evaluate(state, state.order, track)
-  const cyc = state.formulas.filter((f): f is Formula => !!f && state.topo[f.id] < 0).map((f) => f.id)
-  evaluate(state, cyc, track)
 }
 
 // ---------- assembly ----------
@@ -284,32 +220,6 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
   recompute(state, dirty, track)
   return changed(state, track)
-}
-
-/** Recomputes a set of formulas and everything that depends on them, in topological order. */
-function recompute(state: EngineState, dirty: Set<number>, track: Tracker) {
-  const stack = [...dirty]
-  while (stack.length) {
-    const id = stack.pop()!
-    for (const n of state.succ[id] ?? [])
-      if (!dirty.has(n)) {
-        dirty.add(n)
-        stack.push(n)
-      }
-  }
-  const live = [...dirty].filter((id) => state.formulas[id])
-  const ordered = live.filter((id) => state.topo[id] >= 0).sort((a, b) => state.topo[a] - state.topo[b])
-  evaluate(state, ordered, track)
-  evaluate(state, live.filter((id) => state.topo[id] < 0), track)
-}
-
-function changed(state: EngineState, track: Tracker): string[] {
-  const out: string[] = []
-  for (const [k, old] of track) {
-    const [s, r, c] = k.split(':').map(Number)
-    if (!same(old, state.ctx.sheets[s].cols[c]?.[r] ?? null)) out.push(k)
-  }
-  return out
 }
 
 /** A new clock: recomputes volatile cells and their dependents. */

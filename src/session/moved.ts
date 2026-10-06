@@ -1,6 +1,7 @@
 /** The values a structure operation changed in a session: compared with the old value of the cell that moved there. */
 import type { CellRef } from '../contract.js'
-import { same, type EngineState } from '../engine.js'
+import type { EngineState } from '../engine.js'
+import { same } from '../evaluate.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import type { V } from '../values.js'
