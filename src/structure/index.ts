@@ -42,13 +42,15 @@ function integer(v: unknown, path: string, min: number, max: number): number {
 export function restructure(book: BookInput, op: StructureOp): RestructureResult {
   checkBook(book)
   const r = applyOp(book, op)
-  if (!r.ok) return r
-  // mapCell takes cells of the old book: a sheet of it (in any case) and an address
-  const mapCell = (ref: CellRef): CellRef | null => {
+  return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell(book, r.mapCell) } : r
+}
+
+/** The mapCell callers get: it takes cells of the old book, a sheet of it in any case and an address, and checks them. */
+export function checkedMapCell(book: BookInput, inner: (ref: CellRef) => CellRef | null): (ref: CellRef) => CellRef | null {
+  return (ref) => {
     const x = object(ref, 'ref')
-    return r.mapCell({ sheet: sheetOf(book, x.sheet, 'ref.sheet'), cell: checkAddress(x.cell, 'ref.cell') })
+    return inner({ sheet: sheetOf(book, x.sheet, 'ref.sheet'), cell: checkAddress(x.cell, 'ref.cell') })
   }
-  return { ok: true, book: r.book, mapCell }
 }
 
 /** A sheet of the book by name in any case, as the book spells it. */

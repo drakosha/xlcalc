@@ -86,6 +86,9 @@ describe('session.restructure', () => {
     const s = openSession(book, { clock })
     expect(s.restructure({ op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, code: 'last_sheet' })
     expect(s.book()).toEqual(book)
+    const m = s.restructure({ op: 'insertRows', sheet: 's', row: 1 })
+    expect(m.ok && m.mapCell({ sheet: 's', cell: 'A2' })).toEqual({ sheet: 'S', cell: 'A3' })
+    expect(() => m.ok && m.mapCell({ sheet: 'S', cell: 'a2' })).toThrow(InputError)
     const live = openSession(book, { live: true })
     const c = live.clock
     const r = live.restructure({ op: 'insertRows', sheet: 'S', row: 1 })

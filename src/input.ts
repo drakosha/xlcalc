@@ -231,7 +231,7 @@ function checkLines(v: unknown, path: string, axis: Axis, styles: number) {
   for (let i = 1; i < spans.length; i++) if (spans[i][0] <= spans[i - 1][1]) throw new InputError(path, `${JSON.stringify(spans[i][2])} overlaps ${JSON.stringify(spans[i - 1][2])}`)
 }
 
-export function checkMerges(v: unknown, path: string) {
+function checkMerges(v: unknown, path: string) {
   const list = array(v, path, 'an array of merged areas such as ["B2:D3"]')
   const xs = list.map((m, i) => {
     const x = typeof m === 'string' ? parseMerge(m) : null

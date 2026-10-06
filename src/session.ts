@@ -11,7 +11,7 @@ import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { movedChanges } from './session/moved.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, clockSerial, outValue } from './result.js'
-import { applyOp } from './structure/index.js'
+import { applyOp, checkedMapCell } from './structure/index.js'
 import { sheetKey } from './syntax.js'
 
 /**
@@ -90,7 +90,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       const next = build(r.book)
       const keys = movedChanges(old, next, r.mapCell)
       state = next
-      return { ok: true, book: next.input, mapCell: r.mapCell, changes: changes(next, keys) }
+      return { ok: true, book: next.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: changes(next, keys) }
     },
     setStyles(styles: CellStyle[]) {
       const s = st()
@@ -99,7 +99,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     },
     setLayout(edits: LayoutEdit[]) {
       const s = st()
-      applyLayout(s.input, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)), (name) => s.sheetIdx.get(sheetKey(name))!)
+      applyLayout(s.input, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)), (name) => sheetIndex(s)(name)!)
     },
     book() {
       return st().input

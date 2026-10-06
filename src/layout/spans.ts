@@ -40,10 +40,11 @@ export function toMap<T>(ls: Line<T>[], axis: Axis): Record<string, T> {
   return out
 }
 
-/** The entry of line `i`. */
-export function lineAt<T>(map: Record<string, T> | undefined, axis: Axis, i: number): T | undefined {
-  return lines(map, axis).find(([lo, hi]) => i >= lo && i <= hi)?.[2]
-}
+/** The entry of line `i` among entries. */
+export const entryAt = <T>(ls: Line<T>[], i: number): T | undefined => ls.find(([lo, hi]) => i >= lo && i <= hi)?.[2]
+
+/** The entry of line `i` of a map. */
+export const lineAt = <T>(map: Record<string, T> | undefined, axis: Axis, i: number): T | undefined => entryAt(lines(map, axis), i)
 
 /** The entry with the patch applied; undefined when nothing is left. */
 function patched<T extends object>(entry: T | undefined, patch: LinePatch<T>): T | undefined {

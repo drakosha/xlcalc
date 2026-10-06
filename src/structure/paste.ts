@@ -8,7 +8,7 @@
  */
 import type { BookInput, ColumnInput, RowInput, SheetInput } from '../contract.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
-import { cut, lines, slice, toMap, type Line } from '../layout/spans.js'
+import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { contains, hi, lo, meets, type Axis, type Rect } from './area.js'
@@ -50,11 +50,9 @@ interface Look {
   format?: string
 }
 
-const lineAtSorted = <T>(ls: Line<T>[], i: number) => ls.find(([a, b]) => i >= a && i <= b)?.[2]
-
 /** The style and format the rows and columns give at a position: the row's, else the column's, each separately. */
 function lineLook(rows: Line<RowInput>[], cols: Line<ColumnInput>[], r: number, c: number): Look {
-  const [row, col] = [lineAtSorted(rows, r), lineAtSorted(cols, c)]
+  const [row, col] = [entryAt(rows, r), entryAt(cols, c)]
   return { style: row?.style ?? col?.style, format: row?.format ?? col?.format }
 }
 
