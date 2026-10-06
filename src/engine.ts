@@ -10,7 +10,7 @@
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
+import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type Execution, type FormulaCode } from './compile.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
@@ -48,6 +48,8 @@ export interface EngineOptions {
   now: number
   seed: number
   externals?: Externals
+  /** How formulas run: closures (by default) or JS text compiled by `new Function`. */
+  execution?: Execution
 }
 
 export interface EngineState {
@@ -345,7 +347,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     externalFunctions: (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f]),
     ctx,
     rt,
-    compiler: makeCompiler(rt),
+    compiler: makeCompiler(rt, opts.execution ?? 'eval'),
     formulas: [],
     at: new Map(),
     invalid: new Map(),
