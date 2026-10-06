@@ -20,7 +20,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { ensureExcel, excelDialogs, excelVersion, runExcel, withExcelLock, type Locale } from './excel.js'
+import { ensureExcel, excelDialogs, excelVersion, runExcel, runExcelWatched, declineRepair, withExcelLock, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
 import { buildProbes, PROBE_SHEETS, type Probe } from './probes.js'
@@ -203,33 +203,50 @@ async function stepProbes(set?: string) {
   const mod: { buildProbes: () => Probe[]; SHEETS?: Record<string, Record<string, number | string | boolean>> } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
-  await ensureExcel('en')
-  const values: Record<string, Val> = {}
-  const t0 = Date.now()
-  mkdirSync(OUT, { recursive: true })
-  for (let k = 0; k * PART < ps.length; k++) {
-    const part = ps.slice(k * PART, (k + 1) * PART)
-    const dialogs = () => excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
-    const before = dialogs()
-    if (before) throw new Error(`пробы, часть ${k + 1}: до части у Excel окно не книги: ${before}`)
-    const book = join(OUT, `${set ?? 'probes'}-${k + 1}.xlsx`)
-    await writeBook(part, book, sheets)
-    let vals: Val[] | null = null
-    let err = ''
-    try {
-      vals = runExcel(book, part.length)
-    } catch (e) {
-      err = e instanceof Error ? e.message.split('\n')[0] : String(e)
-    }
-    const after = dialogs()
-    if (after || !vals) throw new Error(`пробы, часть ${k + 1}: ${after ? `модальное окно Excel: ${after}` : ''}${err ? ` ошибка чтения: ${err}` : ''}`)
-    part.forEach((p, i) => (values[p.id] = vals![i]))
-    console.log(`пробы: часть ${k + 1}, ${part.length} случаев`)
-  }
-  const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000 }
+  const tag = set ?? 'probes'
   const target = set ? join(ROOT, `docs/excel-cases/${set}.json`) : join(ROOT, 'docs/excel-probes.json')
+  // продолжение: ответы, чья формула не изменилась, берутся из файла (FCOV_FRESH=1 заново)
+  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { cases: Probe[]; values: Record<string, Val> }) : null
+  const was = new Map(prev?.cases.map((c) => [c.id, c.formula]) ?? [])
+  const values: Record<string, Val> = {}
+  for (const p of ps) if (prev?.values[p.id] && was.get(p.id) === p.formula) values[p.id] = prev.values[p.id]
+  const rejected: Probe[] = []
+  const t0 = Date.now()
+  const save = () => {
+    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: (Date.now() - t0) / 1000 }
+    writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
+  }
+  // книга, которую Excel не читает, делится пополам до формулы-виновника
+  const run = async (cases: Probe[], label: string): Promise<void> => {
+    if (declineRepair()) console.log('закрыто оставшееся окно восстановления книги')
+    const before = excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
+    if (before) throw new Error(`пробы ${label}: у Excel окно не книги: ${before}`)
+    const book = join(OUT, `${tag}-${label}.xlsx`)
+    // скрипт чтения ждёт колонку не короче двух ячеек: одиночный случай дополняется пустышкой
+    const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
+    await writeBook(sent, book, sheets)
+    const vals = await runExcelWatched(book, sent.length)
+    if (vals !== 'rejected') return void cases.forEach((p, i) => (values[p.id] = vals[i]))
+    if (cases.length === 1) {
+      rejected.push(cases[0])
+      return void console.log(`Excel не принимает формулу: ${cases[0].id} ${cases[0].formula}`)
+    }
+    const mid = cases.length >> 1
+    await run(cases.slice(0, mid), `${label}a`)
+    await run(cases.slice(mid), `${label}b`)
+  }
+  await ensureExcel('en')
+  mkdirSync(OUT, { recursive: true })
   mkdirSync(dirname(target), { recursive: true })
-  writeFileSync(target, JSON.stringify({ meta, cases: ps, values }, null, 1) + '\n')
+  for (let k = 0; k * PART < ps.length; k++) {
+    const part = ps.slice(k * PART, (k + 1) * PART).filter((p) => !values[p.id])
+    if (!part.length) continue
+    await run(part, String(k + 1))
+    save()
+    console.log(`пробы ${tag}: часть ${k + 1}, ${part.length} случаев, ${((Date.now() - t0) / 1000).toFixed(1)} с`)
+  }
+  save()
+  if (rejected.length) throw new Error(`Excel не принимает при загрузке ${rejected.length} формул, убрать из генератора: ${rejected.map((p) => `${p.id} ${p.formula}`).join('; ')}`)
 }
 
 const step = process.argv[2]
