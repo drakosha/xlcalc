@@ -1,7 +1,8 @@
 /**
  * The Excel 1900 date system in the functions: serial numbers and calendar dates, with Excel's day 0
- * (1900-01-00) and its phantom 1900-02-29 (serial 60), and date and time text as Excel en-US reads it.
+ * (1900-01-00) and its phantom 1900-02-29 (serial 60), and date, time and number text as Excel en-US reads it.
  */
+import { readNumber } from './model.js'
 
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465
@@ -100,4 +101,77 @@ export function parseDateText(text: string): number | null {
   if (split[2] === undefined) return date
   const t = timeText(split[2])
   return t === null ? null : date + t
+}
+
+// ---------- number text (en-US): VALUE's reading, also of text in arithmetic and numeric arguments ----------
+
+/** Digits with commas, each followed by three digits at least (Excel: `1,0000` is 10000, `10,00` and `0,123` are not numbers). */
+const GROUPED = /^((?!0+,)\d+(?:,\d{3,})*|)(\.\d*)?$/
+
+/** Excel trims spaces only, not tabs or line breaks. */
+const trimSpaces = (s: string) => s.replace(/^ +| +$/g, '')
+
+/** VALUE's time: minutes and seconds past 59 carry (`1:61`), up to 9,999 hours; with ` AM`/` PM` a clock time. */
+const TIME = /^(\d+):(\d+)(?::(\d+(?:\.\d+)?))?(?: ([ap]m))?$/i
+const MAX_TIME = 10_000 / 24
+
+function timeOf(s: string): number | null {
+  const m = TIME.exec(s)
+  if (!m) return null
+  let h = Number(m[1])
+  const mi = Number(m[2])
+  const sec = Number(m[3] ?? 0)
+  if (m[4]) {
+    if (h > 12 || mi > 59 || sec >= 60) return null
+    h = (h % 12) + (m[4].toLowerCase() === 'pm' ? 12 : 0)
+  }
+  const t = (h * 3600 + mi * 60 + sec) / 86_400
+  return t < MAX_TIME ? t : null
+}
+
+/** Date text, optionally followed by a time that may run past 24 hours (`2025-01-31 25:00`). */
+function dateTime(s: string): number | null {
+  const m = /^(.*\S) +(\d+:\d+(?::\d+(?:\.\d+)?)?(?: [ap]m)?)$/i.exec(s)
+  if (m) {
+    const d = m[1].includes(':') ? null : parseDateText(m[1])
+    const t = timeOf(m[2])
+    return d === null || t === null ? null : d + t
+  }
+  return s.includes(':') || /\d[ap]m$/i.test(s) ? null : parseDateText(s)
+}
+
+/**
+ * Text as a number, as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`,
+ * parentheses, commas, exponent, one `%` at either end, `1 1/2`; else a time or a date. Null if it is none.
+ */
+export function textToNumber(text: string): number | null {
+  let s = trimSpaces(text)
+  if (s === '') return null
+  let paren = false
+  let percent = false
+  // parentheses and the percent sign in either order: `(5%)`, `(5)%`, `%(5)`
+  for (;;) {
+    if (!paren && s.startsWith('(') && s.endsWith(')')) [paren, s] = [true, s.slice(1, -1)]
+    else if (!percent && s.startsWith('%')) [percent, s] = [true, s.slice(1)]
+    else if (!percent && s.endsWith('%')) [percent, s] = [true, s.slice(0, -1)]
+    else break
+    s = trimSpaces(s)
+  }
+  const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/.exec(s)!
+  if (sign[1] && sign[3]) return null
+  const negative = (sign[1] || sign[3]) === '-'
+  if (paren && negative) return null
+  const body = sign[4]
+  const exp = /^(.*?)([eE][+-]?\d+)$/.exec(body)
+  const mant = exp ? exp[1] : body
+  let n: number | null = null
+  if (GROUPED.test(mant) && /\d/.test(mant)) n = readNumber(mant.replace(/,/g, '') + (exp ? exp[2] : ''))
+  else if (!sign[2] && !paren) {
+    const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
+    if (frac && Number(frac[3]) > 0) n = Number(frac[1]) + Number(frac[2]) / Number(frac[3])
+    else if (!sign[1] && !sign[3] && !percent) return timeOf(s) ?? dateTime(s)
+  }
+  if (n === null || !Number.isFinite(n)) return null
+  if (percent) n /= 100
+  return negative || paren ? -n : n
 }
