@@ -118,16 +118,17 @@ export interface BookInput {
   locale?: string
 }
 
-/** `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`). */
+/**
+ * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
+ * `SPILL`: an array that cannot spill from its formula's cell (its range is not empty, meets a merged area or
+ * leaves the sheet).
+ */
 export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
 
 /** A computed value. Dates come out as serial numbers, numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }
 
-/**
- * Formula check codes. `unsupported`: a result that is an array of several values (no spilling yet: the cell
- * gets #SPILL!), or an external function with non-literal arguments.
- */
+/** Formula check codes. `unsupported`: an external function called with arguments that are not literals. */
 export type CheckCode =
   | 'empty'
   | 'syntax'
@@ -185,6 +186,16 @@ export interface CellResult {
   formula?: string
   format?: string
   meta?: JsonValue
+  /** A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left). */
+  spill?: string
+  /**
+   * The value of the cells of `spill` that the result does not list: only for an array of more than 65,536
+   * values whose cells past some row and column all hold one value (`A:A*2`: 0 below the data), which are
+   * then left out of `cells` and of the hash's lines but for one line of the range.
+   */
+  spillFill?: CellValue
+  /** A cell an array spilled into: the address of the array's formula on the same sheet (an empty element is 0). */
+  spillOf?: string
 }
 
 /** A cell with an error and its reason: an invalid formula (with the check code and position) or a computation error. */
@@ -210,7 +221,7 @@ export interface ComputeResult {
   volatile: CellRef[]
   /** The clock the book was computed with (for a live session, the latest one). */
   clock: Clock
-  /** sha256 of the canonical text of the values together with the engine configuration version. */
+  /** sha256 of the canonical text of the values (spilled cells too) together with the engine configuration version. */
   hash: string
   /** sha256 of the input (sheets, cells, names, and styles, columns, rows and merged areas when there are any; order does not matter). */
   inputHash: string
@@ -237,8 +248,16 @@ export interface CellEdit extends CellRef {
   input: CellInput | null
 }
 
+/**
+ * A changed cell, with `spill`, `spillFill` and `spillOf` as in `CellResult`. A formula whose spill range or
+ * `spillFill` changed is listed even when its own value did not; the cells it no longer lists are listed
+ * when their value changed.
+ */
 export interface CellChange extends CellRef {
   value: CellValue
+  spill?: string
+  spillFill?: CellValue
+  spillOf?: string
 }
 
 export interface ExplainOptions {
@@ -255,6 +274,8 @@ export interface ExplainNode {
   ref: string
   value?: CellValue
   formula?: string
+  /** A cell an array spilled into: its formula's cell (`'Sheet'!B2`), which is the node's child. */
+  spillOf?: string
   /** For a range: the number of non-empty cells. */
   cells?: number
   children: ExplainNode[]
@@ -364,7 +385,8 @@ export interface Session {
   readonly clock: Clock
   /**
    * Applied atomically with one recomputation; returns the changed values. An edit that keeps the cell's
-   * value and formula (a new `style`, `format` or `meta`) recomputes nothing.
+   * value and formula (a new `style`, `format` or `meta`) recomputes nothing. A value or formula put into a
+   * spill range stops the array spilling (#SPILL!); clearing it lets the array spill again.
    */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]
@@ -374,8 +396,12 @@ export interface Session {
   restructure(op: StructureOp): SessionRestructureResult
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing. */
   setStyles(styles: CellStyle[]): void
-  /** Column widths, row heights, row and column styles and formats, merged areas; applied atomically. Recomputes nothing. */
-  setLayout(edits: LayoutEdit[]): void
+  /**
+   * Column widths, row heights, row and column styles and formats, merged areas; applied atomically. Merged
+   * areas stop arrays spilling over them: the formulas whose spill range an added or removed area meets are
+   * recomputed and the changed values returned; nothing else is recomputed.
+   */
+  setLayout(edits: LayoutEdit[]): CellChange[]
   /**
    * The session's book with every change so far: what a host saves as a version. Its objects are the
    * session's own and later calls change them, so do not modify it; serialize or copy what must stay.

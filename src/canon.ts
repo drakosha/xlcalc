@@ -1,7 +1,8 @@
 /**
  * Canonical text of values and the hashes: one line per cell, ordered by sheet and address
  * (`"Sheet"!E12 n 1234.5`, `s "…"`, `b TRUE`, `e DIV0`); `-0` is 0, non-finite is `#NUM!`, numbers are
- * rounded to 15 significant digits. The engine configuration version is part of the values hash, and so is a
+ * rounded to 15 significant digits; then one line per range of a large spilled array's unstored cells
+ * (`"Sheet"!B4:B1048576 n 0`). The engine configuration version is part of the values hash, and so is a
  * book's locale other than en-US.
  */
 import type { BookInput, CellValue } from './contract.js'
@@ -27,8 +28,15 @@ export function canonValue(v: CellValue): string {
 
 const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
-/** Values: sheet → address → value; empty cells are skipped. */
-export function canonText(values: Map<string, Map<string, CellValue>>): string {
+/** A range of a sheet whose cells all hold one value: the unstored cells of a large spilled array. */
+export interface FillLine {
+  sheet: string
+  range: string
+  value: CellValue
+}
+
+/** Values: sheet → address → value; empty cells are skipped. Then the fill ranges, by sheet and their top-left cell. */
+export function canonText(values: Map<string, Map<string, CellValue>>, fills: readonly FillLine[] = []): string {
   const lines: string[] = []
   for (const sheet of [...values.keys()].sort(byText)) {
     const cells = values.get(sheet)!
@@ -37,16 +45,18 @@ export function canonText(values: Map<string, Map<string, CellValue>>): string {
       if (v !== null) lines.push(`${JSON.stringify(sheet)}!${addr} ${canonValue(v)}`)
     }
   }
+  const top = (f: FillLine) => f.range.split(':')[0]
+  for (const f of [...fills].sort((a, b) => byText(a.sheet, b.sheet) || compareAddress(top(a), top(b)))) lines.push(`${JSON.stringify(f.sheet)}!${f.range} ${canonValue(f.value)}`)
   return lines.join('\n')
 }
 
 /** A locale that takes part in the hashes: one given and not en-US, so books computed as before hash as before. */
 const hashedLocale = (locale: string | undefined): string | undefined => (locale === DEFAULT_LOCALE ? undefined : locale)
 
-/** The values hash: the configuration version, `;locale=<tag>` for a book in a locale other than en-US, the values. */
-export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, locale?: string): string {
+/** The values hash: the configuration version, `;locale=<tag>` for a book in a locale other than en-US, the values and fills. */
+export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string): string {
   const tag = hashedLocale(locale)
-  return new Sha256().update(configVersion).update(tag === undefined ? '' : `;locale=${tag}`).update('\n').update(canonText(values)).hex()
+  return new Sha256().update(configVersion).update(tag === undefined ? '' : `;locale=${tag}`).update('\n').update(canonText(values, fills)).hex()
 }
 
 /** JSON with sorted object keys: the order of fields in the input does not affect the hash. */

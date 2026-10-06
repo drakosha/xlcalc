@@ -6,9 +6,8 @@ export interface PreparedName {
   name: string
   /** Index of the scope sheet; -1 for a global name. */
   scope: number
-  /** The reference, or `#REF!` when Excel lost it (`'S'!#REF!`, `#REF!A1`). */
+  /** The reference (a spill reference too), or `#REF!` when Excel lost it (`'S'!#REF!`, `#REF!A1`). */
   ast: Extract<Ast, { k: 'ref' | 'err' }>
-  area: boolean
 }
 
 /** Names in the book's order; an invalid one is left out with its issue. */
@@ -44,7 +43,7 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[]):
     }
     // a reference Excel lost stays a name, as in Excel: formulas using it give #REF!
     if (ast.k === 'err' && ast.code === 'REF') {
-      out.push({ name: n.name, scope, ast, area: false })
+      out.push({ name: n.name, scope, ast })
       continue
     }
     if (ast.k !== 'ref' || ast.sheet === null) {
@@ -55,8 +54,7 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[]):
       issue(`unknown sheet ${ast.sheet}`)
       continue
     }
-    const ref = ast.ref
-    out.push({ name: n.name, scope, ast, area: ref.kind !== 'cell' && !(ref.r1 === ref.r2 && ref.c1 === ref.c2) })
+    out.push({ name: n.name, scope, ast })
   }
   return { names: out, issues }
 }

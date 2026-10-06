@@ -19,6 +19,8 @@ export interface StructCase {
 export interface StructCases {
   books: Record<string, BookInput>
   cases: StructCase[]
+  /** Formulas written as dynamic array formulas (Excel 365), as the spill cases need. */
+  dynamic?: true
 }
 
 export interface StructSet {
