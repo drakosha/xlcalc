@@ -6,7 +6,7 @@
  */
 import { makeCaller, type Cx, type Grid } from './args.js'
 import type { CellValue } from './contract.js'
-import { buildIndex, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
+import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
 import { DEFS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
@@ -162,8 +162,7 @@ export function makeRuntime(ctx: RuntimeContext) {
       if (!(rg instanceof Rng)) return isErr(rg) ? rg : E.VALUE
       if (rg.r2 - rg.r1 + 1 !== rows || rg.c2 - rg.c1 + 1 !== w) return E.VALUE
       const v = scalar(crit)
-      if (isErr(v)) return v
-      const c = parseCrit(v)
+      const c = isErr(v) ? errorCrit(v.code) : parseCrit(v)
       blank &&= matches(null, c)
       h = Math.max(h, bounds(rg).h)
       const f = aligned(rg, w)
