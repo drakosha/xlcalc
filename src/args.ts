@@ -143,7 +143,8 @@ export interface FunctionSpec {
   /** A range of several cells in a lifted argument: lifted, #VALUE!, or its top-left cell. */
   rangeAt: (i: number) => 'lift' | 'error' | 'first'
   array?: boolean
-  liftAt?: FnDef['liftAt']
+  /** Lazy functions: the arguments whose array lifts the call. */
+  liftAt: (i: number, n: number) => boolean
   /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
   parity?: 'odd' | 'even'
   volatile?: boolean
@@ -188,7 +189,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   }
   const { ranges } = def
   const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')
-  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt }
+  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0) }
 }
 
 // ---------- coercion by kind ----------

@@ -70,7 +70,7 @@ export function liftLazy(fn: Call, spec: FunctionSpec, check: readonly number[],
   const done: (Arg | undefined)[] = new Array(n)
   let many = false
   for (const i of check) {
-    if (i >= n || !(spec.liftAt ?? ((j: number) => j === 0))(i, n)) continue
+    if (i >= n || !spec.liftAt(i, n)) continue
     const v = thunks[i]()
     if (isMany(v)) many = true
     done[i] = v

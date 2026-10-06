@@ -85,8 +85,7 @@ export function codegen(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (spec.lazy) {
           // lazy functions (IF, IFERROR) get each argument as a function; lifted when a lifting argument is an array
           const thunks = n.args.map((a) => `()=>${go(a)}`)
-          const lifts = spec.liftAt ?? ((i: number) => i === 0)
-          const check = n.args.flatMap((a, i) => (many(a) && lifts(i, n.args.length) ? [i] : []))
+          const check = n.args.flatMap((a, i) => (many(a) && spec.liftAt(i, n.args.length) ? [i] : []))
           return check.length ? `LZ(${JSON.stringify(n.name)},[${check.join(',')}],${thunks.join(',')})` : `F${key}(${thunks.join(',')})`
         }
         const args = n.args.map((a, i) => go(a, spec.range(i)))

@@ -80,10 +80,9 @@ export function shapes(ast: Ast, isRangeName: (name: string) => boolean | undefi
       return { s: r ? (many ? 2 : 0) : args.length ? 1 : 0, ref: false }
     }
     if (spec.lazy) {
-      const lifts = spec.liftAt ?? ((j: number) => j === 0)
       const lifted: Shape[] = []
       const rest: Shape[] = []
-      args.forEach((a, i) => (lifts(i, args.length) ? lifted : rest).push(a.s))
+      args.forEach((a, i) => (spec.liftAt(i, args.length) ? lifted : rest).push(a.s))
       // IF without its third argument answers FALSE
       if (name === 'IF' && args.length === 2) rest.push(0)
       return { s: combine(lifted, rest, false), ref: false }

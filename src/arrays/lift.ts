@@ -14,12 +14,12 @@ export type Val = V | Rng | Arr
 export const isMany = (x: unknown): x is Rng | Arr =>
   x instanceof Arr ? x.rows * x.cols > 1 : x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)
 
-/** Element (r, c) of an operand of a lifted computation of `rows` × `cols`. */
-function elem(x: V | Arr, r: number, c: number): V {
+/** Element (r, c) of an operand, a single row or column repeated; undefined past the operand. */
+function elem(x: V | Arr, r: number, c: number): V | undefined {
   if (!(x instanceof Arr)) return x
   const rr = x.rows === 1 ? 0 : r
   const cc = x.cols === 1 ? 0 : c
-  return rr >= x.rows || cc >= x.cols ? E.NA : x.at(rr, cc)
+  return rr >= x.rows || cc >= x.cols ? undefined : x.at(rr, cc)
 }
 
 /** How far an operand varies along one dimension of size `n`: its occupied part, all of it when repeated or short. */
@@ -50,20 +50,17 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
   const args: V[] = new Array(xs.length)
   for (let r = 0; r < h; r++)
     for (let c = 0; c < w; c++) {
-      let na = false
+      let outside = false
       for (let i = 0; i < xs.length; i++) {
         const v = elem(xs[i], r, c)
-        if (v === E.NA && xs[i] instanceof Arr && isOutside(xs[i] as Arr, r, c)) na = true
-        args[i] = v
+        if (v === undefined) outside = true
+        else args[i] = v
       }
-      out[r * w + c] = na ? E.NA : f(args)
+      out[r * w + c] = outside ? E.NA : f(args)
     }
   const fill = h < rows || w < cols ? f(xs.map((x) => (x instanceof Arr ? x.fill : x))) : null
   return new Arr(rows, cols, h, w, out, fill)
 }
-
-/** A position past an operand that is not repeated along that dimension: the element there is #N/A. */
-const isOutside = (x: Arr, r: number, c: number) => (x.rows > 1 && r >= x.rows) || (x.cols > 1 && c >= x.cols)
 
 /**
  * The value of a lifted call at one position: an array or a reference answer gives its top-left value, and a
