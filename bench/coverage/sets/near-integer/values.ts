@@ -39,6 +39,13 @@ const PARITY: [number, string[]][] = [
 /** Seconds below midnight of a date serial (the date functions read a moment to the second). */
 const SECONDS = ['0.4', '0.49', '0.499', '0.501', '0.51', '0.6', '1']
 
+/** Absolute offsets below N around the tolerance of whole-number arguments, between 2·10^-7 and 3·10^-7. */
+const TAU = ['2.2E-07', '2.3E-07', '2.35E-07', '2.38E-07', '2.39E-07', '2.42E-07', '2.5E-07', '2.7E-07']
+const TAU_TABLE: [number, string[]][] = [[1, TAU], [2, TAU], [3, TAU], [9, TAU], [10, ['1E-07', '2E-07', ...TAU]]]
+
+/** Absolute offsets below N around the tolerance of ISEVEN and ISODD, between 10^-10 and 1.2·10^-10. */
+const PARITY_FINE = ['1.05E-10', '1.1E-10', '1.15E-10', '1.16E-10', '1.17E-10', '1.2E-10', '1.5E-10']
+
 export function values() {
   const sheet: Record<string, { formula: string }> = {}
   const put = (n: number, formula: string, j?: number): Value => {
@@ -63,6 +70,11 @@ export function values() {
     sample: [1, 2, 3, 4, 9].flatMap((n) => below(n, [40, 30])),
     parity: offsets(PARITY),
     seconds: [45688, 45658].flatMap((n) => SECONDS.map((s) => put(n, `${n}-${s}/86400`))),
+    tau: offsets(TAU_TABLE),
+    // above -2 (toward zero): a whole number with the tolerance is -2, truncated -1
+    tauNeg: ['1E-07', '2.3E-07', '2.5E-07', '3E-07'].map((d) => put(-2, `-2+${d}`)),
+    parityFine: offsets([1, 10, 1000].map((n) => [n, PARITY_FINE])),
+    sample2: [2025, 5].flatMap((n) => below(n, [40, 30])),
   }
   return { sheet, g }
 }
