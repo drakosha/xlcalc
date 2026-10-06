@@ -2,7 +2,8 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.455
+  "seconds": 14.622,
+  "dynamic": true
  },
  "cases": [
   {
@@ -31495,15 +31496,15 @@
   },
   "BITAND#18": {
    "t": "e",
-   "v": "VALUE"
+   "v": "SPILL"
   },
   "BITOR#18": {
    "t": "e",
-   "v": "VALUE"
+   "v": "SPILL"
   },
   "BITXOR#18": {
    "t": "e",
-   "v": "VALUE"
+   "v": "SPILL"
   },
   "DELTA#13": {
    "t": "e",
