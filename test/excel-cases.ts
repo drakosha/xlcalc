@@ -93,7 +93,9 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
   legacyFormula:
-    'Some answers of the coverage measurement and of the `text` and `matheng` sets come from formulas of the old kind, where Excel intersects a range with the formula\'s row or column or shows the first value of an array (`ROW(D!C1:C8)` is 1, `TYPE(D!B1:B8)` is 16). The engine follows Excel 365\'s dynamic arrays, as the array set measures them: such a result is an array (`#SPILL!` until spilling is supported), `TYPE` of a range is 64, `BITAND(D!B1:B2,1)` is lifted into an array, `VLOOKUP` with a range of column numbers is `#REF!`. Those sets are to be measured again as dynamic array formulas.',
+    'Some answers of the coverage measurement come from formulas of the old kind, where Excel intersects a range with the formula\'s row or column or shows the first value of an array (`ROW(D!C1:C8)` is 1, `TYPE(D!B1:B8)` is 16). The engine follows Excel 365\'s dynamic arrays, as the array set measures them: such a result is an array (`#SPILL!` until spilling is supported), `TYPE` of a range is 64. The measurement is to be computed again as dynamic array formulas.',
+  lookupIndexLifted:
+    '`VLOOKUP` and `HLOOKUP` lifted by an array key or match mode, with an array or a range of several cells as the index: Excel takes the index\'s top-left number in each lifted call, the engine reads the whole index, so a number below 1 or past the table anywhere in it is the answer (`INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),1)` is `"five"` in Excel and `#REF!` here).',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
@@ -112,15 +114,16 @@ const SPILL: Val = { t: 'e', v: 'SPILL' }
 /** Old-kind answers whose dynamic-array result is an array (#SPILL! here). */
 const LEGACY_SPILL = [
   'measurement:COLUMN#2', 'measurement:COLUMN#4', 'measurement:INDEX#6', 'measurement:INDEX#7', 'measurement:INDEX#13', 'measurement:ROW#1',
-  'measurement:ROW#2', 'measurement:ROW#4', 'text:INDEX#3', 'text:INDEX#5', 'text:INDEX#12', 'text:ROW#2', 'text:COLUMN#3', 'matheng:BITAND#18',
-  'matheng:BITOR#18', 'matheng:BITXOR#18',
+  'measurement:ROW#2', 'measurement:ROW#4',
 ]
 
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
   ...Object.fromEntries(LEGACY_SPILL.map((k) => [k, { reason: 'legacyFormula' as const, engine: SPILL }])),
   'measurement:TYPE#4': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
-  'text:TYPE#3': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
-  'text:VLOOKUP#39': { reason: 'legacyFormula', engine: { t: 'e', v: 'REF' } },
+  'arrays:index:VLOOKUP#61': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
+  'arrays:index:VLOOKUP#62': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
+  'arrays:index:VLOOKUP#63': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'VALUE' } },
+  'arrays:index:HLOOKUP#6': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

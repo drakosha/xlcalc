@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 3.692,
+  "seconds": 2.279,
   "dynamic": true
  },
  "cases": [
@@ -1763,6 +1763,438 @@
    "group": "key:HLOOKUP",
    "fn": "HLOOKUP",
    "formula": "SUM(HLOOKUP({2,3},D!L8:Q10,3,FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#1",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!AH2:AH3,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#2",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,D!AH2:AH3,FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#3",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,D!AH2:AH4,FALSE),3)"
+  },
+  {
+   "id": "index:VLOOKUP#4",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "SUM(VLOOKUP(5,D!L1:N6,D!AH2:AH4,FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#5",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "TYPE(VLOOKUP(5,D!L1:N6,D!AH2:AH3,FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#6",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!AH2,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#7",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#8",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "TYPE(VLOOKUP(5,D!L1:N6,{2},FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#9",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!B1:B2/4,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#10",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{3;2;1},FALSE),3)"
+  },
+  {
+   "id": "index:VLOOKUP#11",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{2,3},FALSE),1,2)"
+  },
+  {
+   "id": "index:VLOOKUP#12",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "COLUMNS(VLOOKUP(5,D!L1:N6,{2,3},FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#13",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{2,3;1,2},FALSE),2,1)"
+  },
+  {
+   "id": "index:VLOOKUP#14",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "ROWS(VLOOKUP(5,D!L1:N6,{2,3;1,2},FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#15",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{2;\"3\"},FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#16",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{2;TRUE},FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#17",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{2;2.9},FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#18",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(4,D!L1:N6,{2;3}),1)"
+  },
+  {
+   "id": "index:VLOOKUP#19",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(\"five\",D!M1:N6,D!AH2:AH3,FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#20",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(11,D!AK5:AL7,{1,2},FALSE),1,2)"
+  },
+  {
+   "id": "index:VLOOKUP#21",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "ISBLANK(INDEX(VLOOKUP(11,D!AK5:AL7,{1,2},FALSE),1,2))"
+  },
+  {
+   "id": "index:VLOOKUP#22",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "COUNTA(VLOOKUP(11,D!AK5:AL7,{1,2},FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#23",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "ISBLANK(VLOOKUP(11,D!AK5:AL7,2,FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#24",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!L1:L2,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#25",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{1;4},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#26",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{1;4},FALSE),1)"
+  },
+  {
+   "id": "index:VLOOKUP#27",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "ROWS(VLOOKUP(5,D!L1:N6,D!B1:B2,FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#28",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!B1:B2-3,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#29",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{1;0},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#30",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{0;4},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#31",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{4;0},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#32",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2;-1},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#33",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!AH1:AH2,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#34",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,D!AH3:AH5,FALSE),1)"
+  },
+  {
+   "id": "index:VLOOKUP#35",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!AH2:AI2,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#36",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!AH:AH,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#37",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2;\"x\"},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#38",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{\"x\";0},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#39",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{0;\"x\"},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#40",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!A2:A3,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#41",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2;#N/A},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#42",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2;#N/A;0},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#43",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2;0;#N/A},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#44",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2,#DIV/0!,4},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#45",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{1;2;3;\"x\"},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#46",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{1;4},TRUE),1)"
+  },
+  {
+   "id": "index:VLOOKUP#47",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(7,D!L1:N6,D!B1:B2,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#48",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(7,D!L1:N6,D!AH2:AH3,FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#49",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(#N/A,D!L1:N6,{2;4},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#50",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(\"x\",D!L1:N6,{2;4},FALSE)"
+  },
+  {
+   "id": "index:VLOOKUP#51",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,{2;\"x\"},\"x\")"
+  },
+  {
+   "id": "index:VLOOKUP#52",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(5,D!L1:N6,D!AH2:AH3,\"x\")"
+  },
+  {
+   "id": "index:VLOOKUP#53",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "ROWS(VLOOKUP({5;8},D!L1:N6,{2,3},FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#54",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "COLUMNS(VLOOKUP({5;8},D!L1:N6,{2,3},FALSE))"
+  },
+  {
+   "id": "index:VLOOKUP#55",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;8},D!L1:N6,{2;3},FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#56",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;8},D!L1:N6,D!B1:B2/4,FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#57",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;7},D!L1:N6,{2,3},FALSE),2,1)"
+  },
+  {
+   "id": "index:VLOOKUP#58",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(D!L1:L2,D!L1:N6,D!AH2:AH3,FALSE),2,1)"
+  },
+  {
+   "id": "index:VLOOKUP#59",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,{2;3},{FALSE;TRUE}),2)"
+  },
+  {
+   "id": "index:VLOOKUP#60",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(5,D!L1:N6,D!AH2:AH3,{FALSE;TRUE}),2)"
+  },
+  {
+   "id": "index:VLOOKUP#61",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),1)"
+  },
+  {
+   "id": "index:VLOOKUP#62",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),2)"
+  },
+  {
+   "id": "index:VLOOKUP#63",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;8},D!L1:N6,{2;0},FALSE),1)"
+  },
+  {
+   "id": "index:VLOOKUP#64",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP({5;8},D!L1:N6,{0;2},FALSE),1)"
+  },
+  {
+   "id": "index:VLOOKUP#65",
+   "group": "index:VLOOKUP",
+   "fn": "VLOOKUP",
+   "formula": "INDEX(VLOOKUP(D!L4:L5,D!L1:N6,{4;2},FALSE),1)"
+  },
+  {
+   "id": "index:HLOOKUP#1",
+   "group": "index:HLOOKUP",
+   "fn": "HLOOKUP",
+   "formula": "HLOOKUP(5,D!L8:Q10,D!AH2:AH3,FALSE)"
+  },
+  {
+   "id": "index:HLOOKUP#2",
+   "group": "index:HLOOKUP",
+   "fn": "HLOOKUP",
+   "formula": "INDEX(HLOOKUP(5,D!L8:Q10,D!AH2:AH3,FALSE),2)"
+  },
+  {
+   "id": "index:HLOOKUP#3",
+   "group": "index:HLOOKUP",
+   "fn": "HLOOKUP",
+   "formula": "HLOOKUP(5,D!L8:Q10,{1;4},FALSE)"
+  },
+  {
+   "id": "index:HLOOKUP#4",
+   "group": "index:HLOOKUP",
+   "fn": "HLOOKUP",
+   "formula": "HLOOKUP(5,D!L8:Q10,{0;1},FALSE)"
+  },
+  {
+   "id": "index:HLOOKUP#5",
+   "group": "index:HLOOKUP",
+   "fn": "HLOOKUP",
+   "formula": "HLOOKUP(5,D!L8:Q10,D!AH2:AH3,\"x\")"
+  },
+  {
+   "id": "index:HLOOKUP#6",
+   "group": "index:HLOOKUP",
+   "fn": "HLOOKUP",
+   "formula": "INDEX(HLOOKUP({5,8},D!L8:Q10,{2;4},FALSE),1,2)"
+  },
+  {
+   "id": "index:MATCH#1",
+   "group": "index:MATCH",
+   "fn": "MATCH",
+   "formula": "MATCH(5,D!L1:L6,D!AH1:AH2)"
   },
   {
    "id": "key:MATCH#1",
@@ -14844,6 +15276,30 @@
    "t": "n",
    "v": 8
   },
+  "empty#1": {
+   "t": "n",
+   "v": 2
+  },
+  "empty#2": {
+   "t": "s",
+   "v": "0x"
+  },
+  "empty#3": {
+   "t": "s",
+   "v": "x"
+  },
+  "empty#4": {
+   "t": "n",
+   "v": 2
+  },
+  "empty#5": {
+   "t": "n",
+   "v": 1
+  },
+  "empty#6": {
+   "t": "n",
+   "v": 2
+  },
   "agg:MAXA#1": {
    "t": "n",
    "v": -1
@@ -16747,6 +17203,14 @@
   "fn:DROP#5": {
    "t": "n",
    "v": 0
+  },
+  "fn:DROP#6": {
+   "t": "n",
+   "v": 2
+  },
+  "fn:TAKE#8": {
+   "t": "n",
+   "v": 3
   },
   "fn:SORTBY#8": {
    "t": "n",
@@ -23496,37 +23960,293 @@
    "t": "e",
    "v": "SPILL"
   },
-  "empty#1": {
+  "index:VLOOKUP#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:VLOOKUP#2": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#3": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#4": {
+   "t": "n",
+   "v": 55
+  },
+  "index:VLOOKUP#5": {
+   "t": "n",
+   "v": 64
+  },
+  "index:VLOOKUP#6": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#7": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#8": {
+   "t": "n",
+   "v": 64
+  },
+  "index:VLOOKUP#9": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:VLOOKUP#10": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#11": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#12": {
    "t": "n",
    "v": 2
   },
-  "empty#2": {
-   "t": "s",
-   "v": "0x"
+  "index:VLOOKUP#13": {
+   "t": "n",
+   "v": 5
   },
-  "empty#3": {
-   "t": "s",
-   "v": "x"
-  },
-  "empty#4": {
+  "index:VLOOKUP#14": {
    "t": "n",
    "v": 2
   },
-  "empty#5": {
+  "index:VLOOKUP#15": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#16": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#17": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#18": {
+   "t": "s",
+   "v": "three"
+  },
+  "index:VLOOKUP#19": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#20": {
+   "t": "n",
+   "v": 0
+  },
+  "index:VLOOKUP#21": {
+   "t": "b",
+   "v": true
+  },
+  "index:VLOOKUP#22": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#23": {
+   "t": "b",
+   "v": true
+  },
+  "index:VLOOKUP#24": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:VLOOKUP#25": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#26": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#27": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#28": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#29": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#30": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#31": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#32": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#33": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#34": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#35": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#37": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#38": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#39": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#40": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#41": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#42": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#43": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#44": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#45": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#46": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#47": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#48": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#49": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#50": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#51": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#52": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#53": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#54": {
    "t": "n",
    "v": 1
   },
-  "empty#6": {
+  "index:VLOOKUP#55": {
+   "t": "s",
+   "v": "eight"
+  },
+  "index:VLOOKUP#56": {
+   "t": "n",
+   "v": 8
+  },
+  "index:VLOOKUP#57": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#58": {
    "t": "n",
    "v": 2
   },
-  "fn:DROP#6": {
-   "t": "n",
-   "v": 2
+  "index:VLOOKUP#59": {
+   "t": "s",
+   "v": "five"
   },
-  "fn:TAKE#8": {
+  "index:VLOOKUP#60": {
    "t": "n",
-   "v": 3
+   "v": 5
+  },
+  "index:VLOOKUP#61": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#62": {
+   "t": "s",
+   "v": "eight"
+  },
+  "index:VLOOKUP#63": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#64": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#65": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:HLOOKUP#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:HLOOKUP#2": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:HLOOKUP#3": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:HLOOKUP#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:HLOOKUP#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:HLOOKUP#6": {
+   "t": "s",
+   "v": "eight"
+  },
+  "index:MATCH#1": {
+   "t": "n",
+   "v": 4
   }
  }
 }
