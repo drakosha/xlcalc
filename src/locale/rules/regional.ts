@@ -8,7 +8,7 @@ import { errorWords, textOrder } from '../../criteria.js'
 import { parseDateWith, type DateSyntax } from '../../dates.js'
 import { formatWith, generalText } from '../../format.js'
 import { ERROR_TEXT } from '../../syntax.js'
-import { compareWith, E, isErr, operatorOrder, type CErr, type V } from '../../values.js'
+import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
 import type { RegionalData, RulesClock } from './data.js'
 import { dmyDates } from './dates.js'
@@ -20,10 +20,10 @@ export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
   const dates: DateSyntax = { date: dmyDates(data, clock), decimal }
   const valueText = numberReader(data, dates)
   const numberText = (n: number) => generalText(n).replace('.', decimal)
-  const { TRUE, FALSE } = locale.booleans
+  const { toNum, toText, toBool } = coercions(valueText, locale.booleans, numberText)
   const word = (t: string): boolean | null => {
-    const u = t.toUpperCase()
-    return u === TRUE.toUpperCase() ? true : u === FALSE.toUpperCase() ? false : null
+    const b = toBool(t)
+    return typeof b === 'boolean' ? b : null
   }
   const compareText = textOrder(data.collation)
   const compare = compareWith(compareText)
@@ -34,9 +34,9 @@ export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
     group,
     currency,
     clock,
-    toNum: (v: V): number | CErr => (typeof v === 'number' ? v : v === null ? 0 : typeof v === 'boolean' ? (v ? 1 : 0) : isErr(v) ? v : (valueText(v) ?? E.VALUE)),
-    toText: (v: V): string | CErr => (typeof v === 'string' ? v : v === null ? '' : typeof v === 'boolean' ? (v ? TRUE : FALSE) : isErr(v) ? v : numberText(v)),
-    toBool: (v: V): boolean | CErr => (typeof v === 'boolean' ? v : typeof v === 'number' ? v !== 0 : v === null ? false : isErr(v) ? v : (word(v) ?? E.VALUE)),
+    toNum,
+    toText,
+    toBool,
     valueText,
     dateText: (text) => parseDateWith(text, dates),
     numberText,

@@ -50,35 +50,49 @@ const MIN_NORMAL = 2.2250738585072014e-308
 /** A computed number as Excel keeps it: a non-finite one is #NUM!, one below the smallest normal number is 0. */
 export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)
 
-export function toNum(v: V): number | CErr {
-  if (typeof v === 'number') return v
-  if (v === null) return 0
-  if (typeof v === 'boolean') return v ? 1 : 0
-  if (isErr(v)) return v
-  // decimal text first (the common case), else as VALUE reads it: `$1,000`, `50%`, dates and times
-  const t = v.trim()
-  return NUMBER_TEXT.test(t) ? readNumber(t) : (textToNumber(v) ?? E.VALUE)
+/**
+ * The coercions of a locale: `toNum` (operators and numeric arguments; text through `number`), `toText`
+ * (`&` and text arguments; booleans by `words`, numbers through `numberText`), `toBool` (text that is one of
+ * `words`, any case).
+ */
+export function coercions(number: (text: string) => number | null, words: { readonly TRUE: string; readonly FALSE: string }, numberText: (n: number) => string) {
+  const T = words.TRUE.toUpperCase()
+  const F = words.FALSE.toUpperCase()
+  return {
+    toNum(v: V): number | CErr {
+      if (typeof v === 'number') return v
+      if (v === null) return 0
+      if (typeof v === 'boolean') return v ? 1 : 0
+      if (isErr(v)) return v
+      return number(v) ?? E.VALUE
+    },
+    toText(v: V): string | CErr {
+      if (typeof v === 'string') return v
+      if (v === null) return ''
+      if (typeof v === 'boolean') return v ? words.TRUE : words.FALSE
+      if (isErr(v)) return v
+      return numberText(v)
+    },
+    toBool(v: V): boolean | CErr {
+      if (typeof v === 'boolean') return v
+      if (typeof v === 'number') return v !== 0
+      if (v === null) return false
+      if (isErr(v)) return v
+      const u = v.toUpperCase()
+      return u === T ? true : u === F ? false : E.VALUE
+    },
+  }
 }
 
-export function toText(v: V): string | CErr {
-  if (typeof v === 'string') return v
-  if (v === null) return ''
-  if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE'
-  if (isErr(v)) return v
-  return generalText(v)
-}
-
-/** Text "TRUE" and "FALSE" are booleans, as in Excel en-US with the English UI. */
-export function toBool(v: V): boolean | CErr {
-  if (typeof v === 'boolean') return v
-  if (typeof v === 'number') return v !== 0
-  if (v === null) return false
-  if (isErr(v)) return v
-  const u = v.toUpperCase()
-  if (u === 'TRUE') return true
-  if (u === 'FALSE') return false
-  return E.VALUE
-}
+/** en-US with the English UI: decimal text first (the common case), else as VALUE reads it (`$1,000`, `50%`, dates and times); TRUE and FALSE. */
+export const { toNum, toText, toBool } = coercions(
+  (text) => {
+    const t = text.trim()
+    return NUMBER_TEXT.test(t) ? readNumber(t) : textToNumber(text)
+  },
+  { TRUE: 'TRUE', FALSE: 'FALSE' },
+  generalText,
+)
 
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2)
 

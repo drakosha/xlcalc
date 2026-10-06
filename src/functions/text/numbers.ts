@@ -2,11 +2,11 @@
  * Numbers as text by the book's locale (`Cx.rules`): FIXED is ported from formula.js 4.6.1 (src/text.js),
  * Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); TEXT and DOLLAR are this engine's own.
  */
+import { roundHalfUp } from '../../format.js'
 import type { Cx, FnDef } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, type CErr, type V } from '../../values.js'
 import { roundDigits } from '../common.js'
-import { roundHalfUp } from '../../format.js'
 
 /** Rounded on the decimal representation (1.005 → 1.01); negative decimals round left of the point; grouped by threes with `group`. */
 function fixedDigits(x: number, decimals: number, rules: Rules, group: boolean): { text: string; zero: boolean } {
