@@ -1,0 +1,40 @@
+/**
+ * Text functions beyond the Excel case set (`bench/coverage/sets/text.ts`): the 32,767-character limit,
+ * one delimiter in TEXTBEFORE and TEXTAFTER, an array answer of VALUETOTEXT, astral characters.
+ */
+import { describe, expect, it } from 'vitest'
+import { compute, validateFormula, type CellInput, type CellValue } from '../src/index.js'
+
+const err = (code: Extract<CellValue, { error: unknown }>['error']): CellValue => ({ error: code })
+
+function values(formulas: string[], cells: Record<string, CellInput> = {}): CellValue[] {
+  const f: Record<string, CellInput> = {}
+  formulas.forEach((x, i) => (f[`Z${i + 1}`] = { formula: x }))
+  const r = compute({ sheets: [{ name: 'S', cells: { ...cells, ...f } }] }, { clock: { now: '2026-10-06T12:00:00Z', seed: 1 } })
+  return formulas.map((_, i) => r.sheets[0].cells[`Z${i + 1}`].value)
+}
+
+describe('text functions beyond the Excel cases', () => {
+  it('results longer than 32,767 characters are #VALUE! (Excel: #CALC! for CONCAT and TEXTJOIN)', () => {
+    expect(values(['CONCAT(REPT("a",20000),REPT("b",20000))', 'TEXTJOIN(",",TRUE,REPT("a",20000),REPT("b",20000))', 'SUBSTITUTE(REPT("a",20000),"a","bb")', 'REPLACE(REPT("a",30000),1,0,REPT("b",3000))', 'LEN(TEXTJOIN(",",TRUE,REPT("a",16383),REPT("b",16383)))'])).toEqual([
+      err('VALUE'),
+      err('VALUE'),
+      err('VALUE'),
+      err('VALUE'),
+      32767,
+    ])
+  })
+
+  it('TEXTBEFORE and TEXTAFTER take one delimiter: a range of them is unsupported', () => {
+    expect(validateFormula('TEXTBEFORE("a-b",A1:A2)').ok).toBe(false)
+    expect(validateFormula('TEXTAFTER("a-b",A1)').ok).toBe(true)
+  })
+
+  it('VALUETOTEXT of a range of several cells has an array answer: #VALUE!', () => {
+    expect(values(['VALUETOTEXT(A1:A2)', 'VALUETOTEXT(A1)'], { A1: { value: 1.5 }, A2: { value: 'x' } })).toEqual([err('VALUE'), '1.5'])
+  })
+
+  it('PROPER, UPPER and MID keep astral characters whole (UTF-16 units count, as in Excel)', () => {
+    expect(values(['PROPER("😀abc def")', 'UPPER("😀ß")', 'LEN("😀")', 'MID("a😀b",2,2)'])).toEqual(['😀Abc Def', '😀ß', 2, '😀'])
+  })
+})
