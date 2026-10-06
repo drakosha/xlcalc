@@ -1,7 +1,8 @@
 /**
  * Excel cases of the text, lookup, database, logical and information functions beyond the coverage
  * measurement: wildcards, case and Cyrillic, approximate search over sorted data, errors on input, number
- * text, database criteria; the data sheets and the cases by group are in `./text/`.
+ * text, database criteria; the data sheets and the cases by group are in `./text/`. Computed as dynamic array
+ * formulas (Excel 365).
  */
 import type { Probe } from '../probes.js'
 import { SHEETS, type Add } from './text/data.js'
@@ -10,6 +11,8 @@ import { database, logical } from './text/other.js'
 import { bytes, formats, strings, tildes } from './text/strings.js'
 
 export { SHEETS }
+
+export const DYNAMIC = true
 
 /** Functions written with the `_xlfn.` prefix in a workbook (newer than Excel 2007). */
 const XLFN = /\b(IFNA|SWITCH|XLOOKUP|XMATCH|NUMBERVALUE|UNICHAR|TEXTJOIN|TEXTBEFORE|TEXTAFTER|VALUETOTEXT|ARRAYTOTEXT)\(/g
