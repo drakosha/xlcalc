@@ -1,14 +1,10 @@
 /**
- * Logical functions.
- *
- * AND, IFS, NOT, OR and XOR are ported from formula.js 4.6.1 (https://github.com/formulajs/formulajs),
- * src/logical.js: Copyright (c) 2014 Sutoiku, Inc., MIT License (full text in THIRD_PARTY.md). Changed:
- * arguments are coerced by the engine's argument layer (`src/args.ts`); NOT reads text "TRUE"/"FALSE" as
- * Excel en-US does.
- * IF and IFERROR (evaluated lazily: the branch not taken is not computed), TRUE and FALSE are this engine's own.
+ * Logical functions. AND, IFS, NOT, OR and XOR are ported from formula.js 4.6.1 (src/logical.js), Copyright
+ * (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); IF, IFERROR, IFNA, SWITCH, TRUE and FALSE are this
+ * engine's own (lazy: a branch not taken is not computed).
  */
 import { eachValue, type FnDef, type Segment } from '../args.js'
-import { E, isErr, toBool, type CErr, type V } from '../values.js'
+import { compareValues, E, isErr, sameType, toBool, type CErr, type V } from '../values.js'
 
 /** The booleans of AND, OR, XOR: numbers and booleans count, text and blanks are skipped (direct text too); none at all is #VALUE!. */
 function booleans(segs: Segment[]): boolean[] | CErr {
@@ -50,6 +46,14 @@ export const functions: Record<string, FnDef> = {
       return isErr(v) ? alt() : v
     },
   },
+  IFNA: {
+    args: 'a a',
+    lazy: true,
+    fn: (value: () => V, alt: () => V) => {
+      const v = value()
+      return isErr(v) && v.code === 'NA' ? alt() : v
+    },
+  },
   IFS: {
     args: 'a a',
     rep: 2,
@@ -64,6 +68,22 @@ export const functions: Record<string, FnDef> = {
   },
   NOT: { args: 'b', fn: (b: boolean) => !b },
   OR: logical((bs) => bs.some(Boolean)),
+  // values match within a type, text in any case; a lone last argument is the default
+  SWITCH: {
+    args: 'a a a',
+    rep: 1,
+    lazy: true,
+    fn: (expr: () => V, ...rest: (() => V)[]) => {
+      const x = expr()
+      if (isErr(x)) return x
+      for (let i = 0; i + 1 < rest.length; i += 2) {
+        const v = rest[i]()
+        if (isErr(v)) return v
+        if (x === null ? v === null : v !== null && sameType(x, v) && compareValues(x, v) === 0) return rest[i + 1]()
+      }
+      return rest.length % 2 ? rest[rest.length - 1]() : E.NA
+    },
+  },
   TRUE: { args: '', fn: () => true },
   XOR: logical((bs) => bs.filter(Boolean).length % 2 === 1),
 }

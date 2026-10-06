@@ -32,12 +32,12 @@ const cells = {
   A3: { value: 'North' }, B3: { value: 45.5 },
   D1: { formula: 'SUMIFS(B:B,A:A,"North")' },
   D2: { formula: 'XLOOKUP("South",A1:A3,B1:B3)' },
-  D3: { formula: 'VLOOKUP("South",A1:B3,2)' },
+  D3: { formula: 'INDIRECT("B2")' },
 }
 const { sheets, issues } = compute({ sheets: [{ name: 'Sales', cells }] })
 console.log(sheets[0].cells.D1.value) // → 165.5
 console.log(sheets[0].cells.D2.value) // → 80
-console.log(sheets[0].cells.D3.value, issues[0].reason) // → { error: 'NAME' } unknown function VLOOKUP
+console.log(sheets[0].cells.D3.value, issues[0].reason) // → { error: 'NAME' } unknown function INDIRECT
 ```
 
 A formula is stored without the leading `=` in `formula`, separately from `value`, so a string from your data never turns into a formula. Dates are passed explicitly as `{ date: '2026-01-31' }` and become Excel serial numbers; `format` and `meta` pass through to the result untouched.
@@ -213,7 +213,7 @@ Notes on semantics:
   - `TEXT` knows en-US formats only; exponent formats (`0.00E+00`), colours and bracketed conditions give `#VALUE!`.
   - Date text without a year (`1/31`, which Excel completes with the current year) is not read as a date.
   - `#NULL!` is read as `#ERROR!`.
-- **Syntax.** English function names and separators only (no `;` or decimal commas), no R1C1 references, no references to other workbooks, no 3D references or structured table references. Functions outside the whitelist (`VLOOKUP`, `INDEX`, `INDIRECT`, `OFFSET`, …) give `#NAME?`.
+- **Syntax.** English function names and separators only (no `;` or decimal commas), no R1C1 references, no references to other workbooks, no 3D references or structured table references. Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LET`, …) give `#NAME?`.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
 
 ## Development

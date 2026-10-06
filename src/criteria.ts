@@ -25,8 +25,8 @@ export const collator: { compare(a: string, b: string): number } =
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const cache = new Map<string, Crit>()
 
-function wildRe(s: string): RegExp | null {
-  if (!/[*?~]/.test(s)) return null
+/** The regular expression source of a wildcard pattern: `*` any text, `?` one character, `~` escapes `*`, `?` and `~`. */
+export function wildSource(s: string): string {
   let re = ''
   for (let i = 0; i < s.length; i++) {
     const ch = s[i]
@@ -35,7 +35,12 @@ function wildRe(s: string): RegExp | null {
     else if (ch === '?') re += '[\\s\\S]'
     else re += ch.replace(/[.+^${}()|[\]\\]/g, '\\$&')
   }
-  return new RegExp(`^${re}$`, 'iu')
+  return re
+}
+
+/** A whole-text, case-insensitive matcher for a pattern with wildcards; null for a pattern without them. */
+export function wildRe(s: string): RegExp | null {
+  return /[*?~]/.test(s) ? new RegExp(`^${wildSource(s)}$`, 'iu') : null
 }
 
 /** A criterion from a value (the scalar after evaluating the argument). */
