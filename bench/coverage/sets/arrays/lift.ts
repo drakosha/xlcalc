@@ -12,7 +12,7 @@ import { FUNCTION_NAMES } from '../../../../src/functions.js'
 import type { Add } from './common.js'
 
 /** Typical calls of the whitelisted functions the measurement has no typical case for. */
-const BASE: Record<string, string> = {
+export const BASE: Record<string, string> = {
   'ERF.PRECISE': 'ERF.PRECISE(0.745)',
   'ERFC.PRECISE': 'ERFC.PRECISE(1)',
   DURATION: 'DURATION(DATE(2018,7,1),DATE(2048,1,1),0.08,0.09,2,1)',

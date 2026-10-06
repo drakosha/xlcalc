@@ -17,6 +17,8 @@ interface Col<T = Val> {
 
 /** Прежняя колонка en-US, посчитанная с русским интерфейсом Excel: для абзаца о языке интерфейса. */
 const EN_RU_UI = 'excel-en-ru-ui.json'
+/** Колонка en-US формулами старого вида, с которой сравнивается EN_RU_UI (тоже формулы старого вида). */
+const EN_LEGACY = 'excel-en-legacy.json'
 
 export type Status = 'все' | 'обычные' | 'расходятся обычные' | 'зависает'
 
@@ -70,6 +72,7 @@ export function analyse(dir: string) {
   const lo = load<Col>('libreoffice.json')
   const en = enRaw.values
   const enRuUi = existsSync(join(dir, EN_RU_UI)) ? load<Col>(EN_RU_UI) : null
+  const enLegacy = existsSync(join(dir, EN_LEGACY)) ? load<Col>(EN_LEGACY).values : en
 
   const byFn = new Map<string, typeof set.cases>()
   for (const c of set.cases) byFn.set(c.fn, [...(byFn.get(c.fn) ?? []), c])
@@ -101,7 +104,7 @@ export function analyse(dir: string) {
       ru: vr.filter((v) => !v.ok).length,
     })
   }
-  return { set, fj, en, enRaw, enRuUi, ru, lo, rows, verdicts }
+  return { set, fj, en, enRaw, enRuUi, enLegacy, ru, lo, rows, verdicts }
 }
 
 // ---------- markdown ----------
@@ -260,17 +263,17 @@ function blocks(dir: string): Record<string, string> {
     '</details>',
   ].join('\n')
 
-  // язык интерфейса: прежняя колонка en-US (русский интерфейс) против текущей (английский)
+  // язык интерфейса: прежняя колонка en-US (русский интерфейс) против английского интерфейса, обе формулами старого вида
   if (a.enRuUi) {
     const old = a.enRuUi.values
-    const changed = set.cases.filter((c) => !compare(old[c.id], a.en[c.id]).ok)
-    const before = (k: 'adapter' | 'bare') => set.cases.filter((c) => compare(old[c.id], k === 'adapter' ? a.fj.values[c.id].adapter : a.fj.values[c.id].bare, k === 'adapter' && !!a.fj.values[c.id].adapterThrew).ok).length
+    const changed = set.cases.filter((c) => !compare(old[c.id], a.enLegacy[c.id]).ok)
+    const ok = (col: Record<string, Val>, k: 'adapter' | 'bare') => set.cases.filter((c) => compare(col[c.id], a.fj.values[c.id][k], k === 'adapter' && !!a.fj.values[c.id].adapterThrew).ok).length
     out.uilang = [
-      `С русским интерфейсом ответ Excel en-US был другим в ${changed.length} случаях у ${new Set(changed.map((c) => c.fn)).size} функций. Совпадение через адаптер по прежней колонке ${before('adapter')} случаев, по новой ${Object.values(a.verdicts).filter((v) => v.adapter.ok).length}; голой ${before('bare')} и ${Object.values(a.verdicts).filter((v) => v.bare.ok).length}.`,
+      `С русским интерфейсом ответ Excel en-US был другим в ${changed.length} случаях у ${new Set(changed.map((c) => c.fn)).size} функций. Совпадение через адаптер по прежней колонке ${ok(old, 'adapter')} случаев, с английским интерфейсом ${ok(a.enLegacy, 'adapter')}; голой ${ok(old, 'bare')} и ${ok(a.enLegacy, 'bare')}.`,
       '',
       '| случай | формула | русский интерфейс | английский интерфейс |',
       '|---|---|---|---|',
-      ...changed.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(old[c.id]))} | ${esc(show(a.en[c.id]))} |`),
+      ...changed.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(old[c.id]))} | ${esc(show(a.enLegacy[c.id]))} |`),
     ].join('\n')
   }
 

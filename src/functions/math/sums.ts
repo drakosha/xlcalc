@@ -104,9 +104,9 @@ function seriessum(x: number, n: number, m: number, coefs: Segment): V {
   return acc
 }
 
-/** PERCENTOF's sum: a range gives its numbers, a direct argument is coerced; any error is #NUM! (Excel). */
+/** PERCENTOF's sum: a range gives its numbers, a direct argument is coerced; an error in a range or array is #NUM!, a direct one itself (Excel). */
 function percentSum(s: Segment): number | CErr {
-  if (!Array.isArray(s)) return isErr(s) ? E.NUM : toNum(s as V)
+  if (!Array.isArray(s)) return toNum(s as V)
   let acc = 0
   for (const v of s as readonly V[]) {
     if (isErr(v)) return E.NUM

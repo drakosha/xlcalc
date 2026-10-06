@@ -1,6 +1,6 @@
 /** Helpers shared by the statistical function files. */
 import { pairs, type Grid } from '../../args.js'
-import { isErr, type CErr } from '../../values.js'
+import { E, isErr, type CErr } from '../../values.js'
 
 export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
 export const mean = (xs: readonly number[]) => sum(xs) / xs.length
@@ -39,7 +39,10 @@ export function gridNumbers(g: Grid): number[] | CErr {
   return out
 }
 
-/** Rule 4 with errors: an error in either grid is the answer, then pairs of numbers by position. */
+/** A grid of one cell holding an error: Excel reads it as the argument's own error, before any check of the function. */
+export const cellError = (g: Grid): CErr | undefined => (g.rows * g.cols === 1 ? gridError(g) : undefined)
+
+/** Rule 4 with errors, in Excel's order: a one-cell error, different sizes (#N/A), an error in either grid, then pairs of numbers by position. */
 export function numberPairs(a: Grid, b: Grid): [number[], number[]] | CErr {
-  return gridError(a) ?? gridError(b) ?? pairs(a, b)
+  return cellError(a) ?? cellError(b) ?? (a.rows * a.cols !== b.rows * b.cols ? E.NA : (gridError(a) ?? gridError(b) ?? pairs(a, b)))
 }

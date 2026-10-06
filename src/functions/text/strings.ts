@@ -2,7 +2,7 @@
  * Text functions on strings. Ported from formula.js 4.6.1 (src/text.js), Copyright (c) 2014 Sutoiku, Inc.,
  * MIT License (THIRD_PARTY.md); fixed against Excel en-US, see the comments.
  */
-import { eachValue, type FnDef, type Segment } from '../../args.js'
+import { directError, eachValue, type FnDef, type Segment } from '../../args.js'
 import { wildSource } from '../../criteria.js'
 import { E, isErr, toText, type V } from '../../values.js'
 import { capped, delimiters, joined, MAX_TEXT } from './common.js'
@@ -62,7 +62,7 @@ function textjoin(delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
   const ds = delimiters(delims)
   if (isErr(ds)) return ds
   const parts: string[] = []
-  const e = eachValue(segs, (v) => {
+  const e = directError(segs) ?? eachValue(segs, (v) => {
     const t = toText(v)
     if (isErr(t)) return t
     if (!(ignoreEmpty && t === '')) parts.push(t)
@@ -81,7 +81,7 @@ const strings: Record<string, FnDef> = {
     rep: 1,
     fn: (segs: Segment[]) => {
       let out = ''
-      const e = eachValue(segs, (v) => {
+      const e = directError(segs) ?? eachValue(segs, (v) => {
         const t = toText(v)
         if (isErr(t)) return t
         out += t

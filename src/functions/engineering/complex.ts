@@ -3,6 +3,8 @@
  * (src/engineering.js), Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); fixed against Excel en-US.
  */
 import { gridAt, type FnDef, type Grid } from '../../args.js'
+import { textToNumber } from '../../dates.js'
+import { atp } from '../date/atp.js'
 import { readNumber } from '../../model.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
 
@@ -48,13 +50,18 @@ function parseComplex(text: string): Complex | null {
   return second && isUnit(second[1]) ? { re: a, im: sign * second[0], unit: second[1] } : null
 }
 
-/** An argument: a number is real, a blank 0, a boolean #VALUE!, text that is not complex #NUM!. */
+/**
+ * An argument: a number is real, a blank 0, a boolean #VALUE!; text is complex, else a real number as VALUE reads
+ * it when no sign follows the first character (`"$1,000"`, `"50%"`, `"18:30"`, `"1/2/2025"`; not `"2025-01-31"`),
+ * else #NUM!, as in Excel.
+ */
 function toComplex(v: V): Complex | CErr {
   if (isErr(v)) return v
   if (typeof v === 'boolean') return E.VALUE
   if (v === null) return { re: 0, im: 0, unit: '' }
   if (typeof v === 'number') return { re: v, im: 0, unit: '' }
-  const z = parseComplex(v)
+  const n = /[+-]/.test(v.trim().slice(1)) ? null : textToNumber(v)
+  const z = parseComplex(v) ?? (n === null ? null : { re: n, im: 0, unit: '' as const })
   // −0 is 0 (IMARGUMENT("-1-0i") is π)
   return z ? { re: z.re + 0, im: z.im + 0, unit: z.unit } : E.NUM
 }
@@ -209,10 +216,10 @@ function binary(f: (a: Complex, b: Complex) => [number, number] | null): FnDef {
   }
 }
 
-function complex(re: number, im: number, suffix?: V): V {
-  if (suffix !== undefined && suffix !== null && suffix !== '' && suffix !== 'i' && suffix !== 'j') return E.VALUE
-  return complexText(re, im, suffix === 'j' ? 'j' : 'i')
-}
+/** Excel reads the suffix first: a suffix other than i, j or blank is #VALUE! whatever the parts are. */
+const SUFFIX = { first: [2], check: { 2: (s: V) => (s === null || s === '' || s === 'i' || s === 'j' ? undefined : E.VALUE) } }
+
+const complex = (re: number, im: number, suffix?: V): V => complexText(re, im, suffix === 'j' ? 'j' : 'i')
 
 function power(v: V, n: number): V {
   const z = toComplex(v)
@@ -240,7 +247,7 @@ const part = (f: (z: Complex) => V): FnDef => ({
 })
 
 export const functions: Record<string, FnDef> = {
-  COMPLEX: { args: 'x x v?', fn: complex },
+  COMPLEX: atp('x x v?', complex, SUFFIX),
   IMABS: part((z) => Math.hypot(z.re, z.im)),
   IMAGINARY: part((z) => z.im),
   IMARGUMENT: part((z) => (z.re === 0 && z.im === 0 ? E.DIV0 : Math.atan2(z.im, z.re))),

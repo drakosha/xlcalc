@@ -3,7 +3,7 @@ import type { FnDef } from '../../args.js'
 import { serialOf, ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp } from '../date/atp.js'
-import { validBasis, yearFrac, yearLength } from '../date/daycount.js'
+import { basisFirst, validBasis, yearFrac, yearLength } from '../date/daycount.js'
 
 /** settlement < maturity, a valid basis and positive amounts, as the ToolPak checks them. */
 const bad = (settlement: number, maturity: number, basis: number, ...positive: number[]) =>
@@ -13,7 +13,7 @@ const bad = (settlement: number, maturity: number, basis: number, ...positive: n
 function onYears(answer: (years: number, a: number, b: number) => number) {
   return atp('e e x x j?', (settlement: number, maturity: number, a: number, b: number, basis = 0) =>
     bad(settlement, maturity, basis, a, b) ? E.NUM : answer(yearFrac(settlement, maturity, basis), a, b),
-  )
+  basisFirst(4))
 }
 
 /** The same day a year on, an impossible day rolling over (2008-02-29 gives 2009-03-01). */
@@ -48,7 +48,7 @@ export const functions: Record<string, FnDef> = {
     if (settlement >= maturity || issue > settlement || !validBasis(basis) || rate < 0 || yld < 0) return E.NUM
     const { dim, a, dsm } = atMaturity(settlement, maturity, issue, basis)
     return ((1 + dim * rate) / (1 + dsm * yld) - a * rate) * 100
-  }),
+  }, basisFirst(5)),
   RECEIVED: onYears((years, investment, discount) => {
     const d = 1 - discount * years
     return d <= 0 ? NaN : investment / d
@@ -71,5 +71,5 @@ export const functions: Record<string, FnDef> = {
     if (settlement >= maturity || issue > settlement || !validBasis(basis) || rate < 0 || pr <= 0) return E.NUM
     const { dim, a, dsm } = atMaturity(settlement, maturity, issue, basis)
     return ((1 + dim * rate) / (pr / 100 + a * rate) - 1) / dsm
-  }),
+  }, basisFirst(5)),
 }

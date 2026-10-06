@@ -1,8 +1,8 @@
 /**
  * The coverage measurement's cases computed by this engine and compared with Microsoft Excel. The cases
  * (`docs/coverage-formulajs/cases.json`), the data sheet they read (`bench/coverage/data.ts`) and Excel's
- * answers (`docs/coverage-formulajs/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI) are
- * stored in the repository, so neither Excel nor LibreOffice is needed. Comparison follows the measurement
+ * answers (`docs/coverage-formulajs/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI, dynamic
+ * array formulas as Excel 365 writes them) are stored in the repository, so neither Excel nor LibreOffice is needed. Comparison follows the measurement
  * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
  * exactly.
  */
@@ -12,6 +12,7 @@ import { DATA_SHEET, dataCells, type Cell } from '../bench/coverage/data.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { BookInput, CellInput, CellValue } from '../src/contract.js'
 import { compute } from '../src/index.js'
+import { OPEN } from './excel-open.js'
 
 export interface ExcelCase {
   id: string
@@ -92,14 +93,26 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
-  legacyFormula:
-    'Some answers of the coverage measurement and of the `text` and `matheng` sets come from formulas of the old kind, where Excel intersects a range with the formula\'s row or column or shows the first value of an array (`ROW(D!C1:C8)` is 1, `TYPE(D!B1:B8)` is 16). The engine follows Excel 365\'s dynamic arrays, as the array set measures them: such a result is an array (`#SPILL!` until spilling is supported), `TYPE` of a range is 64, `BITAND(D!B1:B2,1)` is lifted into an array, `VLOOKUP` with a range of column numbers is `#REF!`. Those sets are to be measured again as dynamic array formulas.',
+  lookupIndexLifted:
+    '`VLOOKUP` and `HLOOKUP` lifted by an array key or match mode, with an array or a range of several cells as the index: Excel takes the index\'s top-left number in each lifted call, the engine reads the whole index, so a number below 1 or past the table anywhere in it is the answer (`INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),1)` is `"five"` in Excel and `#REF!` here).',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
     '`GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) give the quantile where Excel\'s iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom) and probabilities near 1 with shapes under 0.03; Excel\'s own `GAMMA.DIST` at the engine\'s answer gives the probability back.',
   binomInvTie:
     '`BINOM.INV` where alpha equals the probability of no success, (1 − p)^n, exactly: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they part on `BINOM.INV(3,0.25,0.421875)`, 0 in Excel and 1 here.',
+  lookupPastEnd: '`LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.',
+  textDigits:
+    'A number that Excel computes by another algorithm can differ from the engine\'s in the 15th significant digit, within the tests\' relative tolerance of 1e-9; turned into text (`&`, `TEXTJOIN`) the last digit then differs (`TEXTJOIN(";",FALSE,BESSELK(10,3))` is `2.72527006358477E-05` in Excel and `2.72527006358476E-05` here).',
+  sortbyOrders:
+    '`SORTBY` with an array or a range of several cells as a sort order is `#VALUE!`; Excel answers an array the size of the orders (the first sorted value, then blanks, or an error where a sort fails).',
+  linestConstantColumn:
+    '`LINEST` with a constant x variable besides the intercept: both give it coefficient 0 and the same fit, but Excel\'s statistics count it as a variable in some way the engine does not reproduce (`LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE)`: degrees of freedom 1 in Excel, 2 here, and the F statistic and the intercept\'s standard error differ).',
+  nearInteger:
+    'A whole-number argument just below a whole number: Excel takes `0.9999999999999997` as 1 in `INT`, `TRUNC`, `LEFT`, `INDEX`, `ROUND`\'s digits and the field of a database function (not in `MID`\'s start) and finds `FTEST(A1:A8,A1:A8)=1` TRUE; the engine truncates such a number and compares exactly. How far below Excel\'s tolerance reaches, and in which functions, is not measured yet.',
+  rowsOfIfs: '`ROWS` and `COLUMNS` of an `IFS` that answers an error: Excel counts 1 (`ROWS(IFS("x",1,TRUE,2))`), the engine answers the error.',
+  excelContext:
+    '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
 
 /**
@@ -107,20 +120,11 @@ export const REASONS = {
  * set's name): the engine's answer the tests pin instead of Excel's. An entry whose case matches Excel fails
  * the tests, so the list stays current.
  */
-const SPILL: Val = { t: 'e', v: 'SPILL' }
-
-/** Old-kind answers whose dynamic-array result is an array (#SPILL! here). */
-const LEGACY_SPILL = [
-  'measurement:COLUMN#2', 'measurement:COLUMN#4', 'measurement:INDEX#6', 'measurement:INDEX#7', 'measurement:INDEX#13', 'measurement:ROW#1',
-  'measurement:ROW#2', 'measurement:ROW#4', 'text:INDEX#3', 'text:INDEX#5', 'text:INDEX#12', 'text:ROW#2', 'text:COLUMN#3', 'matheng:BITAND#18',
-  'matheng:BITOR#18', 'matheng:BITXOR#18',
-]
-
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
-  ...Object.fromEntries(LEGACY_SPILL.map((k) => [k, { reason: 'legacyFormula' as const, engine: SPILL }])),
-  'measurement:TYPE#4': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
-  'text:TYPE#3': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
-  'text:VLOOKUP#39': { reason: 'legacyFormula', engine: { t: 'e', v: 'REF' } },
+  'arrays:index:VLOOKUP#61': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
+  'arrays:index:VLOOKUP#62': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
+  'arrays:index:VLOOKUP#63': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'VALUE' } },
+  'arrays:index:HLOOKUP#6': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },
@@ -141,14 +145,34 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat:GAMMAINV#16': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990052413.58303 } },
   'stat:GAMMAINV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
   'stat:BINOM.INV#30': { reason: 'binomInvTie', engine: { t: 'n', v: 1 } },
+  'fuzz:1#697': { reason: 'lookupPastEnd', engine: { t: 'e', v: 'REF' } },
+  'fuzz:1#234': { reason: 'textDigits', engine: { t: 's', v: '2.72527006358476E-05' } },
+  'fuzz:1#403': { reason: 'textDigits', engine: { t: 's', v: '4.18382560777941E-23' } },
+  'fuzz:1#947': { reason: 'textDigits', engine: { t: 's', v: '0.00803735952120296' } },
+  'fuzz:1#1327': { reason: 'textDigits', engine: { t: 's', v: '0.1963093102686' } },
+  'fuzz:1#185': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz:1#232': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz:1#426': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz-rules:LINEST#41': { reason: 'linestConstantColumn', engine: { t: 'n', v: 0.474341649025257 } },
+  'fuzz-rules:LINEST#42': { reason: 'linestConstantColumn', engine: { t: 'n', v: 56.3333333333333 } },
+  'fuzz-rules:LINEST#43': { reason: 'linestConstantColumn', engine: { t: 'n', v: 2 } },
+  'fuzz:1#1263': { reason: 'excelContext', engine: { t: 'e', v: 'NUM' } },
+  'fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: '2048.47532711546' } },
+  'fuzz:2#411': { reason: 'sortbyOrders', engine: { t: 'e', v: 'NUM' } },
+  'fuzz:2#1577': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz:2#175': { reason: 'nearInteger', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz-rules:INT#1': { reason: 'nearInteger', engine: { t: 'n', v: 0 } },
+  'fuzz-rules:LEFT#1': { reason: 'nearInteger', engine: { t: 's', v: '' } },
+  'fuzz-rules:INDEX#1': { reason: 'nearInteger', engine: { t: 'n', v: 1 } },
+  'fuzz:2#165': { reason: 'rowsOfIfs', engine: { t: 'e', v: 'VALUE' } },
 }
 
-/** A case passes: it matches Excel, or it is in KNOWN, differs from Excel and gives exactly the pinned answer. */
+/** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives exactly the pinned answer. */
 export function verdict(key: string, fn: string | undefined, excel: Val, engine: Val): { ok: boolean; why?: string } {
-  const known = KNOWN[key]
+  const known = KNOWN[key] ?? OPEN[key]
   const same = matches(fn, excel, engine)
   if (!known) return { ok: same }
-  if (same) return { ok: false, why: 'matches Excel, remove it from KNOWN' }
+  if (same) return { ok: false, why: `matches Excel, remove it from ${key in KNOWN ? 'KNOWN' : 'OPEN'}` }
   return engine.t === known.engine.t && engine.v === known.engine.v ? { ok: true } : { ok: false, why: `KNOWN pins ${show(known.engine)}` }
 }
 

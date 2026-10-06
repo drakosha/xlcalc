@@ -8,13 +8,13 @@ import { gammaPQ, normCdf } from './special.js'
 import { fCdf, tCdf } from './distributions.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, isErr, type V } from '../../values.js'
-import { devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
+import { cellError, devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
 
 function chisqTest(actual: Grid, expected: Grid): V {
-  const err = gridError(actual) ?? gridError(expected)
-  if (err) return err
   const n = actual.rows * actual.cols
-  if (n !== expected.rows * expected.cols || n === 1) return E.NA
+  // Excel's order: a one-cell error, the sizes, then errors inside
+  const err = cellError(actual) ?? cellError(expected) ?? (n !== expected.rows * expected.cols || n === 1 ? E.NA : (gridError(actual) ?? gridError(expected)))
+  if (err) return err
   let x2 = 0
   let pairs = 0
   for (let i = 0; i < n; i++) {
@@ -40,6 +40,8 @@ function fTest(a: number[], b: number[]): V {
 }
 
 function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
+  const e = cellError(ga) ?? cellError(gb)
+  if (e) return e
   if ((tails !== 1 && tails !== 2) || type < 1 || type > 3) return E.NUM
   let t: number
   let df: number

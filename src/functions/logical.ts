@@ -3,13 +3,13 @@
  * (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); IF, IFERROR, IFNA, SWITCH, TRUE and FALSE are this
  * engine's own (lazy: a branch not taken is not computed).
  */
-import { eachValue, type FnDef, type Segment } from '../args.js'
+import { directError, eachValue, type FnDef, type Segment } from '../args.js'
 import { compareValues, E, isErr, sameType, toBool, type CErr, type V } from '../values.js'
 
 /** The booleans of AND, OR, XOR: numbers and booleans count, text and blanks are skipped (direct text too); none at all is #VALUE!. */
 function booleans(segs: Segment[]): boolean[] | CErr {
   const out: boolean[] = []
-  const e = eachValue(segs, (v) => {
+  const e = directError(segs) ?? eachValue(segs, (v) => {
     if (isErr(v)) return v
     if (typeof v === 'boolean' || typeof v === 'number') out.push(v !== 0 && v !== false)
   })

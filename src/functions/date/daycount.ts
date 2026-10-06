@@ -2,7 +2,7 @@
 import type { FnDef } from '../../args.js'
 import { daysInMonth, isLeap, serialOf, ymd } from '../../dates.js'
 import { E } from '../../values.js'
-import { atp } from './atp.js'
+import { atp, need, type AtpOrder } from './atp.js'
 
 export type Ymd = { y: number; m: number; d: number }
 
@@ -75,7 +75,12 @@ export function yearFrac(start: number, end: number, basis: number): number {
 
 export const validBasis = (b: number) => b >= 0 && b <= 4
 
+export const validFreq = (f: number) => f === 1 || f === 2 || f === 4
+
+/** Excel reads the basis first in YEARFRAC and most securities: an invalid one is #NUM! whatever the other arguments. */
+export const basisFirst = (i: number): AtpOrder => ({ first: [i], check: { [i]: need(validBasis) } })
+
 export const functions: Record<string, FnDef> = {
   DAYS360: { args: 'd d b?', fn: (start: number, end: number, european = false) => days360(start, end, european) },
-  YEARFRAC: atp('e e j?', (start: number, end: number, basis = 0) => (validBasis(basis) ? yearFrac(start, end, basis) : E.NUM)),
+  YEARFRAC: atp('e e j?', (start: number, end: number, basis = 0) => yearFrac(start, end, basis), basisFirst(2)),
 }

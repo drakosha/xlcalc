@@ -91,7 +91,8 @@ describe('large period counts and spans stay fast', () => {
       'ACCRINT(DATE(1900,3,1),DATE(1900,6,1),DATE(9999,12,1),0.1,1000,4)',
       'PRICE(DATE(1900,3,1),DATE(9999,12,1),0.05,0.06,100,4)',
       'YIELD(DATE(1900,3,1),DATE(9999,12,1),0.05,90,100,4)',
-      'ODDFPRICE(DATE(1900,3,1),DATE(9999,12,1),DATE(1900,1,15),DATE(1900,6,1),0.05,0.06,100,4)',
+      // an issue date in a quasi-coupon period that begins before 1900 is #NUM! in Excel
+      'ODDFPRICE(DATE(1900,4,1),DATE(9999,12,1),DATE(1900,3,15),DATE(1900,6,1),0.05,0.06,100,4)',
     ])
     expect(performance.now() - t0).toBeLessThan(3000)
     expect(got[1]).toEqual({ error: 'NUM' })

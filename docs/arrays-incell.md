@@ -27,7 +27,7 @@ Measured exceptions, all from the `lift` cases, which give every whitelisted fun
 - 108 functions refuse a range in a one-value argument with `#VALUE!` but lift an array (`EOMONTH(A1:A2,0)` is `#VALUE!`, `EOMONTH(A1:A2+0,0)` an array): the former Analysis ToolPak (BESSEL, radix and complex-number functions, bond, coupon and discount functions, EDATE, EOMONTH, WORKDAY, YEARFRAC and others) and the field of the database functions; WORKDAY.INTL lifts a range of weekends. The list is `REFUSE_RANGES` in `src/functions.ts`.
 - `N` and `T` take the top-left cell of a range and lift an array.
 - In an array, `MAXA`, `MINA`, `STDEVA`, `STDEVPA`, `VARA` and `VARPA` take only the numbers, `AVERAGEA` counts text as 0 (kind `Y`); booleans are skipped by all of them.
-- `VLOOKUP` with a range as the column number is `#REF!`, `MATCH` reads its top-left cell as the match type.
+- `VLOOKUP` and `HLOOKUP` take an array or a range of several cells as the index whole: the answer is the found line at each number, shaped as the index, and the first number in order that is not valid answers for all (`#VALUE!` below 1, `#REF!` past the table, an error or text that is not a number). `MATCH` reads its top-left cell as the match type. Measured by the `index` cases.
 - `INDEX`, `TAKE`, `DROP`, `XLOOKUP` and `CHOOSE` answer references when given references (`SUMIF(INDEX(A1:C9,0,1),">2")`, `COUNTA(TAKE(A1:A8,2))` skips blank cells); the other functions with an array answer give arrays.
 
 ## A formula whose result is an array
@@ -60,11 +60,11 @@ The case set `bench/coverage/sets/arrays.ts` is computed in Excel as dynamic arr
 
 A case whose answer is an array is checked through a scalar wrapper (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or at the top level, where both Excel and the engine give `#SPILL!`: in the case book every neighbour of a case is taken, and a value under the last case blocks a downward spill.
 
-Older answers stored from formulas of the old kind (the coverage measurement, the `text` and `matheng` sets) part from Excel 365 where implicit intersection or an array result matters; those cases are listed in `KNOWN` with the reason `legacyFormula`, and the array set checks the same formulas as dynamic ones.
+The coverage measurement's Excel columns (en-US and ru-RU) and the `text` and `matheng` sets are computed as dynamic array formulas too since 06.10. Measured again, 9 of the measurement's 5,275 answers changed in each column and 10 of the sets' 4,392, all where an old formula intersected a range with its row or showed the first value of an array (`ROW(D!C1:C8)` was 1, `TYPE(D!B1:B8)` 16, `INDEX(D!L1:N6,0,3)` `#VALUE!`); the 19 cases kept in `KNOWN` for that (`legacyFormula`) leave it: 18 match Excel as they are, `text:VLOOKUP#39` (`VLOOKUP(5,L!A1:B8,D!L1:L2)`, `#SPILL!`) after `VLOOKUP` and `HLOOKUP` learned an index array. The old columns stay as `docs/coverage-formulajs/excel-en-legacy.json` and `excel-ru-legacy.json`.
 
 ## Decisions taken (Mikhail, 06.10)
 
 1. `#CALC!`: added to `ErrorCode` (a `contract:` commit after review of 06.10); empty arrays and over-long `CONCAT`, `TEXTJOIN` answer it.
 2. The JSDoc of `CheckCode` `unsupported` says what it means now (the same `contract:` commit).
-3. Old-kind answers: 19 cases of the coverage measurement and of the `text` and `matheng` sets stay in `KNOWN` (`legacyFormula`); measuring those sets again as dynamic formulas is the next session's work.
+3. Old-kind answers: 19 cases of the coverage measurement and of the `text` and `matheng` sets stayed in `KNOWN` (`legacyFormula`) until those were measured again as dynamic formulas (done 06.10, see Checking against Excel).
 4. The text order is en-US for `<`, `>`, criteria, lookups and sorting (Latin before Cyrillic, as Excel en-US); a locale of the book will set it in the locale work's second part.

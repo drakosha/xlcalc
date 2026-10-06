@@ -3,9 +3,9 @@
  * rows under a header row; criteria rows are OR, the conditions in a row AND; text without an operator
  * matches values that begin with it.
  */
-import { gridAt, type FnDef, type Grid } from '../args.js'
+import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
-import { E, isErr, toBool, toText, type CErr, type V } from '../values.js'
+import { E, isErr, Rng, toBool, toText, type CErr, type V } from '../values.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V): Crit | null {
@@ -37,11 +37,11 @@ function nameIndex(db: Grid, name: V): number | CErr {
   return E.VALUE
 }
 
-/** The field's values in the records selected by the criteria. */
+/** The field's values in the records selected by the criteria; a database or criteria without a row under the header is #VALUE!. */
 function selected(db: Grid, field: V, criteria: Grid): V[] | CErr {
   const col = fieldIndex(db, field)
   if (isErr(col)) return col
-  if (criteria.rows < 2) return E.VALUE
+  if (db.rows < 2 || criteria.rows < 2) return E.VALUE
   // the database column each condition tests; under a header that is no field (−1) only TRUE holds, as a computed criterion
   const tests: { col: number; crit: Crit }[][] = []
   // past the occupied part every criteria row is blank: one of them selects every record
@@ -73,11 +73,23 @@ function squares(xs: number[]): number {
   return xs.reduce((s, x) => s + (x - mean) ** 2, 0)
 }
 
+/**
+ * The field as Excel reads it: a value as it is (an error is the answer), a reference to one cell by its value
+ * (an error there is #VALUE!), a reference to several cells #VALUE!; an array is lifted.
+ */
+function fieldOf(cx: Cx, field: V | Rng): V {
+  if (!(field instanceof Rng)) return field
+  if (field.r2 > field.r1 || field.c2 > field.c1) return E.VALUE
+  const v = cx.scalar(field)
+  return isErr(v) ? E.VALUE : v
+}
+
 /** A database function of the selected values; with `errors`, an error among them is the answer. */
 const dfn = (f: (vs: V[]) => V, errors = true): FnDef => ({
-  args: 'G a G',
-  fn: (db: Grid, field: V, criteria: Grid) => {
-    const vs = selected(db, field, criteria)
+  args: 'G r G',
+  cx: true,
+  fn: (cx: Cx, db: Grid, field: V | Rng, criteria: Grid) => {
+    const vs = selected(db, fieldOf(cx, field), criteria)
     if (isErr(vs)) return vs
     if (errors) {
       const e = vs.find(isErr)

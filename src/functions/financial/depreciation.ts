@@ -5,7 +5,7 @@
 import { E } from '../../values.js'
 import type { FnDef } from '../../args.js'
 import { roundDigits } from '../common.js'
-import { atp } from '../date/atp.js'
+import { atp, need } from '../date/atp.js'
 import { isLeap, ymd } from '../../dates.js'
 import { validBasis, yearFrac } from '../date/daycount.js'
 
@@ -32,13 +32,14 @@ function amorFirst(purchased: number, first: number, basis: number): number {
 /** AMORDEGRC's coefficient by asset life 1/rate; a life of 2 years or less is #NUM!. */
 const coefficient = (life: number) => (life <= 2 ? NaN : life <= 4 ? 1.5 : life <= 6 ? 2 : 2.5)
 
-const badAmor = (cost: number, purchased: number, first: number, salvage: number, period: number, rate: number, basis: number) =>
-  !validBasis(basis) || basis === 2 || rate <= 0 || cost < 0 || salvage < 0 || salvage > cost || period < 0 || purchased > first
+/** AMORDEGRC and AMORLINC check cost, dates, salvage, period and rate before they read the basis. */
+const ASSET = { check: { 5: need((rate: number, [cost, purchased, first, salvage, period]: readonly number[]) => rate > 0 && cost >= 0 && salvage >= 0 && salvage <= cost && period >= 0 && purchased <= first) } }
+const badBasis = (basis: number) => !validBasis(basis) || basis === 2
 
 export const functions: Record<string, FnDef> = {
   // declining by rate × coefficient, rounded; the year before the life's end takes half the rest, the last year the same again
   AMORDEGRC: atp('x e e x x x j?', (cost: number, purchased: number, first: number, salvage: number, period: number, rate: number, basis = 0) => {
-    if (badAmor(cost, purchased, first, salvage, period, rate, basis)) return E.NUM
+    if (badBasis(basis)) return E.NUM
     const r = rate * coefficient(1 / rate)
     if (Number.isNaN(r)) return E.NUM
     const last = Math.floor(1 / rate)
@@ -61,9 +62,9 @@ export const functions: Record<string, FnDef> = {
       book -= dep
     }
     return dep
-  }),
+  }, ASSET),
   AMORLINC: atp('x e e x x x j?', (cost: number, purchased: number, first: number, salvage: number, period: number, rate: number, basis = 0) => {
-    if (badAmor(cost, purchased, first, salvage, period, rate, basis)) return E.NUM
+    if (badBasis(basis)) return E.NUM
     const full = cost * rate
     const first0 = amorFirst(purchased, first, basis) * full
     const n = Math.trunc(period)
@@ -72,7 +73,7 @@ export const functions: Record<string, FnDef> = {
     if (n <= fulls) return full
     if (n === fulls + 1) return cost - salvage - full * fulls - first0
     return 0
-  }),
+  }, ASSET),
   // the rate rounded to three decimals; a partial first year of `month` months and its remainder after `life`
   DB: {
     args: 'n n n n i?',

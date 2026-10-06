@@ -6,7 +6,7 @@
  * conditions are not supported: null (the caller turns it into #VALUE!).
  */
 import { roundDigits } from './functions/common.js'
-import { ymd } from './dates.js'
+import { textToNumber, ymd } from './dates.js'
 import { NUMBER_TEXT, readNumber } from './model.js'
 
 type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
@@ -285,7 +285,7 @@ export function formatText(value: number | string | boolean, fmt: string): strin
   const sections = splitSections(fmt)
   if (typeof value === 'string') {
     const t = value.trim()
-    const n = NUMBER_TEXT.test(t) ? readNumber(t) : NaN
+    const n = NUMBER_TEXT.test(t) ? readNumber(t) : (textToNumber(value) ?? NaN)
     if (Number.isNaN(n)) {
       const textSec = sections.length >= 4 ? sections[3] : sections.find((s) => s.includes('@'))
       return textSec !== undefined ? textSec.replace(/@/g, value).replace(/"/g, '') : value

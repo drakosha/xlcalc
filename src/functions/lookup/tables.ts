@@ -1,28 +1,51 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
-import { Arr } from '../../arrays/value.js'
-import { E, isErr, Rng, toBool, type V } from '../../values.js'
+import { arr, Arr } from '../../arrays/value.js'
+import { E, isErr, Rng, toBool, toNum, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
-/** Excel reads the index, looks up the key, and only then checks the index against the table. */
+/**
+ * Excel reads the index, looks up the key, and only then checks the index against the table. An array or a
+ * range of several cells as the index answers the found line at each number, shaped as the index; the first
+ * number in order that is not valid is the whole answer (a lifted call takes the index's top-left, see README).
+ */
 const tableLookup = (horizontal: boolean): FnDef => ({
-  args: 'a G r a?',
+  args: 'a G R a?',
   cx: true,
-  fn: (cx: Cx, key: V, table: Grid, idx: V | Rng, approx: V = true): V => {
+  array: true,
+  fn: (cx: Cx, key: V, table: Grid, idx: V | Rng | Arr, approx: V = true): V | Arr => {
     const k = keyOf(key)
     if (isErr(k)) return k
-    const n = indexArg(cx, idx)
+    const many = idx instanceof Arr || (idx instanceof Rng && (idx.r2 > idx.r1 || idx.c2 > idx.c1))
+    const n = many ? 0 : indexArg(cx, idx as V | Rng)
     if (isErr(n)) return n
     const a = toBool(approx)
     if (isErr(a)) return a
     const pos = find(horizontal ? row(table) : column(table), k, a ? 1 : 0, true)
     if (pos < 0) return E.NA
+    const size = horizontal ? table.rows : table.cols
+    const bad = (i: number) => (i < 1 ? E.VALUE : i > size ? E.REF : undefined)
+    const cell = (i: number) => gridAt(table, horizontal ? (i - 1) * table.cols + pos : pos * table.cols + i - 1)
+    if (many) return lineAt(cx.view(idx) as Arr, bad, cell)
     const i = Math.trunc(n)
-    if (i < 1) return E.VALUE
-    if (i > (horizontal ? table.rows : table.cols)) return E.REF
-    return gridAt(table, horizontal ? (i - 1) * table.cols + pos : pos * table.cols + i - 1)
+    return bad(i) ?? cell(i)
   },
 })
+
+/** The found line at every number of an index array, row by row; an error or text that is not a number is #REF!. */
+function lineAt(idx: Arr, bad: (i: number) => CErr | undefined, cell: (i: number) => V): CErr | Arr {
+  const out: V[] = []
+  for (let r = 0; r < idx.rows; r++)
+    for (let c = 0; c < idx.cols; c++) {
+      const n = toNum(idx.at(r, c))
+      if (isErr(n)) return E.REF
+      const i = Math.trunc(n)
+      const e = bad(i)
+      if (e) return e
+      out.push(cell(i))
+    }
+  return arr(idx.rows, idx.cols, out)
+}
 
 const row = (g: Grid): Line => ({ at: (j) => gridAt(g, j), n: g.cols, filled: g.w })
 const column = (g: Grid): Line => ({ at: (j) => gridAt(g, j * g.cols), n: g.rows, filled: g.h })

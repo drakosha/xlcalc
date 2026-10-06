@@ -4,13 +4,15 @@
 
 Поводом стал замер WB1 в the app (`docs/probes/WB1-engine.md`, раздел «Семантика списка»): голая formulajs ошибалась не на простых вызовах, а на краях (шаблоны и даты текстом в условиях, текст и логические в диапазонах, регистр, JS Date в местной зоне). Поэтому здесь на каждую функцию кроме типичных вызовов идут краевые.
 
-Код замера, правила работы с Excel и команда повтора: `bench/coverage/README.md`. Сырые результаты по колонкам: `docs/coverage-formulajs/` (`cases.json` случаи с формулами, `formulajs.json`, `excel-en.json`, `excel-ru.json`, `libreoffice.json`, `summary.json` вердикты по случаям и функциям). Таблицы ниже между метками `auto` пересобирает `npx tsx bench/coverage/run.ts report`.
+Код замера, правила работы с Excel и команда повтора: `bench/coverage/README.md`. Сырые результаты по колонкам: `docs/coverage-formulajs/` (`cases.json` случаи с формулами, `formulajs.json`, `excel-en.json`, `excel-ru.json`, `libreoffice.json`, `summary.json` вердикты по случаям и функциям; прежние колонки Excel `excel-en-legacy.json`, `excel-ru-legacy.json`, `excel-en-ru-ui.json`). Таблицы ниже между метками `auto` пересобирает `npx tsx bench/coverage/run.ts report`.
 
 ## Итог
 
-В наборе 402 функции и 5 275 случаев. Эталон Excel en-US посчитан с английским интерфейсом и локалью (`-AppleLanguages (en) -AppleLocale en_US`). Через адаптер все случаи совпали с ним у 105 функций, у 213 совпали обычные случаи, а расходятся краевые, у 81 расходятся уже обычные, 3 функции зависают на огромном аргументе. Голая formulajs полностью совпадает у 55 функций. По случаям адаптер поднимает совпадение с 3 354 до 3 975 (с 64 до 75 процентов); обычных случаев совпало 817 из 965, краевых 3 158 из 4 310. Комплексное число текстом с мнимой единицей сравнивается по частям с тем же допуском, что и числа (с 7 октября; до того знак в знак, и 15 функций IM* расходились только записью с 17 цифрами). Предложение (последний раздел): 105 функций брать как есть, 39 после общих правил адаптера, 169 после правил адаптера и короткой проверки аргументов на функцию, 86 писать своими, 3 зависающих закрыть стражем.
+В наборе 402 функции и 5 275 случаев. Эталон Excel en-US посчитан с английским интерфейсом и локалью (`-AppleLanguages (en) -AppleLocale en_US`). Через адаптер все случаи совпали с ним у 105 функций, у 213 совпали обычные случаи, а расходятся краевые, у 81 расходятся уже обычные, 3 функции зависают на огромном аргументе. Голая formulajs полностью совпадает у 55 функций. По случаям адаптер поднимает совпадение с 3 355 до 3 976 (с 64 до 75 процентов); обычных случаев совпало 817 из 965, краевых 3 159 из 4 310. Комплексное число текстом с мнимой единицей сравнивается по частям с тем же допуском, что и числа (с 7 октября; до того знак в знак, и 15 функций IM* расходились только записью с 17 цифрами). Предложение (последний раздел): 105 функций брать как есть, 40 после общих правил адаптера, 169 после правил адаптера и короткой проверки аргументов на функцию, 85 писать своими, 3 зависающих закрыть стражем.
 
 Первая редакция отчёта считала колонку en-US с русским интерфейсом Excel. Язык интерфейса влияет на расчёт, а не только на показ (раздел «Влияние языка интерфейса»): 32 случая у 23 функций, и итог отсюда сдвинулся с 97 до 105 полностью совпавших функций.
+
+С 6 октября 2026 года колонки Excel en-US и ru-RU посчитаны формулами динамического массива, как их сохраняет Excel 365; прежние, формулами старого вида, оставлены в `excel-en-legacy.json` и `excel-ru-legacy.json`. При перемере в каждой колонке изменилось 9 ответов из 5 275, все там, где старая формула пересекала диапазон со своей строкой или показывала первое значение массива: ROW и COLUMN диапазона (ROW#1, ROW#2, ROW#4, COLUMN#2, COLUMN#4: было число, стало `#SPILL!`), INDEX с нулём или пустой ячейкой в номере (INDEX#6, INDEX#7, INDEX#13: было `#VALUE!`, стало `#SPILL!`), TYPE диапазона (TYPE#4: было 16, стало 64). Случаи с ответом-массивом, прежде записанные формулой массива (Ctrl+Shift+Enter), не изменились. Через адаптер совпал на один случай больше (TYPE#4), TYPE перешла из «своих» в «адаптер».
 
 <!-- auto:summary -->
 | | через адаптер | голая formulajs |
@@ -20,7 +22,7 @@
 | совпали только обычные случаи | 213 | 259 |
 | расходятся уже обычные случаи | 81 | 85 |
 | зависает (на одном из случаев) | 3 | 3 |
-| случаев совпало | 3975 из 5275 | 3354 из 5275 |
+| случаев совпало | 3976 из 5275 | 3355 из 5275 |
 
 С мягким допуском 1e-6 через адаптер полностью совпадают ещё 3: F.INV.RT, GAMMA, TDIST.
 Адаптер довёл до полного совпадения 50 функций, где голая formulajs расходится: ACOTH, ATANH, AVEDEV, AVERAGE, BINOM.DIST.RANGE, BINOMDIST, CHOOSE, CHOOSECOLS, CHOOSEROWS, CLEAN, COLUMNS, COSH, DROP, EXP, EXPAND, F.DIST.RT, FIND, FISHER, FIXED, GAMMALN, GAMMALN.PRECISE, IF, IFS, ISPMT, LEFT, LN, LOG, LOG10, MAX, MEDIAN, MIN, NORM.DIST, NORM.S.DIST, NORMDIST, NOT, NPV, PDURATION, PHI, PROB, PRODUCT, REPT, RIGHT, ROUNDDOWN, ROUNDUP, ROWS, SINH, SUBTOTAL, SUM, TRIM, UNICODE.
@@ -42,10 +44,10 @@
 <!-- auto:kinds -->
 | вид расхождения | случаев через адаптер | функций через адаптер | случаев голой | функций голой |
 |---|---|---|---|---|
-| число | 350 | 108 | 374 | 122 |
+| число | 349 | 107 | 373 | 121 |
 | значение вместо ошибки | 334 | 164 | 379 | 183 |
-| другой код ошибки | 273 | 111 | 436 | 210 |
-| ошибка вместо значения | 196 | 98 | 220 | 112 |
+| другой код ошибки | 278 | 113 | 441 | 212 |
+| ошибка вместо значения | 191 | 98 | 215 | 112 |
 | исключение | 94 | 29 | 132 | 59 |
 | строка | 22 | 10 | 23 | 10 |
 | строка: формат числа | 14 | 14 | 0 | 0 |
@@ -75,11 +77,11 @@
 
 **Сравнение.** Числа с допуском |a−b| ≤ 1e-9·max(1,|a|), отдельно мягкий 1e-6; строки и логические точно; ошибки по коду (`ERROR.TYPE` в Excel, а не текст ошибки). Эталон для формул движка Excel en-US: английский интерфейс и локаль. Excel ru-RU посчитан с русскими интерфейсом и локалью (системными), как у пользователя с русским вводом.
 
-**Книга.** Функции новее Excel 2007 записаны с `_xlfn.` (SORT с `_xlfn._xlws.`); ни одна функция в Excel не дала `#NAME?`, так что список приставок верен. Ответ-массив сравнивается по элементу (`INDEX(F(…),i,j)`) и по размеру (`ROWS`, `COLUMNS`); такие случаи записаны формулой массива, иначе Excel применяет к аргументу TRANSPOSE неявное пересечение. Одномерный массив formulajs считается колонкой.
+**Книга.** Функции новее Excel 2007 записаны с `_xlfn.` (SORT с `_xlfn._xlws.`); ни одна функция в Excel не дала `#NAME?`, так что список приставок верен. Ответ-массив сравнивается по элементу (`INDEX(F(…),i,j)`) и по размеру (`ROWS`, `COLUMNS`). Все случаи записаны формулами динамического массива (`cm="1"`, метаданные XLDAPR); до 6 октября обычные случаи писались формулами старого вида, а случаи с ответом-массивом формулой массива, иначе Excel старого вида применял к аргументу TRANSPOSE неявное пересечение. Одномерный массив formulajs считается колонкой.
 
 <!-- auto:meta -->
 - formulajs 4.6.1, Node v26.7.0, часовой пояс Europe/Moscow, расчёт 15.914 с;
-- Excel 16.113.3 на Маке: en-US 17.6 с, ru-RU 17 с (14 частей, без учёта перезапуска Excel);
+- Excel 16.113.3 на Маке: en-US 17.6 с, ru-RU 18.3 с (14 частей, без учёта перезапуска Excel);
 - LibreOffice 26.2.4.2, профиль en-US, 2.891 с.
 <!-- /auto:meta -->
 
@@ -255,7 +257,7 @@
 | ISTEXT | информационные | 9 | 9 | 9 | все |  |  |
 | N | информационные | 11 | 11 | 11 | все |  |  |
 | NA | информационные | 1 | 1 | 1 | все |  |  |
-| TYPE | информационные | 11 | 9 | 9 | только обычные | число 1, ошибка вместо значения 1 | диапазон; пустая ячейка |
+| TYPE | информационные | 11 | 10 | 10 | только обычные | ошибка вместо значения 1 | пустая ячейка |
 | AND | логические | 15 | 15 | 15 | все |  |  |
 | FALSE | логические | 1 | 1 | 1 | все |  |  |
 | IF | логические | 15 | 15 | 14 | все |  |  |
@@ -270,7 +272,7 @@
 | CHOOSE | поиск и ссылки | 15 | 15 | 10 | все |  |  |
 | CHOOSECOLS | поиск и ссылки | 19 | 19 | 16 | все |  |  |
 | CHOOSEROWS | поиск и ссылки | 19 | 19 | 16 | все |  |  |
-| COLUMN | поиск и ссылки | 4 | 0 | 0 | расходятся обычные | ошибка вместо значения 4 | обычный; одна ячейка; таблица по строкам |
+| COLUMN | поиск и ссылки | 4 | 0 | 0 | расходятся обычные | ошибка вместо значения 2, другой код ошибки 2 | обычный; одна ячейка; таблица по строкам |
 | COLUMNS | поиск и ссылки | 5 | 5 | 4 | все |  |  |
 | DROP | поиск и ссылки | 16 | 16 | 15 | все |  |  |
 | EXPAND | поиск и ссылки | 19 | 19 | 18 | все |  |  |
@@ -279,7 +281,7 @@
 | INDEX | поиск и ссылки | 15 | 12 | 9 | только обычные | значение вместо ошибки 3 | пустая ячейка; ноль |
 | LOOKUP | поиск и ссылки | 14 | 12 | 12 | расходятся обычные | число 1, другой код ошибки 1 | обычный; #DIV/0! |
 | MATCH | поиск и ссылки | 15 | 12 | 11 | только обычные | другой код ошибки 2, число 1 | по убыванию -1; ошибка на входе; #DIV/0! |
-| ROW | поиск и ссылки | 4 | 0 | 0 | расходятся обычные | ошибка вместо значения 4 | обычный; одна ячейка; таблица по строкам |
+| ROW | поиск и ссылки | 4 | 0 | 0 | расходятся обычные | другой код ошибки 3, ошибка вместо значения 1 | обычный; одна ячейка; таблица по строкам |
 | ROWS | поиск и ссылки | 5 | 5 | 4 | все |  |  |
 | SORT | поиск и ссылки | 16 | 10 | 10 | расходятся обычные | число 5, строка 1 | обычный, элемент 2,1; обычный, элемент 7,1; обычный |
 | TAKE | поиск и ссылки | 12 | 12 | 12 | все |  |  |
@@ -554,7 +556,6 @@
 | без смены знака | 1 | MIRR |
 | экранирование ~? | 1 | SEARCH |
 | кириллица и регистр | 1 | SWITCH |
-| диапазон | 1 | TYPE |
 | даты не по порядку | 1 | XNPV |
 | поток: смесь | 1 | XNPV |
 <!-- /auto:tags -->
@@ -594,9 +595,9 @@
 ## LibreOffice против Excel
 
 <!-- auto:libreoffice -->
-LibreOffice расходится с Excel en-US в 1337 случаях из 5275, у 316 функций из 402. По видам: другой код ошибки 772, значение вместо ошибки 203, ошибка вместо значения 163, число 153, строка 38, другой тип 6, строка: формат числа 1, логическое 1.
+LibreOffice расходится с Excel en-US в 1345 случаях из 5275, у 319 функций из 402. По видам: другой код ошибки 775, значение вместо ошибки 208, ошибка вместо значения 163, число 153, строка 38, другой тип 6, строка: формат числа 1, логическое 1.
 
-На обычных случаях расходится 56 раз у 36 функций:
+На обычных случаях расходится 59 раз у 38 функций:
 
 | случай | формула | Excel en-US | LibreOffice |
 |---|---|---|---|
@@ -609,6 +610,7 @@ LibreOffice расходится с Excel en-US в 1337 случаях из 5275
 | CHAR#4 | `CHAR(0)` | #VALUE | "_x0000_" |
 | CODE#3 | `CODE("Ж")` | 95 | 208 |
 | CODE#4 | `CODE("")` | #VALUE | 0 |
+| COLUMN#2 | `COLUMN(D!L1:N6)` | #SPILL | 12 |
 | CONCATENATE#3 | `CONCATENATE(1.5,TRUE)` | "1.5TRUE" | "1.51" |
 | CONVERT#1 | `CONVERT(1,"lbm","kg")` | 0.45359237 | 0.453592309749 |
 | CONVERT#3 | `CONVERT(2.5,"ft","sec")` | #NA | #VALUE |
@@ -646,6 +648,8 @@ LibreOffice расходится с Excel en-US в 1337 случаях из 5275
 | PERCENTRANK.INC#1 | `_xlfn.PERCENTRANK.INC(D!B1:B8,8)` | 0.285 | 0.286 |
 | PERCENTRANK.INC#2 | `_xlfn.PERCENTRANK.INC(D!B1:B8,5.5,2)` | 0.19 | 0.2 |
 | PERCENTRANK.INC#3 | `_xlfn.PERCENTRANK.INC(D!B1:B8,100)` | #NA | #VALUE |
+| ROW#1 | `ROW(D!C1:C8)` | #SPILL | 1 |
+| ROW#2 | `ROW(D!L1:N6)` | #SPILL | 1 |
 | SQRT#2 | `SQRT(-16)` | #NUM | #VALUE |
 | SUBTOTAL#4 | `SUBTOTAL(2,D!D1:D8)` | 3 | 5 |
 | TYPE#3 | `TYPE(TRUE)` | 4 | 1 |
@@ -842,6 +846,7 @@ LibreOffice расходится с Excel en-US в 1337 случаях из 5275
 | GAMMALN | 3 из 13 | `GAMMALN(D!A1)`: Excel #NUM, LibreOffice #VALUE |
 | GAMMALN.PRECISE | 3 из 13 | `_xlfn.GAMMALN.PRECISE(D!A1)`: Excel #NUM, LibreOffice #VALUE |
 | GEOMEAN | 3 из 12 | `GEOMEAN(D!D1:D8)`: Excel 2.59624705093, LibreOffice 0 |
+| INDEX | 3 из 15 | `INDEX(D!L1:N6,2,D!A1)`: Excel #SPILL, LibreOffice #VALUE |
 | IRR | 3 из 7 | `IRR(D!I13:I17)`: Excel #VALUE, LibreOffice #NA |
 | LN | 3 из 14 | `LN(D!A1)`: Excel #NUM, LibreOffice #VALUE |
 | LOG | 3 из 15 | `LOG(D!A1)`: Excel #NUM, LibreOffice #VALUE |
@@ -853,6 +858,7 @@ LibreOffice расходится с Excel en-US в 1337 случаях из 5275
 | MROUND | 3 из 15 | `MROUND(5,-2)`: Excel #NUM, LibreOffice 6 |
 | NEGBINOMDIST | 3 из 15 | `NEGBINOMDIST(10,5,-0.1)`: Excel #NUM, LibreOffice #VALUE |
 | NETWORKDAYS | 3 из 15 | `NETWORKDAYS(41183,-1)`: Excel #NUM, LibreOffice -29417 |
+| ROW | 3 из 4 | `ROW(D!C1:C8)`: Excel #SPILL, LibreOffice 1 |
 | SERIESSUM | 3 из 15 | `SERIESSUM(TRUE,0,2,D!AR1:AR4)`: Excel #VALUE, LibreOffice 0.540277777778 |
 | STDEV.S | 3 из 12 | `_xlfn.STDEV.S(D!D1:D8)`: Excel 2.02072594216, LibreOffice 2.07364413533 |
 | SUM | 3 из 13 | `SUM(D!D1:D8)`: Excel 9.5, LibreOffice 10.5 |
@@ -874,6 +880,7 @@ LibreOffice расходится с Excel en-US в 1337 случаях из 5275
 | CHISQ.TEST | 2 из 4 | `_xlfn.CHISQ.TEST(D!AK5:AL7,D!AM1:AN3)`: Excel 0.0168018232972, LibreOffice #VALUE |
 | CHITEST | 2 из 4 | `CHITEST(D!AK5:AL7,D!AM1:AN3)`: Excel 0.0168018232972, LibreOffice #VALUE |
 | CHOOSEROWS | 2 из 19 | `INDEX(_xlfn.CHOOSEROWS(D!L1:N6,1,"3"),1,1)`: Excel 1, LibreOffice #VALUE |
+| COLUMN | 2 из 4 | `COLUMN(D!L1:N6)`: Excel #SPILL, LibreOffice 12 |
 | CONCATENATE | 2 из 15 | `CONCATENATE(1.5,TRUE)`: Excel "1.5TRUE", LibreOffice "1.51" |
 | COTH | 2 из 13 | `_xlfn.COTH(D!A1)`: Excel #DIV0, LibreOffice #NUM |
 | COUNT | 2 из 12 | `COUNT(D!D1:D8)`: Excel 3, LibreOffice 5 |
@@ -1313,7 +1320,7 @@ Excel ru-RU (русские интерфейс и локаль) расходит
 Excel берёт язык интерфейса не только для показа (тексты ошибок), но и для расчёта: от него зависит, как логическое становится текстом, какой текст считается логическим и в какой кодировке работает CODE. Первая редакция отчёта считала колонку en-US с локалью en_US, но с русским интерфейсом; прежняя колонка оставлена в `docs/coverage-formulajs/excel-en-ru-ui.json`. С английским интерфейсом `IF("TRUE",1,2)` это 1, а `IF("ИСТИНА",1,2)` это `#VALUE!` (отдельная проверка 5 октября); с русским наоборот. Ошибки с английским интерфейсом Excel тоже показывает по-английски. Различие по случаям замера:
 
 <!-- auto:uilang -->
-С русским интерфейсом ответ Excel en-US был другим в 32 случаях у 23 функций. Совпадение через адаптер по прежней колонке 3950 случаев, по новой 3975; голой 3342 и 3354.
+С русским интерфейсом ответ Excel en-US был другим в 32 случаях у 23 функций. Совпадение через адаптер по прежней колонке 3950 случаев, с английским интерфейсом 3975; голой 3342 и 3354.
 
 | случай | формула | русский интерфейс | английский интерфейс |
 |---|---|---|---|
@@ -1429,9 +1436,9 @@ Excel берёт язык интерфейса не только для пока
 | предложение | функций | функции |
 |---|---|---|
 | как есть | 105 | BINOMDIST, CEILING, FLOOR, NORMDIST, ISPMT, NPV, PDURATION, ERROR.TYPE, ISBLANK, ISERR, ISERROR, ISLOGICAL, ISNA, ISNONTEXT, ISNUMBER, ISTEXT, N, NA, AND, FALSE, IF, IFS, NOT, OR, TRUE, XOR, CHOOSE, CHOOSECOLS, CHOOSEROWS, COLUMNS, DROP, EXPAND, HSTACK, ROWS, TAKE, TRANSPOSE, VSTACK, ABS, ACOS, ACOSH, ACOTH, ASIN, ASINH, ATAN, ATANH, CEILING.MATH, CEILING.PRECISE, COSH, CSCH, DEGREES, EVEN, EXP, FLOOR.MATH, FLOOR.PRECISE, INT, LN, LOG, LOG10, MMULT, MUNIT, ODD, PI, POWER, PRODUCT, RADIANS, ROUNDDOWN, ROUNDUP, SECH, SIGN, SINH, SQRT, SUBTOTAL, SUM, TRUNC, AVEDEV, AVERAGE, BINOM.DIST.RANGE, COUNTA, COUNTBLANK, F.DIST.RT, FISHER, GAMMALN, GAMMALN.PRECISE, GAUSS, MAX, MEDIAN, MIN, NORM.DIST, NORM.S.DIST, PHI, PROB, CLEAN, CONCAT, CONCATENATE, EXACT, FIND, FIXED, LEFT, LEN, LOWER, REPT, RIGHT, T, TRIM, UNICODE |
-| адаптер | 39 | ZTEST, DATEVALUE, HOUR, ISOWEEKNUM, MINUTE, SECOND, BESSELI, BESSELJ, BESSELK, BESSELY, COMPLEX, DELTA, ERFC, GESTEP, CUMIPMT, CUMPRINC, DDB, DOLLARDE, DOLLARFR, EFFECT, FVSCHEDULE, NOMINAL, NPER, ISEVEN, ISODD, IFNA, MROUND, SQRTPI, SUMPRODUCT, SUMSQ, AVERAGEA, COUNT, FREQUENCY, GAMMA.INV, MAXA, MINA, T.INV, Z.TEST, TEXTJOIN |
+| адаптер | 40 | ZTEST, DATEVALUE, HOUR, ISOWEEKNUM, MINUTE, SECOND, BESSELI, BESSELJ, BESSELK, BESSELY, COMPLEX, DELTA, ERFC, GESTEP, CUMIPMT, CUMPRINC, DDB, DOLLARDE, DOLLARFR, EFFECT, FVSCHEDULE, NOMINAL, NPER, ISEVEN, ISODD, TYPE, IFNA, MROUND, SQRTPI, SUMPRODUCT, SUMSQ, AVERAGEA, COUNT, FREQUENCY, GAMMA.INV, MAXA, MINA, T.INV, Z.TEST, TEXTJOIN |
 | адаптер и проверка области | 169 | BETADIST, BETAINV, COVAR, CRITBINOM, EXPONDIST, GAMMADIST, GAMMAINV, HYPGEOMDIST, LOGINV, NEGBINOMDIST, NORM.INV, NORMSINV, STDEVP, TDIST, VARP, DATEDIF, DAY, DAYS, EDATE, EOMONTH, MONTH, WEEKDAY, WEEKNUM, YEAR, YEARFRAC, BIN2DEC, BIN2HEX, BIN2OCT, BITAND, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, DEC2BIN, DEC2HEX, DEC2OCT, HEX2BIN, HEX2DEC, HEX2OCT, IMABS, IMAGINARY, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMCSC, IMCSCH, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMREAL, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN, OCT2BIN, OCT2DEC, OCT2HEX, ACCRINT, COUPDAYS, FV, IPMT, IRR, MIRR, PMT, PPMT, PRICEDISC, PV, RATE, RRI, SLN, SYD, HLOOKUP, INDEX, ACOT, ATAN2, BASE, COMBIN, COMBINA, COS, COT, COTH, CSC, FACT, FACTDOUBLE, GCD, LCM, MULTINOMIAL, QUOTIENT, ROUND, SEC, SERIESSUM, SIN, SUMX2MY2, SUMX2PY2, SUMXMY2, TAN, TANH, BETA.INV, BINOM.DIST, BINOM.INV, CHISQ.DIST, CHISQ.DIST.RT, CONFIDENCE.NORM, CORREL, COVARIANCE.P, COVARIANCE.S, DEVSQ, EXPON.DIST, F.DIST, F.INV, F.INV.RT, FISHERINV, FORECAST, GAMMA.DIST, GEOMEAN, GROWTH, HARMEAN, HYPGEOM.DIST, INTERCEPT, KURT, LARGE, LOGNORM.DIST, LOGNORM.INV, MODE.SNGL, NEGBINOM.DIST, NORM.S.INV, NORMINV, PEARSON, PERCENTILE.EXC, PERCENTILE.INC, PERCENTRANK.EXC, PERMUT, PERMUTATIONA, POISSON.DIST, QUARTILE.EXC, RANK.AVG, RANK.EQ, RSQ, SKEW, SKEW.P, SLOPE, SMALL, STANDARDIZE, STDEV.P, STDEV.S, STDEVA, STDEVPA, STEYX, T.DIST.2T, T.DIST.RT, T.INV.2T, VAR.P, VAR.S, VARA, VARPA, WEIBULL.DIST, MID, REPLACE, UNICHAR |
-| своя (расходятся по смыслу на краях) | 8 | XNPV, TYPE, SWITCH, MATCH, VLOOKUP, DECIMAL, MINIFS, SEARCH |
+| своя (расходятся по смыслу на краях) | 7 | XNPV, SWITCH, MATCH, VLOOKUP, DECIMAL, MINIFS, SEARCH |
 | своя (расходятся обычные) | 78 | CHIDIST, CHITEST, FDIST, FINV, FTEST, LOGNORMDIST, NORMSDIST, TINV, TTEST, DAVERAGE, DCOUNT, DCOUNTA, DGET, DMAX, DMIN, DPRODUCT, DSTDEV, DSTDEVP, DSUM, DVAR, DVARP, DATE, DAYS360, NETWORKDAYS, NETWORKDAYS.INTL, TIME, TIMEVALUE, WORKDAY, WORKDAY.INTL, CONVERT, ERF, DB, DISC, TBILLEQ, TBILLPRICE, TBILLYIELD, XIRR, IFERROR, COLUMN, LOOKUP, ROW, SORT, UNIQUE, AGGREGATE, ARABIC, ISO.CEILING, MOD, ROMAN, SUMIF, SUMIFS, AVERAGEIF, AVERAGEIFS, BETA.DIST, CHISQ.TEST, CONFIDENCE.T, COUNTIF, COUNTIFS, F.TEST, GAMMA, LINEST, LOGEST, MAXIFS, MODE.MULT, PERCENTRANK.INC, QUARTILE.INC, T.DIST, T.TEST, TREND, TRIMMEAN, CHAR, CODE, DOLLAR, NUMBERVALUE, PROPER, SUBSTITUTE, TEXT, UPPER, VALUE |
 | своя или страж (зависает) | 3 | CHIINV, CHISQ.INV, CHISQ.INV.RT |
 <!-- /auto:plan -->

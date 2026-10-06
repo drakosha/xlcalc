@@ -1,9 +1,11 @@
 /**
  * Excel cases for the math and engineering functions beyond the coverage measurement: domain edges, large and
  * negative arguments, complex text, CONVERT units, functions formula.js lacks; a few with a range in a one-value
- * argument (formulas of the old kind here; the array set checks that as Excel 365). Answers: `docs/excel-cases/matheng.json`.
+ * argument. Computed as dynamic array formulas (Excel 365). Answers: `docs/excel-cases/matheng.json`.
  */
 import type { Probe } from '../probes.js'
+
+export const DYNAMIC = true
 
 /** Functions newer than Excel 2007: stored with the `_xlfn.` prefix. */
 const XLFN = new Set([

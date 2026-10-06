@@ -4,6 +4,7 @@
  */
 import type { CellValue, ErrorCode } from './contract.js'
 import { collator } from './criteria.js'
+import { textToNumber } from './dates.js'
 import { generalText } from './format.js'
 import { NUMBER_TEXT, readNumber } from './model.js'
 
@@ -54,8 +55,9 @@ export function toNum(v: V): number | CErr {
   if (v === null) return 0
   if (typeof v === 'boolean') return v ? 1 : 0
   if (isErr(v)) return v
+  // decimal text first (the common case), else as VALUE reads it: `$1,000`, `50%`, dates and times
   const t = v.trim()
-  return NUMBER_TEXT.test(t) ? readNumber(t) : E.VALUE
+  return NUMBER_TEXT.test(t) ? readNumber(t) : (textToNumber(v) ?? E.VALUE)
 }
 
 export function toText(v: V): string | CErr {

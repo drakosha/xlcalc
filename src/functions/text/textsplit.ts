@@ -22,16 +22,14 @@ function textsplit(text: string, colSeg: Segment, rowSeg?: Segment, ignoreEmpty 
   const rows = rowSeg === undefined ? [] : delimiters(rowSeg)
   if (isErr(rows)) return rows
   if (mode !== 0 && mode !== 1) return E.VALUE
-  const colKeys = cols.filter((k) => k !== '')
-  const rowKeys = rows.filter((k) => k !== '')
-  if (!colKeys.length && !rowKeys.length) return E.VALUE
-  if (text === '') return E.VALUE
+  // an empty delimiter anywhere (a blank cell too) is #VALUE!, as in Excel
+  if (cols.includes('') || rows.includes('') || text === '') return E.VALUE
   const hay = mode ? text.toLowerCase() : text
   const fold = (ks: string[]) => (mode ? ks.map((k) => k.toLowerCase()) : ks)
   const lines: string[][] = [[]]
   let p = 0
   for (;;) {
-    const d = next(hay, p, fold(colKeys), fold(rowKeys))
+    const d = next(hay, p, fold(cols), fold(rows))
     lines.at(-1)!.push(text.slice(p, d ? d.at : text.length))
     if (!d) break
     if (d.row) lines.push([])

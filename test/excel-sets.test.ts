@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import { compute, type CellInput } from '../src/index.js'
 import { CASES, dataSheet, engineFormula, KNOWN, REASONS, show, toVal, verdict } from './excel-cases.js'
+import { OPEN } from './excel-open.js'
 import { SETS } from './excel-sets.js'
 
 for (const set of SETS) {
@@ -45,9 +46,9 @@ describe('excel case sets', () => {
 })
 
 describe('known differences from Excel', () => {
-  it('every KNOWN entry names an existing case', () => {
+  it('every KNOWN and OPEN entry names an existing case', () => {
     const keys = new Set([...CASES.map((c) => `measurement:${c.id}`), ...SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`))])
-    expect(Object.keys(KNOWN).filter((k) => !keys.has(k))).toEqual([])
+    expect([...Object.keys(KNOWN), ...Object.keys(OPEN)].filter((k) => !keys.has(k))).toEqual([])
   })
 
   it("the README's known differences have a line for every reason in KNOWN", () => {

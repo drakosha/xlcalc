@@ -2,12 +2,15 @@
 import type { FnDef } from '../../args.js'
 import { ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
-import { atp } from '../date/atp.js'
-import { validBasis } from '../date/daycount.js'
+import { atp, need } from '../date/atp.js'
+import { validBasis, validFreq } from '../date/daycount.js'
 import { solveDecreasing } from './bond.js'
-import { cmp, couponDate, daysBetween, normalDays, periodOf, type Ymd } from './coupon.js'
+import { cmp, couponDate, coupons, daysBetween, normalDays, periodOf, type Ymd } from './coupon.js'
 
-const badFreq = (freq: number, basis: number) => (freq !== 1 && freq !== 2 && freq !== 4) || !validBasis(basis)
+const badFreq = (freq: number, basis: number) => !validFreq(freq) || !validBasis(basis)
+
+/** The frequency is checked as it is read, before the basis. */
+const freqAt = (i: number) => ({ check: { [i]: need(validFreq) } })
 const later = (a: Ymd, b: Ymd) => (cmp(a, b) > 0 ? a : b)
 
 /** A quasi-coupon period's normal length (`actual`: bases 1–3 count actual days, as ODDL* do in Excel). */
@@ -67,34 +70,37 @@ function oddLast(settlement: number, maturity: number, last: number, freq: numbe
   return { dc, a, dsc }
 }
 
+/** Excel's #NUM! for an odd period whose quasi-coupon period (on the regular schedule) begins before 1900. */
+const before1900 = (date: number, anchor: number, freq: number) => coupons(date, anchor, freq).early === true
+
 const oddFirstBad = (settlement: number, maturity: number, issue: number, first: number, freq: number, basis: number) =>
-  badFreq(freq, basis) || !(issue < settlement && settlement < first && first < maturity)
+  badFreq(freq, basis) || !(issue < settlement && settlement < first && first < maturity) || before1900(issue, first, freq)
 
 const oddLastBad = (settlement: number, maturity: number, last: number, freq: number, basis: number) =>
-  badFreq(freq, basis) || !(last < settlement && settlement < maturity)
+  badFreq(freq, basis) || !(last < settlement && settlement < maturity) || before1900(last, maturity, freq)
 
 export const functions: Record<string, FnDef> = {
   ODDFPRICE: atp('e e e e x x x j j?', (settlement: number, maturity: number, issue: number, first: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) =>
     oddFirstBad(settlement, maturity, issue, first, freq, basis) || rate < 0 || yld < 0 || redemption <= 0
       ? E.NUM
       : oddFirstPrice(settlement, maturity, issue, first, rate, yld, redemption, freq, basis),
-  ),
+  freqAt(7)),
   ODDFYIELD: atp('e e e e x x x j j?', (settlement: number, maturity: number, issue: number, first: number, rate: number, pr: number, redemption: number, freq: number, basis = 0): number | CErr => {
     if (oddFirstBad(settlement, maturity, issue, first, freq, basis) || rate < 0 || pr <= 0 || redemption <= 0) return E.NUM
     const f = (y: number) => oddFirstPrice(settlement, maturity, issue, first, rate, y, redemption, freq, basis) - pr
     return solveDecreasing(f, rate || 0.05, -freq + 1e-9) ?? E.NUM
-  }),
+  }, freqAt(7)),
   ODDLPRICE: atp('e e e x x x j j?', (settlement: number, maturity: number, last: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) => {
     if (oddLastBad(settlement, maturity, last, freq, basis) || rate < 0 || yld < 0 || redemption <= 0) return E.NUM
     const { dc, a, dsc } = oddLast(settlement, maturity, last, freq, basis)
     const coupon = (100 * rate) / freq
     return (redemption + dc * coupon) / (1 + (dsc * yld) / freq) - a * coupon
-  }),
+  }, freqAt(6)),
   ODDLYIELD: atp('e e e x x x j j?', (settlement: number, maturity: number, last: number, rate: number, pr: number, redemption: number, freq: number, basis = 0) => {
     if (oddLastBad(settlement, maturity, last, freq, basis) || rate < 0 || pr <= 0 || redemption <= 0) return E.NUM
     const { dc, a, dsc } = oddLast(settlement, maturity, last, freq, basis)
     const coupon = (100 * rate) / freq
     const paid = pr + a * coupon
     return ((redemption + dc * coupon - paid) / paid) * (freq / dsc)
-  }),
+  }, freqAt(6)),
 }
