@@ -59,6 +59,7 @@ const ERRORS: Record<string, [code: string, rank: number]> = {
   '#NUM!': ['NUM', 6],
   '#N/A': ['NA', 7],
   '#SPILL!': ['SPILL', 9],
+  '#CALC!': ['CALC', 14],
 }
 const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRORS))
 

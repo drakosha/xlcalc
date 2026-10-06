@@ -20,6 +20,7 @@ export const E: Record<ErrorCode, CErr> = {
   VALUE: new CErr('VALUE'),
   CYCLE: new CErr('CYCLE'),
   SPILL: new CErr('SPILL'),
+  CALC: new CErr('CALC'),
   ERROR: new CErr('ERROR'),
 }
 

@@ -500,6 +500,7 @@ const GENERIC: Record<ErrorCode, string> = {
   VALUE: 'wrong type of value',
   CYCLE: 'circular reference',
   SPILL: 'array result does not fit',
+  CALC: 'empty array or text too long',
   ERROR: 'error',
 }
 

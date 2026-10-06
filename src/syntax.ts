@@ -71,6 +71,7 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   VALUE: '#VALUE!',
   CYCLE: '#CYCLE!',
   SPILL: '#SPILL!',
+  CALC: '#CALC!',
   ERROR: '#ERROR!',
 }
 
