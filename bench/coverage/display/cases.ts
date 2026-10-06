@@ -21,6 +21,8 @@ export interface DisplayCase {
   width?: number
   /** A merged area of this many columns from the cell, all of `width`. */
   span?: number
+  /** The format is written by its number when it is one of Excel's built-in formats (else as a custom format). */
+  builtin?: true
   /** A held-out case: the answer predicted before Excel showed it. */
   predicted?: DisplayAnswer
 }

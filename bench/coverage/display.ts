@@ -9,6 +9,7 @@
  * the `probes` step does) is halved down to the refused cases, which the step names.
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
@@ -22,6 +23,14 @@ const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-display.applescript')
 const OUT = join(HERE, 'out')
 const PART = 400
+
+/**
+ * ExcelJS writes a format that equals one of Excel's built-in formats by its number, and Excel shows some built-in
+ * formats by the regional settings (in ru-RU `d-mmm-yy` as `dd.mmm.yy`): a case's format is written as a custom
+ * format unless the case is `builtin`.
+ */
+const NumFmt = createRequire(import.meta.url)('exceljs/lib/xlsx/xform/style/numfmt-xform.js') as { getDefaultFmtId(code: string): number | undefined }
+const builtinId = NumFmt.getDefaultFmtId
 
 /** The automatic font colour reads as black, as `[Black]` does: neither is stored. */
 const BLACK = '#000000'
@@ -60,6 +69,9 @@ async function writeBook(cases: DisplayCase[], file: string): Promise<void> {
   const ws = wb.addWorksheet('S')
   const list = wb.addWorksheet('L')
   const at = place(cases)
+  const builtins = new Set(cases.flatMap((c) => (c.builtin ? [c.cell.format] : [])))
+  if (cases.some((c) => !c.builtin && builtins.has(c.cell.format))) throw new Error('a format is both built-in and custom in one book')
+  NumFmt.getDefaultFmtId = (code) => (builtins.has(code) ? builtinId(code) : undefined)
   cases.forEach((c, i) => {
     const { row, col } = at.get(c.id)!
     const addr = formatAddress(row, col)
