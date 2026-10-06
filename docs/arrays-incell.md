@@ -60,11 +60,11 @@ The case set `bench/coverage/sets/arrays.ts` is computed in Excel as dynamic arr
 
 A case whose answer is an array is checked through a scalar wrapper (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or at the top level, where both Excel and the engine give `#SPILL!`: in the case book every neighbour of a case is taken, and a value under the last case blocks a downward spill.
 
-The `text` and `matheng` sets are computed as dynamic array formulas too (since 06.10; 10 of their 4,392 answers changed, all where a range met a one-value argument or an array was the result). Older answers of the coverage measurement, stored from formulas of the old kind, part from Excel 365 where implicit intersection or an array result matters; those cases are listed in `KNOWN` with the reason `legacyFormula`, and the array set checks the same formulas as dynamic ones.
+The coverage measurement's Excel columns (en-US and ru-RU) and the `text` and `matheng` sets are computed as dynamic array formulas too since 06.10. Measured again, 9 of the measurement's 5,275 answers changed in each column and 10 of the sets' 4,392, all where an old formula intersected a range with its row or showed the first value of an array (`ROW(D!C1:C8)` was 1, `TYPE(D!B1:B8)` 16, `INDEX(D!L1:N6,0,3)` `#VALUE!`); the 19 cases kept in `KNOWN` for that (`legacyFormula`) leave it: 18 match Excel as they are, `text:VLOOKUP#39` (`VLOOKUP(5,L!A1:B8,D!L1:L2)`, `#SPILL!`) after `VLOOKUP` and `HLOOKUP` learned an index array. The old columns stay as `docs/coverage-formulajs/excel-en-legacy.json` and `excel-ru-legacy.json`.
 
 ## Decisions taken (Mikhail, 06.10)
 
 1. `#CALC!`: added to `ErrorCode` (a `contract:` commit after review of 06.10); empty arrays and over-long `CONCAT`, `TEXTJOIN` answer it.
 2. The JSDoc of `CheckCode` `unsupported` says what it means now (the same `contract:` commit).
-3. Old-kind answers: 19 cases of the coverage measurement and of the `text` and `matheng` sets stay in `KNOWN` (`legacyFormula`); measuring those sets again as dynamic formulas is the next session's work.
+3. Old-kind answers: 19 cases of the coverage measurement and of the `text` and `matheng` sets stayed in `KNOWN` (`legacyFormula`) until those were measured again as dynamic formulas (done 06.10, see Checking against Excel).
 4. The text order is en-US for `<`, `>`, criteria, lookups and sorting (Latin before Cyrillic, as Excel en-US); a locale of the book will set it in the locale work's second part.

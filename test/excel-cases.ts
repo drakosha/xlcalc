@@ -1,8 +1,8 @@
 /**
  * The coverage measurement's cases computed by this engine and compared with Microsoft Excel. The cases
  * (`docs/coverage-formulajs/cases.json`), the data sheet they read (`bench/coverage/data.ts`) and Excel's
- * answers (`docs/coverage-formulajs/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI) are
- * stored in the repository, so neither Excel nor LibreOffice is needed. Comparison follows the measurement
+ * answers (`docs/coverage-formulajs/excel-en.json`: Excel 16.113 for Mac, en-US locale and English UI, dynamic
+ * array formulas as Excel 365 writes them) are stored in the repository, so neither Excel nor LibreOffice is needed. Comparison follows the measurement
  * (`bench/coverage/compare.ts`): numbers within |a−b| ≤ 1e-9·max(1,|a|), strings, booleans and error codes
  * exactly.
  */
@@ -92,8 +92,6 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
-  legacyFormula:
-    'Some answers of the coverage measurement come from formulas of the old kind, where Excel intersects a range with the formula\'s row or column or shows the first value of an array (`ROW(D!C1:C8)` is 1, `TYPE(D!B1:B8)` is 16). The engine follows Excel 365\'s dynamic arrays, as the array set measures them: such a result is an array (`#SPILL!` until spilling is supported), `TYPE` of a range is 64. The measurement is to be computed again as dynamic array formulas.',
   lookupIndexLifted:
     '`VLOOKUP` and `HLOOKUP` lifted by an array key or match mode, with an array or a range of several cells as the index: Excel takes the index\'s top-left number in each lifted call, the engine reads the whole index, so a number below 1 or past the table anywhere in it is the answer (`INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),1)` is `"five"` in Excel and `#REF!` here).',
   rateZeroRoot:
@@ -109,17 +107,7 @@ export const REASONS = {
  * set's name): the engine's answer the tests pin instead of Excel's. An entry whose case matches Excel fails
  * the tests, so the list stays current.
  */
-const SPILL: Val = { t: 'e', v: 'SPILL' }
-
-/** Old-kind answers whose dynamic-array result is an array (#SPILL! here). */
-const LEGACY_SPILL = [
-  'measurement:COLUMN#2', 'measurement:COLUMN#4', 'measurement:INDEX#6', 'measurement:INDEX#7', 'measurement:INDEX#13', 'measurement:ROW#1',
-  'measurement:ROW#2', 'measurement:ROW#4',
-]
-
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
-  ...Object.fromEntries(LEGACY_SPILL.map((k) => [k, { reason: 'legacyFormula' as const, engine: SPILL }])),
-  'measurement:TYPE#4': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
   'arrays:index:VLOOKUP#61': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
   'arrays:index:VLOOKUP#62': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
   'arrays:index:VLOOKUP#63': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'VALUE' } },

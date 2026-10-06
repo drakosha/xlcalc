@@ -36,7 +36,7 @@ export const RESULTS = ONLY ? OUT : join(ROOT, 'docs/coverage-formulajs')
 const BOOK = join(OUT, 'book.xlsx')
 
 export interface Column<T = Val> {
-  meta: Record<string, string | number>
+  meta: Record<string, string | number | boolean>
   values: Record<string, T>
 }
 
