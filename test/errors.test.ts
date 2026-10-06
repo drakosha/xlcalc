@@ -29,7 +29,7 @@ describe('errors', () => {
   })
 
   it('#NAME?: unknown function and name', () => {
-    const { v, issue } = run({ A1: { formula: 'VLOOKUP(1,B1:C2,2)' }, A2: { formula: 'nope*2' } })
+    const { v, issue } = run({ A1: { formula: 'INDIRECT("B1")' }, A2: { formula: 'nope*2' } })
     expect(v('A1')).toEqual({ error: 'NAME' })
     expect(issue('A1')).toMatchObject({ check: 'unknown_function', at: 0 })
     expect(v('A2')).toEqual({ error: 'NAME' })
