@@ -181,7 +181,7 @@ export function buildProbes(): Probe[] {
     '100,"C","F"', '212,"F","C"', '0,"K","C"', '0,"Rank","K"', '100,"Reau","C"', '100,"C","Rank"', '1,"cel","fah"', '1,"kel","K"', '-40,"C","F"',
     '300,"K","Reau"', '50,"F","Rank"', '1,"Reau","Rank"', '0,"C","K"', '-273.15,"C","K"', '-500,"C","K"', '1,"C","C"', '1,"Reau","Reau"',
     '1,"m","m"', '1,"m","sec"', '1,"LBM","kg"', '1," m","m"', '1,"m ","m"', '1,"","m"', '"2","m","ft"', 'TRUE,"m","ft"', 'D!A4,"m","ft"', '1,TRUE,"m"',
-    '1,"m",D!A1', 'D!A1,"m","ft"', '1E308,"km","m"', '1,"yd","ft"', '1,"mi","Nmi"', '1,"gal","uk_gal"', '1,"ft2","in2"', '1,"BTU","cal"',
+    '1,"m",D!A1', 'D!A1,"m","ft"', '1E307*10,"km","m"', '1,"yd","ft"', '1,"mi","Nmi"', '1,"gal","uk_gal"', '1,"ft2","in2"', '1,"BTU","cal"',
     '1,"hh","HPh"', '1,"lbm","ozm"', '1,"day","yr"', '1,"psi","mmHg"', '1,"atm","Torr"', '1,"mph","kn"', '1,"admkn","kn"', '1,"byte","bit"',
     '1,"Wh","kJ"', '1,"HP","PS"', '1,"ly","parsec"', '1,"survey_mi","mi"', '1,"us_acre","uk_acre"', '1,"pica","Pica"', '1,"cup","oz"', '1,"tbs","tsp"',
     '6,"tsp","tbs"', '1,"kn","m/h"', '1,"Picapt3","Pica^3"', '1,"ang","Pica"', '1,"g","u"', '1,"eV","e"', '1,"hr","mn"', '1,"MTON","GRT"', '1,"lbf","dyn"',
@@ -221,7 +221,7 @@ export function buildProbes(): Probe[] {
   each('ROMAN', ['4000', '-1', '0', '3999.9', '1,5', '1,-1', '499,TRUE', '499,FALSE', '499,"2"', '499,D!A1', '499,1.9', '"12"', 'TRUE', 'D!A4,0', '12,"abc"', '499,D!A4', '0.5', '1999'])
   each('ARABIC', ['"I"', '"IV"', '"MCMXCIX"', '"mcmxcix"', '"MMMCMXCIX"', '"MMMM"', '"IIII"', '"IC"', '"VX"', '"XM"', '"LL"', '"DM"', '"IIIIIIIIII"', '"-MCM"', '"--I"', '"-"', '" MCM"', '"MCM "', '"M CM"', '"0"', '"A"', 'REPT("M",255)', 'REPT("M",256)', '"XIIII"', '"CCCCC"', '"IM"', '"VV"', '"XLX"', '"iV"', 'D!A13', '" "', '"MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"'])
   each('SERIESSUM', ['2,1,1,M!W1:W3', '2,1,1,M!V1:V3', '2,1,1,M!X1:X2', '2,1,1,3', '2,0,1,D!AR1:AR4', '0,1,1,D!AR1:AR4', '0,0,1,D!AR1:AR4', '-2,0.5,1,D!AR1:AR4', '2,1.5,1,D!AR1:AR4', '2,1,1,D!E1:E8', '2,1,1,D!K1:K8', '2,1,1,"3"', '2,1,1,TRUE', '1E200,2,1,D!AR1:AR4', '2,-1,-1,D!AR1:AR4', 'D!A4,1,1,D!AR1:AR4', '2,1,1,M!C1:C2', '0,-1,1,D!AR1:AR4'])
-  each('SQRTPI', ['0', '1', '1E300', '1E308', '-1', '"4"', 'D!A4', '1E-300'])
+  each('SQRTPI', ['0', '1', '1E300', '1E307*10', '-1', '"4"', 'D!A4', '1E-300'])
   each('SUMPRODUCT', ['D!B1:B8', 'D!B1:B8,D!C1:C8,D!B1:B8', '3,4', '"3",4', 'TRUE,4', 'D!B1,D!C1', 'D!P1:Q2,D!B1:B4', 'M!S1:S4,M!T1:T4', 'D!B:B,D!C:C', 'D!I13:I17,D!E2:E6', 'D!E2:E6,D!I13:I17', 'D!K1:K8', 'D!A7', 'D!A2,D!A2', 'D!A4,1', '"abc",1', 'D!P1:Q2,D!R1:S2,D!P1:Q2', 'D!B1:C8'])
   each('SUMSQ', ['D!B:B', '1E200,1E200', '"3"', 'TRUE', 'D!A4', 'D!A2', 'D!A13', 'D!B1:C8'])
   for (const fn of ['SUMX2MY2', 'SUMX2PY2', 'SUMXMY2'])
