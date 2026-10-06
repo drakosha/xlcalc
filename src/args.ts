@@ -296,8 +296,11 @@ export const coerce = (kind: string, x: Arg, cx: Cx): unknown => COERCE[kind](x,
 
 /** Kinds whose argument may be an error without stopping the call. */
 const KEEP_ERRORS = 'aRVrp'
-/** Lists and arrays are read after the one-value arguments, as Excel reads them: `LARGE(A1:A9,"x")` is #VALUE! even with an error in A1:A9. */
-const LATE_KINDS = 'NAYZDMG'
+/**
+ * Excel reads the arguments given as values before those given as references or arrays (`LARGE(A1:A9,"x")` and
+ * `SUM(A1:A9,"x")` are #VALUE! even with an error in A1:A9), except GCD, LCM and MULTINOMIAL (kind `Z`).
+ */
+const late = (x: unknown, kind: string) => kind !== 'Z' && (x instanceof Rng || x instanceof Arr)
 
 /** The callable the generated code uses for a function: coercion by kind, the call, the answer rules. */
 export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
@@ -314,11 +317,12 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
     const cells = def.cell ? 3 : 0
     for (let i = 0; i < cells; i++) out.push(a[i])
     const vals: unknown[] = new Array(a.length - cells)
-    for (const late of [false, true])
+    for (const pass of [false, true])
       for (let p = 0; p < vals.length; p++) {
         const k = kindAt(p)
-        if (LATE_KINDS.includes(k) !== late) continue
-        const v = COERCE[k](a[cells + p] as Arg, cx)
+        const x = a[cells + p] as Arg
+        if (late(x, k) !== pass) continue
+        const v = COERCE[k](x, cx)
         if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
         vals[p] = v
       }
@@ -381,6 +385,9 @@ export function pairs(a: Grid, b: Grid): [number[], number[]] | CErr {
   }
   return [xs, ys]
 }
+
+/** The first error given as a value among `V` arguments: Excel finds it before any error inside a range or array (`AND({TRUE,#DIV/0!},NA())` is #N/A). */
+export const directError = (segs: readonly Segment[]): CErr | undefined => segs.find((s): s is CErr => !Array.isArray(s) && isErr(s))
 
 /** Visits the values of `V` arguments in order, telling whether each came from a range; an error returned by `visit` stops and is returned. */
 export function eachValue(segs: readonly Segment[], visit: (v: V, inRange: boolean) => CErr | void): CErr | undefined {

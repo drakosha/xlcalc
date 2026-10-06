@@ -39,7 +39,10 @@ export function gridNumbers(g: Grid): number[] | CErr {
   return out
 }
 
-/** Rule 4 with errors, in Excel's order: an error in the first grid, different sizes (#N/A), an error in the second, then pairs of numbers by position. */
+/** A grid of one cell holding an error: Excel reads it as the argument's own error, before any check of the function. */
+export const cellError = (g: Grid): CErr | undefined => (g.rows * g.cols === 1 ? gridError(g) : undefined)
+
+/** Rule 4 with errors, in Excel's order: a one-cell error, different sizes (#N/A), an error in either grid, then pairs of numbers by position. */
 export function numberPairs(a: Grid, b: Grid): [number[], number[]] | CErr {
-  return gridError(a) ?? (a.rows * a.cols !== b.rows * b.cols ? E.NA : (gridError(b) ?? pairs(a, b)))
+  return cellError(a) ?? cellError(b) ?? (a.rows * a.cols !== b.rows * b.cols ? E.NA : (gridError(a) ?? gridError(b) ?? pairs(a, b)))
 }
