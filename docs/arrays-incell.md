@@ -44,7 +44,7 @@ Before spilling, a formula whose result is an array of more than one value gives
 
 `INDEX` with row or column 0 answers the whole column, row or range; `ROW` and `COLUMN` of several rows or columns answer the list of numbers. New functions, usable inside a formula: TRANSPOSE, MMULT, MUNIT, MINVERSE, SEQUENCE, CHOOSECOLS, CHOOSEROWS, TAKE, DROP, EXPAND, HSTACK, VSTACK, TOCOL, TOROW, WRAPROWS, WRAPCOLS, SORT, SORTBY, UNIQUE, FILTER, FREQUENCY, MODE.MULT, LINEST, LOGEST, TREND, GROWTH, TEXTSPLIT, RANDARRAY. `RANDARRAY` is volatile and draws from the clock seed, the cell and the element's position, as `RAND` does (RAND's own values do not change). Sorting is stable and orders numbers, text, booleans, errors, then blanks, which stay last in a descending sort too; text compares with the en-US collation (Latin before Cyrillic, as Excel en-US sorts), which `<` and `>` now use as well. LINEST and its kin solve by Householder QR.
 
-Excel answers `#CALC!` for an empty array (`FILTER` with nothing kept, `TAKE` of zero rows, `DROP` of everything). The contract has no such code; the engine answers `#VALUE!` (as for an over-long `CONCAT`), listed under Known differences.
+An empty array (`FILTER` with nothing kept, `TAKE` of zero rows, `DROP` of everything) is `#CALC!`, as in Excel (the error code `CALC` joined the contract for it).
 
 ## Graph and recomputation
 
@@ -62,9 +62,9 @@ A case whose answer is an array is checked through a scalar wrapper (SUM, INDEX,
 
 Older answers stored from formulas of the old kind (the coverage measurement, the `text` and `matheng` sets) part from Excel 365 where implicit intersection or an array result matters; those cases are listed in `KNOWN` with the reason `legacyFormula`, and the array set checks the same formulas as dynamic ones.
 
-## Questions for Mikhail
+## Decisions taken (Mikhail, 06.10)
 
-1. `#CALC!`: add `CALC` to `ErrorCode` (a `contract:` change) so that empty arrays and over-long `CONCAT` answer as Excel does, or keep `#VALUE!` as a known difference?
-2. The JSDoc of `CheckCode` in `src/contract.ts` says `unsupported` means "array arithmetic"; it now means a result that is an array (and external calls with non-literal arguments). A one-line `contract:` comment fix after your word.
-3. Old-kind answers: 19 cases of the coverage measurement and of the `text` and `matheng` sets are in `KNOWN` because Excel computed them as old formulas. Re-measure those sets as dynamic formulas (`DYNAMIC = true`, a full rerun of each) so that they leave `KNOWN`, or keep them as they are?
-4. The text order changed from ru-RU to en-US collation for `<`, `>`, criteria and lookups (Latin before Cyrillic), because Excel en-US sorts that way (`SORT`, and `{"x*y"}<"Аренда"` is TRUE in Excel). No existing case depended on the old order. Keep it?
+1. `#CALC!`: added to `ErrorCode` (a `contract:` commit after review of 06.10); empty arrays and over-long `CONCAT`, `TEXTJOIN` answer it.
+2. The JSDoc of `CheckCode` `unsupported` says what it means now (the same `contract:` commit).
+3. Old-kind answers: 19 cases of the coverage measurement and of the `text` and `matheng` sets stay in `KNOWN` (`legacyFormula`); measuring those sets again as dynamic formulas is the next session's work.
+4. The text order is en-US for `<`, `>`, criteria, lookups and sorting (Latin before Cyrillic, as Excel en-US); a locale of the book will set it in the locale work's second part.

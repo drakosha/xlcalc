@@ -19,10 +19,10 @@ describe('text functions beyond the Excel cases', () => {
     expect(values(['LEN(REPT("a",20000)&REPT("b",20000))', 'RIGHT(CONCATENATE(REPT("a",20000),"xyz",REPT("b",20000)),1)', 'LEN(REPT("a",32767)&"")'])).toEqual([32767, 'b', 32767])
   })
 
-  it('results longer than 32,767 characters are #VALUE! (Excel: #CALC! for CONCAT and TEXTJOIN)', () => {
+  it('results longer than 32,767 characters are #CALC! from CONCAT and TEXTJOIN, #VALUE! from other functions', () => {
     expect(values(['CONCAT(REPT("a",20000),REPT("b",20000))', 'TEXTJOIN(",",TRUE,REPT("a",20000),REPT("b",20000))', 'SUBSTITUTE(REPT("a",20000),"a","bb")', 'REPLACE(REPT("a",30000),1,0,REPT("b",3000))', 'LEN(TEXTJOIN(",",TRUE,REPT("a",16383),REPT("b",16383)))'])).toEqual([
-      err('VALUE'),
-      err('VALUE'),
+      err('CALC'),
+      err('CALC'),
       err('VALUE'),
       err('VALUE'),
       32767,

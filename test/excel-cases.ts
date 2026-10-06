@@ -93,8 +93,7 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
   legacyFormula:
-    'Some answers of the coverage measurement and of the `text` and `matheng` sets come from formulas of the old kind, where Excel intersects a range with the formula\'s row or column or shows the first value of an array (`ROW(D!C1:C8)` is 1, `TYPE(D!B1:B8)` is 16). The engine follows Excel 365\'s dynamic arrays, as the array set measures them: such a result is an array (`#SPILL!` until spilling is supported), `TYPE` of a range is 64, `BITAND(D!B1:B2,1)` is lifted into an array, `VLOOKUP` with a range of column numbers is `#REF!`.',
-  calc: 'An empty array (`FILTER` that keeps nothing, `TAKE` or `SEQUENCE` of zero rows, `DROP` of everything, `UNIQUE` with nothing exactly once, `TOCOL` ignoring every value, `RANDARRAY(0)`) is `#VALUE!`; Excel answers `#CALC!`, which this engine has no error code for.',
+    'Some answers of the coverage measurement and of the `text` and `matheng` sets come from formulas of the old kind, where Excel intersects a range with the formula\'s row or column or shows the first value of an array (`ROW(D!C1:C8)` is 1, `TYPE(D!B1:B8)` is 16). The engine follows Excel 365\'s dynamic arrays, as the array set measures them: such a result is an array (`#SPILL!` until spilling is supported), `TYPE` of a range is 64, `BITAND(D!B1:B2,1)` is lifted into an array, `VLOOKUP` with a range of column numbers is `#REF!`. Those sets are to be measured again as dynamic array formulas.',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
@@ -109,7 +108,6 @@ export const REASONS = {
  * the tests, so the list stays current.
  */
 const SPILL: Val = { t: 'e', v: 'SPILL' }
-const VALUE: Val = { t: 'e', v: 'VALUE' }
 
 /** Old-kind answers whose dynamic-array result is an array (#SPILL! here). */
 const LEGACY_SPILL = [
@@ -118,15 +116,11 @@ const LEGACY_SPILL = [
   'matheng:BITOR#18', 'matheng:BITXOR#18',
 ]
 
-/** Cases whose answer is an empty array. */
-const EMPTY = ['measurement:DROP#15', 'measurement:TAKE#9', ...['SEQUENCE#6', 'SEQUENCE#15', 'TAKE#4', 'DROP#2', 'TOCOL#5', 'TOROW#6', 'UNIQUE#7', 'FILTER#4', 'RANDARRAY#7'].map((id) => `arrays:fn:${id}`)]
-
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
   ...Object.fromEntries(LEGACY_SPILL.map((k) => [k, { reason: 'legacyFormula' as const, engine: SPILL }])),
   'measurement:TYPE#4': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
   'text:TYPE#3': { reason: 'legacyFormula', engine: { t: 'n', v: 64 } },
   'text:VLOOKUP#39': { reason: 'legacyFormula', engine: { t: 'e', v: 'REF' } },
-  ...Object.fromEntries(EMPTY.map((k) => [k, { reason: 'calc' as const, engine: VALUE }])),
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

@@ -4,8 +4,8 @@
  */
 import { eachValue, type FnDef, type Segment } from '../../args.js'
 import { wildSource } from '../../criteria.js'
-import { E, isErr, toText, type CErr, type V } from '../../values.js'
-import { capped, MAX_TEXT } from './common.js'
+import { E, isErr, toText, type V } from '../../values.js'
+import { capped, delimiters, joined, MAX_TEXT } from './common.js'
 
 /** The largest position or count MID accepts; REPLACE takes up to Excel's text length. */
 const MAX_INT = 2_147_483_647
@@ -57,18 +57,7 @@ function substitute(text: string, old: string, rep: string, instance?: number): 
   return capped(text.slice(0, at) + rep + text.slice(at + old.length))
 }
 
-/** A range of delimiters gives each of its cells, used in turn. */
-function delimiters(seg: Segment): string[] | CErr {
-  const out: string[] = []
-  for (const v of Array.isArray(seg) ? (seg as readonly V[]) : [seg as V]) {
-    const t = toText(v)
-    if (isErr(t)) return t
-    out.push(t)
-  }
-  return out
-}
-
-/** Ranges are read row by row. */
+/** Ranges are read row by row; several delimiters are used in turn. */
 function textjoin(delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
   const ds = delimiters(delims)
   if (isErr(ds)) return ds
@@ -81,7 +70,7 @@ function textjoin(delims: Segment, ignoreEmpty: boolean, segs: Segment[]): V {
   if (e) return e
   let out = parts[0] ?? ''
   for (let i = 1; i < parts.length; i++) out += ds[(i - 1) % ds.length] + parts[i]
-  return capped(out)
+  return joined(out)
 }
 
 const strings: Record<string, FnDef> = {
@@ -97,7 +86,7 @@ const strings: Record<string, FnDef> = {
         if (isErr(t)) return t
         out += t
       })
-      return e ?? capped(out)
+      return e ?? joined(out)
     },
   },
   // like &, Excel cuts the text at 32,767 characters (CONCAT and TEXTJOIN refuse it)

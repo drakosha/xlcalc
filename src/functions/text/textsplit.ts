@@ -2,7 +2,7 @@
 import type { FnDef, Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { E, isErr, type V } from '../../values.js'
-import { delimiters } from './split.js'
+import { delimiters } from './common.js'
 
 /** The earliest delimiter at or after `from` (a column delimiter wins a tie, then the longer). */
 function next(text: string, from: number, cols: string[], rows: string[]): { at: number; len: number; row: boolean } | null {

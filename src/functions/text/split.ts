@@ -1,19 +1,9 @@
 /** TEXTBEFORE and TEXTAFTER, this engine's own (Excel 2024). The delimiter may be several texts (an array or a range). */
 import type { FnDef, Segment } from '../../args.js'
-import { E, isErr, toText, type CErr, type V } from '../../values.js'
+import { E, isErr, toText, type V } from '../../values.js'
+import { delimiters } from './common.js'
 
 type Span = [number, number]
-
-/** The delimiters as texts: a range or array gives each of its values, an error is the answer. */
-export function delimiters(seg: Segment): string[] | CErr {
-  const out: string[] = []
-  for (const v of Array.isArray(seg) ? (seg as readonly V[]) : [seg as V]) {
-    const t = toText(v)
-    if (isErr(t)) return t
-    out.push(t)
-  }
-  return out
-}
 
 /** The first delimiter found from `p` on (to the left of `p` when `back`): its span, or null. */
 function nearest(hay: string, keys: string[], p: number, back: boolean): Span | null {

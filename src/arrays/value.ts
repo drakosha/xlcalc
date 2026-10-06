@@ -40,5 +40,5 @@ export const arr = (rows: number, cols: number, v: V[]): Arr => new Arr(rows, co
 /** A grid (a range's values, a scalar) as an array; an array stays as it is. */
 export const fromGrid = (g: { rows: number; cols: number; h: number; w: number; v: readonly V[] }): Arr => (g instanceof Arr ? g : new Arr(g.rows, g.cols, g.h, g.w, g.v))
 
-/** Excel has no empty arrays: an empty answer is #CALC!, which the contract has no code for (#VALUE!). */
-export const EMPTY: CErr = E.VALUE
+/** Excel has no empty arrays: an empty answer is #CALC!. */
+export const EMPTY: CErr = E.CALC
