@@ -76,6 +76,12 @@ export interface Outcome {
  */
 export const SOFT: Readonly<Record<string, string>> = {
   XIRR: 'Excel stops within its 1e-8 relative tolerance of the root (the measurement matched it only softly)',
+  'F.INV': "Excel loses up to 7 digits when a degree of freedom is 10^9 or more; the engine's quantile checks out with mpmath",
+  'F.INV.RT': "Excel loses up to 7 digits when a degree of freedom is 10^9 or more; the engine's quantile checks out with mpmath",
+  FINV: "Excel loses up to 7 digits when a degree of freedom is 10^9 or more; the engine's quantile checks out with mpmath",
+  'T.INV': "Excel loses up to 7 digits at 10^9 degrees of freedom and more (it inverts through the beta function near 1); the engine's quantile checks out with mpmath",
+  'T.INV.2T': "Excel loses up to 7 digits at 10^9 degrees of freedom and more (it inverts through the beta function near 1); the engine's quantile checks out with mpmath",
+  TINV: "Excel loses up to 7 digits at 10^9 degrees of freedom and more (it inverts through the beta function near 1); the engine's quantile checks out with mpmath",
 }
 
 /** A case matches Excel: within the usual tolerance, or the soft one for the functions in SOFT. */
@@ -90,6 +96,12 @@ export const REASONS = {
     'A range where a function takes one value (`BESSELJ(A1:A2,1)`) is array arithmetic for this engine, `#ERROR!` with the check code `unsupported` until arrays are supported; Excel intersects it with the formula\'s row or column and gives `#VALUE!` where they do not meet.',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
+  gammaInvConvergence:
+    '`GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) give the quantile where Excel\'s iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom) and probabilities near 1 with shapes under 0.03; Excel\'s own `GAMMA.DIST` at the engine\'s answer gives the probability back.',
+  errorCriterion:
+    '`COUNTIFS`, `AVERAGEIF`, `AVERAGEIFS` (and `SUMIF`, `SUMIFS`, `MAXIFS`, `MINIFS`) with an error as a criterion, or its text (`"#DIV/0!"`), give that error or match nothing; Excel matches the cells holding that error. `COUNTIF` does as Excel.',
+  binomInvTie:
+    '`BINOM.INV` where alpha equals the probability of no success, (1 − p)^n, exactly: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they part on `BINOM.INV(3,0.25,0.421875)`, 0 in Excel and 1 here.',
 } as const
 
 /**
@@ -105,6 +117,27 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },
+  'measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
+  'measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
+  'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
+  'measurement:GAMMAINV#8': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 19999701973.2484 } },
+  'stat:CHISQ.INV#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232618.5678 } },
+  'stat:CHISQ.INV.RT#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990232502.22995 } },
+  'stat:GAMMA.INV#5': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 1.50908414769475 } },
+  'stat:GAMMA.INV#16': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990052413.58303 } },
+  'stat:GAMMA.INV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
+  'stat:GAMMA.INV#26': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 0.265052550251588 } },
+  'stat:GAMMA.INV#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 0.934242187465308 } },
+  'stat:GAMMA.INV#31': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 5000116309.28388 } },
+  'stat:GAMMA.INV#33': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 5999959379.86929 } },
+  'stat:GAMMAINV#5': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 1.50908414769475 } },
+  'stat:GAMMAINV#16': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990052413.58303 } },
+  'stat:GAMMAINV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
+  'stat:BINOM.INV#30': { reason: 'binomInvTie', engine: { t: 'n', v: 1 } },
+  'stat:COUNTIFS#1': { reason: 'errorCriterion', engine: { t: 'e', v: 'DIV0' } },
+  'stat:COUNTIFS#2': { reason: 'errorCriterion', engine: { t: 'n', v: 0 } },
+  'stat:AVERAGEIF#31': { reason: 'errorCriterion', engine: { t: 'e', v: 'DIV0' } },
+  'stat:AVERAGEIFS#15': { reason: 'errorCriterion', engine: { t: 'e', v: 'DIV0' } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN, differs from Excel and gives exactly the pinned answer. */
