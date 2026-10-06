@@ -1,6 +1,7 @@
 /**
  * A workbook formula engine (the package root). The contract (types only) is also available as the
- * `./contract` subpath; the implementation compiles formulas to JS and computes over the reference graph.
+ * `./contract` subpath; the implementation compiles formulas to closures (or to JS text) and computes over
+ * the reference graph.
  * The `./unstable/*` subpaths (internals, the synthetic book) are outside semver.
  */
 import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
@@ -30,7 +31,7 @@ export function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
   const o = checkComputeOptions(opts)
   checkBook(book)
   const clock = o.clock ?? currentClock()
-  const state = createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals })
+  const state = createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
   return buildResult(state, clock, t0)
 }
 
@@ -45,12 +46,12 @@ export function validateName(name: string): NameCheck {
   return checkName(checkString(name, 'name'))
 }
 
-/** Generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
+/** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
 export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): string {
   const o = checkComputeOptions(opts)
   checkBook(book)
   const clock = o.clock ?? currentClock()
-  return debugSource(createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals }))
+  return debugSource(createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: 'eval' }))
 }
 
 /** The contract implementation as one object. */

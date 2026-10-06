@@ -1,16 +1,16 @@
 /**
- * The engine: formulas are compiled to JS (`compile.ts`), cells are computed over the reference graph.
+ * The engine: formulas are compiled (`compile.ts`) to closures or, in the `eval` mode, to JS text with one
+ * `new Function` per batch; cells are computed over the reference graph.
  *
- * One `new Function` per book, each formula its own function (editing a formula in a session compiles
- * only that formula). A full computation follows the topological order; editing a value recomputes only
- * the dependent cells.
+ * Each formula is its own function (editing a formula in a session compiles only that formula). A full
+ * computation follows the topological order; editing a value recomputes only the dependent cells.
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Externals, NameInput, NameIssue } from './contract.js'
+import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameInput, NameIssue } from './contract.js'
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
-import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type Execution, type FormulaCode } from './compile.js'
+import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
@@ -48,7 +48,7 @@ export interface EngineOptions {
   now: number
   seed: number
   externals?: Externals
-  /** How formulas run: closures (by default) or JS text compiled by `new Function`. */
+  /** `closures` by default. */
   execution?: Execution
 }
 
@@ -347,7 +347,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     externalFunctions: (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f]),
     ctx,
     rt,
-    compiler: makeCompiler(rt, opts.execution ?? 'eval'),
+    compiler: makeCompiler(rt, opts.execution ?? 'closures'),
     formulas: [],
     at: new Map(),
     invalid: new Map(),

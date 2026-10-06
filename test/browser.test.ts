@@ -1,9 +1,10 @@
 /**
  * Outside Node: the library bundled by esbuild for the browser has no dependencies and no Node built-ins,
  * and the bundle runs in an empty `node:vm` context (only the ECMAScript globals: no `process`, `Buffer`,
- * `require`, `performance` or `crypto`) and gives the same hash as Node. With code generation from strings
- * disabled, as under a Content Security Policy without 'unsafe-eval', the bundle loads and validates
- * formulas, and computing fails with a clear EvalError.
+ * `require`, `performance` or `crypto`) and gives the same hash as Node in both execution modes. With code
+ * generation from strings disabled, as under a Content Security Policy without 'unsafe-eval', the bundle
+ * computes in the default `closures` mode with the same hash, and `execution: 'eval'` fails with a clear
+ * EvalError.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -43,14 +44,21 @@ describe('outside Node', () => {
     const out = runInContext(
       `const s = FormulaEngine.synthBook({ seed: 1, rows: 340 })
        const session = FormulaEngine.openSession(s.book, { clock: ${JSON.stringify(clock)} })
-       JSON.stringify({ hash: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)} }).hash, session: session.result().hash, seed: typeof FormulaEngine.openSession(s.book, { live: true }).clock.seed })`,
+       const evalSession = FormulaEngine.openSession(s.book, { clock: ${JSON.stringify(clock)}, execution: 'eval' })
+       JSON.stringify({
+         hash: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)} }).hash,
+         eval: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)}, execution: 'eval' }).hash,
+         session: session.result().hash,
+         evalSession: evalSession.result().hash,
+         seed: typeof FormulaEngine.openSession(s.book, { live: true }).clock.seed,
+       })`,
       ctx,
     ) as string
     const expected = compute(synthBook({ seed: 1, rows: 340 }).book, { clock }).hash
-    expect(JSON.parse(out)).toEqual({ hash: expected, session: expected, seed: 'number' })
+    expect(JSON.parse(out)).toEqual({ hash: expected, eval: expected, session: expected, evalSession: expected, seed: 'number' })
   }, 60_000)
 
-  it('without code generation from strings (strict CSP) the bundle loads, validates, and compute explains the failure', async () => {
+  it('without code generation from strings (strict CSP) the bundle computes in the closures mode, and the eval mode explains the failure', async () => {
     const { code } = await bundle()
     const ctx = createContext({}, { codeGeneration: { strings: false } })
     expect(() => runInContext('new Function("return 1")', ctx)).toThrow()
@@ -58,9 +66,19 @@ describe('outside Node', () => {
     expect(runInContext('FormulaEngine.validateFormula("SUM(A1:A3)*2").ok', ctx)).toBe(true)
     expect(runInContext('FormulaEngine.toLocal("SUM(A1:A3,1.5)", FormulaEngine.ruRU).formula', ctx)).toBe('СУММ(A1:A3;1,5)')
     const out = runInContext(
-      `try { FormulaEngine.compute({ sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }); 'computed' } catch (e) { e.name + ': ' + e.message }`,
+      `const s = FormulaEngine.synthBook({ seed: 1, rows: 340 })
+       const session = FormulaEngine.openSession(s.book, { clock: ${JSON.stringify(clock)} })
+       JSON.stringify({ hash: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)} }).hash, session: session.result().hash })`,
       ctx,
     ) as string
-    expect(out).toBe(`EvalError: ${PACKAGE_NAME} compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)`)
+    const expected = compute(synthBook({ seed: 1, rows: 340 }).book, { clock }).hash
+    expect(JSON.parse(out)).toEqual({ hash: expected, session: expected })
+    const failure = runInContext(
+      `try { FormulaEngine.compute({ sheets: [{ name: 'S', cells: { A1: { formula: '1+1' } } }] }, { execution: 'eval' }); 'computed' } catch (e) { e.name + ': ' + e.message }`,
+      ctx,
+    ) as string
+    expect(failure).toBe(
+      `EvalError: ${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`,
+    )
   }, 60_000)
 })

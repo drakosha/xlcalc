@@ -55,7 +55,7 @@ export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
     make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
   } catch (e) {
     // a Content Security Policy without 'unsafe-eval' blocks new Function with an EvalError
-    if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function, and this environment blocks it (a Content Security Policy without 'unsafe-eval'?)`, { cause: e })
+    if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`, { cause: e })
     throw e
   }
   return make({ ...rt, R, A }) as (() => Arg)[]

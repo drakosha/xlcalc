@@ -5,6 +5,7 @@
  * `new Function`. Both modes give the same values.
  */
 import type { Arg } from './args.js'
+import type { Execution } from './contract.js'
 import { closureBackend } from './exec/closures.js'
 import { compileSources, jsBackend } from './exec/js.js'
 import { walk, type CodegenContext, type FormulaInfo } from './exec/walk.js'
@@ -20,8 +21,6 @@ export interface FormulaCode extends FormulaInfo {
   source?: string
   fn: () => Arg
 }
-
-export type Execution = 'closures' | 'eval'
 
 export interface Compiler {
   /** Walks one formula at sheet `s`, row `r`, column `c`; its function is ready after `link`. */

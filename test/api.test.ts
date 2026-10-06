@@ -59,10 +59,12 @@ describe('input errors', () => {
 
   it('options and the clock', () => {
     const book = sheet({ A1: { value: 1 } })
-    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals) (pass the clock as { clock: { now, seed } })')
+    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution) (pass the clock as { clock: { now, seed } })')
     fails(() => compute(book, { clock: { now: 'yesterday', seed: 1 } }), 'opts.clock.now: invalid moment "yesterday"')
     fails(() => compute(book, { clock: { now: '2026-01-01T00:00:00Z', seed: '1' } as never }), 'opts.clock.seed: expected a finite number, got the string "1"')
     fails(() => openSession(book, { live: true, clock: { now: '2026-01-01T00:00:00Z', seed: 1 } } as never), 'opts: a live session takes its clock from the system')
+    fails(() => compute(book, { execution: 'fast' } as never), 'opts.execution: expected "closures" or "eval", got the string "fast"')
+    fails(() => openSession(book, { execution: 'Eval' } as never), 'opts.execution: expected "closures" or "eval", got the string "Eval"')
   })
 
   it('session calls and validation', () => {
