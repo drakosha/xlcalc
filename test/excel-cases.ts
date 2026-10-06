@@ -66,6 +66,8 @@ export interface Outcome {
   excel: Val
   engine: Val
   ok: boolean
+  /** Why a case in KNOWN fails. */
+  why?: string
 }
 
 /**
@@ -88,6 +90,32 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
   return v.ok || (fn !== undefined && fn in SOFT && v.soft === true)
 }
 
+/** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
+export const REASONS = {
+  rateZeroRoot:
+    '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
+} as const
+
+/**
+ * Cases where this engine knowingly differs from Excel, by `<source>:<case id>` (`measurement` or a case
+ * set's name): the engine's answer the tests pin instead of Excel's. An entry whose case matches Excel fails
+ * the tests, so the list stays current.
+ */
+export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
+  'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
+  'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
+  'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },
+}
+
+/** A case passes: it matches Excel, or it is in KNOWN, differs from Excel and gives exactly the pinned answer. */
+export function verdict(key: string, fn: string | undefined, excel: Val, engine: Val): { ok: boolean; why?: string } {
+  const known = KNOWN[key]
+  const same = matches(fn, excel, engine)
+  if (!known) return { ok: same }
+  if (same) return { ok: false, why: 'matches Excel, remove it from KNOWN' }
+  return engine.t === known.engine.t && engine.v === known.engine.v ? { ok: true } : { ok: false, why: `KNOWN pins ${show(known.engine)}` }
+}
+
 /** Every case computed in one book and compared with Excel en-US. */
 export function runExcelCases(cases: readonly ExcelCase[] = CASES): Outcome[] {
   const r = compute(excelBook(cases), { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } })
@@ -95,7 +123,8 @@ export function runExcelCases(cases: readonly ExcelCase[] = CASES): Outcome[] {
   return cases.map((c, i) => {
     const excel = EXCEL[c.id]
     const engine = toVal(cells[`A${i + 1}`].value)
-    return { c, excel, engine, ok: matches(c.fn, excel, engine) }
+    const v = verdict(`measurement:${c.id}`, c.fn, excel, engine)
+    return { c, excel, engine, ok: v.ok, why: v.why }
   })
 }
 

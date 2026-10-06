@@ -2,9 +2,8 @@
  * Financial and date functions: cases beyond the coverage measurement (functions formula.js lacks, day-count
  * bases 0–4, frequencies 1/2/4, the 1900 boundary, leap years, month ends, weekend codes, iteration limits).
  * Excel's answers: `npx tsx bench/coverage/run.ts probes findate` → `docs/excel-cases/findate.json`.
- * Left out (functions not admitted; their Excel answers are in commit 52168a4): COUPDAYS on basis 1 with
- * month-end maturities and VDB inside one period, whose rules were not found; RATE at a root of exactly 0,
- * where Excel answers its own rounding noise (±2e-9) or #NUM! depending on the guess.
+ * Left out (functions not admitted, their Excel answers are in commit 52168a4): COUPDAYS on basis 1 with
+ * month-end maturities and VDB inside one period, whose rules were not found.
  */
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
@@ -344,5 +343,9 @@ export function buildProbes(): Probe[] {
   for (const t of ['"1:61"', '"1:99"', '"1:100"', '"1:00:60"', '"1:00:61"', '"1:00:99"', '"0 PM"', '"0:30 PM"', '"12:60 PM"', '"9999:59:59"', '"99999:00"', '"1:2"', '"1:2:3"', '"24:00 AM"', '"10:60"', '"0:00:00.5"', '"1:00:59.99"'])
     add('TIMEVALUE', t)
   for (const t of ['"2025-01-31 9999:00"', '"2025-01-31 10:60"', '"1/31/2025 25:00:00"']) add('DATEVALUE', t)
+
+  // ---------- RATE at a root of exactly 0: Excel answers rounding noise or #NUM! (test/excel-cases.ts, KNOWN) ----------
+  for (const args of [[10, -100, 1000], [10, -100, 1000, 0, 1], [10, -100, 1000, 0, 1, 0], [12, -100, 1200], [5, -200, 1000, 0, 1], [10, -100, 1000, 0, 0, 0.05], [24, -50, 1200, 0, 0]])
+    add('RATE', ...args)
   return out
 }
