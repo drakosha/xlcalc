@@ -4,7 +4,7 @@
  * that are arrays in a session, array constants in the canonical form.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, openSession, validateFormula, type CellInput, type CellValue } from '../src/index.js'
+import { compute, debugGeneratedCode, openSession, restructure, ruRU, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
@@ -50,7 +50,12 @@ describe('arrays beyond the Excel cases', () => {
   it('array constants: the canonical form, names and validation', () => {
     expect(validateFormula('sum({1,-2;"a",true})')).toMatchObject({ ok: true, canonical: 'SUM({1,-2;"a",TRUE})' })
     expect(validateFormula('{1,2;3}')).toMatchObject({ ok: false, code: 'syntax' })
+    // typed in ru-RU: `;` between columns, `:` between rows
+    expect(validateLocalFormula('СУММ({1,5;2:3;4})', ruRU)).toMatchObject({ ok: true, canonical: 'SUM({1.5,2;3,4})' })
     const r = compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(x*{1;2})' }, B1: { value: 3 }, B2: { value: 4 } } }], names: [{ name: 'x', ref: "'S'!$B$1:$B$2" }] }, { clock })
     expect(r.sheets[0].cells.A1.value).toBe(11)
+    // a formula with a constant parses, so a structure operation moves its references
+    const moved = restructure({ sheets: [{ name: 'S', cells: { B1: { formula: 'SUM(A1:A2*{1;2})' } } }] }, { op: 'insertRows', sheet: 'S', row: 1 })
+    expect(moved.ok && moved.book.sheets[0].cells.B2).toEqual({ formula: 'SUM(A2:A3*{1;2})' })
   })
 })

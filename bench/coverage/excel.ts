@@ -222,7 +222,7 @@ export function runExcel(book: string, n: number): Val[] {
 }
 
 /** Окно «We found a problem with some content»: Excel не читает книгу целиком, обычно из-за формулы, которую он не принимает при загрузке. */
-const REPAIR = /problem with some content|проблем\S* с содержим/i
+const REPAIR = /problem with some content|проблем\S* с содержим|ошибка в части содержимого/i
 
 /** Закрывает окно восстановления книги кнопкой No; другие окна не трогает. */
 export function declineRepair(): boolean {
@@ -238,7 +238,11 @@ export function declineRepair(): boolean {
     end repeat
     if tx contains "problem with some content" or tx contains "содержим" then
       repeat with b in (buttons of w)
-        if name of b is in {"No", "Нет"} then click b
+        if name of b is in {"No", "Нет"} then
+          click b
+          -- the window is gone: the list of windows is stale
+          return
+        end if
       end repeat
     end if
   end repeat
@@ -248,13 +252,19 @@ end tell`)
 
 /** Как runExcel, но следит за окном восстановления: закрывает его и отдаёт 'rejected', а не ждёт таймаута AppleEvent. */
 export async function runExcelWatched(book: string, n: number): Promise<Val[] | 'rejected'> {
+  const out = await runScriptWatched(SCRIPT, book, n)
+  return out === 'rejected' ? out : parseRead(out, n)
+}
+
+/** AppleScript `script` над копией книги в песочнице (аргументы: путь, `n`): его вывод или 'rejected', как в runExcelWatched. */
+export async function runScriptWatched(script: string, book: string, n: number): Promise<string | 'rejected'> {
   if (countWorkbooks() !== 0) throw new Error('в Excel есть открытые книги')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
     copyFileSync(book, file)
-    const child = spawn('osascript', [SCRIPT, file, String(n)])
+    const child = spawn('osascript', [script, file, String(n)])
     let out = ''
     let err = ''
     child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
@@ -265,7 +275,7 @@ export async function runExcelWatched(book: string, n: number): Promise<Val[] | 
       const code = await Promise.race([exited, sleep(2000).then(() => undefined)])
       if (code !== undefined) {
         if (code !== 0) throw new Error(`osascript ${code}: ${err.trim().split('\n')[0]}`)
-        return parseRead(out, n)
+        return out
       }
       if (declineRepair()) {
         child.kill()

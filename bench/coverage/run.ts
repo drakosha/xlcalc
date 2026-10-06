@@ -10,6 +10,7 @@
  *   npx tsx bench/coverage/run.ts all        всё подряд, в конце Excel остаётся запущенным без аргументов
  *   npx tsx bench/coverage/run.ts probes     пробы Excel en-US вне замера (probes.ts) в docs/excel-probes.json
  *   npx tsx bench/coverage/run.ts probes X   набор sets/X.ts в docs/excel-cases/X.json (тест test/excel-sets.test.ts)
+ *   npx tsx bench/coverage/run.ts struct X   операции над структурой struct/X.ts в docs/excel-struct/X.json (тест test/structure-excel.test.ts)
  *
  * FCOV_ONLY=ABS,SUM ограничивает набор функций (пробный прогон): тогда всё пишется в out/.
  * Excel считается частями до 400 случаев; после каждой части проверяется, нет ли модального окна.
@@ -25,6 +26,7 @@ import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
+import { stepStruct } from './struct.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -260,6 +262,7 @@ else if (step === 'lo') await stepLo()
 else if (step === 'excel') await withExcelLock(() => stepExcel(process.argv[3] as Locale))
 else if (step === 'report') writeReport(RESULTS, ONLY !== undefined)
 else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3]))
+else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -270,7 +273,7 @@ else if (step === 'all') {
   })
   writeReport(RESULTS, ONLY !== undefined)
 } else {
-  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes [набор]')
+  console.error('шаг: cases | fj | lo | excel en|ru | report | all | probes [набор] | struct набор')
   process.exit(2)
 }
 console.log(`готово за ${((Date.now() - t0) / 1000).toFixed(1)} с`)
