@@ -93,8 +93,6 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
-  lookupIndexLifted:
-    '`VLOOKUP` and `HLOOKUP` lifted by an array key or match mode, with an array or a range of several cells as the index: Excel takes the index\'s top-left number in each lifted call, the engine reads the whole index, so a number below 1 or past the table anywhere in it is the answer (`INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),1)` is `"five"` in Excel and `#REF!` here).',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
@@ -121,10 +119,6 @@ export const REASONS = {
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
-  'arrays:index:VLOOKUP#61': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
-  'arrays:index:VLOOKUP#62': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
-  'arrays:index:VLOOKUP#63': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'VALUE' } },
-  'arrays:index:HLOOKUP#6': { reason: 'lookupIndexLifted', engine: { t: 'e', v: 'REF' } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

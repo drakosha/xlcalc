@@ -133,6 +133,8 @@ export interface FnDef {
   ranges?: 'error' | 'first' | readonly number[]
   /** Lazy functions: the arguments whose array lifts the call (by default the first, IF's condition). */
   liftAt?: (i: number, n: number) => boolean
+  /** Arguments taken whole that a lifted call reads by their top-left value, as a 1 × 1 array (VLOOKUP's index). */
+  liftFirst?: readonly number[]
 }
 
 /** What the parser and the code generator need to know about a function. */
@@ -152,6 +154,8 @@ export interface FunctionSpec {
   liftAt: (i: number, n: number) => boolean
   /** An argument of kind `P`: the function can answer a reference it was given. */
   refs: boolean
+  /** Arguments taken whole that a lifted call reads by their top-left value. */
+  liftFirst: readonly number[]
   /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
   parity?: 'odd' | 'even'
   volatile?: boolean
@@ -196,7 +200,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   }
   const { ranges } = def
   const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')
-  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0), refs: kinds.some((k) => k.k === 'P') }
+  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0), refs: kinds.some((k) => k.k === 'P'), liftFirst: def.liftFirst ?? [] }
 }
 
 // ---------- coercion by kind ----------

@@ -7,12 +7,14 @@ import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 /**
  * Excel reads the index, looks up the key, and only then checks the index against the table. An array or a
  * range of several cells as the index answers the found line at each number, shaped as the index; the first
- * number in order that is not valid is the whole answer (a lifted call takes the index's top-left, see README).
+ * number in order that is not valid is the whole answer; a call lifted by the key or the match mode reads the
+ * index's top-left number (`liftFirst`).
  */
 const tableLookup = (horizontal: boolean): FnDef => ({
   args: 'a G R a?',
   cx: true,
   array: true,
+  liftFirst: [2],
   fn: (cx: Cx, key: V, table: Grid, idx: V | Rng | Arr, approx: V = true): V | Arr => {
     const k = keyOf(key)
     if (isErr(k)) return k

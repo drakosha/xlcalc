@@ -6,7 +6,7 @@
 import type { Arg, Cx, FunctionSpec } from '../args.js'
 import { Rng, type V } from '../values.js'
 import { first, liftN, lifts } from './lift.js'
-import { Arr } from './value.js'
+import { arr, Arr } from './value.js'
 
 type Call = (...a: any[]) => V | Arr | Rng
 
@@ -49,6 +49,11 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       xs.push(cx.view(x))
     }
     const args = a.slice()
+    // VLOOKUP's index: each lifted call reads the index's top-left number (an invalid one elsewhere does not count)
+    for (const p of spec.liftFirst) {
+      const x = args[off + p]
+      if (x instanceof Arr || x instanceof Rng) args[off + p] = arr(1, 1, [x instanceof Arr ? x.at(0, 0) : topLeft(x, cx)])
+    }
     return liftN(xs, (els) => {
       for (let k = 0; k < at.length; k++) args[at[k]] = els[k]
       return first(call(...args), (g) => topLeft(g, cx))
