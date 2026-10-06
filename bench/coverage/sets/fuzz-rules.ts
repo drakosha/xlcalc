@@ -8,8 +8,6 @@
 import type { Probe } from '../probes.js'
 import { collector } from './arrays/common.js'
 
-export const DYNAMIC = true
-
 /** Cases by function: `fn` is the function checked. */
 const CASES: Record<string, string[]> = {
   // text as a number, as VALUE reads it: dates, times, %, currency, groups

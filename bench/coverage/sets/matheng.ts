@@ -5,8 +5,6 @@
  */
 import type { Probe } from '../probes.js'
 
-export const DYNAMIC = true
-
 /** Functions newer than Excel 2007: stored with the `_xlfn.` prefix. */
 const XLFN = new Set([
   'ACOT', 'ARABIC', 'BASE', 'BITAND', 'BITLSHIFT', 'BITOR', 'BITRSHIFT', 'BITXOR', 'COMBINA', 'COT', 'COTH', 'CSC', 'DECIMAL',

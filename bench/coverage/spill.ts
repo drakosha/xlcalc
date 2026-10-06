@@ -16,7 +16,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
-import JSZip from 'jszip'
+import { markDynamic } from './book.js'
 import { dialogText, ensureExcel, excelDialogs, excelVersion } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
@@ -104,25 +104,6 @@ async function writeBook(c: SpillCase, file: string): Promise<void> {
   Object.defineProperty(wb.definedNames, 'model', { get: () => names })
   await wb.xlsx.writeFile(file)
   await markDynamic(file, book.sheets.length)
-}
-
-const METADATA = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<metadata xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray"><metadataTypes count="1"><metadataType name="XLDAPR" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1" cellMeta="1"/></metadataTypes><futureMetadata name="XLDAPR" count="1"><bk><extLst><ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}"><xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/></ext></extLst></bk></futureMetadata><cellMetadata count="1"><bk><rc t="1" v="0"/></bk></cellMetadata></metadata>`
-
-/** The array formulas of the first `sheets` sheets become dynamic array formulas: `cm="1"` and the XLDAPR metadata, as in `book.ts`. */
-export async function markDynamic(file: string, sheets: number): Promise<void> {
-  const zip = await JSZip.loadAsync(readFileSync(file))
-  for (let i = 1; i <= sheets; i++) {
-    const path = `xl/worksheets/sheet${i}.xml`
-    const xml = await zip.file(path)!.async('string')
-    zip.file(path, xml.replace(/<c r="([A-Z]+\d+)"([^>]*)><f t="array"/g, '<c r="$1"$2 cm="1"><f t="array"'))
-  }
-  zip.file('xl/metadata.xml', METADATA)
-  const rels = await zip.file('xl/_rels/workbook.xml.rels')!.async('string')
-  zip.file('xl/_rels/workbook.xml.rels', rels.replace('</Relationships>', '<Relationship Id="rIdMeta" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sheetMetadata" Target="metadata.xml"/></Relationships>'))
-  const types = await zip.file('[Content_Types].xml')!.async('string')
-  zip.file('[Content_Types].xml', types.replace('</Types>', '<Override PartName="/xl/metadata.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheetMetadata+xml"/></Types>'))
-  writeFileSync(file, await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' }))
 }
 
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */

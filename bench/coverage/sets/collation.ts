@@ -7,8 +7,6 @@
  */
 import type { Probe, SheetCells } from '../probes.js'
 
-export const DYNAMIC = true
-
 /** Words of both scripts, cases and accents (`а`, `е`, `х` are Cyrillic where they stand among Cyrillic letters). */
 const WORDS = ['b', 'а', 'A', 'Б', 'ё', 'е', 'z', 'я', 'Z', 'ж', '1', '10', '9', 'é', 'e', 'ea', 'éa', 'Ё', 'ъ', 'ь', 'й', 'и', 'abc', 'абв', 'Abc', 'Абв', 'ab', 'аб', 'x1', 'х1']
 

@@ -12,8 +12,6 @@ import { ladder } from './near-integer/ladder.js'
 import { tolerance } from './near-integer/tolerance.js'
 import { values } from './near-integer/values.js'
 
-export const DYNAMIC = true
-
 const { sheet, g } = values()
 
 export const SHEETS: SheetCells = { NI: sheet }

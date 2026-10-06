@@ -14,8 +14,6 @@ import { constants, operators, results } from './arrays/ops.js'
 
 export { SHEETS }
 
-export const DYNAMIC = true
-
 export function buildProbes(): Probe[] {
   const { out, add } = collector()
   for (const part of [operators, constants, results, aggregates, lazy, keyed, lifted, reference, arrayFunctions, lift]) part(add)

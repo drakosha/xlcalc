@@ -6,8 +6,6 @@
  */
 import type { Probe, SheetCells } from '../probes.js'
 
-export const DYNAMIC = true
-
 export const SHEETS: SheetCells = { G: { A1: 'TRUE', A2: 'ИСТИНА', A3: 'FALSE', A4: 'ЛОЖЬ' } }
 
 const ARGS = ['"TRUE"', '"true"', '"FALSE"', '"ИСТИНА"', '"истина"', '"ЛОЖЬ"', '" TRUE"', '"TRUE",FALSE', '"FALSE",TRUE', '"ИСТИНА",FALSE', '"ЛОЖЬ",TRUE', 'G!A1', 'G!A2', 'G!A1:A4', 'G!A1,TRUE', '{"TRUE"}', '{"ИСТИНА",TRUE}']

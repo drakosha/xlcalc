@@ -6,8 +6,6 @@
  */
 import type { Probe, SheetCells } from '../probes.js'
 
-export const DYNAMIC = true
-
 const AGG = '_xlfn.AGGREGATE'
 const f = (formula: string) => ({ formula })
 

@@ -9,8 +9,6 @@
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
 
-export const DYNAMIC = true
-
 /** Sheet F: cash flows, dates and holidays with mixed content. */
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {
   F: {

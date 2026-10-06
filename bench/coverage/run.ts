@@ -25,7 +25,7 @@ import { buildCases, type Case, type CaseSet } from './cases.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
-import { buildProbes, DYNAMIC as PROBES_DYNAMIC, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
+import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
 import { stepSpill } from './spill.js'
@@ -149,20 +149,16 @@ function parts(cs: Case[]): Case[][] {
 }
 
 interface ExcelColumn extends Column {
-  meta: Column['meta'] & { parts: number; done: number; stopped?: string; dynamic?: boolean }
+  meta: Column['meta'] & { parts: number; done: number; stopped?: string; dynamic: true }
 }
 
 /** Локаль в метаданных файла ответов. */
 const LOCALE_META: Record<Locale, string> = { en: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', ru: 'ru-RU (системные язык и локаль)' }
 
-/** Формулы замера в Excel пишутся формулами динамического массива (Excel 365), как в наборах с `DYNAMIC`. */
-const DYNAMIC = true
-
 /**
  * Excel частями: перед частью и после неё проверяется, нет ли у Excel окна, которое не окно книги
  * (модальный диалог). Есть: остановка с текстом диалога и номером части, посчитанные части уже в
- * файле. Повторный запуск продолжает с первой непосчитанной части (FCOV_FRESH=1 заново); колонка
- * формул другого вида (старого или динамического массива) считается заново.
+ * файле. Повторный запуск продолжает с первой непосчитанной части (FCOV_FRESH=1 заново).
  */
 async function stepExcel(locale: Locale) {
   const cs = cases()
@@ -171,10 +167,7 @@ async function stepExcel(locale: Locale) {
   await ensureExcel(locale)
   const ps = parts(cs)
   const stored = existsSync(file) && !process.env.FCOV_FRESH ? load<ExcelColumn>(name) : null
-  const col: ExcelColumn =
-    stored && (stored.meta.dynamic ?? false) === DYNAMIC
-      ? stored
-      : { meta: { version: excelVersion(), locale: LOCALE_META[locale], seconds: 0, parts: ps.length, done: 0, dynamic: DYNAMIC }, values: {} }
+  const col: ExcelColumn = stored ?? { meta: { version: excelVersion(), locale: LOCALE_META[locale], seconds: 0, parts: ps.length, done: 0, dynamic: true }, values: {} }
   delete col.meta.stopped
   const stop = (k: number, why: string) => {
     col.meta.stopped = `часть ${k + 1} из ${ps.length} (${ps[k][0].id} … ${ps[k][ps[k].length - 1].id}): ${why}`
@@ -188,7 +181,7 @@ async function stepExcel(locale: Locale) {
     const before = dialogText()
     if (before) stop(k, `до части у Excel окно не книги: ${before}`)
     const book = join(OUT, `part-${locale}-${k + 1}.xlsx`)
-    await writeBook(part, book, {}, { dynamic: DYNAMIC })
+    await writeBook(part, book)
     const t0 = Date.now()
     let vals: Val[] | null = null
     let err = ''
@@ -211,29 +204,27 @@ async function stepExcel(locale: Locale) {
 /**
  * Пробы в Excel частями по PART, с той же проверкой модальных окон до и после части. Без имени
  * набора это `probes.ts` и `test/excel/probes.json` (только en-US); с именем `<set>` генератор `sets/<set>.ts`
- * (экспорт `buildProbes()`, если нужны листы данных, `SHEETS`, и `DYNAMIC`, если формулы динамического массива)
+ * (экспорт `buildProbes()` и, если нужны листы данных, `SHEETS`)
  * и ответы в `test/excel/cases/<set>.json` для en-US, в `test/excel/cases/ru-RU/<set>.json` для ru-RU.
  * Наборы нужны, чтобы параллельные ветки добавляли свои случаи, не трогая общие файлы.
  */
 async function stepProbes(set: string | undefined, locale: Locale) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
   if (set === undefined && locale !== 'en') throw new Error('пробы probes.ts считаются только в en-US; набор в ru-RU: probes <набор> ru')
-  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS, DYNAMIC: PROBES_DYNAMIC }
+  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = `${set ?? 'probes'}-${locale}`
   const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/cases/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
   // продолжение: ответы, чья формула не изменилась, берутся из файла (FCOV_FRESH=1 заново)
-  const read = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { meta: { dynamic?: boolean }; cases: Probe[]; values: Record<string, Val> }) : null
-  // ответы формул другого вида (старого или динамического массива) не годятся
-  const prev = read && (read.meta.dynamic ?? false) === (mod.DYNAMIC ?? false) ? read : null
+  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { cases: Probe[]; values: Record<string, Val> }) : null
   const was = new Map(prev?.cases.map((c) => [c.id, c.formula]) ?? [])
   const values: Record<string, Val> = {}
   for (const p of ps) if (prev?.values[p.id] && was.get(p.id) === p.formula) values[p.id] = prev.values[p.id]
   const rejected: Probe[] = []
   const t0 = Date.now()
   const save = () => {
-    const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, ...(mod.DYNAMIC ? { dynamic: true } : {}) }
+    const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, dynamic: true }
     writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
   // книга, которую Excel не читает, делится пополам до формулы-виновника
@@ -244,7 +235,7 @@ async function stepProbes(set: string | undefined, locale: Locale) {
     const book = join(OUT, `${tag}-${label}.xlsx`)
     // скрипт чтения ждёт колонку не короче двух ячеек: одиночный случай дополняется пустышкой
     const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
-    await writeBook(sent, book, sheets, { dynamic: mod.DYNAMIC })
+    await writeBook(sent, book, sheets)
     const vals = await runExcelWatched(book, sent.length)
     if (vals !== 'rejected') return void cases.forEach((p, i) => (values[p.id] = vals[i]))
     if (cases.length === 1) {

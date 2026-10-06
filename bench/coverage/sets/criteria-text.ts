@@ -7,8 +7,6 @@
  */
 import type { Probe, SheetCells } from '../probes.js'
 
-export const DYNAMIC = true
-
 export const SHEETS: SheetCells = {
   N: { A1: 'TRUE', B1: true, C1: 'ИСТИНА', D1: '2', E1: 2, F1: '1,000', G1: '1/31/2025', H1: '50%', I1: '$1,000', J1: '1 1/2', K1: '2025-01-31', L1: '2.5', M1: '2,5', O1: 45688, P1: 0.5, Q1: 1000 },
 }

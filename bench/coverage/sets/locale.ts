@@ -8,8 +8,6 @@
  */
 import type { Probe, SheetCells } from '../probes.js'
 
-export const DYNAMIC = true
-
 /** L!A1:A16: numbers, dates (46143 is 2026-05-01, 46023 2026-01-01, 45657 2024-12-31), booleans, text that reads as numbers and words, #N/A. */
 export const SHEETS: SheetCells = {
   L: {

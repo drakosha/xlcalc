@@ -9,8 +9,6 @@
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
 
-export const DYNAMIC = true
-
 const PREFIX: Record<string, string> = { ...XLFN, 'FORECAST.LINEAR': '_xlfn.FORECAST.LINEAR' }
 
 const col = (letter: string, values: (number | string | boolean | null)[], from = 1) =>

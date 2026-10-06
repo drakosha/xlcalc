@@ -8,8 +8,6 @@
 import type { Probe } from '../probes.js'
 import { collector, type Add } from './arrays/common.js'
 
-export const DYNAMIC = true
-
 /** Operands of each binary operator: a text that is not a number and an error on either side, two errors. */
 const OPERANDS = [['"abc"', 'NA()'], ['NA()', '"abc"'], ['1/0', 'NA()'], ['NA()', '1/0'], ['D!A3', 'D!A8'], ['D!A8', 'D!A3'], ['""', 'NA()'], ['"abc"', '1/0']]
 

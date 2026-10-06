@@ -7,8 +7,6 @@ import type { Probe } from '../probes.js'
 import { xl } from './arrays/common.js'
 import { fuzz, type Batch } from './fuzz/gen.js'
 
-export const DYNAMIC = true
-
 /** Batches: a seed, how many formulas, the most levels of nested calls. A new batch goes last, so stored answers stay. */
 export const BATCHES: readonly Batch[] = [
   { seed: 20261006, count: 2000, depth: 3 },
