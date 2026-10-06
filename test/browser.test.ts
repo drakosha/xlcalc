@@ -1,5 +1,5 @@
 /**
- * Outside Node: the library bundled by esbuild for the browser (with formulajs) has no Node built-ins,
+ * Outside Node: the library bundled by esbuild for the browser has no dependencies and no Node built-ins,
  * and the bundle runs in an empty `node:vm` context (only the ECMAScript globals: no `process`, `Buffer`,
  * `require`, `performance` or `crypto`) and gives the same hash as Node. With code generation from strings
  * disabled, as under a Content Security Policy without 'unsafe-eval', the bundle loads and validates
@@ -34,7 +34,7 @@ async function bundle(): Promise<{ code: string; inputs: string[] }> {
 describe('outside Node', () => {
   it('the browser bundle has no Node built-ins and runs in an empty vm context with the same hash', async () => {
     const { code, inputs } = await bundle()
-    expect(inputs.filter((p) => p.startsWith('node:') || !/^(src|dist|node_modules)\/|<stdin>/.test(p))).toEqual([])
+    expect(inputs.filter((p) => !/^(src|dist)\/|<stdin>/.test(p))).toEqual([])
     expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\b|["']node:/)
 
     const ctx = createContext({})

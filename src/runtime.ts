@@ -1,35 +1,16 @@
 /**
- * Engine runtime: the value model, operators with type coercion, errors as values, ranges as slices of
- * sheet columns, the whitelisted functions.
- *
- * Only ROUND, EOMONTH, DATE and SUM come from formulajs: they pass the test against Excel documentation
- * and the oracle (DATE, EOMONTH and SUM through an adapter). SUMIF, SUMIFS, COUNTIFS (with a criteria
- * index), XLOOKUP, TEXT, IF, IFERROR and the volatile functions are our own: formulajs either lacks them
- * or gets them wrong. No platform imports: the code can be bundled and run outside Node.
+ * Engine runtime: the evaluation context, operators with type coercion, ranges as slices of sheet columns,
+ * criteria selection over cached indexes, and the whitelisted functions called through the argument layer
+ * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
+ * be bundled and run outside Node.
  */
-import * as fj from '@formulajs/formulajs'
-import type { CellValue, ErrorCode } from './contract.js'
-import { buildIndex, collator, matches, parseCrit, select, type Crit, type CritColumn, type CritIndex } from './criteria.js'
-import { dateToSerial, MAX_ROWS } from './model.js'
-import { formatText, generalText } from './text.js'
-
-export class CErr {
-  constructor(readonly code: ErrorCode) {}
-}
-
-export const E: Record<ErrorCode, CErr> = {
-  DIV0: new CErr('DIV0'),
-  NA: new CErr('NA'),
-  NAME: new CErr('NAME'),
-  NUM: new CErr('NUM'),
-  REF: new CErr('REF'),
-  VALUE: new CErr('VALUE'),
-  CYCLE: new CErr('CYCLE'),
-  SPILL: new CErr('SPILL'),
-  ERROR: new CErr('ERROR'),
-}
-
-export type V = number | string | boolean | null | CErr
+import { makeCaller, type Cx, type Grid } from './args.js'
+import type { CellValue } from './contract.js'
+import { buildIndex, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
+import { DEFS } from './functions.js'
+import { power } from './functions/math.js'
+import { MAX_ROWS } from './model.js'
+import { compareValues, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -38,95 +19,6 @@ export interface SheetData {
   /** Occupied rows (highest index + 1). */
   rows: number
 }
-
-/** A sheet rectangle; a whole column is cut to the occupied rows of the sheet when read. */
-export class Rng {
-  /** Key for the value and criteria-index caches. */
-  readonly key: string
-  constructor(
-    readonly s: number,
-    readonly r1: number,
-    readonly c1: number,
-    readonly r2: number,
-    readonly c2: number,
-  ) {
-    this.key = `${s}:${r1}:${c1}:${r2}:${c2}`
-  }
-}
-
-export const isErr = (x: unknown): x is CErr => x instanceof CErr
-
-// ---------- formulajs ----------
-
-const FJ_ERRORS: Record<string, ErrorCode> = { '#DIV/0!': 'DIV0', '#N/A': 'NA', '#NAME?': 'NAME', '#NUM!': 'NUM', '#REF!': 'REF', '#VALUE!': 'VALUE' }
-
-/** A formulajs result in our model: Error → error, Date → serial number, NaN/∞ → #NUM!. */
-function fromFj(x: unknown): V {
-  if (x instanceof Error) return E[FJ_ERRORS[x.message] ?? 'ERROR']
-  if (x instanceof Date) return localDateToSerial(x)
-  if (typeof x === 'number') return Number.isFinite(x) ? x : E.NUM
-  if (typeof x === 'string' || typeof x === 'boolean') return x
-  return E.VALUE
-}
-
-/** formulajs reads and writes dates with local-time getters: serial numbers go through local midnight. */
-function localDateToSerial(d: Date): number {
-  const p = (n: number, w = 2) => String(n).padStart(w, '0')
-  return dateToSerial(`${p(d.getFullYear(), 4)}-${p(d.getMonth() + 1)}-${p(d.getDate())}`)
-}
-
-function serialToLocalDate(serial: number): Date {
-  const s = Math.floor(serial)
-  const u = new Date(Date.UTC(1899, 11, 30) + (s < 61 ? s + 1 : s) * 86_400_000)
-  return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate())
-}
-
-/** formulajs throws on some inputs: that is #VALUE!. */
-function call(f: (...a: any[]) => unknown, ...a: unknown[]): V {
-  try {
-    return fromFj(f(...a))
-  } catch {
-    return E.VALUE
-  }
-}
-
-// ---------- coercion ----------
-
-export function toNum(v: V): number | CErr {
-  if (typeof v === 'number') return v
-  if (v === null) return 0
-  if (typeof v === 'boolean') return v ? 1 : 0
-  if (isErr(v)) return v
-  const t = v.trim()
-  if (t === '') return E.VALUE
-  const n = Number(t)
-  return Number.isFinite(n) ? n : E.VALUE
-}
-
-export function toText(v: V): string | CErr {
-  if (typeof v === 'string') return v
-  if (v === null) return ''
-  if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE'
-  if (isErr(v)) return v
-  return generalText(v)
-}
-
-export function toBool(v: V): boolean | CErr {
-  if (typeof v === 'boolean') return v
-  if (typeof v === 'number') return v !== 0
-  if (v === null) return false
-  if (isErr(v)) return v
-  const u = v.toUpperCase()
-  if (u === 'TRUE') return true
-  if (u === 'FALSE') return false
-  return E.VALUE
-}
-
-export function fromCellValue(v: CellValue): V {
-  return v !== null && typeof v === 'object' ? E[v.error] : v
-}
-
-// ---------- context ----------
 
 export interface RuntimeContext {
   sheets: SheetData[]
@@ -184,9 +76,22 @@ export function makeRuntime(ctx: RuntimeContext) {
     return out
   }
 
+  /** A value in a scalar position: the single cell of a range or #VALUE! (no spilling). */
+  const scalar = (x: V | Rng): V => {
+    if (!(x instanceof Rng)) return x
+    const b = bounds(x)
+    return b.h === 1 && b.w === 1 ? cell(x.s, b.r1, b.c1) : E.VALUE
+  }
+
+  const grid = (x: V | Rng): Grid => {
+    if (!(x instanceof Rng)) return { rows: 1, cols: 1, h: 1, w: 1, v: [x] }
+    const b = bounds(x)
+    return { rows: x.r2 - x.r1 + 1, cols: x.c2 - x.c1 + 1, h: b.h, w: b.w, v: flat(x) }
+  }
+
   // ---------- operators ----------
 
-  const arith = (a: V, b: V, f: (x: number, y: number) => number): V => {
+  const arith = (a: V, b: V, f: (x: number, y: number) => number | CErr): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
     const x = toNum(a)
@@ -194,23 +99,13 @@ export function makeRuntime(ctx: RuntimeContext) {
     const y = toNum(b)
     if (isErr(y)) return y
     const z = f(x, y)
-    return Number.isFinite(z) ? z : E.NUM
+    return isErr(z) ? z : fitNumber(z)
   }
   const add = (a: V, b: V) => arith(a, b, (x, y) => x + y)
   const sub = (a: V, b: V) => arith(a, b, (x, y) => x - y)
   const mul = (a: V, b: V) => arith(a, b, (x, y) => x * y)
-  const div = (a: V, b: V): V => {
-    if (isErr(a)) return a
-    if (isErr(b)) return b
-    const y = toNum(b)
-    if (isErr(y)) return y
-    if (y === 0) {
-      const x = toNum(a)
-      return isErr(x) ? x : E.DIV0
-    }
-    return arith(a, y, (x, z) => x / z)
-  }
-  const pow = (a: V, b: V) => arith(a, b, (x, y) => Math.pow(x, y))
+  const div = (a: V, b: V) => arith(a, b, (x, y) => (y === 0 ? E.DIV0 : x / y))
+  const pow = (a: V, b: V) => arith(a, b, power)
   const neg = (a: V): V => {
     const x = toNum(a)
     return isErr(x) ? x : -x
@@ -225,31 +120,12 @@ export function makeRuntime(ctx: RuntimeContext) {
     const y = toText(b)
     return isErr(y) ? y : x + y
   }
-  // Excel: numbers < text < booleans; text is case-insensitive; blank is 0, "" or FALSE
-  const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2)
-  const compare = (a: V, b: V): number => {
-    if (a === null) a = typeof b === 'string' ? '' : typeof b === 'boolean' ? false : 0
-    if (b === null) b = typeof a === 'string' ? '' : typeof a === 'boolean' ? false : 0
-    const ra = rank(a)
-    const rb = rank(b)
-    if (ra !== rb) return ra - rb
-    if (typeof a === 'string') return collator.compare(a, b as string)
-    return (a as number) < (b as number) ? -1 : (a as number) > (b as number) ? 1 : 0
-  }
   const cmp = (op: string, a: V, b: V): V => {
     if (isErr(a)) return a
     if (isErr(b)) return b
-    const c = compare(a, b)
+    const c = compareValues(a, b)
     return op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0
   }
-
-  /** A value in a scalar position: the single cell of a range or #VALUE! (no spilling). */
-  const scalar = (x: V | Rng): V => {
-    if (!(x instanceof Rng)) return x
-    const b = bounds(x)
-    return b.h === 1 && b.w === 1 ? cell(x.s, b.r1, b.c1) : E.VALUE
-  }
-  const num = (x: V | Rng) => toNum(scalar(x))
 
   // ---------- criteria ----------
 
@@ -259,192 +135,58 @@ export function makeRuntime(ctx: RuntimeContext) {
     return ix
   }
 
-  const asRng = (x: V | Rng): Rng | CErr => (x instanceof Rng ? x : isErr(x) ? x : E.VALUE)
+  /** A range's values laid out row by row in `w` columns (its occupied part can be narrower). */
+  const aligned = (g: Rng, w: number): readonly V[] => {
+    const b = bounds(g)
+    const f = flat(g)
+    if (b.w === w) return f
+    const out: V[] = new Array(b.h * w).fill(null)
+    for (let r = 0; r < b.h; r++) for (let c = 0; c < b.w; c++) out[r * w + c] = f[r * b.w + c]
+    return out
+  }
 
-  /** Positions where all (range, criterion) pairs hold; #VALUE! when sizes differ. */
-  const pick = (pairs: [V | Rng, V | Rng][], size?: { h: number; w: number }): { sel: number[]; size: { h: number; w: number } } | CErr => {
+  const select_: Cx['select'] = (pairs, sum) => {
+    const ref = sum ?? pairs[0]?.[0]
+    if (!(ref instanceof Rng)) return isErr(ref) ? ref : E.VALUE
+    const rows = ref.r2 - ref.r1 + 1
+    const w = ref.c2 - ref.c1 + 1
+    // the part any range occupies; past it every range is blank
+    let h = sum ? bounds(sum).h : 0
     const cols: CritColumn[] = []
-    let sz = size
+    let blank = true
     for (const [rg, crit] of pairs) {
-      const g = asRng(rg)
-      if (isErr(g)) return g
-      const b = bounds(g)
-      sz ??= b
-      if (b.h !== sz.h || b.w !== sz.w) return E.VALUE
+      if (!(rg instanceof Rng)) return isErr(rg) ? rg : E.VALUE
+      if (rg.r2 - rg.r1 + 1 !== rows || rg.c2 - rg.c1 + 1 !== w) return E.VALUE
       const v = scalar(crit)
       if (isErr(v)) return v
-      cols.push({ flat: flat(g), crit: parseCrit(v), index: () => indexOf(g) })
+      const c = parseCrit(v)
+      blank &&= matches(null, c)
+      h = Math.max(h, bounds(rg).h)
+      const f = aligned(rg, w)
+      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg) : () => buildIndex(f) })
     }
-    return { sel: select(cols, sz!.h * sz!.w), size: sz! }
+    const n = h * w
+    return { sel: select(cols, n), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
   }
 
-  const sumAt = (g: Rng, sel: number[]): V => {
-    const f = flat(g)
-    let acc = 0
-    for (const p of sel) {
-      const v = f[p]
-      if (typeof v === 'number') acc += v
-      else if (isErr(v)) return v
-    }
-    return acc
-  }
-
-  const SUMIFS = (sum: V | Rng, ...rest: (V | Rng)[]): V => {
-    const sg = asRng(sum)
-    if (isErr(sg)) return sg
-    const pairs: [V | Rng, V | Rng][] = []
-    for (let i = 0; i < rest.length; i += 2) pairs.push([rest[i], rest[i + 1]])
-    const r = pick(pairs, bounds(sg))
-    return isErr(r) ? r : sumAt(sg, r.sel)
-  }
-
-  const COUNTIFS = (...args: (V | Rng)[]): V => {
-    const pairs: [V | Rng, V | Rng][] = []
-    for (let i = 0; i < args.length; i += 2) pairs.push([args[i], args[i + 1]])
-    const r = pick(pairs)
-    return isErr(r) ? r : r.sel.length
-  }
-
-  /** SUMIF: the sum range takes the size of the criteria range from its own top-left cell (as Excel does). */
-  const SUMIF = (range: V | Rng, crit: V | Rng, sum?: V | Rng): V => {
-    const cg = asRng(range)
-    if (isErr(cg)) return cg
-    const r = pick([[cg, crit]])
-    if (isErr(r)) return r
-    if (sum === undefined) return sumAt(cg, r.sel)
-    const sg = asRng(sum)
-    if (isErr(sg)) return sg
-    const b = bounds(cg)
-    const sized = new Rng(sg.s, sg.r1, sg.c1, sg.r1 + b.h - 1, sg.c1 + b.w - 1)
-    return sumAt(sized, r.sel)
-  }
-
-  /** XLOOKUP: match modes 0, −1, 1, 2 (wildcard); search modes 1, −1, ±2 (binary search runs linearly, same answer on sorted data). */
-  const XLOOKUP = (key: V | Rng, look: V | Rng, ret: V | Rng, notFound?: V | Rng, matchMode?: V | Rng, searchMode?: V | Rng): V => {
-    const k = scalar(key)
-    if (isErr(k)) return k
-    const lg = asRng(look)
-    if (isErr(lg)) return lg
-    const rg = asRng(ret)
-    if (isErr(rg)) return rg
-    const lb = bounds(lg)
-    const rb = bounds(rg)
-    if (lb.w !== 1 && lb.h !== 1) return E.VALUE
-    const vertical = lb.w === 1
-    if ((vertical && rb.h !== lb.h) || (!vertical && rb.w !== lb.w)) return E.VALUE
-    if ((vertical && rb.w !== 1) || (!vertical && rb.h !== 1)) return E.VALUE // an array result: no spilling
-    const mm = matchMode === undefined ? 0 : num(matchMode)
-    const sm = searchMode === undefined ? 1 : num(searchMode)
-    if (isErr(mm)) return mm
-    if (isErr(sm)) return sm
-    if (![0, -1, 1, 2].includes(mm) || ![1, -1, 2, -2].includes(sm)) return E.VALUE
-    const lf = flat(lg)
-    const kk: V = k === null ? 0 : k
-    const wild: Crit | null = mm === 2 && typeof kk === 'string' ? parseCrit('=' + kk) : null
-    const order = sm > 0 ? lf.map((_, i) => i) : lf.map((_, i) => lf.length - 1 - i)
-    let pos = -1
-    let best: V = null
-    for (const i of order) {
-      const v = lf[i]
-      if (v === null || isErr(v) || rank(v) !== rank(kk)) continue
-      if (wild ? matches(v, wild) : compare(v, kk) === 0) {
-        pos = i
-        break
-      }
-      if (mm === -1 && compare(v, kk) < 0 && (pos < 0 || compare(v, best) > 0)) {
-        pos = i
-        best = v
-      } else if (mm === 1 && compare(v, kk) > 0 && (pos < 0 || compare(v, best) < 0)) {
-        pos = i
-        best = v
-      }
-    }
-    if (pos < 0) return notFound === undefined ? E.NA : scalar(notFound)
-    return flat(rg)[pos] ?? null
-  }
-
-  const F: Record<string, (...a: any[]) => V> = {
-    // in a range only numbers and errors count (text and booleans are skipped); a direct argument is coerced
-    SUM: (...a: (V | Rng)[]) => {
-      const args: unknown[] = []
-      for (const x of a) {
-        if (x instanceof Rng) {
-          const f = flat(x)
-          for (const v of f) if (isErr(v)) return v
-          args.push(f.filter((v): v is number => typeof v === 'number'))
-        } else {
-          const n = toNum(x)
-          if (isErr(n)) return n
-          args.push(n)
-        }
-      }
-      return call(fj.SUM, ...args)
+  const cx: Cx = {
+    get now() {
+      return ctx.now
     },
-    SUMIF,
-    SUMIFS,
-    COUNTIFS,
-    XLOOKUP,
-    ROUND: (x: V | Rng, d: V | Rng) => {
-      const n = num(x)
-      if (isErr(n)) return n
-      const k = num(d)
-      if (isErr(k)) return k
-      return call(fj.ROUND, n, Math.trunc(k))
-    },
-    EOMONTH: (x: V | Rng, m: V | Rng) => {
-      const n = num(x)
-      if (isErr(n)) return n
-      const k = num(m)
-      if (isErr(k)) return k
-      if (n < 0) return E.NUM
-      return call(fj.EOMONTH, serialToLocalDate(n), Math.trunc(k))
-    },
-    DATE: (y: V | Rng, m: V | Rng, d: V | Rng) => {
-      const a = [y, m, d].map(num)
-      for (const x of a) if (isErr(x)) return x
-      const [yy, mo, dd] = (a as number[]).map(Math.trunc)
-      // Excel: years 0–1899 are added to 1900; a result before 1900-01-01 is #NUM!
-      const year = yy < 1900 ? yy + 1900 : yy
-      if (year < 1900 || year > 9999) return E.NUM
-      const v = call(fj.DATE, year, mo, dd)
-      return typeof v === 'number' && v < 0 ? E.NUM : v
-    },
-    TEXT: (x: V | Rng, f: V | Rng) => {
-      const v = scalar(x)
-      if (isErr(v)) return v
-      const t = toText(scalar(f))
-      if (isErr(t)) return t
-      return formatText(v ?? 0, t) ?? E.VALUE
-    },
-    TRUE: () => true,
-    FALSE: () => false,
-    TODAY: () => Math.floor(ctx.now),
-    NOW: () => ctx.now,
+    rand: (s, r, c) => randAt(ctx.seed, sheets[s].name, r, c),
+    flat,
+    bounds,
+    scalar,
+    grid,
+    select: select_,
   }
 
-  const IF = (c: V | Rng, a: () => V | Rng, b: () => V | Rng): V => {
-    const x = toBool(scalar(c))
-    if (isErr(x)) return x
-    return scalar(x ? a() : b())
-  }
-  const IFERR = (a: () => V | Rng, b: () => V | Rng): V => {
-    const x = scalar(a())
-    return isErr(x) ? scalar(b()) : x
-  }
-  const rand = (s: number, r: number, c: number) => randAt(ctx.seed, sheets[s].name, r, c)
-  const randbetween = (s: number, r: number, c: number, lo: V | Rng, hi: V | Rng): V => {
-    const a = num(lo)
-    if (isErr(a)) return a
-    const b = num(hi)
-    if (isErr(b)) return b
-    const x = Math.ceil(a)
-    const y = Math.floor(b)
-    if (y < x) return E.NUM
-    return x + Math.floor(randAt(ctx.seed, sheets[s].name, r, c) * (y - x + 1))
-  }
+  const F: Record<string, (...a: any[]) => V> = {}
+  for (const [name, def] of Object.entries(DEFS)) F[name] = makeCaller(def, cx)
+
   const ext = (key: string): V => (key in ctx.externals ? fromCellValue(ctx.externals[key]) : E.NA)
 
-  return { cell, flat, bounds, scalar, add, sub, mul, div, pow, neg, pct, cat, cmp, F, IF, IFERR, rand, randbetween, ext, E }
+  return { cell, flat, bounds, scalar, add, sub, mul, div, pow, neg, pct, cat, cmp, F, ext, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

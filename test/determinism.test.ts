@@ -1,6 +1,6 @@
 /**
  * Determinism: the hash does not depend on input order, the number of runs, the process or its time zone
- * (formulajs handles dates through JS Date in the local zone); cents are not lost.
+ * (dates are computed in UTC, never through the local zone); cents are not lost.
  */
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'

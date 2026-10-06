@@ -12,8 +12,13 @@ import { DATA_SHEET, dataCells } from './data.js'
 
 export const CASE_SHEET = 'C'
 
-export async function writeBook(cases: Case[], file: string): Promise<void> {
+/** `sheets`: further data sheets by name, values by A1 address (the probes of `probes.ts`). */
+export async function writeBook(cases: Pick<Case, 'id' | 'formula' | 'pick'>[], file: string, sheets: Record<string, Record<string, number | string | boolean>> = {}): Promise<void> {
   const wb = new ExcelJS.Workbook()
+  for (const [name, cells] of Object.entries(sheets)) {
+    const ws = wb.addWorksheet(name)
+    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = v
+  }
   const d = wb.addWorksheet(DATA_SHEET)
   for (const [addr, v] of dataCells()) {
     const cell = d.getCell(addr)

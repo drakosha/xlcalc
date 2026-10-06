@@ -1,9 +1,10 @@
 /**
  * Criteria of SUMIF, SUMIFS, COUNTIFS and an index over them: strings are case-insensitive but
  * accent-sensitive («й» ≠ «и», «ё» ≠ «е»); wildcards `*`, `?`, escaping with `~`; numbers and ISO dates in
- * the criterion text are compared as numbers; `""` matches blanks, `"<>"` non-blanks.
+ * the criterion text are compared as numbers, and a number criterion's equality also holds for text that
+ * reads as that number; `""` matches blanks, `"<>"` non-blanks.
  */
-import { dateToSerial } from './model.js'
+import { dateToSerial, NUMBER_TEXT, readNumber } from './model.js'
 
 /** A cell value for a criterion; errors are any object. */
 export type CritValue = number | string | boolean | null | object
@@ -21,7 +22,6 @@ export type Crit =
  */
 export const collator: { compare(a: string, b: string): number } =
   typeof Intl !== 'undefined' ? new Intl.Collator('ru-RU', { sensitivity: 'accent' }) : { compare: (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0) }
-const NUM_RE = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const cache = new Map<string, Crit>()
 
@@ -53,7 +53,7 @@ export function parseCrit(v: number | string | boolean | null): Crit {
     const rest = m[2]
     const t = rest.trim()
     if (rest === '') c = { op, kind: 'blank' }
-    else if (NUM_RE.test(t)) c = { op, kind: 'num', n: Number(t) }
+    else if (NUMBER_TEXT.test(t)) c = { op, kind: 'num', n: readNumber(t) }
     else if (DATE_RE.test(t)) c = { op, kind: 'num', n: dateToSerial(t) }
     else if (/^(TRUE|FALSE)$/i.test(rest)) c = { op, kind: 'bool', b: rest.toUpperCase() === 'TRUE' }
     else {
@@ -68,9 +68,20 @@ export function parseCrit(v: number | string | boolean | null): Crit {
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 const opOk = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0)
 
+/** Text that reads as a number, as in a criterion (`"2"`, `" 2.50 "`), or null. */
+function numericText(s: string): number | null {
+  const t = s.trim()
+  return NUMBER_TEXT.test(t) ? readNumber(t) : null
+}
+
 export function matches(v: CritValue, c: Crit): boolean {
   switch (c.kind) {
     case 'num':
+      // equality with a number also holds for text that reads as that number (Excel: 2 matches "2")
+      if (typeof v === 'string' && (c.op === '=' || c.op === '<>')) {
+        const n = numericText(v)
+        if (n !== null) return (n === c.n) === (c.op === '=')
+      }
       if (typeof v !== 'number') return c.op === '<>'
       return opOk(c.op, ord(v, c.n))
     case 'bool':
@@ -90,9 +101,12 @@ export function matches(v: CritValue, c: Crit): boolean {
   }
 }
 
-/** Equality key in the index: case-insensitive strings, numbers, booleans. */
+/** Equality key in the index: case-insensitive strings, numbers (and text that reads as a number), booleans. */
 function eqKey(v: CritValue): string | null {
-  if (typeof v === 'string') return 's' + v.toLowerCase()
+  if (typeof v === 'string') {
+    const n = numericText(v)
+    return n === null ? 's' + v.toLowerCase() : 'n' + n
+  }
   if (typeof v === 'number') return 'n' + v
   if (typeof v === 'boolean') return 'b' + v
   return null
@@ -121,6 +135,7 @@ export function buildIndex(flat: readonly CritValue[]): CritIndex {
 }
 
 export interface CritColumn {
+  /** Values by position; positions past the end are blank. */
   flat: readonly CritValue[]
   crit: Crit
   /** The index of this range (built lazily and cached by the caller). */
@@ -143,7 +158,7 @@ export function select(cols: CritColumn[], n: number): number[] {
   }
   const out: number[] = []
   const check = (p: number) => {
-    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p], cols[i].crit)) return
+    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit)) return
     out.push(p)
   }
   if (cand) for (const p of cand) check(p)

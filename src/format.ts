@@ -1,11 +1,12 @@
 /**
  * TEXT with Excel number formats (en-US): `;` sections (positive, negative, zero, text), quoted and
  * `\`-escaped literals, numbers (`0`, `#`, `?`, `.`, `,` for thousands grouping and scaling by 1000,
- * `%`), dates and times (`yyyy`, `yy`, `m`…`mmmm`, `d`…`dddd`, `h`, `hh`, `mm` as minutes, `ss`,
- * `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed conditions are not supported:
- * null (the caller turns it into #VALUE!).
+ * `%`), fractions (`# ?/?`, `?/??`, `# ?/8`), dates and times (`yyyy`, `yy`, `m`…`mmmm`, `d`…`dddd`,
+ * `h`, `hh`, `mm` as minutes, `ss`, `AM/PM`), `General` and `@`. Exponents (`E+`), colours and bracketed
+ * conditions are not supported: null (the caller turns it into #VALUE!).
  */
-import { serialToUtcMs } from './model.js'
+import { roundDigits } from './functions/common.js'
+import { NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
 
 type Tok = { t: 'lit'; s: string } | { t: 'ph'; c: '0' | '#' | '?' } | { t: 'dot' } | { t: 'comma' } | { t: 'pct' } | { t: 'date'; s: string } | { t: 'ampm'; s: string }
 
@@ -78,9 +79,8 @@ function tokenize(sec: string): Tok[] | null {
 }
 
 /** Round half away from zero on the decimal representation (1.005 → 1.01). */
-function roundHalfUp(abs: number, k: number): string {
-  const shifted = Math.round(Number(`${abs}e${k}`))
-  return Number(`${shifted}e-${k}`).toFixed(k)
+export function roundHalfUp(abs: number, k: number): string {
+  return roundDigits(abs, k, Math.round).toFixed(k)
 }
 
 function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
@@ -137,6 +137,59 @@ function formatNumber(v: number, toks: Tok[], signed: boolean): string | null {
   return (negative ? '-' : '') + out
 }
 
+const isDigitLit = (t: Tok | undefined) => t?.t === 'lit' && /^[0-9]$/.test(t.s)
+
+/**
+ * A fraction: placeholders right before `/` are the numerator, placeholders before them (if any) the
+ * integer part; after `/` either placeholders (the denominator has at most that many digits, the closest
+ * fraction is taken) or a fixed denominator (`?/8`).
+ */
+function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean): string | null {
+  let i = slash - 1
+  while (i >= 0 && toks[i].t === 'ph') i--
+  const numPh = toks.slice(i + 1, slash) as Extract<Tok, { t: 'ph' }>[]
+  const intToks = toks.slice(0, i + 1)
+  const hasInt = intToks.some((t) => t.t === 'ph')
+  let j = slash + 1
+  let fixed = 0
+  const denPh: Extract<Tok, { t: 'ph' }>[] = []
+  if (isDigitLit(toks[j])) {
+    let digits = ''
+    for (; j < toks.length && (isDigitLit(toks[j]) || (toks[j].t === 'ph' && (toks[j] as Extract<Tok, { t: 'ph' }>).c === '0')); j++) digits += toks[j].t === 'lit' ? (toks[j] as Extract<Tok, { t: 'lit' }>).s : '0'
+    fixed = Number(digits)
+  } else for (; j < toks.length && toks[j].t === 'ph'; j++) denPh.push(toks[j] as Extract<Tok, { t: 'ph' }>)
+  if (!numPh.length || (!fixed && !denPh.length)) return null
+  const x = Math.abs(v)
+  let ip = hasInt ? Math.floor(x) : 0
+  const frac = x - ip
+  let num = 0
+  let den = fixed
+  if (fixed) num = Math.round(frac * fixed)
+  else {
+    let best = Infinity
+    for (let d = 1, max = 10 ** denPh.length - 1; d <= max; d++) {
+      const n = Math.round(frac * d)
+      const err = Math.abs(frac - n / d)
+      if (err < best - 1e-12) [best, num, den] = [err, n, d]
+    }
+  }
+  if (hasInt && num === den) [ip, num] = [ip + 1, 0]
+  // unused digit places: `0` gives a zero before the digits, `?` a space (after the denominator's digits)
+  const pad = (s: string, ph: Extract<Tok, { t: 'ph' }>[], left: boolean) => {
+    const free = ph.slice(0, Math.max(0, ph.length - s.length))
+    const zeros = '0'.repeat(free.filter((t) => t.c === '0').length)
+    const spaces = ' '.repeat(free.filter((t) => t.c === '?').length)
+    return left ? spaces + zeros + s : zeros + s + spaces
+  }
+  const intPart = hasInt ? formatNumber(ip, intToks, false)! : intToks.map((t) => (t.t === 'lit' ? t.s : '')).join('')
+  const denText = fixed ? String(fixed) : pad(String(den), denPh, false)
+  const fracText = pad(String(num), numPh, true) + '/' + denText
+  const tail = toks.slice(j).map((t) => (t.t === 'lit' ? t.s : '')).join('')
+  // a whole number: the fraction's place is blank
+  const body = hasInt && num === 0 ? intPart + ' '.repeat(fracText.length) : intPart + fracText
+  return (signed && v < 0 && (ip !== 0 || num !== 0) ? '-' : '') + body + tail
+}
+
 function formatDate(serial: number, toks: Tok[]): string | null {
   if (serial < 0) return null
   const ms = serialToUtcMs(Math.floor(serial)) + Math.round((serial - Math.floor(serial)) * 86_400) * 1000
@@ -179,18 +232,56 @@ function formatDate(serial: number, toks: Tok[]): string | null {
   return out
 }
 
-/** A number as text in the General format: up to 15 significant digits (like an unformatted Excel cell). */
+/**
+ * A number as text the way Excel converts one (`&`, CONCAT, text arguments): rounded to 15 significant
+ * digits, in positional notation unless that takes more than 20 characters (the sign aside), else in
+ * scientific notation with an exponent of two digits at least (`1E+20`, `7.4500104300146E-06`).
+ */
 export function generalText(n: number): string {
   if (n === 0) return '0'
-  return String(Number(n.toPrecision(15)))
+  const [m, e] = Math.abs(n).toExponential(14).split('e')
+  const exp = Number(e)
+  const digits = m.replace('.', '').replace(/0+$/, '')
+  const fixed =
+    exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
+  const text = fixed.length <= 20 ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
+  return n < 0 ? '-' + text : text
+}
+
+/**
+ * A number in the General format of TEXT: at most 11 characters, the sign aside. Positional when that
+ * shows all of the number's 15 significant digits or as many as scientific notation would (a fraction
+ * keeps up to 9 decimals, `0.000123457`), else scientific with the mantissa rounded to fit
+ * (`1.23457E-05`, `1E+11`).
+ */
+export function generalFormat(n: number): string {
+  if (n === 0) return '0'
+  const a = Math.abs(n)
+  const [m, ex] = a.toExponential(14).split('e')
+  const e = Number(ex)
+  const need = m.replace('.', '').replace(/0+$/, '').length
+  const sciCap = 11 - 3 - Math.max(2, String(Math.abs(e)).length)
+  const fixedCap = e >= 0 ? (e < 11 ? Math.max(10, e + 1) : 0) : 10 + e
+  let text: string | null = null
+  if (fixedCap > 0 && (need <= fixedCap || fixedCap >= sciCap)) {
+    const fixed = roundHalfUp(a, e >= 0 ? Math.max(0, 9 - e) : 9).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
+    if (fixed.length <= 11) text = fixed
+  }
+  if (text === null) {
+    const [sm, se] = a.toExponential(sciCap - 1).split('e')
+    text = `${sm.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')}E${se[0]}${se.slice(1).padStart(2, '0')}`
+  }
+  return n < 0 ? '-' + text : text
 }
 
 /** TEXT(value, format); null for an unsupported or invalid format. */
 export function formatText(value: number | string | boolean, fmt: string): string | null {
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
+  if (fmt === '') return ''
   const sections = splitSections(fmt)
   if (typeof value === 'string') {
-    const n = value.trim() === '' ? NaN : Number(value)
+    const t = value.trim()
+    const n = NUMBER_TEXT.test(t) ? readNumber(t) : NaN
     if (Number.isNaN(n)) {
       const textSec = sections.length >= 4 ? sections[3] : sections.find((s) => s.includes('@'))
       return textSec ? textSec.replace(/@/g, value).replace(/"/g, '') : value
@@ -204,11 +295,13 @@ export function formatText(value: number | string | boolean, fmt: string): strin
     sec = sections[1]
     signed = false
   } else if (v === 0 && sections.length >= 3 && sections[2] !== '') sec = sections[2]
-  if (/^\s*general\s*$/i.test(sec) || sec === '') return generalText(signed ? v : Math.abs(v))
+  if (/^\s*general\s*$/i.test(sec) || sec === '') return generalFormat(signed ? v : Math.abs(v))
   if (sec.trim() === '@') return generalText(v)
   const toks = tokenize(sec)
   if (!toks) return null
   if (toks.some((t) => t.t === 'date' || t.t === 'ampm')) return formatDate(v, toks)
   if (!toks.some((t) => t.t === 'ph')) return toks.map((t) => (t.t === 'lit' ? t.s : t.t === 'dot' ? '.' : t.t === 'comma' ? ',' : t.t === 'pct' ? '%' : '')).join('')
+  const slash = toks.findIndex((t, i) => t.t === 'lit' && t.s === '/' && toks[i - 1]?.t === 'ph')
+  if (slash >= 0) return formatFraction(v, toks, slash, signed)
   return formatNumber(v, toks, signed)
 }

@@ -16,6 +16,16 @@ describe('formula parsing', () => {
     expect(canonical(parse('IF(true,1,2)'))).toBe('IF(TRUE,1,2)')
   })
 
+  it('number literals keep 15 significant digits, the rest is dropped (as Excel reads them)', () => {
+    const num = (f: string) => {
+      const a = parse(f)
+      return a.k === 'num' ? a.v : NaN
+    }
+    expect([num('123456789012345678'), num('1.99999999999999999'), num('.5'), num('5.'), num('1234567890123456789E-5'), num('0.000000000000000012345678901234567')]).toEqual([
+      123456789012345000, 1.99999999999999, 0.5, 5, 12345678901234.5, 1.23456789012345e-17,
+    ])
+  })
+
   it('three kinds of references and a name', () => {
     const a = parse("SUM('Данные'!$D$2:$D$3401,Данные!D:D,data_amt,1:1)")
     expect(a.k === 'fn' && a.args.map((x) => (x.k === 'ref' ? x.ref.kind : x.k))).toEqual(['range', 'cols', 'name', 'rows'])

@@ -12,8 +12,9 @@ import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, E
 import { PACKAGE_NAME } from './config.js'
 import { FUNCTIONS } from './functions.js'
 import { formatAddress, indexToCol, inputScalar, MAX_COLS, MAX_ROWS, parseAddress, sortAddresses } from './model.js'
-import { CErr, E, isErr, makeRuntime, Rng, type Runtime, type RuntimeContext, type SheetData, type V } from './runtime.js'
+import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { canonical, FormulaError, parse, quoteSheet, sheetKey, validate, validateName, type Ast } from './syntax.js'
+import { CErr, E, isErr, Rng, type V } from './values.js'
 
 interface Formula {
   id: number
@@ -199,12 +200,11 @@ function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number):
         const spec = FUNCTIONS[n.name]
         if (!spec) return `ext(${JSON.stringify(canonical(n))})`
         if (spec.volatile) volatile = true
-        const args = n.args
-        if (n.name === 'IF') return `IF(${go(args[0])},()=>${go(args[1])},()=>${args[2] ? go(args[2]) : 'false'})`
-        if (n.name === 'IFERROR') return `IFERR(()=>${go(args[0])},()=>${go(args[1])})`
-        if (n.name === 'RAND') return `rand(${s},${r},${c})`
-        if (n.name === 'RANDBETWEEN') return `randbetween(${s},${r},${c},${go(args[0])},${go(args[1])})`
-        return `F.${n.name}(${args.map((a, i) => go(a, spec.range(i))).join(',')})`
+        // lazy functions (IF, IFERROR) get each argument as a function; RAND gets its cell
+        const args = n.args.map((a, i) => (spec.lazy ? `()=>${go(a)}` : go(a, spec.range(i))))
+        if (spec.cell) args.unshift(String(s), String(r), String(c))
+        const callee = /^[A-Z][A-Z0-9_]*$/.test(n.name) ? `F.${n.name}` : `F[${JSON.stringify(n.name)}]`
+        return `${callee}(${args.join(',')})`
       }
     }
   }
@@ -213,7 +213,7 @@ function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number):
   return { source: `(()=>{${decl}return ()=>${expr}})()`, refs, volatile }
 }
 
-const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,F,IF,IFERR,rand,randbetween,ext,E,R}=rt;'
+const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,F,ext,E,R}=rt;'
 
 function compileSources(rt: Runtime, sources: string[]): (() => V | Rng)[] {
   const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)

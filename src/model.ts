@@ -43,6 +43,24 @@ export function compareAddress(a: string, b: string): number {
   return x.row - y.row || x.col - y.col
 }
 
+// ---------- numbers ----------
+
+/** Decimal number text: `12`, `-1.5`, `.5`, `1E-7`. */
+export const NUMBER_TEXT = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/
+
+/**
+ * Decimal number text (matching `NUMBER_TEXT`) as Excel reads it, in a formula or in text: digits past the
+ * 15th significant one are dropped, not rounded (123456789012345678 is 123456789012345000).
+ */
+export function readNumber(text: string): number {
+  const m = /^([+-]?)(\d*)\.?(\d*)(?:[eE]([+-]?\d+))?$/.exec(text)!
+  const digits = m[2] + m[3]
+  const first = digits.search(/[1-9]/)
+  if (first < 0 || digits.length - first <= 15) return Number(text)
+  const kept = digits.slice(0, first + 15).padEnd(digits.length, '0')
+  return Number(`${m[1]}${kept.slice(0, m[2].length)}.${kept.slice(m[2].length)}e${m[4] ?? 0}`)
+}
+
 // ---------- dates ----------
 
 const DAY_MS = 86_400_000

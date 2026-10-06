@@ -2,14 +2,17 @@
  * The README's code runs: every ```js block runs as an ES module that imports the built package by name
  * (`npm test` builds first), and each `// → text` comment must equal what the corresponding console.log
  * printed, in order; comment lines starting with `//   ` right after it continue a multi-line output.
+ * The README's list of functions is the whitelist.
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import { FUNCTION_NAMES } from '../src/index.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const blocks = [...readFileSync(new URL('../README.md', import.meta.url), 'utf8').matchAll(/```js\n([\s\S]*?)```/g)].map((m) => m[1])
+const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+const blocks = [...readme.matchAll(/```js\n([\s\S]*?)```/g)].map((m) => m[1])
 
 function expected(code: string): string[] {
   const out: string[] = []
@@ -33,6 +36,12 @@ describe('README', () => {
   it('has code blocks with expected output', () => {
     expect(blocks.length).toBeGreaterThanOrEqual(5)
     for (const b of blocks) expect(expected(b).length, b.slice(0, 80)).toBeGreaterThan(0)
+  })
+
+  it('lists the whitelist by category in Functions', () => {
+    const section = readme.slice(readme.indexOf('## Functions\n'), readme.indexOf('\nStatus:'))
+    const listed = [...section.matchAll(/^- [^:]+: (.+)$/gm)].flatMap((m) => [...m[1].matchAll(/`([^`]+)`/g)].map((x) => x[1]))
+    expect([...listed].sort()).toEqual(FUNCTION_NAMES)
   })
 
   for (const [i, code] of blocks.entries()) {

@@ -1,14 +1,15 @@
 /**
  * Smoke test of the built package (`npm run build` first): every `exports` subpath exists in `dist` with
  * `.d.ts`, plain node imports them by package name, the synthetic hash and the session match the sources,
- * `dist` cannot be reached around `exports`, and the tarball holds only `dist` and the documents.
+ * `dist` cannot be reached around `exports`, ported code keeps its attribution, and the tarball holds only
+ * `dist` and the documents.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { compute, openSession } from '../src/index.js'
+import { compute, FUNCTION_NAMES, openSession } from '../src/index.js'
 import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -41,7 +42,7 @@ describe('built package', () => {
     expect(out.hash).toBe(compute(synth.book, { clock }).hash)
     expect(out.edited).toBe(session.result().hash)
     session.close()
-    expect(out.functions).toBe(17)
+    expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.engine).toEqual(['compute', 'openSession', 'validateFormula', 'validateName'])
     expect(out.inputError).toBe('function')
     expect(out.validate).toBe(true)
@@ -49,6 +50,17 @@ describe('built package', () => {
     expect(out.internal).toEqual(['function', 'function', 'function'])
     expect(out.closed).toEqual(Array(3).fill('ERR_PACKAGE_PATH_NOT_EXPORTED'))
   }, 60_000)
+
+  it('the attribution of ported code stays at the top of its built file', () => {
+    const dir = join(root, 'src/functions')
+    const ported = readdirSync(dir).filter((f) => readFileSync(join(dir, f), 'utf8').includes('Copyright (c)'))
+    expect(ported.length).toBeGreaterThan(0)
+    for (const f of ported) {
+      const built = readFileSync(join(root, 'dist/functions', f.replace(/\.ts$/, '.js')), 'utf8')
+      // tsc drops a comment attached to an import it elides: a value import has to come first
+      expect(built.startsWith('/**') && /Copyright \(c\)\s+(\*\s+)?\d{4}/.test(built.slice(0, built.indexOf('*/'))), f).toBe(true)
+    }
+  })
 
   it('the tarball holds dist, the documents and package.json only', () => {
     const [packed] = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: root, encoding: 'utf8' })) as { files: { path: string }[] }[]
