@@ -15,5 +15,9 @@ export function buildProbes(): Probe[] {
   for (const d of DAYS) add(`DATE(2025,1,${d})`)
   for (const d of ['32767', '32768', '-32768', '-32769']) add(`DATE(1950,7,${d})`)
   for (const m of ['32767', '32768', '-32768', '-32769', '1000', '-1000']) add(`DATE(2000,${m},1)`)
+  // where months stop: the month alone, the year with it, the date reached
+  for (const m of ['2000', '4000', '8000', '12000', '16000', '20000', '24000', '28000', '30000', '32000', '-2000', '-12000', '-22000'])
+    for (const y of ['1900', '2000', '5000']) add(`DATE(${y},${m},1)`)
+  for (const [y, m] of [['1900', '96000'], ['1900', '32767'], ['9999', '12'], ['9999', '13'], ['1900', '-11'], ['1900', '-12']]) add(`DATE(${y},${m},1)`)
   return out
 }

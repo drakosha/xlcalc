@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.297,
+  "seconds": 2.293,
   "dynamic": true
  },
  "cases": [
@@ -185,6 +185,276 @@
    "group": "DATE",
    "fn": "DATE",
    "formula": "DATE(2000,-1000,1)"
+  },
+  {
+   "id": "DATE#31",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,2000,1)"
+  },
+  {
+   "id": "DATE#32",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,2000,1)"
+  },
+  {
+   "id": "DATE#33",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,2000,1)"
+  },
+  {
+   "id": "DATE#34",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,4000,1)"
+  },
+  {
+   "id": "DATE#35",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,4000,1)"
+  },
+  {
+   "id": "DATE#36",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,4000,1)"
+  },
+  {
+   "id": "DATE#37",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,8000,1)"
+  },
+  {
+   "id": "DATE#38",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,8000,1)"
+  },
+  {
+   "id": "DATE#39",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,8000,1)"
+  },
+  {
+   "id": "DATE#40",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,12000,1)"
+  },
+  {
+   "id": "DATE#41",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,12000,1)"
+  },
+  {
+   "id": "DATE#42",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,12000,1)"
+  },
+  {
+   "id": "DATE#43",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,16000,1)"
+  },
+  {
+   "id": "DATE#44",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,16000,1)"
+  },
+  {
+   "id": "DATE#45",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,16000,1)"
+  },
+  {
+   "id": "DATE#46",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,20000,1)"
+  },
+  {
+   "id": "DATE#47",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,20000,1)"
+  },
+  {
+   "id": "DATE#48",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,20000,1)"
+  },
+  {
+   "id": "DATE#49",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,24000,1)"
+  },
+  {
+   "id": "DATE#50",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,24000,1)"
+  },
+  {
+   "id": "DATE#51",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,24000,1)"
+  },
+  {
+   "id": "DATE#52",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,28000,1)"
+  },
+  {
+   "id": "DATE#53",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,28000,1)"
+  },
+  {
+   "id": "DATE#54",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,28000,1)"
+  },
+  {
+   "id": "DATE#55",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,30000,1)"
+  },
+  {
+   "id": "DATE#56",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,30000,1)"
+  },
+  {
+   "id": "DATE#57",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,30000,1)"
+  },
+  {
+   "id": "DATE#58",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32000,1)"
+  },
+  {
+   "id": "DATE#59",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32000,1)"
+  },
+  {
+   "id": "DATE#60",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,32000,1)"
+  },
+  {
+   "id": "DATE#61",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,-2000,1)"
+  },
+  {
+   "id": "DATE#62",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,-2000,1)"
+  },
+  {
+   "id": "DATE#63",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,-2000,1)"
+  },
+  {
+   "id": "DATE#64",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,-12000,1)"
+  },
+  {
+   "id": "DATE#65",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,-12000,1)"
+  },
+  {
+   "id": "DATE#66",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,-12000,1)"
+  },
+  {
+   "id": "DATE#67",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,-22000,1)"
+  },
+  {
+   "id": "DATE#68",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,-22000,1)"
+  },
+  {
+   "id": "DATE#69",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(5000,-22000,1)"
+  },
+  {
+   "id": "DATE#70",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,96000,1)"
+  },
+  {
+   "id": "DATE#71",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32767,1)"
+  },
+  {
+   "id": "DATE#72",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(9999,12,1)"
+  },
+  {
+   "id": "DATE#73",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(9999,13,1)"
+  },
+  {
+   "id": "DATE#74",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,-11,1)"
+  },
+  {
+   "id": "DATE#75",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,-12,1)"
   }
  ],
  "values": {
@@ -307,6 +577,186 @@
   "DATE#30": {
    "t": "n",
    "v": 6058
+  },
+  "DATE#31": {
+   "t": "n",
+   "v": 60845
+  },
+  "DATE#32": {
+   "t": "n",
+   "v": 97369
+  },
+  "DATE#33": {
+   "t": "n",
+   "v": 1193096
+  },
+  "DATE#34": {
+   "t": "n",
+   "v": 121718
+  },
+  "DATE#35": {
+   "t": "n",
+   "v": 158242
+  },
+  "DATE#36": {
+   "t": "n",
+   "v": 1253970
+  },
+  "DATE#37": {
+   "t": "n",
+   "v": 243466
+  },
+  "DATE#38": {
+   "t": "n",
+   "v": 279990
+  },
+  "DATE#39": {
+   "t": "n",
+   "v": 1375718
+  },
+  "DATE#40": {
+   "t": "n",
+   "v": 365214
+  },
+  "DATE#41": {
+   "t": "n",
+   "v": 401738
+  },
+  "DATE#42": {
+   "t": "n",
+   "v": 1497465
+  },
+  "DATE#43": {
+   "t": "n",
+   "v": 486961
+  },
+  "DATE#44": {
+   "t": "n",
+   "v": 523485
+  },
+  "DATE#45": {
+   "t": "n",
+   "v": 1619212
+  },
+  "DATE#46": {
+   "t": "n",
+   "v": 608708
+  },
+  "DATE#47": {
+   "t": "n",
+   "v": 645233
+  },
+  "DATE#48": {
+   "t": "n",
+   "v": 1740960
+  },
+  "DATE#49": {
+   "t": "n",
+   "v": 730456
+  },
+  "DATE#50": {
+   "t": "n",
+   "v": 766980
+  },
+  "DATE#51": {
+   "t": "n",
+   "v": 1862708
+  },
+  "DATE#52": {
+   "t": "n",
+   "v": 852203
+  },
+  "DATE#53": {
+   "t": "n",
+   "v": 888727
+  },
+  "DATE#54": {
+   "t": "n",
+   "v": 1984455
+  },
+  "DATE#55": {
+   "t": "n",
+   "v": 913077
+  },
+  "DATE#56": {
+   "t": "n",
+   "v": 949602
+  },
+  "DATE#57": {
+   "t": "n",
+   "v": 2045329
+  },
+  "DATE#58": {
+   "t": "n",
+   "v": 973951
+  },
+  "DATE#59": {
+   "t": "n",
+   "v": 1010475
+  },
+  "DATE#60": {
+   "t": "n",
+   "v": 2106203
+  },
+  "DATE#61": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#62": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#63": {
+   "t": "n",
+   "v": 1071349
+  },
+  "DATE#64": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#65": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#66": {
+   "t": "n",
+   "v": 766980
+  },
+  "DATE#67": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#68": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#69": {
+   "t": "n",
+   "v": 462611
+  },
+  "DATE#70": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#71": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#72": {
+   "t": "n",
+   "v": 2958435
+  },
+  "DATE#73": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#74": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DATE#75": {
+   "t": "e",
+   "v": "NUM"
   }
  }
 }
