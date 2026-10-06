@@ -43,6 +43,13 @@ describe('functions beyond the measurement', () => {
     expect(values(['ROWS(A:A)', 'COLUMNS(1:1)', 'COUNTBLANK(A:A)', 'ROWS(A1:B3)'], { A1: { value: 1 }, A5: { value: 2 } })).toEqual([1048576, 16384, 1048574, 3])
   })
 
+  it('criteria over whole columns of sheets with different numbers of rows (Excel: 4)', () => {
+    const t: Record<string, CellInput> = { B1: { value: 1 }, B2: { value: -1 }, B3: { value: 1 } }
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= 5; r++) cells[`A${r}`] = { value: r }
+    expect(values(['SUMIFS(A:A,T!B:B,">0")', 'SUMIF(T!B:B,">0",A:A)', 'COUNTIFS(T!B:B,">0",A:A,">2")', 'SUMIFS(A:A,T!B:B,"")', 'COUNTIFS(A:A,"")', 'COUNTIFS(A:A,"<>3")', 'SUMIFS(A:A,T!B1:B3,">0")'], cells, t)).toEqual([4, 4, 1, 9, 1048571, 1048575, err('VALUE')])
+  })
+
   it('XLOOKUP over whole columns of sheets with different numbers of rows', () => {
     const t: Record<string, CellInput> = {}
     for (let r = 1; r <= 10; r++) t[`B${r}`] = { value: r * 10 }

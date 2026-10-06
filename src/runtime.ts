@@ -6,7 +6,7 @@
  */
 import { makeCaller, type Cx, type Grid } from './args.js'
 import type { CellValue } from './contract.js'
-import { buildIndex, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
+import { buildIndex, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
 import { DEFS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_ROWS } from './model.js'
@@ -135,19 +135,38 @@ export function makeRuntime(ctx: RuntimeContext) {
     return ix
   }
 
-  const select_: Cx['select'] = (pairs, size) => {
+  /** A range's values laid out row by row in `w` columns (its occupied part can be narrower). */
+  const aligned = (g: Rng, w: number): readonly V[] => {
+    const b = bounds(g)
+    const f = flat(g)
+    if (b.w === w) return f
+    const out: V[] = new Array(b.h * w).fill(null)
+    for (let r = 0; r < b.h; r++) for (let c = 0; c < b.w; c++) out[r * w + c] = f[r * b.w + c]
+    return out
+  }
+
+  const select_: Cx['select'] = (pairs, sum) => {
+    const ref = sum ?? pairs[0]?.[0]
+    if (!(ref instanceof Rng)) return isErr(ref) ? ref : E.VALUE
+    const rows = ref.r2 - ref.r1 + 1
+    const w = ref.c2 - ref.c1 + 1
+    // the part any range occupies; past it every range is blank
+    let h = sum ? bounds(sum).h : 0
     const cols: CritColumn[] = []
-    let sz = size
+    let blank = true
     for (const [rg, crit] of pairs) {
       if (!(rg instanceof Rng)) return isErr(rg) ? rg : E.VALUE
-      const b = bounds(rg)
-      sz ??= b
-      if (b.h !== sz.h || b.w !== sz.w) return E.VALUE
+      if (rg.r2 - rg.r1 + 1 !== rows || rg.c2 - rg.c1 + 1 !== w) return E.VALUE
       const v = scalar(crit)
       if (isErr(v)) return v
-      cols.push({ flat: flat(rg), crit: parseCrit(v), index: () => indexOf(rg) })
+      const c = parseCrit(v)
+      blank &&= matches(null, c)
+      h = Math.max(h, bounds(rg).h)
+      const f = aligned(rg, w)
+      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg) : () => buildIndex(f) })
     }
-    return { sel: select(cols, sz!.h * sz!.w), size: sz! }
+    const n = h * w
+    return { sel: select(cols, n), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
   }
 
   const cx: Cx = {

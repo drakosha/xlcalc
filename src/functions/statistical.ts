@@ -92,7 +92,7 @@ export const functions: Record<string, FnDef> = {
       const pairs: [V, V][] = []
       for (let i = 0; i < rest.length; i += 2) pairs.push([rest[i], rest[i + 1]])
       const r = cx.select(pairs)
-      return isErr(r) ? r : r.sel.length
+      return isErr(r) ? r : r.sel.length + r.rest
     },
   },
   'F.DIST.RT': {

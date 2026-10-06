@@ -60,6 +60,12 @@ export interface Bounds {
   w: number
 }
 
+export interface Selection {
+  sel: number[]
+  rest: number
+  read(g: Rng): readonly V[]
+}
+
 /** What a function declared with `cx` gets as its first argument. */
 export interface Cx {
   /** The clock moment, a serial number with a day fraction (UTC). */
@@ -72,8 +78,14 @@ export interface Cx {
   /** A value in a scalar position: the single cell of a range, or #VALUE!. */
   scalar(x: V | Rng): V
   grid(x: V | Rng): Grid
-  /** Positions (row by row) where every (range, criterion) pair holds; #VALUE! when the ranges differ in size. */
-  select(pairs: [V | Rng, V | Rng][], size?: { h: number; w: number }): { sel: number[]; size: { h: number; w: number } } | CErr
+  /**
+   * Criteria over ranges of one referenced size (else #VALUE!), on different sheets too: the positions
+   * (row by row in the referenced width) where every (range, criterion) pair holds within the part any of
+   * the ranges occupies, `rest` the matching positions past it (all blank: they count when every
+   * criterion matches a blank), and `read` a range's values by those positions. `sum` is a range of
+   * the same size read along (SUMIFS).
+   */
+  select(pairs: [V | Rng, V | Rng][], sum?: Rng): Selection | CErr
 }
 
 export interface FnDef {

@@ -197,7 +197,7 @@ How the acceptance works: the measurement generated 5,275 cases for 402 Excel fu
 Notes on semantics:
 
 - Arguments are coerced by kind, the same way for every function of a group: numeric arguments read numeric text and booleans, a range in `SUM`, `AVERAGE`, `MAX` and the like contributes only its numbers while a direct argument is coerced, date arguments read date text as Excel en-US does (`2025-01-31`, `1/31/2025`, `31-Jan-2025`), and `"TRUE"`/`"FALSE"` text is a boolean where a boolean is expected.
-- Criteria (`SUMIF`, `SUMIFS`, `COUNTIFS`) compare text case-insensitively but accent-sensitively, support `*`, `?` and `~` escapes, read numbers and ISO dates inside criterion text as numbers (`">=2026-01-01"`), and a number criterion also matches text that reads as that number (`2` matches `"2"`), as in Excel.
+- Criteria (`SUMIF`, `SUMIFS`, `COUNTIFS`) compare text case-insensitively but accent-sensitively, support `*`, `?` and `~` escapes, read numbers and ISO dates inside criterion text as numbers (`">=2026-01-01"`), and a number criterion also matches text that reads as that number (`2` matches `"2"`), as in Excel. Their ranges must have the same referenced size (else `#VALUE!`); whole columns of sheets with different numbers of rows fit, and blank cells of a whole column count where every criterion matches a blank (`COUNTIFS(A:A,"")`).
 - `IF` and `IFERROR` do not compute the branch not taken.
 - Dates follow Excel's 1900 system, phantom 1900-02-29 included: `DATE(1900,2,29)` is 60.
 

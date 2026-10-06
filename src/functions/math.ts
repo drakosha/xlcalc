@@ -13,6 +13,7 @@
  */
 import { E, isErr, Rng, type CErr, type V } from '../values.js'
 import type { Cx, FnDef } from '../args.js'
+import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { quotient, roundDigits } from './common.js'
 
 /** CEILING.MATH and FLOOR.MATH: significance taken as positive; `mode` rounds negative numbers away from zero. */
@@ -31,12 +32,11 @@ export function power(x: number, y: number): number | CErr {
   return Math.pow(x, y)
 }
 
-/** The sum of the numbers at the selected positions of a range; an error there is the answer. */
-function sumAt(cx: Cx, g: Rng, sel: number[]): V {
-  const f = cx.flat(g)
+/** The sum of the numbers at the selected positions; an error there is the answer. */
+function sumAt(values: readonly V[], sel: number[]): V {
   let acc = 0
   for (const p of sel) {
-    const v = f[p]
+    const v = values[p]
     if (typeof v === 'number') acc += v
     else if (isErr(v)) return v
   }
@@ -130,13 +130,16 @@ export const functions: Record<string, FnDef> = {
     fn: (cx: Cx, range: V | Rng, crit: V | Rng, sum?: V | Rng) => {
       const cg = asRng(range)
       if (isErr(cg)) return cg
-      const r = cx.select([[cg, crit]])
-      if (isErr(r)) return r
-      if (sum === undefined) return sumAt(cx, cg, r.sel)
+      if (sum === undefined) {
+        const r = cx.select([[cg, crit]])
+        return isErr(r) ? r : sumAt(r.read(cg), r.sel)
+      }
       const sg = asRng(sum)
       if (isErr(sg)) return sg
-      const b = cx.bounds(cg)
-      return sumAt(cx, new Rng(sg.s, sg.r1, sg.c1, sg.r1 + b.h - 1, sg.c1 + b.w - 1), r.sel)
+      // past the sheet's edge the sum range is cut, and then it no longer fits: #VALUE!
+      const sized = new Rng(sg.s, sg.r1, sg.c1, Math.min(sg.r1 + cg.r2 - cg.r1, MAX_ROWS - 1), Math.min(sg.c1 + cg.c2 - cg.c1, MAX_COLS - 1))
+      const r = cx.select([[cg, crit]], sized)
+      return isErr(r) ? r : sumAt(r.read(sized), r.sel)
     },
   },
   SUMIFS: {
@@ -148,8 +151,8 @@ export const functions: Record<string, FnDef> = {
       if (isErr(sg)) return sg
       const pairs: [V | Rng, V | Rng][] = []
       for (let i = 0; i < rest.length; i += 2) pairs.push([rest[i], rest[i + 1]])
-      const r = cx.select(pairs, cx.bounds(sg))
-      return isErr(r) ? r : sumAt(cx, sg, r.sel)
+      const r = cx.select(pairs, sg)
+      return isErr(r) ? r : sumAt(r.read(sg), r.sel)
     },
   },
   TRUNC: { args: 'n i?', fn: (x: number, d = 0) => roundDigits(x, d, Math.floor) },

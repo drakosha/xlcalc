@@ -136,6 +136,7 @@ export function buildIndex(flat: readonly CritValue[]): CritIndex {
 }
 
 export interface CritColumn {
+  /** Values by position; positions past the end are blank. */
   flat: readonly CritValue[]
   crit: Crit
   /** The index of this range (built lazily and cached by the caller). */
@@ -158,7 +159,7 @@ export function select(cols: CritColumn[], n: number): number[] {
   }
   const out: number[] = []
   const check = (p: number) => {
-    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p], cols[i].crit)) return
+    for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit)) return
     out.push(p)
   }
   if (cand) for (const p of cand) check(p)
