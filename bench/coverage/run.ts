@@ -29,6 +29,7 @@ import { buildProbes, DYNAMIC as PROBES_DYNAMIC, PROBE_SHEETS, type Probe, type 
 import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
 import { stepSpill } from './spill.js'
+import { stepDisplay } from './display.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -275,6 +276,7 @@ else if (step === 'report') writeReport(RESULTS, ONLY !== undefined)
 else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
+else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
