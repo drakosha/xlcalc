@@ -166,7 +166,7 @@ function nameFor(state: EngineState, here: number, name: string): PreparedName |
 }
 
 
-const codegenContext = (state: EngineState, s: number): CodegenContext => ({
+export const codegenContext = (state: EngineState, s: number): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name) => nameFor(state, s, name),
 })
