@@ -2,8 +2,8 @@
  * BITAND, BITOR, BITXOR, BITLSHIFT, BITRSHIFT on whole numbers of 48 bits. This engine's own (formula.js used
  * JavaScript's 32-bit operators).
  */
-import type { FnDef } from '../../args.js'
 import { E, type CErr } from '../../values.js'
+import type { FnDef } from '../../args.js'
 
 const MAX = 2 ** 48 - 1
 const HALF = 2 ** 24

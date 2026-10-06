@@ -123,7 +123,7 @@ const cos = (x: number, y: number): [number, number] => [Math.cos(x) * ch(y), -M
 const sinh = (x: number, y: number): [number, number] => [Math.cos(y) * sh(x), Math.sin(y) * ch(x)]
 const cosh = (x: number, y: number): [number, number] => [Math.cos(y) * ch(x), Math.sin(y) * sh(x)]
 
-/** a / b with the denominator c² + d² (IMSECH, IMCSC: Excel's last digits). */
+/** a / b with the denominator c² + d² (IMSECH: Excel's last digits). */
 function naive(a: number, b: number, c: number, d: number): [number, number] | null {
   const den = c * c + d * d
   return den === 0 ? null : [(a * c + b * d) / den, (b * c - a * d) / den]

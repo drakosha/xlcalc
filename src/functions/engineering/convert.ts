@@ -2,8 +2,8 @@
  * CONVERT: Excel's units, aliases and prefixes, with the factors Excel uses (some of them older than current
  * definitions: the atomic mass unit, the electronvolt, the parsec). This engine's own.
  */
-import type { FnDef } from '../../args.js'
 import { E, type V } from '../../values.js'
+import type { FnDef } from '../../args.js'
 
 interface Unit {
   /** The quantity: units convert only within one. */

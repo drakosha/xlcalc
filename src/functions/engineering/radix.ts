@@ -2,9 +2,9 @@
  * BIN2DEC … OCT2HEX: numbers of ten binary, octal or hexadecimal digits, the upper half of the range negative
  * (two's complement), with Excel's checks of input, range and places. This engine's own.
  */
-import type { FnDef } from '../../args.js'
 import { generalText } from '../../format.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
+import type { FnDef } from '../../args.js'
 
 const DIGITS = 10
 

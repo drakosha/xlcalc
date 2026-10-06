@@ -6,9 +6,9 @@
  * I_n by a longer recurrence (Excel's start 2(n + ⌊√40n⌋), exact at x = 30 and 100), I0 and I1 of negative x; Excel's argument checks; orders
  * whose answer underflows are 0 without iterating, and the order loops are capped.
  */
-import type { FnDef } from '../../args.js'
 import { E } from '../../values.js'
 import { gammaln } from '../jstat.js'
+import type { FnDef } from '../../args.js'
 
 /** Excel's limit for J and Y, as for its trigonometric functions. */
 const MAX_X = 2 ** 27
