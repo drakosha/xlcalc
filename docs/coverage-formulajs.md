@@ -8,7 +8,7 @@
 
 ## Итог
 
-В наборе 402 функции и 5 275 случаев. Эталон Excel en-US посчитан с английским интерфейсом и локалью (`-AppleLanguages (en) -AppleLocale en_US`). Через адаптер все случаи совпали с ним у 105 функций, у 198 совпали обычные случаи, а расходятся краевые, у 96 расходятся уже обычные, 3 функции зависают на огромном аргументе. Голая formulajs полностью совпадает у 55 функций. По случаям адаптер поднимает совпадение с 3 337 до 3 957 (с 63 до 75 процентов); обычных случаев совпало 802 из 965, краевых 3 155 из 4 310. Предложение (последний раздел): 105 функций брать как есть, 39 после общих правил адаптера, 169 после правил адаптера и короткой проверки аргументов на функцию, 86 писать своими, 3 зависающих закрыть стражем.
+В наборе 402 функции и 5 275 случаев. Эталон Excel en-US посчитан с английским интерфейсом и локалью (`-AppleLanguages (en) -AppleLocale en_US`). Через адаптер все случаи совпали с ним у 105 функций, у 213 совпали обычные случаи, а расходятся краевые, у 81 расходятся уже обычные, 3 функции зависают на огромном аргументе. Голая formulajs полностью совпадает у 55 функций. По случаям адаптер поднимает совпадение с 3 354 до 3 975 (с 64 до 75 процентов); обычных случаев совпало 817 из 965, краевых 3 158 из 4 310. Комплексное число текстом с мнимой единицей сравнивается по частям с тем же допуском, что и числа (с 7 октября; до того знак в знак, и 15 функций IM* расходились только записью с 17 цифрами). Предложение (последний раздел): 105 функций брать как есть, 39 после общих правил адаптера, 169 после правил адаптера и короткой проверки аргументов на функцию, 86 писать своими, 3 зависающих закрыть стражем.
 
 Первая редакция отчёта считала колонку en-US с русским интерфейсом Excel. Язык интерфейса влияет на расчёт, а не только на показ (раздел «Влияние языка интерфейса»): 32 случая у 23 функций, и итог отсюда сдвинулся с 97 до 105 полностью совпавших функций.
 
@@ -17,14 +17,14 @@
 |---|---|---|
 | функций в наборе | 402 | 402 |
 | все случаи совпали с Excel en-US | 105 | 55 |
-| совпали только обычные случаи | 198 | 244 |
-| расходятся уже обычные случаи | 96 | 100 |
+| совпали только обычные случаи | 213 | 259 |
+| расходятся уже обычные случаи | 81 | 85 |
 | зависает (на одном из случаев) | 3 | 3 |
-| случаев совпало | 3957 из 5275 | 3337 из 5275 |
+| случаев совпало | 3975 из 5275 | 3354 из 5275 |
 
 С мягким допуском 1e-6 через адаптер полностью совпадают ещё 3: F.INV.RT, GAMMA, TDIST.
 Адаптер довёл до полного совпадения 50 функций, где голая formulajs расходится: ACOTH, ATANH, AVEDEV, AVERAGE, BINOM.DIST.RANGE, BINOMDIST, CHOOSE, CHOOSECOLS, CHOOSEROWS, CLEAN, COLUMNS, COSH, DROP, EXP, EXPAND, F.DIST.RT, FIND, FISHER, FIXED, GAMMALN, GAMMALN.PRECISE, IF, IFS, ISPMT, LEFT, LN, LOG, LOG10, MAX, MEDIAN, MIN, NORM.DIST, NORM.S.DIST, NORMDIST, NOT, NPV, PDURATION, PHI, PROB, PRODUCT, REPT, RIGHT, ROUNDDOWN, ROUNDUP, ROWS, SINH, SUBTOTAL, SUM, TRIM, UNICODE.
-Хуже голой через адаптер 15: DAYS360 (9 против 10), GCD (8 против 10), IMCSC (6 против 7), IMCSCH (5 против 6), IRR (4 против 5), LCM (6 против 8), MULTINOMIAL (5 против 8), NETWORKDAYS (5 против 6), NETWORKDAYS.INTL (7 против 9), TBILLEQ (11 против 12), TEXT (8 против 9), VALUE (10 против 11), VLOOKUP (11 против 12), WEEKDAY (9 против 11), WEEKNUM (11 против 12).
+Хуже голой через адаптер 15: DAYS360 (9 против 10), GCD (8 против 10), IMCSC (6 против 7), IMCSCH (6 против 7), IRR (4 против 5), LCM (6 против 8), MULTINOMIAL (5 против 8), NETWORKDAYS (5 против 6), NETWORKDAYS.INTL (7 против 9), TBILLEQ (11 против 12), TEXT (8 против 9), VALUE (10 против 11), VLOOKUP (11 против 12), WEEKDAY (9 против 11), WEEKNUM (11 против 12).
 <!-- /auto:summary -->
 
 Основной выигрыш адаптера даёт правило SUM для свёрток (из диапазона только числа, прямой аргумент приводится), перевод JS Date в серийный номер, NaN и бесконечности в `#NUM!` и исключений в `#VALUE!`. Голая formulajs 228 раз отдаёт NaN или бесконечность, 132 раза бросает исключение и 65 раз отдаёт JS Date вместо числа. Через адаптер NaN и JS Date не остаётся; исключения становятся `#VALUE!`, и в 94 случаях Excel отвечает иначе.
@@ -47,8 +47,8 @@
 | другой код ошибки | 273 | 111 | 436 | 210 |
 | ошибка вместо значения | 196 | 98 | 220 | 112 |
 | исключение | 94 | 29 | 132 | 59 |
-| строка: формат числа | 32 | 17 | 17 | 15 |
 | строка | 22 | 10 | 23 | 10 |
+| строка: формат числа | 14 | 14 | 0 | 0 |
 | строка: регистр | 8 | 3 | 12 | 8 |
 | другой тип | 6 | 5 | 3 | 3 |
 | зависает | 3 | 3 | 3 | 3 |
@@ -57,7 +57,7 @@
 | JS Date | 0 | 0 | 65 | 6 |
 <!-- /auto:kinds -->
 
-«Значение вместо ошибки» и «другой код ошибки» почти целиком краевые случаи: Excel проверяет область определения и отвечает `#NUM!`, `#DIV/0!` или `#N/A`, formulajs считает дальше или отвечает другим кодом. «Число» делится на две части: на краях это разная трактовка входа (логическое, пустая ячейка, дата 0 и 60), на обычных случаях это неверная формула или старое имя с чужой семантикой (раздел «Где расходятся обычные случаи»). «Строка: формат числа» означает те же числа в другой записи (комплексные числа formulajs печатает с 17 знаками, Excel с 15), «строка: регистр» означает шестнадцатеричные цифры строчными.
+«Значение вместо ошибки» и «другой код ошибки» почти целиком краевые случаи: Excel проверяет область определения и отвечает `#NUM!`, `#DIV/0!` или `#N/A`, formulajs считает дальше или отвечает другим кодом. «Число» делится на две части: на краях это разная трактовка входа (логическое, пустая ячейка, дата 0 и 60), на обычных случаях это неверная формула или старое имя с чужой семантикой (раздел «Где расходятся обычные случаи»). «Строка: формат числа» означает те же числа в другой записи (действительный ответ IM* formulajs печатает с 17 знаками, Excel с 15; комплексный с мнимой единицей сравнивается по частям), «строка: регистр» означает шестнадцатеричные цифры строчными.
 
 С мягким допуском 1e-6 полностью совпадают ещё три функции: F.INV.RT, GAMMA и TDIST (GAMMA в formulajs точна примерно до 1e-8). XIRR на обычных случаях совпадает только мягко (0,3733625352 против 0,3733625335), но расходится ещё и на краях.
 
@@ -185,27 +185,27 @@
 | IMAGINARY | инженерные | 12 | 10 | 9 | только обычные | другой код ошибки 1, значение вместо ошибки 1 | логическое; пустая строка |
 | IMARGUMENT | инженерные | 10 | 5 | 3 | только обычные | другой код ошибки 5 | кириллица; регистр; пустая ячейка; пробелы; кириллица в ячейке |
 | IMCONJUGATE | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, строка 1, значение вместо ошибки 1 | кириллица; регистр; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
-| IMCOS | инженерные | 10 | 3 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
-| IMCOSH | инженерные | 10 | 3 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
-| IMCOT | инженерные | 10 | 2 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, исключение 2 | обычный; кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
+| IMCOS | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
+| IMCOSH | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
+| IMCOT | инженерные | 10 | 3 | 2 | только обычные | другой код ошибки 4, исключение 2, строка: формат числа 1 | кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
 | IMCSC | инженерные | 10 | 6 | 7 | только обычные | исключение 2, строка: формат числа 1, другой код ошибки 1 | число; логическое; пустая ячейка; пустая строка |
-| IMCSCH | инженерные | 10 | 5 | 6 | расходятся обычные | строка: формат числа 2, исключение 2, другой код ошибки 1 | обычный; число; логическое; пустая ячейка; пустая строка |
-| IMDIV | инженерные | 15 | 5 | 3 | только обычные | другой код ошибки 7, строка: формат числа 1, другой тип 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
-| IMEXP | инженерные | 10 | 3 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
-| IMLN | инженерные | 10 | 4 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2 | обычный; кириллица; регистр; число; пробелы; кириллица в ячейке |
-| IMLOG10 | инженерные | 10 | 4 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2 | обычный; кириллица; регистр; число; пробелы; кириллица в ячейке |
-| IMLOG2 | инженерные | 10 | 4 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2 | обычный; кириллица; регистр; число; пробелы; кириллица в ячейке |
-| IMPOWER | инженерные | 15 | 4 | 1 | расходятся обычные | другой код ошибки 5, строка: формат числа 3, значение вместо ошибки 2, ошибка вместо значения 1 | обычный; кириллица; регистр; отрицательное; текст-число в ячейке; пустая ячейка; пустая строка; логическое; пробелы; кириллица в ячейке; дата в ячейке |
+| IMCSCH | инженерные | 10 | 6 | 7 | только обычные | исключение 2, строка: формат числа 1, другой код ошибки 1 | число; логическое; пустая ячейка; пустая строка |
+| IMDIV | инженерные | 15 | 6 | 3 | только обычные | другой код ошибки 7, другой тип 1, значение вместо ошибки 1 | кириллица; регистр; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
+| IMEXP | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
+| IMLN | инженерные | 10 | 5 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1 | кириллица; регистр; число; пробелы; кириллица в ячейке |
+| IMLOG10 | инженерные | 10 | 5 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1 | кириллица; регистр; число; пробелы; кириллица в ячейке |
+| IMLOG2 | инженерные | 10 | 5 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1 | кириллица; регистр; число; пробелы; кириллица в ячейке |
+| IMPOWER | инженерные | 15 | 7 | 4 | только обычные | другой код ошибки 5, значение вместо ошибки 2, ошибка вместо значения 1 | кириллица; регистр; пустая ячейка; пустая строка; логическое; пробелы; кириллица в ячейке; дата в ячейке |
 | IMPRODUCT | инженерные | 15 | 7 | 6 | только обычные | другой код ошибки 6, другой тип 1, значение вместо ошибки 1 | кириллица; регистр; пустая ячейка; пустая строка; кириллица в ячейке; пробелы |
 | IMREAL | инженерные | 10 | 6 | 6 | только обычные | другой тип 2, другой код ошибки 1, значение вместо ошибки 1 | число; логическое; пустая ячейка; пустая строка |
-| IMSEC | инженерные | 10 | 3 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
-| IMSECH | инженерные | 10 | 3 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
-| IMSIN | инженерные | 10 | 2 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, другой тип 1, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
-| IMSINH | инженерные | 10 | 2 | 1 | расходятся обычные | другой код ошибки 4, строка: формат числа 2, другой тип 1, значение вместо ошибки 1 | обычный; кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
-| IMSQRT | инженерные | 10 | 2 | 1 | расходятся обычные | другой код ошибки 5, строка: формат числа 2, ошибка вместо значения 1 | обычный; кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
+| IMSEC | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
+| IMSECH | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая строка; пробелы; кириллица в ячейке |
+| IMSIN | инженерные | 10 | 3 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, другой тип 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
+| IMSINH | инженерные | 10 | 3 | 2 | только обычные | другой код ошибки 4, строка: формат числа 1, другой тип 1, значение вместо ошибки 1 | кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
+| IMSQRT | инженерные | 10 | 3 | 2 | только обычные | другой код ошибки 5, строка: формат числа 1, ошибка вместо значения 1 | кириллица; регистр; число; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
 | IMSUB | инженерные | 15 | 6 | 2 | только обычные | другой код ошибки 7, значение вместо ошибки 2 | кириллица; регистр; пустая строка; пробелы; кириллица в ячейке |
 | IMSUM | инженерные | 15 | 8 | 5 | только обычные | другой код ошибки 6, значение вместо ошибки 1 | кириллица; регистр; пустая строка; пробелы; кириллица в ячейке |
-| IMTAN | инженерные | 10 | 3 | 1 | расходятся обычные | другой код ошибки 4, исключение 2, строка: формат числа 1 | обычный; кириллица; регистр; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
+| IMTAN | инженерные | 10 | 4 | 2 | только обычные | другой код ошибки 4, исключение 2 | кириллица; регистр; пустая ячейка; пустая строка; пробелы; кириллица в ячейке |
 | OCT2BIN | инженерные | 15 | 11 | 9 | только обычные | другой код ошибки 2, ошибка вместо значения 2 | логическое; пустая ячейка; пустая строка |
 | OCT2DEC | инженерные | 11 | 8 | 7 | только обычные | ошибка вместо значения 2, другой код ошибки 1 | логическое; пустая ячейка; пустая строка |
 | OCT2HEX | инженерные | 15 | 10 | 9 | расходятся обычные | ошибка вместо значения 2, строка: регистр 1, другой код ошибки 1, значение вместо ошибки 1 | обычный; логическое; дата в ячейке; пустая ячейка; пустая строка |
@@ -503,37 +503,37 @@
 <!-- auto:tags -->
 | краевой случай | функций | функции |
 |---|---|---|
-| логическое | 58 | ACCRINT, BASE, BESSELI, BESSELJ, BESSELK, BESSELY, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, BINOM.INV, COMBINA, COMPLEX, CONFIDENCE.NORM, CUMIPMT, CUMPRINC, DEC2BIN, DEC2OCT, DELTA, DOLLARDE, DOLLARFR, EFFECT, ERFC, FACTDOUBLE, FVSCHEDULE, GAMMA.INV, GAMMAINV, GESTEP, HEX2BIN, HEX2DEC, HEX2OCT, IMAGINARY, IMCSC, IMREAL, ISEVEN, ISODD, LOGINV, LOGNORM.INV, MROUND, NOMINAL, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, QUOTIENT, RANK.AVG, RANK.EQ, SERIESSUM, SQRTPI, T.DIST.2T, T.DIST.RT, T.INV, TDIST, XNPV |
-| пустая ячейка | 54 | ATAN2, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, DDB, F.INV, GAMMA.DIST, HEX2BIN, HEX2DEC, HEX2OCT, HLOOKUP, HYPGEOM.DIST, IFNA, IMARGUMENT, IMCONJUGATE, IMCSC, IMDIV, IMPRODUCT, IMREAL, INDEX, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, MID, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, PPMT, RANK.AVG, RANK.EQ, SERIESSUM, SLN, SMALL, T.DIST.2T, T.DIST.RT, TDIST, TYPE, WEEKDAY, WEEKNUM, XNPV, YEAR |
+| пустая ячейка | 61 | ATAN2, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, DDB, F.INV, GAMMA.DIST, HEX2BIN, HEX2DEC, HEX2OCT, HLOOKUP, HYPGEOM.DIST, IFNA, IMARGUMENT, IMCONJUGATE, IMCOT, IMCSC, IMCSCH, IMDIV, IMPOWER, IMPRODUCT, IMREAL, IMSIN, IMSINH, IMSQRT, IMTAN, INDEX, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, MID, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, PPMT, RANK.AVG, RANK.EQ, SERIESSUM, SLN, SMALL, T.DIST.2T, T.DIST.RT, TDIST, TYPE, WEEKDAY, WEEKNUM, XNPV, YEAR |
+| логическое | 60 | ACCRINT, BASE, BESSELI, BESSELJ, BESSELK, BESSELY, BETA.INV, BETADIST, BETAINV, BIN2DEC, BIN2OCT, BINOM.INV, COMBINA, COMPLEX, CONFIDENCE.NORM, CUMIPMT, CUMPRINC, DEC2BIN, DEC2OCT, DELTA, DOLLARDE, DOLLARFR, EFFECT, ERFC, FACTDOUBLE, FVSCHEDULE, GAMMA.INV, GAMMAINV, GESTEP, HEX2BIN, HEX2DEC, HEX2OCT, IMAGINARY, IMCSC, IMCSCH, IMPOWER, IMREAL, ISEVEN, ISODD, LOGINV, LOGNORM.INV, MROUND, NOMINAL, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, OCT2BIN, OCT2DEC, PERMUT, QUOTIENT, RANK.AVG, RANK.EQ, SERIESSUM, SQRTPI, T.DIST.2T, T.DIST.RT, T.INV, TDIST, XNPV |
 | отрицательное | 45 | ACOT, ATAN2, BASE, BETADIST, BETAINV, BINOM.INV, CHISQ.DIST, COMBIN, CONFIDENCE.NORM, CRITBINOM, EXPON.DIST, EXPONDIST, F.DIST, FACT, FACTDOUBLE, GAMMA.DIST, GAMMADIST, HYPGEOMDIST, IPMT, LARGE, LOGINV, LOGNORM.DIST, LOGNORM.INV, NEGBINOM.DIST, NEGBINOMDIST, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, PERMUT, PERMUTATIONA, PMT, POISSON.DIST, PPMT, PV, RANK.AVG, RANK.EQ, RATE, REPLACE, RRI, STANDARDIZE, SYD, T.DIST.RT, UNICHAR, WEIBULL.DIST |
 | пустой диапазон | 44 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, DEVSQ, FORECAST, FREQUENCY, GCD, GEOMEAN, HARMEAN, INTERCEPT, IRR, KURT, LARGE, LCM, MODE.SNGL, MULTINOMIAL, PEARSON, PERCENTILE.EXC, PERCENTILE.INC, PERCENTRANK.EXC, QUARTILE.EXC, RSQ, SKEW, SKEW.P, SLOPE, SMALL, STDEV.P, STDEV.S, STDEVA, STDEVP, STDEVPA, STEYX, SUMSQ, SUMX2MY2, SUMX2PY2, SUMXMY2, VAR.P, VAR.S, VARA, VARP, VARPA, Z.TEST, ZTEST |
 | большое | 38 | ATAN2, BINOM.DIST, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, COMBIN, COMBINA, COS, COT, COTH, CSC, DEC2BIN, DEC2OCT, F.DIST, F.INV, F.INV.RT, FACT, FACTDOUBLE, FISHERINV, GAMMAINV, HEX2BIN, HYPGEOMDIST, LARGE, MID, PERMUT, PERMUTATIONA, QUOTIENT, RANK.AVG, RANK.EQ, SEC, SIN, T.DIST.2T, T.DIST.RT, TAN, TANH, UNICHAR, WEIBULL.DIST |
 | ноль | 36 | ATAN2, BETADIST, BETAINV, BINOM.INV, CHISQ.DIST.RT, CONFIDENCE.NORM, CRITBINOM, DAY, EOMONTH, EXPON.DIST, EXPONDIST, F.INV, HLOOKUP, INDEX, LOGINV, LOGNORM.INV, MONTH, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, PERMUT, PPMT, QUOTIENT, RANK.AVG, RANK.EQ, SERIESSUM, SMALL, T.DIST.2T, T.DIST.RT, TDIST, VLOOKUP, WEEKDAY, WEEKNUM, XNPV, YEAR |
 | диапазон: смесь | 31 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, FORECAST, FREQUENCY, GCD, INTERCEPT, IRR, KURT, LCM, MIRR, MODE.SNGL, MULTINOMIAL, PEARSON, PERCENTRANK.EXC, RSQ, SLOPE, SMALL, STDEVA, STDEVPA, STEYX, SUMPRODUCT, SUMX2MY2, SUMX2PY2, SUMXMY2, TEXTJOIN, VARA, VARPA, Z.TEST, ZTEST |
+| пустая строка | 29 | BIN2DEC, BIN2OCT, DATEDIF, HEX2BIN, HEX2DEC, HEX2OCT, IMABS, IMAGINARY, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMCSC, IMCSCH, IMDIV, IMEXP, IMPOWER, IMPRODUCT, IMREAL, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN, OCT2BIN, OCT2DEC |
+| пробелы | 23 | DATEDIF, DECIMAL, IMABS, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN |
+| регистр | 22 | IMABS, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN, SWITCH |
+| кириллица | 21 | IMABS, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN |
+| кириллица в ячейке | 21 | IMABS, IMARGUMENT, IMCONJUGATE, IMCOS, IMCOSH, IMCOT, IMDIV, IMEXP, IMLN, IMLOG10, IMLOG2, IMPOWER, IMPRODUCT, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT, IMSUB, IMSUM, IMTAN |
 | дробное | 18 | ATAN2, BETADIST, BITAND, BITLSHIFT, BITOR, BITRSHIFT, BITXOR, CHISQ.DIST.RT, COMBINA, FV, IPMT, LARGE, PERMUT, PV, RANK.AVG, RANK.EQ, T.DIST.2T, T.DIST.RT |
-| пустая строка | 17 | BIN2DEC, BIN2OCT, DATEDIF, HEX2BIN, HEX2DEC, HEX2OCT, IMABS, IMAGINARY, IMCONJUGATE, IMCSC, IMDIV, IMPRODUCT, IMREAL, IMSUB, IMSUM, OCT2BIN, OCT2DEC |
+| число | 17 | DATEVALUE, DECIMAL, IMCOS, IMCOSH, IMCOT, IMCSC, IMCSCH, IMEXP, IMLN, IMLOG10, IMLOG2, IMREAL, IMSEC, IMSECH, IMSIN, IMSINH, IMSQRT |
 | разный размер | 15 | CORREL, COVAR, COVARIANCE.P, COVARIANCE.S, FORECAST, GROWTH, PEARSON, RSQ, SLOPE, STEYX, SUMPRODUCT, SUMX2MY2, SUMX2PY2, SUMXMY2, XNPV |
 | дата текстом ISO | 14 | ACCRINT, COUPDAYS, DATEDIF, DAY, DAYS, EDATE, EOMONTH, ISOWEEKNUM, MONTH, PRICEDISC, WEEKDAY, WEEKNUM, YEAR, YEARFRAC |
 | дата текстом m/d/yyyy | 14 | ACCRINT, COUPDAYS, DATEDIF, DAY, DAYS, EDATE, EOMONTH, ISOWEEKNUM, MONTH, PRICEDISC, WEEKDAY, WEEKNUM, YEAR, YEARFRAC |
-| дата в ячейке | 12 | BETA.INV, COTH, FACT, FACTDOUBLE, FISHERINV, HYPGEOM.DIST, LARGE, RANK.AVG, RANK.EQ, ROUND, T.DIST.RT, TANH |
+| дата в ячейке | 13 | BETA.INV, COTH, FACT, FACTDOUBLE, FISHERINV, HYPGEOM.DIST, IMPOWER, LARGE, RANK.AVG, RANK.EQ, ROUND, T.DIST.RT, TANH |
 | пустая ячейка аргументом | 11 | KURT, MINA, MODE.SNGL, SKEW, SKEW.P, STDEV.S, STDEVA, STDEVPA, VAR.S, VARA, VARPA |
 | текст-число | 10 | ATAN2, BETADIST, BETAINV, CUMIPMT, CUMPRINC, DOLLARDE, NPER, RANK.AVG, RANK.EQ, T.INV.2T |
 | число текстом с точкой | 10 | BITOR, CHISQ.DIST.RT, DOLLARDE, F.DIST, LARGE, RANK.AVG, RANK.EQ, T.DIST.2T, T.INV, T.INV.2T |
 | больше 1 | 10 | CONFIDENCE.NORM, CRITBINOM, LOGINV, LOGNORM.INV, NEGBINOMDIST, NORM.INV, NORM.S.INV, NORMINV, NORMSINV, T.INV.2T |
 | ссылка на текст-число | 10 | KURT, LCM, MAXA, MINA, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P, STDEV.S, VAR.S |
-| пробелы | 9 | DATEDIF, DECIMAL, IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
 | ссылка на логическое | 9 | GCD, KURT, LCM, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P, STDEV.S, VAR.S |
 | ложный 29.02.1900 | 8 | ACCRINT, COUPDAYS, DAY, EDATE, EOMONTH, MONTH, WEEKDAY, YEARFRAC |
 | текст аргументом | 8 | AVERAGEA, MAXA, MINA, MODE.SNGL, STDEVA, STDEVPA, VARA, VARPA |
 | логическое аргументом | 8 | COUNT, GCD, KURT, LCM, MODE.SNGL, MULTINOMIAL, SKEW, SKEW.P |
-| регистр | 8 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM, SWITCH |
-| кириллица | 7 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
-| кириллица в ячейке | 7 | IMABS, IMARGUMENT, IMCONJUGATE, IMDIV, IMPRODUCT, IMSUB, IMSUM |
 | текст-число аргументом | 6 | AVERAGEA, COUNT, KURT, MODE.SNGL, SKEW, SKEW.P |
 | отрицательные и дробные | 6 | GCD, HARMEAN, KURT, LCM, MODE.SNGL, MULTINOMIAL |
 | диапазон с ошибкой | 6 | IRR, STDEVA, STDEVPA, TEXTJOIN, VARA, VARPA |
 | текст-число в ячейке | 5 | ATAN2, CUMIPMT, NPER, RANK.AVG, RANK.EQ |
-| число | 5 | DATEVALUE, DECIMAL, IMCSC, IMDIV, IMREAL |
 | 01.03.1900 | 4 | COUPDAYS, DAYS, PRICEDISC, YEARFRAC |
 | 28.02.1900 | 3 | COUPDAYS, WEEKDAY, YEARFRAC |
 | високосный 29.02.2024 | 3 | DATEDIF, PRICEDISC, YEARFRAC |
@@ -569,7 +569,7 @@
 
 ## Где расходятся обычные случаи
 
-Обычные случаи через адаптер расходятся у 97 функций: 96 из строки «расходятся уже обычные» и зависающая CHIINV. У 18 из них разница только в записи ответа: шестнадцатеричные цифры строчными (BIN2HEX, DEC2HEX, OCT2HEX) и комплексное число с 17 значащими цифрами вместо 15 (15 функций IM*); в предложении они отнесены к адаптеру. Остальные по группам:
+Обычные случаи через адаптер расходятся у 82 функций: 81 из строки «расходятся уже обычные» и зависающая CHIINV. У трёх из них разница только в записи ответа: шестнадцатеричные цифры строчными (BIN2HEX, DEC2HEX, OCT2HEX); в предложении они отнесены к адаптеру. Комплексное число с 17 значащими цифрами вместо 15 (15 функций IM*) теперь совпадает по частям. Остальные по группам:
 - старые имена: formulajs подставляет новые функции с другой семантикой. CHIDIST и CHIINV (в Excel правый хвост, в formulajs CHISQ.DIST и CHISQ.INV), FDIST и FINV, TINV (в Excel двусторонний), NORMSDIST и LOGNORMDIST (у старых имён нет аргумента cumulative, formulajs без него считает плотность); TTEST и T.TEST не учитывают число хвостов и тип теста, FTEST и F.TEST отдают не вероятность, CHITEST и CHISQ.TEST округляют ответ до шести знаков (как и LOGEST);
 - база данных: все 12 D-функций. formulajs ждёт базу и условия по колонкам (`database[колонка][строка]`), а диапазон Excel идёт по строкам; номер поля сдвинут на один;
 - условия: SUMIF, SUMIFS, COUNTIF, COUNTIFS, AVERAGEIF, AVERAGEIFS, MAXIFS (и MINIFS на краях): регистр учитывается, шаблонов и дат текстом нет. В движке эти функции уже свои;
@@ -1313,7 +1313,7 @@ Excel ru-RU (русские интерфейс и локаль) расходит
 Excel берёт язык интерфейса не только для показа (тексты ошибок), но и для расчёта: от него зависит, как логическое становится текстом, какой текст считается логическим и в какой кодировке работает CODE. Первая редакция отчёта считала колонку en-US с локалью en_US, но с русским интерфейсом; прежняя колонка оставлена в `docs/coverage-formulajs/excel-en-ru-ui.json`. С английским интерфейсом `IF("TRUE",1,2)` это 1, а `IF("ИСТИНА",1,2)` это `#VALUE!` (отдельная проверка 5 октября); с русским наоборот. Ошибки с английским интерфейсом Excel тоже показывает по-английски. Различие по случаям замера:
 
 <!-- auto:uilang -->
-С русским интерфейсом ответ Excel en-US был другим в 32 случаях у 23 функций. Совпадение через адаптер по прежней колонке 3932 случаев, по новой 3957; голой 3325 и 3337.
+С русским интерфейсом ответ Excel en-US был другим в 32 случаях у 23 функций. Совпадение через адаптер по прежней колонке 3950 случаев, по новой 3975; голой 3342 и 3354.
 
 | случай | формула | русский интерфейс | английский интерфейс |
 |---|---|---|---|
