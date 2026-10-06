@@ -55,13 +55,15 @@ function dateDif(start: number, end: number, unit: string): number | CErr {
 
 export const functions: Record<string, FnDef> = {
   // years 0–1899 are added to 1900; month and day roll over, so DATE(1900,2,29) is 60; a day below zero
-  // rounds down, after the whole-number tolerance (DATE(2025,1,-1.9999997) is December 29)
+  // rounds down, after the whole-number tolerance (DATE(2025,1,-1.9999997) is December 29); a day outside
+  // −32768…32767 is 32767 and a month from 32767 up #NUM!, as Excel's 16-bit arguments (the date-day set)
   DATE: {
     args: 'w w n',
     fn: (y: number, m: number, day: number) => {
-      const d = Math.floor(day + WHOLE)
+      const whole = Math.floor(day + WHOLE)
+      const d = whole < -32768 || whole > 32767 ? 32767 : whole
       const year = y >= 0 && y < 1900 ? y + 1900 : y
-      if (year < 1900 || year > 9999) return E.NUM
+      if (year < 1900 || year > 9999 || m >= 32767) return E.NUM
       const first = addMonths(year, m, 0)
       if (first.y < 1899 || first.y > 9999) return E.NUM
       const serial = serialOf(first.y, first.m, 1) + d - 1
