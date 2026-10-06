@@ -5,7 +5,7 @@
  * (`-AppleLanguages (en) -AppleLocale en_US` для en-US, без аргументов системные ru для ru-RU);
  * настройки Excel не меняются.
  */
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
@@ -170,11 +170,12 @@ export function excelDialogs(): { subrole: string; text: string }[] {
     end try
     if sr is not "AXStandardWindow" then
       set tx to ""
-      try
-        repeat with t in (value of every static text of w)
-          set tx to tx & (t as text) & " "
-        end repeat
-      end try
+      repeat with t in (static texts of w)
+        try
+          set v to value of t
+          if v is not missing value then set tx to tx & (v as text) & " "
+        end try
+      end repeat
       set out to out & sr & "\t" & tx & linefeed
     end if
   end repeat
@@ -194,6 +195,19 @@ end tell`
  * Значения формул книги (одна часть замера) по строкам; книга копируется в песочницу и удаляется
  * после. Часть небольшая, поэтому ожидание ответа Excel короткое (3 минуты).
  */
+function parseRead(out: string, n: number): Val[] {
+  const [types, nums, strs] = JSON.parse(out) as [number[][], number[][], string[][]]
+  if (types.length !== n || nums.length !== n || strs.length !== n) throw new Error(`Excel отдал ${types.length}/${nums.length}/${strs.length} строк из ${n}`)
+  return types.map(([t], i): Val => {
+    if (t === 0) return { t: 'n', v: nums[i][0] }
+    if (t === -1) return { t: 'b', v: true }
+    if (t === -2) return { t: 'b', v: false }
+    if (t === -3) return { t: 's', v: strs[i][0] }
+    if (t > 0) return { t: 'e', v: ERROR_TYPE[t] ?? 'ERROR' }
+    return { t: 'other', v: `type ${t}` }
+  })
+}
+
 export function runExcel(book: string, n: number): Val[] {
   if (countWorkbooks() !== 0) throw new Error('в Excel есть открытые книги')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
@@ -201,17 +215,72 @@ export function runExcel(book: string, n: number): Val[] {
   try {
     const file = join(dir, 'book.xlsx')
     copyFileSync(book, file)
-    const out = execFileSync('osascript', [SCRIPT, file, String(n)], { encoding: 'utf8', timeout: 180_000, maxBuffer: 1 << 28 })
-    const [types, nums, strs] = JSON.parse(out) as [number[][], number[][], string[][]]
-    if (types.length !== n || nums.length !== n || strs.length !== n) throw new Error(`Excel отдал ${types.length}/${nums.length}/${strs.length} строк из ${n}`)
-    return types.map(([t], i): Val => {
-      if (t === 0) return { t: 'n', v: nums[i][0] }
-      if (t === -1) return { t: 'b', v: true }
-      if (t === -2) return { t: 'b', v: false }
-      if (t === -3) return { t: 's', v: strs[i][0] }
-      if (t > 0) return { t: 'e', v: ERROR_TYPE[t] ?? 'ERROR' }
-      return { t: 'other', v: `type ${t}` }
-    })
+    return parseRead(execFileSync('osascript', [SCRIPT, file, String(n)], { encoding: 'utf8', timeout: 180_000, maxBuffer: 1 << 28 }), n)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+/** Окно «We found a problem with some content»: Excel не читает книгу целиком, обычно из-за формулы, которую он не принимает при загрузке. */
+const REPAIR = /problem with some content|проблем\S* с содержим/i
+
+/** Закрывает окно восстановления книги кнопкой No; другие окна не трогает. */
+export function declineRepair(): boolean {
+  if (!excelDialogs().some((d) => REPAIR.test(d.text))) return false
+  osa(`tell application "System Events" to tell process "Microsoft Excel"
+  repeat with w in windows
+    set tx to ""
+    repeat with t in (static texts of w)
+      try
+        set v to value of t
+        if v is not missing value then set tx to tx & (v as text)
+      end try
+    end repeat
+    if tx contains "problem with some content" or tx contains "содержим" then
+      repeat with b in (buttons of w)
+        if name of b is in {"No", "Нет"} then click b
+      end repeat
+    end if
+  end repeat
+end tell`)
+  return true
+}
+
+/** Как runExcel, но следит за окном восстановления: закрывает его и отдаёт 'rejected', а не ждёт таймаута AppleEvent. */
+export async function runExcelWatched(book: string, n: number): Promise<Val[] | 'rejected'> {
+  if (countWorkbooks() !== 0) throw new Error('в Excel есть открытые книги')
+  const dir = join(SANDBOX, `fcov-${process.pid}`)
+  mkdirSync(dir, { recursive: true })
+  try {
+    const file = join(dir, 'book.xlsx')
+    copyFileSync(book, file)
+    const child = spawn('osascript', [SCRIPT, file, String(n)])
+    let out = ''
+    let err = ''
+    child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
+    child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
+    const exited = new Promise<number | null>((res) => child.on('close', res))
+    const until = Date.now() + 180_000
+    for (;;) {
+      const code = await Promise.race([exited, sleep(2000).then(() => undefined)])
+      if (code !== undefined) {
+        if (code !== 0) throw new Error(`osascript ${code}: ${err.trim().split('\n')[0]}`)
+        return parseRead(out, n)
+      }
+      if (declineRepair()) {
+        child.kill()
+        await exited
+        await sleep(1500)
+        declineRepair()
+        if (countWorkbooks() !== 0) osa('tell application "Microsoft Excel" to close every workbook saving no')
+        return 'rejected'
+      }
+      if (Date.now() > until) {
+        child.kill()
+        await exited
+        throw new Error('Excel не ответил за 180 с')
+      }
+    }
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
