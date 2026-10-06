@@ -8,7 +8,10 @@
  *
  * 1. Coercion by group, not one rule for all:
  *    - `n` number: a boolean is 1 or 0, a blank 0, text that reads as a number is that number, other text
- *      #VALUE!; `i` the same, truncated to an integer; `x` the same, but a boolean is #VALUE! (functions
+ *      #VALUE!; `i` the same, truncated to an integer; `w` the same, read with Excel's tolerance of whole
+ *      numbers (`whole` in values.ts: less than 2^-22 short of an integer is that integer; LEFT, INDEX,
+ *      ROUND's digits, DATE and the others the `near-integer` set measured), while `i` truncates as MID, REPT,
+ *      CHOOSE, ROUNDDOWN's digits and the statistical counts do; `x` the same as `n`, but a boolean is #VALUE! (functions
  *      of the former Analysis ToolPak: engineering and part of the financial ones);
  *    - `s` text (a number in the General format, TRUE/FALSE); `b` boolean (text "TRUE"/"FALSE" too, as in
  *      Excel en-US with the English UI); `v` any value (an error stops the call); `a` any value, errors
@@ -23,7 +26,10 @@
  *      argument itself, a reference or a value (criteria functions, which work on the reference through
  *      the function context); `r` one value that may be a reference (the function gets a reference to one
  *      or more cells as it is; an array is lifted); `p` any value, reference or array, passed as it is
- *      unless the call is lifted (CHOOSE, the values of IF and IFS).
+ *      unless the call is lifted, a one-cell reference as its value (IFERROR's alternative, FILTER's
+ *      `if_empty`); `P` the same with a reference passed on as a reference, one cell too, for a function
+ *      that answers it (CHOOSE, the values of IF, IFS and SWITCH, HSTACK: `SUM(IF(TRUE,A2))` skips text in
+ *      A2, as Excel does); where the answer goes to a one-value position it is read as a value.
  * 2. Date and time text in a date argument (`d`, `t`, `D`) is read as Excel en-US reads it
  *    (`2025-01-31`, `1/31/2025`, `18:30`; see `dates.ts`); a date before 0 or after 9999-12-31 is #NUM!.
  * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Z`, `D`) hold no
@@ -42,7 +48,7 @@
 import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL, parseDateText } from './dates.js'
-import { E, fitNumber, isErr, Rng, toBool, toNum, toText, type CErr, type V } from './values.js'
+import { E, fitNumber, isErr, Rng, toBool, toNum, toText, whole, type CErr, type V } from './values.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -107,6 +113,8 @@ export interface FnDef {
   args: string
   /** How many of the last kinds repeat (SUM: 1, SUMIFS: 2); the repeated arguments arrive as one array, lists spliced in. */
   rep?: number
+  /** Excel's own limit on repeated arguments, below its 255 (SWITCH: 126 pairs and a default). */
+  max?: number
   /** The implementation, given the coerced arguments (an omitted optional argument is undefined). */
   fn: (...a: any[]) => Arg
   /** The error when all list arguments (`N`, `A`, `Z`, `D`) are empty (rule 3). */
@@ -128,6 +136,8 @@ export interface FnDef {
   ranges?: 'error' | 'first' | readonly number[]
   /** Lazy functions: the arguments whose array lifts the call (by default the first, IF's condition). */
   liftAt?: (i: number, n: number) => boolean
+  /** Arguments taken whole that a lifted call reads by their top-left value, as a 1 × 1 array (VLOOKUP's index). */
+  liftFirst?: readonly number[]
 }
 
 /** What the parser and the code generator need to know about a function. */
@@ -145,8 +155,14 @@ export interface FunctionSpec {
   array?: boolean
   /** Lazy functions: the arguments whose array lifts the call. */
   liftAt: (i: number, n: number) => boolean
-  /** Parity of the argument count (odd for SUMIFS, even for COUNTIFS). */
-  parity?: 'odd' | 'even'
+  /** An argument of kind `P`: the function can answer a reference it was given. */
+  refs: boolean
+  /** Arguments taken whole that a lifted call reads by their top-left value. */
+  liftFirst: readonly number[]
+  /** Whether a call with `k` arguments is one Excel loads: within min…max, repeated pairs complete (SUMIFS 3, 5, …; SORTBY 2, 3, 5, …). */
+  takes: (k: number) => boolean
+  /** The counts it takes, for a message ("3 to 255 (odd)"). */
+  counts: string
   volatile?: boolean
   lazy?: boolean
   cell?: boolean
@@ -154,7 +170,7 @@ export interface FunctionSpec {
 
 /** Excel's limit on the number of arguments. */
 const MAX_ARGS = 255
-const RANGE_KINDS = 'NAYZVGMRDr'
+const RANGE_KINDS = 'NAYZVGMRDrP'
 const LIST_KINDS = 'NAYZD'
 const WHOLE_KINDS = 'NAYZVGMRD'
 
@@ -177,19 +193,20 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   const fixed = kinds.length - rep
   const kindAt = (i: number) => (i < kinds.length ? kinds[i].k : kinds[fixed + ((i - fixed) % rep)].k)
   const min = kinds.filter((k) => !k.optional).length
-  let max = rep ? MAX_ARGS : kinds.length
-  let parity: FunctionSpec['parity']
-  if (rep === 2) {
-    parity = fixed % 2 === 0 ? 'even' : 'odd'
-    if ((max - fixed) % 2) max--
-  }
+  let max = rep ? (def.max ?? MAX_ARGS) : kinds.length
+  // past the declared kinds, repeated groups come whole (an optional one inside the first group may be left out)
+  const whole = (k: number) => k <= kinds.length || (k - fixed) % rep === 0
+  if (rep && !whole(max)) max--
+  const parity = rep === 2 ? (fixed % 2 ? 'odd' : 'even') : ''
+  const range = min === max ? `${min}` : `${min} to ${max}`
+  const counts = !parity ? range : min < kinds.length ? `${min}, or ${parity} ${min + 1} to ${max}` : `${range} (${parity})`
   const mode = (i: number): ArgMode => {
     const k = kindAt(i)
-    return k === 'r' ? 'array' : k === 'p' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
+    return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
   }
   const { ranges } = def
   const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')
-  return { min, max, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, parity, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0) }
+  return { min, max, takes: (k) => k >= min && k <= max && whole(k), counts, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0), refs: kinds.some((k) => k.k === 'P'), liftFirst: def.liftFirst ?? [] }
 }
 
 // ---------- coercion by kind ----------
@@ -265,6 +282,10 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
     const n = toNum(cx.scalar(x))
     return isErr(n) ? n : Math.trunc(n)
   },
+  w: (x, cx) => {
+    const n = toNum(cx.scalar(x))
+    return isErr(n) ? n : whole(n)
+  },
   x: (x, cx) => noBool(cx.scalar(x)),
   d: (x, cx) => toDate(cx.scalar(x)),
   t: (x, cx) => toTime(cx.scalar(x)),
@@ -289,13 +310,14 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   R: (x) => x,
   r: (x) => x,
   p: (x) => x,
+  P: (x) => x,
 }
 
 /** An argument coerced by kind inside a function that reads it after others (FVSCHEDULE's schedule after the principal). */
 export const coerce = (kind: string, x: Arg, cx: Cx): unknown => COERCE[kind](x, cx)
 
 /** Kinds whose argument may be an error without stopping the call. */
-const KEEP_ERRORS = 'aRVrp'
+const KEEP_ERRORS = 'aRVrpP'
 /**
  * Excel reads the arguments given as values before those given as references or arrays (`LARGE(A1:A9,"x")` and
  * `SUM(A1:A9,"x")` are #VALUE! even with an error in A1:A9).

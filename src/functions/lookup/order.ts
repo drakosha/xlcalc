@@ -150,6 +150,7 @@ function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
 export const functions: Record<string, FnDef> = {
   FILTER: { args: 'G R p?', cx: true, array: true, fn: filter },
   SORT: { args: 'G G? G? b?', array: true, fn: sort },
-  SORTBY: { args: 'G G', rep: 1, array: true, fn: sortby },
+  // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4)
+  SORTBY: { args: 'G G G?', rep: 2, array: true, fn: sortby },
   UNIQUE: { args: 'G b? b?', array: true, fn: unique },
 }

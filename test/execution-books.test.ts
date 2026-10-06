@@ -7,29 +7,22 @@
  */
 import { runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
-import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../bench/coverage/probes.js'
+import { buildProbes, PROBE_SHEETS } from '../bench/coverage/probes.js'
 import type { BookInput, CellInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { CASES, dataSheet, engineFormula, excelBook } from './excel-cases.js'
-import { SETS } from './excel-sets.js'
+import { CASES, excelBook } from './excel-cases.js'
+import { caseBook, loadSet, SETS } from './excel-sets.js'
 import { byClosures, byEval, ctx, expectSame, strict } from './execution-compare.js'
 import { randomBook } from './seeded-books.js'
 import { CASES as SEMANTICS, semanticsBook } from './semantics-cases.js'
 
-const toInput = (v: SheetCells[string][string]): CellInput => (typeof v === 'object' ? { formula: engineFormula(v.formula) } : { value: v })
-const sheetsOf = (cells: SheetCells) => Object.entries(cells).map(([name, cs]) => ({ name, cells: Object.fromEntries(Object.entries(cs).map(([a, v]) => [a, toInput(v)])) }))
-const casesSheet = (probes: Probe[]) => ({ name: 'C', cells: Object.fromEntries(probes.map((p, i): [string, CellInput] => [`A${i + 1}`, { formula: engineFormula(p.formula) }])) })
-
-/** A case set's book as sent to Excel: the measurement's data sheet, the set's own sheets, the cases on C. */
-async function setBook(name: string): Promise<BookInput> {
-  const mod = (await import(`../bench/coverage/sets/${name}.ts`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
-  return { sheets: [dataSheet(), ...sheetsOf(mod.SHEETS ?? {}), casesSheet(mod.buildProbes())] }
-}
-
 const BOOKS: [string, BookInput][] = [
   ['the coverage measurement', excelBook(CASES)],
-  ...(await Promise.all(SETS.map(async (s): Promise<[string, BookInput]> => [`the case set ${s.name}`, await setBook(s.name)]))),
-  ['the probes', { sheets: [...sheetsOf(PROBE_SHEETS), casesSheet(buildProbes())] }],
+  ...(await Promise.all(SETS.map(async (s): Promise<[string, BookInput]> => {
+    const mod = await loadSet(s.name)
+    return [`the case set ${s.name}`, caseBook(mod.buildProbes(), mod.SHEETS)]
+  }))),
+  ['the probes', caseBook(buildProbes(), PROBE_SHEETS)],
   ['the semantics cases', semanticsBook(SEMANTICS)],
   ['the synthetic book', synthBook({ seed: 1, rows: 3400 }).book],
 ]

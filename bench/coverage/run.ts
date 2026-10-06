@@ -21,10 +21,10 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { ensureExcel, excelDialogs, excelVersion, runExcel, runExcelWatched, declineRepair, withExcelLock, type Locale } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
-import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
+import { buildProbes, DYNAMIC as PROBES_DYNAMIC, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
 
@@ -176,8 +176,8 @@ async function stepExcel(locale: Locale) {
   for (let k = 0; k < ps.length; k++) {
     const part = ps[k]
     if (part.every((c) => c.id in col.values)) continue
-    const before = excelDialogs()
-    if (before.length) stop(k, `до части у Excel окно не книги: ${before.map((d) => `${d.subrole} «${d.text}»`).join('; ')}`)
+    const before = dialogText()
+    if (before) stop(k, `до части у Excel окно не книги: ${before}`)
     const book = join(OUT, `part-${locale}-${k + 1}.xlsx`)
     await writeBook(part, book, {}, { dynamic: DYNAMIC })
     const t0 = Date.now()
@@ -188,8 +188,8 @@ async function stepExcel(locale: Locale) {
     } catch (e) {
       err = e instanceof Error ? e.message.split('\n')[0] : String(e)
     }
-    const after = excelDialogs()
-    if (after.length) stop(k, `модальное окно Excel: ${after.map((d) => `${d.subrole} «${d.text}»`).join('; ')}${err ? `; ошибка чтения: ${err}` : ''}`)
+    const after = dialogText()
+    if (after) stop(k, `модальное окно Excel: ${after}${err ? `; ошибка чтения: ${err}` : ''}`)
     if (!vals) stop(k, `ошибка чтения: ${err}`)
     Object.assign(col.values, byId(part, vals!))
     col.meta.seconds = Math.round((Number(col.meta.seconds) + (Date.now() - t0) / 1000) * 10) / 10
@@ -208,7 +208,7 @@ async function stepExcel(locale: Locale) {
  */
 async function stepProbes(set?: string) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
-  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells; DYNAMIC?: boolean } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS, DYNAMIC: PROBES_DYNAMIC }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = set ?? 'probes'
@@ -229,7 +229,7 @@ async function stepProbes(set?: string) {
   // книга, которую Excel не читает, делится пополам до формулы-виновника
   const run = async (cases: Probe[], label: string): Promise<void> => {
     if (declineRepair()) console.log('закрыто оставшееся окно восстановления книги')
-    const before = excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
+    const before = dialogText()
     if (before) throw new Error(`пробы ${label}: у Excel окно не книги: ${before}`)
     const book = join(OUT, `${tag}-${label}.xlsx`)
     // скрипт чтения ждёт колонку не короче двух ячеек: одиночный случай дополняется пустышкой

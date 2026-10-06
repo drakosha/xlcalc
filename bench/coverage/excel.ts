@@ -157,10 +157,23 @@ function closeStartupBook() {
 }
 
 /**
- * Окна Excel, которые не окна книг (модальный диалог и т. п.): подроль и текст. Только чтение
- * через System Events, ничего не нажимается.
+ * Excel's windows that are not book windows (a modal dialog and the like): subrole and text, read through
+ * System Events, nothing is clicked. System Events fails with -1719 when a book's window closes while it
+ * lists them: then it asks again, three times at most.
  */
 export function excelDialogs(): { subrole: string; text: string }[] {
+  for (let i = 0; ; i++)
+    try {
+      return listDialogs()
+    } catch (e) {
+      if (i >= 2 || !String((e as { stderr?: string }).stderr).includes('(-1719)')) throw e
+    }
+}
+
+/** The windows that are not books in one line (`subrole «text»; …`), empty when there are none. */
+export const dialogText = (): string => excelDialogs().map((d) => `${d.subrole} «${d.text}»`).join('; ')
+
+function listDialogs(): { subrole: string; text: string }[] {
   const script = `tell application "System Events" to tell process "Microsoft Excel"
   set out to ""
   repeat with w in windows

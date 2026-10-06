@@ -1,9 +1,12 @@
 /**
  * Excel cases for SUBTOTAL and AGGREGATE: which cells count as nested (a formula with SUBTOTAL or AGGREGATE,
  * also inside an expression; a reference to such a cell), every function and option over numbers, errors,
- * mixed values and blanks, the k argument of 14–19, argument checks. Answers: `docs/excel-cases/subtotal.json`.
+ * mixed values and blanks, the k argument of 14–19, argument checks. Computed as dynamic array formulas
+ * (Excel 365). Answers: `docs/excel-cases/subtotal.json`.
  */
 import type { Probe, SheetCells } from '../probes.js'
+
+export const DYNAMIC = true
 
 const AGG = '_xlfn.AGGREGATE'
 const f = (formula: string) => ({ formula })

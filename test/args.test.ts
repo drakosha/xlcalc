@@ -118,12 +118,17 @@ describe('argument layer', () => {
     expect(f(1, NUMS, 4)).toBe('1|1,2,3,4')
   })
 
-  it('specs: argument counts, range positions and parity follow the kinds', () => {
+  it('specs: argument counts, range positions and complete repeated pairs follow the kinds', () => {
+    const counts = (spec: ReturnType<typeof specOf>) => [1, 2, 3, 4, 5, 6, 254, 255, 256].filter(spec.takes)
     const sumifs = specOf('SUMIFS', { args: 'R R a', rep: 2, fn: () => 0 })
-    expect([sumifs.min, sumifs.max, sumifs.parity]).toEqual([3, 255, 'odd'])
+    expect([sumifs.min, sumifs.max, sumifs.counts, counts(sumifs)]).toEqual([3, 255, '3 to 255 (odd)', [3, 5, 255]])
     expect([0, 1, 2, 3, 4].map(sumifs.range)).toEqual([true, true, false, true, false])
     const countifs = specOf('COUNTIFS', { args: 'R a', rep: 2, fn: () => 0 })
-    expect([countifs.min, countifs.max, countifs.parity]).toEqual([2, 254, 'even'])
+    expect([countifs.min, countifs.max, countifs.counts, counts(countifs)]).toEqual([2, 254, '2 to 254 (even)', [2, 4, 6, 254]])
+    // an optional order inside the first pair: 2 arguments, then complete pairs
+    const sortby = specOf('SORTBY', { args: 'G G G?', rep: 2, fn: () => 0 })
+    expect([sortby.counts, counts(sortby)]).toEqual(['2, or odd 3 to 255', [2, 3, 5, 255]])
+    expect(specOf('SWITCH', { args: 'a P P', rep: 1, max: 254, fn: () => 0 }).max).toBe(254)
     expect(specOf('LOG', { args: 'n n?', fn: () => 0 })).toMatchObject({ min: 1, max: 2 })
     expect(() => specOf('BAD', { args: 'q', fn: () => 0 })).toThrow(/unknown argument kind q/)
   })

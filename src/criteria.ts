@@ -5,6 +5,7 @@
  * reads as that number; `""` matches blanks, `"<>"` non-blanks; an error, or its text, matches that error.
  */
 import { dateToSerial, NUMBER_TEXT, readNumber } from './model.js'
+import { to15 } from './values.js'
 
 /** A cell value for a criterion; errors are any object. */
 export type CritValue = number | string | boolean | null | object
@@ -109,10 +110,11 @@ export function matches(v: CritValue, c: Crit): boolean {
       // equality with a number also holds for text that reads as that number (Excel: 2 matches "2")
       if (typeof v === 'string' && (c.op === '=' || c.op === '<>')) {
         const n = numericText(v)
-        if (n !== null) return (n === c.n) === (c.op === '=')
+        if (n !== null) return (to15(n) === to15(c.n)) === (c.op === '=')
       }
       if (typeof v !== 'number') return c.op === '<>'
-      return opOk(c.op, ord(v, c.n))
+      // numbers equal to 15 significant digits are equal, as with the comparison operators
+      return opOk(c.op, ord(to15(v), to15(c.n)))
     case 'bool':
       if (typeof v !== 'boolean') return c.op === '<>'
       return opOk(c.op, ord(Number(v), Number(c.b)))
@@ -141,9 +143,9 @@ export function matches(v: CritValue, c: Crit): boolean {
 function eqKey(v: CritValue): string | null {
   if (typeof v === 'string') {
     const n = numericText(v)
-    return n === null ? 's' + v.toLowerCase() : 'n' + n
+    return n === null ? 's' + v.toLowerCase() : 'n' + to15(n)
   }
-  if (typeof v === 'number') return 'n' + v
+  if (typeof v === 'number') return 'n' + to15(v)
   if (typeof v === 'boolean') return 'b' + v
   return null
 }
@@ -151,7 +153,7 @@ function eqKey(v: CritValue): string | null {
 function critKey(c: Crit): string | null {
   if (c.op !== '=') return null
   if (c.kind === 'str') return 's' + c.s
-  if (c.kind === 'num') return 'n' + c.n
+  if (c.kind === 'num') return 'n' + to15(c.n)
   if (c.kind === 'bool') return 'b' + c.b
   return null
 }

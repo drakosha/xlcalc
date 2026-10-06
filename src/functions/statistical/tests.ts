@@ -93,6 +93,6 @@ function zTest(xs: number[], x: number, sigma?: number): V {
 export const functions: Record<string, FnDef> = {
   'CHISQ.TEST': { args: 'G G', fn: chisqTest },
   'F.TEST': { args: 'N N', fn: fTest },
-  'T.TEST': { args: 'G G i i', fn: tTest },
+  'T.TEST': { args: 'G G w w', fn: tTest },
   'Z.TEST': { args: 'N n n?', fn: zTest },
 }

@@ -4,6 +4,7 @@
  * here (`EMPTY`).
  */
 import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
+import { isMany } from '../../arrays/lift.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
 import { E, isErr, Rng, toNum, type CErr, type V } from '../../values.js'
 
@@ -57,17 +58,22 @@ function takeDrop(take: boolean): FnDef {
   }
 }
 
-/** An argument of HSTACK, VSTACK: a value, a reference or an array, as an array (an error is a 1 × 1 one). */
+/** An argument of HSTACK, VSTACK: a value, a reference or an array, as an array. */
 const stackPart = (cx: Cx, x: Arg): Arr => (x instanceof Arr ? x : x instanceof Rng ? fromGrid(cx.grid(x)) : new Arr(1, 1, 1, 1, [x]))
 
-/** Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. */
+/**
+ * Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. An error given as a
+ * value is the answer (the first in order); a reference to an error cell is stacked, as in Excel.
+ */
 function stack(across: boolean): FnDef {
   return {
-    args: 'p',
+    args: 'P',
     rep: 1,
     cx: true,
     array: true,
     fn: (cx: Cx, xs: Arg[]) => {
+      const e = xs.find(isErr)
+      if (e) return e
       const parts = xs.map((x) => stackPart(cx, x))
       const rows = across ? Math.max(...parts.map((p) => p.rows)) : parts.reduce((s, p) => s + p.rows, 0)
       const cols = across ? parts.reduce((s, p) => s + p.cols, 0) : Math.max(...parts.map((p) => p.cols))
@@ -159,7 +165,8 @@ export const functions: Record<string, FnDef> = {
   TAKE: takeDrop(true),
   TOCOL: flatten(true),
   TOROW: flatten(false),
-  TRANSPOSE: { args: 'G', array: true, fn: (g: Grid) => transpose(fromGrid(g)) },
+  // a value or a one-cell reference is that value (TYPE(TRANSPOSE(5)) is 1), an array of one value stays an array
+  TRANSPOSE: { args: 'R', cx: true, array: true, fn: (cx: Cx, x: Arg) => (x instanceof Arr || isMany(x) ? transpose(fromGrid(cx.grid(x))) : cx.scalar(x)) },
   VSTACK: stack(false),
   WRAPCOLS: wrap(false),
   WRAPROWS: wrap(true),

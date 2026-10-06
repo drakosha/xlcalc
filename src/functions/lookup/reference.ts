@@ -44,9 +44,9 @@ const position = (row: boolean): FnDef => ({
 })
 
 export const functions: Record<string, FnDef> = {
-  ADDRESS: { args: 'i i i? b? s?', fn: address },
-  // the chosen value as it is, a reference too (SUMIF(CHOOSE(1,A1:A9,B1:B9),">2"))
-  CHOOSE: { args: 'i p', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
+  ADDRESS: { args: 'w w w? b? s?', fn: address },
+  // the chosen value as it is, a reference too, one cell too (SUMIF(CHOOSE(1,A1:A9,B1:B9),">2"))
+  CHOOSE: { args: 'i P', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
   COLUMN: position(false),
   // the referenced size: a whole column has 1,048,576 rows
   COLUMNS: { args: 'G', fn: (g: Grid) => g.cols },

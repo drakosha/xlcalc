@@ -1,6 +1,6 @@
 /** Factorials, binomial coefficients, GCD and LCM with Excel's argument checks. This engine's own. */
 import { gridAt, type Arg, type Cx, type FnDef } from '../../args.js'
-import { E, isErr, toNum, type CErr, type V } from '../../values.js'
+import { E, isErr, toNum, whole, type CErr, type V } from '../../values.js'
 import { fact } from '../common.js'
 
 /** Excel: COMBIN and COMBINA take n below 2^31 − 1. */
@@ -75,7 +75,7 @@ function gcd2(a: number, b: number): number {
 export const functions: Record<string, FnDef> = {
   COMBIN: { args: 'n n', fn: combin },
   COMBINA: { args: 'n n', fn: combina },
-  FACT: { args: 'n', fn: (x: number) => (x < 0 ? E.NUM : fact(Math.trunc(x))) },
+  FACT: { args: 'n', fn: (x: number) => (x < 0 ? E.NUM : fact(whole(x))) },
   FACTDOUBLE: { args: 'x', fn: factdouble },
   GCD: {
     args: 'R',

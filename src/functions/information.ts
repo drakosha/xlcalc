@@ -3,7 +3,7 @@
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
 import { Arr } from '../arrays/value.js'
-import { E, isErr, Rng, type V } from '../values.js'
+import { E, isErr, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
 import type { ErrorCode } from '../contract.js'
 
@@ -20,12 +20,13 @@ export const functions: Record<string, FnDef> = {
   ISERR: is((v) => isErr(v) && v.code !== 'NA'),
   ISERROR: is(isErr),
   // Excel: a boolean is #VALUE!, a fraction is truncated
-  ISEVEN: { args: 'x', fn: (x: number) => Math.trunc(x) % 2 === 0 },
+  // ISEVEN and ISODD take a number less than 10^-10 short of an integer as that integer (Excel's own tolerance)
+  ISEVEN: { args: 'x', fn: (x: number) => whole(x, 1e-10) % 2 === 0 },
   ISLOGICAL: is((v) => typeof v === 'boolean'),
   ISNA: is((v) => isErr(v) && v.code === 'NA'),
   ISNONTEXT: is((v) => typeof v !== 'string'),
   ISNUMBER: is((v) => typeof v === 'number'),
-  ISODD: { args: 'x', fn: (x: number) => Math.trunc(x) % 2 !== 0 },
+  ISODD: { args: 'x', fn: (x: number) => whole(x, 1e-10) % 2 !== 0 },
   ISTEXT: is((v) => typeof v === 'string'),
   // a range of several cells gives its top-left cell (an array is lifted)
   N: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'number' || isErr(v) ? v : v === true ? 1 : 0) },

@@ -10,9 +10,14 @@ import { Arr } from './value.js'
 /** A value as the runtime passes it: a scalar, a reference or an array. */
 export type Val = V | Rng | Arr
 
-/** A reference or an array of more than one value (a 1 × 1 one is a scalar wherever it goes). */
-export const isMany = (x: unknown): x is Rng | Arr =>
-  x instanceof Arr ? x.rows * x.cols > 1 : x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)
+/** A reference of more than one cell. */
+const isArea = (x: unknown): x is Rng => x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)
+
+/** A reference or an array of more than one value: what one cell cannot show. */
+export const isMany = (x: unknown): x is Rng | Arr => (x instanceof Arr ? x.rows * x.cols > 1 : isArea(x))
+
+/** What an operator or a one-value argument lifts over: any array (a 1 × 1 one stays an array, `TYPE({1}+0)` is 64) or a reference of several cells. */
+export const lifts = (x: unknown): x is Rng | Arr => x instanceof Arr || isArea(x)
 
 /** Element (r, c) of an operand, a single row or column repeated; undefined past the operand. */
 function elem(x: V | Arr, r: number, c: number): V | undefined {

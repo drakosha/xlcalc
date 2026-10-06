@@ -1,18 +1,20 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { arr, Arr } from '../../arrays/value.js'
-import { E, isErr, Rng, toBool, toNum, type CErr, type V } from '../../values.js'
+import { E, isErr, Rng, toBool, toNum, whole, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /**
  * Excel reads the index, looks up the key, and only then checks the index against the table. An array or a
  * range of several cells as the index answers the found line at each number, shaped as the index; the first
- * number in order that is not valid is the whole answer (a lifted call takes the index's top-left, see README).
+ * number in order that is not valid is the whole answer; a call lifted by the key or the match mode reads the
+ * index's top-left number (`liftFirst`).
  */
 const tableLookup = (horizontal: boolean): FnDef => ({
   args: 'a G R a?',
   cx: true,
   array: true,
+  liftFirst: [2],
   fn: (cx: Cx, key: V, table: Grid, idx: V | Rng | Arr, approx: V = true): V | Arr => {
     const k = keyOf(key)
     if (isErr(k)) return k
@@ -27,7 +29,7 @@ const tableLookup = (horizontal: boolean): FnDef => ({
     const bad = (i: number) => (i < 1 ? E.VALUE : i > size ? E.REF : undefined)
     const cell = (i: number) => gridAt(table, horizontal ? (i - 1) * table.cols + pos : pos * table.cols + i - 1)
     if (many) return lineAt(cx.view(idx) as Arr, bad, cell)
-    const i = Math.trunc(n)
+    const i = whole(n)
     return bad(i) ?? cell(i)
   },
 })
@@ -39,7 +41,7 @@ function lineAt(idx: Arr, bad: (i: number) => CErr | undefined, cell: (i: number
     for (let c = 0; c < idx.cols; c++) {
       const n = toNum(idx.at(r, c))
       if (isErr(n)) return E.REF
-      const i = Math.trunc(n)
+      const i = whole(n)
       const e = bad(i)
       if (e) return e
       out.push(cell(i))
@@ -80,8 +82,7 @@ function lookup(key: V, look: Grid, result?: Grid): V {
 }
 
 /** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */
-function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): V | Arr {
-  if (r1 === r2 && c1 === c2) return a.at(r1, c1)
+function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): Arr {
   if (r1 === 0 && c1 === 0 && r2 === a.rows - 1 && c2 === a.cols - 1) return a
   const v: V[] = []
   for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) v.push(a.at(r, c))
@@ -106,12 +107,14 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
   const [c1, c2] = c ? [c - 1, c - 1] : [0, cols - 1]
   // a reference, one cell too: SUM(INDEX(A1:A3,2)) skips text there, as a range does
   if (x instanceof Rng) return new Rng(x.s, x.r1 + r1, x.c1 + c1, x.r1 + r2, x.c1 + c2)
-  return x instanceof Arr ? slice(x, r1, c1, r2, c2) : x
+  // an element of an array is a value; a line selected by 0 stays an array, 1 × 1 too (TYPE(INDEX({1;2},1,0)+0) is 64)
+  if (x instanceof Arr) return r && c ? x.at(r1, c1) : slice(x, r1, c1, r2, c2)
+  return x
 }
 
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
-  INDEX: { args: 'R i i? i?', array: true, fn: index },
+  INDEX: { args: 'R w w? w?', array: true, fn: index },
   LOOKUP: { args: 'a G G?', fn: lookup },
   MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),

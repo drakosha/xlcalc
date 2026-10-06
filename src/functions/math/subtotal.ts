@@ -3,7 +3,7 @@
  * formula) is skipped as nested, as in Excel; there are no hidden rows, so codes 101–111 equal 1–11 and AGGREGATE's
  * options 1, 3, 5, 7 equal 0, 2, 4, 6. This engine's own.
  */
-import { E, isErr, Rng, toNum, type CErr, type V } from '../../values.js'
+import { E, isErr, Rng, toNum, whole, type CErr, type V } from '../../values.js'
 import type { Cx, FnDef, Grid } from '../../args.js'
 import { functions as stat } from '../statistical/descriptive.js'
 import { functions as sums } from './sums.js'
@@ -46,21 +46,23 @@ function over(cx: Cx, code: number, refs: readonly (V | Rng)[], skipNested: bool
 }
 
 function subtotal(cx: Cx, code: number, refs: (V | Rng)[]): V {
-  const t = Math.trunc(code)
+  const t = whole(code)
   const c = t > 100 ? t - 100 : t
   return c < 1 || c > 11 || (t > 11 && t < 101) ? E.VALUE : over(cx, c, refs, true, false)
 }
 
 function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng)[]): V {
-  const c = Math.trunc(code)
+  const c = whole(code)
   const o = Math.trunc(option)
   if (c < 1 || c > 19 || o < 0 || o > 7) return E.VALUE
   const skipNested = o < 4
   const skipErrors = o % 4 >= 2
   if (c <= 13) return over(cx, c, refs, skipNested, skipErrors)
-  // LARGE … QUARTILE.EXC: one array and k, a number (an error there is #VALUE!, as in Excel)
+  // LARGE … QUARTILE.EXC: one array and k, a number (an error there is #VALUE!, as in Excel); a range as k
+  // gives its top-left cell (Excel 365: AGGREGATE(14,6,M1:M10,A1:A3) is LARGE with k from A1)
   if (refs.length !== 2) return E.VALUE
-  const kv = cx.scalar(refs[1])
+  const r = refs[1]
+  const kv = cx.scalar(r instanceof Rng ? new Rng(r.s, r.r1, r.c1, r.r1, r.c1) : r)
   const k = isErr(kv) ? kv : toNum(kv)
   return isErr(k) ? E.VALUE : over(cx, c, [refs[0]], skipNested, skipErrors, k)
 }

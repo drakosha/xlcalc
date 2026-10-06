@@ -40,6 +40,8 @@ export interface Backend<T> {
   call(name: string, args: T[], lift: boolean): T
   /** A lazy function (IF, IFERROR): each argument computed on demand; `check`, the positions that can lift it. */
   lazy(name: string, args: T[], check: number[]): T
+  /** The value of a call that may answer a one-cell reference (CHOOSE, IF) where one value goes. */
+  read(code: T): T
   /** An external function, by the canonical text of its call. */
   external(text: string): T
 }
@@ -103,15 +105,18 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (spec.volatile) info.volatile = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
+        const args = n.args.map((a, i) => go(a, spec.range(i)))
+        let code: T
         if (spec.lazy) {
           // lifted when a lifting argument is an array
-          const check = n.args.flatMap((a, i) => (many(a) && spec.liftAt(i, n.args.length) ? [i] : []))
-          return b.lazy(n.name, n.args.map((a) => go(a)), check)
+          code = b.lazy(n.name, args, n.args.flatMap((a, i) => (many(a) && spec.liftAt(i, n.args.length) ? [i] : [])))
+        } else {
+          // RAND gets its cell
+          if (spec.cell) args.unshift(b.value(s), b.value(r), b.value(c))
+          code = b.call(n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
         }
-        const args = n.args.map((a, i) => go(a, spec.range(i)))
-        // RAND gets its cell
-        if (spec.cell) args.unshift(b.value(s), b.value(r), b.value(c))
-        return b.call(n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
+        // a reference answered where one value goes is read here; a range position takes it as a reference
+        return spec.refs && !rangeOk && !many(n) ? b.read(code) : code
       }
     }
   }

@@ -5,7 +5,7 @@
  */
 import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
-import { E, isErr, Rng, toBool, toText, type CErr, type V } from '../values.js'
+import { E, isErr, Rng, toBool, toText, whole, type CErr, type V } from '../values.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V): Crit | null {
@@ -20,7 +20,7 @@ function condition(v: V): Crit | null {
 function fieldIndex(db: Grid, field: V): number | CErr {
   if (isErr(field)) return field
   if (typeof field === 'number' || typeof field === 'boolean') {
-    const i = Math.trunc(Number(field))
+    const i = whole(Number(field))
     return i >= 1 && i <= db.cols ? i - 1 : E.VALUE
   }
   return nameIndex(db, field)

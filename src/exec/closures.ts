@@ -43,5 +43,6 @@ export function closureBackend(rt: Runtime): Backend<Fn> {
       return () => f(...args)
     },
     external: (text) => () => ext(text),
+    read: (a) => () => scalar(a()),
   }
 }

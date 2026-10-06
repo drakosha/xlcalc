@@ -5,17 +5,13 @@
  */
 import type { Arg, Cx, FunctionSpec } from '../args.js'
 import { Rng, type V } from '../values.js'
-import { first, isMany, liftN } from './lift.js'
-import { Arr } from './value.js'
+import { first, liftN, lifts } from './lift.js'
+import { arr, Arr } from './value.js'
 
 type Call = (...a: any[]) => V | Arr | Rng
 
-/** A 1 × 1 array or reference is its value. */
-function single(x: Arg, cx: Cx): Arg {
-  if (x instanceof Arr) return x.rows * x.cols === 1 ? x.at(0, 0) : x
-  if (x instanceof Rng && !isMany(x)) return cx.scalar(x)
-  return x
-}
+/** A one-cell reference is its value (an array, a 1 × 1 one too, lifts the call). */
+const single = (x: Arg, cx: Cx): Arg => (x instanceof Rng && !lifts(x) ? cx.scalar(x) : x)
 
 /** The top-left cell of a reference (N and T take it from a range of several cells). */
 const topLeft = (g: Rng, cx: Cx): V => cx.scalar(new Rng(g.s, g.r1, g.c1, g.r1, g.c1))
@@ -31,7 +27,7 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       const x = a[i]
       if (mode === 'whole' || mode === 'pass' || !(x instanceof Arr || x instanceof Rng)) continue
       if (x instanceof Rng && mode === 'array') continue
-      if (!isMany(x)) a[i] = single(x, cx)
+      if (!lifts(x)) a[i] = single(x, cx)
       else if (x instanceof Arr) many = true
       else {
         const how = spec.rangeAt(p)
@@ -53,6 +49,11 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       xs.push(cx.view(x))
     }
     const args = a.slice()
+    // VLOOKUP's index: each lifted call reads the index's top-left number (an invalid one elsewhere does not count)
+    for (const p of spec.liftFirst) {
+      const x = args[off + p]
+      if (x instanceof Arr || x instanceof Rng) args[off + p] = arr(1, 1, [x instanceof Arr ? x.at(0, 0) : topLeft(x, cx)])
+    }
     return liftN(xs, (els) => {
       for (let k = 0; k < at.length; k++) args[at[k]] = els[k]
       return first(call(...args), (g) => topLeft(g, cx))
@@ -72,7 +73,7 @@ export function liftLazy(fn: Call, spec: FunctionSpec, check: readonly number[],
   for (const i of check) {
     if (i >= n || !spec.liftAt(i, n)) continue
     const v = thunks[i]()
-    if (isMany(v)) many = true
+    if (lifts(v)) many = true
     done[i] = v
   }
   if (!many) return fn(...thunks.map((t, i) => (done[i] === undefined ? t : () => single(done[i]!, cx))))

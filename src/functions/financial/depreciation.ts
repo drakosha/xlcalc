@@ -76,7 +76,7 @@ export const functions: Record<string, FnDef> = {
   }, ASSET),
   // the rate rounded to three decimals; a partial first year of `month` months and its remainder after `life`
   DB: {
-    args: 'n n n n i?',
+    args: 'n n n n w?',
     fn: (cost: number, salvage: number, life: number, period: number, month = 12) => {
       if (month < 1 || month > 12 || life <= 0 || period <= 0 || period > life + (month < 12 ? 1 : 0)) return E.NUM
       if (cost === 0) return 0
