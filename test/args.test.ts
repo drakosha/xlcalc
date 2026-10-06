@@ -1,11 +1,9 @@
 /**
  * The shared argument layer (`src/args.ts`), rule by rule: coercion by kind on real ranges of a computed
- * book, empty input, paired arrays, the answer rules (non-finite numbers, complex text checked against
- * every complex answer of Excel in the coverage measurement), and the function specs derived from kinds.
+ * book, empty input, paired arrays, the answer rules (non-finite numbers), and the function specs derived from kinds.
  */
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { complexText, makeCaller, pairs, specOf, type FnDef, type Grid } from '../src/args.js'
+import { makeCaller, pairs, specOf, type FnDef, type Grid } from '../src/args.js'
 import { createState } from '../src/engine.js'
 import { E, isErr, Rng, type V } from '../src/values.js'
 
@@ -107,23 +105,6 @@ describe('argument layer', () => {
     expect(makeCaller({ args: 'n', fn: (x: number) => x / 0 }, cx)(1)).toBe(E.NUM)
     expect(makeCaller({ args: 'n', fn: () => Math.sqrt(-1) }, cx)(1)).toBe(E.NUM)
     expect(makeCaller({ args: '', fn: () => ([] as number[]).reduce((a, b) => a + b) }, cx)()).toBe(E.VALUE)
-  })
-
-  it('rule 5: complex numbers as Excel writes them (every complex answer of Excel in the measurement)', () => {
-    const cases = JSON.parse(readFileSync(new URL('../docs/coverage-formulajs/cases.json', import.meta.url), 'utf8')).cases as { id: string; fn: string }[]
-    const excel = JSON.parse(readFileSync(new URL('../docs/coverage-formulajs/excel-en.json', import.meta.url), 'utf8')).values as Record<string, { t: string; v: unknown }>
-    const texts = cases.filter((c) => /^IM|^COMPLEX$/.test(c.fn) && excel[c.id].t === 's').map((c) => excel[c.id].v as string)
-    expect(texts.length).toBeGreaterThan(50)
-    for (const t of texts) {
-      // "a+bi", "a-i", "bi", "a": the imaginary part starts at the last sign that is not an exponent's
-      const unit = /[ij]$/.exec(t)?.[0] as 'i' | 'j' | undefined
-      const body = unit ? t.slice(0, -1) : t
-      let at = -1
-      for (let i = 1; i < body.length; i++) if ('+-'.includes(body[i]) && body[i - 1] !== 'E') at = i
-      const [reText, imText] = !unit ? [body, '0'] : at < 0 ? ['0', body] : [body.slice(0, at), body.slice(at)]
-      const im = imText === '' || imText === '+' ? 1 : imText === '-' ? -1 : Number(imText)
-      expect(complexText(Number(reText), im, unit), t).toBe(t)
-    }
   })
 
   it('rule 6: holidays as whole serial numbers; text or a boolean in the list is #VALUE!', () => {

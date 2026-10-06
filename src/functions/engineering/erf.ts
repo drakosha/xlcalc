@@ -8,6 +8,7 @@ const COF = [
   8.94487e-13, 3.13092e-13, -1.12708e-13, 3.81e-16, 7.106e-15, -1.523e-15, -9.4e-17, 1.21e-16, -2.8e-17,
 ]
 
+// TODO: import erfc from ../jstat.ts once the statistics branch exports it, and drop this copy
 /** erfc(x) for x ≥ 0. */
 function erfcPos(x: number): number {
   const t = 2 / (2 + x)
