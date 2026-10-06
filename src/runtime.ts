@@ -14,6 +14,7 @@ import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
+import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
 import { compareOp, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
 
 export interface SheetData {
@@ -22,6 +23,8 @@ export interface SheetData {
   cols: V[][]
   /** Occupied rows (highest index + 1). */
   rows: number
+  /** The unstored cells of large spilled arrays (`spill/fill.ts`). */
+  fills: Fill[]
 }
 
 export interface RuntimeContext {
@@ -36,6 +39,8 @@ export interface RuntimeContext {
   /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
   nested: Map<number, Set<number>>
   index: Map<string, CritIndex>
+  /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
+  spillRef: (s: number, r: number, c: number) => Rng | CErr
 }
 
 export const BIG_RANGE = 256
@@ -60,12 +65,11 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const bounds = (g: Rng) => {
     const sh = sheets[g.s]
-    const r2 = g.r2 === MAX_ROWS - 1 ? Math.max(sh.rows - 1, g.r1) : g.r2
-    const c2 = Math.min(g.c2, Math.max(sh.cols.length - 1, g.c1))
+    const [r2, c2] = fillBounds(sh.fills, g, g.r2 === MAX_ROWS - 1 ? Math.max(sh.rows - 1, g.r1) : g.r2, Math.min(g.c2, Math.max(sh.cols.length - 1, g.c1)))
     return { r1: g.r1, c1: g.c1, r2, c2, h: r2 - g.r1 + 1, w: c2 - g.c1 + 1 }
   }
 
-  const cell = (s: number, r: number, c: number): V => sheets[s].cols[c]?.[r] ?? null
+  const cell = (s: number, r: number, c: number): V => sheets[s].cols[c]?.[r] ?? fillAt(sheets[s].fills, r, c)
 
   /** Range values row by row; large ones are cached until an edit touches them. */
   const flat = (g: Rng): V[] => {
@@ -73,11 +77,12 @@ export function makeRuntime(ctx: RuntimeContext) {
     if (hit) return hit
     const b = bounds(g)
     const out: V[] = new Array(b.h * b.w)
-    const cols = sheets[g.s].cols
+    const sh = sheets[g.s]
     for (let c = 0; c < b.w; c++) {
-      const col = cols[b.c1 + c]
+      const col = sh.cols[b.c1 + c]
       for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.[b.r1 + r] ?? null
     }
+    if (sh.fills.length) fillFlat(sh.fills, b, out)
     if (out.length >= BIG_RANGE) ctx.flat.set(g.key, out)
     return out
   }
@@ -241,7 +246,9 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const ext = (key: string): V => (key in ctx.externals ? fromCellValue(ctx.externals[key]) : E.NA)
 
-  return { cell, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, E, cx }
+  const spill = (s: number, r: number, c: number) => ctx.spillRef(s, r, c)
+
+  return { cell, spill, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

@@ -19,7 +19,7 @@ const STRUCT_KNOWN: Readonly<Record<string, string[]>> = {
 
 describe('structure operations against Excel en-US', () => {
   it('every set has its cases answered', () => {
-    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['checks', 'edge', 'move', 'moves', 'rows', 'sheets', 'styles-checks', 'styles'])
+    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['checks', 'edge', 'move', 'moves', 'rows', 'sheets', 'spill', 'styles-checks', 'styles'])
   })
 
   it('every STRUCT_KNOWN entry names an existing case', () => {

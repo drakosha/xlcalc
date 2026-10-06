@@ -1,5 +1,9 @@
-/** The reference graph over a book's formulas: which formulas read which cells, and the order of evaluation. */
+/**
+ * The reference graph over a book's formulas: which formulas read which cells, and the order of evaluation.
+ * Besides the references, a spilled array (its claim, `spill/state.ts`) comes before the formulas reading its range.
+ */
 import type { EngineState, Formula } from './engine.js'
+import type { Area } from './spill/state.js'
 
 const WIDE = 64
 
@@ -57,35 +61,58 @@ export function rebuildGraph(state: EngineState) {
       }
     }
   }
+  state.succ = succ
+  state.listeners = listeners
+  state.wide = wide
+  const spillSucc = new Map<number, number[]>()
+  for (const [id, x] of state.spills.claims) {
+    const readers = new Set<number>()
+    readersOf(state, x, readers)
+    if (!readers.size) continue
+    spillSucc.set(id, [...readers])
+    for (const n of readers) indeg[n]++
+  }
+  state.spillSucc = spillSucc
+  state.spills.rank = undefined
   const order: number[] = []
   const queue: number[] = []
   formulas.forEach((f, id) => f && indeg[id] === 0 && queue.push(id))
-  // the queue need not be ordered by address: values do not depend on the evaluation order
+  // the queue need not be ordered by address: values do not depend on the evaluation order (of two arrays
+  // over one cell, the one that spills is chosen by rank, `spill/rank.ts`)
   while (queue.length) {
     const id = queue.pop()!
     order.push(id)
-    for (const n of succ[id]) if (--indeg[n] === 0) queue.push(n)
+    for (const n of successors(state, id)) if (--indeg[n] === 0) queue.push(n)
   }
   const topo = new Array<number>(formulas.length).fill(-1)
   order.forEach((id, i) => (topo[id] = i))
-  state.succ = succ
   state.topo = topo
   state.order = order
-  state.listeners = listeners
-  state.wide = wide
   const vol = new Set<number>()
   const stack = formulas.filter((f): f is Formula => !!f?.volatile).map((f) => f.id)
   while (stack.length) {
     const id = stack.pop()!
     if (vol.has(id)) continue
     vol.add(id)
-    stack.push(...succ[id])
+    stack.push(...successors(state, id))
   }
   state.volatile = vol
 }
 
-/** Formulas that read a cell (by their references, whether or not the cell holds anything). */
-export function listenersOf(state: EngineState, s: number, r: number, c: number, out: Set<number>) {
-  for (const [r1, r2, id] of state.listeners.get(s)?.get(c) ?? []) if (r >= r1 && r <= r2) out.add(id)
-  for (const [r1, r2, c1, c2, id] of state.wide.get(s) ?? []) if (r >= r1 && r <= r2 && c >= c1 && c <= c2) out.add(id)
+/** The formulas that come after a formula: those reading its cell, and those reading the range its array spilled into. */
+export function successors(state: EngineState, id: number): number[] {
+  const spilled = state.spillSucc.get(id)
+  return spilled ? [...state.succ[id], ...spilled] : (state.succ[id] ?? [])
+}
+
+/** Formulas that read a cell of an area (by their references, whether or not the cells hold anything). */
+export function readersOf(state: EngineState, x: Area, out: Set<number>) {
+  const ls = state.listeners.get(x.s)
+  const scan = (list: [number, number, number][]) => {
+    for (const [r1, r2, id] of list) if (r1 <= x.r2 && r2 >= x.r1) out.add(id)
+  }
+  // a wide area is checked against the listened columns, a narrow one column by column
+  if (ls && x.c2 - x.c1 + 1 > ls.size) for (const [c, list] of ls) c >= x.c1 && c <= x.c2 && scan(list)
+  else if (ls) for (let c = x.c1; c <= x.c2; c++) scan(ls.get(c) ?? [])
+  for (const [r1, r2, c1, c2, id] of state.wide.get(x.s) ?? []) if (r1 <= x.r2 && r2 >= x.r1 && c1 <= x.c2 && c2 >= x.c1) out.add(id)
 }

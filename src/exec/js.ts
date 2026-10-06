@@ -20,6 +20,7 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
     value: lit,
     array: (a) => hoist(`A(${a.rows},${a.cols},[${a.v.map(lit).join(',')}])`),
     cell: (s, r, c) => `cell(${s},${r},${c})`,
+    spill: (s, r, c) => `spill(${s},${r},${c})`,
     range: (g, one) => {
       const h = hoist(`R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`)
       return one ? `scalar(${h})` : h
@@ -43,7 +44,7 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
 
 const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`)
 
-export const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,E,R,A}=rt;'
+export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,E,R,A}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
 export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {

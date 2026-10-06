@@ -33,8 +33,8 @@ function combine(lifted: Shape[], passed: Shape[], array: boolean): Shape {
 
 const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: number }) => r.kind !== 'cell' && !(r.r1 === r.r2 && r.c1 === r.c2)
 
-/** Shapes of every node of a formula; names are judged by `isRangeName`. */
-export function shapes(ast: Ast, isRangeName: (name: string) => boolean | undefined): Map<Ast, Shape> {
+/** Shapes of every node of a formula; a name is judged by its reference (`nameRef`, undefined when unknown). */
+export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
   const go = (n: Ast): Info => {
     const i = info(n)
@@ -52,9 +52,12 @@ export function shapes(ast: Ast, isRangeName: (name: string) => boolean | undefi
         // a 1 × 1 constant is still an array (TYPE({1}) is 64), but one value wherever it goes
         return { s: n.rows.length * n.rows[0].length > 1 ? 2 : 1, ref: false }
       case 'ref':
-        return isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
-      case 'name':
-        return isRangeName(n.name) ? { s: 2, ref: true } : { s: 0, ref: false }
+        // a spill reference has as many cells as its array spilled into
+        return n.ref.spill ? { s: 1, ref: true } : isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
+      case 'name': {
+        const d = nameRef(n.name)
+        return d ? info(d) : { s: 0, ref: false }
+      }
       case 'paren':
         return go(n.a)
       case 'un': {
@@ -75,7 +78,7 @@ export function shapes(ast: Ast, isRangeName: (name: string) => boolean | undefi
     if (!spec) return { s: 0, ref: false }
     if (name === 'ROW' || name === 'COLUMN') {
       const a = nodes[0]
-      const r = a?.k === 'ref' ? a.ref : null
+      const r = a?.k === 'ref' && !a.ref.spill ? a.ref : null
       const many = r ? (name === 'ROW' ? r.r2 > r.r1 : r.c2 > r.c1) : args.length > 0 && args[0].s > 0
       return { s: r ? (many ? 2 : 0) : args.length ? 1 : 0, ref: false }
     }

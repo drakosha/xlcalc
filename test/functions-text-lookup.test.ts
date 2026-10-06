@@ -14,14 +14,14 @@ function sheet(cells: Record<string, CellInput>): Record<string, CellValue> {
 }
 
 describe('lookup and database functions beyond the Excel cases', () => {
-  it('ROW and COLUMN without an argument give the formula cell; of a range the array of its rows or columns', () => {
+  it('ROW and COLUMN without an argument give the formula cell; of a range the array of its rows or columns (spilled)', () => {
     const v = sheet({ C7: { formula: 'ROW()' }, D7: { formula: 'COLUMN()' }, E7: { formula: 'ROW(A2:A4)' }, F7: { formula: 'SUM(ROW(A2:A4))' }, G7: { formula: 'ROW(A2:C2)' } })
-    expect([v.C7, v.D7, v.E7, v.F7, v.G7]).toEqual([7, 4, err('SPILL'), 9, 2])
+    expect([v.C7, v.D7, v.E7, v.E8, v.E9, v.F7, v.G7]).toEqual([7, 4, 2, 3, 4, 9, 2])
   })
 
   it('INDEX with row or column 0 answers a reference: SUM sums it, SUMIF takes it as a range', () => {
     const v = sheet({ A1: { value: 1 }, B1: { value: 2 }, A2: { value: 3 }, B2: { value: 4 }, D1: { formula: 'SUM(INDEX(A1:B2,0,2))' }, D2: { formula: 'INDEX(A1:B2,2,2)' }, D3: { formula: 'SUMIF(INDEX(A1:B2,0,1),">1",INDEX(A1:B2,0,2))' }, D4: { formula: 'INDEX(A1:B2,0,2)' } })
-    expect([v.D1, v.D2, v.D3, v.D4]).toEqual([6, 4, 4, err('SPILL')])
+    expect([v.D1, v.D2, v.D3, v.D4, v.D5]).toEqual([6, 4, 4, 2, 4])
   })
 
   it('LOOKUP past the end of a shorter result range is #REF! (Excel reads on)', () => {

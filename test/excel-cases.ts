@@ -48,10 +48,19 @@ export function dataSheet(): BookInput['sheets'][number] {
   return { name: DATA_SHEET, cells: d }
 }
 
-export function excelBook(cases: readonly ExcelCase[]): BookInput {
+/** Case formulas in column A as in Excel's book: a neighbour in B (Excel's wrappers) and a value under the last, so an array answer is `#SPILL!`. */
+export function caseCells(formulas: readonly string[]): Record<string, CellInput> {
   const c: Record<string, CellInput> = {}
-  cases.forEach((x, i) => (c[`A${i + 1}`] = { formula: engineFormula(x.formula) }))
-  return { sheets: [dataSheet(), { name: CASE_SHEET, cells: c }] }
+  formulas.forEach((f, i) => {
+    c[`A${i + 1}`] = { formula: f }
+    c[`B${i + 1}`] = { value: 0 }
+  })
+  c[`A${formulas.length + 1}`] = { value: 'end' }
+  return c
+}
+
+export function excelBook(cases: readonly ExcelCase[]): BookInput {
+  return { sheets: [dataSheet(), { name: CASE_SHEET, cells: caseCells(cases.map((x) => engineFormula(x.formula))) }] }
 }
 
 export function toVal(v: CellValue): Val {

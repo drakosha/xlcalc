@@ -9,12 +9,16 @@
  */
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
-import { changed, evaluateAll, put, recompute, write, type Tracker } from './evaluate.js'
+import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
 import { FUNCTIONS } from './functions.js'
-import { listenersOf, rebuildGraph } from './graph.js'
-import { formatAddress, inputScalar, MAX_COLS, parseAddress, sortAddresses } from './model.js'
+import { rebuildGraph } from './graph.js'
+import { formatAddress, inputScalar, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
+import { blocks } from './spill/occupied.js'
+import { endSpill, spillRef } from './spill/place.js'
+import { newSpills, type Area, type Spills } from './spill/state.js'
+import { meets, type Rect } from './structure/area.js'
 import { canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { CErr, E, isErr, type V } from './values.js'
 
@@ -25,8 +29,6 @@ export interface Formula extends FormulaCode {
   c: number
   /** Canonical text. */
   text: string
-  /** Rows and columns of the array result of the latest computation (the cell shows #SPILL!). */
-  spill?: [number, number]
 }
 
 interface Invalid {
@@ -61,6 +63,8 @@ export interface EngineState {
   at: Map<string, number>
   invalid: Map<string, Invalid>
   succ: number[][]
+  /** The formulas reading a spilled array's range, by the array's formula (successors besides `succ`). */
+  spillSucc: Map<number, number[]>
   /** Position in the topological order; -1 for cells in a cycle and cells depending on them. */
   topo: number[]
   order: number[]
@@ -70,6 +74,7 @@ export interface EngineState {
   wide: Map<number, [number, number, number, number, number][]>
   /** Formulas that depend on volatile functions (directly or through others). */
   volatile: Set<number>
+  spills: Spills
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
@@ -83,7 +88,7 @@ function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean)
 }
 
 function emptySheet(name: string): SheetData {
-  return { name, cols: [], rows: 0 }
+  return { name, cols: [], rows: 0, fills: [] }
 }
 
 
@@ -104,8 +109,7 @@ type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Inv
 
 function prepare(state: EngineState, s: number, text: string): Prepared {
   const visible = state.names.filter((n) => n.scope === -1 || n.scope === s).map((n) => n.name)
-  // an array result is found when computing (#SPILL!), not refused here
-  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions }, (name) => nameFor(state.names, s, name)?.area, false)
+  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions })
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
@@ -119,7 +123,16 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
-  const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
+  const ctx: RuntimeContext = {
+    sheets: sheetNames.map(emptySheet),
+    now: opts.now,
+    seed: opts.seed,
+    externals: opts.externals?.values ?? {},
+    flat: new Map(),
+    index: new Map(),
+    nested: new Map(),
+    spillRef: (s, r, c) => spillRef(state, s, r, c),
+  }
   const rt = makeRuntime(ctx)
   const state: EngineState = {
     input,
@@ -135,16 +148,19 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     at: new Map(),
     invalid: new Map(),
     succ: [],
+    spillSucc: new Map(),
     topo: [],
     order: [],
     listeners: new Map(),
     wide: new Map(),
     volatile: new Set(),
+    spills: newSpills(),
   }
   const pending: Formula[] = []
   input.sheets.forEach((sheet, s) => {
     for (const [addr, cellIn] of Object.entries(sheet.cells)) {
       const { row, col } = parseAddress(addr)
+      if (blocks(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       if (cellIn.formula === undefined) {
         const v = inputScalar(cellIn.value)
         if (v !== null) put(ctx.sheets[s], row, col, v)
@@ -174,9 +190,11 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
  * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass.
  */
 export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile = false): string[] {
-  const track: Tracker = new Map()
+  const track = tracker()
   const dirty = new Set<number>()
   const fresh: Formula[] = []
+  // the edited cells and the ranges of arrays whose formula is gone
+  const touched: Area[] = []
   let structural = false
   for (const e of edits) {
     const s = state.sheetIdx.get(sheetKey(e.sheet))
@@ -186,15 +204,17 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
     const cells = state.input.sheets[s].cells
     if (e.input === null) delete cells[e.cell]
     else cells[e.cell] = e.input
+    state.spills.occupied.set(s, row, col, blocks(e.input ?? undefined))
     const old = state.at.get(k)
     if (old !== undefined) {
       if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
+      endSpill(state, state.formulas[old]!, track, false)
       state.formulas[old] = undefined
       state.at.delete(k)
       structural = true
     }
     state.invalid.delete(k)
-    listenersOf(state, s, row, col, dirty)
+    touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
       const p = prepare(state, s, input.formula)
@@ -214,6 +234,8 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
   }
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
+  // formulas reading the cells, arrays spilled over them or waiting for them
+  for (const x of [...touched, ...state.spills.touched.splice(0)]) concerned(state, x, dirty)
   for (const f of fresh) dirty.add(f.id)
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
   // cells that were in a cycle are recomputed in case the cycle is broken
@@ -226,14 +248,24 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
 export function applyClock(state: EngineState, now: number, seed: number): string[] {
   state.ctx.now = now
   state.ctx.seed = seed
-  const track: Tracker = new Map()
+  const track = tracker()
   recompute(state, new Set(state.volatile), track)
   return changed(state, track)
 }
 
-/** The value of a cell (null when empty). */
+/** Merged areas of a sheet were added or removed (`rects`): the arrays whose range meets them are computed again. */
+export function applyMerges(state: EngineState, s: number, rects: Rect[]): string[] {
+  const track = tracker()
+  const dirty = new Set<number>()
+  state.spills.merges.delete(s)
+  for (const m of [state.spills.on, state.spills.wait]) for (const [id, x] of m) if (x.s === s && rects.some((r) => meets(r, x))) dirty.add(id)
+  recompute(state, dirty, track)
+  return changed(state, track)
+}
+
+/** The value of a cell (null when empty), a spilled one too. */
 export function valueAt(state: EngineState, s: number, r: number, c: number): V {
-  return state.ctx.sheets[s].cols[c]?.[r] ?? null
+  return state.rt.cell(s, r, c)
 }
 
 export function toCellValue(v: V): CellValue {
@@ -253,8 +285,3 @@ export function debugSource(state: EngineState): string {
   return lines.join('\n')
 }
 
-/** Cells of the book by address (for output and hashing). */
-export function sortedCells(state: EngineState, s: number): string[] {
-  const addrs = new Set(Object.keys(state.input.sheets[s].cells))
-  return sortAddresses(addrs)
-}
