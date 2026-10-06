@@ -67,6 +67,8 @@ export const SHEETS: Record<string, Record<string, Cell>> = {
     ...column('A', ['-', '+']),
     ...column('B', ['b', 'c', 'a', 'ab']),
     ...column('C', ['1\t2', '1 2', ' 12\t', '日本語', 'ｱｲｳ', 'ＡＢＣ１２３', 'abc', 'x\ny', '1\n2']),
+    // tildes in criteria, lookups and SEARCH
+    ...column('D', ['~', '~~', 'a~c', 'a~~c', '~a', 'a~', 'a*c', 'ab', 'a~bx', 'abx', 'xa']),
   },
   L: {
     ...column('A', [0, 1, 2, 2, 2, 5, 8, 13]),

@@ -27,26 +27,25 @@ const cache = new Map<string, Crit>()
 
 const literal = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-/**
- * The regular expression source of a wildcard pattern: `*` any text, `?` one character, `~` escapes `*`,
- * `?` and `~`; with `anyEscape`, `~` escapes any character and a trailing `~` is dropped (Excel's SEARCH and lookups).
- */
-export function wildSource(s: string, anyEscape = false): string {
+/** The regular expression source of a wildcard pattern as Excel reads it: `*` any text, `?` one character, `~` takes the next character as it is (a trailing `~` is dropped). */
+export function wildSource(s: string): string {
   let re = ''
   for (let i = 0; i < s.length; i++) {
     const ch = s[i]
-    if (ch === '~' && anyEscape) re += i + 1 < s.length ? literal(s[++i]) : ''
-    else if (ch === '~' && i + 1 < s.length && '*?~'.includes(s[i + 1])) re += '\\' + s[++i]
+    if (ch === '~') re += i + 1 < s.length ? literal(s[++i]) : ''
     else if (ch === '*') re += '[\\s\\S]*'
     else if (ch === '?') re += '[\\s\\S]'
-    else re += ch.replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    else re += literal(ch)
   }
   return re
 }
 
-/** A whole-text, case-insensitive matcher for a pattern with wildcards; null for a pattern without them. */
-export function wildRe(s: string, anyEscape = false): RegExp | null {
-  return /[*?~]/.test(s) ? new RegExp(`^${wildSource(s, anyEscape)}$`, 'iu') : null
+/**
+ * A whole-text, case-insensitive matcher, or null for plain text. In criteria only `*` or `?` make a pattern
+ * (`a~~c` is compared as it is); in lookups (`tilde`) a `~` alone does too (`a~c` looks up `ac`).
+ */
+export function wildRe(s: string, tilde = false): RegExp | null {
+  return (tilde ? /[*?~]/ : /[*?]/).test(s) ? new RegExp(`^${wildSource(s)}$`, 'iu') : null
 }
 
 /** A criterion from a value (the scalar after evaluating the argument). */

@@ -10,9 +10,8 @@ import { FUNCTIONS } from '../src/functions.js'
 import { CASES, EXCEL, runExcelCases, show, type Outcome } from './excel-cases.js'
 import { SET_FUNCTIONS } from './excel-sets.js'
 
-/** Whitelisted functions the measurement has no cases for, and why. */
+/** Whitelisted functions without cases in the measurement or a case set, and why. */
 const NO_CASES: Record<string, string> = {
-  XLOOKUP: 'formula.js 4.6.1 has no XLOOKUP, so the measurement does not cover it; test/semantics-cases.ts does',
   TODAY: 'volatile, excluded from the measurement; test/volatile.test.ts',
   NOW: 'volatile, excluded from the measurement; test/volatile.test.ts',
   RAND: 'volatile, excluded from the measurement; test/volatile.test.ts',
@@ -32,6 +31,8 @@ describe('acceptance against Excel en-US', () => {
   it('every whitelisted function has cases (measurement or a case set), or is listed with the reason why not', () => {
     expect(covered.filter((f) => !byFunction.has(f) && !SET_FUNCTIONS.has(f))).toEqual([])
     for (const f of Object.keys(NO_CASES)) expect(FUNCTIONS[f], f).toBeDefined()
+    // a function that has cases now leaves the list, so the cases count for it
+    expect(Object.keys(NO_CASES).filter((f) => CASES.some((c) => c.fn === f) || SET_FUNCTIONS.has(f))).toEqual([])
   })
 
   for (const f of covered) {

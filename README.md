@@ -11,7 +11,7 @@ What it does differently:
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
 - **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
-Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT) and [jStat](https://github.com/jstat/jstat) (MIT), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
+Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT), [jStat](https://github.com/jstat/jstat) (MIT) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
 
 ## Install
 
@@ -174,7 +174,7 @@ From `formula-engine`:
 
 The whitelist, by category (`FUNCTION_NAMES` has it in code):
 
-- Math and trigonometry: `ABS`, `ACOS`, `ACOSH`, `ACOTH`, `ASIN`, `ASINH`, `ATAN`, `ATANH`, `CEILING`, `CEILING.MATH`, `CEILING.PRECISE`, `COSH`, `CSCH`, `DEGREES`, `EVEN`, `EXP`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `INT`, `LN`, `LOG`, `LOG10`, `ODD`, `PI`, `POWER`, `PRODUCT`, `RADIANS`, `RAND`, `RANDBETWEEN`, `ROUND`, `ROUNDDOWN`, `ROUNDUP`, `SECH`, `SIGN`, `SINH`, `SQRT`, `SUM`, `SUMIF`, `SUMIFS`, `TRUNC`
+- Math and trigonometry: `ABS`, `ACOS`, `ACOSH`, `ACOT`, `ACOTH`, `ARABIC`, `ASIN`, `ASINH`, `ATAN`, `ATAN2`, `ATANH`, `BASE`, `CEILING`, `CEILING.MATH`, `CEILING.PRECISE`, `COMBIN`, `COMBINA`, `COS`, `COSH`, `COT`, `COTH`, `CSC`, `CSCH`, `DECIMAL`, `DEGREES`, `EVEN`, `EXP`, `FACT`, `FACTDOUBLE`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `GCD`, `INT`, `ISO.CEILING`, `LCM`, `LN`, `LOG`, `LOG10`, `MDETERM`, `MOD`, `MROUND`, `MULTINOMIAL`, `ODD`, `PERCENTOF`, `PI`, `POWER`, `PRODUCT`, `QUOTIENT`, `RADIANS`, `RAND`, `RANDBETWEEN`, `ROMAN`, `ROUND`, `ROUNDDOWN`, `ROUNDUP`, `SEC`, `SECH`, `SERIESSUM`, `SIGN`, `SIN`, `SINH`, `SQRT`, `SQRTPI`, `SUM`, `SUMIF`, `SUMIFS`, `SUMPRODUCT`, `SUMSQ`, `SUMX2MY2`, `SUMX2PY2`, `SUMXMY2`, `TAN`, `TANH`, `TRUNC`
 
 - Statistical: `AVEDEV`, `AVERAGE`, `BINOM.DIST.RANGE`, `BINOMDIST`, `COUNTA`, `COUNTBLANK`, `COUNTIFS`, `F.DIST.RT`, `FISHER`, `GAMMALN`, `GAMMALN.PRECISE`, `GAUSS`, `MAX`, `MEDIAN`, `MIN`, `NORM.DIST`, `NORM.S.DIST`, `NORMDIST`, `PHI`, `PROB`
 
@@ -184,13 +184,15 @@ The whitelist, by category (`FUNCTION_NAMES` has it in code):
 
 - Text: `ARRAYTOTEXT`, `BAHTTEXT`, `CLEAN`, `CONCAT`, `CONCATENATE`, `DOLLAR`, `EXACT`, `FIND`, `FINDB`, `FIXED`, `LEFT`, `LEFTB`, `LEN`, `LENB`, `LOWER`, `MID`, `MIDB`, `NUMBERVALUE`, `PROPER`, `REPLACE`, `REPLACEB`, `REPT`, `RIGHT`, `RIGHTB`, `SEARCH`, `SEARCHB`, `SUBSTITUTE`, `T`, `TEXT`, `TEXTAFTER`, `TEXTBEFORE`, `TEXTJOIN`, `TRIM`, `UNICHAR`, `UNICODE`, `UPPER`, `VALUE`, `VALUETOTEXT`
 
-- Date and time: `DATE`, `EOMONTH`, `NOW`, `TODAY`
+- Date and time: `DATE`, `DATEDIF`, `DATEVALUE`, `DAY`, `DAYS`, `DAYS360`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MINUTE`, `MONTH`, `NETWORKDAYS`, `NETWORKDAYS.INTL`, `NOW`, `SECOND`, `TIME`, `TIMEVALUE`, `TODAY`, `WEEKDAY`, `WEEKNUM`, `WORKDAY`, `WORKDAY.INTL`, `YEAR`, `YEARFRAC`
 
-- Financial: `ISPMT`, `NPV`, `PDURATION`
+- Financial: `ACCRINT`, `ACCRINTM`, `AMORDEGRC`, `AMORLINC`, `COUPDAYBS`, `COUPDAYSNC`, `COUPNCD`, `COUPNUM`, `COUPPCD`, `CUMIPMT`, `CUMPRINC`, `DB`, `DDB`, `DISC`, `DOLLARDE`, `DOLLARFR`, `DURATION`, `EFFECT`, `FV`, `FVSCHEDULE`, `INTRATE`, `IPMT`, `IRR`, `ISPMT`, `MDURATION`, `MIRR`, `NOMINAL`, `NPER`, `NPV`, `ODDFPRICE`, `ODDFYIELD`, `ODDLPRICE`, `ODDLYIELD`, `PDURATION`, `PMT`, `PPMT`, `PRICE`, `PRICEDISC`, `PRICEMAT`, `PV`, `RATE`, `RECEIVED`, `RRI`, `SLN`, `SYD`, `TBILLEQ`, `TBILLPRICE`, `TBILLYIELD`, `XIRR`, `XNPV`, `YIELD`, `YIELDDISC`, `YIELDMAT`
 
 - Lookup and reference: `ADDRESS`, `CHOOSE`, `COLUMN`, `COLUMNS`, `HLOOKUP`, `HYPERLINK`, `INDEX`, `LOOKUP`, `MATCH`, `ROW`, `ROWS`, `VLOOKUP`, `XLOOKUP`, `XMATCH`
 
 - Database: `DAVERAGE`, `DCOUNT`, `DCOUNTA`, `DGET`, `DMAX`, `DMIN`, `DPRODUCT`, `DSTDEV`, `DSTDEVP`, `DSUM`, `DVAR`, `DVARP`
+
+- Engineering: `BESSELI`, `BESSELJ`, `BESSELK`, `BESSELY`, `BIN2DEC`, `BIN2HEX`, `BIN2OCT`, `BITAND`, `BITLSHIFT`, `BITOR`, `BITRSHIFT`, `BITXOR`, `COMPLEX`, `CONVERT`, `DEC2BIN`, `DEC2HEX`, `DEC2OCT`, `DELTA`, `ERF`, `ERF.PRECISE`, `ERFC`, `ERFC.PRECISE`, `GESTEP`, `HEX2BIN`, `HEX2DEC`, `HEX2OCT`, `IMABS`, `IMAGINARY`, `IMARGUMENT`, `IMCONJUGATE`, `IMCOS`, `IMCOT`, `IMCSCH`, `IMDIV`, `IMEXP`, `IMLN`, `IMLOG10`, `IMLOG2`, `IMPOWER`, `IMPRODUCT`, `IMREAL`, `IMSEC`, `IMSECH`, `IMSIN`, `IMSINH`, `IMSQRT`, `IMSUB`, `IMSUM`, `IMTAN`, `OCT2BIN`, `OCT2DEC`, `OCT2HEX`
 
 Status: every function in the list matches Excel en-US on all of its cases in the coverage measurement (`docs/coverage-formulajs.md`) and in the Excel case sets (`docs/excel-cases/`), which also cover the functions formula.js lacks (`XLOOKUP`, `XMATCH`, `TEXTBEFORE`, `ADDRESS` and others). `TODAY`, `NOW`, `RAND` and `RANDBETWEEN` (volatile) have their own semantics and clock tests instead.
 
@@ -199,7 +201,7 @@ How the acceptance works: the measurement generated 5,275 cases for 402 Excel fu
 Notes on semantics:
 
 - Arguments are coerced by kind, the same way for every function of a group: numeric arguments read numeric text and booleans, a range in `SUM`, `AVERAGE`, `MAX` and the like contributes only its numbers while a direct argument is coerced, date arguments read date text as Excel en-US does (`2025-01-31`, `1/31/2025`, `31-Jan-2025`), and `"TRUE"`/`"FALSE"` text is a boolean where a boolean is expected.
-- Criteria (`SUMIF`, `SUMIFS`, `COUNTIFS`) compare text case-insensitively but accent-sensitively, support `*`, `?` and `~` escapes, read numbers and ISO dates inside criterion text as numbers (`">=2026-01-01"`), and a number criterion also matches text that reads as that number (`2` matches `"2"`), as in Excel. Their ranges must have the same referenced size (else `#VALUE!`); whole columns of sheets with different numbers of rows fit, and blank cells of a whole column count where every criterion matches a blank (`COUNTIFS(A:A,"")`).
+- Criteria (`SUMIF`, `SUMIFS`, `COUNTIFS`) compare text case-insensitively but accent-sensitively, support `*` and `?` (where `~` takes the next character as it is; text without `*` or `?` is compared as it is, `~` included), read numbers and ISO dates inside criterion text as numbers (`">=2026-01-01"`), and a number criterion also matches text that reads as that number (`2` matches `"2"`), as in Excel. Their ranges must have the same referenced size (else `#VALUE!`); whole columns of sheets with different numbers of rows fit, and blank cells of a whole column count where every criterion matches a blank (`COUNTIFS(A:A,"")`).
 - Numbers become text (`&`, `CONCAT`, text arguments) as in Excel: rounded to 15 significant digits, in positional notation when that takes at most 20 characters, the sign aside (`0.0000000745`, `10000000000000000000`), else in scientific notation with an exponent of two digits at least (`7.4500104300146E-06`, `1E+20`). `TEXT` with the `General` format has Excel's other rule, at most 11 characters (`0.333333333`, `1.23457E-05`).
 - Number literals and numeric text keep 15 significant digits and drop the rest, as Excel reads them (`123456789012345678` is 123456789012345000); a result smaller than the smallest normal number (2.2250738585072E-308) is 0.
 - `IF`, `IFERROR`, `IFNA` and `SWITCH` do not compute the branch not taken.
@@ -216,7 +218,7 @@ Notes on semantics:
 - **Known differences from Excel:**
   - `XLOOKUP` and `XMATCH` with binary search (search mode 2 or −2) scan linearly: the same answer on sorted data, where Excel's binary search is defined. Match mode 3 (regular expressions) is `#VALUE!`.
   - `INDEX` returns a value, not a reference: a whole row or column (`INDEX(A1:C3,0,2)`) is `#VALUE!` even inside `SUM`, which in Excel sums it. `ROW` and `COLUMN` of several rows or columns give the first one, as the cell shows it; Excel passes the whole list to an enclosing function (`SUM(ROW(A1:A3))` is 6 there).
-  - `CONCAT` and `TEXTJOIN` longer than 32,767 characters are `#VALUE!`; Excel answers `#CALC!`, which this engine has no code for.
+  - `CONCAT` and `TEXTJOIN` longer than 32,767 characters are `#VALUE!`; Excel answers `#CALC!`, which this engine has no code for. `&` and `CONCATENATE` cut the text at 32,767 characters, as Excel does.
   - `TEXTBEFORE` and `TEXTAFTER` take one delimiter (there are no array constants).
   - `LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.
   - Text order for `<` and `>` uses `Intl.Collator` (case-insensitive, accent-sensitive), which may differ from Excel for some characters; without `Intl` it falls back to comparing lower-cased code units.
@@ -245,4 +247,4 @@ Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical
 
 ## License
 
-MIT. Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT, Copyright (c) 2014 Sutoiku, Inc.) and [jStat](https://github.com/jstat/jstat) (MIT, Copyright (c) 2013 jStat); [THIRD_PARTY.md](THIRD_PARTY.md) has their license texts and the files they are in.
+MIT. Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT, Copyright (c) 2014 Sutoiku, Inc.), [jStat](https://github.com/jstat/jstat) (MIT, Copyright (c) 2013 jStat) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0, Copyright (C) 2013-present SheetJS); [THIRD_PARTY.md](THIRD_PARTY.md) has their license texts and the files they are in.
