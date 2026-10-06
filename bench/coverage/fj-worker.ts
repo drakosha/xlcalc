@@ -1,6 +1,6 @@
 /**
- * Дочерний процесс: считает случаи formulajs с номера `start` и печатает строку JSON на случай.
- * Родитель (`run.ts fj`) убивает процесс, если случай висит, и продолжает со следующего.
+ * Child process: computes the cases in formulajs from the number `start` and prints a JSON line per case.
+ * The parent (`run.ts fj`) kills it when a case hangs and goes on from the next one.
  */
 import { readFileSync } from 'node:fs'
 import type { CaseSet } from './cases.js'

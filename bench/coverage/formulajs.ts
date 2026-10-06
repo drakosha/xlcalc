@@ -1,20 +1,20 @@
 /**
- * Вызов formulajs на случае замера двумя способами.
+ * formulajs called on a measurement case in two ways.
  *
- * Голая formulajs: аргументы как лежат в ячейках (одна ячейка значением, диапазон двумерным массивом,
- * пустая null, ошибка объектом ошибки formulajs, дата серийным номером), ответ как есть (Date
- * отмечается отдельно, с серийным номером по местному времени и долей суток).
+ * Bare formulajs: arguments as they lie in the cells (one cell as its value, a range as a two-dimensional
+ * array, a blank as null, an error as a formulajs error object, a date as a serial number), the answer as it
+ * is (a Date is marked apart, as a serial number in local time with the fraction of the day).
  *
- * Через адаптер: общие правила рантайма движка (`src/runtime.ts`), обобщённые по видам аргументов:
- * - ошибка в скалярном аргументе и в числовом диапазоне (виды N, M, D) сразу ответ;
- * - число (`n`, `p`) через toNum, целое (`i`) ещё и с отбрасыванием дробной части (как ROUND),
- *   текст через toText, логическое через toBool;
- * - дата (`d`, `D`): серийный номер в местную полночь JS Date, время (`t`) с долей суток;
- *   отрицательный номер это #NUM! (как EOMONTH);
- * - свёртка чисел (`N`): из ссылки только числа, прямой аргумент приводится (правило SUM);
- * - остальные диапазоны двумерными массивами, ошибки внутри объектами ошибок formulajs;
- * - ответ: ошибка formulajs в код, Date в серийный номер её местной даты, NaN и бесконечность в
- *   #NUM!, исключение в #VALUE!, прочее (null, undefined, массив) в #VALUE!.
+ * Through the adapter: the engine's runtime rules (`src/runtime.ts`), generalised by argument kind:
+ * - an error in a scalar argument or in a numeric range (kinds N, M, D) is the answer at once;
+ * - a number (`n`, `p`) through toNum, a whole number (`i`) also truncated (as ROUND does), text through
+ *   toText, a boolean through toBool;
+ * - a date (`d`, `D`): the serial number as a JS Date at local midnight, a time (`t`) with the fraction of the
+ *   day; a negative serial number is #NUM! (as in EOMONTH);
+ * - a fold of numbers (`N`): only numbers from a reference, a direct argument converted (the SUM rule);
+ * - other ranges as two-dimensional arrays, errors inside them as formulajs error objects;
+ * - the answer: a formulajs error to its code, a Date to the serial number of its local date, NaN and
+ *   infinity to #NUM!, an exception to #VALUE!, anything else (null, undefined, an array) to #VALUE!.
  */
 import * as fj from '@formulajs/formulajs'
 import { dateToSerial } from '../../src/model.js'
@@ -24,13 +24,13 @@ import { kindAt, parseKinds } from './cases.js'
 import { REGIONS, type Cell, type ErrCode } from './data.js'
 import { SIGNATURES, type Arg } from './signatures.js'
 
-/** Значение в выдаче замера. */
+/** A value in the measurement's output. */
 export type Val =
   | { t: 'n'; v: number }
   | { t: 's'; v: string }
   | { t: 'b'; v: boolean }
   | { t: 'e'; v: ErrCode }
-  /** JS Date из голой formulajs: v серийный номер по местному времени. */
+  /** A JS Date from bare formulajs: v is the serial number in local time. */
   | { t: 'date'; v: number }
   | { t: 'nan'; v: string }
   | { t: 'throw'; v: string }
@@ -38,7 +38,7 @@ export type Val =
 
 export interface FjResult {
   adapter: Val
-  /** Адаптер получил исключение (ответ #VALUE!). */
+  /** The adapter caught an exception (the answer is #VALUE!). */
   adapterThrew?: string
   bare: Val
 }
@@ -89,7 +89,7 @@ function resolve(a: Arg): V | Ref {
 const isRef = (x: V | Ref): x is Ref => x !== null && typeof x === 'object' && 'rows' in x
 const fjv = (v: V): unknown => (isErr(v) ? toFjErr[v.code] ?? fj.utils.errors.error : v)
 
-// ---------- даты ----------
+// ---------- dates ----------
 
 export function localDateToSerial(d: Date): number {
   const p = (n: number, w = 2) => String(n).padStart(w, '0')
@@ -104,9 +104,9 @@ export function serialToLocalDate(serial: number): Date {
   return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate(), 0, 0, 0, Math.round((serial - s) * 86_400_000))
 }
 
-// ---------- аргументы ----------
+// ---------- arguments ----------
 
-/** Голый вызов: одна ячейка значением, диапазон двумерным массивом, ошибки объектами formulajs. */
+/** A bare call: one cell as its value, a range as a two-dimensional array, errors as formulajs objects. */
 function bareArg(a: Arg): unknown {
   const x = resolve(a)
   if (!isRef(x)) return x
@@ -115,7 +115,7 @@ function bareArg(a: Arg): unknown {
 
 const scalarOf = (x: V | Ref): V => (isRef(x) ? (x.single ? x.rows[0][0] : E.VALUE) : x)
 
-/** Аргумент через адаптер по виду; CErr значит ответ этой ошибкой без вызова. */
+/** An argument through the adapter by kind; a CErr means that error is the answer without a call. */
 function adaptArg(a: Arg, kind: string): unknown {
   const x = resolve(a)
   switch (kind) {
@@ -133,7 +133,7 @@ function adaptArg(a: Arg, kind: string): unknown {
       if (isErr(v)) return v
       const n = toNum(v)
       if (isErr(n)) return n
-      // дата: местная полночь (как EOMONTH в рантайме); время: с долей суток
+      // a date: local midnight (as EOMONTH in the runtime); a time: with the fraction of the day
       return n < 0 ? E.NUM : serialToLocalDate(kind === 'd' ? Math.floor(n) : n)
     }
     case 's': {
@@ -176,9 +176,9 @@ function adaptArg(a: Arg, kind: string): unknown {
   }
 }
 
-// ---------- ответ ----------
+// ---------- the answer ----------
 
-/** Элемент или размер ответа-массива (одномерный массив считается колонкой). */
+/** An element or the size of an array answer (a one-dimensional array counts as a column). */
 function applyPick(r: unknown, c: Case): unknown {
   if (c.pick === undefined || r instanceof Error) return r
   const m: unknown[][] | null = Array.isArray(r) ? (r.length && Array.isArray(r[0]) ? (r as unknown[][]) : (r as unknown[]).map((x) => [x])) : null
@@ -200,7 +200,7 @@ function rawVal(x: unknown): Val {
   return { t: 'other', v: x === undefined ? 'undefined' : x === null ? 'null' : Array.isArray(x) ? 'array' : typeof x }
 }
 
-/** Ответ через адаптер (правила fromFj рантайма движка: дата в серийный номер местной полночи). */
+/** The answer through the adapter (the runtime's fromFj rules: a date to the serial number of its local midnight). */
 function adapterVal(x: unknown): Val {
   const r = rawVal(x)
   if (r.t === 'date') return { t: 'n', v: Math.floor(r.v) }

@@ -1,11 +1,9 @@
 /**
  * Excel cases for TEXT rounding a number that a percent sign or a thousands scale multiplies: the product is
  * rounded as Excel shows it, to 15 significant digits, before the format's own rounding (`TEXT(0.285,"0%")`).
- * Computed as dynamic array formulas (Excel 365), in Excel en-US (`docs/excel-cases/format-scale.json`).
+ * Computed as dynamic array formulas (Excel 365), in Excel en-US (`test/excel/cases/format-scale.json`).
  */
 import type { Probe } from '../probes.js'
-
-export const DYNAMIC = true
 
 const CASES: [value: string, format: string][] = [
   ['0.285', '0%'], ['0.145', '0%'], ['0.0285', '0.0%'], ['1.0005', '0.0%'], ['0.575', '0%'], ['0.285', '0.%'], ['1234500', '#,##0,'], ['2500', '0,'],

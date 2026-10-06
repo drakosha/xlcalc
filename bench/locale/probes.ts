@@ -2,7 +2,7 @@
  * Formulas whose local text Excel is asked for (`snapshot.ts`): a call of every function of
  * `bench/coverage/excel-functions.json` that the coverage measurement has no case for, literals (TRUE and
  * FALSE, error literals, numbers, array constants, sheet names, strings with separators), then the
- * measurement's cases and the probes of `docs/excel-probes.json`. Formulas are in Excel's file form
+ * measurement's cases and the probes of `test/excel/probes.json`. Formulas are in Excel's file form
  * (`_xlfn.` prefixes, `_xlpm.` LAMBDA parameters). Calls that reach outside the book (cube functions,
  * web services, add-ins) sit in a branch IF never computes, so they cannot block Excel with a prompt.
  */
@@ -188,8 +188,8 @@ export interface Probes {
 
 export function buildProbes(): Probes {
   const functions = json<{ name: string }[]>('bench/coverage/excel-functions.json').map((f) => f.name)
-  const measured = json<{ cases: { id: string; fn: string; formula: string }[] }>('docs/coverage-formulajs/cases.json').cases
-  const probes = json<{ cases: Probe[] }>('docs/excel-probes.json').cases
+  const measured = json<{ cases: { id: string; fn: string; formula: string }[] }>('test/excel/coverage/cases.json').cases
+  const probes = json<{ cases: Probe[] }>('test/excel/probes.json').cases
   const inMeasurement = new Set(measured.flatMap((c) => called(c.formula)))
   const missing = functions.filter((f) => !inMeasurement.has(f) && !NOT_IN_BOOKS.includes(f))
   const unknown = missing.filter((f) => !(f in CALLS))

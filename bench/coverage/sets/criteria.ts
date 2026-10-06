@@ -7,8 +7,6 @@
  */
 import type { Probe } from '../probes.js'
 
-export const DYNAMIC = true
-
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {
   CR: {
     // 2^0 … 2^14 beside D!A1:A15: a sum tells which rows were taken

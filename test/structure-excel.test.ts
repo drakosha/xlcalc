@@ -1,5 +1,5 @@
 /**
- * Acceptance of `restructure` against Excel en-US (`docs/excel-struct/`, see `test/structure-excel.ts`):
+ * Acceptance of `restructure` against Excel en-US (`test/excel/struct/`, see `test/structure-excel.ts`):
  * each stored case is the generator's current case, and the engine's book after the operation shows what
  * Excel showed, or Excel refused and so does the engine. Known differences are listed in STRUCT_KNOWN
  * with their lines.

@@ -1,5 +1,5 @@
 /**
- * Excel's formula text in a locale (`docs/locale/excel-<tag>.json`, written by `snapshot.ts`) and the locale
+ * Excel's formula text in a locale (`test/excel/locale/<tag>.json`, written by `snapshot.ts`) and the locale
  * data derived from it: separators from the international settings, TRUE/FALSE and error literals from
  * their probes, and function names by pairing the calls of each English formula with those of its local
  * text, in order. The scanner here is independent of the library's lexer, so the tests compare two readings.
@@ -21,7 +21,7 @@ export interface Snapshot {
   formulas: Record<string, [string, string]>
 }
 
-export const snapshotFile = (tag: string) => new URL(`../../docs/locale/excel-${tag}.json`, import.meta.url)
+export const snapshotFile = (tag: string) => new URL(`../../test/excel/locale/${tag}.json`, import.meta.url)
 
 export const loadSnapshot = (tag: string): Snapshot => JSON.parse(readFileSync(snapshotFile(tag), 'utf8')) as Snapshot
 

@@ -1,11 +1,10 @@
 /**
- * Сравнение колонок замера с эталоном Excel en-US: сводка по функциям (`summary.json`) и таблицы
- * отчёта `docs/coverage-formulajs.md`. Таблицы стоят между метками `<!-- auto:имя -->` и
- * `<!-- /auto:имя -->` и пересобираются при каждом запуске; текст вне меток пишется руками и не
- * трогается.
+ * The measurement's columns against the Excel en-US reference: a summary by function (`summary.json`) and the
+ * tables of the report `docs/coverage-formulajs.md`. The tables stand between the marks `<!-- auto:name -->`
+ * and `<!-- /auto:name -->` and are rebuilt on every run; the text outside the marks is written by hand and
+ * left alone.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
 import type { CaseSet } from './cases.js'
 import { compare, show, type Kind, type Verdict } from './compare.js'
 import type { FjResult, Val } from './formulajs.js'
@@ -15,12 +14,7 @@ interface Col<T = Val> {
   values: Record<string, T>
 }
 
-/** Прежняя колонка en-US, посчитанная с русским интерфейсом Excel: для абзаца о языке интерфейса. */
-const EN_RU_UI = 'excel-en-ru-ui.json'
-/** Колонка en-US формулами старого вида, с которой сравнивается EN_RU_UI (тоже формулы старого вида). */
-const EN_LEGACY = 'excel-en-legacy.json'
-
-export type Status = 'все' | 'обычные' | 'расходятся обычные' | 'зависает'
+export type Status = 'all' | 'typical only' | 'typical differ' | 'hangs'
 
 export interface FnRow {
   fn: string
@@ -33,28 +27,10 @@ export interface FnRow {
   ru: number
 }
 
-const CAT_RU: Record<string, string> = {
-  'Math and trigonometry': 'математические',
-  Statistical: 'статистические',
-  Compatibility: 'совместимость',
-  'Date and time': 'дата и время',
-  Engineering: 'инженерные',
-  Financial: 'финансовые',
-  Information: 'информационные',
-  Logical: 'логические',
-  'Lookup and reference': 'поиск и ссылки',
-  Text: 'текстовые',
-  Database: 'база данных',
-  Cube: 'кубы',
-  Web: 'веб',
-  'Add-in and Automation': 'надстройки',
-}
-export const catRu = (c: string) => CAT_RU[c] ?? c
-
 function status(list: { kind: string }[], vs: Verdict[]): Status {
-  if (vs.some((v) => v.kind === 'зависает')) return 'зависает'
-  if (vs.every((v) => v.ok)) return 'все'
-  return list.every((c, i) => c.kind !== 'typical' || vs[i].ok) ? 'обычные' : 'расходятся обычные'
+  if (vs.some((v) => v.kind === 'hangs')) return 'hangs'
+  if (vs.every((v) => v.ok)) return 'all'
+  return list.every((c, i) => c.kind !== 'typical' || vs[i].ok) ? 'typical only' : 'typical differ'
 }
 
 const count = <T extends string>(xs: (T | undefined)[]) => {
@@ -63,16 +39,15 @@ const count = <T extends string>(xs: (T | undefined)[]) => {
   return out
 }
 
-export function analyse(dir: string) {
-  const load = <T>(n: string) => JSON.parse(readFileSync(join(dir, n), 'utf8')) as T
+/** `at` gives the path of a measurement file by name. */
+export function analyse(at: (name: string) => string) {
+  const load = <T>(n: string) => JSON.parse(readFileSync(at(n), 'utf8')) as T
   const set = load<CaseSet>('cases.json')
   const fj = load<Col<FjResult>>('formulajs.json')
   const enRaw = load<Col>('excel-en.json')
   const ru = load<Col>('excel-ru.json')
   const lo = load<Col>('libreoffice.json')
   const en = enRaw.values
-  const enRuUi = existsSync(join(dir, EN_RU_UI)) ? load<Col>(EN_RU_UI) : null
-  const enLegacy = existsSync(join(dir, EN_LEGACY)) ? load<Col>(EN_LEGACY).values : en
 
   const byFn = new Map<string, typeof set.cases>()
   for (const c of set.cases) byFn.set(c.fn, [...(byFn.get(c.fn) ?? []), c])
@@ -104,28 +79,27 @@ export function analyse(dir: string) {
       ru: vr.filter((v) => !v.ok).length,
     })
   }
-  return { set, fj, en, enRaw, enRuUi, enLegacy, ru, lo, rows, verdicts }
+  return { set, fj, en, enRaw, ru, lo, rows, verdicts }
 }
 
 // ---------- markdown ----------
 
-/** Классы краевых случаев для предложения: что чинится общим правилом адаптера, что нет. */
+/** Classes of edge cases for the proposal: what a shared adapter rule fixes and what it does not. */
 const TAG_CLASS: Record<string, string> = Object.fromEntries(
   Object.entries({
-    приведение: ['логическое', 'текст-число', 'число текстом с точкой', 'текст-число в ячейке', 'ссылка на текст-число', 'ссылка на логическое', 'логическое аргументом', 'текст-число аргументом', 'текст аргументом', 'текст TRUE', 'логическое в ячейке', 'число 0', 'число 2', 'текст', 'число', 'ЛОЖЬ'],
-    пустое: ['пустая ячейка', 'пустой диапазон', 'пустая строка', 'пустая ячейка аргументом', 'пустая строка в ячейке'],
-    ошибки: ['ошибка на входе', '#N/A', '#DIV/0!', 'диапазон с ошибкой', 'поток с ошибкой'],
-    диапазоны: ['диапазон: смесь', 'разный размер', 'праздники: смесь', 'праздники: пустой диапазон', 'праздники с ошибкой', 'поток: смесь'],
-    'текст-дата': ['дата текстом ISO', 'дата текстом m/d/yyyy', 'время текстом'],
-    область: ['отрицательное', 'ноль', 'дробное', 'большое', 'больше 1', 'отрицательные и дробные', 'дата в ячейке', 'больше суток', `большое (${100})`, 'большое (1000)'],
-    'даты 1900': ['28.02.1900', 'ложный 29.02.1900', '01.03.1900', 'високосный 29.02.2024', 'дата со временем'],
-    текст: ['кириллица', 'регистр', 'пробелы', 'кириллица в ячейке'],
+    coercion: ['boolean', 'numeric text', 'number text with a point', 'numeric text in a cell', 'reference to numeric text', 'reference to a boolean', 'boolean argument', 'numeric text argument', 'text argument', 'text TRUE', 'boolean in a cell', 'number 0', 'number 2', 'text', 'number', 'FALSE'],
+    blank: ['blank cell', 'blank range', 'empty string', 'blank cell argument', 'empty string in a cell'],
+    errors: ['error input', '#N/A', '#DIV/0!', 'range with an error', 'cash flow with an error'],
+    ranges: ['range: mixed', 'different size', 'holidays: mixed', 'holidays: blank range', 'holidays with an error', 'cash flow: mixed'],
+    'date text': ['ISO date text', 'm/d/yyyy date text', 'time text'],
+    domain: ['negative', 'zero', 'fractional', 'large', 'above 1', 'negative and fractional', 'date in a cell', 'over a day', 'large (100)', 'large (1000)'],
+    '1900 dates': ['1900-02-28', 'false leap day 1900-02-29', '1900-03-01', 'leap day 2024-02-29', 'date with a time'],
+    text: ['Cyrillic', 'case', 'spaces', 'Cyrillic in a cell'],
   }).flatMap(([cls, tags]) => tags.map((t) => [t, cls])),
 )
 
 const esc = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, '\\n')
 const code = (s: string) => '`' + s.replace(/`/g, "'") + '`'
-const statusRu: Record<Status, string> = { все: 'все', обычные: 'только обычные', 'расходятся обычные': 'расходятся обычные', зависает: 'зависает' }
 
 function kindsText(k: Partial<Record<Kind, number>>): string {
   return Object.entries(k)
@@ -134,37 +108,37 @@ function kindsText(k: Partial<Record<Kind, number>>): string {
     .join(', ')
 }
 
-function blocks(dir: string): Record<string, string> {
-  const a = analyse(dir)
+function blocks(at: (name: string) => string): Record<string, string> {
+  const a = analyse(at)
   const { rows, set } = a
   const st = (sel: (r: FnRow) => Status) => {
     const c = count(rows.map(sel))
-    return { все: c['все'] ?? 0, обычные: c['обычные'] ?? 0, 'расходятся обычные': c['расходятся обычные'] ?? 0, зависает: c['зависает'] ?? 0 }
+    return { all: c.all ?? 0, typical: c['typical only'] ?? 0, differ: c['typical differ'] ?? 0, hangs: c.hangs ?? 0 }
   }
   const sa = st((r) => r.adapter.status)
   const sb = st((r) => r.bare.status)
   const casesOk = (k: 'adapter' | 'bare') => Object.values(a.verdicts).filter((v) => v[k].ok).length
-  const softFns = rows.filter((r) => r.adapter.status !== 'все' && r.adapter.ok + r.adapter.soft === r.cases)
-  const fixedByAdapter = rows.filter((r) => r.adapter.status === 'все' && r.bare.status !== 'все')
+  const softFns = rows.filter((r) => r.adapter.status !== 'all' && r.adapter.ok + r.adapter.soft === r.cases)
+  const fixedByAdapter = rows.filter((r) => r.adapter.status === 'all' && r.bare.status !== 'all')
   const brokenByAdapter = rows.filter((r) => r.adapter.ok < r.bare.ok)
 
   const out: Record<string, string> = {}
   out.summary = [
-    '| | через адаптер | голая formulajs |',
+    '| | through the adapter | bare formulajs |',
     '|---|---|---|',
-    `| функций в наборе | ${rows.length} | ${rows.length} |`,
-    `| все случаи совпали с Excel en-US | ${sa['все']} | ${sb['все']} |`,
-    `| совпали только обычные случаи | ${sa['обычные']} | ${sb['обычные']} |`,
-    `| расходятся уже обычные случаи | ${sa['расходятся обычные']} | ${sb['расходятся обычные']} |`,
-    `| зависает (на одном из случаев) | ${sa['зависает']} | ${sb['зависает']} |`,
-    `| случаев совпало | ${casesOk('adapter')} из ${set.cases.length} | ${casesOk('bare')} из ${set.cases.length} |`,
+    `| functions in the set | ${rows.length} | ${rows.length} |`,
+    `| all cases match Excel en-US | ${sa.all} | ${sb.all} |`,
+    `| only the typical cases match | ${sa.typical} | ${sb.typical} |`,
+    `| typical cases differ already | ${sa.differ} | ${sb.differ} |`,
+    `| hangs (on one of the cases) | ${sa.hangs} | ${sb.hangs} |`,
+    `| cases that match | ${casesOk('adapter')} of ${set.cases.length} | ${casesOk('bare')} of ${set.cases.length} |`,
     '',
-    `С мягким допуском 1e-6 через адаптер полностью совпадают ещё ${softFns.length}: ${softFns.map((r) => r.fn).join(', ') || 'нет'}.`,
-    `Адаптер довёл до полного совпадения ${fixedByAdapter.length} функций, где голая formulajs расходится: ${fixedByAdapter.map((r) => r.fn).join(', ')}.`,
-    `Хуже голой через адаптер ${brokenByAdapter.length}: ${brokenByAdapter.map((r) => `${r.fn} (${r.adapter.ok} против ${r.bare.ok})`).join(', ') || 'нет'}.`,
+    `Within the soft tolerance 1e-6, ${softFns.length} more match fully through the adapter: ${softFns.map((r) => r.fn).join(', ') || 'none'}.`,
+    `The adapter brought ${fixedByAdapter.length} functions to a full match where bare formulajs differs: ${fixedByAdapter.map((r) => r.fn).join(', ')}.`,
+    `Worse through the adapter than bare: ${brokenByAdapter.length}: ${brokenByAdapter.map((r) => `${r.fn} (${r.adapter.ok} against ${r.bare.ok})`).join(', ') || 'none'}.`,
   ].join('\n')
 
-  // виды расхождений: случаи и функции
+  // kinds of difference: cases and functions
   const kindRows = (k: 'adapter' | 'bare') => {
     const byKind = new Map<string, { cases: number; fns: Set<string> }>()
     for (const c of set.cases) {
@@ -181,20 +155,20 @@ function blocks(dir: string): Record<string, string> {
   const kb = kindRows('bare')
   const allKinds = [...new Set([...ka.keys(), ...kb.keys()])].sort((x, y) => (ka.get(y)?.cases ?? 0) - (ka.get(x)?.cases ?? 0))
   out.kinds = [
-    '| вид расхождения | случаев через адаптер | функций через адаптер | случаев голой | функций голой |',
+    '| kind of difference | cases through the adapter | functions through the adapter | cases bare | functions bare |',
     '|---|---|---|---|---|',
     ...allKinds.map((k) => `| ${k} | ${ka.get(k)?.cases ?? 0} | ${ka.get(k)?.fns.size ?? 0} | ${kb.get(k)?.cases ?? 0} | ${kb.get(k)?.fns.size ?? 0} |`),
   ].join('\n')
 
-  // краевые метки, на которых адаптер расходится у функций со совпавшими обычными
+  // the edge tags where the adapter differs, for functions whose typical cases match
   const tagFns = new Map<string, Set<string>>()
   for (const c of set.cases) {
     const r = rows.find((x) => x.fn === c.fn)!
-    if (r.adapter.status !== 'обычные' || a.verdicts[c.id].adapter.ok) continue
+    if (r.adapter.status !== 'typical only' || a.verdicts[c.id].adapter.ok) continue
     tagFns.set(c.tag, (tagFns.get(c.tag) ?? new Set()).add(c.fn))
   }
   out.tags = [
-    '| краевой случай | функций | функции |',
+    '| edge case | functions | which |',
     '|---|---|---|',
     ...[...tagFns]
       .sort((x, y) => y[1].size - x[1].size)
@@ -203,21 +177,21 @@ function blocks(dir: string): Record<string, string> {
 
   const sorted = [...rows].sort((x, y) => x.category.localeCompare(y.category) || x.fn.localeCompare(y.fn))
   out.functions = [
-    '| функция | категория | случаев | совпало через адаптер | совпало голой | итог через адаптер | вид расхождения через адаптер | на каких случаях |',
+    '| function | category | cases | match through the adapter | match bare | result through the adapter | kind of difference through the adapter | on which cases |',
     '|---|---|---|---|---|---|---|---|',
     ...sorted.map(
       (r) =>
-        `| ${r.fn} | ${catRu(r.category)} | ${r.cases} | ${r.adapter.ok} | ${r.bare.ok} | ${statusRu[r.adapter.status]}${r.adapter.soft ? `, мягко ещё ${r.adapter.soft}` : ''} | ${kindsText(r.adapter.kinds)} | ${esc(r.adapter.tags.join('; '))} |`,
+        `| ${r.fn} | ${r.category} | ${r.cases} | ${r.adapter.ok} | ${r.bare.ok} | ${r.adapter.status}${r.adapter.soft ? `, ${r.adapter.soft} more soft` : ''} | ${kindsText(r.adapter.kinds)} | ${esc(r.adapter.tags.join('; '))} |`,
     ),
   ].join('\n')
 
-  // зависания formulajs
+  // formulajs hangs
   const hangs = set.cases.filter((c) => a.fj.values[c.id].adapter.t === 'other' && ['hang', 'crash'].includes(String(a.fj.values[c.id].adapter.v)))
   out.hangs = hangs.length
-    ? ['| случай | формула | что | Excel en-US |', '|---|---|---|---|', ...hangs.map((c) => `| ${c.id} | ${code(c.formula)} | ${a.fj.values[c.id].adapter.v === 'hang' ? 'висит дольше 5 с' : 'падает (память)'} | ${show(a.en[c.id])} |`)].join('\n')
-    : 'Зависаний нет.'
+    ? ['| case | formula | what | Excel en-US |', '|---|---|---|---|', ...hangs.map((c) => `| ${c.id} | ${code(c.formula)} | ${a.fj.values[c.id].adapter.v === 'hang' ? 'hangs over 5 s' : 'crashes (memory)'} | ${show(a.en[c.id])} |`)].join('\n')
+    : 'No hangs.'
 
-  // LibreOffice против Excel
+  // LibreOffice against Excel
   const loRows = rows.filter((r) => r.lo > 0).sort((x, y) => y.lo - x.lo || x.fn.localeCompare(y.fn))
   const loCases = Object.values(a.verdicts).filter((v) => !v.lo.ok).length
   const loExample = (fn: string) => {
@@ -227,117 +201,102 @@ function blocks(dir: string): Record<string, string> {
   const loKinds = count(Object.values(a.verdicts).map((v) => (v.lo.ok ? undefined : v.lo.kind)))
   const loTypical = set.cases.filter((c) => c.kind === 'typical' && !a.verdicts[c.id].lo.ok)
   out.libreoffice = [
-    `LibreOffice расходится с Excel en-US в ${loCases} случаях из ${set.cases.length}, у ${loRows.length} функций из ${rows.length}. По видам: ${kindsText(loKinds)}.`,
+    `LibreOffice differs from Excel en-US in ${loCases} cases of ${set.cases.length}, for ${loRows.length} functions of ${rows.length}. By kind: ${kindsText(loKinds)}.`,
     '',
-    `На обычных случаях расходится ${loTypical.length} раз у ${new Set(loTypical.map((c) => c.fn)).size} функций:`,
+    `On typical cases it differs ${loTypical.length} times, for ${new Set(loTypical.map((c) => c.fn)).size} functions:`,
     '',
-    '| случай | формула | Excel en-US | LibreOffice |',
+    '| case | formula | Excel en-US | LibreOffice |',
     '|---|---|---|---|',
     ...loTypical.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(a.en[c.id]))} | ${esc(show(a.lo.values[c.id]))} |`),
     '',
-    'Все функции, где LibreOffice расходится хотя бы в одном случае:',
+    'Every function where LibreOffice differs in at least one case:',
     '',
-    '| функция | случаев расходится | пример |',
+    '| function | cases that differ | example |',
     '|---|---|---|',
-    ...loRows.map((r) => `| ${r.fn} | ${r.lo} из ${r.cases} | ${esc(loExample(r.fn))} |`),
+    ...loRows.map((r) => `| ${r.fn} | ${r.lo} of ${r.cases} | ${esc(loExample(r.fn))} |`),
   ].join('\n')
 
-  // ru против en: по краевому случаю, затем полный список
+  // ru-RU against en-US: by edge tag, then the full list
   const ruCases = set.cases.filter((c) => !a.verdicts[c.id].ru.ok)
   const ruByTag = new Map<string, typeof ruCases>()
   for (const c of ruCases) ruByTag.set(c.tag, [...(ruByTag.get(c.tag) ?? []), c])
-  const ruLine = (c: (typeof ruCases)[number]) => `${code(c.formula)}: ${esc(show(a.enRaw.values[c.id]))} и ${esc(show(a.ru.values[c.id]))}`
+  const ruLine = (c: (typeof ruCases)[number]) => `${code(c.formula)}: ${esc(show(a.enRaw.values[c.id]))} and ${esc(show(a.ru.values[c.id]))}`
   out.ru = [
-    `Excel ru-RU (русские интерфейс и локаль) расходится с en-US (английские) в ${ruCases.length} случаях у ${new Set(ruCases.map((c) => c.fn)).size} функций.`,
+    `Excel ru-RU (Russian interface and locale) differs from en-US (English ones) in ${ruCases.length} cases, for ${new Set(ruCases.map((c) => c.fn)).size} functions.`,
     '',
-    '| случай | расходится | функции | пример (en-US и ru-RU) |',
+    '| case | differ | functions | example (en-US and ru-RU) |',
     '|---|---|---|---|',
     ...[...ruByTag].sort((x, y) => y[1].length - x[1].length).map(([t, cs]) => `| ${t} | ${cs.length} | ${[...new Set(cs.map((c) => c.fn))].join(', ')} | ${ruLine(cs[0])} |`),
     '',
-    '<details><summary>Все случаи</summary>',
+    '<details><summary>All cases</summary>',
     '',
-    '| случай | формула | en-US | ru-RU |',
+    '| case | formula | en-US | ru-RU |',
     '|---|---|---|---|',
     ...ruCases.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(a.enRaw.values[c.id]))} | ${esc(show(a.ru.values[c.id]))} |`),
     '',
     '</details>',
   ].join('\n')
 
-  // язык интерфейса: прежняя колонка en-US (русский интерфейс) против английского интерфейса, обе формулами старого вида
-  if (a.enRuUi) {
-    const old = a.enRuUi.values
-    const changed = set.cases.filter((c) => !compare(old[c.id], a.enLegacy[c.id]).ok)
-    const ok = (col: Record<string, Val>, k: 'adapter' | 'bare') => set.cases.filter((c) => compare(col[c.id], a.fj.values[c.id][k], k === 'adapter' && !!a.fj.values[c.id].adapterThrew).ok).length
-    out.uilang = [
-      `С русским интерфейсом ответ Excel en-US был другим в ${changed.length} случаях у ${new Set(changed.map((c) => c.fn)).size} функций. Совпадение через адаптер по прежней колонке ${ok(old, 'adapter')} случаев, с английским интерфейсом ${ok(a.enLegacy, 'adapter')}; голой ${ok(old, 'bare')} и ${ok(a.enLegacy, 'bare')}.`,
-      '',
-      '| случай | формула | русский интерфейс | английский интерфейс |',
-      '|---|---|---|---|',
-      ...changed.map((c) => `| ${c.id} | ${code(c.formula)} | ${esc(show(old[c.id]))} | ${esc(show(a.enLegacy[c.id]))} |`),
-    ].join('\n')
-  }
-
-  // нет в formulajs
+  // functions formulajs lacks
   const miss = new Map<string, string[]>()
   for (const m of set.missing) miss.set(m.category, [...(miss.get(m.category) ?? []), m.fn + (m.note ? '*' : '')])
   out.missing = [
-    `Всего ${set.missing.length} из ${set.missing.length + set.inFormulajs.length} функций справочника. Звёздочка: в formulajs это имя есть, но это объект с подфункциями, а не функция (вызвать нельзя).`,
+    `${set.missing.length} of the reference's ${set.missing.length + set.inFormulajs.length} functions. An asterisk: formulajs has the name, but as an object of subfunctions, not a function (it cannot be called).`,
     '',
-    '| категория | число | функции |',
+    '| category | count | functions |',
     '|---|---|---|',
-    ...[...miss].sort((x, y) => y[1].length - x[1].length).map(([cat, fs]) => `| ${catRu(cat)} | ${fs.length} | ${fs.join(', ')} |`),
+    ...[...miss].sort((x, y) => y[1].length - x[1].length).map(([cat, fs]) => `| ${cat} | ${fs.length} | ${fs.join(', ')} |`),
   ].join('\n')
 
   out.notinexcel = [
-    '| имя formulajs | та же реализация, что у функции Excel |',
+    '| formulajs name | same implementation as the Excel function |',
     '|---|---|',
-    ...set.notInExcel.map((x) => `| ${x.name} | ${x.same.join(', ') || 'нет'} |`),
+    ...set.notInExcel.map((x) => `| ${x.name} | ${x.same.join(', ') || 'none'} |`),
   ].join('\n')
 
-  // предложение: по классам расхождений через адаптер (формат ответа, класс краевого случая)
-  const FIXABLE = new Set(['приведение', 'пустое', 'ошибки', 'диапазоны', 'текст-дата', 'формат'])
-  const DOMAIN = new Set(['область', 'даты 1900', 'код ошибки'])
+  // the proposal: by the classes of difference through the adapter (answer format, edge class)
+  const FIXABLE = new Set(['coercion', 'blank', 'errors', 'ranges', 'date text', 'format'])
+  const DOMAIN = new Set(['domain', '1900 dates', 'error code'])
   const plan = new Map<string, string[]>()
   for (const r of sorted) {
     const fails = set.cases.filter((c) => c.fn === r.fn && !a.verdicts[c.id].adapter.ok)
     const cls = fails.map((c) => {
       const k = a.verdicts[c.id].adapter.kind
-      if (k === 'строка: регистр' || k === 'строка: формат числа') return 'формат'
-      if (c.kind === 'typical') return 'обычный'
-      if (k === 'другой код ошибки') return 'код ошибки'
-      return TAG_CLASS[c.tag] ?? 'семантика'
+      if (k === 'string: case' || k === 'string: number format') return 'format'
+      if (c.kind === 'typical') return 'typical'
+      if (k === 'other error code') return 'error code'
+      return TAG_CLASS[c.tag] ?? 'semantics'
     })
     const key =
-      r.adapter.status === 'все'
-        ? 'как есть'
-        : r.adapter.status === 'зависает'
-          ? 'своя или страж (зависает)'
+      r.adapter.status === 'all'
+        ? 'as is'
+        : r.adapter.status === 'hangs'
+          ? 'own or a guard (hangs)'
           : cls.every((c) => FIXABLE.has(c))
-            ? 'адаптер'
+            ? 'adapter'
             : cls.every((c) => FIXABLE.has(c) || DOMAIN.has(c))
-              ? 'адаптер и проверка области'
-              : cls.includes('обычный')
-                ? 'своя (расходятся обычные)'
-                : 'своя (расходятся по смыслу на краях)'
+              ? 'adapter and a domain check'
+              : cls.includes('typical')
+                ? 'own (typical cases differ)'
+                : 'own (edges differ in meaning)'
     plan.set(key, [...(plan.get(key) ?? []), r.fn])
   }
-  const order = ['как есть', 'адаптер', 'адаптер и проверка области', 'своя (расходятся по смыслу на краях)', 'своя (расходятся обычные)', 'своя или страж (зависает)']
-  out.plan = ['| предложение | функций | функции |', '|---|---|---|', ...order.filter((k) => plan.has(k)).map((k) => `| ${k} | ${plan.get(k)!.length} | ${plan.get(k)!.join(', ')} |`)].join('\n')
+  const order = ['as is', 'adapter', 'adapter and a domain check', 'own (edges differ in meaning)', 'own (typical cases differ)', 'own or a guard (hangs)']
+  out.plan = ['| proposal | functions | which |', '|---|---|---|', ...order.filter((k) => plan.has(k)).map((k) => `| ${k} | ${plan.get(k)!.length} | ${plan.get(k)!.join(', ')} |`)].join('\n')
 
   out.meta = [
-    `- formulajs ${a.fj.meta.formulajs}, Node ${a.fj.meta.node}, часовой пояс ${a.fj.meta.tz}, расчёт ${a.fj.meta.seconds} с;`,
-    `- Excel ${a.enRaw.meta.version} на Маке: en-US ${a.enRaw.meta.seconds} с, ru-RU ${a.ru.meta.seconds} с (${a.enRaw.meta.parts} частей, без учёта перезапуска Excel);`,
-    `- ${String(a.lo.meta.version).split(' ').slice(0, 2).join(' ')}, профиль en-US, ${a.lo.meta.seconds} с.`,
+    `- formulajs ${a.fj.meta.formulajs}, Node ${a.fj.meta.node}, time zone ${a.fj.meta.tz}, ${a.fj.meta.seconds} s to compute;`,
+    `- Excel ${a.enRaw.meta.version} for Mac: en-US ${a.enRaw.meta.seconds} s, ru-RU ${a.ru.meta.seconds} s (${a.enRaw.meta.parts} parts, Excel's restarts not counted);`,
+    `- ${String(a.lo.meta.version).split(' ').slice(0, 2).join(' ')}, en-US profile, ${a.lo.meta.seconds} s.`,
   ].join('\n')
 
-  writeFileSync(join(dir, 'summary.json'), JSON.stringify({ rows, verdicts: a.verdicts }, null, 1) + '\n')
+  writeFileSync(at('summary.json'), JSON.stringify({ rows, verdicts: a.verdicts }, null, 1) + '\n')
   return out
 }
 
-/** Пересобирает блоки отчёта; без отчёта создаёт заготовку со всеми блоками. */
-export function writeReport(dir: string, pilot: boolean): void {
-  const b = blocks(dir)
-  const md = pilot ? join(dir, 'report.md') : join(dir, '../coverage-formulajs.md')
+/** Rebuilds the report's blocks; without a report it writes a frame with every block. */
+export function writeReport(at: (name: string) => string, md: string): void {
+  const b = blocks(at)
   let text = existsSync(md) ? readFileSync(md, 'utf8') : Object.keys(b).map((k) => `<!-- auto:${k} -->\n<!-- /auto:${k} -->\n`).join('\n')
   for (const [k, v] of Object.entries(b)) {
     const re = new RegExp(`<!-- auto:${k} -->[\\s\\S]*?<!-- /auto:${k} -->`)
@@ -345,5 +304,5 @@ export function writeReport(dir: string, pilot: boolean): void {
     text = text.replace(re, () => `<!-- auto:${k} -->\n${v}\n<!-- /auto:${k} -->`)
   }
   writeFileSync(md, text)
-  console.log(`отчёт: ${md}`)
+  console.log(`report: ${md}`)
 }

@@ -1,7 +1,7 @@
 /**
  * Spilling against Excel en-US: each case of `spill/<set>.ts` is a small book whose formulas are written as
  * dynamic array formulas (Excel 365); Excel computes it and the values of the case's rectangles are read
- * back. `npx tsx bench/coverage/run.ts spill <set>` stores the answers in `docs/excel-spill/<set>.json`;
+ * back. `npx tsx bench/coverage/run.ts spill <set>` stores the answers in `test/excel/spill/<set>.json`;
  * `test/spill-excel.test.ts` compares the engine with them without Excel.
  *
  * Reading: the `value` of a range with errors in it is unsafe (errors drop out of the list, a two-dimensional
@@ -16,7 +16,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
-import JSZip from 'jszip'
+import { markDynamic } from './book.js'
 import { dialogText, ensureExcel, excelDialogs, excelVersion } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
@@ -106,25 +106,6 @@ async function writeBook(c: SpillCase, file: string): Promise<void> {
   await markDynamic(file, book.sheets.length)
 }
 
-const METADATA = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<metadata xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray"><metadataTypes count="1"><metadataType name="XLDAPR" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1" cellMeta="1"/></metadataTypes><futureMetadata name="XLDAPR" count="1"><bk><extLst><ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}"><xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/></ext></extLst></bk></futureMetadata><cellMetadata count="1"><bk><rc t="1" v="0"/></bk></cellMetadata></metadata>`
-
-/** The array formulas of the first `sheets` sheets become dynamic array formulas: `cm="1"` and the XLDAPR metadata, as in `book.ts`. */
-export async function markDynamic(file: string, sheets: number): Promise<void> {
-  const zip = await JSZip.loadAsync(readFileSync(file))
-  for (let i = 1; i <= sheets; i++) {
-    const path = `xl/worksheets/sheet${i}.xml`
-    const xml = await zip.file(path)!.async('string')
-    zip.file(path, xml.replace(/<c r="([A-Z]+\d+)"([^>]*)><f t="array"/g, '<c r="$1"$2 cm="1"><f t="array"'))
-  }
-  zip.file('xl/metadata.xml', METADATA)
-  const rels = await zip.file('xl/_rels/workbook.xml.rels')!.async('string')
-  zip.file('xl/_rels/workbook.xml.rels', rels.replace('</Relationships>', '<Relationship Id="rIdMeta" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sheetMetadata" Target="metadata.xml"/></Relationships>'))
-  const types = await zip.file('[Content_Types].xml')!.async('string')
-  zip.file('[Content_Types].xml', types.replace('</Types>', '<Override PartName="/xl/metadata.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheetMetadata+xml"/></Types>'))
-  writeFileSync(file, await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' }))
-}
-
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */
 const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0]) ? (x as unknown[][]) : [x]) : [[x]])
 
@@ -194,13 +175,13 @@ export async function stepSpill(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./spill/${set}.js`)) as SpillSet
   const cases = mod.buildSpillCases()
-  const target = join(ROOT, `docs/excel-spill/${set}.json`)
+  const target = join(ROOT, `test/excel/spill/${set}.json`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredSpill) : null
   const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify({ ...c, predicted: undefined })]) ?? [])
   const answers: Record<string, SpillAnswer> = {}
   for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify({ ...c, predicted: undefined })) answers[c.id] = prev.answers[c.id]
   const t0 = Date.now()
-  mkdirSync(join(ROOT, 'docs/excel-spill'), { recursive: true })
+  mkdirSync(join(ROOT, 'test/excel/spill'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, cases, answers }, null, 1) + '\n')

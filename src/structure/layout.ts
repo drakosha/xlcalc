@@ -1,6 +1,6 @@
 /**
  * The layout of a sheet under inserted and deleted rows and columns, as Excel changes it (checked in
- * `docs/excel-struct/styles.json`): columns and rows keep their entries as they move, new lines take the
+ * `test/excel/struct/styles.json`): columns and rows keep their entries as they move, new lines take the
  * entry and the cells' style and format of the line before them, merged areas grow, shrink and move as
  * ranges do and are gone when one cell or none is left.
  */

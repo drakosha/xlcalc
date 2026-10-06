@@ -1,9 +1,9 @@
 /**
- * Excel на Маке как оракул: книга кладётся в песочницу Excel (там он открывает её без запроса
- * доступа), `excel-read.applescript` открывает, пересчитывает, читает три колонки без ошибок и
- * закрывает без сохранения. Язык интерфейса и локаль расчёта задаются аргументами запуска Excel
- * (`-AppleLanguages (en) -AppleLocale en_US` для en-US, без аргументов системные ru для ru-RU);
- * настройки Excel не меняются.
+ * Excel for Mac as the oracle: a book goes into Excel's sandbox (Excel opens it from there without asking for
+ * access), `excel-read.applescript` opens it, recalculates, reads three columns that never hold an error and
+ * closes it without saving. The interface language and the calculation locale come from Excel's launch
+ * arguments (`-AppleLanguages (en) -AppleLocale en_US` for en-US, none for the system's ru-RU); Excel's
+ * settings are not changed.
  */
 import { execFileSync, spawn } from 'node:child_process'
 import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -18,12 +18,12 @@ export type Locale = 'en' | 'ru'
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url))
 
-/** ERROR.TYPE → код ошибки. */
+/** ERROR.TYPE → error code. */
 const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-const LOCK = join(homedir(), '.cache/formula-engine-excel.lock')
+const LOCK = join(homedir(), '.cache/xlcalc-excel.lock')
 
 const alive = (pid: number) => {
   try {
@@ -35,9 +35,9 @@ const alive = (pid: number) => {
 }
 
 /**
- * Excel один на машину, а прогоны из разных worktree идут параллельно: перезапуск под другую
- * локаль посреди чужого прогона ломает оба. Блокировка каталогом (mkdir атомарен), в нём pid
- * владельца; брошенную блокировку мёртвого процесса забираем. Ждём до 60 минут.
+ * One Excel per machine, while runs from different worktrees go in parallel: a restart for another locale in
+ * the middle of another run breaks both. The lock is a directory (mkdir is atomic) holding the owner's pid; a
+ * lock left by a dead process is taken over. Waits up to 60 minutes.
  */
 export async function withExcelLock<T>(fn: () => Promise<T>): Promise<T> {
   mkdirSync(join(homedir(), '.cache'), { recursive: true })
@@ -57,8 +57,8 @@ export async function withExcelLock<T>(fn: () => Promise<T>): Promise<T> {
         rmSync(LOCK, { recursive: true, force: true })
         continue
       }
-      if (Date.now() > until) throw new Error(`Excel занят процессом ${owner} дольше 60 минут (${LOCK})`)
-      if (!said) console.log(`Excel занят процессом ${owner}, жду очереди`)
+      if (Date.now() > until) throw new Error(`Excel has been busy with process ${owner} for over 60 minutes (${LOCK})`)
+      if (!said) console.log(`Excel is busy with process ${owner}, waiting`)
       said = true
       await sleep(2000)
     }
@@ -73,7 +73,7 @@ export async function withExcelLock<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-/** Процесс Excel и его аргументы; null если не запущен. */
+/** Excel's process and its arguments; null when it is not running. */
 export function excelProcess(): { pid: number; args: string } | null {
   const ps = execFileSync('ps', ['-axo', 'pid=,args='], { encoding: 'utf8' })
   for (const line of ps.split('\n')) {
@@ -85,13 +85,13 @@ export function excelProcess(): { pid: number; args: string } | null {
 
 const osa = (script: string, timeout = 60_000) => execFileSync('osascript', ['-e', script], { encoding: 'utf8', timeout }).trim()
 
-/** AppleEvent только запущенному Excel: иначе `tell` запустит его без нужных аргументов. */
+/** AppleEvents go only to a running Excel: `tell` would otherwise start it without the arguments needed. */
 function countWorkbooks(): number {
-  if (!excelProcess()) throw new Error('Excel не запущен')
+  if (!excelProcess()) throw new Error('Excel is not running')
   return Number(osa('tell application "Microsoft Excel" to count workbooks'))
 }
 
-/** Режим запущенного Excel: en (английский интерфейс и локаль), ru (системные), иначе прочий. */
+/** The running Excel's mode: en (English interface and locale), ru (the system's), else other. */
 const localeOf = (args: string): Locale | 'other' => {
   const lang = /-AppleLanguages \(en\)/.test(args)
   const loc = /-AppleLocale en_US/.test(args)
@@ -99,9 +99,9 @@ const localeOf = (args: string): Locale | 'other' => {
 }
 
 /**
- * Аргументы запуска: для en-US английский интерфейс и локаль. Язык интерфейса влияет на расчёт, не
- * только на показ: с русским интерфейсом текст "TRUE" не логическое (`IF("TRUE",1,2)` это #VALUE!),
- * а логическое в тексте выходит ИСТИНА; с английским `IF("TRUE",1,2)` это 1.
+ * Launch arguments: the English interface and locale for en-US. The interface language changes computation,
+ * not only display: with the Russian interface the text "TRUE" is no boolean (`IF("TRUE",1,2)` is #VALUE!)
+ * and a boolean becomes the text ИСТИНА; with the English one `IF("TRUE",1,2)` is 1.
  */
 const LAUNCH: Record<Locale, string[]> = { en: ['--args', '-AppleLanguages', '(en)', '-AppleLocale', 'en_US'], ru: [] }
 
@@ -110,24 +110,24 @@ export function excelVersion(): string {
 }
 
 /**
- * Excel с нужной локалью: если запущен с другой, при нуле открытых книг выходит и запускается
- * заново (`open -a`, для en-US с `--args -AppleLanguages (en) -AppleLocale en_US`). Открытые книги: отказ.
+ * Excel in the locale wanted: if it runs in another, with no books open it quits and starts again (`open -a`,
+ * for en-US with `--args -AppleLanguages (en) -AppleLocale en_US`). Open books: refused.
  */
 export async function ensureExcel(locale: Locale): Promise<void> {
   const p = excelProcess()
   if (p && localeOf(p.args) === locale) return closeStartupBook()
   if (p) {
     const n = countWorkbooks()
-    if (n !== 0) throw new Error(`в Excel открыто книг: ${n}; перезапуск для локали ${locale} отменён`)
+    if (n !== 0) throw new Error(`Excel has ${n} books open; restart for the locale ${locale} cancelled`)
     osa('tell application "Microsoft Excel" to quit')
     for (let i = 0; excelProcess(); i++) {
-      if (i > 120) throw new Error('Excel не вышел за 60 с')
+      if (i > 120) throw new Error('Excel did not quit in 60 s')
       await sleep(500)
     }
   }
   execFileSync('open', ['-a', 'Microsoft Excel', ...LAUNCH[locale]])
   for (let i = 0; ; i++) {
-    if (i > 120) throw new Error('Excel не запустился за 60 с')
+    if (i > 120) throw new Error('Excel did not start in 60 s')
     await sleep(500)
     const q = excelProcess()
     if (!q) continue
@@ -135,17 +135,17 @@ export async function ensureExcel(locale: Locale): Promise<void> {
       countWorkbooks()
       break
     } catch {
-      // ещё не отвечает на AppleEvent
+      // not answering AppleEvents yet
     }
   }
   const q = excelProcess()!
-  if (localeOf(q.args) !== locale) throw new Error(`Excel запустился не с той локалью: ${q.args}`)
+  if (localeOf(q.args) !== locale) throw new Error(`Excel started in the wrong locale: ${q.args}`)
   closeStartupBook()
 }
 
 /**
- * При запуске без документа Excel открывает пустую новую книгу («Книга1»): новую книгу без файла и
- * без правок закрываем без сохранения. Любая другая открытая книга: отказ.
+ * Started without a document, Excel opens an empty new book ("Book1", "Книга1" in Russian): a new book with no
+ * file and no edits is closed without saving. Any other open book: refused.
  */
 function closeStartupBook() {
   if (countWorkbooks() === 1) {
@@ -153,7 +153,7 @@ function closeStartupBook() {
     if (/^(Книга|Book)\d+$/.test(name) && saved === 'true' && !path) osa(`tell application "Microsoft Excel" to close workbook "${name}" saving no`)
   }
   const n = countWorkbooks()
-  if (n !== 0) throw new Error(`в Excel открыто книг: ${n} (не пустая новая книга запуска)`)
+  if (n !== 0) throw new Error(`Excel has ${n} books open (not the empty startup book)`)
 }
 
 /**
@@ -204,13 +204,10 @@ end tell`
     })
 }
 
-/**
- * Значения формул книги (одна часть замера) по строкам; книга копируется в песочницу и удаляется
- * после. Часть небольшая, поэтому ожидание ответа Excel короткое (3 минуты).
- */
+/** The read script's output (type codes, numbers, texts) as values by row. */
 function parseRead(out: string, n: number): Val[] {
   const [types, nums, strs] = JSON.parse(out) as [number[][], number[][], string[][]]
-  if (types.length !== n || nums.length !== n || strs.length !== n) throw new Error(`Excel отдал ${types.length}/${nums.length}/${strs.length} строк из ${n}`)
+  if (types.length !== n || nums.length !== n || strs.length !== n) throw new Error(`Excel gave ${types.length}/${nums.length}/${strs.length} rows of ${n}`)
   return types.map(([t], i): Val => {
     if (t === 0) return { t: 'n', v: nums[i][0] }
     if (t === -1) return { t: 'b', v: true }
@@ -221,8 +218,9 @@ function parseRead(out: string, n: number): Val[] {
   })
 }
 
+/** The values of a book's case formulas by row; the book is copied into the sandbox and removed after. A part is small, so the wait is short (3 minutes). */
 export function runExcel(book: string, n: number): Val[] {
-  if (countWorkbooks() !== 0) throw new Error('в Excel есть открытые книги')
+  if (countWorkbooks() !== 0) throw new Error('Excel has open books')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
@@ -234,10 +232,10 @@ export function runExcel(book: string, n: number): Val[] {
   }
 }
 
-/** Окно «We found a problem with some content»: Excel не читает книгу целиком, обычно из-за формулы, которую он не принимает при загрузке. */
+/** The window "We found a problem with some content": Excel does not read the whole book, usually over a formula it does not load. */
 const REPAIR = /problem with some content|проблем\S* с содержим|ошибка в части содержимого/i
 
-/** Закрывает окно восстановления книги кнопкой No; другие окна не трогает. */
+/** Closes the book repair window with No; other windows are left alone. */
 export function declineRepair(): boolean {
   if (!excelDialogs().some((d) => REPAIR.test(d.text))) return false
   osa(`tell application "System Events" to tell process "Microsoft Excel"
@@ -263,15 +261,15 @@ end tell`)
   return true
 }
 
-/** Как runExcel, но следит за окном восстановления: закрывает его и отдаёт 'rejected', а не ждёт таймаута AppleEvent. */
+/** As runExcel, but watching for the repair window: it is closed and 'rejected' returned instead of waiting for the AppleEvent timeout. */
 export async function runExcelWatched(book: string, n: number): Promise<Val[] | 'rejected'> {
   const out = await runScriptWatched(SCRIPT, book, n)
   return out === 'rejected' ? out : parseRead(out, n)
 }
 
-/** AppleScript `script` над копией книги в песочнице (аргументы: путь, `n`): его вывод или 'rejected', как в runExcelWatched. */
+/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`): its output, or 'rejected' as in runExcelWatched. */
 export async function runScriptWatched(script: string, book: string, n: number): Promise<string | 'rejected'> {
-  if (countWorkbooks() !== 0) throw new Error('в Excel есть открытые книги')
+  if (countWorkbooks() !== 0) throw new Error('Excel has open books')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
@@ -301,7 +299,7 @@ export async function runScriptWatched(script: string, book: string, n: number):
       if (Date.now() > until) {
         child.kill()
         await exited
-        throw new Error('Excel не ответил за 180 с')
+        throw new Error('Excel did not answer in 180 s')
       }
     }
   } finally {

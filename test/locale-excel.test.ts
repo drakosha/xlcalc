@@ -1,5 +1,5 @@
 /**
- * ru-RU against Excel: `docs/locale/excel-ru-RU.json` holds Excel 16.113's own text of 6,381 formulas (the
+ * ru-RU against Excel: `test/excel/locale/ru-RU.json` holds Excel 16.113's own text of 6,381 formulas (the
  * coverage measurement's cases, the probes, a call of every listed function the measurement lacks, literals)
  * in English (`formula`) and Russian (`formula local`), and its international settings
  * (`bench/locale/snapshot.ts`). The locale data equals what that text gives (`bench/locale/derive.ts`, a

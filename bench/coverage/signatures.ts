@@ -1,26 +1,26 @@
 /**
- * Таблица сигнатур функций Excel, которые есть в formulajs 4.6.1: виды аргументов и типичные вызовы
- * (по справочнику функций Excel, большей частью его же примеры). Из неё генерируются случаи замера.
+ * The signatures of the Excel functions formulajs 4.6.1 has: argument kinds and typical calls (from Excel's
+ * function reference, mostly its own examples). The measurement's cases are generated from it.
  *
- * Виды аргументов (один знак, `?` после знака значит необязательный):
- * - `n` число, `i` целое (Excel отбрасывает дробную часть), `p` вероятность или доля, `d` дата
- *   (серийный номер), `t` время (доля суток), `s` текст, `b` логическое, `a` любое значение;
- * - `N` числа для свёртки (диапазон: только числа, прямой аргумент приводится; правило SUM);
- * - `V` значения как есть (COUNTA, AVERAGEA, AND, CONCAT): диапазон со всем содержимым;
- * - `M` числовой массив с формой (парные и матричные функции), ошибка в нём ошибка ответа;
- * - `R` диапазон как есть с формой (поиск, база данных, условия);
- * - `D` диапазон дат (праздники, даты платежей);
- * - `c` условие (критерий).
- * `rep` задаёт, сколько последних видов повторяются (SUM: 1, SUMIFS: 2).
+ * Argument kinds (one character; `?` after it means optional):
+ * - `n` a number, `i` a whole number (Excel truncates), `p` a probability or fraction, `d` a date (serial
+ *   number), `t` a time (fraction of a day), `s` text, `b` a boolean, `a` any value;
+ * - `N` numbers to fold (a range: numbers only, a direct argument converted; the SUM rule);
+ * - `V` values as they are (COUNTA, AVERAGEA, AND, CONCAT): a range with all its contents;
+ * - `M` a numeric array with its shape (paired and matrix functions), an error in it is the answer's error;
+ * - `R` a range as it is, with its shape (lookups, databases, criteria);
+ * - `D` a range of dates (holidays, payment dates);
+ * - `c` a criterion.
+ * `rep` says how many of the last kinds repeat (SUM: 1, SUMIFS: 2).
  *
- * Значения в вызовах: число, строка, логическое; строка с `@` это ссылка на место листа данных
- * (`data.ts`). Даты пишутся серийным номером (`dt`).
+ * Values in calls: a number, a string, a boolean; a string starting with `@` refers to a place of the data
+ * sheet (`data.ts`). Dates are written as serial numbers (`dt`).
  */
 import { dt } from './data.js'
 
 export type Arg = number | string | boolean
 
-/** Что брать из ответа-массива: элемент (строка, колонка с 1) или размер. */
+/** What to take from an array answer: an element (row, column from 1) or a size. */
 export type Pick = [number, number] | 'rows' | 'cols'
 
 export interface Sig {
@@ -28,16 +28,15 @@ export interface Sig {
   kinds: string
   rep?: number
   calls: Arg[][]
-  /** Ответ массив: вызов оборачивается в INDEX/ROWS/COLUMNS по каждому элементу списка. */
+  /** The answer is an array: the call is wrapped in INDEX/ROWS/COLUMNS for each element of the list. */
   picks?: Pick[]
-  /** Краевые вызовы вручную: метка, аргументы и (для ответа-массива) что взять. */
+  /** Hand-written edge calls: the tag, the arguments and (for an array answer) what to take. */
   extra?: [string, Arg[], Pick?][]
-  /** Без автоматических краевых случаев (условия, база данных: краевые заданы вручную). */
+  /** No automatic edge cases (criteria, databases: their edge cases are written by hand). */
   noAuto?: boolean
   /**
-   * Аргументы-размеры и счётчики (массивы, повторы, порядок, периоды): «большое» берётся равным
-   * CAP вместо 1E10, дата как размер и "1.5" (в ru-RU это дата 46143) не подставляются. Иначе Excel
-   * рискует исчерпать ресурсы.
+   * Size and count arguments (arrays, repeats, orders, periods): "large" is CAP instead of 1E10, and a date as
+   * a size and "1.5" (the date 46143 in ru-RU) are not put in. Otherwise Excel risks running out of resources.
    */
   cap?: boolean
 }
@@ -46,14 +45,14 @@ const S: Sig[] = []
 const s = (name: string, kinds: string, calls: Arg[][], o: Partial<Sig> = {}) => S.push({ name, kinds, calls, ...o })
 const each = (names: string[], kinds: string, calls: Arg[][], o: Partial<Sig> = {}) => names.forEach((n) => s(n, kinds, calls, o))
 
-/** CHISQ.TEST и CHITEST: краевые случаи. */
+/** CHISQ.TEST and CHITEST: edge cases. */
 const CHI: [string, Arg[]][] = [
-  ['диапазон: смесь', ['@actualmix', '@expected']],
-  ['диапазон с ошибкой', ['@actualerr', '@expected']],
-  ['разный размер', ['@actual', '@m1']],
+  ['range: mixed', ['@actualmix', '@expected']],
+  ['range with an error', ['@actualerr', '@expected']],
+  ['different size', ['@actual', '@m1']],
 ]
 
-// ---------- математические ----------
+// ---------- math and trigonometry ----------
 s('ABS', 'n', [[-4], [2.5]])
 s('ACOS', 'n', [[0.5], [-1]])
 s('ACOSH', 'n', [[1], [10]])
@@ -126,7 +125,7 @@ s('TAN', 'n', [[0.785], [0.7853981633974483]])
 s('TANH', 'n', [[-2], [0.5]])
 s('TRUNC', 'n i?', [[8.9], [-8.9], [0.45], [3.14159, 2]])
 
-// ---------- статистические ----------
+// ---------- statistical ----------
 s('AVEDEV', 'N', [['@nums1'], [4, 5, 6, 7, 5, 4, 3]], { rep: 1 })
 s('AVERAGE', 'N', [['@nums1'], [10, 7, 9, 27, 2]], { rep: 1 })
 s('AVERAGEA', 'V', [['@nums1'], [10, 7, 9, 2]], { rep: 1 })
@@ -146,7 +145,7 @@ s('CORREL', 'M M', [['@nums1', '@nums2']])
 s('COUNT', 'V', [['@nums1'], [1, 2, 3]], { rep: 1 })
 s('COUNTA', 'V', [['@nums1'], [1, 'x', true]], { rep: 1 })
 s('COUNTBLANK', 'R', [['@mixed'], ['@blank']], {
-  extra: [['диапазон с ошибкой', ['@witherr']], ['одна пустая ячейка', ['@empty']], ['пустая строка формулой', ['@emptystr']], ['тексты', ['@txt']], ['одна ячейка с датой', ['@date']]],
+  extra: [['range with an error', ['@witherr']], ['one blank cell', ['@empty']], ['empty string from a formula', ['@emptystr']], ['texts', ['@txt']], ['one cell with a date', ['@date']]],
 })
 each(['COVARIANCE.P', 'COVARIANCE.S'], 'M M', [['@nums1', '@nums2']])
 s('DEVSQ', 'N', [['@nums1'], [4, 5, 8, 7, 11, 4, 3]], { rep: 1 })
@@ -169,7 +168,7 @@ s('GAUSS', 'n', [[2]])
 s('GEOMEAN', 'N', [['@pos'], [4, 5, 8, 7, 11, 4, 3]], { rep: 1 })
 s('GROWTH', 'M M? M? b?', [['@gy', '@gx', '@gnew'], ['@gy', '@gx']], {
   picks: [[1, 1], [2, 1], 'rows'],
-  extra: [['без known_x', ['@gy']], ['без константы', ['@gy', '@gx', '@gnew', false]], ['разный размер', ['@gy', '@lx']], ['ноль в known_y', ['@probx', '@lx']]],
+  extra: [['without known_x', ['@gy']], ['without the constant', ['@gy', '@gx', '@gnew', false]], ['different size', ['@gy', '@lx']], ['zero in known_y', ['@probx', '@lx']]],
 })
 s('HARMEAN', 'N', [['@pos'], [4, 5, 8, 7, 11, 4, 3]], { rep: 1 })
 s('HYPGEOM.DIST', 'i i i i b', [[1, 4, 8, 20, true], [1, 4, 8, 20, false]])
@@ -223,13 +222,13 @@ s('T.INV.2T', 'p n', [[0.546449, 60]])
 s('T.TEST', 'M M i i', [['@nums1', '@nums2', 2, 1], ['@nums1', '@nums2', 1, 2], ['@nums1', '@nums2', 2, 3]])
 s('TREND', 'M M? M? b?', [['@ly', '@lx', '@lnew'], ['@ly', '@lx']], {
   picks: [[1, 1], [2, 1], 'rows'],
-  extra: [['без known_x', ['@ly']], ['без константы', ['@ly', '@lx', '@lnew', false]], ['разный размер', ['@ly', '@gx']], ['текст в known_y', ['@cfmix', '@lx']]],
+  extra: [['without known_x', ['@ly']], ['without the constant', ['@ly', '@lx', '@lnew', false]], ['different size', ['@ly', '@gx']], ['text in known_y', ['@cfmix', '@lx']]],
 })
 s('TRIMMEAN', 'N p', [['@nums1', 0.2], ['@nums1', 0.25]])
 s('WEIBULL.DIST', 'n n n b', [[105, 20, 100, true], [105, 20, 100, false]])
 s('Z.TEST', 'M n n?', [['@nums1', 4], ['@nums1', 6, 2]])
 
-// ---------- совместимость (старые имена) ----------
+// ---------- compatibility (old names) ----------
 s('BETADIST', 'n n n n? n?', [[2, 8, 10, 1, 3]])
 s('BETAINV', 'p n n n? n?', [[0.685470581, 8, 10, 1, 3]])
 s('BINOMDIST', 'i i p b', [[6, 10, 0.5, false], [6, 10, 0.5, true]])
@@ -259,7 +258,7 @@ s('TINV', 'p n', [[0.05464493, 60]])
 s('TTEST', 'M M i i', [['@nums1', '@nums2', 2, 1], ['@nums1', '@nums2', 1, 2]])
 s('ZTEST', 'M n n?', [['@nums1', 4], ['@nums1', 6, 2]])
 
-// ---------- дата и время ----------
+// ---------- date and time ----------
 s('DATE', 'i i i', [[2025, 1, 31], [2008, 14, 2], [2008, 1, -15], [108, 1, 2], [1900, 2, 29]])
 s('DATEDIF', 'd d s', [
   [dt('2001-01-01'), dt('2003-01-01'), 'Y'],
@@ -291,7 +290,7 @@ s('WORKDAY.INTL', 'd i a? D?', [[dt('2012-01-01'), 90, 11], [dt('2012-01-01'), 3
 s('YEAR', 'd', [[dt('2008-07-05')], [dt('2010-07-05')]])
 s('YEARFRAC', 'd d i?', [[dt('2012-01-01'), dt('2012-07-30')], [dt('2012-01-01'), dt('2012-07-30'), 1], [dt('2012-01-01'), dt('2012-07-30'), 3], [dt('2024-02-29'), dt('2025-03-01'), 1], [dt('2024-02-29'), dt('2025-03-01'), 4]])
 
-// ---------- инженерные ----------
+// ---------- engineering ----------
 s('BESSELI', 'n i', [[1.5, 1]])
 s('BESSELJ', 'n i', [[1.9, 2]])
 s('BESSELK', 'n i', [[1.5, 1]])
@@ -335,7 +334,7 @@ s('OCT2BIN', 's i?', [['3', 3], ['7777777000']])
 s('OCT2DEC', 's', [['54'], ['7777777533']])
 s('OCT2HEX', 's i?', [['100', 4], ['7777777533']])
 
-// ---------- финансовые ----------
+// ---------- financial ----------
 s('ACCRINT', 'd d d n n i i? b?', [
   [dt('2008-03-01'), dt('2008-08-31'), dt('2008-05-01'), 0.1, 1000, 2, 0],
   [dt('2008-03-01'), dt('2008-08-31'), dt('2008-05-01'), 0.1, 1000, 2, 0, false],
@@ -354,10 +353,10 @@ s('FV', 'n n n n? i?', [[0.005, 10, -200, -500, 1], [0.01, 12, -1000], [0.11 / 1
 s('FVSCHEDULE', 'n M', [[1, '@sched']])
 s('IPMT', 'n i n n n? i?', [[0.1 / 12, 1, 36, 8000], [0.1, 3, 3, 8000]])
 s('IRR', 'M n?', [['@cf'], ['@cf', 0.1]], {
-  extra: [['диапазон: смесь', ['@cfmix']], ['диапазон с ошибкой', ['@cferr']], ['без смены знака', ['@xcfpos']], ['догадка -0.5', ['@cf', -0.5]], ['пустой диапазон', ['@blank']]],
+  extra: [['range: mixed', ['@cfmix']], ['range with an error', ['@cferr']], ['no sign change', ['@xcfpos']], ['guess -0.5', ['@cf', -0.5]], ['blank range', ['@blank']]],
 })
 s('ISPMT', 'n i i n', [[0.1 / 12, 1, 36, 8000000], [0.1, 1, 3, 8000000]])
-s('MIRR', 'M n n', [['@cf', 0.1, 0.12]], { extra: [['диапазон: смесь', ['@cfmix', 0.1, 0.12]], ['диапазон с ошибкой', ['@cferr', 0.1, 0.12]], ['без смены знака', ['@xcfpos', 0.1, 0.12]]] })
+s('MIRR', 'M n n', [['@cf', 0.1, 0.12]], { extra: [['range: mixed', ['@cfmix', 0.1, 0.12]], ['range with an error', ['@cferr', 0.1, 0.12]], ['no sign change', ['@xcfpos', 0.1, 0.12]]] })
 s('NOMINAL', 'n i', [[0.053543, 4]])
 s('NPER', 'n n n n? i?', [[0.01, -100, -1000, 10000, 1], [0.01, -100, -1000, 10000], [0.01, -100, -1000]])
 s('NPV', 'n N', [[0.1, -10000, 3000, 4200, 6800], [0.08, '@cf']], { rep: 1 })
@@ -374,23 +373,23 @@ s('TBILLEQ', 'd d n', [[dt('2008-03-31'), dt('2008-06-01'), 0.0914]])
 s('TBILLPRICE', 'd d n', [[dt('2008-03-31'), dt('2008-06-01'), 0.09]])
 s('TBILLYIELD', 'd d n', [[dt('2008-03-31'), dt('2008-06-01'), 98.45]])
 s('XIRR', 'M D n?', [['@xcf', '@xdates'], ['@xcf', '@xdates', 0.1]], {
-  extra: [['без смены знака', ['@xcfpos', '@xdates']], ['даты не по порядку', ['@xcf', '@xdatesmix']], ['разный размер', ['@xcf', '@hol']], ['догадка -0.5', ['@xcf', '@xdates', -0.5]], ['поток с ошибкой', ['@cferr', '@xdates']], ['поток: смесь', ['@cfmix', '@xdates']]],
+  extra: [['no sign change', ['@xcfpos', '@xdates']], ['dates out of order', ['@xcf', '@xdatesmix']], ['different size', ['@xcf', '@hol']], ['guess -0.5', ['@xcf', '@xdates', -0.5]], ['cash flow with an error', ['@cferr', '@xdates']], ['cash flow: mixed', ['@cfmix', '@xdates']]],
 })
-s('XNPV', 'n M D', [[0.09, '@xcf', '@xdates']], { extra: [['даты не по порядку', [0.09, '@xcf', '@xdatesmix']], ['разный размер', [0.09, '@xcf', '@hol']], ['поток: смесь', [0.09, '@cfmix', '@xdates']]] })
+s('XNPV', 'n M D', [[0.09, '@xcf', '@xdates']], { extra: [['dates out of order', [0.09, '@xcf', '@xdatesmix']], ['different size', [0.09, '@xcf', '@hol']], ['cash flow: mixed', [0.09, '@cfmix', '@xdates']]] })
 
-// ---------- информационные ----------
+// ---------- information ----------
 s('ERROR.TYPE', 'a', [['@div0'], ['@na']])
 each(['ISBLANK', 'ISERR', 'ISERROR', 'ISLOGICAL', 'ISNA', 'ISNONTEXT', 'ISNUMBER', 'ISTEXT'], 'a', [[2.5], ['abc']])
 s('ISEVEN', 'n', [[-1], [2.5], [5]])
 s('ISODD', 'n', [[-1], [2.5], [5]])
 s('N', 'a', [[7], ['Even'], [true], ['@date']])
 s('NA', '', [[]])
-s('TYPE', 'a', [[2], ['abc'], [true]], { extra: [['диапазон', ['@nums1']]] })
+s('TYPE', 'a', [[2], ['abc'], [true]], { extra: [['range', ['@nums1']]] })
 
-// ---------- логические ----------
-s('AND', 'V', [[true, true], [true, false], [2, 1]], { rep: 1, extra: [['диапазон логических', ['@alltrue']], ['диапазон с текстом и пустыми', ['@logic']]] })
-s('OR', 'V', [[false, true], [false, false]], { rep: 1, extra: [['диапазон с текстом и пустыми', ['@logic']]] })
-s('XOR', 'V', [[true, false], [true, true]], { rep: 1, extra: [['диапазон с текстом и пустыми', ['@logic']]] })
+// ---------- logical ----------
+s('AND', 'V', [[true, true], [true, false], [2, 1]], { rep: 1, extra: [['range of booleans', ['@alltrue']], ['range with text and blanks', ['@logic']]] })
+s('OR', 'V', [[false, true], [false, false]], { rep: 1, extra: [['range with text and blanks', ['@logic']]] })
+s('XOR', 'V', [[true, false], [true, true]], { rep: 1, extra: [['range with text and blanks', ['@logic']]] })
 s('FALSE', '', [[]])
 s('TRUE', '', [[]])
 s('IF', 'b a a?', [[true, 'yes', 'no'], [false, 1, 2], [false, 1]])
@@ -400,53 +399,53 @@ s('IFS', 'b a', [[false, 1, true, 2], [false, 1, false, 2]], { rep: 2 })
 s('NOT', 'b', [[false], [true]])
 s('SWITCH', 'a a a', [[2, 1, 'one', 2, 'two', 'other'], [3, 1, 'one', 2, 'two', 'other'], [3, 1, 'one', 2, 'two']], {
   rep: 2,
-  extra: [['регистр', ['b', 'a', 'A', 'B', 'BB']], ['кириллица и регистр', ['мир', 'МИР', 1, 0]]],
+  extra: [['case', ['b', 'a', 'A', 'B', 'BB']], ['Cyrillic and case', ['мир', 'МИР', 1, 0]]],
 })
 
-// ---------- поиск и ссылки ----------
+// ---------- lookup and reference ----------
 s('CHOOSE', 'i a', [[2, 'a', 'b', 'c'], [1.9, 'a', 'b'], [4, 'a', 'b']], { rep: 1 })
 s('CHOOSECOLS', 'R i', [['@tbl', 1, 3], ['@tbl', -1]], { rep: 1, picks: [[1, 1], [2, 2], 'cols'] })
 s('CHOOSEROWS', 'R i', [['@tbl', 1, 3], ['@tbl', -1]], { rep: 1, picks: [[1, 1], [2, 2], 'rows'] })
-s('COLUMN', 'R', [['@nums1'], ['@tbl']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']]] })
-s('COLUMNS', 'R', [['@tbl'], ['@nums1']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']], ['пустой диапазон', ['@blank']]] })
+s('COLUMN', 'R', [['@nums1'], ['@tbl']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']]] })
+s('COLUMNS', 'R', [['@tbl'], ['@nums1']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']], ['blank range', ['@blank']]] })
 s('DROP', 'R i i?', [['@tbl', 2], ['@tbl', 0, 1], ['@tbl', -1, -1]], { picks: [[1, 1], [2, 2], 'rows', 'cols'] })
 s('EXPAND', 'R i i? a?', [['@m1', 3, 3, 0], ['@m1', 3, 3]], { picks: [[1, 1], [3, 3], 'rows'] })
 s('HLOOKUP', 'a R i b?', [[5, '@htbl', 2, false], [4, '@htbl', 3], [4, '@htbl', 3, false], [0, '@htbl', 2]], {
-  extra: [['текст без учёта регистра', ['FIVE', '@htbl', 3, false]], ['шаблон *', ['th*', '@htbl', 3, false]]],
+  extra: [['text, any case', ['FIVE', '@htbl', 3, false]], ['wildcard *', ['th*', '@htbl', 3, false]]],
 })
 s('HSTACK', 'R', [['@m1', '@m2']], {
   rep: 1,
   picks: [[1, 1], [2, 4], 'cols'],
-  extra: [['разная высота: дополнение #N/A', ['@m1', '@lkeys'], [3, 1]], ['разная высота: строк', ['@m1', '@lkeys'], 'rows'], ['пустые ячейки', ['@m1', '@mixed'], [5, 3]], ['текст', ['@m1', '@lnames'], [2, 3]]],
+  extra: [['different height: #N/A padding', ['@m1', '@lkeys'], [3, 1]], ['different height: rows', ['@m1', '@lkeys'], 'rows'], ['blank cells', ['@m1', '@mixed'], [5, 3]], ['text', ['@m1', '@lnames'], [2, 3]]],
 })
 s('INDEX', 'R i i?', [['@tbl', 2, 3], ['@nums1', 3], ['@tbl', 7, 1], ['@htbl', 2, 4]])
 s('LOOKUP', 'a R R?', [[4.19, '@lkeys', '@lvals'], [5, '@lkeys', '@lnames'], [0, '@lkeys', '@lvals'], [100, '@lkeys', '@lvals'], [5, '@tbl']])
 s('MATCH', 'a R i?', [[5, '@lkeys', 0], [4, '@lkeys'], [100, '@lkeys', 1]], {
-  extra: [['текст без учёта регистра', ['THREE', '@lnames', 0]], ['шаблон *', ['th*', '@lnames', 0]], ['шаблон ?', ['f?ve', '@lnames', 0]], ['по убыванию -1', [4, '@lvals', -1]]],
+  extra: [['text, any case', ['THREE', '@lnames', 0]], ['wildcard *', ['th*', '@lnames', 0]], ['wildcard ?', ['f?ve', '@lnames', 0]], ['descending -1', [4, '@lvals', -1]]],
 })
-s('ROW', 'R', [['@nums2'], ['@tbl']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']]] })
-s('ROWS', 'R', [['@tbl'], ['@nums1']], { extra: [['одна ячейка', ['@date']], ['таблица по строкам', ['@htbl']], ['пустой диапазон', ['@blank']]] })
+s('ROW', 'R', [['@nums2'], ['@tbl']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']]] })
+s('ROWS', 'R', [['@tbl'], ['@nums1']], { extra: [['one cell', ['@date']], ['table by rows', ['@htbl']], ['blank range', ['@blank']]] })
 s('SORT', 'R i? i? b?', [['@nums1'], ['@nums1', 1, -1], ['@txt'], ['@tbl', 2, 1]], { picks: [[1, 1], [2, 1], [7, 1], 'rows'] })
 s('TAKE', 'R i i?', [['@tbl', 2], ['@tbl', -2, 2]], { picks: [[1, 1], [2, 2], 'rows', 'cols'] })
 s('TRANSPOSE', 'R', [['@m23'], ['@nums1']], { picks: [[1, 2], [2, 1], 'rows', 'cols'] })
 s('UNIQUE', 'R b? b?', [['@uniq'], ['@uniq', false, true]], {
   picks: [[1, 1], [4, 1], 'rows'],
-  extra: [['регистр: a и A одно значение', ['@uniq'], [5, 1]], ['по колонкам', ['@htbl', true], 'cols'], ['кириллица и регистр', ['@txt'], 'rows'], ['пустые ячейки', ['@mixed'], 'rows']],
+  extra: [['case: a and A one value', ['@uniq'], [5, 1]], ['by columns', ['@htbl', true], 'cols'], ['Cyrillic and case', ['@txt'], 'rows'], ['blank cells', ['@mixed'], 'rows']],
 })
 s('VLOOKUP', 'a R i b?', [[5, '@tbl', 2, false], [4, '@tbl', 3], [4, '@tbl', 3, false], [0, '@tbl', 2]], {
-  extra: [['текст без учёта регистра', ['FIVE', '@ntbl', 2, false]], ['шаблон *', ['th*', '@ntbl', 2, false]], ['шаблон ?', ['f?ve', '@ntbl', 2, false]]],
+  extra: [['text, any case', ['FIVE', '@ntbl', 2, false]], ['wildcard *', ['th*', '@ntbl', 2, false]], ['wildcard ?', ['f?ve', '@ntbl', 2, false]]],
 })
 s('VSTACK', 'R', [['@m1', '@m2']], {
   rep: 1,
   picks: [[1, 1], [4, 2], 'rows'],
-  extra: [['разная ширина: дополнение #N/A', ['@m1', '@m23'], [1, 3]], ['разная ширина: колонок', ['@m1', '@m23'], 'cols'], ['пустые ячейки', ['@lkeys', '@mixed'], [11, 1]], ['текст', ['@m1', '@htbl'], [4, 1]]],
+  extra: [['different width: #N/A padding', ['@m1', '@m23'], [1, 3]], ['different width: columns', ['@m1', '@m23'], 'cols'], ['blank cells', ['@lkeys', '@mixed'], [11, 1]], ['text', ['@m1', '@htbl'], [4, 1]]],
 })
 
-// ---------- текстовые ----------
+// ---------- text ----------
 s('CHAR', 'i', [[65], [33], [200], [0], [256]])
 s('CLEAN', 's', [['@ctrl'], ['abc']])
 s('CODE', 's', [['A'], ['!'], ['Ж'], ['']])
-s('CONCAT', 'V', [['a', 'b', 'c'], ['@texts3']], { rep: 1, extra: [['диапазон: смесь', ['@mixed']]] })
+s('CONCAT', 'V', [['a', 'b', 'c'], ['@texts3']], { rep: 1, extra: [['range: mixed', ['@mixed']]] })
 s('CONCATENATE', 's', [['a', 'b'], ['Привет', ' ', 'Мир'], [1.5, true]], { rep: 1 })
 s('DOLLAR', 'n i?', [[1234.567, 2], [1234.567, -2], [-1234.567, -2], [-0.123, 4], [99.888]])
 s('EXACT', 's s', [['word', 'word'], ['Word', 'word'], ['w ord', 'word'], ['Привет', 'привет']])
@@ -462,36 +461,36 @@ s('REPLACE', 's i i s', [['abcdefghijk', 6, 5, '*'], ['2009', 3, 2, '10'], ['123
 s('REPT', 's i', [['*-', 3], ['-', 10], ['ab', 0]])
 s('RIGHT', 's i?', [['Sale Price', 5], ['Stock Number'], ['Привет', 2]])
 s('SEARCH', 's s i?', [['e', 'Statements', 6], ['margin', 'Profit Margin'], ['МИР', 'Привет мир']], {
-  extra: [['шаблон ?', ['p?o', 'Profit']], ['шаблон *', ['M*n', 'Profit Margin']], ['экранирование ~?', ['~?', 'a?b']]],
+  extra: [['wildcard ?', ['p?o', 'Profit']], ['wildcard *', ['M*n', 'Profit Margin']], ['escaped ~?', ['~?', 'a?b']]],
 })
 s('SUBSTITUTE', 's s s i?', [['Sales Data', 'Sales', 'Cost'], ['Quarter 1, 2008', '1', '2', 1], ['Quarter 1, 2011', '1', '2', 3], ['aaa', 'a', 'b', 2], ['Привет', 'п', 'П']])
 s('T', 'a', [['Rainfall'], [19], [true]])
 s('TEXT', 'a s', [[1234.567, '$#,##0.00'], [45658, 'YYYY-MM-DD'], [0.285, '0.0%'], [45658, 'dd.mm.yyyy'], [1234.5, '0.00'], [-5, '0'], [45688.75, 'h:mm AM/PM'], [4.34, '# ?/?']])
-s('TEXTJOIN', 's b V', [[', ', true, 'a', '', 'b'], [', ', false, 'a', '', 'b'], ['-', true, '@texts3']], { rep: 1, extra: [['диапазон: смесь', [' ', true, '@mixed']]] })
+s('TEXTJOIN', 's b V', [[', ', true, 'a', '', 'b'], [', ', false, 'a', '', 'b'], ['-', true, '@texts3']], { rep: 1, extra: [['range: mixed', [' ', true, '@mixed']]] })
 s('TRIM', 's', [['  First Quarter Earnings  '], ['a   b'], ['Привет  мир']])
 s('UNICHAR', 'i', [[66], [32], [1046], [0]])
 s('UNICODE', 's', [['B'], [' '], ['Ж'], ['']])
 s('UPPER', 's', [['total'], ['привет Мир'], ['ß']])
 s('VALUE', 's', [['$1,000'], ['16:48:00'], ['1.5'], ['1,5'], ['10%'], ['1e3'], ['2025-01-31'], [' 12 ']])
 
-// ---------- условия (SUMIF и родня): общий шаблон ----------
-/** Тройки (диапазон условия, условие, диапазон значений) и метка; первые две обычные. */
+// ---------- criteria (SUMIF and its kin): a shared template ----------
+/** Triples (criteria range, criterion, value range) with a tag; the first two are typical. */
 const CRIT: [string, Arg[]][] = [
-  ['обычный', ['@amt', '>4', '@amt']],
-  ['обычный', ['@txt', 'Аренда', '@amt']],
-  ['шаблон *', ['@txt', 'Ар*', '@amt']],
-  ['экранирование ~*', ['@txt', 'x~*y', '@amt']],
-  ['шаблон ?', ['@txt', 'Ча?', '@amt']],
-  ['кириллица без учёта регистра', ['@txt', 'аренда', '@amt']],
-  ['«й» и «и» различаются', ['@txt', 'Чай', '@amt']],
-  ['дата текстом', ['@dates', '>=2025-01-01', '@amt']],
-  ['дата числом', ['@dates', '>45658', '@amt']],
-  ['не равно', ['@txt', '<>Аренда', '@amt']],
-  ['пустое условие', ['@mixed', '', '@nums1']],
-  ['число против текста-числа', ['@mixed', 2, '@nums1']],
-  ['логическое условие', ['@mixed', true, '@nums1']],
-  ['ошибка в диапазоне условия', ['@witherr', '>1', '@nums1']],
-  ['ничего не подошло', ['@txt', 'нет', '@amt']],
+  ['typical', ['@amt', '>4', '@amt']],
+  ['typical', ['@txt', 'Аренда', '@amt']],
+  ['wildcard *', ['@txt', 'Ар*', '@amt']],
+  ['escaped ~*', ['@txt', 'x~*y', '@amt']],
+  ['wildcard ?', ['@txt', 'Ча?', '@amt']],
+  ['Cyrillic, any case', ['@txt', 'аренда', '@amt']],
+  ['й and и differ', ['@txt', 'Чай', '@amt']],
+  ['date text', ['@dates', '>=2025-01-01', '@amt']],
+  ['date as a number', ['@dates', '>45658', '@amt']],
+  ['not equal', ['@txt', '<>Аренда', '@amt']],
+  ['empty criterion', ['@mixed', '', '@nums1']],
+  ['number against numeric text', ['@mixed', 2, '@nums1']],
+  ['boolean criterion', ['@mixed', true, '@nums1']],
+  ['error in the criteria range', ['@witherr', '>1', '@nums1']],
+  ['nothing matches', ['@txt', 'нет', '@amt']],
 ]
 const critCase = (shape: (r: Arg, c: Arg, v: Arg) => Arg[]) => CRIT.map(([tag, [r, c, v]]) => [tag, shape(r, c, v)] as [string, Arg[]])
 const critSig = (name: string, kinds: string, shape: (r: Arg, c: Arg, v: Arg) => Arg[], rep?: number) => {
@@ -506,27 +505,27 @@ critSig('AVERAGEIFS', 'R R c', (r, c, v) => [v, r, c], 2)
 critSig('MAXIFS', 'R R c', (r, c, v) => [v, r, c], 2)
 critSig('MINIFS', 'R R c', (r, c, v) => [v, r, c], 2)
 critSig('COUNTIFS', 'R c', (r, c) => [r, c], 2)
-for (const n of ['SUMIFS', 'AVERAGEIFS', 'MAXIFS', 'MINIFS']) S.find((x) => x.name === n)!.extra!.push(['два условия', ['@amt', '@txt', 'Ар*', '@amt', '>1']])
-S.find((x) => x.name === 'COUNTIFS')!.extra!.push(['два условия', ['@txt', 'Ар*', '@amt', '>1']])
+for (const n of ['SUMIFS', 'AVERAGEIFS', 'MAXIFS', 'MINIFS']) S.find((x) => x.name === n)!.extra!.push(['two criteria', ['@amt', '@txt', 'Ар*', '@amt', '>1']])
+S.find((x) => x.name === 'COUNTIFS')!.extra!.push(['two criteria', ['@txt', 'Ар*', '@amt', '>1']])
 
-// ---------- база данных: общий шаблон ----------
+// ---------- databases: a shared template ----------
 const DB: [string, Arg[]][] = [
-  ['обычный', ['@db', 'Yield', '@critApple']],
-  ['обычный', ['@db', 4, '@critPear']],
-  ['поле без учёта регистра', ['@db', 'profit', '@critApple']],
-  ['шаблон в условии', ['@db', 'Profit', '@critWild']],
-  ['одна строка', ['@db', 'Age', '@critCherry']],
-  ['ничего не подошло', ['@db', 'Yield', '@critNone']],
-  ['пустое условие (все строки)', ['@db', 'Height', '@critAll']],
-  ['номер поля 0', ['@db', 0, '@critPear']],
-  ['нет такого поля', ['@db', 'Weight', '@critPear']],
-  ['поле текстом-заголовком', ['@db', 'Tree', '@critPear']],
+  ['typical', ['@db', 'Yield', '@critApple']],
+  ['typical', ['@db', 4, '@critPear']],
+  ['field, any case', ['@db', 'profit', '@critApple']],
+  ['wildcard in the criterion', ['@db', 'Profit', '@critWild']],
+  ['one row', ['@db', 'Age', '@critCherry']],
+  ['nothing matches', ['@db', 'Yield', '@critNone']],
+  ['empty criterion (all rows)', ['@db', 'Height', '@critAll']],
+  ['field number 0', ['@db', 0, '@critPear']],
+  ['no such field', ['@db', 'Weight', '@critPear']],
+  ['field as header text', ['@db', 'Tree', '@critPear']],
 ]
 for (const name of ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']) {
   S.push({ name, kinds: 'R a R', calls: DB.slice(0, 2).map((x) => x[1]), extra: DB.slice(2), noAuto: true })
 }
 
-// размеры и счётчики: потолок для краевых значений
+// sizes and counts: a ceiling for edge values
 for (const n of ['CHOOSECOLS', 'CHOOSEROWS', 'REPT', 'BESSELI', 'BESSELJ', 'BESSELK', 'BESSELY', 'CUMIPMT', 'CUMPRINC', 'IPMT', 'PPMT', 'ISPMT', 'DB', 'DDB', 'SYD', 'FV', 'PV', 'PMT', 'NPER', 'RATE', 'BASE', 'ROMAN', 'WORKDAY', 'WORKDAY.INTL']) {
   const sig = S.find((x) => x.name === n)
   if (!sig) throw new Error(`cap: no signature ${n}`)
@@ -536,19 +535,19 @@ for (const n of ['CHOOSECOLS', 'CHOOSEROWS', 'REPT', 'BESSELI', 'BESSELJ', 'BESS
 export const SIGNATURES: readonly Sig[] = S
 
 /**
- * Функции, которые строят массив по размеру из аргумента: позиции аргументов-размеров. В этих
- * позициях только числовые литералы не больше SIZE_LIMIT по модулю: без ссылок, текста, дат и
- * логических. MUNIT(45688) (дата как размер) и MUNIT("1.5") в ru-RU (текст стал датой 46143)
- * исчерпали ресурсы Excel и вызвали модальный диалог; в ru-RU любой текст вида "1.5", "1,5",
- * "2025-01-01" может стать числом около 45 000–46 000. Страж проверяет все случаи (`cases.ts`,
- * `cases.test.ts`). SEQUENCE, RANDARRAY и MAKEARRAY в набор не входят (их нет в formulajs).
+ * Functions that build an array of a size taken from an argument: the positions of the size arguments. Those
+ * positions take only number literals of at most SIZE_LIMIT in absolute value: no references, text, dates or
+ * booleans. MUNIT(45688) (a date as the size) and MUNIT("1.5") in ru-RU (the text became the date 46143) ran
+ * Excel out of resources and raised a modal dialog; in ru-RU any text like "1.5", "1,5", "2025-01-01" can
+ * become a number near 45,000–46,000. A guard checks every case (`cases.ts`, `cases.test.ts`). SEQUENCE,
+ * RANDARRAY and MAKEARRAY are not in the set (formulajs lacks them).
  */
 export const ARRAY_SIZE: Readonly<Record<string, readonly number[]>> = { MUNIT: [0], EXPAND: [1, 2], TAKE: [1, 2], DROP: [1, 2] }
 export const SIZE_LIMIT = 100
 
 /**
- * Функции, которые в OOXML пишутся с приставкой (новее Excel 2007). Проверка: Excel даёт `#NAME?`
- * на всех случаях функции, которая в нём есть, если приставка пропущена.
+ * Functions written with a prefix in OOXML (newer than Excel 2007). The check: Excel gives `#NAME?` on every
+ * case of a function it has when the prefix is missing.
  */
 export const XLFN: Record<string, string> = Object.fromEntries(
   [

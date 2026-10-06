@@ -10,7 +10,7 @@ import { canonical, parse } from '../src/syntax.js'
 import { CASES, engineFormula } from './excel-cases.js'
 import { SETS } from './excel-sets.js'
 
-const probes = (JSON.parse(readFileSync(new URL('../docs/excel-probes.json', import.meta.url), 'utf8')) as { cases: { formula: string }[] }).cases
+const probes = (JSON.parse(readFileSync(new URL('./excel/probes.json', import.meta.url), 'utf8')) as { cases: { formula: string }[] }).cases
 
 function canonicalOf(f: string): string {
   try {

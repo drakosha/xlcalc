@@ -1,6 +1,6 @@
--- Открыть книгу замера в Excel, пересчитать полностью, прочитать колонки B, C, D листа случаев
--- (код типа, число, текст) тремя вызовами и закрыть без сохранения. Выдача: JSON [[B], [C], [D]].
--- Аргументы: путь к книге (внутри песочницы Excel), число строк.
+-- Opens a measurement book in Excel, recalculates it fully, reads columns B, C, D of the case sheet
+-- (type code, number, text) in three calls and closes it without saving. Output: JSON [[B], [C], [D]].
+-- Arguments: the book's path (inside Excel's sandbox), the number of rows.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions

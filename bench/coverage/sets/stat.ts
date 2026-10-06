@@ -4,12 +4,10 @@
  * WEIBULL, CONFIDENCE, FORECAST.LINEAR), and for every function the places where the measurement's 8–15
  * cases are too few: distribution tails, large parameters, the limits of argument domains, empty, mixed and
  * two-dimensional ranges, ties, errors on input. `npx tsx bench/coverage/run.ts probes stat` stores Excel's
- * answers in `docs/excel-cases/stat.json`. Computed as dynamic array formulas (Excel 365).
+ * answers in `test/excel/cases/stat.json`. Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
-
-export const DYNAMIC = true
 
 const PREFIX: Record<string, string> = { ...XLFN, 'FORECAST.LINEAR': '_xlfn.FORECAST.LINEAR' }
 

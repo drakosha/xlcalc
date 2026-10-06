@@ -1,6 +1,6 @@
-# Third-party code in formula-engine
+# Third-party code in xlcalc
 
-formula-engine has no runtime dependencies. Part of its code is ported (copied, typed and modified) from two MIT-licensed projects and one under the Apache License 2.0; each file that holds ported code names its source, version and copyright in its header.
+xlcalc has no runtime dependencies. Part of its code is ported (copied, typed and modified) from two MIT-licensed projects and one under the Apache License 2.0; each file that holds ported code names its source, version and copyright in its header.
 
 | project | version | license | ported into |
 |---|---|---|---|

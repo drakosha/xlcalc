@@ -12,8 +12,6 @@ import { bytes, formats, strings, tildes } from './text/strings.js'
 
 export { SHEETS }
 
-export const DYNAMIC = true
-
 /** Functions written with the `_xlfn.` prefix in a workbook (newer than Excel 2007). */
 const XLFN = /\b(IFNA|SWITCH|XLOOKUP|XMATCH|NUMBERVALUE|UNICHAR|TEXTJOIN|TEXTBEFORE|TEXTAFTER|VALUETOTEXT|ARRAYTOTEXT)\(/g
 

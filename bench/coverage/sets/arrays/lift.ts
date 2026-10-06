@@ -100,7 +100,7 @@ function baseCall(fn: string, typical: Map<string, string>): string[] | null {
 const AREA = /^(?:'[^']+'|\w+)!\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?\d+$/
 
 export function lift(add: Add) {
-  const cases = JSON.parse(readFileSync(new URL('../../../../docs/coverage-formulajs/cases.json', import.meta.url), 'utf8')) as { cases: { fn: string; kind: string; formula: string }[] }
+  const cases = JSON.parse(readFileSync(new URL('../../../../test/excel/coverage/cases.json', import.meta.url), 'utf8')) as { cases: { fn: string; kind: string; formula: string }[] }
   const typical = new Map<string, string>()
   for (const c of cases.cases) if (c.kind === 'typical' && !typical.has(c.fn)) typical.set(c.fn, c.formula)
   for (const fn of FUNCTION_NAMES) {

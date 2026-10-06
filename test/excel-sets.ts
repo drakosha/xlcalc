@@ -1,7 +1,7 @@
 /**
  * Excel-verified case sets beyond the coverage measurement: `bench/coverage/sets/<name>.ts` builds the
  * cases, `npx tsx bench/coverage/run.ts probes <name>` stores Excel's answers (en-US locale, English UI) in
- * `docs/excel-cases/<name>.json`. One file per set, so parallel work adds cases without touching shared files.
+ * `test/excel/cases/<name>.json`. One file per set, so parallel work adds cases without touching shared files.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
@@ -15,7 +15,7 @@ export interface StoredSet {
   values: Record<string, Val>
 }
 
-const dir = new URL('../docs/excel-cases/', import.meta.url)
+const dir = new URL('./excel/cases/', import.meta.url)
 
 export const SETS: StoredSet[] = existsSync(dir)
   ? readdirSync(dir)

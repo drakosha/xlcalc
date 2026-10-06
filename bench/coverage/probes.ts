@@ -1,63 +1,60 @@
 /**
- * Пробы Excel для правил движка вне функций formulajs: число в текст (`&`, CONCAT, текстовые
- * аргументы, TEXT с General), разбор длинных числовых литералов и текста-числа, условия по целым
- * колонкам листов с разным числом занятых строк. Ответы Excel en-US лежат в `docs/excel-probes.json`
- * и сверяются тестом `test/excel-probes.test.ts`.
+ * Excel probes of the engine's rules outside the formulajs functions: numbers as text (`&`, CONCAT, text
+ * arguments, TEXT with General), reading long number literals and numeric text, criteria over whole columns of
+ * sheets with different numbers of filled rows. Excel en-US's answers are in `test/excel/probes.json`, checked
+ * by `test/excel-probes.test.ts`.
  */
 
 export interface Probe {
   id: string
   group: string
   formula: string
-  /** Функция, которую случай проверяет (в наборах `sets/*`): по нему приёмка видит, что у функции есть случаи. */
+  /** The function the case checks (in the sets `sets/*`): acceptance sees by it that the function has cases. */
   fn?: string
 }
 
-/** Листы данных набора: значение ячейки или формула (в записи Excel, с приставками `_xlfn.`). */
+/** A set's data sheets: a cell's value or formula (as Excel writes it, with `_xlfn.` prefixes). */
 export type SheetCells = Record<string, Record<string, number | string | boolean | { formula: string }>>
 
-/** The probes are computed as dynamic array formulas (Excel 365), as the sets with `DYNAMIC` are. */
-export const DYNAMIC = true
-
-/** Листы данных проб: S2!A1:A5 = 1…5, S3!B1:B3 = 1, −1, 1. */
+/** The probes' data sheets: S2!A1:A5 = 1…5, S3!B1:B3 = 1, −1, 1. */
 export const PROBE_SHEETS: Record<string, Record<string, number>> = {
   S2: { A1: 1, A2: 2, A3: 3, A4: 4, A5: 5 },
   S3: { B1: 1, B2: -1, B3: 1 },
 }
 
-/** Литерал числа с мантиссой m и порядком e, как его пишут в формуле: `1.5E-07`. */
+/** A number literal with mantissa m and exponent e, as written in a formula: `1.5E-07`. */
 const lit = (m: string, e: number) => `${m}E${e < 0 ? '-' : '+'}${String(Math.abs(e)).padStart(2, '0')}`
 
 export function buildProbes(): Probe[] {
   const out: Probe[] = []
   const add = (group: string, formula: string) => out.push({ id: `${group}#${out.filter((p) => p.group === group).length + 1}`, group, formula })
 
-  // число в текст: мантиссы с 1…15 значащими цифрами на порядках −22…22
+  // numbers as text: mantissas of 1…15 significant digits at exponents −22…22
   for (const m of ['1', '1.5', '7.45', '1.2345', '-1.5', '1.23456789', '1.2345678901234', '1.23456789012345', '-1.23456789012345'])
     for (let e = -22; e <= 22; e++) add('text', `"a"&${lit(m, e)}`)
-  // больше 15 значащих цифр: частное литералов
+  // more than 15 significant digits: a quotient of literals
   for (const [n, d] of [['1', '3'], ['2', '3'], ['-1', '7']] as const) for (let e = -20; e <= 20; e++) add('text', `"a"&(${n}/${lit(d, e)})`)
   add('text', '"a"&(1/134228)')
   add('text', '"a"&0.0000000745')
   add('text', '"a"&0.00000745')
   add('text', '"a"&0')
   add('text', '"a"&-0.000001')
-  // другие пути того же приведения
+  // other paths of the same conversion
   for (const x of ['0.0000000745', '(1/134228)', '1E+21', '1E+15', '123456789012345', '(1/3)', '(2/3E-15)', '-1.5E-11', '1E+20', '(10/3)'])
     for (const f of [`_xlfn.CONCAT(${x})`, `LEN(${x})`, `${x}&"a"`, `LEFT(${x},30)`, `TEXT(${x},"General")`]) add('paths', f)
-  // TEXT с форматом General: другое правило, чем у приведения
+  // TEXT with the General format: a rule other than the conversion's
   for (const m of ['1', '1.5', '1.2345', '1.23456789', '1.23456789012345', '9.99999', '9.999999', '-1.5', '-1.23456789012345'])
     for (let e = -12; e <= 15; e++) add('general', `TEXT(${lit(m, e)},"General")`)
   for (const [n, d] of [['1', '3'], ['2', '3'], ['-1', '7']] as const) for (let e = -12; e <= 14; e++) add('general', `TEXT(${n}/${lit(d, e)},"General")`)
-  // края приведения: трёхзначный порядок, денормализованные, округление на границе 15 цифр
+  // edges of the conversion: three-digit exponents, subnormals, rounding at the 15-digit boundary
   for (const x of ['1E-100', '1.5E+300', '-1E-300', '(1E-300/1E+20)', '9.999999999999999E+19', '99999999999999999999', '(1E+20-1)', '(0.1+0.2)', '(1/3*3)', '(9.99999999999999E-05+1E-19)'])
     add('text', `"a"&${x}`)
-  // меньше наименьшего нормального числа (2.2250738585072E-308): денормализованных у Excel нет
+  // below the smallest normal number (2.2250738585072E-308): Excel has no subnormals
   for (const x of ['(1E-300*1E-10)', '(3E-308/2)', '(2.2250738585072E-308*1)', 'POWER(1E-160,2)', '(-1E-300/1E+15)']) add('text', `"a"&${x}`)
   add('text', '(1E-300*1E-10)=0')
-  // General с трёхзначным порядком
+  // General with a three-digit exponent
   for (const x of ['1E-100', '1.23456789E-100', '1.5E+300', '-1.23456789E+200']) add('general', `TEXT(${x},"General")`)
-  // разбор литералов и текста-числа длиннее 15 значащих цифр
+  // literals and numeric text longer than 15 significant digits
   for (const f of [
     '123456789012345678-123456789012345000',
     '-123456789012345678+123456789012345000',
@@ -74,7 +71,7 @@ export function buildProbes(): Probe[] {
     '"0.99999999999999999"+0=1',
   ])
     add('parse', f)
-  // условия по целым колонкам разных листов
+  // criteria over whole columns of different sheets
   for (const f of [
     "SUMIFS('S2'!A:A,'S3'!B:B,\">0\")",
     "SUMIF('S3'!B:B,\">0\",'S2'!A:A)",

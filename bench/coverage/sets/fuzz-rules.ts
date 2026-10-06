@@ -3,12 +3,10 @@
  * VALUE reads it in numeric arguments, the order in which Excel reads arguments and checks them (ToolPak
  * functions, values before references, one-cell errors), collinear variables in LINEST, the database field,
  * empty delimiters, odd coupon periods before 1900. Computed as dynamic array formulas (Excel 365). Answers:
- * `docs/excel-cases/fuzz-rules.json`.
+ * `test/excel/cases/fuzz-rules.json`.
  */
 import type { Probe } from '../probes.js'
 import { collector } from './arrays/common.js'
-
-export const DYNAMIC = true
 
 /** Cases by function: `fn` is the function checked. */
 const CASES: Record<string, string[]> = {
