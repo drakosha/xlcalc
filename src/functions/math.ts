@@ -5,9 +5,10 @@ import { functions as combinatorics } from './math/combinatorics.js'
 import { functions as matrix } from './math/matrix.js'
 import { functions as numerals } from './math/numerals.js'
 import { functions as rounding } from './math/rounding.js'
+import { functions as subtotal } from './math/subtotal.js'
 import { functions as sums } from './math/sums.js'
 import { functions as trig } from './math/trig.js'
 
 export { power } from './math/arithmetic.js'
 
-export const functions: Record<string, FnDef> = { ...arithmetic, ...combinatorics, ...matrix, ...numerals, ...rounding, ...sums, ...trig }
+export const functions: Record<string, FnDef> = { ...arithmetic, ...combinatorics, ...matrix, ...numerals, ...rounding, ...subtotal, ...sums, ...trig }

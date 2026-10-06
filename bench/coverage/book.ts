@@ -9,15 +9,16 @@
 import ExcelJS from 'exceljs'
 import type { Case } from './cases.js'
 import { DATA_SHEET, dataCells } from './data.js'
+import type { SheetCells } from './probes.js'
 
 export const CASE_SHEET = 'C'
 
-/** `sheets`: further data sheets by name, values by A1 address (the probes of `probes.ts`). */
-export async function writeBook(cases: Pick<Case, 'id' | 'formula' | 'pick'>[], file: string, sheets: Record<string, Record<string, number | string | boolean>> = {}): Promise<void> {
+/** `sheets`: further data sheets by name, values or formulas by A1 address (the probes of `probes.ts`, the case sets). */
+export async function writeBook(cases: Pick<Case, 'id' | 'formula' | 'pick'>[], file: string, sheets: SheetCells = {}): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const [name, cells] of Object.entries(sheets)) {
     const ws = wb.addWorksheet(name)
-    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = v
+    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = (typeof v === 'object' ? { formula: v.formula } : v) as ExcelJS.CellValue
   }
   const d = wb.addWorksheet(DATA_SHEET)
   for (const [addr, v] of dataCells()) {

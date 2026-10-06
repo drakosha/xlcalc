@@ -23,7 +23,7 @@ import { buildCases, type Case, type CaseSet } from './cases.js'
 import { ensureExcel, excelDialogs, excelVersion, runExcel, runExcelWatched, declineRepair, withExcelLock, type Locale } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
-import { buildProbes, PROBE_SHEETS, type Probe } from './probes.js'
+import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -200,7 +200,7 @@ async function stepExcel(locale: Locale) {
  */
 async function stepProbes(set?: string) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`имя набора: [a-z0-9-], а не ${set}`)
-  const mod: { buildProbes: () => Probe[]; SHEETS?: Record<string, Record<string, number | string | boolean>> } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = set ?? 'probes'

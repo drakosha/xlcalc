@@ -26,6 +26,8 @@ interface Formula {
   refs: Rng[]
   /** Calls a volatile function directly. */
   volatile: boolean
+  /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
+  nested: boolean
   source: string
   fn: () => V | Rng
 }
@@ -80,6 +82,14 @@ export interface EngineState {
 
 const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
 const WIDE = 64
+
+/** Marks or unmarks a cell whose formula calls SUBTOTAL or AGGREGATE. */
+function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean) {
+  let marks = ctx.nested.get(s)
+  if (!marks) ctx.nested.set(s, (marks = new Set()))
+  if (on) marks.add(r * MAX_COLS + c)
+  else marks.delete(r * MAX_COLS + c)
+}
 
 function emptySheet(name: string): SheetData {
   return { name, cols: [], rows: 0 }
@@ -157,10 +167,11 @@ function nameFor(state: EngineState, here: number, name: string): PreparedName |
 }
 
 /** JS code of one formula (a self-contained factory expression) and its references. */
-function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number): { source: string; refs: Rng[]; volatile: boolean } {
+function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number): { source: string; refs: Rng[]; volatile: boolean; nested: boolean } {
   const refs: Rng[] = []
   const hoisted: Rng[] = []
   let volatile = false
+  let nested = false
   const sheetOf = (name: string | null) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!)
   const deref = (n: Ast): Ast => (n.k === 'name' ? (nameFor(state, s, n.name)?.ast ?? n) : n)
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
@@ -200,6 +211,7 @@ function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number):
         const spec = FUNCTIONS[n.name]
         if (!spec) return `ext(${JSON.stringify(canonical(n))})`
         if (spec.volatile) volatile = true
+        if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') nested = true
         // lazy functions (IF, IFERROR) get each argument as a function; RAND gets its cell
         const args = n.args.map((a, i) => (spec.lazy ? `()=>${go(a)}` : go(a, spec.range(i))))
         if (spec.cell) args.unshift(String(s), String(r), String(c))
@@ -210,7 +222,7 @@ function codegen(state: EngineState, ast: Ast, s: number, r: number, c: number):
   }
   const expr = go(ast)
   const decl = hoisted.length ? `const ${hoisted.map((g, i) => `g${i}=R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`).join(',')};` : ''
-  return { source: `(()=>{${decl}return ()=>${expr}})()`, refs, volatile }
+  return { source: `(()=>{${decl}return ()=>${expr}})()`, refs, volatile, nested }
 }
 
 const PRELUDE = '"use strict";const {cell,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,F,ext,E,R}=rt;'
@@ -387,7 +399,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
   const input: BookInput = { sheets: book.sheets.map((s) => ({ name: s.name, cells: { ...s.cells } })), names: [...(book.names ?? [])] }
   const { names, issues } = prepareNames({ sheetIdx, sheetNames }, input.names!)
-  const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map() }
+  const ctx: RuntimeContext = { sheets: sheetNames.map(emptySheet), now: opts.now, seed: opts.seed, externals: opts.externals?.values ?? {}, flat: new Map(), index: new Map(), nested: new Map() }
   const state: EngineState = {
     input,
     sheetNames,
@@ -423,7 +435,8 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
         continue
       }
       const g = codegen(state, p.ast, s, row, col)
-      pending.push({ id: pending.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, source: g.source })
+      pending.push({ id: pending.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, nested: g.nested, source: g.source })
+      if (g.nested) mark(ctx, s, row, col, true)
     }
   })
   const fns = compileSources(state.rt, pending.map((p) => p.source))
@@ -453,6 +466,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
     else cells[e.cell] = e.input
     const old = state.at.get(k)
     if (old !== undefined) {
+      if (state.formulas[old]!.nested) mark(state.ctx, s, row, col, false)
       state.formulas[old] = undefined
       state.at.delete(k)
       structural = true
@@ -468,7 +482,8 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
         continue
       }
       const g = codegen(state, p.ast, s, row, col)
-      const f = { id: state.formulas.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, source: g.source, fn: () => null as V }
+      const f = { id: state.formulas.length, s, r: row, c: col, text: p.text, refs: g.refs, volatile: g.volatile, nested: g.nested, source: g.source, fn: () => null as V }
+      if (g.nested) mark(state.ctx, s, row, col, true)
       state.formulas.push(f)
       state.at.set(k, f.id)
       fresh.push(f)

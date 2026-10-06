@@ -13,6 +13,9 @@ export interface Probe {
   fn?: string
 }
 
+/** Листы данных набора: значение ячейки или формула (в записи Excel, с приставками `_xlfn.`). */
+export type SheetCells = Record<string, Record<string, number | string | boolean | { formula: string }>>
+
 /** Листы данных проб: S2!A1:A5 = 1…5, S3!B1:B3 = 1, −1, 1. */
 export const PROBE_SHEETS: Record<string, Record<string, number>> = {
   S2: { A1: 1, A2: 2, A3: 3, A4: 4, A5: 5 },
