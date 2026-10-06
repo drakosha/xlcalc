@@ -32,7 +32,7 @@ The engine builds the rules when it creates a book's state (`rulesOf` in `create
 
 ### What depends on the locale, and the ru-RU rules
 
-The measurement (`docs/coverage-formulajs.md`, "Excel ru-RU против en-US") has 280 cases where Excel ru-RU differs from en-US, 272 of them in whitelisted functions; the `locale` set (1,109 cases computed in Excel ru-RU) measured the rules behind them. By mechanism:
+The measurement (`docs/coverage-formulajs.md`, "Excel ru-RU against en-US") has 280 cases where Excel ru-RU differs from en-US, 272 of them in whitelisted functions; the `locale` set (1,109 cases computed in Excel ru-RU) measured the rules behind them. By mechanism:
 
 | mechanism | ru-RU, as Excel 16.113 for Mac computes | where |
 |---|---|---|
