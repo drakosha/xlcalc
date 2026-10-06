@@ -60,31 +60,38 @@ function flows(g: Grid): number[] | CErr {
 
 const signs = (xs: number[]) => xs.some((x) => x > 0) && xs.some((x) => x < 0)
 
-/** XNPV: a blank is #VALUE!, text or a boolean #NUM!; XIRR reads numeric and date text and a blank value as 0, a boolean is #VALUE!, a blank date #NUM!. */
+/**
+ * XNPV: a blank is #VALUE!, text or a boolean #NUM!; XIRR reads numeric and date text and a blank value as 0, a
+ * boolean or other text is #VALUE! anywhere before a blank date counts as #NUM!.
+ */
 function dated(values: Grid, dates: Grid, lenient: boolean): [number[], number[]] | CErr {
   const n = values.rows * values.cols
   if (n !== dates.rows * dates.cols) return E.NUM
   const vs: number[] = []
   const ds: number[] = []
+  let blank = false
   for (let i = 0; i < n; i++) {
     let v: V = gridAt(values, i)
     let d: V = gridAt(dates, i)
     if (isErr(v)) return v
     if (isErr(d)) return d
     if (lenient) {
-      if (typeof v === 'boolean') return E.VALUE
-      if (d === null) return E.NUM
+      if (typeof v === 'boolean' || typeof d === 'boolean') return E.VALUE
       v = toNum(v)
-      d = typeof d === 'string' ? (parseDateText(d) ?? E.VALUE) : d
+      d = typeof d === 'string' ? (parseDateText(d) ?? toNum(d)) : d
       if (isErr(v)) return v
       if (isErr(d)) return d
+      if (d === null) {
+        blank = true
+        continue
+      }
     }
     if (v === null || d === null) return E.VALUE
     if (typeof v !== 'number' || typeof d !== 'number' || d < 0) return E.NUM
     vs.push(v)
     ds.push(Math.floor(d))
   }
-  return [vs, ds]
+  return blank ? E.NUM : [vs, ds]
 }
 
 const xnpv = (rate: number, vs: number[], ds: number[]) => vs.reduce((s, v, i) => s + v / Math.pow(1 + rate, (ds[i] - ds[0]) / 365), 0)

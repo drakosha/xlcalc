@@ -81,7 +81,7 @@ const CASES: Record<string, string[]> = {
   MAX: ['MAX(D!E1:E8,"x")'],
   AVERAGE: ['AVERAGE({1,#N/A},1/0)'],
   MAXA: ['MAXA({1,#N/A},1/0)'],
-  GCD: ['GCD({4,#N/A},1/0)'],
+  GCD: ['GCD({4,#N/A},1/0)', 'GCD({4,"a"},1/0)', 'GCD(D!B1:C8,NA())'],
   CONCAT: ['CONCAT({"a",#DIV/0!},NA())', 'CONCAT(NA(),{"a",#DIV/0!})'],
   AND: ['AND({TRUE,#DIV/0!},NA())'],
   TEXTJOIN: ['TEXTJOIN(",",TRUE,{"a",#DIV/0!},NA())'],
@@ -103,6 +103,23 @@ const CASES: Record<string, string[]> = {
   // PERCENTOF: an error given as a value is the answer, one in a range or array #NUM!
   PERCENTOF: ['PERCENTOF(2,NA())', 'PERCENTOF(NA(),2)', 'PERCENTOF({1,#N/A},3)', 'PERCENTOF(1,D!E1:E8)'],
   WEEKNUM: ['WEEKNUM(40977,1000)', 'DAY(WEEKNUM(40977,1E+3)<>2.5)'],
+  // batch 2: complex functions read number text as VALUE does unless a sign follows the first character
+  IMCONJUGATE: ['IMCONJUGATE("$8.00")'],
+  IMLOG10: ['IMLOG10("$1,000")'],
+  IMEXP: ['IMEXP("18:30")'],
+  IMABS: ['IMABS("50%")'],
+  IMSUM: ['IMSUM("2025-01-31",1)', 'IMSUM("18:30",1)'],
+  IMREAL: ['IMREAL("(5)")', 'IMREAL("1,000")', 'IMREAL("1/2/2025")', 'IMREAL("31-Jan-2025")', 'IMREAL("6:35 AM")', 'IMREAL("1 1/2")', 'IMREAL("-$5")', 'IMREAL("TRUE")', 'IMREAL("25:00")', 'IMREAL("2025-01-31 12:00")'],
+  // XIRR: a boolean or other text among the dates is #VALUE! before a blank date's #NUM!
+  XIRR: ['XIRR(D!AY1:AY5,D!A1:A5,D!A2)', 'XIRR(D!J1:J5,D!A1:A5)', 'XIRR({-1,2},{1,TRUE})', 'XIRR({1,2},{1,TRUE})', 'XIRR(D!J1:J2,D!A1:A2)', 'XIRR(D!I1:I5,D!A1:A5)'],
+  // GCD, LCM, MULTINOMIAL read every argument in order, inside ranges and arrays too, and check signs last
+  MULTINOMIAL: ['MULTINOMIAL(2,3,{2,"a";TRUE,#N/A})', 'MULTINOMIAL(NA(),{"a"})'],
+  LCM: ['LCM(D!A3,NA())', 'LCM(-0.5,2)'],
+  // whole numbers near an integer (Excel takes some as that integer)
+  INT: ['INT(FTEST(D!C1:C8,D!C1:C8))'],
+  LEFT: ['LEFT("abc",0.9999999999999997)'],
+  INDEX: ['INDEX({1,2,3},1,1.9999999999999997)'],
+  MID: ['MID("abcdef",1.9999999999999997,2)'],
 }
 
 /** LINEST and its kin with collinear variables (left out with coefficient 0) and a single observation. */
@@ -134,8 +151,9 @@ function fits(): Record<string, string[]> {
       'INDEX(LINEST(D!L1:N6,D!BC1:BC6),1,1)', 'INDEX(LINEST(D!B1:B8,D!L1:N6),1,1)', 'INDEX(LINEST(D!L1:L6,D!M1:M6),1,1)', 'INDEX(LINEST(D!B1:B8,D!D1:D8),1,1)',
     ],
     LOGEST: ['INDEX(LOGEST(1E+3,D!BC1:BC6),1,1)', 'INDEX(LOGEST(1E+3,D!BC1:BC6),1,7)', 'COLUMNS(LOGEST(1E+3,D!BC1:BC6))', 'INDEX(LOGEST(5,{1,2,3}),1,4)', 'LOGEST(D!L1:N6,D!BC1:BC6)'],
-    TREND: ['INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8}),4)', 'TREND(5,{1,2,3},{1,2,3})', 'INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8},{5,10}),1,1)'],
-    GROWTH: ['GROWTH(5,{1,2,3},{1,2,3})'],
+    // batch 2: an error among the new x is #VALUE!
+    TREND: ['INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8}),4)', 'TREND(5,{1,2,3},{1,2,3})', 'INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8},{5,10}),1,1)', 'TREND(D!AY1:AY5,D!AZ1:AZ5,D!E1:E8)', 'TREND(D!AY1:AY5,D!AZ1:AZ5,{1,#N/A})'],
+    GROWTH: ['GROWTH(5,{1,2,3},{1,2,3})', 'GROWTH(D!BB1:BB6,D!BC1:BC6,{17,#N/A})'],
   }
 }
 

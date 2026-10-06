@@ -108,6 +108,9 @@ export const REASONS = {
     '`SORTBY` with an array or a range of several cells as a sort order is `#VALUE!`; Excel answers an array the size of the orders (the first sorted value, then blanks, or an error where a sort fails).',
   linestConstantColumn:
     '`LINEST` with a constant x variable besides the intercept: both give it coefficient 0 and the same fit, but Excel\'s statistics count it as a variable in some way the engine does not reproduce (`LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE)`: degrees of freedom 1 in Excel, 2 here, and the F statistic and the intercept\'s standard error differ).',
+  nearInteger:
+    'A whole-number argument just below a whole number: Excel takes `0.9999999999999997` as 1 in `INT`, `TRUNC`, `LEFT`, `INDEX`, `ROUND`\'s digits and the field of a database function (not in `MID`\'s start) and finds `FTEST(A1:A8,A1:A8)=1` TRUE; the engine truncates such a number and compares exactly. How far below Excel\'s tolerance reaches, and in which functions, is not measured yet.',
+  rowsOfIfs: '`ROWS` and `COLUMNS` of an `IFS` that answers an error: Excel counts 1 (`ROWS(IFS("x",1,TRUE,2))`), the engine answers the error.',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
@@ -154,6 +157,14 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fuzz-rules:LINEST#42': { reason: 'linestConstantColumn', engine: { t: 'n', v: 56.3333333333333 } },
   'fuzz-rules:LINEST#43': { reason: 'linestConstantColumn', engine: { t: 'n', v: 2 } },
   'fuzz:1#1263': { reason: 'excelContext', engine: { t: 'e', v: 'NUM' } },
+  'fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: '2048.47532711546' } },
+  'fuzz:2#411': { reason: 'sortbyOrders', engine: { t: 'e', v: 'NUM' } },
+  'fuzz:2#1577': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz:2#175': { reason: 'nearInteger', engine: { t: 'e', v: 'VALUE' } },
+  'fuzz-rules:INT#1': { reason: 'nearInteger', engine: { t: 'n', v: 0 } },
+  'fuzz-rules:LEFT#1': { reason: 'nearInteger', engine: { t: 's', v: '' } },
+  'fuzz-rules:INDEX#1': { reason: 'nearInteger', engine: { t: 'n', v: 1 } },
+  'fuzz:2#165': { reason: 'rowsOfIfs', engine: { t: 'e', v: 'VALUE' } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives exactly the pinned answer. */

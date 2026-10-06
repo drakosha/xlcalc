@@ -210,8 +210,9 @@ function trend(log: boolean) {
       points = d.x
       ;[rows, cols] = d.byRow ? [1, d.y.length] : [d.y.length, 1]
     } else {
+      // an error among the new x is #VALUE! (Excel), not that error
       const xs = values(gnew)
-      if (isErr(xs)) return xs
+      if (isErr(xs)) return E.VALUE
       if (k === 1) {
         points = xs.map((x) => [x])
         ;[rows, cols] = [gnew.rows, gnew.cols]

@@ -128,8 +128,6 @@ export interface FnDef {
   ranges?: 'error' | 'first' | readonly number[]
   /** Lazy functions: the arguments whose array lifts the call (by default the first, IF's condition). */
   liftAt?: (i: number, n: number) => boolean
-  /** Excel reads every argument in order, references and arrays among them (GCD, LCM, MULTINOMIAL). */
-  inOrder?: boolean
 }
 
 /** What the parser and the code generator need to know about a function. */
@@ -300,7 +298,7 @@ export const coerce = (kind: string, x: Arg, cx: Cx): unknown => COERCE[kind](x,
 const KEEP_ERRORS = 'aRVrp'
 /**
  * Excel reads the arguments given as values before those given as references or arrays (`LARGE(A1:A9,"x")` and
- * `SUM(A1:A9,"x")` are #VALUE! even with an error in A1:A9), unless the function reads them in order (`inOrder`).
+ * `SUM(A1:A9,"x")` are #VALUE! even with an error in A1:A9).
  */
 const late = (x: unknown) => x instanceof Rng || x instanceof Arr
 
@@ -323,7 +321,7 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
       for (let p = 0; p < vals.length; p++) {
         const k = kindAt(p)
         const x = a[cells + p] as Arg
-        if ((!def.inOrder && late(x)) !== pass) continue
+        if (late(x) !== pass) continue
         const v = COERCE[k](x, cx)
         if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
         vals[p] = v

@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.625,
+  "seconds": 1.721,
   "dynamic": true
  },
  "cases": [
@@ -835,6 +835,18 @@
    "formula": "GCD({4,#N/A},1/0)"
   },
   {
+   "id": "GCD#2",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD({4,\"a\"},1/0)"
+  },
+  {
+   "id": "GCD#3",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD(D!B1:C8,NA())"
+  },
+  {
    "id": "CONCAT#1",
    "group": "CONCAT",
    "fn": "CONCAT",
@@ -1055,6 +1067,186 @@
    "group": "WEEKNUM",
    "fn": "WEEKNUM",
    "formula": "DAY(WEEKNUM(40977,1E+3)<>2.5)"
+  },
+  {
+   "id": "IMCONJUGATE#1",
+   "group": "IMCONJUGATE",
+   "fn": "IMCONJUGATE",
+   "formula": "IMCONJUGATE(\"$8.00\")"
+  },
+  {
+   "id": "IMLOG10#1",
+   "group": "IMLOG10",
+   "fn": "IMLOG10",
+   "formula": "IMLOG10(\"$1,000\")"
+  },
+  {
+   "id": "IMEXP#1",
+   "group": "IMEXP",
+   "fn": "IMEXP",
+   "formula": "IMEXP(\"18:30\")"
+  },
+  {
+   "id": "IMABS#1",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(\"50%\")"
+  },
+  {
+   "id": "IMSUM#1",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"2025-01-31\",1)"
+  },
+  {
+   "id": "IMSUM#2",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"18:30\",1)"
+  },
+  {
+   "id": "IMREAL#1",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(5)\")"
+  },
+  {
+   "id": "IMREAL#2",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1,000\")"
+  },
+  {
+   "id": "IMREAL#3",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1/2/2025\")"
+  },
+  {
+   "id": "IMREAL#4",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"31-Jan-2025\")"
+  },
+  {
+   "id": "IMREAL#5",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"6:35 AM\")"
+  },
+  {
+   "id": "IMREAL#6",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 1/2\")"
+  },
+  {
+   "id": "IMREAL#7",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-$5\")"
+  },
+  {
+   "id": "IMREAL#8",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"TRUE\")"
+  },
+  {
+   "id": "IMREAL#9",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"25:00\")"
+  },
+  {
+   "id": "IMREAL#10",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"2025-01-31 12:00\")"
+  },
+  {
+   "id": "XIRR#1",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR(D!AY1:AY5,D!A1:A5,D!A2)"
+  },
+  {
+   "id": "XIRR#2",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR(D!J1:J5,D!A1:A5)"
+  },
+  {
+   "id": "XIRR#3",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR({-1,2},{1,TRUE})"
+  },
+  {
+   "id": "XIRR#4",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR({1,2},{1,TRUE})"
+  },
+  {
+   "id": "XIRR#5",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR(D!J1:J2,D!A1:A2)"
+  },
+  {
+   "id": "XIRR#6",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR(D!I1:I5,D!A1:A5)"
+  },
+  {
+   "id": "MULTINOMIAL#1",
+   "group": "MULTINOMIAL",
+   "fn": "MULTINOMIAL",
+   "formula": "MULTINOMIAL(2,3,{2,\"a\";TRUE,#N/A})"
+  },
+  {
+   "id": "MULTINOMIAL#2",
+   "group": "MULTINOMIAL",
+   "fn": "MULTINOMIAL",
+   "formula": "MULTINOMIAL(NA(),{\"a\"})"
+  },
+  {
+   "id": "LCM#1",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(D!A3,NA())"
+  },
+  {
+   "id": "LCM#2",
+   "group": "LCM",
+   "fn": "LCM",
+   "formula": "LCM(-0.5,2)"
+  },
+  {
+   "id": "INT#1",
+   "group": "INT",
+   "fn": "INT",
+   "formula": "INT(FTEST(D!C1:C8,D!C1:C8))"
+  },
+  {
+   "id": "LEFT#1",
+   "group": "LEFT",
+   "fn": "LEFT",
+   "formula": "LEFT(\"abc\",0.9999999999999997)"
+  },
+  {
+   "id": "INDEX#1",
+   "group": "INDEX",
+   "fn": "INDEX",
+   "formula": "INDEX({1,2,3},1,1.9999999999999997)"
+  },
+  {
+   "id": "MID#1",
+   "group": "MID",
+   "fn": "MID",
+   "formula": "MID(\"abcdef\",1.9999999999999997,2)"
   },
   {
    "id": "LINEST#1",
@@ -1603,10 +1795,28 @@
    "formula": "INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8},{5,10}),1,1)"
   },
   {
+   "id": "TREND#4",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(D!AY1:AY5,D!AZ1:AZ5,D!E1:E8)"
+  },
+  {
+   "id": "TREND#5",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(D!AY1:AY5,D!AZ1:AZ5,{1,#N/A})"
+  },
+  {
    "id": "GROWTH#1",
    "group": "GROWTH",
    "fn": "GROWTH",
    "formula": "GROWTH(5,{1,2,3},{1,2,3})"
+  },
+  {
+   "id": "GROWTH#2",
+   "group": "GROWTH",
+   "fn": "GROWTH",
+   "formula": "GROWTH(D!BB1:BB6,D!BC1:BC6,{17,#N/A})"
   }
  ],
  "values": {
@@ -2677,6 +2887,146 @@
   "GROWTH#1": {
    "t": "n",
    "v": 4.999999999999999
+  },
+  "GCD#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GCD#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "IMCONJUGATE#1": {
+   "t": "s",
+   "v": "8"
+  },
+  "IMLOG10#1": {
+   "t": "s",
+   "v": "3"
+  },
+  "IMEXP#1": {
+   "t": "s",
+   "v": "2.16156680912359"
+  },
+  "IMABS#1": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMSUM#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMSUM#2": {
+   "t": "s",
+   "v": "1.77083333333333"
+  },
+  "IMREAL#1": {
+   "t": "n",
+   "v": -5
+  },
+  "IMREAL#2": {
+   "t": "n",
+   "v": 1000
+  },
+  "IMREAL#3": {
+   "t": "n",
+   "v": 45659
+  },
+  "IMREAL#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#5": {
+   "t": "n",
+   "v": 0.2743055555555556
+  },
+  "IMREAL#6": {
+   "t": "n",
+   "v": 1.5
+  },
+  "IMREAL#7": {
+   "t": "n",
+   "v": -5
+  },
+  "IMREAL#8": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#9": {
+   "t": "n",
+   "v": 1.0416666666666667
+  },
+  "IMREAL#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XIRR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XIRR#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XIRR#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XIRR#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "XIRR#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XIRR#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MULTINOMIAL#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MULTINOMIAL#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LCM#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LCM#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "INT#1": {
+   "t": "n",
+   "v": 1
+  },
+  "LEFT#1": {
+   "t": "s",
+   "v": "a"
+  },
+  "INDEX#1": {
+   "t": "n",
+   "v": 2
+  },
+  "MID#1": {
+   "t": "s",
+   "v": "ab"
+  },
+  "TREND#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TREND#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GROWTH#2": {
+   "t": "e",
+   "v": "VALUE"
   }
  }
 }

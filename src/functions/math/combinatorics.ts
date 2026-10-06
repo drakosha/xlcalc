@@ -1,5 +1,5 @@
 /** Factorials, binomial coefficients, GCD and LCM with Excel's argument checks. This engine's own. */
-import { gridAt, type FnDef, type Grid } from '../../args.js'
+import { gridAt, type Arg, type Cx, type FnDef } from '../../args.js'
 import { E, isErr, toNum, type CErr, type V } from '../../values.js'
 import { fact } from '../common.js'
 
@@ -42,12 +42,16 @@ function factdouble(x: number): number | CErr {
 
 /**
  * The whole numbers of GCD, LCM and MULTINOMIAL: numbers and numeric text, in ranges too; a blank cell of a range
- * is 0, a blank single cell is left out (Excel: LCM(A1:A3) with A2 blank is 0, LCM(blank,1) is 1); a boolean,
- * other text or a negative number stops.
+ * is 0, a blank single cell is left out (Excel: LCM(A1:A3) with A2 blank is 0, LCM(blank,1) is 1); an error, a
+ * boolean or other text stops in the order Excel reads them, values inside ranges and arrays too
+ * (`GCD({4,"a"},1/0)` is #VALUE!), and only then a negative number is #NUM!.
  */
-function wholes(grids: readonly Grid[]): number[] | CErr {
+function wholes(cx: Cx, args: readonly Arg[]): number[] | CErr {
   const out: number[] = []
-  for (const g of grids) {
+  let negative = false
+  for (const x of args) {
+    if (isErr(x)) return x
+    const g = cx.grid(x)
     const n = g.rows * g.cols
     if (n === 1 && gridAt(g, 0) === null) continue
     const end = Math.min(n, g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
@@ -55,12 +59,12 @@ function wholes(grids: readonly Grid[]): number[] | CErr {
       const v: V = gridAt(g, i)
       const x = typeof v === 'boolean' ? E.VALUE : toNum(v)
       if (isErr(x)) return x
-      if (x < 0) return E.NUM
+      negative ||= x < 0
       out.push(Math.trunc(x))
     }
     if (n > end) out.push(0)
   }
-  return out
+  return negative ? E.NUM : out
 }
 
 function gcd2(a: number, b: number): number {
@@ -74,21 +78,21 @@ export const functions: Record<string, FnDef> = {
   FACT: { args: 'n', fn: (x: number) => (x < 0 ? E.NUM : fact(Math.trunc(x))) },
   FACTDOUBLE: { args: 'x', fn: factdouble },
   GCD: {
-    args: 'M',
+    args: 'R',
     rep: 1,
-    inOrder: true,
-    fn: (grids: Grid[]) => {
-      const xs = wholes(grids)
+    cx: true,
+    fn: (cx: Cx, args: Arg[]) => {
+      const xs = wholes(cx, args)
       if (isErr(xs)) return xs
       return xs.some((x) => x > MAX_INT) ? E.NUM : xs.reduce(gcd2, 0)
     },
   },
   LCM: {
-    args: 'M',
+    args: 'R',
     rep: 1,
-    inOrder: true,
-    fn: (grids: Grid[]) => {
-      const xs = wholes(grids)
+    cx: true,
+    fn: (cx: Cx, args: Arg[]) => {
+      const xs = wholes(cx, args)
       if (isErr(xs)) return xs
       let l = 1
       for (const x of xs) {
@@ -99,11 +103,11 @@ export const functions: Record<string, FnDef> = {
     },
   },
   MULTINOMIAL: {
-    args: 'M',
+    args: 'R',
     rep: 1,
-    inOrder: true,
-    fn: (grids: Grid[]) => {
-      const xs = wholes(grids)
+    cx: true,
+    fn: (cx: Cx, args: Arg[]) => {
+      const xs = wholes(cx, args)
       if (isErr(xs)) return xs
       const total = xs.reduce((s, x) => s + x, 0)
       return fact(total) / xs.reduce((p, x) => p * fact(x), 1)
