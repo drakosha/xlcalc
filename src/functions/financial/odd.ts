@@ -5,7 +5,7 @@ import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
 import { validBasis, validFreq } from '../date/daycount.js'
 import { solveDecreasing } from './bond.js'
-import { cmp, couponDate, daysBetween, normalDays, periodOf, type Ymd } from './coupon.js'
+import { cmp, couponDate, coupons, daysBetween, normalDays, periodOf, type Ymd } from './coupon.js'
 
 const badFreq = (freq: number, basis: number) => !validFreq(freq) || !validBasis(basis)
 
@@ -70,11 +70,14 @@ function oddLast(settlement: number, maturity: number, last: number, freq: numbe
   return { dc, a, dsc }
 }
 
+/** Excel's #NUM! for an odd period whose quasi-coupon period (on the regular schedule) begins before 1900. */
+const before1900 = (date: number, anchor: number, freq: number) => coupons(date, anchor, freq).early === true
+
 const oddFirstBad = (settlement: number, maturity: number, issue: number, first: number, freq: number, basis: number) =>
-  badFreq(freq, basis) || !(issue < settlement && settlement < first && first < maturity)
+  badFreq(freq, basis) || !(issue < settlement && settlement < first && first < maturity) || before1900(issue, first, freq)
 
 const oddLastBad = (settlement: number, maturity: number, last: number, freq: number, basis: number) =>
-  badFreq(freq, basis) || !(last < settlement && settlement < maturity)
+  badFreq(freq, basis) || !(last < settlement && settlement < maturity) || before1900(last, maturity, freq)
 
 export const functions: Record<string, FnDef> = {
   ODDFPRICE: atp('e e e e x x x j j?', (settlement: number, maturity: number, issue: number, first: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) =>

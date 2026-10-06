@@ -74,8 +74,9 @@ export const functions: Record<string, FnDef> = {
   FACT: { args: 'n', fn: (x: number) => (x < 0 ? E.NUM : fact(Math.trunc(x))) },
   FACTDOUBLE: { args: 'x', fn: factdouble },
   GCD: {
-    args: 'G',
+    args: 'M',
     rep: 1,
+    inOrder: true,
     fn: (grids: Grid[]) => {
       const xs = wholes(grids)
       if (isErr(xs)) return xs
@@ -83,8 +84,9 @@ export const functions: Record<string, FnDef> = {
     },
   },
   LCM: {
-    args: 'G',
+    args: 'M',
     rep: 1,
+    inOrder: true,
     fn: (grids: Grid[]) => {
       const xs = wholes(grids)
       if (isErr(xs)) return xs
@@ -97,8 +99,9 @@ export const functions: Record<string, FnDef> = {
     },
   },
   MULTINOMIAL: {
-    args: 'G',
+    args: 'M',
     rep: 1,
+    inOrder: true,
     fn: (grids: Grid[]) => {
       const xs = wholes(grids)
       if (isErr(xs)) return xs

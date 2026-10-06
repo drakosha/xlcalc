@@ -1,0 +1,2682 @@
+{
+ "meta": {
+  "version": "16.113.3",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.625,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "ABS#1",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"2025-01-31\")"
+  },
+  {
+   "id": "ABS#2",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"$1,000\")"
+  },
+  {
+   "id": "ABS#3",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"(5)\")"
+  },
+  {
+   "id": "ABS#4",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"1 1/2\")"
+  },
+  {
+   "id": "LN#1",
+   "group": "LN",
+   "fn": "LN",
+   "formula": "LN(\"50%\")"
+  },
+  {
+   "id": "SIGN#1",
+   "group": "SIGN",
+   "fn": "SIGN",
+   "formula": "SIGN(\"$1,000\")"
+  },
+  {
+   "id": "SIGN#2",
+   "group": "SIGN",
+   "fn": "SIGN",
+   "formula": "SIGN(\"-1,000.5\")"
+  },
+  {
+   "id": "ROUNDDOWN#1",
+   "group": "ROUNDDOWN",
+   "fn": "ROUNDDOWN",
+   "formula": "ROUNDDOWN(3.2,\"$1,000\")"
+  },
+  {
+   "id": "NORM.S.DIST#1",
+   "group": "NORM.S.DIST",
+   "fn": "NORM.S.DIST",
+   "formula": "_xlfn.NORM.S.DIST(\"2025-01-31 12:00\",TRUE)"
+  },
+  {
+   "id": "NORM.S.DIST#2",
+   "group": "NORM.S.DIST",
+   "fn": "NORM.S.DIST",
+   "formula": "_xlfn.NORM.S.DIST(\"6:35 AM\",TRUE)"
+  },
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"2025-01-31 12:00\",\"0\")"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"50%\",\"0.00\")"
+  },
+  {
+   "id": "TEXT#3",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0\")"
+  },
+  {
+   "id": "TEXT#4",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"$1,000\",\"#,##0\")"
+  },
+  {
+   "id": "DOLLAR#1",
+   "group": "DOLLAR",
+   "fn": "DOLLAR",
+   "formula": "DOLLAR(\"1/2/2025\",1)"
+  },
+  {
+   "id": "BAHTTEXT#1",
+   "group": "BAHTTEXT",
+   "fn": "BAHTTEXT",
+   "formula": "BAHTTEXT(\"50%\")"
+  },
+  {
+   "id": "RIGHTB#1",
+   "group": "RIGHTB",
+   "fn": "RIGHTB",
+   "formula": "RIGHTB(\"2025-01-31\",\"2025-01-31 12:00\")"
+  },
+  {
+   "id": "EDATE#1",
+   "group": "EDATE",
+   "fn": "EDATE",
+   "formula": "EDATE(40558,\"50%\")"
+  },
+  {
+   "id": "EDATE#2",
+   "group": "EDATE",
+   "fn": "EDATE",
+   "formula": "EDATE(40558,\"1E1\")"
+  },
+  {
+   "id": "SUM#1",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM(\"50%\",1)"
+  },
+  {
+   "id": "SUM#2",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM({1,#DIV/0!},NA())"
+  },
+  {
+   "id": "SUM#3",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM(D!E1:E8,NA())"
+  },
+  {
+   "id": "SUM#4",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM(NA(),D!E1:E8)"
+  },
+  {
+   "id": "SUM#5",
+   "group": "SUM",
+   "fn": "SUM",
+   "formula": "SUM(D!E1:E8,\"x\")"
+  },
+  {
+   "id": "+#1",
+   "group": "+",
+   "fn": "+",
+   "formula": "\"31-Jan-2025\"-\"2025-01-31\""
+  },
+  {
+   "id": "+#2",
+   "group": "+",
+   "fn": "+",
+   "formula": "\"50%\"*2"
+  },
+  {
+   "id": "+#3",
+   "group": "+",
+   "fn": "+",
+   "formula": "\"$1,000\"+1"
+  },
+  {
+   "id": "+#4",
+   "group": "+",
+   "fn": "+",
+   "formula": "\"18:30\"*24"
+  },
+  {
+   "id": "+#5",
+   "group": "+",
+   "fn": "+",
+   "formula": "\" 2 \"+1"
+  },
+  {
+   "id": "+#6",
+   "group": "+",
+   "fn": "+",
+   "formula": "\"1,5\"+0"
+  },
+  {
+   "id": "DISC#1",
+   "group": "DISC",
+   "fn": "DISC",
+   "formula": "DISC(NA(),48214,97.975,100,7)"
+  },
+  {
+   "id": "DISC#2",
+   "group": "DISC",
+   "fn": "DISC",
+   "formula": "DISC(39264,48214,NA(),100,9)"
+  },
+  {
+   "id": "DISC#3",
+   "group": "DISC",
+   "fn": "DISC",
+   "formula": "DISC(48214,39264,97.975,100,NA())"
+  },
+  {
+   "id": "DISC#4",
+   "group": "DISC",
+   "fn": "DISC",
+   "formula": "DISC(48214,39264,97.975,100,\"x\")"
+  },
+  {
+   "id": "INTRATE#1",
+   "group": "INTRATE",
+   "fn": "INTRATE",
+   "formula": "INTRATE(NA(),39583,1000000,1014420,7)"
+  },
+  {
+   "id": "INTRATE#2",
+   "group": "INTRATE",
+   "fn": "INTRATE",
+   "formula": "INTRATE(39583,39493,1000000,1014420,NA())"
+  },
+  {
+   "id": "PRICEDISC#1",
+   "group": "PRICEDISC",
+   "fn": "PRICEDISC",
+   "formula": "PRICEDISC(39494,\"x y\",0.0525,100,7)"
+  },
+  {
+   "id": "PRICEDISC#2",
+   "group": "PRICEDISC",
+   "fn": "PRICEDISC",
+   "formula": "PRICEDISC(39494,39508,0.0525,TRUE,7)"
+  },
+  {
+   "id": "PRICEDISC#3",
+   "group": "PRICEDISC",
+   "fn": "PRICEDISC",
+   "formula": "PRICEDISC(NA(),39508,0.0525,100,7)"
+  },
+  {
+   "id": "PRICEDISC#4",
+   "group": "PRICEDISC",
+   "fn": "PRICEDISC",
+   "formula": "PRICEDISC(39494,39508,0.0525,100,NA())"
+  },
+  {
+   "id": "PRICEDISC#5",
+   "group": "PRICEDISC",
+   "fn": "PRICEDISC",
+   "formula": "PRICEDISC(39508,39494,NA(),100,2)"
+  },
+  {
+   "id": "RECEIVED#1",
+   "group": "RECEIVED",
+   "fn": "RECEIVED",
+   "formula": "RECEIVED(NA(),39583,1000000,0.0575,7)"
+  },
+  {
+   "id": "RECEIVED#2",
+   "group": "RECEIVED",
+   "fn": "RECEIVED",
+   "formula": "RECEIVED(\"abc\",39583,NA(),0.5,20)"
+  },
+  {
+   "id": "YIELDDISC#1",
+   "group": "YIELDDISC",
+   "fn": "YIELDDISC",
+   "formula": "YIELDDISC(\"abc\",39508,15,100,7)"
+  },
+  {
+   "id": "YIELDDISC#2",
+   "group": "YIELDDISC",
+   "fn": "YIELDDISC",
+   "formula": "YIELDDISC(\"abc\",39508,15,100,0)"
+  },
+  {
+   "id": "PRICEMAT#1",
+   "group": "PRICEMAT",
+   "fn": "PRICEMAT",
+   "formula": "PRICEMAT(NA(),39551,39397,0.061,0.061,7)"
+  },
+  {
+   "id": "PRICEMAT#2",
+   "group": "PRICEMAT",
+   "fn": "PRICEMAT",
+   "formula": "PRICEMAT(39551,39493,39397,0.061,0.061,9)"
+  },
+  {
+   "id": "YIELDMAT#1",
+   "group": "YIELDMAT",
+   "fn": "YIELDMAT",
+   "formula": "YIELDMAT(39522,39755,39395,NA(),100.0123,7)"
+  },
+  {
+   "id": "ACCRINTM#1",
+   "group": "ACCRINTM",
+   "fn": "ACCRINTM",
+   "formula": "ACCRINTM(NA(),39614,0.1,1000,7)"
+  },
+  {
+   "id": "PRICE#1",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(NA(),42689,0.0575,0.065,100,2,7)"
+  },
+  {
+   "id": "PRICE#2",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(39493,42689,0.0575,0.065,100,3,NA())"
+  },
+  {
+   "id": "PRICE#3",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(42689,39493,0.0575,0.065,100,3,0)"
+  },
+  {
+   "id": "YIELD#1",
+   "group": "YIELD",
+   "fn": "YIELD",
+   "formula": "YIELD(39493,42689,NA(),95.04287,100,2,7)"
+  },
+  {
+   "id": "YIELD#2",
+   "group": "YIELD",
+   "fn": "YIELD",
+   "formula": "YIELD(39493,42689,0.0575,95.04287,100,NA(),9)"
+  },
+  {
+   "id": "YEARFRAC#1",
+   "group": "YEARFRAC",
+   "fn": "YEARFRAC",
+   "formula": "YEARFRAC(\"x\",40909,9)"
+  },
+  {
+   "id": "YEARFRAC#2",
+   "group": "YEARFRAC",
+   "fn": "YEARFRAC",
+   "formula": "YEARFRAC(40909,\"x\",NA())"
+  },
+  {
+   "id": "YEARFRAC#3",
+   "group": "YEARFRAC",
+   "fn": "YEARFRAC",
+   "formula": "YEARFRAC(NA(),41120,7)"
+  },
+  {
+   "id": "COUPDAYBS#1",
+   "group": "COUPDAYBS",
+   "fn": "COUPDAYBS",
+   "formula": "COUPDAYBS(40862,40568,2,NA())"
+  },
+  {
+   "id": "COUPDAYBS#2",
+   "group": "COUPDAYBS",
+   "fn": "COUPDAYBS",
+   "formula": "COUPDAYBS(40862,40568,2,\"x\")"
+  },
+  {
+   "id": "COUPDAYBS#3",
+   "group": "COUPDAYBS",
+   "fn": "COUPDAYBS",
+   "formula": "COUPDAYBS(40568,40862,3,NA())"
+  },
+  {
+   "id": "COUPDAYBS#4",
+   "group": "COUPDAYBS",
+   "fn": "COUPDAYBS",
+   "formula": "COUPDAYBS(NA(),40862,3,1)"
+  },
+  {
+   "id": "COUPNUM#1",
+   "group": "COUPNUM",
+   "fn": "COUPNUM",
+   "formula": "COUPNUM(40862,40568,2,NA())"
+  },
+  {
+   "id": "COUPNUM#2",
+   "group": "COUPNUM",
+   "fn": "COUPNUM",
+   "formula": "COUPNUM(40568,40862,3,NA())"
+  },
+  {
+   "id": "COUPNCD#1",
+   "group": "COUPNCD",
+   "fn": "COUPNCD",
+   "formula": "COUPNCD(40862,40568,NA(),1)"
+  },
+  {
+   "id": "COUPNCD#2",
+   "group": "COUPNCD",
+   "fn": "COUPNCD",
+   "formula": "COUPNCD(40568,40862,\"x\",9)"
+  },
+  {
+   "id": "COUPPCD#1",
+   "group": "COUPPCD",
+   "fn": "COUPPCD",
+   "formula": "COUPPCD(45688,20,\"x y\")"
+  },
+  {
+   "id": "COUPPCD#2",
+   "group": "COUPPCD",
+   "fn": "COUPPCD",
+   "formula": "COUPPCD(DATE(2011,1,25),DATE(2011,11,15),0,#VALUE!)"
+  },
+  {
+   "id": "DURATION#1",
+   "group": "DURATION",
+   "fn": "DURATION",
+   "formula": "DURATION(43282,54058,0.08,0.09,3,NA())"
+  },
+  {
+   "id": "DURATION#2",
+   "group": "DURATION",
+   "fn": "DURATION",
+   "formula": "DURATION(54058,43282,0.08,0.09,2,NA())"
+  },
+  {
+   "id": "MDURATION#1",
+   "group": "MDURATION",
+   "fn": "MDURATION",
+   "formula": "MDURATION(43282,54058,0.08,0.09,3,NA())"
+  },
+  {
+   "id": "ACCRINT#1",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(39508,39691,39569,0.1,1000,3,NA())"
+  },
+  {
+   "id": "ACCRINT#2",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(39569,39691,39508,0.1,1000,2,NA())"
+  },
+  {
+   "id": "ODDFPRICE#1",
+   "group": "ODDFPRICE",
+   "fn": "ODDFPRICE",
+   "formula": "ODDFPRICE(39763,44256,39736,39873,0.0785,0.0625,100,3,NA())"
+  },
+  {
+   "id": "ODDFPRICE#2",
+   "group": "ODDFPRICE",
+   "fn": "ODDFPRICE",
+   "formula": "ODDFPRICE(-1,59,FALSE,39873,0.0785,\"x\",100,2,1)"
+  },
+  {
+   "id": "ODDFPRICE#3",
+   "group": "ODDFPRICE",
+   "fn": "ODDFPRICE",
+   "formula": "ODDFPRICE(400,44256,60,39873,0.0785,0.0625,100,2,1)"
+  },
+  {
+   "id": "ODDFPRICE#4",
+   "group": "ODDFPRICE",
+   "fn": "ODDFPRICE",
+   "formula": "ODDFPRICE(400,44256,61,39873,0.0785,0.0625,100,2,1)"
+  },
+  {
+   "id": "ODDFPRICE#5",
+   "group": "ODDFPRICE",
+   "fn": "ODDFPRICE",
+   "formula": "ODDFPRICE(400,44256,59,39873,0.0785,0.0625,100,4,1)"
+  },
+  {
+   "id": "ODDFYIELD#1",
+   "group": "ODDFYIELD",
+   "fn": "ODDFYIELD",
+   "formula": "ODDFYIELD(39763,44256,39736,39873,0.0575,84.5,100,3,NA())"
+  },
+  {
+   "id": "ODDLPRICE#1",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,39370,0.0375,\"3\",100,-3.5,#N/A)"
+  },
+  {
+   "id": "ODDLPRICE#2",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,164,0.0375,0.0405,100,2,0)"
+  },
+  {
+   "id": "ODDLPRICE#3",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,168,0.0375,0.0405,100,2,0)"
+  },
+  {
+   "id": "ODDLPRICE#4",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,72,0.0375,0.0405,100,4,0)"
+  },
+  {
+   "id": "ODDLPRICE#5",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,75,0.0375,0.0405,100,4,0)"
+  },
+  {
+   "id": "ODDLPRICE#6",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,120,0.0375,0.0405,100,1,0)"
+  },
+  {
+   "id": "ODDLPRICE#7",
+   "group": "ODDLPRICE",
+   "fn": "ODDLPRICE",
+   "formula": "ODDLPRICE(39485,39614,182,0.0375,0.0405,100,1,0)"
+  },
+  {
+   "id": "ODDLYIELD#1",
+   "group": "ODDLYIELD",
+   "fn": "ODDLYIELD",
+   "formula": "ODDLYIELD(39558,39614,39440,0.0375,99.875,100,3,NA())"
+  },
+  {
+   "id": "ODDLYIELD#2",
+   "group": "ODDLYIELD",
+   "fn": "ODDLYIELD",
+   "formula": "ODDLYIELD(39558,39614,100,0.0375,99.875,100,2,0)"
+  },
+  {
+   "id": "ODDLYIELD#3",
+   "group": "ODDLYIELD",
+   "fn": "ODDLYIELD",
+   "formula": "ODDLYIELD(39558,39614,184,0.0375,99.875,100,2,0)"
+  },
+  {
+   "id": "AMORDEGRC#1",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(-1,39679,39813,300,1,0.15,NA())"
+  },
+  {
+   "id": "AMORDEGRC#2",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,39679,39813,300,-1,0.15,NA())"
+  },
+  {
+   "id": "AMORDEGRC#3",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,39679,39813,3000,1,0.15,NA())"
+  },
+  {
+   "id": "AMORDEGRC#4",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(-1,39679,39813,NA(),1,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#5",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,39813,39679,300,1,0.15,NA())"
+  },
+  {
+   "id": "AMORLINC#1",
+   "group": "AMORLINC",
+   "fn": "AMORLINC",
+   "formula": "AMORLINC(2400,39679,39813,300,1,-0.15,NA())"
+  },
+  {
+   "id": "AMORLINC#2",
+   "group": "AMORLINC",
+   "fn": "AMORLINC",
+   "formula": "AMORLINC(2400,39813,39679,300,1,0.15,\"x\")"
+  },
+  {
+   "id": "DEC2BIN#1",
+   "group": "DEC2BIN",
+   "fn": "DEC2BIN",
+   "formula": "DEC2BIN(NA(),\"x\")"
+  },
+  {
+   "id": "DEC2BIN#2",
+   "group": "DEC2BIN",
+   "fn": "DEC2BIN",
+   "formula": "DEC2BIN(NA(),-1)"
+  },
+  {
+   "id": "DEC2BIN#3",
+   "group": "DEC2BIN",
+   "fn": "DEC2BIN",
+   "formula": "DEC2BIN(\"x\",-1)"
+  },
+  {
+   "id": "DEC2BIN#4",
+   "group": "DEC2BIN",
+   "fn": "DEC2BIN",
+   "formula": "DEC2BIN(NA(),TRUE)"
+  },
+  {
+   "id": "DEC2BIN#5",
+   "group": "DEC2BIN",
+   "fn": "DEC2BIN",
+   "formula": "DEC2BIN(1,NA())"
+  },
+  {
+   "id": "DEC2HEX#1",
+   "group": "DEC2HEX",
+   "fn": "DEC2HEX",
+   "formula": "DEC2HEX(NA(),\"x\")"
+  },
+  {
+   "id": "HEX2BIN#1",
+   "group": "HEX2BIN",
+   "fn": "HEX2BIN",
+   "formula": "HEX2BIN(NA(),\"x\")"
+  },
+  {
+   "id": "HEX2BIN#2",
+   "group": "HEX2BIN",
+   "fn": "HEX2BIN",
+   "formula": "HEX2BIN(NA(),11)"
+  },
+  {
+   "id": "OCT2HEX#1",
+   "group": "OCT2HEX",
+   "fn": "OCT2HEX",
+   "formula": "OCT2HEX(NA(),\"x\")"
+  },
+  {
+   "id": "DELTA#1",
+   "group": "DELTA",
+   "fn": "DELTA",
+   "formula": "DELTA(NA(),\"x\")"
+  },
+  {
+   "id": "DELTA#2",
+   "group": "DELTA",
+   "fn": "DELTA",
+   "formula": "DELTA(\"x\",NA())"
+  },
+  {
+   "id": "GESTEP#1",
+   "group": "GESTEP",
+   "fn": "GESTEP",
+   "formula": "GESTEP(NA(),\"x\")"
+  },
+  {
+   "id": "GESTEP#2",
+   "group": "GESTEP",
+   "fn": "GESTEP",
+   "formula": "GESTEP(\"x\",NA())"
+  },
+  {
+   "id": "COMPLEX#1",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(3,NA(),\"x\")"
+  },
+  {
+   "id": "COMPLEX#2",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(NA(),4,\"x\")"
+  },
+  {
+   "id": "COMPLEX#3",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(NA(),4)"
+  },
+  {
+   "id": "COMPLEX#4",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1,1,NA())"
+  },
+  {
+   "id": "COMPLEX#5",
+   "group": "COMPLEX",
+   "fn": "COMPLEX",
+   "formula": "COMPLEX(1,1,\"\")"
+  },
+  {
+   "id": "FVSCHEDULE#1",
+   "group": "FVSCHEDULE",
+   "fn": "FVSCHEDULE",
+   "formula": "FVSCHEDULE(#VALUE!,D!A8)"
+  },
+  {
+   "id": "FVSCHEDULE#2",
+   "group": "FVSCHEDULE",
+   "fn": "FVSCHEDULE",
+   "formula": "FVSCHEDULE(1,D!A8)"
+  },
+  {
+   "id": "FVSCHEDULE#3",
+   "group": "FVSCHEDULE",
+   "fn": "FVSCHEDULE",
+   "formula": "FVSCHEDULE(NA(),{1,\"x\"})"
+  },
+  {
+   "id": "FVSCHEDULE#4",
+   "group": "FVSCHEDULE",
+   "fn": "FVSCHEDULE",
+   "formula": "FVSCHEDULE(TRUE,D!A8)"
+  },
+  {
+   "id": "ISPMT#1",
+   "group": "ISPMT",
+   "fn": "ISPMT",
+   "formula": "ISPMT(0.1,1.5,4,1000)"
+  },
+  {
+   "id": "ISPMT#2",
+   "group": "ISPMT",
+   "fn": "ISPMT",
+   "formula": "ISPMT(0.1,1,4.5,1000)"
+  },
+  {
+   "id": "ISPMT#3",
+   "group": "ISPMT",
+   "fn": "ISPMT",
+   "formula": "ISPMT(0.1,-1.5,4,1000)"
+  },
+  {
+   "id": "LARGE#1",
+   "group": "LARGE",
+   "fn": "LARGE",
+   "formula": "LARGE(D!E1:E8,NA())"
+  },
+  {
+   "id": "LARGE#2",
+   "group": "LARGE",
+   "fn": "LARGE",
+   "formula": "LARGE({1,#N/A},\"x\")"
+  },
+  {
+   "id": "SMALL#1",
+   "group": "SMALL",
+   "fn": "SMALL",
+   "formula": "SMALL(D!E1:E8,\"x\")"
+  },
+  {
+   "id": "QUARTILE#1",
+   "group": "QUARTILE",
+   "fn": "QUARTILE",
+   "formula": "QUARTILE(D!E1:E8,NA())"
+  },
+  {
+   "id": "PERCENTILE.EXC#1",
+   "group": "PERCENTILE.EXC",
+   "fn": "PERCENTILE.EXC",
+   "formula": "_xlfn.PERCENTILE.EXC(D!A7,#NAME?)"
+  },
+  {
+   "id": "PERCENTILE.EXC#2",
+   "group": "PERCENTILE.EXC",
+   "fn": "PERCENTILE.EXC",
+   "formula": "_xlfn.PERCENTILE.EXC(D!E1:E8,NA())"
+  },
+  {
+   "id": "PERCENTILE.INC#1",
+   "group": "PERCENTILE.INC",
+   "fn": "PERCENTILE.INC",
+   "formula": "_xlfn.PERCENTILE.INC(D!E1:E8,\"x\")"
+  },
+  {
+   "id": "PERCENTRANK.INC#1",
+   "group": "PERCENTRANK.INC",
+   "fn": "PERCENTRANK.INC",
+   "formula": "_xlfn.PERCENTRANK.INC(D!E1:E8,\"x\")"
+  },
+  {
+   "id": "PERCENTRANK.INC#2",
+   "group": "PERCENTRANK.INC",
+   "fn": "PERCENTRANK.INC",
+   "formula": "_xlfn.PERCENTRANK.INC(D!E1:E8,5,\"x\")"
+  },
+  {
+   "id": "PERCENTRANK#1",
+   "group": "PERCENTRANK",
+   "fn": "PERCENTRANK",
+   "formula": "PERCENTRANK(D!A8,#VALUE!)"
+  },
+  {
+   "id": "TRIMMEAN#1",
+   "group": "TRIMMEAN",
+   "fn": "TRIMMEAN",
+   "formula": "TRIMMEAN(D!E1:E8,\"x\")"
+  },
+  {
+   "id": "PROB#1",
+   "group": "PROB",
+   "fn": "PROB",
+   "formula": "PROB(D!AH1:AH4,{0.2,#N/A,0.1,0.4},\"x\")"
+  },
+  {
+   "id": "MIRR#1",
+   "group": "MIRR",
+   "fn": "MIRR",
+   "formula": "MIRR(D!I13:I17,\"x\",0.1)"
+  },
+  {
+   "id": "ZTEST#1",
+   "group": "ZTEST",
+   "fn": "ZTEST",
+   "formula": "ZTEST(D!E1:E8,NA())"
+  },
+  {
+   "id": "MAX#1",
+   "group": "MAX",
+   "fn": "MAX",
+   "formula": "MAX(D!E1:E8,\"x\")"
+  },
+  {
+   "id": "AVERAGE#1",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE({1,#N/A},1/0)"
+  },
+  {
+   "id": "MAXA#1",
+   "group": "MAXA",
+   "fn": "MAXA",
+   "formula": "MAXA({1,#N/A},1/0)"
+  },
+  {
+   "id": "GCD#1",
+   "group": "GCD",
+   "fn": "GCD",
+   "formula": "GCD({4,#N/A},1/0)"
+  },
+  {
+   "id": "CONCAT#1",
+   "group": "CONCAT",
+   "fn": "CONCAT",
+   "formula": "_xlfn.CONCAT({\"a\",#DIV/0!},NA())"
+  },
+  {
+   "id": "CONCAT#2",
+   "group": "CONCAT",
+   "fn": "CONCAT",
+   "formula": "_xlfn.CONCAT(NA(),{\"a\",#DIV/0!})"
+  },
+  {
+   "id": "AND#1",
+   "group": "AND",
+   "fn": "AND",
+   "formula": "AND({TRUE,#DIV/0!},NA())"
+  },
+  {
+   "id": "TEXTJOIN#1",
+   "group": "TEXTJOIN",
+   "fn": "TEXTJOIN",
+   "formula": "_xlfn.TEXTJOIN(\",\",TRUE,{\"a\",#DIV/0!},NA())"
+  },
+  {
+   "id": "STEYX#1",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(D!C1:C8,{1,#NUM!})"
+  },
+  {
+   "id": "STEYX#2",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(D!C1:C8,D!B1:B8/0)"
+  },
+  {
+   "id": "COVARIANCE.P#1",
+   "group": "COVARIANCE.P",
+   "fn": "COVARIANCE.P",
+   "formula": "_xlfn.COVARIANCE.P(D!B1:B8,{#VALUE!,1})"
+  },
+  {
+   "id": "PEARSON#1",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(D!B1:B8,{#VALUE!,1})"
+  },
+  {
+   "id": "SLOPE#1",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(D!B1:B8,{#VALUE!,1})"
+  },
+  {
+   "id": "CORREL#1",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(D!A7,D!B1:B8)"
+  },
+  {
+   "id": "CHITEST#1",
+   "group": "CHITEST",
+   "fn": "CHITEST",
+   "formula": "CHITEST({1,#VALUE!},D!AM1:AN3)"
+  },
+  {
+   "id": "CHITEST#2",
+   "group": "CHITEST",
+   "fn": "CHITEST",
+   "formula": "CHITEST(D!AK1:AL3,{#VALUE!,1;1,1;1,1})"
+  },
+  {
+   "id": "CHITEST#3",
+   "group": "CHITEST",
+   "fn": "CHITEST",
+   "formula": "CHITEST({1,#N/A},{1,1,1})"
+  },
+  {
+   "id": "TTEST#1",
+   "group": "TTEST",
+   "fn": "TTEST",
+   "formula": "TTEST(D!B1:B8,D!A8,0.5,1)"
+  },
+  {
+   "id": "TTEST#2",
+   "group": "TTEST",
+   "fn": "TTEST",
+   "formula": "TTEST(D!B1:B8,{1,#N/A},0.5,1)"
+  },
+  {
+   "id": "TTEST#3",
+   "group": "TTEST",
+   "fn": "TTEST",
+   "formula": "TTEST(D!B1:B8,D!C1:C5,0.5,1)"
+  },
+  {
+   "id": "TTEST#4",
+   "group": "TTEST",
+   "fn": "TTEST",
+   "formula": "TTEST(D!B1:B8,D!A8,1,2)"
+  },
+  {
+   "id": "DCOUNTA#1",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!U1:Y7,D!A7,D!AA1:AB2)"
+  },
+  {
+   "id": "DCOUNTA#2",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!U1:Y7,NA(),D!AA1:AB2)"
+  },
+  {
+   "id": "DCOUNTA#3",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!AY1:AY5,1,D!AZ1:AZ5)"
+  },
+  {
+   "id": "DVAR#1",
+   "group": "DVAR",
+   "fn": "DVAR",
+   "formula": "DVAR(D!B3,1,D!F1:F7)"
+  },
+  {
+   "id": "DVAR#2",
+   "group": "DVAR",
+   "fn": "DVAR",
+   "formula": "DVAR(D!U1:Y7,TRUE,D!F1:F7)"
+  },
+  {
+   "id": "DSUM#1",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(D!B3,1,D!AA1:AB2)"
+  },
+  {
+   "id": "DSUM#2",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(D!U1:Y7,D!X1,D!AA1:AB2)"
+  },
+  {
+   "id": "DSUM#3",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(D!U1:Y7,D!U1:V1,D!AA1:AB2)"
+  },
+  {
+   "id": "DSUM#4",
+   "group": "DSUM",
+   "fn": "DSUM",
+   "formula": "DSUM(D!U1:Y1,4,D!AA1:AB2)"
+  },
+  {
+   "id": "DCOUNT#1",
+   "group": "DCOUNT",
+   "fn": "DCOUNT",
+   "formula": "DCOUNT(D!B3:B4,1,D!AA1:AB2)"
+  },
+  {
+   "id": "TEXTSPLIT#1",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(\"a,b\",{\",\",\"\"})"
+  },
+  {
+   "id": "TEXTSPLIT#2",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(\"a,b\",\",\",{\";\",\"\"})"
+  },
+  {
+   "id": "TEXTSPLIT#3",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(\"a,b\",\",\",D!K1)"
+  },
+  {
+   "id": "TEXTSPLIT#4",
+   "group": "TEXTSPLIT",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.TEXTSPLIT(\"a,b;c\",D!K1:K8,\";\")"
+  },
+  {
+   "id": "PERCENTOF#1",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(2,NA())"
+  },
+  {
+   "id": "PERCENTOF#2",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(NA(),2)"
+  },
+  {
+   "id": "PERCENTOF#3",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF({1,#N/A},3)"
+  },
+  {
+   "id": "PERCENTOF#4",
+   "group": "PERCENTOF",
+   "fn": "PERCENTOF",
+   "formula": "_xlfn.PERCENTOF(1,D!E1:E8)"
+  },
+  {
+   "id": "WEEKNUM#1",
+   "group": "WEEKNUM",
+   "fn": "WEEKNUM",
+   "formula": "WEEKNUM(40977,1000)"
+  },
+  {
+   "id": "WEEKNUM#2",
+   "group": "WEEKNUM",
+   "fn": "WEEKNUM",
+   "formula": "DAY(WEEKNUM(40977,1E+3)<>2.5)"
+  },
+  {
+   "id": "LINEST#1",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#2",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#3",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),1,3)"
+  },
+  {
+   "id": "LINEST#4",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LINEST#5",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),2,2)"
+  },
+  {
+   "id": "LINEST#6",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),2,3)"
+  },
+  {
+   "id": "LINEST#7",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#8",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "LINEST#9",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "LINEST#10",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#11",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),5,1)"
+  },
+  {
+   "id": "LINEST#12",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,2;2,4;3,6;4,8},TRUE,TRUE),5,2)"
+  },
+  {
+   "id": "LINEST#13",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{1,1;2,2;3,3}),1,1)"
+  },
+  {
+   "id": "LINEST#14",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{1,1;2,2;3,3}),1,2)"
+  },
+  {
+   "id": "LINEST#15",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{1,1;2,2;3,3}),1,3)"
+  },
+  {
+   "id": "LINEST#16",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{1,1;2,2;3,3},FALSE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#17",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{1,1;2,2;3,3},FALSE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#18",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{1,1;2,2;3,3},FALSE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#19",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;5},{1,0.5;2,1;3,1.5;5,2.5}),1,1)"
+  },
+  {
+   "id": "LINEST#20",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;5},{1,0.5;2,1;3,1.5;5,2.5}),1,2)"
+  },
+  {
+   "id": "LINEST#21",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;5},{1,0.5;2,1;3,1.5;5,2.5}),1,3)"
+  },
+  {
+   "id": "LINEST#22",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4},{1,2;2,4;3,6},FALSE),1,1)"
+  },
+  {
+   "id": "LINEST#23",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4},{1,2;2,4;3,6},FALSE),1,2)"
+  },
+  {
+   "id": "LINEST#24",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;5},{10,0;11,1;12,2;13,3}),1,1)"
+  },
+  {
+   "id": "LINEST#25",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;5},{10,0;11,1;12,2;13,3}),1,2)"
+  },
+  {
+   "id": "LINEST#26",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;5},{10,0;11,1;12,2;13,3}),1,3)"
+  },
+  {
+   "id": "LINEST#27",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},TRUE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#28",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},TRUE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#29",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},TRUE,TRUE),1,3)"
+  },
+  {
+   "id": "LINEST#30",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},TRUE,TRUE),1,4)"
+  },
+  {
+   "id": "LINEST#31",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "LINEST#32",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},TRUE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#33",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},FALSE),1,1)"
+  },
+  {
+   "id": "LINEST#34",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},FALSE),1,2)"
+  },
+  {
+   "id": "LINEST#35",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;4;7},{1,1,2;2,1,3;3,2,5;4,2,6},FALSE),1,3)"
+  },
+  {
+   "id": "LINEST#36",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#37",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#38",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),1,3)"
+  },
+  {
+   "id": "LINEST#39",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),1,4)"
+  },
+  {
+   "id": "LINEST#40",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),2,3)"
+  },
+  {
+   "id": "LINEST#41",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),2,4)"
+  },
+  {
+   "id": "LINEST#42",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "LINEST#43",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#44",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1,2,3},{1,2,3;2,4,6}),1,1)"
+  },
+  {
+   "id": "LINEST#45",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1,2,3},{1,2,3;2,4,6}),1,2)"
+  },
+  {
+   "id": "LINEST#46",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1,2,3},{1,2,3;2,4,6}),1,3)"
+  },
+  {
+   "id": "LINEST#47",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{0;0;0}),1,1)"
+  },
+  {
+   "id": "LINEST#48",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{0;0;0}),1,2)"
+  },
+  {
+   "id": "LINEST#49",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{0;0;0},FALSE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#50",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({1;2;3},{0;0;0},FALSE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#51",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({2;2;2},{1;2;3},TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#52",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({2;2;2},{1;2;3},TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "LINEST#53",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST({2;2;2},{1;2;3},TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "LINEST#54",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#55",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#56",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),1,3)"
+  },
+  {
+   "id": "LINEST#57",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),1,4)"
+  },
+  {
+   "id": "LINEST#58",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LINEST#59",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),2,4)"
+  },
+  {
+   "id": "LINEST#60",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#61",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "LINEST#62",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},TRUE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#63",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},FALSE),1,1)"
+  },
+  {
+   "id": "LINEST#64",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},FALSE),1,2)"
+  },
+  {
+   "id": "LINEST#65",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},FALSE),1,3)"
+  },
+  {
+   "id": "LINEST#66",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,{1,2,3},FALSE),1,4)"
+  },
+  {
+   "id": "LINEST#67",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,D!BC1:BC6),1,1)"
+  },
+  {
+   "id": "LINEST#68",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(5,D!BC1:BC6),1,7)"
+  },
+  {
+   "id": "LINEST#69",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#70",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#71",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LINEST#72",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),2,2)"
+  },
+  {
+   "id": "LINEST#73",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#74",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "LINEST#75",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "LINEST#76",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),4,2)"
+  },
+  {
+   "id": "LINEST#77",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1,D!C1,TRUE,TRUE),5,1)"
+  },
+  {
+   "id": "LINEST#78",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "COLUMNS(LINEST(5,D!BC1:BC6))"
+  },
+  {
+   "id": "LINEST#79",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "COLUMNS(LINEST(5,{1,2,3}))"
+  },
+  {
+   "id": "LINEST#80",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!L1:N6,D!BC1:BC6),1,1)"
+  },
+  {
+   "id": "LINEST#81",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1:B8,D!L1:N6),1,1)"
+  },
+  {
+   "id": "LINEST#82",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!L1:L6,D!M1:M6),1,1)"
+  },
+  {
+   "id": "LINEST#83",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(D!B1:B8,D!D1:D8),1,1)"
+  },
+  {
+   "id": "LOGEST#1",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(1E+3,D!BC1:BC6),1,1)"
+  },
+  {
+   "id": "LOGEST#2",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(1E+3,D!BC1:BC6),1,7)"
+  },
+  {
+   "id": "LOGEST#3",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "COLUMNS(LOGEST(1E+3,D!BC1:BC6))"
+  },
+  {
+   "id": "LOGEST#4",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(5,{1,2,3}),1,4)"
+  },
+  {
+   "id": "LOGEST#5",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "LOGEST(D!L1:N6,D!BC1:BC6)"
+  },
+  {
+   "id": "TREND#1",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8}),4)"
+  },
+  {
+   "id": "TREND#2",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(5,{1,2,3},{1,2,3})"
+  },
+  {
+   "id": "TREND#3",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "INDEX(TREND({1;2;3;5},{1,2;2,4;3,6;4,8},{5,10}),1,1)"
+  },
+  {
+   "id": "GROWTH#1",
+   "group": "GROWTH",
+   "fn": "GROWTH",
+   "formula": "GROWTH(5,{1,2,3},{1,2,3})"
+  }
+ ],
+ "values": {
+  "ABS#1": {
+   "t": "n",
+   "v": 45688
+  },
+  "ABS#2": {
+   "t": "n",
+   "v": 1000
+  },
+  "ABS#3": {
+   "t": "n",
+   "v": 5
+  },
+  "ABS#4": {
+   "t": "n",
+   "v": 1.5
+  },
+  "LN#1": {
+   "t": "n",
+   "v": -0.6931471805599453
+  },
+  "SIGN#1": {
+   "t": "n",
+   "v": 1
+  },
+  "SIGN#2": {
+   "t": "n",
+   "v": -1
+  },
+  "ROUNDDOWN#1": {
+   "t": "n",
+   "v": 3.2
+  },
+  "NORM.S.DIST#1": {
+   "t": "n",
+   "v": 1
+  },
+  "NORM.S.DIST#2": {
+   "t": "n",
+   "v": 0.6080750922584142
+  },
+  "TEXT#1": {
+   "t": "s",
+   "v": "45689"
+  },
+  "TEXT#2": {
+   "t": "s",
+   "v": "0.50"
+  },
+  "TEXT#3": {
+   "t": "s",
+   "v": "abc"
+  },
+  "TEXT#4": {
+   "t": "s",
+   "v": "1,000"
+  },
+  "DOLLAR#1": {
+   "t": "s",
+   "v": "$45,659.0"
+  },
+  "BAHTTEXT#1": {
+   "t": "s",
+   "v": "ห้าสิบสตางค์"
+  },
+  "RIGHTB#1": {
+   "t": "s",
+   "v": "2025-01-31"
+  },
+  "EDATE#1": {
+   "t": "n",
+   "v": 40558
+  },
+  "EDATE#2": {
+   "t": "n",
+   "v": 40862
+  },
+  "SUM#1": {
+   "t": "n",
+   "v": 1.5
+  },
+  "SUM#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUM#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUM#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUM#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "+#1": {
+   "t": "n",
+   "v": 0
+  },
+  "+#2": {
+   "t": "n",
+   "v": 1
+  },
+  "+#3": {
+   "t": "n",
+   "v": 1001
+  },
+  "+#4": {
+   "t": "n",
+   "v": 18.5
+  },
+  "+#5": {
+   "t": "n",
+   "v": 3
+  },
+  "+#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DISC#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DISC#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DISC#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "DISC#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "INTRATE#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "INTRATE#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PRICEDISC#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICEDISC#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICEDISC#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICEDISC#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PRICEDISC#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "RECEIVED#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "RECEIVED#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YIELDDISC#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YIELDDISC#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PRICEMAT#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICEMAT#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YIELDMAT#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ACCRINTM#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PRICE#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICE#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PRICE#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YIELD#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YIELD#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YEARFRAC#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YEARFRAC#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "YEARFRAC#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYBS#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYBS#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYBS#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPDAYBS#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "COUPNUM#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPNUM#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPNCD#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPNCD#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "COUPPCD#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPPCD#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DURATION#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DURATION#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "MDURATION#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ACCRINT#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ACCRINT#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "ODDFPRICE#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDFPRICE#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDFPRICE#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDFPRICE#4": {
+   "t": "n",
+   "v": -6.033634102165021
+  },
+  "ODDFPRICE#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDFYIELD#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLPRICE#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLPRICE#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLPRICE#3": {
+   "t": "n",
+   "v": 94.16471148790748
+  },
+  "ODDLPRICE#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLPRICE#5": {
+   "t": "n",
+   "v": 94.15125525762357
+  },
+  "ODDLPRICE#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLPRICE#7": {
+   "t": "n",
+   "v": 94.16678167718197
+  },
+  "ODDLYIELD#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLYIELD#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "ODDLYIELD#3": {
+   "t": "n",
+   "v": 0.009061605391880867
+  },
+  "AMORDEGRC#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "AMORDEGRC#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "AMORDEGRC#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "AMORDEGRC#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "AMORDEGRC#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "AMORLINC#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "AMORLINC#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DEC2BIN#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEC2BIN#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DEC2BIN#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "DEC2HEX#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2BIN#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HEX2BIN#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "OCT2HEX#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DELTA#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DELTA#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "GESTEP#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "GESTEP#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "COMPLEX#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "COMPLEX#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "COMPLEX#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "COMPLEX#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "COMPLEX#5": {
+   "t": "s",
+   "v": "1+i"
+  },
+  "FVSCHEDULE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "FVSCHEDULE#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "FVSCHEDULE#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "FVSCHEDULE#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISPMT#1": {
+   "t": "n",
+   "v": -62.5
+  },
+  "ISPMT#2": {
+   "t": "n",
+   "v": -77.77777777777777
+  },
+  "ISPMT#3": {
+   "t": "n",
+   "v": -137.5
+  },
+  "LARGE#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LARGE#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SMALL#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "QUARTILE#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PERCENTILE.EXC#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "PERCENTILE.EXC#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PERCENTILE.INC#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PERCENTRANK.INC#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PERCENTRANK.INC#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PERCENTRANK#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TRIMMEAN#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PROB#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MIRR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ZTEST#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "MAX#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "AVERAGE#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "MAXA#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "GCD#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CONCAT#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CONCAT#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "AND#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TEXTJOIN#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "STEYX#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "STEYX#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "COVARIANCE.P#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PEARSON#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SLOPE#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CORREL#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "CHITEST#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CHITEST#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHITEST#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TTEST#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "TTEST#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "TTEST#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "TTEST#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "DCOUNTA#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DCOUNTA#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "DCOUNTA#3": {
+   "t": "n",
+   "v": 4
+  },
+  "DVAR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DVAR#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "DSUM#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DSUM#2": {
+   "t": "n",
+   "v": 24
+  },
+  "DSUM#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DSUM#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DCOUNT#1": {
+   "t": "n",
+   "v": 0
+  },
+  "TEXTSPLIT#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTSPLIT#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTSPLIT#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXTSPLIT#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "PERCENTOF#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PERCENTOF#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "PERCENTOF#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PERCENTOF#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "WEEKNUM#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "WEEKNUM#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LINEST#1": {
+   "t": "n",
+   "v": 0.65
+  },
+  "LINEST#2": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#3": {
+   "t": "n",
+   "v": -0.5
+  },
+  "LINEST#4": {
+   "t": "n",
+   "v": 0.08660254037844385
+  },
+  "LINEST#5": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#6": {
+   "t": "n",
+   "v": 0.4743416490252569
+  },
+  "LINEST#7": {
+   "t": "n",
+   "v": 0.9657142857142856
+  },
+  "LINEST#8": {
+   "t": "n",
+   "v": 0.3872983346207417
+  },
+  "LINEST#9": {
+   "t": "n",
+   "v": 56.33333333333333
+  },
+  "LINEST#10": {
+   "t": "n",
+   "v": 2
+  },
+  "LINEST#11": {
+   "t": "n",
+   "v": 8.45
+  },
+  "LINEST#12": {
+   "t": "n",
+   "v": 0.3
+  },
+  "LINEST#13": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#14": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#15": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#16": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#17": {
+   "t": "n",
+   "v": 1.0000000000000002
+  },
+  "LINEST#18": {
+   "t": "n",
+   "v": 2
+  },
+  "LINEST#19": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#20": {
+   "t": "n",
+   "v": 1.0285714285714285
+  },
+  "LINEST#21": {
+   "t": "n",
+   "v": 0.1714285714285717
+  },
+  "LINEST#22": {
+   "t": "n",
+   "v": 0.6071428571428572
+  },
+  "LINEST#23": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#24": {
+   "t": "n",
+   "v": 1.4
+  },
+  "LINEST#25": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#26": {
+   "t": "n",
+   "v": 0.9000000000000004
+  },
+  "LINEST#27": {
+   "t": "n",
+   "v": 1.9999999999999998
+  },
+  "LINEST#28": {
+   "t": "n",
+   "v": -1.9999999999999996
+  },
+  "LINEST#29": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#30": {
+   "t": "n",
+   "v": -1.5
+  },
+  "LINEST#31": {
+   "t": "n",
+   "v": 10.000000000000018
+  },
+  "LINEST#32": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#33": {
+   "t": "n",
+   "v": -1.3636363636363655
+  },
+  "LINEST#34": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#35": {
+   "t": "n",
+   "v": 3.6363636363636394
+  },
+  "LINEST#36": {
+   "t": "n",
+   "v": 0.65
+  },
+  "LINEST#37": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#38": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#39": {
+   "t": "n",
+   "v": -0.5
+  },
+  "LINEST#40": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#41": {
+   "t": "n",
+   "v": 0.10319961748964883
+  },
+  "LINEST#42": {
+   "t": "n",
+   "v": 615.6878650646264
+  },
+  "LINEST#43": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#44": {
+   "t": "n",
+   "v": 0.5
+  },
+  "LINEST#45": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#46": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#47": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#48": {
+   "t": "n",
+   "v": 2
+  },
+  "LINEST#49": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#50": {
+   "t": "n",
+   "v": 2
+  },
+  "LINEST#51": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#52": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#53": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LINEST#54": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#55": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#56": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#57": {
+   "t": "n",
+   "v": 5
+  },
+  "LINEST#58": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#59": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#60": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#61": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#62": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#63": {
+   "t": "n",
+   "v": 1.6666666666666667
+  },
+  "LINEST#64": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#65": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#66": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#67": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#68": {
+   "t": "n",
+   "v": 5
+  },
+  "LINEST#69": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#70": {
+   "t": "n",
+   "v": 4
+  },
+  "LINEST#71": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#72": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#73": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#74": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#75": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LINEST#76": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#77": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#78": {
+   "t": "n",
+   "v": 7
+  },
+  "LINEST#79": {
+   "t": "n",
+   "v": 4
+  },
+  "LINEST#80": {
+   "t": "e",
+   "v": "REF"
+  },
+  "LINEST#81": {
+   "t": "e",
+   "v": "REF"
+  },
+  "LINEST#82": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LINEST#83": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "LOGEST#1": {
+   "t": "n",
+   "v": 1
+  },
+  "LOGEST#2": {
+   "t": "n",
+   "v": 999.9999999999998
+  },
+  "LOGEST#3": {
+   "t": "n",
+   "v": 7
+  },
+  "LOGEST#4": {
+   "t": "n",
+   "v": 4.999999999999999
+  },
+  "LOGEST#5": {
+   "t": "e",
+   "v": "REF"
+  },
+  "TREND#1": {
+   "t": "n",
+   "v": 4.7
+  },
+  "TREND#2": {
+   "t": "n",
+   "v": 5
+  },
+  "TREND#3": {
+   "t": "n",
+   "v": 6
+  },
+  "GROWTH#1": {
+   "t": "n",
+   "v": 4.999999999999999
+  }
+ }
+}
