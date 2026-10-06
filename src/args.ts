@@ -75,6 +75,8 @@ export interface Cx {
   rand(s: number, r: number, c: number): number
   /** Range values row by row (the occupied part); shared with caches, never to be modified. */
   flat(g: Rng): readonly V[]
+  /** The same with the cells whose formula calls SUBTOTAL or AGGREGATE blank: SUBTOTAL and AGGREGATE skip them. */
+  flatOuter(g: Rng): readonly V[]
   bounds(g: Rng): Bounds
   /** A value in a scalar position: the single cell of a range, or #VALUE!. */
   scalar(x: V | Rng): V

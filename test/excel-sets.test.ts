@@ -5,17 +5,15 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import type { Probe } from '../bench/coverage/probes.js'
+import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import { compute, type CellInput } from '../src/index.js'
 import { CASES, dataSheet, engineFormula, KNOWN, REASONS, show, toVal, verdict } from './excel-cases.js'
 import { SETS } from './excel-sets.js'
 
-type Sheets = Record<string, Record<string, number | string | boolean>>
-
 for (const set of SETS) {
-  const mod = (await import(`../bench/coverage/sets/${set.name}.ts`)) as { buildProbes: () => Probe[]; SHEETS?: Sheets }
+  const mod = (await import(`../bench/coverage/sets/${set.name}.ts`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
   const probes = mod.buildProbes()
-  const sheets = Object.entries(mod.SHEETS ?? {}).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]): [string, CellInput] => [a, { value: v }])) }))
+  const sheets = Object.entries(mod.SHEETS ?? {}).map(([name, cells]) => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]): [string, CellInput] => [a, typeof v === 'object' ? { formula: engineFormula(v.formula) } : { value: v }])) }))
   const cases = { name: 'C', cells: Object.fromEntries(probes.map((p, i): [string, CellInput] => [`A${i + 1}`, { formula: engineFormula(p.formula) }])) }
   // as the book sent to Excel: the measurement's data sheet D, the set's own sheets, the cases on C
   const result = compute({ sheets: [dataSheet(), ...sheets, cases] }, { clock: { now: '2026-10-05T12:00:00Z', seed: 1 } }).sheets.at(-1)!.cells

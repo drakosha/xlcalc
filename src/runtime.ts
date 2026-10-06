@@ -10,7 +10,7 @@ import { buildIndex, matches, parseCrit, select, type CritColumn, type CritIndex
 import { DEFS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
-import { MAX_ROWS } from './model.js'
+import { MAX_COLS, MAX_ROWS } from './model.js'
 import { compareValues, E, fitNumber, fromCellValue, isErr, Rng, toNum, toText, type CErr, type V } from './values.js'
 
 export interface SheetData {
@@ -30,6 +30,8 @@ export interface RuntimeContext {
   externals: Record<string, CellValue>
   /** Cache of large ranges (flat arrays) and criteria indexes; invalidated by edits. */
   flat: Map<string, V[]>
+  /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
+  nested: Map<number, Set<number>>
   index: Map<string, CritIndex>
 }
 
@@ -75,6 +77,22 @@ export function makeRuntime(ctx: RuntimeContext) {
     }
     if (out.length >= BIG_RANGE) ctx.flat.set(g.key, out)
     return out
+  }
+
+  /** Range values like `flat`, with the cells whose formula calls SUBTOTAL or AGGREGATE blank (not counted twice). */
+  const flatOuter = (g: Rng): readonly V[] => {
+    const marks = ctx.nested.get(g.s)
+    if (!marks?.size) return flat(g)
+    const b = bounds(g)
+    let out: V[] | undefined
+    for (const pos of marks) {
+      const r = Math.floor(pos / MAX_COLS)
+      const c = pos - r * MAX_COLS
+      if (r < b.r1 || r > b.r2 || c < b.c1 || c > b.c2) continue
+      out ??= flat(g).slice()
+      out[(r - b.r1) * b.w + (c - b.c1)] = null
+    }
+    return out ?? flat(g)
   }
 
   /** A value in a scalar position: the single cell of a range or #VALUE! (no spilling). */
@@ -179,6 +197,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     },
     rand: (s, r, c) => randAt(ctx.seed, sheets[s].name, r, c),
     flat,
+    flatOuter,
     bounds,
     scalar,
     grid,
