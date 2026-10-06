@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.293,
+  "seconds": 2.014,
   "dynamic": true
  },
  "cases": [
@@ -455,6 +455,114 @@
    "group": "DATE",
    "fn": "DATE",
    "formula": "DATE(1900,-12,1)"
+  },
+  {
+   "id": "DATE#76",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32500,1)"
+  },
+  {
+   "id": "DATE#77",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32500,1)"
+  },
+  {
+   "id": "DATE#78",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32700,1)"
+  },
+  {
+   "id": "DATE#79",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32700,1)"
+  },
+  {
+   "id": "DATE#80",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32750,1)"
+  },
+  {
+   "id": "DATE#81",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32750,1)"
+  },
+  {
+   "id": "DATE#82",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32755,1)"
+  },
+  {
+   "id": "DATE#83",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32755,1)"
+  },
+  {
+   "id": "DATE#84",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32756,1)"
+  },
+  {
+   "id": "DATE#85",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32756,1)"
+  },
+  {
+   "id": "DATE#86",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32757,1)"
+  },
+  {
+   "id": "DATE#87",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32757,1)"
+  },
+  {
+   "id": "DATE#88",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32760,1)"
+  },
+  {
+   "id": "DATE#89",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32760,1)"
+  },
+  {
+   "id": "DATE#90",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32765,1)"
+  },
+  {
+   "id": "DATE#91",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32765,1)"
+  },
+  {
+   "id": "DATE#92",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(1900,32766,1)"
+  },
+  {
+   "id": "DATE#93",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2000,32766,1)"
   }
  ],
  "values": {
@@ -757,6 +865,78 @@
   "DATE#75": {
    "t": "e",
    "v": "NUM"
+  },
+  "DATE#76": {
+   "t": "n",
+   "v": 989169
+  },
+  "DATE#77": {
+   "t": "n",
+   "v": 1025693
+  },
+  "DATE#78": {
+   "t": "n",
+   "v": 995257
+  },
+  "DATE#79": {
+   "t": "n",
+   "v": 1031781
+  },
+  "DATE#80": {
+   "t": "n",
+   "v": 996780
+  },
+  "DATE#81": {
+   "t": "n",
+   "v": 1033304
+  },
+  "DATE#82": {
+   "t": "n",
+   "v": 996930
+  },
+  "DATE#83": {
+   "t": "n",
+   "v": 1033454
+  },
+  "DATE#84": {
+   "t": "n",
+   "v": 996961
+  },
+  "DATE#85": {
+   "t": "n",
+   "v": 1033485
+  },
+  "DATE#86": {
+   "t": "n",
+   "v": 996992
+  },
+  "DATE#87": {
+   "t": "n",
+   "v": 1033516
+  },
+  "DATE#88": {
+   "t": "n",
+   "v": 997083
+  },
+  "DATE#89": {
+   "t": "n",
+   "v": 1033607
+  },
+  "DATE#90": {
+   "t": "n",
+   "v": 997234
+  },
+  "DATE#91": {
+   "t": "n",
+   "v": 1033758
+  },
+  "DATE#92": {
+   "t": "n",
+   "v": 997265
+  },
+  "DATE#93": {
+   "t": "n",
+   "v": 1033789
   }
  }
 }
