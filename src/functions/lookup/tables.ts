@@ -1,7 +1,6 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
-import { MAX_COLS, MAX_ROWS } from '../../model.js'
-import { E, isErr, Rng, toBool, type V } from '../../values.js'
+import { E, isErr, toBool, type Rng, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /** Excel reads the index, looks up the key, and only then checks the index against the table. */
@@ -42,21 +41,18 @@ function match(cx: Cx, key: V, range: Grid, type: V | Rng = 1): V {
 }
 
 /**
- * LOOKUP: array form reads the last row (column) of the array; vector form reads the result at the same
- * position, past its end too, as Excel extends a result reference down a column or along a row.
+ * LOOKUP: array form reads the last row (column) of the array, vector form the result at the same position.
+ * Past the end of the result Excel reads further cells; here that is #REF!, since a session recomputes a
+ * formula only for edits inside its references.
  */
-function lookup(cx: Cx, key: V, look: Grid, result?: V | Rng): V {
+function lookup(key: V, look: Grid, result?: Grid): V {
   const k = keyOf(key)
   if (isErr(k)) return k
   const pos = bisect(along(look), k)
   if (pos < 0) return E.NA
   if (result === undefined) return gridAt(look, look.cols > look.rows ? (look.rows - 1) * look.cols + pos : pos * look.cols + look.cols - 1)
-  if (!(result instanceof Rng)) return pos === 0 ? result : E.NA
-  if (result.r2 > result.r1 && result.c2 > result.c1) return E.NA
-  const down = result.r2 > result.r1
-  const r = result.r1 + (down ? pos : 0)
-  const c = result.c1 + (down ? 0 : pos)
-  return r >= MAX_ROWS || c >= MAX_COLS ? E.REF : cx.scalar(new Rng(result.s, r, c, r, c))
+  if (result.rows > 1 && result.cols > 1) return E.NA
+  return pos < result.rows * result.cols ? gridAt(result, pos) : E.REF
 }
 
 /** Row or column 0 selects all of them: more than one cell is an array answer (no spilling), #VALUE!. */
@@ -77,7 +73,7 @@ function index(g: Grid, r: number, c?: number, area?: number): V {
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
   INDEX: { args: 'G i i? i?', fn: index },
-  LOOKUP: { args: 'a G R?', cx: true, fn: lookup },
+  LOOKUP: { args: 'a G G?', fn: lookup },
   MATCH: { args: 'a G R?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),
 }

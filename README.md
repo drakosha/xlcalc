@@ -218,6 +218,7 @@ Notes on semantics:
   - `INDEX` returns a value, not a reference: a whole row or column (`INDEX(A1:C3,0,2)`) is `#VALUE!` even inside `SUM`, which in Excel sums it. `ROW` and `COLUMN` of several rows or columns give the first one, as the cell shows it; Excel passes the whole list to an enclosing function (`SUM(ROW(A1:A3))` is 6 there).
   - `CONCAT` and `TEXTJOIN` longer than 32,767 characters are `#VALUE!`; Excel answers `#CALC!`, which this engine has no code for.
   - `TEXTBEFORE` and `TEXTAFTER` take one delimiter (there are no array constants).
+  - `LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.
   - Text order for `<` and `>` uses `Intl.Collator` (case-insensitive, accent-sensitive), which may differ from Excel for some characters; without `Intl` it falls back to comparing lower-cased code units.
   - `TEXT` knows en-US formats only; exponent formats (`0.00E+00`), colours and bracketed conditions give `#VALUE!`.
   - Date text without a year (`1/31`, which Excel completes with the current year) is not read as a date.

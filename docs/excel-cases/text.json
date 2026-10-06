@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.3",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 3.957
+  "seconds": 1.619
  },
  "cases": [
   {
@@ -4245,184 +4245,142 @@
    "id": "LOOKUP#2",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(8,L!A1:A8,L!B1:B3)"
+   "formula": "LOOKUP(2,L!A1:A8,L!B1:B8)"
   },
   {
    "id": "LOOKUP#3",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(8,L!A1:A8,L!B1)"
+   "formula": "LOOKUP(\"c\",L!D1:D6,L!E1:E6)"
   },
   {
    "id": "LOOKUP#4",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(2,L!A1:A8,L!B1:B8)"
+   "formula": "LOOKUP(5,D!L8:Q10)"
   },
   {
    "id": "LOOKUP#5",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(\"c\",L!D1:D6,L!E1:E6)"
+   "formula": "LOOKUP(5,D!P1:Q2)"
   },
   {
    "id": "LOOKUP#6",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L8:Q10)"
+   "formula": "LOOKUP(5,D!L1:N6,D!N1:N6)"
   },
   {
    "id": "LOOKUP#7",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!P1:Q2)"
+   "formula": "LOOKUP(5,D!L1:L6,D!L8:Q8)"
   },
   {
    "id": "LOOKUP#8",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L1:N6,D!N1:N6)"
+   "formula": "LOOKUP(\"b*\",L!D1:D6,L!E1:E6)"
   },
   {
    "id": "LOOKUP#9",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L1:L6,D!L8:Q8)"
+   "formula": "LOOKUP(TRUE,L!G1:G8)"
   },
   {
    "id": "LOOKUP#10",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(\"b*\",L!D1:D6,L!E1:E6)"
+   "formula": "LOOKUP(3,D!E1:E8)"
   },
   {
    "id": "LOOKUP#11",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(TRUE,L!G1:G8)"
+   "formula": "LOOKUP(4,L!M1:M7)"
   },
   {
    "id": "LOOKUP#12",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(3,D!E1:E8)"
+   "formula": "LOOKUP(\"b\",L!M1:M7)"
   },
   {
    "id": "LOOKUP#13",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(4,L!M1:M7)"
+   "formula": "LOOKUP(100,L!A:A,L!B:B)"
   },
   {
    "id": "LOOKUP#14",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(\"b\",L!M1:M7)"
+   "formula": "LOOKUP(5,D!L1:L6,D!N1:N6)"
   },
   {
    "id": "LOOKUP#15",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(100,L!A:A,L!B:B)"
+   "formula": "LOOKUP(5,D!L8:Q10,D!L10:Q10)"
   },
   {
    "id": "LOOKUP#16",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L1:L6,D!N1:N6)"
+   "formula": "LOOKUP(5,D!L1:L6,D!M1:N6)"
   },
   {
    "id": "LOOKUP#17",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(8,L!A1:A8,L!B3:B4)"
+   "formula": "LOOKUP(0,L!U1:U9)"
   },
   {
    "id": "LOOKUP#18",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(1,L!A1:A8,L!D1)"
+   "formula": "LOOKUP(2.5,L!U1:U9)"
   },
   {
    "id": "LOOKUP#19",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,L!A1:A8,L!B1:C1)"
+   "formula": "LOOKUP(6,L!U1:U9)"
   },
   {
    "id": "LOOKUP#20",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L8:Q10,D!L10:Q10)"
+   "formula": "LOOKUP(10,L!U1:U9)"
   },
   {
    "id": "LOOKUP#21",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(8,L!A1:A8,D!N1:N6)"
+   "formula": "LOOKUP(2.5,L!U:U,L!V:V)"
   },
   {
    "id": "LOOKUP#22",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L1:L6,D!M1:N6)"
+   "formula": "LOOKUP(6,L!U:U,L!V:V)"
   },
   {
    "id": "LOOKUP#23",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(5,D!L1:L6,D!L10:N10)"
+   "formula": "LOOKUP(2.5,L!20:20,L!21:21)"
   },
   {
    "id": "LOOKUP#24",
    "group": "LOOKUP",
    "fn": "LOOKUP",
-   "formula": "LOOKUP(0,L!U1:U9)"
-  },
-  {
-   "id": "LOOKUP#25",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
-   "formula": "LOOKUP(2.5,L!U1:U9)"
-  },
-  {
-   "id": "LOOKUP#26",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
-   "formula": "LOOKUP(6,L!U1:U9)"
-  },
-  {
-   "id": "LOOKUP#27",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
-   "formula": "LOOKUP(10,L!U1:U9)"
-  },
-  {
-   "id": "LOOKUP#28",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
-   "formula": "LOOKUP(2.5,L!U:U,L!V:V)"
-  },
-  {
-   "id": "LOOKUP#29",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
-   "formula": "LOOKUP(6,L!U:U,L!V:V)"
-  },
-  {
-   "id": "LOOKUP#30",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
-   "formula": "LOOKUP(2.5,L!20:20,L!21:21)"
-  },
-  {
-   "id": "LOOKUP#31",
-   "group": "LOOKUP",
-   "fn": "LOOKUP",
    "formula": "LOOKUP(6,L!20:20,L!21:21)"
   },
   {
-   "id": "LOOKUP#32",
+   "id": "LOOKUP#25",
    "group": "LOOKUP",
    "fn": "LOOKUP",
    "formula": "LOOKUP(6,L!A20:I21)"
@@ -9275,130 +9233,6 @@
    "t": "s",
    "v": "a"
   },
-  "LOOKUP#2": {
-   "t": "s",
-   "v": "g"
-  },
-  "LOOKUP#3": {
-   "t": "n",
-   "v": 0
-  },
-  "LOOKUP#4": {
-   "t": "s",
-   "v": "e"
-  },
-  "LOOKUP#5": {
-   "t": "n",
-   "v": 2
-  },
-  "LOOKUP#6": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#7": {
-   "t": "n",
-   "v": 4
-  },
-  "LOOKUP#8": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#9": {
-   "t": "n",
-   "v": 5
-  },
-  "LOOKUP#10": {
-   "t": "n",
-   "v": 1
-  },
-  "LOOKUP#11": {
-   "t": "b",
-   "v": true
-  },
-  "LOOKUP#12": {
-   "t": "n",
-   "v": 2
-  },
-  "LOOKUP#13": {
-   "t": "n",
-   "v": 1
-  },
-  "LOOKUP#14": {
-   "t": "s",
-   "v": "a"
-  },
-  "LOOKUP#15": {
-   "t": "n",
-   "v": 3
-  },
-  "LOOKUP#16": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#17": {
-   "t": "n",
-   "v": 0
-  },
-  "LOOKUP#18": {
-   "t": "n",
-   "v": 1
-  },
-  "LOOKUP#19": {
-   "t": "n",
-   "v": 1
-  },
-  "LOOKUP#20": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#21": {
-   "t": "n",
-   "v": 0
-  },
-  "LOOKUP#22": {
-   "t": "e",
-   "v": "NA"
-  },
-  "LOOKUP#23": {
-   "t": "n",
-   "v": 50
-  },
-  "LOOKUP#24": {
-   "t": "e",
-   "v": "NA"
-  },
-  "LOOKUP#25": {
-   "t": "e",
-   "v": "NA"
-  },
-  "LOOKUP#26": {
-   "t": "n",
-   "v": 6
-  },
-  "LOOKUP#27": {
-   "t": "n",
-   "v": 4
-  },
-  "LOOKUP#28": {
-   "t": "n",
-   "v": 3
-  },
-  "LOOKUP#29": {
-   "t": "n",
-   "v": 3
-  },
-  "LOOKUP#30": {
-   "t": "s",
-   "v": "r4"
-  },
-  "LOOKUP#31": {
-   "t": "s",
-   "v": "r8"
-  },
-  "LOOKUP#32": {
-   "t": "s",
-   "v": "r8"
-  },
   "XMATCH#1": {
    "t": "n",
    "v": 4
@@ -10746,6 +10580,102 @@
   "BAHTTEXT#30": {
    "t": "s",
    "v": "ยี่สิบเอ็ดสตางค์"
+  },
+  "LOOKUP#2": {
+   "t": "s",
+   "v": "e"
+  },
+  "LOOKUP#3": {
+   "t": "n",
+   "v": 2
+  },
+  "LOOKUP#4": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#5": {
+   "t": "n",
+   "v": 4
+  },
+  "LOOKUP#6": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#7": {
+   "t": "n",
+   "v": 5
+  },
+  "LOOKUP#8": {
+   "t": "n",
+   "v": 1
+  },
+  "LOOKUP#9": {
+   "t": "b",
+   "v": true
+  },
+  "LOOKUP#10": {
+   "t": "n",
+   "v": 2
+  },
+  "LOOKUP#11": {
+   "t": "n",
+   "v": 1
+  },
+  "LOOKUP#12": {
+   "t": "s",
+   "v": "a"
+  },
+  "LOOKUP#13": {
+   "t": "n",
+   "v": 3
+  },
+  "LOOKUP#14": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#15": {
+   "t": "n",
+   "v": 50
+  },
+  "LOOKUP#16": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LOOKUP#17": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LOOKUP#18": {
+   "t": "e",
+   "v": "NA"
+  },
+  "LOOKUP#19": {
+   "t": "n",
+   "v": 6
+  },
+  "LOOKUP#20": {
+   "t": "n",
+   "v": 4
+  },
+  "LOOKUP#21": {
+   "t": "n",
+   "v": 3
+  },
+  "LOOKUP#22": {
+   "t": "n",
+   "v": 3
+  },
+  "LOOKUP#23": {
+   "t": "s",
+   "v": "r4"
+  },
+  "LOOKUP#24": {
+   "t": "s",
+   "v": "r8"
+  },
+  "LOOKUP#25": {
+   "t": "s",
+   "v": "r8"
   }
  }
 }
