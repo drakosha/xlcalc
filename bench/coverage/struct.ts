@@ -18,7 +18,6 @@ import type { StructCase, StructCases, StructSet } from './struct/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
-const OUT = join(HERE, 'out')
 const SCRIPT = join(HERE, 'excel-struct.applescript')
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 
@@ -178,7 +177,6 @@ export async function stepStruct(set: string): Promise<void> {
   for (const c of cases) if (prev?.answers[c.id] && same.get(c.id) === key(c, books)) answers[c.id] = prev.answers[c.id]
   const t0 = Date.now()
   mkdirSync(join(ROOT, 'docs/excel-struct'), { recursive: true })
-  mkdirSync(OUT, { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, books, cases, answers }, null, 1) + '\n')
