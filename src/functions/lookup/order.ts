@@ -3,7 +3,7 @@
  * stable; an empty answer is #CALC! in Excel, #VALUE! here (`EMPTY`). A whole column is handled by its
  * occupied rows: past them every row is blank.
  */
-import type { FnDef, Grid } from '../../args.js'
+import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
 import { collator } from '../../criteria.js'
 import { E, isErr, toBool, toNum, type CErr, type V } from '../../values.js'
@@ -121,10 +121,15 @@ function unique(g: Grid, byCol = false, once = false): V | Arr {
   return lines.length ? lineArr(a, lines, byCol) : EMPTY
 }
 
-/** FILTER: an include column (row) as long as the array's rows (columns); numbers and booleans, text #VALUE!, an error is the answer. */
-function filter(g: Grid, inc: Grid, empty?: V | Arr): V | Arr {
+/**
+ * FILTER: an include column (row) as long as the array's rows (columns); numbers and booleans, text #VALUE!,
+ * an error is the answer. An include array is read lazily: past its occupied part only its fill counts.
+ */
+function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
+  if (isErr(inc)) return inc
   const a = fromGrid(g)
-  const f = fromGrid(inc)
+  const v = cx.view(inc)
+  const f = v instanceof Arr ? v : new Arr(1, 1, 1, 1, [v])
   const byCol = !(f.cols === 1 && f.rows === a.rows) && f.rows === 1 && f.cols === a.cols
   if (!byCol && !(f.cols === 1 && f.rows === a.rows)) return E.VALUE
   const kept: number[] = []
@@ -143,7 +148,7 @@ function filter(g: Grid, inc: Grid, empty?: V | Arr): V | Arr {
 }
 
 export const functions: Record<string, FnDef> = {
-  FILTER: { args: 'G G p?', array: true, fn: filter },
+  FILTER: { args: 'G R p?', cx: true, array: true, fn: filter },
   SORT: { args: 'G G? G? b?', array: true, fn: sort },
   SORTBY: { args: 'G G', rep: 1, array: true, fn: sortby },
   UNIQUE: { args: 'G b? b?', array: true, fn: unique },

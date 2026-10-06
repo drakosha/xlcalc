@@ -2,7 +2,8 @@
  * Sums and products. SUM and PRODUCT ported from formula.js 4.6.1 (src/math-trig.js), Copyright (c) 2014
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); the rest this engine's own.
  */
-import { gridAt, pairs, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
+import { pairs, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
+import { Arr } from '../../arrays/value.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { E, isErr, Rng, toNum, type CErr, type V } from '../../values.js'
 
@@ -30,23 +31,34 @@ function firstError(grids: readonly Grid[]): CErr | undefined {
   }
 }
 
-/** SUMPRODUCT: arrays of one shape; anything but a number counts as 0. */
-function sumproduct(grids: Grid[]): V {
-  const [first] = grids
-  if (grids.some((g) => g.rows !== first.rows || g.cols !== first.cols)) return E.VALUE
-  const e = firstError(grids)
-  if (e) return e
-  const end = Math.max(...grids.map(filled))
+/**
+ * SUMPRODUCT: arrays of one shape; anything but a number counts as 0. Past the occupied parts every array
+ * holds its fill (blank for a range), so `SUMPRODUCT((A:A="x")*B:B)` computes the occupied rows only.
+ */
+function sumproduct(cx: Cx, xs: Arg[]): V {
+  const arrs: Arr[] = []
+  for (const x of xs) {
+    if (isErr(x)) return x
+    const a = cx.view(x)
+    arrs.push(a instanceof Arr ? a : new Arr(1, 1, 1, 1, [a]))
+  }
+  const [first] = arrs
+  if (arrs.some((a) => a.rows !== first.rows || a.cols !== first.cols)) return E.VALUE
+  for (const a of arrs) {
+    const e = a.v.find(isErr) ?? (a.h * a.w < a.rows * a.cols && isErr(a.fill) ? a.fill : undefined)
+    if (e) return e as CErr
+  }
+  const num = (v: V) => (typeof v === 'number' ? v : 0)
+  const end = Math.max(...arrs.map(filled))
   let acc = 0
   for (let i = 0; i < end; i++) {
+    const r = Math.floor(i / first.cols)
     let p = 1
-    for (const g of grids) {
-      const v = gridAt(g, i)
-      p *= typeof v === 'number' ? v : 0
-    }
+    for (const a of arrs) p *= num(a.at(r, i - r * first.cols))
     acc += p
   }
-  return acc
+  const rest = first.rows * first.cols - end
+  return rest > 0 ? acc + rest * arrs.reduce((p, a) => p * num(a.fill), 1) : acc
 }
 
 /** SUMX2MY2 and its kin: pairs of numbers (rule 4); no pairs at all is #DIV/0!. */
@@ -149,7 +161,7 @@ export const functions: Record<string, FnDef> = {
       return isErr(r) ? r : sumAt(r.read(sg), r.sel)
     },
   },
-  SUMPRODUCT: { args: 'G', rep: 1, fn: sumproduct },
+  SUMPRODUCT: { args: 'R', rep: 1, cx: true, fn: sumproduct },
   SUMSQ: { args: 'N', rep: 1, fn: (xs: number[]) => xs.reduce((s, x) => s + x * x, 0) },
   SUMX2MY2: sumx((x, y) => x * x - y * y),
   SUMX2PY2: sumx((x, y) => x * x + y * y),

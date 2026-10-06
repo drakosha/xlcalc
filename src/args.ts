@@ -217,14 +217,26 @@ function list(direct: (v: V) => number | CErr, inRange: (v: Exclude<V, number | 
   return (x: Arg, cx: Cx): number[] | CErr => {
     const out: number[] = []
     if (x instanceof Arr) {
-      for (const v of x.values()) {
-        if (v === null) continue
+      const take = (v: V): CErr | undefined => {
+        if (v === null) return
         const n = typeof v === 'number' ? (num ? num(v) : v) : inArray(v)
-        if (n === undefined) continue
+        if (n === undefined) return
         if (isErr(n)) return n
         out.push(n)
       }
-      return out
+      // in order: the occupied rows, then the fill past them (a whole column: 0 for B:B*C:C)
+      const a = x.w < x.cols && x.fill !== null ? x.full() : x
+      for (const v of a.v) {
+        const e = take(v)
+        if (e) return e
+      }
+      const rest = a.rows * a.cols - a.h * a.w
+      if (rest <= 0 || a.fill === null) return out
+      // the fill once, then repeated: a whole column adds a million numbers
+      const before = out.length
+      const e = take(a.fill)
+      if (e) return e
+      return out.length > before ? out.concat(new Array<number>(rest - 1).fill(out[before])) : out
     }
     if (!(x instanceof Rng)) {
       const n = direct(x)
