@@ -119,16 +119,14 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   /** A value in a scalar position: the single cell of a range or array, else #VALUE!. */
   const scalar = (x: Arg): V => {
+    if (x instanceof Rng) return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
     if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : E.VALUE
-    if (x instanceof Areas) return E.VALUE
-    if (!(x instanceof Rng)) return x
-    return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
+    return x instanceof Areas ? E.VALUE : x
   }
 
   /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are; several areas #VALUE!. */
   const view = (x: Arg): V | Arr => {
-    if (x instanceof Areas) return scalar(x)
-    if (!(x instanceof Rng)) return x
+    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
     const b = bounds(x)
     return new Arr(x.r2 - x.r1 + 1, x.c2 - x.c1 + 1, b.h, b.w, flat(x))
   }
