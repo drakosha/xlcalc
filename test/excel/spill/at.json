@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.8
+  "seconds": 2.3
  },
  "cases": [
   {
@@ -648,6 +648,9 @@
       "cells": {
        "B2": {
         "formula": "@T:U!A1:A3"
+       },
+       "B3": {
+        "formula": "@T:U!A2"
        }
       }
      }
@@ -657,6 +660,10 @@
     {
      "sheet": "S",
      "range": "H2"
+    },
+    {
+     "sheet": "V",
+     "range": "B2:B3"
     }
    ]
   }
@@ -936,10 +943,20 @@
     "S!H2": {
      "t": "e",
      "v": "VALUE"
+    },
+    "V!B2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "V!B3": {
+     "t": "e",
+     "v": "REF"
     }
    },
    "formulas": {
-    "S!H2": "=@(A1:A3,C1:C3)"
+    "S!H2": "=@(A1:A3,C1:C3)",
+    "V!B2": "=@T:U!A1:A3",
+    "V!B3": "=@T:U!A2"
    }
   }
  }
