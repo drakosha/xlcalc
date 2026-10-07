@@ -53,6 +53,7 @@ const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell:
 /** Predictions of held-out cases that Excel answered otherwise: `<set>:<case>` → cells, each the reason of the miss. */
 const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'date1904-held:held': { 'F!A24': 'EDATE of date text typed in the formula: Excel takes the 1904 serial as a 1900 one (the set date1904-text measures it)' },
+  'iterate-held:text': Object.fromEntries(['S!A1', 'S!B1'].map((k) => [k, 'a change of text into other text does not count to go on iterating (the set iterate measures it)'])),
 }
 
 for (const set of SETS) {

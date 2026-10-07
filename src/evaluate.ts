@@ -63,7 +63,9 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
 
 /**
  * Computes the formulas `ids` in turn and writes their values; a formula in a cycle (or over one) is #CYCLE!, unless
- * `iterating`. Whether any value changed by `delta` or more (another type or value where it is not a number).
+ * `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set `iterate`): a number
+ * by `delta` or more, a number turned into another type or back; text, a boolean or an error changed into another of
+ * them does not count.
  */
 function evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0): boolean {
   const { rt, spills } = state
@@ -93,7 +95,7 @@ function evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = fa
       clocked = true
     }
     const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
-    moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : !same(was, v)
+    moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : (typeof v === 'number') !== (typeof was === 'number')
     write(state, f.s, f.r, f.c, v, t)
   }
   if (clocked) markVolatile(state)

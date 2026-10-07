@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 74.9
+  "seconds": 6
  },
  "cases": [
   {
@@ -3070,6 +3070,219 @@
     },
     "cached": {
      "S!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "type-late",
+   "about": "A1 goes 1, 2, 3, then the text \"x\", then \"y\": does a number turned text count as a change",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "error-late",
+   "about": "A1 goes 1, 2, 3, then #N/A, then #DIV/0!",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "bool-late",
+   "about": "A1 goes 1, 2, 3, then TRUE, then FALSE",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "text-alone",
+   "about": "A1 = A1&\"x\" alone, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1&\"x\""
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "S!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "text-number",
+   "about": "A1 = A1&\"x\" and B1 = B1+1, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1&\"x\""
+       },
+       "B1": {
+        "formula": "B1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
     },
     "plain": {},
     "mirrors": [
@@ -7456,6 +7669,231 @@
       "S!B3": "=B2*(B1+B4)/2",
       "S!B4": "=B1+B3-100",
       "S!B5": "=B4-B1"
+     }
+    }
+   ]
+  },
+  "type-late": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "y"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "y"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "y"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+     }
+    }
+   ]
+  },
+  "error-late": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "DIV0"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "DIV0"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "DIV0"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+     }
+    }
+   ]
+  },
+  "bool-late": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+     }
+    }
+   ]
+  },
+  "text-alone": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xx"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxx"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxx"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\""
+     }
+    }
+   ]
+  },
+  "text-number": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=B1+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=B1+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=B1+1"
      }
     }
    ]
