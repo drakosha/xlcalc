@@ -4,7 +4,8 @@
  * error texts, separators, currency, TEXT codes and text order.
  */
 import type { ErrorCode } from '../../contract.js'
-import { errorWords, textOrder } from '../../criteria.js'
+import { textOrder } from '../../collate.js'
+import { errorWords } from '../../criteria.js'
 import { inSystem, parseDateWith, textReaders } from '../../dates.js'
 import { displayWith, formatWith, generalText, styleIn, type Names } from '../../numfmt.js'
 import { ERROR_TEXT } from '../../syntax.js'

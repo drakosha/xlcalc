@@ -6,6 +6,7 @@
  * an error, or its text, matches that error. Numbers, dates and words in the text and the order of text
  * follow the book's locale (`CritRules`, en-US by default).
  */
+import { collator } from './collate.js'
 import { textToNumber } from './dates.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
 import { to15 } from './values.js'
@@ -20,16 +21,6 @@ export type Crit =
   | { op: string; kind: 'wild'; re: RegExp }
   | { op: string; kind: 'blank' }
   | { op: string; kind: 'err'; code: string }
-
-/**
- * String order for `<`/`>` by an `Intl.Collator` locale tag: case-insensitive, accent-sensitive. Without `Intl`
- * (QuickJS, for example) the order falls back to code units of the lower-cased strings.
- */
-export const textOrder = (tag: string): ((a: string, b: string) => number) =>
-  typeof Intl !== 'undefined' ? new Intl.Collator(tag, { sensitivity: 'accent' }).compare : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0)
-
-/** en-US's order of text: Latin before Cyrillic, as Excel en-US sorts. */
-export const collator = { compare: textOrder('en-US') }
 
 /** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers; #ERROR! is how this engine reads #NULL!. */
 const ERRORS: Record<string, [code: string, rank: number]> = {
