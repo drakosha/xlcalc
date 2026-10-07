@@ -1115,6 +1115,42 @@
    "group": "held",
    "fn": "VALUE",
    "formula": "VALUE(\"Dece 25\")"
+  },
+  {
+   "id": "held#52",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"2025 / 1 / 31\")"
+  },
+  {
+   "id": "held#53",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"2025 - 01 - 31\")"
+  },
+  {
+   "id": "held#54",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"31 - Jan - 2025\")"
+  },
+  {
+   "id": "held#55",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1-31-2025\")"
+  },
+  {
+   "id": "held#56",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1 /31/2025\")"
+  },
+  {
+   "id": "held#57",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"31 Jan - 2025\")"
   }
  ],
  "values": {
@@ -1857,6 +1893,30 @@
   "held#51": {
    "t": "n",
    "v": 46381
+  },
+  "held#52": {
+   "t": "n",
+   "v": 45688
+  },
+  "held#53": {
+   "t": "n",
+   "v": 45688
+  },
+  "held#54": {
+   "t": "n",
+   "v": 45688
+  },
+  "held#55": {
+   "t": "n",
+   "v": 45688
+  },
+  "held#56": {
+   "t": "n",
+   "v": 45688
+  },
+  "held#57": {
+   "t": "n",
+   "v": 45688
   }
  }
 }
