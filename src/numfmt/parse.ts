@@ -77,7 +77,7 @@ export const EN_CODES: Codes = {
 }
 
 /** A code split at `;` outside quotes and escapes. */
-export function splitSections(fmt: string): string[] {
+function splitSections(fmt: string): string[] {
   const out: string[] = []
   let cur = ''
   let quoted = false
@@ -125,7 +125,7 @@ function bracket(inner: string, sec: Section, out: Tok[], codes: Codes): boolean
 }
 
 /** A section's tokens and bracketed parts; null for a code the dialect does not read. */
-export function parseSection(text: string, codes: Codes): Section | null {
+function parseSection(text: string, codes: Codes): Section | null {
   if (codes.refuses?.(text)) return null
   const toks: Tok[] = []
   const sec: Section = { toks }

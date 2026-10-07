@@ -8,7 +8,7 @@
 import type { Cond, Section, Tok } from './parse.js'
 
 /** The section of a number, or null for General; `signed` when the formatted number takes a minus. Null when no section takes it. */
-export interface Choice {
+interface Choice {
   sec: Section | null
   signed: boolean
 }
