@@ -41,13 +41,27 @@ export function element(xml: string, local: string): Element | undefined {
 /** Whether the text has an element of the local name. */
 export const has = (xml: string, local: string): boolean => new RegExp(`<(?:[\\w.-]+:)?${local}[\\s/>]`).test(xml)
 
-const ATTR = /([\w.:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g
-
-/** Attributes by name as written (`r:id` keeps its prefix); values still hold their entities. */
+/** Attributes by name as written (`r:id` keeps its prefix); values still hold their entities. A scan, not a regex: it runs once per cell. */
 export function attributes(text: string): Record<string, string> {
   const out: Record<string, string> = {}
-  for (const m of text.matchAll(ATTR)) out[m[1]] = m[2] ?? m[3]
-  return out
+  const n = text.length
+  let i = 0
+  for (;;) {
+    const eq = text.indexOf('=', i)
+    if (eq < 0) return out
+    let q = eq + 1
+    while (q < n && text.charCodeAt(q) <= 32) q++
+    const quote = text[q]
+    if (quote !== '"' && quote !== "'") return out
+    const end = text.indexOf(quote, q + 1)
+    if (end < 0) return out
+    let b = eq
+    while (b > i && text.charCodeAt(b - 1) <= 32) b--
+    let a = b
+    while (a > i && text.charCodeAt(a - 1) > 32) a--
+    out[text.slice(a, b)] = text.slice(q + 1, end)
+    i = end + 1
+  }
 }
 
 /** The value of an attribute by local name, whatever its prefix (`id` finds `r:id`). */

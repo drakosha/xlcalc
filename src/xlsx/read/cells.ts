@@ -103,7 +103,8 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       col = colOf(ref[1])
       row = Number(ref[2]) - 1
     } else col++
-    const addr = formatAddress(row, col)
+    // the address as written when it is already the model's spelling (upper case), else spelled out
+    const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     let body = ''
     if (!m[4]) {
       const close = `</${m[1] ?? ''}c>`

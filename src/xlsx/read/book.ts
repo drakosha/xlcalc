@@ -155,8 +155,9 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   if (table.styles.length) book.styles = table.styles
   const tag = await locale(archive, root, issues)
   if (tag) book.locale = tag
+  // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time)
   try {
-    checkBook(book)
+    checkBook({ ...book, sheets: sheets.map((s) => ({ ...s, cells: {} })) })
   } catch (e) {
     if (e instanceof InputError) throw new Error(`xlsx: the file's book is not valid: ${e.message}`)
     throw e
