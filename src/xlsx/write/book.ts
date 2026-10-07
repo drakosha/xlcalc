@@ -18,6 +18,9 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { writeSheet } from './sheet.js'
 import { StyleWriter } from './styles.js'
+import { tableXml } from './tables.js'
+import { tableAt, tablesOf } from '../../tables/model.js'
+import { parseAddress } from '../../model.js'
 
 const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
 const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
@@ -118,7 +121,28 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   const sheetKeys = new Set(book.sheets.map((s) => sheetKey(s.name)))
   const rich: (keyof typeof RICH_TYPE)[] = []
   const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
-  const sheets = book.sheets.map((s, i) => writeSheet(s, i, { styles, string, issues, sheets: sheetKeys, mode, result: cells?.[i], richError }))
+  const tables = tablesOf(book)
+  const tableNames = tables.list.map((t) => ({ name: t.name, columns: t.cols }))
+  // table parts are numbered through the book, each sheet's from rId1 of its own relationships
+  let tableId = 0
+  const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
+  const sheets = book.sheets.map((s, i) =>
+    writeSheet(s, i, {
+      styles,
+      string,
+      issues,
+      sheets: sheetKeys,
+      mode,
+      result: cells?.[i],
+      richError,
+      tables: tableNames,
+      tableAt: (addr) => {
+        const { row, col } = parseAddress(addr)
+        return tableAt(tables, i, row, col)?.name
+      },
+      tableParts: parts[i].map((_, k) => `rId${k + 1}`),
+    }),
+  )
   const dynamic = sheets.some((s) => s.formulas)
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
@@ -127,6 +151,12 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: s.xml })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
+    if (!parts[i].length) return
+    for (const { t, id } of parts[i]) {
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames) })
+      contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
+    }
+    files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(parts[i].map(({ id }) => [`${REL}/table`, `../tables/table${id}.xml`])) })
   })
   files.push({ name: 'xl/styles.xml', text: styles.xml() })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])

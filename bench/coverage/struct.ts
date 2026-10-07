@@ -196,6 +196,8 @@ function opArgs(c: StructCase): string[] {
       return [o.before ?? '', '', o.name, '']
     case 'moveSheet':
       return [o.sheet, '', o.before ?? '', '']
+    default:
+      throw new Error(`${c.id}: the struct step has no ${o.op} (the tables step has)`)
   }
 }
 

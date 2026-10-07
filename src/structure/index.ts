@@ -15,6 +15,7 @@ import { moveRange } from './move.js'
 import { shift } from './shift.js'
 import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
+import { tableOp } from '../tables/ops.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -33,6 +34,10 @@ const FIELDS: Record<string, string[]> = {
   deleteSheet: ['sheet'],
   insertSheet: ['name', 'before'],
   moveSheet: ['sheet', 'before'],
+  addTable: ['sheet', 'table'],
+  renameTable: ['table', 'name'],
+  deleteTable: ['table'],
+  convertTable: ['table'],
 }
 
 function fields(o: Record<string, unknown>, path: string, allowed: string[]) {
@@ -146,6 +151,12 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
       break
     case 'moveSheet':
       r = moveSheet(book, named(o.sheet, 'op.sheet'), o.before === undefined ? undefined : named(o.before, 'op.before'))
+      break
+    case 'addTable':
+    case 'renameTable':
+    case 'deleteTable':
+    case 'convertTable':
+      r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>, values)
       break
   }
   return r

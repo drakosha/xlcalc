@@ -25,6 +25,7 @@ import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea } from './array-areas.js'
 import { canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
+import { specRect, tableAt, tableKey, tablesOf, type Tables } from './tables/model.js'
 import { CErr, E, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
@@ -60,6 +61,7 @@ export interface EngineState {
   sheetIdx: Map<string, number>
   names: PreparedName[]
   nameIssues: NameIssue[]
+  tables: Tables
   externalFunctions: string[]
   ctx: RuntimeContext
   rt: Runtime
@@ -127,6 +129,11 @@ export function invalidError(code: CheckCode): ErrorCode {
 export const codegenContext = (state: EngineState, s: number, area?: Rect): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name, scope) => nameFor(state.names, scope, name),
+  table: (n, r) => {
+    const t = n.table === null ? undefined : state.tables.byName.get(tableKey(n.table))
+    const x = t ? specRect(t, n.spec, r) : 'REF'
+    return typeof x === 'string' ? x : { ...x, s: t!.s }
+  },
   ...(area ? { area } : {}),
 })
 
@@ -139,9 +146,13 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
-function prepare(state: EngineState, s: number, text: string): Prepared {
+/** Tables as a formula's check sees them: names and columns. */
+const tableNames = (tables: Tables) => tables.list.map((t) => ({ name: t.name, columns: t.cols }))
+
+function prepare(state: EngineState, s: number, row: number, col: number, text: string): Prepared {
   const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
-  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions })
+  const enclosing = tableAt(state.tables, s, row, col)?.name
+  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { enclosing } : {}) })
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
@@ -155,7 +166,8 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
-  const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions)
+  const tables = tablesOf(input)
+  const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables))
   const epoch = epochOf(book.dateSystem)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock: RulesClock = {
@@ -185,6 +197,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     sheetIdx,
     names,
     nameIssues: issues,
+    tables,
     externalFunctions,
     ctx,
     rt,
@@ -213,7 +226,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
         if (v !== null) put(ctx.sheets[s], row, col, v)
         continue
       }
-      const p = prepare(state, s, cellIn.formula)
+      const p = prepare(state, s, row, col, cellIn.formula)
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
         put(ctx.sheets[s], row, col, E[p.invalid.error])
@@ -265,7 +278,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
     touched.push({ s, r1: row, c1: col, r2: row, c2: col })
     const input: CellInput | null = e.input
     if (input?.formula !== undefined) {
-      const p = prepare(state, s, input.formula)
+      const p = prepare(state, s, row, col, input.formula)
       if (!p.ok) {
         state.invalid.set(k, p.invalid)
         write(state, s, row, col, E[p.invalid.error], track)

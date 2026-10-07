@@ -3,7 +3,7 @@ import type { CheckCode, NameCheck, ValidateContext, ValidateResult } from '../c
 import { FUNCTIONS, isFunction } from '../functions.js'
 import { FormulaError, type Ast } from './ast.js'
 import { parse } from './parse.js'
-import { canonical, sheetKey, walk } from './print.js'
+import { canonical, mapAst, sheetKey, walk } from './print.js'
 
 /** Argument counts of each function and the arguments it cannot leave out; literal arguments of external functions. */
 export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
@@ -56,10 +56,54 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
   return visit(ast)
 }
 
-/** What the engine adds to a check: a name's formula (`union`), and which names a book has as a sheet sees them (`known`). */
+/** What the engine adds to a check: a name's formula (`union`), which names a book has as a sheet sees them (`known`), the table of the formula's cell (`enclosing`). */
 interface BookCheck {
   union?: boolean
   known?: (name: string, sheet: string | undefined) => boolean
+  enclosing?: string
+}
+
+type Fail = Extract<ValidateResult, { ok: false }>
+
+/**
+ * Structured references bound to the tables of `ctx.tables`: a reference without a table name takes the formula's
+ * table, tables and columns are spelled as named, a bare table name is the table's data (`Sales[]`, as a file stores
+ * it). An unknown table or column, or a reference without a table name outside one, fails with `unknown_name`.
+ */
+export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCheck): { ok: true; ast: Ast; tables: string[] } | Fail {
+  const known = ctx.tables ? new Map(ctx.tables.map((t) => [sheetKey(t.name), t])) : null
+  const used = new Set<string>()
+  let fail: Fail | null = null
+  const at = (needle: string) => Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase()))
+  const out = mapAst(ast, (n) => {
+    if (fail) return undefined
+    if (n.k === 'name' && n.sheet === undefined && known?.has(sheetKey(n.name))) {
+      const t = known.get(sheetKey(n.name))!
+      used.add(t.name)
+      return { k: 'table', table: t.name, spec: { areas: [] } }
+    }
+    if (n.k !== 'table') return undefined
+    const name = n.table ?? ctx.enclosing
+    if (name === undefined) {
+      if (ctx.tables) fail = { ok: false, code: 'unknown_name', message: 'a structured reference without a table name outside a table', at: at('[') }
+      return undefined
+    }
+    const t = known?.get(sheetKey(name))
+    if (!t) {
+      if (known) fail = { ok: false, code: 'unknown_name', message: `unknown table ${name}`, at: at(name) }
+      else used.add(name)
+      return undefined
+    }
+    used.add(t.name)
+    const cols = n.spec.cols?.map((c) => t.columns.find((x) => sheetKey(x) === sheetKey(c)))
+    const missing = n.spec.cols?.find((c, i) => cols![i] === undefined)
+    if (missing !== undefined) {
+      fail = { ok: false, code: 'unknown_name', message: `the table ${t.name} has no column ${missing}`, at: at(missing) }
+      return undefined
+    }
+    return { k: 'table', table: t.name, spec: cols ? { ...n.spec, cols: cols as [string] | [string, string] } : n.spec }
+  })
+  return fail ?? { ok: true, ast: out, tables: [...used] }
 }
 
 /** Formula check: parsing, whitelisted or external functions, sheets, names, argument counts. */
@@ -71,6 +115,9 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
     if (e instanceof FormulaError) return { ok: false, code: e.code, message: e.message, at: e.at }
     throw e
   }
+  const bound = bindTables(ast, text, ctx)
+  if (!bound.ok) return bound
+  ast = bound.ast
   const externalSet = new Set((ctx.externalFunctions ?? []).map((f) => f.toUpperCase()))
   const functions = new Set<string>()
   const sheets = new Set<string>()
@@ -105,7 +152,7 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   }
   const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !FUNCTIONS[f])
   if (calls) return { ok: false, code: calls.code, message: calls.message, at: calls.at }
-  return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)] }
+  return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }
 
 const NAME_RE = /^[A-Za-z_][A-Za-z0-9_.]{0,254}$/

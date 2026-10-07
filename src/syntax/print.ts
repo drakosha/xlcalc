@@ -1,5 +1,6 @@
 /** Traversal of an AST and its text: canonical, or with another engine's literals. */
 import { ERROR_TEXT, type Ast } from './ast.js'
+import { specText } from './table.js'
 
 export function walk(ast: Ast, visit: (n: Ast) => void): void {
   visit(ast)
@@ -25,6 +26,53 @@ export function walk(ast: Ast, visit: (n: Ast) => void): void {
       if (ast.body) walk(ast.body, visit)
       break
   }
+}
+
+/** The AST with nodes replaced by `f` (bottom-up; undefined keeps a node); unchanged branches are shared. */
+export function mapAst(ast: Ast, f: (n: Ast) => Ast | undefined): Ast {
+  const go = (n: Ast): Ast => {
+    let m: Ast = n
+    const list = (xs: Ast[]) => {
+      const ys = xs.map(go)
+      return ys.some((y, i) => y !== xs[i]) ? ys : xs
+    }
+    switch (n.k) {
+      case 'fn': {
+        const args = list(n.args)
+        if (args !== n.args) m = { ...n, args }
+        break
+      }
+      case 'un':
+      case 'pct':
+      case 'paren':
+      case 'at': {
+        const a = go(n.a)
+        if (a !== n.a) m = { ...n, a }
+        break
+      }
+      case 'union': {
+        const items = list(n.items)
+        if (items !== n.items) m = { ...n, items }
+        break
+      }
+      case 'bin': {
+        const [a, b] = [go(n.a), go(n.b)]
+        if (a !== n.a || b !== n.b) m = { ...n, a, b }
+        break
+      }
+      case 'let': {
+        const binds = n.binds.map((x) => {
+          const value = go(x.value)
+          return value === x.value ? x : { ...x, value }
+        })
+        const body = n.body && go(n.body)
+        if (body !== n.body || binds.some((x, i) => x !== n.binds[i])) m = { ...n, binds, ...(body ? { body } : {}) }
+        break
+      }
+    }
+    return f(m) ?? m
+  }
+  return go(ast)
 }
 
 /** Sheet names compare case-insensitively, as in Excel. */
@@ -58,6 +106,8 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
         return (n.sheet === null ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.ref.text + (n.ref.spill ? '#' : '')
       case 'ref3d':
         return `${quoteSheet(`${sheetOf(n.first)}:${sheetOf(n.last)}`)}!${n.ref.text}`
+      case 'table':
+        return `${n.table ?? ''}[${specText(n.spec)}]`
       case 'name':
         return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.name
       case 'at':

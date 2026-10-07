@@ -155,7 +155,7 @@ Styles, number formats, widths, heights and merged areas are written as the book
 | `meta` | a cell's `meta` is left out |
 | `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference |
 | `textLength` | text over 32,767 characters is cut |
-| `formula` | a formula that does not parse, or names a sheet the book does not have, is written as its value |
+| `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse, is left out |
 
 ## Speed

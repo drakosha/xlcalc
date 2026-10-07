@@ -12,6 +12,7 @@ import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
+import { checkTables } from './tables/check.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
 export class InputError extends TypeError {
@@ -276,7 +277,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, problem)
@@ -300,6 +301,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
+  checkTables(book as unknown as BookInput, path)
   return book as unknown as BookInput
 }
 
@@ -406,9 +408,17 @@ export function checkSheet(v: unknown, sheetIndex: (name: string) => number | un
 export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext | undefined {
   if (v === undefined) return undefined
   const o = object(v, path, 'a context such as { sheets: ["Sheet1"], names: [] }')
-  onlyKeys(o, path, ['sheets', 'names', 'externalFunctions'])
+  onlyKeys(o, path, ['sheets', 'names', 'externalFunctions', 'tables'])
   for (const k of ['sheets', 'names', 'externalFunctions'] as const)
     if (o[k] !== undefined) array(o[k], `${path}.${k}`, 'an array of strings').forEach((s, i) => checkString(s, `${path}.${k}[${i}]`))
+  if (o.tables !== undefined)
+    array(o.tables, `${path}.tables`, 'an array of tables such as { name: "Sales", columns: ["Qty"] }').forEach((t, i) => {
+      const p = `${path}.tables[${i}]`
+      const x = object(t, p, 'a table such as { name: "Sales", columns: ["Qty"] }')
+      onlyKeys(x, p, ['name', 'columns'])
+      checkString(x.name, `${p}.name`)
+      array(x.columns, `${p}.columns`, 'an array of column names').forEach((c, j) => checkString(c, `${p}.columns[${j}]`))
+    })
   return o as ValidateContext
 }
 

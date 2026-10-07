@@ -1,0 +1,105 @@
+/**
+ * Checks of a book's tables at the API boundary (`InputError`): names by Excel's rules in the namespace of defined names,
+ * a rectangle with a data row, one column entry per column with unique names, header cells holding the names, no
+ * table over another, no merged area or array area of several cells in a table.
+ */
+import type { BookInput, CellInput, TableColumn, TableInput } from '../contract.js'
+import { InputError } from '../input.js'
+import { parseMerge } from '../layout/merges.js'
+import { formatAddress } from '../model.js'
+import { arrayArea } from '../array-areas.js'
+import { meets, parseRange, type Rect } from '../structure/area.js'
+import { tableKey } from './model.js'
+
+const NAME = /^[\p{L}_\\][\p{L}\p{N}_.]{0,254}$/u
+
+/** Why Excel would not take a table name (null when it would): its rules for names, the namespace aside. */
+export function tableNameProblem(name: string): string | null {
+  if (!NAME.test(name)) return 'a table name starts with a letter, _ or \\ and has only letters, digits, _ and . (255 characters at most)'
+  if (/^[A-Za-z]{1,3}[0-9]+$/.test(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'a table name must not look like a cell address or an R1C1 reference'
+  if (/^(TRUE|FALSE)$/i.test(name)) return 'TRUE and FALSE are reserved'
+  return null
+}
+
+const TOTALS = ['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom']
+
+const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+
+function only(o: Record<string, unknown>, path: string, keys: string[]) {
+  for (const k of Object.keys(o)) if (!keys.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${keys.join(', ')})`)
+}
+
+function column(v: unknown, path: string): TableColumn {
+  if (!isObject(v)) throw new InputError(path, 'expected a column such as { name: "Amount" }')
+  only(v, path, ['name', 'formula', 'totals'])
+  if (typeof v.name !== 'string' || v.name === '' || v.name.length > 255) throw new InputError(`${path}.name`, 'expected a column name of 1 to 255 characters')
+  if (v.formula !== undefined && typeof v.formula !== 'string') throw new InputError(`${path}.formula`, 'expected formula text')
+  if (v.totals !== undefined) {
+    const t = v.totals
+    const ok = isObject(t) && Object.keys(t).length === 1 && (TOTALS.includes(t.function as string) || typeof t.label === 'string')
+    if (!ok) throw new InputError(`${path}.totals`, `expected { function } with one of ${TOTALS.join(', ')}, or { label }`)
+  }
+  return v as unknown as TableColumn
+}
+
+/** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
+function table(v: unknown, path: string, cells: Record<string, CellInput>): Rect {
+  if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
+  only(v, path, ['name', 'range', 'headers', 'totals', 'columns'])
+  if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
+  const problem = tableNameProblem(v.name)
+  if (problem) throw new InputError(`${path}.name`, `${JSON.stringify(v.name)}: ${problem}`)
+  const x = typeof v.range === 'string' && /^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(v.range) ? parseRange(v.range) : null
+  if (!x) throw new InputError(`${path}.range`, `expected a range such as "B2:E10" within the sheet, got ${JSON.stringify(v.range)}`)
+  for (const k of ['headers', 'totals'] as const) if (v[k] !== undefined && typeof v[k] !== 'boolean') throw new InputError(`${path}.${k}`, 'expected a boolean')
+  const t = v as unknown as TableInput
+  const headers = t.headers !== false
+  if (x.r2 - x.r1 + 1 < (headers ? 1 : 0) + (t.totals ? 1 : 0) + 1) throw new InputError(`${path}.range`, `${t.range} has no row for data between its header and totals rows`)
+  if (!Array.isArray(v.columns)) throw new InputError(`${path}.columns`, 'expected an array of columns')
+  const width = x.c2 - x.c1 + 1
+  if (v.columns.length !== width) throw new InputError(`${path}.columns`, `${t.range} has ${width} columns, the table lists ${v.columns.length}`)
+  const seen = new Map<string, number>()
+  v.columns.forEach((c, i) => {
+    const col = column(c, `${path}.columns[${i}]`)
+    const k = tableKey(col.name)
+    if (seen.has(k)) throw new InputError(`${path}.columns[${i}].name`, `${JSON.stringify(col.name)} is also the name of column ${seen.get(k)! + 1} (column names are unique in a table, in any case)`)
+    seen.set(k, i)
+    if (!headers) return
+    const addr = formatAddress(x.r1, x.c1 + i)
+    const cell = cells[addr]
+    if (cell?.formula !== undefined || cell?.value !== col.name)
+      throw new InputError(`${path}.columns[${i}].name`, `the header cell ${addr} holds ${cell?.formula !== undefined ? `a formula` : JSON.stringify(cell?.value ?? null)}, not the column's name ${JSON.stringify(col.name)} as text`)
+  })
+  return x
+}
+
+/** The tables of a checked book's sheets, and their names against each other and against the defined names. */
+export function checkTables(book: BookInput, path = 'book'): void {
+  const names = new Map((book.names ?? []).map((n) => [tableKey(n.name), n.name]))
+  const taken = new Map<string, string>()
+  book.sheets.forEach((sheet, s) => {
+    if (sheet.tables === undefined) return
+    const p = `${path}.sheets[${s}].tables`
+    if (!Array.isArray(sheet.tables)) throw new InputError(p, 'expected an array of tables')
+    const rects: [Rect, string][] = []
+    sheet.tables.forEach((t, i) => {
+      const tp = `${p}[${i}]`
+      const x = table(t, tp, sheet.cells)
+      const { name, range } = t as TableInput
+      const k = tableKey(name)
+      if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a book, in any case)`)
+      if (names.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also a defined name (tables and names share one namespace, in any case)`)
+      taken.set(k, name)
+      const over = rects.find(([y]) => meets(x, y))
+      if (over) throw new InputError(`${tp}.range`, `${range} overlaps the table ${over[1]}`)
+      rects.push([x, name])
+      const merge = (sheet.merges ?? []).find((m) => meets(parseMerge(m)!, x))
+      if (merge) throw new InputError(`${tp}.range`, `the merged area ${merge} meets the table ${name} (Excel has no merged cells in tables)`)
+      for (const [addr, cell] of Object.entries(sheet.cells)) {
+        if (cell.array === undefined) continue
+        const a = arrayArea(addr, cell.array)
+        if (a && (a.r2 > a.r1 || a.c2 > a.c1) && meets(a, x)) throw new InputError(`${tp}.range`, `the array formula over ${cell.array} meets the table ${name} (Excel has no array formulas of several cells in tables)`)
+      }
+    })
+  })
+}

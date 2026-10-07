@@ -15,7 +15,7 @@ export interface PreparedName {
 }
 
 /** Names in the book's order; an invalid one is left out with its issue. */
-export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[]): { names: PreparedName[]; issues: NameIssue[] } {
+export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[], tables: { name: string; columns: string[] }[] = []): { names: PreparedName[]; issues: NameIssue[] } {
   const out: PreparedName[] = []
   const issues: NameIssue[] = []
   const seen = new Set<string>()
@@ -51,11 +51,11 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
       continue
     }
     // a formula Excel would not compute stays a name giving its error, as a lost reference does (#REF!)
-    const v = validate(n.ref, { sheets, externalFunctions, union: true })
+    const v = validate(n.ref, { sheets, externalFunctions, union: true, tables })
     if (!v.ok) {
       issue(v.message)
-      ast = { k: 'err', code: v.code === 'unknown_sheet' ? 'REF' : v.code === 'unknown_function' ? 'NAME' : 'ERROR' }
-    }
+      ast = { k: 'err', code: v.code === 'unknown_sheet' ? 'REF' : v.code === 'unknown_function' || v.code === 'unknown_name' ? 'NAME' : 'ERROR' }
+    } else ast = v.ast
     out.push({ name: n.name, scope, ast })
   }
   return { names: out, issues }

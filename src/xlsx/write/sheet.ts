@@ -4,7 +4,7 @@
  * every formula by the rules of dynamic arrays, and so does Excel then. An array formula of the old kind
  * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
  * Ctrl+Shift+Enter. Values come from the result: a formula's value, and the cells its array spilled into. A formula
- * the file cannot hold (it does not parse, or names a sheet the book does not have) is written as its value.
+ * the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is written as its value.
  */
 import type { CellInput, CellResult, CellValue, SheetInput } from '../../contract.js'
 import { lines } from '../../layout/spans.js'
@@ -13,6 +13,7 @@ import { parseRange } from '../../structure/area.js'
 import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
+import { bindTables } from '../../syntax/check.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
@@ -39,6 +40,11 @@ export interface SheetContext {
   result?: Record<string, CellResult>
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
   richError(code: 'SPILL' | 'CALC'): number
+  /** The book's tables with their columns, and the one holding a cell of this sheet. */
+  tables: { name: string; columns: string[] }[]
+  tableAt(addr: string): string | undefined
+  /** The relationship ids of the sheet's table parts. */
+  tableParts: string[]
 }
 
 export interface SheetWritten {
@@ -71,8 +77,11 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
   return { t: ' t="e"', v: v.error === 'ERROR' ? '#NULL!' : ERROR_TEXT[v.error] }
 }
 
-/** The formula's tree when the file can hold it: it parses and names only the book's sheets. */
-function fileTree(formula: string, sheets: Set<string>): Ast | null {
+/**
+ * The formula's tree when the file can hold it: it parses, names only the book's sheets, and its structured references
+ * name the book's tables and columns (a file names a reference's table always: `[@Qty]` is written `Sales[[#This Row],[Qty]]`).
+ */
+export function fileTree(formula: string, sheets: Set<string>, tables: { name: string; columns: string[] }[], enclosing?: string): Ast | null {
   let ast: Ast
   try {
     ast = parse(formula)
@@ -80,6 +89,9 @@ function fileTree(formula: string, sheets: Set<string>): Ast | null {
     if (e instanceof FormulaError) return null
     throw e
   }
+  const bound = bindTables(ast, formula, { tables, ...(enclosing ? { enclosing } : {}) })
+  if (!bound.ok) return null
+  ast = bound.ast
   let ok = true
   const known = (sheet: string | null | undefined) => sheet == null || sheets.has(sheetKey(sheet))
   walk(ast, (n) => {
@@ -124,8 +136,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       put(addr, cellXml(addr, c, v))
       continue
     }
-    const tree = mode === 'formulas' ? fileTree(c.formula, ctx.sheets) : null
-    if (mode === 'formulas' && !tree) issues.add('formula', 'a formula the file cannot hold (it does not parse, or names a sheet the book does not have) is written as its value', where(addr))
+    const tree = mode === 'formulas' ? fileTree(c.formula, ctx.sheets, ctx.tables, ctx.tableAt(addr)) : null
+    if (mode === 'formulas' && !tree) issues.add('formula', 'a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is written as its value', where(addr))
     if (!tree) {
       put(addr, cellXml(addr, c, res?.value))
       continue
@@ -176,6 +188,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
     `<sheetData>${data.join('')}</sheetData>` +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
+    (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
     '</worksheet>'
   return { xml, formulas }
 }

@@ -85,6 +85,8 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
         return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}) }
       case 'ref':
         return t.last === undefined ? { k: 'ref', sheet: t.sheet, ref: t.ref } : { k: 'ref3d', first: t.sheet!, last: t.last, ref: t.ref }
+      case 'table':
+        return { k: 'table', table: t.table, spec: t.spec }
       case 'ident': {
         if (t.sheet !== undefined) return { k: 'name', name: t.v, sheet: t.sheet }
         const up = t.v.toUpperCase()

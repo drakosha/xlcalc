@@ -13,6 +13,7 @@ import { parseMerge } from '../layout/merges.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
 import { meets, type Rect } from '../structure/area.js'
 import { quoteSheet } from '../syntax.js'
+import { tableAt } from '../tables/model.js'
 import { E, Rng, type CErr, type V } from '../values.js'
 import type { Fill } from './fill.js'
 import { fit } from './fixed.js'
@@ -68,6 +69,9 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   const area: Area = { s: f.s, r1: f.r, c1: f.c, r2: f.r + a.rows - 1, c2: f.c + a.cols - 1 }
   const cannot = `the array of ${a.rows}×${a.cols} values cannot spill`
   if (area.r2 >= MAX_ROWS || area.c2 >= MAX_COLS) return blocked(state, f, t, `${cannot}: it would go past the edge of the sheet`)
+  // Excel spills no array inside a table, nor into one
+  const inside = tableAt(state.tables, f.s, f.r, f.c) ?? state.tables.list.find((x) => x.s === f.s && meets(x, area))
+  if (inside) return blocked(state, f, t, `${cannot}: ${meets(inside, { r1: f.r, c1: f.c, r2: f.r, c2: f.c }) ? 'its cell is in' : 'it meets'} the table ${inside.name}`)
   const merge = mergesOf(state, f.s).find((m) => meets(m, area))
   if (merge) return blocked(state, f, t, `${cannot}: it meets the merged area ${cellText(state, f.s, merge.r1, merge.c1)}:${formatAddress(merge.r2, merge.c2)}`, area)
   const cell = sp.occupied.first(f.s, area, f.r, f.c)
