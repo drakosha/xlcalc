@@ -19,14 +19,23 @@ export interface CellInput {
   formula?: string
   /**
    * Number format, an Excel format code as an xlsx file stores it (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
-   * shown in the book's locale (`CellResult.text`). Without it a cell shows its row's format, else its column's.
+   * shown in the book's locale (`CellResult.text`), or a built-in format by its number (`NumberFormat`). Without it
+   * a cell shows its row's format, else its column's.
    */
-  format?: string
+  format?: NumberFormat
   /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
   style?: number
   /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
   meta?: JsonValue
 }
+
+/**
+ * A number format: a format code as an xlsx file stores it, or the number of one of Excel's built-in formats, 0 to
+ * 49, as a file stores a cell's format with no code of its own (`numFmtId`). Excel shows some built-in formats by the
+ * locale: 14 is the locale's short date (`m/d/yy` in en-US, `dd.mm.yyyy` in ru-RU), 5 to 8 and 37 to 44 its money
+ * and number formats, 15 to 22 its other dates and times. A code is shown as written whatever the locale.
+ */
+export type NumberFormat = string | number
 
 /** A colour, `#RRGGBB`. */
 export type Color = string
@@ -77,7 +86,7 @@ export interface ColumnInput {
    */
   width?: number
   style?: number
-  format?: string
+  format?: NumberFormat
   /** Hidden (xlsx `hidden`). SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
   hidden?: boolean
 }
@@ -87,7 +96,7 @@ export interface RowInput {
   /** Points, 0 to 409. */
   height?: number
   style?: number
-  format?: string
+  format?: NumberFormat
   /**
    * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
    * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does.
@@ -210,7 +219,7 @@ export interface CellDisplay {
 /** `displayValue`'s options: where the value is shown. */
 export interface DisplayOptions {
   /** The number format; General without it. */
-  format?: string
+  format?: NumberFormat
   /** A tag of the package's locales (`'en-US'`, the default, or `'ru-RU'`). */
   locale?: string
   /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
@@ -238,7 +247,7 @@ export interface CellResult extends Partial<CellDisplay> {
   value: CellValue
   /** Canonical formula text (sheet always quoted, function names upper-case). */
   formula?: string
-  format?: string
+  format?: NumberFormat
   meta?: JsonValue
   /** A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left). */
   spill?: string
