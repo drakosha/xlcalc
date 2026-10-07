@@ -1,12 +1,12 @@
 /**
- * Deleting (and inserting) rows and columns at the sheet's end under a styled layout that reaches it: rows to
- * 1,048,576 with a height and a fill, columns to XFD with a width and bold, a column span from C to XFD, merged
- * areas and styled cells on the last row and column. The look of the sheet's last rows and columns is read too.
+ * Deleting rows and columns at the sheet's end under a styled layout that reaches it: rows to 1,048,576 with a
+ * height and a fill, columns to XFD with a width and bold, merged areas and styled cells on the last row and
+ * column. The look of the sheet's last rows and columns is read too.
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import type { StructCase, StructCases } from './cases.js'
 
-const STYLES = [{ font: { bold: true } }, { fill: { color: '#FFCC00' } }, { fill: { color: '#99CCFF' } }]
+export const STYLES = [{ font: { bold: true } }, { fill: { color: '#FFCC00' } }, { fill: { color: '#99CCFF' } }]
 
 /** S: rows 1,048,570 to the end filled, 30 points high, with a format; columns XFA to XFD bold, 20 wide, with a format; merged areas at both ends. */
 function endBook(): BookInput {
@@ -34,19 +34,11 @@ function endBook(): BookInput {
   }
 }
 
-/** S: columns C to XFD 15 wide, filled, with a format; rows 3 and 4 bold, 25 points high, with a format. */
-function wideBook(): BookInput {
-  return {
-    styles: STYLES,
-    sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 2 }, C1: { value: 3 }, A3: { formula: 'SUM(A1:C1)' } }, columns: { 'C:XFD': { width: 15, style: 1, format: '0.0' } }, rows: { '3:4': { height: 25, style: 0, format: '#,##0' } } }],
-  }
-}
-
 export function buildStructCases(): StructCases {
   const extra = [{ sheet: 'S', cell: 'A1048576' }, { sheet: 'S', cell: 'XFD5' }]
   const cases: StructCase[] = []
-  const rows = (id: string, op: 'insertRows' | 'deleteRows', row: number, count = 1, book = 'end') => cases.push({ id, book, op: { op, sheet: 'S', row, count }, extra })
-  const cols = (id: string, op: 'insertColumns' | 'deleteColumns', column: string, count = 1, book = 'end') => cases.push({ id, book, op: { op, sheet: 'S', column, count }, extra })
+  const rows = (id: string, op: 'insertRows' | 'deleteRows', row: number, count = 1) => cases.push({ id, book: 'end', op: { op, sheet: 'S', row, count }, extra })
+  const cols = (id: string, op: 'insertColumns' | 'deleteColumns', column: string, count = 1) => cases.push({ id, book: 'end', op: { op, sheet: 'S', column, count }, extra })
   rows('delete-rows-3-4', 'deleteRows', 3, 2)
   rows('delete-row-1048572', 'deleteRows', 1048572)
   rows('delete-row-1048576', 'deleteRows', 1048576)
@@ -56,9 +48,5 @@ export function buildStructCases(): StructCases {
   cols('delete-column-XFB', 'deleteColumns', 'XFB')
   cols('delete-column-XFD', 'deleteColumns', 'XFD')
   cols('delete-columns-XEZ-3', 'deleteColumns', 'XEZ', 3)
-  cols('wide-delete-column-A', 'deleteColumns', 'A', 1, 'wide')
-  cols('wide-delete-column-D', 'deleteColumns', 'D', 1, 'wide')
-  cols('wide-insert-column-B', 'insertColumns', 'B', 1, 'wide')
-  rows('wide-delete-row-3', 'deleteRows', 3, 1, 'wide')
-  return { books: { end: endBook(), wide: wideBook() }, cases, look: ['A1048566:E1048576', 'XEX1:XFD7'] }
+  return { books: { end: endBook() }, cases, look: ['A1048566:E1048576', 'XEX1:XFD7'] }
 }

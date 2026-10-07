@@ -19,7 +19,7 @@ const STRUCT_KNOWN: Readonly<Record<string, string[]>> = {
 
 describe('structure operations against Excel en-US', () => {
   it('every set has its cases answered', () => {
-    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['checks', 'edge', 'history', 'move', 'moves', 'rows', 'sheets', 'spill-more', 'spill', 'styles-checks', 'styles'])
+    expect(STRUCT_SETS.map((s) => s.name)).toEqual(['checks', 'edge-layout', 'edge-wide', 'edge', 'history', 'move', 'moves', 'rows', 'sheets', 'spill-more', 'spill', 'styles-checks', 'styles'])
   })
 
   it('every STRUCT_KNOWN entry names an existing case', () => {
@@ -56,10 +56,10 @@ for (const set of STRUCT_SETS) {
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           // Excel left the book as it was
-          expect(differences(set.books[c.book], a, String(set.meta.read), look)).toEqual([])
+          expect(differences(set.books[c.book], a, String(set.meta.read), look, set.widths !== false)).toEqual([])
           return
         }
-        expect(r.ok ? differences(r.book, a, String(set.meta.read), look) : [`engine refused (${r.code}): ${r.message}`]).toEqual(STRUCT_KNOWN[`${set.name}:${c.id}`] ?? [])
+        expect(r.ok ? differences(r.book, a, String(set.meta.read), look, set.widths !== false) : [`engine refused (${r.code}): ${r.message}`]).toEqual(STRUCT_KNOWN[`${set.name}:${c.id}`] ?? [])
       })
     }
   })

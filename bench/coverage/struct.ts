@@ -289,7 +289,7 @@ async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRec
 export async function stepStruct(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./struct/${set}.js`)) as StructSet
-  const { books, cases, dynamic = false, look = [] } = mod.buildStructCases()
+  const { books, cases, dynamic = false, look = [], widths } = mod.buildStructCases()
   const lookRects = [LOOK, ...look].join(',')
   const target = join(ROOT, `test/excel/struct/${set}.json`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
@@ -302,7 +302,7 @@ export async function stepStruct(set: string): Promise<void> {
   mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), answers }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), answers }, null, 1) + '\n')
   }
   await ensureExcel('en')
   let done = 0

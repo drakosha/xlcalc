@@ -64,7 +64,11 @@ function nameKey(excel: string): string {
 const shownWidth = (w: number) => Math.round(((6 * w - 5) / 6) * 100) / 100
 const shownHeight = (h: number) => Math.round((h * 16) / 3) / 4
 
-/** The look of a sheet of the book in the rectangles of `look` (`A1:J24,…`), as Excel reads it: a cell's style and format, else its row's, else its column's. */
+/**
+ * The look of a sheet of the book in the rectangles of `look` (`A1:J24,…`), as Excel reads it: a cell's style and
+ * format, else its row's, else its column's; a cell of a merged area shows the area's top-left cell, as the area is
+ * drawn (deleting row 1,048,576 keeps an area that reaches into it, `edge-layout`).
+ */
 export function lookOf(book: BookInput, sheet: SheetInput, look: string): SheetLook {
   const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
   for (const rect of look.split(',')) lookIn(book, sheet, rect, out)
@@ -73,10 +77,13 @@ export function lookOf(book: BookInput, sheet: SheetInput, look: string): SheetL
 
 function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook): void {
   const [a, b] = rect.split(':').map(parseAddress)
+  const merges = (sheet.merges ?? []).map((m) => parseMerge(m)!)
   for (let r = a.row; r <= b.row; r++)
     for (let c = a.col; c <= b.col; c++) {
       const addr = formatAddress(r, c)
-      const [cell, row, col] = [sheet.cells[addr], lineAt(sheet.rows, 'r', r), lineAt(sheet.columns, 'c', c)]
+      const m = merges.find((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)
+      const [tr, tc] = m ? [m.r1, m.c1] : [r, c]
+      const [cell, row, col] = [sheet.cells[formatAddress(tr, tc)], lineAt(sheet.rows, 'r', tr), lineAt(sheet.columns, 'c', tc)]
       const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
       const format = cell?.format ?? row?.format ?? col?.format
       const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format } : {}) }
@@ -91,28 +98,25 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
     if (h !== undefined) out.heights[String(r + 1)] = shownHeight(h)
   }
   const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
-  for (const m of sheet.merges ?? []) {
-    const text = mergeText(parseMerge(m)!)
-    if (meets(parseMerge(m)!, window) && !out.merges.includes(text)) out.merges.push(text)
-  }
+  for (const m of merges) if (meets(m, window) && !out.merges.includes(mergeText(m))) out.merges.push(mergeText(m))
 }
 
 /** Differences of looks, as `place: Excel …, engine …` lines. */
-function lookDifferences(name: string, excel: SheetLook, ours: SheetLook): string[] {
+function lookDifferences(name: string, excel: SheetLook, ours: SheetLook, widths: boolean): string[] {
   const out: string[] = []
   const diff = (what: string, x: Record<string, unknown>, y: Record<string, unknown>) => {
     for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) if (JSON.stringify(x[k] ?? null) !== JSON.stringify(y[k] ?? null)) out.push(`'${name}' ${what} ${k}: Excel ${JSON.stringify(x[k] ?? null)}, engine ${JSON.stringify(y[k] ?? null)}`)
   }
   diff('look', excel.cells, ours.cells)
-  diff('width', excel.widths, ours.widths)
+  if (widths) diff('width', excel.widths, ours.widths)
   diff('height', excel.heights, ours.heights)
   const [x, y] = [[...excel.merges].sort(), [...ours.merges].sort()]
   if (JSON.stringify(x) !== JSON.stringify(y)) out.push(`'${name}' merges: Excel ${JSON.stringify(x)}, engine ${JSON.stringify(y)}`)
   return out
 }
 
-/** Differences between a book and Excel's answer, as `place: Excel … , engine …` lines; `look` for a styled book. */
-export function differences(book: BookInput, a: ExcelStructAnswer, read: string, look?: string): string[] {
+/** Differences between a book and Excel's answer, as `place: Excel … , engine …` lines; `look` for a styled book, column widths unless `widths` is false. */
+export function differences(book: BookInput, a: ExcelStructAnswer, read: string, look?: string, widths = true): string[] {
   const out: string[] = []
   const [r0, r1] = read.split(':').map(parseAddress)
   const inRead = (addr: string) => {
@@ -133,7 +137,7 @@ export function differences(book: BookInput, a: ExcelStructAnswer, read: string,
     // Excel's used range must lie in the read rectangle unless the case reads extra cells
     const used = s.used.replaceAll('$', '').split(':')
     if (!a.extra.length && !used.every((x) => /^[A-Z]+\d+$/.test(x) && inRead(x))) out.push(`'${s.name}': Excel's used range ${s.used} is outside ${read}`)
-    if (s.look && look) out.push(...lookDifferences(s.name, s.look, lookOf(book, ours, look)))
+    if (s.look && look) out.push(...lookDifferences(s.name, s.look, lookOf(book, ours, look), widths))
   }
   for (const e of a.extra) {
     const c = book.sheets.find((x) => x.name === e.sheet)?.cells[e.cell]

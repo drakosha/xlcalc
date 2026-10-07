@@ -18,15 +18,27 @@ function moved(i: number, at: number, n: number, gone: number): number {
 
 /**
  * Columns or rows after the lines move: a span holding the line before `at` takes the inserted lines (they get
- * its entry), a span past the sheet's end is cut there; deleted lines leave their spans.
+ * its entry), a span past the sheet's end is cut there; deleted lines leave their spans. A span of columns that
+ * reaches XFD keeps reaching it when columns are deleted, unless all of it is, as xlsx keeps it (`<col max=16384>`);
+ * where the deleted columns include XFD, the columns that come in at the end get no width (one observation). Rows,
+ * kept one by one, do not reach on (the struct set `edge-layout`).
  */
-export function shiftLines<T>(map: Record<string, T> | undefined, axis: Axis, at: number, n: number): Record<string, T> | undefined {
+export function shiftLines<T extends object>(map: Record<string, T> | undefined, axis: Axis, at: number, n: number): Record<string, T> | undefined {
   if (!map) return map
   const out: Line<T>[] = []
+  const last = LIMIT[axis] - 1
   for (const [lo, hi, v] of lines(map, axis)) {
+    if (n < 0 && lo >= at && hi < at - n) continue
     const a = moved(lo, at, n, at)
+    if (n < 0 && axis === 'c' && hi === last) {
+      const full = at - n > last ? last + n : last
+      if (a <= full) out.push([a, full, v])
+      const rest = Object.fromEntries(Object.entries(v).filter(([k]) => k !== 'width')) as T
+      if (full < last && Object.keys(rest).length) out.push([Math.max(a, full + 1), last, rest])
+      continue
+    }
     const b = n > 0 && hi === at - 1 ? hi + n : moved(hi, at, n, at - 1)
-    if (a <= b && a < LIMIT[axis]) out.push([a, Math.min(b, LIMIT[axis] - 1), v])
+    if (a <= b && a < LIMIT[axis]) out.push([a, Math.min(b, last), v])
   }
   return toMap(out, axis)
 }
@@ -38,6 +50,8 @@ const withBounds = (x: Rect, axis: Axis, lo: number, hi: number): Rect => (axis 
 /**
  * Merged areas after the lines move, as ranges: one grows with lines inserted inside it and loses deleted
  * ones; it is gone when one cell or none is left; null when an inserted line pushes one past the sheet's end.
+ * Deleting the sheet's last lines leaves an area that ends there as it is, unless all of its lines go (the struct
+ * set `edge-layout`: deleting row 1,048,576 keeps `C1048575:D1048576`).
  */
 export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number, n: number): string[] | undefined | null {
   if (!merges) return merges
@@ -45,8 +59,9 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
   for (const m of merges) {
     const x = parseMerge(m)!
     const [lo, hi] = bounds(x, axis)
+    if (n < 0 && lo >= at && hi < at - n) continue
     const a = moved(lo, at, n, at)
-    const b = moved(hi, at, n, at - 1)
+    const b = n < 0 && hi === LIMIT[axis] - 1 && at - n === LIMIT[axis] ? hi : moved(hi, at, n, at - 1)
     if (b >= LIMIT[axis]) return null
     const y = withBounds(x, axis, a, b)
     if (a <= b && (y.r1 < y.r2 || y.c1 < y.c2)) out.push(mergeText(y))
