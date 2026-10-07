@@ -9,8 +9,11 @@ import type { NameInput } from '../../../src/contract.js'
 /** Data on S: A1:A5 1…5, B1:B5 10…50, C1:C3 100…300. */
 const DATA: Record<string, CellSpec> = { A1: 1, A2: 2, A3: 3, A4: 4, A5: 5, B1: 10, B2: 20, B3: 30, B4: 40, B5: 50, C1: 100, C2: 200, C3: 300 }
 
-const named = (id: string, about: string, names: NameInput[], cells: Record<string, CellSpec>, ranges: string[], more: Partial<SpillCase> = {}): SpillCase =>
-  one(id, about, { ...DATA, ...cells }, ranges, { book: { sheets: more.book?.sheets ?? [], names }, ...more })
+/** A case on S with `names`; a range read is on S, or on another sheet as `T!A1:A4`. */
+const named = (id: string, about: string, names: NameInput[], cells: Record<string, CellSpec>, ranges: string[], more: Partial<SpillCase> = {}): SpillCase => ({
+  ...one(id, about, { ...DATA, ...cells }, [], { book: { sheets: more.book?.sheets ?? [], names }, ...more }),
+  read: ranges.map((r) => (r.includes('!') ? { sheet: r.split('!')[0], range: r.split('!')[1] } : { sheet: 'S', range: r })),
+})
 
 export function buildSpillCases(): SpillCase[] {
   return [
