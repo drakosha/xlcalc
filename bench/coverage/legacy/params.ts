@@ -13,8 +13,8 @@ import { xl } from '../sets/arrays/common.js'
 import { xlpm } from '../sets/let/xlpm.js'
 import { isRefOnly, isSize } from '../sets/fuzz/pools.js'
 
-const RANGE = 'D!B1:B3'
-const EXPR = `(${RANGE}+0)`
+export const RANGE = 'D!B1:B3'
+export const EXPR = `(${RANGE}+0)`
 
 /** The top-level arguments of a call `NAME(...)`. */
 function split(call: string, name: string): string[] {
@@ -35,7 +35,7 @@ function split(call: string, name: string): string[] {
     }
     cur += ch
   }
-  return [...out, cur]
+  return out.length || cur ? [...out, cur] : []
 }
 
 /** Forms outside one call: operators, constants, references of every shape, nesting. */
@@ -53,20 +53,30 @@ const FORMS = [
   `XLOOKUP(8,${RANGE},D!C1:C3)+0`, `ABS(SEQUENCE(3))`, `SEQUENCE(3)+${RANGE}`, `N(${RANGE})`, `T(D!F1:F3)`, `COLUMN(D!B1:D1)`, `ROW()`, `NOW()`, `RAND()>2`, `TODAY()>1`,
 ]
 
-export function buildProbes(): Probe[] {
-  const out: Probe[] = []
-  const add = (id: string, group: string, fn: string, formula: string) => out.push({ id, group, fn, formula: xl(xlpm(formula)) })
+/** A probe in the engine's spelling, written as a file stores it. */
+export const probe = (id: string, group: string, fn: string, formula: string): Probe => ({ id, group, fn, formula: xl(xlpm(formula)) })
+
+/**
+ * Each function's call (`name`, `call`) and its variants: `make` gets the call text and, for the variants, the
+ * kind of the argument put in (`r` a range, `e` an expression) and its position from 1.
+ */
+export function eachCall(visit: (name: string, call: string, variant?: { kind: 'r' | 'e'; at: number }) => void) {
   for (const [name, call] of CALLS as [string, string][]) {
-    add(`${name}#call`, 'call', name, call)
+    visit(name, call)
     // LET's arguments are names and values: its forms are below
     const args = name === 'LET' ? [] : split(call, name)
     args.forEach((_, i) => {
       if (isSize(name, i)) return
       const with_ = (x: string) => `${name}(${args.map((a, j) => (j === i ? x : a)).join(',')})`
-      add(`${name}#r${i + 1}`, 'range', name, with_(RANGE))
-      if (!isRefOnly(name, i)) add(`${name}#e${i + 1}`, 'expr', name, with_(EXPR))
+      visit(name, with_(RANGE), { kind: 'r', at: i + 1 })
+      if (!isRefOnly(name, i)) visit(name, with_(EXPR), { kind: 'e', at: i + 1 })
     })
   }
-  FORMS.forEach((f, i) => add(`form#${i + 1}`, 'form', 'form', f))
+}
+
+export function buildProbes(): Probe[] {
+  const out: Probe[] = []
+  eachCall((name, call, v) => out.push(v ? probe(`${name}#${v.kind}${v.at}`, v.kind === 'r' ? 'range' : 'expr', name, call) : probe(`${name}#call`, 'call', name, call)))
+  FORMS.forEach((f, i) => out.push(probe(`form#${i + 1}`, 'form', 'form', f)))
   return out
 }

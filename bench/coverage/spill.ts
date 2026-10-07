@@ -17,7 +17,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { markDynamic } from './book.js'
-import { dialogText, ensureExcel, excelDialogs, excelVersion } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelDialogs, excelVersion } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
@@ -220,6 +220,11 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
         if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
         if (code !== 0) throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
         return answerOf(c, JSON.parse(out) as RawAnswer)
+      }
+      if (declineRepair()) {
+        child.kill()
+        await exited
+        throw new Error(`${c.id}: Excel did not accept the book (repair window declined)`)
       }
       if (excelDialogs().length) {
         child.kill()
