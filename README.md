@@ -65,9 +65,9 @@ const session = openSession({
 
 console.log(session.setCells([{ sheet: 'Plan', cell: 'A2', input: { value: 300 } }]))
 // → [
-//     { sheet: 'Plan', cell: 'A2', value: 300 },
-//     { sheet: 'Plan', cell: 'B1', value: 400 },
-//     { sheet: 'Plan', cell: 'B2', value: 480 }
+//     { sheet: 'Plan', cell: 'A2', value: 300, text: '300' },
+//     { sheet: 'Plan', cell: 'B1', value: 400, text: '400' },
+//     { sheet: 'Plan', cell: 'B2', value: 480, text: '480' }
 //   ]
 console.log(session.explain('Plan', 'B2').text)
 // → 'Plan'!B2 = 480  ← ROUND(B1*1.2,0)
@@ -90,7 +90,7 @@ const session = openSession({
 })
 const r = session.restructure({ op: 'deleteRows', sheet: 'Plan', row: 1 })
 console.log(r.mapCell({ sheet: 'Plan', cell: 'A3' }), r.changes)
-// → { sheet: 'Plan', cell: 'A2' } [ { sheet: 'Plan', cell: 'A2', value: 250 } ]
+// → { sheet: 'Plan', cell: 'A2' } [ { sheet: 'Plan', cell: 'A2', value: 250, text: '250' } ]
 session.setLayout([{ sheet: 'Plan', columns: 'A', set: { width: 14 } }])
 console.log(session.book().sheets[0])
 // → {
@@ -138,7 +138,7 @@ const cells = {
 const r = compute({ sheets: [{ name: 'S', cells }] })
 const out = r.sheets[0].cells
 console.log(out.B1.value, out.B2.value, out.D1.value) // → 32 13 16
-console.log(out.C1, out.C2) // → { value: 8, formula: 'SORT(A1:A3,1,-1)', spill: 'C1:C3' } { value: 5, spillOf: 'C1' }
+console.log(out.C1, out.C2) // → { value: 8, text: '8', formula: 'SORT(A1:A3,1,-1)', spill: 'C1:C3' } { value: 5, text: '5', spillOf: 'C1' }
 console.log(out.E1.value, r.issues[0].reason)
 // → { error: 'SPILL' } the array of 3×1 values cannot spill: 'S'!E3 is not empty
 ```

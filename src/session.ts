@@ -45,9 +45,12 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c) }
     })
   }
-  // keys of changed values with the cells whose look changed besides, in order
-  const merged = (keys: string[], more: string[]) =>
-    [...new Set([...keys, ...more])].map((k) => k.split(':').map(Number)).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((k) => k.join(':'))
+  // keys of changed values as the engine orders them, then the other cells whose look changed, by address
+  const merged = (keys: string[], more: string[]) => {
+    const seen = new Set(keys)
+    const extra = more.filter((k) => !seen.has(k)).map((k) => k.split(':').map(Number))
+    return [...keys, ...extra.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((k) => k.join(':'))]
+  }
   const tick = (s: EngineState) => {
     clock = currentClock()
     s.ctx.now = clockSerial(clock)
