@@ -81,9 +81,9 @@ function fileTree(formula: string, sheets: Set<string>): Ast | null {
     throw e
   }
   let ok = true
+  const known = (sheet: string | null | undefined) => sheet == null || sheets.has(sheetKey(sheet))
   walk(ast, (n) => {
-    const named = n.k === 'ref3d' ? [n.first, n.last] : n.k === 'ref' || n.k === 'err' || n.k === 'name' ? [n.sheet] : []
-    if (named.some((sheet) => sheet != null && !sheets.has(sheetKey(sheet)))) ok = false
+    if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
   })
   return ok ? ast : null
 }

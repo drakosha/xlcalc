@@ -284,20 +284,22 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (dup) throw new InputError(`${p}.name`, `duplicate sheet name ${JSON.stringify(name)}: ${path}.sheets[${dup.i}] is ${JSON.stringify(dup.name)} (sheet names are case-insensitive)`)
     seen.set(sheetKey(name), { name, i })
     const cells = object(sheet.cells, `${p}.cells`, 'an object of cells by address such as { A1: { value: 1 } }')
+    // the cells of old-kind array formulas, checked against the sheet once all its cells are
+    const arrays: string[] = []
     for (const addr of Object.keys(cells)) {
       const cell = cells[addr]
       if (SURE_ADDRESS.test(addr) && plainCell(cell, styles)) continue
       const cp = `${p}.cells[${JSON.stringify(addr)}]`
       checkAddress(addr, cp)
-      checkCell(cell, cp, styles)
+      if (checkCell(cell, cp, styles).array !== undefined) arrays.push(addr)
     }
+    if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
-  checkArrays(book as unknown as BookInput, path)
   return book as unknown as BookInput
 }
 
