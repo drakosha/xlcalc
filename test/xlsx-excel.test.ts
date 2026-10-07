@@ -101,9 +101,11 @@ describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved 
     return sets.get(name)!
   }
 
-  it('every part of every set with stored answers went through Excel', () => {
+  it('every part of every set with stored answers went through Excel, and only those', async () => {
     const names = ['probes', ...readdirSync(new URL('../cases/', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5))]
-    expect(names.filter((n) => !files.some((f) => f.startsWith(`${n}-`)))).toEqual([])
+    const parts: string[] = []
+    for (const name of names) for (let k = 0; k * PART < (await set(name)).probes.length; k++) parts.push(`${name}-${k + 1}.xlsx`)
+    expect([...files].sort()).toEqual(parts.sort())
   })
 
   for (const file of files.sort()) {

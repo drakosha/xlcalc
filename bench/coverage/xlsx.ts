@@ -13,7 +13,7 @@
  * changed (`FCOV_FRESH=1` sends all); `FXLSX_ONLY=id,id` limits a run.
  */
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compute } from '../../src/index.js'
@@ -64,6 +64,12 @@ async function send(step: string, books: { id: string; locale: Locale; bytes: ()
     run.meta = { version: excelVersion(), seconds: Math.round((Date.now() - t0) / 100) / 10, date: new Date().toISOString().slice(0, 10) }
     writeFileSync(join(DATA, `${step}.json`), JSON.stringify(run, null, 1) + '\n')
   }
+  // books the step no longer sends (a set that shrank) go with their files
+  for (const id of Object.keys(run.books))
+    if (!books.some((b) => b.id === id)) {
+      delete run.books[id]
+      rmSync(join(dir, `${id}.xlsx`), { force: true })
+    }
   for (const locale of ['en', 'ru'] as const) {
     const todo = books.filter((b) => b.locale === locale && (!ONLY || ONLY.includes(b.id)) && !(run.books[b.id]?.sent === b.hash && (run.books[b.id].rejected || existsSync(join(dir, `${b.id}.xlsx`)))))
     if (!todo.length) continue
