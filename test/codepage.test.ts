@@ -37,12 +37,12 @@ describe('code pages of CHAR and CODE', () => {
 
     it.skipIf(!decoder(name))(`${tag}: ${name} as TextDecoder reads it`, () => expect(CODE_PAGES[tag]).toBe(decoder(name)!.decode(Uint8Array.from({ length: 128 }, (_, i) => 128 + i))))
 
-    it(`${tag}: CODE(CHAR(n)) is n for 1 to 255, a character outside the page is 95`, () => {
+    it(`${tag}: CODE(CHAR(n)) is n for 1 to 255, a character outside the page is 63`, () => {
       const cells = Object.fromEntries(Array.from({ length: 255 }, (_, i) => [`A${i + 1}`, { formula: `CODE(CHAR(${i + 1}))` }]))
       Object.assign(cells, { B1: { formula: 'CODE("中")' }, B2: { formula: `CODE("${tag === 'en-US' ? 'Ж' : 'é'}")` } })
       const out = compute({ locale: tag, sheets: [{ name: 'S', cells }] }).sheets[0].cells
       expect(Array.from({ length: 255 }, (_, i) => out[`A${i + 1}`].value)).toEqual(Array.from({ length: 255 }, (_, i) => i + 1))
-      expect([out.B1.value, out.B2.value]).toEqual([95, 95])
+      expect([out.B1.value, out.B2.value]).toEqual([63, 63])
     })
   }
 })
