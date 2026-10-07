@@ -2,8 +2,15 @@
 
 ## Unreleased
 
+A synchronous session call that throws while it recomputes (over its limits, say) leaves the session as it was before the call; the session computes its book again on its next call.
+
 Added:
 
+- Computation in the same thread in portions, `createInlineCalc`: it gives way to the event loop between formulas (slices of `sliceMs`), and a call stops at its soft deadline (`timeoutMs`) or when its `signal` fires, with `CalcError`. A session's calls are taken in order, and a call that fails changes nothing (`docs/async.md`).
+- Computation in threads, `createCalcPool` from the new subpath `xlcalc/worker`: Node `worker_threads` or Web Workers on one protocol. A session's book lives in its thread; edits go there and changes come back. A task past `hardTimeoutMs` terminates its thread, `maxHeapMb` bounds a Node thread's heap, `maxQueue` and `maxSessions` refuse more work, `maxSessionsPerThread` sends the session called least recently off a full thread. The pool keeps a snapshot and a journal of each session: a session whose thread was lost, or that left a full thread, comes back on its next call with the hash it would have had. Checked against the synchronous engine on the case books in both execution modes, and in headless Chromium.
+- `limits` in `compute` and `openSession`: a book with more formulas than `formulas`, or a range, an array or a spill of more values than `cells`, throws `CalcError` instead of computing; an array too large is refused before it is made (`SUM(SEQUENCE(20000,20000))` used to bring the Node process down).
+- `CalcError`, exported from `xlcalc` and `xlcalc/worker`, with `code` (`soft_timeout`, `aborted`, `hard_timeout`, `out_of_memory`, `thread_failed`, `restore_failed`, `limit`, `queue_full`, `too_many_sessions`, `closed`).
+- `playwright-core` 1.63.0 joins the development dependencies, for the browser test.
 - Contract: `CalcLimits` (`formulas`, `cells`) in `ComputeOptions.limits` and `SessionOptions.limits`; a book over them throws `CalcError` with code `limit` instead of computing. The types of asynchronous and threaded computation: `Calc`, `AsyncSession`, `CalcOptions` (`signal`, `timeoutMs`), `AsyncComputeOptions`, `AsyncSessionOptions`, `AsyncRestructureResult` (as `SessionRestructureResult` without the book), `InlineCalcOptions`, `CalcPoolOptions`, `WorkerLike`, `AbortSignalLike` and `CalcErrorCode`.
 
 ## 0.3.1 (2026-10-07)
