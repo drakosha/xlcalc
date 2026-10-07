@@ -6,6 +6,12 @@ Added:
 
 - Contract: `CalcLimits` (`formulas`, `cells`) in `ComputeOptions.limits` and `SessionOptions.limits`; a book over them throws `CalcError` with code `limit` instead of computing. The types of asynchronous and threaded computation: `Calc`, `AsyncSession`, `CalcOptions` (`signal`, `timeoutMs`), `AsyncComputeOptions`, `AsyncSessionOptions`, `AsyncRestructureResult` (as `SessionRestructureResult` without the book), `InlineCalcOptions`, `CalcPoolOptions`, `WorkerLike`, `AbortSignalLike` and `CalcErrorCode`.
 
+## 0.3.1 (2026-10-07)
+
+Internal release; not published to npm.
+
+- `xlcalc/unstable/internal` imported before the root entry threw `ReferenceError: Cannot access 'collator' before initialization` (a module cycle between the values and the criteria). Every subpath now loads on its own, and a test imports each one first in a fresh process.
+
 ## 0.3.0 (2026-10-07)
 
 Internal release as `xlcalc`, used by our own applications before a public release; not published to npm.

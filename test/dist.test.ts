@@ -15,6 +15,7 @@ import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
+  name: string
   exports: Record<string, string | { types: string; default: string }>
   files: string[]
 }
@@ -33,6 +34,14 @@ describe('built package', () => {
     }
     expect(pkg.files).toContain('dist')
   })
+
+  it('each subpath loads on its own in a fresh process', () => {
+    // a consumer may import any subpath first; module cycles must not depend on the root entry loading before it
+    for (const sub of Object.keys(pkg.exports).filter((k) => k !== './package.json')) {
+      const spec = sub === '.' ? pkg.name : `${pkg.name}/${sub.slice(2)}`
+      expect(() => execFileSync(process.execPath, ['--input-type=module', '-e', `await import(${JSON.stringify(spec)})`], { cwd: root, stdio: 'pipe' }), spec).not.toThrow()
+    }
+  }, 60_000)
 
   it('plain node imports the package by name, values match the sources', () => {
     const out = JSON.parse(execFileSync(process.execPath, [child], { cwd: root, encoding: 'utf8' }).trim())
