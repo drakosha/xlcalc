@@ -127,13 +127,15 @@ function plainCell(c: unknown, styles: number): boolean {
   return true
 }
 
-/** Why Excel would not take a sheet name, or null: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end. */
+/** Why Excel would not take a sheet name, or null: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History` (reserved, in any case). */
 export function sheetNameProblem(name: string): string | null {
   if (name === '') return 'a sheet name must not be empty'
   if (name.length > 31) return `a sheet name has at most 31 characters, ${JSON.stringify(name)} has ${name.length}`
   const bad = /[:\\/?*[\]]/.exec(name)
   if (bad) return `a sheet name must not contain ${JSON.stringify(bad[0])} (Excel forbids : \\ / ? * [ ])`
   if (name.startsWith("'") || name.endsWith("'")) return 'a sheet name must not begin or end with an apostrophe'
+  // Excel refuses to rename a sheet so (the struct set `history`)
+  if (name.toLowerCase() === 'history') return 'Excel reserves the sheet name "History" (in any case)'
   return null
 }
 
