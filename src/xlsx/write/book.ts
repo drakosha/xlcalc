@@ -140,6 +140,11 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
         const { row, col } = parseAddress(addr)
         return tableAt(tables, i, row, col)?.name
       },
+      totalsAt: (addr) => {
+        const { row, col } = parseAddress(addr)
+        const t = tableAt(tables, i, row, col)
+        return !!t?.totals && row === t.r2
+      },
       tableParts: parts[i].map((_, k) => `rId${k + 1}`),
     }),
   )

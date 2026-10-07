@@ -3,8 +3,9 @@
  * metadata, `t="array"` over the range their array spilled into), as Excel 365 saves them: the engine computes
  * every formula by the rules of dynamic arrays, and so does Excel then. An array formula of the old kind
  * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
- * Ctrl+Shift+Enter. Values come from the result: a formula's value, and the cells its array spilled into. A formula
- * the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is written as its value.
+ * Ctrl+Shift+Enter, and a formula in a table's totals row as a plain one, the only kind Excel takes there. Values
+ * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
+ * does not parse, or names a sheet, a table or a column the book does not have) is written as its value.
  */
 import type { CellInput, CellResult, CellValue, SheetInput } from '../../contract.js'
 import { lines } from '../../layout/spans.js'
@@ -43,6 +44,8 @@ export interface SheetContext {
   /** The book's tables with their columns, and the one holding a cell of this sheet. */
   tables: { name: string; columns: string[] }[]
   tableAt(addr: string): string | undefined
+  /** A cell of a table's totals row, where Excel takes only a formula of the old kind (no array formula). */
+  totalsAt(addr: string): boolean
   /** The relationship ids of the sheet's table parts. */
   tableParts: string[]
 }
@@ -143,6 +146,10 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       continue
     }
     formulas = true
+    if (ctx.totalsAt(addr) && c.array === undefined) {
+      put(addr, cellXml(addr, c, res?.value, `<f>${escapeText(toFile(tree))}</f>`, false))
+      continue
+    }
     const ref = c.array ?? res?.spill ?? addr
     put(addr, cellXml(addr, c, res?.value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
   }
