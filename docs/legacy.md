@@ -16,7 +16,9 @@ fromLegacy('INDEX(A1:C3,0,1)+1')      // → '@INDEX(A1:C3,0,1)+1'
 fromLegacy('rng*2', { names, sheet }) // → '@rng*2' when rng is a range
 ```
 
-An xlsx cell formula without dynamic array metadata (`cm`) is of the old kind; `fromLegacy` takes its text after the prefixes of newer functions are dropped and returns canonical text. A formula it does not read comes back as it is.
+An xlsx cell formula without dynamic array metadata (`cm`) is of the old kind. `fromLegacy` takes its text after the prefixes of newer functions are dropped and returns canonical text. A formula it does not read comes back as it is.
+
+`readXlsx` does this for every formula of the old kind in a file and keeps the text as written where no `@` is needed. It reads an array formula without the metadata into `CellInput.array`, and `writeXlsx` writes it back so.
 
 ## Where Excel puts @
 
@@ -68,8 +70,9 @@ The other cells of the area hold no input. A session refuses edits that change s
 - `legacy/nesting` (3,469) and `legacy/blocks` (346): the same inside SUMPRODUCT, SUM, INDEX, ROWS and MMULT.
 - `legacy/calls` (113): calls whose answer depends on their arguments, array constants, names.
 - The coverage measurement computed with formulas of the old kind: every whitelisted case gives Excel's value at its row.
-- `spill/legacy` and `spill/legacy-held`: intersection by row and column, on other sheets and through names. The 13 held-out cells were predicted before Excel computed them, and all came out as predicted.
-- `spill/cse`, `spill/cse-held` and `struct/arrays` for array formulas of the old kind: 25 held-out cells, all as predicted.
+- `spill/legacy` and `spill/legacy-held`: intersection by row and column, on other sheets and through names. The 13 cells of `legacy-held` were predicted before Excel computed them, and all came out as predicted.
+- `spill/cse`, `spill/cse-held` and `struct/arrays` for array formulas of the old kind. The 25 cells of `cse-held` were predicted before Excel computed them, all as predicted.
+- `xlsx intersect`: 75 formulas of the old kind in a file Excel computed and saved. Read by `readXlsx`, each computes the value Excel stored, but two with `OFFSET`, which is not in the whitelist, and one with the intersection operator.
 
 `fromLegacy` gives Excel's text for every formula of these sets but one, which uses the intersection operator.
 

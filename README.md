@@ -159,7 +159,7 @@ const out = compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
 console.log(out.C1.value, out.C2.value, out.C3.value) // → 10 20 { error: 'NA' }
 ```
 
-The array fills its area and never spills. A session refuses to change part of the area, as Excel does. `fromLegacy` turns a formula of the old kind from a file into the dynamic formula Excel 365 shows for it, with `@` where Excel puts it. [docs/legacy.md](docs/legacy.md) has both.
+The array fills its area and never spills. A session refuses to change part of the area, as Excel does. `fromLegacy` turns a formula of the old kind from a file into the dynamic formula Excel 365 shows for it, with `@` where Excel puts it, and `readXlsx` does so for every such formula of a file. [docs/legacy.md](docs/legacy.md) has both.
 
 ### Checking formulas
 

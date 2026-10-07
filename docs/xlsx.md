@@ -40,13 +40,24 @@ Formulas come in the engine's spelling.
 | `_xlfn.XLOOKUP(…)`, `_xlfn._xlws.FILTER(…)` | `XLOOKUP(…)`, `FILTER(…)` |
 | `_xlfn.LET(_xlpm.x,1,_xlpm.x+1)` | `LET(x,1,x+1)` |
 | `_xlfn.ANCHORARRAY(E2)` | `E2#` |
+| `_xlfn.SINGLE(A1:A3)` | `@A1:A3` |
+| `Jan:Mar!A1`, `'Jan 1:Mar 2'!A1` | the same reference across sheets |
 | `_xludf.MYFN(1)` | `MYFN(1)`, reported |
 
 A shared formula is written once in a file and taken by a block of cells. Each of these cells gets its own formula, made as a copy and paste would make it: `A1*2` in B1 becomes `A2*2` in B2. A master cell below or right of its copies works too, and a reference pushed past the sheet's edge becomes `#REF!`.
 
-An array formula spills from its top-left cell. The other cells of its range hold only stored values in the file, so they go to `cached`, and they keep their own style in the book. Excel 365 marks its dynamic array formulas with cell metadata. An array formula without that mark is of the old kind, entered with Ctrl+Shift+Enter, and is reported because its array now spills.
+An array formula spills from its top-left cell. The other cells of its range hold only stored values in the file, so they go to `cached`, and they keep their own style in the book. Excel 365 marks its dynamic array formulas with cell metadata. An array formula without that mark is of the old kind, entered with Ctrl+Shift+Enter. Its cell gets the formula and `array`, the range it covers, and the formula is computed over that range as Excel computes it ([docs/legacy.md](legacy.md)).
 
-Excel 365 computes a plain formula of the old kind with implicit intersection: where such a formula puts a range in a place that takes one value, Excel takes the value in the formula's row. The engine computes it as a dynamic array, so the reader reports these formulas. `A1:A3*2`, `ABS(A1:A3)`, `SUM(A1:A3*2)` and `IF(TRUE,A1:A3)` are reported, while `SUM(A1:A3)`, `COUNTIF(A:A,">0")`, `VLOOKUP(1,A1:C5,2,FALSE)` and `SUMPRODUCT(A1:A3*2)` are not. Excel 365 writes a plain formula only where both ways agree: none of the 194 files it saved for the checks below has such an issue.
+A plain formula, without the mark, is of the old kind too. Excel 365 computes it with implicit intersection and shows `@` where it takes one value of a range. The reader gives the formula Excel shows, with `fromLegacy`:
+
+| in the file | in the book |
+|---|---|
+| `A1:A3*2`, `ABS(A1:A3)` | `@A1:A3*2`, `ABS(@A1:A3)` |
+| `INDEX(A1:B5,0,1)` | `@INDEX(A1:B5,0,1)` |
+| `span*1`, `span` a name over a range | `@span*1` |
+| `SUM(A1:A3)`, `SUMPRODUCT(A1:A3*2)`, `IF(A1>0,1,2)` | as written |
+
+A formula that needs no `@` keeps its text as written. Excel 365 writes a dynamic formula as a plain one when the two kinds agree, so most formulas of a file Excel 365 saved come through unchanged.
 
 Excel 365 stores `#SPILL!` and `#CALC!` as `#VALUE!` with a rich value that names the real error. The reader reads them as `#SPILL!` and `#CALC!`.
 
@@ -71,7 +82,7 @@ A merged area that overlaps another is left out and reported.
 | `Data!$A$1`, `'Data'!$D:$D` | the reference |
 | `#REF!`, `Data!#REF!` | the lost reference, as the engine keeps it |
 | `localSheetId="1"` | `scope`, the second sheet's name |
-| `0.2`, `Data!$A$1*2` | kept as written and reported: the engine takes only references |
+| `0.2`, `Data!$A$1*2`, `Data!$A$1:$A$3,Data!$C$1:$C$3` | the constant, the formula, the union ([docs/names.md](names.md)) |
 | `_xlnm.Print_Area` and other built-in names | left out and reported |
 | `_xlfn.XLOOKUP` (Excel's placeholder for a newer function) | left out |
 
@@ -84,18 +95,14 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | code | what the book cannot hold |
 |---|---|
 | `richText` | formatted runs of text |
-| `legacyArray` | an array formula of the old kind |
-| `implicitIntersection` | a formula of the old kind that Excel computes with `@` |
-| `singleOperator` | the `@` operator (`_xlfn.SINGLE`): the formula computes to `#NAME?` |
 | `userFunction` | a user-defined function (`_xludf.`) |
 | `table` | tables, and structured references in formulas |
-| `reference3d` | references across sheets, such as `Sheet1:Sheet3!A1` |
 | `externalLink` | links to other workbooks, and formulas that use them |
 | `formula` | a formula the engine does not parse, kept as written |
 | `errorConstant` | an error stored as a value, read as a formula of it |
 | `errorValue` | an error the model has no code for, such as `#GETTING_DATA` |
 | `dataTable` | a what-if data table, read as its stored values |
-| `name` | constants, formulas, built-in and hidden names |
+| `name` | built-in names, hidden names, names of a sheet left out |
 | `date1904` | the 1904 date system: numbers in date formats move to the 1900 system |
 | `calculation` | iterative calculation, the manual mode |
 | `style` | pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript, protection |
@@ -131,7 +138,9 @@ Every formula is written as a dynamic array formula, as Excel 365 saves one: wit
 
 The spilled cells are written with their values. `#SPILL!` and `#CALC!` are written as Excel 365 writes them, so Excel reads them back as those errors.
 
-Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET's names become `_xlpm.x`, and `E2#` becomes `_xlfn.ANCHORARRAY(E2)`. Sheet names are always quoted. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
+Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET's names become `_xlpm.x`, `E2#` becomes `_xlfn.ANCHORARRAY(E2)` and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted.
+
+A cell with `array` is written as an array formula of the old kind over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A name's formula is written as the book has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 
 A file with formulas asks Excel to compute the book when it opens it, so Excel shows its own values over the stored ones.
 
@@ -166,9 +175,9 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 
 - `zip/` reads and writes the archive. Inflating and deflating go through `DecompressionStream` and `CompressionStream`.
 - `xml/` holds the text layer: entities, Excel's escapes, and elements found by regular expressions.
-- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, and checks implicit intersection.
+- `read/` reads the package, the workbook, the sheets and their cells, and the cell metadata.
 - `styles/` turns styles.xml into the style table and holds the built-in number formats and the colours.
-- `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` and `modes.ts` are generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions.
+- `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
 - `write/` writes the workbook, the sheets and styles.xml.
 
 Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 120 KB.
@@ -179,9 +188,9 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 
 | step | what | result |
 |---|---|---|
-| `roundtrip` | 106 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, and the books of the structure and spill sets | every file opens, every book reads back as written, and Excel's values equal the engine's |
-| `saved` | 88 books of the case sets, 27,694 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
-| `intersect` | 75 formulas of the old kind | every formula whose value Excel computes otherwise is reported |
+| `roundtrip` | 143 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, and the books of the structure and spill sets, names of any formula, `@`, references across sheets and array formulas of the old kind among them | every file opens, every book reads back as written, and Excel's values equal the engine's |
+| `saved` | 91 books of the case sets, 28,831 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
+| `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` and the one with the intersection operator |
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
 | `formats` | the built-in number formats 1 to 58 | the reader's codes equal Excel's |
 
@@ -191,10 +200,12 @@ The round trip compares books by what they mean: a style by its fields, a formul
 
 - Excel saves the literal characters of a number format escaped, so `dd.mm.yyyy` comes back as `dd\.mm\.yyyy`. It is the same format.
 - Excel saves a range over whole columns or rows as such, so `A1:A1048576` comes back as `A:A`.
+- Excel saves a global name qualified by a sheet that has no name of its own, `'S'!x`, as the book's name `[0]!x`. It comes back as `x`, the same name.
 - Excel saves a LET that ends with a value with its last name as the calculation. With 127 names that makes 255 arguments, one more than the engine takes, so such a formula does not parse after Excel saved it.
 - A built-in date, time or currency format reads as the code Excel for Mac en-US shows. Excel for Windows en-US shows format 14 as `m/d/yyyy`, and ru-RU as `dd.mm.yyyy`.
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
-- The implicit intersection check knows the functions of the whitelist. A formula of the old kind with a function outside it, such as `OFFSET`, is not checked.
+- In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
+- The intersection operator, a space between two ranges, is not read: such a formula is reported.
 - Hidden rows and columns lose the size they had before they were hidden.
 - A style or height given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.

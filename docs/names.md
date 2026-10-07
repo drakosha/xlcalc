@@ -25,7 +25,7 @@ The rules below were measured in Excel 16.113 for Mac (en-US).
 | `'Data'!$A$1:$A$3,'Data'!$C$1:$C$3` | `=SUM(both)` | a union: see [References](references.md) |
 | `'Data'!$B$1#` | `=SUM(sp)` | the spill range of B1 |
 
-A name's formula is written as a file stores it, without `=`. Every reference in it has its sheet. A name whose formula does not parse, or has a reference without a sheet, is left out with a name issue.
+A name's formula is written as a file stores it, without `=`, and `readXlsx` reads it so. Every reference in it has its sheet. A name whose formula does not parse, or has a reference without a sheet, is left out with a name issue.
 
 ## References without `$`
 
@@ -64,7 +64,7 @@ Operations rewrite the references in names' formulas as in cells' formulas: a un
 
 ## How it was checked
 
-The sets `spill/names` (16 books) and `struct/cube` (20 operations) were computed in Excel. The held-out set `spill/names-held` (10 books, 24 cells) was predicted and committed before Excel computed it, and all 24 cells came out as predicted.
+The sets `spill/names` (16 books) and `struct/cube` (20 operations) were computed in Excel. The 24 cells of the set `spill/names-held` (10 books) were predicted before Excel computed them, and all came out as predicted.
 
 ## Known differences
 
