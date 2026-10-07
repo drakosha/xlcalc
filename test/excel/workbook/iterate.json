@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.9
+  "seconds": 74.9
  },
  "cases": [
   {
@@ -43,7 +43,12 @@
      "S!A3": 0,
      "S!B2": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -82,7 +87,12 @@
     "cached": {
      "S!A1": 0,
      "S!B1": 0
-    }
+    },
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -118,7 +128,12 @@
    ],
    "file": {
     "iterate": {},
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -154,7 +169,12 @@
     "cached": {
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -198,7 +218,12 @@
     "cached": {
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -244,7 +269,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -284,7 +314,12 @@
      "S!A1": 50,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -327,7 +362,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -379,7 +419,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -421,7 +466,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -461,7 +511,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -500,7 +555,12 @@
     "cached": {
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -544,7 +604,12 @@
     "cached": {
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -586,7 +651,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -628,7 +698,12 @@
      "S!B1": 0,
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -670,7 +745,12 @@
      "S!A1": 0,
      "S!A2": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -716,7 +796,12 @@
      "S!B1": 0,
      "S!C1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -762,7 +847,12 @@
      "S!B1": 0,
      "S!C1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -804,7 +894,12 @@
      "S!B1": 0,
      "S!A2": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -861,7 +956,12 @@
      "S!E1": 0,
      "S!F1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -918,7 +1018,12 @@
      "S!E1": 0,
      "S!F1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -964,7 +1069,12 @@
      "S!B3": 0,
      "S!C3": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1015,7 +1125,12 @@
      "S!A1": 0,
      "T!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1066,7 +1181,12 @@
      "T!A1": 0,
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1117,7 +1237,12 @@
      "B!A1": 0,
      "A!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1168,7 +1293,12 @@
      "A!A1": 0,
      "B!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1232,7 +1362,12 @@
      "Y!A1": 0,
      "X!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1296,7 +1431,12 @@
      "Y!A1": 0,
      "X!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1347,7 +1487,12 @@
      "B!A1": 0,
      "A!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1393,7 +1538,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1439,7 +1589,12 @@
      "S!B1": 0,
      "S!A2": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1490,7 +1645,12 @@
      "D!A1": 0,
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1539,7 +1699,12 @@
      "S!D1": 0,
      "S!H1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1585,7 +1750,12 @@
      "S!C1": 0,
      "S!D1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1625,7 +1795,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1665,7 +1840,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1716,7 +1896,12 @@
      "Zeta!A1": 0,
      "alpha!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1767,7 +1952,12 @@
      "S2!A1": 0,
      "S10!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1818,7 +2008,901 @@
      "X!A1": 0,
      "Y!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-counter-1",
+   "about": "a counter across X and Y, 1 iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-counter-2",
+   "about": "a counter across X and Y, 2 iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 2
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-counter-3",
+   "about": "a counter across X and Y, 3 iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 3
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-counter-4",
+   "about": "a counter across X and Y, 4 iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 4
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-counter-10",
+   "about": "a counter across X and Y, 10 iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 10
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-counter-100",
+   "about": "a counter across X and Y, 100 iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 100
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-times",
+   "about": "a counter across X and Y with Y = X*1, one iteration",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-st",
+   "about": "a counter across S and T, one iteration",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "T!A1+1"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "formula": "S!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    },
+    {
+     "sheet": "T",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "S!A1": 0,
+     "T!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-st-times",
+   "about": "S!A1 = T!A1+1, T!A1 = S!A1*10, three iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "T!A1+1"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "formula": "S!A1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    },
+    {
+     "sheet": "T",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 3
+    },
+    "cached": {
+     "S!A1": 0,
+     "T!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-ab-5",
+   "about": "a counter across A and B, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "A",
+      "cells": {
+       "A1": {
+        "formula": "B!A1+1"
+       }
+      }
+     },
+     {
+      "name": "B",
+      "cells": {
+       "A1": {
+        "formula": "A!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "A",
+     "range": "A1"
+    },
+    {
+     "sheet": "B",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "A!A1": 0,
+     "B!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "one-x-5",
+   "about": "X!A1 = X!A1+1 alone on sheet X, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "X!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "one-v-5",
+   "about": "V!A1 = V!A1+1 alone on sheet V (before the harness's sheets WN, WT, WX), five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "V",
+      "cells": {
+       "A1": {
+        "formula": "A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "V",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "V!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-three",
+   "about": "a counter across X, Y and Z, six iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Z!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     },
+     {
+      "name": "Z",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    },
+    {
+     "sheet": "Z",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 6
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0,
+     "Z!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-converge",
+   "about": "a converging cycle across X and Y: X = Y/2+1, Y = X",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1/2+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-through",
+   "about": "a counter on S through a cell of T: S!A1 = S!B1+1, S!B1 = T!A1, T!A1 = S!A1, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1+1"
+       },
+       "B1": {
+        "formula": "T!A1"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "formula": "S!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    },
+    {
+     "sheet": "T",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0,
+     "T!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "xs-one-sheet-two",
+   "about": "two cycles, one on X (X!A1 = X!A1+1) and one across X and Y, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "A1+1"
+       },
+       "B1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!B1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1:B1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "X!A1": 0,
+     "X!B1": 0,
+     "Y!A1": 0
+    },
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1858,7 +2942,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1894,7 +2983,12 @@
     "cached": {
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1934,7 +3028,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -1972,7 +3071,12 @@
     "cached": {
      "S!A1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2012,7 +3116,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2052,7 +3161,12 @@
      "S!A1": 0,
      "S!B1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2100,7 +3214,12 @@
      "S!C1": 0,
      "S!D1": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2146,7 +3265,12 @@
      "arrays": [
       "S!A1"
      ]
-    }
+    },
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2196,7 +3320,12 @@
      "S!B4": 0,
      "S!B5": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2248,7 +3377,12 @@
      "S!B4": 0,
      "S!B5": 0
     },
-    "plain": {}
+    "plain": {},
+    "mirrors": [
+     "zMirrorT",
+     "zMirrorN",
+     "zMirrorX"
+    ]
    },
    "steps": [
     "read",
@@ -2509,6 +3643,42 @@
      "formulas": {
       "S!A1": "=A1+1",
       "S!B1": "=A1"
+     }
+    }
+   ]
+  },
+  "text-typed": {
+   "settings": {
+    "iteration": true,
+    "count": 3,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "S!B1": "=LEN(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=LEN(A1)"
      }
     }
    ]
@@ -3889,15 +5059,15 @@
      "values": {
       "X!A1": {
        "t": "n",
-       "v": 1
+       "v": 11
       },
       "Y!A1": {
        "t": "n",
-       "v": 1
+       "v": 21
       },
       "Z!A1": {
        "t": "n",
-       "v": 10
+       "v": 110
       }
      },
      "formulas": {
@@ -3910,15 +5080,15 @@
      "values": {
       "X!A1": {
        "t": "n",
-       "v": 111
+       "v": 1111
       },
       "Y!A1": {
        "t": "n",
-       "v": 221
+       "v": 2221
       },
       "Z!A1": {
        "t": "n",
-       "v": 1110
+       "v": 11110
       }
      },
      "formulas": {
@@ -3931,15 +5101,15 @@
      "values": {
       "X!A1": {
        "t": "n",
-       "v": 11111
+       "v": 111111
       },
       "Y!A1": {
        "t": "n",
-       "v": 22221
+       "v": 222221
       },
       "Z!A1": {
        "t": "n",
-       "v": 111110
+       "v": 1111110
       }
      },
      "formulas": {
@@ -3961,15 +5131,15 @@
      "values": {
       "Z!A1": {
        "t": "n",
-       "v": 10
+       "v": 110
       },
       "Y!A1": {
        "t": "n",
-       "v": 1
+       "v": 21
       },
       "X!A1": {
        "t": "n",
-       "v": 1
+       "v": 11
       }
      },
      "formulas": {
@@ -3982,15 +5152,15 @@
      "values": {
       "Z!A1": {
        "t": "n",
-       "v": 1110
+       "v": 11110
       },
       "Y!A1": {
        "t": "n",
-       "v": 221
+       "v": 2221
       },
       "X!A1": {
        "t": "n",
-       "v": 111
+       "v": 1111
       }
      },
      "formulas": {
@@ -4003,15 +5173,15 @@
      "values": {
       "Z!A1": {
        "t": "n",
-       "v": 111110
+       "v": 1111110
       },
       "Y!A1": {
        "t": "n",
-       "v": 22221
+       "v": 222221
       },
       "X!A1": {
        "t": "n",
-       "v": 11111
+       "v": 111111
       }
      },
      "formulas": {
@@ -4535,7 +5705,7 @@
       },
       "Zeta!A1": {
        "t": "n",
-       "v": 0
+       "v": 10
       }
      },
      "formulas": {
@@ -4551,7 +5721,7 @@
       },
       "Zeta!A1": {
        "t": "n",
-       "v": 10
+       "v": 110
       }
      },
      "formulas": {
@@ -4567,7 +5737,7 @@
       },
       "Zeta!A1": {
        "t": "n",
-       "v": 110
+       "v": 1110
       }
      },
      "formulas": {
@@ -4645,11 +5815,198 @@
      "values": {
       "X!A1": {
        "t": "n",
+       "v": 5
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 10
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 15
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-counter-1": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-counter-2": {
+   "settings": {
+    "iteration": true,
+    "count": 2,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
        "v": 4
       },
       "Y!A1": {
        "t": "n",
        "v": 4
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 6
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-counter-3": {
+   "settings": {
+    "iteration": true,
+    "count": 3,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 6
       }
      },
      "formulas": {
@@ -4672,21 +6029,761 @@
       "X!A1": "=Y!A1+1",
       "Y!A1": "=X!A1"
      }
-    },
+    }
+   ]
+  },
+  "xs-counter-4": {
+   "settings": {
+    "iteration": true,
+    "count": 4,
+    "delta": 0.001
+   },
+   "reads": [
     {
      "values": {
       "X!A1": {
        "t": "n",
-       "v": 14
+       "v": 4
       },
       "Y!A1": {
        "t": "n",
-       "v": 14
+       "v": 4
       }
      },
      "formulas": {
       "X!A1": "=Y!A1+1",
       "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 8
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 8
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 12
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 12
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-counter-10": {
+   "settings": {
+    "iteration": true,
+    "count": 10,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 10
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 20
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 20
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 30
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 30
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-counter-100": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 100
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 100
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 200
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 200
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 300
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 300
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-times": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1*1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1*1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1*1"
+     }
+    }
+   ]
+  },
+  "xs-st": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A1": "=T!A1+1",
+      "T!A1": "=S!A1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 2
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 2
+      }
+     },
+     "formulas": {
+      "S!A1": "=T!A1+1",
+      "T!A1": "=S!A1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=T!A1+1",
+      "T!A1": "=S!A1"
+     }
+    }
+   ]
+  },
+  "xs-st-times": {
+   "settings": {
+    "iteration": true,
+    "count": 3,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 111
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 1110
+      }
+     },
+     "formulas": {
+      "S!A1": "=T!A1+1",
+      "T!A1": "=S!A1*10"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 111111
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 1111110
+      }
+     },
+     "formulas": {
+      "S!A1": "=T!A1+1",
+      "T!A1": "=S!A1*10"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 111111111
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 1111111110
+      }
+     },
+     "formulas": {
+      "S!A1": "=T!A1+1",
+      "T!A1": "=S!A1*10"
+     }
+    }
+   ]
+  },
+  "xs-ab-5": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1"
+     }
+    },
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 10
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1"
+     }
+    },
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 15
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1"
+     }
+    }
+   ]
+  },
+  "one-x-5": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "X!A1": "=A1+1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "X!A1": "=A1+1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "X!A1": "=A1+1"
+     }
+    }
+   ]
+  },
+  "one-v-5": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "V!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "V!A1": "=A1+1"
+     }
+    },
+    {
+     "values": {
+      "V!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "V!A1": "=A1+1"
+     }
+    },
+    {
+     "values": {
+      "V!A1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "V!A1": "=A1+1"
+     }
+    }
+   ]
+  },
+  "xs-three": {
+   "settings": {
+    "iteration": true,
+    "count": 6,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 6
+      },
+      "Z!A1": {
+       "t": "n",
+       "v": 6
+      }
+     },
+     "formulas": {
+      "X!A1": "=Z!A1+1",
+      "Y!A1": "=X!A1",
+      "Z!A1": "=Y!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 12
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 12
+      },
+      "Z!A1": {
+       "t": "n",
+       "v": 12
+      }
+     },
+     "formulas": {
+      "X!A1": "=Z!A1+1",
+      "Y!A1": "=X!A1",
+      "Z!A1": "=Y!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 18
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 18
+      },
+      "Z!A1": {
+       "t": "n",
+       "v": 18
+      }
+     },
+     "formulas": {
+      "X!A1": "=Z!A1+1",
+      "Y!A1": "=X!A1",
+      "Z!A1": "=Y!A1"
+     }
+    }
+   ]
+  },
+  "xs-converge": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 1.9990234375
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1.9990234375
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1/2+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 1.99951171875
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1.99951171875
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1/2+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 1.999755859375
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1.999755859375
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1/2+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "xs-through": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 3
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 2
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 3
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1+1",
+      "S!B1": "=T!A1",
+      "T!A1": "=S!A1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 5
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1+1",
+      "S!B1": "=T!A1",
+      "T!A1": "=S!A1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 8
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 7
+      },
+      "T!A1": {
+       "t": "n",
+       "v": 8
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1+1",
+      "S!B1": "=T!A1",
+      "T!A1": "=S!A1"
+     }
+    }
+   ]
+  },
+  "xs-one-sheet-two": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "X!B1": {
+       "t": "n",
+       "v": 5
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "X!A1": "=A1+1",
+      "X!B1": "=Y!A1+1",
+      "Y!A1": "=X!B1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 10
+      },
+      "X!B1": {
+       "t": "n",
+       "v": 10
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "X!A1": "=A1+1",
+      "X!B1": "=Y!A1+1",
+      "Y!A1": "=X!B1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 15
+      },
+      "X!B1": {
+       "t": "n",
+       "v": 15
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "X!A1": "=A1+1",
+      "X!B1": "=Y!A1+1",
+      "Y!A1": "=X!B1"
      }
     }
    ]
@@ -5359,42 +7456,6 @@
       "S!B3": "=B2*(B1+B4)/2",
       "S!B4": "=B1+B3-100",
       "S!B5": "=B4-B1"
-     }
-    }
-   ]
-  },
-  "text-typed": {
-   "settings": {
-    "iteration": true,
-    "count": 3,
-    "delta": 0.001
-   },
-   "reads": [
-    {
-     "values": {
-      "S!B1": {
-       "t": "n",
-       "v": 0
-      }
-     },
-     "formulas": {
-      "S!B1": "=LEN(A1)"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xxx"
-      },
-      "S!B1": {
-       "t": "n",
-       "v": 4
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\"",
-      "S!B1": "=LEN(A1)"
      }
     }
    ]

@@ -60,6 +60,12 @@ export interface FileParts {
    * (`S!A1`), written as dynamic array formulas; without it every formula is a dynamic array formula.
    */
   plain?: { arrays?: string[] }
+  /**
+   * The mirror sheets' names: their formulas depend on the cells read, and Excel's first computation of a cycle on
+   * opening the file does one pass less when such dependents' sheets sort before the cycle's sheet (the workbook set
+   * `iterate`), so a set of cycles names them to sort last. `WT`, `WN`, `WX` without it.
+   */
+  mirrors?: readonly [string, string, string]
 }
 
 /** A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as `ANCHORARRAY(E2)`. */
@@ -125,8 +131,8 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
     if (filter) ws.autoFilter = filter.range
   }
   const at = mirrorRanges(read)
-  for (const m of MIRRORS) {
-    const ws = wb.addWorksheet(m)
+  for (const [i, m] of MIRRORS.entries()) {
+    const ws = wb.addWorksheet(parts.mirrors?.[i] ?? m)
     read.forEach((g, i) => {
       const src = cellsOf(g.range)
       const dst = cellsOf(at[i])

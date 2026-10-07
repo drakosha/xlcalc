@@ -7,7 +7,8 @@
 -- lines: "full", "calc", "read", "set<TAB>sheet<TAB>cell<TAB>kind<TAB>value" (kind n a number, s a text, x clear),
 -- "formula<TAB>sheet<TAB>cell<TAB>=formula",
 -- "hide<TAB>sheet<TAB>range<TAB>1|0" (the entire rows of the range), "hidecols<TAB>sheet<TAB>range<TAB>1|0",
--- "filter<TAB>sheet<TAB>range<TAB>field<TAB>criterion"; the cells to show as lines "sheet<TAB>address".
+-- "filter<TAB>sheet<TAB>range<TAB>field<TAB>criterion"; the cells to show as lines "sheet<TAB>address"; the names of
+-- the mirror sheets of the types, the numbers and the texts, separated by tabs.
 -- Output: JSON {"settings": [iteration, max iterations, max change], "reads": [[[[types, numbers, texts, formulas], ...], [shown text, ...]], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
@@ -18,6 +19,9 @@ on run argv
 	set rects to paragraphs of item 2 of argv
 	set steps to paragraphs of item 3 of argv
 	set shows to paragraphs of item 4 of argv
+	set AppleScript's text item delimiters to (character id 9)
+	set mirrors to text items of item 5 of argv
+	set AppleScript's text item delimiters to ""
 	set hfs to (POSIX file p) as text
 	set reads to {}
 	tell application "Microsoft Excel"
@@ -57,9 +61,9 @@ on run argv
 						set rp to text items of rl
 						set AppleScript's text item delimiters to ""
 						set mr to item 3 of rp
-						set t to value of range mr of worksheet "WT" of wb
-						set nums to value of range mr of worksheet "WN" of wb
-						set strs to value of range mr of worksheet "WX" of wb
+						set t to value of range mr of worksheet (item 1 of mirrors) of wb
+						set nums to value of range mr of worksheet (item 2 of mirrors) of wb
+						set strs to value of range mr of worksheet (item 3 of mirrors) of wb
 						set f to formula of range (item 2 of rp) of worksheet (item 1 of rp) of wb
 						set end of snap to {t, nums, strs, f}
 					end repeat

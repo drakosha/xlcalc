@@ -9,7 +9,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { answerOf, cellsOf, fileFormula, runOnBook } from './case-book.js'
+import { answerOf, cellsOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import type { Step, WorkbookAnswer, WorkbookCase, WorkbookSet } from './workbook/cases.js'
 
@@ -46,7 +46,8 @@ function stepLine(s: Step): string {
 async function runCase(c: WorkbookCase): Promise<WorkbookAnswer> {
   const steps = (c.steps ?? ['full', 'read']).map(stepLine).join('\n')
   const shows = (c.show ?? []).flatMap((g) => cellsOf(g.range).addrs.map((a) => `${g.sheet}!${a}`))
-  const out = await runOnBook(c.id, SCRIPT, c.book, c.read, [steps, shows.map((k) => k.replace('!', '\t')).join('\n')], c.file)
+  const mirrors = (c.file?.mirrors ?? MIRRORS).join('\t')
+  const out = await runOnBook(c.id, SCRIPT, c.book, c.read, [steps, shows.map((k) => k.replace('!', '\t')).join('\n'), mirrors], c.file)
   const raw = JSON.parse(out) as { settings: [boolean, number, number]; reads: [[unknown, unknown, unknown, unknown][], string[]][] }
   const [iteration, count, delta] = raw.settings
   return {

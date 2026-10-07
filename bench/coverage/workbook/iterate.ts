@@ -17,8 +17,11 @@ const sheet = (name: string, cells: Record<string, Spec>): SheetInput => ({ name
 /** Read after opening, after a recalculation and after a full calculation. */
 const AGAIN: Step[] = ['read', 'calc', 'read', 'full', 'read']
 
+/** The harness's mirror sheets named to sort last (`FileParts.mirrors`). */
+const LAST = { mirrors: ['zMirrorT', 'zMirrorN', 'zMirrorX'] as const }
+
 /** Ordinary formulas, as Excel 365 saves the formulas of a cycle. */
-const PLAIN = { plain: {} }
+const PLAIN = { plain: {}, ...LAST }
 
 /** The value 0 stored for every formula of the sheets, as a file Excel saved stores values: without one Excel starts a cycle from no number (#VALUE!). */
 const zeros = (sheets: SheetInput[]) => Object.fromEntries(sheets.flatMap((s) => Object.entries(s.cells).flatMap(([a, c]) => (c.formula === undefined ? [] : [[`${s.name}!${a}`, 0]]))))
@@ -41,7 +44,7 @@ const two = (id: string, about: string, sheets: SheetInput[], read = ['S', 'T'])
 export function buildWorkbookCases(): WorkbookCase[] {
   return [
     one('counter', 'A1 = A1+1 with dependents right of it and below it', { A1: '=A1+1', B1: '=A1', A3: '=A1*2', B2: '=A1' }, 'A1:B3'),
-    one('counter-dynamic', 'the counter written as dynamic array formulas', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', {}, { file: { iterate: {}, cached: { 'S!A1': 0, 'S!B1': 0 } } }),
+    one('counter-dynamic', 'the counter written as dynamic array formulas', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', {}, { file: { iterate: {}, cached: { 'S!A1': 0, 'S!B1': 0 }, ...LAST } }),
     one('counter-blank', 'the counter whose file stores no value', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', {}, { file: { iterate: {}, ...PLAIN } }),
     one('counter-typed', 'the counter typed into an empty cell after opening', { B1: '=A1' }, 'A1:B1', {}, { steps: ['read', { formula: { sheet: 'S', cell: 'A1', formula: 'A1+1' } }, 'read', 'calc', 'read'] }),
     one('text-typed', 'A1 = A1&"x" typed into an empty cell, three iterations', { B1: '=LEN(A1)' }, 'A1:B1', { count: 3 }, { steps: ['read', { formula: { sheet: 'S', cell: 'A1', formula: 'A1&"x"' } }, 'read'] }),
@@ -99,6 +102,52 @@ export function buildWorkbookCases(): WorkbookCase[] {
       ...two('sheets-five', 'a counter across X and Y, five iterations', [sheet('X', { A1: '=Y!A1+1' }), sheet('Y', { A1: '=X!A1' })], ['X', 'Y']),
       file: { iterate: { count: 5 }, cached: { 'X!A1': 0, 'Y!A1': 0 }, ...PLAIN },
     },
+    ...[1, 2, 3, 4, 10, 100].map((n) => ({
+      ...two(`xs-counter-${n}`, `a counter across X and Y, ${n} iterations`, [sheet('X', { A1: '=Y!A1+1' }), sheet('Y', { A1: '=X!A1' })], ['X', 'Y']),
+      file: { iterate: { count: n }, cached: { 'X!A1': 0, 'Y!A1': 0 }, ...PLAIN },
+    })),
+    {
+      ...two('xs-times', 'a counter across X and Y with Y = X*1, one iteration', [sheet('X', { A1: '=Y!A1+1' }), sheet('Y', { A1: '=X!A1*1' })], ['X', 'Y']),
+      file: { iterate: { count: 1 }, cached: { 'X!A1': 0, 'Y!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-st', 'a counter across S and T, one iteration', [sheet('S', { A1: '=T!A1+1' }), sheet('T', { A1: '=S!A1' })]),
+      file: { iterate: { count: 1 }, cached: { 'S!A1': 0, 'T!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-st-times', 'S!A1 = T!A1+1, T!A1 = S!A1*10, three iterations', [sheet('S', { A1: '=T!A1+1' }), sheet('T', { A1: '=S!A1*10' })]),
+      file: { iterate: { count: 3 }, cached: { 'S!A1': 0, 'T!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-ab-5', 'a counter across A and B, five iterations', [sheet('A', { A1: '=B!A1+1' }), sheet('B', { A1: '=A!A1' })], ['A', 'B']),
+      file: { iterate: { count: 5 }, cached: { 'A!A1': 0, 'B!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('one-x-5', 'X!A1 = X!A1+1 alone on sheet X, five iterations', [sheet('X', { A1: '=A1+1' })], ['X']),
+      file: { iterate: { count: 5 }, cached: { 'X!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('one-v-5', 'V!A1 = V!A1+1 alone on sheet V (before the harness\'s sheets WN, WT, WX), five iterations', [sheet('V', { A1: '=A1+1' })], ['V']),
+      file: { iterate: { count: 5 }, cached: { 'V!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-three', 'a counter across X, Y and Z, six iterations', [sheet('X', { A1: '=Z!A1+1' }), sheet('Y', { A1: '=X!A1' }), sheet('Z', { A1: '=Y!A1' })], ['X', 'Y', 'Z']),
+      file: { iterate: { count: 6 }, cached: { 'X!A1': 0, 'Y!A1': 0, 'Z!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-converge', 'a converging cycle across X and Y: X = Y/2+1, Y = X', [sheet('X', { A1: '=Y!A1/2+1' }), sheet('Y', { A1: '=X!A1' })], ['X', 'Y']),
+      file: { iterate: {}, cached: { 'X!A1': 0, 'Y!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-through', 'a counter on S through a cell of T: S!A1 = S!B1+1, S!B1 = T!A1, T!A1 = S!A1, five iterations', [sheet('S', { A1: '=B1+1', B1: '=T!A1' }), sheet('T', { A1: '=S!A1' })], ['S', 'T']),
+      read: [{ sheet: 'S', range: 'A1:B1' }, { sheet: 'T', range: 'A1' }],
+      file: { iterate: { count: 5 }, cached: { 'S!A1': 0, 'S!B1': 0, 'T!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('xs-one-sheet-two', 'two cycles, one on X (X!A1 = X!A1+1) and one across X and Y, five iterations', [sheet('X', { A1: '=A1+1', B1: '=Y!A1+1' }), sheet('Y', { A1: '=X!B1' })], ['X', 'Y']),
+      read: [{ sheet: 'X', range: 'A1:B1' }, { sheet: 'Y', range: 'A1' }],
+      file: { iterate: { count: 5 }, cached: { 'X!A1': 0, 'X!B1': 0, 'Y!A1': 0 }, ...PLAIN },
+    },
     one('text', 'A1 = A1&"x" alone, B1 its length', { A1: '=A1&"x"', B1: '=LEN(A1)' }, 'A1:B1'),
     one('boolean', 'A1 = NOT(A1) alone', { A1: '=NOT(A1)' }, 'A1'),
     one('error-flip', 'A1 = IF(ISERROR(A1),1,IF(A1=1,NA(),1)) alone, B1 = ISNA(A1)', { A1: '=IF(ISERROR(A1),1,IF(A1=1,NA(),1))', B1: '=ISNA(A1)' }, 'A1:B1'),
@@ -106,7 +155,7 @@ export function buildWorkbookCases(): WorkbookCase[] {
     one('text-steady', 'a converging cycle beside a cycle holding the same text from its first iteration', { A1: '=A1/2+1', B1: '=IF(B1=0,"x","x")' }, 'A1:B1'),
     one('error-steady', 'a converging cycle beside a cycle holding the same error from its first iteration', { A1: '=A1/2+1', B1: '=IF(ISERROR(B1),NA(),NA())' }, 'A1:B1'),
     one('error', 'A1 = IF(A1>5,NA(),A1+1), B1 = A1+B1, C1 = IFERROR(C1+1/0,C1+2), D1 = 1/0+D1', { A1: '=IF(A1>5,NA(),A1+1)', B1: '=A1+B1', C1: '=IFERROR(C1+1/0,C1+2)', D1: '=1/0+D1' }, 'A1:D1'),
-    one('spill', 'A1 = SEQUENCE(3)+B1 spills over A1:A3, B1 = SUM(A2:A3)', { A1: '=SEQUENCE(3)+B1', B1: '=SUM(A2:A3)' }, 'A1:B3', { count: 3 }, { file: { iterate: { count: 3 }, cached: { 'S!A1': 0, 'S!B1': 0 }, plain: { arrays: ['S!A1'] } } }),
+    one('spill', 'A1 = SEQUENCE(3)+B1 spills over A1:A3, B1 = SUM(A2:A3)', { A1: '=SEQUENCE(3)+B1', B1: '=SUM(A2:A3)' }, 'A1:B3', { count: 3 }, { file: { iterate: { count: 3 }, cached: { 'S!A1': 0, 'S!B1': 0 }, plain: { arrays: ['S!A1'] }, ...LAST } }),
     one('interest', 'interest on the average balance: B3 = B2*(B1+B4)/2, B4 = B1+B3-100', { B1: 1000, B2: 0.1, B3: '=B2*(B1+B4)/2', B4: '=B1+B3-100', B5: '=B4-B1' }, 'B1:B5'),
     one('interest-fine', 'the same with a maximum change of 0.000001', { B1: 1000, B2: 0.1, B3: '=B2*(B1+B4)/2', B4: '=B1+B3-100', B5: '=B4-B1' }, 'B1:B5', { delta: 0.000001 }),
   ]
