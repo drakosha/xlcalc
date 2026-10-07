@@ -32,6 +32,9 @@ export function buildSpillCases(): SpillCase[] {
         ],
       },
     }),
-    one('union', 'a union and a reference across sheets under @', { ...DATA, H2: '=@(A1:A3,C1:C3)' }, ['H2'], { book: { sheets: [sheet('T', { A2: 1 }), sheet('U', { A2: 2 }), sheet('V', { B2: '=@T:U!A1:A3' })] } }),
+    one('union', 'a union and a reference across sheets under @', { ...DATA, H2: '=@(A1:A3,C1:C3)' }, ['H2'], {
+      book: { sheets: [sheet('T', { A2: 1 }), sheet('U', { A2: 2 }), sheet('V', { B2: '=@T:U!A1:A3', B3: '=@T:U!A2' })] },
+      read: [{ sheet: 'S', range: 'H2' }, { sheet: 'V', range: 'B2:B3' }],
+    }),
   ]
 }
