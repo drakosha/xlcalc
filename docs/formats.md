@@ -1,118 +1,134 @@
-# Number formats and what cells show
+# Number formats and shown text
 
-A cell of a result carries its value and, by default, what Excel shows in it: `CellResult.text` (VBA's `Range.Text`) and `color`, the colour of its format's section. `TEXT` formats with the same engine. This document has the rules as measured in Excel, how they were measured, how the engine is built and where it differs.
+Besides its value, each cell of a result carries what Excel shows in it: `text`, the same as VBA's `Range.Text`, and `color`, the colour of the format section that was used. The `TEXT` function formats with the same engine.
 
-## The API
+The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 
-- `compute(book, { display })` and `openSession(book, { display })`: `display` is `true` by default. With it every cell of `sheets[].cells` (spilled cells too) has `text`, and `color` when its section has one; session changes (`setCells`, `setLayout`, `restructure`, `setNames`, `setClock`) carry them for the cells they list, and also list the cells whose text or colour changed while their value did not. With `display: false` results and changes are as before: values alone, nothing spent on formatting.
-- `displayValue(value, { format, locale, width })` shows one value without a book: a cell being edited, a value a host computed itself. It takes the cell's value as the result gives it (a number, text, a boolean, `null`, `{ error }`).
-- The value is always the number in `value`, whatever the text shows; the text is derived from the value, the format, the locale and the width, so it is not part of the values hash (`hash` and `inputHash` do not change).
-- The format of a cell is its own `format`, else its row's, else its column's. The width is its column's `width`, in xlsx's units, or the sum of the columns of a merged area it is the top-left cell of.
+## API
 
-Alternatives that were weighed:
+- `compute(book, { display })` and `openSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `format` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `restructure`.
+- `display: false` returns values only and spends nothing on formatting.
+- `displayValue(value, { format, locale, width })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`.
 
-- **Text instead of the number in `value` by default** (what a grid draws, with an option for numbers): one field fewer, but every consumer of values (hashes, comparisons, exports) would have to ask for numbers back, and a number would turn into text depending on a column's width. Rejected: Mikhail's rule is that `value` stays the number.
-- **Display only through a separate call** (`displayValue` per visible cell, or `session.render(range)`): no cost on computing, but the default would not be "as in Excel", and the host would have to track which cells changed their look after an edit of a width or a format; the session knows it and returns them. Kept as `displayValue` for cells outside a book.
-- **A `shown` object (`{ text, color }`) per cell instead of two flat fields**: one more object for each of tens of thousands of cells, and `CellChange` would nest too. Rejected for flat optional fields, typed together as `CellDisplay`.
-- **Display options per call of `result()`** instead of per session: a session that tracks looks must know before edits whether to compare them, so the option belongs to the session.
+The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
 
-## How it was measured
+A cell's format is its own `format`, else its row's, else its column's. Its width is its column's `width` (in xlsx units), or the width of all columns of the merged area it starts.
 
-`npx tsx bench/coverage/run.ts display <set> [ru]` (`bench/coverage/display.ts`) writes a book whose cells hold the cases' values (or formulas) with their formats, one column per width, merged areas where a case asks for one, and reads back from Excel 16.113 for Mac `string value` of each cell (its `Range.Text`) and `color of font object of display format` (the colour Excel draws the text in). Excel en-US runs with the English interface and locale, ru-RU with the system's Russian ones, under the shared Excel lock. Answers are in `test/excel/display/` (en-US) and `test/excel/display/ru-RU/`; `test/display-excel.test.ts` computes the same books with the engine.
+## Width
 
-ExcelJS writes a format equal to one of Excel's built-in formats by its number, and Excel shows built-in formats 14 to 22 by the regional settings (`d-mmm-yy` as `31.янв.25` in ru-RU). The harness writes every case's format as a custom code, which is what a `format` string is here.
+Excel lays out text in points of Calibri 11, the default font of xlsx files. A digit is 6 points wide. A column of xlsx width `w` is `trunc(6w + 21·6/256)` points; a column without a width is 53 points. Five points go to padding, and text fits when the widths of its characters add up to no more than the rest.
 
-| set | cases | what |
-|---|---|---|
-| `widths` | 1,523 (en-US) | widths of characters by fills, the room of columns by `#`, digits against widths, fractional widths and the default column |
-| `general` | 5,166 (en-US) | 82 numbers in the General format in columns from half a character to 14 characters, in steps of a sixth |
-| `codes` | 1,674 each | 99 number codes on 12 values and 38 date codes on 15 values, in a wide column |
-| `fit` | 678 each | booleans, errors and text in narrow columns, formatted numbers near the edge, fills and padding against the width, text past 255 characters, merged areas, the default column, colours, date separators, edges of the calendar and of fractions |
-| `names` | 70 each | month names after a day, the long date and time, large improper fractions, numbers under `@` in narrow columns, values no conditional section takes |
-| `held`, `held-ru` | 58 each | held out: predicted by the engine and committed before Excel ran (below) |
+Character widths were measured by fills (`0*x` repeats `x` across the column, and the count gives the width of `x`):
 
-`TEXT` was measured as formulas in the case sets `text-format` (479) and `text-format-more` (22) in en-US and `text-format-ru` (254) and `text-format-ru-more` (16) in ru-RU (`test/excel/cases/`).
-
-### Colours
-
-AppleScript gives the colour of the display format's font, which is the section's colour: `[Red]` reads as `#FF0000`, `[Color10]` as `#008000`, and black (the automatic colour, `[Black]`, `[Color1]`) as `#000000`, which the answers leave out. It gives no colour for an exact 0 in a format of fewer than three sections (`[Red]0`, `[Red]0;[Blue]0`) and for text under a coloured text section (`[Red]@`, `0;0;0;[Red]@`), where Excel draws the colour on the screen: a screenshot of Excel 16.113 with those cells shows them red (and `x` under `[Red]0;[Blue]0;[Green]0;[Magenta]@` magenta). The engine gives the section's colour there, and `test/display-api.test.ts` pins it; the Excel comparison accepts any colour in those two places. The names are Microsoft's eight (`[Black]`, `[White]`, `[Red]`, `[Green]`, `[Blue]`, `[Yellow]`, `[Magenta]`, `[Cyan]`, any case) and `[ColorN]` an index into Excel's default palette of 56 colours ("Review guidelines for customizing a number format", Microsoft Support; the palette is xlsx's indexed colours 8 to 63); the measured ones (`[Color1]`, `[Color10]`, `[Color56]`, the names, and five held-out indexes) agree with it.
-
-### Held-out cases
-
-Before the run of `held` and `held-ru`, each of their 58 cases got the engine's answer as its `predicted` field, committed (`95cf949`). Excel confirmed 57 of 58 in each locale. The miss, in both: 0 in `[<0]0;[>0]0`, which no section takes, shows `#` in Excel; the engine showed General. Two more cases in each locale and in `TEXT` measured the rule (with conditions in two or three sections a value none of them takes is `#VALUE!` in `TEXT` and `#` in a cell; with one section it shows General), the engine follows it now, and `test/display-excel.test.ts` lists the miss.
-
-## The rules
-
-### Width
-
-Excel lays out text in points of Calibri 11, the default font of an xlsx file. A digit is 6 points. A column of xlsx width `w` (the `width` of `ColumnInput`, in digits with the padding) is `trunc(6w + 21·6/256)` points wide, as xlsx's formula with a maximum digit width of 6; a column without a width is 53 (8 digits and the padding of 5). Of that, 5 points are padding: the text fits when the sum of its characters' widths is at most the rest. The widths of 155 characters were measured by fills (`0*x` repeats `x` across the column: the count gives `x`'s width): space and `'` 2; `. , - ( ) : { } f i j l I` 3; `/ ! r s t z J г т` 4; `+ # ^ ~ < > = ? _ E F L S T Y Z`, lower-case `a c e g k v x y`, Cyrillic `а в е ё з к с у ч х ь э я Г Е Ё З Т` 5; digits, `$ ₽ € £ ¥` and the most letters 6; `D G H N O Q U м ф ы` and the like 7; `% & w ж ш щ ю Ф Ы` 8; `m M Ж М` 9; `W Ш Щ Ю` 10. Every case of the `widths` set agrees with this model exactly.
+| points | characters |
+|---|---|
+| 2 | space, `'` |
+| 3 | `. , - ( ) : { } f i j l I` |
+| 4 | `/ ! r s t z J г т` |
+| 5 | `+ # ^ ~ < > = ? _ E F L S T Y Z`, `a c e g k v x y`, `а в е ё з к с у ч х ь э я Г Е Ё З Т` |
+| 6 | digits, `$ ₽ € £ ¥` and most letters |
+| 7 | `D G H N O Q U м ф ы` and similar |
+| 8 | `% & w ж ш щ ю Ф Ы` |
+| 9 | `m M Ж М` |
+| 10 | `W Ш Щ Ю` |
 
 A merged area is as wide as its columns together.
 
-### What does not fit
+## Values that do not fit
 
-- A formatted number or date that does not fit shows `#` across the cell, one per 5 points of room (`#` is 5 wide), at most 255; nothing when the room is under 5.
-- A shown text longer than 255 characters (a fill, a long number) shows `#` too: `0* ` in a column of width 86 shows 253 characters, at 87 `#`.
-- A boolean or an error shows whole when it fits, else `#` the same way (`TRUE` needs 23 points, `ИСТИНА` 38).
-- Text is never cut: it runs over the next cells, and `Range.Text` is the text itself, however narrow the column.
+- A formatted number or date that does not fit shows `#` across the cell, one per 5 points of room, at most 255. A cell with less than 5 points of room shows nothing.
+- Shown text longer than 255 characters, such as a long fill, shows `#` as well: `0* ` in a column of width 86 shows 253 characters, at width 87 it shows `#`.
+- A boolean or an error shows whole when it fits, else `#` in the same way. `TRUE` needs 23 points, `ИСТИНА` 38.
+- Text is never cut. It runs over the next cells, and the shown text is the text itself however narrow the column.
 
-### General
+## General
 
-A number in the General format shows the text `TEXT(x,"General")` gives (at most 11 characters, the sign aside) when that fits, counting each character as a digit and a leading minus as 3 points. Else, as measured on 5,166 cells:
+A number in the General format shows what `TEXT(x,"General")` gives (at most 11 characters, not counting the sign) when that fits. A leading minus counts as 3 points and every other character as a digit. When it does not fit:
 
-1. A number from 10^-4 to under 10^11 drops decimals, rounding, down to the most that fit, as long as some digit of the number shows (`3.14159265` is `3.142`, then `3.1`, then `3`; `0.000123456789` is `0.0001235`, then `0.0001`).
-2. Then scientific notation with fewer digits of the mantissa (`1.23E+08`, `1.2E+08`, `1E+08`).
-3. A number that rounds to 0 in a room of one to four digits shows `0` (`1E-10` in a column one digit wide); a positive number from 10^-4 whose rounding is one digit shows it in any width (`0.5` shows `1` even with no room).
-4. The shortest scientific form when its real width fits and the number rounds to 6 digits or more, or is under 10^-4 (`1E+05` for 999999.5 in 28 points, but `#` for 99999.4).
-5. Else `#` across the cell, one at least.
+1. A number from 10^-4 to below 10^11 drops decimals, rounding, as long as at least one digit shows. `3.14159265` becomes `3.142`, then `3.1`, then `3`; `0.000123456789` becomes `0.0001235`, then `0.0001`.
+2. Then comes scientific notation with a shorter mantissa: `1.23E+08`, `1.2E+08`, `1E+08`.
+3. A number that rounds to 0 in a room of one to four digits shows `0` (`1E-10` in a one-digit column). A positive number from 10^-4 that rounds to one digit shows that digit at any width: `0.5` shows `1` even with no room.
+4. The shortest scientific form shows when it fits and the number rounds to 6 digits or more, or is below 10^-4. 999999.5 shows `1E+05` in 28 points, but 99999.4 shows `#`.
+5. Otherwise the cell shows `#`, at least one.
 
-### Sections
+## Sections
 
-Without conditions: the first section for positive numbers (and zero when there are fewer than three), the second for negative ones (which then write no minus of their own), the third for zero, the fourth, or else a section with `@`, for text. With conditions (`[>100]`, `[<=-5]`, `[=1]`, `[<>0]`) the first of the first three sections whose condition holds or that has none; a value none of them takes shows General when the code has one section, and nothing otherwise (`#VALUE!` in `TEXT`, `#` in a cell). A section writes the minus of a negative number unless every number it can take is negative (`[Red][<0]0;0` shows −5 as `5`, `[<=-5]"low";[>=5]"high";0` shows −1 as `-1`); a section of literals writes the minus before them (`[=1]"one";"other"` shows −2 as `-other`). An empty section shows nothing (`0;;`). Booleans and errors show as they are, booleans under a text section as its text (`0;-0;0;"is "@` shows FALSE as `is FALSE`).
+A format has up to four sections separated by `;`. Without conditions, the first is for positive numbers (and zero, when there are fewer than three sections), the second for negative numbers, the third for zero, and the fourth, or a section with `@`, for text. A negative number in the second section writes no minus of its own.
 
-### Numbers
+With conditions (`[>100]`, `[<=-5]`, `[=1]`, `[<>0]`), the value takes the first of the first three sections whose condition holds or that has no condition. A value that no section takes shows General when the format has one section; otherwise it shows `#` in a cell and gives `#VALUE!` in `TEXT`.
 
-- Digits as before: `0` a digit or zero, `#` a digit, `?` a digit or a space; a group separator between digits groups by thousands, after them scales by 1000 (`0.0,,`); `%` multiplies by 100 (both rounded to 15 significant digits first); a second point is a literal.
-- Scientific notation: as many integer digits as integer placeholders, the exponent a multiple of their count (`##0.0E+0` shows 0.5 as `500.0E-3`), `E+` writes the exponent's sign always, `E-` only a minus, the exponent padded to its placeholders (`1.00E+300`). An exponent written in lower case is `#VALUE!` in `TEXT`, and Excel refuses to load an xlsx file with one.
-- Fractions: the integer part before the numerator if the code has one; a denominator by its placeholders (the closest fraction) or fixed (`?/8`); a numerator over 2,147,483,646 shows `#` (`#VALUE!` in `TEXT`): `?/?` shows 1E+15 as `#` but 2,000,000,001/2 as itself. With an integer part a negative number keeps its minus and a whole 0 shows `0` (`-0    `).
-- Positional numbers keep 15 significant digits and zeros after them (`TEXT(1E+250,"0")` is a 1 and 250 zeros).
-- Literals: `"…"`, `\x`, and characters that need no quotes (`$ - + / ( ) : space`); `_x` is one space whatever `x` (Excel draws the width of `x`, `Range.Text` has a space, and fitting counts a space); `*x` repeats `x` across the room the rest leaves, the last fill only, earlier ones dropping out; `[$₽-419]` is the symbol `₽` (any symbol) and the locale `419`.
+A section writes the minus of a negative number unless it can only take negative numbers: `[Red][<0]0;0` shows −5 as `5`, while `[<=-5]"low";[>=5]"high";0` shows −1 as `-1`. A section of literals writes the minus before them: `[=1]"one";"other"` shows −2 as `-other`. An empty section shows nothing (`0;;`). Booleans and errors show as they are; under a text section, a boolean shows as that section's text (`0;-0;0;"is "@` shows FALSE as `is FALSE`).
 
-### Dates and times
+## Numbers
 
-- Excel's 1900 calendar: serial 0 is `1/0/1900`, 60 is `2/29/1900`; a negative serial or one from 2,958,466 (past 9999-12-31) shows `#` (`#VALUE!` in `TEXT`).
-- The time is rounded to what the code shows: whole seconds, or the decimals of `ss.0` to `ss.000` (45688.999999 is `2025-02-01 00:00:00` by `yyyy-mm-dd hh:mm:ss`, `23:59:59.9` by `h:mm:ss.0`).
-- `m` is minutes after hours or before seconds, else the month; `mmmmm` the month's first letter; `ddd`, `dddd`, `mmm`, `mmmm` the locale's names; `A/P` writes the letter in the code's case (`a/p` shows `6:00 p`).
-- Elapsed time: `[h]`, `[mm]`, `[ss]` count hours, minutes or seconds from 0; a negative value shows with a minus when the section has elapsed time alone (`[h]` shows −1 as `-24`), else `#`.
-- In a cell, a bare `/` in a date is the locale's date separator (`dd/mm/yyyy` shows `31.01.2025` in ru-RU); in `TEXT` it stays `/`. Other separators and quoted or escaped ones are as written.
-- `[$-409]` and `[$-419]` take English and Russian names; `[$-F800]` is the system's long date (en-US `dddd, mmmm d, yyyy`, ru-RU `dddd, d mmmm yyyy "г."` with month names in the genitive, `пятница, 31 января 2025 г.`) and `[$-F400]` the long time (`h:mm:ss AM/PM`, `hh:mm:ss`). Other tags are read and ignored.
+- `0` is a digit or zero, `#` a digit, `?` a digit or a space. A group separator between digit placeholders groups thousands; after them it divides by 1000 (`0.0,,`). `%` multiplies by 100. Both round to 15 significant digits first. A second decimal point is a literal.
+- Scientific notation shows as many integer digits as there are integer placeholders, and the exponent is a multiple of their count: `##0.0E+0` shows 0.5 as `500.0E-3`. `E+` always writes the exponent's sign, `E-` only a minus, and the exponent is padded to its placeholders (`1.00E+300`). A lower-case exponent (`0.00e+00`) is `#VALUE!` in `TEXT`, and Excel will not load an xlsx file that has one.
+- Fractions put the integer part before the numerator when the format has one, and take the closest fraction for the denominator's placeholders or a fixed denominator (`?/8`). A numerator above 2,147,483,646 shows `#` (`#VALUE!` in `TEXT`): `?/?` shows 1E+15 as `#`. With an integer part, a negative number keeps its minus and a whole 0 shows `0`.
+- Positional numbers keep 15 significant digits and pad with zeros: `TEXT(1E+250,"0")` is a 1 followed by 250 zeros.
+- Literals are `"…"`, `\x`, and characters that need no quotes (`$ - + / ( ) :` and space). `_x` is one space, whatever `x` is (Excel leaves the width of `x`, but `Range.Text` has a space). `*x` repeats `x` across the room the rest of the text leaves; only the last fill counts. `[$₽-419]` writes the symbol `₽` (any symbol works) with the locale 419.
 
-### Locales
+## Dates and times
 
-A cell's format is read as an xlsx file stores it, in en-US syntax, whatever the book's locale, and shown with the locale's decimal and group separators, names, booleans, error texts and date separator: `#,##0.00` is `1 234 567,89` in ru-RU, `mmmm` is `январь`, `TRUE` is `ИСТИНА`, `#N/A` is `#Н/Д`. `TEXT` reads the locale's own codes (`# ##0,00`, `ДД.ММ.ГГГГ`, `Основной`) and its colour names: in ru-RU `[Красный]`, `[Синий]`, `[Цвет10]` and the other Russian names, while `[Red]` and `[Color10]` are `#VALUE!`. Month names in ru-RU are nominative (`31 январь 2025`) except in the long date.
+- Excel's 1900 calendar: serial 0 is `1/0/1900`, 60 is `2/29/1900`. A negative serial, or one from 2,958,466 (past 9999-12-31), shows `#` and is `#VALUE!` in `TEXT`.
+- Time is rounded to what the format shows: whole seconds, or the decimals of `ss.0` to `ss.000`. 45688.999999 is `2025-02-01 00:00:00` with `yyyy-mm-dd hh:mm:ss` and `23:59:59.9` with `h:mm:ss.0`.
+- `m` means minutes after hours or before seconds, and the month elsewhere. `mmmmm` is the month's first letter. `ddd`, `dddd`, `mmm` and `mmmm` are the locale's names. `A/P` writes the letter in the format's case (`a/p` shows `6:00 p`).
+- `[h]`, `[mm]` and `[ss]` count elapsed hours, minutes or seconds from 0. A negative value shows with a minus when the section has elapsed time alone (`[h]` shows −1 as `-24`), and `#` otherwise.
+- In a cell, a bare `/` in a date format is the locale's date separator: `dd/mm/yyyy` shows `31.01.2025` in ru-RU. In `TEXT` it stays `/`. Quoted and escaped separators stay as written.
+- `[$-409]` and `[$-419]` select English and Russian names. `[$-F800]` is the system's long date (en-US `dddd, mmmm d, yyyy`; ru-RU `пятница, 31 января 2025 г.`, with months in the genitive) and `[$-F400]` the long time. Other tags are read and ignored.
 
-### `TEXT` and a cell
+## Locales
+
+A cell's format is read the way xlsx stores it, in en-US syntax, whatever the book's locale. It is shown with the locale's separators, names, booleans, error texts and date separator: in ru-RU `#,##0.00` shows `1 234 567,89`, `mmmm` shows `январь`, TRUE shows `ИСТИНА`, `#N/A` shows `#Н/Д`.
+
+`TEXT` reads the locale's own codes (`# ##0,00`, `ДД.ММ.ГГГГ`, `Основной`) and colour names (`[Красный]`, `[Синий]`, `[Цвет10]`); in ru-RU, `[Red]` and `[Color10]` are `#VALUE!`. Month names in ru-RU are in the nominative (`31 январь 2025`), except in the long date.
+
+## Colours
+
+Format colours are the eight names `[Black]`, `[White]`, `[Red]`, `[Green]`, `[Blue]`, `[Yellow]`, `[Magenta]`, `[Cyan]` in any case, and `[ColorN]`, an index into Excel's default palette of 56 colours (xlsx's indexed colours 8 to 63). `[Red]` gives `#FF0000`, `[Color10]` gives `#008000`. Black is the automatic colour and is left out of results. The names and the palette come from Microsoft's "Review guidelines for customizing a number format"; the 13 colours measured in Excel agree with it.
+
+## How `TEXT` differs from a cell
 
 | | `TEXT` | a cell |
 |---|---|---|
-| codes | the book's locale's (`# ##0,00` in ru-RU) | as xlsx stores them (`#,##0.00`) |
-| General | 11 characters at most | narrowed to the width |
-| a number wider than the column | (no width) | `#` across the cell |
-| a value its section cannot show (a date out of range, no section takes it, more than 255 characters) | `#VALUE!` | `#` across the cell |
+| format codes | the book's locale (`# ##0,00` in ru-RU) | as xlsx stores them (`#,##0.00`) |
+| General | at most 11 characters | narrowed to the column |
+| a number wider than the column | no width | `#` across the cell |
+| a value its section cannot show | `#VALUE!` | `#` across the cell |
 | `*x` | dropped | `x` across the room |
 | `_x` | a space | a space |
 | colour | none | the section's |
 | `/` in a date | `/` | the locale's date separator |
 
-## The engine
+## How the engine does it
 
-`src/numfmt.ts` assembles `src/numfmt/`: `parse.ts` reads a code into sections (colour, condition, locale tag, tokens) by a dialect's letters and separators and caches the result per dialect and code, so a column of one format is parsed once; `select.ts` chooses the section; `number.ts` (digits, fractions, exponents), `date.ts` (dates, times, elapsed time) and `general.ts` (General as text, as `TEXT` writes it and narrowed to a width) format; `glyphs.ts` has the widths; `palette.ts` the colours; `style.ts` what a locale writes. `formatWith` is `TEXT`, `displayWith` a cell. A locale gives a dialect for `TEXT` and a style for cells (`src/locale/rules/format.ts`); `Rules.display` is the book's (`src/locale/rules.ts`). `src/shown.ts` finds a cell's format and width (row, column, merged area) and is used by results (`src/result.ts`) and sessions; `src/session/looks.ts` compares what cells show before and after an edit that recomputes nothing, and `src/session/moved.ts` after a structure operation.
+`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths, `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
 
-Speed, on the synthetic book (3,400 rows, 3,907 formulas, 54,778 cells; cold compute, medians of 5 interleaved processes, each the median of 5 runs after a warm-up, Apple M5 Pro, Node 26; `node --expose-gc --import tsx test/fixtures/bench-child.ts 3400 <mode> [off]`): 310 ms with the display and 279 ms without in the closures mode, 322 and 294 ms in the eval mode, against 279 and 298 ms before the display existed; an edit of a criterion cell stays under 2 ms (p95) either way, the heap grows by 0.2 MB. Most cells are text or numbers in the General format of a default column; their text is the value's shortest decimal text when that has at most 11 characters, so most cost nothing beyond a string.
+`src/shown.ts` finds a cell's format and width. Sessions compare what cells show before and after an edit that recomputes nothing (`src/session/looks.ts`) and after a structure operation (`src/session/moved.ts`).
+
+Most cells are text or General numbers in a default column, and their text is the value's shortest decimal form, so they cost almost nothing. On the synthetic book (54,778 cells) a cold computation takes 310 ms with display and 279 ms without, in the closures mode.
+
+## How it was checked
+
+`npx tsx bench/coverage/run.ts display <set> [ru]` writes a book of values or formulas with their formats, one column per width, and merged areas where a case needs one. Excel reads back each cell's `string value` (its `Range.Text`) and `color of font object of display format`. Answers are in `test/excel/display/` and `test/excel/display/ru-RU/`, and `test/display-excel.test.ts` compares the engine with them.
+
+| set | cells | what |
+|---|---|---|
+| `widths` | 1,523 | character widths, column room, fractional and default widths |
+| `general` | 5,166 | 82 numbers in General, columns from half a character to 14 characters |
+| `codes` | 1,674 per locale | 99 number formats on 12 values, 38 date formats on 15 values |
+| `fit` | 678 per locale | booleans, errors and text in narrow columns, numbers near the edge, fills, merged areas, colours, date separators, calendar edges |
+| `names` | 70 per locale | month names, long dates and times, large fractions, values no section takes |
+| `held` | 58 per locale | predicted by the engine before Excel computed them; 57 of 58 matched in each locale, and the miss became the rule for values no section takes |
+
+`TEXT` was measured as formulas in the case sets `text-format` and `text-format-more` (en-US) and `text-format-ru` and `text-format-ru-more` (ru-RU), 771 cases in all.
+
+The cases write every format as a custom code. Excel shows built-in formats 14 to 22 by the regional settings, so a format equal to one of them would show differently.
+
+AppleScript returns no colour for an exact 0 in a format of fewer than three sections (`[Red]0`) and for text under a coloured text section (`[Red]@`), though Excel draws the colour on screen there. The engine gives the section's colour in these places, and the comparison accepts any colour.
 
 ## Known differences
 
-- **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (`style` with another font or size, bold) is not taken into account, nor indent, wrapping, shrinking or rotation; characters outside the measured table (other scripts, rare signs) count as a digit. Excel for Windows lays text out in pixels of a digit 7 wide at 96 dpi: near the edge of a column it can show `#` where the engine shows the number, or the other way round.
-- **Built-in formats.** An xlsx file stores some formats by number, and Excel shows numbers 14 to 22 by the regional settings (`d-mmm-yy` as `31.янв.25` in ru-RU); a `format` here is a code, shown as written (`31-янв-25`).
-- **Locale tags.** Only `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]` change names or formats; other locale codes, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are read and ignored.
-- **A second decimal separator** among the decimals of a number format (`#,##0,00` in ru-RU's `TEXT`) is a literal between digits; Excel shows one digit fewer before it in some numbers (`RU_KNOWN`, `secondDecimal`).
+- **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (another font or size, bold), indent, wrapping, shrinking and rotation are ignored, and characters outside the measured table count as a digit. Excel for Windows lays out text in pixels, with a digit 7 pixels wide at 96 dpi, so near the edge of a column it can show `#` where the engine shows the number, or the other way round.
+- **Built-in formats.** xlsx stores some formats by number, and Excel shows numbers 14 to 22 by the regional settings (`d-mmm-yy` as `31.янв.25` in ru-RU). Here a format is a code and shows as written (`31-янв-25`).
+- **Locale tags.** Only `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]` change names or formats. Other locale codes, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are read and ignored.
+- **A second decimal separator** among the decimals of a format (`#,##0,00` in ru-RU's `TEXT`) is a literal between digits; Excel shows one digit fewer before it for some numbers.
