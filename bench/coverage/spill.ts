@@ -34,7 +34,7 @@ export interface StoredSpill {
 }
 
 /** The file of a case with cells of the old kind: those as plain formulas, the others as dynamic array formulas. */
-function partsOf(c: SpillCase): FileParts | undefined {
+export function partsOf(c: SpillCase): FileParts | undefined {
   if (!c.legacy) return undefined
   const old = new Set(c.legacy)
   return { plain: { arrays: c.book.sheets.flatMap((s) => Object.keys(s.cells).map((a) => `${s.name}!${a}`).filter((k) => !old.has(k))) } }

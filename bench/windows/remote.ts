@@ -201,3 +201,22 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
     if (!process.env.XLWIN_KEEP) rmSync(local, { recursive: true, force: true })
   }
 }
+
+/**
+ * Items (a part of cases, a case) as books in jobs of up to `per`: `take` stores a book's answer and gives back what is
+ * to run again (a part halved, the books after the one a cut-short job hung on); `save` follows every job.
+ */
+export async function inJobs<T>(label: string, items: T[], build: (t: T, file: string) => Promise<Book>, take: (t: T, a: Answer, cutShort: boolean) => T[], save: () => void, per = 40): Promise<void> {
+  const queue = [...items]
+  const t0 = Date.now()
+  mkdirSync(OUT, { recursive: true })
+  for (let job = 1; queue.length; job++) {
+    const batch = queue.splice(0, per)
+    const books = await Promise.all(batch.map((t, k) => build(t, join(OUT, `${label}-${k}.xlsx`))))
+    const answers = await runJob(label, books)
+    const stop = answers.findIndex((a) => !a)
+    answers.forEach((a, k) => queue.push(...take(batch[k], a, stop >= 0 && k > stop)))
+    save()
+    console.log(`${label} job ${job}: ${batch.length} books, ${queue.length} left, ${((Date.now() - t0) / 1000).toFixed(0)} s`)
+  }
+}

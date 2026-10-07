@@ -15,11 +15,10 @@ import type { ErrCode } from '../coverage/data.js'
 import type { Val } from '../coverage/formulajs.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../coverage/probes.js'
 import { inCaseOrder } from '../coverage/stored.js'
-import { metaOf, OUT, runJob, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 const PART = 400
-const BOOKS_PER_JOB = 40
 
 /** Where the Windows answers are stored, beside the Mac's in `test/excel/`. */
 export const winFile = (rel: string) => join(ROOT, 'test/excel/win', rel)
@@ -98,6 +97,9 @@ export async function target(name: string, tag: Tag): Promise<Target> {
   return { cases: mod.buildProbes(), sheets: mod.SHEETS ?? {}, file: winFile(`${dir === 'legacy' ? 'legacy' : 'cases'}/${ru ? 'ru-RU/' : ''}${set}.json`), ...(dir === 'legacy' ? { legacy: true as const } : {}) }
 }
 
+/** A part of a target's cases. */
+type Item = { r: Run; part: Probe[] }
+
 /** A target in a run: its answers so far, and how they are stored. */
 interface Run {
   name: string
@@ -147,13 +149,13 @@ function take(r: Run, part: Probe[], a: Answer, cutShort: boolean): Probe[][] {
 }
 
 /**
- * The targets' cases without a stored answer for the same formula, in jobs of up to BOOKS_PER_JOB books across targets
- * (a job costs some 30 s of SSH and Excel's start); each target's file is written after every job that touched it.
+ * The targets' cases without a stored answer for the same formula, in jobs of up to 40 books across targets
+ * (a job costs some 30 s of SSH and Excel's start); the targets' files are written after every job.
  */
 export async function stepFunctions(names: string[], tag: Tag, e: WinEnv): Promise<void> {
   const t0 = Date.now()
   const runs: Run[] = []
-  const queue: { r: Run; part: Probe[] }[] = []
+  const queue: Item[] = []
   for (const name of names) {
     const t = await target(name, tag)
     const got = storedOf(t)
@@ -174,16 +176,13 @@ export async function stepFunctions(names: string[], tag: Tag, e: WinEnv): Promi
     const todo = t.cases.filter((c) => !got.values[c.id] && !got.rejected.includes(c.id))
     queue.push(...parts(todo, !!t.valuesOnly).map((part) => ({ r, part })))
   }
-  mkdirSync(OUT, { recursive: true })
-  for (let job = 1; queue.length; job++) {
-    const batch = queue.splice(0, BOOKS_PER_JOB)
-    const books = await Promise.all(batch.map(({ r, part }, k) => bookOf(r, part, join(OUT, `functions-${k}.xlsx`))))
-    const answers = await runJob(`functions-${tag}`, books)
-    const stop = answers.findIndex((a) => !a)
-    answers.forEach((a, k) => queue.push(...take(batch[k].r, batch[k].part, a, stop >= 0 && k > stop).map((part) => ({ r: batch[k].r, part }))))
-    for (const r of new Set(batch.map((b) => b.r))) r.save()
-    console.log(`job ${job}: ${batch.length} books, ${queue.length} left, ${((Date.now() - t0) / 1000).toFixed(0)} s`)
-  }
+  await inJobs(
+    `functions-${tag}`,
+    queue,
+    (it, file) => bookOf(it.r, it.part, file),
+    (it, a, cutShort) => take(it.r, it.part, a, cutShort).map((part) => ({ r: it.r, part })),
+    () => runs.forEach((r) => r.save()),
+  )
   for (const r of runs) {
     r.save()
     console.log(`${r.name}: ${Object.keys(r.got.values).length} of ${r.t.cases.length} answered${r.got.rejected.length ? `, ${r.got.rejected.length} not taken` : ''}`)

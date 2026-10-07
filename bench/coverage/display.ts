@@ -67,7 +67,7 @@ export function place(cases: DisplayCase[]): Map<string, { row: number; col: num
 }
 
 /** The book of a part: sheet `S` with the cases' cells, column widths and merged areas; sheet `L` lists their addresses. */
-async function writeBook(cases: DisplayCase[], file: string): Promise<void> {
+export async function writeBook(cases: DisplayCase[], file: string): Promise<void> {
   const wb = new ExcelJS.Workbook()
   const ws = wb.addWorksheet('S')
   const list = wb.addWorksheet('L')
