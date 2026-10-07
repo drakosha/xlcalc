@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, displayValue } from '../src/index.js'
-import { CLOCK, DISPLAY_SETS, displayBook, sameShown } from './display-cases.js'
+import { CLOCK, DISPLAY_SETS, displayBook, formatted, sameShown } from './display-cases.js'
 
 /** Held-out cases whose prediction Excel did not confirm, by `<locale>:<set>:<id>` (the engine was fixed after the run). */
 const MISSED: readonly string[] = ['en-US:held:condition#6', 'ru-RU:held-ru:condition#6']
@@ -34,7 +34,7 @@ for (const set of DISPLAY_SETS) {
       const off = set.cases.flatMap((c) => {
         if (c.cell.formula !== undefined || (c.span ?? 1) > 1) return []
         const value = c.cell.value === undefined || (typeof c.cell.value === 'object' && c.cell.value !== null) ? null : c.cell.value
-        const shown = displayValue(value, { format: c.cell.format, locale: set.locale, width: c.width })
+        const shown = displayValue(value, { format: formatted(c).format, locale: set.locale, width: c.width })
         return sameShown(set.answers[c.id], shown, value) ? [] : [`${c.id}: Excel ${JSON.stringify(set.answers[c.id])}, displayValue ${JSON.stringify(shown)}`]
       })
       expect(off).toEqual([])

@@ -6,7 +6,7 @@
  * land on are gone. A move that cuts a merged area at its source, and a copy that lands on part of one, are
  * refused, as Excel refuses them.
  */
-import type { BookInput, ColumnInput, RowInput, SheetInput } from '../contract.js'
+import type { BookInput, ColumnInput, NumberFormat, RowInput, SheetInput } from '../contract.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
@@ -47,7 +47,7 @@ function pasteLines<T>(from: SheetInput, to: SheetInput, taken: Line<T>[], key: 
 
 interface Look {
   style?: number
-  format?: string
+  format?: NumberFormat
 }
 
 /** The style and format the rows and columns give at a position: the row's, else the column's, each separately. */

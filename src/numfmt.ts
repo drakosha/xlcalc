@@ -4,7 +4,7 @@
  * width of its column, `#` for a number that does not fit, fills and the section's colour. One parser and one
  * formatter serve both; the rules and what was measured in Excel are in `docs/formats.md`.
  */
-import type { CellDisplay, CellValue } from './contract.js'
+import type { CellDisplay, CellValue, NumberFormat } from './contract.js'
 import { formatDate } from './numfmt/date.js'
 import { generalFit } from './numfmt/general.js'
 import { glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
@@ -13,6 +13,7 @@ import { EN_CODES, parseFormat, type Codes, type Section } from './numfmt/parse.
 import { choose, kind, textSection } from './numfmt/select.js'
 import { FILL, plain, type Style } from './numfmt/style.js'
 
+export { builtinCodes, EN_BUILTIN, isBuiltin } from './numfmt/builtin.js'
 export { generalFormat, generalText } from './numfmt/general.js'
 export { columnPoints, room } from './numfmt/glyphs.js'
 export { EN_CODES, type Codes } from './numfmt/parse.js'
@@ -106,12 +107,14 @@ function filled(text: string, space: number): string | null {
 const fitted = (text: string, space: number, overflow: boolean) => filled(text, space) ?? (overflow ? unfilled(text) : hashes(space))
 
 /**
- * What a cell shows: a value by its format (an xlsx file's code, General without one) in `space` points of room,
- * written in the style of the book's locale. Text is never cut (it overflows); a number that does not fit shows `#`.
+ * What a cell shows: a value by its format (an xlsx file's code, a built-in format by its number, General without one)
+ * in `space` points of room, written in the style of the book's locale. Text is never cut (it overflows); a number
+ * that does not fit shows `#`.
  */
-export function displayWith(value: CellValue, fmt: string | undefined, style: Style, space: number): CellDisplay {
+export function displayWith(value: CellValue, format: NumberFormat | undefined, style: Style, space: number): CellDisplay {
   if (value === null) return { text: '' }
   if (typeof value === 'object') return { text: fitted(style.error(value.error), space, false) }
+  const fmt = typeof format === 'number' ? style.builtin(format) : format
   const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
   if (typeof value !== 'number') {
     const sec = secs && textSection(secs)

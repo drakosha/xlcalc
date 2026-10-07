@@ -86,7 +86,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const [cell, row, col] = [sheet.cells[formatAddress(tr, tc)], lineAt(sheet.rows, 'r', tr), lineAt(sheet.columns, 'c', tc)]
       const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
       const format = cell?.format ?? row?.format ?? col?.format
-      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format } : {}) }
+      const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }
   // a hidden line shows no size, as Excel reads it

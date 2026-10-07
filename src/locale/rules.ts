@@ -5,10 +5,10 @@
  * book (`rulesOf`) and passes it to the operators and criteria (`runtime.ts`) and to functions (`Cx.rules`);
  * code outside a book (the parser, the criteria index of `unstable/internal`) works by en-US.
  */
-import type { CellDisplay, CellValue, ErrorCode } from '../contract.js'
+import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders } from '../dates.js'
-import { displayWith, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
+import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { enUS } from './en-US.js'
@@ -44,8 +44,8 @@ export interface Rules extends CritRules {
   numberText(n: number): string
   /** TEXT(value, format); null for a format the locale does not read. */
   formatText(value: number | string | boolean, format: string): string | null
-  /** What a cell shows: a value by its format (an xlsx code) in `space` points of room. */
-  display(value: CellValue, format: string | undefined, space: number): CellDisplay
+  /** What a cell shows: a value by its format (an xlsx code or a built-in format's number) in `space` points of room. */
+  display(value: CellValue, format: NumberFormat | undefined, space: number): CellDisplay
   /** Excel's order of two values that are not errors (lookups, sorting), text by the locale's order. */
   compare(a: V, b: V): number
   /** The order of the comparison operators: `compare` with numbers equal to 15 significant digits. */
@@ -69,6 +69,7 @@ const EN_STYLE: Style = {
   names: namesOf,
   longDate: 'dddd, mmmm d, yyyy',
   longTime: 'h:mm:ss AM/PM',
+  builtin: (id) => EN_BUILTIN[id],
 }
 
 /** Excel en-US with the English interface: the engine's own rules, date text without a year in the clock's year (`1/31`). */

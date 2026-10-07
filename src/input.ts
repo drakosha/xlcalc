@@ -8,6 +8,7 @@ import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { LOCALES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
+import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 
@@ -70,6 +71,11 @@ export function checkAddress(addr: unknown, path: string): string {
   return addr
 }
 
+/** A number format: a code, or the number of a built-in format (0 to 49). */
+function checkFormat(v: unknown, path: string) {
+  if (typeof v !== 'string' && !(typeof v === 'number' && isBuiltin(v))) throw new InputError(path, `expected a format code or the number of a built-in format, 0 to 49, got ${what(v)}`)
+}
+
 /** A style number of a book with `styles` styles. */
 function checkStyleIndex(v: unknown, path: string, styles: number) {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles)
@@ -91,7 +97,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
     }
   }
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
-  if (c.format !== undefined && typeof c.format !== 'string') checkString(c.format, `${path}.format`)
+  if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   return c as CellInput
 }
@@ -215,7 +221,7 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
-  field('format', checkString)
+  field('format', checkFormat)
   field('hidden', checkBoolean)
 }
 
@@ -407,7 +413,7 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { format: '#,##0.00', locale: 'ru-RU', width: 12 }")
   onlyKeys(o, path, ['format', 'locale', 'width', 'dateSystem'])
-  if (o.format !== undefined) checkString(o.format, `${path}.format`)
+  if (o.format !== undefined) checkFormat(o.format, `${path}.format`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)

@@ -19,7 +19,7 @@ import { dialogText, excelDialogs } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
-import type { BookInput, RangeRef } from '../../src/contract.js'
+import type { BookInput, NumberFormat, RangeRef } from '../../src/contract.js'
 import { lines, parseSpan } from '../../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../../src/model.js'
 import { quoteSheet } from '../../src/syntax.js'
@@ -62,6 +62,12 @@ export const fileFormula = (f: string) => xl(xlpm(f)).replace(/((?:'(?:[^']|'')+
 
 const ERROR_TYPE: Record<number, Extract<Val, { t: 'e' }>['v']> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 
+/** A cell's format as ExcelJS writes it: a code; a built-in format by its number is written by the display step only. */
+export function formatCode(format: NumberFormat): string {
+  if (typeof format === 'number') throw new Error(`the built-in format ${format} by its number: only the display step writes it`)
+  return format
+}
+
 /** A rectangle's cells row by row. */
 export function cellsOf(range: string): { rows: number; cols: number; addrs: string[] } {
   const [a, b = a] = range.split(':').map(parseAddress)
@@ -99,7 +105,7 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
       if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), shareType: 'array', ref: addr, ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
       else if (cell.value !== null && typeof cell.value === 'object') x.value = new Date(Date.parse(`${cell.value.date}${cell.value.date.includes('T') ? '' : 'T00:00:00'}Z`))
       else if (cell.value !== undefined) x.value = cell.value
-      if (cell.format !== undefined) x.numFmt = cell.format
+      if (cell.format !== undefined) x.numFmt = formatCode(cell.format)
       const fill = cell.style === undefined ? undefined : book.styles![cell.style].fill
       if (fill) x.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${fill.color.slice(1)}` } }
     }

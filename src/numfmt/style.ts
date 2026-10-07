@@ -33,6 +33,8 @@ export interface Style extends Names {
   longMonths?: readonly string[]
   /** The book's date system as the 1900 serial of its day 0: 1462 in the 1904 system, which shows negative dates and times with a minus. */
   epoch?: number
+  /** The code a built-in format shows by in the locale, by its number (`numfmt/builtin.ts`). */
+  builtin(id: number): string
 }
 
 /** A style in a date system whose day 0 is `epoch` of the 1900 one. */

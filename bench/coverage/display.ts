@@ -15,6 +15,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { dialogText, ensureExcel, excelVersion, runScriptWatched, type Locale } from './excel.js'
+import { formatCode } from './case-book.js'
 import { xl } from './sets/arrays/common.js'
 import { formatAddress, inputScalar } from '../../src/model.js'
 import type { DisplayAnswer, DisplayCase, DisplaySet } from './display/cases.js'
@@ -78,7 +79,7 @@ async function writeBook(cases: DisplayCase[], file: string): Promise<void> {
     const addr = formatAddress(row, col)
     const x = ws.getCell(addr)
     x.value = (c.cell.formula !== undefined ? { formula: xl(c.cell.formula) } : inputScalar(c.cell.value)) as ExcelJS.CellValue
-    if (c.cell.format !== undefined) x.numFmt = c.cell.format
+    if (c.cell.format !== undefined) x.numFmt = formatCode(c.cell.format)
     else if (c.numFmtId !== undefined) x.numFmt = builtinMark(c.numFmtId)
     for (let k = 0; k < (c.span ?? 1); k++) if (c.width !== undefined) ws.getColumn(col + 1 + k).width = c.width
     if ((c.span ?? 1) > 1) ws.mergeCells(`${addr}:${formatAddress(row, col + c.span! - 1)}`)

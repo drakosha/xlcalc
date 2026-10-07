@@ -15,8 +15,8 @@ import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import { markDynamic } from './book.js'
-import { fileFormula, writeParts, type FileParts } from './case-book.js'
-import type { BookInput, CellStyle, SheetInput } from '../../src/contract.js'
+import { fileFormula, formatCode, writeParts, type FileParts } from './case-book.js'
+import type { BookInput, CellStyle, NumberFormat, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
@@ -71,9 +71,9 @@ export const styled = (book: BookInput) =>
 const argb = (color: string) => ({ argb: `FF${color.slice(1).toUpperCase()}` })
 
 /** A style and a number format as ExcelJS takes them; a font keeps the default Calibri 11. */
-function excelStyle(st: CellStyle | undefined, format: string | undefined): Partial<ExcelJS.Style> {
+function excelStyle(st: CellStyle | undefined, format: NumberFormat | undefined): Partial<ExcelJS.Style> {
   const out: Partial<ExcelJS.Style> = {}
-  if (format !== undefined) out.numFmt = format
+  if (format !== undefined) out.numFmt = formatCode(format)
   if (st?.font) {
     const { color, ...f } = st.font
     out.font = { name: 'Calibri', size: 11, ...f, ...(color ? { color: argb(color) } : {}) }
