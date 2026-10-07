@@ -44,6 +44,22 @@ describe('xlsx reader: sheets', () => {
     expect(r.book.sheets).toEqual([{ name: 'S', cells: { Z5: { value: 'far' } } }])
   })
 
+  it('a Strict file: its namespaces and relationship types, dates as ISO text', async () => {
+    const STRICT = 'http://purl.oclc.org/ooxml/officeDocument/relationships'
+    const r = await readXlsx(
+      await pack({
+        '_rels/.rels': rels(`<Relationship Id="rId1" Type="${STRICT}/officeDocument" Target="xl/workbook.xml"/>`),
+        'xl/workbook.xml': `<workbook xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main" xmlns:r="${STRICT}" conformance="strict"><workbookPr dateCompatibility="1"/><sheets><sheet name="Strict" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+        'xl/_rels/workbook.xml.rels': rels(`<Relationship Id="rId1" Type="${STRICT}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${STRICT}/sharedStrings" Target="sharedStrings.xml"/>`),
+        'xl/sharedStrings.xml': '<sst xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main"><si><t>строгий</t></si></sst>',
+        'xl/worksheets/sheet1.xml':
+          '<worksheet xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main"><sheetData><row r="1"><c r="A1" t="d"><v>2025-01-31T12:00:00</v></c><c r="B1" t="s"><v>0</v></c><c r="C1"><f>A1+1</f><v>45689.5</v></c></row></sheetData></worksheet>',
+      }),
+    )
+    expect(r.book.sheets).toEqual([{ name: 'Strict', cells: { A1: { value: 45688.5 }, B1: { value: 'строгий' }, C1: { formula: 'A1+1' } } }])
+    expect(r.cached[0].cells).toEqual({ C1: 45689.5 })
+  })
+
   it('a sheet whose part is missing is left out and reported', async () => {
     const r = await read({ sheets: [{ name: 'S', body: one(1) }, { name: 'Gone', body: one(2) }], parts: { 'xl/worksheets/sheet2.xml': undefined } })
     expect(r.book.sheets.map((s) => s.name)).toEqual(['S'])

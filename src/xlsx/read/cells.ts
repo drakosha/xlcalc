@@ -5,7 +5,7 @@
  * collected for the sheet reader to resolve once every cell is known.
  */
 import type { CellInput, CellValue, ErrorCode, RowInput, Scalar } from '../../contract.js'
-import { dateToSerial, formatAddress } from '../../model.js'
+import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Issues } from '../issues.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag } from '../xml/scan.js'
@@ -103,8 +103,6 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       col = colOf(ref[1])
       row = Number(ref[2]) - 1
     } else col++
-    // the address as written when it is already the model's spelling (upper case), else spelled out
-    const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     let body = ''
     if (!m[4]) {
       const close = `</${m[1] ?? ''}c>`
@@ -112,6 +110,12 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       body = data.slice(TAG.lastIndex, end < 0 ? data.length : end)
       TAG.lastIndex = end < 0 ? data.length : end + close.length
     }
+    if (row < 0 || row >= MAX_ROWS || col >= MAX_COLS) {
+      issues.add('part', 'a cell outside the sheet (past its last row or column) is left out', { sheet, cell: a.r ?? `${row + 1}:${col + 1}` })
+      continue
+    }
+    // the address as written when it is already the model's spelling (upper case), else spelled out
+    const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     const xf = a.s === undefined ? undefined : ctx.xfs[Number(a.s)]
     const cell: CellInput = look(xf)
     if (xf) for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, { sheet, cell: addr })

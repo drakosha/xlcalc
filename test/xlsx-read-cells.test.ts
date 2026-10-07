@@ -24,6 +24,21 @@ describe('xlsx reader: cells', () => {
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 'Альфа' }, B1: { value: 7 }, C1: { value: 'Бета' }, C2: { value: 1 }, D2: { value: 2 } })
   })
 
+  it('a cell outside the sheet is left out and reported; lower-case addresses are spelled in upper case', async () => {
+    const r = await sheet('<row r="1"><c r="a1"><v>1</v></c><c r="XFE1"><v>2</v></c></row><row r="1048577"><c r="A1048577"><v>3</v></c></row>')
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1 } })
+    expect(codes(r.issues)).toEqual(['part XFE1 A1048577'])
+  })
+
+  it('elements and attributes the reader does not know are passed over', async () => {
+    const r = await sheet(
+      '<row r="1" spans="1:3" x14ac:dyDescent="0.25" thickBot="1"><c r="A1" ph="1" x:foo="bar"><extLst><ext uri="x"/></extLst><v>1</v></c><c r="B1" t="s"><v>0</v><extra/></c></row><row r="2"/>',
+      { strings: ['s'] },
+    )
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1 }, B1: { value: 's' } })
+    expect(r.issues).toEqual([])
+  })
+
   it('tags with a namespace prefix', async () => {
     const r = await read({ sheets: [{ name: 'S', body: '<x:sheetData><x:row r="1"><x:c r="A1"><x:v>99</x:v></x:c><x:c r="B1" t="s"><x:v>0</x:v></x:c><x:c r="C1"><x:f>A1*2</x:f><x:v>198</x:v></x:c></x:row></x:sheetData>' }], strings: ['нс'] })
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 99 }, B1: { value: 'нс' }, C1: { formula: 'A1*2' } })
