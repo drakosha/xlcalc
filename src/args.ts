@@ -142,6 +142,39 @@ export interface FnDef {
   liftAt?: (i: number, n: number) => boolean
   /** Arguments taken whole that a lifted call reads by their top-left value, as a 1 × 1 array (VLOOKUP's index). */
   liftFirst?: readonly number[]
+  /** An argument left out (`f(a,,c)`) where it is not a blank read by kind (`functions/omitted.ts`). */
+  omit?: Omission
+  /** Where Excel does not load a formula that leaves the argument out. */
+  notOmitted?: Positions
+}
+
+/** A left-out argument: not given (the function's default), a blank, TRUE, or an error. */
+export type Omit = 'default' | 'blank' | 'true' | 'NA' | 'VALUE'
+
+export interface Omission {
+  /** By position. */
+  at?: Readonly<Record<number, Omit>>
+  /** Every repeated argument past the declared kinds, or one rule for each kind of the repeated group. */
+  rest?: Omit | readonly Omit[]
+  /** The former Analysis ToolPak's rule elsewhere: not given, a required one #N/A. */
+  analysis?: boolean
+}
+
+const TAKEN: Record<Omit, V | undefined> = { default: undefined, blank: null, true: true, NA: E.NA, VALUE: E.VALUE }
+
+/** Argument positions: those `at`, and from `from` on every one, or the odd or the even ones. */
+export interface Positions {
+  at?: readonly number[]
+  from?: number
+  odd?: boolean
+  even?: boolean
+}
+
+function holds(p: Positions | undefined, i: number): boolean {
+  if (!p) return false
+  if (p.at?.includes(i)) return true
+  if (p.from === undefined || i < p.from) return false
+  return p.odd ? i % 2 === 1 : p.even ? i % 2 === 0 : true
 }
 
 /** What the parser and the code generator need to know about a function. */
@@ -165,6 +198,10 @@ export interface FunctionSpec {
   liftFirst: readonly number[]
   /** Whether a call with `k` arguments is one Excel loads: within min…max, repeated pairs complete (SUMIFS 3, 5, …; SORTBY 2, 3, 5, …). */
   takes: (k: number) => boolean
+  /** What the function gets for an argument left out at `i`: a value (a blank is null), undefined when it is not given. */
+  omitted: (i: number) => V | undefined
+  /** Whether Excel loads a formula that leaves out the argument at `i`. */
+  omits: (i: number) => boolean
   /** The counts it takes, for a message ("3 to 255 (odd)"). */
   counts: string
   volatile?: boolean
@@ -177,6 +214,8 @@ const MAX_ARGS = 255
 const RANGE_KINDS = 'NAYZVGMRDrP'
 const LIST_KINDS = 'NAYZD'
 const WHOLE_KINDS = 'NAYZVGMRD'
+/** Kinds of an array or a reference: an argument left out there is #VALUE!. */
+const ARRAY_KINDS = 'GMR'
 
 interface Kind {
   k: string
@@ -208,9 +247,31 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     const k = kindAt(i)
     return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
   }
-  const { ranges } = def
+  const { ranges, omit } = def
   const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')
-  return { min, max, takes: (k) => k >= min && k <= max && whole(k), counts, range: (i) => RANGE_KINDS.includes(kindAt(i)), mode, rangeAt, volatile: def.volatile, lazy: def.lazy, cell: def.cell, array: def.array, liftAt: def.liftAt ?? ((i) => i === 0), refs: kinds.some((k) => k.k === 'P'), liftFirst: def.liftFirst ?? [] }
+  const omitted = (i: number): V | undefined => {
+    const rest = rep && i >= fixed ? omit?.rest : undefined
+    const own = omit?.at?.[i] ?? (typeof rest === 'object' ? rest[(i - fixed) % rep] : rest)
+    return TAKEN[own ?? (omit?.analysis ? (i < min ? 'NA' : 'default') : ARRAY_KINDS.includes(kindAt(i)) ? 'VALUE' : 'blank')]
+  }
+  return {
+    min,
+    max,
+    takes: (k) => k >= min && k <= max && whole(k),
+    counts,
+    range: (i) => RANGE_KINDS.includes(kindAt(i)),
+    mode,
+    rangeAt,
+    volatile: def.volatile,
+    lazy: def.lazy,
+    cell: def.cell,
+    array: def.array,
+    liftAt: def.liftAt ?? ((i) => i === 0),
+    refs: kinds.some((k) => k.k === 'P'),
+    liftFirst: def.liftFirst ?? [],
+    omitted,
+    omits: (i) => !holds(def.notOmitted, i),
+  }
 }
 
 // ---------- coercion by kind ----------
@@ -350,8 +411,9 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
     for (const pass of [false, true])
       for (let p = 0; p < vals.length; p++) {
         const k = kindAt(p)
-        const x = a[cells + p] as Arg
-        if (late(x) !== pass) continue
+        const x = a[cells + p] as Arg | undefined
+        // an argument left out that the function takes as not given (`omitted`) stays undefined
+        if (x === undefined || late(x) !== pass) continue
         const v = COERCE[k](x, cx)
         if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
         vals[p] = v
@@ -362,12 +424,14 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
     for (let p = 0; p < vals.length; p++) {
       const k = kindAt(p)
       const v = vals[p]
-      if (LIST_KINDS.includes(k)) {
+      // a repeated argument not given is left out (PRODUCT(2,), LCM(6,,4)); in pairs it keeps its place
+      if (v === undefined && rep === 1 && p >= fixed) continue
+      if (LIST_KINDS.includes(k) && v !== undefined) {
         lists++
         nums += (v as number[]).length
       }
       if (rep && p >= fixed) {
-        if (LIST_KINDS.includes(k)) for (const e of v as number[]) tail.push(e)
+        if (LIST_KINDS.includes(k) && v !== undefined) for (const e of v as number[]) tail.push(e)
         else tail.push(v)
       } else out.push(v)
     }

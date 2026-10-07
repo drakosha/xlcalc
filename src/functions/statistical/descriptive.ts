@@ -141,11 +141,11 @@ function frequency(data: Grid, bins: Grid): V | Arr {
   return new Arr(counts.length, 1, counts.length, 1, counts)
 }
 
-/** COUNT: numbers in ranges; a direct argument counts if it reads as a number (booleans, numeric and date text). */
+/** COUNT: numbers in ranges; a direct argument counts if it reads as a number (booleans, numeric and date text, a blank: `COUNT(1,,2)` is 3). */
 function countable(v: V, inRange: boolean, rules: Rules): boolean {
   if (typeof v === 'number') return true
-  if (inRange || v === null || isErr(v)) return false
-  if (typeof v === 'boolean') return true
+  if (inRange || isErr(v)) return false
+  if (v === null || typeof v === 'boolean') return true
   return !isErr(rules.toNum(v)) || rules.dateText(v) !== null
 }
 

@@ -4,12 +4,16 @@ import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { atp } from '../date/atp.js'
 
-/** Newton's method on a rate: null when it does not settle (|Δ| < 1e-7) within `max` steps or settles at −1 or below. */
+/**
+ * Newton's method on a rate: null when it does not settle (|Δ| < 1e-7) within `max` steps or settles at −1 or
+ * below. A balance below 1e-14 settles only with a small step too: one that vanishes only as the rate goes to −1
+ * (`RATE(48,0,8000)`) does not settle, as in Excel.
+ */
 function newton(f: (x: number) => [number, number], guess: number, max: number): number | null {
   let x = guess
   for (let k = 0; k < max; k++) {
     const [y, dy] = f(x)
-    if (Math.abs(y) < 1e-14) return x > -1 ? x : null
+    if (Math.abs(y) < 1e-14 && Math.abs(y) < 1e-7 * Math.abs(dy)) return x > -1 ? x : null
     const next = dy === 0 ? x + 1.1e-7 : x - y / dy
     if (!Number.isFinite(next)) return null
     if (Math.abs(next - x) < 1e-7) return next > -1 ? next : null

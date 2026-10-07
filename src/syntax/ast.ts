@@ -29,6 +29,22 @@ export type Ast =
   | { k: 'paren'; a: Ast }
   /** An array constant `{1,2;3,4}`: rows of numbers, text, booleans and errors. */
   | { k: 'arr'; rows: Lit[][] }
+  /** An argument left out between commas (`IF(A1,,1)`). */
+  | { k: 'missing' }
+  /**
+   * LET: each name bound to its value in turn, then the calculation; a call that ends with a value (an even
+   * number of arguments, which Excel loads) answers that value. A name's `slot` numbers it among the
+   * formula's LET names.
+   */
+  | { k: 'let'; binds: Bind[]; body?: Ast }
+  /** A LET name where it is seen: the binding `slot` of the formula. */
+  | { k: 'local'; name: string; slot: number }
+
+export interface Bind {
+  name: string
+  slot: number
+  value: Ast
+}
 
 /** A value of an array constant. */
 export type Lit = Extract<Ast, { k: 'num' | 'str' | 'bool' | 'err' }>

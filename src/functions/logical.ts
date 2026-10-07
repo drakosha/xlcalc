@@ -9,13 +9,14 @@ import { E, isErr, sameType, type CErr, type V } from '../values.js'
 
 /**
  * The booleans of AND, OR, XOR: numbers and booleans count, a direct text argument that is the locale's word for
- * TRUE or FALSE counts as it (the logical-text set), other text and blanks are skipped; none at all is #VALUE!.
+ * TRUE or FALSE counts as it (the logical-text set), a direct blank as FALSE (`AND(TRUE,)`), other text and
+ * blanks in ranges are skipped; none at all is #VALUE!.
  */
 function booleans(segs: Segment[], rules: Rules): boolean[] | CErr {
   const out: boolean[] = []
   const e = directError(segs) ?? eachValue(segs, (v, inRange) => {
     if (isErr(v)) return v
-    if (typeof v === 'boolean' || typeof v === 'number') out.push(v !== 0 && v !== false)
+    if (typeof v === 'boolean' || typeof v === 'number' || (v === null && !inRange)) out.push(v !== 0 && v !== false && v !== null)
     else if (typeof v === 'string' && !inRange) {
       const b = rules.toBool(v)
       if (typeof b === 'boolean') out.push(b)

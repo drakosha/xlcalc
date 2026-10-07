@@ -1,6 +1,7 @@
 /**
  * An omitted argument in every whitelisted function: its typical call (`arrays/lift.ts`, the functions with an
- * array answer from `NEWER` inside `ARRAYTOTEXT(…,1)`, which shows the whole array) with each argument left out
+ * array answer from `NEWER` inside `ARRAYTOTEXT(…,1)`, which shows the whole array, the fitted numbers rounded to
+ * 6 decimals: computed by another algorithm, their text can differ in the 15th digit) with each argument left out
  * in turn and, beside it, replaced by 0, "" and FALSE; and, where the function takes one more argument, the call
  * itself, with that argument left out and given as 0, "" and FALSE. The answers tell, function by function,
  * whether a left-out argument is a blank (read as 0, "" or FALSE by its kind) or the argument not given. Positions
@@ -39,11 +40,15 @@ const NEWER: Record<string, string> = {
   WRAPROWS: 'WRAPROWS({1,2,3},2,0)',
 }
 
+/** Functions whose numbers come from a fit: rounded before they become text. */
+const FITTED = new Set(['GROWTH', 'LINEST', 'LOGEST', 'TREND'])
+
 const newer = (): [string, string[]][] => Object.entries(NEWER).map(([fn, text]) => [fn, splitArgs(text.slice(fn.length + 1, -1))])
 
 export function all(add: Add) {
   for (const [fn, args] of [...typicalCalls(), ...newer()]) {
-    const call = (xs: string[]) => (fn in NEWER ? `ARRAYTOTEXT(${fn}(${xs.join(',')}),1)` : `${fn}(${xs.join(',')})`)
+    const text = (xs: string[]) => `${fn}(${xs.join(',')})`
+    const call = (xs: string[]) => (FITTED.has(fn) ? `ARRAYTOTEXT(ROUND(${text(xs)},6),1)` : fn in NEWER ? `ARRAYTOTEXT(${text(xs)},1)` : text(xs))
     const g = (...fs: string[]) => add(`all:${fn}`, fn, ...fs)
     const variants = (i: number) => (isSize(fn, i) ? ['', '0'] : ['', '0', '""', 'FALSE'])
     const k = args.length

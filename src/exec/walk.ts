@@ -28,8 +28,10 @@ export const OPERATORS: Partial<Record<BinOp, Operator>> = { '+': 'add', '-': 's
  * through the lifting operators (`L1`, `L2`) or callers (`FL`, `LZ`); otherwise it is plain scalar code.
  */
 export interface Backend<T> {
-  /** A literal: a number, text, a boolean or an error. */
+  /** A literal: a number, text, a boolean, an error or a blank. */
   value(v: V): T
+  /** An argument left out that the function takes as not given. */
+  absent(): T
   /** An array constant, built once per compiled formula. */
   array(a: Arr): T
   cell(s: number, r: number, c: number): T
@@ -46,6 +48,24 @@ export interface Backend<T> {
   read(code: T): T
   /** An external function, by the canonical text of its call. */
   external(text: string): T
+  /**
+   * A LET of `count` names: `build` gets the code of a use of its i-th name and gives the code of the values
+   * and of the result. A value is computed on its first use, once in each computation of the LET.
+   */
+  let(count: number, build: (local: (i: number) => T) => { values: T[]; body: T }): T
+}
+
+/** A LET value: computed on its first use, then kept. */
+export function once<A>(f: () => A): () => A {
+  let done = false
+  let v: A
+  return () => {
+    if (!done) {
+      v = f()
+      done = true
+    }
+    return v
+  }
 }
 
 /** What a formula reads and how it behaves, the same in both modes. */
@@ -65,7 +85,13 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const deref = (n: Ast): Ast => (n.k === 'name' ? (ctx.name(n.name)?.ast ?? n) : n)
   const shape = shapes(ast, (name) => ctx.name(name)?.ast)
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
+  // the code of a use of each LET name, by slot
+  const uses: T[] = []
   // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
+  // an argument left out: a value, or not given
+  const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
+  // a value that may be a reference, read as a value where one value goes
+  const value = (code: T, n: Ast, rangeOk: boolean) => (!rangeOk && !many(n) ? b.read(code) : code)
   const go = (n: Ast, rangeOk = false): T => {
     switch (n.k) {
       case 'num':
@@ -108,7 +134,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (spec.volatile) info.volatile = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
-        const args = n.args.map((a, i) => go(a, spec.range(i)))
+        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : go(a, spec.range(i))))
         let code: T
         if (spec.lazy) {
           // lifted when a lifting argument is an array
@@ -119,8 +145,19 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           code = b.call(n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
         }
         // a reference answered where one value goes is read here; a range position takes it as a reference
-        return spec.refs && !rangeOk && !many(n) ? b.read(code) : code
+        return spec.refs ? value(code, n, rangeOk) : code
       }
+      case 'missing':
+        return b.value(null)
+      case 'let':
+        // the values are kept as references; the result is read where one value goes
+        return b.let(n.binds.length, (local) => {
+          n.binds.forEach((x, i) => (uses[x.slot] = local(i)))
+          const values = n.binds.map((x) => go(x.value, true))
+          return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
+        })
+      case 'local':
+        return value(uses[n.slot], n, rangeOk)
     }
   }
   const code = go(ast)

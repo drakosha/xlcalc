@@ -33,9 +33,11 @@ function combine(lifted: Shape[], passed: Shape[], array: boolean): Shape {
 
 const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: number }) => r.kind !== 'cell' && !(r.r1 === r.r2 && r.c1 === r.c2)
 
-/** Shapes of every node of a formula; a name is judged by its reference (`nameRef`, undefined when unknown). */
+/** Shapes of every node of a formula; a name is judged by its reference (`nameRef`, undefined when unknown), a LET name by its value. */
 export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
+  // LET's names by slot
+  const bound: Info[] = []
   const go = (n: Ast): Info => {
     const i = info(n)
     out.set(n, i.s)
@@ -47,6 +49,7 @@ export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Ma
       case 'str':
       case 'bool':
       case 'err':
+      case 'missing':
         return { s: 0, ref: false }
       case 'arr':
         // a 1 × 1 constant is still an array (TYPE({1}) is 64), but one value wherever it goes
@@ -71,6 +74,11 @@ export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Ma
         return { s: max(go(n.a).s, go(n.b).s), ref: false }
       case 'fn':
         return call(n.name, n.args.map(go), n.args)
+      case 'let':
+        for (const b of n.binds) bound[b.slot] = go(b.value)
+        return n.body ? go(n.body) : bound[n.binds[n.binds.length - 1].slot]
+      case 'local':
+        return bound[n.slot]
     }
   }
   const call = (name: string, args: Info[], nodes: Ast[]): Info => {

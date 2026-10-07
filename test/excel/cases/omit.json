@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 5.12,
+  "seconds": 3.502,
   "dynamic": true
  },
  "cases": [
@@ -23290,97 +23290,97 @@
    "id": "all:GROWTH#1",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(,D!BC1:BC6,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(,D!BC1:BC6,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#2",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(0,D!BC1:BC6,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(0,D!BC1:BC6,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#3",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(\"\",D!BC1:BC6,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(\"\",D!BC1:BC6,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#4",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(FALSE,D!BC1:BC6,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(FALSE,D!BC1:BC6,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#5",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#6",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,0,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,0,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#7",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,\"\",D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,\"\",D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#8",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,FALSE,D!BD1:BD2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,FALSE,D!BD1:BD2,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#9",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#10",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,0,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,0,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#11",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,\"\",TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,\"\",TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#12",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,FALSE,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,FALSE,TRUE),6),1)"
   },
   {
    "id": "all:GROWTH#13",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,),6),1)"
   },
   {
    "id": "all:GROWTH#14",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,0),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,0),6),1)"
   },
   {
    "id": "all:GROWTH#15",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,\"\"),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,\"\"),6),1)"
   },
   {
    "id": "all:GROWTH#16",
    "group": "all:GROWTH",
    "fn": "GROWTH",
-   "formula": "_xlfn.ARRAYTOTEXT(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(GROWTH(D!BB1:BB6,D!BC1:BC6,D!BD1:BD2,FALSE),6),1)"
   },
   {
    "id": "all:HSTACK#1",
@@ -23488,193 +23488,193 @@
    "id": "all:LINEST#1",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(,D!AZ1:AZ5,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(,D!AZ1:AZ5,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#2",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(0,D!AZ1:AZ5,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(0,D!AZ1:AZ5,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#3",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(\"\",D!AZ1:AZ5,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(\"\",D!AZ1:AZ5,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#4",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(FALSE,D!AZ1:AZ5,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(FALSE,D!AZ1:AZ5,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#5",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#6",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,0,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,0,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#7",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,\"\",TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,\"\",TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#8",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,FALSE,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,FALSE,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#9",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#10",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,0,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,0,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#11",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,\"\",FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,\"\",FALSE),6),1)"
   },
   {
    "id": "all:LINEST#12",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,FALSE,FALSE),6),1)"
   },
   {
    "id": "all:LINEST#13",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,),6),1)"
   },
   {
    "id": "all:LINEST#14",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,0),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,0),6),1)"
   },
   {
    "id": "all:LINEST#15",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,\"\"),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,\"\"),6),1)"
   },
   {
    "id": "all:LINEST#16",
    "group": "all:LINEST",
    "fn": "LINEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LINEST(D!AY1:AY5,D!AZ1:AZ5,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#1",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(,D!BC1:BC6,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(,D!BC1:BC6,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#2",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(0,D!BC1:BC6,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(0,D!BC1:BC6,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#3",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(\"\",D!BC1:BC6,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(\"\",D!BC1:BC6,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#4",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(FALSE,D!BC1:BC6,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(FALSE,D!BC1:BC6,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#5",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#6",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,0,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,0,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#7",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,\"\",TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,\"\",TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#8",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,FALSE,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,FALSE,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#9",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#10",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,0,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,0,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#11",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,\"\",FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,\"\",FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#12",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,FALSE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,FALSE,FALSE),6),1)"
   },
   {
    "id": "all:LOGEST#13",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,),6),1)"
   },
   {
    "id": "all:LOGEST#14",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,0),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,0),6),1)"
   },
   {
    "id": "all:LOGEST#15",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,\"\"),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,\"\"),6),1)"
   },
   {
    "id": "all:LOGEST#16",
    "group": "all:LOGEST",
    "fn": "LOGEST",
-   "formula": "_xlfn.ARRAYTOTEXT(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(LOGEST(D!BB1:BB6,D!BC1:BC6,TRUE,FALSE),6),1)"
   },
   {
    "id": "all:MMULT#1",
@@ -24454,97 +24454,97 @@
    "id": "all:TREND#1",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(,D!AZ1:AZ5,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(,D!AZ1:AZ5,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#2",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(0,D!AZ1:AZ5,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(0,D!AZ1:AZ5,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#3",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(\"\",D!AZ1:AZ5,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(\"\",D!AZ1:AZ5,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#4",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(FALSE,D!AZ1:AZ5,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(FALSE,D!AZ1:AZ5,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#5",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#6",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,0,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,0,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#7",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,\"\",D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,\"\",D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#8",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,FALSE,D!BA1:BA2,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,FALSE,D!BA1:BA2,TRUE),6),1)"
   },
   {
    "id": "all:TREND#9",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,,TRUE),6),1)"
   },
   {
    "id": "all:TREND#10",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,0,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,0,TRUE),6),1)"
   },
   {
    "id": "all:TREND#11",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,\"\",TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,\"\",TRUE),6),1)"
   },
   {
    "id": "all:TREND#12",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,FALSE,TRUE),6),1)"
   },
   {
    "id": "all:TREND#13",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,),6),1)"
   },
   {
    "id": "all:TREND#14",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,0),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,0),6),1)"
   },
   {
    "id": "all:TREND#15",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,\"\"),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,\"\"),6),1)"
   },
   {
    "id": "all:TREND#16",
    "group": "all:TREND",
    "fn": "TREND",
-   "formula": "_xlfn.ARRAYTOTEXT(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,FALSE),1)"
+   "formula": "_xlfn.ARRAYTOTEXT(ROUND(TREND(D!AY1:AY5,D!AZ1:AZ5,D!BA1:BA2,FALSE),6),1)"
   },
   {
    "id": "all:UNIQUE#1",
@@ -25617,6 +25617,18 @@
   "kind:NETWORKDAYS#2": {
    "t": "n",
    "v": 23
+  },
+  "kind:RANDARRAY#1": {
+   "t": "s",
+   "v": "{5,5}"
+  },
+  "kind:RANDARRAY#2": {
+   "t": "s",
+   "v": "{5;5}"
+  },
+  "kind:RANDARRAY#3": {
+   "t": "s",
+   "v": "{5,5}"
   },
   "kind:ROUND#4": {
    "t": "n",
@@ -40102,18 +40114,6 @@
    "t": "e",
    "v": "NUM"
   },
-  "kind:RANDARRAY#1": {
-   "t": "s",
-   "v": "{5,5}"
-  },
-  "kind:RANDARRAY#2": {
-   "t": "s",
-   "v": "{5;5}"
-  },
-  "kind:RANDARRAY#3": {
-   "t": "s",
-   "v": "{5,5}"
-  },
   "all:CHOOSECOLS#1": {
    "t": "e",
    "v": "VALUE"
@@ -40362,70 +40362,6 @@
    "t": "s",
    "v": "{1;7}"
   },
-  "all:GROWTH#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#2": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "all:GROWTH#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#5": {
-   "t": "s",
-   "v": "{14410474.0727384;21086495.5002381}"
-  },
-  "all:GROWTH#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:GROWTH#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:GROWTH#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:GROWTH#9": {
-   "t": "s",
-   "v": "{32618.2037735397;47729.4226147478;69841.3008562175;102197.073378832;149542.486740046;218821.876214595}"
-  },
-  "all:GROWTH#10": {
-   "t": "s",
-   "v": "{495.304770158727}"
-  },
-  "all:GROWTH#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#13": {
-   "t": "s",
-   "v": "{320196.718363472;468536.054184048}"
-  },
-  "all:GROWTH#14": {
-   "t": "s",
-   "v": "{1414600.72828845;3254137.27894143}"
-  },
-  "all:GROWTH#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#16": {
-   "t": "s",
-   "v": "{1414600.72828845;3254137.27894143}"
-  },
   "all:HSTACK#1": {
    "t": "e",
    "v": "VALUE"
@@ -40493,134 +40429,6 @@
   "all:HSTACK#17": {
    "t": "s",
    "v": "{1,4,\"a\",FALSE;#N/A,8,#N/A,#N/A}"
-  },
-  "all:LINEST#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#2": {
-   "t": "s",
-   "v": "{0,0,0,0,0,0}"
-  },
-  "all:LINEST#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#5": {
-   "t": "s",
-   "v": "{2.1,0.900000000000003}"
-  },
-  "all:LINEST#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LINEST#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LINEST#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LINEST#9": {
-   "t": "s",
-   "v": "{2.1,0.900000000000003}"
-  },
-  "all:LINEST#10": {
-   "t": "s",
-   "v": "{2.34545454545455,0}"
-  },
-  "all:LINEST#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#12": {
-   "t": "s",
-   "v": "{2.34545454545455,0}"
-  },
-  "all:LINEST#13": {
-   "t": "s",
-   "v": "{2.1,0.900000000000003}"
-  },
-  "all:LINEST#14": {
-   "t": "s",
-   "v": "{2.1,0.900000000000003}"
-  },
-  "all:LINEST#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#16": {
-   "t": "s",
-   "v": "{2.1,0.900000000000003}"
-  },
-  "all:LOGEST#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#2": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "all:LOGEST#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#5": {
-   "t": "s",
-   "v": "{1.46327562811618,22291.2232984653}"
-  },
-  "all:LOGEST#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LOGEST#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LOGEST#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LOGEST#9": {
-   "t": "s",
-   "v": "{1.46327562811618,495.304770158727}"
-  },
-  "all:LOGEST#10": {
-   "t": "s",
-   "v": "{2.30039276374379,1}"
-  },
-  "all:LOGEST#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#12": {
-   "t": "s",
-   "v": "{2.30039276374379,1}"
-  },
-  "all:LOGEST#13": {
-   "t": "s",
-   "v": "{1.46327562811618,495.304770158727}"
-  },
-  "all:LOGEST#14": {
-   "t": "s",
-   "v": "{1.46327562811618,495.304770158727}"
-  },
-  "all:LOGEST#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#16": {
-   "t": "s",
-   "v": "{1.46327562811618,495.304770158727}"
   },
   "all:MMULT#1": {
    "t": "e",
@@ -41138,70 +40946,6 @@
    "t": "s",
    "v": "{4,2,8,7}"
   },
-  "all:TREND#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#2": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#5": {
-   "t": "s",
-   "v": "{13.5;15.6}"
-  },
-  "all:TREND#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#9": {
-   "t": "s",
-   "v": "{3;5.1;7.2;9.3;11.4}"
-  },
-  "all:TREND#10": {
-   "t": "s",
-   "v": "{0.900000000000003}"
-  },
-  "all:TREND#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#13": {
-   "t": "s",
-   "v": "{13.5;15.6}"
-  },
-  "all:TREND#14": {
-   "t": "s",
-   "v": "{14.0727272727273;16.4181818181818}"
-  },
-  "all:TREND#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#16": {
-   "t": "s",
-   "v": "{14.0727272727273;16.4181818181818}"
-  },
   "all:UNIQUE#1": {
    "t": "s",
    "v": "{}"
@@ -41397,6 +41141,262 @@
   "all:WRAPROWS#10": {
    "t": "s",
    "v": "{1,2;3,FALSE}"
+  },
+  "all:GROWTH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "all:GROWTH#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#5": {
+   "t": "s",
+   "v": "{14410474.072738;21086495.500238}"
+  },
+  "all:GROWTH#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:GROWTH#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:GROWTH#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:GROWTH#9": {
+   "t": "s",
+   "v": "{32618.203774;47729.422615;69841.300856;102197.073379;149542.48674;218821.876215}"
+  },
+  "all:GROWTH#10": {
+   "t": "s",
+   "v": "{495.30477}"
+  },
+  "all:GROWTH#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#13": {
+   "t": "s",
+   "v": "{320196.718363;468536.054184}"
+  },
+  "all:GROWTH#14": {
+   "t": "s",
+   "v": "{1414600.728288;3254137.278941}"
+  },
+  "all:GROWTH#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#16": {
+   "t": "s",
+   "v": "{1414600.728288;3254137.278941}"
+  },
+  "all:LINEST#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#2": {
+   "t": "s",
+   "v": "{0,0,0,0,0,0}"
+  },
+  "all:LINEST#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#5": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LINEST#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LINEST#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LINEST#9": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#10": {
+   "t": "s",
+   "v": "{2.345455,0}"
+  },
+  "all:LINEST#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#12": {
+   "t": "s",
+   "v": "{2.345455,0}"
+  },
+  "all:LINEST#13": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#14": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#16": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LOGEST#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "all:LOGEST#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#5": {
+   "t": "s",
+   "v": "{1.463276,22291.223298}"
+  },
+  "all:LOGEST#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LOGEST#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LOGEST#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LOGEST#9": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:LOGEST#10": {
+   "t": "s",
+   "v": "{2.300393,1}"
+  },
+  "all:LOGEST#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#12": {
+   "t": "s",
+   "v": "{2.300393,1}"
+  },
+  "all:LOGEST#13": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:LOGEST#14": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:LOGEST#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#16": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:TREND#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#2": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#5": {
+   "t": "s",
+   "v": "{13.5;15.6}"
+  },
+  "all:TREND#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#9": {
+   "t": "s",
+   "v": "{3;5.1;7.2;9.3;11.4}"
+  },
+  "all:TREND#10": {
+   "t": "s",
+   "v": "{0.9}"
+  },
+  "all:TREND#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#13": {
+   "t": "s",
+   "v": "{13.5;15.6}"
+  },
+  "all:TREND#14": {
+   "t": "s",
+   "v": "{14.072727;16.418182}"
+  },
+  "all:TREND#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#16": {
+   "t": "s",
+   "v": "{14.072727;16.418182}"
   }
  }
 }

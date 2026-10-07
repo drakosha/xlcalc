@@ -1,11 +1,11 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
 import type { CheckCode, NameCheck, ValidateContext, ValidateResult } from '../contract.js'
-import { FUNCTIONS } from '../functions.js'
+import { FUNCTIONS, isFunction } from '../functions.js'
 import { FormulaError, type Ast } from './ast.js'
 import { parse } from './parse.js'
 import { canonical, sheetKey, walk } from './print.js'
 
-/** Argument counts of each function; literal arguments of external functions. */
+/** Argument counts of each function and the arguments it cannot leave out; literal arguments of external functions. */
 export function checkCalls(ast: Ast, src: string, external: (fn: string) => boolean): FormulaError | null {
   const at = (needle: string) => Math.max(0, src.toUpperCase().indexOf(needle.toUpperCase()))
   const visit = (n: Ast): FormulaError | null => {
@@ -16,6 +16,12 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
         return visit(n.a)
       case 'bin':
         return visit(n.a) ?? visit(n.b)
+      case 'let':
+        for (const a of [...n.binds.map((b) => b.value), ...(n.body ? [n.body] : [])]) {
+          const e = visit(a)
+          if (e) return e
+        }
+        return null
       case 'fn': {
         if (external(n.name)) {
           for (const a of n.args) {
@@ -28,6 +34,8 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
         if (!spec) return null
         const k = n.args.length
         if (!spec.takes(k)) return new FormulaError('syntax', `${n.name} takes ${spec.counts} arguments, got ${k}`, at(n.name))
+        const left = n.args.findIndex((a, i) => a.k === 'missing' && !spec.omits(i))
+        if (left >= 0) return new FormulaError('syntax', `${n.name} takes a reference as its argument ${left + 1}, which cannot be left out`, at(n.name))
         for (const a of n.args) {
           const e = visit(a)
           if (e) return e
@@ -59,11 +67,12 @@ export function validate(text: string, ctx: ValidateContext = {}): ({ ok: true; 
     if (n.k === 'fn') {
       functions.add(n.name)
       if (externalSet.has(n.name) && !FUNCTIONS[n.name]) externals.push(canonical(n))
-    } else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined)) sheets.add(n.sheet!)
+    } else if (n.k === 'let') functions.add('LET')
+    else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined)) sheets.add(n.sheet!)
     else if (n.k === 'name') names.add(n.name)
   })
   const fail = (code: CheckCode, message: string, needle: string) => ({ ok: false as const, code, message, at: Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase())) })
-  for (const f of functions) if (!FUNCTIONS[f] && !externalSet.has(f)) return fail('unknown_function', `unknown function ${f}`, f)
+  for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', `unknown function ${f}`, f)
   if (ctx.sheets) {
     const known = new Set(ctx.sheets.map(sheetKey))
     for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', `unknown sheet ${s}`, s)

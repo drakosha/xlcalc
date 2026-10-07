@@ -16,6 +16,10 @@ export function walk(ast: Ast, visit: (n: Ast) => void): void {
       walk(ast.a, visit)
       walk(ast.b, visit)
       break
+    case 'let':
+      for (const b of ast.binds) walk(b.value, visit)
+      if (ast.body) walk(ast.body, visit)
+      break
   }
 }
 
@@ -62,6 +66,12 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
         return `(${go(n.a)})`
       case 'arr':
         return `{${n.rows.map((r) => r.map(go).join(',')).join(';')}}`
+      case 'missing':
+        return ''
+      case 'let':
+        return `LET(${[...n.binds.flatMap((b) => [b.name, go(b.value)]), ...(n.body ? [go(n.body)] : [])].join(',')})`
+      case 'local':
+        return n.name
     }
   }
   return go(ast)
