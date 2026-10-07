@@ -1,6 +1,6 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming and deleting sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings and merged areas. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings and merged areas. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
 The rules below were measured in Excel 16 for Mac (en-US).
 
@@ -17,11 +17,13 @@ type StructureOp =
   | { op: 'copyRange'; from: RangeRef; to: RangeRef; withMeta?: boolean }  // copy and paste, fill
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }
+  | { op: 'insertSheet'; name: string; before?: string }  // an empty sheet, at the end without `before`
+  | { op: 'moveSheet'; sheet: string; before?: string }   // to the end without `before`
 
 type RangeRef = { sheet: string; range: string }       // B2, B2:D9, B:D, 2:9
 type RestructureResult =
   | { ok: true; book: BookInput; mapCell(ref: CellRef): CellRef | null }
-  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged'; message: string }
+  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged' | 'array'; message: string }
 ```
 
 The types are in `xlcalc/contract`, and `FormulaEngine` has `restructure`.
@@ -40,6 +42,7 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 | `sheet_name` | the new name breaks Excel's rules or another sheet has it |
 | `last_sheet` | deleting the only sheet |
 | `merged` | a move whose source cuts a merged area, or a copy that lands on part of one |
+| `array` | lines inserted inside the area of an array formula of the old kind, part of one deleted or moved, a paste over part of one |
 
 Excel refuses an insert only when a non-empty cell would leave the sheet. Here any cell counts, even one with only a format, style or `meta`, so nothing is dropped silently.
 
@@ -106,6 +109,14 @@ Renaming a sheet renames every reference to it, `'S'!#REF!` included, and the sc
 
 Deleting a sheet removes it with its cells. References to it become `#REF!` followed by the reference (`#REF!A5`, `SUM(#REF!$A$3:$A$8)`), in formulas, in global names and in names local to other sheets. Names local to the deleted sheet are removed.
 
+## Inserting and moving sheets
+
+`insertSheet` adds an empty sheet before another one or at the end. `moveSheet` moves a sheet. Neither changes a formula, except a reference across sheets whose end moves. Such a reference covers the sheets between its ends in the book's order, so a sheet inserted or moved between them is read and one moved out is not. [References](references.md) has the rules for its ends.
+
+## Names, references across sheets and old-kind arrays
+
+Names' formulas change like cells' formulas: each part of a union on its own, a reference without `$` not at all under inserted and deleted lines ([Names](names.md)). A reference across sheets stays under rows and columns and changes with its end sheets ([References](references.md)). The area of an array formula of the old kind moves with its cell; an operation that would change part of it is refused with `array` ([Formulas of the old kind](legacy.md)).
+
 ## Styles and layout
 
 A book keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment), a style number in each cell, and per sheet the columns and rows by line or span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, plus the merged areas. A cell's number format is its `format`. A cell shows its own style, else its row's, else its column's, and the same for the format. Widths are in characters as xlsx stores them, heights in points. Computation does not read styles, and they are not in the values hash; `inputHash` includes them when a book has any.
@@ -159,6 +170,8 @@ None of these recompute values.
 | `styles-checks` | 18 | predicted before Excel computed them: spans, tiled and moved merged areas, cells moved into styled rows and out of styled columns |
 | `edge-layout`, `edge-wide` | 9, 4 | styled rows and columns, spans and merged areas at the end of the sheet |
 | `spill`, `spill-more`, `spill-copy` | 8, 4, 10 | spill references and spilled cells under structure operations |
+| `cube` | 20 | references across sheets and names of any formula: rows and columns, sheets renamed, deleted, inserted and moved, copies |
+| `arrays` | 17 | array formulas of the old kind: lines inserted and deleted around and inside the area, the area moved, copied and pasted over |
 
 All cases match except the one known difference below. Of the predicted cases, `checks` matched 21 of 26 and `styles-checks` 17 of 18; the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
 
@@ -169,4 +182,4 @@ Not checked against Excel: a move that does not fit (it is refused like a copy),
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
 - Hidden rows and columns, outline levels, conditional formats, data validation, comments and charts are not part of a book.
-- 3D references, structured references and references to other workbooks are not read, so they never occur in a valid formula.
+- Structured references and references to other workbooks are not read, so they never occur in a valid formula.
