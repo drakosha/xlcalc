@@ -384,6 +384,8 @@ export type StructureRefusal =
   | 'last_sheet'
   /** A move or copy would cut through a merged area, at its source or where it lands. */
   | 'merged'
+  /** A copy that leaves out rows a filter hid, pasted over hidden rows of a filtered sheet (several areas onto several areas). */
+  | 'filtered'
 
 export type RestructureResult =
   | {
