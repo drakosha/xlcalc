@@ -21,6 +21,8 @@ export interface StructCases {
   cases: StructCase[]
   /** Formulas written as dynamic array formulas (Excel 365), as the spill cases need. */
   dynamic?: true
+  /** Rectangles whose look is read besides `LOOK` of `struct.ts` (`A1048570:C1048576` at the sheet's end). */
+  look?: string[]
 }
 
 export interface StructSet {

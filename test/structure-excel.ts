@@ -64,10 +64,15 @@ function nameKey(excel: string): string {
 const shownWidth = (w: number) => Math.round(((6 * w - 5) / 6) * 100) / 100
 const shownHeight = (h: number) => Math.round((h * 16) / 3) / 4
 
-/** The look of a sheet of the book in `look`, as Excel reads it: a cell's style and format, else its row's, else its column's. */
+/** The look of a sheet of the book in the rectangles of `look` (`A1:J24,…`), as Excel reads it: a cell's style and format, else its row's, else its column's. */
 export function lookOf(book: BookInput, sheet: SheetInput, look: string): SheetLook {
-  const [a, b] = look.split(':').map(parseAddress)
   const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
+  for (const rect of look.split(',')) lookIn(book, sheet, rect, out)
+  return out
+}
+
+function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook): void {
+  const [a, b] = rect.split(':').map(parseAddress)
   for (let r = a.row; r <= b.row; r++)
     for (let c = a.col; c <= b.col; c++) {
       const addr = formatAddress(r, c)
@@ -86,8 +91,10 @@ export function lookOf(book: BookInput, sheet: SheetInput, look: string): SheetL
     if (h !== undefined) out.heights[String(r + 1)] = shownHeight(h)
   }
   const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
-  out.merges = (sheet.merges ?? []).filter((m) => meets(parseMerge(m)!, window)).map((m) => mergeText(parseMerge(m)!))
-  return out
+  for (const m of sheet.merges ?? []) {
+    const text = mergeText(parseMerge(m)!)
+    if (meets(parseMerge(m)!, window) && !out.merges.includes(text)) out.merges.push(text)
+  }
 }
 
 /** Differences of looks, as `place: Excel …, engine …` lines. */

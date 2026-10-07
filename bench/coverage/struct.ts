@@ -4,7 +4,7 @@
  * back (`excel-struct.applescript`). `npx tsx bench/coverage/run.ts struct <set>` runs the cases of
  * `struct/<set>.ts` and stores the answers in `test/excel/struct/<set>.json`;
  * `test/structure-excel.test.ts` compares `restructure` with them without Excel. A book with styles, columns,
- * rows, merged areas or number formats is written with them, and the look of `LOOK` is read back too.
+ * rows, merged areas or number formats is written with them, and the look of `LOOK` (and of the set's `look` rectangles) is read back too.
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
 import { execFileSync, spawn } from 'node:child_process'
@@ -200,14 +200,16 @@ function cellsOf(rows: unknown): Record<string, string> {
   return out
 }
 
-/** The cells, columns and rows of `LOOK` as AppleScript arguments (lines). */
-function lookArgs(): [string, string, string] {
-  const [a, b] = LOOK.split(':').map(parseAddress)
-  const cells: string[] = []
-  for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) cells.push(formatAddress(r, c))
-  const cols = Array.from({ length: b.col - a.col + 1 }, (_, i) => indexToCol(a.col + i))
-  const rows = Array.from({ length: b.row - a.row + 1 }, (_, i) => String(a.row + i + 1))
-  return [cells.join('\n'), cols.join('\n'), rows.join('\n')]
+/** The cells, columns and rows of the look's rectangles (`LOOK,…`) as AppleScript arguments (lines). */
+function lookArgs(look: string): [string, string, string] {
+  const [cells, cols, rows] = [new Set<string>(), new Set<string>(), new Set<string>()]
+  for (const rect of look.split(',')) {
+    const [a, b] = rect.split(':').map(parseAddress)
+    for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) cells.add(formatAddress(r, c))
+    for (let c = a.col; c <= b.col; c++) cols.add(indexToCol(c))
+    for (let r = a.row; r <= b.row; r++) rows.add(String(r + 1))
+  }
+  return [[...cells].join('\n'), [...cols].join('\n'), [...rows].join('\n')]
 }
 
 type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number][], [string, boolean, number][]]
@@ -231,7 +233,7 @@ function lookOf([cells, widths, heights]: RawLook): SheetLook {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
-async function runCase(c: StructCase, book: BookInput, dynamic: boolean): Promise<ExcelStructAnswer> {
+async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRects: string): Promise<ExcelStructAnswer> {
   const before = dialogText()
   if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
   if (Number(execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to count workbooks'], { encoding: 'utf8' }).trim()) !== 0) throw new Error('Excel has open books')
@@ -241,7 +243,7 @@ async function runCase(c: StructCase, book: BookInput, dynamic: boolean): Promis
     const file = join(dir, 'book.xlsx')
     await writeBook(c, book, file, dynamic)
     const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
-    const look = styled(book) ? lookArgs() : ['', '', '']
+    const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
     const child = spawn('osascript', [SCRIPT, file, c.op.op, ...opArgs(c), READ, extra, ...look])
     let out = ''
     let err = ''
@@ -287,7 +289,8 @@ async function runCase(c: StructCase, book: BookInput, dynamic: boolean): Promis
 export async function stepStruct(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./struct/${set}.js`)) as StructSet
-  const { books, cases, dynamic = false } = mod.buildStructCases()
+  const { books, cases, dynamic = false, look = [] } = mod.buildStructCases()
+  const lookRects = [LOOK, ...look].join(',')
   const target = join(ROOT, `test/excel/struct/${set}.json`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
   // an answer is kept when its case and the case's book are unchanged
@@ -298,7 +301,7 @@ export async function stepStruct(set: string): Promise<void> {
   const t0 = Date.now()
   mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: LOOK } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
+    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), answers }, null, 1) + '\n')
   }
   await ensureExcel('en')
@@ -307,7 +310,7 @@ export async function stepStruct(set: string): Promise<void> {
     const only = process.env.FSTRUCT_ONLY?.split(',')
     for (const c of cases) {
       if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c, books[c.book], dynamic)
+      answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects)
       done++
     }
   } finally {
