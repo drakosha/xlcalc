@@ -35,6 +35,11 @@ type Reason = keyof typeof REASONS | keyof typeof RU_REASONS
 
 /** Cases where this engine knowingly differs from Excel ru-RU, by `<source>:<case id>`: the engine's answer pinned instead. */
 export const RU_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>> = {
+  'measurement:CHAR#3': { reason: 'codePage', engine: { t: 's', v: 'И' } },
+  'measurement:CODE#3': { reason: 'codePage', engine: { t: 'n', v: 198 } },
+  'measurement:CODE#5': { reason: 'codePage', engine: { t: 'n', v: 207 } },
+  'measurement:CODE#8': { reason: 'codePage', engine: { t: 'n', v: 200 } },
+  'measurement:CODE#12': { reason: 'codePage', engine: { t: 'n', v: 207 } },
   'measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
   'measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
   'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },

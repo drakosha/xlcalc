@@ -8,6 +8,9 @@
  * leaves a number that is already whole at that many digits unchanged (Excel: ROUND(2.15, 45688) is 2.15).
  */
 
+/** Excel's largest argument count of a function newer than Excel 2007 (`_xlfn.NAME` in a file): one fewer than its 255, measured by the `arity` set. */
+export const NEWER_MAX_ARGS = 254
+
 const FACTS: number[] = [1, 1]
 
 /** n! for a whole n ≥ 0, by products as formula.js computes it (Infinity past 170). */

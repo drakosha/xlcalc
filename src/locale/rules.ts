@@ -7,11 +7,10 @@
  */
 import type { CellDisplay, CellValue, ErrorCode } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
-import { parseDateText, textToNumber } from '../dates.js'
+import { decimalFirst, enDates, enNumber, parseDateWith, textReaders } from '../dates.js'
 import { displayWith, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, type Dialect, type Names, type Style } from '../numfmt.js'
-import { NUMBER_TEXT, readNumber } from '../model.js'
 import { ERROR_TEXT } from '../syntax.js'
-import { compareOp, compareValues, enNumber, toBool, toNum, toText, type CErr, type V } from '../values.js'
+import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { enUS } from './en-US.js'
 import type { RegionalData, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
@@ -35,9 +34,9 @@ export interface Rules extends CritRules {
   toText(v: V): string | CErr
   /** A value as a boolean: the locale's words for TRUE and FALSE in text. */
   toBool(v: V): boolean | CErr
-  /** Text as VALUE reads it (a number, percent, currency, a date or a time), or null. */
+  /** Text as VALUE reads it (a number, percent, currency, a date or a time; spaces before a date dropped), or null. */
   valueText(text: string): number | null
-  /** Date or time text as a date or time argument reads it (DATEVALUE, DAY, EDATE…), or null. */
+  /** Date or time text as a date or time argument reads it (DAY, EDATE…; DATEVALUE after dropping spaces before it), or null. */
   dateText(text: string): number | null
   /** A number as text, as `&` writes it. */
   numberText(n: number): string
@@ -51,8 +50,6 @@ export interface Rules extends CritRules {
   compareOp(a: V, b: V): number
   /** An error as text (VALUETOTEXT, ARRAYTOTEXT). */
   errorText(code: ErrorCode): string
-  /** A real number in complex text (`1.5` in `1.5+2i`), or null. */
-  complexPart(text: string): number | null
 }
 
 /** The month and day names of a locale code (`[$-409]`): en-US's, or a regional locale's. */
@@ -72,32 +69,35 @@ const EN_STYLE: Style = {
   longTime: 'h:mm:ss AM/PM',
 }
 
-const EN_DIALECT: Dialect = {
-  codes: EN_CODES,
-  style: EN_STYLE,
-  number: enNumber,
+/** Excel en-US with the English interface: the engine's own rules, date text without a year in the clock's year (`1/31`). */
+function englishRules(clock: RulesClock): Rules {
+  const dates = enDates(() => clock.year())
+  const { value: valueText, argument } = textReaders(enNumber, dates)
+  const number = decimalFirst(argument)
+  const dialect: Dialect = { codes: EN_CODES, style: EN_STYLE, number }
+  return {
+    ...EN_CRIT,
+    ...coercions(number, enUS.booleans, generalText),
+    clock,
+    critNumber: argument,
+    cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
+    locale: enUS,
+    decimal: '.',
+    group: ',',
+    currency: { symbol: '$', before: true, space: '', negative: '()' },
+    valueText,
+    dateText: (text) => parseDateWith(text, dates),
+    numberText: generalText,
+    formatText: (value, format) => formatWith(value, format, dialect),
+    display: (value, format, space) => displayWith(value, format, EN_STYLE, space),
+    compare: compareValues,
+    compareOp,
+    errorText: (code) => ERROR_TEXT[code],
+  }
 }
 
-/** Excel en-US with the English interface: the engine's own rules since the first release. */
-export const EN_US: Rules = {
-  ...EN_CRIT,
-  locale: enUS,
-  decimal: '.',
-  group: ',',
-  currency: { symbol: '$', before: true, space: '', negative: '()' },
-  toNum,
-  toText,
-  toBool,
-  valueText: textToNumber,
-  dateText: parseDateText,
-  numberText: generalText,
-  formatText: (value, format) => formatWith(value, format, EN_DIALECT),
-  display: (value, format, space) => displayWith(value, format, EN_STYLE, space),
-  compare: compareValues,
-  compareOp,
-  errorText: (code) => ERROR_TEXT[code],
-  complexPart: (t) => (NUMBER_TEXT.test(t) ? readNumber(t) : null),
-}
+/** en-US's rules for showing values outside a book (the clock is not read there). */
+const EN_US = englishRules({ year: () => 1900, read: false })
 
 /** The rules of each locale for showing values outside a book (the clock is not read there). */
 const DISPLAY = new Map<string, Rules>()
@@ -114,5 +114,5 @@ export function displayRules(tag: string | undefined): Rules {
 /** The rules of a book in the locale `tag` (one of `LOCALES`; en-US without one), reading `clock` for dates without a year. */
 export function rulesOf(tag: string | undefined, clock: RulesClock): Rules {
   const data = tag === undefined ? undefined : REGIONAL.get(tag)
-  return data ? regionalRules(data, clock, namesOf) : EN_US
+  return data ? regionalRules(data, clock, namesOf) : englishRules(clock)
 }

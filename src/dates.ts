@@ -3,7 +3,7 @@
  * (1900-01-00) and its phantom 1900-02-29 (serial 60), and date, time and number text as Excel en-US reads it;
  * the times and the frame of date text are shared with the other locales (`DateSyntax`, `locale/rules/`).
  */
-import { readNumber } from './model.js'
+import { NUMBER_TEXT, readNumber } from './model.js'
 
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465
@@ -45,8 +45,9 @@ export function addMonths(y: number, m: number, months: number): { y: number; m:
 
 // ---------- date and time text (en-US) ----------
 
-const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-const MONTH_RE = '(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)'
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+/** A month's name, or three letters or more of its beginning (`jan`, `sept`, `febr`). */
+const MONTH_RE = '([a-z]{3,})'
 
 /** How a locale reads date text: the date part (lower case, single spaces) and the decimal separator of seconds. */
 export interface DateSyntax {
@@ -54,38 +55,56 @@ export interface DateSyntax {
   decimal: string
 }
 
-/** The patterns of time text by the decimal separator of seconds: a time in date text, date text and its time, VALUE's time, VALUE's date and time. */
+/** A time's parts as typed: hours, minutes, seconds (with the decimal separator), `a` or `p`. */
+type TimeParts = [h: string, mi?: string, sec?: string, ampm?: string]
+
+/** The forms of time text by the decimal separator of seconds (text in lower case, single spaces), and their union for a date with a time. */
 interface TimePatterns {
-  time: RegExp
-  split: RegExp
-  value: RegExp
+  forms: [RegExp, (m: RegExpExecArray) => TimeParts][]
   dateTime: RegExp
+  timeDate: RegExp
 }
 
 const PATTERNS = new Map<string, TimePatterns>()
 
-/** The patterns for a decimal separator, built once: `18:30`, `6:30:15 PM`, `6 PM`, seconds with decimals. */
+/**
+ * The time forms for a decimal separator, built once (the `time-text` set): a clock time `6:30 pm`, `6 :30:15 p`;
+ * an hour `6 pm`; a duration `18:30`, `25:00`, `18:30:15.5`, a `:` at the end (`6:`, `6:30:15:`); minutes and
+ * seconds with decimals `6:30.5`. Hours of 3 or 4 digits do not begin with 0 (`006:30` is no time).
+ */
 function patterns(decimal: string): TimePatterns {
   let p = PATTERNS.get(decimal)
   if (!p) {
     const d = `\\${decimal}`
-    const t = `(\\d{1,4}):(\\d+)(?::(\\d+(?:${d}\\d+)?))?(?:\\s*([ap]m))?|(\\d{1,2})\\s*([ap]m)`
-    p = {
-      time: new RegExp(`^(?:${t})$`),
-      split: new RegExp(`^(.*?)(?:[ t](${t}))?$`),
-      value: new RegExp(`^(\\d+):(\\d+)(?::(\\d+(?:${d}\\d+)?))?(?: ([ap]m))?$`, 'i'),
-      dateTime: new RegExp(`^(.*\\S) +(\\d+:\\d+(?::\\d+(?:${d}\\d+)?)?(?: [ap]m)?)$`, 'i'),
-    }
+    const h = '(\\d{1,2}|[1-9]\\d{2,3})'
+    const sources: [string, (m: RegExpExecArray) => TimeParts][] = [
+      [`${h} ?: ?(\\d+)(?: ?: ?(\\d+(?:${d}\\d+)?))? ([ap])m?`, (m) => [m[1], m[2], m[3], m[4]]],
+      ['(\\d{1,2}) ([ap])m?', (m) => [m[1], undefined, undefined, m[2]]],
+      [`${h} ?:(?: ?(\\d+)(?: ?:(?: ?(\\d+(?:${d}\\d+)?) ?:?)?)?)?`, (m) => [m[1], m[2], m[3]]],
+      [`(\\d+) ?: ?(\\d+${d}\\d+)`, (m) => ['0', m[1], m[2]]],
+    ]
+    const any = sources.map(([src]) => src.replace(/\((?!\?)/g, '(?:')).join('|')
+    p = { forms: sources.map(([src, parts]) => [new RegExp(`^${src}$`), parts]), dateTime: new RegExp(`^(.*\\S) (${any})$`), timeDate: new RegExp(`^(${any}) (.*\\S)$`) }
     PATTERNS.set(decimal, p)
   }
   return p
 }
+
+/** Full dates; spaces may stand around `/` and `-` (`1 / 31 / 2025`, `1-31-2025`). */
 const DATE_FORMS: [RegExp, (m: RegExpExecArray) => [string, string, string]][] = [
-  [/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/, (m) => [m[1], m[2], m[3]]],
-  [/^(\d{1,2})\/(\d{1,2})\/(\d{4}|\d{2})$/, (m) => [m[3], m[1], m[2]]],
-  [new RegExp(`^(\\d{1,2})[- ]${MONTH_RE}[- ](\\d{4}|\\d{2})$`), (m) => [m[3], m[2], m[1]]],
-  [new RegExp(`^${MONTH_RE} (\\d{1,2}),? (\\d{4})$`), (m) => [m[3], m[1], m[2]]],
+  [/^(\d{4}) *[-/] *(\d{1,2}) *[-/] *(\d{1,2})$/, (m) => [m[1], m[2], m[3]]],
+  [/^(\d{1,2}) *[-/] *(\d{1,2}) *[-/] *(\d{4}|\d{2})$/, (m) => [m[3], m[1], m[2]]],
+  [new RegExp(`^(\\d{1,2})(?: *- *| )${MONTH_RE}(?: *- *| )(\\d{4}|\\d{2})$`), (m) => [m[3], m[2], m[1]]],
+  [new RegExp(`^${MONTH_RE} (\\d{1,2}), (\\d{4})$`), (m) => [m[3], m[1], m[2]]],
 ]
+
+/** A month and a number, no year: `1/31`, `1 / 31`, `1-31`, `Jan 31`, `Jan/31`, `Jan31`, `31-Jan`, `1/2025`, `Jan 2025`. */
+const TWO_NUMBERS = /^(\d{1,2}) *[-/] *(\d{1,4})$/
+const NAME_NUMBER = new RegExp(`^${MONTH_RE} *[-/]? *(\\d{1,4})$`)
+const NUMBER_NAME = new RegExp(`^(\\d{1,2}) *[-/]? *${MONTH_RE}$`)
+
+/** The month a word names (1–12), or 0. */
+const monthOf = (word: string) => MONTHS.findIndex((m) => m.startsWith(word)) + 1
 
 /** A year as typed: two digits are 1930–2029, as in Excel. */
 export const fullYear = (s: string) => (s.length > 2 ? Number(s) : Number(s) + (Number(s) < 30 ? 2000 : 1900))
@@ -97,54 +116,118 @@ export function calendarDate(y: number, mo: number, d: number): number | null {
   return d > daysInMonth(y, mo) ? null : serialOf(y, mo, d)
 }
 
-function dateText(s: string): number | null {
+/** Whether `d` is a day of month `mo` in some year (February 29 in a leap year). */
+const isDay = (mo: number, d: number) => mo >= 1 && mo <= 12 && d >= 1 && d <= daysInMonth(2000, mo)
+
+/**
+ * A month and then a number, no year, as Excel en-US reads them (the `date-noyear` set): a day of the month in the
+ * current year, `year()`, else a year (two digits 1930–2029, or four) on the 1st, so `2/29` is February 2029 in a
+ * year that is not leap and `1/32` January 1932; three digits are neither. A day without `year` is no date.
+ */
+function monthAnd(mo: number, n: string, year?: () => number): number | null {
+  if (mo < 1 || mo > 12 || n.length === 3) return null
+  const day = n.length <= 2 && isDay(mo, Number(n))
+  if (day && !year) return null
+  return (day ? calendarDate(year!(), mo, Number(n)) : null) ?? calendarDate(fullYear(n), mo, 1)
+}
+
+function dateText(s: string, year?: () => number): number | null {
   for (const [re, parts] of DATE_FORMS) {
     const m = re.exec(s)
     if (!m) continue
     const [ys, ms, ds] = parts(m)
-    return calendarDate(fullYear(ys), /^\d+$/.test(ms) ? Number(ms) : MONTHS.indexOf(ms.slice(0, 3)) + 1, Number(ds))
+    return calendarDate(fullYear(ys), /^\d+$/.test(ms) ? Number(ms) : monthOf(ms), Number(ds))
+  }
+  let m = TWO_NUMBERS.exec(s)
+  if (m) return monthAnd(Number(m[1]), m[2], year)
+  if ((m = NAME_NUMBER.exec(s))) return monthAnd(monthOf(m[1]), m[2], year)
+  // a number before the name is a day only (`29 Feb` is no date in a year that is not leap)
+  if ((m = NUMBER_NAME.exec(s))) {
+    const [mo, d] = [monthOf(m[2]), Number(m[1])]
+    return year && isDay(mo, d) ? calendarDate(year(), mo, d) : null
   }
   return null
 }
 
-const EN_DATES: DateSyntax = { date: dateText, decimal: '.' }
+/** en-US date text, completing a date without a year with `year()` (the book's clock; without one such text is no date). */
+export const enDates = (year?: () => number): DateSyntax => ({ date: (s) => dateText(s, year), decimal: '.' })
 
+const EN_DATES = enDates()
+
+/** Excel's limit of time text: 10,000 hours. */
+const MAX_TIME = 10_000 / 24
+
+/**
+ * A time as Excel en-US reads it, in VALUE and in date and time arguments alike (the `time-text` set; `patterns`):
+ * with AM or PM hours to 12 and minutes and seconds below 60, without any minutes and seconds below 10,000 hours.
+ * The day fraction, past 1 from 24 hours, or null.
+ */
 function timeText(s: string, decimal: string): number | null {
-  const m = patterns(decimal).time.exec(s)
-  if (!m) return null
-  const ampm = m[4] ?? m[6]
-  let h = Number(m[1] ?? m[5])
-  const mi = Number(m[2] ?? 0)
-  const sec = Number((m[3] ?? '0').replace(decimal, '.'))
-  // Excel en-US: with AM/PM hours 0–12 and minutes and seconds below 60; without, up to 9999 hours and any minutes and seconds
-  if (ampm) {
-    if (h > 12 || mi > 59 || sec >= 60) return null
-    h = (h % 12) + (ampm === 'pm' ? 12 : 0)
+  for (const [re, parts] of patterns(decimal).forms) {
+    const m = re.exec(s)
+    if (!m) continue
+    const [hs, ms = '0', ss = '0', ampm] = parts(m)
+    let h = Number(hs)
+    const mi = Number(ms)
+    const sec = Number(ss.replace(decimal, '.'))
+    if (ampm) {
+      if (h > 12 || mi > 59 || sec >= 60) return null
+      h = (h % 12) + (ampm === 'p' ? 12 : 0)
+    }
+    const t = (h * 3600 + mi * 60 + sec) / 86_400
+    return t < MAX_TIME ? t : null
   }
-  return (h * 3600 + mi * 60 + sec) / 86_400
+  return null
 }
 
 /**
- * Date or time text as Excel en-US reads it in a date or time argument: `2025-01-31`, `2025/01/31`,
- * `1/31/2025`, `1/31/25`, `31-Jan-2025`, `Jan 31, 2025`, each optionally followed by a time, or a time
- * alone (`18:30`, `6:30:15 PM`, `6 PM`). The serial number with a day fraction, or null. Forms without a
- * year (`1/31`, which Excel completes with the current year) are not read.
+ * Date or time text as Excel en-US reads it in a date or time argument, outside a book: `2025-01-31`, `2025/01/31`,
+ * `1/31/2025`, `1-31-2025`, `1/31/25`, `31-Jan-2025`, `Jan 31, 2025`, with a time before or after it, or a time
+ * alone (`18:30`, `6:30:15 PM`, `6 PM`). The serial number with a day fraction, or null. Forms without a year
+ * (`1/31`) need a book's clock (`enDates`) and are not read here.
  */
 export const parseDateText = (text: string): number | null => parseDateWith(text, EN_DATES)
 
-/** Date or time text in a date or time argument by a locale's syntax: a date optionally followed by a time, or a time alone. */
+/**
+ * Date or time text by a locale's syntax, as date and time arguments, operators and numeric arguments read it: a time
+ * alone, a date alone, or a date and a time in either order (`1/31/2025 6 PM`, `18:00 1/31/2025`; the time may
+ * pass 24 hours). Spaces after it are dropped and runs of spaces inside are one; text that begins with a space is
+ * no date or time (`DAY(" 1/31/2025")` is #VALUE!), and a tab is no space, as in Excel (the `lead-spaces` set).
+ */
 export function parseDateWith(text: string, syn: DateSyntax): number | null {
-  const s = text.trim().toLowerCase().replace(/\s+/g, ' ')
-  if (s === '') return null
+  const s = text.replace(/ +$/, '').toLowerCase().replace(/  +/g, ' ')
+  if (s === '' || s.startsWith(' ')) return null
   const time = timeText(s, syn.decimal)
   if (time !== null) return time
-  const split = patterns(syn.decimal).split.exec(s)!
-  const date = syn.date(split[1])
-  if (date === null) return null
-  if (split[2] === undefined) return date
-  const t = timeText(split[2], syn.decimal)
-  return t === null ? null : date + t
+  const date = syn.date(s)
+  if (date !== null) return date
+  const p = patterns(syn.decimal)
+  const both = (d: string, t: string) => {
+    const [dd, tt] = [syn.date(d), timeText(t, syn.decimal)]
+    return dd === null || tt === null ? null : dd + tt
+  }
+  let m = p.dateTime.exec(s)
+  const after = m ? both(m[1], m[2]) : null
+  if (after !== null) return after
+  m = p.timeDate.exec(s)
+  return m ? both(m[2], m[1]) : null
 }
+
+/** How a locale reads text as a number: VALUE's reading and that of operators, numeric arguments, criteria and TEXT. */
+export interface TextReaders {
+  value(text: string): number | null
+  argument(text: string): number | null
+}
+
+/**
+ * The readers from a locale's number text (`number`: numbers only) and date syntax. Both take numbers with spaces
+ * around them (` 5 `); VALUE takes date and time text after dropping spaces before it, the others do not
+ * (`VALUE(" 6:30")` is 6:30, `" 6:30"+0` is #VALUE!), as Excel does in en-US and ru-RU (the `lead-spaces` set).
+ */
+export const textReaders = (number: (text: string) => number | null, dates: DateSyntax): TextReaders => ({
+  value: (text) => number(text) ?? parseDateWith(trimSpaces(text), dates),
+  argument: (text) => number(text) ?? parseDateWith(text, dates),
+})
 
 // ---------- number text (en-US): VALUE's reading, also of text in arithmetic and numeric arguments ----------
 
@@ -153,34 +236,6 @@ const GROUPED = /^((?!0+,)\d+(?:,\d{3,})*|)(\.\d*)?$/
 
 /** Excel trims spaces only, not tabs or line breaks. */
 export const trimSpaces = (s: string) => s.replace(/^ +| +$/g, '')
-
-const MAX_TIME = 10_000 / 24
-
-/** VALUE's time, seconds with the decimal separator: minutes and seconds past 59 carry (`1:61`), up to 9,999 hours; with ` AM`/` PM` a clock time. */
-export function timeOf(s: string, decimal: string): number | null {
-  const m = patterns(decimal).value.exec(s)
-  if (!m) return null
-  let h = Number(m[1])
-  const mi = Number(m[2])
-  const sec = Number((m[3] ?? '0').replace(decimal, '.'))
-  if (m[4]) {
-    if (h > 12 || mi > 59 || sec >= 60) return null
-    h = (h % 12) + (m[4].toLowerCase() === 'pm' ? 12 : 0)
-  }
-  const t = (h * 3600 + mi * 60 + sec) / 86_400
-  return t < MAX_TIME ? t : null
-}
-
-/** VALUE's date text by a locale's syntax, optionally followed by a time that may run past 24 hours (`2025-01-31 25:00`). */
-export function dateTimeWith(s: string, syn: DateSyntax): number | null {
-  const m = patterns(syn.decimal).dateTime.exec(s)
-  if (m) {
-    const d = m[1].includes(':') ? null : parseDateWith(m[1], syn)
-    const t = timeOf(m[2], syn.decimal)
-    return d === null || t === null ? null : d + t
-  }
-  return s.includes(':') || /\d[ap]m$/i.test(s) ? null : parseDateWith(s, syn)
-}
 
 /** Parentheses and the percent sign around number text (trimmed), in either order: `(5%)`, `(5)%`, `%(5)`. */
 export function unwrap(text: string): { s: string; paren: boolean; percent: boolean } {
@@ -198,10 +253,10 @@ export function unwrap(text: string): { s: string; paren: boolean; percent: bool
 }
 
 /**
- * Text as a number, as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`,
- * parentheses, commas, exponent, one `%` at either end, `1 1/2`; else a time or a date. Null if it is none.
+ * Number text as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`, parentheses,
+ * commas, exponent, one `%` at either end, `1 1/2`, spaces around it. Null if it is none (dates and times are read apart).
  */
-export function textToNumber(text: string): number | null {
+export function enNumber(text: string): number | null {
   const t = trimSpaces(text)
   if (t === '') return null
   const { s, paren, percent } = unwrap(t)
@@ -217,9 +272,19 @@ export function textToNumber(text: string): number | null {
   else if (!sign[2] && !paren) {
     const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
     if (frac && Number(frac[3]) > 0) n = Number(frac[1]) + Number(frac[2]) / Number(frac[3])
-    else if (!sign[1] && !sign[3] && !percent) return timeOf(s, '.') ?? dateTimeWith(s, EN_DATES)
   }
   if (n === null || !Number.isFinite(n)) return null
   if (percent) n /= 100
   return negative || paren ? -n : n
 }
+
+/** en-US text as a number outside a book, as operators and arguments read it: date text without a year is no date. */
+export const textToNumber = textReaders(enNumber, EN_DATES).argument
+
+/** How operators and numeric arguments read text: plain decimal text, whitespace around it trimmed (the common case), else as `read` reads it. */
+export const decimalFirst =
+  (read: (text: string) => number | null) =>
+  (text: string): number | null => {
+    const t = text.trim()
+    return NUMBER_TEXT.test(t) ? readNumber(t) : read(text)
+  }

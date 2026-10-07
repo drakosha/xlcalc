@@ -21,6 +21,10 @@ export interface StructCases {
   cases: StructCase[]
   /** Formulas written as dynamic array formulas (Excel 365), as the spill cases need. */
   dynamic?: true
+  /** Rectangles whose look is read besides `LOOK` of `struct.ts` (`A1048570:C1048576` at the sheet's end). */
+  look?: string[]
+  /** Column widths are not compared: Excel takes the width of a span over most columns as the sheet's standard width when it loads the book, and reports the columns against that. */
+  widths?: false
 }
 
 export interface StructSet {

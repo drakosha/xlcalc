@@ -18,6 +18,8 @@ export interface SpillCase {
   volatile?: true
   /** A held-out case: its answer (non-blank cells of `read`, `Sheet!A1`) predicted before Excel computed it. */
   predicted?: Record<string, Val>
+  /** Edits after the computation, in order, each followed by a recalculation: a number or a text typed into a cell, or null to clear it (a session's `setCells`). */
+  edits?: { sheet: string; cell: string; value: number | string | null }[]
 }
 
 export interface SpillSet {

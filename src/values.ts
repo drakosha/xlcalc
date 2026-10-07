@@ -4,9 +4,8 @@
  */
 import type { CellValue, ErrorCode } from './contract.js'
 import { collator } from './criteria.js'
-import { textToNumber } from './dates.js'
+import { decimalFirst, textToNumber } from './dates.js'
 import { generalText } from './numfmt/general.js'
-import { NUMBER_TEXT, readNumber } from './model.js'
 
 export class CErr {
   constructor(readonly code: ErrorCode) {}
@@ -84,14 +83,8 @@ export function coercions(number: (text: string) => number | null, words: { read
   }
 }
 
-/** en-US text as a number: decimal text first (the common case), else as VALUE reads it (`$1,000`, `50%`, dates and times). */
-export function enNumber(text: string): number | null {
-  const t = text.trim()
-  return NUMBER_TEXT.test(t) ? readNumber(t) : textToNumber(text)
-}
-
-/** en-US with the English UI: numbers by `enNumber`; TRUE and FALSE. */
-export const { toNum, toText, toBool } = coercions(enNumber, { TRUE: 'TRUE', FALSE: 'FALSE' }, generalText)
+/** en-US with the English UI outside a book: decimal text first (the common case), else as operators read it (`$1,000`, `50%`, dates and times); TRUE and FALSE. */
+export const { toNum, toText, toBool } = coercions(decimalFirst(textToNumber), { TRUE: 'TRUE', FALSE: 'FALSE' }, generalText)
 
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : 2)
 
