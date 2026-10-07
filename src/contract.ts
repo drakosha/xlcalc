@@ -129,7 +129,51 @@ export interface SheetInput {
    * hid, which SUBTOTAL skips with codes 1–11 too and a copy leaves out, as Excel does whatever hid the row.
    */
   filtered?: boolean
+  /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or array area of several cells meets one. */
+  tables?: TableInput[]
 }
+
+/**
+ * A table (Excel's list object): a rectangle of a sheet with a header row of column names, data rows and a totals row.
+ * Formulas refer to its parts by name with structured references (`Sales[Amount]`, `SUM(Sales[[#Totals],[Qty]])`),
+ * which follow the table as rows and columns are inserted and deleted in it. A formula stores a reference to its own
+ * row as an xlsx file does, `Sales[[#This Row],[Amount]]`; `Sales[@Amount]`, and `[@Amount]` inside the table, are read too.
+ */
+export interface TableInput {
+  /**
+   * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`, at most 255
+   * characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE. Tables and defined names share
+   * one namespace: no other table and no defined name of the book has the name, in any case.
+   */
+  name: string
+  /** The table's rectangle, its header and totals rows included (`B2:E10`), with one data row at least. */
+  range: string
+  /** The first row is a header row (true by default): its cells hold the columns' names as text, and no formulas. */
+  headers?: boolean
+  /** The last row is a totals row (false by default). */
+  totals?: boolean
+  /** The columns from left to right, one for each column of the range. */
+  columns: TableColumn[]
+}
+
+export interface TableColumn {
+  /** 1 to 255 characters, unique in the table in any case; the header cell's text. */
+  name: string
+  /**
+   * The formula of a calculated column (stored text, `Sales[[#This Row],[Qty]]*2`), which a row inserted into the table
+   * gets in this column, as Excel fills it. The column's cells hold their own formulas.
+   */
+  formula?: string
+  /**
+   * What the column's cell of the totals row is, as an xlsx file records it: one of Excel's totals functions, a
+   * SUBTOTAL over the column that the cell holds as its formula (`custom`: a formula of its own), or a label. The cell
+   * computes what it holds.
+   */
+  totals?: { function: TotalsFunction } | { label: string }
+}
+
+/** Excel's totals functions of a table column (xlsx `totalsRowFunction`). */
+export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 
 export interface NameInput {
   /** Latin letters, digits, `_` and `.`; not a cell address, not R1C1, not TRUE/FALSE. */
@@ -190,7 +234,10 @@ export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCL
 /** A computed value. Dates come out as serial numbers, numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }
 
-/** Formula check codes. `unsupported`: an external function called with arguments that are not literals. */
+/**
+ * Formula check codes. `unsupported`: an external function called with arguments that are not literals.
+ * `unknown_name` covers tables too: an unknown table or column, a structured reference without a table outside one.
+ */
 export type CheckCode =
   | 'empty'
   | 'syntax'
@@ -332,10 +379,16 @@ export interface ValidateContext {
   /** Names of the book; without them names are not checked. */
   names?: string[]
   externalFunctions?: string[]
+  /**
+   * Tables of the book with their columns; without them structured references are not checked. With them the canonical
+   * text spells tables and columns as they are named, and a bare table name is a table, not a name.
+   */
+  tables?: { name: string; columns: string[] }[]
 }
 
 export type ValidateResult =
-  | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[] }
+  /** `tables`: the tables the formula's structured references name (and bare table names, with `ctx.tables`). */
+  | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
   | { ok: false; code: CheckCode; message: string; at: number }
 
 export type NameCheck = { ok: true } | { ok: false; message: string }
@@ -403,7 +456,9 @@ export interface RangeRef {
 
 /**
  * One structure operation (`restructure`). Rows are 1-based numbers and columns are letters, as in A1
- * addresses; `count` is 1 by default; sheets are matched case-insensitively.
+ * addresses; `count` is 1 by default; sheets and tables are matched case-insensitively. Tables move with their cells
+ * and grow and shrink with the rows and columns inserted and deleted inside them; an inserted row gets the formulas of
+ * the calculated columns, an inserted column a name (`Column1`), and references to a deleted column become #REF!.
  */
 export type StructureOp =
   /** Inserts `count` rows before `row`: rows from `row` on move down; the new rows take the format of the row above. */
@@ -435,6 +490,17 @@ export type StructureOp =
    * between its ends in the new order; an end that moves leaves it, the next sheet inward taking its place.
    */
   | { op: 'moveSheet'; sheet: string; before?: string }
+  /** A table over cells of `sheet` (Excel's Format as Table): with a header row its header cells take the columns' names. */
+  | { op: 'addTable'; sheet: string; table: TableInput }
+  /** A new name for the table, by the rules of `TableInput.name`; every structured reference to it follows. */
+  | { op: 'renameTable'; table: string; name: string }
+  /** The table and its cells deleted (Excel's Delete Table): structured references to it become #REF!. */
+  | { op: 'deleteTable'; table: string }
+  /**
+   * The table turned into plain cells (Excel's Convert to Range): structured references to it become references to its
+   * cells with `$` and the sheet (`'S'!$B$2:$B$9`; a reference to the formula's own row keeps its row relative, `'S'!$B2`).
+   */
+  | { op: 'convertTable'; table: string }
 
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =
@@ -450,6 +516,13 @@ export type StructureRefusal =
   | 'filtered'
   /** The operation would change part of the area of an array formula of the old kind (`CellInput.array`). */
   | 'array'
+  /**
+   * The operation would shift or cut part of a table as Excel refuses it: rows or columns inserted into or deleted from
+   * two tables at once, a table's header row deleted without the rest, a move that cuts a table, a table over another.
+   */
+  | 'table'
+  /** A table name that breaks the rules of `TableInput.name` or that a table or a defined name of the book has. */
+  | 'table_name'
 
 export type RestructureResult =
   | {
@@ -504,6 +577,10 @@ export interface Session {
    * (#SPILL!); clearing it lets the array spill again. Edits that change some cells of an old-kind array formula's
    * area (`CellInput.array`) but not all of them throw `InputError` and change nothing, as Excel refuses to change
    * part of an array; an edit of its top-left cell that keeps an array formula over the same area changes all of it.
+   * An edit of a table's header cell renames its column, as Excel does: the structured references to it follow, a number
+   * or a boolean becomes its text, a cleared cell names the column `Column1` (the first such name free; `Столбец1` in a
+   * ru-RU book), and a name another column has already gives the column further right a number (`Price2`). A formula
+   * in a header cell throws `InputError`.
    */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]

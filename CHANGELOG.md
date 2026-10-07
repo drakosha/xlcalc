@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- Contract: tables (Excel's list objects). `SheetInput.tables` lists a sheet's tables (`TableInput`: `name`, `range`, `headers`, `totals`, `columns` with each column's `name`, the `formula` of a calculated column and its `totals` function or label; type `TotalsFunction`). Tables and defined names share one namespace. Structured references (`Sales[Amount]`, `Sales[[#Headers],[#Data],[Qty]:[Price]]`, `Sales[[#This Row],[Qty]]`, `[@Qty]` inside the table) are part of formula text. `ValidateContext.tables` checks them in `validateFormula`, whose result gains `tables`; the check code `unknown_name` also covers an unknown table or column. `StructureOp` gains `addTable`, `renameTable`, `deleteTable` and `convertTable`, `StructureRefusal` gains `table` and `table_name`, and `Session.setCells` renames a column when its header cell is edited.
+
 ## 0.3.1 (2026-10-07)
 
 Internal release; not published to npm.
