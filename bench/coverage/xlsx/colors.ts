@@ -1,0 +1,57 @@
+/**
+ * Fill colours as Excel shows them: a book whose cells are filled with each theme colour at Excel's tints and with
+ * each colour of the legacy palette, written here as XML. `npx tsx bench/coverage/run.ts xlsx colors` reads the
+ * colours Excel shows into `test/excel/xlsx/colors.json`; `test/xlsx-excel.test.ts` checks the reader's against them.
+ */
+import { formatAddress } from '../../../src/model.js'
+import { zip } from '../../../src/xlsx/zip/write.js'
+
+/** The Office theme's colours (Office 2013 to 2022). */
+export const THEME =
+  '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light"/><a:ea typeface=""/><a:cs typeface=""/></a:majorFont><a:minorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface=""/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln w="12700"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln w="19050"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>'
+
+/** The tints Excel's colour picker gives (lighter 80, 60, 40 %, darker 25, 50 %, for black and white 5 to 50 %) and rounder ones. */
+const TINTS = [0.79998168889431442, 0.59999389629810485, 0.39997558519241921, -0.249977111117893, -0.499984740745262, -4.9989318521683403e-2, -0.14999847407452621, -0.34998626667073579, 0.499984740745262, 0.34998626667073579, 0.1, -0.1, 0.9]
+
+export interface ColorCase {
+  cell: string
+  /** The attributes of the fill's `<fgColor>`. */
+  color: string
+}
+
+export function colorCases(): ColorCase[] {
+  const colors = [
+    ...Array.from({ length: 12 }, (_, t) => [`theme="${t}"`, ...TINTS.map((x) => `theme="${t}" tint="${x}"`)]).flat(),
+    ...Array.from({ length: 64 }, (_, i) => `indexed="${i}"`),
+    'rgb="00FFC7CE"',
+  ]
+  return colors.map((color, i) => ({ cell: formatAddress(i % 50, Math.floor(i / 50)), color }))
+}
+
+const enc = new TextEncoder()
+const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
+const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+const TYPE = 'application/vnd.openxmlformats-officedocument'
+
+/** The book: one cell per case, filled with its colour, the theme as a part of its own. */
+export function colorBook(cases: ColorCase[]): Promise<Uint8Array> {
+  const fills = cases.map((c) => `<fill><patternFill patternType="solid"><fgColor ${c.color}/><bgColor indexed="64"/></patternFill></fill>`)
+  const xfs = cases.map((_, i) => `<xf numFmtId="0" fontId="0" fillId="${i + 2}" borderId="0" xfId="0" applyFill="1"/>`)
+  const styles = `<styleSheet ${NS}><fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts><fills count="${fills.length + 2}"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>${fills.join('')}</fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length + 1}"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>${xfs.join('')}</cellXfs></styleSheet>`
+  const byRow = new Map<number, string[]>()
+  cases.forEach((c, i) => {
+    const row = Number(/\d+/.exec(c.cell)![0])
+    byRow.set(row, [...(byRow.get(row) ?? []), `<c r="${c.cell}" s="${i + 1}"/>`])
+  })
+  const rows = [...byRow].sort((a, b) => a[0] - b[0]).map(([r, cs]) => `<row r="${r}">${cs.join('')}</row>`)
+  const parts: Record<string, string> = {
+    '[Content_Types].xml': `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="${TYPE}.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="${TYPE}.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="${TYPE}.spreadsheetml.styles+xml"/><Override PartName="/xl/theme/theme1.xml" ContentType="${TYPE}.theme+xml"/></Types>`,
+    '_rels/.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
+    'xl/workbook.xml': `<workbook ${NS}><sheets><sheet name="Colors" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+    'xl/_rels/workbook.xml.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${REL}/styles" Target="styles.xml"/><Relationship Id="rId3" Type="${REL}/theme" Target="theme/theme1.xml"/></Relationships>`,
+    'xl/styles.xml': styles,
+    'xl/theme/theme1.xml': THEME,
+    'xl/worksheets/sheet1.xml': `<worksheet ${NS}><sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData></worksheet>`,
+  }
+  return zip(Object.entries(parts).map(([name, text]) => ({ name, data: enc.encode(text) })))
+}

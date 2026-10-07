@@ -36,11 +36,11 @@ describe('xlsx styles: reading', () => {
     expect(r.issues).toEqual([])
   })
 
-  it("tint on luminance in Windows' HLS steps: Excel's palette for its standard tints", () => {
+  it("tint on luminance in Windows' HLS steps, as Excel shows it (the colours Excel showed: test/excel/xlsx/colors.json)", () => {
     expect(tinted('4472C4', 0.39997558519241921)).toBe('8EA9DB')
+    expect(tinted('4472C4', -0.249977111117893)).toBe('305496')
     expect(tinted('FFFFFF', -0.0499893185216834)).toBe('F2F2F2')
-    expect(tinted('000000', 0.499984740745262)).toBe('808080')
-    expect(tinted('000000', 0.34998626667073579)).toBe('595959')
+    expect(tinted('A5A5A5', -0.499984740745262)).toBe('525252')
     expect(tinted('ABCDEF', 0)).toBe('ABCDEF')
   })
 

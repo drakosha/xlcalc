@@ -169,7 +169,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
           cell.formula = errText
           out.cached[addr] = { error: ERRORS[errText] }
           issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet, cell: addr })
-        } else issues.add('errorValue', 'an error the model has no code for, left out', { sheet, cell: addr })
+        } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
     if (cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.format !== undefined) out.cells[addr] = cell

@@ -36,39 +36,50 @@ export function palette(themeXml: string | undefined, stylesXml: string | undefi
   return { theme, indexed }
 }
 
-/** RGB to HSL and back on [0, 1]. */
-function toHsl([r, g, b]: number[]): number[] {
+/** Windows' HLS scale (hue, luminance, saturation from 0 to 240), in which Excel applies a tint. */
+const HLS = 240
+const div = (a: number, b: number) => Math.trunc(a / b)
+
+/** RGB (0 to 255) to HLS in whole steps, as Windows' ColorRGBToHLS rounds them. */
+function toHls(r: number, g: number, b: number): [h: number, l: number, s: number] {
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
-  const l = (max + min) / 2
-  if (max === min) return [0, 0, l]
-  const d = max - min
-  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-  const h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4
-  return [h / 6, s, l]
+  const l = div((max + min) * HLS + 255, 510)
+  if (max === min) return [0, l, 0]
+  const s = l <= HLS / 2 ? div((max - min) * HLS + div(max + min, 2), max + min) : div((max - min) * HLS + div(510 - max - min, 2), 510 - max - min)
+  const d = (c: number) => div((max - c) * (HLS / 6) + div(max - min, 2), max - min)
+  let h = r === max ? d(b) - d(g) : g === max ? HLS / 3 + d(r) - d(b) : (2 * HLS) / 3 + d(g) - d(r)
+  if (h < 0) h += HLS
+  if (h > HLS) h -= HLS
+  return [h, l, s]
 }
 
-function fromHsl([h, s, l]: number[]): number[] {
-  if (s === 0) return [l, l, l]
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-  const p = 2 * l - q
+/** HLS in whole steps back to RGB (0 to 255), rounded. */
+function toRgb(h: number, l: number, s: number): number[] {
+  if (s === 0) return [l, l, l].map((x) => div(x * 255 + HLS / 2, HLS))
+  const m2 = l <= HLS / 2 ? div(l * (HLS + s) + HLS / 2, HLS) : l + s - div(l * s + HLS / 2, HLS)
+  const m1 = 2 * l - m2
   const hue = (t: number) => {
-    t = t < 0 ? t + 1 : t > 1 ? t - 1 : t
-    return t < 1 / 6 ? p + (q - p) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p
+    t = t < 0 ? t + HLS : t > HLS ? t - HLS : t
+    if (t < HLS / 6) return m1 + div((m2 - m1) * t + HLS / 12, HLS / 6)
+    if (t < HLS / 2) return m2
+    if (t < (2 * HLS) / 3) return m1 + div((m2 - m1) * ((2 * HLS) / 3 - t) + HLS / 12, HLS / 6)
+    return m1
   }
-  return [hue(h + 1 / 3), hue(h), hue(h - 1 / 3)]
+  return [h + HLS / 3, h, h - HLS / 3].map((t) => Math.max(0, Math.min(255, div(hue(t) * 255 + HLS / 2, HLS))))
 }
 
-/** Windows' HLS scale: Excel rounds hue, luminance and saturation to whole steps of 1/240 before applying a tint. */
-const HLS = 240
-
-/** A colour lightened (tint > 0) or darkened (tint < 0) by its luminance, as Excel computes it. */
+/**
+ * A colour lightened (tint > 0) or darkened (tint < 0) by its luminance in Windows' HLS steps. Measured against
+ * Excel for Mac, this gives its colour exactly for most theme colours and tints, and within 3 of 255 per channel
+ * for the rest.
+ */
 export function tinted(hex: string, tint: number): string {
   if (!tint) return hex
-  const [h, s, l] = toHsl([0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)).map((x) => Math.round(x * HLS))
-  const lum = Math.round(tint < 0 ? l * (1 + tint) : l * (1 - tint) + (HLS - HLS * (1 - tint)))
-  return fromHsl([h / HLS, s / HLS, lum / HLS])
-    .map((c) => Math.round(c * 255).toString(16).padStart(2, '0'))
+  const [h, l, s] = toHls(...([0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)) as [number, number, number]))
+  const lum = Math.floor(tint < 0 ? l * (1 + tint) : l * (1 - tint) + HLS * tint)
+  return toRgb(h, lum, s)
+    .map((c) => c.toString(16).padStart(2, '0'))
     .join('')
     .toUpperCase()
 }

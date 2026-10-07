@@ -7,6 +7,9 @@
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import { synthBook } from '../../../src/synth.js'
 
+/** The clock the round trip computes its books with. */
+export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
+
 export interface RoundTrip {
   id: string
   what: string
@@ -42,7 +45,7 @@ const escapes: BookInput = {
       cells: {
         A1: v('_x0041_'), A2: v('a_x000D_b'), A3: v('_x005F_x0041_'), A4: v('vertical\u000btab'), A5: v('nul\u0001and\u001fother'), A6: v('￾'),
         A7: v('x'.repeat(32_767)), A8: v('lone \uD800 surrogate'),
-        B1: f('"_x0041_"&"!"'), B2: f('LEN(A4)'), B3: f('CODE(MID(A4,9,1))'), B4: f('A1=A3'), B5: f('LEN(A7)'),
+        B1: f('"_x0041_"&"!"'), B2: f('LEN(A4)'), B3: f('UNICODE(MID(A4,9,1))'), B4: f('A1=A3'), B5: f('LEN(A7)'),
       },
     },
   ],

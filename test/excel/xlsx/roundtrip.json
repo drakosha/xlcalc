@@ -1,0 +1,42 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "seconds": 18,
+  "date": "2026-10-07"
+ },
+ "books": {
+  "values": {
+   "sent": "fbcba03f393c58cc6f5d1864731f374d60f26286ccd37dcdab3d052e594070bf"
+  },
+  "escapes": {
+   "sent": "94dcb97be535b402449a260331b93df99d7f527df6995f2750ec281193925c36"
+  },
+  "formulas": {
+   "sent": "ec4f24f731f53bbe360bd99a759c62f4812eb2fbedc8d4226194c1f34075968b"
+  },
+  "formulas-values": {
+   "sent": "f344432d3ec3bc98d4d8791117c5ca5056d763cc42f39c28b447b5b012ce6732"
+  },
+  "spills": {
+   "sent": "7feb66446219a4da2af237fc5b2bd11eab088c896080c0e6b45243194ede05e7"
+  },
+  "spills-values": {
+   "sent": "8302083c18ab8376df67582591221b46875164c0626934fe97117b69ceeaac92"
+  },
+  "styles": {
+   "sent": "ad0557806ee116a66ffd7c6690e8d2c7fa766b221f409251f843faa872dd4ad1"
+  },
+  "sheet-names": {
+   "sent": "aff6ee3f11919d0db09d930151d378d6bfe05afd0d03710e6af15d5dcbd763a2"
+  },
+  "en": {
+   "sent": "9956549f637dd01631d947a105c11431b216ddaaf7c66517e9268842d7cf061d"
+  },
+  "synth": {
+   "sent": "0b0c34a84fe71b3983ddca16aa6209516e1d604caaf1d7e8888975ae680acb51"
+  },
+  "ru": {
+   "sent": "e8ef0e1c63db91b53f7c2b6b0f3bb9562e867fa2715882f2433e73220c9a02d6"
+  }
+ }
+}

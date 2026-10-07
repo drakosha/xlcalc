@@ -4,7 +4,9 @@
  * the saved file goes to `test/excel/xlsx/roundtrip/<id>.xlsx`; a book Excel refuses (its repair window) is
  * recorded as rejected. `xlsx saved`: the books of the case sets (`sets/*.ts` with stored answers, the probes),
  * as the harness writes them for Excel, go through Excel the same way into `test/excel/xlsx/saved/`. The test
- * `test/xlsx-excel.test.ts` reads the saved files with the reader and compares them without Excel.
+ * `test/xlsx-excel.test.ts` reads the saved files with the reader and compares them without Excel. `xlsx colors`:
+ * the fill colours Excel shows for theme colours with tints and for the legacy palette (`xlsx/colors.ts`) into
+ * `test/excel/xlsx/colors.json`.
  * `test/excel/xlsx/<step>.json` records what was sent (a hash per book), so a run sends again only the books that
  * changed (`FCOV_FRESH=1` sends all); `FXLSX_ONLY=id,id` limits a run.
  */
@@ -17,18 +19,16 @@ import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { writeBook } from './book.js'
 import { ensureExcel, excelVersion, type Locale } from './excel.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
-import { buildRoundTrips } from './xlsx/books.js'
+import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
+import { colorBook, colorCases } from './xlsx/colors.js'
 import { compareBooks, compareCached, entries } from './xlsx/compare.js'
-import { saveThroughExcel } from './xlsx/excel.js'
+import { fillColors, saveThroughExcel } from './xlsx/excel.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const DATA = join(ROOT, 'test/excel/xlsx')
 const OUT = join(HERE, 'out/xlsx')
 const ONLY = process.env.FXLSX_ONLY?.split(',').filter(Boolean)
-
-/** The clock the round trip computes its books with. */
-export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
 
 export interface Sent {
   /** sha256 of what was sent: the written file, or a part's case formulas. */
@@ -129,8 +129,19 @@ async function saved() {
   await send('saved', books, async (_, file) => `${(await readXlsx(file)).issues.length} issues`)
 }
 
+async function colors() {
+  const cases = colorCases()
+  await ensureExcel('en')
+  const shown = await fillColors(await colorBook(cases), cases.map((c) => c.cell))
+  const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', date: new Date().toISOString().slice(0, 10) }
+  mkdirSync(DATA, { recursive: true })
+  writeFileSync(join(DATA, 'colors.json'), JSON.stringify({ meta, colors: Object.fromEntries(cases.map((c, i) => [c.color, shown[i]])) }, null, 1) + '\n')
+  console.log(`colors: ${cases.length} fills read`)
+}
+
 export async function stepXlsx(what: string | undefined): Promise<void> {
   if (what === 'roundtrip') await roundTrip()
   else if (what === 'saved') await saved()
-  else throw new Error('xlsx: roundtrip | saved')
+  else if (what === 'colors') await colors()
+  else throw new Error('xlsx: roundtrip | saved | colors')
 }
