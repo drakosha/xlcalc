@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 4.728,
+  "seconds": 4.713,
   "dynamic": true
  },
  "cases": [
@@ -809,6 +809,192 @@
    "group": "SUMIF",
    "fn": "SUMIF",
    "formula": "SUMIF(G!A1:A2,\"1/31\",G!A1:A2)"
+  },
+  {
+   "id": "held#1",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"29 Feb\")"
+  },
+  {
+   "id": "held#2",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"30-Feb\")"
+  },
+  {
+   "id": "held#3",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"32 Jan\")"
+  },
+  {
+   "id": "held#4",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"0 Jan\")"
+  },
+  {
+   "id": "held#5",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"99-Jan\")"
+  },
+  {
+   "id": "held#6",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100 Jan\")"
+  },
+  {
+   "id": "held#7",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"2025 Jan\")"
+  },
+  {
+   "id": "held#8",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"2025-Jan\")"
+  },
+  {
+   "id": "held#9",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Jan/2025\")"
+  },
+  {
+   "id": "held#10",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/05\")"
+  },
+  {
+   "id": "held#11",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/005\")"
+  },
+  {
+   "id": "held#12",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/1899\")"
+  },
+  {
+   "id": "held#13",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/1900\")"
+  },
+  {
+   "id": "held#14",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"12/9999\")"
+  },
+  {
+   "id": "held#15",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"13-Jan\")"
+  },
+  {
+   "id": "held#16",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Jan-13\")"
+  },
+  {
+   "id": "held#17",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Dec 31 18:00:30\")"
+  },
+  {
+   "id": "held#18",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/31 6:30:15 PM\")"
+  },
+  {
+   "id": "held#19",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"2/29 18:00\")"
+  },
+  {
+   "id": "held#20",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Febr 3\")"
+  },
+  {
+   "id": "held#21",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Janu 3\")"
+  },
+  {
+   "id": "held#22",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"June 5\")"
+  },
+  {
+   "id": "held#23",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"sep 5\")"
+  },
+  {
+   "id": "held#24",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"5 May\")"
+  },
+  {
+   "id": "held#25",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Jan  31\")"
+  },
+  {
+   "id": "held#26",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\" 1/31 \")"
+  },
+  {
+   "id": "held#27",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1 /31\")"
+  },
+  {
+   "id": "held#28",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/ 31\")"
+  },
+  {
+   "id": "held#29",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1.31\")"
+  },
+  {
+   "id": "held#30",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"31 Jan 2025\")"
+  },
+  {
+   "id": "held#31",
+   "group": "held",
+   "fn": "VALUE",
+   "formula": "VALUE(\"Jan 31 2025\")"
   }
  ],
  "values": {
@@ -1347,6 +1533,130 @@
   "SUMIF#1": {
    "t": "n",
    "v": 46053
+  },
+  "held#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#9": {
+   "t": "n",
+   "v": 45658
+  },
+  "held#10": {
+   "t": "n",
+   "v": 46027
+  },
+  "held#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#13": {
+   "t": "n",
+   "v": 1
+  },
+  "held#14": {
+   "t": "n",
+   "v": 2958435
+  },
+  "held#15": {
+   "t": "n",
+   "v": 46035
+  },
+  "held#16": {
+   "t": "n",
+   "v": 46035
+  },
+  "held#17": {
+   "t": "n",
+   "v": 46387.75034722222
+  },
+  "held#18": {
+   "t": "n",
+   "v": 46053.771006944444
+  },
+  "held#19": {
+   "t": "n",
+   "v": 47150.75
+  },
+  "held#20": {
+   "t": "n",
+   "v": 46056
+  },
+  "held#21": {
+   "t": "n",
+   "v": 46025
+  },
+  "held#22": {
+   "t": "n",
+   "v": 46178
+  },
+  "held#23": {
+   "t": "n",
+   "v": 46270
+  },
+  "held#24": {
+   "t": "n",
+   "v": 46147
+  },
+  "held#25": {
+   "t": "n",
+   "v": 46053
+  },
+  "held#26": {
+   "t": "n",
+   "v": 46053
+  },
+  "held#27": {
+   "t": "n",
+   "v": 46053
+  },
+  "held#28": {
+   "t": "n",
+   "v": 46053
+  },
+  "held#29": {
+   "t": "n",
+   "v": 1.31
+  },
+  "held#30": {
+   "t": "n",
+   "v": 45688
+  },
+  "held#31": {
+   "t": "e",
+   "v": "VALUE"
   }
  }
 }

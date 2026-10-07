@@ -19,6 +19,8 @@ const NAMED = [
 const HELD = [
   '29 Feb', '30-Feb', '32 Jan', '0 Jan', '99-Jan', '100 Jan', '2025 Jan', '2025-Jan', 'Jan/2025', '1/05', '1/005', '1/1899', '1/1900', '12/9999', '13-Jan', 'Jan-13',
   'Dec 31 18:00:30', '1/31 6:30:15 PM', '2/29 18:00', 'Febr 3', 'Janu 3', 'June 5', 'sep 5', '5 May', 'Jan  31', ' 1/31 ', '1 /31', '1/ 31', '1.31', '31 Jan 2025', 'Jan 31 2025',
+  '1 / 31', '1 - 31', '1 /2025', 'Jan / 31', '31 - Jan', '1 / 31 / 2025', 'Ja 3', 'Janua 3', 'Januaryy 3', '31-Janu-2025', 'Febr 3, 2025', '3 Febr 2025', 'Marc 3', 'Ma 3', 'Jun 2025',
+  'Junee 3', 'Jan 31,2025', 'Sep 2', '2 Sep', 'Dece 25',
 ]
 
 export function buildProbes(): Probe[] {
