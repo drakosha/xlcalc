@@ -150,6 +150,14 @@ export interface BookInput {
    * (`-12:00`). It goes into both hashes only when it is 1904.
    */
   dateSystem?: 1900 | 1904
+  /**
+   * Iterative calculation of circular references, as Excel's setting and xlsx `calcPr iterate`. Without it a cycle
+   * gives `#CYCLE!`. With it the cells of every cycle and the cells that depend on them are computed again and again
+   * from 0, sheet by sheet in the order of the sheets' names and row by row, up to `maxIterations` times (100 by
+   * default, 1 to 32,767), until no value changes by `maxChange` or more (0.001 by default). Each computation starts
+   * from 0 again, so a session gives what a full computation gives, where Excel goes on from the values it holds.
+   */
+  iteration?: { maxIterations?: number; maxChange?: number }
 }
 
 /**
