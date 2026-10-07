@@ -1,8 +1,8 @@
 {
  "meta": {
-  "version": "16.113.3",
+  "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.279,
+  "seconds": 2.142,
   "dynamic": true
  },
  "cases": [
@@ -5983,6 +5983,18 @@
    "formula": "_xlfn.CEILING.PRECISE({1;2})"
   },
   {
+   "id": "lift:CHAR#1",
+   "group": "lift:CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(D!B1:B2)"
+  },
+  {
+   "id": "lift:CHAR#2",
+   "group": "lift:CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR({1;2})"
+  },
+  {
    "id": "lift:CHIDIST#1",
    "group": "lift:CHIDIST",
    "fn": "CHIDIST",
@@ -6197,6 +6209,18 @@
    "group": "lift:CLEAN",
    "fn": "CLEAN",
    "formula": "CLEAN({1;2})"
+  },
+  {
+   "id": "lift:CODE#1",
+   "group": "lift:CODE",
+   "fn": "CODE",
+   "formula": "CODE(D!B1:B2)"
+  },
+  {
+   "id": "lift:CODE#2",
+   "group": "lift:CODE",
+   "fn": "CODE",
+   "formula": "CODE({1;2})"
   },
   {
    "id": "lift:COMBIN#1",
@@ -24247,6 +24271,22 @@
   "index:MATCH#1": {
    "t": "n",
    "v": 4
+  },
+  "lift:CHAR#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:CHAR#2": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:CODE#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:CODE#2": {
+   "t": "e",
+   "v": "SPILL"
   }
  }
 }
