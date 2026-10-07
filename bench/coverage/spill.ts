@@ -73,7 +73,7 @@ function closing(f: string, i: number): number {
   return f.length
 }
 
-/** `@x` as `_xlfn.SINGLE(x)`: x a parenthesis, a call, or a reference or a name with its sheet. */
+/** `@x` as `_xlfn.SINGLE(x)`: x a parenthesis, a call, a string, an array constant, or a reference, a name or a literal. */
 function single(f: string): string {
   let out = ''
   for (let i = 0; i < f.length; ) {
@@ -90,9 +90,13 @@ function single(f: string): string {
       continue
     }
     let j = i + 1
-    if (f[j] === "'") j = quoted(f, j, "'")
-    while (j < f.length && /[\w.$:!#]/.test(f[j])) j++
-    if (f[j] === '(') j = closing(f, j)
+    if (f[j] === '"') j = quoted(f, j, '"')
+    else if (f[j] === '{') j = f.indexOf('}', j) + 1
+    else {
+      if (f[j] === "'") j = quoted(f, j, "'")
+      while (j < f.length && /[\w.$:!#]/.test(f[j])) j++
+      if (f[j] === '(') j = closing(f, j)
+    }
     out += `_xlfn.SINGLE(${single(f.slice(i + 1, j))})`
     i = j
   }
