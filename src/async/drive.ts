@@ -10,7 +10,6 @@ import { nowMs } from '../env.js'
 interface Timers {
   setImmediate?: (f: () => void) => unknown
   setTimeout?: (f: () => void, ms: number) => unknown
-  scheduler?: { yield?: () => Promise<void> }
   MessageChannel?: new () => { port1: { onmessage: (() => void) | null }; port2: { postMessage(m: unknown): void } }
 }
 
@@ -32,10 +31,12 @@ function viaChannel(): Promise<void> {
   })
 }
 
-/** Gives way to the event loop: `setImmediate` in Node, `scheduler.yield` or a message in a browser, a timer elsewhere. */
+/**
+ * Gives way to the event loop: `setImmediate` in Node, a message in a browser, a timer elsewhere. Not
+ * `scheduler.yield`: its continuation goes before the page's own tasks, timers and workers' messages starve.
+ */
 export function pause(): Promise<void> {
   if (g.setImmediate) return new Promise((resolve) => g.setImmediate!(resolve))
-  if (g.scheduler?.yield) return g.scheduler.yield()
   if (g.MessageChannel) return viaChannel()
   if (g.setTimeout) return new Promise((resolve) => g.setTimeout!(resolve, 0))
   return Promise.resolve()
