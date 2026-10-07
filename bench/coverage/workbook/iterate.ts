@@ -44,6 +44,7 @@ export function buildWorkbookCases(): WorkbookCase[] {
     one('counter-dynamic', 'the counter written as dynamic array formulas', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', {}, { file: { iterate: {}, cached: { 'S!A1': 0, 'S!B1': 0 } } }),
     one('counter-blank', 'the counter whose file stores no value', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', {}, { file: { iterate: {}, ...PLAIN } }),
     one('counter-typed', 'the counter typed into an empty cell after opening', { B1: '=A1' }, 'A1:B1', {}, { steps: ['read', { formula: { sheet: 'S', cell: 'A1', formula: 'A1+1' } }, 'read', 'calc', 'read'] }),
+    one('text-typed', 'A1 = A1&"x" typed into an empty cell, three iterations', { B1: '=LEN(A1)' }, 'A1:B1', { count: 3 }, { steps: ['read', { formula: { sheet: 'S', cell: 'A1', formula: 'A1&"x"' } }, 'read'] }),
     one('counter-10', 'the counter with 10 iterations', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', { count: 10 }),
     one('counter-cached', 'the counter whose file stores 50', { A1: '=A1+1', B1: '=A1' }, 'A1:B1', {}, { file: { iterate: {}, cached: { 'S!A1': 50, 'S!B1': 0 }, ...PLAIN } }),
     one('counter-edit', 'the counter, then a value typed into an unrelated cell, then into a cell it reads', { A1: '=A1+C1', C1: 1, B1: '=A1' }, 'A1:C1', {}, {

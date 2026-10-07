@@ -171,6 +171,48 @@
    ]
   },
   {
+   "id": "text-typed",
+   "about": "A1 = A1&\"x\" typed into an empty cell, three iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "LEN(A1)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 3
+    },
+    "cached": {
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    {
+     "formula": {
+      "sheet": "S",
+      "cell": "A1",
+      "formula": "A1&\"x\""
+     }
+    },
+    "read"
+   ]
+  },
+  {
    "id": "counter-10",
    "about": "the counter with 10 iterations",
    "book": {
@@ -4805,6 +4847,48 @@
     }
    ]
   },
+  "delta-equal": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.5
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.75
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.875
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9375
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1"
+     }
+    }
+   ]
+  },
   "text-steady": {
    "settings": {
     "iteration": true,
@@ -5279,44 +5363,38 @@
     }
    ]
   },
-  "delta-equal": {
+  "text-typed": {
    "settings": {
     "iteration": true,
-    "count": 100,
-    "delta": 0.5
+    "count": 3,
+    "delta": 0.001
    },
    "reads": [
     {
      "values": {
-      "S!A1": {
+      "S!B1": {
        "t": "n",
-       "v": 1.75
+       "v": 0
       }
      },
      "formulas": {
-      "S!A1": "=A1/2+1"
+      "S!B1": "=LEN(A1)"
      }
     },
     {
      "values": {
       "S!A1": {
+       "t": "s",
+       "v": "0xxx"
+      },
+      "S!B1": {
        "t": "n",
-       "v": 1.875
+       "v": 4
       }
      },
      "formulas": {
-      "S!A1": "=A1/2+1"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "n",
-       "v": 1.9375
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1/2+1"
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=LEN(A1)"
      }
     }
    ]
