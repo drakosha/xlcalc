@@ -4,6 +4,7 @@
  * cell; of two arrays over one cell the one with the lower rank spills (`rank.ts`). An array that cannot spill
  * gives #SPILL! and waits for its range.
  */
+import type { Arg } from '../args.js'
 import type { Arr } from '../arrays/value.js'
 import { canonValue } from '../canon.js'
 import { toCellValue, key, type EngineState, type Formula } from '../engine.js'
@@ -14,6 +15,7 @@ import { meets, type Rect } from '../structure/area.js'
 import { quoteSheet } from '../syntax.js'
 import { E, Rng, type CErr, type V } from '../values.js'
 import type { Fill } from './fill.js'
+import { fit } from './fixed.js'
 import { beats } from './rank.js'
 import { equalAreas, type Area, type Spill } from './state.js'
 
@@ -44,6 +46,22 @@ function mergesOf(state: EngineState, s: number): Rect[] {
   return m
 }
 
+/**
+ * An array formula of the old kind fills its area with its answer fitted to it (`fixed.ts`), whatever is there: the
+ * arrays spilled over it stop and wait. The formula's own value is the area's first.
+ */
+export function fixed(state: EngineState, f: Formula, x: Arg, t?: Tracker): V {
+  const area: Area = { s: f.s, ...f.area! }
+  const a = fit(x, area.r2 - area.r1 + 1, area.c2 - area.c1 + 1, state.rt.view)
+  for (const o of [...state.spills.on.values()]) {
+    if (o.id === f.id || o.s !== f.s || !meets(o, area)) continue
+    release(state, o.id, t)
+    state.spills.wait.set(o.id, { s: o.s, r1: o.r1, c1: o.c1, r2: o.r2, c2: o.c2 })
+  }
+  place(state, f, a, area, t)
+  return shown(a.at(0, 0))
+}
+
 /** The array `a` of formula `f` spills if it can; the formula's own value (its first element, or #SPILL!). */
 export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   const sp = state.spills
@@ -55,7 +73,8 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
   const cell = sp.occupied.first(f.s, area, f.r, f.c)
   if (cell) return blocked(state, f, t, `${cannot}: ${cellText(state, f.s, cell[0], cell[1])} is not empty`, area)
   const over = [...sp.on.values()].filter((x) => x.id !== f.id && x.s === f.s && meets(x, area))
-  const first = over.find((x) => !beats(state, f.id, x.id))
+  // an old-kind array formula's area is never spilled over
+  const first = over.find((x) => state.formulas[x.id]?.area || !beats(state, f.id, x.id))
   if (first) return blocked(state, f, t, `${cannot}: it meets the spilled array of ${cellText(state, f.s, first.r1, first.c1)}`, area)
   // the arrays this one wins over stop spilling and wait for their range
   for (const x of over) {

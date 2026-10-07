@@ -9,6 +9,7 @@ import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
+import { checkArrayEdits } from './spill/fixed.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { parseMerge } from './layout/merges.js'
@@ -63,6 +64,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     setCells(edits: CellEdit[]) {
       const s = st()
       checkEdits(edits, sheetIndex(s), styleCount(s))
+      checkArrayEdits(s, edits)
       const before = display ? snapshot(s, editedCells(s, edits)) : null
       // edits that keep a cell's value and formula change its input alone
       const loud = contentEdits(s, edits)

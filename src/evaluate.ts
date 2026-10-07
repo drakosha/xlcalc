@@ -8,7 +8,7 @@ import { Arr } from './arrays/value.js'
 import { key, type EngineState, type Formula } from './engine.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
-import { describeAt, endSpill, release, spill } from './spill/place.js'
+import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
 import { E, isErr, Rng, type V } from './values.js'
@@ -75,7 +75,8 @@ function evaluate(state: EngineState, ids: number[], t?: Tracker) {
       v = E.CYCLE
     } else {
       const x = f.fn()
-      if (isMany(x)) v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t)
+      if (f.area) v = fixed(state, f, x, t)
+      else if (isMany(x)) v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t)
       else {
         endSpill(state, f, t, false)
         v = shown(rt.scalar(x))

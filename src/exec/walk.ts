@@ -9,7 +9,7 @@ import { shapes, type NameRef } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { FUNCTIONS } from '../functions.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { decode, type Bound } from '../structure/area.js'
+import { decode, type Bound, type Rect } from '../structure/area.js'
 import { canonical, type Ast, type BinOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 
@@ -24,6 +24,8 @@ export interface CodegenContext {
   sheet(name: string | null): number
   /** A name as the names of sheet `scope` show it: its local one there, else the global one (-1: the global one). */
   name(name: string, scope: number): NameDef | undefined
+  /** The area of an array formula of the old kind: `ROW()` and `COLUMN()` give its rows and columns. */
+  area?: Rect
 }
 
 export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
@@ -93,6 +95,13 @@ export interface FormulaInfo {
   external: boolean
 }
 
+/** The rows (a column of their numbers) or the columns (a row) of an area. */
+function lines(x: Rect, rows: boolean): Arr {
+  const n = rows ? x.r2 - x.r1 + 1 : x.c2 - x.c1 + 1
+  const v = Array.from({ length: n }, (_, i) => (rows ? x.r1 : x.c1) + i + 1)
+  return rows ? new Arr(n, 1, n, 1, v) : new Arr(1, n, 1, n, v)
+}
+
 /** One axis of a name's relative bound used at index `at`: moved by it, wrapping round the sheet. */
 const moved = (b: Bound, at: number, max: number) => (b.abs ? b.i : (b.i + at) % max)
 
@@ -101,7 +110,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
   // a name as the names of `scope` show it, or as its sheet's (`'S'!rate`)
   const resolve: NameRef = (n, scope) => ctx.name(n.name, n.sheet === undefined ? scope : ctx.sheet(n.sheet))
-  const shape = shapes(ast, s, resolve)
+  const shape = shapes(ast, s, resolve, !!ctx.area)
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
   // the code of a use of each LET name, by slot (a name's formula has its own LET names)
   let uses: T[] = []
@@ -184,6 +193,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b))
       }
       case 'fn': {
+        if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))
         const spec = FUNCTIONS[n.name]
         if (!spec) {
           info.external = true

@@ -39,9 +39,9 @@ const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: numbe
 
 /**
  * Shapes of every node of a formula on sheet `scope`; a name is judged by its formula (`nameRef`), which sees the
- * global names, a LET name by its value.
+ * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula.
  */
-export function shapes(ast: Ast, scope: number, nameRef: NameRef): Map<Ast, Shape> {
+export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
   // LET's names by slot (a name's formula has its own), the names being expanded
   let bound: Info[] = []
@@ -113,7 +113,8 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef): Map<Ast, Shap
       const a = nodes[0]
       const r = a?.k === 'ref' && !a.ref.spill ? a.ref : null
       const many = r ? (name === 'ROW' ? r.r2 > r.r1 : r.c2 > r.c1) : args.length > 0 && args[0].s > 0
-      return { s: r ? (many ? 2 : 0) : args.length ? 1 : 0, ref: false }
+      // in an old-kind array formula ROW() and COLUMN() are its area's rows and columns
+      return { s: r ? (many ? 2 : 0) : args.length || inArea ? 1 : 0, ref: false }
     }
     if (spec.lazy) {
       const lifted: Shape[] = []

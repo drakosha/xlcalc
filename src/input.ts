@@ -9,6 +9,7 @@ import { parseSpan } from './layout/spans.js'
 import { LOCALES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import type { Axis } from './structure/area.js'
+import { checkArrays } from './spill/fixed.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
@@ -93,6 +94,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
   if (c.format !== undefined && typeof c.format !== 'string') checkString(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
+  if (c.array !== undefined) checkString(c.array, `${path}.array`)
   return c as CellInput
 }
 
@@ -111,7 +113,7 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
-const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta']
+const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta', 'array']
 
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
@@ -278,6 +280,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
+  checkArrays(book as unknown as BookInput, path)
   return book as unknown as BookInput
 }
 

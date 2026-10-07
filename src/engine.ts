@@ -22,6 +22,7 @@ import { blocks } from './spill/occupied.js'
 import { endSpill, spillRef } from './spill/place.js'
 import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
+import { arrayArea } from './spill/fixed.js'
 import { canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { CErr, E, isErr, type V } from './values.js'
 
@@ -32,6 +33,8 @@ export interface Formula extends FormulaCode {
   c: number
   /** Canonical text. */
   text: string
+  /** An array formula of the old kind: its area (`CellInput.array`, `spill/fixed.ts`). */
+  area?: Rect
 }
 
 interface Invalid {
@@ -105,10 +108,18 @@ export function invalidError(code: CheckCode): ErrorCode {
 
 // ---------- preparation ----------
 
-export const codegenContext = (state: EngineState, s: number): CodegenContext => ({
+export const codegenContext = (state: EngineState, s: number, area?: Rect): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
   name: (name, scope) => nameFor(state.names, scope, name),
+  ...(area ? { area } : {}),
 })
+
+/** A formula cell compiled: its code, and the area of an old-kind array formula. */
+function compiled(state: EngineState, id: number, s: number, row: number, col: number, cell: CellInput, p: Extract<Prepared, { ok: true }>): Formula {
+  const area = cell.array === undefined ? undefined : (arrayArea(formatAddress(row, col), cell.array) ?? undefined)
+  const g = state.compiler.formula(codegenContext(state, s, area), p.ast, s, row, col)
+  return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}) }
+}
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
@@ -188,9 +199,9 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
         put(ctx.sheets[s], row, col, E[p.invalid.error])
         continue
       }
-      const g = state.compiler.formula(codegenContext(state, s), p.ast, s, row, col)
-      pending.push({ id: pending.length, s, r: row, c: col, text: p.text, ...g })
-      if (g.nested) mark(ctx, s, row, col, true)
+      const f = compiled(state, pending.length, s, row, col, cellIn, p)
+      pending.push(f)
+      if (f.nested) mark(ctx, s, row, col, true)
     }
   })
   state.compiler.link(pending)
@@ -240,9 +251,8 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
         write(state, s, row, col, E[p.invalid.error], track)
         continue
       }
-      const g = state.compiler.formula(codegenContext(state, s), p.ast, s, row, col)
-      const f: Formula = { id: state.formulas.length, s, r: row, c: col, text: p.text, ...g }
-      if (g.nested) mark(state.ctx, s, row, col, true)
+      const f = compiled(state, state.formulas.length, s, row, col, input, p)
+      if (f.nested) mark(state.ctx, s, row, col, true)
       state.formulas.push(f)
       state.at.set(k, f.id)
       fresh.push(f)
