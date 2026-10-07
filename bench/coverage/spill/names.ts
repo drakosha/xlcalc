@@ -53,21 +53,19 @@ export function buildSpillCases(): SpillCase[] {
       { E1: '=SUM(u)', E2: '=COUNT(u)', E3: '=MAX(u)', E4: '=ROWS(u)', E5: '=INDEX(u,2,1,2)', E6: '=INDEX(u,1,1,3)', E7: '=u', E8: '=u+1', E9: '=AREAS(u)', E10: '=INDEX(u,2)', E11: '=SUMIF(u,">1")', E12: '=LARGE(u,2)' },
       ['E1:E12'],
     ),
-    named(
-      'relative',
-      'references without $ relative to A1: moved by the cell using the name, wrapping round the sheet',
+    // each name of its own book: one Excel does not load leaves the others answered
+    ...(
       [
-        { name: 'rel', ref: "'S'!XFB1" },
-        { name: 'relr', ref: "'S'!XFB1:XFB2" },
-        { name: 'mix', ref: "'S'!$A1" },
-        { name: 'up', ref: "'S'!$A1048576" },
-        { name: 'relf', ref: "'S'!XFB1*10" },
-        { name: 'r', ref: 'ROW()' },
-        { name: 'cl', ref: 'COLUMN()' },
-      ],
-      { D1: '=rel', D3: '=rel', D2: '=SUM(relr)', E4: '=mix', E5: '=up', D5: '=relf', F7: '=r', F8: '=cl', D10: '=relr*2' },
-      ['D1:F11', 'T!D2:D3'],
-      { book: { sheets: [sheet('T', { D2: '=rel', D3: '=r' })] } },
+        ['rel', "'S'!XFB1", { D1: '=rel', D3: '=rel' }, ['D1:D3', 'T!D2'], { D2: '=rel' }],
+        ['relr', "'S'!XFB1:XFB2", { D2: '=SUM(relr)', D10: '=relr*2' }, ['D2', 'D10:D11']],
+        ['mix', "'S'!$A1", { E4: '=mix' }, ['E4']],
+        ['up', "'S'!$A1048576", { E5: '=up' }, ['E5']],
+        ['relf', "'S'!XFB1*10", { D5: '=relf' }, ['D5']],
+        ['r', 'ROW()', { F7: '=r' }, ['F7', 'T!D3'], { D3: '=r' }],
+        ['cl', 'COLUMN()', { F8: '=cl' }, ['F8']],
+      ] as [string, string, Record<string, CellSpec>, string[], Record<string, CellSpec>?][]
+    ).map(([name, ref, cells, ranges, onT]) =>
+      named(`relative-${name}`, `a name ${ref}: without $ relative to A1, moved by the cell using it, wrapping round the sheet`, [{ name, ref }], cells, ranges, onT ? { book: { sheets: [sheet('T', onT)] } } : {}),
     ),
     named(
       'scope',
@@ -84,6 +82,7 @@ export function buildSpillCases(): SpillCase[] {
       ['E1:E6', 'T!A1:A4'],
       { book: { sheets: [sheet('T', { A1: '=x', A2: '=g', A3: '=L', A4: '=T!x' })] } },
     ),
+    named('array-for-reference', 'an array name where a function takes only a reference', [{ name: 'sq', ref: "'S'!$A$1:$A$3*10" }], { G1: '=SUMIF(sq,">10")', H1: '=COUNTIF(sq,">10")', I1: '=SUMIF(sq,">10",B1:B3)' }, ['G1:I3']),
     named('sheet-global', 'a global name qualified by a sheet without a local one', [{ name: 'x', ref: '1' }], { E1: '=S!x' }, ['E1']),
     named('lost', 'a name whose reference Excel lost', [{ name: 'lost', ref: "'S'!#REF!" }], { E1: '=lost', E2: '=IFERROR(lost,7)' }, ['E1:E2']),
     named('unknown-function', 'a name over a function Excel does not have', [{ name: 'bad', ref: 'FOO(1)' }], { E1: '=bad', E2: '=ISERROR(bad)' }, ['E1:E2']),

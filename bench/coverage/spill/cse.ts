@@ -27,15 +27,16 @@ export function buildSpillCases(): SpillCase[] {
     one('readers', 'formulas reading the area, a spill reference to it', { ...DATA, E1: arr('A1:A3*2', 'E1:E3'), G1: '=SUM(E1:E3)', G2: '=E2', G3: '=E1#', G4: '=ROWS(E1#)' }, ['E1:G4']),
     one('collision', 'a spill meeting the area', { ...DATA, E1: arr('A1:A3', 'E1:E3'), D2: '=SEQUENCE(1,3)' }, ['D1:G3']),
     one('transpose', 'TRANSPOSE of a column over a row', { ...DATA, E1: arr('TRANSPOSE(A1:A3)', 'E1:G1') }, ['E1:G1']),
-    one('edits', 'part of the area refused (a value, clearing the top-left cell, a formula), a precedent, the whole area cleared', { ...DATA, E1: arr('A1:A3*2', 'E1:E3') }, ['E1:E3'], {
-      edits: [
-        { sheet: 'S', cell: 'E2', value: 5 },
-        { sheet: 'S', cell: 'E1', value: null },
-        { sheet: 'S', cell: 'E3', value: { formula: '1' } },
-        { sheet: 'S', cell: 'A1', value: 10 },
-        { sheet: 'S', cell: 'E1:E3', value: null },
-        { sheet: 'S', cell: 'E2', value: 7 },
-      ],
-    }),
+    // each edit in its own book, so the values after it show what Excel did
+    ...(
+      [
+        ['value', 'a value typed into a cell of the area', 'E2', 5],
+        ['clear-top', 'the top-left cell cleared', 'E1', null],
+        ['formula', 'a formula entered into a cell of the area', 'E3', { formula: '1' }],
+        ['precedent', 'a value the array reads', 'A1', 10],
+        ['clear-all', 'the whole area cleared', 'E1:E3', null],
+        ['outside', 'a value typed next to the area', 'F2', 5],
+      ] as [string, string, string, number | null | { formula: string }][]
+    ).map(([id, about, cell, value]) => one(`edit-${id}`, about, { ...DATA, E1: arr('A1:A3*2', 'E1:E3') }, ['E1:F3'], { edits: [{ sheet: 'S', cell, value }] })),
   ]
 }

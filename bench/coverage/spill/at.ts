@@ -12,7 +12,7 @@ const DATA: Record<string, CellSpec> = { ...Object.fromEntries(Array.from({ leng
 export function buildSpillCases(): SpillCase[] {
   return [
     one('column', "a column: the formula's row, else #VALUE!", { ...DATA, G3: '=@A1:A10', G12: '=@A1:A10', G4: '=@A1:A10*2', G6: '=@A:A', G7: '=@$A$1:$A$10+1', G8: '=@A1:A10+@A1:A10' }, ['G1:G12']),
-    one('row', "a row: the formula's column", { ...DATA, D3: '=@C1:E1', H3: '=@C1:E1', C4: '=@1:1', D5: '=@C:E' }, ['C3:H5']),
+    one('row', "a row: the formula's column", { ...DATA, D3: '=@C1:E1', H3: '=@C1:E1', C4: '=@1:1', H5: '=@C:E' }, ['C3:H5']),
     {
       id: 'other-sheet',
       about: 'a range of another sheet by the same row and column, a block',

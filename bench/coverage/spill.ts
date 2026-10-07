@@ -10,7 +10,7 @@
  * (the number) and `WX` (the text), and those are read; the rectangles' formulas are read as Excel shows them.
  * `FSPILL_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
-import { spawn } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
@@ -41,6 +41,8 @@ export interface SpillAnswer {
   formulas2?: Record<string, string>
   /** The edits Excel refused, by their index in `edits`: its error. */
   refused?: Record<number, string>
+  /** Excel did not load the book ("We found a problem with some content", declined): nothing else is answered. */
+  rejected?: true
 }
 
 export interface StoredSpill {
@@ -228,7 +230,11 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
       if (declineRepair()) {
         child.kill()
         await exited
-        throw new Error(`${c.id}: Excel did not accept the book (repair window declined)`)
+        await sleep(1500)
+        declineRepair()
+        if (Number(execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to count workbooks'], { encoding: 'utf8' }).trim()) !== 0) execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to close every workbook saving no'])
+        console.log(`${c.id}: Excel did not load the book (repair window declined)`)
+        return { values: {}, formulas: {}, rejected: true }
       }
       if (excelDialogs().length) {
         child.kill()
