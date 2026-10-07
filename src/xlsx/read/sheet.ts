@@ -15,7 +15,7 @@ import type { Issues } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has } from '../xml/scan.js'
 import { look, readCells, type CellsContext, type SheetCells } from './cells.js'
-import { readFormula } from './formulas.js'
+import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 
 export interface SheetSource {
@@ -97,14 +97,16 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
 }
 
 /** The formulas of `addrs` in the engine's spelling; the trees of the old kind kept for the intersection check. */
-function convert(src: SheetSource, read: SheetCells, issues: Issues, old: Map<string, Ast>, addrs: Iterable<string>) {
-  for (const addr of addrs) {
-    const cell = read.cells[addr]
-    if (cell?.formula === undefined) continue
+function convert(src: SheetSource, read: SheetCells, issues: Issues, old: Map<string, Ast>): Map<string, ReadFormula> {
+  const out = new Map<string, ReadFormula>()
+  for (const [addr, cell] of Object.entries(read.cells)) {
+    if (cell.formula === undefined) continue
     const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr })
     cell.formula = f.formula
+    out.set(addr, f)
     if (f.ast && read.old.has(addr)) old.set(addr, f.ast)
   }
+  return out
 }
 
 /** The cells an array formula spilled into hold stored values: they go to `cached`, keeping their look. */
@@ -203,10 +205,21 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const read = readCells(data, ctx)
   const old = new Map<string, Ast>()
   for (const s of read.shared.values()) if (s.master !== undefined) read.cells[s.master] = { ...read.cells[s.master], formula: s.text }
-  convert(src, read, ctx.issues, old, Object.keys(read.cells))
-  // copies are pasted from the converted master, then checked as their own formulas
+  const converted = convert(src, read, ctx.issues, old)
+  // copies are pasted from the converted master and take what it reports; its tree stands for theirs in the intersection check
   spreadShared(src, read, ctx.issues)
-  convert(src, read, ctx.issues, old, [...read.shared.values()].flatMap((s) => (s.master === undefined ? [] : s.copies)))
+  for (const s of read.shared.values()) {
+    const master = s.master === undefined ? undefined : converted.get(s.master)
+    if (master)
+      for (const cell of s.copies) {
+        if (read.cells[cell]?.formula === undefined) {
+          ctx.issues.add('formula', 'a copy of a shared formula that a paste could not make is left out', { sheet: name, cell })
+          continue
+        }
+        reportFormula(master, ctx.issues, { sheet: name, cell })
+        if (master.ast) old.set(cell, master.ast)
+      }
+  }
   arrays(src, read, ctx.issues)
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet: name, cell })
   features(head, tail, src, ctx.issues)

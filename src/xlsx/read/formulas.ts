@@ -21,16 +21,24 @@ export interface ReadFormula {
   formula: string
   /** The syntax tree, when the engine parses the formula. */
   ast?: Ast
+  found: Found[]
+}
+
+/** Reports what the engine cannot take of a formula read, at `where`: a shared formula's copies report their master's. */
+export function reportFormula(f: ReadFormula, issues: Issues, where: Where): void {
+  for (const x of f.found) issues.add(...FOUND[x], where)
+  if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', 'a formula the engine does not parse is read as written (its cell computes to an error)', where)
 }
 
 export function readFormula(text: string, issues: Issues, where: Where): ReadFormula {
   const c = fromFile(text)
-  for (const f of c.found) issues.add(...FOUND[f], where)
+  let ast: Ast | undefined
   try {
-    return { formula: c.formula, ast: parse(c.formula) }
+    ast = parse(c.formula)
   } catch (e) {
     if (!(e instanceof FormulaError)) throw e
-    if (!c.found.some((f) => EXPLAINED.has(f))) issues.add('formula', 'a formula the engine does not parse is read as written (its cell computes to an error)', where)
-    return { formula: c.formula }
   }
+  const f = ast ? { ...c, ast } : c
+  reportFormula(f, issues, where)
+  return f
 }
