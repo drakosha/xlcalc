@@ -37,6 +37,10 @@ export interface SpillAnswer {
   values: Record<string, Val>
   /** Formulas as Excel shows them, for the cells that have one (`=SEQUENCE(3)`). */
   formulas: Record<string, string>
+  /** A case with cells of the old kind (`legacy`): the formulas as Excel 365 shows them (`formula2`, `@` where it intersects). */
+  formulas2?: Record<string, string>
+  /** The edits Excel refused, by their index in `edits`: its error. */
+  refused?: Record<number, string>
 }
 
 export interface StoredSpill {
@@ -45,8 +49,55 @@ export interface StoredSpill {
   answers: Record<string, SpillAnswer>
 }
 
-/** A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as `ANCHORARRAY(E2)`. */
-export const fileFormula = (f: string) => xl(xlpm(f)).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+/**
+ * A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as
+ * `ANCHORARRAY(E2)`, the operator `@x` as `SINGLE(x)`.
+ */
+export const fileFormula = (f: string) => single(xl(xlpm(f))).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+
+/** The end of the run quoted by `q` that starts at `i` (`""` and `''` inside it are kept). */
+function quoted(f: string, i: number, q: string): number {
+  let j = i + 1
+  while (j < f.length && !(f[j] === q && f[j + 1] !== q)) j += f[j] === q ? 2 : 1
+  return j + 1
+}
+
+/** The end of the parenthesis that opens at `i`. */
+function closing(f: string, i: number): number {
+  let depth = 0
+  for (let j = i; j < f.length; j++) {
+    if (f[j] === '"' || f[j] === "'") j = quoted(f, j, f[j]) - 1
+    else if (f[j] === '(') depth++
+    else if (f[j] === ')' && --depth === 0) return j + 1
+  }
+  return f.length
+}
+
+/** `@x` as `_xlfn.SINGLE(x)`: x a parenthesis, a call, or a reference or a name with its sheet. */
+function single(f: string): string {
+  let out = ''
+  for (let i = 0; i < f.length; ) {
+    const ch = f[i]
+    if (ch === '"') {
+      const j = quoted(f, i, ch)
+      out += f.slice(i, j)
+      i = j
+      continue
+    }
+    if (ch !== '@') {
+      out += ch
+      i++
+      continue
+    }
+    let j = i + 1
+    if (f[j] === "'") j = quoted(f, j, "'")
+    while (j < f.length && /[\w.$:!#]/.test(f[j])) j++
+    if (f[j] === '(') j = closing(f, j)
+    out += `_xlfn.SINGLE(${single(f.slice(i + 1, j))})`
+    i = j
+  }
+  return out
+}
 
 const ERROR_TYPE: Record<number, Extract<Val, { t: 'e' }>['v']> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 
@@ -79,11 +130,14 @@ const MIRROR: Record<(typeof MIRRORS)[number], (x: string) => string> = {
 async function writeBook(c: SpillCase, file: string): Promise<void> {
   const wb = new ExcelJS.Workbook()
   const book: BookInput = c.book
+  const legacy = new Set(c.legacy)
   for (const s of book.sheets) {
     const ws = wb.addWorksheet(s.name)
     for (const [addr, cell] of Object.entries(s.cells)) {
       const x = ws.getCell(addr)
-      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), shareType: 'array', ref: addr } as ExcelJS.CellValue
+      // a formula of the old kind, an old-kind array formula over its area, else a dynamic array formula
+      const array = legacy.has(`${s.name}!${addr}`) ? {} : { shareType: 'array', ref: cell.array ?? addr }
+      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), ...array } as ExcelJS.CellValue
       else if (cell.value !== undefined) x.value = cell.value as ExcelJS.CellValue
       if (cell.format !== undefined) x.numFmt = cell.format
       const fill = cell.style === undefined ? undefined : book.styles![cell.style].fill
@@ -100,20 +154,27 @@ async function writeBook(c: SpillCase, file: string): Promise<void> {
       src.addrs.forEach((a, k) => (ws.getCell(dst.addrs[k]).value = { formula: MIRROR[m](`${quoteSheet(g.sheet)}!${a}`) } as ExcelJS.CellValue))
     })
   }
-  // ExcelJS keeps names in a cell matrix (no `#`): its model is replaced by the case's names
-  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)] }))
+  // ExcelJS keeps names in a cell matrix (no `#`, no formulas): its model is replaced by the case's names
+  const index = new Map(book.sheets.map((s, i) => [s.name, i]))
+  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
   Object.defineProperty(wb.definedNames, 'model', { get: () => names })
   await wb.xlsx.writeFile(file)
-  await markDynamic(file, book.sheets.length)
+  await markDynamic(file, book.sheets.length, (i, addr) => book.sheets[i]?.cells[addr]?.array !== undefined)
 }
 
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */
 const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0]) ? (x as unknown[][]) : [x]) : [[x]])
 
-function answerOf(c: SpillCase, raw: [unknown, unknown, unknown, unknown][]): SpillAnswer {
-  const out: SpillAnswer = { values: {}, formulas: {} }
+interface RawAnswer {
+  rects: [unknown, unknown, unknown, unknown, unknown][]
+  edits: string[]
+}
+
+function answerOf(c: SpillCase, raw: RawAnswer): SpillAnswer {
+  const out: SpillAnswer = { values: {}, formulas: {}, ...(c.legacy ? { formulas2: {} } : {}) }
+  raw.edits.forEach((e, i) => e && ((out.refused ??= {})[i] = e))
   c.read.forEach((g, i) => {
-    const [t, nums, strs, fs] = raw[i].map(grid)
+    const [t, nums, strs, fs, f2s] = raw.rects[i].map(grid)
     const { cols, addrs } = cellsOf(g.range)
     addrs.forEach((a, k) => {
       const [r, j] = [Math.floor(k / cols), k % cols]
@@ -121,6 +182,7 @@ function answerOf(c: SpillCase, raw: [unknown, unknown, unknown, unknown][]): Sp
       const type = Number(t[r][j])
       const f = String(fs[r][j])
       if (f.startsWith('=')) out.formulas[key] = f
+      if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
       if (type === -5) return
       out.values[key] =
         type === 0 ? { t: 'n', v: Number(nums[r][j]) } : type === -1 ? { t: 'b', v: true } : type === -2 ? { t: 'b', v: false } : type === -3 ? { t: 's', v: String(strs[r][j]) } : type > 0 ? { t: 'e', v: ERROR_TYPE[type] ?? 'ERROR' } : { t: 'other', v: `type ${type}` }
@@ -142,8 +204,9 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
     await writeBook(c, file)
     const at = mirrorRanges(c.read)
     const lines = c.read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n')
-    const edits = (c.edits ?? []).map((e) => `${e.sheet}\t${e.cell}\t${e.value === null ? 'x' : typeof e.value === 'number' ? 'n' : 's'}\t${e.value ?? ''}`).join('\n')
-    const child = spawn('osascript', [SCRIPT, file, lines, edits])
+    const kind = (v: NonNullable<SpillCase['edits']>[number]['value']) => (v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : `f\t=${v.formula}`)
+    const edits = (c.edits ?? []).map((e) => `${e.sheet}\t${e.cell}\t${kind(e.value)}`).join('\n')
+    const child = spawn('osascript', [SCRIPT, file, lines, edits, c.legacy ? '1' : ''])
     let out = ''
     let err = ''
     child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
@@ -156,7 +219,7 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
         const after = dialogText()
         if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
         if (code !== 0) throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        return answerOf(c, JSON.parse(out) as [unknown, unknown, unknown, unknown][])
+        return answerOf(c, JSON.parse(out) as RawAnswer)
       }
       if (excelDialogs().length) {
         child.kill()

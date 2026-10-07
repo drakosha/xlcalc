@@ -37,7 +37,7 @@ const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
 function computed(c: SpillCase): ComputeResult {
   if (!c.edits) return compute(c.book, { clock: CLOCK })
   const s = openSession(c.book, { clock: CLOCK })
-  for (const e of c.edits) s.setCells([{ sheet: e.sheet, cell: e.cell, input: e.value === null ? null : { value: e.value } }])
+  for (const e of c.edits) s.setCells([{ sheet: e.sheet, cell: e.cell, input: e.value === null ? null : typeof e.value === 'object' ? e.value : { value: e.value } }])
   return s.result()
 }
 

@@ -60,14 +60,15 @@ const METADATA = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 /**
  * The array formulas of the first `sheets` sheets (`sheetN.xml` in ExcelJS's order) become dynamic array formulas:
- * `cm="1"` points at the XLDAPR metadata, as Excel 365 (and XlsxWriter) write them.
+ * `cm="1"` points at the XLDAPR metadata, as Excel 365 (and XlsxWriter) write them; but those `old` says are array
+ * formulas of the old kind (sheet index from 0, address), which stay as they are.
  */
-export async function markDynamic(file: string, sheets: number): Promise<void> {
+export async function markDynamic(file: string, sheets: number, old: (sheet: number, addr: string) => boolean = () => false): Promise<void> {
   const zip = await JSZip.loadAsync(readFileSync(file))
   for (let i = 1; i <= sheets; i++) {
     const path = `xl/worksheets/sheet${i}.xml`
     const xml = await zip.file(path)!.async('string')
-    zip.file(path, xml.replace(/<c r="([A-Z]+\d+)"([^>]*)><f t="array"/g, '<c r="$1"$2 cm="1"><f t="array"'))
+    zip.file(path, xml.replace(/<c r="([A-Z]+\d+)"([^>]*)><f t="array"/g, (m, addr: string, rest: string) => (old(i - 1, addr) ? m : `<c r="${addr}"${rest} cm="1"><f t="array"`)))
   }
   zip.file('xl/metadata.xml', METADATA)
   const rels = await zip.file('xl/_rels/workbook.xml.rels')!.async('string')
