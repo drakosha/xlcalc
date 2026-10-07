@@ -4,8 +4,8 @@
  * without its repair window, and what Excel saved comes back as the book written, with Excel's values equal to the
  * engine's. Case books: the books of the case sets as Excel saved them read into books that compute every case as
  * the books sent to Excel do, with the values Excel stored equal to its stored answers. Implicit intersection: every
- * formula of the old kind whose value Excel computed otherwise than the engine is reported. Colours: the reader's
- * fill colours are the ones Excel showed.
+ * formula of the old kind whose value Excel computed otherwise than the engine is reported. Colours and built-in
+ * number formats: the reader's are the ones Excel showed.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -19,6 +19,7 @@ import type { StoredRun } from '../bench/coverage/xlsx.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../bench/coverage/probes.js'
 import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { CLOCK, matches, show, toVal } from './excel-cases.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
@@ -139,5 +140,12 @@ describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx implicit inte
     })
     expect(missed).toEqual([])
     expect(reported.size).toBe(44)
+  })
+})
+
+describe.skipIf(!existsSync(new URL('formats.json', dir)))('xlsx built-in number formats as Excel shows them', () => {
+  it('the reader reads each built-in format as the code Excel for Mac en-US gives it', () => {
+    const stored = json<{ formats: Record<string, string> }>('formats.json').formats
+    expect({ ...BUILTIN }).toEqual(stored)
   })
 })

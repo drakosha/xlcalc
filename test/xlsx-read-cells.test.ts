@@ -80,7 +80,7 @@ describe('xlsx reader: cells', () => {
 
   it('numbers stay numbers whatever their format; a format with a letter m is not taken for a date', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"><v>45000</v></c><c r="B1" s="2"><v>5</v></c><c r="C1" s="3"><v>45000.5</v></c></row>', { styles: DATE_STYLES })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, format: 'm/d/yyyy' }, B1: { value: 5, format: '0 m' }, C1: { value: 45000.5, format: 'dd.mm.yyyy' } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, format: 'm/d/yy' }, B1: { value: 5, format: '0 m' }, C1: { value: 45000.5, format: 'dd.mm.yyyy' } })
     expect(codes(r.issues)).toEqual(['numberFormat A1'])
   })
 

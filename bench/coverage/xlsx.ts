@@ -6,7 +6,8 @@
  * as the harness writes them for Excel, go through Excel the same way into `test/excel/xlsx/saved/`. The test
  * `test/xlsx-excel.test.ts` reads the saved files with the reader and compares them without Excel. `xlsx colors`:
  * the fill colours Excel shows for theme colours with tints and for the legacy palette (`xlsx/colors.ts`) into
- * `test/excel/xlsx/colors.json`. `xlsx intersect`: formulas of the old kind computed and saved by Excel
+ * `test/excel/xlsx/colors.json`. `xlsx formats`: the codes Excel en-US shows for the built-in number formats
+ * (`xlsx/formats.ts`) into `test/excel/xlsx/formats.json`. `xlsx intersect`: formulas of the old kind computed and saved by Excel
  * (`xlsx/intersect.ts`) into `test/excel/xlsx/intersect/`.
  * `test/excel/xlsx/<step>.json` records what was sent (a hash per book), so a run sends again only the books that
  * changed (`FCOV_FRESH=1` sends all); `FXLSX_ONLY=id,id` limits a run.
@@ -23,7 +24,8 @@ import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes
 import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
 import { colorBook, colorCases } from './xlsx/colors.js'
 import { compareBooks, compareCached, entries } from './xlsx/compare.js'
-import { fillColors, saveThroughExcel } from './xlsx/excel.js'
+import { fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
+import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
 import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -141,6 +143,15 @@ async function colors() {
   console.log(`colors: ${cases.length} fills read`)
 }
 
+async function formats() {
+  await ensureExcel('en')
+  const shown = await numberFormats(await formatBook(), FORMAT_IDS.map((id) => `A${id}`))
+  const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', date: new Date().toISOString().slice(0, 10) }
+  mkdirSync(DATA, { recursive: true })
+  writeFileSync(join(DATA, 'formats.json'), JSON.stringify({ meta, formats: Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i]])) }, null, 1) + '\n')
+  console.log(`formats: ${shown.length} read`)
+}
+
 async function intersect() {
   const data = await oldFormulaBook(OLD_FORMULAS)
   await send('intersect', [{ id: 'old-formulas', locale: 'en', bytes: async () => data, hash: sha(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
@@ -151,5 +162,6 @@ export async function stepXlsx(what: string | undefined): Promise<void> {
   else if (what === 'saved') await saved()
   else if (what === 'colors') await colors()
   else if (what === 'intersect') await intersect()
-  else throw new Error('xlsx: roundtrip | saved | colors | intersect')
+  else if (what === 'formats') await formats()
+  else throw new Error('xlsx: roundtrip | saved | colors | formats | intersect')
 }

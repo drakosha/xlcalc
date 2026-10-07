@@ -1,7 +1,7 @@
 /**
  * A file through Excel: copied into Excel's sandbox and handed to an AppleScript (`excel-save.applescript` opens it,
  * computes it fully, saves it as xlsx under another name and closes it; `excel-colors.applescript` reads fill
- * colours). The repair window ("We found a problem with some content") is closed with No and the file reported
+ * colours, `excel-formats.applescript` number formats). The repair window ("We found a problem with some content") is closed with No and the file reported
  * as rejected; any other window stops the run and is left open.
  */
 import { execFileSync, spawn } from 'node:child_process'
@@ -81,3 +81,10 @@ export async function fillColors(data: Uint8Array, cells: string[]): Promise<str
   return (JSON.parse(r.out as string) as number[][]).map((c) => `#${c.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`)
 }
 
+
+/** The number format codes Excel shows for cells of the file's first sheet. */
+export async function numberFormats(data: Uint8Array, cells: string[]): Promise<string[]> {
+  const r = await watched('excel-formats.applescript', data, 'formats', () => [cells.join(',')], (_, out) => out)
+  if ('rejected' in r) throw new Error(`formats: Excel refused the book: ${r.rejected}`)
+  return JSON.parse(r.out as string) as string[]
+}

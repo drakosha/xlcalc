@@ -66,7 +66,7 @@ describe('xlsx styles: reading', () => {
       { font: { underline: 'double', strike: true, size: 12 } },
       { border: { left: { style: 'thin', color: '#00B050' }, right: { style: 'medium' }, bottom: { style: 'double' } }, alignment: { horizontal: 'center', vertical: 'top', wrap: true, indent: 2 } },
     ])
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, format: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, format: '#,##0' }, C1: { value: 1, style: 0, format: '@' }, D1: { value: 1, style: 1, format: 'm/d/yyyy' } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, format: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, format: '#,##0' }, C1: { value: 1, style: 0, format: '@' }, D1: { value: 1, style: 1, format: 'm/d/yy' } })
     expect(codes(r.issues)).toEqual(["defaultFont", 'numberFormat D1'])
   })
 
