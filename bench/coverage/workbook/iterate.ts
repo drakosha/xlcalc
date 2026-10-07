@@ -28,12 +28,12 @@ function one(id: string, about: string, cells: Record<string, Spec>, range: stri
   return { id, about, book: { sheets }, read: [{ sheet: 'S', range }], file: { iterate, cached: zeros(sheets), ...PLAIN }, steps: AGAIN, ...extra }
 }
 
-/** A cycle across the sheets S and T, one iteration. */
-const two = (id: string, about: string, sheets: SheetInput[]): WorkbookCase => ({
+/** A cycle across sheets (S and T unless `read` names them), one iteration; A1 of each sheet read. */
+const two = (id: string, about: string, sheets: SheetInput[], read = ['S', 'T']): WorkbookCase => ({
   id,
   about,
   book: { sheets },
-  read: [{ sheet: 'S', range: 'A1' }, { sheet: 'T', range: 'A1' }],
+  read: read.map((s) => ({ sheet: s, range: 'A1' })),
   file: { iterate: { count: 1 }, cached: zeros(sheets), ...PLAIN },
   steps: AGAIN,
 })
@@ -65,6 +65,45 @@ export function buildWorkbookCases(): WorkbookCase[] {
     one('order-before', 'a dependent above the cycle and one before it in the row', { A1: '=C3', B3: '=C3', C3: '=C3+1' }, 'A1:C3', { count: 5 }),
     two('order-sheets', 'S!A1 = T!A1+1 and T!A1 = S!A1*10 on two sheets, one iteration', [sheet('S', { A1: '=T!A1+1' }), sheet('T', { A1: '=S!A1*10' })]),
     two('order-sheets-back', 'the same with the sheets the other way round', [sheet('T', { A1: '=S!A1*10' }), sheet('S', { A1: '=T!A1+1' })]),
+    two('sheets-named', 'the cycle across sheets named B and A, in that order', [sheet('B', { A1: '=A!A1*10' }), sheet('A', { A1: '=B!A1+1' })], ['A', 'B']),
+    two('sheets-named-back', 'the same with the sheets in the order A, B', [sheet('A', { A1: '=B!A1+1' }), sheet('B', { A1: '=A!A1*10' })], ['A', 'B']),
+    {
+      ...two('sheets-three', 'a cycle across X and Z with a dependent on Y between them, the sheets in the order Z, Y, X', [sheet('Z', { A1: '=X!A1*10' }), sheet('Y', { A1: '=X!A1+Z!A1' }), sheet('X', { A1: '=Z!A1+1' })], ['X', 'Y', 'Z']),
+      file: { iterate: { count: 2 }, cached: { 'Z!A1': 0, 'Y!A1': 0, 'X!A1': 0 }, ...PLAIN },
+    },
+    {
+      ...two('sheets-three-read', 'the same read Z, Y, X', [sheet('Z', { A1: '=X!A1*10' }), sheet('Y', { A1: '=X!A1+Z!A1' }), sheet('X', { A1: '=Z!A1+1' })], ['Z', 'Y', 'X']),
+      file: { iterate: { count: 2 }, cached: { 'Z!A1': 0, 'Y!A1': 0, 'X!A1': 0 }, ...PLAIN },
+    },
+    two('sheets-named-read', 'the cycle across B and A, in that order, read B, A', [sheet('B', { A1: '=A!A1*10' }), sheet('A', { A1: '=B!A1+1' })], ['B', 'A']),
+    {
+      ...one('order-row-read', 'A1 = B1+1 and B1 = A1*10, one iteration, read B1 then A1', { A1: '=B1+1', B1: '=A1*10' }, 'B1', { count: 1 }),
+      read: [{ sheet: 'S', range: 'B1' }, { sheet: 'S', range: 'A1' }],
+    },
+    {
+      ...one('order-diagonal-read', 'B1 = A2+1 and A2 = B1*10, one iteration, read A2 then B1', { B1: '=A2+1', A2: '=B1*10' }, 'A2', { count: 1 }),
+      read: [{ sheet: 'S', range: 'A2' }, { sheet: 'S', range: 'B1' }],
+    },
+    {
+      ...two('dependent-sheet-before', 'a dependent on a sheet before the cycle\'s sheet, five iterations', [sheet('D', { A1: '=S!A1' }), sheet('S', { A1: '=S!A1+1' })], ['D', 'S']),
+      file: { iterate: { count: 5 }, cached: { 'D!A1': 0, 'S!A1': 0 }, ...PLAIN },
+    },
+    one('precedent-after', 'a precedent of the cycle placed after it: C1 = H1+D1, D1 = C1/10, H1 = A1*2, one iteration', { A1: 5, C1: '=H1+D1', D1: '=C1/10', H1: '=A1*2' }, 'A1:H1', { count: 1 }),
+    one('dependent-chain', 'a dependent before the cycle and a dependent of it after: A1 = C1, C1 = C1+1, D1 = A1, five iterations', { A1: '=C1', C1: '=C1+1', D1: '=A1' }, 'A1:D1', { count: 5 }),
+    one('delta-dependent', 'a converging cycle and a dependent that magnifies its changes: B1 = A1*1000', { A1: '=A1/2+1', B1: '=A1*1000' }, 'A1:B1'),
+    one('delta-cycle', 'the same magnified inside the cycle: A1 = B1/2000+1, B1 = A1*1000', { A1: '=B1/2000+1', B1: '=A1*1000' }, 'A1:B1'),
+    two('sheets-case', 'the cycle across sheets named Zeta and alpha, in that order', [sheet('Zeta', { A1: '=alpha!A1*10' }), sheet('alpha', { A1: '=Zeta!A1+1' })], ['alpha', 'Zeta']),
+    two('sheets-digits', 'the cycle across sheets named S2 and S10, in that order', [sheet('S2', { A1: '=S10!A1*10' }), sheet('S10', { A1: '=S2!A1+1' })], ['S10', 'S2']),
+    {
+      ...two('sheets-five', 'a counter across X and Y, five iterations', [sheet('X', { A1: '=Y!A1+1' }), sheet('Y', { A1: '=X!A1' })], ['X', 'Y']),
+      file: { iterate: { count: 5 }, cached: { 'X!A1': 0, 'Y!A1': 0 }, ...PLAIN },
+    },
+    one('text', 'A1 = A1&"x" alone, B1 its length', { A1: '=A1&"x"', B1: '=LEN(A1)' }, 'A1:B1'),
+    one('boolean', 'A1 = NOT(A1) alone', { A1: '=NOT(A1)' }, 'A1'),
+    one('error-flip', 'A1 = IF(ISERROR(A1),1,IF(A1=1,NA(),1)) alone, B1 = ISNA(A1)', { A1: '=IF(ISERROR(A1),1,IF(A1=1,NA(),1))', B1: '=ISNA(A1)' }, 'A1:B1'),
+    one('delta-equal', 'A1 = A1/2+1 with a maximum change of 0.5, which its second change equals', { A1: '=A1/2+1' }, 'A1', { delta: 0.5 }),
+    one('text-steady', 'a converging cycle beside a cycle holding the same text from its first iteration', { A1: '=A1/2+1', B1: '=IF(B1=0,"x","x")' }, 'A1:B1'),
+    one('error-steady', 'a converging cycle beside a cycle holding the same error from its first iteration', { A1: '=A1/2+1', B1: '=IF(ISERROR(B1),NA(),NA())' }, 'A1:B1'),
     one('error', 'A1 = IF(A1>5,NA(),A1+1), B1 = A1+B1, C1 = IFERROR(C1+1/0,C1+2), D1 = 1/0+D1', { A1: '=IF(A1>5,NA(),A1+1)', B1: '=A1+B1', C1: '=IFERROR(C1+1/0,C1+2)', D1: '=1/0+D1' }, 'A1:D1'),
     one('spill', 'A1 = SEQUENCE(3)+B1 spills over A1:A3, B1 = SUM(A2:A3)', { A1: '=SEQUENCE(3)+B1', B1: '=SUM(A2:A3)' }, 'A1:B3', { count: 3 }, { file: { iterate: { count: 3 }, cached: { 'S!A1': 0, 'S!B1': 0 }, plain: { arrays: ['S!A1'] } } }),
     one('interest', 'interest on the average balance: B3 = B2*(B1+B4)/2, B4 = B1+B3-100', { B1: 1000, B2: 0.1, B3: '=B2*(B1+B4)/2', B4: '=B1+B3-100', B5: '=B4-B1' }, 'B1:B5'),

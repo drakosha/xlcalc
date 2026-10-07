@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 35.5
+  "seconds": 1.9
  },
  "cases": [
   {
@@ -1023,6 +1023,992 @@
     "cached": {
      "T!A1": 0,
      "S!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-named",
+   "about": "the cycle across sheets named B and A, in that order",
+   "book": {
+    "sheets": [
+     {
+      "name": "B",
+      "cells": {
+       "A1": {
+        "formula": "A!A1*10"
+       }
+      }
+     },
+     {
+      "name": "A",
+      "cells": {
+       "A1": {
+        "formula": "B!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "A",
+     "range": "A1"
+    },
+    {
+     "sheet": "B",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "B!A1": 0,
+     "A!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-named-back",
+   "about": "the same with the sheets in the order A, B",
+   "book": {
+    "sheets": [
+     {
+      "name": "A",
+      "cells": {
+       "A1": {
+        "formula": "B!A1+1"
+       }
+      }
+     },
+     {
+      "name": "B",
+      "cells": {
+       "A1": {
+        "formula": "A!A1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "A",
+     "range": "A1"
+    },
+    {
+     "sheet": "B",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "A!A1": 0,
+     "B!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-three",
+   "about": "a cycle across X and Z with a dependent on Y between them, the sheets in the order Z, Y, X",
+   "book": {
+    "sheets": [
+     {
+      "name": "Z",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*10"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1+Z!A1"
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Z!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    },
+    {
+     "sheet": "Z",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 2
+    },
+    "cached": {
+     "Z!A1": 0,
+     "Y!A1": 0,
+     "X!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-three-read",
+   "about": "the same read Z, Y, X",
+   "book": {
+    "sheets": [
+     {
+      "name": "Z",
+      "cells": {
+       "A1": {
+        "formula": "X!A1*10"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1+Z!A1"
+       }
+      }
+     },
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Z!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "Z",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    },
+    {
+     "sheet": "X",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 2
+    },
+    "cached": {
+     "Z!A1": 0,
+     "Y!A1": 0,
+     "X!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-named-read",
+   "about": "the cycle across B and A, in that order, read B, A",
+   "book": {
+    "sheets": [
+     {
+      "name": "B",
+      "cells": {
+       "A1": {
+        "formula": "A!A1*10"
+       }
+      }
+     },
+     {
+      "name": "A",
+      "cells": {
+       "A1": {
+        "formula": "B!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "B",
+     "range": "A1"
+    },
+    {
+     "sheet": "A",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "B!A1": 0,
+     "A!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "order-row-read",
+   "about": "A1 = B1+1 and B1 = A1*10, one iteration, read B1 then A1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1+1"
+       },
+       "B1": {
+        "formula": "A1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "B1"
+    },
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "order-diagonal-read",
+   "about": "B1 = A2+1 and A2 = B1*10, one iteration, read A2 then B1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "A2+1"
+       },
+       "A2": {
+        "formula": "B1*10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2"
+    },
+    {
+     "sheet": "S",
+     "range": "B1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "S!B1": 0,
+     "S!A2": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "dependent-sheet-before",
+   "about": "a dependent on a sheet before the cycle's sheet, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "D",
+      "cells": {
+       "A1": {
+        "formula": "S!A1"
+       }
+      }
+     },
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "S!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "D",
+     "range": "A1"
+    },
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "D!A1": 0,
+     "S!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "precedent-after",
+   "about": "a precedent of the cycle placed after it: C1 = H1+D1, D1 = C1/10, H1 = A1*2, one iteration",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 5
+       },
+       "C1": {
+        "formula": "H1+D1"
+       },
+       "D1": {
+        "formula": "C1/10"
+       },
+       "H1": {
+        "formula": "A1*2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:H1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "S!C1": 0,
+     "S!D1": 0,
+     "S!H1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "dependent-chain",
+   "about": "a dependent before the cycle and a dependent of it after: A1 = C1, C1 = C1+1, D1 = A1, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "C1"
+       },
+       "C1": {
+        "formula": "C1+1"
+       },
+       "D1": {
+        "formula": "A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "S!A1": 0,
+     "S!C1": 0,
+     "S!D1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "delta-dependent",
+   "about": "a converging cycle and a dependent that magnifies its changes: B1 = A1*1000",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1/2+1"
+       },
+       "B1": {
+        "formula": "A1*1000"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "delta-cycle",
+   "about": "the same magnified inside the cycle: A1 = B1/2000+1, B1 = A1*1000",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "B1/2000+1"
+       },
+       "B1": {
+        "formula": "A1*1000"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-case",
+   "about": "the cycle across sheets named Zeta and alpha, in that order",
+   "book": {
+    "sheets": [
+     {
+      "name": "Zeta",
+      "cells": {
+       "A1": {
+        "formula": "alpha!A1*10"
+       }
+      }
+     },
+     {
+      "name": "alpha",
+      "cells": {
+       "A1": {
+        "formula": "Zeta!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "alpha",
+     "range": "A1"
+    },
+    {
+     "sheet": "Zeta",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "Zeta!A1": 0,
+     "alpha!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-digits",
+   "about": "the cycle across sheets named S2 and S10, in that order",
+   "book": {
+    "sheets": [
+     {
+      "name": "S2",
+      "cells": {
+       "A1": {
+        "formula": "S10!A1*10"
+       }
+      }
+     },
+     {
+      "name": "S10",
+      "cells": {
+       "A1": {
+        "formula": "S2!A1+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S10",
+     "range": "A1"
+    },
+    {
+     "sheet": "S2",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 1
+    },
+    "cached": {
+     "S2!A1": 0,
+     "S10!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "sheets-five",
+   "about": "a counter across X and Y, five iterations",
+   "book": {
+    "sheets": [
+     {
+      "name": "X",
+      "cells": {
+       "A1": {
+        "formula": "Y!A1+1"
+       }
+      }
+     },
+     {
+      "name": "Y",
+      "cells": {
+       "A1": {
+        "formula": "X!A1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "X",
+     "range": "A1"
+    },
+    {
+     "sheet": "Y",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "count": 5
+    },
+    "cached": {
+     "X!A1": 0,
+     "Y!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "text",
+   "about": "A1 = A1&\"x\" alone, B1 its length",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1&\"x\""
+       },
+       "B1": {
+        "formula": "LEN(A1)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "boolean",
+   "about": "A1 = NOT(A1) alone",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "NOT(A1)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "error-flip",
+   "about": "A1 = IF(ISERROR(A1),1,IF(A1=1,NA(),1)) alone, B1 = ISNA(A1)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "IF(ISERROR(A1),1,IF(A1=1,NA(),1))"
+       },
+       "B1": {
+        "formula": "ISNA(A1)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "delta-equal",
+   "about": "A1 = A1/2+1 with a maximum change of 0.5, which its second change equals",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1/2+1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1"
+    }
+   ],
+   "file": {
+    "iterate": {
+     "delta": 0.5
+    },
+    "cached": {
+     "S!A1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "text-steady",
+   "about": "a converging cycle beside a cycle holding the same text from its first iteration",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1/2+1"
+       },
+       "B1": {
+        "formula": "IF(B1=0,\"x\",\"x\")"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
+    },
+    "plain": {}
+   },
+   "steps": [
+    "read",
+    "calc",
+    "read",
+    "full",
+    "read"
+   ]
+  },
+  {
+   "id": "error-steady",
+   "about": "a converging cycle beside a cycle holding the same error from its first iteration",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "A1/2+1"
+       },
+       "B1": {
+        "formula": "IF(ISERROR(B1),NA(),NA())"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B1"
+    }
+   ],
+   "file": {
+    "iterate": {},
+    "cached": {
+     "S!A1": 0,
+     "S!B1": 0
     },
     "plain": {}
    },
@@ -2736,6 +3722,1203 @@
     }
    ]
   },
+  "sheets-named": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1*10"
+     }
+    },
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 11
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 110
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1*10"
+     }
+    },
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 111
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 1110
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1*10"
+     }
+    }
+   ]
+  },
+  "sheets-named-back": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1*10"
+     }
+    },
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 11
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 110
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1*10"
+     }
+    },
+    {
+     "values": {
+      "A!A1": {
+       "t": "n",
+       "v": 111
+      },
+      "B!A1": {
+       "t": "n",
+       "v": 1110
+      }
+     },
+     "formulas": {
+      "A!A1": "=B!A1+1",
+      "B!A1": "=A!A1*10"
+     }
+    }
+   ]
+  },
+  "sheets-three": {
+   "settings": {
+    "iteration": true,
+    "count": 2,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "Z!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "X!A1": "=Z!A1+1",
+      "Y!A1": "=X!A1+Z!A1",
+      "Z!A1": "=X!A1*10"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 111
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 221
+      },
+      "Z!A1": {
+       "t": "n",
+       "v": 1110
+      }
+     },
+     "formulas": {
+      "X!A1": "=Z!A1+1",
+      "Y!A1": "=X!A1+Z!A1",
+      "Z!A1": "=X!A1*10"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 11111
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 22221
+      },
+      "Z!A1": {
+       "t": "n",
+       "v": 111110
+      }
+     },
+     "formulas": {
+      "X!A1": "=Z!A1+1",
+      "Y!A1": "=X!A1+Z!A1",
+      "Z!A1": "=X!A1*10"
+     }
+    }
+   ]
+  },
+  "sheets-three-read": {
+   "settings": {
+    "iteration": true,
+    "count": 2,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "Z!A1": {
+       "t": "n",
+       "v": 10
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "X!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "Z!A1": "=X!A1*10",
+      "Y!A1": "=X!A1+Z!A1",
+      "X!A1": "=Z!A1+1"
+     }
+    },
+    {
+     "values": {
+      "Z!A1": {
+       "t": "n",
+       "v": 1110
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 221
+      },
+      "X!A1": {
+       "t": "n",
+       "v": 111
+      }
+     },
+     "formulas": {
+      "Z!A1": "=X!A1*10",
+      "Y!A1": "=X!A1+Z!A1",
+      "X!A1": "=Z!A1+1"
+     }
+    },
+    {
+     "values": {
+      "Z!A1": {
+       "t": "n",
+       "v": 111110
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 22221
+      },
+      "X!A1": {
+       "t": "n",
+       "v": 11111
+      }
+     },
+     "formulas": {
+      "Z!A1": "=X!A1*10",
+      "Y!A1": "=X!A1+Z!A1",
+      "X!A1": "=Z!A1+1"
+     }
+    }
+   ]
+  },
+  "sheets-named-read": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "B!A1": {
+       "t": "n",
+       "v": 10
+      },
+      "A!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "B!A1": "=A!A1*10",
+      "A!A1": "=B!A1+1"
+     }
+    },
+    {
+     "values": {
+      "B!A1": {
+       "t": "n",
+       "v": 110
+      },
+      "A!A1": {
+       "t": "n",
+       "v": 11
+      }
+     },
+     "formulas": {
+      "B!A1": "=A!A1*10",
+      "A!A1": "=B!A1+1"
+     }
+    },
+    {
+     "values": {
+      "B!A1": {
+       "t": "n",
+       "v": 1110
+      },
+      "A!A1": {
+       "t": "n",
+       "v": 111
+      }
+     },
+     "formulas": {
+      "B!A1": "=A!A1*10",
+      "A!A1": "=B!A1+1"
+     }
+    }
+   ]
+  },
+  "order-row-read": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 10
+      },
+      "S!A1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!B1": "=A1*10",
+      "S!A1": "=B1+1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 110
+      },
+      "S!A1": {
+       "t": "n",
+       "v": 11
+      }
+     },
+     "formulas": {
+      "S!B1": "=A1*10",
+      "S!A1": "=B1+1"
+     }
+    },
+    {
+     "values": {
+      "S!B1": {
+       "t": "n",
+       "v": 1110
+      },
+      "S!A1": {
+       "t": "n",
+       "v": 111
+      }
+     },
+     "formulas": {
+      "S!B1": "=A1*10",
+      "S!A1": "=B1+1"
+     }
+    }
+   ]
+  },
+  "order-diagonal-read": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 10
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1
+      }
+     },
+     "formulas": {
+      "S!A2": "=B1*10",
+      "S!B1": "=A2+1"
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 110
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 11
+      }
+     },
+     "formulas": {
+      "S!A2": "=B1*10",
+      "S!B1": "=A2+1"
+     }
+    },
+    {
+     "values": {
+      "S!A2": {
+       "t": "n",
+       "v": 1110
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 111
+      }
+     },
+     "formulas": {
+      "S!A2": "=B1*10",
+      "S!B1": "=A2+1"
+     }
+    }
+   ]
+  },
+  "dependent-sheet-before": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "D!A1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "D!A1": "=S!A1",
+      "S!A1": "=S!A1+1"
+     }
+    },
+    {
+     "values": {
+      "D!A1": {
+       "t": "n",
+       "v": 9
+      },
+      "S!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "D!A1": "=S!A1",
+      "S!A1": "=S!A1+1"
+     }
+    },
+    {
+     "values": {
+      "D!A1": {
+       "t": "n",
+       "v": 14
+      },
+      "S!A1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "D!A1": "=S!A1",
+      "S!A1": "=S!A1+1"
+     }
+    }
+   ]
+  },
+  "precedent-after": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 10
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 1
+      },
+      "S!H1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!C1": "=H1+D1",
+      "S!D1": "=C1/10",
+      "S!H1": "=A1*2"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 11
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 1.1
+      },
+      "S!H1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!C1": "=H1+D1",
+      "S!D1": "=C1/10",
+      "S!H1": "=A1*2"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 11.1
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 1.1099999999999999
+      },
+      "S!H1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!C1": "=H1+D1",
+      "S!D1": "=C1/10",
+      "S!H1": "=A1*2"
+     }
+    }
+   ]
+  },
+  "dependent-chain": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 4
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 5
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "S!A1": "=C1",
+      "S!C1": "=C1+1",
+      "S!D1": "=A1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 9
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 10
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 9
+      }
+     },
+     "formulas": {
+      "S!A1": "=C1",
+      "S!C1": "=C1+1",
+      "S!D1": "=A1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 14
+      },
+      "S!C1": {
+       "t": "n",
+       "v": 15
+      },
+      "S!D1": {
+       "t": "n",
+       "v": 14
+      }
+     },
+     "formulas": {
+      "S!A1": "=C1",
+      "S!C1": "=C1+1",
+      "S!D1": "=A1"
+     }
+    }
+   ]
+  },
+  "delta-dependent": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9999990463256836
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1999.9990463256836
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=A1*1000"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9999995231628418
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1999.9995231628418
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=A1*1000"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.999999761581421
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1999.999761581421
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=A1*1000"
+     }
+    }
+   ]
+  },
+  "delta-cycle": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9999990463256836
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1999.9990463256836
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2000+1",
+      "S!B1": "=A1*1000"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9999995231628418
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1999.9995231628418
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2000+1",
+      "S!B1": "=A1*1000"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.999999761581421
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 1999.999761581421
+      }
+     },
+     "formulas": {
+      "S!A1": "=B1/2000+1",
+      "S!B1": "=A1*1000"
+     }
+    }
+   ]
+  },
+  "sheets-case": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "alpha!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "Zeta!A1": {
+       "t": "n",
+       "v": 0
+      }
+     },
+     "formulas": {
+      "alpha!A1": "=Zeta!A1+1",
+      "Zeta!A1": "=alpha!A1*10"
+     }
+    },
+    {
+     "values": {
+      "alpha!A1": {
+       "t": "n",
+       "v": 11
+      },
+      "Zeta!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "alpha!A1": "=Zeta!A1+1",
+      "Zeta!A1": "=alpha!A1*10"
+     }
+    },
+    {
+     "values": {
+      "alpha!A1": {
+       "t": "n",
+       "v": 111
+      },
+      "Zeta!A1": {
+       "t": "n",
+       "v": 110
+      }
+     },
+     "formulas": {
+      "alpha!A1": "=Zeta!A1+1",
+      "Zeta!A1": "=alpha!A1*10"
+     }
+    }
+   ]
+  },
+  "sheets-digits": {
+   "settings": {
+    "iteration": true,
+    "count": 1,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S10!A1": {
+       "t": "n",
+       "v": 1
+      },
+      "S2!A1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S10!A1": "='S2'!A1+1",
+      "S2!A1": "='S10'!A1*10"
+     }
+    },
+    {
+     "values": {
+      "S10!A1": {
+       "t": "n",
+       "v": 11
+      },
+      "S2!A1": {
+       "t": "n",
+       "v": 110
+      }
+     },
+     "formulas": {
+      "S10!A1": "='S2'!A1+1",
+      "S2!A1": "='S10'!A1*10"
+     }
+    },
+    {
+     "values": {
+      "S10!A1": {
+       "t": "n",
+       "v": 111
+      },
+      "S2!A1": {
+       "t": "n",
+       "v": 1110
+      }
+     },
+     "formulas": {
+      "S10!A1": "='S2'!A1+1",
+      "S2!A1": "='S10'!A1*10"
+     }
+    }
+   ]
+  },
+  "sheets-five": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 4
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 4
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 9
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 9
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    },
+    {
+     "values": {
+      "X!A1": {
+       "t": "n",
+       "v": 14
+      },
+      "Y!A1": {
+       "t": "n",
+       "v": 14
+      }
+     },
+     "formulas": {
+      "X!A1": "=Y!A1+1",
+      "Y!A1": "=X!A1"
+     }
+    }
+   ]
+  },
+  "text": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 101
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=LEN(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 201
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=LEN(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 301
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=LEN(A1)"
+     }
+    }
+   ]
+  },
+  "boolean": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=NOT(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=NOT(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=NOT(A1)"
+     }
+    }
+   ]
+  },
+  "error-flip": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!B1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISERROR(A1),1,IF(A1=1,NA(),1))",
+      "S!B1": "=ISNA(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!B1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISERROR(A1),1,IF(A1=1,NA(),1))",
+      "S!B1": "=ISNA(A1)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "NA"
+      },
+      "S!B1": {
+       "t": "b",
+       "v": true
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISERROR(A1),1,IF(A1=1,NA(),1))",
+      "S!B1": "=ISNA(A1)"
+     }
+    }
+   ]
+  },
+  "text-steady": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9990234375
+      },
+      "S!B1": {
+       "t": "s",
+       "v": "x"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=IF(B1=0,\"x\",\"x\")"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.99951171875
+      },
+      "S!B1": {
+       "t": "s",
+       "v": "x"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=IF(B1=0,\"x\",\"x\")"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.999755859375
+      },
+      "S!B1": {
+       "t": "s",
+       "v": "x"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=IF(B1=0,\"x\",\"x\")"
+     }
+    }
+   ]
+  },
+  "error-steady": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9990234375
+      },
+      "S!B1": {
+       "t": "e",
+       "v": "NA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=IF(ISERROR(B1),NA(),NA())"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.99951171875
+      },
+      "S!B1": {
+       "t": "e",
+       "v": "NA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=IF(ISERROR(B1),NA(),NA())"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.999755859375
+      },
+      "S!B1": {
+       "t": "e",
+       "v": "NA"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1",
+      "S!B1": "=IF(ISERROR(B1),NA(),NA())"
+     }
+    }
+   ]
+  },
   "error": {
    "settings": {
     "iteration": true,
@@ -3092,6 +5275,48 @@
       "S!B3": "=B2*(B1+B4)/2",
       "S!B4": "=B1+B3-100",
       "S!B5": "=B4-B1"
+     }
+    }
+   ]
+  },
+  "delta-equal": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.5
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.75
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.875
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "n",
+       "v": 1.9375
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1/2+1"
      }
     }
    ]
