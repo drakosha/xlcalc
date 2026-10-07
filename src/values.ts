@@ -3,7 +3,7 @@
  * of operators and functions (number, text, boolean).
  */
 import type { CellValue, ErrorCode } from './contract.js'
-import { collator } from './criteria.js'
+import { collator } from './collate.js'
 import { decimalFirst, textToNumber } from './dates.js'
 import { generalText } from './numfmt/general.js'
 
