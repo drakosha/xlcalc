@@ -9,12 +9,14 @@ import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { isFull, LIMIT, span, type Area, type Axis, type Bound, type Rect } from './area.js'
 import { carryNames, shiftRect, within } from './move.js'
+import { arrayRefusal, copiedCells, relocated } from './arrays.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
 
 /** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
 function copyTransform(dr: number, dc: number): Transform {
   return {
+    copy: true,
     ref({ sheet, area }): Outcome {
       const next: Area = { ...area }
       for (const [axis, d] of [['r', dr], ['c', dc]] as [Axis, number][]) {
@@ -56,20 +58,24 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
   const refused = mergeRefusal(book, paste)
   if (refused) return { ok: false, code: 'merged', message: refused }
+  const part = arrayRefusal(book, paste)
+  if (part) return { ok: false, code: 'array', message: part }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const names = sheetNames(book)
-  const source = Object.entries(book.sheets.find((s) => sheetKey(s.name) === fk)!.cells)
-    .filter(([addr]) => within(src, addr))
-    .map(([addr, cell]) => ({ at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
+  const sheet = book.sheets.find((s) => sheetKey(s.name) === fk)!
+  // the cells of part of an array formula's area copy as array formulas of their own
+  const parts = copiedCells(sheet, src, (f, r, c) => rewriteFormula(f, from, from, copyTransform(r, c), names))
+  const source = [...Object.entries(sheet.cells).filter(([addr]) => within(src, addr) && !parts.some(([a]) => a === addr)), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== tk) return s
     const cells: Record<string, CellInput> = {}
     for (const [addr, cell] of Object.entries(s.cells)) if (!within(pasted, addr)) cells[addr] = cell
     for (const [r, c] of offsets) {
       const t = copyTransform(r, c)
-      for (const { at, cell } of source) {
+      for (const { addr, at, cell } of source) {
         const formula = cell.formula === undefined ? undefined : rewriteFormula(cell.formula, to, to, t, names)
-        cells[formatAddress(at.row + r, at.col + c)] = formula === cell.formula ? cell : { ...cell, formula }
+        const dest = formatAddress(at.row + r, at.col + c)
+        cells[dest] = relocated(formula === cell.formula ? cell : { ...cell, formula }, addr, dest)
       }
     }
     return { ...s, cells }

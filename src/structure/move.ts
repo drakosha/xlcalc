@@ -8,6 +8,7 @@ import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
 import { contains, hi, isFull, lo, meets, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
+import { arrayRefusal, relocated } from './arrays.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
 
@@ -140,6 +141,8 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   const paste: Paste = { from, src, to, area: dst, offsets: [[dr, dc]], move: true }
   const refused = mergeRefusal(book, paste)
   if (refused) return { ok: false, code: 'merged', message: refused }
+  const part = arrayRefusal(book, paste)
+  if (part) return { ok: false, code: 'array', message: part }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const t = moveTransform(from, src, to, dr, dc)
   const names = sheetNames(book)
@@ -152,7 +155,8 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
     for (const [addr, cell] of Object.entries(s.cells)) {
       if (k === fk && within(src, addr)) {
         const p = parseAddress(addr)
-        moved[formatAddress(p.row + dr, p.col + dc)] = rewriteCell(cell, s.name, to, t, names)
+        const at = formatAddress(p.row + dr, p.col + dc)
+        moved[at] = relocated(rewriteCell(cell, s.name, to, t, names), addr, at)
         if (cell.formula !== undefined) formulas.push(cell.formula)
       } else if (k !== tk || !within(dst, addr)) {
         const next = rewriteCell(cell, s.name, s.name, t, names)

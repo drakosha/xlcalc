@@ -9,8 +9,9 @@ import type { BookInput, CellInput, CellRef, RestructureResult } from '../contra
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { LIMIT, withSpan, type Axis } from './area.js'
+import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, shiftLines, shiftMerges } from './layout.js'
-import { rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { offsetsStay, rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
 export function insertSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
@@ -71,6 +72,8 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
     const off = Object.keys(target.cells).find((a) => pos(a) >= max - count)
     if (off) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push ${target.name}!${off} off the sheet` }
   }
+  const cut = shiftRefusal(target, axis, at, n)
+  if (cut) return { ok: false, code: 'array', message: cut }
   const merges = shiftMerges(target.merges, axis, at, n)
   if (merges === null) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push a merged area of ${target.name} off the sheet` }
   const t = shiftTransform(target.name, axis, at, count, n > 0 ? insertSpan : deleteSpan)
@@ -85,9 +88,8 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
       if (!moving) cells[addr] = next
       else {
         const i = pos(addr)
-        if (n > 0) cells[i >= at ? place(addr, i + count) : addr] = next
-        else if (i < at) cells[addr] = next
-        else if (i >= at + count) cells[place(addr, i - count)] = next
+        const to = n > 0 ? (i >= at ? place(addr, i + count) : addr) : i < at ? addr : i >= at + count ? place(addr, i - count) : null
+        if (to) cells[to] = relocated(next, addr, to)
       }
     }
     if (!moving) return changed ? { ...s, cells } : s
@@ -98,7 +100,7 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
     return layout
   })
   const out: BookInput = { ...book, sheets }
-  const nm = rewriteNames(book.names, t, names)
+  const nm = rewriteNames(book.names, offsetsStay(t), names)
   if (nm) out.names = nm
   const key = sheetKey(target.name)
   const mapCell = (ref: CellRef): CellRef | null => {
