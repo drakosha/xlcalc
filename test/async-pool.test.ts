@@ -7,7 +7,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, openSession, type BookInput, type Calc, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, setA1 } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, setA1, slowBook } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
@@ -146,6 +146,23 @@ describe('in threads', () => {
     await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }], { deadline: 1 } as never)).rejects.toThrow('opts: unknown field "deadline"')
     await expect(p.compute(chainBook(3), { clok: 1 } as never)).rejects.toThrow('opts: unknown field "clok"')
   }, 60_000)
+
+  it('a session call past its soft deadline in a thread changes nothing', async () => {
+    const p = await made({ threads: 1 })
+    const s = await p.openSession(slowBook(), { clock: CLOCK })
+    const before = (await s.result()).hash
+    expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
+    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 1 })
+    expect((await s.result()).hash).toBe(before)
+    const y = openSession(slowBook(), { clock: CLOCK })
+    expect(await s.setCells(setA1(0.5))).toEqual(y.setCells(setA1(0.5)))
+  }, 60_000)
+
+  it('maxHeapMb without limits.cells: arrays larger than a 32nd of the heap give CalcError', async () => {
+    const p = await made({ threads: 1, maxHeapMb: 64 })
+    const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(3000000))' } } }] }))
+    expect([e.limit, e.max]).toEqual(['cells', 2_097_152])
+  })
 
   it('limits in a thread: CalcError with the cell', async () => {
     const p = await made({ threads: 1, limits: { cells: 1000 } })

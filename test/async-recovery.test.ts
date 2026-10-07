@@ -8,7 +8,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, openSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
-import { chainBook, CLOCK, setA1 } from './async-books.js'
+import { chainBook, CLOCK, setA1, slowBook } from './async-books.js'
 import { inside, pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 
@@ -26,14 +26,12 @@ const open: Calc[] = []
 afterAll(() => Promise.all(open.map((p) => p.close())))
 const kept = <T extends Calc>(c: T) => (open.push(c), c)
 
-/** A book whose formula in B1 is heavy (a matrix product of 700 × 700) once A1 is above 1. */
-const slow = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(700,700),SEQUENCE(700,700))),A1)' }, B2: { formula: 'B1+1' } } }] })
 const heavy: CellEdit[] = setA1(2)
 
 describe('a thread lost', () => {
   it('past its hard deadline: the call fails, the session comes back with the hash of one that never lost its thread', async () => {
     const synth = synthBook({ seed: 1, rows: 340 })
-    const book: BookInput = { ...synth.book, sheets: [...synth.book.sheets, ...slow().sheets] }
+    const book: BookInput = { ...synth.book, sheets: [...synth.book.sheets, ...slowBook().sheets] }
     const p = kept(await pool({ threads: 1, hardTimeoutMs: 400 }))
     const s = await p.openSession(book, { clock: CLOCK })
     const y = openSession(book, { clock: CLOCK })

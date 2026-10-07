@@ -31,3 +31,6 @@ export function chainBook(n: number): BookInput {
 }
 
 export const setA1 = (value: number): CellEdit[] => [{ sheet: 'S', cell: 'A1', input: { value } }]
+
+/** A book whose formula in B1 is heavy (a matrix product of `n` × `n`) once A1 is above 1. */
+export const slowBook = (n = 700): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: `IF(A1>1,SUM(MMULT(SEQUENCE(${n},${n}),SEQUENCE(${n},${n}))),A1)` }, B2: { formula: 'B1+1' } } }] })
