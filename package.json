@@ -46,6 +46,10 @@
       "types": "./dist/synth.d.ts",
       "default": "./dist/synth.js"
     },
+    "./xlsx": {
+      "types": "./dist/xlsx.d.ts",
+      "default": "./dist/xlsx.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
