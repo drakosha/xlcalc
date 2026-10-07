@@ -42,7 +42,7 @@ function regionalCodes(data: RegionalData): Codes {
 }
 
 /** TEXT's dialect of a locale, and the style a cell's display writes with (its date separator the locale's). */
-export function formatDialects(data: RegionalData, number: (text: string) => number | null, numberText: (n: number) => string, names: (lcid: string) => Names | undefined): { text: Dialect; cell: Style } {
+export function formatDialects(data: RegionalData, number: (text: string) => number | null, names: (lcid: string) => Names | undefined): { text: Dialect; cell: Style } {
   const { decimal, locale } = data
   const style: Style = {
     decimal,
@@ -53,7 +53,6 @@ export function formatDialects(data: RegionalData, number: (text: string) => num
     daysShort: data.daysShort,
     dateSeparator: '/',
     general: (n) => generalFormat(n).replace('.', decimal),
-    text: numberText,
     bool: (b) => locale.booleans[b ? 'TRUE' : 'FALSE'],
     error: (code) => locale.errors[ERROR_TEXT[code as ErrorCode]] ?? ERROR_TEXT[code as ErrorCode],
     names,

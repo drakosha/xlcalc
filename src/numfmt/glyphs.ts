@@ -34,7 +34,7 @@ export function textWidth(s: string): number {
 }
 
 /** The width of a column without its own: 8 digits and the padding (xlsx `baseColWidth` 8). */
-export const DEFAULT_POINTS = 8 * DIGIT + 5
+const DEFAULT_POINTS = 8 * DIGIT + 5
 
 /** Points of a column of xlsx width `w` (characters of a digit with the padding); the default column without one. */
 export const columnPoints = (w: number | undefined): number => (w === undefined ? DEFAULT_POINTS : Math.trunc(DIGIT * w + (21 * DIGIT) / 256))

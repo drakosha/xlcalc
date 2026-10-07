@@ -5,10 +5,10 @@
  * book (`rulesOf`) and passes it to the operators and criteria (`runtime.ts`) and to functions (`Cx.rules`);
  * code outside a book (the parser, the criteria index of `unstable/internal`) works by en-US.
  */
-import type { ErrorCode } from '../contract.js'
+import type { CellDisplay, CellValue, ErrorCode } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { parseDateText, textToNumber } from '../dates.js'
-import { displayWith, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, type Dialect, type Names, type Shown, type Style } from '../numfmt.js'
+import { displayWith, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, type Dialect, type Names, type Style } from '../numfmt.js'
 import { NUMBER_TEXT, readNumber } from '../model.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { compareOp, compareValues, toBool, toNum, toText, type CErr, type V } from '../values.js'
@@ -44,7 +44,7 @@ export interface Rules extends CritRules {
   /** TEXT(value, format); null for a format the locale does not read. */
   formatText(value: number | string | boolean, format: string): string | null
   /** What a cell shows: a value by its format (an xlsx code) in `space` points of room. */
-  display(value: number | string | boolean | { error: string } | null, format: string | undefined, space: number): Shown
+  display(value: CellValue, format: string | undefined, space: number): CellDisplay
   /** Excel's order of two values that are not errors (lookups, sorting), text by the locale's order. */
   compare(a: V, b: V): number
   /** The order of the comparison operators: `compare` with numbers equal to 15 significant digits. */
@@ -65,7 +65,6 @@ const EN_STYLE: Style = {
   group: ',',
   dateSeparator: '/',
   general: generalFormat,
-  text: generalText,
   bool: (b) => (b ? 'TRUE' : 'FALSE'),
   error: (code) => ERROR_TEXT[code as ErrorCode],
   names: namesOf,

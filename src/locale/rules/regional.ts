@@ -27,7 +27,7 @@ export function regionalRules(data: RegionalData, clock: RulesClock, names: (lci
   }
   const compareText = textOrder(data.collation)
   const compare = compareWith(compareText)
-  const formats = formatDialects(data, valueText, numberText, names)
+  const formats = formatDialects(data, valueText, names)
   return {
     locale,
     decimal,

@@ -4,6 +4,7 @@
  * width of its column, `#` for a number that does not fit, fills and the section's colour. One parser and one
  * formatter serve both; the rules and what was measured in Excel are in `docs/formats.md`.
  */
+import type { CellDisplay, CellValue } from './contract.js'
 import { formatDate } from './numfmt/date.js'
 import { generalFit } from './numfmt/general.js'
 import { glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
@@ -23,12 +24,6 @@ export interface Dialect {
   style: Style
   /** Text read as a number (TEXT's text argument), or null. */
   number(text: string): number | null
-}
-
-/** What a cell shows: its text and its section's colour (`#RRGGBB`). */
-export interface Shown {
-  text: string
-  color?: string
 }
 
 /** A section with the locale's long date or time in place of `[$-F800]` and `[$-F400]`, and its month names. */
@@ -114,7 +109,7 @@ const fitted = (text: string, space: number, overflow: boolean) => filled(text, 
  * What a cell shows: a value by its format (an xlsx file's code, General without one) in `space` points of room,
  * written in the style of the book's locale. Text is never cut (it overflows); a number that does not fit shows `#`.
  */
-export function displayWith(value: number | string | boolean | { error: string } | null, fmt: string | undefined, style: Style, space: number): Shown {
+export function displayWith(value: CellValue, fmt: string | undefined, style: Style, space: number): CellDisplay {
   if (value === null) return { text: '' }
   if (typeof value === 'object') return { text: fitted(style.error(value.error), space, false) }
   const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)

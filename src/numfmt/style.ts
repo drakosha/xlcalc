@@ -20,9 +20,8 @@ export interface Style extends Names {
   group: string
   /** What a bare `/` in a date writes: the locale's date separator in a cell (`31.01.2025` in ru-RU), `/` in TEXT. */
   dateSeparator: string
-  /** A number in TEXT's General format (11 characters at most) and as text (`&`), with the locale's decimal separator. */
+  /** A number in TEXT's General format (11 characters at most), with the locale's decimal separator. */
   general(n: number): string
-  text(n: number): string
   bool(b: boolean): string
   /** An error's text, by its code (`DIV0`). */
   error(code: string): string
