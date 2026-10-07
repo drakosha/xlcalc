@@ -7,8 +7,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { Val } from '../bench/coverage/formulajs.js'
-import type { WorkbookAnswer, WorkbookCase } from '../bench/coverage/workbook/cases.js'
-import { differences, engineReads } from './workbook-cases.js'
+import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
+import { differences, engineReads, goesOn } from './workbook-cases.js'
 
 /** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */
 const predictedRead = (p: Record<string, Val | string>): [Record<string, Val>, Record<string, string>] => [
@@ -41,14 +41,6 @@ const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'iterate:counter-blank': { 'S!A1': START, 'S!B1': START },
   'iterate:counter-cached': { 'S!A1': START, 'S!B1': START },
 }
-
-/**
- * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
- * engine's from 0 (`BookInput.iteration`): in the set `iterate`, a cell of a read after the first may differ where
- * Excel's value moved from its previous read, and must match where it did not.
- */
-const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell: string) =>
-  set === 'iterate' && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])
 
 /** Predictions of held-out cases that Excel answered otherwise: `<set>:<case>` → cells, each the reason of the miss. */
 const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
