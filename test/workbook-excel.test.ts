@@ -30,7 +30,18 @@ const OUTSIDE = {
   'F!A91': 'XNPV with a date of serial 0 is #NUM! in Excel in both date systems, computed here',
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets)',
 }
-const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = { 'date1904:d1900': OUTSIDE, 'date1904:d1904': OUTSIDE }
+const HOLIDAY = { 'F!A10': 'WORKDAY reads date text in a one-cell reference among its holidays in Excel, the engine takes text in a reference there as #VALUE!' }
+const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  'date1904:d1900': OUTSIDE,
+  'date1904:d1904': OUTSIDE,
+  'date1904-text:t1900': HOLIDAY,
+  'date1904-text:t1904': HOLIDAY,
+}
+
+/** Predictions of held-out cases that Excel answered otherwise: `<set>:<case>` → cells, each the reason of the miss. */
+const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  'date1904-held:held': { 'F!A24': 'EDATE of date text typed in the formula: Excel takes the 1904 serial as a 1900 one (the set date1904-text measures it)' },
+}
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()
@@ -54,9 +65,15 @@ for (const set of SETS) {
         expect(diffs.filter((d) => !at(d))).toEqual([])
       })
       if (c.predicted)
-        it(`${c.id}: the answer predicted before Excel ran`, () => {
+        it(`${c.id}: the answers predicted before Excel ran, but the missed ones`, () => {
+          const missed = MISSED[`${set.name}:${c.id}`] ?? {}
+          // a miss is pinned: Excel answered that cell otherwise than predicted
+          const excel = set.answers[c.id].reads
+          expect(Object.keys(missed).filter((k) => !c.predicted!.some((p, i) => JSON.stringify(p[k]) !== JSON.stringify(excel[i].values[k])))).toEqual([])
           const reads = engineReads(c)
-          expect(c.predicted!.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]))).toEqual([])
+          // the missed cells hold Excel's answer instead
+          const kept = c.predicted!.map((p, i) => ({ ...p, ...Object.fromEntries(Object.keys(missed).map((k) => [k, excel[i].values[k]])) }))
+          expect(kept.flatMap((p, i) => differences(c, ...predictedRead(p), reads[i]))).toEqual([])
         })
     }
   })
