@@ -2,8 +2,9 @@
 -- For every cell: its shown text (`string value`, Range.Text) and the colour of its display format's font, which
 -- is the colour of the format's section (black for the automatic colour; its colour index reads as missing).
 -- Arguments: book path (inside Excel's sandbox), the number of cells n; sheet "L" lists their addresses on
--- sheet "S" in A1:An.
--- Output: JSON [[text, colour], ...] in the order of the addresses, the colour as {r, g, b} ("" when unreadable).
+-- sheet "S" in A1:An; with a third argument "codes", each cell's number format and local number format too.
+-- Output: JSON [[text, colour(, format, local format)], ...] in the order of the addresses, the colour as {r, g, b}
+-- ("" when unreadable).
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -11,6 +12,7 @@ use scripting additions
 on run argv
 	set p to item 1 of argv
 	set n to (item 2 of argv) as integer
+	set codes to (count of argv) > 2
 	set hfs to (POSIX file p) as text
 	set out to {}
 	tell application "Microsoft Excel"
@@ -32,7 +34,11 @@ on run argv
 				try
 					set cl to color of font object of display format of rg
 				end try
-				set end of out to {tx as text, cl}
+				if codes then
+					set end of out to {tx as text, cl, number format of rg, number format local of rg}
+				else
+					set end of out to {tx as text, cl}
+				end if
 			end repeat
 			close wb saving no
 		end timeout

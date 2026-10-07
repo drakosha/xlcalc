@@ -8,6 +8,7 @@
  * cases (`FCOV_FRESH=1` runs every case again). A book Excel refuses to load (its repair window is declined, as
  * the `probes` step does) is halved down to the refused cases, which the step names.
  */
+import JSZip from 'jszip'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
@@ -78,11 +79,31 @@ async function writeBook(cases: DisplayCase[], file: string): Promise<void> {
     const x = ws.getCell(addr)
     x.value = (c.cell.formula !== undefined ? { formula: xl(c.cell.formula) } : inputScalar(c.cell.value)) as ExcelJS.CellValue
     if (c.cell.format !== undefined) x.numFmt = c.cell.format
+    else if (c.numFmtId !== undefined) x.numFmt = builtinMark(c.numFmtId)
     for (let k = 0; k < (c.span ?? 1); k++) if (c.width !== undefined) ws.getColumn(col + 1 + k).width = c.width
     if ((c.span ?? 1) > 1) ws.mergeCells(`${addr}:${formatAddress(row, col + c.span! - 1)}`)
     list.getCell(`A${i + 1}`).value = addr
   })
   await wb.xlsx.writeFile(file)
+  if (cases.some((c) => c.numFmtId !== undefined)) await builtinIds(file)
+}
+
+/** A placeholder code that marks a built-in format by number until `builtinIds` writes the number alone. */
+const builtinMark = (id: number) => `"builtin ${id}"`
+
+/** The cells' formats marked by `builtinMark` become built-in numbers without a code, as Excel stores them. */
+async function builtinIds(file: string) {
+  const zip = await JSZip.loadAsync(readFileSync(file))
+  let xml = await zip.file('xl/styles.xml')!.async('string')
+  const ids = new Map<string, string>()
+  xml = xml.replace(/<numFmt numFmtId="(\d+)" formatCode="&quot;builtin (\d+)&quot;"\/>/g, (_, custom: string, id: string) => {
+    ids.set(custom, id)
+    return ''
+  })
+  xml = xml.replace(/<numFmts count="\d+">/, () => `<numFmts count="${(xml.match(/<numFmt /g) ?? []).length}">`).replace(/<numFmts count="0"><\/numFmts>/, '')
+  xml = xml.replace(/(<xf [^>]*numFmtId=")(\d+)"/g, (m, head: string, id: string) => (ids.has(id) ? `${head}${ids.get(id)}"` : m))
+  zip.file('xl/styles.xml', xml)
+  writeFileSync(file, await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' }))
 }
 
 /** One part in Excel: its answers, or 'rejected' when Excel would not load the book (its repair window is declined). */
@@ -92,16 +113,18 @@ async function runPart(cases: DisplayCase[], label: string): Promise<DisplayAnsw
   mkdirSync(OUT, { recursive: true })
   const file = join(OUT, `display-${process.pid}.xlsx`)
   await writeBook(cases, file)
-  const out = await runScriptWatched(SCRIPT, file, cases.length).finally(() => rmSync(file))
+  const codes = cases.some((c) => c.numFmtId !== undefined)
+  const out = await runScriptWatched(SCRIPT, file, cases.length, codes ? ['codes'] : []).finally(() => rmSync(file))
   if (out === 'rejected') return out
   const after = dialogText()
   if (after) throw new Error(`${label}: Excel window after the part: ${after}`)
-  const raw = JSON.parse(out) as [string, number[] | ''][]
+  const raw = JSON.parse(out) as [string, number[] | '', string?, string?][]
   if (raw.length !== cases.length) throw new Error(`${label}: Excel gave ${raw.length} cells of ${cases.length}`)
-  return raw.map(([text, rgb]) => {
+  return raw.map(([text, rgb, code, local], i) => {
     if (!Array.isArray(rgb)) throw new Error(`${label}: no colour for ${text}`)
     const color = '#' + rgb.map((x) => x.toString(16).padStart(2, '0').toUpperCase()).join('')
-    return color === BLACK ? { text } : { text, color }
+    const codesOf = cases[i].numFmtId !== undefined ? { code, local } : {}
+    return color === BLACK ? { text, ...codesOf } : { text, color, ...codesOf }
   })
 }
 

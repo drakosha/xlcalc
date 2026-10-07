@@ -267,15 +267,15 @@ export async function runExcelWatched(book: string, n: number): Promise<Val[] | 
   return out === 'rejected' ? out : parseRead(out, n)
 }
 
-/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`): its output, or 'rejected' as in runExcelWatched. */
-export async function runScriptWatched(script: string, book: string, n: number): Promise<string | 'rejected'> {
+/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`, `more`): its output, or 'rejected' as in runExcelWatched. */
+export async function runScriptWatched(script: string, book: string, n: number, more: string[] = []): Promise<string | 'rejected'> {
   if (countWorkbooks() !== 0) throw new Error('Excel has open books')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
     copyFileSync(book, file)
-    const child = spawn('osascript', [script, file, String(n)])
+    const child = spawn('osascript', [script, file, String(n), ...more])
     let out = ''
     let err = ''
     child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
