@@ -55,6 +55,11 @@ export interface FileParts {
   iterate?: { count?: number; delta?: number }
   /** Values the file stores for formulas (`S!A1`), as Excel stores what it computed last. */
   cached?: Record<string, number>
+  /**
+   * Formulas written as ordinary formulas, as Excel 365 saves a formula that does not spill, but for the cells listed
+   * (`S!A1`), written as dynamic array formulas; without it every formula is a dynamic array formula.
+   */
+  plain?: { arrays?: string[] }
 }
 
 /** A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as `ANCHORARRAY(E2)`. */
@@ -102,7 +107,8 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
     for (const [addr, cell] of Object.entries(s.cells)) {
       const x = ws.getCell(addr)
       const result = parts.cached?.[`${s.name}!${addr}`]
-      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), shareType: 'array', ref: addr, ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
+      const array = !parts.plain || parts.plain.arrays?.includes(`${s.name}!${addr}`)
+      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), ...(array ? { shareType: 'array', ref: addr } : {}), ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
       else if (cell.value !== null && typeof cell.value === 'object') x.value = new Date(Date.parse(`${cell.value.date}${cell.value.date.includes('T') ? '' : 'T00:00:00'}Z`))
       else if (cell.value !== undefined) x.value = cell.value
       if (cell.format !== undefined) x.numFmt = formatCode(cell.format)

@@ -9,7 +9,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { answerOf, cellsOf, runOnBook } from './case-book.js'
+import { answerOf, cellsOf, fileFormula, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import type { Step, WorkbookAnswer, WorkbookCase, WorkbookSet } from './workbook/cases.js'
 
@@ -33,6 +33,7 @@ function stepLine(s: Step): string {
     const { sheet, cell, value } = s.set
     return ['set', sheet, cell, value === null ? 'x' : typeof value === 'number' ? 'n' : 's', value ?? ''].join('\t')
   }
+  if ('formula' in s) return ['formula', s.formula.sheet, s.formula.cell, `=${fileFormula(s.formula.formula)}`].join('\t')
   if ('hide' in s) {
     const { sheet, rows, columns, hidden } = s.hide
     return rows !== undefined ? ['hide', sheet, `A${rows.replace(':', ':A')}`, hidden ? 1 : 0].join('\t') : ['hidecols', sheet, `${columns!.split(':')[0]}1:${columns!.split(':').at(-1)}1`, hidden ? 1 : 0].join('\t')

@@ -5,6 +5,7 @@
 -- rectangle's formulas as Excel shows them, and the text each cell to show shows (`string value`, Range.Text).
 -- Arguments: book path (inside Excel's sandbox), rectangles as lines "sheet<TAB>range<TAB>mirror range", steps as
 -- lines: "full", "calc", "read", "set<TAB>sheet<TAB>cell<TAB>kind<TAB>value" (kind n a number, s a text, x clear),
+-- "formula<TAB>sheet<TAB>cell<TAB>=formula",
 -- "hide<TAB>sheet<TAB>range<TAB>1|0" (the entire rows of the range), "hidecols<TAB>sheet<TAB>range<TAB>1|0",
 -- "filter<TAB>sheet<TAB>range<TAB>field<TAB>criterion"; the cells to show as lines "sheet<TAB>address".
 -- Output: JSON {"settings": [iteration, max iterations, max change], "reads": [[[[types, numbers, texts, formulas], ...], [shown text, ...]], ...]}.
@@ -41,6 +42,8 @@ on run argv
 					else
 						set value of rg to (item 5 of parts)
 					end if
+				else if k is "formula" then
+					set formula of range (item 3 of parts) of worksheet (item 2 of parts) of wb to (item 4 of parts)
 				else if k is "hide" then
 					set hidden of entire row of (range (item 3 of parts) of worksheet (item 2 of parts) of wb) to ((item 4 of parts) is "1")
 				else if k is "hidecols" then

@@ -15,6 +15,8 @@ export type Step =
   | 'read'
   /** A number or a text typed into a cell, or null to clear it (a session's `setCells`). */
   | { set: { sheet: string; cell: string; value: number | string | null } }
+  /** A formula typed into a cell, in the engine's spelling (a session's `setCells`). */
+  | { formula: { sheet: string; cell: string; formula: string } }
   /** Rows (`5:6`) or columns (`C:D`) hidden or shown (a session's `setLayout`). */
   | { hide: { sheet: string; rows?: string; columns?: string; hidden: boolean } }
   /** Excel's autofilter on a range: a column (1 from its left) keeps the rows equal to `criterion`. */
