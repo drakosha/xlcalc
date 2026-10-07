@@ -18,7 +18,7 @@ export interface Rel {
 }
 
 /** `xl/worksheets` + `../theme/theme1.xml` → `xl/theme/theme1.xml`; absolute targets start from the root. */
-export function resolvePart(dir: string, target: string): string {
+function resolvePart(dir: string, target: string): string {
   let t = target
   try {
     t = decodeURIComponent(target)

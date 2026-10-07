@@ -6,7 +6,7 @@
 import { attributes, element, elements, type Element } from '../xml/scan.js'
 
 /** The legacy palette (ECMA-376 18.8.27): 64 is the system foreground, 65 the background. */
-export const INDEXED = [
+const INDEXED = [
   '000000', 'FFFFFF', 'FF0000', '00FF00', '0000FF', 'FFFF00', 'FF00FF', '00FFFF', '000000', 'FFFFFF', 'FF0000', '00FF00', '0000FF',
   'FFFF00', 'FF00FF', '00FFFF', '800000', '008000', '000080', '808000', '800080', '008080', 'C0C0C0', '808080', '9999FF', '993366',
   'FFFFCC', 'CCFFFF', '660066', 'FF8080', '0066CC', 'CCCCFF', '000080', 'FF00FF', 'FFFF00', '00FFFF', '800080', '800000', '008080',

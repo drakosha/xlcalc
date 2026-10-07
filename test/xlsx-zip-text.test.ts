@@ -51,7 +51,7 @@ describe('xlsx: zip', () => {
     expect(await zip(files)).toEqual(a)
     expect(a.length).toBeLessThan(big.length / 100)
     const archive = openArchive(a)
-    expect(archive.names).toEqual(['[Content_Types].xml', 'xl/big.xml', 'empty'])
+    expect(await archive.text('[Content_Types].xml')).toBe('<Types/>')
     expect(await archive.bytes('xl/big.xml')).toEqual(big)
     expect(await archive.text('empty')).toBe('')
     expect(await archive.bytes('missing')).toBeUndefined()
