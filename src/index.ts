@@ -9,6 +9,7 @@ import { openSession } from './session.js'
 import { restructure } from './structure/index.js'
 import { epochOf } from './dates.js'
 import { createState, debugSource } from './engine.js'
+import { limitsBudget, withBudget } from './exec/budget.js'
 import { currentClock, nowMs } from './env.js'
 import { checkBook, checkCellValue, checkComputeOptions, checkDisplayOptions, checkString, checkValidateContext } from './input.js'
 import { displayRules } from './locale/rules.js'
@@ -21,6 +22,7 @@ export { FUNCTION_NAMES } from './functions.js'
 export { CONFIG_VERSION } from './config.js'
 export { openSession } from './session.js'
 export { InputError } from './input.js'
+export { CalcError } from './exec/budget.js'
 export { enUS, ruRU, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 export { restructure } from './structure/index.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
@@ -35,8 +37,10 @@ export function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
   const o = checkComputeOptions(opts)
   checkBook(book)
   const clock = o.clock ?? currentClock()
-  const state = createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
-  return buildResult(state, clock, t0, o.display !== false)
+  return withBudget(limitsBudget(o.limits), () => {
+    const state = createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
+    return buildResult(state, clock, t0, o.display !== false)
+  })
 }
 
 export function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
