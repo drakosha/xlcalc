@@ -37,18 +37,26 @@ function areaNames(names: NameInput[]): Set<string> {
   return out
 }
 
+/** Functions that answer an array only when given one where they take one value: the arguments tell. */
+const BY_ARGUMENTS = new Set(['VLOOKUP', 'HLOOKUP'])
+/** Functions that answer an array only for a reference of several cells. */
+const BY_REFERENCE = new Set(['ROW', 'COLUMN'])
+
 function intersects(ast: Ast, areas: Set<string>): boolean {
+  const several = (n: Ast): boolean =>
+    (n.k === 'ref' && (n.ref.kind !== 'cell' || n.ref.spill === true)) || (n.k === 'name' && areas.has(n.name.toUpperCase())) || (n.k === 'arr' && n.rows.length * n.rows[0].length > 1)
+  // a call that can answer an array or a range, where one value goes
+  const answersArray = (n: Extract<Ast, { k: 'fn' }>): boolean =>
+    !BY_ARGUMENTS.has(n.name) && n.args.length > 0 && (!BY_REFERENCE.has(n.name) || n.args.some(several)) && MODES[n.name]?.endsWith('!') === true
   const go = (n: Ast, at: Place): boolean => {
     switch (n.k) {
       case 'ref':
-        return at === 'one' && (n.ref.kind !== 'cell' || n.ref.spill === true)
       case 'name':
-        return at === 'one' && areas.has(n.name.toUpperCase())
       case 'arr':
-        return at === 'one' && n.rows.length * n.rows[0].length > 1
+        return at === 'one' && several(n)
       case 'fn': {
         const spec = MODES[n.name]
-        if (at === 'one' && spec?.endsWith('!') && n.args.length > 0) return true
+        if (at === 'one' && answersArray(n)) return true
         return n.args.some((a, i) => {
           const m = modeAt(spec, i)
           return go(a, m === 'w' ? 'whole' : m === 'p' ? at : 'one')

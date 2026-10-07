@@ -27,8 +27,8 @@ export interface Xf {
 export interface StyleTable {
   styles: CellStyle[]
   xfs: Xf[]
-  /** The default font (the first one), as `name size`. */
-  font: { name?: string; size?: number }
+  /** The default font (the first one), when there are fonts. */
+  font?: { name?: string; size?: number }
 }
 
 const on = (body: string, local: string): boolean => {
@@ -136,7 +136,7 @@ function relative(f: FontStyle, base: FontStyle): FontStyle | undefined {
 }
 
 export function readStyles(xml: string | undefined, p: Palette): StyleTable {
-  if (!xml) return { styles: [], xfs: [], font: {} }
+  if (!xml) return { styles: [], xfs: [] }
   const formats = new Map<number, string>()
   for (const e of elements(element(xml, 'numFmts')?.body ?? '', 'numFmt')) {
     const a = attributes(e.attrs)
@@ -177,5 +177,5 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
     if (!formats.has(id) && REGIONAL.has(id)) xf.regional = id
     return xf
   })
-  return { styles, xfs, font: { name: base.name, size: base.size } }
+  return { styles, xfs, ...(fonts.length ? { font: { name: base.name, size: base.size } } : {}) }
 }

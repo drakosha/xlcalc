@@ -27,15 +27,17 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  * - `calculation`: calculation settings the book does not keep: iterative calculation, the manual mode.
  * - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
  * - `defaultFont`: a default font other than Calibri 11, which the model assumes.
+ * - `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
+ *   (Excel for Mac starts its own books at 10).
  * - `numberFormat`: a built-in number format Excel shows by the regional settings (read as its en-US code), or
  *   one this reader does not know (left out).
  * - `hidden`: hidden sheets (read as visible ones), rows and columns (read with a size of 0).
  * - `sheetKind`: a chart, dialog or macro sheet, left out.
- * - `cellMetadata`: a cell's value metadata (`vm`: data types, pictures in cells), left out.
+ * - `cellMetadata`: a cell's rich value (`vm`: a data type, a picture in the cell), read as the value the cell stores.
  * - `conditionalFormat`, `dataValidation`, `comment`, `hyperlink`, `drawing` (pictures, charts, shapes),
  *   `autoFilter`, `pivotTable`, `protection`, `frozenPanes`, `outline` (grouped rows and columns), `print`
- *   (headers and footers, page breaks, a page setup made by hand), `macros`, `sparkline`, `richData` (rich values
- *   of data types), `connection` (data connections and queries): parts of the file the model does not have, left
+ *   (headers and footers, page breaks, a page setup made by hand), `macros`, `sparkline`, `connection` (data
+ *   connections and queries): parts of the file the model does not have, left
  *   out. View settings (zoom, gridlines, the selection) and a page setup Excel writes by default are not reported.
  * - `locale`: a locale the package does not have, left out of the book.
  * - `meta`: written: cell `meta` has no place in a file.
@@ -60,6 +62,7 @@ export type XlsxIssueCode =
   | 'calculation'
   | 'style'
   | 'defaultFont'
+  | 'defaultWidth'
   | 'numberFormat'
   | 'hidden'
   | 'sheetKind'
@@ -77,7 +80,6 @@ export type XlsxIssueCode =
   | 'print'
   | 'macros'
   | 'sparkline'
-  | 'richData'
   | 'connection'
   | 'locale'
   | 'meta'

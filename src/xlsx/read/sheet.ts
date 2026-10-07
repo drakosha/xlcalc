@@ -177,6 +177,10 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const outside = head + tail
   const where = { sheet: src.name }
   for (const [local, code, message] of FEATURES) if (has(outside, local)) issues.add(code, message, where)
+  // the sheet's default column width: 8 digits and the padding, as the model assumes, or another
+  const fp = attributes(element(head, 'sheetFormatPr')?.attrs ?? '')
+  const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84
+  if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', `the sheet's default column width (${Math.round(width * 100) / 100} in xlsx units) is not in the model, which takes Excel's standard of 8 digits`, where)
   const pane = element(head, 'pane')
   const state = pane && attributes(pane.attrs).state
   if (state === 'frozen' || state === 'frozenSplit' || state === 'split') issues.add('frozenPanes', 'frozen and split panes are not in the model', where)

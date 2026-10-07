@@ -25,8 +25,30 @@ const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships
 const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 
-/** The dynamic array metadata (XLDAPR) that `cm="1"` points at, as Excel 365 writes it. */
-const METADATA = `${HEAD}<metadata xmlns="${MAIN}" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray"><metadataTypes count="1"><metadataType name="XLDAPR" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1" cellMeta="1"/></metadataTypes><futureMetadata name="XLDAPR" count="1"><bk><extLst><ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}"><xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/></ext></extLst></bk></futureMetadata><cellMetadata count="1"><bk><rc t="1" v="0"/></bk></cellMetadata></metadata>`
+const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
+const RICH_REL = 'http://schemas.microsoft.com/office/2017/06/relationships'
+/** The rich value `errorType` of the errors Excel keeps as rich values. */
+const RICH_TYPE = { SPILL: 8, CALC: 13 } as const
+
+/**
+ * The cell metadata: XLDAPR (dynamic array formulas, which `cm="1"` points at) as Excel 365 writes it, and the rich
+ * values of errors (which `vm` points at, one block each).
+ */
+function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): string {
+  const types = [...(dynamic ? ['XLDAPR'] : []), ...(rich.length ? ['XLRICHVALUE'] : [])]
+  const flags = ' minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1"'
+  const typeXml = types.map((t) => `<metadataType name="${t}"${flags}${t === 'XLDAPR' ? ' cellMeta="1"' : ''}/>`).join('')
+  const dynamicXml = dynamic
+    ? `<futureMetadata name="XLDAPR" count="1"><bk><extLst><ext uri="{bdbb8cdc-fa1e-496e-a857-3c3f30c029c3}"><xda:dynamicArrayProperties fDynamic="1" fCollapsed="0"/></ext></extLst></bk></futureMetadata>`
+    : ''
+  const richT = types.indexOf('XLRICHVALUE') + 1
+  const richXml = rich.length
+    ? `<futureMetadata name="XLRICHVALUE" count="${rich.length}">${rich.map((_, i) => `<bk><extLst><ext uri="{3e2802c4-a4d2-4d8b-9148-e3be6c30e623}"><xlrd:rvb i="${i}"/></ext></extLst></bk>`).join('')}</futureMetadata>`
+    : ''
+  const cells = dynamic ? '<cellMetadata count="1"><bk><rc t="1" v="0"/></bk></cellMetadata>' : ''
+  const values = rich.length ? `<valueMetadata count="${rich.length}">${rich.map((_, i) => `<bk><rc t="${richT}" v="${i}"/></bk>`).join('')}</valueMetadata>` : ''
+  return `${HEAD}<metadata xmlns="${MAIN}" xmlns:xlrd="${RICH}" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray"><metadataTypes count="${types.length}">${typeXml}</metadataTypes>${dynamicXml}${richXml}${cells}${values}</metadata>`
+}
 
 const rels = (items: [type: string, target: string][]) =>
   `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${target}"/>`).join('')}</Relationships>`
@@ -94,7 +116,9 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     return i
   }
   const sheetKeys = new Set(book.sheets.map((s) => sheetKey(s.name)))
-  const sheets = book.sheets.map((s, i) => writeSheet(s, i, { styles, string, issues, sheets: sheetKeys, mode, result: cells?.[i] }))
+  const rich: (keyof typeof RICH_TYPE)[] = []
+  const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
+  const sheets = book.sheets.map((s, i) => writeSheet(s, i, { styles, string, issues, sheets: sheetKeys, mode, result: cells?.[i], richError }))
   const dynamic = sheets.some((s) => s.formulas)
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
@@ -113,10 +137,17 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     contentTypes.push(['/xl/sharedStrings.xml', `${TYPE}.sharedStrings+xml`])
     wbRels.push([`${REL}/sharedStrings`, 'sharedStrings.xml'])
   }
-  if (dynamic) {
-    files.push({ name: 'xl/metadata.xml', text: METADATA })
+  if (dynamic || rich.length) {
+    files.push({ name: 'xl/metadata.xml', text: metadata(dynamic, rich) })
     contentTypes.push(['/xl/metadata.xml', `${TYPE}.sheetMetadata+xml`])
     wbRels.push([`${REL}/sheetMetadata`, 'metadata.xml'])
+  }
+  if (rich.length) {
+    const values = rich.map((code) => `<rv s="0"><v>${RICH_TYPE[code]}</v></rv>`).join('')
+    files.push({ name: 'xl/richData/rdrichvalue.xml', text: `${HEAD}<rvData xmlns="${RICH}" count="${rich.length}">${values}</rvData>` })
+    files.push({ name: 'xl/richData/rdrichvaluestructure.xml', text: `${HEAD}<rvStructures xmlns="${RICH}" count="1"><s t="_error"><k n="errorType" t="i"/></s></rvStructures>` })
+    contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
+    wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')
   const calc = dynamic ? '<calcPr fullCalcOnLoad="1"/>' : ''

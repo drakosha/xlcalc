@@ -1,7 +1,7 @@
 /**
  * Colours of styles.xml as `#RRGGBB`: `rgb` (ARGB, the alpha ignored as Excel ignores it), `indexed` (the legacy
  * palette, or the book's own `<indexedColors>`), `theme` with `tint` (the theme's colour lightened or darkened by
- * its luminance, as ECMA-376 defines `tint`). `auto` and the system colours are no colour.
+ * its luminance, as ECMA-376 defines `tint` and Excel rounds it). `auto` and the system colours are no colour.
  */
 import { attributes, element, elements, type Element } from '../xml/scan.js'
 
@@ -59,12 +59,15 @@ function fromHsl([h, s, l]: number[]): number[] {
   return [hue(h + 1 / 3), hue(h), hue(h - 1 / 3)]
 }
 
-/** A colour lightened (tint > 0) or darkened (tint < 0) by its luminance. */
+/** Windows' HLS scale: Excel rounds hue, luminance and saturation to whole steps of 1/240 before applying a tint. */
+const HLS = 240
+
+/** A colour lightened (tint > 0) or darkened (tint < 0) by its luminance, as Excel computes it. */
 export function tinted(hex: string, tint: number): string {
   if (!tint) return hex
-  const [h, s, l] = toHsl([0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255))
-  const lum = tint < 0 ? l * (1 + tint) : l * (1 - tint) + tint
-  return fromHsl([h, s, lum])
+  const [h, s, l] = toHsl([0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)).map((x) => Math.round(x * HLS))
+  const lum = Math.round(tint < 0 ? l * (1 + tint) : l * (1 - tint) + (HLS - HLS * (1 - tint)))
+  return fromHsl([h / HLS, s / HLS, lum / HLS])
     .map((c) => Math.round(c * 255).toString(16).padStart(2, '0'))
     .join('')
     .toUpperCase()

@@ -10,14 +10,14 @@ import type { Issues } from '../issues.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
+import type { CellMetadata } from './metadata.js'
 import { stringItem, type Strings } from './strings.js'
 
 export interface CellsContext {
   sheet: string
   strings: Strings
   xfs: Xf[]
-  /** Whether a cell metadata index (`cm`, 1-based) marks a dynamic array formula. */
-  dynamic(cm: number): boolean
+  meta: CellMetadata
   /** A number of a date format moved to the 1900 date system (as it is in a book of that system). */
   date(n: number, xf: Xf | undefined): number
   issues: Issues
@@ -59,8 +59,8 @@ const ERRORS: Record<string, ErrorCode> = {
   '#CALC!': 'CALC',
 }
 
-/** Errors a formula can be: what an error typed into a cell is read as. */
-const LITERAL = new Set(['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A'])
+/** Errors the engine reads in a formula: what an error stored as a cell's value is read as. */
+const LITERAL = new Set(['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#SPILL!'])
 
 const TAG = /<([\w.-]+:)?(row|c)((?:\s[^>]*?)?)(\/?)>/g
 const V = /<(?:[\w.-]+:)?v(?:\s[^>]*)?>([\s\S]*?)<\/(?:[\w.-]+:)?v>/
@@ -114,7 +114,9 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     if (xf) for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, { sheet, cell: addr })
     if (xf?.regional !== undefined) issues.add('numberFormat', 'a built-in date, time or currency format Excel shows by the regional settings, read as its en-US code', { sheet, cell: addr })
     if (xf?.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', { sheet, cell: addr })
-    if (a.vm !== undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
+    // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
+    const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
+    if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
     const t = a.t ?? 'n'
     const raw = body.includes('v') ? V.exec(body)?.[1] : undefined
     let value: Scalar | undefined
@@ -137,7 +139,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       else if (t === 'd') value = dateToSerial(raw)
       else if (raw !== '' && Number.isFinite(Number(raw))) value = ctx.date(Number(raw), xf)
     }
-    const errText = t === 'e' && raw !== undefined ? readText(raw).trim() : undefined
+    const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
     const f = body.includes('f') ? F.exec(body) : null
     const fa = f ? attributes(f[1]) : {}
     if (f && fa.t !== 'dataTable') {
@@ -155,7 +157,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
         } else s.copies.push(addr)
         out.old.add(addr)
       } else {
-        const dynamic = fa.t === 'array' && a.cm !== undefined && ctx.dynamic(Number(a.cm))
+        const dynamic = fa.t === 'array' && a.cm !== undefined && ctx.meta.dynamic(Number(a.cm))
         if (fa.t === 'array') out.arrays.push({ anchor: addr, ref: (fa.ref ?? addr).toUpperCase(), dynamic })
         if (!dynamic) out.old.add(addr)
         cell.formula = text

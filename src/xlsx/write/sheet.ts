@@ -20,6 +20,12 @@ import type { StyleWriter } from './styles.js'
 /** Excel's limit on a cell's text. */
 export const MAX_TEXT = 32_767
 
+/**
+ * The default width in xlsx units (8 digits and the padding, as Excel for Mac writes it): a column that has a look
+ * but no width of its own needs one, as Excel reads a column without a width as hidden.
+ */
+const DEFAULT_WIDTH = '8.83203125'
+
 export interface SheetContext {
   styles: StyleWriter
   /** The index of a string in the shared strings table. */
@@ -30,6 +36,8 @@ export interface SheetContext {
   mode: 'formulas' | 'values'
   /** The sheet's cells of the result, when there is one. */
   result?: Record<string, CellResult>
+  /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
+  richError(code: 'SPILL' | 'CALC'): number
 }
 
 export interface SheetWritten {
@@ -38,7 +46,10 @@ export interface SheetWritten {
   formulas: boolean
 }
 
-/** A value as the attribute `t` and the content of `<v>`; `shared` writes text through the shared strings. */
+/**
+ * A value as the cell's attributes (`t`, and `vm` for an error Excel keeps as a rich value: the cell holds #VALUE!
+ * for older readers) and the content of `<v>`; `shared` writes text through the shared strings.
+ */
 function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell: string }, shared: boolean): { t: string; v: string } {
   if (v === null) return { t: '', v: '0' }
   if (typeof v === 'number') return Number.isFinite(v) ? { t: '', v: String(v) } : { t: ' t="e"', v: '#NUM!' }
@@ -55,6 +66,7 @@ function valueXml(v: CellValue, ctx: SheetContext, where: { sheet: string; cell:
     ctx.issues.add('errorValue', 'a circular reference (#CYCLE!) is written as 0, as Excel stores it', where)
     return { t: '', v: '0' }
   }
+  if (v.error === 'SPILL' || v.error === 'CALC') return { t: ` t="e" vm="${ctx.richError(v.error)}"`, v: '#VALUE!' }
   return { t: ' t="e"', v: v.error === 'ERROR' ? '#NULL!' : ERROR_TEXT[v.error] }
 }
 
@@ -149,13 +161,15 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const dim = keys.length ? `${indexToCol(minCol)}${Math.floor(first / MAX_COLS) + 1}:${indexToCol(maxCol)}${Math.floor(last / MAX_COLS) + 1}` : 'A1'
   const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
     const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
-    const size = e.width === 0 ? ' width="0" customWidth="1" hidden="1"' : e.width !== undefined ? ` width="${e.width}" customWidth="1"` : ''
+    const size = e.width === 0 ? ' width="0" customWidth="1" hidden="1"' : e.width !== undefined ? ` width="${e.width}" customWidth="1"` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${xf ? ` style="${xf}"` : ''}/>`
   })
   const merges = sheet.merges ?? []
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}/></sheetViews>` +
+    // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
+    '<sheetFormatPr defaultRowHeight="15"/>' +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
     `<sheetData>${data.join('')}</sheetData>` +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
