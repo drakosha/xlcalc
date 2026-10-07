@@ -6,6 +6,7 @@
 import { directError, eachValue, type Arg, type Cx, type FnDef, type Segment } from '../args.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, sameType, type CErr, type V } from '../values.js'
+import { NEWER_MAX_ARGS } from './common.js'
 
 /**
  * The booleans of AND, OR, XOR: numbers and booleans count, a direct text argument that is the locale's word for
@@ -102,5 +103,5 @@ export const functions: Record<string, FnDef> = {
     },
   },
   TRUE: { args: '', fn: () => true },
-  XOR: logical((bs) => bs.filter(Boolean).length % 2 === 1),
+  XOR: { ...logical((bs) => bs.filter(Boolean).length % 2 === 1), max: NEWER_MAX_ARGS },
 }

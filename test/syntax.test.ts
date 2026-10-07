@@ -55,7 +55,7 @@ describe('formula parsing', () => {
     expect(code('SORTBY(A1:A3,B1:B3,-1,C1:C3,1)')).toBe('ok')
     expect(code(`SWITCH(1,${'1,1,'.repeat(127).slice(0, -1)})`)).toBe('syntax')
     expect(code(`SWITCH(1,${'1,1,'.repeat(126)}0)`)).toBe('ok')
-    expect(validate('SORTBY(A1:A3,B1:B3,-1,C1:C3)', ctx)).toMatchObject({ message: 'SORTBY takes 2, or odd 3 to 255 arguments, got 4' })
+    expect(validate('SORTBY(A1:A3,B1:B3,-1,C1:C3)', ctx)).toMatchObject({ message: 'SORTBY takes 2, or odd 3 to 253 arguments, got 4' })
     const r = validate('ROUND(1)', ctx)
     expect(!r.ok && r.message).toBe('ROUND takes 2 arguments, got 1')
   })
