@@ -386,6 +386,16 @@ export type StructureOp =
   /** A new name by Excel's rules (see `BookInput.sheets`) that no other sheet has. */
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }
+  /**
+   * A new empty sheet named `name` (by Excel's rules, not taken), before the sheet `before`, else after the last one.
+   * A reference across sheets takes in a sheet inserted between its ends.
+   */
+  | { op: 'insertSheet'; name: string; before?: string }
+  /**
+   * The sheet moved before the sheet `before`, else after the last one. A reference across sheets covers the sheets
+   * between its ends in the new order.
+   */
+  | { op: 'moveSheet'; sheet: string; before?: string }
 
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =
