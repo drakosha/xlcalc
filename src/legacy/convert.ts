@@ -102,7 +102,8 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
       return args.length && args[0].kind !== 'one' ? 'rowcol' : 'one'
     case 'INDEX': {
       const ref = args[0].kind === 'range' || nodes[0].k === 'ref'
-      const one = place(nodes[1]) && (nodes.length < 3 ? ref : place(nodes[2]))
+      // of one value one value; of several, one cell when every index given is a number that leaves one
+      const one = (args[0].kind === 'one' && nodes[0].k !== 'ref') || (place(nodes[1]) && (nodes.length < 3 ? ref : place(nodes[2])))
       return one ? 'one' : ref ? 'range' : 'array'
     }
     case 'VLOOKUP':
