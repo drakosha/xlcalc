@@ -260,9 +260,15 @@ function checkMerges(v: unknown, path: string) {
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration'])
   if (book.locale !== undefined) checkLocale(book.locale, `${path}.locale`)
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
+  if (book.iteration !== undefined) {
+    const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
+    onlyKeys(it, `${path}.iteration`, ['maxIterations', 'maxChange'])
+    if (it.maxIterations !== undefined) checkNumber(it.maxIterations, `${path}.iteration.maxIterations`, 1, 32_767, true)
+    if (it.maxChange !== undefined) checkNumber(it.maxChange, `${path}.iteration.maxChange`, 0, Number.MAX_VALUE)
+  }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {

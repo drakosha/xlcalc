@@ -27,7 +27,8 @@ function withParts(s: SheetInput, parts: NonNullable<FileParts['sheets']>[string
 /** The case's book as the engine takes it. */
 export function bookOf(c: WorkbookCase): BookInput {
   const f = c.file ?? {}
-  return { ...c.book, sheets: c.book.sheets.map((s) => withParts(s, f.sheets?.[s.name])), ...(f.date1904 ? { dateSystem: 1904 as const } : {}) }
+  const iteration = f.iterate && { ...(f.iterate.count !== undefined ? { maxIterations: f.iterate.count } : {}), ...(f.iterate.delta !== undefined ? { maxChange: f.iterate.delta } : {}) }
+  return { ...c.book, sheets: c.book.sheets.map((s) => withParts(s, f.sheets?.[s.name])), ...(f.date1904 ? { dateSystem: 1904 as const } : {}), ...(iteration ? { iteration } : {}) }
 }
 
 /** Excel's autofilter as a host applies it: the rows of `range` below its header shown where `field` is `criterion`, else hidden; the sheet filtered. */

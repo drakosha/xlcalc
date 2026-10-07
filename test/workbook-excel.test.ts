@@ -7,7 +7,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredWorkbook } from '../bench/coverage/workbook.js'
 import type { Val } from '../bench/coverage/formulajs.js'
-import type { WorkbookCase } from '../bench/coverage/workbook/cases.js'
+import type { WorkbookAnswer, WorkbookCase } from '../bench/coverage/workbook/cases.js'
 import { differences, engineReads } from './workbook-cases.js'
 
 /** A predicted read as Excel's answer: the values, and the shown text of `show:` keys. */
@@ -31,12 +31,24 @@ const OUTSIDE = {
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets)',
 }
 const HOLIDAY = { 'F!A10': 'WORKDAY reads date text in a one-cell reference among its holidays in Excel, the engine takes text in a reference there as #VALUE!' }
+/** Excel starts a cycle from the value the file stores for its cells; a book stores none and the engine starts from 0. */
+const START = 'Excel starts a cycle from what the file stores: 50 here, empty text (#VALUE! in arithmetic) where it stores no value; the engine starts from 0'
 const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'date1904:d1900': OUTSIDE,
   'date1904:d1904': OUTSIDE,
   'date1904-text:t1900': HOLIDAY,
   'date1904-text:t1904': HOLIDAY,
+  'iterate:counter-blank': { 'S!A1': START, 'S!B1': START },
+  'iterate:counter-cached': { 'S!A1': START, 'S!B1': START },
 }
+
+/**
+ * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
+ * engine's from 0 (`BookInput.iteration`): in the set `iterate`, a cell of a read after the first may differ where
+ * Excel's value moved from its previous read, and must match where it did not.
+ */
+const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell: string) =>
+  set === 'iterate' && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])
 
 /** Predictions of held-out cases that Excel answered otherwise: `<set>:<case>` → cells, each the reason of the miss. */
 const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
@@ -57,12 +69,11 @@ for (const set of SETS) {
         const reads = engineReads(c)
         const excel = set.answers[c.id].reads
         expect(reads.length).toBe(excel.length)
-        const diffs = excel.flatMap((a, i) => differences(c, a.values, a.shown, reads[i]).map((d) => `read ${i + 1}: ${d}`))
+        const diffs = excel.flatMap((a, i) => differences(c, a.values, a.shown, reads[i]).map((d) => ({ read: i, cell: d.split(/:? /)[0], text: `read ${i + 1}: ${d}` })))
         // a known difference is pinned: its cell must still differ
-        const known = Object.keys(KNOWN[`${set.name}:${c.id}`] ?? {})
-        const at = (d: string) => known.find((k) => d.includes(`: ${k}: `))
-        expect(known.filter((k) => !diffs.some((d) => at(d) === k))).toEqual([])
-        expect(diffs.filter((d) => !at(d))).toEqual([])
+        const known = KNOWN[`${set.name}:${c.id}`] ?? {}
+        expect(Object.keys(known).filter((k) => !diffs.some((d) => d.cell === k))).toEqual([])
+        expect(diffs.filter((d) => !known[d.cell] && !goesOn(set.name, excel, d.read, d.cell)).map((d) => d.text)).toEqual([])
       })
       if (c.predicted)
         it(`${c.id}: the answers predicted before Excel ran, but the missed ones`, () => {

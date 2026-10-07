@@ -87,8 +87,8 @@ function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis
 
 /**
  * Input hash: sheets by name, cells by address, names by (scope, name). Columns, rows, merged areas (in
- * order), the filter mode, the style table, a locale other than en-US and the 1904 date system come after their
- * sheet and the names when there are any, so a book without them hashes as before they existed.
+ * order), the filter mode, the style table, a locale other than en-US, the 1904 date system and iterative
+ * calculation come after their sheet and the names when there are any, so a book without them hashes as before.
  */
 export function inputHash(book: BookInput): string {
   const h = new Sha256()
@@ -105,6 +105,7 @@ export function inputHash(book: BookInput): string {
   const tag = hashedLocale(book.locale)
   if (tag !== undefined) h.update(`L ${JSON.stringify(tag)}\n`)
   if (book.dateSystem === 1904) h.update('D 1904\n')
+  if (book.iteration) h.update(`I ${stableJson(book.iteration)}\n`)
   return h.hex()
 }
 

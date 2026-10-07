@@ -80,6 +80,8 @@ export interface EngineState {
   volatile: Set<number>
   /** Formulas whose latest computation read the clock's year (date text without a year, by the book's locale). */
   clocked: Set<number>
+  /** The formulas in cycles the last iterative calculation computed (`BookInput.iteration`). */
+  iterated: number[]
   spills: Spills
 }
 
@@ -186,6 +188,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     wide: new Map(),
     volatile: new Set(),
     clocked: new Set(),
+    iterated: [],
     spills: newSpills(),
   }
   const pending: Formula[] = []
