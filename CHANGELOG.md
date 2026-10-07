@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (2026-10-07)
+
+Internal release as `xlcalc`, used by our own applications before a public release; not published to npm.
 
 Breaking changes:
 
@@ -97,7 +99,7 @@ Changed:
 
 ## 0.2.0 (2026-10-05)
 
-First public release, as `formula-engine`. Version 0.1.0 was an internal release named `@mike/formula` and was never published to npm.
+Prepared as the first public release, as `formula-engine`, and never published. Version 0.1.0 was an internal release named `@mike/formula`.
 
 Breaking changes:
 
