@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import { compare } from '../bench/coverage/compare.js'
 import type { SpillAnswer, StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
-import { compute, type ComputeResult } from '../src/index.js'
+import { compute, openSession, type ComputeResult } from '../src/index.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
 
@@ -26,6 +26,16 @@ const RUNS = JSON.parse(readFileSync(new URL('order-runs.json', dir), 'utf8')) a
 const KNOWN: Readonly<Record<string, string>> = {
   'base:cross': 'two independent arrays over one cell: in the set order the same pair (cross-C1-A2-row-first) let either spill',
   'base:cross-rect': 'two independent arrays over one cell: Excel lets either spill, the set order shows it for 11 pairs',
+}
+
+const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
+
+/** The case computed, and its edits applied one by one in a session, as Excel had them typed after computing. */
+function computed(c: SpillCase): ComputeResult {
+  if (!c.edits) return compute(c.book, { clock: CLOCK })
+  const s = openSession(c.book, { clock: CLOCK })
+  for (const e of c.edits) s.setCells([{ sheet: e.sheet, cell: e.cell, input: e.value === null ? null : { value: e.value } }])
+  return s.result()
 }
 
 /** Cells of the case's rectangles where the engine does not show Excel's answer. */
@@ -56,7 +66,7 @@ for (const set of SETS) {
 
     for (const c of set.cases) {
       it(`${c.id}: ${c.about}`, () => {
-        const r = compute(c.book, { clock: { now: '2026-10-06T12:00:00Z', seed: 1 } })
+        const r = computed(c)
         const seen = RUNS.answers[c.id] ?? [set.answers[c.id]]
         const diffs = seen.map((a) => differences(c, a, r))
         const best = diffs.find((d) => !d.length) ?? diffs[0]

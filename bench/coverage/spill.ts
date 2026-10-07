@@ -141,7 +141,8 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
     await writeBook(c, file)
     const at = mirrorRanges(c.read)
     const lines = c.read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n')
-    const child = spawn('osascript', [SCRIPT, file, lines])
+    const edits = (c.edits ?? []).map((e) => `${e.sheet}\t${e.cell}\t${e.value === null ? 'x' : typeof e.value === 'number' ? 'n' : 's'}\t${e.value ?? ''}`).join('\n')
+    const child = spawn('osascript', [SCRIPT, file, lines, edits])
     let out = ''
     let err = ''
     child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
