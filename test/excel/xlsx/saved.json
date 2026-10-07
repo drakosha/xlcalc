@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 93.4,
+  "seconds": 14.3,
   "date": "2026-10-07"
  },
  "books": {
@@ -21,19 +21,19 @@
    "sent": "60d0d0c8dc3210b6f28151aa2e55fec4c77f9460378421b62b499bccd2d402e7"
   },
   "arrays-3": {
-   "sent": "bc9bfcffcbd8b1c0decfc3ce2979d9590f198b24e6d5eda7f91fb345c0d212ed"
+   "sent": "1acffbc33066dff8c039b4233e857e6ef792c25e83320cffe245c9e7def70eab"
   },
   "arrays-4": {
-   "sent": "07e8980b1b1ebccb8f49096c9c204daca63941ad4e41a74875a73be52dfa28ee"
+   "sent": "210d0acf962dbb54b690da02e7bfe903a2b2d5b2b917fab7b300338abdd5d612"
   },
   "arrays-5": {
-   "sent": "27670bd79974a89793f116ce567d76ca159a3954dbe4b9f1d87b872efdbb3536"
+   "sent": "23d94c0b6aa48d4eb8a4c1ae7c26f09d68febf5f5c2419032b685ee4c483848b"
   },
   "arrays-6": {
-   "sent": "d860c356ba668489107bf7fe4a4a5c8cc59bc6ad471d2298e0a9ee2abd5efc1f"
+   "sent": "682f8b3fc0345fb690e4f6a25bffc260995be7ab952d4f223c7b52d1739e9cdb"
   },
   "arrays-7": {
-   "sent": "819414941db28b6f829d9f5bcea4b96fed32f9f06c00cf00e5478c376dc09f75"
+   "sent": "cfa3cbce39cfc0e1b5a9c1bf19d2995c5f5c30291a8ae8a8367f4fb5090aac16"
   },
   "collation-1": {
    "sent": "391ad6327ac9c4f27636c66c33e36e0ad6f523e8c16ba91dda1ae6b6c9277887"
@@ -241,6 +241,33 @@
   },
   "text-4": {
    "sent": "3a5b82b87cbed77dec9fc3a76216e19fe5362a8f7660b4b06458f487da0f0900"
+  },
+  "arity-1": {
+   "sent": "308a26e8f2c270766be9b1e515d57a747402a88950d950311311aae7a1ba05be"
+  },
+  "char-code-1": {
+   "sent": "c747e1889247ae546c21f4fa67c7a1b2018d1ff59c1e779a2da2fa91aa3f3d97"
+  },
+  "complex-text-1": {
+   "sent": "47cde8b9dddeb1de2897779d8b5b303c094d12e14bf7a0f8c842c56c9cc5ed4c"
+  },
+  "date-noyear-1": {
+   "sent": "e139f1ece594dc47785db568a3e73cba47c7052f08da56e69946bfa52297f426"
+  },
+  "lead-spaces-1": {
+   "sent": "ccbc0485b22d606e9443d547130ca17656f377e83877b50f1b43c2b8f40665d3"
+  },
+  "text-format-1": {
+   "sent": "c02bc7c1cb8dff2b34476d416ce06f1ad7ee92deb7732a99b58842d3ac9851c2"
+  },
+  "text-format-2": {
+   "sent": "4573d425b108cce3ab049686c40567caaa5f561d11be311ee8c9995bf07a70ba"
+  },
+  "text-format-more-1": {
+   "sent": "2e826680fa6d88171d4d41e1104f7092375fe667f9856dc5222815890eb9bd6e"
+  },
+  "time-text-1": {
+   "sent": "f6196c3a370a8cb37d8e1eac5971a80409995821a1463342d247f969389a7501"
   }
  }
 }
