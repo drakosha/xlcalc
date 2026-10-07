@@ -61,7 +61,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
       const inCell = sheet.cells[addr] ?? {}
       const value = outValue(toCellValue(valueAt(state, s, row, col)))
       const id = state.at.get(key(s, row, col))
-      const out: CellResult = look ? { value, ...look(s, row, col, value) } : { value }
+      const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
       const text = id === undefined ? inCell.formula : state.formulas[id]!.text
       if (text !== undefined) out.formula = text
       if (inCell.format !== undefined) out.format = inCell.format

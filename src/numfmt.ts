@@ -119,8 +119,10 @@ export function displayWith(value: number | string | boolean | { error: string }
   if (typeof value === 'object') return { text: fitted(style.error(value.error), space, false) }
   const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
   if (typeof value !== 'number') {
-    const word = typeof value === 'boolean' ? style.bool(value) : value
     const sec = secs && textSection(secs)
+    // text without a text section shows as it is, whatever the width
+    if (!sec && typeof value === 'string') return { text: value }
+    const word = typeof value === 'boolean' ? style.bool(value) : value
     const text = fitted(sec ? asText(sec, word, style) : word, space, typeof value === 'string')
     return sec?.color ? { text, color: sec.color } : { text }
   }

@@ -1,6 +1,7 @@
 /**
  * Benchmark of the package on the synthetic book in a fresh process (for `budgets.test.ts`; `--expose-gc`),
- * in one execution mode (`closures` or `eval`, the second argument): the first compute, then 1 warm-up run
+ * in one execution mode (`closures` or `eval`, the second argument), with the cells' display or without it (`off`, the
+ * third argument): the first compute, then 1 warm-up run
  * and 5 measured runs; memory is the heapUsed and rss growth over an empty process with an open session;
  * 100 class A edits; 5 class B edits; validating all formulas; compiling the book's parsed formulas alone
  * (5 runs).
@@ -10,6 +11,7 @@ import type { Execution } from '../../src/contract.js'
 const m0 = process.memoryUsage()
 const rows = Number(process.argv[2] ?? 3400)
 const execution = (process.argv[3] ?? 'closures') as Execution
+const display = process.argv[4] !== 'off'
 const { libUrl } = await import('./target.js')
 const { compute, openSession, validateFormula } = (await import(libUrl('index.js'))) as typeof import('../../src/index.js')
 const { synthBook, classAEdits, classBEdit } = (await import(libUrl('synth.js'))) as typeof import('../../src/synth.js')
@@ -28,11 +30,11 @@ const time = (f: () => unknown) => {
   return performance.now() - t
 }
 
-const first = time(() => compute(synth.book, { clock, execution }))
-compute(synth.book, { clock, execution })
-const cold = [0, 1, 2, 3, 4].map(() => time(() => compute(synth.book, { clock, execution })))
+const first = time(() => compute(synth.book, { clock, execution, display }))
+compute(synth.book, { clock, execution, display })
+const cold = [0, 1, 2, 3, 4].map(() => time(() => compute(synth.book, { clock, execution, display })))
 gc()
-const session = openSession(synth.book, { clock, execution })
+const session = openSession(synth.book, { clock, execution, display })
 gc()
 const m1 = process.memoryUsage()
 const editA = classAEdits(synth, 101, 100).map((e) => time(() => session.setCells([e])))
@@ -57,6 +59,7 @@ console.log(
   JSON.stringify({
     rows,
     execution,
+    display,
     formulas: formulas.length,
     firstMs: r1(first),
     coldMedianMs: r1(median(cold)),

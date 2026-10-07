@@ -57,6 +57,9 @@ export function generalText(n: number): string {
 export function generalFormat(n: number): string {
   if (n === 0) return '0'
   const a = Math.abs(n)
+  // the shortest decimal text of 11 characters at most is the General text (most values of a book)
+  const short = String(a)
+  if (short.length <= 11 && !short.includes('e')) return n < 0 ? '-' + short : short
   const [m, ex] = a.toExponential(14).split('e')
   const e = Number(ex)
   const need = m.replace('.', '').replace(/0+$/, '').length
@@ -92,8 +95,9 @@ export function generalFit(n: number, space: number): string {
   if (full.length <= cells) return sign + full
   const e = exponent(a)
   const positional = e >= -4 && e <= 10
+  // more decimals than the room left by the integer part and the point cannot fit
   if (positional)
-    for (let d = 9; d >= 0; d--) {
+    for (let d = Math.max(0, Math.min(9, cells - Math.max(1, e + 1) - 1)); d >= 0; d--) {
       if (d > 0 && a < 10 ** -d) continue
       const t = strip(roundHalfUp(a, d))
       if (t !== '0' && t.length <= cells) return sign + t
