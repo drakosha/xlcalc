@@ -48,11 +48,13 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
     const sheet = changed.get(i) ?? { ...book.sheets[i] }
     changed.set(i, sheet)
     if ('merges' in e) sheet.merges = [...e.merges]
+    else if ('filtered' in e) sheet.filtered = e.filtered
     else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set)
     else sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, e.set)
   }
   for (const [i, sheet] of changed) {
     for (const k of ['columns', 'rows', 'merges'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
+    if (sheet.filtered === false) delete sheet.filtered
     book.sheets[i] = sheet
   }
 }

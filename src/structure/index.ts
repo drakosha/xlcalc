@@ -6,11 +6,15 @@ import type { BookInput, CellRef, RestructureResult, StructureOp } from '../cont
 import { checkAddress, checkBook, checkString, InputError } from '../input.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
+import { createState } from '../engine.js'
+import { currentClock } from '../env.js'
+import { clockSerial } from '../result.js'
 import { parseRange } from './area.js'
-import { copyRange } from './copy.js'
+import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
 import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
+import { stateValues, type ValuesIn } from './values.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -40,10 +44,13 @@ function integer(v: unknown, path: string, min: number, max: number): number {
   return v
 }
 
-/** Restructures a book; the input book is not changed. */
+/**
+ * Restructures a book; the input book is not changed. A copy that pastes values (from a filtered sheet) computes
+ * the book at the current moment.
+ */
 export function restructure(book: BookInput, op: StructureOp): RestructureResult {
   checkBook(book)
-  const r = applyOp(book, op)
+  const r = applyOp(book, op, lazyValues(book))
   return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell(book, r.mapCell) } : r
 }
 
@@ -63,8 +70,23 @@ function sheetOf(book: BookInput, v: unknown, path: string): string {
   return sheet.name
 }
 
-/** The operation on a book already checked; its mapCell takes a sheet as the book spells it and a valid address. */
-export function applyOp(book: BookInput, op: StructureOp): RestructureResult {
+/** The values of a book computed when first asked for, at the current moment. */
+function lazyValues(book: BookInput): ValuesIn {
+  let values: ValuesIn | undefined
+  return (sheet, rect) => {
+    if (!values) {
+      const clock = currentClock()
+      values = stateValues(createState(book, { now: clockSerial(clock), seed: clock.seed }))
+    }
+    return values(sheet, rect)
+  }
+}
+
+/**
+ * The operation on a book already checked; its mapCell takes a sheet as the book spells it and a valid address.
+ * `values` gives the computed values a paste of values takes.
+ */
+export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): RestructureResult {
   const o = object(op, 'op')
   const allowed = FIELDS[o.op as string]
   if (typeof o.op !== 'string' || !allowed) throw new InputError('op.op', `expected one of ${Object.keys(FIELDS).join(', ')}, got ${JSON.stringify(o.op)}`)
@@ -83,7 +105,7 @@ export function applyOp(book: BookInput, op: StructureOp): RestructureResult {
       const sheet = named(o.sheet, 'op.sheet')
       const row = integer(o.row, 'op.row', 1, MAX_ROWS)
       const n = count(MAX_ROWS - row + 1)
-      r = shift(book, sheet, 'r', row - 1, o.op === 'insertRows' ? n : -n)
+      r = (o.op === 'insertRows' ? insertRows : deleteRows)(book, sheet, row - 1, n)
       break
     }
     case 'insertColumns':
@@ -106,7 +128,7 @@ export function applyOp(book: BookInput, op: StructureOp): RestructureResult {
       const src = rangeOf(from.range, 'op.from.range')
       const toSheet = named(to.sheet, 'op.to.sheet')
       if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
-      if (o.op === 'copyRange') r = copyRange(book, fromSheet, src, toSheet, rangeOf(to.range, 'op.to.range'), o.withMeta === true)
+      if (o.op === 'copyRange') r = copyRows(book, fromSheet, src, toSheet, rangeOf(to.range, 'op.to.range'), o.withMeta === true, values)
       else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         r = moveRange(book, fromSheet, src, toSheet, at.row, at.col)

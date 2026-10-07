@@ -2,8 +2,8 @@
  * Canonical text of values and the hashes: one line per cell, ordered by sheet and address
  * (`"Sheet"!E12 n 1234.5`, `s "…"`, `b TRUE`, `e DIV0`); `-0` is 0, non-finite is `#NUM!`, numbers are
  * rounded to 15 significant digits; then one line per range of a large spilled array's unstored cells
- * (`"Sheet"!B4:B1048576 n 0`). The engine configuration version is part of the values hash, and so is a
- * book's locale other than en-US.
+ * (`"Sheet"!B4:B1048576 n 0`). The engine configuration version is part of the values hash, and so are a
+ * book's locale other than en-US and the 1904 date system.
  */
 import type { BookInput, CellValue } from './contract.js'
 import { lines, spanKey } from './layout/spans.js'
@@ -53,10 +53,19 @@ export function canonText(values: Map<string, Map<string, CellValue>>, fills: re
 /** A locale that takes part in the hashes: one given and not en-US, so books computed as before hash as before. */
 const hashedLocale = (locale: string | undefined): string | undefined => (locale === DEFAULT_LOCALE ? undefined : locale)
 
-/** The values hash: the configuration version, `;locale=<tag>` for a book in a locale other than en-US, the values and fills. */
-export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string): string {
+/**
+ * The values hash: the configuration version, `;locale=<tag>` for a book in a locale other than en-US, `;date1904`
+ * for a book in the 1904 date system, the values and fills.
+ */
+export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string, dateSystem?: 1900 | 1904): string {
   const tag = hashedLocale(locale)
-  return new Sha256().update(configVersion).update(tag === undefined ? '' : `;locale=${tag}`).update('\n').update(canonText(values, fills)).hex()
+  return new Sha256()
+    .update(configVersion)
+    .update(tag === undefined ? '' : `;locale=${tag}`)
+    .update(dateSystem === 1904 ? ';date1904' : '')
+    .update('\n')
+    .update(canonText(values, fills))
+    .hex()
 }
 
 /** JSON with sorted object keys: the order of fields in the input does not affect the hash. */
@@ -78,8 +87,8 @@ function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis
 
 /**
  * Input hash: sheets by name, cells by address, names by (scope, name). Columns, rows, merged areas (in
- * order), the style table and a locale other than en-US come after their sheet and the names when there are
- * any, so a book without them hashes as before they existed.
+ * order), the filter mode, the style table, a locale other than en-US, the 1904 date system and iterative
+ * calculation come after their sheet and the names when there are any, so a book without them hashes as before.
  */
 export function inputHash(book: BookInput): string {
   const h = new Sha256()
@@ -88,12 +97,15 @@ export function inputHash(book: BookInput): string {
     for (const addr of sortAddresses(Object.keys(s.cells))) h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
+    if (s.filtered) h.update('F\n')
   }
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
   for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)
   if (book.styles?.length) h.update(`Y ${stableJson(book.styles)}\n`)
   const tag = hashedLocale(book.locale)
   if (tag !== undefined) h.update(`L ${JSON.stringify(tag)}\n`)
+  if (book.dateSystem === 1904) h.update('D 1904\n')
+  if (book.iteration) h.update(`I ${stableJson(book.iteration)}\n`)
   return h.hex()
 }
 

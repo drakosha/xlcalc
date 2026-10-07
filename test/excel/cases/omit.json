@@ -40362,6 +40362,70 @@
    "t": "s",
    "v": "{1;7}"
   },
+  "all:GROWTH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "all:GROWTH#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#5": {
+   "t": "s",
+   "v": "{14410474.072738;21086495.500238}"
+  },
+  "all:GROWTH#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:GROWTH#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:GROWTH#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:GROWTH#9": {
+   "t": "s",
+   "v": "{32618.203774;47729.422615;69841.300856;102197.073379;149542.48674;218821.876215}"
+  },
+  "all:GROWTH#10": {
+   "t": "s",
+   "v": "{495.30477}"
+  },
+  "all:GROWTH#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#13": {
+   "t": "s",
+   "v": "{320196.718363;468536.054184}"
+  },
+  "all:GROWTH#14": {
+   "t": "s",
+   "v": "{1414600.728288;3254137.278941}"
+  },
+  "all:GROWTH#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:GROWTH#16": {
+   "t": "s",
+   "v": "{1414600.728288;3254137.278941}"
+  },
   "all:HSTACK#1": {
    "t": "e",
    "v": "VALUE"
@@ -40429,6 +40493,134 @@
   "all:HSTACK#17": {
    "t": "s",
    "v": "{1,4,\"a\",FALSE;#N/A,8,#N/A,#N/A}"
+  },
+  "all:LINEST#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#2": {
+   "t": "s",
+   "v": "{0,0,0,0,0,0}"
+  },
+  "all:LINEST#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#5": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LINEST#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LINEST#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LINEST#9": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#10": {
+   "t": "s",
+   "v": "{2.345455,0}"
+  },
+  "all:LINEST#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#12": {
+   "t": "s",
+   "v": "{2.345455,0}"
+  },
+  "all:LINEST#13": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#14": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LINEST#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LINEST#16": {
+   "t": "s",
+   "v": "{2.1,0.9}"
+  },
+  "all:LOGEST#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "all:LOGEST#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#5": {
+   "t": "s",
+   "v": "{1.463276,22291.223298}"
+  },
+  "all:LOGEST#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LOGEST#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LOGEST#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:LOGEST#9": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:LOGEST#10": {
+   "t": "s",
+   "v": "{2.300393,1}"
+  },
+  "all:LOGEST#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#12": {
+   "t": "s",
+   "v": "{2.300393,1}"
+  },
+  "all:LOGEST#13": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:LOGEST#14": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
+  },
+  "all:LOGEST#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:LOGEST#16": {
+   "t": "s",
+   "v": "{1.463276,495.30477}"
   },
   "all:MMULT#1": {
    "t": "e",
@@ -40946,6 +41138,70 @@
    "t": "s",
    "v": "{4,2,8,7}"
   },
+  "all:TREND#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#2": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#5": {
+   "t": "s",
+   "v": "{13.5;15.6}"
+  },
+  "all:TREND#6": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#7": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#8": {
+   "t": "e",
+   "v": "REF"
+  },
+  "all:TREND#9": {
+   "t": "s",
+   "v": "{3;5.1;7.2;9.3;11.4}"
+  },
+  "all:TREND#10": {
+   "t": "s",
+   "v": "{0.9}"
+  },
+  "all:TREND#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#13": {
+   "t": "s",
+   "v": "{13.5;15.6}"
+  },
+  "all:TREND#14": {
+   "t": "s",
+   "v": "{14.072727;16.418182}"
+  },
+  "all:TREND#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "all:TREND#16": {
+   "t": "s",
+   "v": "{14.072727;16.418182}"
+  },
   "all:UNIQUE#1": {
    "t": "s",
    "v": "{}"
@@ -41141,262 +41397,6 @@
   "all:WRAPROWS#10": {
    "t": "s",
    "v": "{1,2;3,FALSE}"
-  },
-  "all:GROWTH#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#2": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "all:GROWTH#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#5": {
-   "t": "s",
-   "v": "{14410474.072738;21086495.500238}"
-  },
-  "all:GROWTH#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:GROWTH#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:GROWTH#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:GROWTH#9": {
-   "t": "s",
-   "v": "{32618.203774;47729.422615;69841.300856;102197.073379;149542.48674;218821.876215}"
-  },
-  "all:GROWTH#10": {
-   "t": "s",
-   "v": "{495.30477}"
-  },
-  "all:GROWTH#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#13": {
-   "t": "s",
-   "v": "{320196.718363;468536.054184}"
-  },
-  "all:GROWTH#14": {
-   "t": "s",
-   "v": "{1414600.728288;3254137.278941}"
-  },
-  "all:GROWTH#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:GROWTH#16": {
-   "t": "s",
-   "v": "{1414600.728288;3254137.278941}"
-  },
-  "all:LINEST#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#2": {
-   "t": "s",
-   "v": "{0,0,0,0,0,0}"
-  },
-  "all:LINEST#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#5": {
-   "t": "s",
-   "v": "{2.1,0.9}"
-  },
-  "all:LINEST#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LINEST#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LINEST#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LINEST#9": {
-   "t": "s",
-   "v": "{2.1,0.9}"
-  },
-  "all:LINEST#10": {
-   "t": "s",
-   "v": "{2.345455,0}"
-  },
-  "all:LINEST#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#12": {
-   "t": "s",
-   "v": "{2.345455,0}"
-  },
-  "all:LINEST#13": {
-   "t": "s",
-   "v": "{2.1,0.9}"
-  },
-  "all:LINEST#14": {
-   "t": "s",
-   "v": "{2.1,0.9}"
-  },
-  "all:LINEST#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LINEST#16": {
-   "t": "s",
-   "v": "{2.1,0.9}"
-  },
-  "all:LOGEST#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#2": {
-   "t": "e",
-   "v": "NUM"
-  },
-  "all:LOGEST#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#5": {
-   "t": "s",
-   "v": "{1.463276,22291.223298}"
-  },
-  "all:LOGEST#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LOGEST#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LOGEST#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:LOGEST#9": {
-   "t": "s",
-   "v": "{1.463276,495.30477}"
-  },
-  "all:LOGEST#10": {
-   "t": "s",
-   "v": "{2.300393,1}"
-  },
-  "all:LOGEST#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#12": {
-   "t": "s",
-   "v": "{2.300393,1}"
-  },
-  "all:LOGEST#13": {
-   "t": "s",
-   "v": "{1.463276,495.30477}"
-  },
-  "all:LOGEST#14": {
-   "t": "s",
-   "v": "{1.463276,495.30477}"
-  },
-  "all:LOGEST#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:LOGEST#16": {
-   "t": "s",
-   "v": "{1.463276,495.30477}"
-  },
-  "all:TREND#1": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#2": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#3": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#5": {
-   "t": "s",
-   "v": "{13.5;15.6}"
-  },
-  "all:TREND#6": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#7": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#8": {
-   "t": "e",
-   "v": "REF"
-  },
-  "all:TREND#9": {
-   "t": "s",
-   "v": "{3;5.1;7.2;9.3;11.4}"
-  },
-  "all:TREND#10": {
-   "t": "s",
-   "v": "{0.9}"
-  },
-  "all:TREND#11": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#12": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#13": {
-   "t": "s",
-   "v": "{13.5;15.6}"
-  },
-  "all:TREND#14": {
-   "t": "s",
-   "v": "{14.072727;16.418182}"
-  },
-  "all:TREND#15": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "all:TREND#16": {
-   "t": "s",
-   "v": "{14.072727;16.418182}"
   }
  }
 }

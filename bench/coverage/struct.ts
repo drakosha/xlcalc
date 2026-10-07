@@ -13,10 +13,11 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
+import { inCaseOrder } from './stored.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import { markDynamic } from './book.js'
-import { fileFormula } from './spill.js'
-import type { BookInput, CellStyle, SheetInput } from '../../src/contract.js'
+import { fileFormula, formatCode, writeParts, type FileParts } from './case-book.js'
+import type { BookInput, CellStyle, NumberFormat, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
@@ -39,12 +40,14 @@ export interface CellLook {
   format?: string
 }
 
-/** The look of `LOOK` on a sheet: cells that are not plain, the columns and rows not of the standard size, merged areas meeting it. */
+/** The look of `LOOK` on a sheet: cells that are not plain, the columns and rows not of the standard size, merged areas meeting it, hidden columns and rows. */
 export interface SheetLook {
   cells: Record<string, CellLook>
   widths: Record<string, number>
   heights: Record<string, number>
   merges: string[]
+  /** Hidden columns and rows (`C`, `5`) when there are any. */
+  hidden?: string[]
 }
 
 export interface ExcelStructAnswer {
@@ -69,9 +72,9 @@ export const styled = (book: BookInput) =>
 const argb = (color: string) => ({ argb: `FF${color.slice(1).toUpperCase()}` })
 
 /** A style and a number format as ExcelJS takes them; a font keeps the default Calibri 11. */
-function excelStyle(st: CellStyle | undefined, format: string | undefined): Partial<ExcelJS.Style> {
+function excelStyle(st: CellStyle | undefined, format: NumberFormat | undefined): Partial<ExcelJS.Style> {
   const out: Partial<ExcelJS.Style> = {}
-  if (format !== undefined) out.numFmt = format
+  if (format !== undefined) out.numFmt = formatCode(format)
   if (st?.font) {
     const { color, ...f } = st.font
     out.font = { name: 'Calibri', size: 11, ...f, ...(color ? { color: argb(color) } : {}) }
@@ -96,12 +99,13 @@ function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.
   const rows = lines(s.rows, 'r')
   for (const [lo, hi, e] of cols) {
     if (e.width === undefined) throw new Error(`${c.id}: column ${indexToCol(lo)} has no width (ExcelJS would write 9)`)
-    for (let i = lo; i <= hi; i++) Object.assign(ws.getColumn(i + 1), { width: e.width, style: excelStyle(style(e.style), e.format) })
+    for (let i = lo; i <= hi; i++) Object.assign(ws.getColumn(i + 1), { width: e.width, style: excelStyle(style(e.style), e.format), ...(e.hidden ? { hidden: true } : {}) })
   }
   const filled = new Set(Object.keys(s.cells).map((a) => parseAddress(a).row))
   for (const [lo, hi, e] of rows)
     for (let i = lo; i <= hi; i++) {
-      if (e.height === undefined && !filled.has(i)) throw new Error(`${c.id}: row ${i + 1} has neither a height nor cells (ExcelJS would drop it)`)
+      // a row that is only hidden is written by `writeParts`
+      if (e.height === undefined && !filled.has(i) && Object.keys(e).some((k) => k !== 'hidden')) throw new Error(`${c.id}: row ${i + 1} has neither a height nor cells (ExcelJS would drop it)`)
       // the row's own style, without passing it to its cells as ExcelJS's setters do
       Object.assign(ws.getRow(i + 1), { style: excelStyle(style(e.style), e.format) }, e.height === undefined ? {} : { height: e.height })
     }
@@ -125,11 +129,24 @@ function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.
   }
 }
 
+/** The file parts of a book: its hidden rows, and the autofilter `files` gives each `filtered` sheet. */
+function partsOf(c: StructCase, book: BookInput, files: FileParts = {}): FileParts {
+  const sheets: FileParts['sheets'] = {}
+  for (const s of book.sheets) {
+    const hiddenRows = lines(s.rows, 'r').flatMap(([lo, hi, e]) => (e.hidden ? [lo === hi ? `${lo + 1}` : `${lo + 1}:${hi + 1}`] : []))
+    const filter = files.sheets?.[s.name]?.filter
+    if (!!s.filtered !== !!filter) throw new Error(`${c.id}: sheet ${s.name} is filtered without a filter in the file, or the other way round`)
+    if (hiddenRows.length || filter) sheets[s.name] = { hiddenRows, ...(filter ? { filter } : {}) }
+  }
+  return { sheets }
+}
+
 /**
  * The book as xlsx: values and formulas (no cached results; spill references as Excel stores them), names with
- * their scope, the layout of a styled book; with `dynamic`, formulas as dynamic array formulas (Excel 365).
+ * their scope, the layout of a styled book with its hidden lines and filters; with `dynamic`, formulas as dynamic
+ * array formulas (Excel 365).
  */
-async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: boolean): Promise<void> {
+async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: boolean, files?: FileParts): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const s of book.sheets) {
     const ws = wb.addWorksheet(s.name)
@@ -148,6 +165,8 @@ async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: 
   Object.defineProperty(wb.definedNames, 'model', { get: () => names })
   await wb.xlsx.writeFile(file)
   if (dynamic) await markDynamic(file, book.sheets.length, (i, addr) => book.sheets[i].cells[addr]?.array !== undefined)
+  const parts = partsOf(c, book, files)
+  if (Object.keys(parts.sheets!).length) await writeParts(file, book, parts)
 }
 
 /**
@@ -218,7 +237,7 @@ function lookArgs(look: string): [string, string, string] {
   return [[...cells].join('\n'), [...cols].join('\n'), [...rows].join('\n')]
 }
 
-type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number][], [string, boolean, number][]]
+type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number, boolean][], [string, boolean, number, boolean][]]
 
 /** Excel's look of a sheet: a white fill is no fill (cases do not use white), sizes of the standard size are left out. */
 function lookOf([cells, widths, heights]: RawLook): SheetLook {
@@ -231,15 +250,18 @@ function lookOf([cells, widths, heights]: RawLook): SheetLook {
     const m = merge.replaceAll('$', '')
     if (m && !out.merges.includes(m)) out.merges.push(m)
   }
-  for (const [col, std, w] of widths) if (!std) out.widths[col] = w
-  for (const [row, std, h] of heights) if (!std) out.heights[row] = h
-  return out
+  const hidden: string[] = []
+  for (const [col, std, w, hid] of widths) if (hid) hidden.push(col)
+  else if (!std) out.widths[col] = w
+  for (const [row, std, h, hid] of heights) if (hid) hidden.push(row)
+  else if (!std) out.heights[row] = h
+  return hidden.length ? { ...out, hidden } : out
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
-async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRects: string): Promise<ExcelStructAnswer> {
+async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
   const before = dialogText()
   if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
   if (Number(execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to count workbooks'], { encoding: 'utf8' }).trim()) !== 0) throw new Error('Excel has open books')
@@ -247,10 +269,10 @@ async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRec
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
-    await writeBook(c, book, file, dynamic)
+    await writeBook(c, book, file, dynamic, files)
     const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
     const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
-    const child = spawn('osascript', [SCRIPT, file, c.op.op, ...opArgs(c), READ, extra, ...look])
+    const child = spawn('osascript', [SCRIPT, file, c.via ?? c.op.op, ...opArgs(c), READ, extra, ...look])
     let out = ''
     let err = ''
     child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
@@ -295,20 +317,20 @@ async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRec
 export async function stepStruct(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./struct/${set}.js`)) as StructSet
-  const { books, cases, dynamic = false, look = [], widths } = mod.buildStructCases()
+  const { books, cases, dynamic = false, look = [], widths, files } = mod.buildStructCases()
   const lookRects = [LOOK, ...look].join(',')
   const target = join(ROOT, `test/excel/struct/${set}.json`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredStruct) : null
   // an answer is kept when its case and the case's book are unchanged
-  const key = (c: StructCase, bs: Record<string, BookInput>) => JSON.stringify([c, bs[c.book]])
-  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.books)]) ?? [])
+  const key = (c: StructCase, bs: Record<string, BookInput>, fs?: Record<string, FileParts>) => JSON.stringify([c, bs[c.book], fs?.[c.book]])
+  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.books, prev.files)]) ?? [])
   const answers: Record<string, ExcelStructAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && same.get(c.id) === key(c, books)) answers[c.id] = prev.answers[c.id]
+  for (const c of cases) if (prev?.answers[c.id] && same.get(c.id) === key(c, books, files)) answers[c.id] = prev.answers[c.id]
   const t0 = Date.now()
   mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), answers }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
   await ensureExcel('en')
   let done = 0
@@ -316,7 +338,7 @@ export async function stepStruct(set: string): Promise<void> {
     const only = process.env.FSTRUCT_ONLY?.split(',')
     for (const c of cases) {
       if (answers[c.id] || (only && !only.includes(c.id))) continue
-      answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects)
+      answers[c.id] = await runCase(c, books[c.book], dynamic, lookRects, files?.[c.book])
       done++
     }
   } finally {

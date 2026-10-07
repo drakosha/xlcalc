@@ -11,6 +11,9 @@ import type { CellInput } from '../../../src/contract.js'
 export interface DisplayAnswer {
   text: string
   color?: string
+  /** For a case with `numFmtId`: the cell's format code as Excel reports it (`NumberFormat`) and in the interface's language (`NumberFormatLocal`). */
+  code?: string
+  local?: string
 }
 
 export interface DisplayCase {
@@ -23,6 +26,8 @@ export interface DisplayCase {
   span?: number
   /** The format is written by its number when it is one of Excel's built-in formats (else as a custom format). */
   builtin?: true
+  /** The cell's format is the built-in format of this number, written by its number alone (`numFmtId` without a code); `cell.format` is left out. */
+  numFmtId?: number
   /** A held-out case: the answer predicted before Excel showed it. */
   predicted?: DisplayAnswer
 }

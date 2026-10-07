@@ -29,6 +29,9 @@ const read = (sub: string, locale: DisplaySetFile['locale']): DisplaySetFile[] =
 /** The stored answers of Excel en-US and Excel ru-RU. */
 export const DISPLAY_SETS: DisplaySetFile[] = [...read('./', 'en-US'), ...read('./ru-RU/', 'ru-RU')]
 
+/** A case's cell as the engine takes it: a built-in format by its number. */
+export const formatted = (c: DisplayCase) => (c.numFmtId === undefined ? c.cell : { ...c.cell, format: c.numFmtId })
+
 /** The book of a set's cases, as the harness lays them out, and each case's address. */
 export function displayBook(cases: DisplayCase[], locale: string): { book: BookInput; at: Map<string, string> } {
   const sheet: Required<Pick<SheetInput, 'cells' | 'columns' | 'merges'>> & SheetInput = { name: 'S', cells: {}, columns: {}, merges: [] }
@@ -38,7 +41,7 @@ export function displayBook(cases: DisplayCase[], locale: string): { book: BookI
     const { row, col } = placed.get(c.id)!
     const addr = formatAddress(row, col)
     at.set(c.id, addr)
-    sheet.cells[addr] = c.cell
+    sheet.cells[addr] = formatted(c)
     const span = c.span ?? 1
     for (let k = 0; k < span; k++) if (c.width !== undefined) sheet.columns[indexToCol(col + k)] = { width: c.width }
     if (span > 1) sheet.merges.push(`${addr}:${formatAddress(row, col + span - 1)}`)

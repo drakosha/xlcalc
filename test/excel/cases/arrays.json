@@ -15748,6 +15748,294 @@
    "t": "n",
    "v": 50
   },
+  "index:VLOOKUP#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:VLOOKUP#2": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#3": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#4": {
+   "t": "n",
+   "v": 55
+  },
+  "index:VLOOKUP#5": {
+   "t": "n",
+   "v": 64
+  },
+  "index:VLOOKUP#6": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#7": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#8": {
+   "t": "n",
+   "v": 64
+  },
+  "index:VLOOKUP#9": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:VLOOKUP#10": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#11": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#12": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#13": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#14": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#15": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#16": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#17": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#18": {
+   "t": "s",
+   "v": "three"
+  },
+  "index:VLOOKUP#19": {
+   "t": "n",
+   "v": 50
+  },
+  "index:VLOOKUP#20": {
+   "t": "n",
+   "v": 0
+  },
+  "index:VLOOKUP#21": {
+   "t": "b",
+   "v": true
+  },
+  "index:VLOOKUP#22": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#23": {
+   "t": "b",
+   "v": true
+  },
+  "index:VLOOKUP#24": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:VLOOKUP#25": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#26": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#27": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#28": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#29": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#30": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#31": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#32": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#33": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#34": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#35": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#37": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#38": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#39": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#40": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#41": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#42": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#43": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#44": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#45": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#46": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:VLOOKUP#47": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#48": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#49": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#50": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#51": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#52": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#53": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#54": {
+   "t": "n",
+   "v": 1
+  },
+  "index:VLOOKUP#55": {
+   "t": "s",
+   "v": "eight"
+  },
+  "index:VLOOKUP#56": {
+   "t": "n",
+   "v": 8
+  },
+  "index:VLOOKUP#57": {
+   "t": "e",
+   "v": "NA"
+  },
+  "index:VLOOKUP#58": {
+   "t": "n",
+   "v": 2
+  },
+  "index:VLOOKUP#59": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#60": {
+   "t": "n",
+   "v": 5
+  },
+  "index:VLOOKUP#61": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#62": {
+   "t": "s",
+   "v": "eight"
+  },
+  "index:VLOOKUP#63": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:VLOOKUP#64": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:VLOOKUP#65": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:HLOOKUP#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "index:HLOOKUP#2": {
+   "t": "s",
+   "v": "five"
+  },
+  "index:HLOOKUP#3": {
+   "t": "e",
+   "v": "REF"
+  },
+  "index:HLOOKUP#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:HLOOKUP#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "index:HLOOKUP#6": {
+   "t": "s",
+   "v": "eight"
+  },
+  "index:MATCH#1": {
+   "t": "n",
+   "v": 4
+  },
   "key:MATCH#1": {
    "t": "n",
    "v": 7
@@ -18272,6 +18560,14 @@
    "t": "e",
    "v": "SPILL"
   },
+  "lift:CHAR#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:CHAR#2": {
+   "t": "e",
+   "v": "SPILL"
+  },
   "lift:CHIDIST#1": {
    "t": "e",
    "v": "SPILL"
@@ -18413,6 +18709,14 @@
    "v": "SPILL"
   },
   "lift:CLEAN#2": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:CODE#1": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "lift:CODE#2": {
    "t": "e",
    "v": "SPILL"
   },
@@ -23981,310 +24285,6 @@
    "v": "SPILL"
   },
   "lift:ZTEST#2": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "index:VLOOKUP#1": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "index:VLOOKUP#2": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:VLOOKUP#3": {
-   "t": "n",
-   "v": 50
-  },
-  "index:VLOOKUP#4": {
-   "t": "n",
-   "v": 55
-  },
-  "index:VLOOKUP#5": {
-   "t": "n",
-   "v": 64
-  },
-  "index:VLOOKUP#6": {
-   "t": "n",
-   "v": 5
-  },
-  "index:VLOOKUP#7": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:VLOOKUP#8": {
-   "t": "n",
-   "v": 64
-  },
-  "index:VLOOKUP#9": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "index:VLOOKUP#10": {
-   "t": "n",
-   "v": 5
-  },
-  "index:VLOOKUP#11": {
-   "t": "n",
-   "v": 50
-  },
-  "index:VLOOKUP#12": {
-   "t": "n",
-   "v": 2
-  },
-  "index:VLOOKUP#13": {
-   "t": "n",
-   "v": 5
-  },
-  "index:VLOOKUP#14": {
-   "t": "n",
-   "v": 2
-  },
-  "index:VLOOKUP#15": {
-   "t": "n",
-   "v": 50
-  },
-  "index:VLOOKUP#16": {
-   "t": "n",
-   "v": 5
-  },
-  "index:VLOOKUP#17": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:VLOOKUP#18": {
-   "t": "s",
-   "v": "three"
-  },
-  "index:VLOOKUP#19": {
-   "t": "n",
-   "v": 50
-  },
-  "index:VLOOKUP#20": {
-   "t": "n",
-   "v": 0
-  },
-  "index:VLOOKUP#21": {
-   "t": "b",
-   "v": true
-  },
-  "index:VLOOKUP#22": {
-   "t": "n",
-   "v": 2
-  },
-  "index:VLOOKUP#23": {
-   "t": "b",
-   "v": true
-  },
-  "index:VLOOKUP#24": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "index:VLOOKUP#25": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#26": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#27": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#28": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#29": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#30": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#31": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#32": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#33": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#34": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#35": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#36": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#37": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#38": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#39": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#40": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#41": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#42": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#43": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#44": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#45": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#46": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:VLOOKUP#47": {
-   "t": "e",
-   "v": "NA"
-  },
-  "index:VLOOKUP#48": {
-   "t": "e",
-   "v": "NA"
-  },
-  "index:VLOOKUP#49": {
-   "t": "e",
-   "v": "NA"
-  },
-  "index:VLOOKUP#50": {
-   "t": "e",
-   "v": "NA"
-  },
-  "index:VLOOKUP#51": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#52": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#53": {
-   "t": "n",
-   "v": 2
-  },
-  "index:VLOOKUP#54": {
-   "t": "n",
-   "v": 1
-  },
-  "index:VLOOKUP#55": {
-   "t": "s",
-   "v": "eight"
-  },
-  "index:VLOOKUP#56": {
-   "t": "n",
-   "v": 8
-  },
-  "index:VLOOKUP#57": {
-   "t": "e",
-   "v": "NA"
-  },
-  "index:VLOOKUP#58": {
-   "t": "n",
-   "v": 2
-  },
-  "index:VLOOKUP#59": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:VLOOKUP#60": {
-   "t": "n",
-   "v": 5
-  },
-  "index:VLOOKUP#61": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:VLOOKUP#62": {
-   "t": "s",
-   "v": "eight"
-  },
-  "index:VLOOKUP#63": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:VLOOKUP#64": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:VLOOKUP#65": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:HLOOKUP#1": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "index:HLOOKUP#2": {
-   "t": "s",
-   "v": "five"
-  },
-  "index:HLOOKUP#3": {
-   "t": "e",
-   "v": "REF"
-  },
-  "index:HLOOKUP#4": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:HLOOKUP#5": {
-   "t": "e",
-   "v": "VALUE"
-  },
-  "index:HLOOKUP#6": {
-   "t": "s",
-   "v": "eight"
-  },
-  "index:MATCH#1": {
-   "t": "n",
-   "v": 4
-  },
-  "lift:CHAR#1": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "lift:CHAR#2": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "lift:CODE#1": {
-   "t": "e",
-   "v": "SPILL"
-  },
-  "lift:CODE#2": {
    "t": "e",
    "v": "SPILL"
   }

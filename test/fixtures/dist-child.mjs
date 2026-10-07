@@ -8,6 +8,7 @@ const { compute, CONFIG_VERSION, engine, FUNCTION_NAMES, InputError, openSession
 const contract = await import(`${name}/contract`)
 const { createState, parse, valuesHash } = await import(`${name}/unstable/internal`)
 const { classAEdits, synthBook } = await import(`${name}/unstable/synth`)
+const { readXlsx, writeXlsx } = await import(`${name}/xlsx`)
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const synth = synthBook({ seed: 1, rows: 340 })
@@ -16,6 +17,7 @@ const session = openSession(synth.book, { clock })
 for (const e of classAEdits(synth, 3, 10)) session.setCells([e])
 const edited = session.result().hash
 session.close()
+const xlsx = await readXlsx((await writeXlsx(synth.book, { result: compute(synth.book, { clock }) })).data)
 /** Error code of importing a path that `exports` does not expose. */
 async function closed(spec) {
   try {
@@ -36,6 +38,7 @@ console.log(
     validate: validateFormula('SUM(A1:A3)').ok,
     contract: Object.keys(contract).sort(),
     internal: [typeof createState, typeof parse, typeof valuesHash],
+    xlsx: compute(xlsx.book, { clock }).hash,
     closed: await Promise.all([`${name}/dist/engine.js`, `${name}/internal`, `${name}/synth`].map(closed)),
   }),
 )

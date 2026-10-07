@@ -1,6 +1,7 @@
 /**
  * Smoke test of the built package (`npm run build` first): every `exports` subpath exists in `dist` with
- * `.d.ts`, plain node imports them by package name, the synthetic hash and the session match the sources,
+ * `.d.ts`, plain node imports them by package name, the synthetic hash, the session and the synthetic book through
+ * xlsx match the sources,
  * `dist` cannot be reached around `exports`, ported code keeps its attribution, and the tarball holds only
  * `dist` and the documents.
  */
@@ -22,7 +23,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth', './xlsx'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -41,6 +42,8 @@ describe('built package', () => {
     for (const e of classAEdits(synth, 3, 10)) session.setCells([e])
     expect(out.hash).toBe(compute(synth.book, { clock }).hash)
     expect(out.edited).toBe(session.result().hash)
+    // the synthetic book written to xlsx and read back computes to the same values
+    expect(out.xlsx).toBe(out.hash)
     session.close()
     expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.engine).toEqual(['compute', 'displayValue', 'openSession', 'restructure', 'validateFormula', 'validateName'])

@@ -10,10 +10,10 @@ function clock(t: number): { h: number; m: number; s: number } {
 }
 
 export const functions: Record<string, FnDef> = {
-  HOUR: { args: 't', fn: (t: number) => clock(t).h },
-  MINUTE: { args: 't', fn: (t: number) => clock(t).m },
+  HOUR: { args: 'h', fn: (t: number) => clock(t).h },
+  MINUTE: { args: 'h', fn: (t: number) => clock(t).m },
   NOW: { args: '', cx: true, volatile: true, fn: (cx: Cx) => cx.now },
-  SECOND: { args: 't', fn: (t: number) => clock(t).s },
+  SECOND: { args: 'h', fn: (t: number) => clock(t).s },
   // INT of each part, each at most 32767, wrapped to a day; a negative total is #NUM!
   TIME: {
     args: 'n n n',

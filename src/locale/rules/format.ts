@@ -10,7 +10,7 @@
  */
 import type { ErrorCode } from '../../contract.js'
 import { colorNames } from '../../numfmt/palette.js'
-import { generalFormat, type Codes, type Dialect, type Names, type Style } from '../../numfmt.js'
+import { builtinCodes, generalFormat, type Codes, type Dialect, type Names, type Style } from '../../numfmt.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import type { RegionalData } from './data.js'
 
@@ -59,6 +59,7 @@ export function formatDialects(data: RegionalData, number: (text: string) => num
     longDate: data.longDate,
     longTime: data.longTime,
     longMonths: data.longMonths,
+    builtin: builtinCodes(data.builtin),
   }
   return { text: { codes: regionalCodes(data), style, number }, cell: { ...style, dateSeparator: data.dateSeparator } }
 }

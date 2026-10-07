@@ -94,12 +94,12 @@ export const functions: Record<string, FnDef> = {
   WORKDAY: atp('e j V?', (cx: Cx, start: number, days: number, h?: Segment) => {
     const hol = holidaysOf(h, cx.rules)
     return isErr(hol) ? hol : workday(start, days, SAT_SUN, hol)
-  }, { cx: true }),
+  }, { cx: true, date: 'book' }),
   'WORKDAY.INTL': atp('e j a? V?', (cx: Cx, start: number, days: number, w: V | undefined, h?: Segment) => {
     const weekend = weekendOf(w)
     if (isErr(weekend)) return weekend
     if (allWeekend(weekend)) return E.VALUE
     const hol = holidaysOf(h, cx.rules)
     return isErr(hol) ? hol : workday(start, days, weekend, hol)
-  }, { cx: true }),
+  }, { cx: true, date: 'book' }),
 }

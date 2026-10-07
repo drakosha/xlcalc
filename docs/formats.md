@@ -8,11 +8,11 @@ The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 
 - `compute(book, { display })` and `openSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `format` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `restructure`.
 - `display: false` returns values only and spends nothing on formatting.
-- `displayValue(value, { format, locale, width })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`.
+- `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`.
 
 The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
 
-A cell's format is its own `format`, else its row's, else its column's. Its width is its column's `width` (in xlsx units), or the width of all columns of the merged area it starts.
+A cell's format is its own `format`, else its row's, else its column's. A format is a code, or the number of a built-in format. Its width is its column's `width` (in xlsx units), or the width of all columns of the merged area it starts.
 
 ## Width
 
@@ -70,11 +70,35 @@ A section writes the minus of a negative number unless it can only take negative
 ## Dates and times
 
 - Excel's 1900 calendar: serial 0 is `1/0/1900`, 60 is `2/29/1900`. A negative serial, or one from 2,958,466 (past 9999-12-31), shows `#` and is `#VALUE!` in `TEXT`.
+- In a book of the 1904 date system, serial 0 is `1/1/1904` and the last date is serial 2,957,003. A negative date or time shows as its size with a minus: −1 with `m/d/yyyy` shows `-1/2/1904`, −0.5 with `h:mm` shows `-12:00`, and `TEXT` gives the same.
 - Time is rounded to what the format shows: whole seconds, or the decimals of `ss.0` to `ss.000`. 45688.999999 is `2025-02-01 00:00:00` with `yyyy-mm-dd hh:mm:ss` and `23:59:59.9` with `h:mm:ss.0`.
 - `m` means minutes after hours or before seconds, and the month elsewhere. `mmmmm` is the month's first letter. `ddd`, `dddd`, `mmm` and `mmmm` are the locale's names. `A/P` writes the letter in the format's case (`a/p` shows `6:00 p`).
 - `[h]`, `[mm]` and `[ss]` count elapsed hours, minutes or seconds from 0. A negative value shows with a minus when the section has elapsed time alone (`[h]` shows −1 as `-24`), and `#` otherwise.
 - In a cell, a bare `/` in a date format is the locale's date separator: `dd/mm/yyyy` shows `31.01.2025` in ru-RU. In `TEXT` it stays `/`. Quoted and escaped separators stay as written.
 - `[$-409]` and `[$-419]` select English and Russian names. `[$-F800]` is the system's long date (en-US `dddd, mmmm d, yyyy`; ru-RU `пятница, 31 января 2025 г.`, with months in the genitive) and `[$-F400]` the long time. Other tags are read and ignored.
+
+## Built-in formats
+
+An xlsx file stores some formats by number alone, without a code. A format here can be such a number, from 0 to 49: `{ value: 45688.75, format: 14 }`. Excel shows some of them by the locale, so the same number shows differently in en-US and ru-RU.
+
+| number | en-US | ru-RU |
+|---|---|---|
+| 0, 23 to 26 | `General` | `General` |
+| 1 to 4 | `0`, `0.00`, `#,##0`, `#,##0.00` | the same |
+| 5 to 8 | `$#,##0_);($#,##0)` and the like | `#,##0 "₽";-#,##0 "₽"` and the like |
+| 9 to 13 | `0%`, `0.00%`, `0.00E+00`, `# ?/?`, `# ??/??` | the same |
+| 14, 27 to 31, 36 | `m/d/yy` | `dd.mm.yyyy` |
+| 15, 16, 17 | `d-mmm-yy`, `d-mmm`, `mmm-yy` | `dd.mmm.yy`, `dd.mmm`, `mmm.yy` |
+| 18, 19 | `h:mm AM/PM`, `h:mm:ss AM/PM` | the same |
+| 20, 21, 32 to 35 | `h:mm`, `h:mm:ss` | `hh:mm`, `hh:mm:ss` |
+| 22 | `m/d/yy h:mm` | `dd.mm.yyyy hh:mm` |
+| 37 to 40 | `#,##0_);(#,##0)` and the like | `#,##0;-#,##0` and the like |
+| 41 to 44 | the accounting formats with `$` | the accounting formats with `₽` after the amount |
+| 45 to 49 | `mm:ss`, `[h]:mm:ss`, `mm:ss.0`, `##0.0E+0`, `@` | the same |
+
+In en-US, 14 shows 2025-01-31 as `1/31/25` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, `src/locale/rules/ru-RU.ts` the ru-RU ones.
+
+A format written as a code always shows as written. `format: 'm/d/yy'` shows `1/31/25` in ru-RU too.
 
 ## Locales
 
@@ -119,16 +143,19 @@ Most cells are text or General numbers in a default column, and their text is th
 | `fit` | 678 per locale | booleans, errors and text in narrow columns, numbers near the edge, fills, merged areas, colours, date separators, calendar edges |
 | `names` | 70 per locale | month names, long dates and times, large fractions, values no section takes |
 | `held` | 58 per locale | predicted by the engine before Excel computed them; 57 of 58 matched in each locale, and the miss became the rule for values no section takes |
+| `builtin` | 300 per locale | the built-in formats 0 to 49 by number on six values, with the codes Excel reports for them |
+| `builtin-held` | 350 per locale | built-in formats on other values and widths, predicted by the engine before Excel computed them, all matched |
 
 `TEXT` was measured as formulas in the case sets `text-format` and `text-format-more` (en-US) and `text-format-ru` and `text-format-ru-more` (ru-RU), 771 cases in all.
 
-The cases write every format as a custom code. Excel shows built-in formats 14 to 22 by the regional settings, so a format equal to one of them would show differently.
+The cases write a format as a custom code, so a code equal to a built-in format does not show by the locale. The sets of built-in formats write the number alone, as Excel stores it.
+
+The 1904 date system was checked with the workbook set `date1904` (`bench/coverage/workbook/`): the same cells and `TEXT` formulas in a book of each system.
 
 AppleScript returns no colour for an exact 0 in a format of fewer than three sections (`[Red]0`) and for text under a coloured text section (`[Red]@`), though Excel draws the colour on screen there. The engine gives the section's colour in these places, and the comparison accepts any colour.
 
 ## Known differences
 
 - **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (another font or size, bold), indent, wrapping, shrinking and rotation are ignored, and characters outside the measured table count as a digit. Excel for Windows lays out text in pixels, with a digit 7 pixels wide at 96 dpi, so near the edge of a column it can show `#` where the engine shows the number, or the other way round.
-- **Built-in formats.** xlsx stores some formats by number, and Excel shows numbers 14 to 22 by the regional settings (`d-mmm-yy` as `31.янв.25` in ru-RU). Here a format is a code and shows as written (`31-янв-25`).
 - **Locale tags.** Only `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]` change names or formats. Other locale codes, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are read and ignored.
 - **A second decimal separator** among the decimals of a format (`#,##0,00` in ru-RU's `TEXT`) is a literal between digits; Excel shows one digit fewer before it for some numbers.

@@ -23,7 +23,7 @@ type StructureOp =
 type RangeRef = { sheet: string; range: string }       // B2, B2:D9, B:D, 2:9
 type RestructureResult =
   | { ok: true; book: BookInput; mapCell(ref: CellRef): CellRef | null }
-  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged' | 'array'; message: string }
+  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged' | 'filtered' | 'array'; message: string }
 ```
 
 The types are in `xlcalc/contract`, and `FormulaEngine` has `restructure`.
@@ -42,6 +42,7 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 | `sheet_name` | the new name breaks Excel's rules or another sheet has it |
 | `last_sheet` | deleting the only sheet |
 | `merged` | a move whose source cuts a merged area, or a copy that lands on part of one |
+| `filtered` | a copy that left out rows a filter hid, pasted over hidden rows of a filtered sheet |
 | `array` | lines inserted inside the area of an array formula of the old kind, part of one deleted or moved, a paste over part of one |
 
 Excel refuses an insert only when a non-empty cell would leave the sheet. Here any cell counts, even one with only a format, style or `meta`, so nothing is dropped silently.
@@ -137,6 +138,29 @@ Merged areas inside the source go along. A copy also takes the part of a merged 
 
 A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
+## Hidden rows and filtered sheets
+
+A row or a column is hidden by `hidden: true` in `rows` or `columns`. A sheet whose autofilter has criteria is marked `filtered: true`. Excel then treats every hidden row of the sheet as one the filter hid, whatever hid it. An xlsx file marks such a sheet with `filterMode`.
+
+On any sheet:
+
+- Inserted rows and columns are shown, even inside a hidden block. They copy every other setting of the line before them.
+- Deleted lines take their `hidden` along, and moved or copied whole rows and columns carry it.
+- Cells move and copy without regard to `hidden` on a sheet that is not filtered. A copy of `A2:C16` with rows 4 and 7 hidden by hand copies all 15 rows.
+
+On a filtered sheet Excel acts on the visible rows:
+
+- Deleting rows deletes the visible rows among them. Deleting rows 6 to 9 when rows 7 and 8 are hidden deletes rows 6 and 9.
+- Inserting rows inserts as many rows as are visible among them, before the first. Inserting two rows at row 8, when row 8 is hidden and row 9 is shown, inserts one row.
+- A copy whose source covers hidden rows takes the visible rows only, one after another, and pastes their values instead of formulas. A copy of `A2:C16` with rows 4, 7, 8 and 11 hidden pastes 11 rows of values.
+- A paste of several cells over hidden rows goes into the visible rows. Each run of visible rows takes the copy as a target of its own. A copy of `D2:E2` onto `D3:E16` fills the visible rows and leaves the hidden ones as they were.
+- A copy that left rows out cannot be pasted over hidden rows. The operation is refused with `filtered`, as Excel refuses it.
+- A selection of hidden rows only is taken whole.
+
+The values a copy pastes come from the computed book. `session.restructure` takes the session's values. `restructure` computes the book first, at the current moment, which matters only for volatile formulas.
+
+`copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. Excel's fill handle fills the hidden rows too.
+
 ## Sessions
 
 `session.restructure(op)` applies the operation to the session's book and recomputes. The result is that of `restructure`, with `book` being the session's book after the operation, plus `changes`: every cell whose value differs from the value its old cell had. An interface that moves the values it shows by `mapCell` and applies `changes` has the new values. An insert into a block of data without position-dependent formulas reports no changes. A refused operation changes nothing.
@@ -149,9 +173,10 @@ Styles and layout change through the session so that its book stays the host's b
 
 - a cell's style through `setCells`; an edit that keeps a cell's value and formula recomputes nothing and returns no changes;
 - the style table through `setStyles(styles)`; every style in use must stay in it;
-- columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas.
+- columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
+- the filter mode through `setLayout`: `{ sheet, filtered: true }`.
 
-None of these recompute values.
+Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
 ## How it was checked
 
@@ -170,16 +195,22 @@ None of these recompute values.
 | `styles-checks` | 18 | predicted before Excel computed them: spans, tiled and moved merged areas, cells moved into styled rows and out of styled columns |
 | `edge-layout`, `edge-wide` | 9, 4 | styled rows and columns, spans and merged areas at the end of the sheet |
 | `spill`, `spill-more`, `spill-copy` | 8, 4, 10 | spill references and spilled cells under structure operations |
+| `hidden` | 49 | copies, fills, moves, inserts and deletes over rows hidden by hand and on a filtered sheet, and next to hidden columns |
 | `cube` | 20 | references across sheets and names of any formula: rows and columns, sheets renamed, deleted, inserted and moved, copies |
 | `arrays` | 17 | array formulas of the old kind: lines inserted and deleted around and inside the area, the area moved, copied and pasted over |
 
-All cases match except the one known difference below. Of the predicted cases, `checks` matched 21 of 26 and `styles-checks` 17 of 18; the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
+The look also lists the hidden rows and columns. The set `hidden` writes its filtered book with an autofilter and its criteria, and runs its fills through Excel's Fill Down and fill handle as well as copy and paste.
+
+All cases match except the two known differences below. Of the predicted cases, `checks` matched 21 of 26 and `styles-checks` 17 of 18; the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
 
 Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number).
+
+Copies were applied through AppleScript's `copy range` with a destination, Excel's `Range.Copy`. On a filtered sheet it pasted values. Copying and pasting in Excel's window was not measured.
 
 ## Known differences and limits
 
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
+- Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does.
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
-- Hidden rows and columns, outline levels, conditional formats, data validation, comments and charts are not part of a book.
+- Outline levels, conditional formats, data validation, comments and charts are not part of a book.
 - Structured references and references to other workbooks are not read, so they never occur in a valid formula.

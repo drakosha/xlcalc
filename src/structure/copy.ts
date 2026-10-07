@@ -48,8 +48,11 @@ const withoutMeta = (cell: CellInput): CellInput => {
   return rest
 }
 
-/** Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. */
-export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean): RestructureResult {
+/**
+ * Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. The source is read
+ * from `source`, the book as it was copied (the clipboard), when pastes follow one another.
+ */
+export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): RestructureResult {
   const offsets = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: `the copy does not fit on ${to} at ${formatAddress(target.r1, target.c1)}` }
@@ -62,17 +65,17 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   if (part) return { ok: false, code: 'array', message: part }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const names = sheetNames(book)
-  const sheet = book.sheets.find((s) => sheetKey(s.name) === fk)!
+  const sheet = source.sheets.find((s) => sheetKey(s.name) === fk)!
   // the cells of part of an array formula's area copy as array formulas of their own
   const parts = copiedCells(sheet, src, (f, r, c) => rewriteFormula(f, from, from, copyTransform(r, c), names))
-  const source = [...Object.entries(sheet.cells).filter(([addr]) => within(src, addr) && !parts.some(([a]) => a === addr)), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
+  const copied = [...Object.entries(sheet.cells).filter(([addr]) => within(src, addr) && !parts.some(([a]) => a === addr)), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== tk) return s
     const cells: Record<string, CellInput> = {}
     for (const [addr, cell] of Object.entries(s.cells)) if (!within(pasted, addr)) cells[addr] = cell
     for (const [r, c] of offsets) {
       const t = copyTransform(r, c)
-      for (const { addr, at, cell } of source) {
+      for (const { addr, at, cell } of copied) {
         const formula = cell.formula === undefined ? undefined : rewriteFormula(cell.formula, to, to, t, names)
         const dest = formatAddress(at.row + r, at.col + c)
         cells[dest] = relocated(formula === cell.formula ? cell : { ...cell, formula }, addr, dest)
@@ -83,11 +86,11 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const out: BookInput = { ...book, sheets }
   if (book.names) {
     const repoint: Transform = { ref: ({ sheet, area }) => (sheetKey(sheet) === fk ? { sheet: to, area } : undefined) }
-    const formulas = source.flatMap(({ cell }) => (cell.formula === undefined ? [] : [cell.formula]))
+    const formulas = copied.flatMap(({ cell }) => (cell.formula === undefined ? [] : [cell.formula]))
     const carried = fk === tk ? [] : carryNames(book.names, formulas, from, to, (ref) => rewriteFormula(ref, null, null, repoint, names))
     out.names = carried.length ? [...book.names, ...carried] : book.names
   }
-  pasteLayout(book, out, paste)
+  pasteLayout(source, out, paste)
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
   return { ok: true, book: out, mapCell }
 }

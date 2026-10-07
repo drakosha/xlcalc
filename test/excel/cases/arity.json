@@ -472,7 +472,15 @@
    "t": "n",
    "v": 1
   },
+  "MODE.SNGL:254": {
+   "t": "n",
+   "v": 1
+  },
   "SKEW:255": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SKEW.P:254": {
    "t": "e",
    "v": "DIV0"
   },
@@ -543,6 +551,10 @@
   "XOR:254": {
    "t": "b",
    "v": false
+  },
+  "IFS:254": {
+   "t": "n",
+   "v": 1
   },
   "SWITCH:254": {
    "t": "n",
@@ -615,18 +627,6 @@
   "TEXTJOIN:254": {
    "t": "s",
    "v": "a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a"
-  },
-  "MODE.SNGL:254": {
-   "t": "n",
-   "v": 1
-  },
-  "SKEW.P:254": {
-   "t": "e",
-   "v": "DIV0"
-  },
-  "IFS:254": {
-   "t": "n",
-   "v": 1
   }
  }
 }

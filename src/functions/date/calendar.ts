@@ -62,6 +62,7 @@ export const functions: Record<string, FnDef> = {
   // −32768…32767 is 32767 and a month from 32767 up #NUM!, as Excel's 16-bit arguments (the date-day set)
   DATE: {
     args: 'w w n',
+    date: 'book',
     fn: (y: number, m: number, day: number) => {
       const whole = Math.floor(day + WHOLE)
       const d = whole < -32768 || whole > 32767 ? 32767 : whole
@@ -91,21 +92,22 @@ export const functions: Record<string, FnDef> = {
       return isErr(e) ? e : isErr(s) ? s : e - s
     },
   },
-  // the day clamped to the target month; serial 0 is day 0 of January 1900
+  // the day clamped to the target month; serial 0 is day 0 of January 1900; a 1904 book answers dates before
+  // its first day too (EDATE(0,-1) is -31, the workbook set date1904)
   EDATE: atp('e j', (start: number, months: number) => {
     const s = ymd(start)
     const t = addMonths(s.y, s.m, months)
     if (t.y < 1900 || t.y > 9999) return E.NUM
     const serial = serialOf(t.y, t.m, 1) + Math.min(s.d, daysInMonth(t.y, t.m)) - 1
     return serial < 0 || serial > MAX_SERIAL ? E.NUM : serial
-  }),
+  }, { date: 'calendar' }),
   // the start month in Excel's calendar (serial 60 is February 1900), the last day by the real one
   EOMONTH: atp('e j', (start: number, months: number) => {
     const s = ymd(start)
     const t = addMonths(s.y, s.m, months)
     if (t.y < 1900 || t.y > 9999) return E.NUM
     return serialOf(t.y, t.m, daysInMonth(t.y, t.m))
-  }),
+  }, { date: 'calendar' }),
   ISOWEEKNUM: { args: 'd', fn: isoWeek },
   MONTH: { args: 't', fn: (t: number) => ymd(dayAt(t)).m },
   WEEKDAY: {

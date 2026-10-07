@@ -11,6 +11,7 @@ import type { RuntimeContext, SheetData } from './runtime.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
 import { meets } from './structure/area.js'
+import { sheetKey } from './syntax.js'
 import { E, isErr, Rng, type V } from './values.js'
 
 export function same(a: V, b: V): boolean {
@@ -60,17 +61,24 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
   return true
 }
 
-function evaluate(state: EngineState, ids: number[], t?: Tracker) {
+/**
+ * Computes the formulas `ids` in turn and writes their values; a formula in a cycle (or over one) is #CYCLE!, unless
+ * `iterating`. Whether any value changed as Excel's iteration counts a change (the workbook set `iterate`): a number
+ * by `delta` or more, a number turned into another type or back; text, a boolean or an error changed into another of
+ * them does not count.
+ */
+function evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0): boolean {
   const { rt, spills } = state
   // a formula that reads the clock's year joins the volatile ones; one that no longer does leaves them
   const { clock } = state.ctx.rules
   let clocked = false
+  let moved = false
   for (const id of ids) {
     const f = state.formulas[id]!
     spills.done.set(id, ++spills.step)
     if (clock) clock.read = false
     let v: V
-    if (state.topo[id] < 0) {
+    if (state.topo[id] < 0 && !iterating) {
       endSpill(state, f, t, true)
       v = E.CYCLE
     } else {
@@ -87,13 +95,50 @@ function evaluate(state: EngineState, ids: number[], t?: Tracker) {
       else state.clocked.delete(id)
       clocked = true
     }
+    const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
+    moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : (typeof v === 'number') !== (typeof was === 'number')
     write(state, f.s, f.r, f.c, v, t)
   }
   if (clocked) markVolatile(state)
+  return moved
 }
 
-/** Formulas in a cycle (computed after the others). */
+/** Formulas in a cycle or over one (computed after the others). */
 const cyclic = (state: EngineState) => state.formulas.filter((f): f is Formula => !!f && state.topo[f.id] < 0).map((f) => f.id)
+
+/**
+ * Iterative calculation (`BookInput.iteration`, the workbook set `iterate`), as Excel computes: every formula in a
+ * cycle or over one, sheet by sheet in the order of the sheets' names (in any case) and row by row, from
+ * 0, again and again up to the iteration count, until no value changes by the maximum change or more. Each
+ * computation starts from 0, so it does not depend on the values a session held before.
+ */
+function iterate(state: EngineState, t?: Tracker) {
+  const { maxIterations = 100, maxChange = 0.001 } = state.input.iteration!
+  const name = (s: number) => sheetKey(state.sheetNames[s])
+  const ids = cyclic(state).sort((a, b) => {
+    const [f, g] = [state.formulas[a]!, state.formulas[b]!]
+    return f.s !== g.s ? (name(f.s) < name(g.s) ? -1 : 1) : f.r - g.r || f.c - g.c
+  })
+  for (const id of ids) {
+    const f = state.formulas[id]!
+    release(state, id, t)
+    write(state, f.s, f.r, f.c, 0, t)
+  }
+  state.iterated = ids
+  for (let k = 0; k < maxIterations && evaluate(state, ids, t, true, maxChange); k++);
+}
+
+/**
+ * The cycles share their iterations, so a cycle added or gone changes the others: when the formulas in cycles are not
+ * those the last iterative calculation computed, all of them, then and now, go to `out`.
+ */
+function cyclesMoved(state: EngineState, out: Set<number>) {
+  const now = cyclic(state)
+  const was = new Set(state.iterated)
+  if (now.length === was.size && now.every((id) => was.has(id))) return
+  for (const id of [...now, ...was]) if (state.formulas[id]) out.add(id)
+  state.iterated = now
+}
 
 export function evaluateAll(state: EngineState, t?: Tracker) {
   settle(state, [state.order, cyclic(state)], t)
@@ -105,6 +150,7 @@ export function evaluateAll(state: EngineState, t?: Tracker) {
  * such a cycle holds depends on which arrays spilled first.
  */
 export function recompute(state: EngineState, dirty: Set<number>, t: Tracker) {
+  if (state.input.iteration) cyclesMoved(state, dirty)
   const before = spillCycle(state)
   settle(state, ordered(state, dirty), t)
   if (!before && !spillCycle(state)) return
@@ -142,13 +188,16 @@ function settle(state: EngineState, lists: [number[], number[]], t?: Tracker) {
     sp.done.clear()
     sp.claimsChanged = false
     evaluate(state, lists[0], t)
-    evaluate(state, lists[1], t)
+    // iterative calculation computes every cycle again when any is to be computed: the cycles share their iterations
+    if (state.input.iteration && lists[1].length) iterate(state, t)
+    else evaluate(state, lists[1], t)
     const next = new Set<number>()
     for (const x of sp.touched) concerned(state, x, next, x.step)
     if (sp.claimsChanged) {
       rebuildGraph(state)
       // formulas that went into a cycle or out of one
-      for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== isCycle(state.rt.cell(f.s, f.r, f.c))) next.add(f.id)
+      if (state.input.iteration) cyclesMoved(state, next)
+      else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== isCycle(state.rt.cell(f.s, f.r, f.c))) next.add(f.id)
     }
     if (!next.size) return
     lists = ordered(state, next)

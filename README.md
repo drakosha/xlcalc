@@ -11,6 +11,7 @@ What it does differently:
 - **Arrays inside a formula.** Operators and functions work element by element over ranges and arrays with Excel 365's rules (`SUM(B:B*C:C)`, `SUMPRODUCT((A1:A9="x")*B1:B9)`, `SUM(IF(A1:A9>0,A1:A9))`), array constants `{1,2;3,4}` are read, and functions with an array answer (`SORT`, `FILTER`, `UNIQUE`, `SEQUENCE`, `MMULT`, …) can be used inside a formula. A formula whose result is an array spills into the cells to its right and below, as in Excel 365 (`#SPILL!` where they are taken), and `E2#` refers to the range it filled (see [Arrays](#arrays)).
 - **Cells shown as Excel shows them.** Each cell of a result carries, beside its value, the text Excel shows in it: its number format in the book's locale, General narrowed to the column's width, `#` across a column a number does not fit, the colour of the format's section (see [Showing values](#showing-values)). The value stays the number; `display: false` leaves the text out.
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
+- **xlsx in and out.** `xlcalc/xlsx` reads an xlsx file into a book, with the values Excel stored and a list of what the book cannot hold, and writes a book with its computed values back to xlsx. It has no dependencies and loads none of the engine's computation (see [Reading and writing xlsx](#reading-and-writing-xlsx)).
 - **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
 Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT), [jStat](https://github.com/jstat/jstat) (MIT) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
@@ -178,7 +179,7 @@ Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (
 
 ### Errors
 
-Cell errors come out as `{ error: code }` with codes `DIV0`, `NA`, `NAME`, `NUM`, `REF`, `VALUE`, `CYCLE`, `SPILL`, `CALC` and `ERROR`. Every cell with an error is listed in `issues` with a reason, which names the cell an error came from (`division by zero, from 'S'!A2`). A circular reference gives `#CYCLE!` to the cells in the cycle and to everything that depends on them; the rest of the book is computed.
+Cell errors come out as `{ error: code }` with codes `DIV0`, `NA`, `NAME`, `NUM`, `REF`, `VALUE`, `CYCLE`, `SPILL`, `CALC` and `ERROR`. Every cell with an error is listed in `issues` with a reason, which names the cell an error came from (`division by zero, from 'S'!A2`). A circular reference gives `#CYCLE!` to the cells in the cycle and to everything that depends on them; the rest of the book is computed. A book with [iterative calculation](#iterative-calculation) computes its cycles instead.
 
 Input of the wrong shape is a programming error and throws `InputError` (a `TypeError` with `path`), for example `book.sheets[0].cells["b2"]: invalid cell address "b2": expected A1 style such as "B12" (column letters must be upper-case: "B2")`. This covers wrong types, malformed or out-of-grid addresses, duplicate sheet names (compared case-insensitively, as in Excel), unknown fields, bad dates and clocks, and unknown sheets in session edits.
 
@@ -288,7 +289,62 @@ console.log(displayValue(0.4567, { format: '0.0%', locale: 'ru-RU' }), displayVa
 
 `compute(book, { display: false })` and `openSession(book, { display: false })` give values alone and spend nothing on formatting. A session's changes carry the text of the cells they list, and with the display on they also list the cells whose text or colour changed without a new value: a new `format` through `setCells`, a width, a row's or a column's format or a merged area through `setLayout`, a column moved by `restructure`. `displayValue(value, { format, locale, width })` shows a value without a book, for a cell being edited, say; the number itself is always the cell's `value`.
 
+A format can also be the number of one of Excel's built-in formats, from 0 to 49, as an xlsx file stores a cell's format without a code. Excel shows some of them by the locale: `format: 14` is the short date, `1/31/25` in en-US and `31.01.2025` in ru-RU. The table is in [docs/formats.md](docs/formats.md).
+
 `TEXT` uses the same formats, read in the book's locale (`TEXT(x,"# ##0,00")` in ru-RU), without the width: it drops fills, has no colour and answers `#VALUE!` where a cell shows `#`. The rules, as measured in Excel 16.113 for Mac in en-US and ru-RU on 11,649 cells and 771 `TEXT` cases, are in [docs/formats.md](docs/formats.md), with the differences.
+
+### Hidden rows and filters
+
+A row or a column is hidden by `hidden: true` in `rows` or `columns`, as an xlsx file stores it. `SUBTOTAL` with codes 101 to 111 and `AGGREGATE` with options 1, 3, 5 and 7 leave out the cells of hidden rows. Hidden columns count, as in Excel.
+
+A sheet whose autofilter has criteria is marked `filtered: true`. Excel takes every hidden row of such a sheet as one a filter hid, and `SUBTOTAL` with codes 1 to 11 leaves those out too.
+
+```js
+import { compute, openSession } from 'xlcalc'
+
+const cells = { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 4 }, B1: { formula: 'SUBTOTAL(9,A1:A3)' }, B2: { formula: 'SUBTOTAL(109,A1:A3)' }, B3: { formula: 'AGGREGATE(9,5,A1:A3)' } }
+const sheet = { name: 'S', cells, rows: { 2: { hidden: true } } }
+const v = compute({ sheets: [sheet] }).sheets[0].cells
+console.log(v.B1.value, v.B2.value, v.B3.value) // → 7 5 5
+console.log(compute({ sheets: [{ ...sheet, filtered: true }] }).sheets[0].cells.B1.value) // → 5
+const session = openSession({ sheets: [sheet] })
+console.log(session.setLayout([{ sheet: 'S', rows: '2', set: { hidden: null } }]))
+// → [
+//     { sheet: 'S', cell: 'B3', value: 7, text: '7' },
+//     { sheet: 'S', cell: 'B2', value: 7, text: '7' }
+//   ]
+```
+
+A session hides and shows rows through `setLayout`, sets the filter mode with `{ sheet, filtered }`, and recomputes these formulas. Structure operations treat hidden rows as Excel does: on a filtered sheet they delete and copy the visible rows only ([docs/structure.md](docs/structure.md)).
+
+### Date systems
+
+A book is in Excel's 1900 date system unless it has `dateSystem: 1904`, as an xlsx file made on an old Mac may have. In the 1904 system serial 0 is 1 January 1904. Dates typed in, date text, `DATE`, `TODAY` and the date functions count from there, and cells and `TEXT` show a negative date or time with a minus.
+
+```js
+import { compute } from 'xlcalc'
+
+const cells = { A1: { formula: 'DATE(2025,1,31)' }, A2: { formula: 'YEAR(A1)' }, A3: { value: -0.5, format: 'h:mm' } }
+const c = compute({ dateSystem: 1904, sheets: [{ name: 'S', cells }] }).sheets[0].cells
+console.log(c.A1.value, c.A2.value, c.A3.text) // → 44226 2025 -12:00
+```
+
+`displayValue` takes `dateSystem` too. A book in the 1904 system has its own values hash.
+
+### Iterative calculation
+
+A circular reference gives `#CYCLE!`, unless the book has `iteration`, as Excel's setting "Enable iterative calculation" stores it in a file. Then the cells of every cycle, and the cells that depend on them, are computed again and again from 0, as Excel computes a book it opens. The rounds stop after `maxIterations` (100 by default) or when no number changes by `maxChange` (0.001 by default) or more.
+
+```js
+import { compute } from 'xlcalc'
+
+const cells = { B1: { value: 1000 }, B2: { value: 0.1 }, B3: { formula: 'B2*(B1+B4)/2' }, B4: { formula: 'B1+B3-100' } }
+const r = compute({ sheets: [{ name: 'S', cells }], iteration: {} }).sheets[0].cells
+console.log(r.B3.value, r.B4.value) // → 99.999984375 999.999984375
+console.log(compute({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.B3.value) // → { error: 'CYCLE' }
+```
+
+Cells are computed sheet by sheet in the order of the sheets' names, row by row. A change of text, a boolean or an error into another of them does not count as a change. Every computation starts from 0, so a session gives what a full computation gives. Excel goes on from the values it holds when it recalculates, which the engine does not do (see [Limitations](#limitations)).
 
 ### Structure operations
 
@@ -317,9 +373,31 @@ const last = restructure(book, { op: 'deleteSheet', sheet: 'Sales' })
 console.log(last.ok, last.code) // → false last_sheet
 ```
 
-The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`) and `moveSheet` (`sheet`, `before`). Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }` with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, `History` among them, or one another sheet has), `last_sheet`, `merged` (a move cutting a merged area, a copy landing on part of one) or `array` (part of an old-kind array formula's area would change). A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
+The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`) and `moveSheet` (`sheet`, `before`). Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }` with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, `History` among them, or one another sheet has), `last_sheet`, `merged` (a move cutting a merged area, a copy landing on part of one) `filtered` (a copy without the rows a filter hid, pasted over hidden rows of a filtered sheet) or `array` (part of an old-kind array formula's area would change). A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
 
-A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. The rules, and how they were checked against Excel on 231 cases (64 with styles, 12 with spill references, 20 with references across sheets, 17 with old-kind arrays), are in [docs/structure.md](docs/structure.md).
+A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. The rules, and how they were checked against Excel on 309 books, are in [docs/structure.md](docs/structure.md).
+
+### Reading and writing xlsx
+
+`readXlsx(data)` from `xlcalc/xlsx` reads a file's bytes into a book. Beside the book it gives `cached`, the values Excel stored for formulas and spilled cells, and `issues`, everything the book cannot hold, such as rich text, conditional formatting or a formula with a structured reference, with the sheet and cells. `writeXlsx(book, { result })` writes the book with its computed values. Formulas are written as dynamic array formulas with their spills, and `mode: 'values'` writes values only.
+
+```js
+import { compute } from 'xlcalc'
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = { sheets: [{ name: 'Sales', cells: { A1: { value: 120 }, A2: { value: 80 }, B1: { formula: 'SUM(A1:A2)' }, C1: { formula: 'SEQUENCE(2)' } } }] }
+const { data } = await writeXlsx(book, { result: compute(book) })
+
+const read = await readXlsx(data)
+console.log(read.book.sheets[0].cells.B1) // → { formula: 'SUM(A1:A2)' }
+console.log(read.cached[0].cells) // → { B1: 200, C1: 1, C2: 2 }
+console.log(read.issues) // → []
+
+const values = await readXlsx((await writeXlsx(book, { result: compute(book), mode: 'values' })).data)
+console.log(values.book.sheets[0].cells.C2) // → { value: 2 }
+```
+
+Both functions return promises: the archive is inflated and deflated by the platform's streams. Styles, number formats, widths, heights, merged areas, names and the book's locale go both ways. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
 
 ## API
 
@@ -329,7 +407,7 @@ From `xlcalc`:
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
 | `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `result()`, `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution` and `display`; edits are compiled in the session's execution mode |
-| `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width` ([Showing values](#showing-values)) |
+| `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name)` | `{ ok: true }` or `{ ok: false, message }` |
 | `toLocal(formula, locale)`, `toInvariant(text, locale)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)) |
@@ -343,6 +421,8 @@ From `xlcalc`:
 | `debugGeneratedCode(book, opts?)` | the JavaScript that the `eval` mode generates, in evaluation order, for debugging; not part of the contract |
 
 `xlcalc/contract` exports the types and two constants (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`) without any engine code, for code that only builds books or reads results.
+
+`xlcalc/xlsx` exports `readXlsx(data)`, which resolves to `{ book, cached, issues }`, and `writeXlsx(book, opts?)`, which resolves to `{ data, issues }` (`opts`: `result`, `mode` `'formulas'` or `'values'`), with their types `XlsxRead`, `XlsxWritten`, `WriteXlsxOptions`, `XlsxIssue` and `XlsxIssueCode`.
 
 `xlcalc/unstable/internal` (the parser, the criteria index, engine state) and `xlcalc/unstable/synth` (a seeded synthetic book for tests and benchmarks) exist for benchmark harnesses and adapters of other engines. They are outside semver and change in any release.
 
@@ -370,7 +450,7 @@ The whitelist, by category (`FUNCTION_NAMES` has it in code):
 
 - Engineering: `BESSELI`, `BESSELJ`, `BESSELK`, `BESSELY`, `BIN2DEC`, `BIN2HEX`, `BIN2OCT`, `BITAND`, `BITLSHIFT`, `BITOR`, `BITRSHIFT`, `BITXOR`, `COMPLEX`, `CONVERT`, `DEC2BIN`, `DEC2HEX`, `DEC2OCT`, `DELTA`, `ERF`, `ERF.PRECISE`, `ERFC`, `ERFC.PRECISE`, `GESTEP`, `HEX2BIN`, `HEX2DEC`, `HEX2OCT`, `IMABS`, `IMAGINARY`, `IMARGUMENT`, `IMCONJUGATE`, `IMCOS`, `IMCOSH`, `IMCOT`, `IMCSC`, `IMCSCH`, `IMDIV`, `IMEXP`, `IMLN`, `IMLOG10`, `IMLOG2`, `IMPOWER`, `IMPRODUCT`, `IMREAL`, `IMSEC`, `IMSECH`, `IMSIN`, `IMSINH`, `IMSQRT`, `IMSUB`, `IMSUM`, `IMTAN`, `OCT2BIN`, `OCT2DEC`, `OCT2HEX`
 
-Status: checked against Excel on 34,481 cases: in en-US the coverage measurement (5,275), the case sets (17,331), the probes (959) and the random check (4,000); in ru-RU the coverage measurement (5,275) and the locale case sets (1,641); all with Excel's answers stored in this repository; spilling on 88 more (`docs/spill.md`), what cells show on 11,649 cells (9,169 in en-US, 2,480 in ru-RU, `docs/formats.md`).
+Status: 40,281 cases are checked against Excel, with Excel's answers stored in this repository. In en-US they are the coverage measurement (5,275), the case sets (22,735), the probes (959) and the random check (4,000). In ru-RU they are the coverage measurement (5,275) and the locale case sets (2,037). Spilling is checked on 104 more books (`docs/spill.md`), what cells show on 12,949 cells, 9,819 in en-US and 3,130 in ru-RU (`docs/formats.md`), structure operations on 272 books (`docs/structure.md`), and hidden rows, the 1904 date system and iterative calculation on 98 books (`bench/coverage/workbook/`).
 
 Every function in the list matches Excel en-US on all of its cases in the coverage measurement (`docs/coverage-formulajs.md`) and in the Excel case sets (`test/excel/cases/`), which also cover the functions formula.js lacks (`XLOOKUP`, `XMATCH`, `TEXTBEFORE`, `ADDRESS` and others), with two kinds of exceptions, both listed in `test/excel-cases.ts`: `XIRR` matches within 1e-6 relative (`SOFT`: Excel stops its iteration within 1e-8 of the root, the engine finds the root), and so do the t and F quantiles (`T.INV`, `T.INV.2T`, `TINV`, `F.INV`, `F.INV.RT`, `FINV`), where Excel loses up to 7 digits at 10^9 degrees of freedom and more, and a few cases differ knowingly (`KNOWN`: the engine's answer is pinned by the tests and the reason is in [Known differences](#limitations)); a difference the random check finds outside the functions (operators, the array layer) is pinned as open in `test/excel-open.ts` until it is fixed (none is open now). `TODAY`, `NOW`, `RAND` and `RANDBETWEEN` (volatile) have their own semantics and clock tests instead; `RANDARRAY` has Excel cases on what does not depend on the draw (sizes, bounds, whole numbers) and clock tests.
 
@@ -395,13 +475,13 @@ Notes on semantics:
 - Arrays follow Excel 365's dynamic arrays. An operator, or a function argument that takes one value, given an array or a range of several cells works element by element: the result has the larger number of rows and of columns, a single row or column is repeated, a position outside a shorter array is `#N/A` (`{1,2,3}+{1,2}` is `{2,4,#N/A}`). The functions of the former Analysis ToolPak (`EOMONTH`, `BESSELJ`, the radix and complex-number functions, the bond functions and others) and the field of the database functions do not take a range there: `#VALUE!`, while an array (`EOMONTH(A1:A2+0,0)`) works; `N` and `T` take the top-left cell of a range. Functions that take ranges take arrays the same way (`SUM` adds an array's numbers), except that `MAXA`, `STDEVA` and their kin take only an array's numbers and `AVERAGEA` counts its text as 0. An array of one value stays an array under an operator or a lifted call (`TYPE({1}+0)` is 64, so `SUM({TRUE}=TRUE)` skips the boolean and is 0), while a one-cell reference is a value (`TYPE(A1:A1+0)` is 1). A whole column is an array of 1,048,576 rows (`SUM(B:B+1)` adds 1,048,576), computed on its occupied rows.
 - `INDEX`, `TAKE`, `DROP`, `XLOOKUP` (its `if_not_found` too), `CHOOSE`, `IF`, `IFS` and `SWITCH` answer references when given references, one cell too, so `SUMIF(INDEX(A1:C9,0,1),">2")` works and `SUM` skips text there (`SUM(IF(TRUE,A2))` is 0 when A2 holds the text "2"); `IFERROR`, `IFNA`, `FILTER`'s `if_empty` and unary `+` give values. `HSTACK` and `VSTACK` answer an error given as a value (`VSTACK(1,1/0)` is `#DIV/0!`) but stack a reference to a cell holding an error; the other functions with an array answer give arrays, where a blank cell is an empty value (`COUNTA` counts it, `ISBLANK` is TRUE). `TYPE` of an array, or of a range of several cells, is 64.
 - Sorting (`SORT`, `SORTBY`) is stable and orders numbers, text, booleans, errors, then blanks (blanks last in a descending sort too); text compares as `<` does.
-- `SUBTOTAL` and `AGGREGATE` (options 0–3) skip the cells whose formula calls either of them anywhere (`=SUBTOTAL(9,A1:A2)*10` too, a plain reference to such a cell not), so nothing is counted twice; a book has no hidden rows, so codes 101–111 equal 1–11 and options 1, 3, 5, 7 equal 0, 2, 4, 6.
+- `SUBTOTAL` and `AGGREGATE` (options 0–3) skip the cells whose formula calls either of them anywhere (`=SUBTOTAL(9,A1:A2)*10` too, a plain reference to such a cell not), so nothing is counted twice. `SUBTOTAL` 101–111 and `AGGREGATE` options 1, 3, 5 and 7 skip hidden rows, and `SUBTOTAL` 1–11 skips the hidden rows of a filtered sheet ([Hidden rows and filters](#hidden-rows-and-filters)). `AGGREGATE` 14–19 take an array as well as a reference (`AGGREGATE(14,6,10/A1:A9,1)`).
 - Lookups compare within a type (numbers, text, booleans), text in any case, and never match blanks or errors in the data. An exact match in `VLOOKUP`, `HLOOKUP` and `MATCH` (and `XLOOKUP`, `XMATCH` in match mode 2) takes `*`, `?` and `~`, where `~` escapes any character. An approximate match is Excel's binary search over the referenced cells, so it gives Excel's answer on unsorted, mixed and whole-column data too (checked on about 200 such cases); `MATCH` with type −1 scans. A blank lookup value is 0 in `VLOOKUP`, `HLOOKUP`, `MATCH` and `LOOKUP` and finds a blank cell in `XLOOKUP` and `XMATCH`. An error in a column index or match type taken from a cell is `#REF!`, as in Excel. An array or a range of several cells as the column (row) index of `VLOOKUP` (`HLOOKUP`) answers the found row (column) at each number, shaped as the index; the first number in order that is not valid answers for all: `#VALUE!` below 1, `#REF!` past the table, for an error or for text that is not a number. A call lifted by an array key or match mode reads the index's top-left number in each call (`INDEX(VLOOKUP({5;8},D!L1:N6,{2;4},FALSE),2)` is `"eight"`). A range as `MATCH`'s type gives its top-left cell.
 - Database functions (`DSUM` and the rest) read records by rows under a header row; a database without records is `#VALUE!`, and so is a field taken from a cell holding an error (an error given as the field is itself the answer). Criteria are written as in `SUMIFS`, except that text without an operator matches the values that begin with it (`App` selects `Apple`); criteria rows are alternatives, conditions in a row all hold. A condition under a header that is not a field name holds for every record when it is `TRUE` (Excel's computed criterion) and for none otherwise.
 - Text longer than 32,767 characters: `&` and `CONCATENATE` cut it there, `CONCAT` and `TEXTJOIN` answer `#CALC!`, the other text functions `#VALUE!`, as Excel does. An empty array (`FILTER` that keeps nothing, `TAKE` of zero rows, `DROP` of everything) is `#CALC!` too.
 - `VALUE` reads currency, thousands groups, parentheses, `%`, exponents, `1 1/2`, dates and times as Excel en-US does, times past 24 hours too (`25:00`), date text without a year in the clock's year (`1/31`; `2/29` in a year that is not leap is February 2029, as in Excel); time text follows one rule in `VALUE`, operators and date arguments (`6 PM` and `6 P` but not `6PM`, `6:30.5` as minutes and seconds); `NUMBERVALUE` removes whitespace and the group separators, then reads the rest the same way.
 - `CHAR` and `CODE` work with the Windows code page of the book's locale, Windows-1252 in en-US and Windows-1251 in ru-RU, so a book gives the same characters as in Excel for Windows, where most books are made; Excel for Mac answers codes 128–255 by Mac Roman and Mac Cyrillic, a platform's own encoding rather than the book's. Codes 1–127, a code outside 1–255 (`#VALUE!`), the code of a character outside the page (95, `_`) and the arguments are as Excel computes them (the `char-code` set, in both locales); the tables are checked against Unicode's published ones. `UNICHAR` and `UNICODE` work with code points.
-- Dates follow Excel's 1900 system, phantom 1900-02-29 included: `DATE(1900,2,29)` is 60. `DATE` takes a day outside −32768…32767 as 32767 and answers `#NUM!` for a month of 32767 or more, as Excel does.
+- Dates follow Excel's 1900 system, phantom 1900-02-29 included: `DATE(1900,2,29)` is 60. A book can be in the 1904 system instead ([Date systems](#date-systems)), where the former Analysis ToolPak's functions read date text given as a value as Excel does there: `EDATE("1/31/2025",1)` is 42793, while `EDATE(A1,1)` with that text in A1 is 44254. `DATE` takes a day outside −32768…32767 as 32767 and answers `#NUM!` for a month of 32767 or more, as Excel does.
 
 ## Limitations
 
@@ -430,11 +510,16 @@ Notes on semantics:
   - `F.TEST`, `FTEST` and `MIRR` given an empty text as an array (`F.TEST("",A1:A8)`) are `#DIV/0!` in Excel (no numbers) and `#VALUE!` here.
   - `XIRR` and `XNPV` given one text or boolean as their values or dates (`XIRR("",A1:A5)`) are `#VALUE!` in Excel and `#NUM!` here (the sizes differ).
   - Serial date 0 in the bond functions: `ACCRINT` with an issue or first interest date of 0 and `PRICE` with a settlement date of 0 are `#NUM!` in Excel and computed here; `AMORDEGRC` with a purchase date of 0 is 113 in Excel and −47885 here.
+  - `XNPV` with a date of serial 0 is `#NUM!` in Excel and computed here.
+  - `ACCRINT` with basis 1 over several coupon periods: `ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,15),0.05,1000,2,1)` is 51.9230769230769 in Excel and 51.9337016574586 here.
+  - `WORKDAY` with date text in a cell among its holidays reads it as a date in Excel and is `#VALUE!` here.
+  - Iterative calculation starts from 0 at every computation. Excel starts a book it opens from the values the file stores, empty text where it stores none, and goes on from the values it holds at every recalculation and edit. A cycle that converges differs from Excel's within the maximum change, and one that does not, such as a counter, keeps counting in Excel.
   - `WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).
-- **Shown text.** Widths are those of Excel for Mac with the default font, Calibri 11; a cell's own font, its indent, wrapping and rotation are not taken into account, characters outside Latin, Cyrillic, digits and common signs count as a digit, and Excel for Windows lays text out at other widths, so near the edge of a column it can show `#` where the engine shows the number or the other way round. An xlsx file's built-in formats (14 to 22) are shown by the regional settings in Excel (`d-mmm-yy` as `31.янв.25` in ru-RU); a `format` here is always the code as written (`31-янв-25`). Locale tags other than `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]`, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are not read. [docs/formats.md](docs/formats.md) has the details.
+- **Shown text.** Widths are those of Excel for Mac with the default font, Calibri 11; a cell's own font, its indent, wrapping and rotation are not taken into account, characters outside Latin, Cyrillic, digits and common signs count as a digit, and Excel for Windows lays text out at other widths, so near the edge of a column it can show `#` where the engine shows the number or the other way round. Locale tags other than `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]`, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are not read. [docs/formats.md](docs/formats.md) has the details.
 - **Syntax.** Stored formulas use English function names and separators (no `;` or decimal commas; text typed in another language goes through `toInvariant`), no R1C1 references, no references to other workbooks, no structured table references, no intersection operator (a space between ranges). Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LAMBDA`, …) give `#NAME?`.
-- **Structure operations and styles.** Whole rows or columns copied onto part of a merged area are refused, where Excel pastes them. A book has no hidden rows or columns, outlines, conditional formats, validation or comments. Styles are kept and moved, not computed: `compute` does not return them.
+- **Structure operations and styles.** Whole rows or columns copied onto part of a merged area are refused, where Excel pastes them. Excel's fill handle fills the hidden rows of a filtered sheet, while `copyRange` fills only the visible ones, as Fill Down does. A book has no outlines, conditional formats, validation or comments. Styles are kept and moved, not computed: `compute` does not return them.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
+- **xlsx.** A file's tables, conditional formats, validation, comments, pictures, charts and pivot tables are not read, and each is reported in `issues`. Formulas of the old kind, which Excel 365 computes with implicit intersection, are reported and computed as dynamic arrays. Built-in date, time and currency formats are read as the codes Excel for Mac en-US shows. Every formula is written as a dynamic array formula, which Excel 2019 and older show as an array formula. [docs/xlsx.md](docs/xlsx.md) has the full list.
 
 ## Development
 
@@ -451,7 +536,7 @@ FORMULA_BENCH=1 npx vitest run test/budgets.test.ts   # budgets on the full synt
 
 The tests cover the whitelist against Excel's answers on the coverage measurement's cases (`test/excel.test.ts`) and on the probes (`test/excel-probes.test.ts`), the argument layer rule by rule, the semantics cases against Excel's documentation and the stored LibreOffice answers (`test/oracle/libreoffice.json`, refreshed by `npm run test:oracle`, which needs LibreOffice's `soffice` on `PATH`; the usual tests need no office suite); determinism (shuffled input, a child process, three time zones, cents over 3,400 amounts); references, errors, volatile functions, parsing and the canonical form; sessions (200 random edits against full computations) and `explain`; structure operations against Excel's answers in `test/excel/struct/`, on the synthetic book and on seeded books; budgets; SHA-256 against test vectors and `node:crypto`; a browser bundle run in an empty JavaScript context and with code generation disabled; the two execution modes against each other on every case book and over 200 session edits, the closures mode with code generation disabled; the published package (exports, tarball contents, a consumer importing it by name). The code blocks of this README run as a test too.
 
-Excel's answers that the tests compare with are stored in `test/excel/`, so the tests need no Excel: the coverage measurement's cases and Excel columns in `coverage/`, the case sets in `cases/` (`cases/ru-RU/` for the sets computed in ru-RU), the probes in `probes.json`, structure operations in `struct/`, spilling in `spill/`, Excel's ru-RU formula text in `locale/`. They are recomputed only with Excel for Mac, by a step of `npx tsx bench/coverage/run.ts`: `excel en` and `excel ru` for the measurement, `probes` for the probes, `probes <set>` and `probes <set> ru` for a case set, `struct <set>`, `spill <set>`; `npx tsx bench/locale/snapshot.ts ru` takes Excel's ru-RU formula text. A run keeps the stored answers of unchanged cases and computes the new and changed ones. `bench/coverage/README.md` has the layout, the steps and the rules for driving Excel.
+Excel's answers that the tests compare with are stored in `test/excel/`, so the tests need no Excel: the coverage measurement's cases and Excel columns in `coverage/`, the case sets in `cases/` (`cases/ru-RU/` for the sets computed in ru-RU), the probes in `probes.json`, structure operations in `struct/`, spilling in `spill/`, Excel's ru-RU formula text in `locale/`, the files Excel saved for the xlsx subpath in `xlsx/`. They are recomputed only with Excel for Mac, by a step of `npx tsx bench/coverage/run.ts`: `excel en` and `excel ru` for the measurement, `probes` for the probes, `probes <set>` and `probes <set> ru` for a case set, `struct <set>`, `spill <set>`, `xlsx <step>`; `npx tsx bench/locale/snapshot.ts ru` takes Excel's ru-RU formula text. A run keeps the stored answers of unchanged cases and computes the new and changed ones. `bench/coverage/README.md` has the layout, the steps and the rules for driving Excel.
 
 Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical`, `information`, `text`, `date`, `financial`, `lookup`, `engineering`, `database`; old names such as `NORMDIST` sit next to their modern versions), each file with its own registry, a large category assembled from `src/functions/<category>/`; `src/functions.ts` assembles them. A function declares the kinds of its arguments (`args: 'n i?'`, see `src/args.ts`), and the shared argument layer coerces them, so an implementation gets numbers, text, lists or grids and never repeats the coercion rules. Ported code keeps its attribution in the file header. A function joins its registry when `test/excel.test.ts` passes for it; the coverage measurement (`bench/coverage`, `docs/coverage-formulajs.md`) lists the cases and the classes of the remaining formula.js functions.
 
