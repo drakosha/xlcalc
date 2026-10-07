@@ -134,6 +134,13 @@ export interface BookInput {
    * text: formulas stay invariant, and `toLocal` shows them in a locale. An unknown tag is an `InputError`.
    */
   locale?: string
+  /**
+   * The date system, as xlsx `workbookPr date1904`: 1900 (the default) counts days from 1900-01-00 with Excel's
+   * phantom 1900-02-29, 1904 from 1904-01-01, serial 0. It changes the serial numbers of the dates typed in and
+   * computed, TODAY and NOW, date text and how dates show: a 1904 book shows a negative date or time with a minus
+   * (`-12:00`). It goes into both hashes only when it is 1904.
+   */
+  dateSystem?: 1900 | 1904
 }
 
 /**
@@ -208,6 +215,8 @@ export interface DisplayOptions {
   locale?: string
   /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
   width?: number
+  /** The date system a date shows by, as `BookInput.dateSystem`; 1900 without it. */
+  dateSystem?: 1900 | 1904
 }
 
 export interface ComputeOptions {
