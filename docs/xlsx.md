@@ -151,11 +151,11 @@ Styles, number formats, widths, heights and merged areas are written as the book
 
 ## Speed
 
-Measured on this Mac with `test/fixtures/xlsx-bench-child.ts`, the median of three runs.
+Measured on an Apple Silicon Mac with `test/fixtures/xlsx-bench-child.ts`, the median of three runs. The ranges are over several runs on a busy machine.
 
 | book | file | read | write |
 |---|---|---|---|
-| 20,000 rows × 40 values | 3.0 MB | 0.75 to 0.9 s | 1.2 to 1.6 s |
+| 20,000 rows × 40 values | 3.0 MB | 0.7 to 1.05 s | 1.2 to 1.8 s |
 | the synthetic book, 3,400 rows, 3,900 formulas with values | 0.41 MB | 0.1 s | 0.1 to 0.15 s |
 
 A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx vitest run test/xlsx-budget.test.ts` checks that the large book reads in 2 s at most.
