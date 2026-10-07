@@ -123,6 +123,8 @@ export function displayWith(value: number | string | boolean | { error: string }
     return sec?.color ? { text, color: sec.color } : { text }
   }
   const { text, general, sec } = secs ? byChoice(value, secs, style) : { general: value, sec: null }
-  const shown = general !== undefined ? generalFit(general, space).replace('.', style.decimal) : text === undefined ? hashes(space) : (filled(text, space) ?? hashes(space))
+  // a value its section cannot show (a date out of range) fills the cell with `#` in the automatic colour
+  if (text === undefined && general === undefined) return { text: hashes(space) }
+  const shown = general !== undefined ? generalFit(general, space).replace('.', style.decimal) : (filled(text!, space) ?? hashes(space))
   return sec?.color ? { text: shown, color: sec.color } : { text: shown }
 }

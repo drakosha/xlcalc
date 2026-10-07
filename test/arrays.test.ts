@@ -36,7 +36,7 @@ describe('arrays beyond the Excel cases', () => {
   })
 
   it('a session moves a cell between one value and an array as its data change', () => {
-    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 5 }, B2: { value: 6 }, C1: { formula: 'INDEX(B1:B2,A1)' }, C2: { formula: 'C1*2' } } }] }, { clock })
+    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 5 }, B2: { value: 6 }, C1: { formula: 'INDEX(B1:B2,A1)' }, C2: { formula: 'C1*2' } } }] }, { clock, display: false })
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 0 } }])).toEqual([
       { sheet: 'S', cell: 'A1', value: 0 },
       { sheet: 'S', cell: 'C1', value: { error: 'SPILL' } },

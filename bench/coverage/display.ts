@@ -45,7 +45,7 @@ export interface StoredDisplay {
 export const displayFile = (set: string, locale: Locale) => join(ROOT, `test/excel/display/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
 
 /** The address of each case: columns by width and span (from B, one empty column between them), cases down from row 1. */
-function place(cases: DisplayCase[]): Map<string, { row: number; col: number }> {
+export function place(cases: DisplayCase[]): Map<string, { row: number; col: number }> {
   const cols = new Map<string, number>()
   const rows = new Map<string, number>()
   let next = 1

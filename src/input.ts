@@ -3,13 +3,13 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CellEdit, CellInput, CellStyle, Clock, ComputeOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { LOCALES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import type { Axis } from './structure/area.js'
-import { sheetKey } from './syntax.js'
+import { ERROR_TEXT, sheetKey } from './syntax.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
 export class InputError extends TypeError {
@@ -250,8 +250,7 @@ function checkMerges(v: unknown, path: string) {
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale'])
-  if (book.locale !== undefined && !LOCALES.has(checkString(book.locale, `${path}.locale`)))
-    throw new InputError(`${path}.locale`, `unknown locale ${JSON.stringify(book.locale)} (expected ${[...LOCALES.keys()].join(', ')})`)
+  if (book.locale !== undefined) checkLocale(book.locale, `${path}.locale`)
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
@@ -305,21 +304,28 @@ function checkExecution(v: unknown, path: string) {
 
 const CLOCK_HINT = ' (pass the clock as { clock: { now, seed } })'
 
+/** A tag of the package's locales. */
+function checkLocale(v: unknown, path: string) {
+  if (!LOCALES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALES.keys()].join(', ')})`)
+}
+
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyKeys(o, path, ['clock', 'externals', 'execution'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyKeys(o, path, ['clock', 'externals', 'execution', 'display'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
   if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
+  if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
   return o as ComputeOptions
 }
 
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
-  if (o.live !== undefined && typeof o.live !== 'boolean') throw new InputError(`${path}.live`, `expected a boolean, got ${what(o.live)}`)
+  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution', 'display'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
+  if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
@@ -377,3 +383,20 @@ export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext 
   return o as ValidateContext
 }
 
+
+/** `displayValue`'s value: a number, text, a boolean, null or an error `{ error: code }`. */
+export function checkCellValue(v: unknown, path: string): CellValue {
+  if (v === null || typeof v === 'string' || typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v))) return v
+  if (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 1 && (v as { error?: unknown }).error as string in ERROR_TEXT) return v as CellValue
+  throw new InputError(path, `expected a number, text, a boolean, null or { error: code }, got ${what(v)}`)
+}
+
+export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
+  if (v === undefined) return {}
+  const o = object(v, path, "options such as { format: '#,##0.00', locale: 'ru-RU', width: 12 }")
+  onlyKeys(o, path, ['format', 'locale', 'width'])
+  if (o.format !== undefined) checkString(o.format, `${path}.format`)
+  if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
+  if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
+  return o as DisplayOptions
+}

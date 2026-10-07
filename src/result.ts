@@ -6,6 +6,7 @@ import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
 import { formatAddress, msToSerial, parseAddress, sortAddresses } from './model.js'
+import { cellLooks } from './shown.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
 
@@ -46,9 +47,11 @@ function spilled(state: EngineState, s: number): Map<string, string> {
   return out
 }
 
-export function buildResult(state: EngineState, clock: Clock, t0: number): ComputeResult {
+/** The result; with `display` each cell's shown text and colour after its value. */
+export function buildResult(state: EngineState, clock: Clock, t0: number, display: boolean): ComputeResult {
   const values = new Map<string, Map<string, CellValue>>()
   const fills: FillLine[] = []
+  const look = display ? cellLooks(state) : null
   const sheets = state.input.sheets.map((sheet, s) => {
     const cells: Record<string, CellResult> = {}
     const vals = new Map<string, CellValue>()
@@ -58,7 +61,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number): Compu
       const inCell = sheet.cells[addr] ?? {}
       const value = outValue(toCellValue(valueAt(state, s, row, col)))
       const id = state.at.get(key(s, row, col))
-      const out: CellResult = { value }
+      const out: CellResult = look ? { value, ...look(s, row, col, value) } : { value }
       const text = id === undefined ? inCell.formula : state.formulas[id]!.text
       if (text !== undefined) out.formula = text
       if (inCell.format !== undefined) out.format = inCell.format

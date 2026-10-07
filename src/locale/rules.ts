@@ -103,6 +103,18 @@ export const EN_US: Rules = {
   complexPart: (t) => (NUMBER_TEXT.test(t) ? readNumber(t) : null),
 }
 
+/** The rules of each locale for showing values outside a book (the clock is not read there). */
+const DISPLAY = new Map<string, Rules>()
+
+/** Rules that show values in the locale `tag` (one of `LOCALES`; en-US without one), kept for later calls. */
+export function displayRules(tag: string | undefined): Rules {
+  const data = tag === undefined ? undefined : REGIONAL.get(tag)
+  if (!data) return EN_US
+  let r = DISPLAY.get(tag!)
+  if (!r) DISPLAY.set(tag!, (r = regionalRules(data, { year: () => 1900, read: false }, namesOf)))
+  return r
+}
+
 /** The rules of a book in the locale `tag` (one of `LOCALES`; en-US without one), reading `clock` for dates without a year. */
 export function rulesOf(tag: string | undefined, clock: RulesClock): Rules {
   const data = tag === undefined ? undefined : REGIONAL.get(tag)

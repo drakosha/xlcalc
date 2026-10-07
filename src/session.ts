@@ -4,15 +4,17 @@
  * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  */
 import type { BookInput, CellChange, CellEdit, CellStyle, Clock, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
-import { applyClock, applyEdits, applyMerges, createState, toCellValue, valueAt, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyMerges, createState, type EngineState } from './engine.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
+import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
-import { buildResult, clockSerial, outValue, spillFields } from './result.js'
+import { buildResult, clockSerial, spillFields } from './result.js'
+import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { sheetKey } from './syntax.js'
 
@@ -26,6 +28,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
   const live = o.live === true
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : currentClock()
   const { externals, execution } = o
+  const display = o.display !== false
   const build = (b: BookInput) => createState(b, { now: clockSerial(clock), seed: clock.seed, externals, execution })
   let state: EngineState | null = build(book)
   const st = () => {
@@ -34,11 +37,17 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
   }
   const sheetIndex = (s: EngineState) => (name: string) => s.sheetIdx.get(sheetKey(name))
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
-  const changes = (s: EngineState, keys: string[]): CellChange[] =>
-    keys.map((k) => {
+  const changes = (s: EngineState, keys: string[]): CellChange[] => {
+    const look = display ? cellLooks(s) : null
+    return keys.map((k) => {
       const [i, r, c] = k.split(':').map(Number)
-      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value: outValue(toCellValue(valueAt(s, i, r, c))), ...spillFields(s, i, r, c) }
+      const value = cellValue(s, i, r, c)
+      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c) }
     })
+  }
+  // keys of changed values with the cells whose look changed besides, in order
+  const merged = (keys: string[], more: string[]) =>
+    [...new Set([...keys, ...more])].map((k) => k.split(':').map(Number)).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((k) => k.join(':'))
   const tick = (s: EngineState) => {
     clock = currentClock()
     s.ctx.now = clockSerial(clock)
@@ -51,11 +60,12 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     setCells(edits: CellEdit[]) {
       const s = st()
       checkEdits(edits, sheetIndex(s), styleCount(s))
+      const before = display ? snapshot(s, editedCells(s, edits)) : null
       // edits that keep a cell's value and formula change its input alone
       const loud = contentEdits(s, edits)
-      if (!loud.length) return []
-      if (live) tick(s)
-      return changes(s, applyEdits(s, loud, live))
+      if (loud.length && live) tick(s)
+      const keys = loud.length ? applyEdits(s, loud, live) : []
+      return changes(s, before ? merged(keys, shownChanges(s, before)) : keys)
     },
     setNames(names: NameInput[]) {
       const old = st()
@@ -80,7 +90,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       if (live) tick(old)
       // the simple way: the state is built again from the new book
       const next = build(r.book)
-      const keys = movedChanges(old, next, r.mapCell)
+      const keys = movedChanges(old, next, r.mapCell, display ? [cellLooks(old), cellLooks(next)] : undefined)
       state = next
       return { ok: true, book: next.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: changes(next, keys) }
     },
@@ -91,8 +101,10 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     },
     setLayout(edits: LayoutEdit[]) {
       const s = st()
+      const checked = checkLayoutEdits(edits, sheetIndex(s), styleCount(s))
+      const shown = display ? snapshot(s, layoutCells(s, checked)) : null
       const before = s.input.sheets.map((x) => new Set(x.merges ?? []))
-      applyLayout(s.input, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)), (name) => sheetIndex(s)(name)!)
+      applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
       // merged areas added or removed: the arrays whose range they meet spill or stop
       const keys = new Set<string>()
       s.input.sheets.forEach((x, i) => {
@@ -100,7 +112,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
         const moved = [...before[i]].filter((m) => !now.has(m)).concat([...now].filter((m) => !before[i].has(m)))
         if (moved.length) for (const k of applyMerges(s, i, moved.map((m) => parseMerge(m)!))) keys.add(k)
       })
-      return changes(s, [...keys])
+      return changes(s, shown ? merged([...keys], shownChanges(s, shown)) : [...keys])
     },
     book() {
       return st().input
@@ -114,7 +126,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     },
     result() {
       const t0 = nowMs()
-      return buildResult(st(), clock, t0)
+      return buildResult(st(), clock, t0, display)
     },
     close() {
       state = null

@@ -104,7 +104,7 @@ describe('styles and layout in a session', () => {
   })
 
   it('a cell edit that keeps the value and formula recomputes nothing and returns no changes', () => {
-    const s = openSession(book(), { live: true })
+    const s = openSession(book(), { live: true, display: false })
     const c = s.clock
     expect(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', format: '0.0' } }, { sheet: 'S', cell: 'B9', input: { style: 0 } }])).toEqual([])
     expect(s.clock).toEqual(c)
