@@ -152,7 +152,9 @@ async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: 
     const ws = wb.addWorksheet(s.name)
     for (const [addr, cell] of Object.entries(s.cells)) {
       if (cell.value !== null && typeof cell.value === 'object') throw new Error(`${c.id}: dates are not used in structure cases`)
-      const formula = cell.formula === undefined ? undefined : { formula: fileFormula(cell.formula), ...(dynamic ? { shareType: 'array', ref: addr } : {}) }
+      // an old-kind array formula over its area, else a dynamic one in a dynamic set
+      const array = cell.array !== undefined ? { shareType: 'array', ref: cell.array } : dynamic ? { shareType: 'array', ref: addr } : {}
+      const formula = cell.formula === undefined ? undefined : { formula: fileFormula(cell.formula), ...array }
       ws.getCell(addr).value = (formula ?? cell.value ?? null) as ExcelJS.CellValue
     }
     if (styled(book)) writeLayout(c, book, s, ws)
@@ -162,7 +164,7 @@ async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: 
   const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
   Object.defineProperty(wb.definedNames, 'model', { get: () => names })
   await wb.xlsx.writeFile(file)
-  if (dynamic) await markDynamic(file, book.sheets.length)
+  if (dynamic) await markDynamic(file, book.sheets.length, (i, addr) => book.sheets[i].cells[addr]?.array !== undefined)
   const parts = partsOf(c, book, files)
   if (Object.keys(parts.sheets!).length) await writeParts(file, book, parts)
 }
@@ -190,6 +192,10 @@ function opArgs(c: StructCase): string[] {
       return [o.sheet, '', o.name, '']
     case 'deleteSheet':
       return [o.sheet, '', '', '']
+    case 'insertSheet':
+      return [o.before ?? '', '', o.name, '']
+    case 'moveSheet':
+      return [o.sheet, '', o.before ?? '', '']
   }
 }
 

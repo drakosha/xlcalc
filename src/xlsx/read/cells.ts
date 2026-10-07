@@ -42,7 +42,7 @@ export interface SheetCells {
   rows: Map<number, RowInput>
   shared: Map<string, Shared>
   arrays: ArrayFormula[]
-  /** Cells with formulas of the old kind: no dynamic array metadata. */
+  /** Cells with formulas of the old kind, shared ones among them: not array formulas. */
   old: Set<string>
   /** Cells holding an error as their value, read as a formula of it (unless an array spilled it there). */
   errors: Set<string>
@@ -169,7 +169,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       } else {
         const dynamic = fa.t === 'array' && a.cm !== undefined && ctx.meta.dynamic(Number(a.cm))
         if (fa.t === 'array') out.arrays.push({ anchor: addr, ref: (fa.ref ?? addr).toUpperCase(), dynamic })
-        if (!dynamic) out.old.add(addr)
+        if (fa.t !== 'array') out.old.add(addr)
         cell.formula = text
       }
     } else {

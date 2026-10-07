@@ -11,7 +11,7 @@ import { compare } from '../bench/coverage/compare.js'
 import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
-import { compute, openSession, type ComputeResult } from '../src/index.js'
+import { compute, fromLegacy, InputError, openSession, type BookInput, type ComputeResult } from '../src/index.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
 
@@ -30,15 +30,43 @@ const KNOWN: Readonly<Record<string, string>> = {
   'more:volatile-size': 'a size drawn by RANDBETWEEN: Excel spilled its own draw (five runs of five), the engine spills the draw of its clock',
   'more:volatile-sizes': 'ten sizes drawn in one book: Excel gave #SPILL! 47 times of 50 in five runs (the sizes changed between its passes), the engine draws once and spills',
   'more:volatile-cell': 'a size from a cell holding a draw: both spill that cell\'s value (Excel five runs of five), which Excel and the engine draw differently',
+  'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here",
+  'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument; the engine lifts them',
 }
 
 const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
-/** The case computed, and its edits applied one by one in a session, as Excel had them typed after computing. */
+/** The case's book as a reader loads it: the formulas a file stores as of the old kind converted (`fromLegacy`). */
+function loaded(c: SpillCase): BookInput {
+  if (!c.legacy) return c.book
+  const old = new Set(c.legacy)
+  return {
+    ...c.book,
+    sheets: c.book.sheets.map((sh) => ({
+      ...sh,
+      cells: Object.fromEntries(Object.entries(sh.cells).map(([a, x]) => [a, old.has(`${sh.name}!${a}`) && x.formula !== undefined ? { ...x, formula: fromLegacy(x.formula, { names: c.book.names, sheet: sh.name }) } : x])),
+    })),
+  }
+}
+
+/**
+ * The case computed, and its edits applied one by one in a session, as Excel had them typed after computing: an edit
+ * of a range edits each of its cells, an edit Excel refuses (part of an old-kind array formula) leaves the book as it was.
+ */
 function computed(c: SpillCase): ComputeResult {
-  if (!c.edits) return compute(c.book, { clock: CLOCK })
-  const s = openSession(c.book, { clock: CLOCK })
-  for (const e of c.edits) s.setCells([{ sheet: e.sheet, cell: e.cell, input: e.value === null ? null : { value: e.value } }])
+  if (!c.edits) return compute(loaded(c), { clock: CLOCK })
+  const s = openSession(loaded(c), { clock: CLOCK })
+  for (const e of c.edits) {
+    const [p, q = p] = e.cell.split(':').map(parseAddress)
+    const input = e.value === null ? null : typeof e.value === 'object' ? e.value : { value: e.value }
+    const edits = []
+    for (let row = p.row; row <= q.row; row++) for (let col = p.col; col <= q.col; col++) edits.push({ sheet: e.sheet, cell: formatAddress(row, col), input })
+    try {
+      s.setCells(edits)
+    } catch (err) {
+      if (!(err instanceof InputError)) throw err
+    }
+  }
   return s.result()
 }
 
@@ -68,7 +96,8 @@ for (const set of SETS) {
       expect(built.filter((c) => !set.answers[c.id])).toEqual([])
     })
 
-    for (const c of set.cases) {
+    // a book Excel does not load is checked where its reason is (`test/names-excel.test.ts`)
+    for (const c of set.cases.filter((x) => !set.answers[x.id]?.rejected)) {
       it(`${c.id}: ${c.about}`, () => {
         const r = computed(c)
         const seen = RUNS.answers[c.id] ?? [set.answers[c.id]]
@@ -83,6 +112,8 @@ for (const set of SETS) {
 }
 
 describe('held-out spill cases: the engine gives the answer predicted before Excel ran', async () => {
-  const held = ((await import('../bench/coverage/spill/held.js')) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()
-  for (const c of held) it(c.id, () => expect(differences(c, { values: c.predicted!, formulas: {} }, compute(c.book))).toEqual([]))
+  for (const set of ['held', 'names-held', 'legacy-held', 'cse-held', 'at-held', 'cube-held']) {
+    const held = ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()
+    for (const c of held) it(`${set}: ${c.id}`, () => expect(differences(c, { values: c.predicted!, formulas: {} }, computed(c))).toEqual([]))
+  }
 })

@@ -24,8 +24,8 @@ export interface RoundTrip {
 }
 
 /** The sets of the structure and spill steps whose books the round trip takes. */
-const STRUCT_SETS = ['edge', 'move', 'moves', 'rows', 'sheets', 'spill', 'spill-more', 'styles']
-const SPILL_SETS = ['base', 'held', 'let', 'order']
+const STRUCT_SETS = ['arrays', 'cube', 'edge', 'move', 'moves', 'rows', 'sheets', 'spill', 'spill-more', 'styles']
+const SPILL_SETS = ['at', 'base', 'cse', 'held', 'let', 'names', 'order']
 
 const v = (value: CellInput['value']): CellInput => ({ value })
 const f = (formula: string): CellInput => ({ formula })

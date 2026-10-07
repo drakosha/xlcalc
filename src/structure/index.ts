@@ -13,7 +13,7 @@ import { parseRange } from './area.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
-import { deleteSheet, renameSheet } from './sheets.js'
+import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
@@ -31,6 +31,8 @@ const FIELDS: Record<string, string[]> = {
   copyRange: ['from', 'to', 'withMeta'],
   renameSheet: ['sheet', 'name'],
   deleteSheet: ['sheet'],
+  insertSheet: ['name', 'before'],
+  moveSheet: ['sheet', 'before'],
 }
 
 function fields(o: Record<string, unknown>, path: string, allowed: string[]) {
@@ -138,6 +140,12 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
       break
     case 'deleteSheet':
       r = deleteSheet(book, named(o.sheet, 'op.sheet'))
+      break
+    case 'insertSheet':
+      r = insertSheet(book, checkString(o.name, 'op.name'), o.before === undefined ? undefined : named(o.before, 'op.before'))
+      break
+    case 'moveSheet':
+      r = moveSheet(book, named(o.sheet, 'op.sheet'), o.before === undefined ? undefined : named(o.before, 'op.before'))
       break
   }
   return r

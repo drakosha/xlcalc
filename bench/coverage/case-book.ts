@@ -15,7 +15,7 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { markDynamic } from './book.js'
-import { dialogText, excelDialogs } from './excel.js'
+import { declineRepair, dialogText, excelDialogs, settleRejected } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
@@ -68,8 +68,59 @@ export interface FileParts {
   mirrors?: readonly [string, string, string]
 }
 
-/** A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as `ANCHORARRAY(E2)`. */
-export const fileFormula = (f: string) => xl(xlpm(f)).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+/**
+ * A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as
+ * `ANCHORARRAY(E2)`, the operator `@x` as `SINGLE(x)`.
+ */
+export const fileFormula = (f: string) => single(xl(xlpm(f))).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+
+/** The end of the run quoted by `q` that starts at `i` (`""` and `''` inside it are kept). */
+function quoted(f: string, i: number, q: string): number {
+  let j = i + 1
+  while (j < f.length && !(f[j] === q && f[j + 1] !== q)) j += f[j] === q ? 2 : 1
+  return j + 1
+}
+
+/** The end of the parenthesis that opens at `i`. */
+function closing(f: string, i: number): number {
+  let depth = 0
+  for (let j = i; j < f.length; j++) {
+    if (f[j] === '"' || f[j] === "'") j = quoted(f, j, f[j]) - 1
+    else if (f[j] === '(') depth++
+    else if (f[j] === ')' && --depth === 0) return j + 1
+  }
+  return f.length
+}
+
+/** `@x` as `_xlfn.SINGLE(x)`: x a parenthesis, a call, a string, an array constant, or a reference, a name or a literal. */
+function single(f: string): string {
+  let out = ''
+  for (let i = 0; i < f.length; ) {
+    const ch = f[i]
+    if (ch === '"') {
+      const j = quoted(f, i, ch)
+      out += f.slice(i, j)
+      i = j
+      continue
+    }
+    if (ch !== '@') {
+      out += ch
+      i++
+      continue
+    }
+    let j = i + 1
+    if (f[j] === '"') j = quoted(f, j, '"')
+    else if (f[j] === '{') j = f.indexOf('}', j) + 1
+    else {
+      if (f[j] === "'") j = quoted(f, j, "'")
+      while (j < f.length && /[\w.$:!#]/.test(f[j])) j++
+      if (f[j] === '(') j = closing(f, j)
+    }
+    out += `_xlfn.SINGLE(${single(f.slice(i + 1, j))})`
+    i = j
+  }
+  return out
+}
 
 const ERROR_TYPE: Record<number, Extract<Val, { t: 'e' }>['v']> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 
@@ -113,8 +164,9 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
     for (const [addr, cell] of Object.entries(s.cells)) {
       const x = ws.getCell(addr)
       const result = parts.cached?.[`${s.name}!${addr}`]
-      const array = !parts.plain || parts.plain.arrays?.includes(`${s.name}!${addr}`)
-      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), ...(array ? { shareType: 'array', ref: addr } : {}), ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
+      // an old-kind array formula over its area; a dynamic array formula, or a plain one where `plain` says
+      const array = cell.array !== undefined || !parts.plain || parts.plain.arrays?.includes(`${s.name}!${addr}`)
+      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), ...(array ? { shareType: 'array', ref: cell.array ?? addr } : {}), ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
       else if (cell.value !== null && typeof cell.value === 'object') x.value = new Date(Date.parse(`${cell.value.date}${cell.value.date.includes('T') ? '' : 'T00:00:00'}Z`))
       else if (cell.value !== undefined) x.value = cell.value
       if (cell.format !== undefined) x.numFmt = formatCode(cell.format)
@@ -139,11 +191,12 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
       src.addrs.forEach((a, k) => (ws.getCell(dst.addrs[k]).value = { formula: MIRROR[m](`${quoteSheet(g.sheet)}!${a}`) } as ExcelJS.CellValue))
     })
   }
-  // ExcelJS keeps names in a cell matrix (no `#`): its model is replaced by the case's names
-  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)] }))
+  // ExcelJS keeps names in a cell matrix (no `#`, no formulas, no scope): its model is replaced by the case's names
+  const index = new Map(book.sheets.map((s, i) => [s.name, i]))
+  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
   Object.defineProperty(wb.definedNames, 'model', { get: () => names })
   await wb.xlsx.writeFile(file)
-  await markDynamic(file, book.sheets.length)
+  await markDynamic(file, book.sheets.length, (i, addr) => book.sheets[i]?.cells[addr]?.array !== undefined)
   if (parts.sheets || parts.iterate) await writeParts(file, book, parts)
 }
 
@@ -192,10 +245,14 @@ function hideRows(xml: string, rows: Set<number>): string {
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
+/** Excel did not load a case's book: it showed "We found a problem with some content", which was declined. */
+export class BookRejected extends Error {}
+
 /**
  * A case's book in Excel's sandbox, the AppleScript `script` over it (arguments: the path, the rectangles as lines
- * `sheet<TAB>range<TAB>mirror range`, then `more`): its output. A window that is not a book stops the run and is
- * left open (nothing is clicked); so does Excel not answering in 120 s.
+ * `sheet<TAB>range<TAB>mirror range`, then `more`): its output. The repair window is declined and `BookRejected`
+ * thrown. Another window that is not a book stops the run and is left open (nothing is clicked); so does Excel not
+ * answering in 120 s.
  */
 export async function runOnBook(id: string, script: string, book: BookInput, read: RangeRef[], more: string[], parts?: FileParts): Promise<string> {
   const before = dialogText()
@@ -221,6 +278,12 @@ export async function runOnBook(id: string, script: string, book: BookInput, rea
         if (code !== 0) throw new Error(`${id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
         return out
       }
+      if (declineRepair()) {
+        child.kill()
+        await exited
+        await settleRejected()
+        throw new BookRejected(`${id}: Excel did not load the book (repair window declined)`)
+      }
       if (excelDialogs().length) {
         child.kill()
         throw new Error(`${id}: Excel shows a window, stopped without clicking: ${dialogText()}`)
@@ -238,11 +301,14 @@ export async function runOnBook(id: string, script: string, book: BookInput, rea
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */
 const grid = (x: unknown): unknown[][] => (Array.isArray(x) ? (Array.isArray(x[0]) ? (x as unknown[][]) : [x]) : [[x]])
 
-/** The answer from the read of each rectangle: its mirrors' types, numbers and texts, and its formulas. */
-export function answerOf(read: RangeRef[], raw: [unknown, unknown, unknown, unknown][]): RectsAnswer {
-  const out: RectsAnswer = { values: {}, formulas: {} }
+/**
+ * The answer from the read of each rectangle: its mirrors' types, numbers and texts, and its formulas; with `withF2`
+ * the formulas as Excel 365 shows them too (`formulas2`), read fifth.
+ */
+export function answerOf(read: RangeRef[], raw: [unknown, unknown, unknown, unknown, unknown?][], withF2 = false): RectsAnswer & { formulas2?: Record<string, string> } {
+  const out: RectsAnswer & { formulas2?: Record<string, string> } = { values: {}, formulas: {}, ...(withF2 ? { formulas2: {} } : {}) }
   read.forEach((g, i) => {
-    const [t, nums, strs, fs] = raw[i].map(grid)
+    const [t, nums, strs, fs, f2s] = raw[i].map(grid)
     const { cols, addrs } = cellsOf(g.range)
     addrs.forEach((a, k) => {
       const [r, j] = [Math.floor(k / cols), k % cols]
@@ -250,6 +316,7 @@ export function answerOf(read: RangeRef[], raw: [unknown, unknown, unknown, unkn
       const type = Number(t[r][j])
       const f = String(fs[r][j])
       if (f.startsWith('=')) out.formulas[key] = f
+      if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
       if (type === -5) return
       out.values[key] =
         type === 0 ? { t: 'n', v: Number(nums[r][j]) } : type === -1 ? { t: 'b', v: true } : type === -2 ? { t: 'b', v: false } : type === -3 ? { t: 's', v: String(strs[r][j]) } : type > 0 ? { t: 'e', v: ERROR_TYPE[type] ?? 'ERROR' } : { t: 'other', v: `type ${type}` }

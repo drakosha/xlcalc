@@ -6,16 +6,14 @@ import type { Issues, Where } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
 
 const FOUND: Record<Found, [XlsxIssueCode, string]> = {
-  singleOperator: ['singleOperator', 'the @ operator (_xlfn.SINGLE) is not in the engine: the formula computes to #NAME?'],
   userFunction: ['userFunction', 'a user-defined function (a macro or an add-in) is not in the engine'],
   table: ['table', 'structured references to tables are not in the engine: the formula is read as written and computes to an error'],
   externalLink: ['externalLink', 'references to other workbooks are not in the engine: the formula is read as written and computes to an error'],
-  reference3d: ['reference3d', 'references across sheets (Sheet1:Sheet3!A1) are not in the engine: the formula is read as written and computes to an error'],
   letName: ['formula', 'a LET name that reads as a reference or a boolean once its _xlpm. prefix goes: the formula changes its meaning'],
 }
 
 /** Found kinds that already say why the engine does not parse the formula. */
-const EXPLAINED = new Set<Found>(['table', 'externalLink', 'reference3d', 'letName'])
+const EXPLAINED = new Set<Found>(['table', 'externalLink', 'letName'])
 
 export interface ReadFormula {
   formula: string
@@ -30,11 +28,12 @@ export function reportFormula(f: ReadFormula, issues: Issues, where: Where): voi
   if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', 'a formula the engine does not parse is read as written (its cell computes to an error)', where)
 }
 
-export function readFormula(text: string, issues: Issues, where: Where): ReadFormula {
+/** A formula read at `where`; `union` for a name's formula, which may be a union of references without parentheses. */
+export function readFormula(text: string, issues: Issues, where: Where, union = false): ReadFormula {
   const c = fromFile(text)
   let ast: Ast | undefined
   try {
-    ast = parse(c.formula)
+    ast = parse(c.formula, { union })
   } catch (e) {
     if (!(e instanceof FormulaError)) throw e
   }

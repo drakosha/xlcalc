@@ -36,7 +36,7 @@ const BOOKS: [string, BookInput][] = [
   ['the synthetic book', synthBook({ seed: 1, rows: 3400 }).book],
   ['the spill book', spillBook()],
 ]
-const SPILL_CASES = (await Promise.all(['base', 'order', 'held'].map(async (set) => ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()))).flat()
+const SPILL_CASES = (await Promise.all(['base', 'order', 'held', 'names', 'names-held', 'at', 'at-held', 'legacy', 'legacy-held', 'cse', 'cse-held', 'cube-held'].map(async (set) => ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()))).flat()
 
 /** Every kind of node of the compiler, lifted and not; names, an external function, a cycle, SUBTOTAL over SUBTOTAL. */
 const f = (formula: string): CellInput => ({ formula })
@@ -60,9 +60,13 @@ const NODES: BookInput = {
         D1: f('SEQUENCE(2,2)'), D4: f('D1#*2'), D7: f('SUM(D1#)+ROWS(sq)+SUM(SEQUENCE(1,2)*D4#)'),
         // LET: a reference kept, a nested scope, a lifted value, an unused one; arguments left out
         F1: f('LET(r,A1:A4,n,rate,SUM(r)+LET(r,n*2,r)+SUM(LET(a,{1,2},a*n)))'), F2: f('LET(x,1/0,y,A1,IF(A3,,y)&TEXTJOIN(",",,A1:A4)&COUNT(1,,2))'),
+        // @, unions, references across sheets, names of formulas (relative, with LET, over unions), an old-kind array
+        G1: f('@A1:A4+SUM(@A:A)+@{7,8}'), G2: f('SUM((A1:A2,A4))+INDEX((A1:A2,A3:A4),1,1,2)+AREAS((A1,A2))'), G3: f("SUM('M:K'!A1)+COUNT('M:K'!A1:A2)+ROWS(VSTACK('M:K'!A1))"),
+        G4: f('dbl+SUM(nx)+SUM(un)+lt'), G5: f('LET(dbl,1,dbl)+dbl'), G6: { formula: 'A1:A2*ROW()', array: 'G6:H8' }, G9: f('SUM(G6:H8)+ISREF(un)'),
       },
     },
     { name: 'M', cells: { A1: { value: 0.07 }, B1: f('local*10') } },
+    { name: 'K', cells: { A1: { value: 5 }, A2: { value: 'x' } } },
   ],
   names: [
     { name: 'rate', ref: "'N'!$A$1" },
@@ -70,6 +74,10 @@ const NODES: BookInput = {
     { name: 'local', ref: "'N'!$A$4", scope: 'N' },
     { name: 'local', ref: "'M'!$A$1", scope: 'M' },
     { name: 'sq', ref: "'N'!$D$1#" },
+    { name: 'dbl', ref: "'N'!$A$1*2" },
+    { name: 'nx', ref: "'N'!XFD1:XFD2" },
+    { name: 'un', ref: "'N'!$A$1,'N'!$A$3:$A$4" },
+    { name: 'lt', ref: "LET(a,'N'!$A$1,b,a*2,a+b)" },
   ],
 }
 const EXTERNALS = { functions: ['BALANCE'], values: { 'BALANCE("2025-01")': 1250 } }

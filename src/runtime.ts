@@ -18,7 +18,7 @@ import type { Rules } from './locale/rules.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
-import { E, fitNumber, fromCellValue, isErr, Rng, type CErr, type V } from './values.js'
+import { Areas, E, fitNumber, fromCellValue, isErr, Rng, type CErr, type V } from './values.js'
 
 export interface SheetData {
   name: string
@@ -119,14 +119,14 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   /** A value in a scalar position: the single cell of a range or array, else #VALUE!. */
   const scalar = (x: Arg): V => {
+    if (x instanceof Rng) return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
     if (x instanceof Arr) return x.rows === 1 && x.cols === 1 ? x.at(0, 0) : E.VALUE
-    if (!(x instanceof Rng)) return x
-    return x.r1 === x.r2 && x.c1 === x.c2 ? cell(x.s, x.r1, x.c1) : E.VALUE
+    return x instanceof Areas ? E.VALUE : x
   }
 
-  /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are. */
+  /** A reference as an array of its referenced size (the occupied part stored); values and arrays as they are; several areas #VALUE!. */
   const view = (x: Arg): V | Arr => {
-    if (!(x instanceof Rng)) return x
+    if (!(x instanceof Rng)) return x instanceof Areas ? E.VALUE : x
     const b = bounds(x)
     return new Arr(x.r2 - x.r1 + 1, x.c2 - x.c1 + 1, b.h, b.w, flat(x))
   }
@@ -266,7 +266,32 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const spill = (s: number, r: number, c: number) => ctx.spillRef(s, r, c)
 
-  return { cell, spill, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, E, cx }
+  /**
+   * `@x` at row `r`, column `c`: a reference's cell in that row or column (one row or column is its own), an array's
+   * top-left value; a union is #VALUE!, a reference across sheets #REF!.
+   */
+  const I = (x: Arg, r: number, c: number): Arg => {
+    if (x instanceof Arr) return x.at(0, 0)
+    if (x instanceof Areas) return x.cube ? E.REF : E.VALUE
+    if (!(x instanceof Rng)) return x
+    const row = x.r1 === x.r2 ? x.r1 : r >= x.r1 && r <= x.r2 ? r : -1
+    const col = x.c1 === x.c2 ? x.c1 : c >= x.c1 && c <= x.c2 ? c : -1
+    return row < 0 || col < 0 ? E.VALUE : new Rng(x.s, row, col, row, col)
+  }
+
+  /** A union: references on one sheet as several areas, else #VALUE! (an error among them is the answer). */
+  const U = (...xs: Arg[]): Arg => {
+    const list: Rng[] = []
+    for (const x of xs) {
+      if (isErr(x)) return x
+      if (x instanceof Rng) list.push(x)
+      else if (x instanceof Areas && !x.cube) list.push(...x.list)
+      else return E.VALUE
+    }
+    return list.every((g) => g.s === list[0].s) ? new Areas(list) : E.VALUE
+  }
+
+  return { cell, spill, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

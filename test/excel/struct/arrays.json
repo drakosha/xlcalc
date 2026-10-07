@@ -1,0 +1,766 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "read": "A1:Z60",
+  "seconds": 21
+ },
+ "books": {
+  "arrays": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "C2": {
+       "formula": "A1:A3*2",
+       "array": "C2:C4"
+      },
+      "D2": {
+       "formula": "TRANSPOSE(A1:A2)",
+       "array": "D2:E2"
+      },
+      "G2": {
+       "formula": "SUM(C2:C4)"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "formula": "SUM(S!C2:C4)"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "insert-row-above",
+   "book": "arrays",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 1
+   }
+  },
+  {
+   "id": "insert-row-inside",
+   "book": "arrays",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 3
+   }
+  },
+  {
+   "id": "insert-row-below",
+   "book": "arrays",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 5
+   }
+  },
+  {
+   "id": "delete-row-inside",
+   "book": "arrays",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 3
+   }
+  },
+  {
+   "id": "delete-rows-over",
+   "book": "arrays",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 2,
+    "count": 3
+   }
+  },
+  {
+   "id": "insert-column-inside",
+   "book": "arrays",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "E"
+   }
+  },
+  {
+   "id": "insert-column-before",
+   "book": "arrays",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "C"
+   }
+  },
+  {
+   "id": "delete-column-part",
+   "book": "arrays",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "E"
+   }
+  },
+  {
+   "id": "delete-column-whole",
+   "book": "arrays",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "C"
+   }
+  },
+  {
+   "id": "move-whole",
+   "book": "arrays",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "C2:C4"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J2"
+    }
+   }
+  },
+  {
+   "id": "move-part",
+   "book": "arrays",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "C2:C3"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J2"
+    }
+   }
+  },
+  {
+   "id": "move-other-sheet",
+   "book": "arrays",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "T",
+     "cell": "C1"
+    }
+   }
+  },
+  {
+   "id": "copy-whole",
+   "book": "arrays",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "C2:C4"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J2"
+    }
+   }
+  },
+  {
+   "id": "copy-part",
+   "book": "arrays",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "C3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J3"
+    }
+   }
+  },
+  {
+   "id": "paste-over-part",
+   "book": "arrays",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A1"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "C3"
+    }
+   }
+  },
+  {
+   "id": "paste-over-whole",
+   "book": "arrays",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A1:A3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "C2"
+    }
+   }
+  },
+  {
+   "id": "move-onto-part",
+   "book": "arrays",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "A5"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "C4"
+    }
+   }
+  }
+ ],
+ "answers": {
+  "insert-row-above": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$2:$G$6",
+     "cells": {
+      "A2": "1",
+      "A3": "2",
+      "C3": "=A2:A4*2",
+      "D3": "=TRANSPOSE(A2:A3)",
+      "E3": "=TRANSPOSE(A2:A3)",
+      "G3": "=SUM(C3:C5)",
+      "A4": "3",
+      "C4": "=A2:A4*2",
+      "A5": "4",
+      "C5": "=A2:A4*2",
+      "A6": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C3:C5)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "insert-row-inside": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "insert-row-below": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$6",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A6": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "delete-row-inside": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "delete-rows-over": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$A$2",
+     "cells": {
+      "A1": "1",
+      "A2": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!#REF!)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "insert-column-inside": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "insert-column-before": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "D2": "=A1:A3*2",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "F2": "=TRANSPOSE(A1:A2)",
+      "H2": "=SUM(D2:D4)",
+      "A3": "3",
+      "D3": "=A1:A3*2",
+      "A4": "4",
+      "D4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!D2:D4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "delete-column-part": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "delete-column-whole": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$F$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=TRANSPOSE(A1:A2)",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "F2": "=SUM(#REF!)",
+      "A3": "3",
+      "A4": "4",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!#REF!)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "move-whole": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(J2:J4)",
+      "J2": "=A1:A3*2",
+      "A3": "3",
+      "J3": "=A1:A3*2",
+      "A4": "4",
+      "J4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!J2:J4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "move-part": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "move-other-sheet": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$D$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)",
+      "C1": "=TRANSPOSE(S!A1:A2)",
+      "D1": "=TRANSPOSE(S!A1:A2)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-whole": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "J2": "=H1:H3*2",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "J3": "=H1:H3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "J4": "=H1:H3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "copy-part": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "J3": "=H2:H4*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "paste-over-part": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "paste-over-whole": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "1",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "2",
+      "A4": "4",
+      "C4": "3",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "move-onto-part": {
+   "error": "op: -50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$5",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "C2": "=A1:A3*2",
+      "D2": "=TRANSPOSE(A1:A2)",
+      "E2": "=TRANSPOSE(A1:A2)",
+      "G2": "=SUM(C2:C4)",
+      "A3": "3",
+      "C3": "=A1:A3*2",
+      "A4": "4",
+      "C4": "=A1:A3*2",
+      "A5": "5"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {
+      "A1": "=SUM(S!C2:C4)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  }
+ }
+}

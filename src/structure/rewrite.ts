@@ -19,6 +19,13 @@ export interface Transform {
   ref(site: Site): Outcome
   /** The new name of a sheet in `'S'!#REF!`: null when the sheet is deleted, undefined to keep it. */
   sheet?(name: string): string | null | undefined
+  /**
+   * The new ends of a reference across sheets (`'Jan:Mar'!A1`): undefined to keep them, null when none is left; ends
+   * on one sheet are written as a reference to it. Rows and columns of its sheets do not move it.
+   */
+  ends?(first: string, last: string): [string, string] | null | undefined
+  /** A copy: relative references move by its offset wherever they point, across sheets too. */
+  copy?: true
 }
 
 /** Sheet names of a book by key (sheet names compare case-insensitively). */
@@ -35,7 +42,8 @@ const SPACE = new Set([' ', '\t', '\n', '\r'])
  */
 export function rewriteFormula(text: string, host: string | null, moved: string | null, t: Transform, sheets: Map<string, string>): string {
   try {
-    parse(text)
+    // a name's formula may be a union
+    parse(text, { union: host === null })
   } catch (e) {
     if (e instanceof FormulaError) return text
     throw e
@@ -47,7 +55,9 @@ export function rewriteFormula(text: string, host: string | null, moved: string 
     const tok = toks[k]
     let end = toks[k + 1].at
     while (end > tok.at && SPACE.has(text[end - 1])) end--
-    const now = tok.t === 'ref' ? refText(tok, text.slice(tok.at, end), host, moved, t, sheets) : tok.t === 'err' && tok.sheet !== undefined ? errText(tok.sheet, tok.ref ?? '', t, sheets) : undefined
+    const written = text.slice(tok.at, end)
+    const now =
+      tok.t === 'ref' ? (tok.last === undefined ? refText(tok, written, host, moved, t, sheets) : cubeText(tok, tok.last, written, t, sheets)) : tok.t === 'err' && tok.sheet !== undefined ? errText(tok.sheet, tok.ref ?? '', t, sheets) : undefined
     if (now === undefined) continue
     out += text.slice(pos, tok.at) + now
     pos = end
@@ -74,6 +84,23 @@ function refText(tok: Extract<Tok, { t: 'ref' }>, written: string, host: string 
   return next === written ? undefined : next
 }
 
+/** The new text of a reference across sheets, undefined when it stays as written. */
+function cubeText(tok: Extract<Tok, { t: 'ref' }>, last: string, written: string, t: Transform, sheets: Map<string, string>): string | undefined {
+  const spelled = (s: string) => sheets.get(sheetKey(s)) ?? s
+  const [first, end] = [spelled(tok.sheet!), spelled(last)]
+  const ends = t.ends?.(first, end)
+  let area = decode(tok.ref)
+  if (t.copy) {
+    const o = t.ref({ sheet: first, area })
+    if (o === 'lost' || o === 'gone') return `${quoteSheet(`${first}:${end}`)}!#REF!`
+    if (o) area = o.area
+  }
+  if (ends === null) return `#REF!${encode(area)}`
+  const [a, b] = ends ?? [first, end]
+  const next = `${quoteSheet(sheetKey(a) === sheetKey(b) ? a : `${a}:${b}`)}!${encode(area)}`
+  return next === written || (ends === undefined && sameArea(area, decode(tok.ref))) ? undefined : next
+}
+
 /** `'S'!#REF!` (`tail`: `#` of a lost spill reference) on a renamed or deleted sheet. */
 function errText(name: string, tail: string, t: Transform, sheets: Map<string, string>): string | undefined {
   const next = t.sheet?.(sheets.get(sheetKey(name)) ?? name)
@@ -87,6 +114,9 @@ export function rewriteCell(cell: CellInput, host: string, moved: string, t: Tra
   const formula = rewriteFormula(cell.formula, host, moved, t, sheets)
   return formula === cell.formula ? cell : { ...cell, formula }
 }
+
+/** A transform for names' formulas under inserted or deleted rows and columns: a reference without `$`, an offset from the cell using the name, stays. */
+export const offsetsStay = (t: Transform): Transform => ({ ...t, ref: (site) => (site.area.r.lo.abs || site.area.r.hi.abs || site.area.c.lo.abs || site.area.c.hi.abs ? t.ref(site) : undefined) })
 
 /** The references of names rewritten; the same array when nothing changed. */
 export function rewriteNames(names: NameInput[] | undefined, t: Transform, sheets: Map<string, string>): NameInput[] | undefined {

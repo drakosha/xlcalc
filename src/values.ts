@@ -41,6 +41,18 @@ export class Rng {
   }
 }
 
+/**
+ * A reference of several areas: a union on one sheet (`(A1:A3,C1:C3)`), or one rectangle on each sheet of a
+ * reference across sheets (`'S1:S3'!A1:B2`, `cube`). Functions over lists of values take each area in turn; one value
+ * cannot be read from it (#VALUE!).
+ */
+export class Areas {
+  constructor(
+    readonly list: readonly Rng[],
+    readonly cube = false,
+  ) {}
+}
+
 export const isErr = (x: unknown): x is CErr => x instanceof CErr
 
 /** The smallest positive normal double: Excel has no smaller numbers (subnormal results are 0). */

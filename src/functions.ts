@@ -13,6 +13,7 @@ import { functions as logical } from './functions/logical.js'
 import { functions as lookup } from './functions/lookup.js'
 import { functions as math } from './functions/math.js'
 import { functions as statistical } from './functions/statistical.js'
+import { AREAS } from './functions/areas.js'
 import { NOT_OMITTED, OMITTED } from './functions/omitted.js'
 import { functions as text } from './functions/text.js'
 
@@ -49,10 +50,16 @@ const REFUSE_RANGES: Record<string, FnDef['ranges']> = {
   'WORKDAY.INTL': [0, 1],
 }
 
-/** A definition with the tables of this file and of `functions/omitted.ts`. */
+/** A definition with the tables of this file, of `functions/omitted.ts` and of `functions/areas.ts`. */
 function measured(name: string, def: FnDef): FnDef {
   const omit = ANALYSIS.has(name) ? { ...OMITTED[name], analysis: true } : OMITTED[name]
-  return { ...def, ...(name in REFUSE_RANGES && { ranges: REFUSE_RANGES[name] }), ...(omit && { omit }), ...(name in NOT_OMITTED && { notOmitted: NOT_OMITTED[name] }) }
+  return {
+    ...def,
+    ...(name in REFUSE_RANGES && { ranges: REFUSE_RANGES[name] }),
+    ...(omit && { omit }),
+    ...(name in NOT_OMITTED && { notOmitted: NOT_OMITTED[name] }),
+    ...(name in AREAS && !def.areas && { areas: AREAS[name] }),
+  }
 }
 
 function assemble(): Record<string, FnDef> {

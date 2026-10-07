@@ -3,7 +3,7 @@
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
 import { Arr } from '../arrays/value.js'
-import { E, isErr, Rng, whole, type V } from '../values.js'
+import { Areas, E, isErr, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
 import type { ErrorCode } from '../contract.js'
 
@@ -26,6 +26,8 @@ export const functions: Record<string, FnDef> = {
   ISNA: is((v) => isErr(v) && v.code === 'NA'),
   ISNONTEXT: is((v) => typeof v !== 'string'),
   ISNUMBER: is((v) => typeof v === 'number'),
+  // a reference, a union too; a reference across sheets is not one here, as in Excel
+  ISREF: { args: 'R', areas: true, fn: (x: Arg) => x instanceof Rng || (x instanceof Areas && !x.cube) },
   ISODD: { args: 'x', fn: (x: number) => whole(x, 1e-10) % 2 !== 0 },
   ISTEXT: is((v) => typeof v === 'string'),
   // a range of several cells gives its top-left cell (an array is lifted)

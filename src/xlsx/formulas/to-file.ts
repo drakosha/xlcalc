@@ -1,7 +1,7 @@
 /**
  * A formula of the book in a file's spelling, printed from its syntax tree: functions newer than Excel 2007 with
  * their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.FILTER`), LET as `_xlfn.LET` with its names as `_xlpm.x`, a spill
- * reference `E2#` as `_xlfn.ANCHORARRAY(E2)`, sheets always quoted, numbers with an upper-case exponent. The rest
+ * reference `E2#` as `_xlfn.ANCHORARRAY(E2)`, `@x` as `_xlfn.SINGLE(x)`, sheets always quoted, numbers with an upper-case exponent. The rest
  * as the engine's canonical text prints it.
  */
 import type { Ast } from '../../syntax/ast.js'
@@ -31,8 +31,14 @@ export function toFile(ast: Ast): string {
         const text = (n.sheet === null ? '' : `${quoteSheet(n.sheet)}!`) + n.ref.text
         return n.ref.spill ? `_xlfn.ANCHORARRAY(${text})` : text
       }
+      case 'ref3d':
+        return `${quoteSheet(`${n.first}:${n.last}`)}!${n.ref.text}`
       case 'name':
-        return n.name
+        return (n.sheet === undefined ? '' : `${quoteSheet(n.sheet)}!`) + n.name
+      case 'at':
+        return `_xlfn.SINGLE(${go(n.a)})`
+      case 'union':
+        return n.items.map(go).join(',')
       case 'fn':
         return `${fn(n.name)}(${n.args.map(go).join(',')})`
       case 'un':

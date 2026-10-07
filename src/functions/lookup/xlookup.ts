@@ -57,7 +57,7 @@ function line(ret: Rng | Arr, pos: number, vertical: boolean): Arg {
 }
 
 /** The answer is a row (column) of the return array: several cells when it is wider (taller) than one. */
-function xlookup(cx: Cx, key: V, look: Grid, ret: Arg, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
+function xlookup(cx: Cx, key: V, look: Grid, ret: V | Rng | Arr, notFound?: Arg, matchMode = 0, searchMode = 1): Arg {
   if (isErr(key)) return key
   if (isErr(ret)) return ret
   if (look.cols !== 1 && look.rows !== 1) return E.VALUE

@@ -27,6 +27,16 @@ export interface CellInput {
   style?: number
   /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
   meta?: JsonValue
+  /**
+   * An array formula of the old kind (entered with Ctrl+Shift+Enter; in xlsx `<f t="array" ref="B2:C5">` without
+   * dynamic array metadata), on the top-left cell of its area: the area (`B2:C5`, or the cell alone, `B2`). The
+   * formula is computed as an array, with no implicit intersection, and fills the area, which it never leaves:
+   * a smaller array is repeated when it has one row or one column, else the cells past it are #N/A, a larger one is
+   * cut, one value fills every cell; nothing spills and nothing blocks it. `ROW()` and `COLUMN()` give the rows and
+   * columns of the area. The other cells of the area hold no input, and a session refuses to change some of them
+   * without the rest (`Session.setCells`). Only with `formula`.
+   */
+  array?: string
 }
 
 /**
@@ -124,7 +134,16 @@ export interface SheetInput {
 export interface NameInput {
   /** Latin letters, digits, `_` and `.`; not a cell address, not R1C1, not TRUE/FALSE. */
   name: string
-  /** A reference with a sheet: `'Data'!$D$2:$D$3401`, `'Data'!$D:$D`. */
+  /**
+   * What the name refers to: a formula without `=`, as Excel's "Refers to" and xlsx `<definedName>` hold it. A
+   * reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`, `"text"`, `{1,2,3}`), a
+   * formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a reference), a union of
+   * references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet. A reference
+   * without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from A1,
+   * wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
+   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula
+   * is computed where the name is used, as part of that formula.
+   */
   ref: string
   /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
   scope?: string
@@ -258,7 +277,10 @@ export interface CellResult extends Partial<CellDisplay> {
   formula?: string
   format?: NumberFormat
   meta?: JsonValue
-  /** A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left). */
+  /**
+   * A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left); for an array
+   * formula of the old kind (`CellInput.array`), its area.
+   */
   spill?: string
   /**
    * The value of the cells of `spill` that the result does not list: only for an array of more than 65,536
@@ -266,7 +288,10 @@ export interface CellResult extends Partial<CellDisplay> {
    * then left out of `cells` and of the hash's lines but for one line of the range.
    */
   spillFill?: CellValue
-  /** A cell an array spilled into: the address of the array's formula on the same sheet (an empty element is 0). */
+  /**
+   * A cell an array spilled into, or a cell of an old-kind array formula's area: the address of the array's formula
+   * on the same sheet (an empty element is 0).
+   */
   spillOf?: string
 }
 
@@ -400,6 +425,16 @@ export type StructureOp =
   /** A new name by Excel's rules (see `BookInput.sheets`) that no other sheet has. */
   | { op: 'renameSheet'; sheet: string; name: string }
   | { op: 'deleteSheet'; sheet: string }
+  /**
+   * A new empty sheet named `name` (by Excel's rules, not taken), before the sheet `before`, else after the last one.
+   * A reference across sheets takes in a sheet inserted between its ends.
+   */
+  | { op: 'insertSheet'; name: string; before?: string }
+  /**
+   * The sheet moved before the sheet `before`, else after the last one. A reference across sheets covers the sheets
+   * between its ends in the new order; an end that moves leaves it, the next sheet inward taking its place.
+   */
+  | { op: 'moveSheet'; sheet: string; before?: string }
 
 /** Why Excel would refuse an operation. */
 export type StructureRefusal =
@@ -413,6 +448,8 @@ export type StructureRefusal =
   | 'merged'
   /** A copy that leaves out rows a filter hid, pasted over hidden rows of a filtered sheet (several areas onto several areas). */
   | 'filtered'
+  /** The operation would change part of the area of an array formula of the old kind (`CellInput.array`). */
+  | 'array'
 
 export type RestructureResult =
   | {
@@ -464,7 +501,9 @@ export interface Session {
    * Applied atomically with one recomputation; returns the changed values. An edit that keeps the cell's
    * value and formula (a new `style`, `format` or `meta`) recomputes nothing; with `display` a new format returns
    * the cell when its shown text changed. A value or formula put into a spill range stops the array spilling
-   * (#SPILL!); clearing it lets the array spill again.
+   * (#SPILL!); clearing it lets the array spill again. Edits that change some cells of an old-kind array formula's
+   * area (`CellInput.array`) but not all of them throw `InputError` and change nothing, as Excel refuses to change
+   * part of an array; an edit of its top-left cell that keeps an array formula over the same area changes all of it.
    */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]

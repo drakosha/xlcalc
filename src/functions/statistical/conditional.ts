@@ -41,6 +41,7 @@ export const functions: Record<string, FnDef> = {
   AVERAGEIF: {
     args: 'R a R?',
     cx: true,
+    criteria: true,
     fn: (cx: Cx, range: V | Rng, crit: V | Rng, avg?: V | Rng) => {
       const cg = asRng(range)
       if (isErr(cg)) return cg
@@ -56,10 +57,11 @@ export const functions: Record<string, FnDef> = {
       return isErr(xs) ? xs : xs.length ? mean(xs) : E.DIV0
     },
   },
-  AVERAGEIFS: { args: 'R R a', rep: 2, cx: true, fn: ifs((xs) => (xs.length ? mean(xs) : E.DIV0)) },
+  AVERAGEIFS: { args: 'R R a', rep: 2, cx: true, criteria: true, fn: ifs((xs) => (xs.length ? mean(xs) : E.DIV0)) },
   COUNTIF: {
     args: 'R a',
     cx: true,
+    criteria: true,
     fn: (cx: Cx, range: V | Rng, crit: V | Rng) => {
       const g = asRng(range)
       if (isErr(g)) return g
@@ -71,11 +73,12 @@ export const functions: Record<string, FnDef> = {
     args: 'R a',
     rep: 2,
     cx: true,
+    criteria: true,
     fn: (cx: Cx, rest: (V | Rng)[]) => {
       const r = cx.select(criteriaPairs(rest))
       return isErr(r) ? r : r.sel.length + r.rest
     },
   },
-  MAXIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, fn: ifs((xs) => (xs.length ? max(xs) : 0)) },
-  MINIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, fn: ifs((xs) => (xs.length ? min(xs) : 0)) },
+  MAXIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, criteria: true, fn: ifs((xs) => (xs.length ? max(xs) : 0)) },
+  MINIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, criteria: true, fn: ifs((xs) => (xs.length ? min(xs) : 0)) },
 }

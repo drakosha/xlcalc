@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 14.3,
+  "seconds": 5,
   "date": "2026-10-07"
  },
  "books": {
@@ -268,6 +268,15 @@
   },
   "time-text-1": {
    "sent": "f6196c3a370a8cb37d8e1eac5971a80409995821a1463342d247f969389a7501"
+  },
+  "areas-1": {
+   "sent": "087e7a63cfc90d1a59dd5f7e25fec5c4221c6ff56a306d1bfbba02d9c09e63b4"
+  },
+  "areas-2": {
+   "sent": "0594f4caa7834cc36c2ee029d62b7c1bbfa18cdeaf758c375177f2f4bf918d9a"
+  },
+  "areas-3": {
+   "sent": "19ae84eec0ea31088d062ff7fcf1aa0f187d228ecc655b0c5f80810387c40681"
   }
  }
 }

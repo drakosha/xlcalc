@@ -18,8 +18,18 @@ export interface SpillCase {
   volatile?: true
   /** A held-out case: its answer (non-blank cells of `read`, `Sheet!A1`) predicted before Excel computed it. */
   predicted?: Record<string, Val>
-  /** Edits after the computation, in order, each followed by a recalculation: a number or a text typed into a cell, or null to clear it (a session's `setCells`). */
-  edits?: { sheet: string; cell: string; value: number | string | null }[]
+  /**
+   * Edits after the computation, in order, each followed by a recalculation: a number or a text typed into a cell,
+   * a formula entered (`{ formula }`, the engine's spelling), or null to clear it (a session's `setCells`); `cell`
+   * may be a range, each of its cells taking the edit (clearing an old-kind array formula's whole area).
+   */
+  edits?: { sheet: string; cell: string; value: number | string | null | { formula: string } }[]
+  /**
+   * Cells (`S!A1`) whose formula the file stores as a formula of the old kind (no dynamic array metadata): Excel 365
+   * computes it with implicit intersection, and the engine computes the book with those formulas converted
+   * (`fromLegacy`). Their text as Excel 365 shows it is read too (`formula2`).
+   */
+  legacy?: string[]
 }
 
 export interface SpillSet {

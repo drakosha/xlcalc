@@ -1,8 +1,9 @@
 /**
- * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling, shared
- * formulas spread to their cells as a copy and paste spreads them (`restructure`'s copyRange), the cells an
- * array spilled into left to the stored values, columns, rows, merged areas, and what the sheet has that the
- * model does not, reported.
+ * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
+ * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
+ * cells as a copy and paste spreads them (`restructure`'s copyRange), array formulas of the old kind over their area,
+ * the cells an array spilled into left to the stored values, columns, rows, merged areas, and what the sheet has that
+ * the model does not, reported.
  */
 import type { CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
@@ -11,6 +12,7 @@ import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
+import { canonical } from '../../syntax/print.js'
 import type { Issues } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has } from '../xml/scan.js'
@@ -24,13 +26,13 @@ export interface SheetSource {
   rels: Rel[]
   /** The names of the book's sheets: shared formulas may reference any of them. */
   sheets: string[]
+  /** A formula of the old kind as the dynamic one (`legacyConverter` over the book's names), undefined when the same. */
+  legacy(ast: Ast, sheet: string): Ast | undefined
 }
 
 export interface SheetRead {
   sheet: SheetInput
   cached: Record<string, CellValue>
-  /** Syntax trees of the formulas of the old kind, by cell (`intersect.ts` checks them). */
-  old: Map<string, Ast>
 }
 
 /** Elements of a worksheet the model has no place for, outside `<sheetData>`. */
@@ -97,26 +99,27 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
   }
 }
 
-/** The formulas of `addrs` in the engine's spelling; the trees of the old kind kept for the intersection check. */
-function convert(src: SheetSource, read: SheetCells, issues: Issues, old: Map<string, Ast>): Map<string, ReadFormula> {
+/** The formulas of the sheet in the engine's spelling, those of the old kind as dynamic ones. */
+function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string, ReadFormula> {
   const out = new Map<string, ReadFormula>()
   for (const [addr, cell] of Object.entries(read.cells)) {
     if (cell.formula === undefined) continue
     const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr })
-    cell.formula = f.formula
+    const dynamic = f.ast && read.old.has(addr) ? src.legacy(f.ast, src.name) : undefined
+    cell.formula = dynamic ? canonical(dynamic) : f.formula
     out.set(addr, f)
-    if (f.ast && read.old.has(addr)) old.set(addr, f.ast)
   }
   return out
 }
 
 /** The cells an array formula spilled into hold stored values: they go to `cached`, keeping their look. */
-function arrays(src: SheetSource, read: SheetCells, issues: Issues) {
+function arrays(read: SheetCells) {
   const keys = () => Object.keys(read.cells)
   for (const a of read.arrays) {
-    if (!a.dynamic) issues.add('legacyArray', 'an array formula of the old kind is read as a dynamic array formula: its array spills from the top-left cell', { sheet: src.name, cell: a.ref })
     const r = parseRange(a.ref)
     if (!r) continue
+    const anchor = read.cells[a.anchor]
+    if (!a.dynamic && anchor?.formula !== undefined) anchor.array = a.ref
     for (const addr of cellsOf(r, keys)) {
       const cell = read.cells[addr]
       // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
@@ -204,10 +207,9 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const data = open < 0 ? '' : xml.slice(open, dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const read = readCells(data, ctx)
-  const old = new Map<string, Ast>()
   for (const s of read.shared.values()) if (s.master !== undefined) read.cells[s.master] = { ...read.cells[s.master], formula: s.text }
-  const converted = convert(src, read, ctx.issues, old)
-  // copies are pasted from the converted master and take what it reports; its tree stands for theirs in the intersection check
+  const converted = convert(src, read, ctx.issues)
+  // copies are pasted from the converted master and take what it reports
   spreadShared(src, read, ctx.issues)
   for (const s of read.shared.values()) {
     const master = s.master === undefined ? undefined : converted.get(s.master)
@@ -218,10 +220,9 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
           continue
         }
         reportFormula(master, ctx.issues, { sheet: name, cell })
-        if (master.ast) old.set(cell, master.ast)
       }
   }
-  arrays(src, read, ctx.issues)
+  arrays(read)
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
@@ -231,5 +232,5 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (rows) sheet.rows = rows
   const m = merges(tail, name, ctx.issues)
   if (m) sheet.merges = m
-  return { sheet, cached: read.cached, old }
+  return { sheet, cached: read.cached }
 }

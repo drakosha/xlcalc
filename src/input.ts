@@ -10,6 +10,7 @@ import { LOCALES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
+import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
@@ -99,6 +100,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
   if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
+  if (c.array !== undefined) checkString(c.array, `${path}.array`)
   return c as CellInput
 }
 
@@ -117,7 +119,7 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
-const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta']
+const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta', 'array']
 
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
@@ -282,13 +284,16 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (dup) throw new InputError(`${p}.name`, `duplicate sheet name ${JSON.stringify(name)}: ${path}.sheets[${dup.i}] is ${JSON.stringify(dup.name)} (sheet names are case-insensitive)`)
     seen.set(sheetKey(name), { name, i })
     const cells = object(sheet.cells, `${p}.cells`, 'an object of cells by address such as { A1: { value: 1 } }')
+    // the cells of old-kind array formulas, checked against the sheet once all its cells are
+    const arrays: string[] = []
     for (const addr of Object.keys(cells)) {
       const cell = cells[addr]
       if (SURE_ADDRESS.test(addr) && plainCell(cell, styles)) continue
       const cp = `${p}.cells[${JSON.stringify(addr)}]`
       checkAddress(addr, cp)
-      checkCell(cell, cp, styles)
+      if (checkCell(cell, cp, styles).array !== undefined) arrays.push(addr)
     }
+    if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)

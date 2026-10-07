@@ -5,8 +5,12 @@
  * shape 2 has a result that cannot be shown in one cell.
  */
 import type { FunctionSpec } from '../args.js'
+import type { NameDef } from '../exec/walk.js'
 import { FUNCTIONS } from '../functions.js'
 import type { Ast } from '../syntax.js'
+
+/** A name's definition as the names of sheet `scope` show it (`exec/walk.ts`). */
+export type NameRef = (n: Extract<Ast, { k: 'name' }>, scope: number) => NameDef | undefined
 
 export type Shape = 0 | 1 | 2
 
@@ -33,11 +37,15 @@ function combine(lifted: Shape[], passed: Shape[], array: boolean): Shape {
 
 const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: number }) => r.kind !== 'cell' && !(r.r1 === r.r2 && r.c1 === r.c2)
 
-/** Shapes of every node of a formula; a name is judged by its reference (`nameRef`, undefined when unknown), a LET name by its value. */
-export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Map<Ast, Shape> {
+/**
+ * Shapes of every node of a formula on sheet `scope`; a name is judged by its formula (`nameRef`), which sees the
+ * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula.
+ */
+export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
-  // LET's names by slot
-  const bound: Info[] = []
+  // LET's names by slot (a name's formula has its own), the names being expanded
+  let bound: Info[] = []
+  const inside = new Set<NameDef>()
   const go = (n: Ast): Info => {
     const i = info(n)
     out.set(n, i.s)
@@ -57,9 +65,26 @@ export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Ma
       case 'ref':
         // a spill reference has as many cells as its array spilled into
         return n.ref.spill ? { s: 1, ref: true } : isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
+      // several areas are one value nowhere (#VALUE!), and a reference where a function takes them
+      case 'ref3d':
+        return { s: 0, ref: true }
+      case 'union':
+        n.items.forEach(go)
+        return { s: 0, ref: true }
+      // one cell or one value
+      case 'at':
+        go(n.a)
+        return { s: 0, ref: false }
       case 'name': {
-        const d = nameRef(n.name)
-        return d ? info(d) : { s: 0, ref: false }
+        const d = nameRef(n, scope)
+        if (!d || inside.has(d)) return { s: 0, ref: false }
+        const outer: [Info[], number] = [bound, scope]
+        ;[bound, scope] = [[], -1]
+        inside.add(d)
+        const i = go(d.ast)
+        inside.delete(d)
+        ;[bound, scope] = outer
+        return i
       }
       case 'paren':
         return go(n.a)
@@ -88,7 +113,8 @@ export function shapes(ast: Ast, nameRef: (name: string) => Ast | undefined): Ma
       const a = nodes[0]
       const r = a?.k === 'ref' && !a.ref.spill ? a.ref : null
       const many = r ? (name === 'ROW' ? r.r2 > r.r1 : r.c2 > r.c1) : args.length > 0 && args[0].s > 0
-      return { s: r ? (many ? 2 : 0) : args.length ? 1 : 0, ref: false }
+      // in an old-kind array formula ROW() and COLUMN() are its area's rows and columns
+      return { s: r ? (many ? 2 : 0) : args.length || inArea ? 1 : 0, ref: false }
     }
     if (spec.lazy) {
       const lifted: Shape[] = []

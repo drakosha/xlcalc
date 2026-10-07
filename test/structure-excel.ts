@@ -23,16 +23,16 @@ export const STRUCT_SETS: (StoredStruct & { name: string })[] = existsSync(dir)
       .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredStruct) }))
   : []
 
-/** Formula text (without `=`) with references as Excel writes them; as written when it does not parse. */
+/** Formula text (without `=`, a name's union too) with references as Excel writes them; as written when it does not parse. */
 export function normalFormula(f: string): string {
   let ast
   try {
-    ast = parse(f)
+    ast = parse(f, { union: true })
   } catch {
     return f
   }
   walk(ast, (n) => {
-    if (n.k === 'ref') n.ref = { ...n.ref, text: encode(decode(n.ref)) }
+    if (n.k === 'ref' || n.k === 'ref3d') n.ref = { ...n.ref, text: encode(decode(n.ref)) }
   })
   return canonical(ast)
 }
@@ -134,10 +134,18 @@ export function differences(book: BookInput, a: ExcelStructAnswer, read: string,
   for (const s of a.sheets) {
     const ours = book.sheets.find((x) => x.name === s.name)
     if (!ours) continue
-    const addrs = new Set([...Object.keys(s.cells), ...Object.keys(ours.cells).filter(inRead)])
+    // every cell of an old-kind array formula's area shows its formula, as Excel shows it
+    const arrays = new Map<string, CellInput>()
+    for (const c of Object.values(ours.cells)) {
+      if (c.array === undefined) continue
+      const [p, q = p] = c.array.split(':').map(parseAddress)
+      for (let r = p.row; r <= q.row; r++) for (let k = p.col; k <= q.col; k++) arrays.set(formatAddress(r, k), c)
+    }
+    const addrs = new Set([...Object.keys(s.cells), ...Object.keys(ours.cells).filter(inRead), ...[...arrays.keys()].filter(inRead)])
     for (const addr of addrs) {
       const excel = s.cells[addr] === undefined ? '' : excelShown(s.cells[addr])
-      const engine = ours.cells[addr] ? shown(ours.cells[addr]) : ''
+      const own = ours.cells[addr] ?? arrays.get(addr)
+      const engine = own ? shown(own) : ''
       if (excel !== engine) out.push(`'${s.name}'!${addr}: Excel ${JSON.stringify(excel)}, engine ${JSON.stringify(engine)}`)
     }
     // Excel's used range must lie in the read rectangle unless the case reads extra cells

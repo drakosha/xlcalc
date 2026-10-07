@@ -3,9 +3,9 @@
  * stored in `test/excel/xlsx/`) are read with the reader. Round trip: each book the writer wrote was opened by Excel
  * without its repair window, and what Excel saved comes back as the book written, with Excel's values equal to the
  * engine's. Case books: the books of the case sets as Excel saved them read into books that compute every case as
- * the books sent to Excel do, with the values Excel stored equal to its stored answers. Implicit intersection: every
- * formula of the old kind whose value Excel computed otherwise than the engine is reported. Colours and built-in
- * number formats: the reader's are the ones Excel showed.
+ * the books sent to Excel do, with the values Excel stored equal to its stored answers. Formulas of the old kind: read
+ * with `@` where Excel 365 puts it, they compute the values Excel stored. Colours and built-in number formats: the
+ * reader's are the ones Excel showed.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -29,6 +29,8 @@ const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dir),
 const KNOWN_BOOK: Record<string, { why: string; places: string[] }> = {
   values: { why: 'Excel writes the literal characters of a number format escaped (dd\\.mm\\.yyyy): the same format', places: ['cell Values!E3', 'cell Values!E4', 'cell Values!E5', 'cell Values!E6'] },
   'struct-edge-edge': { why: 'Excel writes a range over whole columns or rows as one (A1:A1048576 as A:A, A:XFD as $1:$1048576): the same cells', places: ['cell F!A3', 'cell F!A5', 'cell F!A15'] },
+  'spill-names-formulas': { why: 'a name that reads as a cell address (nm2) is not a name in Excel: the writer leaves it out', places: ['name !NM2'] },
+  'spill-names-sheet-global': { why: "Excel saves a global name qualified by a sheet without a local one as the book's own name ([0]!x), read as x: the same name", places: ['cell S!E1'] },
 }
 
 /** The issues of reading what Excel saved, by book: what the book itself makes the reader report. */
@@ -130,18 +132,19 @@ describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved 
   }
 })
 
-describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx implicit intersection against Excel', () => {
-  it('every formula of the old kind whose value Excel computed otherwise is reported, but those of functions the engine does not have', async () => {
+describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx formulas of the old kind against Excel', () => {
+  it('every formula of the old kind read computes the value Excel stored, but those of functions the engine does not have and those it does not parse', async () => {
     const read = await readXlsx(readFileSync(new URL('intersect/old-formulas.xlsx', dir)))
-    const reported = new Set(read.issues.filter((i) => i.code === 'implicitIntersection').flatMap((i) => i.cells ?? []))
+    const unread = new Set(read.issues.filter((i) => i.code === 'formula').flatMap((i) => i.cells ?? []))
     const engine = compute(read.book, { clock: CLOCK }).sheets[0].cells
-    const missed = OLD_FORMULAS.flatMap((f, i) => {
+    const off = OLD_FORMULAS.flatMap((f, i) => {
       const a = formulaCell(i)
       const [mine, excel] = [toVal(engine[a].value), toVal(read.cached[0].cells[a] ?? null)]
-      return show(mine) !== show(excel) && !reported.has(a) && !(mine.t === 'e' && mine.v === 'NAME') ? [`${a} ${f}: engine ${show(mine)}, Excel ${show(excel)}`] : []
+      return show(mine) !== show(excel) && !unread.has(a) && !(mine.t === 'e' && mine.v === 'NAME') ? [`${a} ${f} read as ${read.book.sheets[0].cells[a].formula}: engine ${show(mine)}, Excel ${show(excel)}`] : []
     })
-    expect(missed).toEqual([])
-    expect(reported.size).toBe(44)
+    expect(off).toEqual([])
+    // the intersection operator, a space between two ranges
+    expect([...unread]).toEqual([formulaCell(OLD_FORMULAS.indexOf('C1:C3 D2:E2'))])
   })
 })
 

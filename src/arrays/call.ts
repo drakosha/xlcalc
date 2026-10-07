@@ -8,7 +8,7 @@ import { Rng, type V } from '../values.js'
 import { first, liftN, lifts } from './lift.js'
 import { arr, Arr } from './value.js'
 
-type Call = (...a: any[]) => V | Arr | Rng
+type Call = (...a: any[]) => Arg
 
 /** A one-cell reference is its value (an array, a 1 × 1 one too, lifts the call). */
 const single = (x: Arg, cx: Cx): Arg => (x instanceof Rng && !lifts(x) ? cx.scalar(x) : x)
@@ -78,6 +78,6 @@ export function liftLazy(fn: Call, spec: FunctionSpec, check: readonly number[],
   }
   if (!many) return fn(...thunks.map((t, i) => (done[i] === undefined ? t : () => single(done[i]!, cx))))
   const all = thunks.map((t, i) => (done[i] === undefined ? t() : done[i]!))
-  const xs = all.map((x) => (x instanceof Rng || x instanceof Arr ? cx.view(x) : x))
+  const xs = all.map((x) => cx.view(x))
   return liftN(xs, (els) => first(fn(...els.map((e) => () => e)), (g) => topLeft(g, cx)))
 }

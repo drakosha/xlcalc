@@ -261,10 +261,24 @@ end tell`)
   return true
 }
 
-/** As runExcel, but watching for the repair window: it is closed and 'rejected' returned instead of waiting for the AppleEvent timeout. */
-export async function runExcelWatched(book: string, n: number): Promise<Val[] | 'rejected'> {
-  const out = await runScriptWatched(SCRIPT, book, n)
-  return out === 'rejected' ? out : parseRead(out, n)
+/** After the repair window was declined and its script stopped: a second one declined, a book Excel left open closed. */
+export async function settleRejected(): Promise<void> {
+  await sleep(1500)
+  declineRepair()
+  if (countWorkbooks() !== 0) osa('tell application "Microsoft Excel" to close every workbook saving no')
+}
+
+/**
+ * As runExcel, but watching for the repair window: it is closed and 'rejected' returned instead of waiting for the
+ * AppleEvent timeout. With `formula2`, the case formulas as Excel 365 shows them too (`@` where it intersects).
+ */
+export async function runExcelWatched(book: string, n: number, formula2 = false): Promise<{ values: Val[]; formulas?: string[] } | 'rejected'> {
+  const out = await runScriptWatched(SCRIPT, book, n, formula2 ? ['formula2'] : [])
+  if (out === 'rejected') return out
+  const values = parseRead(out, n)
+  if (!formula2) return { values }
+  const f = (JSON.parse(out) as unknown[][][])[3]
+  return { values, formulas: f.map(([x]) => String(x)) }
 }
 
 /** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`, `more`): its output, or 'rejected' as in runExcelWatched. */
@@ -291,9 +305,7 @@ export async function runScriptWatched(script: string, book: string, n: number, 
       if (declineRepair()) {
         child.kill()
         await exited
-        await sleep(1500)
-        declineRepair()
-        if (countWorkbooks() !== 0) osa('tell application "Microsoft Excel" to close every workbook saving no')
+        await settleRejected()
         return 'rejected'
       }
       if (Date.now() > until) {

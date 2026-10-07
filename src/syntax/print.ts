@@ -10,7 +10,11 @@ export function walk(ast: Ast, visit: (n: Ast) => void): void {
     case 'un':
     case 'pct':
     case 'paren':
+    case 'at':
       walk(ast.a, visit)
+      break
+    case 'union':
+      for (const a of ast.items) walk(a, visit)
       break
     case 'bin':
       walk(ast.a, visit)
@@ -52,8 +56,14 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
         return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + ERROR_TEXT[n.code] + (n.ref ?? '')
       case 'ref':
         return (n.sheet === null ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.ref.text + (n.ref.spill ? '#' : '')
+      case 'ref3d':
+        return `${quoteSheet(`${sheetOf(n.first)}:${sheetOf(n.last)}`)}!${n.ref.text}`
       case 'name':
-        return n.name
+        return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.name
+      case 'at':
+        return `@${go(n.a)}`
+      case 'union':
+        return n.items.map(go).join(',')
       case 'fn':
         return `${n.name}(${n.args.map(go).join(',')})`
       case 'un':

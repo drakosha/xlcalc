@@ -1,9 +1,10 @@
 /**
  * A worksheet part from a sheet of the book. Formulas are written as dynamic array formulas (`cm` with the XLDAPR
  * metadata, `t="array"` over the range their array spilled into), as Excel 365 saves them: the engine computes
- * every formula by the rules of dynamic arrays, and so does Excel then. Values come from the result: a formula's
- * value, and the cells its array spilled into. A formula the file cannot hold (it does not parse, or names a
- * sheet the book does not have) is written as its value.
+ * every formula by the rules of dynamic arrays, and so does Excel then. An array formula of the old kind
+ * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
+ * Ctrl+Shift+Enter. Values come from the result: a formula's value, and the cells its array spilled into. A formula
+ * the file cannot hold (it does not parse, or names a sheet the book does not have) is written as its value.
  */
 import type { CellInput, CellResult, CellValue, SheetInput } from '../../contract.js'
 import { lines } from '../../layout/spans.js'
@@ -80,9 +81,9 @@ function fileTree(formula: string, sheets: Set<string>): Ast | null {
     throw e
   }
   let ok = true
+  const known = (sheet: string | null | undefined) => sheet == null || sheets.has(sheetKey(sheet))
   walk(ast, (n) => {
-    const sheet = n.k === 'ref' ? n.sheet : n.k === 'err' ? n.sheet : undefined
-    if (sheet != null && !sheets.has(sheetKey(sheet))) ok = false
+    if (n.k === 'ref3d' ? !known(n.first) || !known(n.last) : (n.k === 'ref' || n.k === 'err' || n.k === 'name') && !known(n.sheet)) ok = false
   })
   return ok ? ast : null
 }
@@ -108,10 +109,12 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const xf = c ? styles.xf(c.style, c.format) : 0
     return xf ? ` s="${xf}"` : ''
   }
-  const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '') => {
-    if (v === undefined) return `<c r="${addr}"${sAttr(c)}${f ? ' cm="1"' : ''}${f ? `>${f}</c>` : '/>'}`
+  // `cm` marks a dynamic array formula
+  const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
+    const cm = dynamic ? ' cm="1"' : ''
+    if (v === undefined) return `<c r="${addr}"${sAttr(c)}${cm}${f ? `>${f}</c>` : '/>'}`
     const x = valueXml(v, ctx, where(addr), !f)
-    return `<c r="${addr}"${sAttr(c)}${x.t}${f ? ' cm="1"' : ''}>${f}<v>${x.v}</v></c>`
+    return `<c r="${addr}"${sAttr(c)}${x.t}${cm}>${f}<v>${x.v}</v></c>`
   }
   for (const [addr, c] of Object.entries(sheet.cells)) {
     if (c.meta !== undefined) issues.add('meta', 'cell meta has no place in a file', where(addr))
@@ -128,8 +131,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       continue
     }
     formulas = true
-    const ref = res?.spill ?? addr
-    put(addr, cellXml(addr, c, res?.value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`))
+    const ref = c.array ?? res?.spill ?? addr
+    put(addr, cellXml(addr, c, res?.value, `<f t="array" ref="${ref}">${escapeText(toFile(tree))}</f>`, c.array === undefined))
   }
   // the cells arrays spilled into, with the look their own cells give them
   if (result)

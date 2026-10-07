@@ -135,6 +135,7 @@ export const functions: Record<string, FnDef> = {
   SUMIF: {
     args: 'R a R?',
     cx: true,
+    criteria: true,
     fn: (cx: Cx, range: V | Rng, crit: V | Rng, sum?: V | Rng) => {
       const cg = asRng(range)
       if (isErr(cg)) return cg
@@ -154,6 +155,7 @@ export const functions: Record<string, FnDef> = {
     args: 'R R a',
     rep: 2,
     cx: true,
+    criteria: true,
     fn: (cx: Cx, sum: V | Rng, rest: (V | Rng)[]) => {
       const sg = asRng(sum)
       if (isErr(sg)) return sg

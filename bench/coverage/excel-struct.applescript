@@ -1,8 +1,8 @@
 -- Open a book, apply one structure operation, read the formulas of a rectangle of every sheet, the extra
 -- cells and the defined names, close without saving. Alerts are off around the operation (deleting a
 -- sheet asks for confirmation otherwise); an operation Excel refuses comes back as `error`, not a dialog.
--- Arguments: book path (inside Excel's sandbox), op, sheet, range (cells of the rows or columns to insert
--- or delete; whole rows and columns written as cell ranges), target sheet or new name, target range, the rectangle to read on every sheet, extra cells as lines "sheet<TAB>address",
+-- Arguments: book path (inside Excel's sandbox), op, sheet (a new sheet's place for insertSheet, empty: the end), range (cells of the rows or columns to insert
+-- or delete; whole rows and columns written as cell ranges), target sheet, new name or the place a sheet moves to (empty: the end), target range, the rectangle to read on every sheet, extra cells as lines "sheet<TAB>address",
 -- and for a styled book the cells, columns and rows whose look is read (lines; empty otherwise).
 -- Output: JSON {"error": text, "sheets": [[name, used range, formulas of the rectangle, look or ""]],
 -- "extra": [[sheet, address, formula]], "names": [[name, references]]}; a look is
@@ -35,7 +35,7 @@ on run argv
 			set display alerts to false
 			set stage to "sheet"
 			try
-				set ws to worksheet argSheet of wb
+				if argSheet is not "" then set ws to worksheet argSheet of wb
 				set stage to "op"
 				if op is "insertRows" then
 					insert into range (entire row of (range argRange of ws)) shift shift down
@@ -57,6 +57,19 @@ on run argv
 					set name of ws to argTarget
 				else if op is "deleteSheet" then
 					delete ws
+				else if op is "insertSheet" then
+					if argSheet is "" then
+						set nw to make new worksheet at after (worksheet (count of worksheets of wb) of wb)
+					else
+						set nw to make new worksheet at before (worksheet argSheet of wb)
+					end if
+					set name of nw to argTarget
+				else if op is "moveSheet" then
+					if argTarget is "" then
+						move ws to after (worksheet (count of worksheets of wb) of wb)
+					else
+						move ws to before (worksheet argTarget of wb)
+					end if
 				else
 					error "unknown op " & op
 				end if
