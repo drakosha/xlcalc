@@ -8,7 +8,7 @@
  */
 import type { Val } from '../formulajs.js'
 import type { Probe } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { xl } from './arrays/common.js'
 
 const n = (v: number): Val => ({ t: 'n', v })
 const s = (v: string): Val => ({ t: 's', v })
@@ -80,10 +80,12 @@ const CASES: [string, string, Val | 'refused'][] = [
   ['DSUM(D!U1:Y7,"Height",)', 'DSUM', 'refused'],
 ]
 
+/** Of the cases, those Excel does not load: an argument left out where Excel takes only a reference. */
+export const REFUSED: readonly string[] = ['COUNTIF(,1)', 'SUMIFS(,D!B1:B8,1)', 'AVERAGEIF(D!B1:B8,">5",)', 'COUNTIFS(D!B1:B8,">5",,1)', 'RANK(1,,0)', 'SUBTOTAL(9,)']
+
+/** The cases Excel loads; a case keeps its number among all of them. */
 export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [f, fn] of CASES) add('held', fn, f)
-  return out
+  return CASES.flatMap(([f, fn], i) => (REFUSED.includes(f) ? [] : [{ id: `held#${i + 1}`, group: 'held', fn, formula: xl(f) }]))
 }
 
 /** The predicted answers by case id. */

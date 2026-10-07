@@ -6,14 +6,14 @@
  * (`_xlpm.x`, `let/xlpm.ts`). Answers: `test/excel/cases/let.json`.
  */
 import type { Probe } from '../probes.js'
-import { collector, xl } from './arrays/common.js'
+import { collector } from './arrays/common.js'
 import { xlpm } from './let/xlpm.js'
 
 /** `count` names `n_1`…, each the previous one plus 1; the last one is the result. */
 const pairs = (count: number) => `LET(${Array.from({ length: count }, (_, i) => `n_${i + 1},${i ? `n_${i}+1` : '1'}`).join(',')},n_${count})`
 
-/** Calls Excel does not load (a book with one is refused): a name declared twice, a reference, a number or text as a name, 127 names. */
-export const REFUSED: readonly string[] = ['LET(_xlpm.x,1,_xlpm.x,2,_xlpm.x)', 'LET(A1,1,A1)', 'LET(1,2,3)', 'LET("x",1,2)', xlpm(pairs(127))].map(xl)
+/** Calls Excel does not load (a book with one is refused): a name declared twice, a reference, a number or text as a name, 255 arguments. */
+export const REFUSED: readonly string[] = ['LET(x,1,x,2,x)', 'LET(A1,1,A1)', 'LET(1,2,3)', 'LET("x",1,2)', pairs(127)]
 
 export function buildProbes(): Probe[] {
   const { out, add } = collector()

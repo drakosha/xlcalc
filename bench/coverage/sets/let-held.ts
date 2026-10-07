@@ -3,11 +3,12 @@
  * computed the case (`refused`: Excel does not load the formula). The rules: a name is seen from the end of its
  * value to the end of its LET, case aside, an inner LET shadowing; a value is computed once and stays a reference
  * when it is one; a left-out value is a blank; a call that ends with a value answers it; a name declared twice,
- * no name at all or more than 126 names are not loaded. Answers: `test/excel/cases/let-held.json`.
+ * no name at all or more than 126 names are not loaded (127 names without a calculation loaded: Excel's limit is
+ * 254 arguments). Answers: `test/excel/cases/let-held.json`.
  */
 import type { Val } from '../formulajs.js'
 import type { Probe } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { xl } from './arrays/common.js'
 import { xlpm } from './let/xlpm.js'
 
 const n = (v: number): Val => ({ t: 'n', v })
@@ -57,10 +58,12 @@ const CASES: [string, Val | 'refused'][] = [
   ['LET(x,D!B1:B8,y,SUM(x))', n(114.75)],
 ]
 
+/** Of the cases, those Excel does not load (a book with one is refused): no name, a name declared twice. */
+export const REFUSED: readonly string[] = ['LET(x)', 'LET(x,1,X,2,x)']
+
+/** The cases Excel loads; a case keeps its number among all of them. */
 export function buildProbes(): Probe[] {
-  const { out, add } = collector()
-  for (const [f] of CASES) add('held', 'LET', xlpm(f))
-  return out
+  return CASES.flatMap(([f], i) => (REFUSED.includes(f) ? [] : [{ id: `held#${i + 1}`, group: 'held', fn: 'LET', formula: xl(xlpm(f)) }]))
 }
 
 /** The predicted answers by case id. */
