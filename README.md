@@ -466,7 +466,8 @@ Notes on semantics:
   - `WRAPROWS` and `WRAPCOLS` of one value with a count above 1 (`WRAPROWS(0,2)`) answer the value alone in Excel; here it is padded to the count.
   - `F.TEST`, `FTEST` and `MIRR` given an empty text as an array (`F.TEST("",A1:A8)`) are `#DIV/0!` in Excel (no numbers) and `#VALUE!` here.
   - `XIRR` and `XNPV` given one text or boolean as their values or dates (`XIRR("",A1:A5)`) are `#VALUE!` in Excel and `#NUM!` here (the sizes differ).
-  - Serial date 0 in the bond functions: `ACCRINT` with an issue or first interest date of 0 and `PRICE` with a settlement date of 0 are `#NUM!` in Excel and computed here; `AMORDEGRC` with a purchase date of 0 is 113 in Excel and −47885 here. `XNPV` with a date of 0 is `#NUM!` in Excel and computed here.
+  - Serial date 0 in the bond functions: `ACCRINT` with an issue or first interest date of 0 and `PRICE` with a settlement date of 0 are `#NUM!` in Excel and computed here; `AMORDEGRC` with a purchase date of 0 is 113 in Excel and −47885 here.
+  - `XNPV` with a date of serial 0 is `#NUM!` in Excel and computed here.
   - `ACCRINT` with basis 1 over several coupon periods: `ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,15),0.05,1000,2,1)` is 51.9230769230769 in Excel and 51.9337016574586 here.
   - `WORKDAY` with date text in a cell among its holidays reads it as a date in Excel and is `#VALUE!` here.
   - Iterative calculation starts from 0 at every computation. Excel starts a book it opens from the values the file stores, empty text where it stores none, and goes on from the values it holds at every recalculation and edit. A cycle that converges differs from Excel's within the maximum change, and one that does not, such as a counter, keeps counting in Excel.
