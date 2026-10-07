@@ -16,6 +16,11 @@ const NAMED = [
   'Jan 32', 'Jan 99', 'Jan 100', 'Jan 2025', 'January 2025', 'Jan-2025', 'Jan/31', '31/Jan', 'Jan31', '31Jan', 'Jan. 31', 'Jan 31,', 'Jan 31 18:00', '31-Jan 6 PM', 'January 31 6:30 PM',
 ]
 
+const HELD = [
+  '29 Feb', '30-Feb', '32 Jan', '0 Jan', '99-Jan', '100 Jan', '2025 Jan', '2025-Jan', 'Jan/2025', '1/05', '1/005', '1/1899', '1/1900', '12/9999', '13-Jan', 'Jan-13',
+  'Dec 31 18:00:30', '1/31 6:30:15 PM', '2/29 18:00', 'Febr 3', 'Janu 3', 'June 5', 'sep 5', '5 May', 'Jan  31', ' 1/31 ', '1 /31', '1/ 31', '1.31', '31 Jan 2025', 'Jan 31 2025',
+]
+
 export function buildProbes(): Probe[] {
   const out: Probe[] = []
   const add = (fn: string, formula: string) => out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: xl(formula) })
@@ -37,5 +42,7 @@ export function buildProbes(): Probe[] {
   for (const c of ['"1/31"', '">=1/31"', '"<Jan 31"', '"=31-Jan"']) add('COUNTIF', `COUNTIF(G!A1:A2,${c})`)
   for (const cell of ['G!A3', 'G!B1']) add('COUNTIF', `COUNTIF(${cell},46053)`)
   add('SUMIF', 'SUMIF(G!A1:A2,"1/31",G!A1:A2)')
+  // held out: the rules of the forms above on others, predicted before Excel ran
+  HELD.forEach((t, i) => out.push({ id: `held#${i + 1}`, group: 'held', fn: 'VALUE', formula: `VALUE("${t}")` }))
   return out
 }
