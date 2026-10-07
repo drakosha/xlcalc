@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 (2026-10-07)
+
+Internal release; not published to npm.
+
+- `xlcalc/unstable/internal` imported before the root entry threw `ReferenceError: Cannot access 'collator' before initialization` (a module cycle between the values and the criteria). Every subpath now loads on its own, and a test imports each one first in a fresh process.
+
 ## 0.3.0 (2026-10-07)
 
 Internal release as `xlcalc`, used by our own applications before a public release; not published to npm.
