@@ -11,7 +11,7 @@ import { parseDateText, textToNumber } from '../dates.js'
 import { displayWith, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, type Dialect, type Names, type Style } from '../numfmt.js'
 import { NUMBER_TEXT, readNumber } from '../model.js'
 import { ERROR_TEXT } from '../syntax.js'
-import { compareOp, compareValues, toBool, toNum, toText, type CErr, type V } from '../values.js'
+import { compareOp, compareValues, enNumber, toBool, toNum, toText, type CErr, type V } from '../values.js'
 import { enUS } from './en-US.js'
 import type { RegionalData, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
@@ -75,10 +75,7 @@ const EN_STYLE: Style = {
 const EN_DIALECT: Dialect = {
   codes: EN_CODES,
   style: EN_STYLE,
-  number: (text) => {
-    const t = text.trim()
-    return NUMBER_TEXT.test(t) ? readNumber(t) : textToNumber(text)
-  },
+  number: enNumber,
 }
 
 /** Excel en-US with the English interface: the engine's own rules since the first release. */
