@@ -1,7 +1,8 @@
 /**
  * The one walk over a formula's AST that both execution modes share. References, names, shapes
- * (`arrays/shape.ts`), function specs and the formula's cell are resolved here, together with the formula's
- * references and flags; a backend (`js.ts` for `eval`, `closures.ts`) only builds the code of each node
+ * (`arrays/shape.ts`), function specs, arguments left out and the formula's cell are resolved here, together
+ * with the formula's references and flags; LET's names are the parser's slots, whose storage each backend keeps
+ * per computation of the LET. A backend (`js.ts` for `eval`, `closures.ts`) only builds the code of each node
  * from what the walk decided, so the two modes cannot part on a decision.
  */
 import { shapes } from '../arrays/shape.js'
@@ -87,11 +88,11 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
   // the code of a use of each LET name, by slot
   const uses: T[] = []
-  // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
   // a value that may be a reference, read as a value where one value goes
   const value = (code: T, n: Ast, rangeOk: boolean) => (!rangeOk && !many(n) ? b.read(code) : code)
+  // rangeOk: a position where the function expects a range (a range object goes there, even for a single cell)
   const go = (n: Ast, rangeOk = false): T => {
     switch (n.k) {
       case 'num':
