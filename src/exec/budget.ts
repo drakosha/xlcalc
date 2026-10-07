@@ -50,8 +50,12 @@ export class Budget {
     this.formulas = limits.formulas ?? Infinity
   }
 
+  /** Set by the host to stop the computation (its calculator closed). */
+  halted: CalcError | null = null
+
   /** The reason to stop now, or null. */
   stopped(now = nowMs()): CalcError | null {
+    if (this.halted) return this.halted
     if (this.signal?.aborted) return new CalcError('aborted', 'the computation was aborted', { cause: this.signal.reason })
     if (now > this.deadline) return new CalcError('soft_timeout', 'the computation ran past its timeoutMs')
     return null
