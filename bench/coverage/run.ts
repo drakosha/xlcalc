@@ -11,6 +11,7 @@
  *   npx tsx bench/coverage/run.ts probes     Excel en-US probes outside the measurement (probes.ts) into test/excel/probes.json
  *   npx tsx bench/coverage/run.ts probes X   the set sets/X.ts into test/excel/cases/X.json (test: test/excel-sets.test.ts)
  *   npx tsx bench/coverage/run.ts probes X ru   the same set in Excel ru-RU into test/excel/cases/ru-RU/X.json (test: test/excel-ru-probes.test.ts)
+ *   npx tsx bench/coverage/run.ts legacy X   the set legacy/X.ts written as formulas of the old kind into test/excel/legacy/X.json, with each formula as Excel 365 shows it
  *   npx tsx bench/coverage/run.ts struct X   the structure operations of struct/X.ts into test/excel/struct/X.json (test: test/structure-excel.test.ts)
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
  *   npx tsx bench/coverage/run.ts display X [ru]   cells shown by display/X.ts into test/excel/display/[ru-RU/]X.json (test: test/display-excel.test.ts)
@@ -151,6 +152,12 @@ function parts(cs: Case[]): Case[][] {
   return out
 }
 
+/** What a legacy set stores besides the values: each case's formula as Excel 365 shows it (`formula2`) and its row. */
+export interface LegacyAnswers {
+  formulas: Record<string, string>
+  rows: Record<string, number>
+}
+
 interface ExcelColumn extends Column {
   meta: Column['meta'] & { parts: number; done: number; stopped?: string; dynamic: true }
 }
@@ -211,24 +218,34 @@ async function stepExcel(locale: Locale) {
  * `test/excel/cases/<set>.json` for en-US, `test/excel/cases/ru-RU/<set>.json` for ru-RU. A file per set lets
  * parallel branches add their cases without touching shared files.
  */
-async function stepProbes(set: string | undefined, locale: Locale) {
+async function stepProbes(set: string | undefined, locale: Locale, legacy = false) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   if (set === undefined && locale !== 'en') throw new Error('the probes of probes.ts are computed in en-US only; a set in ru-RU: probes <set> ru')
-  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./sets/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./${legacy ? 'legacy' : 'sets'}/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const tag = `${set ?? 'probes'}-${locale}`
-  const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/cases/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
+  const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/${legacy ? 'legacy' : 'cases'}/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
   // going on: answers whose formula is unchanged are taken from the file (FCOV_FRESH=1 starts over)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as { cases: Probe[]; values: Record<string, Val> }) : null
+  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as LegacyAnswers & { cases: Probe[]; values: Record<string, Val> }) : null
   const was = new Map(prev?.cases.map((c) => [c.id, c.formula]) ?? [])
   const values: Record<string, Val> = {}
-  for (const p of ps) if (prev?.values[p.id] && was.get(p.id) === p.formula) values[p.id] = prev.values[p.id]
+  // a legacy set: each case's formula as Excel 365 shows it and its row (implicit intersection takes the row)
+  const formulas: Record<string, string> = {}
+  const rows: Record<string, number> = {}
+  for (const p of ps)
+    if (prev?.values[p.id] && was.get(p.id) === p.formula) {
+      values[p.id] = prev.values[p.id]
+      if (legacy) [formulas[p.id], rows[p.id]] = [prev.formulas[p.id], prev.rows[p.id]]
+    }
   const rejected: Probe[] = []
   const t0 = Date.now()
+  // answers by the order of the cases, so a run that goes on does not reorder the file
+  const ordered = <T>(m: Record<string, T>) => Object.fromEntries(ps.filter((p) => p.id in m).map((p) => [p.id, m[p.id]]))
   const save = () => {
-    const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, dynamic: true }
-    writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
+    const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, ...(legacy ? { legacy: true } : { dynamic: true }) }
+    const more = legacy ? { formulas: ordered(formulas), rows: ordered(rows) } : {}
+    writeFileSync(target, JSON.stringify({ meta, cases: ps, values: ordered(values), ...more, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
   // a book Excel does not read is halved down to the formula at fault
   const run = async (cases: Probe[], label: string): Promise<void> => {
@@ -238,9 +255,13 @@ async function stepProbes(set: string | undefined, locale: Locale) {
     const book = join(OUT, `${tag}-${label}.xlsx`)
     // the read script expects a column of two cells at least: a single case gets a pad
     const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
-    await writeBook(sent, book, sheets)
-    const vals = await runExcelWatched(book, sent.length)
-    if (vals !== 'rejected') return void cases.forEach((p, i) => (values[p.id] = vals[i]))
+    await writeBook(sent, book, sheets, legacy)
+    const got = await runExcelWatched(book, sent.length, legacy)
+    if (got !== 'rejected')
+      return void cases.forEach((p, i) => {
+        values[p.id] = got.values[i]
+        if (legacy) [formulas[p.id], rows[p.id]] = [got.formulas![i], i + 1]
+      })
     if (cases.length === 1) {
       rejected.push(cases[0])
       return void console.log(`Excel does not load the formula: ${cases[0].id} ${cases[0].formula}`)
@@ -271,6 +292,7 @@ else if (step === 'lo') await stepLo()
 else if (step === 'excel') await withExcelLock(() => stepExcel(process.argv[3] as Locale))
 else if (step === 'report') writeReport(resultFile, REPORT)
 else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
+else if (step === 'legacy') await withExcelLock(() => stepProbes(process.argv[3], 'en', true))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
 else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
@@ -284,7 +306,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | struct set | spill set')
+  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | legacy set | struct set | spill set')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

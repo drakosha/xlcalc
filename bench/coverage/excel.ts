@@ -261,21 +261,28 @@ end tell`)
   return true
 }
 
-/** As runExcel, but watching for the repair window: it is closed and 'rejected' returned instead of waiting for the AppleEvent timeout. */
-export async function runExcelWatched(book: string, n: number): Promise<Val[] | 'rejected'> {
-  const out = await runScriptWatched(SCRIPT, book, n)
-  return out === 'rejected' ? out : parseRead(out, n)
+/**
+ * As runExcel, but watching for the repair window: it is closed and 'rejected' returned instead of waiting for the
+ * AppleEvent timeout. With `formula2`, the case formulas as Excel 365 shows them too (`@` where it intersects).
+ */
+export async function runExcelWatched(book: string, n: number, formula2 = false): Promise<{ values: Val[]; formulas?: string[] } | 'rejected'> {
+  const out = await runScriptWatched(SCRIPT, book, n, ...(formula2 ? ['formula2'] : []))
+  if (out === 'rejected') return out
+  const values = parseRead(out, n)
+  if (!formula2) return { values }
+  const f = (JSON.parse(out) as unknown[][][])[3]
+  return { values, formulas: f.map(([x]) => String(x)) }
 }
 
-/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`): its output, or 'rejected' as in runExcelWatched. */
-export async function runScriptWatched(script: string, book: string, n: number): Promise<string | 'rejected'> {
+/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`, `more`): its output, or 'rejected' as in runExcelWatched. */
+export async function runScriptWatched(script: string, book: string, n: number, ...more: string[]): Promise<string | 'rejected'> {
   if (countWorkbooks() !== 0) throw new Error('Excel has open books')
   const dir = join(SANDBOX, `fcov-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
     copyFileSync(book, file)
-    const child = spawn('osascript', [script, file, String(n)])
+    const child = spawn('osascript', [script, file, String(n), ...more])
     let out = ''
     let err = ''
     child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))

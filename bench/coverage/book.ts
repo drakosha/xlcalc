@@ -20,8 +20,12 @@ import type { SheetCells } from './probes.js'
 
 export const CASE_SHEET = 'C'
 
-/** `sheets`: further data sheets by name, values or formulas by A1 address (the probes of `probes.ts`, the case sets). */
-export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: string, sheets: SheetCells = {}): Promise<void> {
+/**
+ * `sheets`: further data sheets by name, values or formulas by A1 address (the probes of `probes.ts`, the case sets).
+ * `legacy`: the case formulas are written as formulas of the old kind (no array, no dynamic metadata), which Excel
+ * 365 computes with implicit intersection (the sets of `legacy/`).
+ */
+export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: string, sheets: SheetCells = {}, legacy = false): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const [name, cells] of Object.entries(sheets)) {
     const ws = wb.addWorksheet(name)
@@ -39,7 +43,7 @@ export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: str
   const c = wb.addWorksheet(CASE_SHEET)
   cases.forEach((x, i) => {
     const r = i + 1
-    c.getCell(`A${r}`).value = { formula: x.formula, shareType: 'array', ref: `A${r}` } as ExcelJS.CellFormulaValue
+    c.getCell(`A${r}`).value = (legacy ? { formula: x.formula } : { formula: x.formula, shareType: 'array', ref: `A${r}` }) as ExcelJS.CellFormulaValue
     c.getCell(`B${r}`).value = { formula: `IF(ISERROR(A${r}),ERROR.TYPE(A${r}),IF(ISNUMBER(A${r}),0,IF(ISLOGICAL(A${r}),IF(A${r},-1,-2),IF(ISTEXT(A${r}),-3,-4))))` } as ExcelJS.CellFormulaValue
     c.getCell(`C${r}`).value = { formula: `IF(ISNUMBER(A${r}),A${r},0)` } as ExcelJS.CellFormulaValue
     c.getCell(`D${r}`).value = { formula: `IF(ISTEXT(A${r}),A${r},"")` } as ExcelJS.CellFormulaValue
