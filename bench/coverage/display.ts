@@ -14,6 +14,7 @@ import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
+import { inCaseOrder } from './stored.js'
 import { dialogText, ensureExcel, excelVersion, runScriptWatched, type Locale } from './excel.js'
 import { formatCode } from './case-book.js'
 import { xl } from './sets/arrays/common.js'
@@ -144,7 +145,7 @@ export async function stepDisplay(set: string, locale: Locale): Promise<void> {
   mkdirSync(join(target, '..'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLanguages (en) -AppleLocale en_US)' : 'ru-RU (system language and locale)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
   await ensureExcel(locale)
   const todo = cases.filter((c) => !answers[c.id])

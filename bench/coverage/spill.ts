@@ -9,6 +9,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { inCaseOrder } from './stored.js'
 import { answerOf, runOnBook, type RectsAnswer } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import type { SpillCase, SpillSet } from './spill/cases.js'
@@ -44,7 +45,7 @@ export async function stepSpill(set: string): Promise<void> {
   mkdirSync(join(ROOT, 'test/excel/spill'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
   await ensureExcel('en')
   let done = 0

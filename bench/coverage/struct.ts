@@ -13,6 +13,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
+import { inCaseOrder } from './stored.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import { markDynamic } from './book.js'
 import { fileFormula, formatCode, writeParts, type FileParts } from './case-book.js'
@@ -323,7 +324,7 @@ export async function stepStruct(set: string): Promise<void> {
   mkdirSync(join(ROOT, 'test/excel/struct'), { recursive: true })
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
   await ensureExcel('en')
   let done = 0

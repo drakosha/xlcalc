@@ -23,6 +23,7 @@ import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { inCaseOrder } from './stored.js'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock, type Locale } from './excel.js'
@@ -198,7 +199,7 @@ async function stepExcel(locale: Locale) {
     const after = dialogText()
     if (after) stop(k, `Excel modal window: ${after}${err ? `; read error: ${err}` : ''}`)
     if (!vals) stop(k, `read error: ${err}`)
-    Object.assign(col.values, byId(part, vals!))
+    col.values = inCaseOrder(cs, { ...col.values, ...byId(part, vals!) })
     col.meta.seconds = Math.round((Number(col.meta.seconds) + (Date.now() - t0) / 1000) * 10) / 10
     col.meta.done = ps.filter((p) => p.every((c) => c.id in col.values)).length
     save(name, col)
@@ -230,7 +231,7 @@ async function stepProbes(set: string | undefined, locale: Locale) {
   const t0 = Date.now()
   const save = () => {
     const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, dynamic: true }
-    writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, cases: ps, values: inCaseOrder(ps, values), ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
   // a book Excel does not read is halved down to the formula at fault
   const run = async (cases: Probe[], label: string): Promise<void> => {
