@@ -7199,6 +7199,231 @@
     }
    ]
   },
+  "type-late": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "y"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "y"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "y"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
+     }
+    }
+   ]
+  },
+  "error-late": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "DIV0"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "DIV0"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "e",
+       "v": "DIV0"
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
+     }
+    }
+   ]
+  },
+  "bool-late": {
+   "settings": {
+    "iteration": true,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "b",
+       "v": false
+      }
+     },
+     "formulas": {
+      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
+     }
+    }
+   ]
+  },
+  "text-alone": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xx"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxx"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\""
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxx"
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\""
+     }
+    }
+   ]
+  },
+  "text-number": {
+   "settings": {
+    "iteration": true,
+    "count": 5,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 5
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=B1+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 10
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=B1+1"
+     }
+    },
+    {
+     "values": {
+      "S!A1": {
+       "t": "s",
+       "v": "0xxxxxxxxxxxxxxx"
+      },
+      "S!B1": {
+       "t": "n",
+       "v": 15
+      }
+     },
+     "formulas": {
+      "S!A1": "=A1&\"x\"",
+      "S!B1": "=B1+1"
+     }
+    }
+   ]
+  },
   "text-steady": {
    "settings": {
     "iteration": true,
@@ -7669,231 +7894,6 @@
       "S!B3": "=B2*(B1+B4)/2",
       "S!B4": "=B1+B3-100",
       "S!B5": "=B4-B1"
-     }
-    }
-   ]
-  },
-  "type-late": {
-   "settings": {
-    "iteration": true,
-    "count": 100,
-    "delta": 0.001
-   },
-   "reads": [
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "y"
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "y"
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "y"
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,\"x\"),\"y\")"
-     }
-    }
-   ]
-  },
-  "error-late": {
-   "settings": {
-    "iteration": true,
-    "count": 100,
-    "delta": 0.001
-   },
-   "reads": [
-    {
-     "values": {
-      "S!A1": {
-       "t": "e",
-       "v": "DIV0"
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "e",
-       "v": "DIV0"
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "e",
-       "v": "DIV0"
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,NA()),1/0)"
-     }
-    }
-   ]
-  },
-  "bool-late": {
-   "settings": {
-    "iteration": true,
-    "count": 100,
-    "delta": 0.001
-   },
-   "reads": [
-    {
-     "values": {
-      "S!A1": {
-       "t": "b",
-       "v": false
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "b",
-       "v": false
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "b",
-       "v": false
-      }
-     },
-     "formulas": {
-      "S!A1": "=IF(ISNUMBER(A1),IF(A1<3,A1+1,TRUE),FALSE)"
-     }
-    }
-   ]
-  },
-  "text-alone": {
-   "settings": {
-    "iteration": true,
-    "count": 5,
-    "delta": 0.001
-   },
-   "reads": [
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xx"
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\""
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xxx"
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\""
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xxxx"
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\""
-     }
-    }
-   ]
-  },
-  "text-number": {
-   "settings": {
-    "iteration": true,
-    "count": 5,
-    "delta": 0.001
-   },
-   "reads": [
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xxxxx"
-      },
-      "S!B1": {
-       "t": "n",
-       "v": 5
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\"",
-      "S!B1": "=B1+1"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xxxxxxxxxx"
-      },
-      "S!B1": {
-       "t": "n",
-       "v": 10
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\"",
-      "S!B1": "=B1+1"
-     }
-    },
-    {
-     "values": {
-      "S!A1": {
-       "t": "s",
-       "v": "0xxxxxxxxxxxxxxx"
-      },
-      "S!B1": {
-       "t": "n",
-       "v": 15
-      }
-     },
-     "formulas": {
-      "S!A1": "=A1&\"x\"",
-      "S!B1": "=B1+1"
      }
     }
    ]
