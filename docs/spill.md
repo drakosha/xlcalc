@@ -1,52 +1,102 @@
 # Spilling
 
-A formula whose result is an array of several values fills the cells to the right of and below its own cell, as in Excel 365 with dynamic arrays. The formula's cell is the array's top-left value; the other cells are values of the book that no input holds. Reference: Excel 16.113 for Mac, en-US, dynamic array formulas; every rule below was measured by the spill sets (`bench/coverage/spill/`, answers in `test/excel/spill/`): `base` (50 cases), `order` (21 cases, computed four times), `held` (17 held-out cases whose answers were predicted from the rules of the first two and committed before Excel computed them: all 17 as predicted), and for structure operations the struct sets `spill` (8) and `spill-more` (4) in `test/excel/struct/`.
+When a formula returns several values, they fill the cells to the right of and below the formula's cell, as in Excel 365. The formula's cell holds the top-left value. The other cells hold values too, but no input cell stands behind them.
 
-## The rules
+The rules below were measured in Excel 16.113 for Mac (en-US) with dynamic array formulas.
 
-**Where an array goes.** From the formula's cell, as many rows and columns as the array has. A reference of several cells spills the referenced values (`=A1:A4`). An empty element shows 0: `=A1:A4` over a blank A2 puts 0 there, `ISBLANK` of that cell is FALSE and `COUNTBLANK` does not count it. An array of one value is that value, as before (`={5}` is 5).
+## Where the values go
 
-**What stops it.** The array gives `#SPILL!` and fills nothing when a cell of its range other than the formula's own:
+An array takes as many rows and columns from the formula's cell as it has. A reference to several cells spills their values: `=A1:A4` copies A1:A4.
 
-- holds a value, an empty text too (a constant `""`, as xlsx can store one), or a formula, whatever it gives (`""`, an error, a reference to the array's own cell: `A3 = A1+1` stops `A1 = SEQUENCE(3)` and is `#SPILL!` itself);
-- belongs to a merged area: one inside the range, one the range cuts, one that holds the formula's own cell (`A1:B1` merged stops `A1 = SEQUENCE(3)`); an area next to the range does not;
-- lies past the sheet's edge (`SEQUENCE(3)` in A1048575, `SEQUENCE(1,3)` in XFC1; one row less fits).
+An empty element shows 0. If A2 is blank, `=A1:A4` puts 0 in the second cell, `ISBLANK` of that cell is FALSE, and `COUNTBLANK` does not count it.
 
-A number format or a fill alone does not stop it. A cell typed into the range later stops the array; clearing it lets the array spill again.
+An array of one value is just that value: `={5}` is 5.
 
-**Two arrays over one cell.** When one formula reads the other, the one read spills and the other gives `#SPILL!` (six pairs in the set `order`, both orders, two runs each, and two pairs of `base`). When neither reads the other, Excel's choice varies between runs: the set `order` was computed four times, and of its 15 independent pairs 11 changed their winner at least once (`order-runs.json` keeps every answer seen). The array lower on the sheet won 45 of the 63 times (the four runs and three pairs of `base` run once). The engine is deterministic: the formula another one reads (directly or through other formulas) wins, otherwise the one further down (by sheet, row, column; `src/spill/rank.ts`). Its answer is one Excel gave in every pair of `order`; two pairs of `base`, run once, got the other answer there (known differences in `test/spill-excel.test.ts`).
+## What blocks a spill
 
-**Spill references.** `E2#` is the range E2's array spilled into. When E2 holds a formula that did not spill (one value, or `#SPILL!`), `E2#` is E2 alone: `ROWS(E2#)` is 1 and `E2#` gives E2's value, `#SPILL!` included. When E2 holds no formula (a value, nothing, a cell inside another array's range) it is `#REF!`. A spill reference works in functions (`SUM(E2#)`, `ROWS`, `COLUMNS`, `INDEX(E2#,2)`), lifted (`E2#*2` spills itself), from another sheet (`S!E2#`) and in a name (`'S'!$E$2#`).
+The formula gives `#SPILL!` and fills nothing when a cell of its range, other than its own, is in the way. A cell is in the way when it:
 
-**Readers.** A formula reading a spilled cell gets its value, a whole column too: `COUNT(B:B)` over `B1 = A:A*2` is 1,048,576.
+- holds a value, including an empty string stored as a constant;
+- holds a formula, whatever it returns: `""`, an error, or a reference back to the array's own cell (with `A1 = SEQUENCE(3)` and `A3 = A1+1`, both cells are `#SPILL!`);
+- belongs to a merged area inside the range, cut by the range, or holding the formula's own cell (`A1:B1` merged blocks `A1 = SEQUENCE(3)`); a merged area next to the range does not block;
+- lies past the edge of the sheet (`SEQUENCE(3)` in A1048575 does not fit, in A1048574 it does).
 
-**Sizes from data.** `SEQUENCE(B1)`, `FILTER`, `UNIQUE`, `SORT` spill their current size; a size that meets a value gives `#SPILL!`, a `FILTER` that keeps nothing `#CALC!` without spilling.
+A number format or a fill alone does not block. Typing a value into the range blocks the array, and clearing it lets the array spill again.
 
-**Whole columns and rows.** `A:A*2` in B1 spills down to row 1,048,576, 0 below the data; from B2 it does not fit; a value anywhere below stops it. `1:1*2` in A2 spills to column XFD.
+## Two arrays over the same cells
 
-**Volatile arrays.** `RANDARRAY(3)` spills three draws. Excel gives `#SPILL!` to an array whose size changes between its calculation passes (`SEQUENCE(RANDBETWEEN(1,9))`); the engine draws from its clock once and spills (not measured).
+If one formula reads the other, the one being read spills and the other gives `#SPILL!`.
 
-**Structure operations.** `E2#` moves as a reference to its cell: rows and columns inserted or deleted, the anchor cut and pasted, copies (relative and absolute), a renamed sheet (`'R'!E2#`). Deleting the anchor's cell leaves `#REF!#` (`S!#REF!#` from another sheet, in a name too); deleting its sheet `#REF!E2#`. The parser reads these back. Cutting an anchor to another sheet crashed Excel 16.113 twice, so it is not a case.
+If neither reads the other, Excel's choice changes from one calculation to the next: computed four times, 11 of 15 such pairs changed their winner at least once, and the lower array won 45 times out of 63. The engine has to be deterministic, so it lets the lower array win (by sheet, then row, then column).
 
-## Reading Excel's answers
+## Spill references
 
-A case is a small book written as Excel 365 saves dynamic array formulas (`cm="1"` and the `XLDAPR` metadata; `E2#` is stored as `_xlfn.ANCHORARRAY(E2)`), one book per case. Reading the `value` of a range with errors is unsafe (errors drop out of the list, a two-dimensional read crashed Excel), so every cell of the rectangles read has three mirror formulas on sheets of their own that never give an error: a type code (`-5` blank, `0` number, `-1`/`-2` TRUE/FALSE, `-3` text, `ERROR.TYPE` for errors), the number, the text. The mirrors are read as ranges, and the rectangles' formulas too (a spilled cell has none). `npx tsx bench/coverage/run.ts spill <set>` runs a set; `test/spill-excel.test.ts` compares without Excel.
+`E2#` is the range that E2's array fills.
 
-## The engine
+| E2 holds | `E2#` is |
+|---|---|
+| a formula that spilled | its spill range |
+| a formula with one value, or `#SPILL!` | E2 alone (`ROWS(E2#)` is 1, the value is E2's, `#SPILL!` included) |
+| a value, nothing, or a cell of another array | `#REF!` |
 
-**Placing an array** (`src/spill/place.ts`). When a formula's value is an array of several values, its range is checked: the edge, the merged areas, the input cells that stop it (an index of the cells with a value or a formula, by column, `src/spill/occupied.ts`), then the other arrays' ranges. An array that cannot spill gives `#SPILL!`, keeps the reason for `issues` ("the array of 3×1 values cannot spill: 'S'!A3 is not empty") and waits for its range: a change of a cell there computes it again. An array that wins over another takes its place, and the other waits.
+A spill reference works in functions (`SUM(E2#)`, `ROWS`, `COLUMNS`, `INDEX(E2#,2)`), under operators (`E2#*2` spills itself), from another sheet (`S!E2#`) and in a defined name (`'S'!$E$2#`). In an xlsx file it is stored as `_xlfn.ANCHORARRAY(E2)`.
 
-**The graph.** A formula that read a cell of a spilled range must come after the array's formula. Besides the references, the graph has an edge from each spilled formula to the formulas reading its range (its claim, `src/graph.ts`); the edges change only when a range does. Evaluation goes in rounds (`src/evaluate.ts`): when an array's cells change after a formula read them, or a range an array waits for is freed, those formulas are computed again, until nothing changes; for a book without spills it is one round, as before. A reader of a range that the array's own formula reads closes a cycle: both are `#CYCLE!`, and the formula keeps its claim while in the cycle, so the cycle stays found. What such a cycle holds depends on which arrays spilled first, so a session computes the whole book again from no spills when a cycle runs through a spill range, before or after an edit, as a new computation does (the cost of a cold computation, only for such books).
+## Readers and sizes
 
-**Large arrays.** An array of up to 65,536 values is stored whole. A larger one is stored from its top-left up to the last row and column holding a value other than its bottom-right one; the cells past that hold that one value and are not stored (`src/spill/fill.ts`): the runtime reads them where a range or a cell meets them. So `A:A*2` over 1,000 rows stores 1,000 cells and computes in about 16 ms; `SUM(B:B)` and `COUNT(B:B)` over it read 1,048,576 values once (cached, about 50 ms more). The result lists the stored cells (`spillOf`) and gives the formula `spill: 'B1:B1048576'` and `spillFill: 0`; the hash has one line for the rest of the range. An array without such a tail is stored whole: `ROW(A:A)` lists 1,048,576 cells, about 3 s and 0.5 GB, as Excel holds a million cells too.
+A formula that reads a spilled cell gets its value. `COUNT(B:B)` over `B1 = A:A*2` is 1,048,576.
 
-**Results and sessions.** Spilled cells are in `sheets[].cells` with `spillOf` (the formula's address), the formula has `spill` (its range) and, for a large array, `spillFill`; both are in the values hash, and a book without spills hashes as before. A cell of an array holding an error is in `issues` ("division by zero, in the array spilled from 'S'!B1"). Session changes carry the same fields and list a formula whose range changed even when its own value did not; `setLayout` computes again the arrays whose range a merged area added or removed meets; `explain` of a spilled cell leads to its formula. The contract: `CellResult`, `CellChange`, `ExplainNode` in `src/contract.ts`.
+`SEQUENCE(B1)`, `FILTER`, `UNIQUE` and `SORT` spill their current size. A larger size that meets a value gives `#SPILL!`. A `FILTER` that keeps nothing gives `#CALC!` and spills nothing.
 
-**Speed.** On the synthetic book (no spills) the cold computation, the edits and the hash are as before within noise (medians of four interleaved runs on a loaded machine: cold 287 ms before, 281 ms after; criterion edit p95 1.3 and 1.4 ms; data edit 21.7 and 22.5 ms; heap 30.4 and 31.4 MB, the index of input cells).
+`A:A*2` in B1 spills to row 1,048,576, with 0 below the data. From B2 it does not fit, and any value below B1 blocks it. `1:1*2` in A2 spills to column XFD.
 
-## Known differences and limits
+`RANDARRAY(3)` spills three draws. When the size itself is drawn (`SEQUENCE(RANDBETWEEN(1,3))`), Excel may give `#SPILL!` because the size changes between its calculation passes. A single such formula spilled in five runs out of five, but ten of them in one book gave `#SPILL!` 47 times out of 50. The engine draws once from its clock and spills.
 
-- Two arrays over one cell that do not depend on each other: Excel's choice varies between runs; the engine always takes the lower one (two cases of `base` pinned).
-- An array whose size depends on a volatile draw spills by the engine's clock; Excel gives `#SPILL!` when the size changes between its passes (not measured).
-- A cycle through a spill range is `#CYCLE!`; Excel shows its circular reference warning instead (not measured: the warning is a window).
-- Structure operations copy and move the cells of the input: a spilled cell is not input, so copying a range of spilled cells copies their formula's cell only if it is in the range (not measured).
+## Edits and structure operations
+
+In a session, a value typed into a spill range gives the array `#SPILL!`, and its readers (`SUM(A1#)`, `A1#*2`) follow. Clearing the value lets the array spill again. Merged areas beside the range, below it or holding the formula's cell do not change this.
+
+Spilled cells are not cells of the book, so copying them without their formula pastes nothing. Copying the formula pastes it, and it spills at the target. Moving spilled cells moves the references to them (`E3+1` follows `E3`), and moving the formula moves `E2#`.
+
+`E2#` changes like a reference to E2: inserted and deleted rows and columns move it, copies shift it unless it is absolute, renaming the sheet renames it. Deleting the formula's cell leaves `#REF!#` (`S!#REF!#` from another sheet, in a name too), and deleting its sheet leaves `#REF!E2#`. The parser reads these forms back.
+
+## Results and sessions
+
+In `ComputeResult`, spilled cells appear in `sheets[].cells` with `spillOf`, the address of their formula. The formula's cell has `spill`, its range. Spilled values are part of the values hash. A book without spills hashes as it did before spilling existed.
+
+An error inside a spilled array is listed in `issues`, for example "division by zero, in the array spilled from 'S'!B1". Session changes carry the same fields and include a formula whose range changed even when its own value did not. `setLayout` recomputes the arrays whose range meets a merged area that was added or removed. `explain` of a spilled cell leads to its formula.
+
+## Large arrays
+
+An array of up to 65,536 values is stored whole. A larger one is stored up to the last row and column whose values differ from its bottom-right value; the rest of the range holds that one value and is not stored. Such a formula has `spillFill` with the value, and the hash has one line for the unstored part.
+
+So `A:A*2` over 1,000 rows of data stores 1,000 cells and computes in about 16 ms, and `SUM(B:B)` over it reads the million values once, in about 50 ms. An array without such a tail is stored whole: `ROW(A:A)` lists 1,048,576 cells and takes about 3 s and 0.5 GB, as Excel also holds a million cells.
+
+## How the engine does it
+
+`src/spill/place.ts` places an array: it checks the sheet's edge, the merged areas, the input cells in the way (an index of cells with a value or a formula, `src/spill/occupied.ts`) and the ranges of other arrays. An array that cannot spill gives `#SPILL!`, records which cell is in the way, and is computed again when that cell changes.
+
+A formula that reads a cell of a spilled range has to run after the array's formula. The graph (`src/graph.ts`) adds an edge from each spilled formula to the formulas reading its range, and changes these edges only when a range changes. Evaluation (`src/evaluate.ts`) goes in rounds until nothing changes; a book without spills takes one round.
+
+A formula that reads a range its own array's formula also reads closes a cycle, and both are `#CYCLE!`. What such a cycle holds depends on which arrays spilled first, so a session recomputes the whole book from scratch when a cycle runs through a spill range. This costs as much as a cold computation and happens only in such books.
+
+On the synthetic book, which has no spills, cold computation, edits and the hash are unchanged within noise.
+
+## How it was checked
+
+Each case is a small book written the way Excel 365 saves dynamic array formulas (`cm="1"` and the `XLDAPR` metadata). Reading a range of values that contains errors is unsafe in Excel (errors drop out of the list, and a two-dimensional read crashed Excel), so every cell that is read has three mirror formulas on separate sheets that never fail: a type code, the number and the text. `npx tsx bench/coverage/run.ts spill <set>` runs a set, and `test/spill-excel.test.ts` compares the engine with the stored answers without Excel.
+
+| set | cases | what |
+|---|---|---|
+| `base` | 50 | directions, blocking, collisions, edges, `E2#`, sizes from data, whole columns, volatile arrays |
+| `order` | 21 | two arrays over the same cells, computed four times |
+| `held` | 17 | predicted by the engine before Excel computed them; all 17 matched |
+| `more` | 13 | sizes from a draw (five runs), edits in books with merged areas |
+| struct `spill`, `spill-more`, `spill-copy` | 22 | `E2#` and spilled cells under structure operations |
+
+Answers are in `test/excel/spill/` and `test/excel/struct/`. Cutting a formula with a spill to another sheet crashed Excel 16.113 twice, so it is not among the cases.
+
+## Known differences
+
+- Two independent arrays over the same cells: Excel's choice varies between runs, the engine always lets the lower one spill. Two cases of `base` that Excel ran once show the other choice.
+- An array whose size depends on a random draw spills by the engine's clock. Excel gives `#SPILL!` when the size changes between its passes (three cases of `more`).
+- A cycle through a spill range is `#CYCLE!`. Excel shows its circular reference warning instead (not measured: the warning is a window).

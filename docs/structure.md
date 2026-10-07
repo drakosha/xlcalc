@@ -1,6 +1,8 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming and deleting sheets, with every reference in formulas and names adjusted as Excel adjusts it, and with the cells' styles, the columns and rows and the merged areas changed as Excel changes them. This is the library layer for a grid interface: a pure function over `BookInput`, and the same operation as a method of a session.
+Inserting and deleting rows and columns, moving and copying ranges, renaming and deleting sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings and merged areas. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+
+The rules below were measured in Excel 16 for Mac (en-US).
 
 ## API
 
@@ -22,104 +24,149 @@ type RestructureResult =
   | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged'; message: string }
 ```
 
-The types are in the contract (`xlcalc/contract`), and `FormulaEngine` has `restructure`.
+The types are in `xlcalc/contract`, and `FormulaEngine` has `restructure`.
 
-- One function with the operation as data, rather than eight functions: an operation can be stored, sent from the interface to the server and replayed, and the session's method takes the same object. Rows are numbers and columns letters, as in A1 addresses; sheets are matched case-insensitively.
-- The input book is not changed. Sheets, cells and names that the operation does not touch are shared with the input.
-- `mapCell` says where a cell of the old book is now: a new address, the new sheet name, or null when the cell was deleted or overwritten. It is what a host needs for anything it keeps by address (comments, selection, links to source rows), and what the session uses to report changes.
-- Input of the wrong shape (unknown sheet, row 0, a malformed range, unknown fields) throws `InputError`, as everywhere in the library. An operation Excel refuses returns `ok: false`: an interface shows the message, it is not a programming error. `off_sheet`: inserting would push a cell or a merged area past row 1,048,576 or column XFD (Excel refuses for cells that are not empty; here any cell counts, a cell with only `format`, `style` or `meta` too, so nothing is dropped silently), or a move or copy does not fit on the sheet. `sheet_name`: a name that breaks Excel's rules (empty, over 31 characters, one of `: \ / ? * [ ]`, an apostrophe at either end) or one another sheet has. `last_sheet`: the only sheet. `merged`: a move whose source cuts a merged area, a copy that lands on part of one.
+An operation is plain data, so an interface can store it, send it to a server and replay it. Rows are numbers and columns are letters, as in A1 addresses. Sheet names are matched without regard to case.
+
+The input book is not changed. Sheets, cells and names the operation does not touch are shared with it.
+
+`mapCell` tells where a cell of the old book is now: a new address and sheet name, or `null` if the cell was deleted or overwritten. A host uses it for anything it keeps by address, such as comments, the selection or links to source rows.
+
+Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fields) throws `InputError`. An operation that Excel would refuse returns `ok: false` with a message for the user:
+
+| code | when |
+|---|---|
+| `off_sheet` | an insert would push a cell or a merged area past row 1,048,576 or column XFD, or a move or copy does not fit on the sheet |
+| `sheet_name` | the new name breaks Excel's rules or another sheet has it |
+| `last_sheet` | deleting the only sheet |
+| `merged` | a move whose source cuts a merged area, or a copy that lands on part of one |
+
+Excel refuses an insert only when a non-empty cell would leave the sheet. Here any cell counts, even one with only a format, style or `meta`, so nothing is dropped silently.
 
 ## Formula text
 
-Only the references that change are rewritten, in place: the rest of the formula keeps its spelling (spaces, lower case), and a formula without a changed reference keeps its text byte for byte. A rewritten reference is written as Excel writes it: a range over every row as columns (`A1:A1048576` becomes `A:A`), over every column as rows, a new or changed sheet name quoted.
+Only the references that change are rewritten, in place. The rest of the formula keeps its spelling, spaces and lower case included, and a formula without a changed reference keeps its text byte for byte. A rewritten reference is written as Excel writes it: a range over every row as columns (`A1:A1048576` becomes `A:A`), a range over every column as rows, a new or changed sheet name in quotes.
 
-A formula that does not parse moves with its cell and is not rewritten. Excel has no such formulas (it rejects them on entry, or keeps the text as a value), so there is nothing to copy; rewriting would need a parse, and keeping the text lets the user see and fix what they wrote.
+A formula that does not parse moves with its cell as written. Excel never has such formulas, and keeping the text lets the user see and fix it.
 
-A lost reference is written as Excel writes it: `#REF!` in place of a reference without a sheet, `'S'!#REF!` when the reference named its sheet, `#REF!A5` (the reference after `#REF!`) when the sheet was deleted, `#REF!#REF!` for `'S'!#REF!` when `S` is deleted. A spill reference (`E2#`, `docs/spill.md`) moves as a reference to its cell and keeps its `#`, lost too: `#REF!#`, `'S'!#REF!#`, `#REF!E2#`. The parser reads these forms (they also come in xlsx files) as `#REF!` errors and prints them back unchanged. A name whose reference is lost stays in the book, as in Excel, and gives `#REF!` where it is used; it is no name issue.
+A lost reference is written the way Excel writes it:
 
-## Semantics
+| reference | after the loss |
+|---|---|
+| `A5`, its cells deleted | `#REF!` |
+| `'S'!A5`, its cells deleted | `'S'!#REF!` |
+| `'S'!A5`, sheet S deleted | `#REF!A5` |
+| `'S'!#REF!`, sheet S deleted | `#REF!#REF!` |
+| `E2#` (a spill reference), E2 deleted | `#REF!#`, or `'S'!#REF!#` with a sheet |
+| `'S'!E2#`, sheet S deleted | `#REF!E2#` |
 
-Each rule below is checked against Excel 16 for Mac (en-US) unless marked otherwise; see [Checked against Excel](#checked-against-excel).
+The parser reads all these forms, which also occur in xlsx files, as `#REF!` errors and prints them back unchanged. A name whose reference is lost stays in the book, as in Excel, and gives `#REF!` where it is used.
 
-**Insert rows (columns).** Cells from the row on move down, with their `format`, `style` and `meta`. The inserted rows take the format of the row above, as Excel does by default: its height, style and format, and the style and format of each of its cells, without values; rows inserted above the first are plain (columns: the column on the left). Every reference to the sheet, from any sheet and from names, global and local, moves: absolute ones too. A range grows when rows are inserted between its first and last row, moves when they are inserted at or above its first row, and stays when they are inserted below its last row. A whole column (`B:B`) does not change; whole rows (`2:3`) behave as ranges. At the edge: a single cell pushed past the last row is `#REF!`; a range keeps ending on the last row (`A5:A1048576` becomes `A7:A1048576`), and is `#REF!` when its first row is pushed past it; a range over every row does not change.
+## Inserting rows and columns
 
-**Delete rows (columns).** The cells in the deleted rows are removed, the cells below move up. A reference inside the deleted rows is `#REF!`; a range loses its deleted rows (`A3:A8` with rows 5–6 deleted is `A3:A6`; `A5:A6` with row 6 deleted is `A5:A5`, still a range) and is `#REF!` when all its rows are deleted. A range ending on the last row keeps ending there (deleting row 1,048,576 leaves `A5:A1048576` as it is), unless all its rows are deleted.
+Cells from the inserted row on move down, with their `format`, `style` and `meta`. The inserted rows copy the row above, as Excel does by default: its height, style and format, and the style and format of each of its cells, without values. Rows inserted above row 1 are plain. Columns work the same way with the column on the left.
 
-**Move (cut and paste).** The cells move with their `format`, `style` and `meta`; the cells they land on are replaced (cleared where the source cell is empty). A reference, single cell or range, entirely inside the moved cells follows them, to another sheet too, absolute or not. A reference entirely inside the overwritten cells is `#REF!`. A range with one end among the moved or the overwritten cells changes by these rules, along the axis of that end, when the cells cover the range's other axis and move along it:
+Every reference to the sheet moves, absolute references included, from any sheet and from global and local names.
 
-- an end among the moved cells that moves away from the other end follows the cells (`SUM(A1:A10)`, cut `A10` to `A15`: `SUM(A1:A15)`);
-- an end moving towards the other end, to cells outside the range (past the other end): no change;
-- if the range held all the moved cells: it drops them and takes in where they land (`A4:A9`, cut `A4:A5` to `A7`: `A6:A9`);
-- if the moved cells straddle the end: the end follows them, unless that leaves fewer than two rows or, for a move that does not overlap itself, a range inside the overwritten cells; then the range drops the moved cells; either way it takes in the overwritten cells beyond it;
-- an end among the overwritten cells: the range drops them, unless it holds them all (`A1:A7`, cut `A4:A5` to `A7`: `A1:A6`; `A1:A8` stays).
+- A range grows when rows are inserted between its first and last row, moves when they are inserted at or above its first row, and stays when they are inserted below it.
+- A whole column (`B:B`) does not change. Whole rows (`2:3`) behave like ranges.
+- At the edge of the sheet, a single cell pushed past the last row becomes `#REF!`. A range that ends on the last row keeps ending there (`A5:A1048576` becomes `A7:A1048576`) and becomes `#REF!` when its first row is pushed past it. A range over every row does not change.
 
-Cells moved across the range's axis (sideways for a column range) do not change it, and a range over a whole column or row keeps it. Moved to another sheet, the cells leave a range with one end among them shrunk past them. A moved formula's references to cells that did not move keep pointing at them: a reference without a sheet gets the name of the sheet it pointed to. A moved formula that uses a name local to its old sheet gets that name defined on the new sheet too, when the new sheet sees no name of that name (neither its own nor a global one), as Excel does.
+## Deleting rows and columns
 
-**Copy and paste, fill.** The copied cells replace the target's, with `format` and `style`, and without `meta` unless the operation has `withMeta: true` (a copy is a new cell: what a host keeps in `meta`, such as the ids of source rows, belongs to the original); empty source cells clear the cells they land on. Relative parts of the references move with the copy, absolute ones (`$`) stay, a whole column keeps its rows and a whole row its columns. A reference pushed past the sheet's edge is `#REF!` (`'S'!#REF!` when it names its sheet); a range is not clamped. A target that is a whole multiple of the source's size is tiled with copies (fill down is a copy of the first row over the rows below); any other target gets one copy at its top-left cell, as Excel's `Range.Copy`. Other formulas and names do not change. A formula copied to another sheet with a name local to the source sheet gets the name defined on the target sheet, its references to the source sheet pointed at the target sheet, under the same condition as for a move.
+The cells in the deleted rows are removed and the cells below move up. A reference inside the deleted rows becomes `#REF!`. A range loses its deleted rows: `A3:A8` with rows 5 and 6 deleted is `A3:A6`, and `A5:A6` with row 6 deleted is `A5:A5`, still a range. A range whose rows are all deleted becomes `#REF!`. A range ending on the last row keeps ending there unless all its rows are deleted.
 
-**Rename a sheet.** Every reference to the sheet, `'S'!#REF!` included, takes the new name, and so do the scope of its local names. A new name follows Excel's rules (1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end; a book's sheets follow them too, else `InputError`) and differs from the other sheets' names, compared case-insensitively; renaming to another case is allowed.
+## Moving a range (cut and paste)
 
-**Delete a sheet.** The sheet and its cells are removed. References to it become `#REF!` followed by the reference (`#REF!A5`, `SUM(#REF!$A$3:$A$8)`), in formulas and in global names and names local to other sheets; names local to the deleted sheet are removed.
+The cells move with their `format`, `style` and `meta`, and replace the cells they land on; an empty source cell clears its target. A reference that lies entirely inside the moved cells follows them, to another sheet too, absolute or not. A reference entirely inside the overwritten cells becomes `#REF!`.
+
+A range with one end among the moved or overwritten cells changes along that end's axis, when the cells cover the range's other axis and move along it:
+
+- An end among the moved cells that moves away from the other end follows them: cutting `A10` to `A15` turns `SUM(A1:A10)` into `SUM(A1:A15)`.
+- An end that moves towards the other end, to cells outside the range, does not change it.
+- A range that held all the moved cells drops them and takes in where they land: cutting `A4:A5` to `A7` turns `A4:A9` into `A6:A9`.
+- When the moved cells straddle an end, the end follows them, unless that leaves fewer than two rows or, for a move that does not overlap itself, a range inside the overwritten cells. Then the range drops the moved cells. Either way it takes in the overwritten cells beyond it.
+- An end among the overwritten cells drops them, unless the range holds them all: cutting `A4:A5` to `A7` turns `A1:A7` into `A1:A6` and leaves `A1:A8` as it is.
+
+Cells moved across a range's axis, such as sideways for a column range, do not change it, and a range over a whole column or row stays whole. When the cells move to another sheet, a range with one end among them shrinks past them.
+
+A moved formula's references to cells that did not move keep pointing at them; a reference without a sheet gets the name of the sheet it pointed to. A moved formula that uses a name local to its old sheet gets that name defined on the new sheet too, if the new sheet sees no name of that name, its own or a global one.
+
+## Copying a range (copy and paste, fill)
+
+The copied cells replace the target's, with `format` and `style`. They do not take `meta` unless the operation has `withMeta: true`: a copy is a new cell, and what a host keeps in `meta`, such as the ids of source rows, belongs to the original. Empty source cells clear the cells they land on.
+
+Relative parts of references move with the copy and absolute ones (`$`) stay. A whole column keeps its rows and a whole row its columns. A reference pushed past the sheet's edge becomes `#REF!`, or `'S'!#REF!` when it names its sheet; a range is not clamped.
+
+A target that is a whole multiple of the source's size is tiled with copies, so fill down is a copy of the first row over the rows below. Any other target gets one copy at its top-left cell, as Excel's `Range.Copy` does. Other formulas and names do not change. A formula copied to another sheet that uses a name local to the source sheet gets the name defined on the target sheet, with its references to the source sheet pointed at the target, on the same condition as for a move.
+
+## Renaming and deleting sheets
+
+Renaming a sheet renames every reference to it, `'S'!#REF!` included, and the scope of its local names. The new name must follow Excel's rules (1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History` in any case) and differ from the other sheets' names, compared without regard to case. Renaming to another case is allowed. A book whose sheet names break these rules is an `InputError`.
+
+Deleting a sheet removes it with its cells. References to it become `#REF!` followed by the reference (`#REF!A5`, `SUM(#REF!$A$3:$A$8)`), in formulas, in global names and in names local to other sheets. Names local to the deleted sheet are removed.
 
 ## Styles and layout
 
-A book keeps styles as an xlsx file does (contract: `BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment), a style number in a cell, and per sheet the columns and rows by line or span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, and the merged areas. A cell's number format stays its `format`. A cell shows its own style, else its row's, else its column's, and the same for the format, separately; widths are in characters, as xlsx stores them, heights in points. Computation does not read styles, and they are not in the values hash; `inputHash` has them when a book has any. Excel resolves an empty cell's style and format together, from its row if the row has either, else from its column: the two part only where a row with a style and no format (or a format and no style) crosses a column with the other, which an xlsx import spells out on the row.
+A book keeps styles the way an xlsx file does (`BookInput.styles`, `CellInput.style`, `SheetInput.columns`, `rows`, `merges`): a table of cell styles (font, solid fill, borders, alignment), a style number in each cell, and per sheet the columns and rows by line or span (`C`, `B:D`; `5`, `5:9`) with a width or height, a style and a number format, plus the merged areas. A cell's number format is its `format`. A cell shows its own style, else its row's, else its column's, and the same for the format. Widths are in characters as xlsx stores them, heights in points. Computation does not read styles, and they are not in the values hash; `inputHash` includes them when a book has any.
 
-Under the operations (checked against Excel, see below):
+Excel resolves an empty cell's style and format together: from its row if the row has either, else from its column. The two can differ only where a row with a style but no format (or the other way round) crosses a column with the other; an xlsx reader spells such a case out on the row.
 
-- **Insert and delete.** Columns and rows keep their entries as they move; a span holding the line before the inserted ones takes them in (they get its entry), a span reaching past the sheet's end is cut there, deleted lines leave their spans. The inserted lines' cells get the style and format of the cells of the line before them. A merged area changes as a range: it grows with lines inserted inside it, moves with lines inserted at or above its first line, stays when they come right after it (the new line is not merged), loses deleted lines, and is gone when one cell or none is left.
-- **Move and copy.** A cell takes its own style and format along. Every pasted position shows the style and format its source position showed: where the rows and columns of the destination would show another (a cell moved out of a bold column, into a blue row), the cell gets the source's spelled out, `General` for no format and a plain style, which is added to the book's table when it has none. Whole rows or columns take their entries along (a move leaves the source lines plain, a copy repeats them on every tile). Merged areas inside the source go along; a copy also takes the part of a merged area its source cuts, when two cells or more; merged areas the pasted cells land on are gone (all of them for a move, those inside the target for a copy).
-- **Refusals.** A move whose source cuts a merged area, and a copy that lands on part of one, are refused with `merged`, as Excel refuses them; a move that lands on part of one removes it, and a copy whose source cuts one copies the part. One difference is known: whole columns copied onto part of a merged area, which Excel pastes keeping the area (two observations), the engine refuses.
-- **Sheets.** A renamed sheet keeps its layout; a deleted one takes it along.
+**Inserting and deleting.** Columns and rows keep their settings as they move. A span that holds the line before the inserted ones takes them in. A span that would reach past the sheet's end is cut there, and deleted lines leave their spans. The cells of inserted lines get the style and format of the cells of the line before them.
 
-## Session
+A merged area changes like a range: it grows with lines inserted inside it, moves with lines inserted at or above its first line, stays when lines are inserted right after it (the new line is not merged), loses deleted lines, and disappears when one cell or none is left.
 
-`session.restructure(op)` applies the operation to the session's book and recomputes. The result is `restructure`'s (`ok`, `book`, `mapCell` or the refusal), where `book` is the session's book after the operation, plus `changes`: every cell whose value differs from the one its old cell had, by new address, where `mapCell` carries each old value to its new place and a cell nothing came to was empty. An interface that moves the values it shows by `mapCell` and applies `changes` has the new values; an insert into a block of data with no positional formulas reports none. A refused operation changes nothing; a live session takes a new clock, as for any recomputation.
+At the end of the sheet, a span of columns that reaches XFD keeps reaching it when columns are deleted, as xlsx stores such a span (`<col max=16384>`). If the deleted columns include XFD, the columns that come in at the end take the span's style and format but not its width (seen once). Rows are stored one by one and do not reach on. A merged area that ends on the last row or column keeps ending there when a deletion reaches the end of the sheet, unless all of it is deleted.
 
-The state is built again from the new book, the simple way: on the synthetic book (3,400 data rows, 3,907 formulas) a row inserted in the middle of the data sheet takes 190 ms (median of 8, a cold computation of the same book 197 ms; Apple M5 Pro, Node 26), within the 1.5 s budget of a cold computation, so the compiled formulas are not kept.
+**Moving and copying.** A cell takes its own style and format along. Every pasted cell shows the style and format its source showed: where the target's rows and columns would show something else (a cell moved out of a bold column into a blue row), the cell gets the source's style spelled out, with `General` for no format and a plain style that is added to the book's table if missing. Whole rows or columns take their settings along; a move leaves the source lines plain, and a copy repeats them on every tile.
 
-`book()` returns the session's book with every change so far, what a host saves as a version; its objects are the session's own and later calls change them. Styles and the layout change through the session, so its book does not part from the host's: a cell's style through `setCells` (an edit that keeps the cell's value and formula recomputes nothing and returns no changes), the style table through `setStyles(styles)` (every style in use must stay in it), columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (null removes a field; spans are split where an edit cuts them), `{ sheet, merges: [...] }` replaces the sheet's merged areas. Neither recomputes.
+Merged areas inside the source go along. A copy also takes the part of a merged area that its source cuts, when that part has two cells or more. Merged areas that pasted cells land on are removed: all of them for a move, those inside the target for a copy.
 
-Other shapes were weighed and left:
+**Refusals.** A move whose source cuts a merged area and a copy that lands on part of one are refused with `merged`, as Excel refuses them. A move that lands on part of a merged area removes it, and a copy whose source cuts one copies the part.
 
-- The host keeps its own book, calls the pure `restructure` and passes the new book to the session, which only recomputes. Two copies of the book that must be kept equal by every caller, and the session could not tell an operation from a new book, so it would rebuild and compare every cell.
-- The session rewrites only what changed (keeping compiled formulas whose text did not change and moving cell keys by `mapCell`). Nearer an edit's cost, but the cost of the simple way is a cold computation, within budget, and the remapping would be a second implementation of every operation's cell mapping.
-- Style edits as a whole new book (`setBook`). The host would rebuild the book for a width; a patch by lines and a style table set alone keep edits small and leave the values alone.
-- Column widths and row heights as a map with one key per line. Simple to edit, but a style or width over the whole sheet is one span in xlsx and would be 16,384 keys here.
+A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
-## Checked against Excel
+## Sessions
 
-`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel (AppleScript, alerts off for the operation, every window that is not a book stops the run) and stores what every sheet shows in `A1:Z60` and the defined names in `test/excel/struct/<set>.json`; `test/structure-excel.test.ts` compares `restructure` with them without Excel, formulas in Excel's notation with sheet names quoted. A book with styles, columns, rows, merged areas or number formats is written with them (ExcelJS), and the look of `A1:J24` is read back too: for each cell bold, the fill colour and the number format, the widths of the columns and heights of the rows that are not the standard ones, and the merged areas; the test compares the look the engine's book gives, with sizes as Excel 16 for Mac reports them (a width of w characters as (6w − 5)/6, a height in points as pixels, to a quarter). Known differences are listed in `STRUCT_KNOWN` there.
+`session.restructure(op)` applies the operation to the session's book and recomputes. The result is that of `restructure`, with `book` being the session's book after the operation, plus `changes`: every cell whose value differs from the value its old cell had. An interface that moves the values it shows by `mapCell` and applies `changes` has the new values. An insert into a block of data without position-dependent formulas reports no changes. A refused operation changes nothing.
+
+The session rebuilds its state from the new book. On the synthetic book (3,400 rows, 3,907 formulas) inserting a row in the middle of the data takes 190 ms, about as long as a cold computation of the same book, well within the 1.5 s budget.
+
+`book()` returns the session's book with all changes so far, which is what a host saves as a version. Its objects belong to the session and change with later edits, so serialize it right away.
+
+Styles and layout change through the session so that its book stays the host's book:
+
+- a cell's style through `setCells`; an edit that keeps a cell's value and formula recomputes nothing and returns no changes;
+- the style table through `setStyles(styles)`; every style in use must stay in it;
+- columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas.
+
+None of these recompute values.
+
+## How it was checked
+
+`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel through AppleScript and stores what every sheet shows in `A1:Z60`, with the defined names, in `test/excel/struct/<set>.json`. For books with styles it also reads the look of `A1:J24`: bold, fill colour and number format of each cell, widths and heights that are not standard, and the merged areas. `test/structure-excel.test.ts` compares `restructure` with the stored answers without Excel.
 
 | set | cases | what |
 |---|---|---|
-| `rows` | 26 | inserting and deleting rows and columns of a book with every kind of reference: relative, absolute, mixed, ranges, whole columns and rows, other sheets, a quoted sheet name, global and local names |
-| `edge` | 10 | references at the last row and column, the whole sheet; the two insertions Excel refuses |
-| `move` | 27 | cut and paste and copy and paste on the same book, onto referenced cells, whole columns and rows, to other sheets, fill down and right, tiles |
-| `moves` | 20 | every range `Ai:Aj` and `Ai:Bj` of a 12-row window under 20 moves; the move rules were fitted on it |
-| `sheets` | 9 | renaming (quotes, case, an apostrophe) and deleting sheets, references already lost |
-| `checks` | 26 | held out: moves the fitting did not see, edge cases, copies with mixed `$` and local names, empty cells moved over values, a copy that does not fit; predicted before Excel ran |
-| `styles` | 46 | a styled book (cell styles and formats, a row at a height with a style and format, columns with widths and styles, merged areas): inserting and deleting rows and columns inside, at the edges and next to them, under styled rows; moving and copying ranges, whole rows and columns, merged areas; moves and copies that cut a merged area at either end; the style rules were fitted on it |
-| `styles-checks` | 18 | held out: spans of rows and columns under inserts and deletes, merged areas tiled, cut and moved to another sheet, whole rows and columns moved and tiled, cells moved into a styled row and out of a styled column, whole columns copied onto part of a merged area; predicted before Excel ran |
-| `spill`, `spill-more` | 8, 4 | spill references (`E2#`, `$E$2#`, from another sheet, in a name) under rows and columns inserted and deleted, the anchor cut and pasted, copies, a sheet renamed and deleted; dynamic array formulas, so the anchors spill (cutting an anchor to another sheet crashed Excel 16.113 twice and is not a case) |
+| `rows` | 26 | inserting and deleting rows and columns with every kind of reference: relative, absolute, mixed, ranges, whole columns and rows, other sheets, quoted names, global and local names |
+| `edge` | 10 | references at the last row and column, the whole sheet, the two inserts Excel refuses |
+| `move` | 27 | cut and copy on the same book, onto referenced cells, whole columns and rows, other sheets, fill down and right, tiles |
+| `moves` | 20 | every range `Ai:Aj` and `Ai:Bj` of a 12-row window under 20 moves |
+| `sheets` | 9 | renaming (quotes, case, an apostrophe) and deleting sheets |
+| `history` | 6 | renaming to `History` in three cases (Excel refuses) and to similar names (Excel accepts) |
+| `checks` | 26 | predicted before Excel computed them: moves outside the fitted ones, edge cases, copies with mixed `$` and local names |
+| `styles` | 46 | inserts, deletes, moves and copies in a book with cell styles, styled rows and columns, widths and merged areas |
+| `styles-checks` | 18 | predicted before Excel computed them: spans, tiled and moved merged areas, cells moved into styled rows and out of styled columns |
+| `edge-layout`, `edge-wide` | 9, 4 | styled rows and columns, spans and merged areas at the end of the sheet |
+| `spill`, `spill-more`, `spill-copy` | 8, 4, 10 | spill references and spilled cells under structure operations |
 
-The 118 cases without styles read back 8,057 formulas and 311 names; about 1,000 formulas and 83 names were changed by the operations, 265 formulas to a lost reference. All match. The held-out set matched in 21 of 26 cases as predicted; the other five showed two rules that were wrong and are fixed (a range lying in the deleted rows is `#REF!` even when it ends on the last row; Excel does not carry a local name to a sheet where a global name of that name exists). One move rule (a straddled end does not follow into the overwritten cells of a non-overlapping move) rests on a single observation.
+All cases match except the one known difference below. Of the predicted cases, `checks` matched 21 of 26 and `styles-checks` 17 of 18; the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
 
-The 64 cases with styles read back 294 formulas, 4,406 cells that are not plain, 380 sizes and 212 merged areas. The insert and delete rules were written after the first five answers of `styles` and matched its other 20 such cases; the move and copy rules were fitted on the rest. The held-out set matched in 17 of 18 cases as predicted; the comparison's own conversion of row heights was wrong (20 points read 26.75, not 26.67) and is fixed. The case off, whole columns copied onto part of a merged area, led to three more cases in `styles`: a range landing on the area's top-left cell or on another of its cells is refused, whole columns are pasted and the area stays. That is the one known difference (above).
+Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number).
 
-Not checked against Excel: a move that does not fit (refused like the copy), moves onto another sheet beyond the cases of `checks` and `styles-checks`, deleting lines at the sheet's end under a span that reaches it, fonts other than bold, borders and alignment (they move with the style number), what a whole-column copy onto a merged area does to the area's cells.
+## Known differences and limits
 
-## Limits
-
-- No hidden rows or columns, outline levels, conditional formats, validation, comments or charts: the book has none.
-- References the parser does not read (3D, structured, other workbooks) cannot occur in a valid formula; a formula that does not parse is not rewritten.
-- Whole rows or columns copied onto part of a merged area are refused (Excel pastes them).
-
-## Questions settled
-
-Proposals of the first step, implemented so that dropping any one is a local change:
-
-- Copies have no `meta` unless `withMeta: true`; a move keeps it (`structure/copy.ts`, one function).
-- Sheet names follow Excel's rules in the input and in `renameSheet` (`sheetNameProblem` in `input.ts`); Excel is documented to reserve the name `History` as well, which neither the engine nor the Excel sets check.
-- An insert is refused when any cell would leave the sheet, even one with only a format, style or meta (stricter than Excel), and a merged area as well.
-- Inserted rows take the format of the row above, and columns of the column on the left, as Excel does by default (`formatBefore` in `structure/layout.ts`, one call in `shift.ts`, and the span growth in `shiftLines`).
+- Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
+- One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
+- Hidden rows and columns, outline levels, conditional formats, data validation, comments and charts are not part of a book.
+- 3D references, structured references and references to other workbooks are not read, so they never occur in a valid formula.

@@ -20,8 +20,18 @@ export interface RegionalData {
   /** Day names from Sunday as TEXT writes them (`DDDD`, `DDD`). */
   readonly days: readonly string[]
   readonly daysShort: readonly string[]
-  /** TEXT's format codes: the letters of day, month, minutes, year, hours, seconds, and the name of the General format. */
-  readonly codes: { readonly day: string; readonly month: string; readonly minute: string; readonly year: string; readonly hour: string; readonly second: string; readonly general: string }
+  /** TEXT's format codes: the letters of day, month, minutes, year, hours, seconds, the name of the General format, the word of `[Color10]`. */
+  readonly codes: { readonly day: string; readonly month: string; readonly minute: string; readonly year: string; readonly hour: string; readonly second: string; readonly general: string; readonly color: string }
+  /** TEXT's colour names: black, white, red, green, blue, yellow, magenta, cyan. */
+  readonly colors: readonly string[]
+  /** What a bare `/` in a cell's date format shows (`31.01.2025`). */
+  readonly dateSeparator: string
+  /** Excel's locale code (`[$-419]`), upper-case hex. */
+  readonly lcid: string
+  /** The long date and time (`[$-F800]`, `[$-F400]`) as en-US codes, and the long date's month names. */
+  readonly longDate: string
+  readonly longTime: string
+  readonly longMonths: readonly string[]
   /** The `Intl.Collator` tag that orders text as this Excel does. */
   readonly collation: string
 }

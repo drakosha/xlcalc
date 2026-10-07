@@ -53,7 +53,7 @@ export function errorWords(local: Readonly<Record<string, string>>): (text: stri
 
 /** What criteria read by the locale: numbers, dates and words in a criterion's text, numbers in cell text, the order of text. */
 export interface CritRules {
-  /** A number or a date in a criterion's text (after the operator, trimmed), or null. */
+  /** A number or a date in a criterion's text (after the operator; a space before a date makes it text), or null. */
   critNumber(text: string): number | null
   /** TRUE or FALSE in a criterion's text (after the operator), or null. */
   critBool(text: string): boolean | null
@@ -132,7 +132,7 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
     let code: string | undefined
     if (rest === '') c = { op, kind: 'blank' }
     else if ((code = rules.critError(rest)) !== undefined) c = { op, kind: 'err', code }
-    else if ((n = rules.critNumber(rest.trim())) !== null) c = { op, kind: 'num', n }
+    else if ((n = rules.critNumber(rest)) !== null) c = { op, kind: 'num', n }
     else if ((b = rules.critBool(rest)) !== null) c = { op, kind: 'bool', b }
     else {
       const re = op === '=' || op === '<>' ? wildRe(rest) : null

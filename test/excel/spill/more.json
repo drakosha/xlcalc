@@ -1,0 +1,710 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 25.5
+ },
+ "cases": [
+  {
+   "id": "volatile-size",
+   "about": "the size of a column from a draw",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A4"
+    }
+   ],
+   "volatile": true
+  },
+  {
+   "id": "volatile-sizes",
+   "about": "ten columns whose sizes are drawn",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "C1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "E1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "G1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "I1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "K1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "M1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "O1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "Q1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       },
+       "S1": {
+        "formula": "SEQUENCE(RANDBETWEEN(1,3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:T4"
+    }
+   ],
+   "volatile": true
+  },
+  {
+   "id": "volatile-fixed",
+   "about": "a drawn size that cannot change",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(RANDBETWEEN(2,2))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A3"
+    }
+   ],
+   "volatile": true
+  },
+  {
+   "id": "volatile-cell",
+   "about": "the size from a cell holding a draw",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "RANDBETWEEN(1,3)"
+       },
+       "A1": {
+        "formula": "SEQUENCE(B1)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B4"
+    }
+   ],
+   "volatile": true
+  },
+  {
+   "id": "volatile-randarray",
+   "about": "RANDARRAY of a drawn size",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "RANDARRAY(RANDBETWEEN(1,3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A4"
+    }
+   ],
+   "volatile": true
+  },
+  {
+   "id": "edit-typed",
+   "about": "a value typed into the range, a merged area beside it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "B5": {
+        "value": 1
+       }
+      },
+      "merges": [
+       "C1:D2"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D5"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A2",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "id": "edit-cleared",
+   "about": "a value typed into the range and cleared, a merged area beside it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       }
+      },
+      "merges": [
+       "C1:D2"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D5"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A2",
+     "value": 5
+    },
+    {
+     "sheet": "S",
+     "cell": "A2",
+     "value": null
+    }
+   ]
+  },
+  {
+   "id": "edit-text",
+   "about": "text typed into a rectangle, a merged area below it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3,2)"
+       }
+      },
+      "merges": [
+       "A5:B6"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C6"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "B2",
+     "value": "x"
+    }
+   ]
+  },
+  {
+   "id": "edit-text-cleared",
+   "about": "text typed into a rectangle and cleared, a merged area below it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3,2)"
+       }
+      },
+      "merges": [
+       "A5:B6"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C6"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "B2",
+     "value": "x"
+    },
+    {
+     "sheet": "S",
+     "cell": "B2",
+     "value": null
+    }
+   ]
+  },
+  {
+   "id": "edit-merged-block",
+   "about": "the range meets a merged area; a value typed in and cleared",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       }
+      },
+      "merges": [
+       "A3:B4"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B5"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A2",
+     "value": 1
+    },
+    {
+     "sheet": "S",
+     "cell": "A2",
+     "value": null
+    }
+   ]
+  },
+  {
+   "id": "edit-value-cleared",
+   "about": "a value in the range cleared, a merged area beside it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "A3": {
+        "value": 7
+       }
+      },
+      "merges": [
+       "B1:C1"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C4"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A3",
+     "value": null
+    }
+   ]
+  },
+  {
+   "id": "edit-reader",
+   "about": "a value typed into a range that a reader sums",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "C1": {
+        "formula": "SUM(A1#)"
+       },
+       "D1": {
+        "formula": "A1#*2"
+       }
+      },
+      "merges": [
+       "E1:E2"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A3",
+     "value": 9
+    }
+   ]
+  },
+  {
+   "id": "edit-anchor-merged",
+   "about": "the anchor holds a merged area; a value typed beside it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      },
+      "merges": [
+       "A1:A2"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "D1",
+     "value": 1
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "volatile-size": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(RANDBETWEEN(1,3))"
+   }
+  },
+  "volatile-sizes": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!E1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!G1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!I1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!K1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!M1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!O1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!Q1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!S1": {
+     "t": "e",
+     "v": "SPILL"
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!C1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!E1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!G1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!I1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!K1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!M1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!O1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!Q1": "=SEQUENCE(RANDBETWEEN(1,3))",
+    "S!S1": "=SEQUENCE(RANDBETWEEN(1,3))"
+   }
+  },
+  "volatile-fixed": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(RANDBETWEEN(2,2))"
+   }
+  },
+  "volatile-cell": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(B1)",
+    "S!B1": "=RANDBETWEEN(1,3)"
+   }
+  },
+  "volatile-randarray": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 0.6745429677502786
+    }
+   },
+   "formulas": {
+    "S!A1": "=RANDARRAY(RANDBETWEEN(1,3))"
+   }
+  },
+  "edit-typed": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)"
+   }
+  },
+  "edit-cleared": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)"
+   }
+  },
+  "edit-text": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!B2": {
+     "t": "s",
+     "v": "x"
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3,2)"
+   }
+  },
+  "edit-text-cleared": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3,2)"
+   }
+  },
+  "edit-merged-block": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)"
+   }
+  },
+  "edit-value-cleared": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)"
+   }
+  },
+  "edit-reader": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 9
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)",
+    "S!C1": "=SUM(A1#)",
+    "S!D1": "=A1#*2"
+   }
+  },
+  "edit-anchor-merged": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(1,3)"
+   }
+  }
+ }
+}

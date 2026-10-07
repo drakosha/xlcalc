@@ -7,6 +7,7 @@ import { eachValue, type Cx, type FnDef, type Grid, type Segment } from '../../a
 import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
+import { NEWER_MAX_ARGS } from '../common.js'
 import { devsq, gridNumbers, max, mean, min, sorted, sum } from './common.js'
 
 const variance = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : devsq(xs) / (xs.length - ddof))
@@ -222,13 +223,14 @@ export const functions: Record<string, FnDef> = {
   'MODE.MULT': {
     args: 'G',
     rep: 1,
+    max: NEWER_MAX_ARGS,
     array: true,
     fn: (grids: Grid[]) => {
       const m = modes(grids)
       return isErr(m) ? m : new Arr(m.length, 1, m.length, 1, m)
     },
   },
-  'MODE.SNGL': { args: 'G', rep: 1, fn: mode },
+  'MODE.SNGL': { args: 'G', rep: 1, max: NEWER_MAX_ARGS, fn: mode },
   FREQUENCY: { args: 'G G', array: true, fn: frequency },
   'PERCENTILE.EXC': { args: 'N n', empty: 'NUM', fn: percentileExc },
   'PERCENTILE.INC': { args: 'N n', empty: 'NUM', fn: percentileInc },
@@ -250,6 +252,7 @@ export const functions: Record<string, FnDef> = {
   'SKEW.P': {
     args: 'N',
     rep: 1,
+    max: NEWER_MAX_ARGS,
     fn: (xs: number[]) => {
       const m3 = xs.length < 3 ? undefined : moment(xs, 3, 0)
       return m3 === undefined ? E.DIV0 : m3 / xs.length
@@ -261,8 +264,8 @@ export const functions: Record<string, FnDef> = {
     fn: (xs: number[], k: number) => (k < 1 || k > xs.length ? E.NUM : sorted(xs)[Math.floor(k) - 1]),
   },
   STANDARDIZE: { args: 'n n n', fn: (x: number, m: number, sd: number) => (sd <= 0 ? E.NUM : (x - m) / sd) },
-  'STDEV.P': { args: 'N', rep: 1, fn: (xs: number[]) => stdev(xs, 0) },
-  'STDEV.S': { args: 'N', rep: 1, fn: (xs: number[]) => stdev(xs, 1) },
+  'STDEV.P': { args: 'N', rep: 1, max: NEWER_MAX_ARGS, fn: (xs: number[]) => stdev(xs, 0) },
+  'STDEV.S': { args: 'N', rep: 1, max: NEWER_MAX_ARGS, fn: (xs: number[]) => stdev(xs, 1) },
   STDEVA: { args: 'A', rep: 1, fn: (xs: number[]) => stdev(xs, 1) },
   STDEVPA: { args: 'A', rep: 1, fn: (xs: number[]) => stdev(xs, 0) },
   TRIMMEAN: {
@@ -275,8 +278,8 @@ export const functions: Record<string, FnDef> = {
       return mean(sorted(xs).slice(t, xs.length - t))
     },
   },
-  'VAR.P': { args: 'N', rep: 1, fn: (xs: number[]) => variance(xs, 0) },
-  'VAR.S': { args: 'N', rep: 1, fn: (xs: number[]) => variance(xs, 1) },
+  'VAR.P': { args: 'N', rep: 1, max: NEWER_MAX_ARGS, fn: (xs: number[]) => variance(xs, 0) },
+  'VAR.S': { args: 'N', rep: 1, max: NEWER_MAX_ARGS, fn: (xs: number[]) => variance(xs, 1) },
   VARA: { args: 'A', rep: 1, fn: (xs: number[]) => variance(xs, 1) },
   VARPA: { args: 'A', rep: 1, fn: (xs: number[]) => variance(xs, 0) },
 }

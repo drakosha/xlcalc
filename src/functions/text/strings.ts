@@ -5,6 +5,7 @@
 import { directError, eachValue, type Cx, type FnDef, type Segment } from '../../args.js'
 import { wildSource } from '../../criteria.js'
 import { E, isErr, type V } from '../../values.js'
+import { NEWER_MAX_ARGS } from '../common.js'
 import { capped, delimiters, joined, MAX_TEXT } from './common.js'
 
 /** The largest position or count MID accepts; REPLACE takes up to Excel's text length. */
@@ -79,6 +80,7 @@ const strings: Record<string, FnDef> = {
   CONCAT: {
     args: 'V',
     rep: 1,
+    max: NEWER_MAX_ARGS,
     cx: true,
     fn: (cx: Cx, segs: Segment[]) => {
       let out = ''
@@ -119,7 +121,7 @@ const strings: Record<string, FnDef> = {
   SUBSTITUTE: { args: 's s s w?', fn: substitute },
   // a range of several cells gives its top-left cell (an array is lifted)
   T: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'string' || isErr(v) ? v : '') },
-  TEXTJOIN: { args: 'V b V', rep: 1, cx: true, fn: textjoin },
+  TEXTJOIN: { args: 'V b V', rep: 1, max: NEWER_MAX_ARGS, cx: true, fn: textjoin },
   // Excel trims spaces only, not tabs or line breaks
   TRIM: { args: 's', fn: (s: string) => s.replace(/ +/g, ' ').replace(/^ | $/g, '') },
   // surrogates and noncharacters (U+FDD0…U+FDEF, U+xFFFE, U+xFFFF) are #N/A in Excel

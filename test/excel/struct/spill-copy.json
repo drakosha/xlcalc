@@ -1,0 +1,452 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "read": "A1:Z60",
+  "seconds": 15.8
+ },
+ "books": {
+  "spill": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "B1": {
+       "formula": "SEQUENCE(1,2)"
+      },
+      "E2": {
+       "formula": "SEQUENCE(3)"
+      },
+      "G1": {
+       "formula": "SUM(E2#)"
+      },
+      "H1": {
+       "formula": "E3+1"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "copy-E3-J3",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "E3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J3"
+    }
+   }
+  },
+  {
+   "id": "copy-E3:E4-J3",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "E3:E4"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J3"
+    }
+   }
+  },
+  {
+   "id": "copy-C1-C10",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "C1"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "C10"
+    }
+   }
+  },
+  {
+   "id": "copy-E2:E4-J2",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "E2:E4"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J2"
+    }
+   }
+  },
+  {
+   "id": "copy-E2:E3-J2",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "E2:E3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J2"
+    }
+   }
+  },
+  {
+   "id": "copy-E2-J2",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "J2"
+    }
+   }
+  },
+  {
+   "id": "move-E2:E4-J2",
+   "book": "spill",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "E2:E4"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J2"
+    }
+   }
+  },
+  {
+   "id": "move-E2:E3-J2",
+   "book": "spill",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "E2:E3"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J2"
+    }
+   }
+  },
+  {
+   "id": "move-E3-J3",
+   "book": "spill",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "E3"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J3"
+    }
+   }
+  },
+  {
+   "id": "move-E3:E4-J3",
+   "book": "spill",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "E3:E4"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "J3"
+    }
+   }
+  }
+ ],
+ "dynamic": true,
+ "answers": {
+  "copy-E3-J3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "copy-E3:E4-J3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "copy-C1-C10": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "copy-E2:E4-J2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)",
+      "J2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "copy-E2:E3-J2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)",
+      "J2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "copy-E2-J2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)",
+      "J2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "move-E2:E4-J2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(J2#)",
+      "H1": "=J3+1",
+      "J2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "move-E2:E3-J2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$J$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(J2#)",
+      "H1": "=J3+1",
+      "J2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "move-E3-J3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=J3+1",
+      "E2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  },
+  "move-E3:E4-J3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$4",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=J3+1",
+      "E2": "=SEQUENCE(3)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    }
+   ]
+  }
+ }
+}

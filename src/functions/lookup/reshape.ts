@@ -8,6 +8,7 @@ import { isMany } from '../../arrays/lift.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, Rng, type CErr, type V } from '../../values.js'
+import { NEWER_MAX_ARGS } from '../common.js'
 
 /** Rows `rs` and columns `cs` (zero-based) of an array. */
 function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
@@ -140,11 +141,11 @@ function transpose(a: Arr): Arr {
 }
 
 export const functions: Record<string, FnDef> = {
-  CHOOSECOLS: { args: 'G V', rep: 1, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
+  CHOOSECOLS: { args: 'G V', rep: 1, max: NEWER_MAX_ARGS, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
     const cs = indexes(segs, g.cols, cx.rules)
     return isErr(cs) ? cs : pick(fromGrid(g), range(0, g.rows), cs)
   } },
-  CHOOSEROWS: { args: 'G V', rep: 1, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
+  CHOOSEROWS: { args: 'G V', rep: 1, max: NEWER_MAX_ARGS, array: true, cx: true, fn: (cx: Cx, g: Grid, segs: Segment[]) => {
     const rs = indexes(segs, g.rows, cx.rules)
     return isErr(rs) ? rs : pick(fromGrid(g), rs, range(0, g.cols))
   } },
@@ -162,13 +163,13 @@ export const functions: Record<string, FnDef> = {
       return new Arr(r, c, r, c, v)
     },
   },
-  HSTACK: stack(true),
+  HSTACK: { ...stack(true), max: NEWER_MAX_ARGS },
   TAKE: takeDrop(true),
   TOCOL: flatten(true),
   TOROW: flatten(false),
   // a value or a one-cell reference is that value (TYPE(TRANSPOSE(5)) is 1), an array of one value stays an array
   TRANSPOSE: { args: 'R', cx: true, array: true, fn: (cx: Cx, x: Arg) => (x instanceof Arr || isMany(x) ? transpose(fromGrid(cx.grid(x))) : cx.scalar(x)) },
-  VSTACK: stack(false),
+  VSTACK: { ...stack(false), max: NEWER_MAX_ARGS },
   WRAPCOLS: wrap(false),
   WRAPROWS: wrap(true),
 }

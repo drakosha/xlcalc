@@ -7,6 +7,7 @@ import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
+import { NEWER_MAX_ARGS } from '../common.js'
 
 /** Sort rank of a type: numbers, text, booleans, errors, then blanks. */
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : typeof v === 'boolean' ? 2 : v === null ? 4 : 3)
@@ -152,6 +153,6 @@ export const functions: Record<string, FnDef> = {
   FILTER: { args: 'G R p?', cx: true, array: true, fn: filter },
   SORT: { args: 'G G? G? b?', array: true, cx: true, fn: sort },
   // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4)
-  SORTBY: { args: 'G G G?', rep: 2, array: true, cx: true, fn: sortby },
+  SORTBY: { args: 'G G G?', rep: 2, max: NEWER_MAX_ARGS, array: true, cx: true, fn: sortby },
   UNIQUE: { args: 'G b? b?', array: true, fn: unique },
 }

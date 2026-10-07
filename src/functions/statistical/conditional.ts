@@ -2,6 +2,7 @@
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Cx, FnDef } from '../../args.js'
 import { E, isErr, Rng, type CErr, type V } from '../../values.js'
+import { NEWER_MAX_ARGS } from '../common.js'
 import { max, mean, min } from './common.js'
 
 const asRng = (x: V | Rng): Rng | CErr => (x instanceof Rng ? x : isErr(x) ? x : E.VALUE)
@@ -75,6 +76,6 @@ export const functions: Record<string, FnDef> = {
       return isErr(r) ? r : r.sel.length + r.rest
     },
   },
-  MAXIFS: { args: 'R R a', rep: 2, cx: true, fn: ifs((xs) => (xs.length ? max(xs) : 0)) },
-  MINIFS: { args: 'R R a', rep: 2, cx: true, fn: ifs((xs) => (xs.length ? min(xs) : 0)) },
+  MAXIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, fn: ifs((xs) => (xs.length ? max(xs) : 0)) },
+  MINIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, fn: ifs((xs) => (xs.length ? min(xs) : 0)) },
 }

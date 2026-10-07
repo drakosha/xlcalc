@@ -6,6 +6,7 @@
 import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { atp } from '../date/atp.js'
+import { trimSpaces } from '../../dates.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
 
 type Unit = '' | 'i' | 'j'
@@ -29,29 +30,35 @@ function splitAt(s: string): number {
 }
 
 /**
- * Complex text as Excel reads it: spaces ignored, `a`, `bi`, `a±bi` (i or j; b may carry its own sign; `i` is 1i),
- * each part a real number as the locale reads one in complex text (`Rules.complexPart`: ru-RU reads `1.5` there as
- * a date, as VALUE does); null if not one.
+ * Complex text as Excel reads it: `a`, `bi`, `a±bi` (i or j; `i` is 1i), spaces around the parts. The first number
+ * is a sign and a number as VALUE reads it in the book's locale (`-(1)` is 1, `50%`, `$1,000`, `1/2` a date; ru-RU
+ * `1.5` a date too, `1 000` a number), the imaginary part after a sign a number as VALUE reads it with its own sign
+ * (`1+-2i`; `1+-(2)i` is no number), as the `complex-text` set measured in en-US; null if not one.
  */
 function parseComplex(text: string, rules: Rules): Complex | null {
-  const s = text.replaceAll(' ', '')
-  const part = (t: string): number | null => {
-    const n = rules.complexPart(t)
+  const s = trimSpaces(text)
+  const number = (t: string): number | null => {
+    const n = rules.valueText(t)
     return n === null || Math.abs(n) > MAX_TEXT ? null : n
+  }
+  const first = (t: string): number | null => {
+    const m = /^ *([+-]?)(.*)$/s.exec(t)!
+    const n = number(m[2])
+    return n !== null && m[1] === '-' ? -n : n
   }
   const unit = s.at(-1)
   if (unit !== 'i' && unit !== 'j') {
-    const re = splitAt(s) < 0 ? part(s) : null
+    const re = splitAt(s) < 0 ? first(s) : null
     return re === null ? null : { re, im: 0, unit: '' }
   }
   const body = s.slice(0, -1)
   let at = splitAt(body)
   // `a+-b`: the imaginary part's own sign follows the one that splits
   if (at > 1 && (body[at - 1] === '+' || body[at - 1] === '-')) at--
-  const re = at < 0 ? 0 : part(body.slice(0, at))
+  const re = at < 0 ? 0 : first(body.slice(0, at))
   const coef = at < 0 ? body : body.slice(at + 1)
   const sign = at >= 0 && body[at] === '-' ? -1 : 1
-  const im = coef === '' || coef === '+' ? 1 : coef === '-' ? -1 : part(coef)
+  const im = coef === '' || coef === '+' ? 1 : coef === '-' ? -1 : at < 0 ? first(coef) : number(coef)
   return re === null || im === null ? null : { re, im: sign * im, unit }
 }
 

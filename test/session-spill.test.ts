@@ -44,7 +44,7 @@ describe('sessions with spilled arrays', () => {
   }, 120_000)
 
   it('a value typed into a spill range stops the array; clearing it lets the array spill again', () => {
-    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { formula: 'SEQUENCE(3)' }, B1: { formula: 'SUM(A1:A3)' } } }] }, { clock })
+    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { formula: 'SEQUENCE(3)' }, B1: { formula: 'SUM(A1:A3)' } } }] }, { clock, display: false })
     expect(sorted(s.setCells([S('A3', 'x')]))).toEqual([
       { sheet: 'S', cell: 'A1', value: { error: 'SPILL' } },
       { sheet: 'S', cell: 'A2', value: null },
@@ -90,7 +90,7 @@ describe('sessions with spilled arrays', () => {
   })
 
   it('a whole column: the cells past the data are one fill, reported with the formula', () => {
-    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'A:A*2' }, C1: { formula: 'COUNT(B:B)' } } }] }, { clock })
+    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'A:A*2' }, C1: { formula: 'COUNT(B:B)' } } }] }, { clock, display: false })
     const b1 = s.result().sheets[0].cells.B1
     expect(b1).toEqual({ value: 2, formula: 'A:A*2', spill: 'B1:B1048576', spillFill: 0 })
     expect(Object.keys(s.result().sheets[0].cells)).toEqual(['A1', 'B1', 'C1', 'A2', 'B2'])
@@ -105,7 +105,7 @@ describe('sessions with spilled arrays', () => {
 
   it('a cycle through a spill range is #CYCLE!, and breaking it computes again', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { B1: { value: 2 }, A1: { formula: 'SEQUENCE(B1)' } } }] }
-    const s = openSession(book, { clock })
+    const s = openSession(book, { clock, display: false })
     const cyc = [{ sheet: 'S', cell: 'B1', input: { formula: 'A2+1' } }]
     s.setCells(cyc)
     expect(s.result().hash).toBe(compute(apply(book, cyc), { clock }).hash)

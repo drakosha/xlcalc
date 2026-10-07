@@ -5,29 +5,29 @@
  */
 import type { ErrorCode } from '../../contract.js'
 import { errorWords, textOrder } from '../../criteria.js'
-import { parseDateWith, type DateSyntax } from '../../dates.js'
-import { formatWith, generalText } from '../../format.js'
+import { parseDateWith, textReaders, type DateSyntax } from '../../dates.js'
+import { displayWith, formatWith, generalText, type Names } from '../../numfmt.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
 import type { RegionalData, RulesClock } from './data.js'
 import { dmyDates } from './dates.js'
-import { formatDialect } from './format.js'
+import { formatDialects } from './format.js'
 import { numberReader } from './numbers.js'
 
-export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
+export function regionalRules(data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined): Rules {
   const { locale, decimal, group, currency } = data
   const dates: DateSyntax = { date: dmyDates(data, clock), decimal }
-  const valueText = numberReader(data, dates)
+  const { value: valueText, argument } = textReaders(numberReader(data), dates)
   const numberText = (n: number) => generalText(n).replace('.', decimal)
-  const { toNum, toText, toBool } = coercions(valueText, locale.booleans, numberText)
+  const { toNum, toText, toBool } = coercions(argument, locale.booleans, numberText)
   const word = (t: string): boolean | null => {
     const b = toBool(t)
     return typeof b === 'boolean' ? b : null
   }
   const compareText = textOrder(data.collation)
   const compare = compareWith(compareText)
-  const dialect = formatDialect(data, valueText, numberText)
+  const formats = formatDialects(data, argument, names)
   return {
     locale,
     decimal,
@@ -40,14 +40,14 @@ export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
     valueText,
     dateText: (text) => parseDateWith(text, dates),
     numberText,
-    formatText: (value, format) => formatWith(value, format, dialect),
+    formatText: (value, format) => formatWith(value, format, formats.text),
+    display: (value, format, space) => displayWith(value, format, formats.cell, space),
     compare,
     compareOp: operatorOrder(compare),
     errorText: (code: ErrorCode) => locale.errors[ERROR_TEXT[code]] ?? ERROR_TEXT[code],
-    complexPart: valueText,
-    critNumber: valueText,
+    critNumber: argument,
     critBool: word,
-    cellNumber: (s) => (/\d/.test(s) ? valueText(s) : null),
+    cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
     critError: errorWords(locale.errors),
     compareText,
   }

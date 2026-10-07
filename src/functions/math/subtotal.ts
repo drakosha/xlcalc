@@ -5,6 +5,7 @@
  */
 import { E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import type { Cx, FnDef, Grid } from '../../args.js'
+import { NEWER_MAX_ARGS } from '../common.js'
 import { functions as stat } from '../statistical/descriptive.js'
 import { functions as sums } from './sums.js'
 
@@ -68,6 +69,6 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng)[]): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  AGGREGATE: { args: 'n n R', rep: 1, cx: true, fn: aggregate },
+  AGGREGATE: { args: 'n n R', rep: 1, max: NEWER_MAX_ARGS, cx: true, fn: aggregate },
   SUBTOTAL: { args: 'n R', rep: 1, cx: true, fn: subtotal },
 }

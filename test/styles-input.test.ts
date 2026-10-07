@@ -40,7 +40,7 @@ describe('styles and layout as input', () => {
   it('a styled book computes the same values and values hash as without its styles', () => {
     const b = styled()
     const plain: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { formula: 'A1*2', format: '0.00' }, B1: {} } }] }
-    const [x, y] = [compute(b, { clock }), compute(plain, { clock })]
+    const [x, y] = [compute(b, { clock, display: false }), compute(plain, { clock, display: false })]
     expect(x.hash).toBe(y.hash)
     expect(x.sheets[0].cells.A2).toEqual({ value: 2, formula: 'A1*2', format: '0.00' })
   })
@@ -81,6 +81,7 @@ describe('styles and layout as input', () => {
     fails(withSheet({ name: 'Q1/Q2' }), 'book.sheets[0].name: a sheet name must not contain "/" (Excel forbids : \\ / ? * [ ])')
     fails(withSheet({ name: 'x'.repeat(32) }), `book.sheets[0].name: a sheet name has at most 31 characters, "${'x'.repeat(32)}" has 32`)
     fails(withSheet({ name: "'Data" }), 'book.sheets[0].name: a sheet name must not begin or end with an apostrophe')
+    fails(withSheet({ name: 'HISTORY' }), 'book.sheets[0].name: Excel reserves the sheet name "History" (in any case)')
     expect(compute(withSheet({ name: "It's (2026)" }), { clock }).sheets[0].name).toBe("It's (2026)")
   })
 
@@ -88,5 +89,7 @@ describe('styles and layout as input', () => {
     const b = styled()
     expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'a:b' })).toMatchObject({ ok: false, code: 'sheet_name', message: 'a sheet name must not contain ":" (Excel forbids : \\ / ? * [ ])' })
     expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'y'.repeat(31) }).ok).toBe(true)
+    expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'history' })).toMatchObject({ ok: false, code: 'sheet_name' })
+    expect(restructure(b, { op: 'renameSheet', sheet: 'S', name: 'My History' }).ok).toBe(true)
   })
 })

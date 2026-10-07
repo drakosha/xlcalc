@@ -1,0 +1,99 @@
+/**
+ * The display of values in results and `displayValue`: on by default and off on request, values unchanged and
+ * the hash without it, formats of rows and columns, merged areas, the book's locale, the colours the screen shows
+ * where Excel's AppleScript reads none, input checks.
+ */
+import { describe, expect, it } from 'vitest'
+import type { BookInput } from '../src/contract.js'
+import { compute, displayValue, engine, InputError } from '../src/index.js'
+
+const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
+
+describe('results show what the cells show', () => {
+  const book: BookInput = {
+    sheets: [
+      {
+        name: 'S',
+        cells: { A1: { value: 2, format: '0.00' }, A2: { value: 1234567.891 }, A3: { formula: 'A1*-3', format: '[Blue]0;[Red]-0' }, B1: { value: 'text' }, B2: { formula: 'SEQUENCE(2)' }, C5: { value: 7 } },
+        columns: { A: { width: 6 }, B: { format: '0.0' } },
+        rows: { 5: { format: '0%' } },
+      },
+    ],
+  }
+
+  it('by default: text and colour beside the value, which stays a number', () => {
+    const cells = compute(book, { clock }).sheets[0].cells
+    expect(cells.A1).toEqual({ value: 2, text: '2.00', format: '0.00' })
+    expect(cells.A2).toEqual({ value: 1234567.891, text: '1E+06' })
+    expect(cells.A3).toEqual({ value: -6, text: '-6', color: '#FF0000', formula: 'A1*-3', format: '[Blue]0;[Red]-0' })
+    expect(cells.B1.text).toBe('text')
+  })
+
+  it("a cell without a format shows its row's, else its column's; spilled cells too", () => {
+    const cells = compute(book, { clock }).sheets[0].cells
+    expect([cells.B2.text, cells.B3.text, cells.C5.text]).toEqual(['1.0', '2.0', '700%'])
+  })
+
+  it('display: false leaves the text out; the values and the hash do not depend on it', () => {
+    const on = compute(book, { clock })
+    const off = compute(book, { clock, display: false })
+    expect(Object.values(off.sheets[0].cells).some((c) => 'text' in c || 'color' in c)).toBe(false)
+    expect(off.hash).toBe(on.hash)
+    expect(off.sheets[0].cells.A3).toEqual({ value: -6, formula: 'A1*-3', format: '[Blue]0;[Red]-0' })
+  })
+
+  it("a merged area shows its top-left value in its columns' width", () => {
+    const sheet = (merges?: string[]): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 123456789 } }, columns: { A: { width: 4 }, B: { width: 4 } }, ...(merges ? { merges } : {}) }] })
+    expect(compute(sheet(), { clock }).sheets[0].cells.A1.text).toBe('###')
+    expect(compute(sheet(['A1:B1']), { clock }).sheets[0].cells.A1.text).toBe('1.2E+08')
+  })
+
+  it("in the book's locale", () => {
+    const ru = compute({ ...book, locale: 'ru-RU' }, { clock }).sheets[0].cells
+    expect([ru.A1.text, ru.B2.text]).toEqual(['2,00', '1,0'])
+    const dates = compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: { date: '2025-01-31' }, format: 'dd/mm/yyyy' }, A2: { value: true } } }] }, { clock }).sheets[0].cells
+    // the date is wider than the default column
+    expect([dates.A1.text, dates.A2.text]).toEqual(['#########', 'ИСТИНА'])
+    expect(displayValue(45688, { format: 'dd/mm/yyyy', locale: 'ru-RU', width: 12 }).text).toBe('31.01.2025')
+  })
+})
+
+describe('displayValue', () => {
+  it('shows a value by a format, a locale and a width', () => {
+    expect(displayValue(1234.567)).toEqual({ text: '1234.567' })
+    expect(displayValue(1234.567, { format: '#,##0.00', locale: 'ru-RU' })).toEqual({ text: '1 234,57' })
+    expect(displayValue(-5, { format: '[Blue]0;[Red]-0' })).toEqual({ text: '-5', color: '#FF0000' })
+    expect(displayValue(123456789, { width: 3 })).toEqual({ text: '##' })
+    expect(displayValue(45688.75, { format: 'h:mm AM/PM' })).toEqual({ text: '6:00 PM' })
+    expect(displayValue({ error: 'DIV0' }, { locale: 'ru-RU' })).toEqual({ text: '#ДЕЛ/0!' })
+    expect(displayValue(null, { format: '0.00' })).toEqual({ text: '' })
+    expect(engine.displayValue('abc', { format: '"<"@">"' })).toEqual({ text: '<abc>' })
+  })
+
+  it('a column of the default width', () => {
+    expect([displayValue(12345678).text, displayValue(123456789).text]).toEqual(['12345678', '1.23E+08'])
+  })
+
+  it('checks its input', () => {
+    const fails = (f: () => unknown, message: string) => expect(f).toThrow(new InputError(message.split(':')[0], message.slice(message.indexOf(':') + 2)))
+    fails(() => displayValue(1, { locale: 'de-DE' }), 'opts.locale: unknown locale "de-DE" (expected en-US, ru-RU)')
+    fails(() => displayValue(1, { width: -1 }), 'opts.width: expected a number from 0 to 4177920, got number -1')
+    fails(() => displayValue(1, { size: 3 } as never), 'opts: unknown field "size" (expected format, locale, width)')
+    fails(() => displayValue(Number.NaN), 'value: expected a number, text, a boolean, null or { error: code }, got number NaN')
+    fails(() => displayValue({ error: 'OOPS' } as never), 'value: expected a number, text, a boolean, null or { error: code }, got an object')
+    fails(() => compute({ sheets: [] }, { display: 'yes' } as never), 'opts.display: expected a boolean, got the string "yes"')
+  })
+})
+
+describe("colours the screen shows where Excel's AppleScript reads none", () => {
+  // read from a screenshot of Excel 16.113 for Mac (docs/formats.md): the section's colour on a zero and on text
+  it.each([
+    [0, '[Red]0', '#FF0000'],
+    [0, '[Red]0;[Blue]0', '#FF0000'],
+    [0, '[Red][=0]0;[Blue]0', '#FF0000'],
+    ['abc', '[Red]@', '#FF0000'],
+    ['abc', '0;0;0;[Red]@', '#FF0000'],
+    ['x', '[Red]0;[Blue]0;[Green]0;[Magenta]@', '#FF00FF'],
+    [-5, '[Blue]0;[Red]0', '#FF0000'],
+  ] as const)('%j by %s', (value, format, color) => expect(displayValue(value, { format }).color).toBe(color))
+})
