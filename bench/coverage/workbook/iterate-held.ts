@@ -6,13 +6,10 @@
  */
 import { readFileSync } from 'node:fs'
 import type { Val } from '../formulajs.js'
-import type { CellInput, SheetInput } from '../../../src/contract.js'
+import type { SheetInput } from '../../../src/contract.js'
 import type { WorkbookCase } from './cases.js'
+import { PLAIN, sheet, zeros } from './iterate.js'
 
-const cell = (v: number | string): CellInput => (typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : { value: v })
-const sheet = (name: string, cells: Record<string, number | string>): SheetInput => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, cell(v)])) })
-const zeros = (sheets: SheetInput[]) => Object.fromEntries(sheets.flatMap((s) => Object.entries(s.cells).flatMap(([a, c]) => (c.formula === undefined ? [] : [[`${s.name}!${a}`, 0]]))))
-const MIRRORS = ['zMirrorT', 'zMirrorN', 'zMirrorX'] as const
 
 const PREDICTED = JSON.parse(readFileSync(new URL('./iterate-held.predicted.json', import.meta.url), 'utf8')) as Record<string, Record<string, Val>[]>
 
@@ -22,7 +19,7 @@ function held(id: string, about: string, sheets: SheetInput[], read: [string, st
     about,
     book: { sheets },
     read: read.map(([s, range]) => ({ sheet: s, range })),
-    file: { iterate: { ...(count !== undefined ? { count } : {}), ...(delta !== undefined ? { delta } : {}) }, cached: zeros(sheets), plain: {}, mirrors: MIRRORS },
+    file: { iterate: { ...(count !== undefined ? { count } : {}), ...(delta !== undefined ? { delta } : {}) }, cached: zeros(sheets), ...PLAIN },
     steps: ['read'],
   }
   return PREDICTED[id] ? { ...c, predicted: PREDICTED[id] } : c

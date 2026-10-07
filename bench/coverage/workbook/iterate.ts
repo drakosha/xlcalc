@@ -12,7 +12,7 @@ import type { Step, WorkbookCase } from './cases.js'
 type Spec = number | string
 
 const cell = (v: Spec): CellInput => (typeof v === 'string' && v.startsWith('=') ? { formula: v.slice(1) } : { value: v })
-const sheet = (name: string, cells: Record<string, Spec>): SheetInput => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, cell(v)])) })
+export const sheet = (name: string, cells: Record<string, Spec>): SheetInput => ({ name, cells: Object.fromEntries(Object.entries(cells).map(([a, v]) => [a, cell(v)])) })
 
 /** Read after opening, after a recalculation and after a full calculation. */
 const AGAIN: Step[] = ['read', 'calc', 'read', 'full', 'read']
@@ -21,10 +21,10 @@ const AGAIN: Step[] = ['read', 'calc', 'read', 'full', 'read']
 const LAST = { mirrors: ['zMirrorT', 'zMirrorN', 'zMirrorX'] as const }
 
 /** Ordinary formulas, as Excel 365 saves the formulas of a cycle. */
-const PLAIN = { plain: {}, ...LAST }
+export const PLAIN = { plain: {}, ...LAST }
 
 /** The value 0 stored for every formula of the sheets, as a file Excel saved stores values: without one Excel starts a cycle from no number (#VALUE!). */
-const zeros = (sheets: SheetInput[]) => Object.fromEntries(sheets.flatMap((s) => Object.entries(s.cells).flatMap(([a, c]) => (c.formula === undefined ? [] : [[`${s.name}!${a}`, 0]]))))
+export const zeros = (sheets: SheetInput[]) => Object.fromEntries(sheets.flatMap((s) => Object.entries(s.cells).flatMap(([a, c]) => (c.formula === undefined ? [] : [[`${s.name}!${a}`, 0]]))))
 
 function one(id: string, about: string, cells: Record<string, Spec>, range: string, iterate: FileParts['iterate'] = {}, extra: Partial<WorkbookCase> = {}): WorkbookCase {
   const sheets = [sheet('S', cells)]
