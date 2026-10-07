@@ -4,7 +4,7 @@
  * does, and the new fields are checked and hashed like the rest of the input.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, type BookInput, type CellInput, type LayoutEdit } from '../src/index.js'
+import { compute, InputError, openSession, restructure, type BookInput, type CellInput, type LayoutEdit } from '../src/index.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -80,5 +80,38 @@ describe('hidden rows and filtered sheets', () => {
     const h0 = compute(b, { clock }).inputHash
     expect(compute({ sheets: [{ ...b.sheets[0], filtered: true }] }, { clock }).inputHash).not.toBe(h0)
     expect(compute({ sheets: [{ ...b.sheets[0], rows: { '2': { hidden: true } } }] }, { clock }).inputHash).not.toBe(h0)
+  })
+})
+
+describe('structure operations on a filtered sheet', () => {
+  /** S filtered: A1:A6 the values 1…6, B1:B6 `=A*10`, rows 2 and 4 hidden. */
+  const filtered = (): BookInput => {
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= 6; r++) Object.assign(cells, { [`A${r}`]: { value: r }, [`B${r}`]: { formula: `A${r}*10` } })
+    return { sheets: [{ name: 'S', cells, rows: { '2': { hidden: true }, '4': { hidden: true } }, filtered: true }, { name: 'T', cells: {} }] }
+  }
+
+  it('a copy over hidden rows pastes the visible rows as values, in a session as in restructure', () => {
+    const op = { op: 'copyRange', from: { sheet: 'S', range: 'A1:B6' }, to: { sheet: 'T', range: 'A1' } } as const
+    const r = restructure(filtered(), op)
+    expect(r.ok && r.book.sheets[1].cells).toEqual({ A1: { value: 1 }, B1: { value: 10 }, A2: { value: 3 }, B2: { value: 30 }, A3: { value: 5 }, B3: { value: 50 }, A4: { value: 6 }, B4: { value: 60 } })
+    const session = openSession(filtered(), { clock })
+    session.setCells([{ sheet: 'S', cell: 'A3', input: { value: 7 } }])
+    const s = session.restructure(op)
+    expect(s.ok && s.book.sheets[1].cells.B2).toEqual({ value: 70 })
+    session.close()
+  })
+
+  it('deleting rows deletes the visible ones, and mapCell follows them', () => {
+    const r = restructure(filtered(), { op: 'deleteRows', sheet: 'S', row: 1, count: 3 })
+    if (!r.ok) throw new Error(r.message)
+    expect(Object.keys(r.book.sheets[0].cells).filter((a) => a.startsWith('A')).map((a) => `${a}=${r.book.sheets[0].cells[a].value}`)).toEqual(['A1=2', 'A2=4', 'A3=5', 'A4=6'])
+    expect(r.book.sheets[0].rows).toEqual({ '1': { hidden: true }, '2': { hidden: true } })
+    expect([r.mapCell({ sheet: 'S', cell: 'A3' }), r.mapCell({ sheet: 'S', cell: 'A4' })]).toEqual([null, { sheet: 'S', cell: 'A2' }])
+  })
+
+  it('a copy that left rows out is refused over several runs of visible rows, as Excel refuses it', () => {
+    const r = restructure(filtered(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B6' }, to: { sheet: 'S', range: 'D1:E6' } })
+    expect(r.ok || r.code).toBe('filtered')
   })
 })

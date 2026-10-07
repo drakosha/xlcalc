@@ -89,13 +89,17 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }
+  // a hidden line shows no size, as Excel reads it
+  const hidden = (k: string) => (out.hidden ??= []).includes(k) || out.hidden.push(k)
   for (let c = a.col; c <= b.col; c++) {
-    const w = lineAt(sheet.columns, 'c', c)?.width
-    if (w !== undefined) out.widths[indexToCol(c)] = shownWidth(w)
+    const col = lineAt(sheet.columns, 'c', c)
+    if (col?.hidden) hidden(indexToCol(c))
+    else if (col?.width !== undefined) out.widths[indexToCol(c)] = shownWidth(col.width)
   }
   for (let r = a.row; r <= b.row; r++) {
-    const h = lineAt(sheet.rows, 'r', r)?.height
-    if (h !== undefined) out.heights[String(r + 1)] = shownHeight(h)
+    const row = lineAt(sheet.rows, 'r', r)
+    if (row?.hidden) hidden(String(r + 1))
+    else if (row?.height !== undefined) out.heights[String(r + 1)] = shownHeight(row.height)
   }
   const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
   for (const m of merges) if (meets(m, window) && !out.merges.includes(mergeText(m))) out.merges.push(mergeText(m))
@@ -110,6 +114,8 @@ function lookDifferences(name: string, excel: SheetLook, ours: SheetLook, widths
   diff('look', excel.cells, ours.cells)
   if (widths) diff('width', excel.widths, ours.widths)
   diff('height', excel.heights, ours.heights)
+  const [hx, hy] = [JSON.stringify([...(excel.hidden ?? [])].sort()), JSON.stringify([...(ours.hidden ?? [])].sort())]
+  if (hx !== hy) out.push(`'${name}' hidden: Excel ${hx}, engine ${hy}`)
   const [x, y] = [[...excel.merges].sort(), [...ours.merges].sort()]
   if (JSON.stringify(x) !== JSON.stringify(y)) out.push(`'${name}' merges: Excel ${JSON.stringify(x)}, engine ${JSON.stringify(y)}`)
   return out

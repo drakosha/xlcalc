@@ -17,6 +17,7 @@ import { formatAddress, parseAddress } from './model.js'
 import { buildResult, clockSerial, spillFields } from './result.js'
 import { cellLooks } from './shown.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
+import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 
 /**
@@ -89,7 +90,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     },
     restructure(op: StructureOp): SessionRestructureResult {
       const old = st()
-      const r = applyOp(old.input, op)
+      const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       if (live) tick(old)
       // the simple way: the state is built again from the new book

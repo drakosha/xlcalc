@@ -18,7 +18,8 @@ function moved(i: number, at: number, n: number, gone: number): number {
 
 /**
  * Columns or rows after the lines move: a span holding the line before `at` takes the inserted lines (they get
- * its entry), a span past the sheet's end is cut there; deleted lines leave their spans. A span of columns that
+ * its entry, shown even when it is hidden: the struct set `hidden`), a span past the sheet's end is cut there;
+ * deleted lines leave their spans. A span of columns that
  * reaches XFD keeps reaching it when columns are deleted, unless all of it is, as xlsx keeps it (`<col max=16384>`);
  * where the deleted columns include XFD, the columns that come in at the end get no width (one observation). Rows,
  * kept one by one, do not reach on (the struct set `edge-layout`).
@@ -38,7 +39,13 @@ export function shiftLines<T extends object>(map: Record<string, T> | undefined,
       continue
     }
     const b = n > 0 && hi === at - 1 ? hi + n : moved(hi, at, n, at - 1)
-    if (a <= b && a < LIMIT[axis]) out.push([a, Math.min(b, last), v])
+    if (a > b || a >= LIMIT[axis]) continue
+    // the inserted lines take the entry of the line before them, but for `hidden`
+    if (n > 0 && 'hidden' in v && lo < at && hi >= at - 1) {
+      const { hidden: _, ...shown } = v
+      out.push([a, at - 1, v], ...(Object.keys(shown).length ? [[at, Math.min(at + n - 1, last), shown as T] as Line<T>] : []))
+      if (at + n <= b) out.push([at + n, Math.min(b, last), v])
+    } else out.push([a, Math.min(b, last), v])
   }
   return toMap(out, axis)
 }
