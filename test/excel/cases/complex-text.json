@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.081,
+  "seconds": 2.01,
   "dynamic": true
  },
  "cases": [
@@ -823,6 +823,66 @@
    "formula": "IMAGINARY(\"1+2 j\")"
   },
   {
+   "id": "IMREAL#69",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#69",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-(2)i\")"
+  },
+  {
+   "id": "IMREAL#70",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"+(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#70",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"+(2)i\")"
+  },
+  {
+   "id": "IMREAL#71",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#71",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"(2)i\")"
+  },
+  {
+   "id": "IMREAL#72",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-$2i\")"
+  },
+  {
+   "id": "IMAGINARY#72",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-$2i\")"
+  },
+  {
+   "id": "IMREAL#73",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"- 2i\")"
+  },
+  {
+   "id": "IMAGINARY#73",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"- 2i\")"
+  },
+  {
    "id": "IMSUM#1",
    "group": "IMSUM",
    "fn": "IMSUM",
@@ -1284,46 +1344,6 @@
    "t": "n",
    "v": 0
   },
-  "IMSUM#1": {
-   "t": "s",
-   "v": "1.5+2i"
-  },
-  "IMABS#1": {
-   "t": "n",
-   "v": 1.118033988749895
-  },
-  "IMSUM#2": {
-   "t": "s",
-   "v": "2+3i"
-  },
-  "IMABS#2": {
-   "t": "n",
-   "v": 2.23606797749979
-  },
-  "IMSUM#3": {
-   "t": "s",
-   "v": "1001+3i"
-  },
-  "IMABS#3": {
-   "t": "n",
-   "v": 1000.0019999979999
-  },
-  "IMSUM#4": {
-   "t": "s",
-   "v": "2+1.5i"
-  },
-  "IMABS#4": {
-   "t": "n",
-   "v": 1.118033988749895
-  },
-  "IMSUM#5": {
-   "t": "s",
-   "v": "3i"
-  },
-  "IMABS#5": {
-   "t": "n",
-   "v": 2.23606797749979
-  },
   "IMREAL#51": {
    "t": "n",
    "v": -1
@@ -1467,6 +1487,86 @@
   "IMAGINARY#68": {
    "t": "n",
    "v": 2
+  },
+  "IMSUM#1": {
+   "t": "s",
+   "v": "1.5+2i"
+  },
+  "IMABS#1": {
+   "t": "n",
+   "v": 1.118033988749895
+  },
+  "IMSUM#2": {
+   "t": "s",
+   "v": "2+3i"
+  },
+  "IMABS#2": {
+   "t": "n",
+   "v": 2.23606797749979
+  },
+  "IMSUM#3": {
+   "t": "s",
+   "v": "1001+3i"
+  },
+  "IMABS#3": {
+   "t": "n",
+   "v": 1000.0019999979999
+  },
+  "IMSUM#4": {
+   "t": "s",
+   "v": "2+1.5i"
+  },
+  "IMABS#4": {
+   "t": "n",
+   "v": 1.118033988749895
+  },
+  "IMSUM#5": {
+   "t": "s",
+   "v": "3i"
+  },
+  "IMABS#5": {
+   "t": "n",
+   "v": 2.23606797749979
+  },
+  "IMREAL#69": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#69": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#70": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#70": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#71": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#71": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#72": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#72": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#73": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#73": {
+   "t": "n",
+   "v": -2
   }
  }
 }
