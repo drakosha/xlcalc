@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.957,
+  "seconds": 2.081,
   "dynamic": true
  },
  "cases": [
@@ -607,6 +607,222 @@
    "formula": "IMAGINARY(\"(5)\")"
   },
   {
+   "id": "IMREAL#51",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"- 1+i\")"
+  },
+  {
+   "id": "IMAGINARY#51",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"- 1+i\")"
+  },
+  {
+   "id": "IMREAL#52",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"+ 1+i\")"
+  },
+  {
+   "id": "IMAGINARY#52",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"+ 1+i\")"
+  },
+  {
+   "id": "IMREAL#53",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 +2i\")"
+  },
+  {
+   "id": "IMAGINARY#53",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 +2i\")"
+  },
+  {
+   "id": "IMREAL#54",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+ 2i\")"
+  },
+  {
+   "id": "IMAGINARY#54",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+ 2i\")"
+  },
+  {
+   "id": "IMREAL#55",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2 i\")"
+  },
+  {
+   "id": "IMAGINARY#55",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2 i\")"
+  },
+  {
+   "id": "IMREAL#56",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2i \")"
+  },
+  {
+   "id": "IMAGINARY#56",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2i \")"
+  },
+  {
+   "id": "IMREAL#57",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\" i\")"
+  },
+  {
+   "id": "IMAGINARY#57",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\" i\")"
+  },
+  {
+   "id": "IMREAL#58",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"- i\")"
+  },
+  {
+   "id": "IMAGINARY#58",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"- i\")"
+  },
+  {
+   "id": "IMREAL#59",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 + i\")"
+  },
+  {
+   "id": "IMAGINARY#59",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 + i\")"
+  },
+  {
+   "id": "IMREAL#60",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-(1)-(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#60",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-(1)-(2)i\")"
+  },
+  {
+   "id": "IMREAL#61",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-$1-$2i\")"
+  },
+  {
+   "id": "IMAGINARY#61",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-$1-$2i\")"
+  },
+  {
+   "id": "IMREAL#62",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(1+2i)\")"
+  },
+  {
+   "id": "IMAGINARY#62",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"(1+2i)\")"
+  },
+  {
+   "id": "IMREAL#63",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2i%\")"
+  },
+  {
+   "id": "IMAGINARY#63",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2i%\")"
+  },
+  {
+   "id": "IMREAL#64",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-1 1/2+i\")"
+  },
+  {
+   "id": "IMAGINARY#64",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-1 1/2+i\")"
+  },
+  {
+   "id": "IMREAL#65",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+-(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#65",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+-(2)i\")"
+  },
+  {
+   "id": "IMREAL#66",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\" -1+2i\")"
+  },
+  {
+   "id": "IMAGINARY#66",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\" -1+2i\")"
+  },
+  {
+   "id": "IMREAL#67",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 - 2 i\")"
+  },
+  {
+   "id": "IMAGINARY#67",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 - 2 i\")"
+  },
+  {
+   "id": "IMREAL#68",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2 j\")"
+  },
+  {
+   "id": "IMAGINARY#68",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2 j\")"
+  },
+  {
    "id": "IMSUM#1",
    "group": "IMSUM",
    "fn": "IMSUM",
@@ -1107,6 +1323,150 @@
   "IMABS#5": {
    "t": "n",
    "v": 2.23606797749979
+  },
+  "IMREAL#51": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#51": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#52": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#52": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#53": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#53": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#54": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#54": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#55": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#55": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#56": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#56": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#57": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#57": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#58": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#58": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#59": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#59": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#60": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#60": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#61": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#61": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#62": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#62": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#63": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#63": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#64": {
+   "t": "n",
+   "v": -1.5
+  },
+  "IMAGINARY#64": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#65": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#65": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#66": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#66": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#67": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#67": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#68": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#68": {
+   "t": "n",
+   "v": 2
   }
  }
 }

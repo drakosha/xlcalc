@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "ru-RU (the system language and locale)",
-  "seconds": 4.738,
+  "seconds": 4.926,
   "dynamic": true
  },
  "cases": [
@@ -1576,7 +1576,7 @@
    "id": "CHAR#135",
    "group": "CHAR",
    "fn": "CHAR",
-   "formula": "CHAR(255.5)"
+   "formula": "CHAR(127.9)"
   },
   {
    "id": "CHAR#136",
@@ -2882,10 +2882,6 @@
    "t": "e",
    "v": "VALUE"
   },
-  "CHAR#135": {
-   "t": "s",
-   "v": "€"
-  },
   "CHAR#136": {
    "t": "e",
    "v": "VALUE"
@@ -3057,6 +3053,10 @@
   "CODE#150": {
    "t": "n",
    "v": 164
+  },
+  "CHAR#135": {
+   "t": "s",
+   "v": ""
   }
  }
 }
