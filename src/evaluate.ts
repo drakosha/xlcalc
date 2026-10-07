@@ -78,7 +78,7 @@ function evaluate(state: EngineState, ids: number[], t?: Tracker) {
       if (isMany(x)) v = spill(state, f, x instanceof Arr ? x : (rt.view(x) as Arr), t)
       else {
         endSpill(state, f, t, false)
-        v = shown(x instanceof Rng || x instanceof Arr ? rt.scalar(x) : x)
+        v = shown(rt.scalar(x))
       }
     }
     if (clock && clock.read !== state.clocked.has(id)) {

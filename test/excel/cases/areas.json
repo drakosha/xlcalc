@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 4.999,
+  "seconds": 4.894,
   "dynamic": true
  },
  "cases": [
@@ -5583,26 +5583,26 @@
   {
    "id": "cube#14",
    "group": "cube",
-   "fn": "cube",
-   "formula": "INDEX(Jan:Mar!A1:A3,2)"
+   "fn": "AREAS",
+   "formula": "AREAS(Jan:Mar!A1)"
   },
   {
    "id": "cube#15",
    "group": "cube",
-   "fn": "cube",
-   "formula": "INDEX(Jan:Mar!A1:A3,2,1,2)"
+   "fn": "ISREF",
+   "formula": "ISREF(Jan:Mar!A1)"
   },
   {
    "id": "cube#16",
    "group": "cube",
    "fn": "cube",
-   "formula": "AREAS(Jan:Mar!A1)"
+   "formula": "INDEX(Jan:Mar!A1:A3,2)"
   },
   {
    "id": "cube#17",
    "group": "cube",
    "fn": "cube",
-   "formula": "ISREF(Jan:Mar!A1)"
+   "formula": "INDEX(Jan:Mar!A1:A3,2,1,2)"
   },
   {
    "id": "cube#18",
@@ -5877,37 +5877,37 @@
   {
    "id": "union#30",
    "group": "union",
-   "fn": "union",
+   "fn": "AREAS",
    "formula": "AREAS((D!B1:B3,D!C1:C3))"
   },
   {
    "id": "union#31",
    "group": "union",
-   "fn": "union",
+   "fn": "AREAS",
    "formula": "AREAS(D!B1:B3)"
   },
   {
    "id": "union#32",
    "group": "union",
-   "fn": "union",
+   "fn": "AREAS",
    "formula": "AREAS((D!B1,D!C1,D!E1))"
   },
   {
    "id": "union#33",
    "group": "union",
-   "fn": "union",
+   "fn": "ISREF",
    "formula": "ISREF((D!B1:B3,D!C1:C3))"
   },
   {
    "id": "union#34",
    "group": "union",
-   "fn": "union",
+   "fn": "ISREF",
    "formula": "ISREF(D!B1:B3)"
   },
   {
    "id": "union#35",
    "group": "union",
-   "fn": "union",
+   "fn": "ISREF",
    "formula": "ISREF(1)"
   },
   {
@@ -9663,16 +9663,16 @@
    "v": "VALUE"
   },
   "cube#15": {
-   "t": "e",
-   "v": "VALUE"
+   "t": "b",
+   "v": false
   },
   "cube#16": {
    "t": "e",
    "v": "VALUE"
   },
   "cube#17": {
-   "t": "b",
-   "v": false
+   "t": "e",
+   "v": "VALUE"
   },
   "cube#18": {
    "t": "e",

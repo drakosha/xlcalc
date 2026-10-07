@@ -7,7 +7,7 @@ import type { Arg } from '../args.js'
 import { Arr } from '../arrays/value.js'
 import { PACKAGE_NAME } from '../config.js'
 import type { Runtime } from '../runtime.js'
-import { isErr, Rng, type V } from '../values.js'
+import { Areas, isErr, Rng, type V } from '../values.js'
 import { once, OPERATORS, type Backend } from './walk.js'
 
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
@@ -41,6 +41,9 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
     },
     external: (text) => `ext(${JSON.stringify(text)})`,
     read: (a) => `scalar(${a})`,
+    areas: (list) => hoist(`X([${list.map((g) => `R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`).join(',')}])`),
+    union: (items) => `U(${items.join(',')})`,
+    at: (a, r, c) => `I(${a},${r},${c})`,
     let: (count, build) => {
       const first = names
       names += count
@@ -53,12 +56,13 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
 
 const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`)
 
-export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,E,R,A,M}=rt;'
+export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,E,R,A,X,M}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
 export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
   const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)
   const A = (rows: number, cols: number, v: V[]) => new Arr(rows, cols, rows, cols, v)
+  const X = (list: Rng[]) => new Areas(list, true)
   let make: (rt: unknown) => unknown
   try {
     make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
@@ -67,5 +71,5 @@ export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
     if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`, { cause: e })
     throw e
   }
-  return make({ ...rt, R, A, M: once }) as (() => Arg)[]
+  return make({ ...rt, R, A, X, M: once }) as (() => Arg)[]
 }

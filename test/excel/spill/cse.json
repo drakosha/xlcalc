@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 15.8
+  "seconds": 8.1
  },
  "cases": [
   {
@@ -607,8 +607,8 @@
    ]
   },
   {
-   "id": "edits",
-   "about": "part of the area refused (a value, clearing the top-left cell, a formula), a precedent, the whole area cleared",
+   "id": "edit-value",
+   "about": "a value typed into a cell of the area",
    "book": {
     "sheets": [
      {
@@ -652,7 +652,7 @@
    "read": [
     {
      "sheet": "S",
-     "range": "E1:E3"
+     "range": "E1:F3"
     }
    ],
    "edits": [
@@ -660,33 +660,293 @@
      "sheet": "S",
      "cell": "E2",
      "value": 5
-    },
+    }
+   ]
+  },
+  {
+   "id": "edit-clear-top",
+   "about": "the top-left cell cleared",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
     {
      "sheet": "S",
      "cell": "E1",
      "value": null
-    },
+    }
+   ]
+  },
+  {
+   "id": "edit-formula",
+   "about": "a formula entered into a cell of the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
     {
      "sheet": "S",
      "cell": "E3",
      "value": {
       "formula": "1"
      }
-    },
+    }
+   ]
+  },
+  {
+   "id": "edit-precedent",
+   "about": "a value the array reads",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
     {
      "sheet": "S",
      "cell": "A1",
      "value": 10
-    },
+    }
+   ]
+  },
+  {
+   "id": "edit-clear-all",
+   "about": "the whole area cleared",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
     {
      "sheet": "S",
      "cell": "E1:E3",
      "value": null
-    },
+    }
+   ]
+  },
+  {
+   "id": "edit-outside",
+   "about": "a value typed next to the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
     {
      "sheet": "S",
-     "cell": "E2",
-     "value": 7
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "F2",
+     "value": 5
     }
    ]
   }
@@ -1163,14 +1423,118 @@
     "S!G1": "=TRANSPOSE(A1:A3)"
    }
   },
-  "edits": {
+  "edit-value": {
    "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
     "S!E2": {
      "t": "n",
-     "v": 7
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
     }
    },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-clear-top": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-formula": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-precedent": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 20
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-clear-all": {
+   "values": {},
    "formulas": {}
+  },
+  "edit-outside": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
   }
  }
 }

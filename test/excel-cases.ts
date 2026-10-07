@@ -102,6 +102,8 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
+  severalAreas:
+    'A union or a reference across sheets in `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY`: Excel takes each area there (`FREQUENCY` and `SORTBY` answer an array), the engine answers `#VALUE!` or `#REF!`; a reference across sheets that `SWITCH` compares is `#REF!` in Excel and `#VALUE!` here.',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
@@ -139,6 +141,30 @@ export const REASONS = {
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
+  'areas:fn:union#1': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#1': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union#2': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#2': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union#3': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#3': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union#121': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#121': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union#122': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#122': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union#316': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#316': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union#317': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#317': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union#319': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#319': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union#320': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#320': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union#353': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union#354': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union#355': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union#356': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#378': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube#380': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

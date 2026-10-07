@@ -7,7 +7,7 @@ import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
 import { isMany } from '../../arrays/lift.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, Rng, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 
 /** Rows `rs` and columns `cs` (zero-based) of an array. */
@@ -60,8 +60,9 @@ function takeDrop(take: boolean): FnDef {
   }
 }
 
-/** An argument of HSTACK, VSTACK: a value, a reference or an array, as an array. */
-const stackPart = (cx: Cx, x: Arg): Arr => (x instanceof Arr ? x : x instanceof Rng ? fromGrid(cx.grid(x)) : new Arr(1, 1, 1, 1, [x]))
+/** An argument of HSTACK, VSTACK as arrays: a value, a reference or an array; each area of a union or of a reference across sheets. */
+const stackParts = (cx: Cx, x: Arg): Arr[] =>
+  x instanceof Arr ? [x] : x instanceof Rng ? [fromGrid(cx.grid(x))] : x instanceof Areas ? x.list.flatMap((g) => stackParts(cx, g)) : [new Arr(1, 1, 1, 1, [x])]
 
 /**
  * Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. An error given as a
@@ -76,7 +77,7 @@ function stack(across: boolean): FnDef {
     fn: (cx: Cx, xs: Arg[]) => {
       const e = xs.find(isErr)
       if (e) return e
-      const parts = xs.map((x) => stackPart(cx, x))
+      const parts = xs.flatMap((x) => stackParts(cx, x))
       const rows = across ? Math.max(...parts.map((p) => p.rows)) : parts.reduce((s, p) => s + p.rows, 0)
       const cols = across ? parts.reduce((s, p) => s + p.cols, 0) : Math.max(...parts.map((p) => p.cols))
       const v: V[] = new Array(rows * cols).fill(E.NA)
@@ -90,24 +91,32 @@ function stack(across: boolean): FnDef {
   }
 }
 
-/** TOCOL, TOROW: the values row by row (column by column), without blanks (ignore 1), errors (2) or both (3). */
+/** The values of a grid row by row (column by column), without blanks (ignore 1), errors (2) or both (3). */
+function values(g: Grid, ignore: number, byCol: boolean, v: V[]) {
+  const a = fromGrid(g)
+  const [outer, inner] = byCol ? [a.cols, a.rows] : [a.rows, a.cols]
+  // a whole column without blanks: only its occupied part
+  const stop = ignore & 1 && a.fill === null ? (byCol ? Math.min(outer, a.w) : Math.min(outer, a.h)) : outer
+  for (let i = 0; i < stop; i++)
+    for (let j = 0; j < inner; j++) {
+      const x = byCol ? a.at(j, i) : a.at(i, j)
+      if ((x === null && ignore & 1) || (isErr(x) && ignore & 2)) continue
+      v.push(x)
+    }
+}
+
+/** TOCOL, TOROW: the values of an array, or of each area of a union or of a reference across sheets in turn. */
 function flatten(column: boolean): FnDef {
   return {
-    args: 'G i? b?',
+    args: 'R i? b?',
+    cx: true,
+    areas: true,
     array: true,
-    fn: (g: Grid, ignore = 0, byCol = false) => {
+    fn: (cx: Cx, x: Arg, ignore = 0, byCol = false) => {
+      if (isErr(x)) return x
       if (ignore < 0 || ignore > 3) return E.VALUE
-      const a = fromGrid(g)
       const v: V[] = []
-      const [outer, inner] = byCol ? [a.cols, a.rows] : [a.rows, a.cols]
-      // a whole column without blanks: only its occupied part
-      const stop = ignore & 1 && a.fill === null ? (byCol ? Math.min(outer, a.w) : Math.min(outer, a.h)) : outer
-      for (let i = 0; i < stop; i++)
-        for (let j = 0; j < inner; j++) {
-          const x = byCol ? a.at(j, i) : a.at(i, j)
-          if ((x === null && ignore & 1) || (isErr(x) && ignore & 2)) continue
-          v.push(x)
-        }
+      for (const part of x instanceof Areas ? x.list : [x]) values(cx.grid(part), ignore, byCol, v)
       if (!v.length) return EMPTY
       return column ? new Arr(v.length, 1, v.length, 1, v) : new Arr(1, v.length, 1, v.length, v)
     },

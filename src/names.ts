@@ -1,20 +1,25 @@
-/** Defined names prepared for the engine: checked, their scope resolved, their reference parsed; problems go to name issues. */
+/**
+ * Defined names prepared for the engine: checked, their scope resolved, their formula parsed (a reference, a
+ * constant, a formula, a union); problems go to name issues. A name's formula is computed where it is used
+ * (`exec/walk.ts`).
+ */
 import type { NameInput, NameIssue } from './contract.js'
-import { FormulaError, parse, sheetKey, validateName, type Ast } from './syntax.js'
+import { FormulaError, parse, sheetKey, validate, validateName, walk, type Ast } from './syntax.js'
 
 export interface PreparedName {
   name: string
-  /** Index of the scope sheet; -1 for a global name. */
+  /** Index of the scope sheet; -1 for a global name. Its formula sees the global names, as a file's formula of a name does. */
   scope: number
-  /** The reference (a spill reference too), or `#REF!` when Excel lost it (`'S'!#REF!`, `#REF!A1`). */
-  ast: Extract<Ast, { k: 'ref' | 'err' }>
+  /** The formula, or the error it gives where Excel would not compute it (`#REF!` for a lost reference). */
+  ast: Ast
 }
 
 /** Names in the book's order; an invalid one is left out with its issue. */
-export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[]): { names: PreparedName[]; issues: NameIssue[] } {
+export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[]): { names: PreparedName[]; issues: NameIssue[] } {
   const out: PreparedName[] = []
   const issues: NameIssue[] = []
   const seen = new Set<string>()
+  const sheets = [...sheetIdx.keys()]
   for (const n of names) {
     const issue = (reason: string) => issues.push({ name: n.name, ...(n.scope ? { scope: n.scope } : {}), reason })
     const ok = validateName(n.name)
@@ -35,31 +40,35 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[]):
     seen.add(dup)
     let ast: Ast
     try {
-      ast = parse(n.ref)
+      ast = parse(n.ref, { union: true })
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
-      issue(`bad reference: ${e.message}`)
+      issue(`bad formula: ${e.message}`)
       continue
     }
-    // a reference Excel lost stays a name, as in Excel: formulas using it give #REF!
-    if (ast.k === 'err' && ast.code === 'REF') {
-      out.push({ name: n.name, scope, ast })
+    if (withoutSheet(ast)) {
+      issue('a reference in a name needs its sheet')
       continue
     }
-    if (ast.k !== 'ref' || ast.sheet === null) {
-      issue('a name must reference a cell or a range with a sheet')
-      continue
-    }
-    if (!sheetIdx.has(sheetKey(ast.sheet))) {
-      issue(`unknown sheet ${ast.sheet}`)
-      continue
+    // a formula Excel would not compute stays a name giving its error, as a lost reference does (#REF!)
+    const v = validate(n.ref, { sheets, externalFunctions, union: true })
+    if (!v.ok) {
+      issue(v.message)
+      ast = { k: 'err', code: v.code === 'unknown_sheet' ? 'REF' : v.code === 'unknown_function' ? 'NAME' : 'ERROR' }
     }
     out.push({ name: n.name, scope, ast })
   }
   return { names: out, issues }
 }
 
-/** The name visible from sheet `here`: its own local name, else the global one. */
+/** A reference without its sheet, which a name's formula cannot have. */
+function withoutSheet(ast: Ast): boolean {
+  let found = false
+  walk(ast, (n) => (found ||= n.k === 'ref' && n.sheet === null))
+  return found
+}
+
+/** The name the names of sheet `here` show: its own local name, else the global one (`here` -1: the global one). */
 export function nameFor(names: PreparedName[], here: number, name: string): PreparedName | undefined {
   const up = name.toUpperCase()
   return names.find((n) => n.scope === here && n.name.toUpperCase() === up) ?? names.find((n) => n.scope === -1 && n.name.toUpperCase() === up)

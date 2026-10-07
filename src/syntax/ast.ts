@@ -21,7 +21,14 @@ export type Ast =
   /** `sheet` and `ref` keep what Excel writes around a reference it lost: `'S'!#REF!`, `#REF!A1`, `#REF!#REF!`, `#REF!#` (a spill reference). */
   | { k: 'err'; code: ErrorCode; sheet?: string; ref?: string }
   | { k: 'ref'; sheet: string | null; ref: RangeRef }
-  | { k: 'name'; name: string }
+  /** A reference across the sheets from `first` to `last` in the book's order (`'Sheet1:Sheet3'!A1:B2`). */
+  | { k: 'ref3d'; first: string; last: string; ref: RangeRef }
+  /** A defined name; with `sheet`, the name as that sheet sees it (`'Sheet2'!rate`). */
+  | { k: 'name'; name: string; sheet?: string }
+  /** Implicit intersection (`@x`): a reference's cell in the formula's row or column, an array's top-left value. */
+  | { k: 'at'; a: Ast }
+  /** A union of references (`(A1:A3,C1:C3)`, or a name's formula `'S'!A1,'S'!C1`). */
+  | { k: 'union'; items: Ast[] }
   | { k: 'fn'; name: string; args: Ast[] }
   | { k: 'un'; op: '-' | '+'; a: Ast }
   | { k: 'pct'; a: Ast }

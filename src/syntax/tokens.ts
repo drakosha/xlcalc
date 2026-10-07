@@ -1,4 +1,4 @@
-/** The tokenizer: references (sheets, ranges, spill references, lost ones), numbers, strings, error literals, identifiers, operators. */
+/** The tokenizer: references (sheets, ranges across sheets, spill references, lost ones), numbers, strings, error literals, identifiers (names with a sheet too), operators. */
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
@@ -18,8 +18,10 @@ export type Tok =
   | { t: 'num'; v: number; at: number }
   | { t: 'str'; v: string; at: number }
   | { t: 'err'; code: ErrorCode; at: number; sheet?: string; ref?: string }
-  | { t: 'ref'; sheet: string | null; ref: RangeRef; at: number }
-  | { t: 'ident'; v: string; at: number }
+  /** `last`: the last sheet of a reference across sheets (`Sheet1:Sheet3!A1`). */
+  | { t: 'ref'; sheet: string | null; last?: string; ref: RangeRef; at: number }
+  /** `sheet`: a name seen from that sheet (`Sheet2!rate`). */
+  | { t: 'ident'; v: string; at: number; sheet?: string }
   | { t: 'fn'; v: string; at: number }
   | { t: 'op'; v: string; at: number }
   | { t: '('; at: number }
@@ -33,6 +35,7 @@ export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.]*'
 const IDENT = new RegExp(`^${IDENT_RULE}`, 'u')
 const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
 const UNQUOTED_SHEET = /^([\p{L}_][\p{L}\p{N}_.]*)!/u
+const UNQUOTED_SHEETS = /^([\p{L}_][\p{L}\p{N}_.]*):([\p{L}_][\p{L}\p{N}_.]*)!/u
 const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\$?)([0-9]+))?/
 const COL_RANGE = /^(\$?)([A-Za-z]{1,3}):(\$?)([A-Za-z]{1,3})/
 const ROW_RANGE = /^(\$?)([0-9]+):(\$?)([0-9]+)/
@@ -89,7 +92,7 @@ function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at
   return r.len + 1
 }
 
-const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%']
+const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@']
 
 export function tokenize(src: string): Tok[] {
   const out: Tok[] = []
@@ -136,12 +139,17 @@ export function tokenize(src: string): Tok[] {
       i++
       continue
     }
-    // a sheet, quoted or not, must be followed by a reference
+    // a sheet, quoted or not, or two sheets (no sheet name has `:`), must be followed by a reference or a name
     let sheet: string | null = null
+    let last: string | undefined
     let sm = QUOTED_SHEET.exec(rest)
-    if (sm) sheet = sm[1].replaceAll("''", "'")
+    if (sm) {
+      sheet = sm[1].replaceAll("''", "'")
+      const k = sheet.indexOf(':')
+      if (k >= 0) [sheet, last] = [sheet.slice(0, k), sheet.slice(k + 1)]
+    } else if ((sm = UNQUOTED_SHEETS.exec(rest))) [sheet, last] = [sm[1], sm[2]]
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
-    if (sm && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
+    if (sm && last === undefined && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
       // a reference Excel lost on a sheet that is still there: `'S'!#REF!`, `'S'!#REF!#`
       const spill = src[i + sm[0].length + 5] === '#'
       out.push({ t: 'err', code: 'REF', sheet: sheet!, at: i, ...(spill ? { ref: '#' } : {}) })
@@ -149,10 +157,19 @@ export function tokenize(src: string): Tok[] {
       continue
     }
     if (sm) {
-      const r = readRef(src.slice(i + sm[0].length), i)
-      if (!r) bad(i + sm[0].length, 'reference expected after sheet name')
-      out.push({ t: 'ref', sheet, ref: r.ref, at: i })
-      i += sm[0].length + spilled(r, src[i + sm[0].length + r.len], i)
+      const after = src.slice(i + sm[0].length)
+      const r = readRef(after, i)
+      if (r) {
+        out.push({ t: 'ref', sheet, ...(last !== undefined ? { last } : {}), ref: r.ref, at: i })
+        if (last !== undefined && after[r.len] === '#') bad(i, 'a spill reference (#) follows a single cell of one sheet')
+        i += sm[0].length + spilled(r, after[r.len], i)
+        continue
+      }
+      // a name as one sheet sees it, not a function
+      const nm = last === undefined ? IDENT.exec(after) : null
+      if (!nm || after[nm[0].length] === '(') bad(i + sm[0].length, 'reference expected after sheet name')
+      out.push({ t: 'ident', v: nm[0], at: i, sheet: sheet! })
+      i += sm[0].length + nm[0].length
       continue
     }
     if (ch === "'") bad(i, 'quoted sheet name without reference')

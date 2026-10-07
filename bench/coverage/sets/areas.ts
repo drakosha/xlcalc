@@ -45,11 +45,15 @@ export function buildProbes(): Probe[] {
   })
   const forms = (group: string, ...fs: string[]) => add(group, group, ...fs)
   forms('cube', CUBE, `${CUBE}+1`, 'Jan:Mar!A1', 'Jan:Mar!A1+1', 'SUM(Jan:Mar!A1)', 'SUM(Mar:Jan!A1:A3)', 'SUM(Jan:Jan!A1:A3)', 'SUM(Feb:Mar!A1:A3)', 'SUM(Jan:Mar!A:A)', 'SUM(Jan:Mar!1:1)', "SUM('Jan:Mar'!A1:A3)", 'SUM(Jan:Mar!A1:B3)', 'COUNTA(Jan:Mar!B1:B3)')
-  forms('cube', 'INDEX(Jan:Mar!A1:A3,2)', 'INDEX(Jan:Mar!A1:A3,2,1,2)', 'AREAS(Jan:Mar!A1)', 'ISREF(Jan:Mar!A1)', 'ROWS(Jan:Mar!A1:A3)', 'SUM(CHOOSE(1,Jan:Mar!A1:A3))', 'SUM(IF(TRUE,Jan:Mar!A1:A3))', 'SUM(Jan:Mar!A1:A3,10)', 'SUM(Jan:Mar!A1:A3*2)')
+  add('cube', 'AREAS', 'AREAS(Jan:Mar!A1)')
+  add('cube', 'ISREF', 'ISREF(Jan:Mar!A1)')
+  forms('cube', 'INDEX(Jan:Mar!A1:A3,2)', 'INDEX(Jan:Mar!A1:A3,2,1,2)', 'ROWS(Jan:Mar!A1:A3)', 'SUM(CHOOSE(1,Jan:Mar!A1:A3))', 'SUM(IF(TRUE,Jan:Mar!A1:A3))', 'SUM(Jan:Mar!A1:A3,10)', 'SUM(Jan:Mar!A1:A3*2)')
   forms('cube', 'COUNT((Jan:Mar!A1,D!B1))', 'SUM(Jan:Mar!B1:B3)', 'COUNTA(Jan:Mar!A1:B3)', 'VSTACK(Jan:Mar!A1:A2)', 'HSTACK(Jan:Mar!A1:A2)', 'ROWS(VSTACK(Jan:Mar!A1:A2))', 'COLUMNS(HSTACK(Jan:Mar!A1:B2))', 'SUM(VSTACK(Jan:Mar!A1:A2))', 'INDEX(VSTACK(Jan:Mar!A1:A2),4)', 'INDEX(HSTACK(Jan:Mar!A1:A2),2,3)', 'ROWS(TOCOL(Jan:Mar!A1:A2))')
   forms('union', UNION, `${UNION}+1`, `SUM(${UNION})`, 'SUM((D!B1:B3,D!B1))', 'COUNT((D!B1:B3,D!B1:B3))', 'SUM((D!B1:B3))', 'SUM((D!B1,Jan!A1))', 'SUM((D!B1:B3,D!C1:C3,D!E1:E2))', `SUM(${UNION},10)`, `SUM(${UNION}*2)`)
   forms('union', `ROWS(VSTACK(${UNION}))`, `INDEX(VSTACK(${UNION}),4)`, `COLUMNS(HSTACK(${UNION}))`, `INDEX(HSTACK(${UNION}),2,2)`, `ROWS(TOCOL(${UNION}))`, `INDEX(TOCOL(${UNION}),4)`, `ROWS(TOROW((D!B1:B2,D!C1:C3)))`, `ROWS(VSTACK((D!B1:C1,D!B2:B3)))`, `INDEX(VSTACK((D!B1:C1,D!B2:B3)),2,2)`)
   forms('union', `INDEX(${UNION},2,1,2)`, `INDEX(${UNION},2,1,3)`, `INDEX(${UNION},2,1,0)`, `INDEX(${UNION},2)`, `INDEX(${UNION},2,1)`, 'INDEX(D!B1:B3,2,1,1)', 'INDEX(D!B1:B3,2,1,2)', `SUM(INDEX(${UNION},0,0,2))`, `INDEX(${UNION},0,1,1)`, `ROWS(INDEX(${UNION},0,0,2))`)
-  forms('union', `AREAS(${UNION})`, 'AREAS(D!B1:B3)', 'AREAS((D!B1,D!C1,D!E1))', `ISREF(${UNION})`, 'ISREF(D!B1:B3)', 'ISREF(1)', `SUM(CHOOSE(1,${UNION}))`, `SUM(IF(TRUE,${UNION}))`, `CHOOSE(1,${UNION})`, `ROWS(${UNION})`, `COLUMNS(${UNION})`)
+  add('union', 'AREAS', `AREAS(${UNION})`, 'AREAS(D!B1:B3)', 'AREAS((D!B1,D!C1,D!E1))')
+  add('union', 'ISREF', `ISREF(${UNION})`, 'ISREF(D!B1:B3)', 'ISREF(1)')
+  forms('union', `SUM(CHOOSE(1,${UNION}))`, `SUM(IF(TRUE,${UNION}))`, `CHOOSE(1,${UNION})`, `ROWS(${UNION})`, `COLUMNS(${UNION})`)
   return out
 }

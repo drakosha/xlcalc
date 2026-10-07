@@ -50,7 +50,7 @@ import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL } from './dates.js'
 import type { Rules } from './locale/rules.js'
-import { E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
+import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -63,8 +63,8 @@ export interface Grid {
   v: readonly V[]
 }
 
-/** What the runtime passes a function: a value, a reference, or an array. */
-export type Arg = V | Rng | Arr
+/** What the runtime passes a function: a value, a reference, an array, or a reference of several areas. */
+export type Arg = V | Rng | Arr | Areas
 
 /** A value from a `V` argument: a direct value, or the values of a range (row by row) as one segment. */
 export type Segment = V | readonly V[]
@@ -146,6 +146,16 @@ export interface FnDef {
   omit?: Omission
   /** Where Excel does not load a formula that leaves the argument out. */
   notOmitted?: Positions
+  /**
+   * A reference of several areas (a union, one across sheets): `true` its `R` arguments take it (INDEX's area number);
+   * else the errors the function answers for one in an argument that takes a range (`areas.ts` by kind, measured).
+   */
+  areas?: true | (AreaErrors & { at?: Readonly<Record<number, AreaErrors>> })
+  /**
+   * Its `R` arguments are ranges of criteria (SUMIF): an array there, which only a name or LET can put, lifts the call
+   * over its values, and each is #VALUE!, as in Excel.
+   */
+  criteria?: boolean
 }
 
 /** A left-out argument: not given (the function's default), a blank, TRUE, or an error. */
@@ -323,19 +333,20 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: (v: Exclud
       if (e) return e
       return out.length > before ? out.concat(new Array<number>(rest - 1).fill(out[before])) : out
     }
-    if (!(x instanceof Rng)) {
-      const n = direct(x, rules)
-      if (isErr(n)) return n
-      out.push(n)
+    if (x instanceof Areas || x instanceof Rng) {
+      for (const g of x instanceof Areas ? x.list : [x])
+        for (const v of cx.flat(g)) {
+          if (v === null) continue
+          const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inRange(v)
+          if (n === undefined) continue
+          if (isErr(n)) return n
+          out.push(n)
+        }
       return out
     }
-    for (const v of cx.flat(x)) {
-      if (v === null) continue
-      const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inRange(v)
-      if (n === undefined) continue
-      if (isErr(n)) return n
-      out.push(n)
-    }
+    const n = direct(x, rules)
+    if (isErr(n)) return n
+    out.push(n)
     return out
   }
 }
@@ -369,7 +380,8 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
   D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
   // an empty element of an array counts for COUNTA (as Excel's empty value does): it is read as empty text
-  V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Arr ? x.values().map((v) => (v === null ? '' : v)) : x),
+  V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Areas ? x.list.flatMap((g) => cx.flat(g)) : x instanceof Arr ? x.values().map((v) => (v === null ? '' : v)) : x),
+  // several areas where one rectangle is wanted: #REF! of a union (ROWS), else #VALUE!
   G: (x, cx) => (isErr(x) ? x : cx.grid(x)),
   M: (x, cx) => {
     if (isErr(x)) return x
@@ -382,6 +394,32 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   P: (x) => x,
 }
 
+
+/**
+ * The errors a function answers for a union and for a reference across sheets where it does not take them; `inside`:
+ * the error counts as one inside a range of values, after an error given as a value (CONCAT).
+ */
+export interface AreaErrors {
+  union?: ErrorCode
+  cube?: ErrorCode
+  inside?: true
+}
+
+/**
+ * A reference of several areas as an argument of kind `k`: the lists take each area (SUM, COUNT), INDEX and the
+ * functions that say so take it whole; elsewhere it is an error, by default #VALUE! for a union, #REF! for one
+ * across sheets in an array argument (`G`, `M`) and #VALUE! in the others.
+ */
+function areasArg(own: FnDef['areas'], p: number, k: string, x: Areas, cx: Cx): unknown {
+  if (own === true && k === 'R') return x
+  const errors = typeof own === 'object' ? (own.at?.[p] ?? own) : undefined
+  const error = errors && (x.cube ? errors.cube : errors.union)
+  if (error) return k === 'V' && errors.inside ? [E[error]] : E[error]
+  if (LIST_KINDS.includes(k) || k === 'V') return COERCE[k](x, cx)
+  if (k === 'p' || k === 'P') return x
+  return x.cube && (k === 'G' || k === 'M') ? E.REF : E.VALUE
+}
+
 /** An argument coerced by kind inside a function that reads it after others (FVSCHEDULE's schedule after the principal). */
 export const coerce = (kind: string, x: Arg, cx: Cx): unknown => COERCE[kind](x, cx)
 
@@ -391,10 +429,10 @@ const KEEP_ERRORS = 'aRVrpP'
  * Excel reads the arguments given as values before those given as references or arrays (`LARGE(A1:A9,"x")` and
  * `SUM(A1:A9,"x")` are #VALUE! even with an error in A1:A9).
  */
-const late = (x: unknown) => x instanceof Rng || x instanceof Arr
+const late = (x: unknown) => x instanceof Rng || x instanceof Arr || x instanceof Areas
 
 /** The callable the generated code uses for a function: coercion by kind, the call, the answer rules. */
-export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
+export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => Arg {
   const { fn } = def
   if (def.lazy) return def.cx ? (...a) => fn(cx, ...a) : fn
   const kinds = parseKinds(def.args).map((k) => k.k)
@@ -408,13 +446,21 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
     const cells = def.cell ? 3 : 0
     for (let i = 0; i < cells; i++) out.push(a[i])
     const vals: unknown[] = new Array(a.length - cells)
+    // a reference across sheets the function does not take is found before any other argument (SORT's #REF!)
+    for (let p = 0; p < vals.length; p++) {
+      const x = a[cells + p]
+      if (!(x instanceof Areas) || !x.cube) continue
+      const k = kindAt(p)
+      const v = areasArg(def.areas, p, k, x, cx)
+      if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
+    }
     for (const pass of [false, true])
       for (let p = 0; p < vals.length; p++) {
         const k = kindAt(p)
         const x = a[cells + p] as Arg | undefined
         // an argument left out that the function takes as not given (`omitted`) stays undefined
         if (x === undefined || late(x) !== pass) continue
-        const v = COERCE[k](x, cx)
+        const v = x instanceof Areas ? areasArg(def.areas, p, k, x, cx) : COERCE[k](x, cx)
         if (isErr(v) && !KEEP_ERRORS.includes(k)) return v
         vals[p] = v
       }
@@ -436,11 +482,15 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
       } else out.push(v)
     }
     if (def.empty && lists && !nums) return E[def.empty]
+    if (def.criteria) {
+      const arrays = vals.filter((v, p) => v instanceof Arr && kindAt(p) === 'R') as Arr[]
+      if (arrays.length) return valueErrors(Math.max(...arrays.map((a) => a.rows)), Math.max(...arrays.map((a) => a.cols)))
+    }
     if (rep) {
       while (out.length < head + fixed) out.push(undefined)
       out.push(tail)
     }
-    let r: V | Arr | Rng
+    let r: Arg
     try {
       r = fn(...out)
     } catch {
@@ -450,6 +500,9 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
     return typeof r === 'number' ? fitNumber(r) : r
   }
 }
+
+/** An array of #VALUE! only. */
+const valueErrors = (rows: number, cols: number) => new Arr(rows, cols, rows, cols, new Array<V>(rows * cols).fill(E.VALUE))
 
 // ---------- helpers for function implementations ----------
 

@@ -5,18 +5,25 @@
  * per computation of the LET. A backend (`js.ts` for `eval`, `closures.ts`) only builds the code of each node
  * from what the walk decided, so the two modes cannot part on a decision.
  */
-import { shapes } from '../arrays/shape.js'
+import { shapes, type NameRef } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { FUNCTIONS } from '../functions.js'
+import { MAX_COLS, MAX_ROWS } from '../model.js'
+import { decode, type Bound } from '../structure/area.js'
 import { canonical, type Ast, type BinOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
+
+/** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
+export interface NameDef {
+  ast: Ast
+}
 
 /** What the walk needs to know of the book, seen from the formula's sheet. */
 export interface CodegenContext {
   /** The index of a sheet (null: the formula's own). */
   sheet(name: string | null): number
-  /** A name visible from the formula's sheet: its reference (or `#REF!` when lost). */
-  name(name: string): { ast: Extract<Ast, { k: 'ref' | 'err' }> } | undefined
+  /** A name as the names of sheet `scope` show it: its local one there, else the global one (-1: the global one). */
+  name(name: string, scope: number): NameDef | undefined
 }
 
 export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
@@ -47,6 +54,12 @@ export interface Backend<T> {
   lazy(name: string, args: T[], check: number[]): T
   /** The value of a call that may answer a one-cell reference (CHOOSE, IF) where one value goes. */
   read(code: T): T
+  /** A reference across sheets: its rectangle on each sheet, built once per compiled formula. */
+  areas(list: Rng[]): T
+  /** A union of references (#VALUE! unless they are references on one sheet). */
+  union(items: T[]): T
+  /** `@x` at row `r`, column `c`: a reference's cell there, an array's top-left value. */
+  at(a: T, r: number, c: number): T
   /** An external function, by the canonical text of its call. */
   external(text: string): T
   /**
@@ -80,14 +93,29 @@ export interface FormulaInfo {
   external: boolean
 }
 
+/** One axis of a name's relative bound used at index `at`: moved by it, wrapping round the sheet. */
+const moved = (b: Bound, at: number, max: number) => (b.abs ? b.i : (b.i + at) % max)
+
 /** Walks a formula at sheet `s`, row `r`, column `c`: its information and the code of its root in `b`. */
 export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: number, b: Backend<T>): FormulaInfo & { code: T } {
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
-  const deref = (n: Ast): Ast => (n.k === 'name' ? (ctx.name(n.name)?.ast ?? n) : n)
-  const shape = shapes(ast, (name) => ctx.name(name)?.ast)
+  // a name as the names of `scope` show it, or as its sheet's (`'S'!rate`)
+  const resolve: NameRef = (n, scope) => ctx.name(n.name, n.sheet === undefined ? scope : ctx.sheet(n.sheet))
+  const shape = shapes(ast, s, resolve)
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
-  // the code of a use of each LET name, by slot
-  const uses: T[] = []
+  // the code of a use of each LET name, by slot (a name's formula has its own LET names)
+  let uses: T[] = []
+  // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
+  let scope = s
+  const inside = new Set<NameDef>()
+  // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
+  const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' }>) => {
+    if (!inside.size) return n.ref
+    const a = decode(n.ref)
+    const [r1, r2] = [moved(a.r.lo, r, MAX_ROWS), moved(a.r.hi, r, MAX_ROWS)]
+    const [c1, c2] = [moved(a.c.lo, c, MAX_COLS), moved(a.c.hi, c, MAX_COLS)]
+    return { r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) }
+  }
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
   // a value that may be a reference, read as a value where one value goes
@@ -106,16 +134,44 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         return b.array(new Arr(n.rows.length, n.rows[0].length, n.rows.length, n.rows[0].length, v))
       }
       case 'ref': {
-        const g = new Rng(ctx.sheet(n.sheet), n.ref.r1, n.ref.c1, n.ref.r2, n.ref.c2)
+        const x = rect(n)
+        const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
         info.refs.push(g)
         if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
       }
-      case 'name': {
-        const d = deref(n)
-        return d.k === 'name' ? b.value(E.NAME) : go(d, rangeOk)
+      case 'ref3d': {
+        // under an operator or alone Excel answers #REF! for it
+        if (!rangeOk) return b.value(E.REF)
+        const x = rect(n)
+        const [i, j] = [ctx.sheet(n.first), ctx.sheet(n.last)]
+        const list: Rng[] = []
+        for (let k = Math.min(i, j); k <= Math.max(i, j); k++) list.push(new Rng(k, x.r1, x.c1, x.r2, x.c2))
+        info.refs.push(...list)
+        return b.areas(list)
       }
+      case 'name': {
+        const d = resolve(n, scope)
+        if (!d) return b.value(E.NAME)
+        // a name that uses itself, through other names or not
+        if (inside.has(d)) return b.value(E.CYCLE)
+        const outer: [T[], number] = [uses, scope]
+        ;[uses, scope] = [[], -1]
+        inside.add(d)
+        const code = go(d.ast, rangeOk)
+        inside.delete(d)
+        ;[uses, scope] = outer
+        return code
+      }
+      case 'at':
+        return value(b.at(go(n.a, true), r, c), n, rangeOk)
+      case 'union':
+        return value(
+          b.union(n.items.map((x) => go(x, true))),
+          n,
+          rangeOk,
+        )
       case 'paren':
         return go(n.a, rangeOk)
       case 'un':
@@ -135,7 +191,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (spec.volatile) info.volatile = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
-        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : go(a, spec.range(i))))
+        // a reference across sheets is passed to any argument, which takes it or answers its error
+        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : go(a, spec.range(i) || a.k === 'ref3d')))
         let code: T
         if (spec.lazy) {
           // lifted when a lifting argument is an array

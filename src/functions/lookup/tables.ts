@@ -2,7 +2,7 @@
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { arr, Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /**
@@ -92,9 +92,19 @@ function slice(a: Arr, r1: number, c1: number, r2: number, c2: number): Arr {
   return new Arr(r2 - r1 + 1, c2 - c1 + 1, r2 - r1 + 1, c2 - c1 + 1, v)
 }
 
-/** INDEX: row or column 0 selects all of them; the answer is a reference (of a reference) or an array (of an array). */
+/**
+ * INDEX: row or column 0 selects all of them; the answer is a reference (of a reference) or an array (of an array).
+ * Of a union the area numbered `area` (the first by default) is indexed; a reference across sheets is #VALUE!.
+ */
 function index(x: Arg, r: number, c?: number, area?: number): Arg {
   if (isErr(x)) return x
+  if (x instanceof Areas) {
+    if (x.cube) return E.VALUE
+    const n = area ?? 1
+    if (n < 1) return E.VALUE
+    if (n > x.list.length) return E.REF
+    return index(x.list[n - 1], r, c)
+  }
   const rows = x instanceof Rng ? x.r2 - x.r1 + 1 : x instanceof Arr ? x.rows : 1
   const cols = x instanceof Rng ? x.c2 - x.c1 + 1 : x instanceof Arr ? x.cols : 1
   if (area !== undefined && area !== 1) return area < 1 ? E.VALUE : E.REF
@@ -117,7 +127,7 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
 
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
-  INDEX: { args: 'R w w? w?', array: true, fn: index },
+  INDEX: { args: 'R w w? w?', array: true, areas: true, fn: index },
   LOOKUP: { args: 'a G R?', cx: true, fn: lookup },
   MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),

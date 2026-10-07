@@ -1,4 +1,7 @@
-/** The parser: recursive descent over the tokens, Excel's operator precedence, function calls with arguments left out, array constants. */
+/**
+ * The parser: recursive descent over the tokens, Excel's operator precedence, function calls with arguments left out,
+ * array constants, the `@` operator, unions of references in parentheses (and at the top of a name's formula).
+ */
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH } from '../contract.js'
 import { bad, type Ast, type BinOp, type Bind, type Lit } from './ast.js'
 import { tokenize, type Tok } from './tokens.js'
@@ -8,7 +11,8 @@ const LEVELS: string[][] = [['=', '<>', '<', '>', '<=', '>='], ['&'], ['+', '-']
 /** Excel loads a LET of 254 arguments at most (126 names and the calculation, or 127 names). */
 const MAX_LET_ARGS = 254
 
-export function parse(src: string): Ast {
+/** `union`: a top-level comma joins references (a name's formula: `'S'!A1:A3,'S'!C1:C3`). */
+export function parse(src: string, opts: { union?: boolean } = {}): Ast {
   if (src.trim() === '') bad(0, 'empty formula', 'empty')
   if (src.length > MAX_FORMULA_LENGTH) bad(MAX_FORMULA_LENGTH, `formula longer than ${MAX_FORMULA_LENGTH}`, 'too_long')
   const toks = tokenize(src)
@@ -43,12 +47,32 @@ export function parse(src: string): Ast {
     return postfix()
   }
   const postfix = (): Ast => {
-    let a = primary()
+    let a = intersect()
     while (peek().t === 'op' && (peek() as { v: string }).v === '%') {
       p++
       a = { k: 'pct', a }
     }
     return a
+  }
+  // `@` takes the operand that follows it: a reference, a name, a call, a parenthesis
+  const intersect = (): Ast => {
+    const t = peek()
+    if (t.t !== 'op' || t.v !== '@') return primary()
+    p++
+    enter(t.at)
+    const a = intersect()
+    depth--
+    return { k: 'at', a }
+  }
+  // items joined by commas, as one union
+  const joined = (first: Ast): Ast => {
+    if (peek().t !== ',') return first
+    const items = [first]
+    while (peek().t === ',') {
+      p++
+      items.push(binary(0))
+    }
+    return { k: 'union', items }
   }
   const primary = (): Ast => {
     const t = toks[p++]
@@ -60,8 +84,9 @@ export function parse(src: string): Ast {
       case 'err':
         return { k: 'err', code: t.code, ...(t.sheet !== undefined ? { sheet: t.sheet } : {}), ...(t.ref !== undefined ? { ref: t.ref } : {}) }
       case 'ref':
-        return { k: 'ref', sheet: t.sheet, ref: t.ref }
+        return t.last === undefined ? { k: 'ref', sheet: t.sheet, ref: t.ref } : { k: 'ref3d', first: t.sheet!, last: t.last, ref: t.ref }
       case 'ident': {
+        if (t.sheet !== undefined) return { k: 'name', name: t.v, sheet: t.sheet }
         const up = t.v.toUpperCase()
         if (up === 'TRUE' || up === 'FALSE') return { k: 'bool', v: up === 'TRUE' }
         // a LET name as it is declared, as Excel shows it
@@ -70,7 +95,7 @@ export function parse(src: string): Ast {
       }
       case '(': {
         enter(t.at)
-        const a = binary(0)
+        const a = joined(binary(0))
         depth--
         expect(')')
         return { k: 'paren', a }
@@ -176,7 +201,7 @@ export function parse(src: string): Ast {
     p++
   }
 
-  const ast = binary(0)
+  const ast = opts.union ? joined(binary(0)) : binary(0)
   const t = peek()
   if (t.t !== 'eof') bad(t.at, t.t === ',' ? 'comma outside of a function call' : `unexpected ${describe(t)}`)
   return ast

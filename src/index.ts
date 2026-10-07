@@ -22,6 +22,7 @@ export { openSession } from './session.js'
 export { InputError } from './input.js'
 export { enUS, ruRU, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 export { restructure } from './structure/index.js'
+export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the

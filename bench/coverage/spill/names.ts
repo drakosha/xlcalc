@@ -11,7 +11,7 @@ const DATA: Record<string, CellSpec> = { A1: 1, A2: 2, A3: 3, A4: 4, A5: 5, B1: 
 
 /** A case on S with `names`; a range read is on S, or on another sheet as `T!A1:A4`. */
 const named = (id: string, about: string, names: NameInput[], cells: Record<string, CellSpec>, ranges: string[], more: Partial<SpillCase> = {}): SpillCase => ({
-  ...one(id, about, { ...DATA, ...cells }, [], { book: { sheets: more.book?.sheets ?? [], names }, ...more }),
+  ...one(id, about, { ...DATA, ...cells }, [], { ...more, book: { sheets: more.book?.sheets ?? [], names } }),
   read: ranges.map((r) => (r.includes('!') ? { sheet: r.split('!')[0], range: r.split('!')[1] } : { sheet: 'S', range: r })),
 })
 
@@ -61,7 +61,7 @@ export function buildSpillCases(): SpillCase[] {
         ['mix', "'S'!$A1", { E4: '=mix' }, ['E4']],
         ['up', "'S'!$A1048576", { E5: '=up' }, ['E5']],
         ['relf', "'S'!XFB1*10", { D5: '=relf' }, ['D5']],
-        ['r', 'ROW()', { F7: '=r' }, ['F7', 'T!D3'], { D3: '=r' }],
+        ['rw', 'ROW()', { F7: '=rw' }, ['F7', 'T!D3'], { D3: '=rw' }],
         ['cl', 'COLUMN()', { F8: '=cl' }, ['F8']],
       ] as [string, string, Record<string, CellSpec>, string[], Record<string, CellSpec>?][]
     ).map(([name, ref, cells, ranges, onT]) =>
@@ -91,8 +91,8 @@ export function buildSpillCases(): SpillCase[] {
       'names over names, a whole column, LET in a name and a LET name over a defined one',
       [
         { name: 'a', ref: 'b*2' },
-        { name: 'b', ref: "'S'!$A$1+c" },
-        { name: 'c', ref: '10' },
+        { name: 'b', ref: "'S'!$A$1+cc" },
+        { name: 'cc', ref: '10' },
         { name: 'wc', ref: "'S'!$A:$A" },
         { name: 'lt', ref: "LET(x,'S'!$A$2,x*3)" },
         { name: 'rate', ref: '0.5' },

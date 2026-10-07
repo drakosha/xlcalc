@@ -107,14 +107,14 @@ export function invalidError(code: CheckCode): ErrorCode {
 
 export const codegenContext = (state: EngineState, s: number): CodegenContext => ({
   sheet: (name) => (name === null ? s : state.sheetIdx.get(sheetKey(name))!),
-  name: (name) => nameFor(state.names, s, name),
+  name: (name, scope) => nameFor(state.names, scope, name),
 })
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
 function prepare(state: EngineState, s: number, text: string): Prepared {
-  const visible = state.names.filter((n) => n.scope === -1 || n.scope === s).map((n) => n.name)
-  const r = validate(text, { sheets: state.sheetNames, names: visible, externalFunctions: state.externalFunctions })
+  const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
+  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions })
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
   return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
 }
@@ -127,7 +127,8 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
-  const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
+  const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
+  const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock: RulesClock = {
     read: false,
@@ -154,7 +155,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     sheetIdx,
     names,
     nameIssues: issues,
-    externalFunctions: (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f]),
+    externalFunctions,
     ctx,
     rt,
     compiler: makeCompiler(rt, opts.execution ?? 'closures'),

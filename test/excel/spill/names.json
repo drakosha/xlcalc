@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 4.4
+  "seconds": 5.9
  },
  "cases": [
   {
@@ -368,8 +368,8 @@
    ]
   },
   {
-   "id": "relative",
-   "about": "references without $ relative to A1: moved by the cell using the name, wrapping round the sheet",
+   "id": "relative-rel",
+   "about": "a name 'S'!XFB1: without $ relative to A1, moved by the cell using it, wrapping round the sheet",
    "book": {
     "sheets": [
      {
@@ -419,27 +419,6 @@
        },
        "D3": {
         "formula": "rel"
-       },
-       "D2": {
-        "formula": "SUM(relr)"
-       },
-       "E4": {
-        "formula": "mix"
-       },
-       "E5": {
-        "formula": "up"
-       },
-       "D5": {
-        "formula": "relf"
-       },
-       "F7": {
-        "formula": "r"
-       },
-       "F8": {
-        "formula": "cl"
-       },
-       "D10": {
-        "formula": "relr*2"
        }
       }
      },
@@ -448,22 +427,446 @@
       "cells": {
        "D2": {
         "formula": "rel"
-       },
-       "D3": {
-        "formula": "r"
        }
       }
+     }
+    ],
+    "names": [
+     {
+      "name": "rel",
+      "ref": "'S'!XFB1"
      }
     ]
    },
    "read": [
     {
      "sheet": "S",
-     "range": "D1:F11"
+     "range": "D1:D3"
+    },
+    {
+     "sheet": "T",
+     "range": "D2"
+    }
+   ]
+  },
+  {
+   "id": "relative-relr",
+   "about": "a name 'S'!XFB1:XFB2: without $ relative to A1, moved by the cell using it, wrapping round the sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D2": {
+        "formula": "SUM(relr)"
+       },
+       "D10": {
+        "formula": "relr*2"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "relr",
+      "ref": "'S'!XFB1:XFB2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "D2"
     },
     {
      "sheet": "S",
-     "range": "T!D2:D3"
+     "range": "D10:D11"
+    }
+   ]
+  },
+  {
+   "id": "relative-mix",
+   "about": "a name 'S'!$A1: without $ relative to A1, moved by the cell using it, wrapping round the sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "E4": {
+        "formula": "mix"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "mix",
+      "ref": "'S'!$A1"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E4"
+    }
+   ]
+  },
+  {
+   "id": "relative-up",
+   "about": "a name 'S'!$A1048576: without $ relative to A1, moved by the cell using it, wrapping round the sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "E5": {
+        "formula": "up"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "up",
+      "ref": "'S'!$A1048576"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E5"
+    }
+   ]
+  },
+  {
+   "id": "relative-relf",
+   "about": "a name 'S'!XFB1*10: without $ relative to A1, moved by the cell using it, wrapping round the sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "D5": {
+        "formula": "relf"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "relf",
+      "ref": "'S'!XFB1*10"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "D5"
+    }
+   ]
+  },
+  {
+   "id": "relative-rw",
+   "about": "a name ROW(): without $ relative to A1, moved by the cell using it, wrapping round the sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "F7": {
+        "formula": "rw"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "D3": {
+        "formula": "rw"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "rw",
+      "ref": "ROW()"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F7"
+    },
+    {
+     "sheet": "T",
+     "range": "D3"
+    }
+   ]
+  },
+  {
+   "id": "relative-cl",
+   "about": "a name COLUMN(): without $ relative to A1, moved by the cell using it, wrapping round the sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "F8": {
+        "formula": "cl"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "cl",
+      "ref": "COLUMN()"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F8"
     }
    ]
   },
@@ -548,6 +951,35 @@
        }
       }
      }
+    ],
+    "names": [
+     {
+      "name": "x",
+      "ref": "1"
+     },
+     {
+      "name": "x",
+      "ref": "2",
+      "scope": "T"
+     },
+     {
+      "name": "y",
+      "ref": "10"
+     },
+     {
+      "name": "y",
+      "ref": "20",
+      "scope": "T"
+     },
+     {
+      "name": "g",
+      "ref": "y+0"
+     },
+     {
+      "name": "L",
+      "ref": "y*2",
+      "scope": "T"
+     }
     ]
    },
    "read": [
@@ -556,8 +988,81 @@
      "range": "E1:E6"
     },
     {
+     "sheet": "T",
+     "range": "A1:A4"
+    }
+   ]
+  },
+  {
+   "id": "array-for-reference",
+   "about": "an array name where a function takes only a reference",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "G1": {
+        "formula": "SUMIF(sq,\">10\")"
+       },
+       "H1": {
+        "formula": "COUNTIF(sq,\">10\")"
+       },
+       "I1": {
+        "formula": "SUMIF(sq,\">10\",B1:B3)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "sq",
+      "ref": "'S'!$A$1:$A$3*10"
+     }
+    ]
+   },
+   "read": [
+    {
      "sheet": "S",
-     "range": "T!A1:A4"
+     "range": "G1:I3"
     }
    ]
   },
@@ -843,10 +1348,10 @@
      },
      {
       "name": "b",
-      "ref": "'S'!$A$1+c"
+      "ref": "'S'!$A$1+cc"
      },
      {
-      "name": "c",
+      "name": "cc",
       "ref": "10"
      },
      {
@@ -1134,6 +1639,282 @@
     "S!E10": "=INDEX(u,2)",
     "S!E11": "=SUMIF(u,\">1\")",
     "S!E12": "=LARGE(u,2)"
+   }
+  },
+  "relative-relr": {
+   "values": {
+    "S!D2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!D10": {
+     "t": "n",
+     "v": 0
+    },
+    "S!D11": {
+     "t": "n",
+     "v": 0
+    }
+   },
+   "formulas": {
+    "S!D2": "=SUM(relr)",
+    "S!D10": "=relr*2"
+   }
+  },
+  "relative-mix": {
+   "values": {
+    "S!E4": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!E4": "=mix"
+   }
+  },
+  "relative-up": {
+   "values": {
+    "S!E5": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!E5": "=up"
+   }
+  },
+  "relative-relf": {
+   "values": {
+    "S!D5": {
+     "t": "n",
+     "v": 50
+    }
+   },
+   "formulas": {
+    "S!D5": "=relf"
+   }
+  },
+  "relative-cl": {
+   "values": {
+    "S!F8": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!F8": "=cl"
+   }
+  },
+  "array-for-reference": {
+   "values": {
+    "S!G1": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H1": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!I1": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!G2": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H2": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!I2": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!G3": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H3": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!I3": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUMIF(sq,\">10\")",
+    "S!H1": "=COUNTIF(sq,\">10\")",
+    "S!I1": "=SUMIF(sq,\">10\",B1:B3)"
+   }
+  },
+  "sheet-global": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!E1": "=book.xlsx!x"
+   }
+  },
+  "lost": {
+   "values": {
+    "S!E1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 7
+    }
+   },
+   "formulas": {
+    "S!E1": "=lost",
+    "S!E2": "=IFERROR(lost,7)"
+   }
+  },
+  "unknown-function": {
+   "values": {
+    "S!E1": {
+     "t": "e",
+     "v": "NAME"
+    },
+    "S!E2": {
+     "t": "b",
+     "v": true
+    }
+   },
+   "formulas": {
+    "S!E1": "=bad",
+    "S!E2": "=ISERROR(bad)"
+   }
+  },
+  "relative-rel": {
+   "values": {
+    "S!D1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 3
+    },
+    "T!D2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!D1": "=rel",
+    "S!D3": "=rel",
+    "T!D2": "=rel"
+   }
+  },
+  "relative-rw": {
+   "values": {
+    "S!F7": {
+     "t": "n",
+     "v": 7
+    },
+    "T!D3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!F7": "=rw",
+    "T!D3": "=rw"
+   }
+  },
+  "scope": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 20
+    },
+    "S!E5": {
+     "t": "n",
+     "v": 20
+    },
+    "S!E6": {
+     "t": "n",
+     "v": 10
+    },
+    "T!A1": {
+     "t": "n",
+     "v": 2
+    },
+    "T!A2": {
+     "t": "n",
+     "v": 10
+    },
+    "T!A3": {
+     "t": "n",
+     "v": 20
+    },
+    "T!A4": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!E1": "=x",
+    "S!E2": "=T!x",
+    "S!E4": "=T!L",
+    "S!E5": "=T!y",
+    "S!E6": "=g",
+    "T!A1": "=x",
+    "T!A2": "=g",
+    "T!A3": "=L",
+    "T!A4": "=T!x"
+   }
+  },
+  "chain": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 22
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 15
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 1048576
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 6
+    },
+    "S!E5": {
+     "t": "n",
+     "v": 10
+    },
+    "S!E6": {
+     "t": "n",
+     "v": 1.5
+    }
+   },
+   "formulas": {
+    "S!E1": "=a",
+    "S!E2": "=SUM(wc)",
+    "S!E3": "=ROWS(wc)",
+    "S!E4": "=lt",
+    "S!E5": "=LET(rate,5,rate+rate)",
+    "S!E6": "=rate+LET(rate,1,rate)"
    }
   }
  }

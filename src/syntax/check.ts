@@ -13,7 +13,14 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
       case 'paren':
       case 'un':
       case 'pct':
+      case 'at':
         return visit(n.a)
+      case 'union':
+        for (const a of n.items) {
+          const e = visit(a)
+          if (e) return e
+        }
+        return null
       case 'bin':
         return visit(n.a) ?? visit(n.b)
       case 'let':
@@ -49,11 +56,17 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
   return visit(ast)
 }
 
+/** What the engine adds to a check: a name's formula (`union`), and which names a book has as a sheet sees them (`known`). */
+interface BookCheck {
+  union?: boolean
+  known?: (name: string, sheet: string | undefined) => boolean
+}
+
 /** Formula check: parsing, whitelisted or external functions, sheets, names, argument counts. */
-export function validate(text: string, ctx: ValidateContext = {}): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
+export function validate(text: string, ctx: ValidateContext & BookCheck = {}): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
   let ast: Ast
   try {
-    ast = parse(text)
+    ast = parse(text, { union: ctx.union })
   } catch (e) {
     if (e instanceof FormulaError) return { ok: false, code: e.code, message: e.message, at: e.at }
     throw e
@@ -62,6 +75,8 @@ export function validate(text: string, ctx: ValidateContext = {}): ({ ok: true; 
   const functions = new Set<string>()
   const sheets = new Set<string>()
   const names = new Set<string>()
+  // names with the sheet they are seen from (undefined: the formula's own)
+  const uses: [string, string | undefined][] = []
   const externals: string[] = []
   walk(ast, (n) => {
     if (n.k === 'fn') {
@@ -69,7 +84,12 @@ export function validate(text: string, ctx: ValidateContext = {}): ({ ok: true; 
       if (externalSet.has(n.name) && !FUNCTIONS[n.name]) externals.push(canonical(n))
     } else if (n.k === 'let') functions.add('LET')
     else if ((n.k === 'ref' && n.sheet !== null) || (n.k === 'err' && n.sheet !== undefined)) sheets.add(n.sheet!)
-    else if (n.k === 'name') names.add(n.name)
+    else if (n.k === 'ref3d') sheets.add(n.first).add(n.last)
+    else if (n.k === 'name') {
+      names.add(n.name)
+      uses.push([n.name, n.sheet])
+      if (n.sheet !== undefined) sheets.add(n.sheet)
+    }
   })
   const fail = (code: CheckCode, message: string, needle: string) => ({ ok: false as const, code, message, at: Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase())) })
   for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', `unknown function ${f}`, f)
@@ -77,7 +97,9 @@ export function validate(text: string, ctx: ValidateContext = {}): ({ ok: true; 
     const known = new Set(ctx.sheets.map(sheetKey))
     for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', `unknown sheet ${s}`, s)
   }
-  if (ctx.names) {
+  if (ctx.known) {
+    for (const [n, sheet] of uses) if (!ctx.known(n, sheet)) return fail('unknown_name', `unknown name ${n}`, n)
+  } else if (ctx.names) {
     const known = new Set(ctx.names.map((n) => n.toUpperCase()))
     for (const n of names) if (!known.has(n.toUpperCase())) return fail('unknown_name', `unknown name ${n}`, n)
   }

@@ -4,9 +4,9 @@
  * this engine's own (formula.js gets values, not references).
  */
 import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
-import type { Cx, FnDef, Grid } from '../../args.js'
+import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { arr } from '../../arrays/value.js'
-import { E, isErr, Rng, type V } from '../../values.js'
+import { Areas, E, isErr, Rng, type V } from '../../values.js'
 
 /** A name that reads as an A1 address within the grid, an R1C1 reference or a boolean. */
 function referenceLike(s: string): boolean {
@@ -45,6 +45,8 @@ const position = (row: boolean): FnDef => ({
 
 export const functions: Record<string, FnDef> = {
   ADDRESS: { args: 'w w w? b? s?', fn: address },
+  // the areas of a union; a reference across sheets, a value or an array is #VALUE!
+  AREAS: { args: 'R', areas: true, fn: (x: Arg) => (isErr(x) ? x : x instanceof Rng ? 1 : x instanceof Areas && !x.cube ? x.list.length : E.VALUE) },
   // the chosen value as it is, a reference too, one cell too (SUMIF(CHOOSE(1,A1:A9,B1:B9),">2"))
   CHOOSE: { args: 'i P', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
   COLUMN: position(false),
