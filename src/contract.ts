@@ -256,6 +256,17 @@ export interface DisplayOptions {
   dateSystem?: 1900 | 1904
 }
 
+/**
+ * Size limits of a computation. A book over them is not computed: the call throws `CalcError` with code `limit`, so a
+ * result is either exact or absent and the values hash never depends on the limits.
+ */
+export interface CalcLimits {
+  /** Formulas in the book. */
+  formulas?: number
+  /** Values of one range read whole, one array or one spill that a formula makes, checked before they are made. */
+  cells?: number
+}
+
 export interface ComputeOptions {
   /**
    * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
@@ -267,6 +278,8 @@ export interface ComputeOptions {
   execution?: Execution
   /** Each cell's shown text and colour (`CellResult.text`, `color`); true by default, false computes values alone. */
   display?: boolean
+  /** None by default. */
+  limits?: CalcLimits
 }
 
 /** A cell's value, and by default (`display`) what the cell shows: `text` and `color`, as `CellDisplay`. */
@@ -391,9 +404,10 @@ export interface Explanation {
  * Session options. A session keeps one clock, `clock` or by default the moment of opening and a random
  * seed, until `setClock`. A live session (`live: true`) takes a fresh clock and a new seed on every
  * recomputation instead. Edits are compiled in the `execution` the session was opened with (`closures` by
- * default). With `display` (the default) results and changes carry what the cells show.
+ * default). With `display` (the default) results and changes carry what the cells show. `limits` bound every call;
+ * a call over them throws `CalcError` and leaves the session as it was.
  */
-export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean }
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits }
 
 /** A rectangle on a sheet: `B2`, `B2:D9`, whole columns `B:D` or whole rows `2:9` (no `$`, no sheet). */
 export interface RangeRef {
@@ -530,6 +544,125 @@ export interface Session {
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   result(): ComputeResult
   close(): void
+}
+
+// ---------- asynchronous and threaded computation (`docs/async.md`) ----------
+
+/** What a computation needs of an AbortSignal: the platform's `AbortSignal` is one. */
+export interface AbortSignalLike {
+  readonly aborted: boolean
+  readonly reason?: unknown
+  addEventListener(type: 'abort', listener: () => void, options?: { once?: boolean }): void
+  removeEventListener(type: 'abort', listener: () => void): void
+}
+
+/**
+ * Why an asynchronous call failed (`CalcError.code`). `soft_timeout`: its `timeoutMs` passed, seen by a check inside
+ * the computation. `aborted`: its `signal` fired. `hard_timeout`: it ran past the pool's `hardTimeoutMs` and its
+ * thread was terminated. `out_of_memory`: its thread reached `maxHeapMb`. `thread_failed`: its thread exited or threw
+ * outside the computation. `restore_failed`: the session could not be restored on a thread and is closed. `limit`:
+ * the book is over `CalcLimits`. `queue_full`: `maxQueue` tasks already wait. `too_many_sessions`: the pool holds
+ * `maxSessions` sessions. `closed`: the calculator or the session is closed.
+ */
+export type CalcErrorCode =
+  | 'soft_timeout'
+  | 'aborted'
+  | 'hard_timeout'
+  | 'out_of_memory'
+  | 'thread_failed'
+  | 'restore_failed'
+  | 'limit'
+  | 'queue_full'
+  | 'too_many_sessions'
+  | 'closed'
+
+/** Options of one asynchronous call. */
+export interface CalcOptions {
+  /** Stops the call: a waiting call at once, a running one at its next check. */
+  signal?: AbortSignalLike
+  /** A soft deadline: milliseconds of computing, counted from when the call starts computing (not while it waits). */
+  timeoutMs?: number
+}
+
+export type AsyncComputeOptions = ComputeOptions & CalcOptions
+/** `signal` and `timeoutMs` bound the opening (the first computation of the book). */
+export type AsyncSessionOptions = SessionOptions & CalcOptions
+
+/** `AsyncSession.restructure`: as `SessionRestructureResult`, without the book (`AsyncSession.book()` gives it). */
+export type AsyncRestructureResult =
+  | { ok: true; mapCell(ref: CellRef): CellRef | null; changes: CellChange[] }
+  | { ok: false; code: StructureRefusal; message: string }
+
+/**
+ * A session computed in portions or in a thread: the methods of `Session`, as promises. Calls are taken in order,
+ * each after the one before has finished. A call that fails (a deadline, an abort, a limit) changes nothing.
+ */
+export interface AsyncSession {
+  /** The session's clock as of its last finished call. */
+  readonly clock: Clock
+  setCells(edits: CellEdit[], opts?: CalcOptions): Promise<CellChange[]>
+  setNames(names: NameInput[], opts?: CalcOptions): Promise<CellChange[]>
+  setClock(clock: Clock, opts?: CalcOptions): Promise<CellChange[]>
+  restructure(op: StructureOp, opts?: CalcOptions): Promise<AsyncRestructureResult>
+  setStyles(styles: CellStyle[]): Promise<void>
+  setLayout(edits: LayoutEdit[], opts?: CalcOptions): Promise<CellChange[]>
+  /** The session's book; from a thread, a copy. */
+  book(): Promise<BookInput>
+  explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
+  result(opts?: CalcOptions): Promise<ComputeResult>
+  close(): Promise<void>
+}
+
+/** A calculator: `createInlineCalc` (the same thread, in portions) or `createCalcPool` (threads). */
+export interface Calc {
+  compute(book: BookInput, opts?: AsyncComputeOptions): Promise<ComputeResult>
+  openSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
+  /** Refuses further calls (`closed`), the waiting and running ones too, and closes the sessions. */
+  close(): Promise<void>
+}
+
+export interface InlineCalcOptions {
+  /** Milliseconds of computing between two yields to the event loop; 10 by default. */
+  sliceMs?: number
+  /** The soft deadline of every call that gives none. */
+  timeoutMs?: number
+  /** The limits of every computation that gives none. */
+  limits?: CalcLimits
+}
+
+/** What the pool needs of a Web Worker (`CalcPoolOptions.spawn`). */
+export interface WorkerLike {
+  postMessage(message: unknown): void
+  terminate(): void
+  addEventListener(type: 'message' | 'error' | 'messageerror', listener: (event: { data?: unknown; message?: string }) => void): void
+}
+
+export interface CalcPoolOptions {
+  /** Threads; 2 by default. */
+  threads?: number
+  /** Node: the heap of each thread (`resourceLimits.maxOldGenerationSizeMb`); not available in a browser. */
+  maxHeapMb?: number
+  /** A task that runs longer, from when it reaches its thread, terminates the thread (`hard_timeout`). */
+  hardTimeoutMs?: number
+  /** The soft deadline of every call that gives none. */
+  timeoutMs?: number
+  /** Tasks waiting for a thread, all threads together; one more is refused (`queue_full`). */
+  maxQueue?: number
+  /** Open sessions of the pool; one more is refused (`too_many_sessions`). */
+  maxSessions?: number
+  /** Sessions a thread holds; past it the session called least recently leaves the thread and comes back on its next call. */
+  maxSessionsPerThread?: number
+  /**
+   * The limits of every computation that gives none. With `maxHeapMb` and without `cells`, `cells` is
+   * `maxHeapMb · 2^20 / 32`: one array larger than a thread's heap stops the whole process, not the thread.
+   */
+  limits?: CalcLimits
+  /** Calls kept in a session's journal before the pool takes a new snapshot of its book; 64 by default. */
+  snapshotEvery?: number
+  /** Milliseconds of computing between two yields inside a thread, where a cancel is read; 50 by default. */
+  sliceMs?: number
+  /** Starts a thread in a browser, for a bundler that serves the thread's script elsewhere. */
+  spawn?: () => WorkerLike
 }
 
 export interface FormulaEngine {
