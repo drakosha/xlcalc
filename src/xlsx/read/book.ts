@@ -15,8 +15,8 @@ import type { XlsxRead } from '../types.js'
 import { attr, attributes, element, elements, flag, has } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
 import { openArchive, type Archive } from '../zip/read.js'
+import { legacyConverter } from '../../legacy/convert.js'
 import { readFormula } from './formulas.js'
-import { checkIntersections } from './intersect.js'
 import { cellMetadata } from './metadata.js'
 import { relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
@@ -77,9 +77,7 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       issues.add('name', 'a name of a sheet left out is left out', { name })
       continue
     }
-    const f = readFormula(readText(e.body ?? ''), issues, { name })
-    const ok = f.ast !== undefined && ((f.ast.k === 'ref' && f.ast.sheet !== null) || (f.ast.k === 'err' && f.ast.code === 'REF'))
-    if (!ok) issues.add('name', 'the engine takes only a reference in a name: a constant or a formula is kept as written, and formulas using the name compute to an error', { name })
+    const f = readFormula(readText(e.body ?? ''), issues, { name }, true)
     if (flag(a.hidden)) issues.add('name', 'a hidden name is read as a visible one', { name })
     out.push(scope === undefined ? { name, ref: f.formula } : { name, ref: f.formula, scope })
   }
@@ -129,6 +127,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const meta = cellMetadata(metaXml, richValues, richStructures)
   const all = decls.filter((d) => d.kind === 'worksheet').map((d) => d.name)
   const names = readNames(wb, decls, new Set(all), issues)
+  const legacy = legacyConverter(names)
   const sheets: SheetInput[] = []
   const cached: XlsxRead['cached'] = []
   for (const d of decls) {
@@ -143,12 +142,11 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     }
     if (d.hidden) issues.add('hidden', 'a hidden sheet is read as a visible one', { sheet: d.name })
     const read = readSheet(
-      { name: d.name, xml, rels: await relsOf(archive, d.part!), sheets: all },
+      { name: d.name, xml, rels: await relsOf(archive, d.part!), sheets: all, legacy },
       { sheet: d.name, strings, xfs: table.xfs, meta, date: dateOf, issues },
     )
     sheets.push(read.sheet)
     cached.push({ name: d.name, cells: read.cached })
-    checkIntersections(d.name, read.old, names, issues)
   }
   const book: BookInput = { sheets }
   if (names.length) book.names = names

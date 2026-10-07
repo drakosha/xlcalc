@@ -8,7 +8,8 @@
  * - `R`: the same, an array evaluation stops there (CHOOSE's values);
  * - `a`: an array; nothing in it gets `@`.
  * A position the sets did not probe (a size argument, an optional one the typical call leaves out) takes the class
- * of the function's other arguments of the same kind, else the usual class of its kind.
+ * of the function's other arguments of the same kind, else the usual class of its kind. With the classes, the number
+ * of repeated arguments and whether the function can answer an array, so the conversion needs no function definitions.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -50,7 +51,7 @@ function classes(fn: string): string {
 
 const entries = Object.keys(DEFS)
   .sort()
-  .map((fn) => `${/^[A-Z][A-Z0-9_]*$/.test(fn) ? fn : `'${fn}'`}: '${classes(fn)}'`)
+  .map((fn) => `${/^[A-Z][A-Z0-9_]*$/.test(fn) ? fn : `'${fn}'`}: '${classes(fn)}${DEFS[fn].rep ? `/${DEFS[fn].rep}` : ''}${DEFS[fn].array ? '!' : ''}'`)
 const lines: string[] = []
 for (let i = 0; i < entries.length; i += 6) lines.push(`  ${entries.slice(i, i + 6).join(', ')},`)
 writeFileSync(
@@ -59,8 +60,8 @@ writeFileSync(
  * The class of each argument of the whitelisted functions in a formula of the old kind, as Excel 365 reads it (see
  * \`bench/coverage/legacy/table.ts\`, which writes this file from Excel's answers; do not edit): \`v\` one value, \`V\` one
  * value where an array evaluation stops, \`w\` one value where it goes on into a range alone, \`r\` a reference or an
- * array, \`R\` the same where an array evaluation stops, \`a\` an array. Repeated arguments take the class of their
- * place in the last group.
+ * array, \`R\` the same where an array evaluation stops, \`a\` an array. \`/n\`: the last n arguments repeat, and
+ * an argument past the classes takes the class of its place in that group; \`!\`: the function can answer an array.
  */
 export const PARAMS: Readonly<Record<string, string>> = {
 ${lines.join('\n')}

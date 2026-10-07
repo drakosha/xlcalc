@@ -1,12 +1,14 @@
 /**
  * A formula as a file stores it, in the engine's spelling: the prefixes of newer functions and of LET's names go
- * (`_xlfn.`, `_xlfn._xlws.`, `_xlpm.`, `_xludf.`), `_xlfn.ANCHORARRAY(E2)` becomes the spill reference `E2#`.
- * What the engine has no spelling for is reported: the `@` operator (`_xlfn.SINGLE`), user-defined functions,
- * structured references to tables, references to other workbooks and across sheets, a LET name that reads as a
- * reference or a boolean once its prefix goes. Text in quotes is left as it is.
+ * (`_xlfn.`, `_xlfn._xlws.`, `_xlpm.`, `_xludf.`), `_xlfn.ANCHORARRAY(E2)` becomes the spill reference `E2#` and
+ * `_xlfn.SINGLE(x)` the operator `@x`. What the engine has no spelling for is reported: user-defined functions,
+ * structured references to tables, references to other workbooks, a LET name that reads as a reference or a boolean
+ * once its prefix goes. Text in quotes is left as it is.
  */
+import { FormulaError } from '../../syntax/ast.js'
+import { parse } from '../../syntax/parse.js'
 
-export type Found = 'singleOperator' | 'userFunction' | 'table' | 'externalLink' | 'reference3d' | 'letName'
+export type Found = 'userFunction' | 'table' | 'externalLink' | 'letName'
 
 export interface Converted {
   formula: string
@@ -17,8 +19,6 @@ const PREFIX = /^_(?:xlfn|xlws|xlpm|xludf)\./i
 const IDENT = /[\p{L}\p{N}_.\\]/u
 /** A cell or a lost reference, with its sheet or without: what `#` may follow. */
 const ANCHOR = /^(?:(?:'(?:[^']|'')+'|[^\s'!(),]+)!)?(?:\$?[A-Za-z]{1,3}\$?\d+|#REF!)$/
-const SHEETS_3D = /(?:^|[^\p{L}\p{N}_.!'])[\p{L}_][\p{L}\p{N}_.]*:[\p{L}_][\p{L}\p{N}_.]*!/u
-const QUOTED_3D = /'(?:[^'[]|'')(?:[^']|'')*:(?:[^']|'')*'!/
 const LET_NAME_CLASH = /^(?:[A-Za-z]{1,3}\d+|[Rr]\d*[Cc]\d*|TRUE|FALSE)$/
 
 /** The end (past the closing quote) of a quoted run starting at `i`: `""` and `''` inside are kept. */
@@ -58,11 +58,19 @@ function bracket(src: string, i: number): number {
   return src.length
 }
 
+/** `@x` where `@` takes the whole of `x` (a reference, a name, a call, a constant), else `@(x)`. */
+function single(x: string): string {
+  try {
+    if (parse(`@${x}`).k === 'at') return `@${x}`
+  } catch (e) {
+    if (!(e instanceof FormulaError)) throw e
+  }
+  return `@(${x})`
+}
+
 export function fromFile(src: string): Converted {
   if (!/[_[:]/.test(src)) return { formula: src, found: [] }
   const found = new Set<Found>()
-  const bare = src.replace(/"(?:[^"]|"")*"/g, '""')
-  if (SHEETS_3D.test(bare) || QUOTED_3D.test(bare)) found.add('reference3d')
   let out = ''
   let i = 0
   while (i < src.length) {
@@ -97,13 +105,13 @@ export function fromFile(src: string): Converted {
     const upper = name.toUpperCase()
     if (kind === '_xludf.') found.add('userFunction')
     if (kind === '_xlpm.' && LET_NAME_CLASH.test(name)) found.add('letName')
-    if (upper === 'SINGLE' && src[i + name.length] === '(') found.add('singleOperator')
-    if (upper === 'ANCHORARRAY' && src[i + name.length] === '(') {
-      const open = i + name.length
-      const close = closing(src, open)
-      const inner = close < 0 ? '' : fromFile(src.slice(open + 1, close).trim()).formula
-      if (ANCHOR.test(inner)) {
-        out += `${inner}#`
+    const open = i + name.length
+    const close = src[open] === '(' && (upper === 'SINGLE' || upper === 'ANCHORARRAY') ? closing(src, open) : -1
+    if (close >= 0) {
+      const inner = fromFile(src.slice(open + 1, close).trim())
+      inner.found.forEach((x) => found.add(x))
+      if (upper === 'SINGLE' || ANCHOR.test(inner.formula)) {
+        out += upper === 'SINGLE' ? single(inner.formula) : `${inner.formula}#`
         i = close + 1
         continue
       }

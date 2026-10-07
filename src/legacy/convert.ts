@@ -14,7 +14,6 @@
  * - `A` inside an argument that takes an array: nothing gets `@`.
  */
 import type { NameInput } from '../contract.js'
-import { DEFS } from '../functions.js'
 import { canonical, FormulaError, parse, sheetKey, type Ast } from '../syntax.js'
 import { PARAMS } from './params.js'
 
@@ -43,13 +42,30 @@ const SLOTS: Record<string, Record<number, Slot>> = { IFERROR: { 0: 'p' }, IFNA:
 /** Calls that pass on one of their arguments as it is. */
 const PASSING: Record<string, (i: number) => boolean> = { IF: (i) => i > 0, CHOOSE: (i) => i > 0, IFERROR: () => true, IFNA: () => true }
 
-/** The class of argument `i` of `fn` (`params.ts`); repeated arguments take their place in the last group. */
+interface Params {
+  classes: string
+  rep: number
+  array: boolean
+}
+
+const PARSED = new Map<string, Params | undefined>()
+
+/** A function's entry of `params.ts`: its arguments' classes, the number that repeat, whether it can answer an array. */
+function paramsOf(fn: string): Params | undefined {
+  if (!PARSED.has(fn)) {
+    const m = PARAMS[fn] === undefined ? null : /^([a-zA-Z]*)(?:\/(\d+))?(!?)$/.exec(PARAMS[fn])
+    PARSED.set(fn, m ? { classes: m[1], rep: Number(m[2] ?? 1), array: m[3] === '!' } : undefined)
+  }
+  return PARSED.get(fn)
+}
+
+/** The class of argument `i` of `fn`; repeated arguments take their place in the last group. */
 function classAt(fn: string, i: number): string {
-  const s = PARAMS[fn]
-  if (!s) return 'v'
+  const p = paramsOf(fn)
+  if (!p) return 'v'
+  const s = p.classes
   if (i < s.length) return s[i]
-  const rep = DEFS[fn]?.rep ?? 1
-  return s[s.length - rep + ((i - s.length + rep) % rep)]
+  return s[s.length - p.rep + ((i - s.length + p.rep) % p.rep)]
 }
 
 /** The slot and the evaluation of argument `i` of `fn` (the node `n`) called where `where` says. */
@@ -72,8 +88,6 @@ function argument(fn: string, i: number, n: Ast, where: Where): [Slot, Where] {
   }
 }
 
-const at = (o: Out): Out => ({ ast: { k: 'at', a: o.ast }, kind: 'one' })
-
 /** Whether a node of `kind` in `slot` gets `@` where `where` says. */
 function intersects(kind: Kind, slot: Slot, where: Where): boolean {
   if (kind === 'rowcol') return where !== 'A'
@@ -95,7 +109,6 @@ function size(n: Ast): [number, number] | null {
 
 /** A call's answer after its arguments are converted. */
 function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
-  const spec = DEFS[fn]
   switch (fn) {
     case 'ROW':
     case 'COLUMN':
@@ -121,19 +134,22 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
   }
   const passing = PASSING[fn]
   if (passing) return args.reduce<Kind>((k, a, i) => (passing(i) ? wider(k, a.kind) : k), 'one')
-  return spec?.array ? 'array' : 'one'
+  return paramsOf(fn)?.array ? 'array' : 'one'
 }
 
 /** A name's formula as a sheet sees it: its local name there, else the global one. */
 type Names = (name: string, sheet: string | undefined) => { ast: Ast } | undefined
 
 function converter(names: Names) {
-  // the kind of each LET name, by slot; the names being read
+  // the kind of each LET name, by slot; the names being read; the number of `@` put in
   let locals: Kind[] = []
   const reading = new Set<string>()
+  let added = 0
   const go = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => {
     const o = node(n, where, slot, scope)
-    return intersects(o.kind, slot, where) ? at(o) : o
+    if (!intersects(o.kind, slot, where)) return o
+    added++
+    return { ast: { k: 'at', a: o.ast }, kind: 'one' }
   }
   const node = (n: Ast, where: Where, slot: Slot, scope: string | undefined): Out => {
     switch (n.k) {
@@ -201,13 +217,42 @@ function converter(names: Names) {
     reading.delete(key)
     return kind === 'rowcol' ? 'array' : kind
   }
-  return (ast: Ast, sheet: string | undefined) => go(ast, 'V', 'v', sheet).ast
+  return (ast: Ast, sheet: string | undefined): Ast | undefined => {
+    added = 0
+    const out = go(ast, 'V', 'v', sheet).ast
+    return added ? out : undefined
+  }
 }
 
 /** What `fromLegacy` knows of the book: its names, and the sheet of the formula (whose local names it sees). */
 export interface LegacyContext {
   names?: NameInput[]
   sheet?: string
+}
+
+/**
+ * The conversion of a book's formulas of the old kind, given the book's names: a formula's tree and its sheet give the
+ * dynamic formula's tree, or undefined when it needs no `@` (the formula means the same in both kinds).
+ */
+export function legacyConverter(names: readonly NameInput[] = []): (ast: Ast, sheet?: string) => Ast | undefined {
+  const parsed = new Map<NameInput, Ast | null>()
+  const formulaOf = (n: NameInput): Ast | null => {
+    if (!parsed.has(n))
+      try {
+        parsed.set(n, parse(n.ref, { union: true }))
+      } catch {
+        parsed.set(n, null)
+      }
+    return parsed.get(n)!
+  }
+  const lookup: Names = (name, sheet) => {
+    const up = name.toUpperCase()
+    const local = sheet === undefined ? undefined : names.find((n) => n.scope !== undefined && sheetKey(n.scope) === sheetKey(sheet) && n.name.toUpperCase() === up)
+    const found = local ?? names.find((n) => n.scope === undefined && n.name.toUpperCase() === up)
+    const ast = found && formulaOf(found)
+    return found && ast ? { ast } : undefined
+  }
+  return converter(lookup)
 }
 
 /**
@@ -224,23 +269,5 @@ export function fromLegacy(formula: string, ctx: LegacyContext = {}): string {
     if (e instanceof FormulaError) return formula
     throw e
   }
-  const parsed = new Map<NameInput, Ast | null>()
-  const formulaOf = (n: NameInput): Ast | null => {
-    if (!parsed.has(n))
-      try {
-        parsed.set(n, parse(n.ref, { union: true }))
-      } catch {
-        parsed.set(n, null)
-      }
-    return parsed.get(n)!
-  }
-  const names: Names = (name, sheet) => {
-    const up = name.toUpperCase()
-    const all = ctx.names ?? []
-    const local = sheet === undefined ? undefined : all.find((n) => n.scope !== undefined && sheetKey(n.scope) === sheetKey(sheet) && n.name.toUpperCase() === up)
-    const found = local ?? all.find((n) => n.scope === undefined && n.name.toUpperCase() === up)
-    const ast = found && formulaOf(found)
-    return found && ast ? { ast } : undefined
-  }
-  return canonical(converter(names)(ast, ctx.sheet))
+  return canonical(legacyConverter(ctx.names)(ast, ctx.sheet) ?? ast)
 }

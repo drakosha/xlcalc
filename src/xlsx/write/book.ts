@@ -66,7 +66,7 @@ function definedNames(book: BookInput, issues: Issues): string {
     const key = `${scope ?? ''}\n${n.name.toUpperCase()}`
     let text: string | undefined
     try {
-      text = toFile(parse(n.ref))
+      text = toFile(parse(n.ref, { union: true }))
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
     }

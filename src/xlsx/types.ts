@@ -5,16 +5,9 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  * What the book cannot hold of a file, or what writing changed. The codes:
  *
  * - `richText`: text with formatted runs, read as its plain text.
- * - `legacyArray`: an array formula of the old kind (entered with Ctrl+Shift+Enter, `t="array"` without dynamic
- *   array metadata), read as a dynamic array formula in its top-left cell: its array spills over the range it
- *   held, and a result of another size spills otherwise.
- * - `implicitIntersection`: a formula of the old kind (no dynamic array metadata) where Excel 365 takes one value
- *   of a range by implicit intersection (`@`), while the engine computes it by the rules of dynamic arrays.
- * - `singleOperator`: the `@` operator (`_xlfn.SINGLE`), which the engine does not have.
- * - `name`: a name the engine does not take (a constant, a formula, a built-in `_xlnm.` name, one on a sheet left
- *   out), or a name the writer left out.
+ * - `name`: a name the book does not take (a built-in `_xlnm.` name, one on a sheet left out), a hidden name read as
+ *   a visible one, or a name the writer left out.
  * - `table`: a table (list object), and formulas with structured references to tables.
- * - `reference3d`: a formula with a reference across sheets (`Sheet1:Sheet3!A1`).
  * - `externalLink`: links to other workbooks, and formulas that reference them (`[1]Sheet!A1`).
  * - `userFunction`: a call of a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
  * - `formula`: a formula the engine does not parse, read as written (its cell computes to an error), or a formula
@@ -46,12 +39,8 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  */
 export type XlsxIssueCode =
   | 'richText'
-  | 'legacyArray'
-  | 'implicitIntersection'
-  | 'singleOperator'
   | 'name'
   | 'table'
-  | 'reference3d'
   | 'externalLink'
   | 'userFunction'
   | 'formula'

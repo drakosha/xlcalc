@@ -1,10 +1,10 @@
 /**
  * Implicit intersection against Excel: formulas of the old kind (no dynamic array metadata), as a file from an
  * older Excel or another program holds them, each in row 2 of its own column beside data in C1:E10 whose rows
- * differ. Excel 365 computes them taking one value of a range where the engine computes a dynamic array, so their
- * values tell where that happens. `npx tsx bench/coverage/run.ts xlsx intersect` has Excel compute and save the
- * book into `test/excel/xlsx/intersect.xlsx`; `test/xlsx-excel.test.ts` checks that the reader reports every
- * formula whose stored value differs from the engine's.
+ * differ. Excel 365 computes them taking one value of a range where a dynamic array formula would give several, so
+ * their values tell where that happens. `npx tsx bench/coverage/run.ts xlsx intersect` has Excel compute and save the
+ * book into `test/excel/xlsx/intersect/`; `test/xlsx-excel.test.ts` checks that the formulas the reader reads (with
+ * `@` where Excel puts it) compute the values Excel stored.
  */
 import { formatAddress } from '../../../src/model.js'
 import { handBook } from './hand.js'

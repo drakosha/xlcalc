@@ -1,8 +1,8 @@
 /**
- * The reader on formulas: the file's spelling turned into the engine's (prefixes, spill references), shared
- * formulas spread to their cells as copyRange pastes them, array formulas of both kinds, implicit intersection
- * in formulas of the old kind, and what the engine cannot take (the @ operator, user functions, tables, other
- * workbooks, references across sheets) reported on its cells.
+ * The reader on formulas: the file's spelling turned into the engine's (prefixes, spill references, the @ operator),
+ * shared formulas spread to their cells as copyRange pastes them, array formulas of both kinds, formulas of the old
+ * kind with `@` where Excel 365 puts it, and what the engine cannot take (user functions, tables, other workbooks)
+ * reported on its cells.
  */
 import { describe, expect, it } from 'vitest'
 import { fromFile } from '../src/xlsx/formulas/from-file.js'
@@ -36,13 +36,17 @@ describe("xlsx reader: formulas in the engine's spelling", () => {
     expect(fromFile('_xlfn.ANCHORARRAY(A1:B2)').formula).toBe('ANCHORARRAY(A1:B2)')
   })
 
-  it('what the engine has no spelling for is found', () => {
-    expect(fromFile('_xlfn.SINGLE(A1:A3)').found).toEqual(['singleOperator'])
+  it('SINGLE is the @ operator, over a parenthesis where @ would not take the whole argument', () => {
+    expect(fromFile('_xlfn.SINGLE(A1:A3)*2+_xlfn.SINGLE(_xlfn.SEQUENCE(3))').formula).toBe('@A1:A3*2+@SEQUENCE(3)')
+    expect(fromFile('_xlfn.SINGLE(A1:A3*2)').formula).toBe('@(A1:A3*2)')
+    expect(fromFile("_xlfn.SINGLE('My sheet'!B1:B3)").formula).toBe("@'My sheet'!B1:B3")
+  })
+
+  it('what the engine has no spelling for is found; references across sheets are read', () => {
     expect(fromFile('_xludf.MYFN(1)')).toEqual({ formula: 'MYFN(1)', found: ['userFunction'] })
     expect(fromFile('SUM(Table1[Amount])+Table1[[#This Row],[Qty]]').found).toEqual(['table'])
     expect(fromFile('[1]Sheet1!A1+\'[2]My sheet\'!B2').found).toEqual(['externalLink'])
-    expect(fromFile('SUM(Sheet1:Sheet3!A1)').found).toEqual(['reference3d'])
-    expect(fromFile("SUM('Jan 1:Mar 2'!A1)").found).toEqual(['reference3d'])
+    expect(fromFile("SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)")).toEqual({ formula: "SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)", found: [] })
     expect(fromFile('LET(_xlpm.a1,1,_xlpm.a1)').found).toEqual(['letName'])
     expect(fromFile('SUM(Sheet1!A1:B2)+"Sheet1:Sheet3!"').found).toEqual([])
   })
@@ -87,25 +91,34 @@ describe('xlsx reader: formulas of the file', () => {
     expect(r.issues).toEqual([])
   })
 
-  it('an array formula of the old kind is read as a dynamic one, and reported', async () => {
-    const r = await sheet('<row r="1"><c r="B1"><f t="array" ref="B1:B2">A1:A2*2</f><v>2</v></c></row><row r="2"><c r="B2"><v>4</v></c></row>')
-    expect(r.book.sheets[0].cells).toEqual({ B1: { formula: 'A1:A2*2' } })
-    expect(r.cached[0].cells).toEqual({ B1: 2, B2: 4 })
-    expect(codes(r.issues)).toEqual(['legacyArray B1:B2', 'implicitIntersection B1'])
+  it('an array formula of the old kind is read over its area, without @', async () => {
+    const r = await sheet('<row r="1"><c r="B1"><f t="array" ref="B1:B2">A1:A2*2</f><v>2</v></c><c r="C1"><f t="array" ref="C1">SUM(A1:A2*2)</f><v>6</v></c></row><row r="2"><c r="B2"><v>4</v></c></row>')
+    expect(r.book.sheets[0].cells).toEqual({ B1: { formula: 'A1:A2*2', array: 'B1:B2' }, C1: { formula: 'SUM(A1:A2*2)', array: 'C1' } })
+    expect(r.cached[0].cells).toEqual({ B1: 2, B2: 4, C1: 6 })
+    expect(r.issues).toEqual([])
   })
 
-  it('implicit intersection: a range where one value goes, in a formula of the old kind; not where the function takes it whole', async () => {
-    const formulas = ['A1:A3*2', 'ABS(A1:A3)', 'SUM(A1:A3)', 'SUM(IF(A1:A3>0,1,0))', 'SUM(IF(TRUE,A1:A3))', 'INDEX(A1:B5,0,1)', 'COUNTIF(A:A,">0")', 'A:A', 'ROW()', 'IF(A1>0,1,2)', 'VLOOKUP(1,A1:B3,2,FALSE)', 'span*1', 'one*1', '{1,2}+0']
+  it('a formula of the old kind gets @ where Excel 365 shows it (fromLegacy); one that needs none keeps its text', async () => {
+    const formulas = ['A1:A3*2', 'ABS(A1:A3)', 'SUM(A1:A3)', 'SUM(IF(A1:A3>0,1,0))', 'SUM(IF(TRUE,A1:A3))', 'INDEX(A1:B5,0,1)', 'COUNTIF(A:A,">0")', 'A:A', 'ROW()', 'IF(A1>0,1,2)', 'VLOOKUP(1,A1:B3,2,FALSE)', 'span*1', 'one*1', '{1,2}+0', 'sum( A1:A3 )']
     const rows = formulas.map((f, i) => `<row r="${i + 1}"><c r="C${i + 1}"><f>${f.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</f></c></row>`).join('')
     const r = await read({
       sheets: [{ name: 'S', body: `<sheetData>${rows}</sheetData>` }],
       workbook: { after: "<definedNames><definedName name=\"span\">S!$A$1:$A$3</definedName><definedName name=\"one\">S!$A$1</definedName></definedNames>" },
     })
-    expect(codes(r.issues)).toEqual(['implicitIntersection C1 C2 C4 C6 C8 C12 C14'])
+    const shown = ['@A1:A3*2', 'ABS(@A1:A3)', 'SUM(A1:A3)', 'SUM(IF(@A1:A3>0,1,0))', 'SUM(IF(TRUE,A1:A3))', '@INDEX(A1:B5,0,1)', 'COUNTIF(A:A,">0")', '@A:A', 'ROW()', 'IF(A1>0,1,2)', 'VLOOKUP(1,A1:B3,2,FALSE)', '@span*1', 'one*1', '@{1,2}+0', 'sum( A1:A3 )']
+    expect(formulas.map((_, i) => r.book.sheets[0].cells[`C${i + 1}`].formula)).toEqual(shown)
+    expect(r.issues).toEqual([])
+  })
+
+  it('shared formulas of the old kind: each copy with @ as its master', async () => {
+    const rows = '<row r="1"><c r="B1"><f t="shared" ref="B1:B2" si="0">A1:A3*2</f></c></row><row r="2"><c r="B2"><f t="shared" si="0"/></c></row>'
+    const r = await sheet(rows)
+    expect(r.book.sheets[0].cells).toEqual({ B1: { formula: '@A1:A3*2' }, B2: { formula: '@A2:A4*2' } })
   })
 
   it('formulas with dynamic array metadata are not of the old kind', async () => {
     const r = await dynamic('<row r="1"><c r="C1" cm="1"><f t="array" ref="C1:C3">A1:A3*2</f></c></row>')
+    expect(r.book.sheets[0].cells).toEqual({ C1: { formula: 'A1:A3*2' } })
     expect(r.issues).toEqual([])
   })
 
@@ -113,7 +126,7 @@ describe('xlsx reader: formulas of the file', () => {
     const r = await sheet(
       '<row r="1"><c r="A1"><f>_xlfn.SINGLE(B1:B3)</f></c><c r="B1"><f>_xludf.MYFN(1)</f></c><c r="C1"><f>SUM(T[x])</f></c><c r="D1"><f>[1]S!A1</f></c><c r="E1"><f>SUM(S:T!A1)</f></c><c r="F1"><f>A1 B1</f></c><c r="G1"><f>SUM(</f></c></row>',
     )
-    expect(r.book.sheets[0].cells).toMatchObject({ A1: { formula: 'SINGLE(B1:B3)' }, B1: { formula: 'MYFN(1)' }, C1: { formula: 'SUM(T[x])' }, D1: { formula: '[1]S!A1' } })
-    expect(codes(r.issues)).toEqual(['singleOperator A1', 'userFunction B1', 'table C1', 'externalLink D1', 'reference3d E1', 'formula F1 G1'])
+    expect(r.book.sheets[0].cells).toMatchObject({ A1: { formula: '@B1:B3' }, B1: { formula: 'MYFN(1)' }, C1: { formula: 'SUM(T[x])' }, D1: { formula: '[1]S!A1' }, E1: { formula: 'SUM(S:T!A1)' } })
+    expect(codes(r.issues)).toEqual(['userFunction B1', 'table C1', 'externalLink D1', 'formula F1 G1'])
   })
 })

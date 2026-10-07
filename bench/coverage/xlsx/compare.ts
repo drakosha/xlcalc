@@ -54,9 +54,10 @@ function stable(x: unknown): string {
     .join(',')}}`
 }
 
-function formulaText(f: string): string {
+/** A formula's canonical text; a name's formula may be a union without parentheses. */
+function formulaText(f: string, union = false): string {
   try {
-    return canonical(parse(f))
+    return canonical(parse(f, { union }))
   } catch {
     return f
   }
@@ -100,7 +101,7 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     for (const [addr, c] of Object.entries(s.cells) as [string, CellInput][]) {
       const own = lookOf(book, c)
       const x: Record<string, unknown> = stable(own) === stable(inherited(addr)) ? {} : { ...own }
-      if (c.formula !== undefined) Object.assign(x, res ? fromValue(res[addr]?.value ?? null) : { formula: formulaText(c.formula) })
+      if (c.formula !== undefined) Object.assign(x, res ? fromValue(res[addr]?.value ?? null) : { formula: formulaText(c.formula), array: c.array })
       else if (c.value !== undefined && c.value !== null) x.value = typeof c.value === 'object' ? dateToSerial(c.value.date) : c.value
       if (Object.keys(x).length) cells.set(addr, x)
     }
@@ -112,7 +113,7 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     for (const [lo, hi, e] of lines(s.rows, 'r')) for (let r = lo; r <= hi; r++) out.set(`row ${s.name}!${r + 1}`, stable({ height: e.height, ...lookOf(book, e) }))
     if (s.merges?.length) out.set(`merges ${s.name}`, stable([...s.merges].sort()))
   })
-  for (const n of book.names ?? []) out.set(`name ${n.scope ?? ''}!${n.name.toUpperCase()}`, formulaText(n.ref))
+  for (const n of book.names ?? []) out.set(`name ${n.scope ?? ''}!${n.name.toUpperCase()}`, formulaText(n.ref, true))
   out.set('locale', book.locale ?? 'en-US')
   return out
 }

@@ -89,24 +89,24 @@ describe('xlsx reader: names', () => {
     expect(r.issues).toEqual([])
   })
 
-  it('constants and formulas are kept and reported; built-in names are left out; the placeholders of newer functions are no names', async () => {
+  it('constants, formulas, unions and references across sheets are names; built-in names are left out; the placeholders of newer functions are no names', async () => {
     const r = await names(
-      '<definedName name="tax">0.2</definedName><definedName name="twice">Data!$A$1*2</definedName><definedName name="_xlnm.Print_Area" localSheetId="0">Data!$A$1:$C$9</definedName><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">Data!$A$1:$A$9</definedName><definedName name="_xlfn.XLOOKUP" hidden="1">#NAME?</definedName><definedName name="secret" hidden="1">Data!$B$1</definedName><definedName name="ext">[1]Data!$A$1</definedName>',
+      '<definedName name="tax">0.2</definedName><definedName name="twice">Data!$A$1*2</definedName><definedName name="both">Data!$A$1:$A$3,Data!$C$1:$C$3</definedName><definedName name="cube">Data:Other!$A$1</definedName><definedName name="one">_xlfn.SINGLE(Data!$A:$A)</definedName><definedName name="_xlnm.Print_Area" localSheetId="0">Data!$A$1:$C$9</definedName><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">Data!$A$1:$A$9</definedName><definedName name="_xlfn.XLOOKUP" hidden="1">#NAME?</definedName><definedName name="secret" hidden="1">Data!$B$1</definedName><definedName name="ext">[1]Data!$A$1</definedName>',
     )
     expect(r.book.names).toEqual([
       { name: 'tax', ref: '0.2' },
       { name: 'twice', ref: 'Data!$A$1*2' },
+      { name: 'both', ref: 'Data!$A$1:$A$3,Data!$C$1:$C$3' },
+      { name: 'cube', ref: 'Data:Other!$A$1' },
+      { name: 'one', ref: '@Data!$A:$A' },
       { name: 'secret', ref: 'Data!$B$1' },
       { name: 'ext', ref: '[1]Data!$A$1' },
     ])
     expect(r.issues.map((i) => `${i.code} ${i.name}: ${i.message.split(':')[0]}`)).toEqual([
-      'name tax: the engine takes only a reference in a name',
-      'name twice: the engine takes only a reference in a name',
       'name _xlnm.Print_Area: a built-in name (a print area or titles, the range of a filter) is not in the model',
       'name _xlnm._FilterDatabase: a built-in name (a print area or titles, the range of a filter) is not in the model',
       'name secret: a hidden name is read as a visible one',
       'externalLink ext: references to other workbooks are not in the engine',
-      'name ext: the engine takes only a reference in a name',
     ])
   })
 })
