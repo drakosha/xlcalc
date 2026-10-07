@@ -25,13 +25,13 @@ const clock = ${JSON.stringify(clock)}
 const synth = synthBook({ seed: 1, rows: 340 })
 const out = { worker: typeof Worker }
 try {
-  const pool = createCalcPool({ threads: 2, hardTimeoutMs: 800 })
+  const pool = createCalcPool({ threads: 2, hardTimeoutMs: 2000 })
   out.pool = (await pool.compute(synth.book, { clock })).hash
   out.eval = (await pool.compute(synth.book, { clock, execution: 'eval' })).hash
   const s = await pool.openSession(synth.book, { clock })
   for (const e of classAEdits(synth, 3, 10)) await s.setCells([e])
   out.edited = (await s.result()).hash
-  const slow = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1000,1000),SEQUENCE(1000,1000))),A1)' } } }] }
+  const slow = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1500,1500),SEQUENCE(1500,1500))),A1)' } } }] }
   const t = await pool.openSession(slow, { clock })
   out.killed = await t.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).then(() => 'answered', (e) => e.code)
   await t.setCells([{ sheet: 'S', cell: 'A1', input: { value: 0.5 } }])
@@ -77,7 +77,7 @@ describe.skipIf(!chrome)('in a browser', () => {
       const hash = compute(synth.book, { clock }).hash
       const session = openSession(synth.book, { clock })
       for (const e of classAEdits(synth, 3, 10)) session.setCells([e])
-      const slow = compute({ sheets: [{ name: 'S', cells: { A1: { value: 0.5 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1000,1000),SEQUENCE(1000,1000))),A1)' } } }] }, { clock }).hash
+      const slow = compute({ sheets: [{ name: 'S', cells: { A1: { value: 0.5 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1500,1500),SEQUENCE(1500,1500))),A1)' } } }] }, { clock }).hash
       expect(out.error).toBeUndefined()
       expect(out).toMatchObject({ worker: 'function', pool: hash, eval: hash, edited: session.result().hash, killed: 'hard_timeout', restored: slow, inline: compute(synthBook({ seed: 1, rows: 1700 }).book, { clock }).hash })
       expect(out.heap).toMatch(/^opts\.maxHeapMb: a thread's memory limit needs Node's worker_threads/)

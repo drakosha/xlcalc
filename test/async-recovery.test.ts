@@ -32,8 +32,9 @@ const heavy: CellEdit[] = setA1(2)
 describe('a thread lost', () => {
   it('past its hard deadline: the call fails, the session comes back with the hash of one that never lost its thread', async () => {
     const synth = synthBook({ seed: 1, rows: 340 })
-    const book: BookInput = { ...synth.book, sheets: [...synth.book.sheets, ...slowBook().sheets] }
-    const p = kept(await pool({ threads: 1, hardTimeoutMs: 400 }))
+    const book: BookInput = { ...synth.book, sheets: [...synth.book.sheets, ...slowBook(1500).sheets] }
+    // the heavy edit takes many seconds; the others well under the deadline even on a loaded machine
+    const p = kept(await pool({ threads: 1, hardTimeoutMs: 2000 }))
     const s = await p.openSession(book, { clock: CLOCK })
     const y = openSession(book, { clock: CLOCK })
     const list = edits(4, 12, synth)

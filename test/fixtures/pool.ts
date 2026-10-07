@@ -9,10 +9,14 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import type { Calc, CalcPoolOptions } from '../../src/contract.js'
-import { checkPoolOptions } from '../../src/async/options.js'
-import { nodeSpawn, workerThreads, type Thread, type ThreadLoss } from '../../src/worker/platform.js'
-import { createPool, type PoolInside } from '../../src/worker/pool.js'
+import type { Thread, ThreadLoss } from '../../src/worker/platform.js'
+import type { PoolInside } from '../../src/worker/pool.js'
 import { libUrl, TARGET } from './target.js'
+
+// the modules of the build under test, so that their CalcError is the one the tests import
+const { checkPoolOptions } = (await import(libUrl('async/options.js'))) as typeof import('../../src/async/options.js')
+const { nodeSpawn, workerThreads } = (await import(libUrl('worker/platform.js'))) as typeof import('../../src/worker/platform.js')
+const { createPool } = (await import(libUrl('worker/pool.js'))) as typeof import('../../src/worker/pool.js')
 
 let script: URL | undefined
 
