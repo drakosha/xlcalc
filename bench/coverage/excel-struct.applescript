@@ -6,7 +6,7 @@
 -- and for a styled book the cells, columns and rows whose look is read (lines; empty otherwise).
 -- Output: JSON {"error": text, "sheets": [[name, used range, formulas of the rectangle, look or ""]],
 -- "extra": [[sheet, address, formula]], "names": [[name, references]]}; a look is
--- [[[address, bold, fill colour, number format, merged area or ""]], [[column, standard width, width]], [[row, standard height, height]]].
+-- [[[address, bold, fill colour, number format, merged area or ""]], [[column, standard width, width, hidden]], [[row, standard height, height, hidden]]].
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -49,6 +49,10 @@ on run argv
 					cut range (range argRange of ws) destination of cut (range argTo of worksheet argTarget of wb)
 				else if op is "copyRange" then
 					copy range (range argRange of ws) destination (range argTo of worksheet argTarget of wb)
+				else if op is "fillDown" then
+					fill down (range argTo of worksheet argTarget of wb)
+				else if op is "autofill" then
+					autofill (range argRange of ws) destination (range argTo of worksheet argTarget of wb)
 				else if op is "renameSheet" then
 					set name of ws to argTarget
 				else if op is "deleteSheet" then
@@ -82,12 +86,12 @@ on run argv
 						set wl to {}
 						repeat with cc in lookCols
 							set rg to range ((cc as text) & "1") of w
-							set end of wl to {cc as text, use standard width of rg, column width of rg}
+							set end of wl to {cc as text, use standard width of rg, column width of rg, hidden of entire column of rg}
 						end repeat
 						set hl to {}
 						repeat with rr in lookRows
 							set rg to range ("A" & (rr as text)) of w
-							set end of hl to {rr as text, use standard height of rg, row height of rg}
+							set end of hl to {rr as text, use standard height of rg, row height of rg, hidden of entire row of rg}
 						end repeat
 						set lk to {cl, wl, hl}
 					end if

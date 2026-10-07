@@ -8,7 +8,8 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { compare } from '../bench/coverage/compare.js'
-import type { SpillAnswer, StoredSpill } from '../bench/coverage/spill.js'
+import type { RectsAnswer } from '../bench/coverage/case-book.js'
+import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import { compute, openSession, type ComputeResult } from '../src/index.js'
 import { formatAddress, parseAddress } from '../src/model.js'
@@ -20,7 +21,7 @@ const SETS = existsSync(dir)
       .filter((f) => f.endsWith('.json') && !f.endsWith('-runs.json'))
       .map((f) => ({ name: f.slice(0, -5), ...(JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as StoredSpill) }))
   : []
-const RUNS = JSON.parse(readFileSync(new URL('order-runs.json', dir), 'utf8')) as { answers: Record<string, SpillAnswer[]> }
+const RUNS = JSON.parse(readFileSync(new URL('order-runs.json', dir), 'utf8')) as { answers: Record<string, RectsAnswer[]> }
 
 /** `<set>:<case>` → why the engine's answer differs from the one Excel run of the case. */
 const KNOWN: Readonly<Record<string, string>> = {
@@ -42,7 +43,7 @@ function computed(c: SpillCase): ComputeResult {
 }
 
 /** Cells of the case's rectangles where the engine does not show Excel's answer. */
-function differences(c: SpillCase, a: SpillAnswer, r: ComputeResult): string[] {
+function differences(c: SpillCase, a: RectsAnswer, r: ComputeResult): string[] {
   const out: string[] = []
   for (const g of c.read) {
     const [p, q = p] = g.range.split(':').map(parseAddress)
