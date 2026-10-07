@@ -344,7 +344,7 @@ Notes on semantics:
 
 ## Limitations
 
-- **Spilling.** Of two arrays over one cell that do not depend on each other, the engine always lets the lower one spill; Excel's choice varies between runs (`docs/spill.md`). An array whose size depends on a volatile draw spills by the engine's clock (Excel can give `#SPILL!`). A cycle through a spill range is `#CYCLE!`. There are no `LET`, `LAMBDA` or tables.
+- **Spilling.** Of two arrays over one cell that do not depend on each other, the engine always lets the lower one spill; Excel's choice varies between runs (`docs/spill.md`). An array whose size depends on a volatile draw spills by the engine's clock, where Excel gives `#SPILL!` when the size changes between its calculation passes (for most of ten such arrays in one book, for none of one alone). A cycle through a spill range is `#CYCLE!`. There are no `LET`, `LAMBDA` or tables.
 - **Content Security Policy.** Only `execution: 'eval'` uses `new Function`: in a browser with a CSP that does not allow `'unsafe-eval'`, `compute` and `openSession` in that mode throw an `EvalError` saying so. The default `closures` mode generates no code and computes under such a policy.
 - **Known differences from Excel:**
   - `XLOOKUP` and `XMATCH` with binary search (search mode 2 or −2) scan linearly: the same answer on sorted data, where Excel's binary search is defined. Match mode 3 (regular expressions) is `#VALUE!`.

@@ -26,6 +26,9 @@ const RUNS = JSON.parse(readFileSync(new URL('order-runs.json', dir), 'utf8')) a
 const KNOWN: Readonly<Record<string, string>> = {
   'base:cross': 'two independent arrays over one cell: in the set order the same pair (cross-C1-A2-row-first) let either spill',
   'base:cross-rect': 'two independent arrays over one cell: Excel lets either spill, the set order shows it for 11 pairs',
+  'more:volatile-size': 'a size drawn by RANDBETWEEN: Excel spilled its own draw (five runs of five), the engine spills the draw of its clock',
+  'more:volatile-sizes': 'ten sizes drawn in one book: Excel gave #SPILL! 47 times of 50 in five runs (the sizes changed between its passes), the engine draws once and spills',
+  'more:volatile-cell': 'a size from a cell holding a draw: both spill that cell\'s value (Excel five runs of five), which Excel and the engine draw differently',
 }
 
 const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
