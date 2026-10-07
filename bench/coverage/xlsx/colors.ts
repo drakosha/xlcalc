@@ -4,7 +4,7 @@
  * colours Excel shows into `test/excel/xlsx/colors.json`; `test/xlsx-excel.test.ts` checks the reader's against them.
  */
 import { formatAddress } from '../../../src/model.js'
-import { zip } from '../../../src/xlsx/zip/write.js'
+import { handBook } from './hand.js'
 
 /** The Office theme's colours (Office 2013 to 2022). */
 export const THEME =
@@ -28,30 +28,16 @@ export function colorCases(): ColorCase[] {
   return colors.map((color, i) => ({ cell: formatAddress(i % 50, Math.floor(i / 50)), color }))
 }
 
-const enc = new TextEncoder()
-const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
-const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-const TYPE = 'application/vnd.openxmlformats-officedocument'
-
 /** The book: one cell per case, filled with its colour, the theme as a part of its own. */
 export function colorBook(cases: ColorCase[]): Promise<Uint8Array> {
   const fills = cases.map((c) => `<fill><patternFill patternType="solid"><fgColor ${c.color}/><bgColor indexed="64"/></patternFill></fill>`)
   const xfs = cases.map((_, i) => `<xf numFmtId="0" fontId="0" fillId="${i + 2}" borderId="0" xfId="0" applyFill="1"/>`)
-  const styles = `<styleSheet ${NS}><fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts><fills count="${fills.length + 2}"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>${fills.join('')}</fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length + 1}"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>${xfs.join('')}</cellXfs></styleSheet>`
+  const styles = `<fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts><fills count="${fills.length + 2}"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>${fills.join('')}</fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length + 1}"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>${xfs.join('')}</cellXfs>`
   const byRow = new Map<number, string[]>()
   cases.forEach((c, i) => {
     const row = Number(/\d+/.exec(c.cell)![0])
     byRow.set(row, [...(byRow.get(row) ?? []), `<c r="${c.cell}" s="${i + 1}"/>`])
   })
   const rows = [...byRow].sort((a, b) => a[0] - b[0]).map(([r, cs]) => `<row r="${r}">${cs.join('')}</row>`)
-  const parts: Record<string, string> = {
-    '[Content_Types].xml': `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="${TYPE}.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="${TYPE}.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="${TYPE}.spreadsheetml.styles+xml"/><Override PartName="/xl/theme/theme1.xml" ContentType="${TYPE}.theme+xml"/></Types>`,
-    '_rels/.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
-    'xl/workbook.xml': `<workbook ${NS}><sheets><sheet name="Colors" sheetId="1" r:id="rId1"/></sheets></workbook>`,
-    'xl/_rels/workbook.xml.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${REL}/styles" Target="styles.xml"/><Relationship Id="rId3" Type="${REL}/theme" Target="theme/theme1.xml"/></Relationships>`,
-    'xl/styles.xml': styles,
-    'xl/theme/theme1.xml': THEME,
-    'xl/worksheets/sheet1.xml': `<worksheet ${NS}><sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData></worksheet>`,
-  }
-  return zip(Object.entries(parts).map(([name, text]) => ({ name, data: enc.encode(text) })))
+  return handBook({ sheet: 'Colors', body: `<sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData>`, styles, theme: THEME })
 }

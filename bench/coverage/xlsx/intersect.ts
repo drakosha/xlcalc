@@ -7,7 +7,7 @@
  * formula whose stored value differs from the engine's.
  */
 import { formatAddress } from '../../../src/model.js'
-import { zip } from '../../../src/xlsx/zip/write.js'
+import { handBook } from './hand.js'
 
 /** Formulas in row 2 of sheet S from column G on, over data in C1:E10 and the names `span` (C1:C3) and `one` (C1). */
 export const OLD_FORMULAS = [
@@ -23,10 +23,6 @@ export const OLD_FORMULAS = [
   'SORT(C1:C3)', 'UNIQUE(C1:C3)', 'FILTER(C1:C3,C1:C3>1)', 'C1:C3 D2:E2',
 ]
 
-const enc = new TextEncoder()
-const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
-const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
-const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const NEWER = /\b(XLOOKUP|SEQUENCE|SORT|UNIQUE|FILTER)\(/g
 const PREFIX: Record<string, string> = { XLOOKUP: '_xlfn.XLOOKUP', SEQUENCE: '_xlfn.SEQUENCE', SORT: '_xlfn._xlws.SORT', UNIQUE: '_xlfn.UNIQUE', FILTER: '_xlfn._xlws.FILTER' }
 /** The cell of the formula `i`: row 2, from column G on. */
@@ -38,12 +34,9 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 export function oldFormulaBook(formulas: string[]): Promise<Uint8Array> {
   const cells = formulas.map((f, i) => `<c r="${formulaCell(i)}"><f>${esc(f.replace(NEWER, (_m, n: string) => `${PREFIX[n]}(`))}</f></c>`).join('')
   const rows = Array.from({ length: 10 }, (_, r) => `<row r="${r + 1}">${['C', 'D', 'E'].map((c, k) => `<c r="${c}${r + 1}"><v>${(r + 1) * (k + 1)}</v></c>`).join('')}${r === 1 ? cells : ''}</row>`)
-  const parts: Record<string, string> = {
-    '[Content_Types].xml': `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="${TYPE}.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="${TYPE}.worksheet+xml"/></Types>`,
-    '_rels/.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
-    'xl/workbook.xml': `<workbook ${NS}><sheets><sheet name="S" sheetId="1" r:id="rId1"/></sheets><definedNames><definedName name="one">S!$C$1</definedName><definedName name="span">S!$C$1:$C$3</definedName></definedNames><calcPr fullCalcOnLoad="1"/></workbook>`,
-    'xl/_rels/workbook.xml.rels': `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`,
-    'xl/worksheets/sheet1.xml': `<worksheet ${NS}><sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData></worksheet>`,
-  }
-  return zip(Object.entries(parts).map(([name, text]) => ({ name, data: enc.encode(text) })))
+  return handBook({
+    sheet: 'S',
+    body: `<sheetFormatPr defaultRowHeight="15"/><sheetData>${rows.join('')}</sheetData>`,
+    workbook: '<definedNames><definedName name="one">S!$C$1</definedName><definedName name="span">S!$C$1:$C$3</definedName></definedNames><calcPr fullCalcOnLoad="1"/>',
+  })
 }
