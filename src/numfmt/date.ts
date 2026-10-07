@@ -1,7 +1,8 @@
 /**
  * Date and time sections: `y`, `m` (minutes after hours or before seconds), `d`, `h`, `s` with fractions of a
  * second (`ss.00`), `AM/PM` and `A/P`, elapsed time (`[h]:mm`, `[mm]:ss`, `[ss]`), names by the locale or a
- * locale tag (`[$-409]`). Excel's calendar from 1900-01-00 to 9999-12-31; outside it a section that is not
+ * locale tag (`[$-409]`). Excel's calendar from 1900-01-00 to 9999-12-31, or from 1904-01-01 in the 1904 date
+ * system (`Style.epoch`), where a negative value shows as its size with a minus; outside it a section that is not
  * elapsed time alone gives null (TEXT answers #VALUE!, a cell shows `#`).
  */
 import { ymd } from '../dates.js'
@@ -30,8 +31,10 @@ function subseconds(toks: Tok[], i: number): number {
 
 export function formatDate(v: number, sec: Section, style: Style, names: Names): string | null {
   const { toks } = sec
+  const epoch = style.epoch ?? 0
   const elapsedOnly = !toks.some((t) => t.t === 'date' || t.t === 'ampm')
-  if (v < 0 && !elapsedOnly) return null
+  // the 1904 date system shows a negative date or time as its size with a minus (the workbook set date1904)
+  if (v < 0 && !elapsedOnly && !epoch) return null
   // the precision of the time: whole seconds, or the decimals after the seconds
   const s = toks.findIndex((t, i) => t.t === 'dot' && (toks[i - 1]?.t === 'date' || toks[i - 1]?.t === 'elapsed') && (toks[i - 1] as { s: string }).s[0] === 's')
   const k = s < 0 ? 0 : Math.min(3, subseconds(toks, s))
@@ -40,12 +43,12 @@ export function formatDate(v: number, sec: Section, style: Style, names: Names):
   let day = Math.floor(a)
   let ticks = Math.round((a - day) * unit)
   if (ticks >= unit) [day, ticks] = [day + 1, ticks - unit]
-  if (day >= END && !elapsedOnly) return null
+  if (day + epoch >= END && !elapsedOnly) return null
   const secs = Math.floor(ticks / 10 ** k)
   const ampm = toks.some((t) => t.t === 'ampm')
-  // Excel's calendar: day 0 is 1900-01-00, day 60 the phantom 1900-02-29, day 1 a Sunday
-  const { y: Y, m, d: D } = ymd(day)
-  const W = (day + 6) % 7
+  // Excel's calendar: day 0 is 1900-01-00, day 60 the phantom 1900-02-29, day 1 a Sunday; a 1904 book's day 0 is 1462
+  const { y: Y, m, d: D } = ymd(day + epoch)
+  const W = (day + epoch + 6) % 7
   const h = Math.floor(secs / 3600)
   const mi = Math.floor(secs / 60) % 60
   const sc = secs % 60

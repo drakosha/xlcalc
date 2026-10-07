@@ -25,6 +25,8 @@ export interface AtpOrder {
   check?: Readonly<Record<number, (x: any, a: readonly any[]) => CErr | undefined>>
   /** `fn` gets the function context (`Cx`) first: it reads more values by the book's locale (WORKDAY's holidays). */
   cx?: boolean
+  /** The answer is a date (`FnDef.date`). */
+  date?: FnDef['date']
 }
 
 /** A check that answers #NUM! where `ok` fails. */
@@ -43,6 +45,7 @@ export function atp(kinds: string, fn: (...a: any[]) => V, order: AtpOrder = {})
   return {
     args: ks.map((k, i) => (local[i] ? `a${k.slice(1)}` : k)).join(' '),
     cx: true,
+    ...(order.date ? { date: order.date } : {}),
     fn: (cx: Cx, ...a: unknown[]) => {
       for (const i of seq) {
         if (!local[i] || a[i] === undefined) continue

@@ -4,7 +4,7 @@
  * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  */
 import type { BookInput, CellChange, CellEdit, CellStyle, Clock, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
-import { applyClock, applyEdits, applyHidden, applyMerges, createState, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyMerges, createState, setNow, type EngineState } from './engine.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
@@ -55,8 +55,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
   }
   const tick = (s: EngineState) => {
     clock = currentClock()
-    s.ctx.now = clockSerial(clock)
-    s.ctx.seed = clock.seed
+    setNow(s, clockSerial(clock), clock.seed)
   }
   return {
     get clock() {

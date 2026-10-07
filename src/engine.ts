@@ -12,7 +12,7 @@ import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type Formula
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
-import { ymd } from './dates.js'
+import { epochOf, ymd } from './dates.js'
 import { hiddenRows } from './layout/hidden.js'
 import { rulesOf } from './locale/rules.js'
 import type { RulesClock } from './locale/rules/data.js'
@@ -43,7 +43,7 @@ interface Invalid {
 }
 
 export interface EngineOptions {
-  /** The clock moment, a serial number (UTC). */
+  /** The clock moment, a serial number of the 1900 date system (UTC). */
   now: number
   seed: number
   externals?: Externals
@@ -105,6 +105,12 @@ function emptySheet(name: string): SheetData {
 }
 
 
+/** A typed value in the book's date system: a date's serial number counts from its day 0 (`epoch` of the 1900 system). */
+function bookScalar(v: CellInput['value'], epoch: number) {
+  const x = inputScalar(v)
+  return epoch && typeof v === 'object' && v !== null ? (x as number) - epoch : x
+}
+
 export function invalidError(code: CheckCode): ErrorCode {
   if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
   if (code === 'unknown_sheet' || code === 'external_ref') return 'REF'
@@ -136,19 +142,20 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
+  const epoch = epochOf(book.dateSystem)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock: RulesClock = {
     read: false,
     year: () => {
       clock.read = true
-      return ymd(Math.floor(ctx.now)).y
+      return ymd(Math.floor(ctx.now) + epoch).y
     },
   }
   const ctx: RuntimeContext = {
     sheets: sheetNames.map(emptySheet),
-    now: opts.now,
+    now: opts.now - epoch,
     seed: opts.seed,
-    rules: rulesOf(book.locale, clock),
+    rules: rulesOf(book.locale, clock, epoch),
     externals: opts.externals?.values ?? {},
     flat: new Map(),
     index: new Map(),
@@ -187,7 +194,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
       const { row, col } = parseAddress(addr)
       if (blocks(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       if (cellIn.formula === undefined) {
-        const v = inputScalar(cellIn.value)
+        const v = bookScalar(cellIn.value, epoch)
         if (v !== null) put(ctx.sheets[s], row, col, v)
         continue
       }
@@ -256,7 +263,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
       state.at.set(k, f.id)
       fresh.push(f)
       structural = true
-    } else write(state, s, row, col, input ? inputScalar(input.value) : null, track)
+    } else write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
   }
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
@@ -270,10 +277,15 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
   return changed(state, track)
 }
 
+/** The clock's moment (a serial number of the 1900 date system) in the book's date system. */
+export function setNow(state: EngineState, now: number, seed: number) {
+  state.ctx.now = now - state.ctx.rules.epoch
+  state.ctx.seed = seed
+}
+
 /** A new clock: recomputes volatile cells and their dependents. */
 export function applyClock(state: EngineState, now: number, seed: number): string[] {
-  state.ctx.now = now
-  state.ctx.seed = seed
+  setNow(state, now, seed)
   const track = tracker()
   recompute(state, new Set(state.volatile), track)
   return changed(state, track)

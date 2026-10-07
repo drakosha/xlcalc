@@ -8,6 +8,12 @@ import { NUMBER_TEXT, readNumber } from './model.js'
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465
 
+/** The days from the 1900 date system's day 0 to the 1904 system's (1904-01-01): what a date's serial number loses in a 1904 book. */
+export const EPOCH_1904 = 1462
+
+/** The day 0 of a book's date system in the 1900 system: 0, or 1462 for 1904. */
+export const epochOf = (system: 1900 | 1904 | undefined) => (system === 1904 ? EPOCH_1904 : 0)
+
 const DAY_MS = 86_400_000
 const EPOCH_MS = Date.UTC(1899, 11, 30)
 
@@ -54,6 +60,18 @@ export interface DateSyntax {
   date(s: string): number | null
   decimal: string
 }
+
+/** Date text read in a date system whose day 0 is `epoch` of the 1900 one: a date before it is no date. */
+export const inSystem = (syn: DateSyntax, epoch: number): DateSyntax =>
+  epoch
+    ? {
+        ...syn,
+        date: (s) => {
+          const d = syn.date(s)
+          return d === null || d < epoch ? null : d - epoch
+        },
+      }
+    : syn
 
 /** A time's parts as typed: hours, minutes, seconds (with the decimal separator), `a` or `p`. */
 type TimeParts = [h: string, mi?: string, sec?: string, ampm?: string]

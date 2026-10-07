@@ -27,7 +27,7 @@ function withParts(s: SheetInput, parts: NonNullable<FileParts['sheets']>[string
 /** The case's book as the engine takes it. */
 export function bookOf(c: WorkbookCase): BookInput {
   const f = c.file ?? {}
-  return { ...c.book, sheets: c.book.sheets.map((s) => withParts(s, f.sheets?.[s.name])) }
+  return { ...c.book, sheets: c.book.sheets.map((s) => withParts(s, f.sheets?.[s.name])), ...(f.date1904 ? { dateSystem: 1904 as const } : {}) }
 }
 
 /** Excel's autofilter as a host applies it: the rows of `range` below its header shown where `field` is `criterion`, else hidden; the sheet filtered. */
@@ -59,9 +59,14 @@ export function engineReads(c: WorkbookCase): ComputeResult[] {
   return reads
 }
 
-/** Cells of the case's rectangles where the engine does not show Excel's answer. */
-export function differences(c: WorkbookCase, excel: Record<string, Val>, r: Pick<ComputeResult, 'sheets'>): string[] {
+/** Cells of the case's rectangles where the engine does not show Excel's answer, and cells to show that show other text. */
+export function differences(c: WorkbookCase, excel: Record<string, Val>, shown: Record<string, string> | undefined, r: Pick<ComputeResult, 'sheets'>): string[] {
   const out: string[] = []
+  for (const [k, text] of Object.entries(shown ?? {})) {
+    const [sheet, addr] = k.split('!')
+    const ours = r.sheets.find((s) => s.name === sheet)!.cells[addr]?.text ?? ''
+    if (ours !== text) out.push(`${k} shows ${JSON.stringify(text)} in Excel, ${JSON.stringify(ours)} here`)
+  }
   for (const g of c.read) {
     const [p, q = p] = g.range.split(':').map(parseAddress)
     for (let row = p.row; row <= q.row; row++)

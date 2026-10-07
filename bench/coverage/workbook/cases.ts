@@ -31,8 +31,11 @@ export interface WorkbookCase {
   show?: RangeRef[]
   /** `['full', 'read']` when left out. */
   steps?: Step[]
-  /** A held-out case: the answer of each read (non-blank cells, `Sheet!A1`) predicted before Excel ran it. */
-  predicted?: Record<string, Val>[]
+  /**
+   * A held-out case: the answer of each read predicted before Excel ran it, the values of non-blank cells by
+   * `Sheet!A1` and the text of the cells to show by `show:Sheet!A1`.
+   */
+  predicted?: Record<string, Val | string>[]
 }
 
 export interface WorkbookSet {

@@ -16,7 +16,7 @@ import { FILL, plain, type Style } from './numfmt/style.js'
 export { generalFormat, generalText } from './numfmt/general.js'
 export { columnPoints, room } from './numfmt/glyphs.js'
 export { EN_CODES, type Codes } from './numfmt/parse.js'
-export { EN_NAMES, type Names, type Style } from './numfmt/style.js'
+export { EN_NAMES, styleIn, type Names, type Style } from './numfmt/style.js'
 
 /** How TEXT reads and writes format codes in a locale (a cell reads an xlsx file's codes, `EN_CODES`). */
 export interface Dialect {

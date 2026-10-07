@@ -7,6 +7,7 @@
 import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'
 import { restructure } from './structure/index.js'
+import { epochOf } from './dates.js'
 import { createState, debugSource } from './engine.js'
 import { currentClock, nowMs } from './env.js'
 import { checkBook, checkCellValue, checkComputeOptions, checkDisplayOptions, checkString, checkValidateContext } from './input.js'
@@ -58,11 +59,12 @@ export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): stri
 
 /**
  * A value as a cell shows it without a book (a cell being edited, say): by `format` (General without one), in
- * `locale`, in a column of `width` (the default width without one), as `CellResult.text` and `color` show it.
+ * `locale` and `dateSystem`, in a column of `width` (the default width without one), as `CellResult.text` and
+ * `color` show it.
  */
 export function displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay {
   const o = checkDisplayOptions(opts)
-  return displayRules(o.locale).display(checkCellValue(value, 'value'), o.format, room(columnPoints(o.width)))
+  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, room(columnPoints(o.width)))
 }
 
 /** The contract implementation as one object. */

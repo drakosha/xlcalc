@@ -30,9 +30,10 @@
  *      `if_empty`); `P` the same with a reference passed on as a reference, one cell too, for a function
  *      that answers it (CHOOSE, the values of IF, IFS and SWITCH, HSTACK: `SUM(IF(TRUE,A2))` skips text in
  *      A2, as Excel does); where the answer goes to a one-value position it is read as a value.
- * 2. Date and time text in a date argument (`d`, `t`, `D`) is read as Excel reads it in the book's locale
- *    (`Cx.rules`; en-US: `2025-01-31`, `1/31/2025`, `18:30`, see `dates.ts`); a date before 0 or after
- *    9999-12-31 is #NUM!. Text, numbers and booleans in every kind are coerced by the locale's rules too.
+ * 2. Date and time text in a date argument (`d`, `t`, `D`, `h` a time of day) is read as Excel reads it in the
+ *    book's locale (`Cx.rules`; en-US: `2025-01-31`, `1/31/2025`, `18:30`, see `dates.ts`); a date before 0 or after
+ *    9999-12-31 is #NUM!. A function gets dates in the 1900 date system, whatever the book's (`FnDef.date` moves
+ *    its date answer back). Text, numbers and booleans in every kind are coerced by the locale's rules too.
  * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Z`, `D`) hold no
  *    numbers at all (AVERAGE #DIV/0!, MEDIAN #NUM!, MODE #N/A); a blank cell as a whole answer is null,
  *    which a cell shows as 0.
@@ -131,6 +132,11 @@ export interface FnDef {
   empty?: ErrorCode
   /** `fn` gets the function context (`Cx`) first. */
   cx?: boolean
+  /**
+   * The answer is a date, a serial number of the 1900 system the calendar counts in, moved to the book's date system:
+   * `book` a date of that system (#NUM! before its first day), `calendar` any date the function reached.
+   */
+  date?: 'book' | 'calendar'
   /** `fn` gets the formula's cell (sheet, row, column) after the context: RAND. */
   cell?: boolean
   /** `fn` gets every argument as a function evaluated on demand, without coercion: IF, IFERROR. */
@@ -288,12 +294,21 @@ export function toDate(v: V, rules: Rules): number | CErr {
   return isErr(n) ? n : Math.floor(n)
 }
 
-/** A time or date-time argument: a serial number with a day fraction, from a number or text. */
+/**
+ * A time or date-time argument: a serial number with a day fraction, from a number or text, in the book's date
+ * system (outside its first day … 9999-12-31 #NUM!), given to the function in the 1900 system its calendar counts in.
+ */
 export function toTime(v: V, rules: Rules): number | CErr {
+  const n = timeOfDay(v, rules)
+  return isErr(n) ? n : n + rules.epoch
+}
+
+/** A time of day argument (HOUR, MINUTE, SECOND): as `toTime`, in the book's date system, whose day fraction is the same. */
+function timeOfDay(v: V, rules: Rules): number | CErr {
   const t = typeof v === 'string' ? rules.dateText(v) : null
   const n = t ?? rules.toNum(v)
   if (isErr(n)) return n
-  return n < 0 || n >= MAX_SERIAL + 1 ? E.NUM : n
+  return n < 0 || n >= MAX_SERIAL + 1 - rules.epoch ? E.NUM : n
 }
 
 /** A number where a boolean is #VALUE! (the former Analysis ToolPak's rule). */
@@ -364,6 +379,7 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   x: (x, cx) => noBool(cx.scalar(x), cx.rules),
   d: (x, cx) => toDate(cx.scalar(x), cx.rules),
   t: (x, cx) => toTime(cx.scalar(x), cx.rules),
+  h: (x, cx) => timeOfDay(cx.scalar(x), cx.rules),
   s: (x, cx) => cx.rules.toText(cx.scalar(x)),
   b: (x, cx) => cx.rules.toBool(cx.scalar(x)),
   v: (x, cx) => cx.scalar(x),
@@ -453,7 +469,12 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => V | Arr | Rng {
       // a defect in one function must not abort the whole book
       return E.VALUE
     }
-    return typeof r === 'number' ? fitNumber(r) : r
+    if (typeof r !== 'number') return r
+    if (def.date && cx.rules.epoch) {
+      r -= cx.rules.epoch
+      if (r < 0 && def.date === 'book') return E.NUM
+    }
+    return fitNumber(r)
   }
 }
 

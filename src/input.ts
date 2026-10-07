@@ -145,9 +145,11 @@ function checkColor(v: unknown, path: string) {
   if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a colour such as "#FF0000", got ${what(v)}`)
 }
 
-function checkOneOf(v: unknown, path: string, values: readonly string[]) {
+function checkOneOf(v: unknown, path: string, values: readonly (string | number)[]) {
   if (!values.includes(v as string)) throw new InputError(path, `expected one of ${values.map((x) => JSON.stringify(x)).join(', ')}, got ${what(v)}`)
 }
+
+const DATE_SYSTEMS = [1900, 1904]
 
 function checkBoolean(v: unknown, path: string) {
   if (typeof v !== 'boolean') throw new InputError(path, `expected a boolean, got ${what(v)}`)
@@ -252,8 +254,9 @@ function checkMerges(v: unknown, path: string) {
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem'])
   if (book.locale !== undefined) checkLocale(book.locale, `${path}.locale`)
+  if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
@@ -403,8 +406,9 @@ export function checkCellValue(v: unknown, path: string): CellValue {
 export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { format: '#,##0.00', locale: 'ru-RU', width: 12 }")
-  onlyKeys(o, path, ['format', 'locale', 'width'])
+  onlyKeys(o, path, ['format', 'locale', 'width', 'dateSystem'])
   if (o.format !== undefined) checkString(o.format, `${path}.format`)
+  if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions

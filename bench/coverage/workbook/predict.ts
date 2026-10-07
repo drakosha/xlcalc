@@ -1,5 +1,6 @@
 /**
- * The engine's answers to a held-out workbook set as its predictions, written before Excel runs the set:
+ * The engine's answers to a held-out workbook set as its predictions (values by `Sheet!A1`, shown text by
+ * `show:Sheet!A1`), written before Excel runs the set:
  * `npx tsx bench/coverage/workbook/predict.ts <set>` writes `workbook/<set>.predicted.json`, which the set reads.
  */
 import { writeFileSync } from 'node:fs'
@@ -18,6 +19,8 @@ for (const c of buildWorkbookCases())
       const v = shownValue(r, g.sheet, a)
       if (v) vals[`${g.sheet}!${a}`] = v
     }
+    // the text of the cells to show, by `show:Sheet!A1`
+    for (const g of c.show ?? []) for (const a of cellsOf(g.range).addrs) vals[`show:${g.sheet}!${a}`] = r.sheets.find((s) => s.name === g.sheet)!.cells[a]?.text ?? ''
     return vals
   })
 writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
