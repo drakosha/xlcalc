@@ -8,7 +8,7 @@ import { compute, displayValue } from '../src/index.js'
 import { CLOCK, DISPLAY_SETS, displayBook, sameShown } from './display-cases.js'
 
 /** Held-out cases whose prediction Excel did not confirm, by `<locale>:<set>:<id>` (the engine was fixed after the run). */
-const MISSED: readonly string[] = []
+const MISSED: readonly string[] = ['en-US:held:condition#6', 'ru-RU:held-ru:condition#6']
 
 for (const set of DISPLAY_SETS) {
   describe(`cells shown as in Excel ${set.locale}: set ${set.name}`, async () => {

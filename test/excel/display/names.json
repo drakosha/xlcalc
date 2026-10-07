@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 6.3
+  "seconds": 2.1
  },
  "cases": [
   {
@@ -524,6 +524,46 @@
     "format": "@"
    },
    "width": 12
+  },
+  {
+   "id": "unmatched#1",
+   "cell": {
+    "value": 0,
+    "format": "[>5]0;[<-5]0"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#2",
+   "cell": {
+    "value": 3,
+    "format": "[>5]0;[<-5]0;"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#3",
+   "cell": {
+    "value": -1,
+    "format": "[>5]0"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#4",
+   "cell": {
+    "value": 0,
+    "format": "[Red][<0]0;[Blue][>0]0"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#5",
+   "cell": {
+    "value": 3,
+    "format": "[>5]\"big\";[<-5]\"small\""
+   },
+   "width": 10
   }
  ],
  "answers": {
@@ -721,6 +761,21 @@
   },
   "text-number#21": {
    "text": "-0.5"
+  },
+  "unmatched#1": {
+   "text": "###########"
+  },
+  "unmatched#2": {
+   "text": ""
+  },
+  "unmatched#3": {
+   "text": "-1"
+  },
+  "unmatched#4": {
+   "text": "###########"
+  },
+  "unmatched#5": {
+   "text": "###########"
   }
  }
 }

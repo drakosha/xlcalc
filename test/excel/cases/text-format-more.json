@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 2.402,
+  "seconds": 4.831,
   "dynamic": true
  },
  "cases": [
@@ -107,6 +107,36 @@
    "group": "TEXT",
    "fn": "TEXT",
    "formula": "TEXT(45688,\"d mmmm yyyy\")"
+  },
+  {
+   "id": "TEXT#18",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[<0]0;[>0]0\")"
+  },
+  {
+   "id": "TEXT#19",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[>5]0;[<-5]0\")"
+  },
+  {
+   "id": "TEXT#20",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(3,\"[>5]0;[<-5]0;\")"
+  },
+  {
+   "id": "TEXT#21",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(3,\"[>5]0;[<-5]0;0\")"
+  },
+  {
+   "id": "TEXT#22",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[>5]0\")"
   }
  ],
  "values": {
@@ -177,6 +207,26 @@
   "TEXT#17": {
    "t": "s",
    "v": "31 January 2025"
+  },
+  "TEXT#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#20": {
+   "t": "s",
+   "v": ""
+  },
+  "TEXT#21": {
+   "t": "s",
+   "v": "3"
+  },
+  "TEXT#22": {
+   "t": "s",
+   "v": "-1"
   }
  }
 }

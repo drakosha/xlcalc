@@ -50,7 +50,9 @@ const unfilled = (text: string) => text.replace(/\uFFFF[^]?/g, '')
  * `general`), or undefined when the section cannot show it; the section gives the colour.
  */
 function byChoice(v: number, secs: Section[], style: Style): { text?: string; general?: number; sec: Section | null } {
-  const { sec, signed } = choose(secs, v)
+  const choice = choose(secs, v)
+  if (!choice) return { sec: null }
+  const { sec, signed } = choice
   const general = signed ? v : Math.abs(v)
   if (!sec) return { general, sec }
   const k = kind(sec.toks)
