@@ -14,6 +14,7 @@
  *   npx tsx bench/coverage/run.ts struct X   the structure operations of struct/X.ts into test/excel/struct/X.json (test: test/structure-excel.test.ts)
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
  *   npx tsx bench/coverage/run.ts display X [ru]   cells shown by display/X.ts into test/excel/display/[ru-RU/]X.json (test: test/display-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts xlsx X     the xlsx subpath through Excel (roundtrip | saved | colors | formats | intersect) into test/excel/xlsx/ (test: test/xlsx-excel.test.ts)
  *
  * FCOV_ONLY=ABS,SUM limits the functions (a trial run): everything is then written to out/.
  * Excel computes in parts of up to 400 cases; after each part Excel is checked for a modal window.
@@ -32,6 +33,7 @@ import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
 import { stepSpill } from './spill.js'
 import { stepDisplay } from './display.js'
+import { stepXlsx } from './xlsx.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -274,6 +276,7 @@ else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3]
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
 else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
+else if (step === 'xlsx') await withExcelLock(() => stepXlsx(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -284,7 +287,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | struct set | spill set')
+  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | struct set | spill set | xlsx roundtrip|saved|colors|formats|intersect')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
