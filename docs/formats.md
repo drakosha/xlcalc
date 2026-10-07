@@ -81,7 +81,7 @@ Without conditions: the first section for positive numbers (and zero when there 
 ### Dates and times
 
 - Excel's 1900 calendar: serial 0 is `1/0/1900`, 60 is `2/29/1900`; a negative serial or one from 2,958,466 (past 9999-12-31) shows `#` (`#VALUE!` in `TEXT`).
-- The time is rounded to what the code shows: whole seconds, or the decimals of `ss.0` to `ss.000` (45688.999999 is `2/1/2025 0:00:00` with whole seconds, `23:59:59.9` with tenths).
+- The time is rounded to what the code shows: whole seconds, or the decimals of `ss.0` to `ss.000` (45688.999999 is `2025-02-01 00:00:00` by `yyyy-mm-dd hh:mm:ss`, `23:59:59.9` by `h:mm:ss.0`).
 - `m` is minutes after hours or before seconds, else the month; `mmmmm` the month's first letter; `ddd`, `dddd`, `mmm`, `mmmm` the locale's names; `A/P` writes the letter in the code's case (`a/p` shows `6:00 p`).
 - Elapsed time: `[h]`, `[mm]`, `[ss]` count hours, minutes or seconds from 0; a negative value shows with a minus when the section has elapsed time alone (`[h]` shows −1 as `-24`), else `#`.
 - In a cell, a bare `/` in a date is the locale's date separator (`dd/mm/yyyy` shows `31.01.2025` in ru-RU); in `TEXT` it stays `/`. Other separators and quoted or escaped ones are as written.
