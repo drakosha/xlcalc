@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 1.983,
+  "seconds": 2.412,
   "dynamic": true
  },
  "cases": [
@@ -1265,6 +1265,462 @@
    "group": "TIMEVALUE",
    "fn": "TIMEVALUE",
    "formula": "TIMEVALUE(\"18:00 1/31/2025\")"
+  },
+  {
+   "id": "VALUE#71",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30.5\")"
+  },
+  {
+   "id": "TIMEVALUE#71",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6:30.5\")"
+  },
+  {
+   "id": "VALUE#72",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"18:30.5\")"
+  },
+  {
+   "id": "TIMEVALUE#72",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"18:30.5\")"
+  },
+  {
+   "id": "VALUE#73",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1:2.5\")"
+  },
+  {
+   "id": "TIMEVALUE#73",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"1:2.5\")"
+  },
+  {
+   "id": "VALUE#74",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"100:30.5\")"
+  },
+  {
+   "id": "TIMEVALUE#74",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"100:30.5\")"
+  },
+  {
+   "id": "VALUE#75",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"9999:60\")"
+  },
+  {
+   "id": "TIMEVALUE#75",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"9999:60\")"
+  },
+  {
+   "id": "VALUE#76",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"9999:59:60\")"
+  },
+  {
+   "id": "TIMEVALUE#76",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"9999:59:60\")"
+  },
+  {
+   "id": "VALUE#77",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"0:600000\")"
+  },
+  {
+   "id": "TIMEVALUE#77",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0:600000\")"
+  },
+  {
+   "id": "VALUE#78",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"0006 PM\")"
+  },
+  {
+   "id": "TIMEVALUE#78",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"0006 PM\")"
+  },
+  {
+   "id": "VALUE#79",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"006:30\")"
+  },
+  {
+   "id": "TIMEVALUE#79",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"006:30\")"
+  },
+  {
+   "id": "VALUE#80",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6 p.m.\")"
+  },
+  {
+   "id": "TIMEVALUE#80",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6 p.m.\")"
+  },
+  {
+   "id": "VALUE#81",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30 p\")"
+  },
+  {
+   "id": "TIMEVALUE#81",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6:30 p\")"
+  },
+  {
+   "id": "VALUE#82",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6 :30 PM\")"
+  },
+  {
+   "id": "TIMEVALUE#82",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6 :30 PM\")"
+  },
+  {
+   "id": "VALUE#83",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6: PM\")"
+  },
+  {
+   "id": "TIMEVALUE#83",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6: PM\")"
+  },
+  {
+   "id": "VALUE#84",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30: PM\")"
+  },
+  {
+   "id": "TIMEVALUE#84",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6:30: PM\")"
+  },
+  {
+   "id": "VALUE#85",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30:15:\")"
+  },
+  {
+   "id": "TIMEVALUE#85",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6:30:15:\")"
+  },
+  {
+   "id": "VALUE#86",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6 PM 1/31/2025\")"
+  },
+  {
+   "id": "TIMEVALUE#86",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6 PM 1/31/2025\")"
+  },
+  {
+   "id": "VALUE#87",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"18:00 Jan 31, 2025\")"
+  },
+  {
+   "id": "TIMEVALUE#87",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"18:00 Jan 31, 2025\")"
+  },
+  {
+   "id": "VALUE#88",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"18:00  1/31/2025\")"
+  },
+  {
+   "id": "TIMEVALUE#88",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"18:00  1/31/2025\")"
+  },
+  {
+   "id": "VALUE#89",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/31/2025 6:\")"
+  },
+  {
+   "id": "TIMEVALUE#89",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"1/31/2025 6:\")"
+  },
+  {
+   "id": "VALUE#90",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/31/2025T18:00\")"
+  },
+  {
+   "id": "TIMEVALUE#90",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"1/31/2025T18:00\")"
+  },
+  {
+   "id": "VALUE#91",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"January 31 2025\")"
+  },
+  {
+   "id": "TIMEVALUE#91",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"January 31 2025\")"
+  },
+  {
+   "id": "VALUE#92",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30 PM 1/31\")"
+  },
+  {
+   "id": "TIMEVALUE#92",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6:30 PM 1/31\")"
+  },
+  {
+   "id": "VALUE#93",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/31 6:30 PM\")"
+  },
+  {
+   "id": "TIMEVALUE#93",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"1/31 6:30 PM\")"
+  },
+  {
+   "id": "leading#1",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\" 6:30\")"
+  },
+  {
+   "id": "leading#2",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"   6:30\")"
+  },
+  {
+   "id": "leading#3",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"6:30  \")"
+  },
+  {
+   "id": "leading#4",
+   "group": "leading",
+   "fn": "MINUTE",
+   "formula": "MINUTE(\"  6:30\")"
+  },
+  {
+   "id": "leading#5",
+   "group": "leading",
+   "fn": "SECOND",
+   "formula": "SECOND(\"  6:30:15\")"
+  },
+  {
+   "id": "leading#6",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"  18:30:00\")"
+  },
+  {
+   "id": "leading#7",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"  6 PM\")"
+  },
+  {
+   "id": "leading#8",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\" 6 PM\")"
+  },
+  {
+   "id": "leading#9",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"  1/31/2025 6:30\")"
+  },
+  {
+   "id": "leading#10",
+   "group": "leading",
+   "fn": "DAY",
+   "formula": "DAY(\"  1/31/2025\")"
+  },
+  {
+   "id": "leading#11",
+   "group": "leading",
+   "fn": "DAY",
+   "formula": "DAY(\" 1/31/2025\")"
+  },
+  {
+   "id": "leading#12",
+   "group": "leading",
+   "fn": "MONTH",
+   "formula": "MONTH(\"  Jan 31, 2025\")"
+  },
+  {
+   "id": "leading#13",
+   "group": "leading",
+   "fn": "YEAR",
+   "formula": "YEAR(\"  2025-01-31\")"
+  },
+  {
+   "id": "leading#14",
+   "group": "leading",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(\"  1/31/2025\")"
+  },
+  {
+   "id": "leading#15",
+   "group": "leading",
+   "fn": "DATEVALUE",
+   "formula": "DATEVALUE(\"  1/31/2025\")"
+  },
+  {
+   "id": "leading#16",
+   "group": "leading",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"  6:30\")"
+  },
+  {
+   "id": "leading#17",
+   "group": "leading",
+   "fn": "ABS",
+   "formula": "ABS(\"  6:30\")"
+  },
+  {
+   "id": "leading#18",
+   "group": "leading",
+   "fn": "operators",
+   "formula": "\"  6:30\"+0"
+  },
+  {
+   "id": "leading#19",
+   "group": "leading",
+   "fn": "EDATE",
+   "formula": "EDATE(\"  1/31/2025\",0)"
+  },
+  {
+   "id": "leading#20",
+   "group": "leading",
+   "fn": "DAYS",
+   "formula": "_xlfn.DAYS(\"  2/1/2025\",\"1/31/2025\")"
+  },
+  {
+   "id": "leading#21",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"  25:00\")"
+  },
+  {
+   "id": "leading#22",
+   "group": "leading",
+   "fn": "DAY",
+   "formula": "DAY(\"  45688\")"
+  },
+  {
+   "id": "leading#23",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\"  0.75\")"
+  },
+  {
+   "id": "leading#24",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(\" 0.75\")"
+  },
+  {
+   "id": "leading#25",
+   "group": "leading",
+   "fn": "DAY",
+   "formula": "DAY(CHAR(9)&\"1/31/2025\")"
+  },
+  {
+   "id": "leading#26",
+   "group": "leading",
+   "fn": "HOUR",
+   "formula": "HOUR(CHAR(9)&\"6:30\")"
+  },
+  {
+   "id": "leading#27",
+   "group": "leading",
+   "fn": "VALUE",
+   "formula": "VALUE(CHAR(9)&\"6:30\")"
+  },
+  {
+   "id": "leading#28",
+   "group": "leading",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(CHAR(9)&\"6:30\")"
+  },
+  {
+   "id": "leading#29",
+   "group": "leading",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30\"&CHAR(9)&\"PM\")"
+  },
+  {
+   "id": "leading#30",
+   "group": "leading",
+   "fn": "VALUE",
+   "formula": "VALUE(\"1/31/2025\"&CHAR(9)&\"18:00\")"
   }
  ],
  "values": {
@@ -2107,6 +2563,310 @@
   "TIMEVALUE#70": {
    "t": "n",
    "v": 0.75
+  },
+  "VALUE#71": {
+   "t": "n",
+   "v": 0.004519675925925926
+  },
+  "TIMEVALUE#71": {
+   "t": "n",
+   "v": 0.004519675925925926
+  },
+  "VALUE#72": {
+   "t": "n",
+   "v": 0.012853009259259258
+  },
+  "TIMEVALUE#72": {
+   "t": "n",
+   "v": 0.012853009259259258
+  },
+  "VALUE#73": {
+   "t": "n",
+   "v": 0.0007233796296296296
+  },
+  "TIMEVALUE#73": {
+   "t": "n",
+   "v": 0.0007233796296296296
+  },
+  "VALUE#74": {
+   "t": "n",
+   "v": 0.0697974537037037
+  },
+  "TIMEVALUE#74": {
+   "t": "n",
+   "v": 0.0697974537037037
+  },
+  "VALUE#75": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#75": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#76": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#76": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#77": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#77": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#78": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#78": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#79": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#79": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#80": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#80": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#81": {
+   "t": "n",
+   "v": 0.7708333333333334
+  },
+  "TIMEVALUE#81": {
+   "t": "n",
+   "v": 0.7708333333333334
+  },
+  "VALUE#82": {
+   "t": "n",
+   "v": 0.7708333333333334
+  },
+  "TIMEVALUE#82": {
+   "t": "n",
+   "v": 0.7708333333333334
+  },
+  "VALUE#83": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#83": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#84": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#84": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#85": {
+   "t": "n",
+   "v": 0.27100694444444445
+  },
+  "TIMEVALUE#85": {
+   "t": "n",
+   "v": 0.27100694444444445
+  },
+  "VALUE#86": {
+   "t": "n",
+   "v": 45688.75
+  },
+  "TIMEVALUE#86": {
+   "t": "n",
+   "v": 0.75
+  },
+  "VALUE#87": {
+   "t": "n",
+   "v": 45688.75
+  },
+  "TIMEVALUE#87": {
+   "t": "n",
+   "v": 0.75
+  },
+  "VALUE#88": {
+   "t": "n",
+   "v": 45688.75
+  },
+  "TIMEVALUE#88": {
+   "t": "n",
+   "v": 0.75
+  },
+  "VALUE#89": {
+   "t": "n",
+   "v": 45688.25
+  },
+  "TIMEVALUE#89": {
+   "t": "n",
+   "v": 0.25
+  },
+  "VALUE#90": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#90": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#91": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TIMEVALUE#91": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#92": {
+   "t": "n",
+   "v": 46053.770833333336
+  },
+  "TIMEVALUE#92": {
+   "t": "n",
+   "v": 0.7708333333357587
+  },
+  "VALUE#93": {
+   "t": "n",
+   "v": 46053.770833333336
+  },
+  "TIMEVALUE#93": {
+   "t": "n",
+   "v": 0.7708333333357587
+  },
+  "leading#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#3": {
+   "t": "n",
+   "v": 6
+  },
+  "leading#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#13": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#15": {
+   "t": "n",
+   "v": 45688
+  },
+  "leading#16": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "leading#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#20": {
+   "t": "n",
+   "v": 1
+  },
+  "leading#21": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#22": {
+   "t": "n",
+   "v": 31
+  },
+  "leading#23": {
+   "t": "n",
+   "v": 18
+  },
+  "leading#24": {
+   "t": "n",
+   "v": 18
+  },
+  "leading#25": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#26": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#27": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#28": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#29": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "leading#30": {
+   "t": "e",
+   "v": "VALUE"
   }
  }
 }
