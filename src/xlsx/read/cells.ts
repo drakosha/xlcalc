@@ -63,7 +63,7 @@ const ERRORS: Record<string, ErrorCode> = {
 const LITERAL = new Set(['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#SPILL!'])
 
 const TAG = /<([\w.-]+:)?(row|c)((?:\s[^>]*?)?)(\/?)>/g
-const V = /<(?:[\w.-]+:)?v(?:\s[^>]*)?>([\s\S]*?)<\/(?:[\w.-]+:)?v>/
+const V = /<(?:[\w.-]+:)?v(?:\s[^>]*?)?(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?v>)/
 const F = /<(?:[\w.-]+:)?f((?:\s[^>]*?)?)(?:\/>|>([\s\S]*?)<\/(?:[\w.-]+:)?f>)/
 const IS = /<(?:[\w.-]+:)?is(?:\s[^>]*)?>([\s\S]*?)<\/(?:[\w.-]+:)?is>/
 const ADDR = /^([A-Za-z]{1,3})([1-9][0-9]*)$/
@@ -118,7 +118,9 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
     if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
     const t = a.t ?? 'n'
-    const raw = body.includes('v') ? V.exec(body)?.[1] : undefined
+    // Excel writes an empty text result as `<v/>`
+    const v = body.includes('v') ? V.exec(body) : null
+    const raw = v ? (v[1] ?? '') : undefined
     let value: Scalar | undefined
     if (t === 's') {
       if (raw !== undefined) {

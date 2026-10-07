@@ -28,7 +28,7 @@ const values: BookInput = {
       cells: {
         A1: v(0), A2: v(-1.5), A3: v(0.1 + 0.2), A4: v(1e-300), A5: v(1.7976931348623157e308), A6: v(123456789012345), A7: v(-0),
         B1: v('text'), B2: v('  leading and trailing  '), B3: v('line\nbreak'), B4: v('tab\there'), B5: v('cr\r\nlf'), B6: v('quotes " \' and & < >'),
-        B7: v('Кириллица и ёлка'), B8: v('emoji 😀 and 中文'), B9: v('=not a formula'), B10: v("'apostrophe first"),
+        B7: v('Кириллица и ёлка'), B8: v('emoji 😀 and 中文'), B9: v('=not a formula'), B10: v("'apostrophe first"), B11: v(''),
         C1: v(true), C2: v(false), D1: v({ date: '2025-01-31' }), D2: v({ date: '1900-02-28' }), D3: v({ date: '2025-06-30T18:30:00' }),
         E1: { value: 1, format: '0.00' }, E2: { value: 0.25, format: '0%' }, E3: { value: 45688, format: 'dd.mm.yyyy' }, E4: { value: 45688.75, format: 'm/d/yyyy h:mm' },
         E5: { value: 1234.5, format: '#,##0.00 "₽"' }, E6: { value: -5, format: '0;[Red]-0' }, E7: { value: 'x', format: '@' },
@@ -61,7 +61,7 @@ const formulas: BookInput = {
         C6: f('CONCAT(B1:B3)'), C7: f('XMATCH(30,A1:A3)'), C8: f('IFNA(MATCH(99,A1:A3,0),"none")'), C9: f('SWITCH(A2,10,"ten",20,"twenty")'),
         C10: f('STDEV.S(A1:A3)'), C11: f('CEILING.MATH(2.5)'), C12: f('A4+1'), C13: f('rate*2'), C14: f("'Other sheet'!A1+1"), C15: f('SUM(A:A)'),
         C16: f('LET(x,A1,y,A2,x*y)'), C17: f('IF(A1>5,"yes")'), C18: f('ROUND(1/3,10)'), C19: f('1E+21*1'), C20: f('0.000001*1'),
-        C21: f('"a""b"'), C22: f('TRUE'), C23: f('#N/A'), C24: f('IFERROR(1/0,"div")'), C25: f('local*1'), C26: f('NETWORKDAYS.INTL(DATE(2025,1,1),DATE(2025,1,31),1)'),
+        C21: f('"a""b"'), C22: f('TRUE'), C23: f('#N/A'), C24: f('IFERROR(1/0,"div")'), C25: f('local*1'), C26: f('NETWORKDAYS.INTL(DATE(2025,1,1),DATE(2025,1,31),1)'), C27: f('""'), C28: f('B4&""'),
       },
     },
     { name: 'Other sheet', cells: { A1: v(5), A2: f('local+Data!A1'), B1: f('SUM(Data!A1:A3)') } },
@@ -130,9 +130,9 @@ const en: BookInput = { sheets: [{ name: 'Sheet1', cells: { A1: v('1.5'), B1: f(
 
 export function buildRoundTrips(): RoundTrip[] {
   return [
-    { id: 'values', what: 'numbers, text with spaces, breaks and quotes, booleans, dates, number formats', book: values },
+    { id: 'values', what: 'numbers, text with spaces, breaks and quotes, empty text, booleans, dates, number formats', book: values },
     { id: 'escapes', what: "Excel's _xHHHH_ escapes, control characters, the longest text", book: escapes },
-    { id: 'formulas', what: 'functions newer than Excel 2007, names global and local, sheets, errors, LET', book: formulas },
+    { id: 'formulas', what: 'functions newer than Excel 2007, names global and local, sheets, errors, LET, empty text results', book: formulas },
     { id: 'formulas-values', what: 'the same book as values only', book: formulas, mode: 'values' },
     { id: 'spills', what: 'dynamic arrays: spills, spill references, a blocked spill, an empty FILTER, a merged area in the way', book: spills },
     { id: 'spills-values', what: 'the spills as values only', book: spills, mode: 'values' },
