@@ -38,8 +38,8 @@ function dataInput(c: Cell): CellInput {
   return { value: c.text }
 }
 
-/** The formula as this engine reads it: Excel's storage prefixes of newer functions removed. */
-export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?/g, '')
+/** The formula as this engine reads it: Excel's storage prefixes of newer functions and of LET's names removed. */
+export const engineFormula = (f: string) => f.replace(/_xlfn\.(_xlws\.)?|_xlpm\./g, '')
 
 /** The measurement's data sheet, as in every book sent to Excel. */
 export function dataSheet(): BookInput['sheets'][number] {
@@ -118,7 +118,15 @@ export const REASONS = {
   rowsOfIfs: '`ROWS` and `COLUMNS` of an `IFS` that answers an error: Excel counts 1 (`ROWS(IFS("x",1,TRUE,2))`), the engine answers the error.',
   lastBits:
     '`FTEST` of a sample with itself is 1 − 3·2^-53 in Excel and 1 − 2^-52 here: the last bits of a number Excel computes by another algorithm can differ, which shows only when the difference is magnified (`(1-FTEST(A1:A8,A1:A8))*2^52` is 1.5 in Excel, 1 here).',
-  omittedArgument: 'An omitted argument between commas (`TEXTSPLIT("a,b",",",,,1)`) is a syntax error here (`#ERROR!`); Excel takes it as not given.',
+  letFileName:
+    'A LET name that reads as a reference or a boolean (`A1`, `TRUE`): an xlsx file writes LET\'s names with the prefix `_xlpm.`, so Excel loads `LET(_xlpm.A1,1,_xlpm.A1)` (1); formula text has no prefix, there such a word is a reference or a boolean, and `LET(A1,1,A1)` is a syntax error here, as Excel refuses that text.',
+  lookupTextTable: '`VLOOKUP`, `HLOOKUP` and `MATCH` with an empty text as the table (`MATCH(5,"",0)`) are `#VALUE!` in Excel and `#N/A` here.',
+  xlookupOneValue: '`XLOOKUP` with one value as the lookup array and a return array of several rows (`XLOOKUP(3,0,A1:A6)`) is `#N/A` in Excel and `#VALUE!` here (the sizes differ).',
+  wrapOneValue: '`WRAPROWS` and `WRAPCOLS` of one value with a count above 1 (`WRAPROWS(0,2)`) answer the value alone in Excel; here it is padded to the count.',
+  arrayEmptyText: '`F.TEST`, `FTEST` and `MIRR` given an empty text as an array (`F.TEST("",A1:A8)`) are `#DIV/0!` in Excel (no numbers) and `#VALUE!` here.',
+  datedOneValue: '`XIRR` and `XNPV` given one text or boolean as their values or dates (`XIRR("",A1:A5)`) are `#VALUE!` in Excel and `#NUM!` here (the sizes differ).',
+  analysisDateZero:
+    'Serial date 0 in the bond functions: `ACCRINT` with an issue or first interest date of 0 and `PRICE` with a settlement date of 0 are `#NUM!` in Excel and computed here; `AMORDEGRC` with a purchase date of 0 is 113 in Excel and −47885 here.',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
@@ -166,8 +174,37 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fuzz:2#1577': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
   'fuzz:2#165': { reason: 'rowsOfIfs', engine: { t: 'e', v: 'VALUE' } },
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
-  'near-integer:sample:TEXTSPLIT#1': { reason: 'omittedArgument', engine: { t: 'e', v: 'ERROR' } },
-  'near-integer:sample:TEXTSPLIT#2': { reason: 'omittedArgument', engine: { t: 'e', v: 'ERROR' } },
+  'let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
+  'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
+  'omit:all:HLOOKUP#7': { reason: 'lookupTextTable', engine: { t: 'e', v: 'NA' } },
+  'omit:all:MATCH#7': { reason: 'lookupTextTable', engine: { t: 'e', v: 'NA' } },
+  'omit:all:VLOOKUP#7': { reason: 'lookupTextTable', engine: { t: 'e', v: 'NA' } },
+  'omit:all:XLOOKUP#6': { reason: 'xlookupOneValue', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:XLOOKUP#7': { reason: 'xlookupOneValue', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:XLOOKUP#8': { reason: 'xlookupOneValue', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:WRAPCOLS#2': { reason: 'wrapOneValue', engine: { t: 's', v: '{0;0}' } },
+  'omit:all:WRAPCOLS#3': { reason: 'wrapOneValue', engine: { t: 's', v: '{"";0}' } },
+  'omit:all:WRAPCOLS#4': { reason: 'wrapOneValue', engine: { t: 's', v: '{FALSE;0}' } },
+  'omit:all:WRAPROWS#2': { reason: 'wrapOneValue', engine: { t: 's', v: '{0,0}' } },
+  'omit:all:WRAPROWS#3': { reason: 'wrapOneValue', engine: { t: 's', v: '{"",0}' } },
+  'omit:all:WRAPROWS#4': { reason: 'wrapOneValue', engine: { t: 's', v: '{FALSE,0}' } },
+  'omit:all:F.TEST#3': { reason: 'arrayEmptyText', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:F.TEST#7': { reason: 'arrayEmptyText', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:FTEST#3': { reason: 'arrayEmptyText', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:FTEST#7': { reason: 'arrayEmptyText', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:MIRR#3': { reason: 'arrayEmptyText', engine: { t: 'e', v: 'VALUE' } },
+  'omit:all:XIRR#3': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XIRR#4': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XIRR#7': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XIRR#8': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XNPV#7': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XNPV#8': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XNPV#11': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:XNPV#12': { reason: 'datedOneValue', engine: { t: 'e', v: 'NUM' } },
+  'omit:all:ACCRINT#2': { reason: 'analysisDateZero', engine: { t: 'n', v: 10833.0555555556 } },
+  'omit:all:ACCRINT#6': { reason: 'analysisDateZero', engine: { t: 'n', v: 16.6666666666667 } },
+  'omit:all:PRICE#2': { reason: 'analysisDateZero', engine: { t: 'n', v: 100 } },
+  'omit:all:AMORDEGRC#6': { reason: 'analysisDateZero', engine: { t: 'n', v: -47885 } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives exactly the pinned answer. */

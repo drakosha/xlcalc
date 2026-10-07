@@ -16,8 +16,9 @@ function next(text: string, from: number, cols: string[], rows: string[]): { at:
   return best
 }
 
-function textsplit(cx: Cx, text: string, colSeg: Segment, rowSeg?: Segment, ignoreEmpty = false, mode = 0, pad: V = E.NA): V | Arr {
-  const cols = delimiters(colSeg, cx.rules)
+function textsplit(cx: Cx, text: string, colSeg: Segment | undefined, rowSeg?: Segment, ignoreEmpty = false, mode = 0, pad: V = E.NA): V | Arr {
+  // a column delimiter left out (`TEXTSPLIT(t,,";")`): no columns
+  const cols = colSeg === undefined ? [] : delimiters(colSeg, cx.rules)
   if (isErr(cols)) return cols
   const rows = rowSeg === undefined ? [] : delimiters(rowSeg, cx.rules)
   if (isErr(rows)) return rows
