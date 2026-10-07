@@ -61,9 +61,9 @@ export interface FileParts {
    */
   plain?: { arrays?: string[] }
   /**
-   * The mirror sheets' names: their formulas depend on the cells read, and Excel's first computation of a cycle on
-   * opening the file does one pass less when such dependents' sheets sort before the cycle's sheet (the workbook set
-   * `iterate`), so a set of cycles names them to sort last. `WT`, `WN`, `WX` without it.
+   * The mirror sheets' names, `WT`, `WN`, `WX` without it. Their formulas depend on the cells read. With them sorting
+   * before a cycle's sheet, Excel's first computation on opening did one round of iteration less (the cause was not
+   * found: one sheet of a dependent before the cycle's did not do it), so the set `iterate` names them to sort last.
    */
   mirrors?: readonly [string, string, string]
 }
