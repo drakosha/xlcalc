@@ -2,7 +2,7 @@
  * Numbers as text by the book's locale (`Cx.rules`): FIXED is ported from formula.js 4.6.1 (src/text.js),
  * Copyright (c) 2014 Sutoiku, Inc., MIT License (THIRD_PARTY.md); TEXT and DOLLAR are this engine's own.
  */
-import { roundHalfUp } from '../../format.js'
+import { roundHalfUp } from '../../numfmt/general.js'
 import type { Cx, FnDef } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, type CErr, type V } from '../../values.js'

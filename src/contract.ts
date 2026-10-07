@@ -17,7 +17,10 @@ export interface CellInput {
   value?: Scalar | { date: string }
   /** Formula text without `=`. When present, `value` is ignored. */
   formula?: string
-  /** Display format, passed through untouched. Without it a cell shows its row's format, else its column's. */
+  /**
+   * Number format, an Excel format code as an xlsx file stores it (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
+   * shown in the book's locale (`CellResult.text`). Without it a cell shows its row's format, else its column's.
+   */
   format?: string
   /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
   style?: number
@@ -68,7 +71,10 @@ export interface CellStyle {
 
 /** Columns of a sheet, as xlsx `<col>`: the width, and the style and format of their cells that have none. */
 export interface ColumnInput {
-  /** In characters of the default font's digit, as xlsx stores it, 0 to 255. */
+  /**
+   * In characters of the default font's digit with the cell's padding, as xlsx stores it, 0 to 255. Without it a
+   * column has Excel's default width (8 digits and the padding; Excel for Windows shows it as 8.43).
+   */
   width?: number
   style?: number
   format?: string
@@ -169,6 +175,29 @@ export interface Externals {
  */
 export type Execution = 'closures' | 'eval'
 
+/** A value as a cell shows it: its text and the colour of its format's section. */
+export interface CellDisplay {
+  /**
+   * What Excel shows in the cell (VBA's `Range.Text`): the value by its number format in the book's locale, General
+   * narrowed to the column's width, `#` across the column for a number that does not fit, fills `*x` repeated
+   * across it; text as it is (it overflows into the next cells). Derived from the value, the format, the locale and
+   * the width: not part of the values hash.
+   */
+  text: string
+  /** The colour of the format's section (`[Red]`, `[Color10]`), `#RRGGBB`; absent without one. */
+  color?: Color
+}
+
+/** `displayValue`'s options: where the value is shown. */
+export interface DisplayOptions {
+  /** The number format; General without it. */
+  format?: string
+  /** A tag of the package's locales (`'en-US'`, the default, or `'ru-RU'`). */
+  locale?: string
+  /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
+  width?: number
+}
+
 export interface ComputeOptions {
   /**
    * The clock for TODAY, NOW, RAND and RANDBETWEEN. By default the current moment and a random seed;
@@ -178,9 +207,13 @@ export interface ComputeOptions {
   externals?: Externals
   /** `closures` by default. */
   execution?: Execution
+  /** Each cell's shown text and colour (`CellResult.text`, `color`); true by default, false computes values alone. */
+  display?: boolean
 }
 
-export interface CellResult {
+/** A cell's value, and by default (`display`) what the cell shows: `text` and `color`, as `CellDisplay`. */
+export interface CellResult extends Partial<CellDisplay> {
+  /** The value: numbers stay numbers whatever the format shows. */
   value: CellValue
   /** Canonical formula text (sheet always quoted, function names upper-case). */
   formula?: string
@@ -249,11 +282,12 @@ export interface CellEdit extends CellRef {
 }
 
 /**
- * A changed cell, with `spill`, `spillFill` and `spillOf` as in `CellResult`. A formula whose spill range or
- * `spillFill` changed is listed even when its own value did not; the cells it no longer lists are listed
- * when their value changed.
+ * A changed cell, with `spill`, `spillFill` and `spillOf`, and with `display` its `text` and `color`, as in
+ * `CellResult`. A formula whose spill range or `spillFill` changed is listed even when its own value did not; the
+ * cells it no longer lists are listed when their value changed. With `display`, a cell whose shown text or colour
+ * changed is listed too (a new format, a column's width), with its value.
  */
-export interface CellChange extends CellRef {
+export interface CellChange extends CellRef, Partial<CellDisplay> {
   value: CellValue
   spill?: string
   spillFill?: CellValue
@@ -293,9 +327,9 @@ export interface Explanation {
  * Session options. A session keeps one clock, `clock` or by default the moment of opening and a random
  * seed, until `setClock`. A live session (`live: true`) takes a fresh clock and a new seed on every
  * recomputation instead. Edits are compiled in the `execution` the session was opened with (`closures` by
- * default).
+ * default). With `display` (the default) results and changes carry what the cells show.
  */
-export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution }
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean }
 
 /** A rectangle on a sheet: `B2`, `B2:D9`, whole columns `B:D` or whole rows `2:9` (no `$`, no sheet). */
 export interface RangeRef {
@@ -359,7 +393,7 @@ export type SessionRestructureResult =
       /**
        * Cells whose value differs from the one their old cell (`mapCell`) had, by new address; a cell no old
        * cell came to counts as empty before. An interface that moves its shown values by `mapCell` and applies
-       * these has the new values.
+       * these has the new values. With `display`, cells whose shown text or colour differs are listed too.
        */
       changes: CellChange[]
     }
@@ -385,8 +419,9 @@ export interface Session {
   readonly clock: Clock
   /**
    * Applied atomically with one recomputation; returns the changed values. An edit that keeps the cell's
-   * value and formula (a new `style`, `format` or `meta`) recomputes nothing. A value or formula put into a
-   * spill range stops the array spilling (#SPILL!); clearing it lets the array spill again.
+   * value and formula (a new `style`, `format` or `meta`) recomputes nothing; with `display` a new format returns
+   * the cell when its shown text changed. A value or formula put into a spill range stops the array spilling
+   * (#SPILL!); clearing it lets the array spill again.
    */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]
@@ -394,12 +429,13 @@ export interface Session {
   setClock(clock: Clock): CellChange[]
   /** A structure operation on the session's book, recomputed; refused as `restructure` refuses it. */
   restructure(op: StructureOp): SessionRestructureResult
-  /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing. */
+  /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
   setStyles(styles: CellStyle[]): void
   /**
    * Column widths, row heights, row and column styles and formats, merged areas; applied atomically. Merged
    * areas stop arrays spilling over them: the formulas whose spill range an added or removed area meets are
-   * recomputed and the changed values returned; nothing else is recomputed.
+   * recomputed and the changed values returned; nothing else is recomputed. With `display`, the cells whose shown
+   * text or colour a width, a format or a merged area changed are returned too.
    */
   setLayout(edits: LayoutEdit[]): CellChange[]
   /**
@@ -418,6 +454,8 @@ export interface FormulaEngine {
   validateName(name: string): NameCheck
   openSession(book: BookInput, opts?: SessionOptions): Session
   restructure(book: BookInput, op: StructureOp): RestructureResult
+  /** A value as a cell shows it, without a book: by a format, in a locale and a column's width. */
+  displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay
 }
 
 export const MAX_FORMULA_LENGTH = 8_192

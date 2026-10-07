@@ -1,0 +1,822 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 6.3
+ },
+ "cases": [
+  {
+   "id": "general#1",
+   "cell": {
+    "value": -1234567.5
+   },
+   "width": 6.6667,
+   "predicted": {
+    "text": "-1E+06"
+   }
+  },
+  {
+   "id": "general#2",
+   "cell": {
+    "value": -1234567.5
+   },
+   "width": 7.3333,
+   "predicted": {
+    "text": "-1E+06"
+   }
+  },
+  {
+   "id": "general#3",
+   "cell": {
+    "value": 98765.4321
+   },
+   "width": 5.8333,
+   "predicted": {
+    "text": "98765"
+   }
+  },
+  {
+   "id": "general#4",
+   "cell": {
+    "value": 98765.4321
+   },
+   "width": 6.8333,
+   "predicted": {
+    "text": "98765"
+   }
+  },
+  {
+   "id": "general#5",
+   "cell": {
+    "value": 98765.4321
+   },
+   "width": 9.8333,
+   "predicted": {
+    "text": "98765.432"
+   }
+  },
+  {
+   "id": "general#6",
+   "cell": {
+    "value": 3e-200
+   },
+   "width": 6.1667,
+   "predicted": {
+    "text": "3E-200"
+   }
+  },
+  {
+   "id": "general#7",
+   "cell": {
+    "value": 3e-200
+   },
+   "width": 5.8333,
+   "predicted": {
+    "text": "######"
+   }
+  },
+  {
+   "id": "general#8",
+   "cell": {
+    "value": 0.000056
+   },
+   "width": 6.6667,
+   "predicted": {
+    "text": "6E-05"
+   }
+  },
+  {
+   "id": "general#9",
+   "cell": {
+    "value": 0.000056
+   },
+   "width": 7.8333,
+   "predicted": {
+    "text": "5.6E-05"
+   }
+  },
+  {
+   "id": "general#10",
+   "cell": {
+    "value": 7.5
+   },
+   "width": 0.6667,
+   "predicted": {
+    "text": "8"
+   }
+  },
+  {
+   "id": "general#11",
+   "cell": {
+    "value": -7.5
+   },
+   "width": 2.1667,
+   "predicted": {
+    "text": "#"
+   }
+  },
+  {
+   "id": "general#12",
+   "cell": {
+    "value": 1000000000000000
+   },
+   "predicted": {
+    "text": "1E+15"
+   }
+  },
+  {
+   "id": "general#13",
+   "cell": {
+    "value": 0.6666666666666666
+   },
+   "width": 3.3333,
+   "predicted": {
+    "text": "1"
+   }
+  },
+  {
+   "id": "general#14",
+   "cell": {
+    "value": 123456789
+   },
+   "width": 3,
+   "span": 2,
+   "predicted": {
+    "text": "1E+08"
+   }
+  },
+  {
+   "id": "number#1",
+   "cell": {
+    "value": 1234567.891,
+    "format": "#,##0"
+   },
+   "width": 9.8333,
+   "predicted": {
+    "text": "1,234,568"
+   }
+  },
+  {
+   "id": "number#2",
+   "cell": {
+    "value": 1234567.891,
+    "format": "#,##0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "1,234,568"
+   }
+  },
+  {
+   "id": "number#3",
+   "cell": {
+    "value": 0.4567,
+    "format": "0.0%"
+   },
+   "width": 5,
+   "predicted": {
+    "text": "#####"
+   }
+  },
+  {
+   "id": "number#4",
+   "cell": {
+    "value": 0.4567,
+    "format": "0.0%"
+   },
+   "width": 5.6667,
+   "predicted": {
+    "text": "45.7%"
+   }
+  },
+  {
+   "id": "number#5",
+   "cell": {
+    "value": 1e+300,
+    "format": "0.00E+00"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "1.00E+300"
+   }
+  },
+  {
+   "id": "number#6",
+   "cell": {
+    "value": 1e-300,
+    "format": "0.00E+00"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "1.00E-300"
+   }
+  },
+  {
+   "id": "number#7",
+   "cell": {
+    "value": 123456,
+    "format": "##0.00E+0"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "123.46E+3"
+   }
+  },
+  {
+   "id": "number#8",
+   "cell": {
+    "value": -5,
+    "format": "\"x\""
+   },
+   "width": 6.6667,
+   "predicted": {
+    "text": "-x"
+   }
+  },
+  {
+   "id": "number#9",
+   "cell": {
+    "value": 1234.5,
+    "format": "$* #,##0.00"
+   },
+   "width": 11.6667,
+   "predicted": {
+    "text": "$        1,234.50"
+   }
+  },
+  {
+   "id": "number#10",
+   "cell": {
+    "value": -1234.5,
+    "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "-          1,234.50 ₽ "
+   }
+  },
+  {
+   "id": "number#11",
+   "cell": {
+    "value": 0,
+    "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "                             -   ₽ "
+   }
+  },
+  {
+   "id": "number#12",
+   "cell": {
+    "value": "итого",
+    "format": "_-* #,##0.00\\ \"₽\"_-;\\-* #,##0.00\\ \"₽\"_-;_-* \"-\"??\\ \"₽\"_-;_-@_-"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": " итого "
+   }
+  },
+  {
+   "id": "number#13",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00\\ \"₽\""
+   },
+   "width": 9.1667,
+   "predicted": {
+    "text": "1,234.50 ₽"
+   }
+  },
+  {
+   "id": "number#14",
+   "cell": {
+    "value": 1234.5,
+    "format": "#,##0.00\\ \"₽\""
+   },
+   "width": 9.3333,
+   "predicted": {
+    "text": "1,234.50 ₽"
+   }
+  },
+  {
+   "id": "condition#1",
+   "cell": {
+    "value": -10,
+    "format": "[<=-5]\"low\";[>=5]\"high\";0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "low"
+   }
+  },
+  {
+   "id": "condition#2",
+   "cell": {
+    "value": 10,
+    "format": "[<=-5]\"low\";[>=5]\"high\";0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "high"
+   }
+  },
+  {
+   "id": "condition#3",
+   "cell": {
+    "value": -1,
+    "format": "[<=-5]\"low\";[>=5]\"high\";0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "-1"
+   }
+  },
+  {
+   "id": "condition#4",
+   "cell": {
+    "value": 1,
+    "format": "[<=-5]\"low\";[>=5]\"high\";0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "1"
+   }
+  },
+  {
+   "id": "condition#5",
+   "cell": {
+    "value": -3,
+    "format": "[<0]0;[>0]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "3"
+   }
+  },
+  {
+   "id": "condition#6",
+   "cell": {
+    "value": 0,
+    "format": "[<0]0;[>0]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "color#1",
+   "cell": {
+    "value": 5,
+    "format": "[Color17]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "5",
+    "color": "#9999FF"
+   }
+  },
+  {
+   "id": "color#2",
+   "cell": {
+    "value": 5,
+    "format": "[Color23]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "5",
+    "color": "#0066CC"
+   }
+  },
+  {
+   "id": "color#3",
+   "cell": {
+    "value": 5,
+    "format": "[Color33]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "5",
+    "color": "#00CCFF"
+   }
+  },
+  {
+   "id": "color#4",
+   "cell": {
+    "value": 5,
+    "format": "[Color45]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "5",
+    "color": "#FF9900"
+   }
+  },
+  {
+   "id": "color#5",
+   "cell": {
+    "value": 5,
+    "format": "[Color53]0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "5",
+    "color": "#993300"
+   }
+  },
+  {
+   "id": "color#6",
+   "cell": {
+    "value": 1234567,
+    "format": "[Red]0"
+   },
+   "width": 2,
+   "predicted": {
+    "text": "#",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "color#7",
+   "cell": {
+    "value": -5,
+    "format": "[Red]0;[Blue]-0"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "-5",
+    "color": "#0000FF"
+   }
+  },
+  {
+   "id": "fraction#1",
+   "cell": {
+    "value": 1.75,
+    "format": "# ?/?"
+   },
+   "width": 3.3333,
+   "predicted": {
+    "text": "###"
+   }
+  },
+  {
+   "id": "fraction#2",
+   "cell": {
+    "value": 0.333,
+    "format": "?/?"
+   },
+   "width": 5,
+   "predicted": {
+    "text": "1/3"
+   }
+  },
+  {
+   "id": "fraction#3",
+   "cell": {
+    "value": -2.5,
+    "format": "# ??/??"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "-2  1/2 "
+   }
+  },
+  {
+   "id": "date#1",
+   "cell": {
+    "value": 45688.5,
+    "format": "dd.mm.yyyy h:mm"
+   },
+   "width": 16.6667,
+   "predicted": {
+    "text": "31.01.2025 12:00"
+   }
+  },
+  {
+   "id": "date#2",
+   "cell": {
+    "value": 45688.5,
+    "format": "mmm d"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "Jan 31"
+   }
+  },
+  {
+   "id": "date#3",
+   "cell": {
+    "value": 45688.5,
+    "format": "ddd dd/mm"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "Fri 31/01"
+   }
+  },
+  {
+   "id": "date#4",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F800]dddd, mmmm dd, yyyy"
+   },
+   "width": 33.3333,
+   "predicted": {
+    "text": "Thursday, March 16, 2023"
+   }
+  },
+  {
+   "id": "date#5",
+   "cell": {
+    "value": 45001.25,
+    "format": "[$-F400]h:mm:ss AM/PM"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "date#6",
+   "cell": {
+    "value": 45688.75,
+    "format": "mmmm d, yyyy"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "###############"
+   }
+  },
+  {
+   "id": "date#7",
+   "cell": {
+    "value": 45688.75,
+    "format": "mmmm d, yyyy"
+   },
+   "width": 16.6667,
+   "predicted": {
+    "text": "January 31, 2025"
+   }
+  },
+  {
+   "id": "date#8",
+   "cell": {
+    "value": 1.25,
+    "format": "[mm]:ss.0"
+   },
+   "width": 13.3333,
+   "predicted": {
+    "text": "1800:00.0"
+   }
+  },
+  {
+   "id": "date#9",
+   "cell": {
+    "value": -0.5,
+    "format": "[h]"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "-12"
+   }
+  },
+  {
+   "id": "date#10",
+   "cell": {
+    "value": -0.5,
+    "format": "[h]:mm"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "###########"
+   }
+  },
+  {
+   "id": "text#1",
+   "cell": {
+    "value": "long text",
+    "format": "@*-"
+   },
+   "width": 16.6667,
+   "predicted": {
+    "text": "long text------------------"
+   }
+  },
+  {
+   "id": "text#2",
+   "cell": {
+    "value": "xyz",
+    "format": "\"<\"@\">\""
+   },
+   "width": 1.6667,
+   "predicted": {
+    "text": "<xyz>"
+   }
+  },
+  {
+   "id": "text#3",
+   "cell": {
+    "value": true
+   },
+   "width": 5,
+   "predicted": {
+    "text": "TRUE"
+   }
+  },
+  {
+   "id": "text#4",
+   "cell": {
+    "value": false,
+    "format": "0;0;0;\"is \"@"
+   },
+   "width": 10,
+   "predicted": {
+    "text": "is FALSE"
+   }
+  }
+ ],
+ "answers": {
+  "general#1": {
+   "text": "-1E+06"
+  },
+  "general#2": {
+   "text": "-1E+06"
+  },
+  "general#3": {
+   "text": "98765"
+  },
+  "general#4": {
+   "text": "98765"
+  },
+  "general#5": {
+   "text": "98765.432"
+  },
+  "general#6": {
+   "text": "3E-200"
+  },
+  "general#7": {
+   "text": "######"
+  },
+  "general#8": {
+   "text": "6E-05"
+  },
+  "general#9": {
+   "text": "5.6E-05"
+  },
+  "general#10": {
+   "text": "8"
+  },
+  "general#11": {
+   "text": "#"
+  },
+  "general#12": {
+   "text": "1E+15"
+  },
+  "general#13": {
+   "text": "1"
+  },
+  "general#14": {
+   "text": "1E+08"
+  },
+  "number#1": {
+   "text": "1,234,568"
+  },
+  "number#2": {
+   "text": "1,234,568"
+  },
+  "number#3": {
+   "text": "#####"
+  },
+  "number#4": {
+   "text": "45.7%"
+  },
+  "number#5": {
+   "text": "1.00E+300"
+  },
+  "number#6": {
+   "text": "1.00E-300"
+  },
+  "number#7": {
+   "text": "123.46E+3"
+  },
+  "number#8": {
+   "text": "-x"
+  },
+  "number#9": {
+   "text": "$        1,234.50"
+  },
+  "number#10": {
+   "text": "-          1,234.50 ₽ "
+  },
+  "number#11": {
+   "text": "                             -   ₽ "
+  },
+  "number#12": {
+   "text": " итого "
+  },
+  "number#13": {
+   "text": "1,234.50 ₽"
+  },
+  "number#14": {
+   "text": "1,234.50 ₽"
+  },
+  "condition#1": {
+   "text": "low"
+  },
+  "condition#2": {
+   "text": "high"
+  },
+  "condition#3": {
+   "text": "-1"
+  },
+  "condition#4": {
+   "text": "1"
+  },
+  "condition#5": {
+   "text": "3"
+  },
+  "condition#6": {
+   "text": "###########"
+  },
+  "color#1": {
+   "text": "5",
+   "color": "#9999FF"
+  },
+  "color#2": {
+   "text": "5",
+   "color": "#0066CC"
+  },
+  "color#3": {
+   "text": "5",
+   "color": "#00CCFF"
+  },
+  "color#4": {
+   "text": "5",
+   "color": "#FF9900"
+  },
+  "color#5": {
+   "text": "5",
+   "color": "#993300"
+  },
+  "color#6": {
+   "text": "#",
+   "color": "#FF0000"
+  },
+  "color#7": {
+   "text": "-5",
+   "color": "#0000FF"
+  },
+  "fraction#1": {
+   "text": "###"
+  },
+  "fraction#2": {
+   "text": "1/3"
+  },
+  "fraction#3": {
+   "text": "-2  1/2 "
+  },
+  "date#1": {
+   "text": "31.01.2025 12:00"
+  },
+  "date#2": {
+   "text": "Jan 31"
+  },
+  "date#3": {
+   "text": "Fri 31/01"
+  },
+  "date#4": {
+   "text": "Thursday, March 16, 2023"
+  },
+  "date#5": {
+   "text": "6:00:00 AM"
+  },
+  "date#6": {
+   "text": "###############"
+  },
+  "date#7": {
+   "text": "January 31, 2025"
+  },
+  "date#8": {
+   "text": "1800:00.0"
+  },
+  "date#9": {
+   "text": "-12"
+  },
+  "date#10": {
+   "text": "###########"
+  },
+  "text#1": {
+   "text": "long text------------------"
+  },
+  "text#2": {
+   "text": "<xyz>"
+  },
+  "text#3": {
+   "text": "TRUE"
+  },
+  "text#4": {
+   "text": "is FALSE"
+  }
+ }
+}
