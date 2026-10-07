@@ -268,10 +268,13 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const spill = (s: number, r: number, c: number) => ctx.spillRef(s, r, c)
 
-  /** `@x` at row `r`, column `c`: a reference's cell in that row or column (one row or column is its own), an array's top-left value. */
+  /**
+   * `@x` at row `r`, column `c`: a reference's cell in that row or column (one row or column is its own), an array's
+   * top-left value; a union is #VALUE!, a reference across sheets #REF!.
+   */
   const I = (x: Arg, r: number, c: number): Arg => {
     if (x instanceof Arr) return x.at(0, 0)
-    if (x instanceof Areas) return E.VALUE
+    if (x instanceof Areas) return x.cube ? E.REF : E.VALUE
     if (!(x instanceof Rng)) return x
     const row = x.r1 === x.r2 ? x.r1 : r >= x.r1 && r <= x.r2 ? r : -1
     const col = x.c1 === x.c2 ? x.c1 : c >= x.c1 && c <= x.c2 ? c : -1

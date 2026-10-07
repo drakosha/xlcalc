@@ -18,6 +18,8 @@ describe('the syntax of @, unions and references across sheets', () => {
     expect(canon('SUM((A1:A3, C1), 5)')).toBe('SUM((A1:A3,C1),5)')
     expect(canon('SUM(Jan:Mar!A1:B2)')).toBe("SUM('Jan:Mar'!A1:B2)")
     expect(canon("SUM('Jan 1:Mar 1'!A:A)")).toBe("SUM('Jan 1:Mar 1'!A:A)")
+    // as Excel saved a reference across sheets inside a union
+    expect(canon("COUNT((Jan:'Mar'!A1,D!B1))")).toBe("COUNT(('Jan:Mar'!A1,'D'!B1))")
     expect(canon('Data!rate*2')).toBe("'Data'!rate*2")
   })
 

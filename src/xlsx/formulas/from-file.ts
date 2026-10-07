@@ -82,6 +82,11 @@ export function fromFile(src: string): Converted {
       i = end
       continue
     }
+    // `[0]!x`: the book's own name x, as Excel saves a global name qualified by a sheet
+    if (c === '[' && !IDENT.test(src[i - 1] ?? '') && src.startsWith('[0]!', i)) {
+      i += 4
+      continue
+    }
     if (c === '[') {
       const end = bracket(src, i)
       found.add(IDENT.test(src[i - 1] ?? '') || /[@#[]/.test(src[i + 1] ?? '') ? 'table' : 'externalLink')

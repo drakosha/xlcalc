@@ -30,6 +30,7 @@ const KNOWN_BOOK: Record<string, { why: string; places: string[] }> = {
   values: { why: 'Excel writes the literal characters of a number format escaped (dd\\.mm\\.yyyy): the same format', places: ['cell Values!E3', 'cell Values!E4', 'cell Values!E5', 'cell Values!E6'] },
   'struct-edge-edge': { why: 'Excel writes a range over whole columns or rows as one (A1:A1048576 as A:A, A:XFD as $1:$1048576): the same cells', places: ['cell F!A3', 'cell F!A5', 'cell F!A15'] },
   'spill-names-formulas': { why: 'a name that reads as a cell address (nm2) is not a name in Excel: the writer leaves it out', places: ['name !NM2'] },
+  'spill-names-sheet-global': { why: "Excel saves a global name qualified by a sheet without a local one as the book's own name ([0]!x), read as x: the same name", places: ['cell S!E1'] },
 }
 
 /** The issues of reading what Excel saved, by book: what the book itself makes the reader report. */

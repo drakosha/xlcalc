@@ -19,11 +19,12 @@ The rules below were measured in Excel 16.113 for Mac (en-US) with dynamic array
 | an array, a call with an array answer | its top-left value (`@{7,8}` is 7, `@SEQUENCE(3)` is 1) |
 | a call answering a reference (`INDEX(A1:B10,0,1)`) | the cell of that reference |
 | a union | `#VALUE!` |
+| a reference across sheets | `#REF!` |
 | one value | that value |
 
 The answer is a reference to that cell, so `SUM(@A1:A10)` skips text there, `ROW(@A1:A10)` is the formula's row and `ISREF(@A1:A10)` is TRUE.
 
-`@` binds to what follows it: a reference, a name, a call, a constant or a parenthesis. `@A1:A10*2` is `(@A1:A10)*2`. An xlsx file stores it as `_xlfn.SINGLE(A1:A10)`.
+`@` binds to what follows it: a reference, a name, a call, a constant or a parenthesis. `@A1:A10*2` is `(@A1:A10)*2`. An xlsx file stores it as `_xlfn.SINGLE(A1:A10)`, and `readXlsx` and `writeXlsx` turn one into the other.
 
 ## Unions
 
@@ -67,7 +68,7 @@ A function that does not take several areas gives an error, which depends on the
 
 ## How it was checked
 
-The set `areas` (989 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The held-out sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
+The set `areas` (989 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
 
 ## Known differences
 

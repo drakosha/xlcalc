@@ -46,6 +46,7 @@ describe("xlsx reader: formulas in the engine's spelling", () => {
     expect(fromFile('_xludf.MYFN(1)')).toEqual({ formula: 'MYFN(1)', found: ['userFunction'] })
     expect(fromFile('SUM(Table1[Amount])+Table1[[#This Row],[Qty]]').found).toEqual(['table'])
     expect(fromFile('[1]Sheet1!A1+\'[2]My sheet\'!B2').found).toEqual(['externalLink'])
+    expect(fromFile('[0]!rate*2')).toEqual({ formula: 'rate*2', found: [] })
     expect(fromFile("SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)")).toEqual({ formula: "SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)", found: [] })
     expect(fromFile('LET(_xlpm.a1,1,_xlpm.a1)').found).toEqual(['letName'])
     expect(fromFile('SUM(Sheet1!A1:B2)+"Sheet1:Sheet3!"').found).toEqual([])
