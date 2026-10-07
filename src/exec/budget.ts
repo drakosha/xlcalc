@@ -10,10 +10,11 @@ import { nowMs } from '../env.js'
 /** Why an asynchronous or limited call failed, by `code`; a `limit` names the limit, its maximum, the size and the formula's cell. */
 export class CalcError extends Error {
   readonly code: CalcErrorCode
-  limit?: 'formulas' | 'cells'
-  max?: number
-  size?: number
-  cell?: CellRef
+  // declared only: a field without a value is no property of the error
+  declare limit?: 'formulas' | 'cells'
+  declare max?: number
+  declare size?: number
+  declare cell?: CellRef
   constructor(code: CalcErrorCode, message: string, details: { limit?: 'formulas' | 'cells'; max?: number; size?: number; cell?: CellRef; cause?: unknown } = {}) {
     const { cause, ...rest } = details
     super(message, cause === undefined ? undefined : { cause })

@@ -9,6 +9,7 @@ const contract = await import(`${name}/contract`)
 const { createState, parse, valuesHash } = await import(`${name}/unstable/internal`)
 const { classAEdits, synthBook } = await import(`${name}/unstable/synth`)
 const { readXlsx, writeXlsx } = await import(`${name}/xlsx`)
+const { createCalcPool } = await import(`${name}/worker`)
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const synth = synthBook({ seed: 1, rows: 340 })
@@ -18,6 +19,11 @@ for (const e of classAEdits(synth, 3, 10)) session.setCells([e])
 const edited = session.result().hash
 session.close()
 const xlsx = await readXlsx((await writeXlsx(synth.book, { result: compute(synth.book, { clock }) })).data)
+// the pool's threads from their default place next to the subpath; left open, it must not keep the process alive
+const pool = createCalcPool({ threads: 1 })
+const inThread = await pool.openSession(synth.book, { clock })
+for (const e of classAEdits(synth, 3, 10)) await inThread.setCells([e])
+const threads = { hash: (await pool.compute(synth.book, { clock })).hash, edited: (await inThread.result()).hash }
 /** Error code of importing a path that `exports` does not expose. */
 async function closed(spec) {
   try {
@@ -39,6 +45,7 @@ console.log(
     contract: Object.keys(contract).sort(),
     internal: [typeof createState, typeof parse, typeof valuesHash],
     xlsx: compute(xlsx.book, { clock }).hash,
+    threads,
     closed: await Promise.all([`${name}/dist/engine.js`, `${name}/internal`, `${name}/synth`].map(closed)),
   }),
 )
