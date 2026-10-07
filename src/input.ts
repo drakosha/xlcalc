@@ -209,11 +209,12 @@ const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, 'style', 'format'])
+  onlyKeys(o, p, [size, 'style', 'format', 'hidden'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
   field('format', checkString)
+  field('hidden', checkBoolean)
 }
 
 /** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
@@ -258,7 +259,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, problem)
@@ -276,6 +277,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
+    if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   return book as unknown as BookInput
@@ -360,9 +362,14 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       checkMerges(o.merges, `${p}.merges`)
       return o as unknown as LayoutEdit
     }
+    if (o.filtered !== undefined) {
+      onlyKeys(o, p, ['sheet', 'filtered'])
+      checkBoolean(o.filtered, `${p}.filtered`)
+      return o as unknown as LayoutEdit
+    }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = axis === 'r' ? 'rows' : 'columns'
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows or merges)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges or filtered)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit

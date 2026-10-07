@@ -84,6 +84,9 @@ export interface Selection {
   read(g: Rng): readonly V[]
 }
 
+/** Which hidden rows SUBTOTAL and AGGREGATE skip: all of them, those of a filtered sheet, none. */
+export type HiddenRule = 'all' | 'filtered' | 'none'
+
 /** What a function declared with `cx` gets as its first argument. */
 export interface Cx {
   /** The clock moment, a serial number with a day fraction (UTC). */
@@ -94,8 +97,11 @@ export interface Cx {
   rand(s: number, r: number, c: number, k?: number): number
   /** Range values row by row (the occupied part); shared with caches, never to be modified. */
   flat(g: Rng): readonly V[]
-  /** The same with the cells whose formula calls SUBTOTAL or AGGREGATE blank: SUBTOTAL and AGGREGATE skip them. */
-  flatOuter(g: Rng): readonly V[]
+  /**
+   * Range values like `flat`, blank where SUBTOTAL and AGGREGATE skip: with `nested` the cells whose formula calls
+   * either, with `hidden` the hidden rows (`all`), or those of a filtered sheet only (`filtered`).
+   */
+  counted(g: Rng, nested: boolean, hidden: HiddenRule): readonly V[]
   bounds(g: Rng): Bounds
   /** A value in a scalar position: the single cell of a range or array, or #VALUE!. */
   scalar(x: Arg): V

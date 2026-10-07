@@ -4,13 +4,14 @@
  * (`clock`) is what a saved result records, and a full computation with it gives the same hash.
  */
 import type { BookInput, CellChange, CellEdit, CellStyle, Clock, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
-import { applyClock, applyEdits, applyMerges, createState, type EngineState } from './engine.js'
+import { applyClock, applyEdits, applyHidden, applyMerges, createState, type EngineState } from './engine.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
+import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, clockSerial, spillFields } from './result.js'
@@ -107,13 +108,15 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       const checked = checkLayoutEdits(edits, sheetIndex(s), styleCount(s))
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
       const before = s.input.sheets.map((x) => new Set(x.merges ?? []))
+      const hidden = s.input.sheets.map((x) => JSON.stringify(hiddenRows(x) ?? null))
       applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
-      // merged areas added or removed: the arrays whose range they meet spill or stop
+      // merged areas added or removed: the arrays whose range they meet spill or stop; hidden rows: SUBTOTAL and AGGREGATE count again
       const keys = new Set<string>()
       s.input.sheets.forEach((x, i) => {
         const now = new Set(x.merges ?? [])
         const moved = [...before[i]].filter((m) => !now.has(m)).concat([...now].filter((m) => !before[i].has(m)))
         if (moved.length) for (const k of applyMerges(s, i, moved.map((m) => parseMerge(m)!))) keys.add(k)
+        if (JSON.stringify(hiddenRows(x) ?? null) !== hidden[i]) for (const k of applyHidden(s, i)) keys.add(k)
       })
       return changes(s, shown ? merged([...keys], shownChanges(s, shown)) : [...keys])
     },

@@ -1,10 +1,12 @@
 /**
  * SUBTOTAL and AGGREGATE on the statistical functions. A cell whose formula calls either of them (anywhere in the
- * formula) is skipped as nested, as in Excel; there are no hidden rows, so codes 101–111 equal 1–11 and AGGREGATE's
- * options 1, 3, 5, 7 equal 0, 2, 4, 6. This engine's own.
+ * formula) is skipped as nested, as in Excel. Hidden rows (the workbook set `hidden`): SUBTOTAL 101–111 and
+ * AGGREGATE's options 1, 3, 5, 7 skip them all, SUBTOTAL 1–11 only on a filtered sheet, AGGREGATE's even options
+ * never; hidden columns count. AGGREGATE 14–19 take an array too, which has no rows to skip. This engine's own.
  */
+import { Arr } from '../../arrays/value.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
-import type { Cx, FnDef, Grid } from '../../args.js'
+import type { Cx, FnDef, Grid, HiddenRule } from '../../args.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { functions as stat } from '../statistical/descriptive.js'
 import { functions as sums } from './sums.js'
@@ -20,21 +22,29 @@ function apply(name: string, xs: number[], k?: number): V {
 
 const NAMES = ['AVERAGE', 'COUNT', 'COUNTA', 'MAX', 'MIN', 'PRODUCT', 'STDEV.S', 'STDEV.P', 'SUM', 'VAR.S', 'VAR.P', 'MEDIAN', 'MODE.SNGL', 'LARGE', 'SMALL', 'PERCENTILE.INC', 'QUARTILE.INC', 'PERCENTILE.EXC', 'QUARTILE.EXC']
 
+/** What SUBTOTAL and AGGREGATE skip in their references. */
+interface Skip {
+  nested: boolean
+  hidden: HiddenRule
+  errors: boolean
+}
+
 /**
  * The function `code` (1–13) over the references' values: COUNT counts numbers, COUNTA every non-blank cell
- * (errors too), the rest take the numbers and stop at the first error, unless errors are skipped.
+ * (errors too), the rest take the numbers and stop at the first error, unless errors are skipped. AGGREGATE 14–19
+ * (`k`) also take an array.
  */
-function over(cx: Cx, code: number, refs: readonly (V | Rng)[], skipNested: boolean, skipErrors: boolean, k?: number): V {
+function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr)[], skip: Skip, k?: number): V {
   const xs: number[] = []
   let filled = 0
   let first: CErr | undefined
   for (const x of refs) {
-    // only references: a value in their place is #VALUE!
-    if (!(x instanceof Rng)) return isErr(x) ? x : E.VALUE
-    for (const v of skipNested ? cx.flatOuter(x) : cx.flat(x)) {
+    // only references, and an array for 14–19: a value in their place is #VALUE!
+    if (!(x instanceof Rng) && !(x instanceof Arr && k !== undefined)) return isErr(x) ? x : E.VALUE
+    for (const v of x instanceof Rng ? cx.counted(x, skip.nested, skip.hidden) : cx.grid(x).v) {
       if (v === null) continue
       if (isErr(v)) {
-        if (skipErrors) continue
+        if (skip.errors) continue
         first ??= v
       }
       filled++
@@ -49,23 +59,22 @@ function over(cx: Cx, code: number, refs: readonly (V | Rng)[], skipNested: bool
 function subtotal(cx: Cx, code: number, refs: (V | Rng)[]): V {
   const t = whole(code)
   const c = t > 100 ? t - 100 : t
-  return c < 1 || c > 11 || (t > 11 && t < 101) ? E.VALUE : over(cx, c, refs, true, false)
+  return c < 1 || c > 11 || (t > 11 && t < 101) ? E.VALUE : over(cx, c, refs, { nested: true, hidden: t > 100 ? 'all' : 'filtered', errors: false })
 }
 
-function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng)[]): V {
+function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr)[]): V {
   const c = whole(code)
   const o = Math.trunc(option)
   if (c < 1 || c > 19 || o < 0 || o > 7) return E.VALUE
-  const skipNested = o < 4
-  const skipErrors = o % 4 >= 2
-  if (c <= 13) return over(cx, c, refs, skipNested, skipErrors)
+  const skip: Skip = { nested: o < 4, hidden: o % 2 === 1 ? 'all' : 'none', errors: o % 4 >= 2 }
+  if (c <= 13) return over(cx, c, refs, skip)
   // LARGE … QUARTILE.EXC: one array and k, a number (an error there is #VALUE!, as in Excel); a range as k
   // gives its top-left cell (Excel 365: AGGREGATE(14,6,M1:M10,A1:A3) is LARGE with k from A1)
   if (refs.length !== 2) return E.VALUE
   const r = refs[1]
   const kv = cx.scalar(r instanceof Rng ? new Rng(r.s, r.r1, r.c1, r.r1, r.c1) : r)
   const k = isErr(kv) ? kv : cx.rules.toNum(kv)
-  return isErr(k) ? E.VALUE : over(cx, c, [refs[0]], skipNested, skipErrors, k)
+  return isErr(k) ? E.VALUE : over(cx, c, [refs[0]], skip, k)
 }
 
 export const functions: Record<string, FnDef> = {

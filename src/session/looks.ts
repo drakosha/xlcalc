@@ -37,7 +37,7 @@ export function shownChanges(s: EngineState, before: Map<string, string>): strin
   return [...before].filter(([k, was]) => now.get(k) !== was).map(([k]) => k)
 }
 
-/** The cells a layout edit can change the look of: the cells of its columns or rows, the top-left cells of merged areas old and new. */
+/** The cells a layout edit can change the look of: the cells of its columns or rows, the top-left cells of merged areas old and new; the filter mode changes none. */
 export function layoutCells(s: EngineState, edits: LayoutEdit[]): Set<string> {
   const out = new Set<string>()
   for (const e of edits) {
@@ -51,7 +51,7 @@ export function layoutCells(s: EngineState, edits: LayoutEdit[]): Set<string> {
     } else if ('columns' in e) {
       const [lo, hi] = parseSpan(e.columns, 'c')!
       for (let c = lo; c <= Math.min(hi, cols.length - 1); c++) cols[c]?.forEach((_, r) => out.add(`${i}:${r}:${c}`))
-    } else {
+    } else if ('rows' in e) {
       const [lo, hi] = parseSpan(e.rows, 'r')!
       cols.forEach((col, c) => {
         for (let r = lo; r <= Math.min(hi, col.length - 1); r++) if (col[r] !== undefined) out.add(`${i}:${r}:${c}`)

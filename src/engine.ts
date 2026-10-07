@@ -7,12 +7,13 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue } from './contract.js'
+import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
 import { FUNCTIONS } from './functions.js'
-import { rebuildGraph } from './graph.js'
+import { readersOf, rebuildGraph } from './graph.js'
 import { ymd } from './dates.js'
+import { hiddenRows } from './layout/hidden.js'
 import { rulesOf } from './locale/rules.js'
 import type { RulesClock } from './locale/rules/data.js'
 import { formatAddress, inputScalar, MAX_COLS, parseAddress } from './model.js'
@@ -92,6 +93,13 @@ function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean)
   else marks.delete(r * MAX_COLS + c)
 }
 
+/** The hidden rows of sheet `s` that SUBTOTAL and AGGREGATE read, from its input. */
+export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
+  const h = hiddenRows(sheet)
+  if (h) ctx.hidden.set(s, h)
+  else ctx.hidden.delete(s)
+}
+
 function emptySheet(name: string): SheetData {
   return { name, cols: [], rows: 0, fills: [] }
 }
@@ -145,8 +153,10 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     flat: new Map(),
     index: new Map(),
     nested: new Map(),
+    hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),
   }
+  input.sheets.forEach((sh, s) => setHidden(ctx, s, sh))
   const rt = makeRuntime(ctx)
   const state: EngineState = {
     input,
@@ -276,6 +286,20 @@ export function applyMerges(state: EngineState, s: number, rects: Rect[]): strin
   state.spills.merges.delete(s)
   for (const m of [state.spills.on, state.spills.wait]) for (const [id, x] of m) if (x.s === s && rects.some((r) => meets(r, x))) dirty.add(id)
   recompute(state, dirty, track)
+  return changed(state, track)
+}
+
+/**
+ * Hidden rows or the filter mode of sheet `s` changed: the formulas calling SUBTOTAL or AGGREGATE over the rows hidden
+ * before or now are computed again.
+ */
+export function applyHidden(state: EngineState, s: number): string[] {
+  const before = state.ctx.hidden.get(s)?.spans ?? []
+  setHidden(state.ctx, s, state.input.sheets[s])
+  const track = tracker()
+  const readers = new Set<number>()
+  for (const [r1, r2] of [...before, ...(state.ctx.hidden.get(s)?.spans ?? [])]) readersOf(state, { s, r1, r2, c1: 0, c2: MAX_COLS - 1 }, readers)
+  recompute(state, new Set([...readers].filter((id) => state.formulas[id]!.nested)), track)
   return changed(state, track)
 }
 
