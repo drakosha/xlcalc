@@ -1,0 +1,232 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 4.831,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(99999999,\"?/?\")"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(100000000,\"?/?\")"
+  },
+  {
+   "id": "TEXT#3",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(999999999,\"?/?\")"
+  },
+  {
+   "id": "TEXT#4",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1000000000,\"?/?\")"
+  },
+  {
+   "id": "TEXT#5",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1000000001,\"?/?\")"
+  },
+  {
+   "id": "TEXT#6",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(2000000000,\"?/?\")"
+  },
+  {
+   "id": "TEXT#7",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(123456789.5,\"?/?\")"
+  },
+  {
+   "id": "TEXT#8",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1000000000.5,\"?/?\")"
+  },
+  {
+   "id": "TEXT#9",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1000000000.5,\"??/??\")"
+  },
+  {
+   "id": "TEXT#10",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1/3,\"@\")"
+  },
+  {
+   "id": "TEXT#11",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234567.891,\"@\")"
+  },
+  {
+   "id": "TEXT#12",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+300,\"0\")"
+  },
+  {
+   "id": "TEXT#13",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+250,\"0\")"
+  },
+  {
+   "id": "TEXT#14",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(5,\"0*-\")"
+  },
+  {
+   "id": "TEXT#15",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45688,\"[$-F800]dddd, mmmm dd, yyyy\")"
+  },
+  {
+   "id": "TEXT#16",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[$-F400]h:mm:ss AM/PM\")"
+  },
+  {
+   "id": "TEXT#17",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(45688,\"d mmmm yyyy\")"
+  },
+  {
+   "id": "TEXT#18",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[<0]0;[>0]0\")"
+  },
+  {
+   "id": "TEXT#19",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[>5]0;[<-5]0\")"
+  },
+  {
+   "id": "TEXT#20",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(3,\"[>5]0;[<-5]0;\")"
+  },
+  {
+   "id": "TEXT#21",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(3,\"[>5]0;[<-5]0;0\")"
+  },
+  {
+   "id": "TEXT#22",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[>5]0\")"
+  }
+ ],
+ "values": {
+  "TEXT#1": {
+   "t": "s",
+   "v": "99999999/1"
+  },
+  "TEXT#2": {
+   "t": "s",
+   "v": "100000000/1"
+  },
+  "TEXT#3": {
+   "t": "s",
+   "v": "999999999/1"
+  },
+  "TEXT#4": {
+   "t": "s",
+   "v": "1000000000/1"
+  },
+  "TEXT#5": {
+   "t": "s",
+   "v": "1000000001/1"
+  },
+  "TEXT#6": {
+   "t": "s",
+   "v": "2000000000/1"
+  },
+  "TEXT#7": {
+   "t": "s",
+   "v": "246913579/2"
+  },
+  "TEXT#8": {
+   "t": "s",
+   "v": "2000000001/2"
+  },
+  "TEXT#9": {
+   "t": "s",
+   "v": "2000000001/2 "
+  },
+  "TEXT#10": {
+   "t": "s",
+   "v": "0.333333333"
+  },
+  "TEXT#11": {
+   "t": "s",
+   "v": "1234567.891"
+  },
+  "TEXT#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#13": {
+   "t": "s",
+   "v": "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "TEXT#14": {
+   "t": "s",
+   "v": "5"
+  },
+  "TEXT#15": {
+   "t": "s",
+   "v": "Friday, January 31, 2025"
+  },
+  "TEXT#16": {
+   "t": "s",
+   "v": "6:00:00 PM"
+  },
+  "TEXT#17": {
+   "t": "s",
+   "v": "31 January 2025"
+  },
+  "TEXT#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#19": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "TEXT#20": {
+   "t": "s",
+   "v": ""
+  },
+  "TEXT#21": {
+   "t": "s",
+   "v": "3"
+  },
+  "TEXT#22": {
+   "t": "s",
+   "v": "-1"
+  }
+ }
+}

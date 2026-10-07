@@ -6,7 +6,7 @@ import { XLFN } from '../../signatures.js'
 const PREFIX: Record<string, string> = {
   ...XLFN,
   ...Object.fromEntries(
-    ['ARRAYTOTEXT', 'CHOOSECOLS', 'CHOOSEROWS', 'FORECAST.LINEAR', 'PERCENTOF', 'RANDARRAY', 'SEQUENCE', 'SORTBY', 'TEXTAFTER', 'TEXTBEFORE', 'TEXTSPLIT', 'TOCOL', 'TOROW', 'VALUETOTEXT', 'WRAPCOLS', 'WRAPROWS', 'XLOOKUP', 'XMATCH'].map((n) => [n, `_xlfn.${n}`]),
+    ['ARRAYTOTEXT', 'CHOOSECOLS', 'CHOOSEROWS', 'FORECAST.LINEAR', 'LET', 'PERCENTOF', 'RANDARRAY', 'SEQUENCE', 'SORTBY', 'TEXTAFTER', 'TEXTBEFORE', 'TEXTSPLIT', 'TOCOL', 'TOROW', 'VALUETOTEXT', 'WRAPCOLS', 'WRAPROWS', 'XLOOKUP', 'XMATCH'].map((n) => [n, `_xlfn.${n}`]),
   ),
   FILTER: '_xlfn._xlws.FILTER',
 }

@@ -40,7 +40,7 @@ describe('styles and layout as input', () => {
   it('a styled book computes the same values and values hash as without its styles', () => {
     const b = styled()
     const plain: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { formula: 'A1*2', format: '0.00' }, B1: {} } }] }
-    const [x, y] = [compute(b, { clock }), compute(plain, { clock })]
+    const [x, y] = [compute(b, { clock, display: false }), compute(plain, { clock, display: false })]
     expect(x.hash).toBe(y.hash)
     expect(x.sheets[0].cells.A2).toEqual({ value: 2, formula: 'A1*2', format: '0.00' })
   })

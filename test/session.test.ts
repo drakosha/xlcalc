@@ -30,7 +30,7 @@ describe('session', () => {
 
   it('setClock recomputes volatile cells; setNames rebuilds', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'A1+1' }, A3: { value: 5 }, B1: { formula: 'x*2' } } }], names: [{ name: 'x', ref: "'S'!$A$3" }] }
-    const s = openSession(book, { clock })
+    const s = openSession(book, { clock, display: false })
     expect(s.setClock({ now: '2026-10-05T00:00:00Z', seed: 1 }).map((c) => c.cell).sort()).toEqual(['A1', 'A2'])
     expect(s.result().hash).toBe(compute(book, { clock: { now: '2026-10-05T00:00:00Z', seed: 1 } }).hash)
     expect(s.setNames([{ name: 'x', ref: "'S'!$A$2" }])).toEqual([{ sheet: 'S', cell: 'B1', value: 2 * (46300 + 1) }])

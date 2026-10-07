@@ -27,8 +27,6 @@ export const RU_SETS: StoredSet[] = existsSync(dir)
 /** Reasons of differences that only ru-RU cases show; each is a line of the README's "Known differences from Excel". */
 export const RU_REASONS = {
   nullError: '`#NULL!` is read as `#ERROR!`.',
-  textFormats:
-    '`TEXT` reads the format codes of en-US and of ru-RU; exponent formats (`0.00E+00`, `0,00E+00`), colours, elapsed time and bracketed conditions (`[h]:mm`, `[ч]:мм`) give `#VALUE!`.',
   secondDecimal:
     'A second decimal separator among the decimals of a number format (`#,##0,00` in ru-RU) is a literal between digits; Excel shows one digit fewer before it in some numbers (`TEXT(-0.5,"#,##0,00")` is `-,50,00` in Excel and `-,500,00` here).',
 } as const
@@ -47,11 +45,6 @@ export const RU_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>>
   'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
   'measurement:GAMMAINV#8': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 19999701973.2484 } },
   'locale:text#40': { reason: 'nullError', engine: { t: 's', v: '#ДЕЛ/0!; #ЗНАЧ!; #ССЫЛКА!; #ИМЯ?; #ЧИСЛО!; #ERROR!' } },
-  'locale:format#24': { reason: 'textFormats', engine: { t: 'e', v: 'VALUE' } },
-  'locale:format#93': { reason: 'textFormats', engine: { t: 'e', v: 'VALUE' } },
-  'locale:format#94': { reason: 'textFormats', engine: { t: 'e', v: 'VALUE' } },
-  'locale:format#95': { reason: 'textFormats', engine: { t: 'e', v: 'VALUE' } },
-  'locale:format#96': { reason: 'textFormats', engine: { t: 'e', v: 'VALUE' } },
   'locale:format#244': { reason: 'secondDecimal', engine: { t: 's', v: '-,500,00' } },
 }
 

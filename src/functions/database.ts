@@ -38,9 +38,12 @@ function nameIndex(db: Grid, name: V, rules: Rules): number | CErr {
   return E.VALUE
 }
 
-/** The field's values in the records selected by the criteria; a database or criteria without a row under the header is #VALUE!. */
-function selected(db: Grid, field: V, criteria: Grid, rules: Rules): V[] | CErr {
-  const col = fieldIndex(db, field, rules)
+/**
+ * The field's values in the records selected by the criteria, each record as 0 without a field (DCOUNT and DCOUNTA
+ * then count the records); a database or criteria without a row under the header is #VALUE!.
+ */
+function selected(db: Grid, field: V | undefined, criteria: Grid, rules: Rules): V[] | CErr {
+  const col = field === undefined ? -1 : fieldIndex(db, field, rules)
   if (isErr(col)) return col
   if (db.rows < 2 || criteria.rows < 2) return E.VALUE
   // the database column each condition tests; under a header that is no field (−1) only TRUE holds, as a computed criterion
@@ -61,7 +64,7 @@ function selected(db: Grid, field: V, criteria: Grid, rules: Rules): V[] | CErr 
   const out: V[] = []
   for (let r = 1; r < db.h; r++) {
     const rec = (c: number) => gridAt(db, r * db.cols + c)
-    if (tests.some((row) => row.every((t) => t.col >= 0 && matches(rec(t.col), t.crit, rules)))) out.push(rec(col))
+    if (tests.some((row) => row.every((t) => t.col >= 0 && matches(rec(t.col), t.crit, rules)))) out.push(col < 0 ? 0 : rec(col))
   }
   return out
 }
@@ -78,7 +81,7 @@ function squares(xs: number[]): number {
  * The field as Excel reads it: a value as it is (an error is the answer), a reference to one cell by its value
  * (an error there is #VALUE!), a reference to several cells #VALUE!; an array is lifted.
  */
-function fieldOf(cx: Cx, field: V | Rng): V {
+function fieldOf(cx: Cx, field: V | Rng | undefined): V | undefined {
   if (!(field instanceof Rng)) return field
   if (field.r2 > field.r1 || field.c2 > field.c1) return E.VALUE
   const v = cx.scalar(field)
@@ -89,7 +92,7 @@ function fieldOf(cx: Cx, field: V | Rng): V {
 const dfn = (f: (vs: V[]) => V, errors = true): FnDef => ({
   args: 'G r G',
   cx: true,
-  fn: (cx: Cx, db: Grid, field: V | Rng, criteria: Grid) => {
+  fn: (cx: Cx, db: Grid, field: V | Rng | undefined, criteria: Grid) => {
     const vs = selected(db, fieldOf(cx, field), criteria, cx.rules)
     if (isErr(vs)) return vs
     if (errors) {

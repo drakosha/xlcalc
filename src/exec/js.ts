@@ -8,7 +8,7 @@ import { Arr } from '../arrays/value.js'
 import { PACKAGE_NAME } from '../config.js'
 import type { Runtime } from '../runtime.js'
 import { isErr, Rng, type V } from '../values.js'
-import { OPERATORS, type Backend } from './walk.js'
+import { once, OPERATORS, type Backend } from './walk.js'
 
 const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 
@@ -16,8 +16,11 @@ const lit = (v: V) => (isErr(v) ? `E.${v.code}` : JSON.stringify(v))
 export function jsBackend(): Backend<string> & { source(root: string): string } {
   const hoisted: string[] = []
   const hoist = (code: string) => `h${hoisted.push(code) - 1}`
+  // LET's names of the formula: v0, v1, …
+  let names = 0
   return {
     value: lit,
+    absent: () => 'undefined',
     array: (a) => hoist(`A(${a.rows},${a.cols},[${a.v.map(lit).join(',')}])`),
     cell: (s, r, c) => `cell(${s},${r},${c})`,
     spill: (s, r, c) => `spill(${s},${r},${c})`,
@@ -38,13 +41,19 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
     },
     external: (text) => `ext(${JSON.stringify(text)})`,
     read: (a) => `scalar(${a})`,
+    let: (count, build) => {
+      const first = names
+      names += count
+      const { values, body } = build((i) => `v${first + i}()`)
+      return `(()=>{const ${values.map((v, i) => `v${first + i}=M(()=>${v})`).join(',')};return ${body}})()`
+    },
     source: (root) => `(()=>{${hoisted.length ? `const ${hoisted.map((h, i) => `h${i}=${h}`).join(',')};` : ''}return ()=>${root}})()`,
   }
 }
 
 const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`)
 
-export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,E,R,A}=rt;'
+export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,E,R,A,M}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
 export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
@@ -58,5 +67,5 @@ export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {
     if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`, { cause: e })
     throw e
   }
-  return make({ ...rt, R, A }) as (() => Arg)[]
+  return make({ ...rt, R, A, M: once }) as (() => Arg)[]
 }

@@ -77,7 +77,7 @@ function sort(cx: Cx, g: Grid, idx?: Grid, ord?: Grid, byCol = false): V | Arr {
   return sortLines(a, byCol, (line, j) => (byCol ? a.at(k.at[j], line) : a.at(line, k.at[j])), k.desc, cx.rules)
 }
 
-/** SORTBY: by-arrays of one column (row) as long as the array's rows (columns), each with an optional order. */
+/** SORTBY: by-arrays of one column (row) as long as the array's rows (columns), or one value that keeps the order, each with an optional order. */
 function sortby(cx: Cx, g: Grid, rest: Grid[]): V | Arr {
   const a = fromGrid(g)
   const by: Arr[] = []
@@ -89,9 +89,10 @@ function sortby(cx: Cx, g: Grid, rest: Grid[]): V | Arr {
     if (o !== 1 && o !== -1) return E.VALUE
     desc.push(o === -1)
   }
+  const one = (b: Arr) => b.rows === 1 && b.cols === 1
   const byCol = by[0].rows === 1 && by[0].cols > 1
-  for (const b of by) if (byCol ? b.rows !== 1 || b.cols !== a.cols : b.cols !== 1 || b.rows !== a.rows) return E.VALUE
-  return sortLines(a, byCol, (line, k) => (byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc, cx.rules)
+  for (const b of by) if (!one(b) && (byCol ? b.rows !== 1 || b.cols !== a.cols : b.cols !== 1 || b.rows !== a.rows)) return E.VALUE
+  return sortLines(a, byCol, (line, k) => (one(by[k]) ? by[k].at(0, 0) : byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc, cx.rules)
 }
 
 /** A line's identity for UNIQUE: values by type, text in any case. */

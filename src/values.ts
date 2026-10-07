@@ -5,7 +5,7 @@
 import type { CellValue, ErrorCode } from './contract.js'
 import { collator } from './criteria.js'
 import { decimalFirst, textToNumber } from './dates.js'
-import { generalText } from './format.js'
+import { generalText } from './numfmt/general.js'
 
 export class CErr {
   constructor(readonly code: ErrorCode) {}

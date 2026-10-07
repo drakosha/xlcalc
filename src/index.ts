@@ -4,12 +4,14 @@
  * the reference graph.
  * The `./unstable/*` subpaths (internals, the synthetic book) are outside semver.
  */
-import type { BookInput, ComputeOptions, ComputeResult, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
+import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'
 import { restructure } from './structure/index.js'
 import { createState, debugSource } from './engine.js'
 import { currentClock, nowMs } from './env.js'
-import { checkBook, checkComputeOptions, checkString, checkValidateContext } from './input.js'
+import { checkBook, checkCellValue, checkComputeOptions, checkDisplayOptions, checkString, checkValidateContext } from './input.js'
+import { displayRules } from './locale/rules.js'
+import { columnPoints, room } from './numfmt.js'
 import { buildResult, clockSerial } from './result.js'
 import { validate, validateName as checkName } from './syntax.js'
 
@@ -32,7 +34,7 @@ export function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
   checkBook(book)
   const clock = o.clock ?? currentClock()
   const state = createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
-  return buildResult(state, clock, t0)
+  return buildResult(state, clock, t0, o.display !== false)
 }
 
 export function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
@@ -54,5 +56,14 @@ export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): stri
   return debugSource(createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: 'eval' }))
 }
 
+/**
+ * A value as a cell shows it without a book (a cell being edited, say): by `format` (General without one), in
+ * `locale`, in a column of `width` (the default width without one), as `CellResult.text` and `color` show it.
+ */
+export function displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay {
+  const o = checkDisplayOptions(opts)
+  return displayRules(o.locale).display(checkCellValue(value, 'value'), o.format, room(columnPoints(o.width)))
+}
+
 /** The contract implementation as one object. */
-export const engine: FormulaEngine = { compute, validateFormula, validateName, openSession, restructure }
+export const engine: FormulaEngine = { compute, validateFormula, validateName, openSession, restructure, displayValue }

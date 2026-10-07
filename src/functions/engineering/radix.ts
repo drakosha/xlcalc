@@ -1,5 +1,5 @@
 /** BIN2DEC … OCT2HEX: ten-digit two's complement numbers with Excel's checks. This engine's own. */
-import { generalText } from '../../format.js'
+import { generalText } from '../../numfmt/general.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import type { FnDef } from '../../args.js'
 import { atp, need } from '../date/atp.js'

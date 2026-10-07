@@ -6,16 +6,16 @@
 import type { ErrorCode } from '../../contract.js'
 import { errorWords, textOrder } from '../../criteria.js'
 import { parseDateWith, textReaders, type DateSyntax } from '../../dates.js'
-import { formatWith, generalText } from '../../format.js'
+import { displayWith, formatWith, generalText, type Names } from '../../numfmt.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
 import type { RegionalData, RulesClock } from './data.js'
 import { dmyDates } from './dates.js'
-import { formatDialect } from './format.js'
+import { formatDialects } from './format.js'
 import { numberReader } from './numbers.js'
 
-export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
+export function regionalRules(data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined): Rules {
   const { locale, decimal, group, currency } = data
   const dates: DateSyntax = { date: dmyDates(data, clock), decimal }
   const { value: valueText, argument } = textReaders(numberReader(data), dates)
@@ -27,7 +27,7 @@ export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
   }
   const compareText = textOrder(data.collation)
   const compare = compareWith(compareText)
-  const dialect = formatDialect(data, argument, numberText)
+  const formats = formatDialects(data, argument, names)
   return {
     locale,
     decimal,
@@ -40,7 +40,8 @@ export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
     valueText,
     dateText: (text) => parseDateWith(text, dates),
     numberText,
-    formatText: (value, format) => formatWith(value, format, dialect),
+    formatText: (value, format) => formatWith(value, format, formats.text),
+    display: (value, format, space) => displayWith(value, format, formats.cell, space),
     compare,
     compareOp: operatorOrder(compare),
     errorText: (code: ErrorCode) => locale.errors[ERROR_TEXT[code]] ?? ERROR_TEXT[code],

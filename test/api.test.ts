@@ -59,7 +59,7 @@ describe('input errors', () => {
 
   it('options and the clock', () => {
     const book = sheet({ A1: { value: 1 } })
-    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution) (pass the clock as { clock: { now, seed } })')
+    fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution, display) (pass the clock as { clock: { now, seed } })')
     fails(() => compute(book, { clock: { now: 'yesterday', seed: 1 } }), 'opts.clock.now: invalid moment "yesterday"')
     fails(() => compute(book, { clock: { now: '2026-01-01T00:00:00Z', seed: '1' } as never }), 'opts.clock.seed: expected a finite number, got the string "1"')
     fails(() => openSession(book, { live: true, clock: { now: '2026-01-01T00:00:00Z', seed: 1 } } as never), 'opts: a live session takes its clock from the system')
@@ -68,7 +68,7 @@ describe('input errors', () => {
   })
 
   it('session calls and validation', () => {
-    const s = openSession(sheet({ A1: { value: 1 } }))
+    const s = openSession(sheet({ A1: { value: 1 } }), { display: false })
     fails(() => s.setCells([{ sheet: 'T', cell: 'A1', input: { value: 1 } }]), 'edits[0].sheet: unknown sheet "T"')
     fails(() => s.setCells([{ sheet: 's', cell: 'A1', input: { value: 1 } }, { sheet: 'S', cell: '1A', input: null }]), 'edits[1].cell: invalid cell address "1A"')
     fails(() => s.setCells([{ sheet: 'S', cell: 'A1' } as never]), 'edits[0].input: expected a cell object, or null to clear the cell')

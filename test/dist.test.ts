@@ -43,7 +43,7 @@ describe('built package', () => {
     expect(out.edited).toBe(session.result().hash)
     session.close()
     expect(out.functions).toBe(FUNCTION_NAMES.length)
-    expect(out.engine).toEqual(['compute', 'openSession', 'restructure', 'validateFormula', 'validateName'])
+    expect(out.engine).toEqual(['compute', 'displayValue', 'openSession', 'restructure', 'validateFormula', 'validateName'])
     expect(out.inputError).toBe('function')
     expect(out.validate).toBe(true)
     expect(out.contract).toEqual(['MAX_FORMULA_DEPTH', 'MAX_FORMULA_LENGTH'])

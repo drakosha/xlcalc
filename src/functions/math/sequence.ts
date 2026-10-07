@@ -34,5 +34,5 @@ export const functions: Record<string, FnDef> = {
       return build(rows, cols, (k) => (whole ? lo + Math.floor(cx.rand(s, r, c, k) * (hi - lo + 1)) : lo + cx.rand(s, r, c, k) * (hi - lo)))
     },
   },
-  SEQUENCE: { args: 'n n? n? n?', array: true, fn: (rows: number, cols = 1, start = 1, step = 1) => build(rows, cols, (k) => start + k * step) },
+  SEQUENCE: { args: 'n n? n? n?', array: true, fn: (rows = 1, cols = 1, start = 1, step = 1) => build(rows, cols, (k) => start + k * step) },
 }

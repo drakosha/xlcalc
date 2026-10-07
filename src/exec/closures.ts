@@ -6,7 +6,7 @@
 import type { Arg } from '../args.js'
 import type { Runtime } from '../runtime.js'
 import type { V } from '../values.js'
-import { OPERATORS, type Backend, type Operator } from './walk.js'
+import { once, OPERATORS, type Backend, type Operator } from './walk.js'
 
 type Fn = () => Arg
 
@@ -17,6 +17,8 @@ export function closureBackend(rt: Runtime): Backend<Fn> {
   const op2 = (name: Operator) => rt[name] as (a: Arg, b: Arg) => V
   return {
     value: (v) => () => v,
+    // the argument the function takes as not given (its default)
+    absent: () => () => undefined as unknown as Arg,
     array: (a) => () => a,
     cell: (s, r, c) => () => cell(s, r, c),
     spill: (s, r, c) => () => spill(s, r, c),
@@ -45,5 +47,14 @@ export function closureBackend(rt: Runtime): Backend<Fn> {
     },
     external: (text) => () => ext(text),
     read: (a) => () => scalar(a()),
+    let: (count, build) => {
+      // the uses read the current computation's values
+      const cells: Fn[] = new Array(count)
+      const { values, body } = build((i) => () => cells[i]())
+      return () => {
+        for (let i = 0; i < count; i++) cells[i] = once(values[i])
+        return body()
+      }
+    },
   }
 }

@@ -72,7 +72,7 @@ const PRICE_READ = { first: [6], check: { 6: need(validBasis), 5: need(validFreq
 
 export const functions: Record<string, FnDef> = {
   // quasi-coupon periods anchored at first_interest, whole ones counting 1; calc_method FALSE counts the days in one piece
-  ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par: number, freq: number, basis = 0, calc = true) => {
+  ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par = 1000, freq: number, basis = 0, calc = true) => {
     if (rate <= 0 || par <= 0 || !validBasis(basis) || issue >= settlement) return E.NUM
     const anchor = ymd(first)
     const start = ymd(issue)

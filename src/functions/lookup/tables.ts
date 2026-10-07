@@ -69,17 +69,19 @@ function match(cx: Cx, key: V, range: Grid, type: V | Rng = 1): V {
 
 /**
  * LOOKUP: array form reads the last row (column) of the array, vector form the result at the same position.
- * Past the end of the result Excel reads further cells; here that is #REF!, since a session recomputes a
- * formula only for edits inside its references.
+ * Past the end of a result range Excel reads further cells; here that is #REF!, since a session recomputes a
+ * formula only for edits inside its references. Past the end of a value or an array it is #N/A.
  */
-function lookup(cx: Cx, key: V, look: Grid, result?: Grid): V {
+function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   const k = keyOf(key)
   if (isErr(k)) return k
+  if (isErr(result)) return result
   const pos = bisect(along(look), k, cx.rules.compare)
   if (pos < 0) return E.NA
   if (result === undefined) return gridAt(look, look.cols > look.rows ? (look.rows - 1) * look.cols + pos : pos * look.cols + look.cols - 1)
-  if (result.rows > 1 && result.cols > 1) return E.NA
-  return pos < result.rows * result.cols ? gridAt(result, pos) : E.REF
+  const g = cx.grid(result)
+  if (g.rows > 1 && g.cols > 1) return E.NA
+  return pos < g.rows * g.cols ? gridAt(g, pos) : result instanceof Rng ? E.REF : E.NA
 }
 
 /** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */
@@ -116,7 +118,7 @@ function index(x: Arg, r: number, c?: number, area?: number): Arg {
 export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
   INDEX: { args: 'R w w? w?', array: true, fn: index },
-  LOOKUP: { args: 'a G G?', cx: true, fn: lookup },
+  LOOKUP: { args: 'a G R?', cx: true, fn: lookup },
   MATCH: { args: 'a G r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),
 }

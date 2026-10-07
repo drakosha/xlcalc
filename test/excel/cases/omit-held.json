@@ -1,0 +1,562 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 0.546,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "held#1",
+   "group": "held",
+   "fn": "RANDBETWEEN",
+   "formula": "RANDBETWEEN(,0)"
+  },
+  {
+   "id": "held#2",
+   "group": "held",
+   "fn": "ISO.CEILING",
+   "formula": "_xlfn.ISO.CEILING(,2)"
+  },
+  {
+   "id": "held#3",
+   "group": "held",
+   "fn": "CONVERT",
+   "formula": "CONVERT(,\"m\",\"km\")"
+  },
+  {
+   "id": "held#4",
+   "group": "held",
+   "fn": "EOMONTH",
+   "formula": "EOMONTH(45688,)"
+  },
+  {
+   "id": "held#5",
+   "group": "held",
+   "fn": "DOLLARDE",
+   "formula": "DOLLARDE(1.02,)"
+  },
+  {
+   "id": "held#6",
+   "group": "held",
+   "fn": "GCD",
+   "formula": "GCD(,4)"
+  },
+  {
+   "id": "held#7",
+   "group": "held",
+   "fn": "LCM",
+   "formula": "LCM(6,,4)"
+  },
+  {
+   "id": "held#8",
+   "group": "held",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"1+i\",,\"2\")"
+  },
+  {
+   "id": "held#9",
+   "group": "held",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),,D!AP1:AP8)"
+  },
+  {
+   "id": "held#10",
+   "group": "held",
+   "fn": "YEARFRAC",
+   "formula": "YEARFRAC(45658,45688,)"
+  },
+  {
+   "id": "held#11",
+   "group": "held",
+   "fn": "COUNT",
+   "formula": "COUNT(,,)"
+  },
+  {
+   "id": "held#12",
+   "group": "held",
+   "fn": "COUNTA",
+   "formula": "COUNTA(,,,)"
+  },
+  {
+   "id": "held#13",
+   "group": "held",
+   "fn": "AND",
+   "formula": "AND(,TRUE)"
+  },
+  {
+   "id": "held#14",
+   "group": "held",
+   "fn": "CONCAT",
+   "formula": "_xlfn.CONCAT(,,\"x\")"
+  },
+  {
+   "id": "held#15",
+   "group": "held",
+   "fn": "SUM",
+   "formula": "SUM(,,5)"
+  },
+  {
+   "id": "held#16",
+   "group": "held",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(,,6)"
+  },
+  {
+   "id": "held#17",
+   "group": "held",
+   "fn": "MAX",
+   "formula": "MAX(,,-5)"
+  },
+  {
+   "id": "held#18",
+   "group": "held",
+   "fn": "STDEV",
+   "formula": "STDEV(,,4)"
+  },
+  {
+   "id": "held#19",
+   "group": "held",
+   "fn": "NPV",
+   "formula": "NPV(0.1,,100)"
+  },
+  {
+   "id": "held#20",
+   "group": "held",
+   "fn": "IF",
+   "formula": "IF(,,)"
+  },
+  {
+   "id": "held#21",
+   "group": "held",
+   "fn": "IFERROR",
+   "formula": "IFERROR(,)"
+  },
+  {
+   "id": "held#22",
+   "group": "held",
+   "fn": "IFS",
+   "formula": "_xlfn.IFS(FALSE,1,,2)"
+  },
+  {
+   "id": "held#23",
+   "group": "held",
+   "fn": "SWITCH",
+   "formula": "_xlfn.SWITCH(1,,\"a\")"
+  },
+  {
+   "id": "held#24",
+   "group": "held",
+   "fn": "CHOOSE",
+   "formula": "CHOOSE(3,1,2,)"
+  },
+  {
+   "id": "held#25",
+   "group": "held",
+   "fn": "IF",
+   "formula": "SUM(IF({1,0},,5))"
+  },
+  {
+   "id": "held#26",
+   "group": "held",
+   "fn": "COUNT",
+   "formula": "COUNT(IF(TRUE,))"
+  },
+  {
+   "id": "held#27",
+   "group": "held",
+   "fn": "COUNTA",
+   "formula": "COUNTA(IF(TRUE,))"
+  },
+  {
+   "id": "held#28",
+   "group": "held",
+   "fn": "PEARSON",
+   "formula": "PEARSON(,)"
+  },
+  {
+   "id": "held#29",
+   "group": "held",
+   "fn": "INDEX",
+   "formula": "INDEX(,1)"
+  },
+  {
+   "id": "held#30",
+   "group": "held",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!B1:B2,,)"
+  },
+  {
+   "id": "held#31",
+   "group": "held",
+   "fn": "HSTACK",
+   "formula": "_xlfn.HSTACK(1,)"
+  },
+  {
+   "id": "held#32",
+   "group": "held",
+   "fn": "TEXTJOIN",
+   "formula": "_xlfn.TEXTJOIN(,,\"a\",\"\",\"b\")"
+  },
+  {
+   "id": "held#33",
+   "group": "held",
+   "fn": "PRODUCT",
+   "formula": "PRODUCT(,3)"
+  },
+  {
+   "id": "held#34",
+   "group": "held",
+   "fn": "PRODUCT",
+   "formula": "PRODUCT(,)"
+  },
+  {
+   "id": "held#35",
+   "group": "held",
+   "fn": "TEXTBEFORE",
+   "formula": "_xlfn.TEXTBEFORE(\"abc\",\"-\",,,,)"
+  },
+  {
+   "id": "held#36",
+   "group": "held",
+   "fn": "TEXTSPLIT",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.TEXTSPLIT(\"a,b;c\",\",\",\";\",,,),1)"
+  },
+  {
+   "id": "held#37",
+   "group": "held",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B4,D!C1:C4,1,D!B1:B4,),1)"
+  },
+  {
+   "id": "held#38",
+   "group": "held",
+   "fn": "RANDARRAY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.RANDARRAY(1,2,1,,TRUE),1)"
+  },
+  {
+   "id": "held#39",
+   "group": "held",
+   "fn": "EXPAND",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.EXPAND({1,2},,,9),1)"
+  },
+  {
+   "id": "held#40",
+   "group": "held",
+   "fn": "TAKE",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.TAKE(D!B1:C4,,),1)"
+  },
+  {
+   "id": "held#41",
+   "group": "held",
+   "fn": "SEQUENCE",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SEQUENCE(,,,),1)"
+  },
+  {
+   "id": "held#42",
+   "group": "held",
+   "fn": "XLOOKUP",
+   "formula": "_xlfn.XLOOKUP(5,D!L1:L6,D!M1:M6,,,)"
+  },
+  {
+   "id": "held#43",
+   "group": "held",
+   "fn": "MATCH",
+   "formula": "MATCH(8,D!L1:L6,)"
+  },
+  {
+   "id": "held#44",
+   "group": "held",
+   "fn": "VLOOKUP",
+   "formula": "VLOOKUP(8,D!L1:N6,3,)"
+  },
+  {
+   "id": "held#45",
+   "group": "held",
+   "fn": "ROUNDUP",
+   "formula": "ROUNDUP(1.21,)"
+  },
+  {
+   "id": "held#46",
+   "group": "held",
+   "fn": "TRUNC",
+   "formula": "TRUNC(1.29,)"
+  },
+  {
+   "id": "held#47",
+   "group": "held",
+   "fn": "MID",
+   "formula": "MID(\"abcdef\",,)"
+  },
+  {
+   "id": "held#48",
+   "group": "held",
+   "fn": "DATE",
+   "formula": "DATE(,,)"
+  },
+  {
+   "id": "held#49",
+   "group": "held",
+   "fn": "CEILING.MATH",
+   "formula": "_xlfn.CEILING.MATH(-2.5,,)"
+  },
+  {
+   "id": "held#50",
+   "group": "held",
+   "fn": "FIXED",
+   "formula": "FIXED(1234.567,,TRUE)"
+  },
+  {
+   "id": "held#51",
+   "group": "held",
+   "fn": "ADDRESS",
+   "formula": "ADDRESS(2,3,,,\"S\")"
+  },
+  {
+   "id": "held#52",
+   "group": "held",
+   "fn": "TEXT",
+   "formula": "TEXT(,)"
+  },
+  {
+   "id": "held#53",
+   "group": "held",
+   "fn": "REPT",
+   "formula": "REPT(,)"
+  },
+  {
+   "id": "held#60",
+   "group": "held",
+   "fn": "AGGREGATE",
+   "formula": "_xlfn.AGGREGATE(9,0,)"
+  },
+  {
+   "id": "held#61",
+   "group": "held",
+   "fn": "DSUM",
+   "formula": "DSUM(D!U1:Y7,\"Height\",)"
+  }
+ ],
+ "values": {
+  "held#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#2": {
+   "t": "n",
+   "v": 0
+  },
+  "held#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#5": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#6": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#7": {
+   "t": "n",
+   "v": 12
+  },
+  "held#8": {
+   "t": "s",
+   "v": "3+i"
+  },
+  "held#9": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#10": {
+   "t": "n",
+   "v": 0.08333333333333333
+  },
+  "held#11": {
+   "t": "n",
+   "v": 3
+  },
+  "held#12": {
+   "t": "n",
+   "v": 4
+  },
+  "held#13": {
+   "t": "b",
+   "v": false
+  },
+  "held#14": {
+   "t": "s",
+   "v": "x"
+  },
+  "held#15": {
+   "t": "n",
+   "v": 5
+  },
+  "held#16": {
+   "t": "n",
+   "v": 2
+  },
+  "held#17": {
+   "t": "n",
+   "v": 0
+  },
+  "held#18": {
+   "t": "n",
+   "v": 2.3094010767585034
+  },
+  "held#19": {
+   "t": "n",
+   "v": 82.64462809917354
+  },
+  "held#20": {
+   "t": "n",
+   "v": 0
+  },
+  "held#21": {
+   "t": "n",
+   "v": 0
+  },
+  "held#22": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#23": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#24": {
+   "t": "n",
+   "v": 0
+  },
+  "held#25": {
+   "t": "n",
+   "v": 5
+  },
+  "held#26": {
+   "t": "n",
+   "v": 1
+  },
+  "held#27": {
+   "t": "n",
+   "v": 1
+  },
+  "held#28": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#29": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#30": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#31": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#32": {
+   "t": "s",
+   "v": "ab"
+  },
+  "held#33": {
+   "t": "n",
+   "v": 3
+  },
+  "held#34": {
+   "t": "n",
+   "v": 0
+  },
+  "held#35": {
+   "t": "e",
+   "v": "NA"
+  },
+  "held#36": {
+   "t": "s",
+   "v": "{\"a\",\"b\";\"c\",}"
+  },
+  "held#37": {
+   "t": "s",
+   "v": "{4;8;15;16}"
+  },
+  "held#38": {
+   "t": "s",
+   "v": "{1,1}"
+  },
+  "held#39": {
+   "t": "s",
+   "v": "{1,2}"
+  },
+  "held#40": {
+   "t": "s",
+   "v": "{4,2;8,7;15,11;16,19}"
+  },
+  "held#41": {
+   "t": "s",
+   "v": "{1}"
+  },
+  "held#42": {
+   "t": "s",
+   "v": "five"
+  },
+  "held#43": {
+   "t": "n",
+   "v": 5
+  },
+  "held#44": {
+   "t": "n",
+   "v": 80
+  },
+  "held#45": {
+   "t": "n",
+   "v": 2
+  },
+  "held#46": {
+   "t": "n",
+   "v": 1
+  },
+  "held#47": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#48": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "held#49": {
+   "t": "n",
+   "v": -2
+  },
+  "held#50": {
+   "t": "s",
+   "v": "1234.57"
+  },
+  "held#51": {
+   "t": "s",
+   "v": "S!$C$2"
+  },
+  "held#52": {
+   "t": "s",
+   "v": ""
+  },
+  "held#53": {
+   "t": "s",
+   "v": ""
+  },
+  "held#60": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "held#61": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

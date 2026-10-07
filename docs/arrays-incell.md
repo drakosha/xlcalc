@@ -50,7 +50,7 @@ An array inside a formula lives only while its formula runs; a spilled one puts 
 
 ## Compilation and speed
 
-The compiler's walk (`src/exec/walk.ts`), shared by both execution modes, knows statically whether a node can be an array (`src/arrays/shape.ts`): ranges of several cells in a value position, array constants, functions with an array answer, and what is lifted over them. Only such nodes go through the lifting operators (`L1`, `L2`) and callers (`FL`, `LZ`), as closures or as generated text; a formula without arrays compiles to plain scalar code. The shape pass costs about 5 ms on the synthetic book's 3,907 formulas.
+The compiler's walk (`src/exec/walk.ts`), shared by both execution modes, knows statically whether a node can be an array (`src/arrays/shape.ts`): ranges of several cells in a value position, array constants, functions with an array answer, and what is lifted over them; a LET name has the shape of its value (a reference of several cells stays a reference: `LET(r,A1:A3,SUMIF(r,">0"))`), a LET the shape of its calculation, and an argument left out is one value. Only such nodes go through the lifting operators (`L1`, `L2`) and callers (`FL`, `LZ`), as closures or as generated text; a formula without arrays compiles to plain scalar code. The shape pass costs about 5 ms on the synthetic book's 3,907 formulas.
 
 ## Checking against Excel
 

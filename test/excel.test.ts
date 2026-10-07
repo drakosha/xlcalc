@@ -15,7 +15,6 @@ const NO_CASES: Record<string, string> = {
   TODAY: 'volatile, excluded from the measurement; test/volatile.test.ts',
   NOW: 'volatile, excluded from the measurement; test/volatile.test.ts',
   RAND: 'volatile, excluded from the measurement; test/volatile.test.ts',
-  RANDBETWEEN: 'volatile, excluded from the measurement; test/volatile.test.ts',
 }
 
 const covered = FUNCTION_NAMES.filter((f) => !(f in NO_CASES))

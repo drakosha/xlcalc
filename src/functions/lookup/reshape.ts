@@ -47,9 +47,9 @@ function takeDrop(take: boolean): FnDef {
     args: 'R n n?',
     cx: true,
     array: true,
-    fn: (cx: Cx, x: Arg, rows: number, cols?: number) => {
+    fn: (cx: Cx, x: Arg, rows?: number, cols?: number) => {
       if (isErr(x)) return x
-      if (take && (Math.trunc(rows) === 0 || (cols !== undefined && Math.trunc(cols) === 0))) return EMPTY
+      if (take && ((rows !== undefined && Math.trunc(rows) === 0) || (cols !== undefined && Math.trunc(cols) === 0))) return EMPTY
       const g = cx.grid(x)
       const rs = part(g.rows, rows, take)
       const cs = part(g.cols, cols, take)
@@ -153,8 +153,8 @@ export const functions: Record<string, FnDef> = {
   EXPAND: {
     args: 'G n n? a?',
     array: true,
-    fn: (g: Grid, rows: number, cols?: number, pad: V = E.NA) => {
-      const r = Math.trunc(rows)
+    fn: (g: Grid, rows?: number, cols?: number, pad: V = E.NA) => {
+      const r = rows === undefined ? g.rows : Math.trunc(rows)
       const c = cols === undefined ? g.cols : Math.trunc(cols)
       if (r < g.rows || c < g.cols) return E.VALUE
       const a = fromGrid(g)
