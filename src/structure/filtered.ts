@@ -1,0 +1,81 @@
+/**
+ * Rows on a filtered sheet, where Excel acts on the visible rows (the struct set `hidden`): deleting rows deletes
+ * the visible ones among them and inserting rows inserts as many rows as are visible among them, at the first; a
+ * copy leaves out the hidden rows of its source (`clip.ts`) and pastes into each run of visible rows of its target
+ * as into a target alone. A selection of hidden rows only is taken whole. Every hidden row of a filtered sheet
+ * counts, whatever hid it.
+ */
+import type { BookInput, CellRef, RestructureResult } from '../contract.js'
+import { hiddenRows } from '../layout/hidden.js'
+import { formatAddress } from '../model.js'
+import { sheetKey } from '../syntax.js'
+import type { Rect } from './area.js'
+import { clipped, CLIP } from './clip.js'
+import { copyRange } from './copy.js'
+import { shift } from './shift.js'
+import type { ValuesIn } from './values.js'
+
+/** The rows of [lo, hi] a filter leaves visible on `sheet`, or null when the sheet is not filtered or none of them is hidden. */
+export function visibleRows(book: BookInput, sheet: string, lo: number, hi: number): number[] | null {
+  const s = book.sheets.find((x) => sheetKey(x.name) === sheetKey(sheet))!
+  const h = s.filtered ? hiddenRows(s) : undefined
+  if (!h?.spans.some(([a, b]) => a <= hi && b >= lo)) return null
+  const out: number[] = []
+  for (let r = lo; r <= hi; r++) if (!h.spans.some(([a, b]) => r >= a && r <= b)) out.push(r)
+  return out
+}
+
+/** The runs of consecutive rows of a list, ascending. */
+function runs(rows: number[]): [number, number][] {
+  const out: [number, number][] = []
+  for (const r of rows) {
+    const last = out.at(-1)
+    if (last && last[1] === r - 1) last[1] = r
+    else out.push([r, r])
+  }
+  return out
+}
+
+/** Applies the steps in turn, each to the book the last one gave; mapCell follows them all. */
+function chain(book: BookInput, steps: ((b: BookInput) => RestructureResult)[]): RestructureResult {
+  let out = book
+  const maps: ((ref: CellRef) => CellRef | null)[] = []
+  for (const step of steps) {
+    const r = step(out)
+    if (!r.ok) return r
+    out = r.book
+    maps.push(r.mapCell)
+  }
+  return { ok: true, book: out, mapCell: (ref) => maps.reduce<CellRef | null>((x, m) => x && m(x), ref) }
+}
+
+/** `n` rows inserted before `at` (zero-based) on `sheet`: on a filtered sheet as many as are visible among them. */
+export function insertRows(book: BookInput, sheet: string, at: number, n: number): RestructureResult {
+  const visible = visibleRows(book, sheet, at, at + n - 1)
+  return shift(book, sheet, 'r', at, visible?.length || n)
+}
+
+/** Rows `at` … `at + n - 1` deleted from `sheet`: on a filtered sheet the visible ones, each run of them from the bottom up. */
+export function deleteRows(book: BookInput, sheet: string, at: number, n: number): RestructureResult {
+  const visible = visibleRows(book, sheet, at, at + n - 1)
+  if (!visible?.length) return shift(book, sheet, 'r', at, -n)
+  return chain(book, runs(visible).reverse().map(([lo, hi]) => (b: BookInput) => shift(b, sheet, 'r', lo, lo - hi - 1)))
+}
+
+/**
+ * Copy and paste over filtered sheets. A source over hidden rows of a filtered sheet is copied as its visible rows,
+ * packed and as values (`values` gives them). A target of several cells over hidden rows of a filtered sheet takes
+ * the copy in each run of its visible rows, as a target alone; a copy that left rows out cannot be pasted over
+ * several runs (Excel refuses a selection of several areas pasted onto several areas).
+ */
+export function copyRows(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, values: ValuesIn): RestructureResult {
+  const clip = clipped(book, from, src, values)
+  const [source, at, rect] = clip ? [clip.book, CLIP, clip.src] : [book, from, src]
+  const one = target.r1 === target.r2 && target.c1 === target.c2
+  const visible = one ? null : visibleRows(book, to, target.r1, target.r2)
+  if (!visible?.length) return copyRange(book, at, rect, to, target, withMeta, source)
+  const parts = runs(visible)
+  if (clip && parts.length > 1)
+    return { ok: false, code: 'filtered', message: `the copy leaves out rows a filter hid and cannot be pasted over the hidden rows of ${to}!${formatAddress(target.r1, target.c1)}:${formatAddress(target.r2, target.c2)}` }
+  return chain(book, parts.map(([lo, hi]) => (b: BookInput) => copyRange(b, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
+}

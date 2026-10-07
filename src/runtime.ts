@@ -4,7 +4,7 @@
  * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
  * be bundled and run outside Node.
  */
-import { makeCaller, type Arg, type Cx, type Grid } from './args.js'
+import { makeCaller, type Arg, type Cx, type Grid, type HiddenRule } from './args.js'
 import { liftCaller, liftLazy } from './arrays/call.js'
 import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
@@ -13,6 +13,7 @@ import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, typ
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
+import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
@@ -42,6 +43,8 @@ export interface RuntimeContext {
   flat: Map<string, V[]>
   /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
   nested: Map<number, Set<number>>
+  /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
+  hidden: Map<number, HiddenRows>
   index: Map<string, CritIndex>
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
@@ -92,19 +95,25 @@ export function makeRuntime(ctx: RuntimeContext) {
     return out
   }
 
-  /** Range values like `flat`, with the cells whose formula calls SUBTOTAL or AGGREGATE blank (not counted twice). */
-  const flatOuter = (g: Rng): readonly V[] => {
-    const marks = ctx.nested.get(g.s)
-    if (!marks?.size) return flat(g)
+  /** Range values like `flat`, blank where SUBTOTAL and AGGREGATE skip them (`Cx.counted`). */
+  const counted = (g: Rng, nested: boolean, hidden: HiddenRule): readonly V[] => {
+    const marks = nested ? ctx.nested.get(g.s) : undefined
+    const rows = ctx.hidden.get(g.s)
+    const skipRows = rows && (hidden === 'all' || (hidden === 'filtered' && rows.filtered))
+    if (!marks?.size && !skipRows) return flat(g)
     const b = bounds(g)
     let out: V[] | undefined
-    for (const pos of marks) {
-      const r = Math.floor(pos / MAX_COLS)
-      const c = pos - r * MAX_COLS
-      if (r < b.r1 || r > b.r2 || c < b.c1 || c > b.c2) continue
+    const blank = (r: number, c: number) => {
       out ??= flat(g).slice()
       out[(r - b.r1) * b.w + (c - b.c1)] = null
     }
+    for (const pos of marks ?? []) {
+      const r = Math.floor(pos / MAX_COLS)
+      const c = pos - r * MAX_COLS
+      if (r >= b.r1 && r <= b.r2 && c >= b.c1 && c <= b.c2) blank(r, c)
+    }
+    if (skipRows)
+      for (const [lo, hi] of rows.spans) for (let r = Math.max(lo, b.r1); r <= Math.min(hi, b.r2); r++) for (let c = b.c1; c <= b.c2; c++) blank(r, c)
     return out ?? flat(g)
   }
 
@@ -235,7 +244,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     rules,
     rand: (s, r, c, k) => randAt(ctx.seed, sheets[s].name, r, c, k),
     flat,
-    flatOuter,
+    counted,
     bounds,
     scalar,
     grid,

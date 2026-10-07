@@ -84,16 +84,17 @@ export function bondDays(c: Coupons, basis: number, freq: number) {
 }
 
 /** The COUP* functions check each argument as they read it: the dates' order, then the frequency, then the basis. */
-function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr): FnDef {
+function coup(answer: (c: Coupons, basis: number, freq: number) => number | CErr, date?: FnDef['date']): FnDef {
   return atp('e e j j?', (settlement: number, maturity: number, freq: number, basis = 0) => answer(coupons(settlement, maturity, freq), basis, freq), {
     check: { 1: need((maturity, a) => a[0] < maturity), 2: need(validFreq), 3: need(validBasis) },
+    date,
   })
 }
 
 export const functions: Record<string, FnDef> = {
   COUPDAYBS: coup((c, basis, freq) => couponDays(c, basis, freq).a),
   COUPDAYSNC: coup((c, basis, freq) => couponDays(c, basis, freq).dsc),
-  COUPNCD: coup((c) => serialOfYmd(c.ncd)),
+  COUPNCD: coup((c) => serialOfYmd(c.ncd), 'calendar'),
   COUPNUM: coup((c) => c.n || E.NUM),
-  COUPPCD: coup((c) => serialOfYmd(c.pcd)),
+  COUPPCD: coup((c) => serialOfYmd(c.pcd), 'calendar'),
 }

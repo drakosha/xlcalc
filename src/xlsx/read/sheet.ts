@@ -9,7 +9,7 @@ import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
 import { spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
-import { restructure } from '../../structure/index.js'
+import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import type { Issues } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
@@ -86,7 +86,8 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
     const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [`${formatAddress(box.r1, box.c1)}:${formatAddress(box.r2, box.c2)}`]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
     for (const range of targets) {
-      const r = restructure(book, { op: 'copyRange', from: { sheet: src.name, range: s.master }, to: { sheet: src.name, range } })
+      // the pure copy and paste, without restructure's checks and values (a paste from a filtered sheet computes the book)
+      const r = copyRange(book, src.name, parseRange(s.master)!, src.name, parseRange(range)!, false)
       const pasted = r.ok ? r.book.sheets.find((x) => x.name === src.name)!.cells : {}
       for (const c of s.copies) {
         const f = pasted[c]?.formula

@@ -4,7 +4,7 @@
  * its fields rather than its index, a formula as its canonical text, a date as its serial number, spans of rows
  * and columns line by line.
  */
-import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat } from '../../../src/contract.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
 import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
 import { canonical, parse } from '../../../src/syntax.js'
@@ -65,9 +65,9 @@ function formulaText(f: string): string {
 /** An error value as a values-only file stores it and a reader reads it back: a formula of that error. */
 const ERROR_FORMULA: Partial<Record<string, string>> = { DIV0: '#DIV/0!', NA: '#N/A', NAME: '#NAME?', NUM: '#NUM!', REF: '#REF!', VALUE: '#VALUE!', ERROR: '#NULL!', SPILL: '#SPILL!' }
 
-type Look = { style?: CellStyle; format?: string }
+type Look = { style?: CellStyle; format?: NumberFormat }
 
-function lookOf(book: BookInput, x: { style?: number; format?: string }): Look {
+function lookOf(book: BookInput, x: { style?: number; format?: NumberFormat }): Look {
   const out: Look = {}
   const style = normStyle(x.style === undefined ? undefined : book.styles?.[x.style])
   if (style) out.style = style

@@ -78,7 +78,7 @@ describe('displayValue', () => {
     const fails = (f: () => unknown, message: string) => expect(f).toThrow(new InputError(message.split(':')[0], message.slice(message.indexOf(':') + 2)))
     fails(() => displayValue(1, { locale: 'de-DE' }), 'opts.locale: unknown locale "de-DE" (expected en-US, ru-RU)')
     fails(() => displayValue(1, { width: -1 }), 'opts.width: expected a number from 0 to 4177920, got number -1')
-    fails(() => displayValue(1, { size: 3 } as never), 'opts: unknown field "size" (expected format, locale, width)')
+    fails(() => displayValue(1, { size: 3 } as never), 'opts: unknown field "size" (expected format, locale, width, dateSystem)')
     fails(() => displayValue(Number.NaN), 'value: expected a number, text, a boolean, null or { error: code }, got number NaN')
     fails(() => displayValue({ error: 'OOPS' } as never), 'value: expected a number, text, a boolean, null or { error: code }, got an object')
     fails(() => compute({ sheets: [] }, { display: 'yes' } as never), 'opts.display: expected a boolean, got the string "yes"')

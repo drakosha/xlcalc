@@ -19,14 +19,23 @@ export interface CellInput {
   formula?: string
   /**
    * Number format, an Excel format code as an xlsx file stores it (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
-   * shown in the book's locale (`CellResult.text`). Without it a cell shows its row's format, else its column's.
+   * shown in the book's locale (`CellResult.text`), or a built-in format by its number (`NumberFormat`). Without it
+   * a cell shows its row's format, else its column's.
    */
-  format?: string
+  format?: NumberFormat
   /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
   style?: number
   /** Arbitrary cell data (for example ids of source rows), passed through untouched. */
   meta?: JsonValue
 }
+
+/**
+ * A number format: a format code as an xlsx file stores it, or the number of one of Excel's built-in formats, 0 to
+ * 49, as a file stores a cell's format with no code of its own (`numFmtId`). Excel shows some built-in formats by the
+ * locale: 14 is the locale's short date (`m/d/yy` in en-US, `dd.mm.yyyy` in ru-RU), 5 to 8 and 37 to 44 its money
+ * and number formats, 15 to 22 its other dates and times. A code is shown as written whatever the locale.
+ */
+export type NumberFormat = string | number
 
 /** A colour, `#RRGGBB`. */
 export type Color = string
@@ -77,7 +86,9 @@ export interface ColumnInput {
    */
   width?: number
   style?: number
-  format?: string
+  format?: NumberFormat
+  /** Hidden (xlsx `hidden`). SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
+  hidden?: boolean
 }
 
 /** Rows of a sheet, as xlsx `<row>`: the height, and the style and format of their cells that have none. */
@@ -85,7 +96,12 @@ export interface RowInput {
   /** Points, 0 to 409. */
   height?: number
   style?: number
-  format?: string
+  format?: NumberFormat
+  /**
+   * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
+   * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does.
+   */
+  hidden?: boolean
 }
 
 export interface SheetInput {
@@ -98,6 +114,11 @@ export interface SheetInput {
   rows?: Record<string, RowInput>
   /** Merged areas (`B2:D3`), as xlsx `<mergeCell>`: two cells or more each, none overlapping another. */
   merges?: string[]
+  /**
+   * The sheet's autofilter has criteria (Excel's filter mode): every hidden row of the sheet counts as one a filter
+   * hid, which SUBTOTAL skips with codes 1–11 too and a copy leaves out, as Excel does whatever hid the row.
+   */
+  filtered?: boolean
 }
 
 export interface NameInput {
@@ -122,6 +143,22 @@ export interface BookInput {
    * text: formulas stay invariant, and `toLocal` shows them in a locale. An unknown tag is an `InputError`.
    */
   locale?: string
+  /**
+   * The date system, as xlsx `workbookPr date1904`: 1900 (the default) counts days from 1900-01-00 with Excel's
+   * phantom 1900-02-29, 1904 from 1904-01-01, serial 0. It changes the serial numbers of the dates typed in and
+   * computed, TODAY and NOW, date text and how dates show: a 1904 book shows a negative date or time with a minus
+   * (`-12:00`). It goes into both hashes only when it is 1904.
+   */
+  dateSystem?: 1900 | 1904
+  /**
+   * Iterative calculation of circular references, as Excel's setting and xlsx `calcPr iterate`. Without it a cycle
+   * gives `#CYCLE!`. With it the cells of every cycle and the cells that depend on them are computed from 0, again
+   * and again, sheet by sheet in the order of the sheets' names (in any case), row by row. That stops after
+   * `maxIterations` rounds (100 by default, 1 to 32,767) or when no value changes by `maxChange` or more (0.001 by
+   * default). Each computation starts from 0 again, so a session gives what a full computation gives. Excel goes on
+   * from the values it holds instead.
+   */
+  iteration?: { maxIterations?: number; maxChange?: number }
 }
 
 /**
@@ -191,11 +228,13 @@ export interface CellDisplay {
 /** `displayValue`'s options: where the value is shown. */
 export interface DisplayOptions {
   /** The number format; General without it. */
-  format?: string
+  format?: NumberFormat
   /** A tag of the package's locales (`'en-US'`, the default, or `'ru-RU'`). */
   locale?: string
   /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
   width?: number
+  /** The date system a date shows by, as `BookInput.dateSystem`; 1900 without it. */
+  dateSystem?: 1900 | 1904
 }
 
 export interface ComputeOptions {
@@ -217,7 +256,7 @@ export interface CellResult extends Partial<CellDisplay> {
   value: CellValue
   /** Canonical formula text (sheet always quoted, function names upper-case). */
   formula?: string
-  format?: string
+  format?: NumberFormat
   meta?: JsonValue
   /** A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left). */
   spill?: string
@@ -372,6 +411,8 @@ export type StructureRefusal =
   | 'last_sheet'
   /** A move or copy would cut through a merged area, at its source or where it lands. */
   | 'merged'
+  /** A copy that leaves out rows a filter hid, pasted over hidden rows of a filtered sheet (several areas onto several areas). */
+  | 'filtered'
 
 export type RestructureResult =
   | {
@@ -410,6 +451,8 @@ export type LayoutEdit =
   | { sheet: string; rows: string; set: LinePatch<RowInput> }
   /** All the merged areas of the sheet. */
   | { sheet: string; merges: string[] }
+  /** The sheet's filter mode (`SheetInput.filtered`). */
+  | { sheet: string; filtered: boolean }
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
@@ -432,10 +475,12 @@ export interface Session {
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
   setStyles(styles: CellStyle[]): void
   /**
-   * Column widths, row heights, row and column styles and formats, merged areas; applied atomically. Merged
-   * areas stop arrays spilling over them: the formulas whose spill range an added or removed area meets are
-   * recomputed and the changed values returned; nothing else is recomputed. With `display`, the cells whose shown
-   * text or colour a width, a format or a merged area changed are returned too.
+   * Column widths, row heights, row and column styles and formats, hidden rows and columns, merged areas, the filter
+   * mode; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
+   * or removed area meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count:
+   * their formulas over the rows concerned are recomputed. Nothing else is recomputed; the changed values are
+   * returned. With `display`, the cells whose shown text or colour a width, a format or a merged area changed are
+   * returned too.
    */
   setLayout(edits: LayoutEdit[]): CellChange[]
   /**

@@ -8,6 +8,7 @@ import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { LOCALES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
+import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 
@@ -70,6 +71,11 @@ export function checkAddress(addr: unknown, path: string): string {
   return addr
 }
 
+/** A number format: a code, or the number of a built-in format (0 to 49). */
+function checkFormat(v: unknown, path: string) {
+  if (typeof v !== 'string' && !(typeof v === 'number' && isBuiltin(v))) throw new InputError(path, `expected a format code or the number of a built-in format, 0 to 49, got ${what(v)}`)
+}
+
 /** A style number of a book with `styles` styles. */
 function checkStyleIndex(v: unknown, path: string, styles: number) {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles)
@@ -91,7 +97,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
     }
   }
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
-  if (c.format !== undefined && typeof c.format !== 'string') checkString(c.format, `${path}.format`)
+  if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   return c as CellInput
 }
@@ -145,9 +151,11 @@ function checkColor(v: unknown, path: string) {
   if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a colour such as "#FF0000", got ${what(v)}`)
 }
 
-function checkOneOf(v: unknown, path: string, values: readonly string[]) {
+function checkOneOf(v: unknown, path: string, values: readonly (string | number)[]) {
   if (!values.includes(v as string)) throw new InputError(path, `expected one of ${values.map((x) => JSON.stringify(x)).join(', ')}, got ${what(v)}`)
 }
+
+const DATE_SYSTEMS = [1900, 1904]
 
 function checkBoolean(v: unknown, path: string) {
   if (typeof v !== 'boolean') throw new InputError(path, `expected a boolean, got ${what(v)}`)
@@ -209,11 +217,12 @@ const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, 'style', 'format'])
+  onlyKeys(o, p, [size, 'style', 'format', 'hidden'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
-  field('format', checkString)
+  field('format', checkFormat)
+  field('hidden', checkBoolean)
 }
 
 /** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
@@ -251,14 +260,21 @@ function checkMerges(v: unknown, path: string) {
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration'])
   if (book.locale !== undefined) checkLocale(book.locale, `${path}.locale`)
+  if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
+  if (book.iteration !== undefined) {
+    const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')
+    onlyKeys(it, `${path}.iteration`, ['maxIterations', 'maxChange'])
+    if (it.maxIterations !== undefined) checkNumber(it.maxIterations, `${path}.iteration.maxIterations`, 1, 32_767, true)
+    if (it.maxChange !== undefined) checkNumber(it.maxChange, `${path}.iteration.maxChange`, 0, Number.MAX_VALUE)
+  }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, problem)
@@ -276,6 +292,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
+    if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   return book as unknown as BookInput
@@ -360,9 +377,14 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       checkMerges(o.merges, `${p}.merges`)
       return o as unknown as LayoutEdit
     }
+    if (o.filtered !== undefined) {
+      onlyKeys(o, p, ['sheet', 'filtered'])
+      checkBoolean(o.filtered, `${p}.filtered`)
+      return o as unknown as LayoutEdit
+    }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = axis === 'r' ? 'rows' : 'columns'
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows or merges)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges or filtered)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit
@@ -396,8 +418,9 @@ export function checkCellValue(v: unknown, path: string): CellValue {
 export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { format: '#,##0.00', locale: 'ru-RU', width: 12 }")
-  onlyKeys(o, path, ['format', 'locale', 'width'])
-  if (o.format !== undefined) checkString(o.format, `${path}.format`)
+  onlyKeys(o, path, ['format', 'locale', 'width', 'dateSystem'])
+  if (o.format !== undefined) checkFormat(o.format, `${path}.format`)
+  if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions

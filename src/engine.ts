@@ -7,12 +7,13 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue } from './contract.js'
+import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
 import { FUNCTIONS } from './functions.js'
-import { rebuildGraph } from './graph.js'
-import { ymd } from './dates.js'
+import { readersOf, rebuildGraph } from './graph.js'
+import { epochOf, ymd } from './dates.js'
+import { hiddenRows } from './layout/hidden.js'
 import { rulesOf } from './locale/rules.js'
 import type { RulesClock } from './locale/rules/data.js'
 import { formatAddress, inputScalar, MAX_COLS, parseAddress } from './model.js'
@@ -42,7 +43,7 @@ interface Invalid {
 }
 
 export interface EngineOptions {
-  /** The clock moment, a serial number (UTC). */
+  /** The clock moment, a serial number of the 1900 date system (UTC). */
   now: number
   seed: number
   externals?: Externals
@@ -79,6 +80,8 @@ export interface EngineState {
   volatile: Set<number>
   /** Formulas whose latest computation read the clock's year (date text without a year, by the book's locale). */
   clocked: Set<number>
+  /** The formulas in cycles the last iterative calculation computed (`BookInput.iteration`). */
+  iterated: number[]
   spills: Spills
 }
 
@@ -92,10 +95,23 @@ function mark(ctx: RuntimeContext, s: number, r: number, c: number, on: boolean)
   else marks.delete(r * MAX_COLS + c)
 }
 
+/** The hidden rows of sheet `s` that SUBTOTAL and AGGREGATE read, from its input. */
+export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
+  const h = hiddenRows(sheet)
+  if (h) ctx.hidden.set(s, h)
+  else ctx.hidden.delete(s)
+}
+
 function emptySheet(name: string): SheetData {
   return { name, cols: [], rows: 0, fills: [] }
 }
 
+
+/** A typed value in the book's date system: a date's serial number counts from its day 0 (`epoch` of the 1900 system). */
+function bookScalar(v: CellInput['value'], epoch: number) {
+  const x = inputScalar(v)
+  return epoch && typeof v === 'object' && v !== null ? (x as number) - epoch : x
+}
 
 export function invalidError(code: CheckCode): ErrorCode {
   if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
@@ -128,25 +144,28 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
   // the state's own copy of the cells (edits change it); the layout and the styles are shared
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [])
+  const epoch = epochOf(book.dateSystem)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock: RulesClock = {
     read: false,
     year: () => {
       clock.read = true
-      return ymd(Math.floor(ctx.now)).y
+      return ymd(Math.floor(ctx.now) + epoch).y
     },
   }
   const ctx: RuntimeContext = {
     sheets: sheetNames.map(emptySheet),
-    now: opts.now,
+    now: opts.now - epoch,
     seed: opts.seed,
-    rules: rulesOf(book.locale, clock),
+    rules: rulesOf(book.locale, clock, epoch),
     externals: opts.externals?.values ?? {},
     flat: new Map(),
     index: new Map(),
     nested: new Map(),
+    hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),
   }
+  input.sheets.forEach((sh, s) => setHidden(ctx, s, sh))
   const rt = makeRuntime(ctx)
   const state: EngineState = {
     input,
@@ -169,6 +188,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     wide: new Map(),
     volatile: new Set(),
     clocked: new Set(),
+    iterated: [],
     spills: newSpills(),
   }
   const pending: Formula[] = []
@@ -177,7 +197,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
       const { row, col } = parseAddress(addr)
       if (blocks(cellIn)) state.spills.occupied.set(s, row, col, true, true)
       if (cellIn.formula === undefined) {
-        const v = inputScalar(cellIn.value)
+        const v = bookScalar(cellIn.value, epoch)
         if (v !== null) put(ctx.sheets[s], row, col, v)
         continue
       }
@@ -246,7 +266,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
       state.at.set(k, f.id)
       fresh.push(f)
       structural = true
-    } else write(state, s, row, col, input ? inputScalar(input.value) : null, track)
+    } else write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
   }
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
@@ -260,10 +280,15 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
   return changed(state, track)
 }
 
+/** The clock's moment (a serial number of the 1900 date system) in the book's date system. */
+export function setNow(state: EngineState, now: number, seed: number) {
+  state.ctx.now = now - state.ctx.rules.epoch
+  state.ctx.seed = seed
+}
+
 /** A new clock: recomputes volatile cells and their dependents. */
 export function applyClock(state: EngineState, now: number, seed: number): string[] {
-  state.ctx.now = now
-  state.ctx.seed = seed
+  setNow(state, now, seed)
   const track = tracker()
   recompute(state, new Set(state.volatile), track)
   return changed(state, track)
@@ -276,6 +301,20 @@ export function applyMerges(state: EngineState, s: number, rects: Rect[]): strin
   state.spills.merges.delete(s)
   for (const m of [state.spills.on, state.spills.wait]) for (const [id, x] of m) if (x.s === s && rects.some((r) => meets(r, x))) dirty.add(id)
   recompute(state, dirty, track)
+  return changed(state, track)
+}
+
+/**
+ * Hidden rows or the filter mode of sheet `s` changed: the formulas calling SUBTOTAL or AGGREGATE over the rows hidden
+ * before or now are computed again.
+ */
+export function applyHidden(state: EngineState, s: number): string[] {
+  const before = state.ctx.hidden.get(s)?.spans ?? []
+  setHidden(state.ctx, s, state.input.sheets[s])
+  const track = tracker()
+  const readers = new Set<number>()
+  for (const [r1, r2] of [...before, ...(state.ctx.hidden.get(s)?.spans ?? [])]) readersOf(state, { s, r1, r2, c1: 0, c2: MAX_COLS - 1 }, readers)
+  recompute(state, new Set([...readers].filter((id) => state.formulas[id]!.nested)), track)
   return changed(state, track)
 }
 

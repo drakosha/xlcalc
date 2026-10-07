@@ -34,6 +34,8 @@ export interface RegionalData {
   readonly longMonths: readonly string[]
   /** The `Intl.Collator` tag that orders text as this Excel does. */
   readonly collation: string
+  /** The built-in formats the locale shows by codes of its own, by number, as en-US codes (`numfmt/builtin.ts`). */
+  readonly builtin: Readonly<Record<number, string>>
 }
 
 /** The clock as the rules read it: date text without a year takes the clock's year, and reading it sets `read`. */

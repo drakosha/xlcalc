@@ -5,6 +5,7 @@
  * local names. No formula is inside a range it reads, before or after any operation of the sets, so
  * Excel never meets a circular reference.
  */
+import type { FileParts } from '../case-book.js'
 import type { BookInput, CellInput, CellRef, StructureOp } from '../../../src/contract.js'
 
 export interface StructCase {
@@ -14,6 +15,12 @@ export interface StructCase {
   op: StructureOp
   /** Cells outside the read rectangle to read after the operation. */
   extra?: CellRef[]
+  /**
+   * A copy that Excel applies otherwise than by copy and paste (`Range.Copy` with a destination): `fillDown` fills the
+   * copy's target from its top row (Fill Down, `Range.FillDown`), `autofill` drags the source's fill handle over the
+   * target (`Range.AutoFill`). The engine's `copyRange` is copy and paste: such a case records what Excel does.
+   */
+  via?: 'fillDown' | 'autofill'
 }
 
 export interface StructCases {
@@ -25,6 +32,8 @@ export interface StructCases {
   look?: string[]
   /** Column widths are not compared: Excel takes the width of a span over most columns as the sheet's standard width when it loads the book, and reports the columns against that. */
   widths?: false
+  /** What the files of the books hold beyond the model, by book: the autofilter of a `filtered` sheet. */
+  files?: Record<string, FileParts>
 }
 
 export interface StructSet {

@@ -4,7 +4,7 @@
  * General). Number formats Excel shows by the regional settings are written as codes of their own, so the file
  * shows what `format` says in every locale.
  */
-import type { BorderLine, CellStyle, FontStyle } from '../../contract.js'
+import type { BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN_ID } from '../styles/numfmt.js'
 import { escapeAttr } from '../xml/text.js'
 
@@ -56,7 +56,9 @@ export class StyleWriter {
 
   constructor(private readonly styles: CellStyle[] = []) {}
 
-  private numFmt(code: string | undefined): number {
+  private numFmt(code: NumberFormat | undefined): number {
+    // a built-in format given by number is written as that number, as Excel stores it
+    if (typeof code === 'number') return code
     if (code === undefined || code === 'General') return 0
     const builtin = BUILTIN_ID.get(code)
     if (builtin !== undefined) return builtin
@@ -66,7 +68,7 @@ export class StyleWriter {
   }
 
   /** The cell format of a style (by index) and a number format; 0 is the default. */
-  xf(style: number | undefined, format: string | undefined): number {
+  xf(style: number | undefined, format: NumberFormat | undefined): number {
     const key = `${style ?? ''}\n${format ?? ''}`
     let i = this.byKey.get(key)
     if (i !== undefined) return i

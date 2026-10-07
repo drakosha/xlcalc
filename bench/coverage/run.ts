@@ -15,6 +15,7 @@
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
  *   npx tsx bench/coverage/run.ts display X [ru]   cells shown by display/X.ts into test/excel/display/[ru-RU/]X.json (test: test/display-excel.test.ts)
  *   npx tsx bench/coverage/run.ts xlsx X     the xlsx subpath through Excel (roundtrip | saved | colors | formats | intersect) into test/excel/xlsx/ (test: test/xlsx-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts workbook X   book-level features of workbook/X.ts into test/excel/workbook/X.json (test: test/workbook-excel.test.ts)
  *
  * FCOV_ONLY=ABS,SUM limits the functions (a trial run): everything is then written to out/.
  * Excel computes in parts of up to 400 cases; after each part Excel is checked for a modal window.
@@ -23,6 +24,7 @@ import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { inCaseOrder } from './stored.js'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock, type Locale } from './excel.js'
@@ -34,6 +36,7 @@ import { stepStruct } from './struct.js'
 import { stepSpill } from './spill.js'
 import { stepDisplay } from './display.js'
 import { stepXlsx } from './xlsx.js'
+import { stepWorkbook } from './workbook.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -198,7 +201,7 @@ async function stepExcel(locale: Locale) {
     const after = dialogText()
     if (after) stop(k, `Excel modal window: ${after}${err ? `; read error: ${err}` : ''}`)
     if (!vals) stop(k, `read error: ${err}`)
-    Object.assign(col.values, byId(part, vals!))
+    col.values = inCaseOrder(cs, { ...col.values, ...byId(part, vals!) })
     col.meta.seconds = Math.round((Number(col.meta.seconds) + (Date.now() - t0) / 1000) * 10) / 10
     col.meta.done = ps.filter((p) => p.every((c) => c.id in col.values)).length
     save(name, col)
@@ -230,7 +233,7 @@ async function stepProbes(set: string | undefined, locale: Locale) {
   const t0 = Date.now()
   const save = () => {
     const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, dynamic: true }
-    writeFileSync(target, JSON.stringify({ meta, cases: ps, values, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, cases: ps, values: inCaseOrder(ps, values), ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
   // a book Excel does not read is halved down to the formula at fault
   const run = async (cases: Probe[], label: string): Promise<void> => {
@@ -277,6 +280,7 @@ else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
 else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
 else if (step === 'xlsx') await withExcelLock(() => stepXlsx(process.argv[3]))
+else if (step === 'workbook') await withExcelLock(() => stepWorkbook(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -287,7 +291,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | struct set | spill set | xlsx roundtrip|saved|colors|formats|intersect')
+  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | struct set | spill set | display set [ru] | workbook set | xlsx roundtrip|saved|colors|formats|intersect')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
