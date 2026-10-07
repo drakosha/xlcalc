@@ -20,7 +20,7 @@ import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
 import type { BookInput, RangeRef } from '../../src/contract.js'
-import { parseSpan } from '../../src/layout/spans.js'
+import { lines, parseSpan } from '../../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../../src/model.js'
 import { quoteSheet } from '../../src/syntax.js'
 
@@ -97,11 +97,13 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
       const x = ws.getCell(addr)
       const result = parts.cached?.[`${s.name}!${addr}`]
       if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), shareType: 'array', ref: addr, ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
-      else if (cell.value !== undefined) x.value = cell.value as ExcelJS.CellValue
+      else if (cell.value !== null && typeof cell.value === 'object') x.value = new Date(Date.parse(`${cell.value.date}${cell.value.date.includes('T') ? '' : 'T00:00:00'}Z`))
+      else if (cell.value !== undefined) x.value = cell.value
       if (cell.format !== undefined) x.numFmt = cell.format
       const fill = cell.style === undefined ? undefined : book.styles![cell.style].fill
       if (fill) x.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${fill.color.slice(1)}` } }
     }
+    for (const [lo, hi, e] of lines(s.columns, 'c')) for (let c = lo; c <= hi; c++) if (e.width !== undefined) ws.getColumn(c + 1).width = e.width
     for (const m of s.merges ?? []) ws.mergeCells(m)
     for (const k of parts.sheets?.[s.name]?.hiddenColumns ?? []) {
       const [lo, hi] = parseSpan(k, 'c')!

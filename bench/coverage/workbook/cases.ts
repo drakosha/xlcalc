@@ -27,6 +27,8 @@ export interface WorkbookCase {
   book: BookInput
   file?: FileParts
   read: RangeRef[]
+  /** Rectangles whose cells' shown text (`Range.Text`) each read takes. */
+  show?: RangeRef[]
   /** `['full', 'read']` when left out. */
   steps?: Step[]
   /** A held-out case: the answer of each read (non-blank cells, `Sheet!A1`) predicted before Excel ran it. */
@@ -37,8 +39,8 @@ export interface WorkbookSet {
   buildWorkbookCases(): WorkbookCase[]
 }
 
-/** Excel's answer: the application's iteration settings after opening the book, and each read. */
+/** Excel's answer: the application's iteration settings after opening the book, and each read (the shown text by `Sheet!A1` when the case has `show`). */
 export interface WorkbookAnswer {
   settings: { iteration: boolean; count: number; delta: number }
-  reads: { values: Record<string, Val>; formulas: Record<string, string> }[]
+  reads: { values: Record<string, Val>; formulas: Record<string, string>; shown?: Record<string, string> }[]
 }

@@ -2,12 +2,12 @@
 -- or clear it, hide or show rows and columns, filter, read the rectangles; close without saving. Before the steps
 -- the application's iteration settings are read (Excel takes them from the book it opens). A read takes, for every
 -- rectangle, the values of its mirrors on the sheets WT, WN and WX (formulas that never give an error) and the
--- rectangle's formulas as Excel shows them.
+-- rectangle's formulas as Excel shows them, and the text each cell to show shows (`string value`, Range.Text).
 -- Arguments: book path (inside Excel's sandbox), rectangles as lines "sheet<TAB>range<TAB>mirror range", steps as
 -- lines: "full", "calc", "read", "set<TAB>sheet<TAB>cell<TAB>kind<TAB>value" (kind n a number, s a text, x clear),
 -- "hide<TAB>sheet<TAB>range<TAB>1|0" (the entire rows of the range), "hidecols<TAB>sheet<TAB>range<TAB>1|0",
--- "filter<TAB>sheet<TAB>range<TAB>field<TAB>criterion".
--- Output: JSON {"settings": [iteration, max iterations, max change], "reads": [[[types, numbers, texts, formulas], ...], ...]}.
+-- "filter<TAB>sheet<TAB>range<TAB>field<TAB>criterion"; the cells to show as lines "sheet<TAB>address".
+-- Output: JSON {"settings": [iteration, max iterations, max change], "reads": [[[[types, numbers, texts, formulas], ...], [shown text, ...]], ...]}.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -16,6 +16,7 @@ on run argv
 	set p to item 1 of argv
 	set rects to paragraphs of item 2 of argv
 	set steps to paragraphs of item 3 of argv
+	set shows to paragraphs of item 4 of argv
 	set hfs to (POSIX file p) as text
 	set reads to {}
 	tell application "Microsoft Excel"
@@ -59,7 +60,18 @@ on run argv
 						set f to formula of range (item 2 of rp) of worksheet (item 1 of rp) of wb
 						set end of snap to {t, nums, strs, f}
 					end repeat
-					set end of reads to snap
+					set shown to {}
+					repeat with sl in shows
+						if (length of sl) > 0 then
+							set AppleScript's text item delimiters to (character id 9)
+							set sp to text items of sl
+							set AppleScript's text item delimiters to ""
+							set tx to string value of range (item 2 of sp) of worksheet (item 1 of sp) of wb
+							if tx is missing value then set tx to ""
+							set end of shown to (tx as text)
+						end if
+					end repeat
+					set end of reads to {snap, shown}
 				else if (length of k) > 0 then
 					error "unknown step " & k
 				end if
