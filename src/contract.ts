@@ -393,7 +393,7 @@ export type StructureOp =
   | { op: 'insertSheet'; name: string; before?: string }
   /**
    * The sheet moved before the sheet `before`, else after the last one. A reference across sheets covers the sheets
-   * between its ends in the new order.
+   * between its ends in the new order; an end that moves leaves it, the next sheet inward taking its place.
    */
   | { op: 'moveSheet'; sheet: string; before?: string }
 
