@@ -5,8 +5,11 @@
  * locales (`2025-01-31`, `6:30`, `5`). Computed as dynamic array formulas, in Excel en-US
  * (`test/excel/cases/lead-spaces.json`) and ru-RU (`test/excel/cases/ru-RU/lead-spaces.json`).
  */
-import type { Probe } from '../probes.js'
+import type { Probe, SheetCells } from '../probes.js'
 import { xl } from './arrays/common.js'
+
+/** G: cell text with leading spaces, for criteria that read a cell's text as a number. */
+export const SHEETS: SheetCells = { G: { A1: ' 2025-01-31', A2: ' 5', A3: ' 6:30', A4: '2025-01-31 ' } }
 
 const D = ['" 2025-01-31"', '"2025-01-31 "', '"  2025-01-31"']
 const T = ['" 6:30"', '"6:30 "']
@@ -36,5 +39,6 @@ export function buildProbes(): Probe[] {
   add('TIMEVALUE', 'TIMEVALUE(" 2025-01-31 6:30")')
   add('COUNTIF', 'COUNTIF(D!A6," 2025-01-31")')
   add('COUNTIF', 'COUNTIF(D!A6,">= 2025-01-31")')
+  for (const [cell, crit] of [['G!A1', '45688'], ['G!A2', '5'], ['G!A3', 'TIME(6,30,0)'], ['G!A4', '45688'], ['G!A1', '">=45688"'], ['G!A2', '">4"']]) add('COUNTIF', `COUNTIF(${cell},${crit})`)
   return out
 }
