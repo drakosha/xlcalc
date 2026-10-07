@@ -2,10 +2,13 @@
  * Books for the xlsx round trip: the writer writes each one, Excel opens the file (a repair window is the
  * writer's fault), computes it and saves it as xlsx, the reader reads what Excel saved, and the book that comes
  * back is compared with the one written, Excel's stored values with the engine's (`compare.ts`). No real data:
- * the books are made up here, the synthetic book comes from its seeded generator.
+ * the books are made up here, the synthetic book comes from its seeded generator, and the books of the structure
+ * and spill sets are taken as they are.
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
 import { synthBook } from '../../../src/synth.js'
+import type { SpillSet } from '../spill/cases.js'
+import type { StructSet } from '../struct/cases.js'
 
 /** The clock the round trip computes its books with. */
 export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
@@ -16,7 +19,13 @@ export interface RoundTrip {
   book: BookInput
   /** Written with formulas and their values (the default), or as values only. */
   mode?: 'formulas' | 'values'
+  /** Volatile functions in it: Excel's values of them are its own. */
+  volatile?: true
 }
+
+/** The sets of the structure and spill steps whose books the round trip takes. */
+const STRUCT_SETS = ['edge', 'move', 'moves', 'rows', 'sheets', 'spill', 'spill-more', 'styles']
+const SPILL_SETS = ['base', 'held', 'let', 'order']
 
 const v = (value: CellInput['value']): CellInput => ({ value })
 const f = (formula: string): CellInput => ({ formula })
@@ -128,7 +137,30 @@ const ru: BookInput = {
 
 const en: BookInput = { sheets: [{ name: 'Sheet1', cells: { A1: v('1.5'), B1: f('A1*2'), C1: f('TRUE&""') } }], locale: 'en-US' }
 
-export function buildRoundTrips(): RoundTrip[] {
+/** The books of the structure and spill sets, each once. */
+async function setBooks(): Promise<RoundTrip[]> {
+  const out: RoundTrip[] = []
+  for (const name of STRUCT_SETS) {
+    const { books } = ((await import(`../struct/${name}.ts`)) as StructSet).buildStructCases()
+    for (const [key, book] of Object.entries(books)) out.push({ id: `struct-${name}-${key}`, what: `the book ${key} of the structure set ${name}`, book })
+  }
+  for (const name of SPILL_SETS)
+    for (const c of ((await import(`../spill/${name}.ts`)) as SpillSet).buildSpillCases())
+      out.push({ id: `spill-${name}-${c.id}`, what: c.about, book: c.book, ...(c.volatile ? { volatile: true as const } : {}) })
+  const seen = new Set<string>()
+  // a whole column spilled: Excel saves its million cells, 5.6 MB a file
+  const huge = new Set(['spill-base-col-free', 'spill-base-col-format'])
+  return out.filter((r) => !huge.has(r.id) && !seen.has(JSON.stringify(r.book)) && !!seen.add(JSON.stringify(r.book)))
+}
+
+export async function buildRoundTrips(): Promise<RoundTrip[]> {
+  return [
+    ...ownBooks(),
+    ...(await setBooks()),
+  ]
+}
+
+function ownBooks(): RoundTrip[] {
   return [
     { id: 'values', what: 'numbers, text with spaces, breaks and quotes, empty text, booleans, dates, number formats', book: values },
     { id: 'escapes', what: "Excel's _xHHHH_ escapes, control characters, the longest text", book: escapes },

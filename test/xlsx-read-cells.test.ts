@@ -60,7 +60,7 @@ describe('xlsx reader: cells', () => {
     const r = await sheet('<row r="1"><c r="A1" t="e"><v>#N/A</v></c><c r="B1" t="e"><v>#NULL!</v></c><c r="C1" t="e"><v>#GETTING_DATA</v></c><c r="D1" t="e"><f>X()</f><v>#BLOCKED!</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '#N/A' }, B1: { formula: '#NULL!' }, D1: { formula: 'X()' } })
     expect(r.cached[0].cells).toEqual({ A1: { error: 'NA' }, B1: { error: 'ERROR' }, D1: { error: 'ERROR' } })
-    expect(codes(r.issues)).toEqual(['errorConstant A1 B1', 'errorValue C1', 'errorValue D1'])
+    expect(codes(r.issues)).toEqual(['errorValue C1', 'errorValue D1', 'errorConstant A1 B1'])
   })
 
   it('numbers stay numbers whatever their format; a format with a letter m is not taken for a date', async () => {
@@ -88,7 +88,7 @@ describe('xlsx reader: cells', () => {
   it("a cell's value metadata (vm) and a what-if data table are reported, their values kept", async () => {
     const r = await sheet('<row r="1"><c r="A1" t="e" vm="1"><v>#VALUE!</v></c><c r="B1"><f t="dataTable" ref="B1:B3" dt2D="0" dtr="0" r1="A1"/><v>3</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '#VALUE!' }, B1: { value: 3 } })
-    expect(codes(r.issues)).toEqual(['cellMetadata A1', 'errorConstant A1', 'dataTable B1'])
+    expect(codes(r.issues)).toEqual(['cellMetadata A1', 'dataTable B1', 'errorConstant A1'])
   })
 
   it('an empty cell with a style keeps its look; one with the default look is no cell', async () => {

@@ -83,7 +83,7 @@ async function send(step: string, books: { id: string; locale: Locale; bytes: ()
 }
 
 async function roundTrip() {
-  const cases = buildRoundTrips()
+  const cases = await buildRoundTrips()
   const books = await Promise.all(
     cases.map(async (c) => {
       const result = compute(c.book, { clock: XLSX_CLOCK })

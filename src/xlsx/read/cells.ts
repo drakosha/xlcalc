@@ -44,6 +44,8 @@ export interface SheetCells {
   arrays: ArrayFormula[]
   /** Cells with formulas of the old kind: no dynamic array metadata. */
   old: Set<string>
+  /** Cells holding an error as their value, read as a formula of it (unless an array spilled it there). */
+  errors: Set<string>
 }
 
 /** Error texts by the model's codes; `#NULL!` is what the engine calls #ERROR!. */
@@ -75,7 +77,7 @@ const colOf = (letters: string) => {
 }
 
 export function readCells(data: string, ctx: CellsContext): SheetCells {
-  const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set() }
+  const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
   const { issues, sheet } = ctx
   let row = -1
   let col = -1
@@ -144,8 +146,9 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
     const f = body.includes('f') ? F.exec(body) : null
     const fa = f ? attributes(f[1]) : {}
-    if (f && fa.t !== 'dataTable') {
-      const text = f[2] === undefined ? '' : readText(f[2])
+    const text = f?.[2] === undefined ? '' : readText(f[2])
+    // `<f ca="1"/>` with no text only flags a value Excel recalculates (a cell a volatile array spilled into)
+    if (f && fa.t !== 'dataTable' && (text !== '' || fa.t === 'shared')) {
       if (errText !== undefined) {
         out.cached[addr] = { error: ERRORS[errText] ?? 'ERROR' }
         if (!ERRORS[errText]) issues.add('errorValue', 'a stored error the model has no code for, read as #ERROR!', { sheet, cell: addr })
@@ -165,12 +168,12 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
         cell.formula = text
       }
     } else {
-      if (f) issues.add('dataTable', 'a what-if data table (TABLE) is read as its stored values', { sheet, cell: addr })
+      if (fa.t === 'dataTable') issues.add('dataTable', 'a what-if data table (TABLE) is read as its stored values', { sheet, cell: addr })
       if (errText !== undefined) {
         if (LITERAL.has(errText)) {
           cell.formula = errText
           out.cached[addr] = { error: ERRORS[errText] }
-          issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet, cell: addr })
+          out.errors.add(addr)
         } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }

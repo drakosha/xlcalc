@@ -7,7 +7,7 @@
 import type { CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
 import { spanKey } from '../../layout/spans.js'
-import { formatAddress, parseAddress } from '../../model.js'
+import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
 import { restructure } from '../../structure/index.js'
 import type { Ast } from '../../syntax/ast.js'
@@ -116,9 +116,11 @@ function arrays(src: SheetSource, read: SheetCells, issues: Issues) {
     if (!r) continue
     for (const addr of cellsOf(r, keys)) {
       const cell = read.cells[addr]
-      if (addr === a.anchor || !cell || cell.formula !== undefined) continue
+      // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
+      const spilled = read.errors.delete(addr)
+      if (addr === a.anchor || !cell || (cell.formula !== undefined && !spilled)) continue
       if (cell.value !== undefined) read.cached[addr] = cell.value as CellValue
-      const { value: _, ...rest } = cell
+      const { value: _, formula: __, ...rest } = cell
       if (Object.keys(rest).length) read.cells[addr] = rest
       else delete read.cells[addr]
     }
@@ -206,6 +208,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   spreadShared(src, read, ctx.issues)
   convert(src, read, ctx.issues, old, [...read.shared.values()].flatMap((s) => (s.master === undefined ? [] : s.copies)))
   arrays(src, read, ctx.issues)
+  for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
   const cols = columns(head, ctx)
