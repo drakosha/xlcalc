@@ -75,7 +75,7 @@ export const FUNCTIONS: Readonly<Record<string, FunctionSpec>> = Object.fromEntr
  * Whitelisted functions that are syntax rather than calls: LET's names are bound by the parser
  * (`syntax/parse.ts`) and its values computed by the walk (`exec/walk.ts`).
  */
-export const SYNTAX: readonly string[] = []
+export const SYNTAX: readonly string[] = ['LET']
 
 /** A whitelisted function, a call or syntax. */
 export const isFunction = (name: string): boolean => name in FUNCTIONS || SYNTAX.includes(name)

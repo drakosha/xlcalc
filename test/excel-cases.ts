@@ -118,6 +118,8 @@ export const REASONS = {
   rowsOfIfs: '`ROWS` and `COLUMNS` of an `IFS` that answers an error: Excel counts 1 (`ROWS(IFS("x",1,TRUE,2))`), the engine answers the error.',
   lastBits:
     '`FTEST` of a sample with itself is 1 − 3·2^-53 in Excel and 1 − 2^-52 here: the last bits of a number Excel computes by another algorithm can differ, which shows only when the difference is magnified (`(1-FTEST(A1:A8,A1:A8))*2^52` is 1.5 in Excel, 1 here).',
+  letFileName:
+    'A LET name that reads as a reference or a boolean (`A1`, `TRUE`): an xlsx file writes LET\'s names with the prefix `_xlpm.`, so Excel loads `LET(_xlpm.A1,1,_xlpm.A1)` (1); formula text has no prefix, there such a word is a reference or a boolean, and `LET(A1,1,A1)` is a syntax error here, as Excel refuses that text.',
   lookupTextTable: '`VLOOKUP`, `HLOOKUP` and `MATCH` with an empty text as the table (`MATCH(5,"",0)`) are `#VALUE!` in Excel and `#N/A` here.',
   xlookupOneValue: '`XLOOKUP` with one value as the lookup array and a return array of several rows (`XLOOKUP(3,0,A1:A6)`) is `#N/A` in Excel and `#VALUE!` here (the sizes differ).',
   wrapOneValue: '`WRAPROWS` and `WRAPCOLS` of one value with a count above 1 (`WRAPROWS(0,2)`) answer the value alone in Excel; here it is padded to the count.',
@@ -172,6 +174,8 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fuzz:2#1577': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
   'fuzz:2#165': { reason: 'rowsOfIfs', engine: { t: 'e', v: 'VALUE' } },
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
+  'let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
+  'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'omit:all:HLOOKUP#7': { reason: 'lookupTextTable', engine: { t: 'e', v: 'NA' } },
   'omit:all:MATCH#7': { reason: 'lookupTextTable', engine: { t: 'e', v: 'NA' } },
   'omit:all:VLOOKUP#7': { reason: 'lookupTextTable', engine: { t: 'e', v: 'NA' } },

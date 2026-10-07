@@ -58,6 +58,8 @@ const NODES: BookInput = {
         B29: f('B12+1'), B30: f('INDEX(A1:A4,2)&COUNTA(UNIQUE(A1:A4))'), C1: f('C2+1'), C2: f('C1+1'), C3: f('C1*2'),
         // spills: a spill reference read, lifted and in a name
         D1: f('SEQUENCE(2,2)'), D4: f('D1#*2'), D7: f('SUM(D1#)+ROWS(sq)+SUM(SEQUENCE(1,2)*D4#)'),
+        // LET: a reference kept, a nested scope, a lifted value, an unused one; arguments left out
+        F1: f('LET(r,A1:A4,n,rate,SUM(r)+LET(r,n*2,r)+SUM(LET(a,{1,2},a*n)))'), F2: f('LET(x,1/0,y,A1,IF(A3,,y)&TEXTJOIN(",",,A1:A4)&COUNT(1,,2))'),
       },
     },
     { name: 'M', cells: { A1: { value: 0.07 }, B1: f('local*10') } },
