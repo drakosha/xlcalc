@@ -147,7 +147,7 @@ export function tokenize(src: string): Tok[] {
       sheet = sm[1].replaceAll("''", "'")
       const k = sheet.indexOf(':')
       if (k >= 0) [sheet, last] = [sheet.slice(0, k), sheet.slice(k + 1)]
-    } else if ((sm = UNQUOTED_SHEETS.exec(rest))) [sheet, last] = [sm[1], sm[2]]
+    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest))) [sheet, last] = [sm[1], sm[2]]
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
     if (sm && last === undefined && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
       // a reference Excel lost on a sheet that is still there: `'S'!#REF!`, `'S'!#REF!#`

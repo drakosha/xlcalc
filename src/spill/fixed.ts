@@ -49,6 +49,7 @@ function sheetAreas(cells: Record<string, CellInput>, path: string): Map<string,
     if (!x) throw new InputError(`${path}.cells[${JSON.stringify(addr)}].array`, `expected the area of the cell's array formula with the cell at its top-left, such as "${addr}:${addr.replace(/\d+$/, (n) => String(Number(n) + 2))}" (and a formula), got ${JSON.stringify(c.array)}`)
     out.set(addr, x)
   }
+  if (!out.size) return out
   for (const [addr, c] of Object.entries(cells)) {
     if (!holds(c)) continue
     const { row, col } = parseAddress(addr)
@@ -66,30 +67,34 @@ export function checkArrays(book: BookInput, path: string) {
 
 /**
  * Edits of a session that change part of an array formula's area throw `InputError`: every cell of the area must be
- * edited, unless only its top-left cell is, keeping an array formula over the same area. The areas after the edits
- * are checked as a book's are.
+ * edited, unless only its top-left cell is, keeping an array formula over the same area. A new array formula's area
+ * must hold nothing else after the edits. A book without such formulas, and edits that make none, are not looked at.
  */
 export function checkArrayEdits(state: EngineState, edits: CellEdit[]) {
-  const sheets = new Map<number, CellEdit[]>()
-  for (const e of edits) {
-    const s = state.sheetIdx.get(sheetKey(e.sheet))!
-    sheets.set(s, [...(sheets.get(s) ?? []), e])
+  const made = edits.filter((e) => e.input?.array !== undefined)
+  const areas = state.formulas.filter((f) => f?.area)
+  if (!areas.length && !made.length) return
+  const at = (s: number, addr: string) => `${s}:${addr}`
+  const edited = new Map(edits.map((e) => [at(state.sheetIdx.get(sheetKey(e.sheet))!, e.cell), e.input]))
+  for (const f of areas) {
+    const x = f!.area!
+    const top = formatAddress(f!.r, f!.c)
+    const touched: string[] = []
+    for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) if (edited.has(at(f!.s, formatAddress(r, c)))) touched.push(formatAddress(r, c))
+    const all = touched.length === (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
+    const again = touched.length === 1 && touched[0] === top && edited.get(at(f!.s, top))?.array === state.input.sheets[f!.s].cells[top].array
+    if (touched.length && !all && !again) throw new InputError('edits', `${touched[0]} is part of the array formula at ${state.sheetNames[f!.s]}!${top} (${state.input.sheets[f!.s].cells[top].array}): Excel changes all of an array or none of it`)
   }
-  for (const [s, own] of sheets) {
-    const cells = state.input.sheets[s].cells
-    const edited = new Map(own.map((e) => [e.cell, e.input]))
-    for (const [top, x] of sheetAreas(cells, `book.sheets[${s}]`)) {
-      const touched: string[] = []
-      for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) if (edited.has(formatAddress(r, c))) touched.push(formatAddress(r, c))
-      const all = touched.length === (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
-      const again = touched.length === 1 && touched[0] === top && edited.get(top)?.array === cells[top].array
-      if (touched.length && !all && !again) throw new InputError('edits', `${touched[0]} is part of the array formula at ${state.sheetNames[s]}!${top} (${cells[top].array}): Excel changes all of an array or none of it`)
-    }
-    const after = { ...cells }
-    for (const [addr, input] of edited) {
-      if (input) after[addr] = input
-      else delete after[addr]
-    }
-    sheetAreas(after, 'edits')
+  // a new area holds nothing else once the edits are applied
+  for (const e of made) {
+    const s = state.sheetIdx.get(sheetKey(e.sheet))!
+    const x = arrayArea(e.cell, e.input!.array!)
+    if (!x || e.input!.formula === undefined) throw new InputError('edits', `${e.sheet}!${e.cell}: expected the area of the cell's array formula with the cell at its top-left, got ${JSON.stringify(e.input!.array)}`)
+    for (let r = x.r1; r <= x.r2; r++)
+      for (let c = x.c1; c <= x.c2; c++) {
+        const addr = formatAddress(r, c)
+        const k = at(s, addr)
+        if (addr !== e.cell && holds(edited.has(k) ? (edited.get(k) ?? undefined) : state.input.sheets[s].cells[addr])) throw new InputError('edits', `${e.sheet}!${addr} is in the area of the array formula at ${e.cell} (${e.input!.array}), which holds nothing else`)
+      }
   }
 }

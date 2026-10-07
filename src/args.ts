@@ -303,6 +303,18 @@ export function toTime(v: V, rules: Rules): number | CErr {
 /** A number where a boolean is #VALUE! (the former Analysis ToolPak's rule). */
 export const noBool = (v: V, rules: Rules): number | CErr => (typeof v === 'boolean' ? E.VALUE : rules.toNum(v))
 
+/** A range's numbers added to `out` (through `num`, if given), its other cells by `inRange`; an error stops. */
+function numbers(g: Rng, cx: Cx, out: number[], inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number, rules: Rules) => number | CErr): CErr | undefined {
+  const { rules } = cx
+  for (const v of cx.flat(g)) {
+    if (v === null) continue
+    const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inRange(v)
+    if (n === undefined) continue
+    if (isErr(n)) return n
+    out.push(n)
+  }
+}
+
 /**
  * A list kind: a range gives its numbers (through `num`, if given) and its other non-blank cells by
  * `inRange` (a number, an error, or undefined to skip); a direct argument goes through `direct`.
@@ -333,15 +345,13 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: (v: Exclud
       if (e) return e
       return out.length > before ? out.concat(new Array<number>(rest - 1).fill(out[before])) : out
     }
-    if (x instanceof Areas || x instanceof Rng) {
-      for (const g of x instanceof Areas ? x.list : [x])
-        for (const v of cx.flat(g)) {
-          if (v === null) continue
-          const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inRange(v)
-          if (n === undefined) continue
-          if (isErr(n)) return n
-          out.push(n)
-        }
+    if (x instanceof Rng) return numbers(x, cx, out, inRange, num) ?? out
+    // each area of several
+    if (x instanceof Areas) {
+      for (const g of x.list) {
+        const e = numbers(g, cx, out, inRange, num)
+        if (e) return e
+      }
       return out
     }
     const n = direct(x, rules)

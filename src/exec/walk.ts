@@ -9,8 +9,8 @@ import { shapes, type NameRef } from '../arrays/shape.js'
 import { Arr } from '../arrays/value.js'
 import { FUNCTIONS } from '../functions.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { decode, type Bound, type Rect } from '../structure/area.js'
-import { canonical, type Ast, type BinOp } from '../syntax.js'
+import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
+import { canonical, type Ast, type BinOp, type RangeRef } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
@@ -105,6 +105,18 @@ function lines(x: Rect, rows: boolean): Arr {
 /** One axis of a name's relative bound used at index `at`: moved by it, wrapping round the sheet. */
 const moved = (b: Bound, at: number, max: number) => (b.abs ? b.i : (b.i + at) % max)
 
+/** The bounds of a name's references, read once: a name's formula is walked at every use. */
+const bounds = new WeakMap<RangeRef, Area | null>()
+function relative(ref: RangeRef): Area | null {
+  let a = bounds.get(ref)
+  if (a === undefined) {
+    const d = decode(ref)
+    a = d.r.lo.abs && d.r.hi.abs && d.c.lo.abs && d.c.hi.abs ? null : d
+    bounds.set(ref, a)
+  }
+  return a
+}
+
 /** Walks a formula at sheet `s`, row `r`, column `c`: its information and the code of its root in `b`. */
 export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: number, b: Backend<T>): FormulaInfo & { code: T } {
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
@@ -119,8 +131,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const inside = new Set<NameDef>()
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
   const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' }>) => {
-    if (!inside.size) return n.ref
-    const a = decode(n.ref)
+    const a = inside.size ? relative(n.ref) : null
+    if (!a) return n.ref
     const [r1, r2] = [moved(a.r.lo, r, MAX_ROWS), moved(a.r.hi, r, MAX_ROWS)]
     const [c1, c2] = [moved(a.c.lo, c, MAX_COLS), moved(a.c.hi, c, MAX_COLS)]
     return { r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) }
