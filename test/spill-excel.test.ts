@@ -29,6 +29,8 @@ const KNOWN: Readonly<Record<string, string>> = {
   'more:volatile-size': 'a size drawn by RANDBETWEEN: Excel spilled its own draw (five runs of five), the engine spills the draw of its clock',
   'more:volatile-sizes': 'ten sizes drawn in one book: Excel gave #SPILL! 47 times of 50 in five runs (the sizes changed between its passes), the engine draws once and spills',
   'more:volatile-cell': 'a size from a cell holding a draw: both spill that cell\'s value (Excel five runs of five), which Excel and the engine draw differently',
+  'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here",
+  'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument; the engine lifts them',
 }
 
 const CLOCK = { now: '2026-10-06T12:00:00Z', seed: 1 }
