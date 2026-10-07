@@ -28,3 +28,23 @@ export class Serial {
     })
   }
 }
+
+/** An abort signal of the engine's own (the platform's AbortController is not in every runtime's types). */
+export function abortable(): { signal: AbortSignalLike; abort(reason?: unknown): void } {
+  const listeners = new Set<() => void>()
+  const signal = {
+    aborted: false,
+    reason: undefined as unknown,
+    addEventListener: (_type: 'abort', f: () => void) => void listeners.add(f),
+    removeEventListener: (_type: 'abort', f: () => void) => void listeners.delete(f),
+  }
+  return {
+    signal,
+    abort(reason?: unknown) {
+      if (signal.aborted) return
+      signal.aborted = true
+      signal.reason = reason
+      for (const f of [...listeners]) f()
+    },
+  }
+}

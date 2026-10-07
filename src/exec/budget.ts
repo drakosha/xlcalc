@@ -19,7 +19,7 @@ export class CalcError extends Error {
     super(message, cause === undefined ? undefined : { cause })
     this.name = 'CalcError'
     this.code = code
-    Object.assign(this, rest)
+    for (const [k, v] of Object.entries(rest)) if (v !== undefined) Object.assign(this, { [k]: v })
   }
 }
 

@@ -50,6 +50,10 @@
       "types": "./dist/xlsx.d.ts",
       "default": "./dist/xlsx.js"
     },
+    "./worker": {
+      "types": "./dist/worker/index.d.ts",
+      "default": "./dist/worker/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
