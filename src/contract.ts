@@ -78,6 +78,8 @@ export interface ColumnInput {
   width?: number
   style?: number
   format?: string
+  /** Hidden (xlsx `hidden`). SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
+  hidden?: boolean
 }
 
 /** Rows of a sheet, as xlsx `<row>`: the height, and the style and format of their cells that have none. */
@@ -86,6 +88,11 @@ export interface RowInput {
   height?: number
   style?: number
   format?: string
+  /**
+   * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
+   * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does.
+   */
+  hidden?: boolean
 }
 
 export interface SheetInput {
@@ -98,6 +105,11 @@ export interface SheetInput {
   rows?: Record<string, RowInput>
   /** Merged areas (`B2:D3`), as xlsx `<mergeCell>`: two cells or more each, none overlapping another. */
   merges?: string[]
+  /**
+   * The sheet's autofilter has criteria (Excel's filter mode): every hidden row of the sheet counts as one a filter
+   * hid, which SUBTOTAL skips with codes 1–11 too and a copy leaves out, as Excel does whatever hid the row.
+   */
+  filtered?: boolean
 }
 
 export interface NameInput {
@@ -410,6 +422,8 @@ export type LayoutEdit =
   | { sheet: string; rows: string; set: LinePatch<RowInput> }
   /** All the merged areas of the sheet. */
   | { sheet: string; merges: string[] }
+  /** The sheet's filter mode (`SheetInput.filtered`). */
+  | { sheet: string; filtered: boolean }
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
@@ -432,10 +446,12 @@ export interface Session {
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
   setStyles(styles: CellStyle[]): void
   /**
-   * Column widths, row heights, row and column styles and formats, merged areas; applied atomically. Merged
-   * areas stop arrays spilling over them: the formulas whose spill range an added or removed area meets are
-   * recomputed and the changed values returned; nothing else is recomputed. With `display`, the cells whose shown
-   * text or colour a width, a format or a merged area changed are returned too.
+   * Column widths, row heights, row and column styles and formats, hidden rows and columns, merged areas, the filter
+   * mode; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
+   * or removed area meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count:
+   * their formulas over the rows concerned are recomputed. Nothing else is recomputed; the changed values are
+   * returned. With `display`, the cells whose shown text or colour a width, a format or a merged area changed are
+   * returned too.
    */
   setLayout(edits: LayoutEdit[]): CellChange[]
   /**
