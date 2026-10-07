@@ -3,8 +3,9 @@
  * stored in `test/excel/xlsx/`) are read with the reader. Round trip: each book the writer wrote was opened by Excel
  * without its repair window, and what Excel saved comes back as the book written, with Excel's values equal to the
  * engine's. Case books: the books of the case sets as Excel saved them read into books that compute every case as
- * the books sent to Excel do, with the values Excel stored equal to its stored answers. Colours: the reader's fill
- * colours are the ones Excel showed.
+ * the books sent to Excel do, with the values Excel stored equal to its stored answers. Implicit intersection: every
+ * formula of the old kind whose value Excel computed otherwise than the engine is reported. Colours: the reader's
+ * fill colours are the ones Excel showed.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -12,6 +13,7 @@ import { describe, expect, it } from 'vitest'
 import { colorBook, colorCases } from '../bench/coverage/xlsx/colors.js'
 import { buildRoundTrips, XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
 import { compareBooks, compareCached, entries, type Difference } from '../bench/coverage/xlsx/compare.js'
+import { formulaCell, OLD_FORMULAS } from '../bench/coverage/xlsx/intersect.js'
 import { PART, sentBook } from '../bench/coverage/xlsx/saved.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../bench/coverage/probes.js'
@@ -123,4 +125,19 @@ describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved 
       expect(off).toEqual([])
     })
   }
+})
+
+describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx implicit intersection against Excel', () => {
+  it('every formula of the old kind whose value Excel computed otherwise is reported, but those of functions the engine does not have', async () => {
+    const read = await readXlsx(readFileSync(new URL('intersect/old-formulas.xlsx', dir)))
+    const reported = new Set(read.issues.filter((i) => i.code === 'implicitIntersection').flatMap((i) => i.cells ?? []))
+    const engine = compute(read.book, { clock: CLOCK }).sheets[0].cells
+    const missed = OLD_FORMULAS.flatMap((f, i) => {
+      const a = formulaCell(i)
+      const [mine, excel] = [toVal(engine[a].value), toVal(read.cached[0].cells[a] ?? null)]
+      return show(mine) !== show(excel) && !reported.has(a) && !(mine.t === 'e' && mine.v === 'NAME') ? [`${a} ${f}: engine ${show(mine)}, Excel ${show(excel)}`] : []
+    })
+    expect(missed).toEqual([])
+    expect(reported.size).toBe(44)
+  })
 })

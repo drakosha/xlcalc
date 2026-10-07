@@ -2,8 +2,10 @@
  * Formulas of the old kind (no dynamic array metadata) that Excel 365 computes with implicit intersection: where
  * such a formula puts several cells, an array or a function that can answer one in a place that takes one value
  * (the cell itself, an operator, a one-value argument), Excel takes the value in the formula's row or column
- * (and shows `@` there), while the engine computes a dynamic array. Arguments a function takes whole (SUM's
- * ranges) do not intersect; an argument passed on to the answer (IF's values) is taken as the call is.
+ * (and shows `@` there), while the engine computes a dynamic array. A range a function takes whole (SUM's ranges)
+ * does not intersect, but an operator inside it does (SUM(A1:A3*2)); an argument Excel computes as an array
+ * (SUMPRODUCT's, MMULT's) takes no single value at all; an argument passed on to the answer (IF's values) is taken
+ * as the call is.
  */
 import type { NameInput } from '../../contract.js'
 import { sortAddresses } from '../../model.js'
@@ -12,7 +14,8 @@ import { parse } from '../../syntax/parse.js'
 import { MODES } from '../formulas/modes.js'
 import type { Issues } from '../issues.js'
 
-type Place = 'one' | 'whole'
+/** Where a part of a formula stands: a place for one value, an argument taken whole, an argument computed as an array. */
+type Place = 'one' | 'whole' | 'array'
 
 /** The mode of argument `i` of a function by its `MODES` entry; `w` for a function the table does not have. */
 function modeAt(spec: string | undefined, i: number): string {
@@ -49,6 +52,8 @@ function intersects(ast: Ast, areas: Set<string>): boolean {
   const answersArray = (n: Extract<Ast, { k: 'fn' }>): boolean =>
     !BY_ARGUMENTS.has(n.name) && n.args.length > 0 && (!BY_REFERENCE.has(n.name) || n.args.some(several)) && MODES[n.name]?.endsWith('!') === true
   const go = (n: Ast, at: Place): boolean => {
+    // what Excel computes as an array takes no single value
+    if (at === 'array') return false
     switch (n.k) {
       case 'ref':
       case 'name':
@@ -59,7 +64,7 @@ function intersects(ast: Ast, areas: Set<string>): boolean {
         if (at === 'one' && answersArray(n)) return true
         return n.args.some((a, i) => {
           const m = modeAt(spec, i)
-          return go(a, m === 'w' ? 'whole' : m === 'p' ? at : 'one')
+          return go(a, m === 'g' ? 'array' : m === 'w' ? 'whole' : m === 'p' ? at : 'one')
         })
       }
       case 'un':

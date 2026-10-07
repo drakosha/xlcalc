@@ -51,8 +51,15 @@ export const XLWS: ReadonlySet<string> = new Set([${quoted(xlws)}])
 `
 }
 
-/** An argument kind's mode: lifted (`l`), an array or reference kind lifted by arrays only (`a`), passed on (`p`), taken whole (`w`). */
-const mode = (k: string) => (k === 'r' ? 'a' : k === 'p' || k === 'P' ? 'p' : 'NAYZVGMRD'.includes(k) ? 'w' : 'l')
+/**
+ * An argument kind's mode: lifted (`l`), an array or reference kind lifted by arrays only (`a`), passed on (`p`),
+ * taken whole as a grid (`g`: Excel computes such an argument as an array in formulas of the old kind too), taken
+ * whole otherwise (`w`).
+ */
+const mode = (k: string) => (k === 'r' ? 'a' : k === 'p' || k === 'P' ? 'p' : 'GM'.includes(k) ? 'g' : 'NAYZVRD'.includes(k) ? 'w' : 'l')
+
+/** Functions whose ranges Excel computes as arrays in formulas of the old kind though the engine takes them as references. */
+const ARRAY_ARGUMENTS = new Set(['SUMPRODUCT'])
 
 /** A function's modes by declared argument, `/n` the repeated last n, `!` when it can answer an array or a range. */
 export function modes(): Record<string, string> {
@@ -60,7 +67,7 @@ export function modes(): Record<string, string> {
   for (const [name, def] of Object.entries(DEFS).sort(([a], [b]) => (a < b ? -1 : 1))) {
     const kinds = def.args.split(' ').filter(Boolean).map((t) => t[0])
     // N and T take a range's top-left cell in both kinds of formula
-    const m = kinds.map((k) => (def.ranges === 'first' && mode(k) === 'l' ? 'w' : mode(k))).join('')
+    const m = kinds.map((k) => (ARRAY_ARGUMENTS.has(name) ? 'g' : def.ranges === 'first' && mode(k) === 'l' ? 'w' : mode(k))).join('')
     out[name] = `${m}${def.rep ? `/${def.rep}` : ''}${def.array ? '!' : ''}`
   }
   return out
@@ -69,8 +76,9 @@ export function modes(): Record<string, string> {
 export function modesSource(): string {
   return `/**
  * How each whitelisted function takes its arguments, by declared argument: \`l\` one value (a range of several cells
- * is lifted), \`a\` a reference or one value (an array is lifted), \`p\` passed on to the function's answer, \`w\` taken
- * whole; \`/n\` the last n repeat, \`!\` the function can answer an array or a range. Written by
+ * is lifted), \`a\` a reference or one value (an array is lifted), \`p\` passed on to the function's answer, \`g\` taken
+ * whole as an array (computed as one in formulas of the old kind too), \`w\` taken whole; \`/n\` the last n repeat,
+ * \`!\` the function can answer an array or a range. Written by
  * \`npx tsx bench/coverage/xlsx/generate.ts\` from the engine's definitions, so the reader need not load them; do not edit.
  */
 export const MODES: Readonly<Record<string, string>> = {${wrap(Object.entries(modes()).map(([n, m]) => `${/^[A-Z][A-Z0-9]*$/.test(n) ? n : `'${n}'`}: '${m}'`))}}

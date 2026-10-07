@@ -80,3 +80,4 @@ export async function fillColors(data: Uint8Array, cells: string[]): Promise<str
   if ('rejected' in r) throw new Error(`colors: Excel refused the book: ${r.rejected}`)
   return (JSON.parse(r.out as string) as number[][]).map((c) => `#${c.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`)
 }
+
