@@ -8,6 +8,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, openSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
+import { createPool } from '../src/worker/pool.js'
 import { chainBook, CLOCK, setA1, slowBook } from './async-books.js'
 import { inside, pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
@@ -113,10 +114,16 @@ describe('a thread lost', () => {
     expect((await sb.setCells(setA1(9))).map((c) => c.cell)).toContain('B6')
   }, 60_000)
 
-  it('a thread that exits by itself is reported as thread_failed', async () => {
+  it('a thread that exits by itself is reported as thread_failed; one that cannot start fails one task at a time', async () => {
     const wt = workerThreads()!
-    const loss = await new Promise((resolve) => nodeSpawn(wt, new URL('data:text/javascript,process.exit(3)'), undefined)(() => {}, resolve))
+    const exits = nodeSpawn(wt, new URL('data:text/javascript,process.exit(3)'), undefined)
+    const loss = await new Promise((resolve) => exits(() => {}, resolve))
     expect(loss).toEqual({ code: 'thread_failed', message: 'the thread exited with code 3' })
+    let started = 0
+    const p = kept(createPool({ threads: 1 }, (m, l) => (started++, exits(m, l))))
+    for (let i = 0; i < 3; i++) expect((await fails(p.compute(chainBook(2)))).code).toBe('thread_failed')
+    await new Promise((resolve) => setTimeout(resolve, 200))
+    expect(started).toBeLessThanOrEqual(4)
   })
 })
 

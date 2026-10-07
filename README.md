@@ -12,6 +12,7 @@ What it does differently:
 - **Cells shown as Excel shows them.** Each cell of a result carries, beside its value, the text Excel shows in it: its number format in the book's locale, General narrowed to the column's width, `#` across a column a number does not fit, the colour of the format's section (see [Showing values](#showing-values)). The value stays the number; `display: false` leaves the text out.
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `issues` says why, with a check code and the position in the formula.
 - **xlsx in and out.** `xlcalc/xlsx` reads an xlsx file into a book, with the values Excel stored and a list of what the book cannot hold, and writes a book with its computed values back to xlsx. It has no dependencies and loads none of the engine's computation (see [Reading and writing xlsx](#reading-and-writing-xlsx)).
+- **Computing without blocking.** `createInlineCalc` computes in the same thread in portions that give way to the event loop, `createCalcPool` from `xlcalc/worker` in Node worker threads or Web Workers, with soft and hard deadlines, cancellation, a thread's memory limit and limits on the size of a book; a session survives the loss of its thread (see [Computing without blocking](#computing-without-blocking)).
 - **No Node APIs.** It runs in Node 20.19 or newer and in browsers (see [Limitations](#limitations) about Content Security Policy).
 
 Function implementations are ported from [formula.js](https://github.com/formulajs/formulajs) (MIT), [jStat](https://github.com/jstat/jstat) (MIT) and [bessel](https://github.com/SheetJS/bessel) (Apache-2.0), with fixes verified against Microsoft Excel; the rest (criteria and database functions, the lookups, `TEXT` and `VALUE`, dates, `IF`, the volatile functions) are written here.
@@ -399,14 +400,46 @@ console.log(values.book.sheets[0].cells.C2) // → { value: 2 }
 
 Both functions return promises: the archive is inflated and deflated by the platform's streams. Styles, number formats, widths, heights, merged areas, names and the book's locale go both ways. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
 
+### Computing without blocking
+
+`createInlineCalc()` computes in the same thread, in slices that let timers and input run between them; `createCalcPool()` from `xlcalc/worker` computes in a pool of threads, where a session's book lives in its thread. Both have one API: `compute`, `openSession` and the session's methods return promises, and every call takes `timeoutMs`, a soft deadline of computing time, and `signal`, an `AbortSignal`. A call that fails changes nothing. `limits` bound the formulas of a book and the values of one array, in the synchronous `compute` and `openSession` too; over them the call throws `CalcError` rather than computing.
+
+```js
+import { createInlineCalc } from 'xlcalc'
+import { createCalcPool } from 'xlcalc/worker'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*10' }, A3: { formula: 'SUM(SEQUENCE(1000,1000))' } } }] }
+
+const calc = createInlineCalc({ limits: { cells: 100_000 } })
+const e = await calc.compute(book).catch((e) => e)
+console.log(e.code, e.limit, e.cell) // → limit cells { sheet: 'S', cell: 'A3' }
+
+const pool = createCalcPool({ threads: 2, hardTimeoutMs: 10_000 })
+const session = await pool.openSession(book, { clock: { now: '2026-10-07T12:00:00Z', seed: 1 } })
+console.log(await session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { timeoutMs: 1_000 }))
+// → [
+//     { sheet: 'S', cell: 'A1', value: 3, text: '3' },
+//     { sheet: 'S', cell: 'A2', value: 30, text: '30' }
+//   ]
+const stop = new AbortController()
+const first = session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 4 } }])
+const second = session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }], { signal: stop.signal }).catch((e) => e)
+stop.abort() // the second call waits for the first: it is refused at once
+await first
+console.log((await second).code, (await session.result()).sheets[0].cells.A2.value) // → aborted 40
+await pool.close()
+```
+
+A task that runs past the pool's `hardTimeoutMs` terminates its thread, and in Node `maxHeapMb` bounds each thread's heap. The pool keeps a snapshot and a journal of each session's book, so a session whose thread was lost comes back on its next call as it was before the call that failed. [docs/async.md](docs/async.md) has the rules, the error codes and what this costs.
+
 ## API
 
 From `xlcalc`:
 
 | export | |
 |---|---|
-| `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `result()`, `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution` and `display`; edits are compiled in the session's execution mode |
+| `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `result()`, `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name)` | `{ ok: true }` or `{ ok: false, message }` |
@@ -417,10 +450,14 @@ From `xlcalc`:
 | `restructure(book, op)` | one structure operation (`StructureOp`): `{ ok: true, book, mapCell }` or `{ ok: false, code, message }`; [docs/structure.md](docs/structure.md) |
 | `fromLegacy(formula, { names?, sheet? })` | a file's formula of the old kind as the dynamic formula Excel 365 shows for it, canonical text; [docs/legacy.md](docs/legacy.md) |
 | `FUNCTION_NAMES`, `CONFIG_VERSION` | the whitelist; the configuration version that goes into every hash |
+| `createInlineCalc(opts?)` | a `Calc` computing in the same thread in portions: `compute`, `openSession` (an `AsyncSession`) and `close`, as promises; `opts`: `sliceMs`, `timeoutMs`, `limits` ([docs/async.md](docs/async.md)) |
 | `InputError` | thrown on input of the wrong shape |
+| `CalcError` | an asynchronous call that failed, or a book over its limits; `code` says why ([docs/async.md](docs/async.md)) |
 | `debugGeneratedCode(book, opts?)` | the JavaScript that the `eval` mode generates, in evaluation order, for debugging; not part of the contract |
 
 `xlcalc/contract` exports the types and two constants (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`) without any engine code, for code that only builds books or reads results.
+
+`xlcalc/worker` exports `createCalcPool(opts?)`, a `Calc` over a pool of threads (`opts`: `threads`, `maxHeapMb`, `hardTimeoutMs`, `timeoutMs`, `maxQueue`, `maxSessions`, `maxSessionsPerThread`, `limits`, `snapshotEvery`, `sliceMs`, `spawn`), and `CalcError`.
 
 `xlcalc/xlsx` exports `readXlsx(data)`, which resolves to `{ book, cached, issues }`, and `writeXlsx(book, opts?)`, which resolves to `{ data, issues }` (`opts`: `result`, `mode` `'formulas'` or `'values'`), with their types `XlsxRead`, `XlsxWritten`, `WriteXlsxOptions`, `XlsxIssue` and `XlsxIssueCode`.
 
@@ -534,7 +571,7 @@ npm run pack:release    # build, then the tarball in release/
 FORMULA_BENCH=1 npx vitest run test/budgets.test.ts   # budgets on the full synthetic book
 ```
 
-The tests cover the whitelist against Excel's answers on the coverage measurement's cases (`test/excel.test.ts`) and on the probes (`test/excel-probes.test.ts`), the argument layer rule by rule, the semantics cases against Excel's documentation and the stored LibreOffice answers (`test/oracle/libreoffice.json`, refreshed by `npm run test:oracle`, which needs LibreOffice's `soffice` on `PATH`; the usual tests need no office suite); determinism (shuffled input, a child process, three time zones, cents over 3,400 amounts); references, errors, volatile functions, parsing and the canonical form; sessions (200 random edits against full computations) and `explain`; structure operations against Excel's answers in `test/excel/struct/`, on the synthetic book and on seeded books; budgets; SHA-256 against test vectors and `node:crypto`; a browser bundle run in an empty JavaScript context and with code generation disabled; the two execution modes against each other on every case book and over 200 session edits, the closures mode with code generation disabled; the published package (exports, tarball contents, a consumer importing it by name). The code blocks of this README run as a test too.
+The tests cover the whitelist against Excel's answers on the coverage measurement's cases (`test/excel.test.ts`) and on the probes (`test/excel-probes.test.ts`), the argument layer rule by rule, the semantics cases against Excel's documentation and the stored LibreOffice answers (`test/oracle/libreoffice.json`, refreshed by `npm run test:oracle`, which needs LibreOffice's `soffice` on `PATH`; the usual tests need no office suite); determinism (shuffled input, a child process, three time zones, cents over 3,400 amounts); references, errors, volatile functions, parsing and the canonical form; sessions (200 random edits against full computations) and `explain`; structure operations against Excel's answers in `test/excel/struct/`, on the synthetic book and on seeded books; budgets; SHA-256 against test vectors and `node:crypto`; a browser bundle run in an empty JavaScript context and with code generation disabled; the two execution modes against each other on every case book and over 200 session edits, the closures mode with code generation disabled; computation in portions and in threads against the synchronous engine, threads lost and sessions restored, the pool on Web Workers in headless Chromium (through `playwright-core`; skipped where no Chromium is found, `CHROME_PATH` names one); the published package (exports, tarball contents, a consumer importing it by name). The code blocks of this README run as a test too.
 
 Excel's answers that the tests compare with are stored in `test/excel/`, so the tests need no Excel: the coverage measurement's cases and Excel columns in `coverage/`, the case sets in `cases/` (`cases/ru-RU/` for the sets computed in ru-RU), the probes in `probes.json`, structure operations in `struct/`, spilling in `spill/`, Excel's ru-RU formula text in `locale/`, the files Excel saved for the xlsx subpath in `xlsx/`. They are recomputed only with Excel for Mac, by a step of `npx tsx bench/coverage/run.ts`: `excel en` and `excel ru` for the measurement, `probes` for the probes, `probes <set>` and `probes <set> ru` for a case set, `struct <set>`, `spill <set>`, `xlsx <step>`; `npx tsx bench/locale/snapshot.ts ru` takes Excel's ru-RU formula text. A run keeps the stored answers of unchanged cases and computes the new and changed ones. `bench/coverage/README.md` has the layout, the steps and the rules for driving Excel.
 

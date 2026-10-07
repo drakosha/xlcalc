@@ -52,7 +52,7 @@ export async function inside(opts?: CalcPoolOptions): Promise<{ calc: Calc; insi
     calc,
     inside: seen!,
     crash(i) {
-      const t = seen!.slots[i].thread
+      const t = seen!.slots[i].thread!
       t.terminate()
       losses.get(t)!({ code: 'thread_failed', message: 'the thread exited with code 1' })
     },

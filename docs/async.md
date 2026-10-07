@@ -1,190 +1,111 @@
 # Asynchronous and threaded computation
 
-Draft of the design, for review before the code. The final page will describe the finished API the way `docs/spill.md` does.
+A server that holds books for many users, or a page that must stay responsive, cannot let one large book hold its thread. The engine computes the same way in three places, with the same values and hashes:
 
-A host that serves several users, or a page that must stay responsive, cannot let one large book hold its thread. The engine gets two asynchronous ways to compute, with one API:
+- synchronously, as `compute` and `openSession` always did;
+- in the same thread, in portions: `createInlineCalc` gives way to the event loop between formulas, and a call stops at its soft deadline or when its `AbortSignal` fires;
+- in a pool of threads: `createCalcPool` from `xlcalc/worker` keeps each session's book in a thread (Node `worker_threads`, or Web Workers in a browser), terminates a thread that runs past a hard deadline, bounds a thread's heap, and brings a session back after its thread is lost.
 
-- in the same thread, in portions: the computation yields to the event loop between formulas, stops at a soft deadline and on `AbortSignal`;
-- in a pool of threads (Node `worker_threads`, or Web Workers in a browser): the book lives in a thread, a hard deadline terminates the thread, `maxHeapMb` bounds its memory, and a session survives the loss of its thread.
+Both calculators have one API: `compute(book, opts)`, `openSession(book, opts)` and `close()`, all promises. A session has the methods of `Session`, as promises.
 
-The synchronous `compute` and `openSession` stay as they are.
+```js
+import { createInlineCalc } from 'xlcalc'
+import { createCalcPool } from 'xlcalc/worker'
 
-## API
+const calc = createInlineCalc()                                  // the same thread
+const pool = createCalcPool({ threads: 4, hardTimeoutMs: 10_000, maxHeapMb: 512 })
 
-From `xlcalc`, `createInlineCalc(opts?)`; from the new subpath `xlcalc/worker`, `createCalcPool(opts?)`. Both return a `Calc`:
-
-```ts
-interface Calc {
-  compute(book: BookInput, opts?: AsyncComputeOptions): Promise<ComputeResult>
-  openSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
-  close(): Promise<void>
-}
-
-interface AsyncSession {
-  readonly clock: Clock                      // as of the last finished call
-  setCells(edits: CellEdit[], opts?: CalcOptions): Promise<CellChange[]>
-  setNames(names: NameInput[], opts?: CalcOptions): Promise<CellChange[]>
-  setClock(clock: Clock, opts?: CalcOptions): Promise<CellChange[]>
-  restructure(op: StructureOp, opts?: CalcOptions): Promise<AsyncRestructureResult>
-  setStyles(styles: CellStyle[]): Promise<void>
-  setLayout(edits: LayoutEdit[], opts?: CalcOptions): Promise<CellChange[]>
-  book(): Promise<BookInput>
-  explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
-  result(opts?: CalcOptions): Promise<ComputeResult>
-  close(): Promise<void>
-}
+const result = await calc.compute(book, { timeoutMs: 2_000 })
+const session = await pool.openSession(book)
+const changes = await session.setCells(edits, { signal: AbortSignal.timeout(5_000) })
 ```
 
-The methods are those of `Session` and answer the same values. Two differences: `restructure` answers `{ ok, mapCell, changes }` without `book` (a thread would send the whole book back on every operation; `book()` fetches it), and every call returns a promise.
+## Calls
 
-Types added to `src/contract.ts` (one `contract:` commit):
+A session takes its calls in order: each starts when the one before has finished. Two `setCells` called without waiting give each promise its own changes, as two synchronous calls would. A call that fails changes nothing: the session is as it was before the call, and the next call works on that state.
 
-```ts
-/** What `signal` needs of an AbortSignal; the platform's AbortSignal fits it. */
-interface AbortSignalLike { readonly aborted: boolean; readonly reason?: unknown; addEventListener(type: 'abort', f: () => void, o?: { once?: boolean }): void; removeEventListener(type: 'abort', f: () => void): void }
+`restructure` answers `{ ok, mapCell, changes }` without the book, which a thread would otherwise send back on every operation; `book()` fetches it. From a thread, `book()`, `result()` and `explain()` answer copies.
 
-interface CalcOptions {
-  signal?: AbortSignalLike
-  /** Soft deadline: milliseconds of computing, counted from when the call starts computing (not while it waits). */
-  timeoutMs?: number
-}
-interface CalcLimits {
-  /** Formulas in the book. */
-  formulas?: number
-  /** Values of one range, array or spill that a formula makes, checked before they are allocated. */
-  cells?: number
-}
-type AsyncComputeOptions = ComputeOptions & CalcOptions
-type AsyncSessionOptions = SessionOptions & CalcOptions       // signal and timeoutMs bound the opening
-type AsyncRestructureResult = { ok: true; mapCell(ref: CellRef): CellRef | null; changes: CellChange[] } | { ok: false; code: StructureRefusal; message: string }
+A session's `clock` is its clock as of its last finished call.
 
-interface InlineCalcOptions { sliceMs?: number /* 10 */; timeoutMs?: number; limits?: CalcLimits }
-interface CalcPoolOptions {
-  threads?: number            // 2 by default
-  maxHeapMb?: number          // Node: resourceLimits.maxOldGenerationSizeMb of each thread
-  hardTimeoutMs?: number      // a task running longer terminates its thread
-  timeoutMs?: number          // the soft deadline of every call unless the call gives its own
-  maxQueue?: number           // tasks waiting for a thread; one more is refused with queue_full
-  limits?: CalcLimits
-  snapshotEvery?: number      // journal entries before a session's snapshot is taken again (64)
-  sliceMs?: number            // portions inside a thread, so a cancel message gets through (50)
-  spawn?: () => WorkerLike    // how to start a thread, for bundlers that move the thread's script
-}
-type CalcErrorCode = 'soft_timeout' | 'aborted' | 'hard_timeout' | 'out_of_memory' | 'thread_failed' | 'restore_failed' | 'limit' | 'queue_full' | 'closed'
+## Deadlines and cancellation
+
+`timeoutMs` of a call is a soft deadline: milliseconds of computing, counted from when the call starts computing, not while it waits for its turn. `signal` stops a call at any time: a call that waits is refused at once, a running one at its next check. For a deadline from the moment of the call, pass `AbortSignal.timeout(ms)`.
+
+The engine checks the deadline and the signal between formulas and inside the long loops: a range read whole (whole columns), operators and functions over arrays, a spill and its cells, the indexes and the selection of `SUMIFS`, `COUNTIFS` and their kin, the matrix functions, iterative calculation, the result's cells. One long step without a check, such as a structure operation rewriting every formula, finishes before the call can stop. In a pool, `hardTimeoutMs` covers that: a task that runs longer, counted from when it reaches its thread, terminates the thread.
+
+A call that stops by its deadline or its signal throws `CalcError` with `soft_timeout` or `aborted` (the signal's reason is the error's `cause`).
+
+## Limits
+
+`limits` bound what a book may make: `formulas`, the formulas of the book, and `cells`, the values of one range read whole, one array or one spill. They are options of `compute` and `openSession` too, not only of the calculators.
+
+```js
+compute(book, { limits: { formulas: 100_000, cells: 5_000_000 } })
 ```
 
-`ComputeOptions` and `SessionOptions` also get `limits?: CalcLimits`, so the synchronous API can bound a book too; without it nothing changes.
+A book over a limit is not computed: the call throws `CalcError` with code `limit`, `limit` (`formulas` or `cells`), `max`, `size` and, for `cells`, the formula's `cell`. A limit is no cell error such as `#NUM!`, because then the values and their hash would depend on the limits; a result is either exact or absent. Arrays are checked before they are made: without `cells`, `SUM(SEQUENCE(20000,20000))` asks for 400 million values and brings a Node process down.
 
-Errors are one class, `CalcError extends Error`, with `code: CalcErrorCode`, and for `limit` also `limit: 'formulas' | 'cells'`, `max`, `size` and `cell` (the formula's cell). It is exported from `xlcalc` and from `xlcalc/worker`. Wrong input still throws `InputError`, from a thread too (rebuilt on the calling side with its `path`).
+## Errors
 
-## One computation, run in steps
+`CalcError` has a `code`:
 
-The evaluation loops become generators: `evaluate`, `iterate`, `settle`, `recompute` and `evaluateAll` in `evaluate.ts`, the compile loop of `createState` and `applyEdits`, `applyClock`, `applyMerges`, `applyHidden` in `engine.ts`. A generator yields only between two formulas, and only when a budget is active and its slice is used up. The synchronous functions run the same generator to its end in one `next()` (`createState`, `compute`, `openSession` keep their signatures), so there is one implementation of each step.
-
-`session.ts` keeps its logic in one core whose operations are generators; `openSession` runs each at once, the asynchronous session in portions.
-
-## Checks
-
-One module, `src/exec/budget.ts`, holds the active budget of the computation being run (or none) and two checks:
-
-- `spend(n)`: counts work; every 1,024 units it reads the clock and the signal, and throws `soft_timeout` or `aborted`, or marks the slice used up so the next step boundary yields;
-- `allot(n)`: throws `limit` when `n` values exceed `limits.cells`, before the array is allocated.
-
-Without a budget each check is one comparison with `null`. The synchronous path without options runs with none, and the budgets of `test/budgets.test.ts` measure what the steps and checks cost it.
-
-Where the checks go:
-
-| place | check |
+| code | why |
 |---|---|
-| `evaluate`, each formula (iterative calculation and spill rounds go through it) | `spend(1)`, then a yield when the slice is used up |
-| the compile loop of `createState`, each formula | `spend(1)`, yield; `limits.formulas` before compiling |
-| `applyEdits`, formulas added | `limits.formulas` |
-| `rebuildGraph`, each formula | `spend(1)` |
-| `flat` and `aligned` in `runtime.ts` (a range read whole: whole columns) | `allot(h·w)`, `spend(h·w)` |
-| `liftN` (operators and calls over arrays), `Arr.full` | `allot` before, `spend` each row |
-| spill placement and old-kind areas (`spill/place.ts`, `spill/fixed.ts`) | `allot(rows·cols)`, `spend` each row of a large array |
-| `buildIndex` and `select` (SUMIFS, COUNTIFS and their kin) | `spend` every 65,536 values |
-| functions whose size comes from their arguments: `SEQUENCE`, `RANDARRAY`, `MUNIT`, `EXPAND`, `MMULT`, `WRAPROWS`, `WRAPCOLS` | `allot` |
-| matrix functions with cubic loops: `MMULT`, `MINVERSE`, `MDETERM` | `spend` each row |
-| `buildResult` and the changes of `restructure` and `setNames` (every cell of a book) | `spend` each cell |
+| `soft_timeout` | the call's `timeoutMs` passed |
+| `aborted` | the call's `signal` fired |
+| `hard_timeout` | the task ran past `hardTimeoutMs`; its thread was terminated |
+| `out_of_memory` | the thread reached `maxHeapMb` |
+| `thread_failed` | the thread exited or failed outside a computation |
+| `restore_failed` | the session could not be brought back on a thread; it is closed |
+| `limit` | the book is over `limits` |
+| `queue_full` | `maxQueue` tasks already wait for a thread |
+| `too_many_sessions` | the pool holds `maxSessions` sessions |
+| `closed` | the calculator or the session is closed |
 
-A formula that throws gets its cell written into the error. A single long step without a check (one function looping inside, a structure operation rewriting every formula) cannot be stopped softly: the thread pool's hard deadline covers it.
-
-The limits matter beyond time. Today `SUM(SEQUENCE(20000,20000))` (4·10^8 values) aborts the whole Node process with a heap failure, and so would it in a thread: measured on Node 26, a thread with `maxOldGenerationSizeMb: 256` is terminated cleanly when it fills its heap with many arrays of up to 2·10^7 values, but one array larger than the limit (6·10^7 values) brings the process down. So a pool with `maxHeapMb` and no `limits.cells` takes `limits.cells` of `maxHeapMb · 2^20 / 32` (8 million values for 256 MB).
+Wrong input still throws `InputError`, from a thread too.
 
 ## In the same thread
 
-`createInlineCalc` runs each call through a driver: it makes the call's budget active, calls `next()` on the call's generator, and between portions yields to the event loop (`setImmediate` in Node, `scheduler.yield` or a `MessageChannel` in a browser, `setTimeout` elsewhere). An abort that comes while the call waits for its turn rejects it at once; one that comes during a yield is thrown into the generator at the point where it stopped.
+`createInlineCalc({ sliceMs, timeoutMs, limits })` computes in slices of `sliceMs` milliseconds (10 by default) and gives way to the event loop between them: through `setImmediate` in Node and a `MessageChannel` message in a browser, so timers, input and other messages run while a book computes. `timeoutMs` and `limits` are the defaults of every call. Several sessions and computations of one calculator share the thread, slice by slice.
 
-A session takes its calls in order: each waits in the session's queue until the one before has finished, so `setCells` called twice without waiting gives each promise its own changes, as two synchronous calls would.
-
-A call that stops (soft deadline, abort, limit) changes nothing: the session is as it was before the call. `setNames` and `restructure` build the new state aside, so the old one stays. `setCells`, `setClock` and `setLayout` change the state in place; before them the session notes what they change in the book's input (the cells' old inputs, the sheets' old layout, the clock), puts it back when they stop, and computes the book again on its next call, a cold computation. A full computation of a session's book gives the session's hash (the session tests check this after 200 random edits), so the session after a stopped call has the hash of the session that never got it. The synchronous session does the same when a limit stops it.
+`close()` stops what runs and waits with `closed`.
 
 ## In threads
 
-### Messages
+`createCalcPool(opts)` starts `threads` threads (2 by default). A session's book goes to its thread once, when the session opens; afterwards only edits go there and only changes come back.
 
-Each thread runs `src/worker/thread.ts`. It holds sessions of the same kind as in the same thread, and runs every task through the same driver with `sliceMs` of 50 ms, so a cancel message is read between portions. The calling side keeps one task in flight per thread.
+- A session is placed on the thread that holds the fewest sessions and stays there. One-off computations wait in one queue for any thread. A thread that becomes idle takes the next call of its own sessions first, then the next one-off computation.
+- `maxQueue` bounds the tasks that wait for a thread (`queue_full`), `maxSessions` the open sessions of the pool (`too_many_sessions`).
+- `maxSessionsPerThread` bounds the sessions a thread holds at once. Past it, the session called least recently leaves the thread: the thread forgets its book, and the session comes back on its next call (see below). Sessions that take turns on a full thread come back again and again; give the pool enough room for the sessions in use.
+- `hardTimeoutMs` terminates a thread whose task runs longer. `maxHeapMb` is each thread's heap in Node (`resourceLimits.maxOldGenerationSizeMb`); a thread that fills it is terminated by Node and its task fails with `out_of_memory`. Node terminates a thread cleanly when many arrays fill its heap, but one array larger than the heap brings the whole process down, so a pool with `maxHeapMb` and without `limits.cells` takes `cells` of `maxHeapMb · 2^20 / 32` (8 million values for 256 MB).
+- A thread that waits keeps no process alive: an open pool does not stop Node from exiting.
 
-| to the thread | answer |
-|---|---|
-| `compute { task, book, opts }` | the result |
-| `open { task, sid, book, opts }` | the session's clock |
-| `call { task, sid, seq, op, args }` | the value and the session's clock after it |
-| `restore { task, sid, snapshot, journal }` | done |
-| `snapshot { task, sid }` | `{ book, clock, seq }` |
-| `close { task, sid }` | done |
-| `cancel { task }` | none; the cancelled task answers `aborted` |
+Live sessions and heavy one-off computations (building versions of a book, say) are best kept in two pools, so that a long computation does not hold a thread the sessions need.
 
-An answer is `{ task, ok: true, value }` or `{ task, ok: false, error }`, the error as plain data (`name`, `message`, `code`, `path`, `limit` and so on) made into `CalcError` or `InputError` again on the calling side. Books, results and changes go by structured clone; nothing else is shared, and no `SharedArrayBuffer` is used. The book goes to a thread once, at `open`; afterwards only edits go there and only changes come back.
+### When a thread is lost
 
-`mapCell` of `restructure` is a function and cannot cross threads. The thread answers, beside the changes, an outline of the book before the operation: sheet names, hidden rows of filtered sheets. The calling side applies the operation (`applyOp`) to a book of empty sheets with that outline, which gives the same `mapCell`; a test compares it with the synchronous session's on the structure tests' operations.
+The pool keeps, for each session, a snapshot of its book and a journal of the calls that changed it since the snapshot, with the clock the session had after each. The first snapshot is the book given to `openSession`; when the journal reaches `snapshotEvery` calls (64 by default), the pool takes a new one from the thread and drops the journal up to it.
 
-### Dispatch
+When a thread is terminated or fails, its task fails and a new thread takes its place. The sessions it held come back on their next call: the new thread opens the snapshot and replays the journal, with the recorded clocks (a live session too), and then takes the call. The call that was running is not in the journal, so the session is as it was before that call, with the hash of a session that never lost its thread. Each changing call carries a sequence number; a thread answers the last one again rather than applying it twice, and refuses one out of order. A session whose restore fails is closed with `restore_failed`; the other sessions of the thread go on.
 
-A session is placed on the thread with the fewest sessions and stays there. One-off `compute` calls wait in a shared queue that any idle thread takes from; a thread takes the oldest of its sessions' next call and the shared queue's next task. `maxQueue` counts the tasks waiting, all threads together; restore and snapshot tasks are the pool's own and do not count. An abort removes a waiting task; a running one gets a `cancel` message.
-
-### Deadlines and memory
-
-A task that runs past `hardTimeoutMs` (counted from when it was sent to the thread) is preempted: the thread is terminated, the task rejects with `hard_timeout`, and a new thread takes the old one's place. A thread that reaches `maxHeapMb` is terminated by Node (`ERR_WORKER_OUT_OF_MEMORY`): the running task rejects with `out_of_memory`. A thread that exits or throws outside a task rejects its running task with `thread_failed`. Threads are `unref`ed while idle, so an open pool does not keep the process alive.
-
-### Journal and recovery
-
-The calling side keeps, for each session, a snapshot and a journal:
-
-- the snapshot is the book, the options and the clock at sequence number `seq`: at first the book given to `openSession` (its sheets and cells objects copied, as the session copies them) with the clock the thread answered;
-- the journal lists the calls that changed the session and were answered since the snapshot, each with its sequence number, its arguments and the clock the session had after it (a live session takes a new clock on each call; replay reuses the recorded one).
-
-When the journal reaches `snapshotEvery` entries, the pool asks the thread for a snapshot (its `book()`, clock and `seq`) and drops the journal up to it.
-
-When a thread is lost, every session it held is restored on the new thread: `restore` opens the snapshot and replays the journal, before any waiting call of that session. The call that was running is not in the journal, so the session is as it was before that call, as after a soft stop. A thread keeps each session's last `seq` and its last answer: a call with that `seq` again gets the same answer, an older one is refused, so a repeated message cannot apply an edit twice. If a restore fails (the thread is lost again during it, or it throws), that session is closed with `restore_failed` and its waiting calls reject with it; the other sessions are restored on another new thread.
+This has a cost on the calling side: it holds a copy of each session's book. On the synthetic book of 3,400 rows (54,778 cells) a snapshot from a thread takes 40 ms and its copy about 9 MB; on one of 34,000 rows (510,682 cells), 541 ms and 61 MB.
 
 ### In a browser
 
-The same pool runs on Web Workers with the same messages: the thread starts with `new Worker(new URL('./thread.js', import.meta.url), { type: 'module' })`, or with `spawn` when a bundler places the script elsewhere. A hard deadline terminates the worker. There is no memory limit: `maxHeapMb` throws `InputError` there. Node or browser is decided when the pool starts (`process.getBuiltinModule('node:worker_threads')`, then the global `Worker`), so the subpath has no `node:` import and a browser bundle of it takes nothing of Node.
+The same pool runs on Web Workers with the same messages, started as `new Worker(new URL('./thread.js', import.meta.url), { type: 'module' })`, the form bundlers recognise. Where a bundler puts the thread's script elsewhere, `spawn` starts it. A hard deadline terminates the worker. There is no memory limit: `maxHeapMb` throws `InputError` there.
 
-The thread's code is not imported by `xlcalc`: a test bundles the root entry and checks that no file of `src/worker/` is in it, as `test/xlsx-bundle.test.ts` does for xlsx.
+`xlcalc` imports nothing of the threads: a page that computes in its own thread does not load them.
 
-## Files
+## What it costs the synchronous path
 
-- `src/exec/budget.ts`: the budget, `spend`, `allot`, `CalcError`, the synchronous runner of a generator.
-- `src/async/`: the driver and the yield, the call queue, the asynchronous session, `createInlineCalc`.
-- `src/worker/`: messages, the thread, the pool, the journal, the platforms (Node and Web), the outline for `mapCell`, the subpath's entry.
-- Points in `engine.ts`, `evaluate.ts`, `session.ts`, `graph.ts`, `runtime.ts`, `criteria.ts`, `arrays/`, `spill/`, `result.ts` and the functions named above.
-- `package.json`: the subpath `./worker`.
+The evaluation loops are generators that yield only when a calculator's slice is used up, and each check is one comparison when no calculator runs. On the full synthetic book (3,907 formulas), against the engine before them, five runs each, medians: a cold computation 316 and 313 ms with closures, 336 and 333 ms with eval; an edit of a criterion cell 1.8 and 1.9 ms at p95 with closures, 1.8 and 1.8 ms with eval.
 
-## Tests
+## How it was checked
 
-- Hashes equal in every mode: the synthetic book and the case books computed synchronously, in the same thread and in threads, with closures and eval; a session with a series of edits in the three modes; a session restored after its thread was terminated (by a hard deadline, by `maxHeapMb`, by a crash) against a synchronous session given the same answered calls.
-- In the same thread: a timer fires while a large book computes; soft deadline and abort give `CalcError` and leave the session's hash unchanged; calls made without waiting keep their order and their own changes.
-- Limits: `limits.formulas`, `limits.cells` in each mode; `SEQUENCE(20000,20000)` gives `limit`, not a crash.
-- The pool: `queue_full`, abort while waiting and while running, a snapshot taken and the journal cut, a failed restore, `mapCell` against the synchronous session's.
-- The root entry's bundle takes nothing of `src/worker/`.
-- A browser: the pool on Web Workers in headless Chromium, through `playwright-core` with a Chromium found on the machine; skipped where none is.
-
-## Open questions
-
-- `limits` in the synchronous `ComputeOptions` and `SessionOptions`: proposed above; the alternative is to keep it for the asynchronous calls only.
-- Preemption is read here as the hard deadline terminating a task's thread. If it should also mean a waiting one-off computation giving way to session calls, or the oldest waiting task dropped when the queue is full, it is a small change in dispatch.
-- Sessions share threads: a terminated thread costs every session on it a cold computation and a replay. One thread per session is the other choice, at the cost of a Node isolate (about 10 MB) per session.
-- The browser test needs `playwright-core` as a development dependency (no browser download; it drives a Chromium already on the machine).
+- `test/async-inline.test.ts` and `test/async-pool.test.ts` compute the coverage measurement (in en-US and ru-RU), the semantics cases, the synthetic book, the spill book, a seeded book, iterative calculation and the 1904 date system in the same thread and in threads, with closures and eval, and compare values, issues and hashes with the synchronous engine; a session over 40 edits gives the changes and the hash of a synchronous session after each, in both execution modes and in both calculators; two sessions on one thread with their calls mixed without waiting each give their own changes and hash; a structure operation gives the synchronous session's changes and `mapCell` on eleven operations, filtered rows among them.
+- In the same thread a timer runs while a book computes; deadlines, aborts (waiting and running) and limits give `CalcError`; a stopped `setCells`, `setLayout` or `restructure` leaves the book and the hash as they were.
+- `test/async-recovery.test.ts` terminates threads by a hard deadline, by `maxHeapMb` (twenty spilled arrays of a million values in a 64 MB heap) and by a crash, and checks that the session's hash after it comes back equals that of a synchronous session given the same answered calls, from a snapshot and a journal cut at it too; a restore that fails closes that session only; sessions take turns on a full thread; `maxQueue`, `maxSessions`, the order of a thread's tasks, closing.
+- `test/limits.test.ts`: the limits in `compute` and in a session, with `SEQUENCE`, `MUNIT`, `MMULT`, lifted operators, `TOCOL` of whole columns and a spill.
+- `test/worker-bundle.test.ts` bundles `xlcalc` for the browser and finds no file of the threads in it; `test/dist.test.ts` runs the pool of the built package by its name from a plain Node process, which exits with the pool open.
+- `test/worker-browser.test.ts` loads the built package in headless Chromium (through `playwright-core`): the pool on Web Workers gives Node's hashes for the synthetic book and a session's edits, a hard deadline terminates a worker and the session comes back, and the same-thread calculator lets timers run. It is skipped where no Chromium is found.

@@ -36,7 +36,7 @@ export interface ScriptUrl {
 }
 
 interface WorkerThreads {
-  Worker: new (url: ScriptUrl, opts: { resourceLimits?: { maxOldGenerationSizeMb?: number } }) => NodeWorker
+  Worker: new (url: ScriptUrl, opts: { execArgv: string[]; resourceLimits?: { maxOldGenerationSizeMb?: number } }) => NodeWorker
 }
 
 /** Node's `worker_threads`, or undefined outside Node. */
@@ -46,7 +46,8 @@ export const workerThreads = (): WorkerThreads | undefined =>
 /** A Node thread running `script`, its heap limited to `maxHeapMb`. */
 export function nodeSpawn(wt: WorkerThreads, script: ScriptUrl, maxHeapMb: number | undefined): Spawn {
   return (onMessage, onLoss) => {
-    const w = new wt.Worker(script, maxHeapMb ? { resourceLimits: { maxOldGenerationSizeMb: maxHeapMb } } : {})
+    // the host's own flags (--input-type, --eval, loaders) are no flags of the thread's module
+    const w = new wt.Worker(script, { execArgv: [], ...(maxHeapMb ? { resourceLimits: { maxOldGenerationSizeMb: maxHeapMb } } : {}) })
     let ended = false
     const lost = (l: ThreadLoss) => {
       if (ended) return

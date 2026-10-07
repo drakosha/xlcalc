@@ -34,7 +34,8 @@ interface Task {
 }
 
 interface Slot {
-  thread: Thread
+  /** None after a loss, until a task needs one: a thread that cannot start fails one task at a time. */
+  thread: Thread | null
   busy: Task | null
   timer: unknown
   /** Tasks of its sessions, in order. */
@@ -121,6 +122,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     const m = task.msg
     if (m.t === 'call' && task.session && (CHANGING as readonly string[]).includes(m.op)) task.msg = { ...m, seq: task.session.seq + 1 }
     slot.busy = task
+    slot.thread ??= start(slot)
     slot.thread.hold(true)
     slot.thread.post({ ...task.msg, task: task.id } as ToThread)
     if (o.hardTimeoutMs !== undefined) slot.timer = g.setTimeout(() => slot.busy === task && lose(slot, { code: 'hard_timeout', message: `the task ran past hardTimeoutMs (${o.hardTimeoutMs} ms); its thread was terminated` }), o.hardTimeoutMs)
@@ -131,7 +133,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     while (!slot.busy && !closed) {
       let task = slot.queue.shift() ?? jobs.shift()
       if (!task) {
-        slot.thread.hold(false)
+        slot.thread?.hold(false)
         return
       }
       const r = task.session
@@ -210,14 +212,14 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
   }
 
-  /** The thread is gone (terminated past its deadline, out of memory, failed): its task fails, its sessions come back on their next call. */
+  /** The thread is gone (terminated past its deadline, out of memory, failed): its task fails, its sessions come back on their next call, on a new thread. */
   function lose(slot: Slot, l: ThreadLoss | { code: 'hard_timeout'; message: string }) {
     const task = slot.busy
     g.clearTimeout(slot.timer)
-    slot.thread.terminate()
+    slot.thread?.terminate()
+    slot.thread = null
     slot.busy = null
     slot.resident.clear()
-    slot.thread = start(slot)
     if (task) {
       const e = new CalcError(l.code, l.message)
       const r = task.session
@@ -245,7 +247,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
             fail(task, abortError(signal))
           } else {
             const slot = slots.find((s) => s.busy === task)
-            slot?.thread.post({ t: 'cancel', task: task.id })
+            slot?.thread?.post({ t: 'cancel', task: task.id })
           }
         }
         signal.addEventListener('abort', onAbort, { once: true })
@@ -335,7 +337,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         g.clearTimeout(s.timer)
         if (s.busy && !s.busy.internal) fail(s.busy, closed)
         s.busy = null
-        s.thread.terminate()
+        s.thread?.terminate()
       }
       for (const r of recs) r.gone = closed
       recs.clear()
