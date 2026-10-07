@@ -3,6 +3,7 @@
  * top-left corner stored row by row, and one `fill` value everywhere else, so that a whole column costs
  * only its occupied rows. Elements are any values, blanks (null) and errors included.
  */
+import { allot, spend } from '../exec/budget.js'
 import { E, type CErr, type V } from '../values.js'
 
 export class Arr {
@@ -23,8 +24,12 @@ export class Arr {
   /** Every position stored (h = rows, w = cols): for functions that read `v` as the whole array. */
   full(): Arr {
     if (this.h === this.rows && this.w === this.cols) return this
+    allot(this.rows * this.cols)
     const out: V[] = new Array(this.rows * this.cols)
-    for (let r = 0; r < this.rows; r++) for (let c = 0; c < this.cols; c++) out[r * this.cols + c] = this.at(r, c)
+    for (let r = 0; r < this.rows; r++) {
+      spend(this.cols)
+      for (let c = 0; c < this.cols; c++) out[r * this.cols + c] = this.at(r, c)
+    }
     return new Arr(this.rows, this.cols, this.rows, this.cols, out)
   }
 

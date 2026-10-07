@@ -52,6 +52,7 @@ import { Arr } from './arrays/value.js'
 import { MAX_SERIAL } from './dates.js'
 import type { Rules } from './locale/rules.js'
 import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
+import { CalcError } from './exec/budget.js'
 
 /** A range (or a single value) as a grid. */
 export interface Grid {
@@ -525,8 +526,9 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => Arg {
     let r: Arg
     try {
       r = fn(...out)
-    } catch {
-      // a defect in one function must not abort the whole book
+    } catch (e) {
+      // a stopped computation goes on stopping; a defect in one function must not abort the whole book
+      if (e instanceof CalcError) throw e
       return E.VALUE
     }
     if (typeof r !== 'number') return r

@@ -7,6 +7,7 @@ import { Arr } from '../arrays/value.js'
 import { arrayArea, holds } from '../array-areas.js'
 import type { CellEdit } from '../contract.js'
 import type { EngineState } from '../engine.js'
+import { allot } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -18,6 +19,7 @@ import { Areas, E, Rng, type V } from '../values.js'
  */
 export function fit(x: Arg, rows: number, cols: number, view: (x: Arg) => V | Arr): Arr {
   const a = x instanceof Areas ? E.VALUE : x instanceof Rng || x instanceof Arr ? view(x) : x
+  allot(rows * cols)
   const v: V[] = new Array(rows * cols)
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++) {

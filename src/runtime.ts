@@ -10,6 +10,7 @@ import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
+import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
@@ -84,6 +85,8 @@ export function makeRuntime(ctx: RuntimeContext) {
     const hit = ctx.flat.get(g.key)
     if (hit) return hit
     const b = bounds(g)
+    allot(b.h * b.w)
+    spend(b.h * b.w)
     const out: V[] = new Array(b.h * b.w)
     const sh = sheets[g.s]
     for (let c = 0; c < b.w; c++) {
@@ -209,6 +212,7 @@ export function makeRuntime(ctx: RuntimeContext) {
     const b = bounds(g)
     const f = flat(g)
     if (b.w === w) return f
+    allot(b.h * w)
     const out: V[] = new Array(b.h * w).fill(null)
     for (let r = 0; r < b.h; r++) for (let c = 0; c < b.w; c++) out[r * w + c] = f[r * b.w + c]
     return out

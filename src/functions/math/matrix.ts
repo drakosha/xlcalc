@@ -2,6 +2,7 @@
 import { E, type CErr, type V } from '../../values.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
+import { allot, spend } from '../../exec/budget.js'
 
 /** The rows of a grid filled with numbers only (a blank, text or a boolean is #VALUE!). */
 function numbers(g: Grid): number[][] | CErr {
@@ -28,6 +29,7 @@ function mdeterm(g: Grid): number | CErr {
   const n = a.length
   let det = 1
   for (let k = 0; k < n; k++) {
+    spend(n * n)
     let p = k
     for (let i = k + 1; i < n; i++) if (Math.abs(a[i][k]) > Math.abs(a[p][k])) p = i
     if (a[p][k] === 0) return 0
@@ -51,6 +53,7 @@ function minverse(g: Grid): V | Arr {
   const n = a.length
   const inv = a.map((_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)))
   for (let k = 0; k < n; k++) {
+    spend(2 * n * n)
     let p = k
     for (let i = k + 1; i < n; i++) if (Math.abs(a[i][k]) > Math.abs(a[p][k])) p = i
     if (a[p][k] === 0) return E.NUM
@@ -80,12 +83,26 @@ function mmult(x: Grid, y: Grid): V | Arr {
   const b = numbers(y)
   if (!Array.isArray(b)) return b
   if (x.cols !== y.rows) return E.VALUE
-  return matrix(a.map((row) => b[0].map((_, j) => row.reduce((s, v, k) => s + v * b[k][j], 0))))
+  allot(x.rows * y.cols)
+  return matrix(
+    a.map((row) => {
+      spend(y.cols * x.cols)
+      return b[0].map((_, j) => row.reduce((s, v, k) => s + v * b[k][j], 0))
+    }),
+  )
 }
 
 export const functions: Record<string, FnDef> = {
   MDETERM: { args: 'M', fn: mdeterm },
   MINVERSE: { args: 'M', array: true, fn: minverse },
   MMULT: { args: 'M M', array: true, fn: mmult },
-  MUNIT: { args: 'i', array: true, fn: (n: number) => (n < 1 ? E.VALUE : matrix(Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))))) },
+  MUNIT: {
+    args: 'i',
+    array: true,
+    fn: (n: number) => {
+      if (n < 1) return E.VALUE
+      allot(n * n)
+      return matrix(Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))))
+    },
+  },
 }

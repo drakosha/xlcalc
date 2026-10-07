@@ -1,6 +1,7 @@
 /** SEQUENCE and RANDARRAY (Excel 365), this engine's own. An empty array is #CALC! in Excel, #VALUE! here. */
 import type { Cx, FnDef } from '../../args.js'
 import { Arr, EMPTY } from '../../arrays/value.js'
+import { allot } from '../../exec/budget.js'
 import { E, type V } from '../../values.js'
 
 /** Excel's grid: an array larger than a sheet cannot be made. */
@@ -18,6 +19,7 @@ function build(rows: number, cols: number, at: (k: number) => V): Arr | typeof E
   const s = size(rows, cols)
   if (!Array.isArray(s)) return s
   const [r, c] = s
+  allot(r * c)
   return new Arr(r, c, r, c, Array.from({ length: r * c }, (_, k) => at(k)))
 }
 
