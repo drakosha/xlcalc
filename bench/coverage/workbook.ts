@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url'
 import { inCaseOrder } from './stored.js'
 import { answerOf, cellsOf, fileFormula, MIRRORS, runOnBook } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
+import { compute } from '../../src/index.js'
 import type { Step, WorkbookAnswer, WorkbookCase, WorkbookSet } from './workbook/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -43,8 +44,19 @@ function stepLine(s: Step): string {
   return ['filter', sheet, range, field, criterion].join('\t')
 }
 
+/**
+ * A book with a circular reference and without iterative calculation makes Excel show a warning window on opening,
+ * which stops the run: such a case is refused before Excel sees it (the engine finds the cycle).
+ */
+function checkCycles(c: WorkbookCase) {
+  if (c.file?.iterate) return
+  const cycle = compute(c.book, { display: false }).issues.find((i) => i.error === 'CYCLE')
+  if (cycle) throw new Error(`${c.id}: ${cycle.sheet}!${cycle.cell} is in a circular reference and the case has no iterative calculation (Excel would show a warning window)`)
+}
+
 /** One case in Excel: its book opened, its steps taken. */
 async function runCase(c: WorkbookCase): Promise<WorkbookAnswer> {
+  checkCycles(c)
   const steps = (c.steps ?? ['full', 'read']).map(stepLine).join('\n')
   const shows = (c.show ?? []).flatMap((g) => cellsOf(g.range).addrs.map((a) => `${g.sheet}!${a}`))
   const mirrors = (c.file?.mirrors ?? MIRRORS).join('\t')
