@@ -6,10 +6,15 @@
  */
 import type { Probe } from '../probes.js'
 import { collector } from './arrays/common.js'
+import { all } from './omit/all.js'
 import { kinds } from './omit/kinds.js'
+
+/** Calls Excel does not load: an omitted argument where Excel takes only a reference. */
+export const REFUSED: readonly string[] = ['SUMIF(D!B1:B8,">10",)']
 
 export function buildProbes(): Probe[] {
   const { out, add } = collector()
   kinds(add)
+  all(add)
   return out
 }

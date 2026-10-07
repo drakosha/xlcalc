@@ -20,6 +20,7 @@ import { markDynamic } from './book.js'
 import { dialogText, ensureExcel, excelDialogs, excelVersion } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
+import { xlpm } from './sets/let/xlpm.js'
 import type { BookInput, RangeRef } from '../../src/contract.js'
 import { formatAddress, parseAddress } from '../../src/model.js'
 import { quoteSheet } from '../../src/syntax.js'
@@ -44,8 +45,8 @@ export interface StoredSpill {
   answers: Record<string, SpillAnswer>
 }
 
-/** A formula in the engine's spelling as Excel stores it: newer functions prefixed, `E2#` as `ANCHORARRAY(E2)`. */
-export const fileFormula = (f: string) => xl(f).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+/** A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as `ANCHORARRAY(E2)`. */
+export const fileFormula = (f: string) => xl(xlpm(f)).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
 
 const ERROR_TYPE: Record<number, Extract<Val, { t: 'e' }>['v']> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 

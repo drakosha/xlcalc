@@ -6,11 +6,14 @@
  * (`_xlpm.x`, `let/xlpm.ts`). Answers: `test/excel/cases/let.json`.
  */
 import type { Probe } from '../probes.js'
-import { collector } from './arrays/common.js'
+import { collector, xl } from './arrays/common.js'
 import { xlpm } from './let/xlpm.js'
 
-/** `count` names `n_1`…, each the previous one plus 1, and their sum. */
+/** `count` names `n_1`…, each the previous one plus 1; the last one is the result. */
 const pairs = (count: number) => `LET(${Array.from({ length: count }, (_, i) => `n_${i + 1},${i ? `n_${i}+1` : '1'}`).join(',')},n_${count})`
+
+/** Calls Excel does not load (a book with one is refused): a name declared twice, a reference, a number or text as a name, 127 names. */
+export const REFUSED: readonly string[] = ['LET(_xlpm.x,1,_xlpm.x,2,_xlpm.x)', 'LET(A1,1,A1)', 'LET(1,2,3)', 'LET("x",1,2)', xlpm(pairs(127))].map(xl)
 
 export function buildProbes(): Probe[] {
   const { out, add } = collector()
@@ -27,9 +30,12 @@ export function buildProbes(): Probe[] {
   // a value is computed once: RAND gives the same number to every use; an unused value's error does not count
   g('let:once', 'LET(x,RAND(),x-x)', 'LET(x,RAND(),x=x)', 'LET(x,1/0,1)', 'LET(x,NA(),y,2,y)', 'LET(x,1/0,x+1)', 'LET(x,1/0,IFERROR(x,7))', 'LET(x,1,y,1/0,x)')
   g('let:count', pairs(126))
-  // used outside its LET the word is a defined name (none here); a name used in its own value or before it is declared
-  add('let:load', 'LET', 'LET(_xlpm.x,1,_xlpm.x)+x', 'LET(_xlpm.x,x+1,_xlpm.x)', 'LET(_xlpm.x,_xlpm.x+1,_xlpm.x)', 'LET(_xlpm.x,_xlpm.y,_xlpm.y,1,_xlpm.x)')
-  add('let:load', 'LET', xlpm('LET(x,1)'), xlpm('LET(x,1,y,2)'), xlpm('LET(x,1,x,2,x)'), 'LET(A1,1,A1)', 'LET(_xlpm.A1,1,_xlpm.A1)', xlpm('LET(r,1,r)'), xlpm('LET(c,1,c)'), 'LET(_xlpm.R1C1,1,_xlpm.R1C1)')
-  add('let:load', 'LET', 'LET(_xlpm.TRUE,1,_xlpm.TRUE)', 'LET(1,2,3)', 'LET("x",1,2)', xlpm(pairs(127)), xlpm('LET(x,,x)'), xlpm('LET(x,,x+1)'), xlpm('LET(x,1,)'), xlpm('LET(x,1,y,,x)'))
+  // a name used outside its LET (a defined name, none here), in its own value or before it is declared
+  add('let:unbound', 'LET', 'LET(_xlpm.x,1,_xlpm.x)+x', 'LET(_xlpm.x,x+1,_xlpm.x)', 'LET(_xlpm.x,_xlpm.x+1,_xlpm.x)', 'LET(_xlpm.x,_xlpm.y,_xlpm.y,1,_xlpm.x)')
+  // an even number of arguments: Excel loads it
+  g('let:even', 'LET(x,1)', 'LET(x,1,y,2)')
+  // in the file any word is a name after _xlpm., one that reads as a reference or a boolean too
+  add('let:file', 'LET', 'LET(_xlpm.A1,1,_xlpm.A1)', 'LET(_xlpm.r,1,_xlpm.r)', 'LET(_xlpm.c,1,_xlpm.c)', 'LET(_xlpm.R1C1,1,_xlpm.R1C1)', 'LET(_xlpm.TRUE,1,_xlpm.TRUE)')
+  g('let:omitted', 'LET(x,,x)', 'LET(x,,x+1)', 'LET(x,1,)', 'LET(x,1,y,,x)')
   return out
 }

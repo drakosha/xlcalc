@@ -67,7 +67,7 @@ export function kinds(add: Add) {
   g('STDEV.S', 'STDEV.S(1,,2)')
   g('SUMPRODUCT', 'SUMPRODUCT(D!B1:B3,)', 'SUMPRODUCT(,)')
   // references: an omitted range or criterion
-  g('SUMIF', 'SUMIF(D!B1:B8,">10",)', 'SUMIF(D!B1:B8,)', 'SUMIF(D!K1:K8,,D!B1:B8)')
+  g('SUMIF', 'SUMIF(D!B1:B8,)', 'SUMIF(D!K1:K8,,D!B1:B8)')
   g('COUNTIF', 'COUNTIF(D!B1:B8,)', 'COUNTIF(D!K1:K8,)', 'COUNTIF(D!A12:A13,)')
   g('SUMIFS', 'SUMIFS(D!B1:B8,D!B1:B8,)', 'SUMIFS(D!B1:B8,D!K1:K8,)')
   g('AGGREGATE', 'AGGREGATE(9,,D!B1:B8)', 'AGGREGATE(14,,D!B1:B8,1)')
@@ -88,6 +88,7 @@ export function kinds(add: Add) {
   g('CHOOSECOLS', 'COLUMNS(CHOOSECOLS(D!B1:C8,1,))')
   g('WORKDAY.INTL', 'WORKDAY.INTL(DATE(2025,1,1),5,)', 'WORKDAY.INTL(DATE(2025,1,1),5)', 'WORKDAY.INTL(DATE(2025,1,1),5,,D!AP1:AP8)')
   g('NETWORKDAYS', 'NETWORKDAYS(DATE(2025,1,1),DATE(2025,1,31),)', 'NETWORKDAYS.INTL(DATE(2025,1,1),DATE(2025,1,31),)')
+  g('RANDARRAY', 'ARRAYTOTEXT(RANDARRAY(,2,5,5),1)', 'ARRAYTOTEXT(RANDARRAY(2,,5,5),1)', 'ARRAYTOTEXT(RANDARRAY(1,2,5,5,),1)')
   // lifting and LET
   g('ROUND', 'SUM(ROUND({1.5,2.5},))', 'ROUND({1.5,2.5},)')
   g('LEFT', 'SUM(LEN(LEFT({"ab","cd"},)))')
