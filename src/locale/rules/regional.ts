@@ -5,7 +5,7 @@
  */
 import type { ErrorCode } from '../../contract.js'
 import { errorWords, textOrder } from '../../criteria.js'
-import { parseDateWith, type DateSyntax } from '../../dates.js'
+import { parseDateWith, textReaders, type DateSyntax } from '../../dates.js'
 import { formatWith, generalText } from '../../format.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
@@ -18,16 +18,16 @@ import { numberReader } from './numbers.js'
 export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
   const { locale, decimal, group, currency } = data
   const dates: DateSyntax = { date: dmyDates(data, clock), decimal }
-  const valueText = numberReader(data, dates)
+  const { value: valueText, argument } = textReaders(numberReader(data), dates)
   const numberText = (n: number) => generalText(n).replace('.', decimal)
-  const { toNum, toText, toBool } = coercions(valueText, locale.booleans, numberText)
+  const { toNum, toText, toBool } = coercions(argument, locale.booleans, numberText)
   const word = (t: string): boolean | null => {
     const b = toBool(t)
     return typeof b === 'boolean' ? b : null
   }
   const compareText = textOrder(data.collation)
   const compare = compareWith(compareText)
-  const dialect = formatDialect(data, valueText, numberText)
+  const dialect = formatDialect(data, argument, numberText)
   return {
     locale,
     decimal,
@@ -44,10 +44,9 @@ export function regionalRules(data: RegionalData, clock: RulesClock): Rules {
     compare,
     compareOp: operatorOrder(compare),
     errorText: (code: ErrorCode) => locale.errors[ERROR_TEXT[code]] ?? ERROR_TEXT[code],
-    complexPart: valueText,
-    critNumber: valueText,
+    critNumber: argument,
     critBool: word,
-    cellNumber: (s) => (/\d/.test(s) ? valueText(s) : null),
+    cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
     critError: errorWords(locale.errors),
     compareText,
   }

@@ -7,11 +7,10 @@
  */
 import type { ErrorCode } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
-import { parseDateText, textToNumber } from '../dates.js'
+import { decimalFirst, enDates, enNumber, parseDateWith, textReaders } from '../dates.js'
 import { formatText, generalText } from '../format.js'
-import { NUMBER_TEXT, readNumber } from '../model.js'
 import { ERROR_TEXT } from '../syntax.js'
-import { compareOp, compareValues, toBool, toNum, toText, type CErr, type V } from '../values.js'
+import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { enUS } from './en-US.js'
 import type { RegionalData, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
@@ -32,9 +31,9 @@ export interface Rules extends CritRules {
   toText(v: V): string | CErr
   /** A value as a boolean: the locale's words for TRUE and FALSE in text. */
   toBool(v: V): boolean | CErr
-  /** Text as VALUE reads it (a number, percent, currency, a date or a time), or null. */
+  /** Text as VALUE reads it (a number, percent, currency, a date or a time; spaces before a date dropped), or null. */
   valueText(text: string): number | null
-  /** Date or time text as a date or time argument reads it (DATEVALUE, DAY, EDATE…), or null. */
+  /** Date or time text as a date or time argument reads it (DAY, EDATE…; DATEVALUE after dropping spaces before it), or null. */
   dateText(text: string): number | null
   /** A number as text, as `&` writes it. */
   numberText(n: number): string
@@ -46,28 +45,32 @@ export interface Rules extends CritRules {
   compareOp(a: V, b: V): number
   /** An error as text (VALUETOTEXT, ARRAYTOTEXT). */
   errorText(code: ErrorCode): string
-  /** A real number in complex text (`1.5` in `1.5+2i`), or null. */
-  complexPart(text: string): number | null
 }
 
-/** Excel en-US with the English interface: the engine's own rules since the first release. */
-export const EN_US: Rules = {
-  ...EN_CRIT,
-  locale: enUS,
-  decimal: '.',
-  group: ',',
-  currency: { symbol: '$', before: true, space: '', negative: '()' },
-  toNum,
-  toText,
-  toBool,
-  valueText: textToNumber,
-  dateText: parseDateText,
-  numberText: generalText,
-  formatText,
-  compare: compareValues,
-  compareOp,
-  errorText: (code) => ERROR_TEXT[code],
-  complexPart: (t) => (NUMBER_TEXT.test(t) ? readNumber(t) : null),
+/** Excel en-US with the English interface: the engine's own rules, date text without a year in the clock's year (`1/31`). */
+function englishRules(clock: RulesClock): Rules {
+  const dates = enDates(() => clock.year())
+  const { value: valueText, argument } = textReaders(enNumber, dates)
+  const number = decimalFirst(argument)
+  return {
+    ...EN_CRIT,
+    ...coercions(number, enUS.booleans, generalText),
+    clock,
+    critNumber: argument,
+    cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
+    locale: enUS,
+    decimal: '.',
+    group: ',',
+    currency: { symbol: '$', before: true, space: '', negative: '()' },
+    valueText,
+    dateText: (text) => parseDateWith(text, dates),
+    numberText: generalText,
+    // text that reads as a number by the clock's year is formatted as that number
+    formatText: (value, format) => formatText(typeof value === 'string' ? (number(value) ?? value) : value, format),
+    compare: compareValues,
+    compareOp,
+    errorText: (code) => ERROR_TEXT[code],
+  }
 }
 
 /** The data of the locales other than en-US, by tag (one line per locale of `LOCALES`). */
@@ -76,5 +79,5 @@ export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([['ru-RU', RU
 /** The rules of a book in the locale `tag` (one of `LOCALES`; en-US without one), reading `clock` for dates without a year. */
 export function rulesOf(tag: string | undefined, clock: RulesClock): Rules {
   const data = tag === undefined ? undefined : REGIONAL.get(tag)
-  return data ? regionalRules(data, clock) : EN_US
+  return data ? regionalRules(data, clock) : englishRules(clock)
 }
