@@ -1,0 +1,2393 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "look": "A1:J24,A1048566:E1048576,XEX1:XFD7",
+  "seconds": 80.6
+ },
+ "books": {
+  "end": {
+   "styles": [
+    {
+     "font": {
+      "bold": true
+     }
+    },
+    {
+     "fill": {
+      "color": "#FFCC00"
+     }
+    },
+    {
+     "fill": {
+      "color": "#99CCFF"
+     }
+    }
+   ],
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "B1": {
+       "formula": "SUM(A1:A3)"
+      },
+      "A1048576": {
+       "value": 9,
+       "style": 2
+      },
+      "A1048571": {
+       "value": 7
+      },
+      "XFD5": {
+       "value": 8,
+       "style": 2
+      },
+      "XFB6": {
+       "value": 6
+      }
+     },
+     "rows": {
+      "1048570:1048576": {
+       "height": 30,
+       "style": 1,
+       "format": "0.00"
+      }
+     },
+     "columns": {
+      "XFA:XFD": {
+       "width": 20,
+       "style": 0,
+       "format": "0%"
+      }
+     },
+     "merges": [
+      "C1048575:D1048576",
+      "XFC1:XFD2"
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "delete-rows-3-4",
+   "book": "end",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 3,
+    "count": 2
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-row-1048572",
+   "book": "end",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1048572,
+    "count": 1
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-row-1048576",
+   "book": "end",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1048576,
+    "count": 1
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-rows-1048575-2",
+   "book": "end",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1048575,
+    "count": 2
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-rows-1048568-4",
+   "book": "end",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1048568,
+    "count": 4
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-columns-B-C",
+   "book": "end",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "B",
+    "count": 2
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-column-XFB",
+   "book": "end",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "XFB",
+    "count": 1
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-column-XFD",
+   "book": "end",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "XFD",
+    "count": 1
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  },
+  {
+   "id": "delete-columns-XEZ-3",
+   "book": "end",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "XEZ",
+    "count": 3
+   },
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "delete-rows-3-4": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$1:$1048574",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A2)",
+      "A2": "2"
+     },
+     "look": {
+      "cells": {
+       "A1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD3": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA5": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB5": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC5": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD5": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048568": 30,
+       "1048569": 30,
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30
+      },
+      "merges": [
+       "C1048573:D1048574",
+       "XFC1:XFD2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": ""
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": ""
+    }
+   ],
+   "names": []
+  },
+  "delete-row-1048572": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$1:$1048575",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048575": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XFB6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30,
+       "1048575": 30
+      },
+      "merges": [
+       "C1048574:D1048575",
+       "XFC1:XFD2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": ""
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": "8"
+    }
+   ],
+   "names": []
+  },
+  "delete-row-1048576": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$1:$1048576",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XFB6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30,
+       "1048575": 30
+      },
+      "merges": [
+       "C1048575:D1048576",
+       "XFC1:XFD2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": ""
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": "8"
+    }
+   ],
+   "names": []
+  },
+  "delete-rows-1048575-2": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$1:$1048574",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XFB6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30
+      },
+      "merges": [
+       "XFC1:XFD2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": ""
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": "8"
+    }
+   ],
+   "names": []
+  },
+  "delete-rows-1048568-4": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$1:$1048572",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048568": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048569": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XFB6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048568": 30,
+       "1048569": 30,
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30
+      },
+      "merges": [
+       "C1048571:D1048572",
+       "XFC1:XFD2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": ""
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": "8"
+    }
+   ],
+   "names": []
+  },
+  "delete-columns-B-C": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A:$XFB",
+     "cells": {
+      "A1": "1",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048576": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFA1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XEY4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XEZ4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XEZ6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XEY7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XEZ7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XEY": 19.29,
+       "XEZ": 19.29,
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30,
+       "1048575": 30,
+       "1048576": 30
+      },
+      "merges": [
+       "B1048575:B1048576",
+       "XFA1:XFB2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": "9"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": ""
+    }
+   ],
+   "names": []
+  },
+  "delete-column-XFB": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A:$XFC",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048576": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFB1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30,
+       "1048575": 30,
+       "1048576": 30
+      },
+      "merges": [
+       "C1048575:D1048576",
+       "XFB1:XFC2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": "9"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": ""
+    }
+   ],
+   "names": []
+  },
+  "delete-column-XFD": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$1:$1048576",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048576": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XFC1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB6": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30,
+       "1048575": 30,
+       "1048576": 30
+      },
+      "merges": [
+       "C1048575:D1048576",
+       "XFC1:XFD2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": "9"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": ""
+    }
+   ],
+   "names": []
+  },
+  "delete-columns-XEZ-3": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A:$XFA",
+     "cells": {
+      "A1": "1",
+      "B1": "=SUM(A1:A3)",
+      "A2": "2",
+      "A3": "3"
+     },
+     "look": {
+      "cells": {
+       "A1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048570": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048571": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048572": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048573": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048574": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "B1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048575": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "A1048576": {
+        "fill": "#99CCFF",
+        "format": "0.00"
+       },
+       "B1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "C1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "D1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "E1048576": {
+        "fill": "#FFCC00",
+        "format": "0.00"
+       },
+       "XEZ1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA1": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XEZ2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA2": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XEZ4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD4": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA5": {
+        "fill": "#99CCFF",
+        "format": "0%"
+       },
+       "XEZ7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFA7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFB7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFC7": {
+        "bold": true,
+        "format": "0%"
+       },
+       "XFD7": {
+        "bold": true,
+        "format": "0%"
+       }
+      },
+      "widths": {
+       "XEZ": 19.29,
+       "XFA": 19.29,
+       "XFB": 19.29,
+       "XFC": 19.29,
+       "XFD": 19.29
+      },
+      "heights": {
+       "1048570": 30,
+       "1048571": 30,
+       "1048572": 30,
+       "1048573": 30,
+       "1048574": 30,
+       "1048575": 30,
+       "1048576": 30
+      },
+      "merges": [
+       "C1048575:D1048576",
+       "XEZ1:XFA2"
+      ]
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "S",
+     "cell": "A1048576",
+     "text": "9"
+    },
+    {
+     "sheet": "S",
+     "cell": "XFD5",
+     "text": ""
+    }
+   ],
+   "names": []
+  }
+ }
+}

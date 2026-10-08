@@ -1,0 +1,615 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "seconds": 68.7
+ },
+ "books": {
+  "edge": {
+   "sheets": [
+    {
+     "name": "E",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      }
+     }
+    },
+    {
+     "name": "F",
+     "cells": {
+      "A1": {
+       "formula": "E!A1048576"
+      },
+      "A2": {
+       "formula": "SUM(E!A5:A1048576)"
+      },
+      "A3": {
+       "formula": "SUM(E!A1:A1048576)"
+      },
+      "A4": {
+       "formula": "SUM(E!1:1048576)"
+      },
+      "A5": {
+       "formula": "SUM(E!A:XFD)"
+      },
+      "A6": {
+       "formula": "E!XFD1"
+      },
+      "A7": {
+       "formula": "SUM(E!XFA1:XFD1)"
+      },
+      "A8": {
+       "formula": "SUM(E!B1:XFD1)"
+      },
+      "A9": {
+       "formula": "E!A1048575"
+      },
+      "A10": {
+       "formula": "SUM(E!A1048570:A1048576)"
+      },
+      "A11": {
+       "formula": "SUM(E!1048575:1048576)"
+      },
+      "A12": {
+       "formula": "SUM(E!XFC:XFD)"
+      },
+      "A13": {
+       "formula": "E!$A$1048576"
+      },
+      "A14": {
+       "formula": "SUM(E!B2:C3)"
+      },
+      "A15": {
+       "formula": "SUM(E!A1:XFD1048576)"
+      }
+     }
+    }
+   ],
+   "names": [
+    {
+     "name": "last",
+     "ref": "'E'!$A$1048576"
+    }
+   ]
+  },
+  "full": {
+   "sheets": [
+    {
+     "name": "E",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A1048576": {
+       "value": 2
+      },
+      "XFD1": {
+       "value": 3
+      }
+     }
+    },
+    {
+     "name": "F",
+     "cells": {
+      "A1": {
+       "formula": "E!A1048576+E!XFD1"
+      },
+      "A2": {
+       "formula": "E!A1"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "edge-insert-rows-1",
+   "book": "edge",
+   "op": {
+    "op": "insertRows",
+    "sheet": "E",
+    "row": 1
+   }
+  },
+  {
+   "id": "edge-insert-rows-1048570x2",
+   "book": "edge",
+   "op": {
+    "op": "insertRows",
+    "sheet": "E",
+    "row": 1048570,
+    "count": 2
+   }
+  },
+  {
+   "id": "edge-insert-cols-A",
+   "book": "edge",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "E",
+    "column": "A"
+   }
+  },
+  {
+   "id": "edge-insert-cols-XFAx2",
+   "book": "edge",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "E",
+    "column": "XFA",
+    "count": 2
+   }
+  },
+  {
+   "id": "edge-delete-rows-1048576",
+   "book": "edge",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "E",
+    "row": 1048576
+   }
+  },
+  {
+   "id": "edge-delete-rows-1",
+   "book": "edge",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "E",
+    "row": 1
+   }
+  },
+  {
+   "id": "edge-delete-cols-XFD",
+   "book": "edge",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "E",
+    "column": "XFD"
+   }
+  },
+  {
+   "id": "edge-delete-cols-A",
+   "book": "edge",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "E",
+    "column": "A"
+   }
+  },
+  {
+   "id": "full-insert-rows-5",
+   "book": "full",
+   "op": {
+    "op": "insertRows",
+    "sheet": "E",
+    "row": 5
+   },
+   "extra": [
+    {
+     "sheet": "E",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "E",
+     "cell": "XFD1"
+    }
+   ]
+  },
+  {
+   "id": "full-insert-cols-C",
+   "book": "full",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "E",
+    "column": "C"
+   },
+   "extra": [
+    {
+     "sheet": "E",
+     "cell": "A1048576"
+    },
+    {
+     "sheet": "E",
+     "cell": "XFD1"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "edge-insert-rows-1": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$A$2:$B$3",
+     "cells": {
+      "A2": "1",
+      "B3": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!#REF!",
+      "A2": "=SUM(E!A6:A1048576)",
+      "A3": "=SUM(E!A:A)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!XFD2",
+      "A7": "=SUM(E!XFA2:XFD2)",
+      "A8": "=SUM(E!B2:XFD2)",
+      "A9": "=E!A1048576",
+      "A10": "=SUM(E!A1048571:A1048576)",
+      "A11": "=SUM(E!1048576:1048576)",
+      "A12": "=SUM(E!XFC:XFD)",
+      "A13": "=E!#REF!",
+      "A14": "=SUM(E!B3:C4)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!#REF!"
+    }
+   ]
+  },
+  "edge-insert-rows-1048570x2": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$A$1:$B$2",
+     "cells": {
+      "A1": "1",
+      "B2": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!#REF!",
+      "A2": "=SUM(E!A5:A1048576)",
+      "A3": "=SUM(E!A:A)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!XFD1",
+      "A7": "=SUM(E!XFA1:XFD1)",
+      "A8": "=SUM(E!B1:XFD1)",
+      "A9": "=E!#REF!",
+      "A10": "=SUM(E!A1048572:A1048576)",
+      "A11": "=SUM(E!#REF!)",
+      "A12": "=SUM(E!XFC:XFD)",
+      "A13": "=E!#REF!",
+      "A14": "=SUM(E!B2:C3)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!#REF!"
+    }
+   ]
+  },
+  "edge-insert-cols-A": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$B$1:$C$2",
+     "cells": {
+      "B1": "1",
+      "C2": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!B1048576",
+      "A2": "=SUM(E!B5:B1048576)",
+      "A3": "=SUM(E!B:B)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!#REF!",
+      "A7": "=SUM(E!XFB1:XFD1)",
+      "A8": "=SUM(E!C1:XFD1)",
+      "A9": "=E!B1048575",
+      "A10": "=SUM(E!B1048570:B1048576)",
+      "A11": "=SUM(E!1048575:1048576)",
+      "A12": "=SUM(E!XFD:XFD)",
+      "A13": "=E!$B$1048576",
+      "A14": "=SUM(E!C2:D3)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!$B$1048576"
+    }
+   ]
+  },
+  "edge-insert-cols-XFAx2": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$A$1:$B$2",
+     "cells": {
+      "A1": "1",
+      "B2": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!A1048576",
+      "A2": "=SUM(E!A5:A1048576)",
+      "A3": "=SUM(E!A:A)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!#REF!",
+      "A7": "=SUM(E!XFC1:XFD1)",
+      "A8": "=SUM(E!B1:XFD1)",
+      "A9": "=E!A1048575",
+      "A10": "=SUM(E!A1048570:A1048576)",
+      "A11": "=SUM(E!1048575:1048576)",
+      "A12": "=SUM(E!#REF!)",
+      "A13": "=E!$A$1048576",
+      "A14": "=SUM(E!B2:C3)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!$A$1048576"
+    }
+   ]
+  },
+  "edge-delete-rows-1048576": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$A$1:$B$2",
+     "cells": {
+      "A1": "1",
+      "B2": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!#REF!",
+      "A2": "=SUM(E!A5:A1048576)",
+      "A3": "=SUM(E!A:A)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!XFD1",
+      "A7": "=SUM(E!XFA1:XFD1)",
+      "A8": "=SUM(E!B1:XFD1)",
+      "A9": "=E!A1048575",
+      "A10": "=SUM(E!A1048570:A1048576)",
+      "A11": "=SUM(E!1048575:1048576)",
+      "A12": "=SUM(E!XFC:XFD)",
+      "A13": "=E!#REF!",
+      "A14": "=SUM(E!B2:C3)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!#REF!"
+    }
+   ]
+  },
+  "edge-delete-rows-1": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$B$1",
+     "cells": {
+      "B1": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!A1048575",
+      "A2": "=SUM(E!A4:A1048576)",
+      "A3": "=SUM(E!A:A)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!#REF!",
+      "A7": "=SUM(E!#REF!)",
+      "A8": "=SUM(E!#REF!)",
+      "A9": "=E!A1048574",
+      "A10": "=SUM(E!A1048569:A1048576)",
+      "A11": "=SUM(E!1048574:1048576)",
+      "A12": "=SUM(E!XFC:XFD)",
+      "A13": "=E!$A$1048575",
+      "A14": "=SUM(E!B1:C2)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!$A$1048575"
+    }
+   ]
+  },
+  "edge-delete-cols-XFD": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$A$1:$B$2",
+     "cells": {
+      "A1": "1",
+      "B2": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!A1048576",
+      "A2": "=SUM(E!A5:A1048576)",
+      "A3": "=SUM(E!A:A)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!#REF!",
+      "A7": "=SUM(E!XFA1:XFD1)",
+      "A8": "=SUM(E!B1:XFD1)",
+      "A9": "=E!A1048575",
+      "A10": "=SUM(E!A1048570:A1048576)",
+      "A11": "=SUM(E!1048575:1048576)",
+      "A12": "=SUM(E!XFC:XFD)",
+      "A13": "=E!$A$1048576",
+      "A14": "=SUM(E!B2:C3)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!$A$1048576"
+    }
+   ]
+  },
+  "edge-delete-cols-A": {
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$A$2",
+     "cells": {
+      "A2": "2"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$15",
+     "cells": {
+      "A1": "=E!#REF!",
+      "A2": "=SUM(E!#REF!)",
+      "A3": "=SUM(E!#REF!)",
+      "A4": "=SUM(E!1:1048576)",
+      "A5": "=SUM(E!$1:$1048576)",
+      "A6": "=E!XFC1",
+      "A7": "=SUM(E!XEZ1:XFD1)",
+      "A8": "=SUM(E!1:1)",
+      "A9": "=E!#REF!",
+      "A10": "=SUM(E!#REF!)",
+      "A11": "=SUM(E!1048575:1048576)",
+      "A12": "=SUM(E!XFB:XFD)",
+      "A13": "=E!#REF!",
+      "A14": "=SUM(E!A2:B3)",
+      "A15": "=SUM(E!1:1048576)"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "last",
+     "ref": "=E!#REF!"
+    }
+   ]
+  },
+  "full-insert-rows-5": {
+   "error": "op: -2146827284 Microsoft Excel can't insert new cells because it would push non-empty cells off the end of the worksheet. These non-empty cells might appear empty but have blank values, some formatting, or a formula. Delete enough rows or columns to make room for what you want to insert and then try again.",
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$1:$1048576",
+     "cells": {
+      "A1": "1"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$2",
+     "cells": {
+      "A1": "=E!A1048576+E!XFD1",
+      "A2": "=E!A1"
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "E",
+     "cell": "A1048576",
+     "text": "2"
+    },
+    {
+     "sheet": "E",
+     "cell": "XFD1",
+     "text": "3"
+    }
+   ],
+   "names": []
+  },
+  "full-insert-cols-C": {
+   "error": "op: -2146827284 Microsoft Excel can't insert new cells because it would push non-empty cells off the end of the worksheet. These non-empty cells might appear empty but have blank values, some formatting, or a formula. Delete enough rows or columns to make room for what you want to insert and then try again.",
+   "sheets": [
+    {
+     "name": "E",
+     "used": "$1:$1048576",
+     "cells": {
+      "A1": "1"
+     }
+    },
+    {
+     "name": "F",
+     "used": "$A$1:$A$2",
+     "cells": {
+      "A1": "=E!A1048576+E!XFD1",
+      "A2": "=E!A1"
+     }
+    }
+   ],
+   "extra": [
+    {
+     "sheet": "E",
+     "cell": "A1048576",
+     "text": "2"
+    },
+    {
+     "sheet": "E",
+     "cell": "XFD1",
+     "text": "3"
+    }
+   ],
+   "names": []
+  }
+ }
+}
