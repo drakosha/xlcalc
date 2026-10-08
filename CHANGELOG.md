@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Added:
+
+- Excel for Windows answers for every set the Mac has answers for, in both locales (Excel 16.0.20430: 34,349 formula cases in en-US, 7,297 in ru-RU, 6,999 formulas of the old kind, 12,949 cells shown, and the tables, spill, workbook, structure and xlsx filter sets), with tests against them; where the two Excels part, the engine follows Excel for Mac but in `CHAR` and `CODE`, and `bench/windows/differences.md` lists the cases with their reasons.
+
 Fixed:
 
 - A range made by the range operator found the cells between its ends in more forms: an end under unary plus (`+A1:C1`), an end bound by LET (`SUM(A1:LET(x,C1,x))`), both ends spilled (the corner between them included). Such formulas could be computed before the cells inside the range and miss their edits in a session.

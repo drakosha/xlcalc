@@ -1,9 +1,9 @@
 /**
  * Formulas of the old kind in Excel for Windows (`test/excel/win/legacy/`, `bench/windows`): each case stood at the row
  * it had in the Mac's run, and Excel for Windows shows the formula as the Mac does (`Formula2`, `@` where it intersects)
- * and computes the same value (numbers as the measurement compares them, a volatile call's by type). `legacy.test.ts` checks the engine against
- * the Mac's answers, so where Windows gives the same, the engine matches it too; the cases where Windows parts from the
- * Mac are listed in `WIN_LEGACY` with the reason.
+ * and computes the same value (numbers as the measurement compares them, a volatile call's by type). `legacy.test.ts`
+ * checks the engine against the Mac's answers, so where Windows gives the same, the engine matches it too; the cases
+ * where Windows parts from the Mac are listed in `WIN_LEGACY` with the reason.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'

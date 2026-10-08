@@ -62,6 +62,8 @@ for (const set of WIN_SETS) {
   counts.push(row([set.tag, set.name, String(outcomes.length), String(same), String(outcomes.filter((o) => matches(o.fn, o.win, o.engine)).length), String(engine), String(set.rejected?.length ?? 0)]))
 }
 
+console.log('# Excel for Windows against Excel for Mac and the engine\n')
+console.log('Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/excel/win/` and `test/excel/`. The class of a parted case: a platform difference (the reason in `WIN_REASONS` of `test/excel-win-cases.ts`, or the engine follows Windows) or noise.\n')
 console.log('## Cases compared\n')
 console.log(row(['locale', 'source', 'cases', 'Windows = Mac', 'engine = Windows', 'all three agree', 'not taken by Windows']))
 console.log(row(['---', '---', '---:', '---:', '---:', '---:', '---:']))
