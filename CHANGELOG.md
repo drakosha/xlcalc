@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- Excel for Windows answers for every set the Mac has answers for, in both locales (Excel 16.0.20430: 34,349 formula cases in en-US, 7,297 in ru-RU, 6,999 formulas of the old kind, 12,949 cells shown, and the tables, spill, workbook, structure and xlsx filter sets), with tests against them; where the two Excels part, the engine follows Excel for Mac but in `CHAR` and `CODE`, and `bench/windows/differences.md` lists the cases with their reasons.
+
 ## 0.4.2 (2026-10-09)
 
 Internal release; not published to npm. Fixes from a review, books sent to pool threads as text in chunks, `Session.hash()`.
@@ -7,10 +13,6 @@ Internal release; not published to npm. Fixes from a review, books sent to pool 
 Changed:
 
 - The thread pool sends a book to a thread and back as JSON text, its cells written and read in chunks between turns of the event loop: on the synthetic book of 34,000 rows `openSession` stops the event loop for 62 ms (324 to 395 ms before), a snapshot of a session for 3 ms (234 to 290 ms) and `book()` for 20 ms (230 ms); a session's snapshot takes 29 MB on the calling side (68 MB). The book is taken when the call is made, as before; a book JSON cannot hold as it is goes by structured clone, as before.
-
-Added:
-
-- Excel for Windows answers for every set the Mac has answers for, in both locales (Excel 16.0.20430: 34,349 formula cases in en-US, 7,297 in ru-RU, 6,999 formulas of the old kind, 12,949 cells shown, and the tables, spill, workbook, structure and xlsx filter sets), with tests against them; where the two Excels part, the engine follows Excel for Mac but in `CHAR` and `CODE`, and `bench/windows/differences.md` lists the cases with their reasons.
 
 Fixed:
 
