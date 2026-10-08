@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { CalcError, compute, createInlineCalc, openSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, setA1 } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, heavyBook, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
@@ -105,6 +105,18 @@ describe('in the same thread', () => {
     expect(took).toBeLessThan(200)
     // a slice and the formula in flight when it ends (a sort, a few ms; more while the code is cold), with room for a loaded machine
     expect(worst).toBeLessThan(50)
+  }, 60_000)
+
+  it('the call after a stopped one: computing the book again does not count in its soft deadline', async () => {
+    const calc = createInlineCalc({ sliceMs: 5 })
+    // a cold computation of about 150 ms, longer than the calls' deadline of 50 ms
+    const s = await calc.openSession(heavyBook(), { clock: CLOCK })
+    expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
+    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs: 50 })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.result({ timeoutMs: 50 })).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...heavyBook().sheets[0].cells, C1: { value: 5 } } }] }, { clock: CLOCK }).hash)
+    // an abort still stops it
+    expect((await fails(s.setCells(setA1(3), { timeoutMs: 50 }))).code).toBe('soft_timeout')
+    expect((await fails(s.result({ signal: AbortSignal.timeout(20) }))).code).toBe('aborted')
   }, 60_000)
 
   it('calls made without waiting are taken in order, each with its own changes', async () => {

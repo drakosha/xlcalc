@@ -7,7 +7,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, openSession, type BookInput, type Calc, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, setA1, slowBook } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, heavyBook, setA1, slowBook } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
@@ -192,6 +192,13 @@ describe('in threads', () => {
     expect((await s.result()).hash).toBe(before)
     const y = openSession(slowBook(), { clock: CLOCK })
     expect(await s.setCells(setA1(0.5))).toEqual(y.setCells(setA1(0.5)))
+  }, 60_000)
+
+  it('the call after a stopped one: computing the book again in the thread does not count in its soft deadline', async () => {
+    const p = await made({ threads: 1 })
+    const s = await p.openSession(heavyBook(), { clock: CLOCK })
+    expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
+    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs: 50 })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
   }, 60_000)
 
   it('maxHeapMb without limits.cells: arrays larger than a 32nd of the heap give CalcError', async () => {
