@@ -6,10 +6,9 @@
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { compare } from '../bench/coverage/compare.js'
 import type { StoredTables } from '../bench/coverage/tables.js'
-import type { TableAnswer, TableSet } from '../bench/coverage/tables/cases.js'
-import { engineAnswer, storedText } from './tables-cases.js'
+import type { TableSet } from '../bench/coverage/tables/cases.js'
+import { differences } from './tables-cases.js'
 
 const dir = new URL('./excel/tables/', import.meta.url)
 const sets = (sub: string) => {
@@ -20,34 +19,6 @@ const SETS = [...sets(''), ...sets('ru-RU/')]
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in the README's Known differences). */
 const KNOWN: Readonly<Record<string, string>> = {}
-
-/** What differs between the engine's answer and Excel's, as lines (empty when they agree). */
-export function differences(c: Parameters<typeof engineAnswer>[0], x: TableAnswer): string[] {
-  const out: string[] = []
-  if (x.rejected) return ['Excel did not load the book']
-  const got = engineAnswer(c)
-  // Excel refuses some steps without an error (rows deleted from two tables): the book stays as it was, which the
-  // values, formulas and tables below check; every step it answered with an error the engine refuses too
-  const missed = Object.keys(x.refused ?? {}).filter((i) => !(i in got.refused))
-  if (missed.length) out.push(`steps Excel refused and the engine took: ${missed.map((i) => `${i} (${x.refused![Number(i)]})`).join(', ')}`)
-  const shape = (t: TableAnswer['tables'][number]) => JSON.stringify(t)
-  const ex = x.tables.map(shape).sort()
-  const en = got.tables.map(shape).sort()
-  if (JSON.stringify(ex) !== JSON.stringify(en)) out.push(`tables: Excel ${ex.join(' ')}, engine ${en.join(' ')}`)
-  for (const k of new Set([...Object.keys(x.values), ...Object.keys(got.values)])) {
-    const want = x.values[k]
-    const have = got.values[k]
-    if (!want || !have) {
-      if (want !== have) out.push(`${k}: Excel ${JSON.stringify(want ?? 'blank')}, engine ${JSON.stringify(have ?? 'blank')}`)
-    } else if (!compare(want, have).ok) out.push(`${k}: Excel ${JSON.stringify(want)}, engine ${JSON.stringify(have)}`)
-  }
-  for (const [k, shown] of Object.entries(x.formulas)) {
-    const [sheet, addr] = k.split('!')
-    const stored = storedText(got.book, sheet, addr, shown)
-    if (stored !== got.formulas[k]) out.push(`${k}: Excel ${shown} (${stored}), engine ${got.formulas[k] ?? 'no formula'}`)
-  }
-  return out
-}
 
 describe.each(SETS)('tables $sub$name', (set) => {
   const mod = import(`../bench/coverage/tables/${set.name}.ts`) as Promise<TableSet>

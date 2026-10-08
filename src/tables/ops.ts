@@ -96,10 +96,9 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Restructur
       if (c && typeof c.name === 'string') cells[addr] = { ...cells[addr], value: c.name, formula: undefined }
       if (cells[addr].formula === undefined) delete cells[addr].formula
     })
+  // a malformed table (its fields, range, columns) is an input error, as in a book
+  checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...book.sheets[s], cells, tables: [table] }] }, 'op')
   const sheets = [...book.sheets]
   sheets[s] = { ...sheets[s], cells, tables: [...(sheets[s].tables ?? []), table] }
-  const out = { ...book, sheets }
-  // a malformed table (its fields, range, columns) is an input error, as in a book
-  checkTables(out, 'book')
-  return { ok: true, book: out, mapCell: same }
+  return { ok: true, book: { ...book, sheets }, mapCell: same }
 }

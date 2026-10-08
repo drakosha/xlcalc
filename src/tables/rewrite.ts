@@ -102,6 +102,8 @@ export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
   return changed ? { ...book, sheets, ...(names ? { names } : {}) } : book
 }
 
+const abs = (r: number, c: number) => formatAddress(r, c).replace(/^([A-Z]+)(\d+)$/, '$$$1$$$2')
+
 /**
  * The text a reference becomes when its table turns into cells (Excel's Convert to Range): its cells with `$` and the
  * sheet, the formula's row kept relative (`'S'!$B4`); a part the table lacks (a totals row) gives its whole range, as
@@ -115,7 +117,9 @@ export function convertedText(t: Table, spec: TableSpec, row: number, sheet: str
   let r1 = first
   let r2 = last
   let relative = false
-  if (has('all') || (has('headers') && !has('data') && head < 0) || (has('totals') && !has('data') && !t.totals)) [r1, r2] = [t.r1, t.r2]
+  // a part the table lacks (#REF!) becomes the whole table, columns and all
+  if ((has('headers') && !has('data') && head < 0) || (has('totals') && !has('data') && !t.totals)) return `${quoteSheet(sheet)}!${abs(t.r1, t.c1)}:${abs(t.r2, t.c2)}`
+  if (has('all')) [r1, r2] = [t.r1, t.r2]
   else if (has('row')) {
     ;[r1, r2] = [row, row]
     relative = true

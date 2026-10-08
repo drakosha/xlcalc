@@ -11,7 +11,7 @@
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import type { Axis } from '../structure/area.js'
+import { rectOf, type Area, type Axis } from '../structure/area.js'
 import { rewriteBookTables } from './rewrite.js'
 import { tableKey, tablesOf } from './model.js'
 
@@ -36,6 +36,11 @@ export interface TableShift {
   before(book: BookInput): BookInput
   /** The tables' new ranges and columns, the cells of inserted rows and columns, after the cells moved. */
   after(book: BookInput): BookInput
+  /**
+   * A reference into a table's data that rows inserted at its edge grow, as Excel inserts rows into a table: from its
+   * first data row it stays there, ending on its last data row it takes in rows inserted at the totals row.
+   */
+  edge?(area: Area): [number, number] | undefined
 }
 
 /** Lines inserted (`n` > 0) or deleted (`n` < 0) at index `at` of `axis` on `sheet`. */
@@ -98,6 +103,18 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
     plan.set(t.name, { lo: nlo, hi: nlo + (t.headers ? 1 : 0) + Math.max(1, data) + (totals ? 1 : 0) - 1, columns: cols, totals, grown: [] })
   }
   if (!plan.size) return none
+  const growing = n > 0 && axis === 'r' ? tables.filter((t) => plan.get(t.name)?.grown.length) : []
+  const edge = (area: Area): [number, number] | undefined => {
+    const x = rectOf(area)
+    for (const t of growing) {
+      const first = t.r1 + (t.headers ? 1 : 0)
+      const last = t.r2 - (t.totals ? 1 : 0)
+      if (area.kind === 'cell' || x.c1 < t.c1 || x.c2 > t.c2 || x.r1 < first || x.r2 > last) continue
+      if (at === first && x.r1 === first) return [x.r1, x.r2 + count]
+      if (at === last + 1 && x.r2 === last) return [x.r1, x.r2 + count]
+    }
+    return undefined
+  }
   // a deleted column: references to it alone, or to an end of a span, are lost
   const gone = new Set(tables.filter((t) => plan.get(t.name) === null).map((t) => tableKey(t.name)))
   const deletedCols = axis === 'c' && n < 0 ? new Map(tables.map((t) => [tableKey(t.name), new Set(t.cols.filter((_, i) => t.c1 + i >= at && t.c1 + i <= last).map(tableKey))])) : null
@@ -154,5 +171,20 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
     sheets[s] = out
     return { ...b, sheets }
   }
-  return { before, after }
+  return { before, after, ...(growing.length ? { edge } : {}) }
+}
+
+/**
+ * The columns of a table whose every data row the deleted rows `at` … `at + count - 1` take, its header row left: Excel
+ * keeps the first data row, cleared, and deletes the rows after it (the set `tables/ops`, del-all-data).
+ */
+export function emptiedTable(book: BookInput, sheet: string, at: number, count: number): { c1: number; c2: number } | null {
+  const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
+  for (const t of tablesOf(book).list) {
+    if (t.s !== s || !t.headers) continue
+    const first = t.r1 + 1
+    const last = t.r2 - (t.totals ? 1 : 0)
+    if (at === first && at + count - 1 >= last) return { c1: t.c1, c2: t.c2 }
+  }
+  return null
 }
