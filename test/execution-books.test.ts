@@ -2,7 +2,7 @@
  * The two execution modes against each other (`execution-compare.ts`) on every case book: the coverage
  * measurement, the case sets of `test/excel/cases/`, the probes, the measurement and the sets in ru-RU, the
  * semantics cases, the synthetic book, the seeded books of the structure tests, the spill cases and the spill
- * book with its seeded edits, and a book of every kind of compiled node. Values (cell by cell, without
+ * book with its seeded edits, the table cases before and after their steps, and a book of every kind of compiled node. Values (cell by cell, without
  * tolerance: `Object.is`), issues with their reasons and check codes, volatile cells and hashes are equal.
  */
 import { runInContext } from 'node:vm'
@@ -19,6 +19,8 @@ import { CASES as SEMANTICS, semanticsBook } from './semantics-cases.js'
 import { apply } from './session-edits.js'
 import { spillBook, spillEdits } from './session-spill-edits.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
+import type { TableSet } from '../bench/coverage/tables/cases.js'
+import { engineAnswer } from './tables-cases.js'
 
 const BOOKS: [string, BookInput][] = [
   ['the coverage measurement', excelBook(CASES)],
@@ -36,6 +38,7 @@ const BOOKS: [string, BookInput][] = [
   ['the synthetic book', synthBook({ seed: 1, rows: 3400 }).book],
   ['the spill book', spillBook()],
 ]
+const TABLE_CASES = (await Promise.all(['refs', 'refs-held', 'ops', 'ops-held', 'locale', 'more'].map(async (set) => ((await import(`../bench/coverage/tables/${set}.ts`)) as TableSet).buildTableCases()))).flat()
 const SPILL_CASES = (await Promise.all(['base', 'order', 'held', 'names', 'names-held', 'at', 'at-held', 'legacy', 'legacy-held', 'cse', 'cse-held', 'cube-held'].map(async (set) => ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()))).flat()
 
 /** Every kind of node of the compiler, lifted and not; names, an external function, a cycle, SUBTOTAL over SUBTOTAL. */
@@ -94,6 +97,14 @@ describe('execution modes against each other', () => {
 
   it(`the ${SPILL_CASES.length} books of the spill cases`, () => {
     for (const c of SPILL_CASES) expectSame(byEval(c.book), byClosures(c.book))
+  })
+
+  it(`the ${TABLE_CASES.length} books of the table cases, before and after their steps`, () => {
+    for (const c of TABLE_CASES) {
+      expectSame(byEval(c.book), byClosures(c.book))
+      const after = engineAnswer(c).book
+      expectSame(byEval(after), byClosures(after))
+    }
   })
 
   it('200 seeded edits of the spill book: the books after each one', () => {

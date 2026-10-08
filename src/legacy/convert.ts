@@ -158,6 +158,11 @@ function converter(names: Names) {
       case 'ref3d':
       case 'union':
         return { ast: n, kind: 'range' }
+      // one column of the formula's row, of the header or the totals row is one cell; the rest are ranges
+      case 'table': {
+        const one = n.spec.cols?.length === 1 && n.spec.areas.length === 1 && ['row', 'headers', 'totals'].includes(n.spec.areas[0])
+        return { ast: n, kind: one ? 'one' : 'range' }
+      }
       case 'arr':
         return { ast: n, kind: 'array' }
       case 'name':

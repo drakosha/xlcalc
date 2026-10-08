@@ -1,0 +1,4681 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.3
+ },
+ "cases": [
+  {
+   "id": "ins-other-header",
+   "about": "a row inserted at another table's header row, below this one's end",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "F6": {
+        "value": "a"
+       },
+       "G6": {
+        "value": "b"
+       },
+       "F7": {
+        "value": 1
+       },
+       "G7": {
+        "value": 2
+       },
+       "F8": {
+        "value": 3
+       },
+       "G8": {
+        "value": 4
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       },
+       {
+        "name": "Side",
+        "range": "F6:G8",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "insertRows",
+      "sheet": "S",
+      "row": 6
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "ins-past-other",
+   "about": "a row inserted into a table past the end of a table beside it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "F1": {
+        "value": "a"
+       },
+       "G1": {
+        "value": "b"
+       },
+       "F2": {
+        "value": 1
+       },
+       "G2": {
+        "value": 2
+       },
+       "F3": {
+        "value": 3
+       },
+       "G3": {
+        "value": 4
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       },
+       {
+        "name": "Side",
+        "range": "F1:G3",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "insertRows",
+      "sheet": "S",
+      "row": 4
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "ins-other-last",
+   "about": "a row inserted at another table's last row, inside both",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "F1": {
+        "value": "a"
+       },
+       "G1": {
+        "value": "b"
+       },
+       "F2": {
+        "value": 1
+       },
+       "G2": {
+        "value": 2
+       },
+       "F3": {
+        "value": 3
+       },
+       "G3": {
+        "value": 4
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       },
+       {
+        "name": "Side",
+        "range": "F1:G3",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "insertRows",
+      "sheet": "S",
+      "row": 3
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "del-only-row",
+   "about": "the only data row deleted",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "B1": {
+        "value": "b"
+       },
+       "A2": {
+        "value": 1
+       },
+       "B2": {
+        "formula": "[@a]*2"
+       },
+       "J1": {
+        "formula": "SUM(T[b])"
+       },
+       "J2": {
+        "formula": "ROWS(T)"
+       },
+       "K2": {
+        "value": "outside"
+       }
+      },
+      "tables": [
+       {
+        "name": "T",
+        "range": "A1:B2",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b",
+          "formula": "T[[#This Row],[a]]*2"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "deleteRows",
+      "sheet": "S",
+      "row": 2
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K4"
+    }
+   ]
+  },
+  {
+   "id": "del-data-totals-all",
+   "about": "every data row and the totals row deleted",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "B6": {
+        "formula": "SUBTOTAL(109,Sales[Qty])"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D6",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty",
+          "totals": {
+           "function": "sum"
+          }
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ],
+        "totals": true
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "deleteRows",
+      "sheet": "S",
+      "row": 2,
+      "count": 5
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "del-first-rows",
+   "about": "the first two data rows deleted, a range over the data shrinks",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "deleteRows",
+      "sheet": "S",
+      "row": 2,
+      "count": 2
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "insc-before-last",
+   "about": "a column inserted before the last one: A1 references beside it as usual",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "insertColumns",
+      "sheet": "S",
+      "column": "D"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "delc-middle-span",
+   "about": "a column inside a span of columns deleted: the span stays",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "deleteColumns",
+      "sheet": "S",
+      "column": "B"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "copy-header",
+   "about": "a copy pasted over a table's header cell",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "copyRange",
+      "from": {
+       "sheet": "S",
+       "range": "J1"
+      },
+      "to": {
+       "sheet": "S",
+       "range": "B1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "cut-header",
+   "about": "part of a table's header row cut and pasted elsewhere",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "moveRange",
+      "from": {
+       "sheet": "S",
+       "range": "A1:B1"
+      },
+      "to": {
+       "sheet": "S",
+       "cell": "F1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "copy-in-table",
+   "about": "a calculated cell copied down inside its table",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "copyRange",
+      "from": {
+       "sheet": "S",
+       "range": "D2"
+      },
+      "to": {
+       "sheet": "S",
+       "range": "D3:D5"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "move-to-table",
+   "about": "a calculated cell cut into another table's data",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "F1": {
+        "value": "a"
+       },
+       "G1": {
+        "value": "b"
+       },
+       "F2": {
+        "value": 1
+       },
+       "G2": {
+        "value": 2
+       },
+       "F3": {
+        "value": 3
+       },
+       "G3": {
+        "value": 4
+       },
+       "F4": {
+        "value": 5
+       },
+       "G4": {
+        "value": 6
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       },
+       {
+        "name": "Side",
+        "range": "F1:G4",
+        "columns": [
+         {
+          "name": "a"
+         },
+         {
+          "name": "b"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "moveRange",
+      "from": {
+       "sheet": "S",
+       "range": "D3"
+      },
+      "to": {
+       "sheet": "S",
+       "cell": "G3"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "rename-cell",
+   "about": "a table renamed to a cell address: Excel refuses",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "AB12"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "rename-name",
+   "about": "a table renamed to a defined name: Excel refuses",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       },
+       "J7": {
+        "formula": "SUM(rate)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "names": [
+     {
+      "name": "rate",
+      "ref": "'S'!$C$2"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "Rate"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "head-bool",
+   "about": "TRUE typed into a header cell (Excel reads it as the boolean)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "B1",
+      "value": "TRUE"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "head-decimal",
+   "about": "a decimal typed into a header cell",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": 1.5
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "head-dup-three",
+   "about": "a name typed that two columns to its right have, one with a number",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Qty2"
+       },
+       "A2": {
+        "value": "a"
+       },
+       "B2": {
+        "value": 1
+       },
+       "C2": {
+        "value": 2
+       },
+       "A3": {
+        "value": "b"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 4
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty2])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[Qty])"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:C3",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Qty2"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "A1",
+      "value": "Qty"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    }
+   ]
+  },
+  {
+   "id": "convert-names",
+   "about": "a table converted: names over it keep their values",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "SUM(Sales[[Region]:[Price]])"
+       },
+       "J3": {
+        "formula": "ROWS(Sales[#All])"
+       },
+       "J4": {
+        "formula": "Sales[@Price]"
+       },
+       "J5": {
+        "formula": "SUM(B2:C5)"
+       },
+       "J6": {
+        "formula": "SUM(A1:D5)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Other",
+      "cells": {
+       "A1": {
+        "formula": "SUM(nt)"
+       },
+       "A3": {
+        "formula": "nr"
+       },
+       "A4": {
+        "formula": "nr*2"
+       },
+       "B2": {
+        "formula": "ROWS(nt)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nt",
+      "ref": "Sales"
+     },
+     {
+      "name": "nr",
+      "ref": "Sales[[#This Row],[Price]]"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "convertTable",
+      "table": "Sales"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:N12"
+    },
+    {
+     "sheet": "Other",
+     "range": "A1:B4"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "ins-other-header": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!F7": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!G7": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!J7": {
+     "t": "n",
+     "v": 381
+    },
+    "S!F8": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G8": {
+     "t": "n",
+     "v": 2
+    },
+    "S!F9": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G9": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J7": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    },
+    {
+     "sheet": "S",
+     "name": "Side",
+     "range": "F7:G9",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "a",
+      "b"
+     ]
+    }
+   ]
+  },
+  "ins-past-other": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!F1": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!G1": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 0
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A6": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B6": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C6": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D6": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J7": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=Sales[@Price]",
+    "S!D6": "=[@Qty]*[@Price]",
+    "S!J6": "=SUM(B2:C6)",
+    "S!J7": "=SUM(A1:D6)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D6",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    },
+    {
+     "sheet": "S",
+     "name": "Side",
+     "range": "F1:G3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "a",
+      "b"
+     ]
+    }
+   ]
+  },
+  "ins-other-last": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!F1": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!G1": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    },
+    {
+     "sheet": "S",
+     "name": "Side",
+     "range": "F1:G3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "a",
+      "b"
+     ]
+    }
+   ],
+   "refused": {
+    "0": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "del-only-row": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 0
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!K2": {
+     "t": "s",
+     "v": "outside"
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(T[b])",
+    "S!J2": "=ROWS(T)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "T",
+     "range": "A1:B2",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "a",
+      "b"
+     ]
+    }
+   ]
+  },
+  "del-data-totals-all": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 0
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 0
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D2",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "del-first-rows": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 76
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 266
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=Sales[@Price]",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=SUM(B2:C3)",
+    "S!J4": "=SUM(A1:D3)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "insc-before-last": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Column1"
+    },
+    "S!E1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!K1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!K2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!K3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!K4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!E5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!K5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!K6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!K1": "=SUM(Sales[Qty])",
+    "S!E2": "=[@Qty]*[@Price]",
+    "S!K2": "=SUM(Sales[[Region]:[Price]])",
+    "S!E3": "=[@Qty]*[@Price]",
+    "S!K3": "=ROWS(Sales[#All])",
+    "S!E4": "=[@Qty]*[@Price]",
+    "S!K4": "=Sales[@Price]",
+    "S!E5": "=[@Qty]*[@Price]",
+    "S!K5": "=SUM(B2:C5)",
+    "S!K6": "=SUM(A1:E5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:E5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Column1",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "delc-middle-span": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!I1": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 100
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!C3": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!I3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!C4": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!I4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!C5": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 100
+    },
+    "S!I6": {
+     "t": "e",
+     "v": "REF"
+    }
+   },
+   "formulas": {
+    "S!I1": "=SUM(#REF!)",
+    "S!C2": "=#REF!*[@Price]",
+    "S!I2": "=SUM(Sales[[Region]:[Price]])",
+    "S!C3": "=#REF!*[@Price]",
+    "S!I3": "=ROWS(Sales[#All])",
+    "S!C4": "=#REF!*[@Price]",
+    "S!I4": "=Sales[@Price]",
+    "S!C5": "=#REF!*[@Price]",
+    "S!I5": "=SUM(B2:B5)",
+    "S!I6": "=SUM(A1:C5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:C5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "copy-header": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "11"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[11])",
+    "S!D2": "=[@11]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!D3": "=[@11]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@11]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@11]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "11",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "cut-header": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Column1"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Column2"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!F1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!G1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Column2])",
+    "S!D2": "=[@Column2]*[@Price]",
+    "S!J2": "=SUM(Sales[[Column1]:[Price]])",
+    "S!D3": "=[@Column2]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Column2]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@Column2]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Column1",
+      "Column2",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "copy-in-table": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "move-to-table": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!F1": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!G1": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!F4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!G4": {
+     "t": "n",
+     "v": 6
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 321
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!G3": "=Sales[@Qty]*Sales[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    },
+    {
+     "sheet": "S",
+     "name": "Side",
+     "range": "F1:G4",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "a",
+      "b"
+     ]
+    }
+   ]
+  },
+  "rename-cell": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(AB12_[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(AB12_[[Region]:[Price]])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=ROWS(AB12_[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!J4": "=AB12_[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "AB12",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-name": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    },
+    "S!J7": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Rate_1[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Rate_1[[Region]:[Price]])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=ROWS(Rate_1[#All])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!J4": "=Rate_1[@Price]",
+    "S!D5": "=[@Qty]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)",
+    "S!J7": "=SUM(rate)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Rate",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "head-bool": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "TRUE"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[TRUE])",
+    "S!D2": "=[@TRUE]*[@Price]",
+    "S!J2": "=SUM(Sales[[Region]:[Price]])",
+    "S!D3": "=[@TRUE]*[@Price]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@TRUE]*[@Price]",
+    "S!J4": "=Sales[@Price]",
+    "S!D5": "=[@TRUE]*[@Price]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "TRUE",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "head-decimal": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "1.5"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!D2": "=[@Qty]*[@[1.5]]",
+    "S!J2": "=SUM(Sales[[Region]:[1.5]])",
+    "S!D3": "=[@Qty]*[@[1.5]]",
+    "S!J3": "=ROWS(Sales[#All])",
+    "S!D4": "=[@Qty]*[@[1.5]]",
+    "S!J4": "=Sales[@[1.5]]",
+    "S!D5": "=[@Qty]*[@[1.5]]",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "1.5",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "head-dup-three": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty3"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Qty2"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty2])",
+    "S!J2": "=SUM(Sales[Qty3])"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:C3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Qty",
+      "Qty3",
+      "Qty2"
+     ]
+    }
+   ]
+  },
+  "convert-names": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 111
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 111
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 381
+    },
+    "Other!A1": {
+     "t": "n",
+     "v": 381
+    },
+    "Other!B2": {
+     "t": "n",
+     "v": 4
+    },
+    "Other!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "Other!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "Other!A4": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "Other!B4": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(S!$B$2:$B$5)",
+    "S!D2": "=S!$B2*S!$C2",
+    "S!J2": "=SUM(S!$A$2:$C$5)",
+    "S!D3": "=S!$B3*S!$C3",
+    "S!J3": "=ROWS(S!$A$1:$D$5)",
+    "S!D4": "=S!$B4*S!$C4",
+    "S!J4": "=S!$C4",
+    "S!D5": "=S!$B5*S!$C5",
+    "S!J5": "=SUM(B2:C5)",
+    "S!J6": "=SUM(A1:D5)",
+    "Other!A1": "=SUM(nt)",
+    "Other!B2": "=ROWS(nt)",
+    "Other!A3": "=nr",
+    "Other!A4": "=nr*2"
+   },
+   "tables": []
+  }
+ }
+}

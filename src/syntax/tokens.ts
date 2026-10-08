@@ -1,7 +1,11 @@
-/** The tokenizer: references (sheets, ranges across sheets, spill references, lost ones), numbers, strings, error literals, identifiers (names with a sheet too), operators. */
+/**
+ * The tokenizer: references (sheets, ranges across sheets, spill references, lost ones), structured references to
+ * tables, numbers, strings, error literals, identifiers (names with a sheet too), operators.
+ */
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
+import { readSpec, type TableSpec } from './table.js'
 
 const ERROR_LITERALS: Record<string, ErrorCode> = {
   '#DIV/0!': 'DIV0',
@@ -22,6 +26,8 @@ export type Tok =
   | { t: 'ref'; sheet: string | null; last?: string; ref: RangeRef; at: number }
   /** `sheet`: a name seen from that sheet (`Sheet2!rate`). */
   | { t: 'ident'; v: string; at: number; sheet?: string }
+  /** A structured reference; `table` null without a table name (`[@Qty]`). */
+  | { t: 'table'; table: string | null; spec: TableSpec; at: number }
   | { t: 'fn'; v: string; at: number }
   | { t: 'op'; v: string; at: number }
   | { t: '('; at: number }
@@ -42,6 +48,19 @@ const COL_RANGE = /^(\$?)([A-Za-z]{1,3}):(\$?)([A-Za-z]{1,3})/
 const ROW_RANGE = /^(\$?)([0-9]+):(\$?)([0-9]+)/
 const NUMBER = /^(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?/
 const IDENT_CHAR = /[\p{L}\p{N}_.(]/u
+/** After a bracketed run, what makes it a reference to another workbook (`[1]Sheet1!A1`, `[Book.xlsx]S!A1`, `[1]!name`). */
+const BOOK_SHEET = /^(?:[\p{L}\p{N}_.]+|'(?:[^']|'')+')?!/u
+
+/** The end of the bracketed run that opens at `i`, nested brackets and `'` escapes inside; the text's length when it is not closed. */
+function bracketEnd(src: string, i: number): number {
+  let depth = 0
+  for (let j = i; j < src.length; j++) {
+    if (src[j] === "'") j++
+    else if (src[j] === '[') depth++
+    else if (src[j] === ']' && --depth === 0) return j + 1
+  }
+  return src.length
+}
 
 function rowNo(s: string, at: number): number {
   const n = Number(s)
@@ -134,7 +153,13 @@ export function tokenize(src: string): Tok[] {
       i += lit.length + tail.length
       continue
     }
-    if (ch === '[') bad(i, 'external workbook reference', 'external_ref')
+    if (ch === '[') {
+      if (BOOK_SHEET.test(src.slice(bracketEnd(src, i)))) bad(i, 'external workbook reference', 'external_ref')
+      const { spec, end } = readSpec(src, i, i)
+      out.push({ t: 'table', table: null, spec, at: i })
+      i = end
+      continue
+    }
     if (ch === '(' || ch === ')' || ch === ',' || ch === '{' || ch === '}' || ch === ';') {
       out.push({ t: ch, at: i } as Tok)
       i++
@@ -169,6 +194,14 @@ export function tokenize(src: string): Tok[] {
       // a name as one sheet sees it, not a function
       const nm = last === undefined ? IDENT.exec(after) : null
       if (!nm || after[nm[0].length] === '(') bad(i + sm[0].length, 'reference expected after sheet name')
+      // a table needs no sheet: Excel drops one written before it
+      if (after[nm[0].length] === '[') {
+        const start = i + sm[0].length + nm[0].length
+        const { spec, end } = readSpec(src, start, i)
+        out.push({ t: 'table', table: nm[0], spec, at: i })
+        i = end
+        continue
+      }
       out.push({ t: 'ident', v: nm[0], at: i, sheet: sheet! })
       i += sm[0].length + nm[0].length
       continue
@@ -193,7 +226,12 @@ export function tokenize(src: string): Tok[] {
       let j = i + im[0].length
       while (src[j] === ' ') j++
       if (src[j] === '(') out.push({ t: 'fn', v: im[0].toUpperCase(), at: i })
-      else out.push({ t: 'ident', v: im[0], at: i })
+      else if (src[i + im[0].length] === '[') {
+        const { spec, end } = readSpec(src, i + im[0].length, i)
+        out.push({ t: 'table', table: im[0], spec, at: i })
+        i = end
+        continue
+      } else out.push({ t: 'ident', v: im[0], at: i })
       i += im[0].length
       continue
     }

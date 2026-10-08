@@ -15,6 +15,9 @@ import { moveRange } from './move.js'
 import { shift } from './shift.js'
 import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
+import { tableOp } from '../tables/ops.js'
+import { copyTables, moveTables } from '../tables/moves.js'
+import { rewriteBookTables } from '../tables/rewrite.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -33,6 +36,10 @@ const FIELDS: Record<string, string[]> = {
   deleteSheet: ['sheet'],
   insertSheet: ['name', 'before'],
   moveSheet: ['sheet', 'before'],
+  addTable: ['sheet', 'table'],
+  renameTable: ['table', 'name'],
+  deleteTable: ['table'],
+  convertTable: ['table'],
 }
 
 function fields(o: Record<string, unknown>, path: string, allowed: string[]) {
@@ -128,24 +135,41 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
       const src = rangeOf(from.range, 'op.from.range')
       const toSheet = named(to.sheet, 'op.to.sheet')
       if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
-      if (o.op === 'copyRange') r = copyRows(book, fromSheet, src, toSheet, rangeOf(to.range, 'op.to.range'), o.withMeta === true, values)
-      else {
+      if (o.op === 'copyRange') {
+        const target = rangeOf(to.range, 'op.to.range')
+        r = copyTables(book, fromSheet, src, toSheet, target).after(copyRows(book, fromSheet, src, toSheet, target, o.withMeta === true, values))
+      } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
-        r = moveRange(book, fromSheet, src, toSheet, at.row, at.col)
+        const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
+        if (tables.refuse) r = { ok: false, code: 'table', message: tables.refuse }
+        else {
+          const m = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
+          r = m.ok ? { ...m, book: tables.after(m.book) } : m
+        }
       }
       break
     }
     case 'renameSheet':
       r = renameSheet(book, named(o.sheet, 'op.sheet'), checkString(o.name, 'op.name'))
       break
-    case 'deleteSheet':
-      r = deleteSheet(book, named(o.sheet, 'op.sheet'))
+    case 'deleteSheet': {
+      // references to the sheet's tables are lost with it
+      const sheet = named(o.sheet, 'op.sheet')
+      const gone = book.sheets.findIndex((s) => s.name === sheet)
+      r = deleteSheet(book.sheets.length > 1 ? rewriteBookTables(book, (t) => (t.s === gone ? 'lost' : undefined)) : book, sheet)
       break
+    }
     case 'insertSheet':
       r = insertSheet(book, checkString(o.name, 'op.name'), o.before === undefined ? undefined : named(o.before, 'op.before'))
       break
     case 'moveSheet':
       r = moveSheet(book, named(o.sheet, 'op.sheet'), o.before === undefined ? undefined : named(o.before, 'op.before'))
+      break
+    case 'addTable':
+    case 'renameTable':
+    case 'deleteTable':
+    case 'convertTable':
+      r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>)
       break
   }
   return r

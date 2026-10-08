@@ -12,6 +12,8 @@ In ru-RU on the Mac the list separator is `;`, the decimal separator `,`, and ar
 
 `toInvariant` also accepts English function names, TRUE, FALSE and error texts inside Russian text. Messages of `validateLocalFormula` are in English, with positions in the typed text.
 
+Structured references translate too: the specifiers by the locale's `tableItems` (in ru-RU `#Все`, `#Данные`, `#Заголовки`, `#Итоги` and `#Эта строка`, which Excel shows as `@`) and the separator between their items (`Sales[[#Заголовки];[Qty]]`). `toLocal` shows them as Excel does, and given the table of the formula's cell drops its name where Excel drops it ([Tables](tables.md)).
+
 ### Where the ru-RU names come from
 
 The Russian names were read from Excel 16.113 for Mac with the Russian interface. `bench/locale/snapshot.ts` wrote 6,381 formulas to books and read each back both as `formula` and as `formula local`, together with Excel's international settings (`test/excel/locale/ru-RU.json`). `bench/locale/derive.ts` pairs the function calls of each English formula with those of its Russian text, and `bench/locale/generate.ts` writes `src/locale/ru-RU.ts`.

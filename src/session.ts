@@ -17,6 +17,8 @@ import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
+import { headerEdits } from './tables/headers.js'
+import { checkTables } from './tables/check.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
@@ -106,6 +108,21 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       checkEdits(edits, sheetIndex(s), styleCount(s))
       checkArrayEdits(s, edits)
+      // a table's header cell typed over renames its column and the references to it: the book is built again
+      const renamed = headerEdits(s.input, edits, (v) => String(s.ctx.rules.toText(v)))
+      if (renamed) {
+        const at = clock
+        if (live) tick(s)
+        try {
+          const next = yield* build(renamed)
+          const keys = movedChanges(s, next, (ref) => ref, display ? [cellLooks(s), cellLooks(next)] : undefined)
+          state = next
+          return changes(next, keys)
+        } catch (e) {
+          untick(s, at)
+          throw e
+        }
+      }
       const before = display ? snapshot(s, editedCells(s, edits)) : null
       // the inputs the edits replace, to put back if the call stops
       const was = new Map<string, [Record<string, CellInput>, string, CellInput | undefined]>()
@@ -134,6 +151,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setNames(names: NameInput[]) {
       const old = yield* ready()
       checkNames(names, 'names')
+      // tables and names share one namespace
+      checkTables({ ...old.input, names }, 'book')
       const at = clock
       if (live) tick(old)
       try {

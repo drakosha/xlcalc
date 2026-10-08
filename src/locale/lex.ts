@@ -20,7 +20,8 @@ export const INVARIANT: Syntax = { decimal: '.', list: ',', arrayColumn: ',', ar
 /** Error literals of Excel, invariant spelling. */
 export const ERROR_LITERALS = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#GETTING_DATA', '#SPILL!', '#CALC!', '#FIELD!', '#BLOCKED!', '#CONNECT!', '#BUSY!', '#UNKNOWN!', '#PYTHON!']
 
-export type PieceKind = 'num' | 'fn' | 'word' | 'err' | 'list' | 'col' | 'row' | 'raw'
+/** `tbl`: the brackets of a structured reference (`[[#Data],[Qty]]`), whose specifiers and separators a locale changes. */
+export type PieceKind = 'num' | 'fn' | 'word' | 'err' | 'list' | 'col' | 'row' | 'raw' | 'tbl'
 
 export interface Piece {
   k: PieceKind
@@ -43,6 +44,51 @@ const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /** The number rule of a syntax: `1.5`, `.5`, `5.`, `1.5E-07` with its decimal separator. */
 export const numberRule = (syn: Syntax) => new RegExp(`(?:[0-9]+(?:${escape(syn.decimal)}[0-9]*)?|${escape(syn.decimal)}[0-9]+)(?:[eE][+-]?[0-9]+)?`, 'y')
+
+/** After a bracketed run, what makes it a reference to another workbook (`[1]Sheet1!A1`, `[1]!name`). */
+const BOOK_SHEET = /^(?:[\p{L}\p{N}_.]+|'(?:[^']|'')+')?!/u
+
+/** The end of the bracketed run that opens at `i`, nested brackets and `'` escapes inside; the text's length when it is not closed. */
+function bracketEnd(src: string, i: number): number {
+  let depth = 0
+  for (let j = i; j < src.length; j++) {
+    if (src[j] === "'") j++
+    else if (src[j] === '[') depth++
+    else if (src[j] === ']' && --depth === 0) return j + 1
+  }
+  return src.length
+}
+
+/**
+ * A structured reference's brackets with its specifiers in other words (`#Data` as `#Данные`, `words` mapping upper-case
+ * words of one side to the other's) and its items' separator `from` as `to`; null when the brackets do not close.
+ */
+export function tableText(run: string, words: ReadonlyMap<string, string>, from: string, to: string): string {
+  let out = ''
+  let depth = 0
+  for (let j = 0; j < run.length; j++) {
+    const ch = run[j]
+    if (ch === "'") {
+      out += run.slice(j, j + 2)
+      j++
+      continue
+    }
+    if (ch === '[') depth++
+    else if (ch === ']') depth--
+    else if (ch === from && depth === 1) {
+      out += to
+      continue
+    } else if (ch === '#' && run[j - 1] === '[') {
+      const end = run.indexOf(']', j)
+      const w = run.slice(j, end < 0 ? run.length : end)
+      out += words.get(w.toLocaleUpperCase('ru-RU')) ?? w
+      j += w.length - 1
+      continue
+    }
+    out += ch
+  }
+  return out
+}
 
 /** The end of a quoted run (`"…"` or `'…'`, the quote doubled inside), or -1 if it is not closed. */
 function closing(src: string, i: number, q: string): number {
@@ -82,6 +128,12 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
         push('err', e.length)
         continue
       }
+    }
+    // the brackets of a structured reference; a reference to another workbook (`[1]Sheet!A1`) is copied as it is
+    if (ch === '[' && depth === 0) {
+      const end = bracketEnd(src, i)
+      push(BOOK_SHEET.test(src.slice(end)) ? 'raw' : 'tbl', end - i)
+      continue
     }
     if (ch === '{') depth++
     if (ch === '}' && depth > 0) {

@@ -9,6 +9,7 @@ import type { BookInput, CellInput } from '../../../src/contract.js'
 import { synthBook } from '../../../src/synth.js'
 import type { SpillSet } from '../spill/cases.js'
 import type { StructSet } from '../struct/cases.js'
+import type { TableSet } from '../tables/cases.js'
 
 /** The clock the round trip computes its books with. */
 export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
@@ -26,6 +27,7 @@ export interface RoundTrip {
 /** The sets of the structure and spill steps whose books the round trip takes. */
 const STRUCT_SETS = ['arrays', 'cube', 'edge', 'move', 'moves', 'rows', 'sheets', 'spill', 'spill-more', 'styles']
 const SPILL_SETS = ['at', 'base', 'cse', 'held', 'let', 'names', 'order']
+const TABLE_SETS = ['refs', 'refs-held', 'ops', 'ops-held']
 
 const v = (value: CellInput['value']): CellInput => ({ value })
 const f = (formula: string): CellInput => ({ formula })
@@ -147,6 +149,7 @@ async function setBooks(): Promise<RoundTrip[]> {
   for (const name of SPILL_SETS)
     for (const c of ((await import(`../spill/${name}.ts`)) as SpillSet).buildSpillCases())
       out.push({ id: `spill-${name}-${c.id}`, what: c.about, book: c.book, ...(c.volatile ? { volatile: true as const } : {}) })
+  for (const name of TABLE_SETS) for (const c of ((await import(`../tables/${name}.ts`)) as TableSet).buildTableCases()) out.push({ id: `tables-${name}-${c.id}`, what: c.about, book: c.book })
   const seen = new Set<string>()
   // a whole column spilled: Excel saves its million cells, 5.6 MB a file
   const huge = new Set(['spill-base-col-free', 'spill-base-col-format'])

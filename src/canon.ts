@@ -87,7 +87,7 @@ function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis
 
 /**
  * Input hash: sheets by name, cells by address, names by (scope, name). Columns, rows, merged areas (in
- * order), the filter mode, the style table, a locale other than en-US, the 1904 date system and iterative
+ * order), the filter mode, tables (in order), the style table, a locale other than en-US, the 1904 date system and iterative
  * calculation come after their sheet and the names when there are any, so a book without them hashes as before.
  */
 export function inputHash(book: BookInput): string {
@@ -98,6 +98,7 @@ export function inputHash(book: BookInput): string {
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
     if (s.filtered) h.update('F\n')
+    for (const t of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
   }
   const names = [...(book.names ?? [])].sort((a, b) => byText(`${a.scope ?? ''}\u0000${a.name}`, `${b.scope ?? ''}\u0000${b.name}`))
   for (const n of names) h.update(`N ${stableJson([n.scope ?? null, n.name, n.ref])}\n`)

@@ -7,10 +7,15 @@
 import type { FunctionSpec } from '../args.js'
 import type { NameDef } from '../exec/walk.js'
 import { FUNCTIONS } from '../functions.js'
+import type { ErrorCode } from '../contract.js'
+import type { Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 
 /** A name's definition as the names of sheet `scope` show it (`exec/walk.ts`). */
 export type NameRef = (n: Extract<Ast, { k: 'name' }>, scope: number) => NameDef | undefined
+
+/** A structured reference's rectangle in the formula's row, or its error. */
+export type TableRef = (n: Extract<Ast, { k: 'table' }>) => Rect | ErrorCode
 
 export type Shape = 0 | 1 | 2
 
@@ -41,7 +46,7 @@ const isArea = (r: { kind: string; r1: number; r2: number; c1: number; c2: numbe
  * Shapes of every node of a formula on sheet `scope`; a name is judged by its formula (`nameRef`), which sees the
  * global names, a LET name by its value; `inArea`: the formula is an old-kind array formula.
  */
-export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false): Map<Ast, Shape> {
+export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false, tableRef: TableRef = () => 'REF'): Map<Ast, Shape> {
   const out = new Map<Ast, Shape>()
   // LET's names by slot (a name's formula has its own), the names being expanded
   let bound: Info[] = []
@@ -65,6 +70,10 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
       case 'ref':
         // a spill reference has as many cells as its array spilled into
         return n.ref.spill ? { s: 1, ref: true } : isArea(n.ref) ? { s: 2, ref: true } : { s: 0, ref: false }
+      case 'table': {
+        const x = tableRef(n)
+        return typeof x !== 'string' && (x.r2 > x.r1 || x.c2 > x.c1) ? { s: 2, ref: true } : { s: 0, ref: false }
+      }
       // several areas are one value nowhere (#VALUE!), and a reference where a function takes them
       case 'ref3d':
         return { s: 0, ref: true }
