@@ -26,18 +26,13 @@ const SETS = existsSync(dir)
 /** Cells whose answer differs from Excel's for a reason outside the case's feature: `<set>:<case>` → cell → why. */
 const OUTSIDE = {
   'F!A82': 'COUPDAYS is not in the whitelist (#NAME?)',
-  'F!A86': 'ACCRINT with basis 1 over several coupon periods differs from Excel in both date systems',
-  'F!A91': 'XNPV with a date of serial 0 is #NUM! in Excel in both date systems, computed here',
   'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets)',
 }
-const HOLIDAY = { 'F!A10': 'WORKDAY reads date text in a one-cell reference among its holidays in Excel, the engine takes text in a reference there as #VALUE!' }
 /** Excel starts a cycle from the value the file stores for its cells; a book stores none and the engine starts from 0. */
 const START = 'Excel starts a cycle from what the file stores: 50 here, empty text (#VALUE! in arithmetic) where it stores no value; the engine starts from 0'
 const KNOWN: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'date1904:d1900': OUTSIDE,
   'date1904:d1904': OUTSIDE,
-  'date1904-text:t1900': HOLIDAY,
-  'date1904-text:t1904': HOLIDAY,
   'iterate:counter-blank': { 'S!A1': START, 'S!B1': START },
   'iterate:counter-cached': { 'S!A1': START, 'S!B1': START },
 }

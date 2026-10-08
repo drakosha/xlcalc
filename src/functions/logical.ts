@@ -5,7 +5,7 @@
  */
 import { directError, eachValue, type Arg, type Cx, type FnDef, type Segment } from '../args.js'
 import type { Rules } from '../locale/rules.js'
-import { E, isErr, sameType, type CErr, type V } from '../values.js'
+import { Areas, E, isErr, sameType, type CErr, type V } from '../values.js'
 import { NEWER_MAX_ARGS } from './common.js'
 
 /**
@@ -96,7 +96,9 @@ export const functions: Record<string, FnDef> = {
       const x = expr() ?? 0
       if (isErr(x)) return x
       for (let i = 0; i + 1 < rest.length; i += 2) {
-        const v = cx.scalar(rest[i]()) ?? 0
+        // a reference across sheets compared is #REF!, as in Excel
+        const c = rest[i]()
+        const v = c instanceof Areas && c.cube ? E.REF : (cx.scalar(c) ?? 0)
         if (isErr(v)) return v
         if (sameType(x, v) && cx.rules.compare(x, v) === 0) return rest[i + 1]()
       }

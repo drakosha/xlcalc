@@ -1,6 +1,7 @@
 /**
  * The tokenizer: references (sheets, ranges across sheets, spill references, lost ones), structured references to
- * tables, numbers, strings, error literals, identifiers (names with a sheet too), operators.
+ * tables, numbers, strings, error literals, identifiers (names with a sheet too), operators. Whitespace between two
+ * references (or names, calls, parentheses) is the intersection operator, `' '`; elsewhere it is skipped.
  */
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
@@ -14,7 +15,7 @@ const ERROR_LITERALS: Record<string, ErrorCode> = {
   '#NUM!': 'NUM',
   '#REF!': 'REF',
   '#VALUE!': 'VALUE',
-  '#NULL!': 'ERROR',
+  '#NULL!': 'NULL',
   '#SPILL!': 'SPILL',
 }
 
@@ -43,6 +44,8 @@ const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
 const UNQUOTED_SHEET = /^([\p{L}_][\p{L}\p{N}_.]*)!/u
 /** Two sheets, the last quoted or not: Excel saves `Jan:'Mar'!A1` too. */
 const UNQUOTED_SHEETS = /^([\p{L}_][\p{L}\p{N}_.]*):(?:([\p{L}_][\p{L}\p{N}_.]*)|'((?:[^']|'')+)')!/u
+/** A name that reads as a cell (`S1`, `Q4`): Excel does not take it for the first of two sheets, `S1:S3!A1` is `S1:'S3'!A1`. */
+const CELL_NAME = /^([A-Za-z]{1,3})([0-9]+)$/
 const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\$?)([0-9]+))?/
 const COL_RANGE = /^(\$?)([A-Za-z]{1,3}):(\$?)([A-Za-z]{1,3})/
 const ROW_RANGE = /^(\$?)([0-9]+):(\$?)([0-9]+)/
@@ -78,6 +81,8 @@ function colNo(s: string, at: number): number {
 function readRef(rest: string, at: number): { ref: RangeRef; len: number } | null {
   const next = (len: number) => rest[len] ?? ''
   let m = CELL_RANGE.exec(rest)
+  // the second cell of `S1:S3!A1` is a sheet's name, of `A1:E2#` a spill reference: the first is a cell alone, before the range operator
+  if (m && m[6] !== undefined && (next(m[0].length) === '!' || next(m[0].length) === '#')) m = CELL_RANGE.exec(rest.slice(0, rest.indexOf(':')))
   if (m && !IDENT_CHAR.test(next(m[0].length))) {
     const r1 = rowNo(m[4], at)
     const c1 = colNo(m[2], at)
@@ -112,14 +117,33 @@ function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at
   return r.len + 1
 }
 
-const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@']
+const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@', ':']
+
+/** Whether a name reads as a cell within the sheet (`S1`, not `XFE1` or `A0`). */
+function cellName(name: string): boolean {
+  const m = CELL_NAME.exec(name)
+  return !!m && colToIndex(m[1]) < MAX_COLS && Number(m[2]) >= 1 && Number(m[2]) <= MAX_ROWS
+}
+
+/** Tokens that end and begin a reference: whitespace between two of them is the intersection operator. */
+const ENDS = new Set(['ref', 'ident', 'table', ')'])
+const BEGINS = new Set(['ref', 'ident', 'table', 'fn', '('])
 
 export function tokenize(src: string): Tok[] {
   const out: Tok[] = []
+  // where the last run of whitespace began, if it is just before the token being read
+  let space = -1
+  const push = (t: Tok) => {
+    const last = out.at(-1)
+    if (space >= 0 && last && ENDS.has(last.t) && BEGINS.has(t.t)) out.push({ t: 'op', v: ' ', at: space })
+    space = -1
+    out.push(t)
+  }
   let i = 0
   while (i < src.length) {
     const ch = src[i]
     if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') {
+      if (space < 0) space = i
       i++
       continue
     }
@@ -139,7 +163,7 @@ export function tokenize(src: string): Tok[] {
         }
         v += src[j++]
       }
-      out.push({ t: 'str', v, at: i })
+      push({ t: 'str', v, at: i })
       i = j + 1
       continue
     }
@@ -149,19 +173,19 @@ export function tokenize(src: string): Tok[] {
       // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`; a lost spill reference ends in `#`
       let tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : '')) : ''
       if (lit === '#REF!' && src[i + 5 + tail.length] === '#') tail += '#'
-      out.push({ t: 'err', code: ERROR_LITERALS[lit], at: i, ...(tail ? { ref: tail } : {}) })
+      push({ t: 'err', code: ERROR_LITERALS[lit], at: i, ...(tail ? { ref: tail } : {}) })
       i += lit.length + tail.length
       continue
     }
     if (ch === '[') {
       if (BOOK_SHEET.test(src.slice(bracketEnd(src, i)))) bad(i, 'external workbook reference', 'external_ref')
       const { spec, end } = readSpec(src, i, i)
-      out.push({ t: 'table', table: null, spec, at: i })
+      push({ t: 'table', table: null, spec, at: i })
       i = end
       continue
     }
     if (ch === '(' || ch === ')' || ch === ',' || ch === '{' || ch === '}' || ch === ';') {
-      out.push({ t: ch, at: i } as Tok)
+      push({ t: ch, at: i } as Tok)
       i++
       continue
     }
@@ -173,12 +197,12 @@ export function tokenize(src: string): Tok[] {
       sheet = sm[1].replaceAll("''", "'")
       const k = sheet.indexOf(':')
       if (k >= 0) [sheet, last] = [sheet.slice(0, k), sheet.slice(k + 1)]
-    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest))) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
+    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest)) && !cellName(sm[1])) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
     if (sm && last === undefined && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
       // a reference Excel lost on a sheet that is still there: `'S'!#REF!`, `'S'!#REF!#`
       const spill = src[i + sm[0].length + 5] === '#'
-      out.push({ t: 'err', code: 'REF', sheet: sheet!, at: i, ...(spill ? { ref: '#' } : {}) })
+      push({ t: 'err', code: 'REF', sheet: sheet!, at: i, ...(spill ? { ref: '#' } : {}) })
       i += sm[0].length + 5 + (spill ? 1 : 0)
       continue
     }
@@ -186,7 +210,7 @@ export function tokenize(src: string): Tok[] {
       const after = src.slice(i + sm[0].length)
       const r = readRef(after, i)
       if (r) {
-        out.push({ t: 'ref', sheet, ...(last !== undefined ? { last } : {}), ref: r.ref, at: i })
+        push({ t: 'ref', sheet, ...(last !== undefined ? { last } : {}), ref: r.ref, at: i })
         if (last !== undefined && after[r.len] === '#') bad(i, 'a spill reference (#) follows a single cell of one sheet')
         i += sm[0].length + spilled(r, after[r.len], i)
         continue
@@ -198,11 +222,11 @@ export function tokenize(src: string): Tok[] {
       if (after[nm[0].length] === '[') {
         const start = i + sm[0].length + nm[0].length
         const { spec, end } = readSpec(src, start, i)
-        out.push({ t: 'table', table: nm[0], spec, at: i })
+        push({ t: 'table', table: nm[0], spec, at: i })
         i = end
         continue
       }
-      out.push({ t: 'ident', v: nm[0], at: i, sheet: sheet! })
+      push({ t: 'ident', v: nm[0], at: i, sheet: sheet! })
       i += sm[0].length + nm[0].length
       continue
     }
@@ -210,14 +234,14 @@ export function tokenize(src: string): Tok[] {
     if (/[0-9$A-Za-z]/.test(ch)) {
       const r = readRef(rest, i)
       if (r) {
-        out.push({ t: 'ref', sheet: null, ref: r.ref, at: i })
+        push({ t: 'ref', sheet: null, ref: r.ref, at: i })
         i += spilled(r, src[i + r.len], i)
         continue
       }
     }
     const nm = NUMBER.exec(rest)
     if (nm) {
-      out.push({ t: 'num', v: readNumber(nm[0]), at: i })
+      push({ t: 'num', v: readNumber(nm[0]), at: i })
       i += nm[0].length
       continue
     }
@@ -225,19 +249,19 @@ export function tokenize(src: string): Tok[] {
     if (im) {
       let j = i + im[0].length
       while (src[j] === ' ') j++
-      if (src[j] === '(') out.push({ t: 'fn', v: im[0].toUpperCase(), at: i })
+      if (src[j] === '(') push({ t: 'fn', v: im[0].toUpperCase(), at: i })
       else if (src[i + im[0].length] === '[') {
         const { spec, end } = readSpec(src, i + im[0].length, i)
-        out.push({ t: 'table', table: im[0], spec, at: i })
+        push({ t: 'table', table: im[0], spec, at: i })
         i = end
         continue
-      } else out.push({ t: 'ident', v: im[0], at: i })
+      } else push({ t: 'ident', v: im[0], at: i })
       i += im[0].length
       continue
     }
     const op = OPS.find((o) => rest.startsWith(o))
     if (op) {
-      out.push({ t: 'op', v: op, at: i })
+      push({ t: 'op', v: op, at: i })
       i += op.length
       continue
     }

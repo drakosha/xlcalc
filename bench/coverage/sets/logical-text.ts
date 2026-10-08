@@ -5,6 +5,7 @@
  * Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe, SheetCells } from '../probes.js'
+import { xl } from './arrays/common.js'
 
 export const SHEETS: SheetCells = { G: { A1: 'TRUE', A2: 'ИСТИНА', A3: 'FALSE', A4: 'ЛОЖЬ' } }
 
@@ -13,6 +14,6 @@ const ARGS = ['"TRUE"', '"true"', '"FALSE"', '"ИСТИНА"', '"истина"',
 export function buildProbes(): Probe[] {
   const out: Probe[] = []
   for (const fn of ['AND', 'OR', 'XOR'])
-    for (const a of ARGS) out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: `${fn === 'XOR' ? '_xlfn.' : ''}${fn}(${a})` })
+    for (const a of ARGS) out.push({ id: `${fn}#${out.filter((p) => p.fn === fn).length + 1}`, group: fn, fn, formula: xl(`${fn}(${a})`) })
   return out
 }

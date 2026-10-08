@@ -43,6 +43,7 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
     read: (a) => `scalar(${a})`,
     areas: (list) => hoist(`X([${list.map((g) => `R(${g.s},${g.r1},${g.c1},${g.r2},${g.c2})`).join(',')}])`),
     union: (items) => `U(${items.join(',')})`,
+    refOp: (op, a, b) => `RO(${JSON.stringify(op)},${a},${b})`,
     at: (a, r, c) => `I(${a},${r},${c})`,
     let: (count, build) => {
       const first = names
@@ -56,7 +57,7 @@ export function jsBackend(): Backend<string> & { source(root: string): string } 
 
 const key = (name: string) => (/^[A-Z][A-Z0-9_]*$/.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`)
 
-export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,E,R,A,X,M}=rt;'
+export const PRELUDE = '"use strict";const {cell,spill,scalar,add,sub,mul,div,pow,neg,pct,cat,cmp,L1,L2,C,F,FL,LZ,ext,I,U,RO,E,R,A,X,M}=rt;'
 
 /** The functions of a batch of formula sources, by one `new Function`. */
 export function compileSources(rt: Runtime, sources: string[]): (() => Arg)[] {

@@ -4,13 +4,7 @@
  * argument. Computed as dynamic array formulas (Excel 365). Answers: `test/excel/cases/matheng.json`.
  */
 import type { Probe } from '../probes.js'
-
-/** Functions newer than Excel 2007: stored with the `_xlfn.` prefix. */
-const XLFN = new Set([
-  'ACOT', 'ARABIC', 'BASE', 'BITAND', 'BITLSHIFT', 'BITOR', 'BITRSHIFT', 'BITXOR', 'COMBINA', 'COT', 'COTH', 'CSC', 'DECIMAL',
-  'ERF.PRECISE', 'ERFC.PRECISE', 'IMCOSH', 'IMCOT', 'IMCSC', 'IMCSCH', 'IMSEC', 'IMSECH', 'IMSINH', 'IMTAN', 'ISO.CEILING', 'PERCENTOF',
-  'SEC',
-])
+import { XLFN } from '../signatures.js'
 
 /** Data of the set's own sheet M: ranges with mixed content, matrices. */
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {
@@ -84,7 +78,7 @@ export function buildProbes(): Probe[] {
   const add = (fn: string, args: string) => {
     const k = (count.get(fn) ?? 0) + 1
     count.set(fn, k)
-    out.push({ id: `${fn}#${k}`, group: fn, fn, formula: `${XLFN.has(fn) ? '_xlfn.' : ''}${fn}(${args})` })
+    out.push({ id: `${fn}#${k}`, group: fn, fn, formula: `${XLFN[fn] ?? fn}(${args})` })
   }
   const each = (fn: string, args: string[]) => args.forEach((a) => add(fn, a))
 

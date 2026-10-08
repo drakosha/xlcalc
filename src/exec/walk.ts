@@ -11,7 +11,7 @@ import { FUNCTIONS } from '../functions.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
 import type { ErrorCode } from '../contract.js'
-import { canonical, type Ast, type BinOp, type RangeRef } from '../syntax.js'
+import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
@@ -63,6 +63,8 @@ export interface Backend<T> {
   areas(list: Rng[]): T
   /** A union of references (#VALUE! unless they are references on one sheet). */
   union(items: T[]): T
+  /** The intersection (a space) or the range operator (`:`) of two references. */
+  refOp(op: RefOp, a: T, b: T): T
   /** `@x` at row `r`, column `c`: a reference's cell there, an array's top-left value. */
   at(a: T, r: number, c: number): T
   /** An external function, by the canonical text of its call. */
@@ -87,9 +89,22 @@ export function once<A>(f: () => A): () => A {
   }
 }
 
+/**
+ * A range operator with a spill reference among its ends (`A1:E2#`): what it reads reaches as far as the array
+ * spills, which the graph knows from the area the array claims (`graph.ts`).
+ */
+export interface Span {
+  /** The rectangles around its other ends, by sheet (the anchors included). */
+  boxes: Rng[]
+  /** The cells of its spill references. */
+  anchors: Rng[]
+}
+
 /** What a formula reads and how it behaves, the same in both modes. */
 export interface FormulaInfo {
   refs: Rng[]
+  /** Range operators that reach a spilled array: read as far as the array spills. */
+  spans?: Span[]
   /** Calls a volatile function directly. */
   volatile: boolean
   /** Calls SUBTOTAL or AGGREGATE: those two skip the cell. */
@@ -120,6 +135,16 @@ function relative(ref: RangeRef): Area | null {
   return a
 }
 
+/** The rectangle around a sheet's rectangles, by sheet. */
+export function bySheet(list: readonly Rng[]): Map<number, Rng> {
+  const out = new Map<number, Rng>()
+  for (const g of list) {
+    const h = out.get(g.s)
+    out.set(g.s, h ? new Rng(g.s, Math.min(g.r1, h.r1), Math.min(g.c1, h.c1), Math.max(g.r2, h.r2), Math.max(g.c2, h.c2)) : g)
+  }
+  return out
+}
+
 /** Walks a formula at sheet `s`, row `r`, column `c`: its information and the code of its root in `b`. */
 export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: number, b: Backend<T>): FormulaInfo & { code: T } {
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
@@ -128,8 +153,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const table = (n: Extract<Ast, { k: 'table' }>) => ctx.table?.(n, r) ?? 'REF'
   const shape = shapes(ast, s, resolve, !!ctx.area, table)
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
-  // the code of a use of each LET name, by slot (a name's formula has its own LET names)
+  // the code of a use of each LET name, and its value, by slot (a name's formula has its own LET names)
   let uses: T[] = []
+  let bound: Ast[] = []
   // whose names the walk sees, and the names it is inside (their references without `$` move by the cell from A1)
   let scope = s
   const inside = new Set<NameDef>()
@@ -140,6 +166,68 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     const [r1, r2] = [moved(a.r.lo, r, MAX_ROWS), moved(a.r.hi, r, MAX_ROWS)]
     const [c1, c2] = [moved(a.c.lo, c, MAX_COLS), moved(a.c.hi, c, MAX_COLS)]
     return { r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) }
+  }
+  /**
+   * The rectangles a node can answer as a reference, for the cells between the ends of the range operator: the
+   * references a call can answer (INDEX's, TAKE's and DROP's array, XLOOKUP's return array and `if_not_found`, the
+   * passed arguments of CHOOSE, IF, IFS and SWITCH), not those it reads; a spill reference's cell goes to `anchors` too.
+   */
+  const reach = (n: Ast, out: Rng[], anchors: Rng[]): void => {
+    switch (n.k) {
+      case 'ref': {
+        const x = rect(n)
+        const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
+        out.push(g)
+        if (n.ref.spill) anchors.push(g)
+        return
+      }
+      case 'table': {
+        const x = table(n)
+        if (typeof x !== 'string') out.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
+        return
+      }
+      case 'paren':
+      case 'at':
+        return reach(n.a, out, anchors)
+      case 'union':
+        return n.items.forEach((x) => reach(x, out, anchors))
+      case 'bin':
+        // an intersection lies in its left operand, a range around both
+        if (n.op === ' ') reach(n.a, out, anchors)
+        else if (n.op === ':') [n.a, n.b].forEach((x) => reach(x, out, anchors))
+        return
+      case 'name': {
+        const d = resolve(n, scope)
+        if (!d || inside.has(d)) return
+        const outer: [Ast[], number] = [bound, scope]
+        ;[bound, scope] = [[], -1]
+        inside.add(d)
+        reach(d.ast, out, anchors)
+        inside.delete(d)
+        ;[bound, scope] = outer
+        return
+      }
+      case 'let':
+        return reach(n.body ?? n.binds[n.binds.length - 1].value, out, anchors)
+      case 'local':
+        return reach(bound[n.slot], out, anchors)
+      case 'fn': {
+        const spec = FUNCTIONS[n.name]
+        const answers = (i: number) =>
+          n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' ? i === 0 : n.name === 'XLOOKUP' ? i >= 2 && i <= 3 : !!spec?.refs && spec.mode(i) === 'pass'
+        n.args.forEach((a, i) => answers(i) && reach(a, out, anchors))
+        return
+      }
+    }
+  }
+  /** The range operator's dependencies: on each sheet, the rectangle around what its operands can answer; a spill reached, a span. */
+  const around = (n: Ast) => {
+    const reached: Rng[] = []
+    const anchors: Rng[] = []
+    reach(n, reached, anchors)
+    const boxes = [...bySheet(reached).values()]
+    info.refs.push(...boxes)
+    if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
@@ -189,12 +277,12 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (!d) return b.value(E.NAME)
         // a name that uses itself, through other names or not
         if (inside.has(d)) return b.value(E.CYCLE)
-        const outer: [T[], number] = [uses, scope]
-        ;[uses, scope] = [[], -1]
+        const outer: [T[], Ast[], number] = [uses, bound, scope]
+        ;[uses, bound, scope] = [[], [], -1]
         inside.add(d)
         const code = go(d.ast, rangeOk)
         inside.delete(d)
-        ;[uses, scope] = outer
+        ;[uses, bound, scope] = outer
         return code
       }
       case 'at':
@@ -213,6 +301,11 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'pct':
         return b.unary('pct', go(n.a), many(n.a))
       case 'bin': {
+        if (isRefOp(n.op)) {
+          // the cells between the range's ends are read too, not only the operands'
+          if (n.op === ':') around(n)
+          return value(b.refOp(n.op, go(n.a, true), go(n.b, true)), n, rangeOk)
+        }
         const x = go(n.a)
         return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b))
       }
@@ -244,7 +337,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'let':
         // the values are kept as references; the result is read where one value goes
         return b.let(n.binds.length, (local) => {
-          n.binds.forEach((x, i) => (uses[x.slot] = local(i)))
+          n.binds.forEach((x, i) => {
+            uses[x.slot] = local(i)
+            bound[x.slot] = x.value
+          })
           const values = n.binds.map((x) => go(x.value, true))
           return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
         })

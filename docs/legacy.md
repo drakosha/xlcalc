@@ -72,13 +72,12 @@ The other cells of the area hold no input. A session refuses edits that change s
 - The coverage measurement computed with formulas of the old kind: every whitelisted case gives Excel's value at its row.
 - `spill/legacy` and `spill/legacy-held`: intersection by row and column, on other sheets and through names. The 13 cells of `legacy-held` were predicted before Excel computed them, and all came out as predicted.
 - `spill/cse`, `spill/cse-held` and `struct/arrays` for array formulas of the old kind. The 25 cells of `cse-held` were predicted before Excel computed them, all as predicted.
-- `xlsx intersect`: 75 formulas of the old kind in a file Excel computed and saved. Read by `readXlsx`, each computes the value Excel stored, but two with `OFFSET`, which is not in the whitelist, and one with the intersection operator.
+- `xlsx intersect`: 75 formulas of the old kind in a file Excel computed and saved. Read by `readXlsx`, each computes the value Excel stored, but two with `OFFSET`, which is not in the whitelist.
 
-`fromLegacy` gives Excel's text for every formula of these sets but one, which uses the intersection operator.
+`fromLegacy` gives Excel's text for every formula of these sets, `@D!B1:B3 D!B2:C2` for the intersection `D!B1:B3 D!B2:C2` among them.
 
 ## Known differences
 
-- The intersection operator (a space between two ranges) is not read.
 - Excel computes an old formula by its old rules, and in a few places the dynamic text it shows computes otherwise: a range where an argument takes one value and Excel shows no `@` (GROWTH's and TREND's last argument, MATCH's type) is an error in the old formula and lifted in the dynamic one. The engine gives the dynamic formula's value.
 - Inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument; the engine lifts them.
 - An error as NETWORKDAYS.INTL's weekend is `#VALUE!` in Excel and `#NUM!` here; XIRR's guess given a range is `#VALUE!` in Excel and lifted here.

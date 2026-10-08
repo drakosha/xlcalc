@@ -4,14 +4,7 @@ import { ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp, need } from '../date/atp.js'
 import { basisFirst, validBasis, validFreq } from '../date/daycount.js'
-import { addMonths, daysInMonth } from '../../dates.js'
 import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, normalDays, periodOf, serialOfYmd, type Ymd } from './coupon.js'
-
-/** The date `months` earlier, the day clamped to the month. */
-function monthsBack(x: Ymd, months: number): Ymd {
-  const t = addMonths(x.y, x.m, -months)
-  return { y: t.y, m: t.m, d: Math.min(x.d, daysInMonth(t.y, t.m)) }
-}
 
 /** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
 function price(settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis: number): number {
@@ -71,27 +64,32 @@ const FREQ_READ = { check: { 4: need(validFreq) } }
 const PRICE_READ = { first: [6], check: { 6: need(validBasis), 5: need(validFreq) } }
 
 export const functions: Record<string, FnDef> = {
-  // quasi-coupon periods anchored at first_interest, whole ones counting 1; calc_method FALSE counts the days in one piece
+  // quasi-coupon periods anchored at first_interest, whole ones before the settlement counting 1; calc_method FALSE counts the days in one piece
   ACCRINT: atp('e e e x x j j? b?', (issue: number, first: number, settlement: number, rate: number, par = 1000, freq: number, basis = 0, calc = true) => {
-    if (rate <= 0 || par <= 0 || !validBasis(basis) || issue >= settlement) return E.NUM
+    if (rate <= 0 || par <= 0 || !validBasis(basis) || issue >= settlement || issue < 1 || first < 1) return E.NUM
     const anchor = ymd(first)
     const start = ymd(issue)
     const end = ymd(settlement)
     const normal = normalDays(basis, freq)
-    // the odd first period's length counts its days on bases 1 and 4; later ones on basis 1 only, back from their end
+    // a period before first_interest counts its own days on bases 1 and 4; on basis 1 later ones take the length of the one ending at first_interest
+    const before = daysBetween(couponDate(anchor, -1, freq), anchor, 1)
     const nl = (k: number, q0: Ymd, q1: Ymd) => {
-      if (basis === 1) return k < 0 ? daysBetween(q0, q1, 1) : serialOfYmd(q1) - serialOfYmd(monthsBack(q1, 12 / freq))
+      if (basis === 1) return k < 0 ? daysBetween(q0, q1, 1) : before
       return basis === 4 && k < 0 && cmp(end, q1) >= 0 ? daysBetween(q0, q1, 4) : normal
     }
-    if (!calc && settlement > first) return (par * rate * daysBetween(start, end, basis)) / freq / (basis === 1 ? nl(-1, couponDate(anchor, -1, freq), anchor) : normal)
+    if (!calc && settlement > first) return (par * rate * daysBetween(start, end, basis)) / freq / (basis === 1 ? before : normal)
+    const k0 = periodOf(anchor, start, freq)
+    // the issue's period beginning before 1900 leaves no periods to count (`ACCRINT(1,…)` is 0)
+    if (serialOfYmd(couponDate(anchor, k0, freq)) < 0) return 0
     let sum = 0
-    for (let k = periodOf(anchor, start, freq); ; k++) {
+    for (let k = k0; ; k++) {
       const q0 = couponDate(anchor, k, freq)
       if (cmp(q0, end) >= 0) break
       const q1 = couponDate(anchor, k + 1, freq)
       const lo = cmp(start, q0) > 0 ? start : q0
       const hi = cmp(end, q1) < 0 ? end : q1
-      sum += lo === q0 && hi === q1 ? 1 : daysBetween(lo, hi, basis) / nl(k, q0, q1)
+      // the period that ends on the settlement is counted by its days, as a part of one
+      sum += lo === q0 && hi === q1 && cmp(end, q1) > 0 ? 1 : daysBetween(lo, hi, basis) / nl(k, q0, q1)
     }
     return (par * rate * sum) / freq
   }, { check: { 5: need(validFreq) } }),
@@ -101,8 +99,9 @@ export const functions: Record<string, FnDef> = {
   MDURATION: atp('e e x x j j?', (settlement: number, maturity: number, rate: number, yld: number, freq: number, basis = 0) =>
     badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 ? E.NUM : duration(settlement, maturity, rate, yld, freq, basis) / (1 + yld / freq),
   FREQ_READ),
+  // a previous coupon date before 1900 leaves no coupons, as COUPNUM finds none
   PRICE: atp('e e x x x j j?', (settlement: number, maturity: number, rate: number, yld: number, redemption: number, freq: number, basis = 0) =>
-    badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 || redemption <= 0 ? E.NUM : price(settlement, maturity, rate, yld, redemption, freq, basis),
+    badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 || redemption <= 0 || coupons(settlement, maturity, freq).early ? E.NUM : price(settlement, maturity, rate, yld, redemption, freq, basis),
   PRICE_READ),
   // one coupon left: Excel's closed form; else the yield at which PRICE gives `pr`
   YIELD: atp('e e x x x j j?', (settlement: number, maturity: number, rate: number, pr: number, redemption: number, freq: number, basis = 0) => {

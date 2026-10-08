@@ -18,6 +18,7 @@ export const E: Record<ErrorCode, CErr> = {
   NUM: new CErr('NUM'),
   REF: new CErr('REF'),
   VALUE: new CErr('VALUE'),
+  NULL: new CErr('NULL'),
   CYCLE: new CErr('CYCLE'),
   SPILL: new CErr('SPILL'),
   CALC: new CErr('CALC'),

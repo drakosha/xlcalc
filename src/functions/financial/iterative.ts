@@ -1,7 +1,7 @@
 /** Rates found by iteration (RATE, IRR, XIRR) and the cash-flow functions next to them (MIRR, XNPV), this engine's own. */
-import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
+import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { atp } from '../date/atp.js'
 
 /**
@@ -66,9 +66,15 @@ const signs = (xs: number[]) => xs.some((x) => x > 0) && xs.some((x) => x < 0)
 
 /**
  * XNPV: a blank is #VALUE!, text or a boolean #NUM!; XIRR (`lenient`, the book's rules) reads numeric and date
- * text and a blank value as 0, a boolean or other text is #VALUE! anywhere before a blank date counts as #NUM!.
+ * text and a blank value as 0, a boolean or other text is #VALUE! anywhere before a blank date counts as #NUM!. One
+ * value as the values or the dates is read as a number first: a boolean or text that is no number is #VALUE!, before
+ * the sizes are compared (`XIRR(TRUE,A1:A5)`, the set `single-values`).
  */
-function dated(values: Grid, dates: Grid, lenient: Rules | null): [number[], number[]] | CErr {
+function dated(values: Grid, dates: Grid, rules: Rules, lenient: boolean): [number[], number[]] | CErr {
+  for (const g of [values, dates]) {
+    const v = g.rows * g.cols === 1 ? g.v[0] : null
+    if (typeof v === 'boolean' || (typeof v === 'string' && isErr(rules.toNum(v)))) return E.VALUE
+  }
   const n = values.rows * values.cols
   if (n !== dates.rows * dates.cols) return E.NUM
   const vs: number[] = []
@@ -81,8 +87,8 @@ function dated(values: Grid, dates: Grid, lenient: Rules | null): [number[], num
     if (isErr(d)) return d
     if (lenient) {
       if (typeof v === 'boolean' || typeof d === 'boolean') return E.VALUE
-      v = lenient.toNum(v)
-      d = typeof d === 'string' ? (lenient.dateText(d) ?? lenient.toNum(d)) : d
+      v = rules.toNum(v)
+      d = typeof d === 'string' ? (rules.dateText(d) ?? rules.toNum(d)) : d
       if (isErr(v)) return v
       if (isErr(d)) return d
       if (d === null) {
@@ -144,9 +150,19 @@ export const functions: Record<string, FnDef> = {
       return irr(xs, guess) ?? E.NUM
     },
   },
+  // the values' numbers in order, each area of a union; one value given is an array of it, text there no number (`MIRR("x",0.1,0.1)` is #DIV/0!)
   MIRR: {
-    args: 'N n n',
-    fn: (xs: number[], finance: number, reinvest: number) => {
+    args: 'R n n',
+    cx: true,
+    areas: true,
+    fn: (cx: Cx, values: Arg, finance: number, reinvest: number) => {
+      const xs: number[] = []
+      for (const x of values instanceof Areas ? values.list : [values]) {
+        const g = cx.grid(x)
+        const e = g.v.find(isErr)
+        if (e) return e
+        for (const v of g.v) if (typeof v === 'number') xs.push(v)
+      }
       if (reinvest === -1) return E.DIV0
       const n = xs.length
       let pos = 0
@@ -166,20 +182,20 @@ export const functions: Record<string, FnDef> = {
   },
   // Excel's answers lie within its 1e-8 tolerance of the root; from a negative guess it finds no positive rate
   XIRR: atp('G G x?', (cx: Cx, values: Grid, dates: Grid, guess = 0.1) => {
-    const vd = dated(values, dates, cx.rules)
+    const vd = dated(values, dates, cx.rules, true)
     if (isErr(vd)) return vd
     const [vs, ds] = vd
     if (!signs(vs)) return E.NUM
     const r = xirr(vs, ds, guess)
     return r === null || (guess < 0 && r >= 0) ? E.NUM : r
   }, { cx: true }),
-  // the rate must be positive and no date may precede the first
-  XNPV: atp('x G G', (rate: number, values: Grid, dates: Grid) => {
+  // the rate must be positive, no date may precede the first, and a date of 0 is #NUM! (XIRR takes one)
+  XNPV: atp('x G G', (cx: Cx, rate: number, values: Grid, dates: Grid) => {
     if (rate <= 0) return E.NUM
-    const vd = dated(values, dates, null)
+    const vd = dated(values, dates, cx.rules, false)
     if (isErr(vd)) return vd
     const [vs, ds] = vd
-    if (ds.some((d) => d < ds[0])) return E.NUM
+    if (ds.some((d) => d < ds[0] || d < 1)) return E.NUM
     return xnpv(rate, vs, ds)
-  }),
+  }, { cx: true }),
 }

@@ -34,9 +34,6 @@ function canon(f: string): string {
   }
 }
 
-/** Cases whose text Excel writes with the intersection operator (a space), which the engine does not read. */
-const UNREAD: Readonly<Record<string, string>> = { 'calls:shapes#10': 'the intersection operator `D!B1:B3 D!B2:C2`' }
-
 /**
  * Cases whose value the converted formula does not give, and why (the dynamic text computed in Excel too: the spill set
  * `legacy-shown`). The old and the dynamic kind part in Excel itself: a range where an argument takes one value and
@@ -52,11 +49,9 @@ const PARTED: Readonly<Record<string, string>> = {
   'params:NETWORKDAYS.INTL#e3': 'an error as the weekend: #VALUE! in Excel, #NUM! here',
   'params:XIRR#r3': "XIRR's guess given a range: #VALUE! in Excel, lifted here",
   'nesting:MATCH#array-r3': 'Excel parts the two kinds',
-  'nesting:ACCRINT#array-e1': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:ACCRINT#array-e2': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:CUMIPMT#array-e1': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:GROWTH#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
-  'nesting:PRICE#array-e1': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:TREND#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:XIRR#array-r3': 'inside SUMPRODUCT Excel does not lift the call',
 }
@@ -89,7 +84,6 @@ for (const name of ['params', 'nesting', 'calls', 'blocks']) {
   describe(`formulas of the old kind against Excel 365: set ${name}`, () => {
     it("fromLegacy gives Excel's text, @ where Excel puts it", () => {
       const off = set.cases
-        .filter((c) => !UNREAD[`${name}:${c.id}`])
         .map((c) => ({ c, excel: canon(set.formulas[c.id]), ours: fromLegacy(engineFormula(c.formula)) }))
         .filter((o) => o.excel !== o.ours)
         .map((o) => `${o.c.id} ${o.c.formula}: Excel ${o.excel}, fromLegacy ${o.ours}`)
@@ -102,7 +96,7 @@ for (const name of ['params', 'nesting', 'calls', 'blocks']) {
         const probes = part.map((c) => ({ ...c, formula: fromLegacy(engineFormula(c.formula)) }))
         const cells = compute(rowBook(probes, set.rows, sheets), { clock: CLOCK }).sheets.at(-1)!.cells
         part.forEach((c) => {
-          if (VOLATILE.test(c.formula) || UNREAD[`${name}:${c.id}`]) return
+          if (VOLATILE.test(c.formula)) return
           const engine = toVal(cells[`A${set.rows[c.id]}`].value)
           if (matches(c.fn, set.values[c.id], engine) === !!PARTED[`${name}:${c.id}`]) off.push(`${c.id} ${c.formula}: Excel ${show(set.values[c.id])}, engine ${show(engine)}`)
         })
@@ -159,6 +153,12 @@ describe('fromLegacy', () => {
   })
 
   it('returns a formula it does not read as it is', () => {
-    expect(fromLegacy('A1:A3 B2:C2')).toBe('A1:A3 B2:C2')
+    expect(fromLegacy('SUM(A1:A3')).toBe('SUM(A1:A3')
+  })
+
+  it('takes the reference operators whole: the reference they answer gets @ where one value goes', () => {
+    expect(fromLegacy('A1:A3 B2:C2')).toBe('@A1:A3 B2:C2')
+    expect(fromLegacy('SUM(A1:A3 A2:C2)')).toBe('SUM(A1:A3 A2:C2)')
+    expect(fromLegacy('SUM(A1:INDEX(B1:B9,3))')).toBe('SUM(A1:INDEX(B1:B9,3))')
   })
 })

@@ -61,10 +61,11 @@ function xlookup(cx: Cx, key: V, look: Grid, ret: V | Rng | Arr, notFound?: Arg,
   if (isErr(key)) return key
   if (isErr(ret)) return ret
   if (look.cols !== 1 && look.rows !== 1) return E.VALUE
-  const vertical = look.cols === 1
   const r = ret instanceof Rng || ret instanceof Arr ? ret : new Arr(1, 1, 1, 1, [ret])
   const rows = r instanceof Rng ? r.r2 - r.r1 + 1 : r.rows
   const cols = r instanceof Rng ? r.c2 - r.c1 + 1 : r.cols
+  // one value is a row and a column at once: it looks up the return array's one row, else its one column (`XLOOKUP(0,0,A1:A6)` is A1:A6)
+  const vertical = look.rows === 1 && look.cols === 1 ? rows === 1 : look.cols === 1
   if (vertical ? rows !== look.rows : cols !== look.cols) return E.VALUE
   if (!MATCH_MODES.includes(matchMode) || !SEARCH_MODES.includes(searchMode)) return E.VALUE
   const pos = xfind(key, look, matchMode, searchMode, cx.rules.compare)

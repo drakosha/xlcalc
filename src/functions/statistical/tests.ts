@@ -30,7 +30,9 @@ function chisqTest(actual: Grid, expected: Grid): V {
   return gammaPQ(df / 2, x2 / 2)[1]
 }
 
-function fTest(a: number[], b: number[]): V {
+/** F.TEST over the numbers of two arrays; one value given is an array of it, so text there is no number (`F.TEST("x",A1:A8)` is #DIV/0!). */
+function fTest(ga: Grid, gb: Grid): V {
+  const [a, b] = [ga, gb].map((g) => g.v.filter((v): v is number => typeof v === 'number'))
   if (a.length < 2 || b.length < 2) return E.DIV0
   const va = devsq(a) / (a.length - 1)
   const vb = devsq(b) / (b.length - 1)
@@ -92,7 +94,7 @@ function zTest(xs: number[], x: number, sigma?: number): V {
 
 export const functions: Record<string, FnDef> = {
   'CHISQ.TEST': { args: 'G G', fn: chisqTest },
-  'F.TEST': { args: 'N N', fn: fTest },
+  'F.TEST': { args: 'M M', fn: fTest },
   'T.TEST': { args: 'G G w w', fn: tTest },
   'Z.TEST': { args: 'N n n?', fn: zTest },
 }

@@ -229,9 +229,10 @@ export interface BookInput {
 /**
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
  * `SPILL`: an array that cannot spill from its formula's cell (its range is not empty, meets a merged area or
- * leaves the sheet).
+ * leaves the sheet). `NULL`: Excel's #NULL!, ranges that do not meet under the intersection operator (`A1:A3 C1:C3`).
+ * `ERROR`: a formula that does not compute (it does not parse, say).
  */
-export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
+export type ErrorCode = 'DIV0' | 'NA' | 'NAME' | 'NUM' | 'REF' | 'VALUE' | 'NULL' | 'CYCLE' | 'SPILL' | 'CALC' | 'ERROR'
 
 /** A computed value. Dates come out as serial numbers, numbers are rounded to 15 significant digits. */
 export type CellValue = Scalar | { error: ErrorCode }

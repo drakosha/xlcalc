@@ -9,7 +9,6 @@
 import type { Probe } from '../probes.js'
 import { XLFN } from '../signatures.js'
 
-const PREFIX: Record<string, string> = { ...XLFN, 'FORECAST.LINEAR': '_xlfn.FORECAST.LINEAR' }
 
 const col = (letter: string, values: (number | string | boolean | null)[], from = 1) =>
   Object.fromEntries(values.flatMap((v, i) => (v === null ? [] : [[`${letter}${from + i}`, v] as const])))
@@ -58,7 +57,7 @@ export function buildProbes(): Probe[] {
   const add = (fn: string, args: (string | number | boolean)[]) => {
     const n = (count.get(fn) ?? 0) + 1
     count.set(fn, n)
-    out.push({ id: `${fn}#${n}`, group: fn, fn, formula: `${PREFIX[fn] ?? fn}(${args.map(String).join(',')})` })
+    out.push({ id: `${fn}#${n}`, group: fn, fn, formula: `${XLFN[fn] ?? fn}(${args.map(String).join(',')})` })
   }
   const each = (fns: string[], argsList: (string | number | boolean)[][]) => {
     for (const fn of fns) for (const a of argsList) add(fn, a)

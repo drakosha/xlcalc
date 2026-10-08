@@ -14,7 +14,7 @@
  * - `A` inside an argument that takes an array: nothing gets `@`.
  */
 import type { NameInput } from '../contract.js'
-import { canonical, FormulaError, parse, sheetKey, type Ast } from '../syntax.js'
+import { canonical, FormulaError, isRefOp, parse, sheetKey, type Ast } from '../syntax.js'
 import { PARAMS } from './params.js'
 
 type Where = 'V' | 'R' | 'A'
@@ -173,6 +173,12 @@ function converter(names: Names) {
         return { ast: { ...n, a: a.ast }, kind: a.kind === 'one' ? 'one' : 'array' }
       }
       case 'bin': {
+        // the reference operators take references whole and answer one
+        if (isRefOp(n.op)) {
+          const [a, b] = [go(n.a, 'R', 'r', scope), go(n.b, 'R', 'r', scope)]
+          // an intersection with one cell is one cell at most
+          return { ast: { ...n, a: a.ast, b: b.ast }, kind: n.op === ' ' && (a.kind === 'one' || b.kind === 'one') ? 'one' : 'range' }
+        }
         const a = go(n.a, where, 'v', scope)
         const b = go(n.b, where, 'v', scope)
         return { ast: { ...n, a: a.ast, b: b.ast }, kind: a.kind === 'one' && b.kind === 'one' ? 'one' : 'array' }
