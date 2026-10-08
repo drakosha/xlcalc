@@ -1,0 +1,194 @@
+{
+ "filters": {
+  "filter": {
+   "filtered": true,
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "filter-unmarked": {
+   "filtered": true,
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "filter-none": {
+   "filtered": false,
+   "values": {
+    "F!A1": 1023,
+    "F!A2": 923,
+    "F!A3": 10,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "advanced": {
+   "filtered": true,
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "table": {
+   "filtered": true,
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "table-unmarked": {
+   "filtered": true,
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "table-none": {
+   "filtered": false,
+   "values": {
+    "F!A1": 1023,
+    "F!A2": 923,
+    "F!A3": 10,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "keep-all-table": {
+   "filtered": true,
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  }
+ },
+ "roundtrip": {
+  "hidden": {
+   "differences": [],
+   "values": {
+    "F!A1": 1023,
+    "F!A2": 997,
+    "F!A3": 10,
+    "F!A4": 7,
+    "F!A5": 997,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "zero-sizes": {
+   "differences": [],
+   "values": {
+    "F!A1": 1023,
+    "F!A2": 1021,
+    "F!A3": 10,
+    "F!A4": 9,
+    "F!A5": 1021,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "filtered": {
+   "differences": [],
+   "values": {
+    "F!A1": 923,
+    "F!A2": 923,
+    "F!A3": 7,
+    "F!A4": 7,
+    "F!A5": 923,
+    "F!A6": 1023,
+    "F!A7": 31,
+    "F!A8": 31
+   }
+  },
+  "date1904": {
+   "differences": [],
+   "values": {
+    "Dates!B1": 44226,
+    "Dates!B2": 2025,
+    "Dates!B3": 44225.75,
+    "Dates!B4": "2025-01-31",
+    "Dates!B5": 44226,
+    "Dates!B6": 6,
+    "Dates!B7": 44254,
+    "Dates!B8": 1,
+    "Dates!B9": 1,
+    "Dates!B10": "-1904-01-02 12:00",
+    "Dates!B11": "-12:00",
+    "Dates!B12": true
+   }
+  },
+  "iteration": {
+   "differences": [],
+   "values": {
+    "Cycle!A1": 5,
+    "Cycle!B1": 5,
+    "Cycle!C1": 3,
+    "Cycle!D1": 3,
+    "Cycle!E1": 8
+   }
+  },
+  "iteration-default": {
+   "differences": [],
+   "values": {
+    "Cycle!A1": 5,
+    "Cycle!B1": 5,
+    "Cycle!C1": 3,
+    "Cycle!D1": 3,
+    "Cycle!E1": 8
+   }
+  },
+  "builtin": {
+   "differences": [],
+   "values": {}
+  },
+  "builtin-ru": {
+   "differences": [],
+   "values": {}
+  }
+ }
+}
