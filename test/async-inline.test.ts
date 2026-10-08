@@ -4,7 +4,7 @@
  * `CalcError`, calls taken in order with their own changes, a stopped call that changes nothing, limits, closing.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, compute, createInlineCalc, openSession } from '../src/index.js'
+import { CalcError, compute, createInlineCalc, openSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { BOOKS, chainBook, CLOCK, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
@@ -78,6 +78,32 @@ describe('in the same thread', () => {
     expect((await fails(calc.compute(book, { signal: AbortSignal.abort() }))).code).toBe('aborted')
     // the calculator's default deadline applies to every call
     expect((await fails(createInlineCalc({ sliceMs: 1, timeoutMs: 5 }).compute(book, { clock: CLOCK }))).code).toBe('soft_timeout')
+  }, 60_000)
+
+  it('formulas of any cost: the slice and the soft deadline hold', async () => {
+    // 300 formulas that each sort 10,000 values: a few milliseconds each, where a check counted formulas
+    const cells: BookInput['sheets'][0]['cells'] = {}
+    for (let r = 1; r <= 10_000; r++) cells[`A${r}`] = { value: (r * 7919) % 10_007 }
+    for (let r = 1; r <= 300; r++) cells[`B${r}`] = { formula: 'INDEX(SORT(A$1:A$10000),ROW())' }
+    const book = { sheets: [{ name: 'S', cells }] }
+    const calc = createInlineCalc({ sliceMs: 10 })
+    let last = performance.now()
+    let worst = 0
+    let done = false
+    const tick = () => {
+      const now = performance.now()
+      worst = Math.max(worst, now - last)
+      last = now
+      if (!done) setImmediate(tick)
+    }
+    setImmediate(tick)
+    const t0 = performance.now()
+    const e = await fails(calc.compute(book, { timeoutMs: 100 }))
+    const took = performance.now() - t0
+    done = true
+    expect(e.code).toBe('soft_timeout')
+    expect(took).toBeLessThan(200)
+    expect(worst).toBeLessThan(30)
   }, 60_000)
 
   it('calls made without waiting are taken in order, each with its own changes', async () => {
