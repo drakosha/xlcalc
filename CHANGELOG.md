@@ -4,6 +4,7 @@
 
 Changed:
 
+- Contract: a row of `height` 0 is hidden (`RowInput.hidden`) and a column of `width` 0 too (`ColumnInput.hidden`), as Excel takes them; `SheetInput.filtered` says that a table's filter with criteria makes its sheet filtered as well as the sheet's autofilter.
 - `readXlsx` reads what the book now holds instead of approximating it: hidden rows and columns get `hidden: true` and keep their sizes (they were read with a size of 0), and a row of height 0 or a column of width 0 is hidden as Excel takes it; a file of the 1904 date system gives `dateSystem: 1904` with its numbers as stored (they were moved to the 1900 system); `calcPr iterate` gives `iteration`; a built-in number format is read by its number, 1 to 49 (it was the code Excel for Mac en-US shows). The issue code `date1904` is gone, `hidden` is about hidden sheets alone, `calculation` no longer reports iterative calculation, and `numberFormat` reports only the East Asian formats 50 to 58 and unknown ones.
 - `writeXlsx` writes the codes that ru-RU shows otherwise than built-in formats 37 to 40 (`#,##0_);(#,##0)` and the like) as codes of the file's own, so Excel ru-RU shows what `format` says, and writes `calcPr` in every file, as Excel otherwise keeps iterative calculation on from a book opened before.
 
