@@ -7,7 +7,7 @@
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 126.8
+  "seconds": 14.7
  },
  "cases": [
   {
@@ -14625,7 +14625,7 @@
     },
     "S!C1": {
      "t": "s",
-     "v": "Price"
+     "v": "2024"
     },
     "S!D1": {
      "t": "s",
@@ -14733,7 +14733,7 @@
     },
     "S!K9": {
      "t": "s",
-     "v": "Price"
+     "v": "2024"
     },
     "S!L9": {
      "t": "s",
@@ -14758,21 +14758,21 @@
    },
    "formulas": {
     "S!J1": "=SUM(Sales[Qty])",
-    "S!D2": "=[@Qty]*[@Price]",
-    "S!J2": "=SUM(Sales[[Region]:[Price]])",
-    "S!D3": "=[@Qty]*[@Price]",
+    "S!D2": "=[@Qty]*[@2024]",
+    "S!J2": "=SUM(Sales[[Region]:[2024]])",
+    "S!D3": "=[@Qty]*[@2024]",
     "S!J3": "=ROWS(Sales[#All])",
-    "S!D4": "=[@Qty]*[@Price]",
-    "S!J4": "=Sales[@Price]",
-    "S!D5": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@2024]",
+    "S!J4": "=Sales[@2024]",
+    "S!D5": "=[@Qty]*[@2024]",
     "S!J5": "=SUM(Sales[[#Totals],[Qty]])",
     "S!J6": "=COLUMNS(Sales[#All])",
-    "S!J7": "=SUM(Sales[Price])",
+    "S!J7": "=SUM(Sales[2024])",
     "S!J8": "=SUM(B2:B5)",
     "S!J9": "=Sales[[#Headers],[Qty]:[Total]]",
     "Other!A1": "=SUM(Sales[Total])",
     "Other!B1": "=ROWS(Sales)",
-    "Other!A2": "=SUM(Sales[[#All],[Qty]:[Price]])",
+    "Other!A2": "=SUM(Sales[[#All],[Qty]:[2024]])",
     "Other!A3": "=Sales[@Qty]"
    },
    "tables": [
@@ -14785,14 +14785,11 @@
      "columns": [
       "Region",
       "Qty",
-      "Price",
+      "2024",
       "Total"
      ]
     }
-   ],
-   "refused": {
-    "0": "-2147467262 Unable to cast object of type 'System.Double' to type 'System.String'."
-   }
+   ]
   },
   "head-clear": {
    "values": {

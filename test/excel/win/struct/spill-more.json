@@ -1,0 +1,282 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "seconds": 30.7
+ },
+ "books": {
+  "spill": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "B1": {
+       "formula": "SEQUENCE(1,2)"
+      },
+      "E2": {
+       "formula": "SEQUENCE(3)"
+      },
+      "G1": {
+       "formula": "SUM(E2#)"
+      },
+      "G2": {
+       "formula": "E2#*2"
+      },
+      "G6": {
+       "formula": "ROWS($E$2#)"
+      },
+      "G7": {
+       "formula": "SUM(sp)"
+      },
+      "D8": {
+       "formula": "B1#"
+      },
+      "H1": {
+       "formula": "E3+1"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "formula": "SUM(S!E2#)"
+      },
+      "A2": {
+       "formula": "S!$E$2#"
+      },
+      "B1": {
+       "formula": "COLUMNS(S!B1#)"
+      }
+     }
+    }
+   ],
+   "names": [
+    {
+     "name": "sp",
+     "ref": "'S'!$E$2#"
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "copy-G1-I1",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "G1"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "I1"
+    }
+   }
+  },
+  {
+   "id": "copy-G6-I6",
+   "book": "spill",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "G6"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "I6"
+    }
+   }
+  },
+  {
+   "id": "rename-S",
+   "book": "spill",
+   "op": {
+    "op": "renameSheet",
+    "sheet": "S",
+    "name": "R"
+   }
+  },
+  {
+   "id": "delete-S",
+   "book": "spill",
+   "op": {
+    "op": "deleteSheet",
+    "sheet": "S"
+   }
+  }
+ ],
+ "dynamic": true,
+ "answers": {
+  "copy-G1-I1": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$8",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "I1": "=SUM(G2#)",
+      "E2": "=SEQUENCE(3)",
+      "G2": "=E2#*2",
+      "G6": "=ROWS($E$2#)",
+      "G7": "=SUM(sp)",
+      "D8": "=B1#"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$B$4",
+     "cells": {
+      "A1": "=SUM(S!E2#)",
+      "B1": "=COLUMNS(S!B1#)",
+      "A2": "=S!$E$2#"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "sp",
+     "ref": "=S!$E$2#"
+    }
+   ]
+  },
+  "copy-G6-I6": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$8",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)",
+      "G2": "=E2#*2",
+      "G6": "=ROWS($E$2#)",
+      "I6": "=ROWS($E$2#)",
+      "G7": "=SUM(sp)",
+      "D8": "=B1#"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$B$4",
+     "cells": {
+      "A1": "=SUM(S!E2#)",
+      "B1": "=COLUMNS(S!B1#)",
+      "A2": "=S!$E$2#"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "sp",
+     "ref": "=S!$E$2#"
+    }
+   ]
+  },
+  "rename-S": {
+   "sheets": [
+    {
+     "name": "R",
+     "used": "$A$1:$H$8",
+     "cells": {
+      "A1": "1",
+      "B1": "=SEQUENCE(1,2)",
+      "G1": "=SUM(E2#)",
+      "H1": "=E3+1",
+      "E2": "=SEQUENCE(3)",
+      "G2": "=E2#*2",
+      "G6": "=ROWS($E$2#)",
+      "G7": "=SUM(sp)",
+      "D8": "=B1#"
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1:$B$4",
+     "cells": {
+      "A1": "=SUM('R'!E2#)",
+      "B1": "=COLUMNS('R'!B1#)",
+      "A2": "='R'!$E$2#"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "sp",
+     "ref": "='R'!$E$2#"
+    }
+   ]
+  },
+  "delete-S": {
+   "sheets": [
+    {
+     "name": "T",
+     "used": "$A$1:$B$2",
+     "cells": {
+      "A1": "=SUM(#REF!E2#)",
+      "B1": "=COLUMNS(#REF!B1#)",
+      "A2": "=#REF!$E$2#"
+     }
+    }
+   ],
+   "extra": [],
+   "names": [
+    {
+     "name": "_xlfn.ANCHORARRAY",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "_xlfn.SEQUENCE",
+     "ref": "=#NAME?"
+    },
+    {
+     "name": "sp",
+     "ref": "=#REF!$E$2#"
+    }
+   ]
+  }
+ }
+}
