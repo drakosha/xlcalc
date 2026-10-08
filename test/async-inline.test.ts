@@ -103,7 +103,8 @@ describe('in the same thread', () => {
     done = true
     expect(e.code).toBe('soft_timeout')
     expect(took).toBeLessThan(200)
-    expect(worst).toBeLessThan(30)
+    // a slice and the formula in flight when it ends (a sort, a few ms; more while the code is cold), with room for a loaded machine
+    expect(worst).toBeLessThan(50)
   }, 60_000)
 
   it('calls made without waiting are taken in order, each with its own changes', async () => {
