@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.2 (2026-10-09)
+
+Internal release; not published to npm. Fixes from a review, books sent to pool threads as text in chunks, `Session.hash()`.
 
 Changed:
 
