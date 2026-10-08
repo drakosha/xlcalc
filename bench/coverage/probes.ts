@@ -13,8 +13,11 @@ export interface Probe {
   fn?: string
 }
 
-/** A set's data sheets: a cell's value or formula (as Excel writes it, with `_xlfn.` prefixes). */
-export type SheetCells = Record<string, Record<string, number | string | boolean | { formula: string }>>
+/**
+ * A set's data sheets: a cell's value or formula (as Excel writes it, with `_xlfn.` prefixes), written as a formula of
+ * the old kind unless `dynamic` says it spills as Excel 365's do.
+ */
+export type SheetCells = Record<string, Record<string, number | string | boolean | { formula: string; dynamic?: true }>>
 
 /** The probes' data sheets: S2!A1:A5 = 1…5, S3!B1:B3 = 1, −1, 1. */
 export const PROBE_SHEETS: Record<string, Record<string, number>> = {

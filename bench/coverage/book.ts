@@ -36,7 +36,7 @@ export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: str
   const wb = new ExcelJS.Workbook()
   for (const [name, cells] of Object.entries(sheets)) {
     const ws = wb.addWorksheet(name)
-    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = (typeof v === 'object' ? { formula: v.formula } : v) as ExcelJS.CellValue
+    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = (typeof v === 'object' ? { formula: v.formula, ...(v.dynamic ? { shareType: 'array', ref: addr } : {}) } : v) as ExcelJS.CellValue
   }
   const d = wb.addWorksheet(DATA_SHEET)
   for (const [addr, v] of dataCells()) {

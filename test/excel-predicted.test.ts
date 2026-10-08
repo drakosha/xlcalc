@@ -8,7 +8,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { matches, show } from './excel-cases.js'
 import { SETS } from './excel-sets.js'
 
-const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'sheet-cells', 'single-values']
+const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'ref-deps', 'sheet-cells', 'single-values']
 
 describe('case sets predicted before Excel ran them', async () => {
   for (const name of PREDICTING) {
