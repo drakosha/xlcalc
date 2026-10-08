@@ -4,6 +4,16 @@
 
 A synchronous session call that throws while it recomputes (over its limits, say) leaves the session as it was before the call; the session computes its book again on its next call.
 
+Fixed:
+
+- The thread pool: a book or an edit that a structured clone cannot carry to a thread (a function in a cell's `meta`) is refused with `InputError` and the thread stays free; it used to leave the thread busy for good, and an answer arriving later threw an uncaught `DataCloneError`.
+- The thread pool: a session that leaves a full thread (`maxSessionsPerThread`) takes its book along as a new snapshot, so it comes back without replaying its journal, and a restore after a lost thread has the hard deadline of the opening and of each call it replays; such a session was closed with `restore_failed` when its journal took longer to replay than one task's `hardTimeoutMs`.
+- Computation with a deadline or slices looks at the clock before each formula: 300 formulas that each sort 10,000 values ran 698 ms past a soft deadline of 100 ms without a yield, now they stop at 100 ms with slices of 10 to 21 ms.
+- Closing: a session's `close()` waiting when its pool or its calculator closes resolves (it hung in a pool and was refused in the same thread), and so does one whose thread is lost while it closes.
+- `maxQueue` counts only the tasks no idle thread takes: `maxQueue: 0` refused every task.
+- `maxHeapMb` with `spawn` throws `InputError`: such a worker has no memory limit, and the option was ignored.
+- A restore that fails leaves nothing of the session in the thread; each one kept its book there until the thread died.
+
 Changed:
 
 - `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
