@@ -1,0 +1,837 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 369.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "let:value#1",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.x+1)"
+  },
+  {
+   "id": "let:value#2",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,2,_xlpm.y,3,_xlpm.x*_xlpm.y)"
+  },
+  {
+   "id": "let:value#3",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,_xlpm.x+1,_xlpm.z,_xlpm.y*10,_xlpm.z+_xlpm.x)"
+  },
+  {
+   "id": "let:value#4",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,\"a\",_xlpm.x&\"b\")"
+  },
+  {
+   "id": "let:value#5",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,TRUE,NOT(_xlpm.x))"
+  },
+  {
+   "id": "let:value#6",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!B2,_xlpm.x*2)"
+  },
+  {
+   "id": "let:value#7",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,5,_xlpm.x%)"
+  },
+  {
+   "id": "let:value#8",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,-2,-_xlpm.x^2)"
+  },
+  {
+   "id": "let:value#9",
+   "group": "let:value",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,2,_xlpm.x)"
+  },
+  {
+   "id": "let:array#1",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.a,{1,2,3},SUM(_xlpm.a))"
+  },
+  {
+   "id": "let:array#2",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.a,{1,2,3},_xlpm.a*2)"
+  },
+  {
+   "id": "let:array#3",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.a,{1,2,3},INDEX(_xlpm.a,2))"
+  },
+  {
+   "id": "let:array#4",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.a,{1},TYPE(_xlpm.a))"
+  },
+  {
+   "id": "let:array#5",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "TYPE(_xlfn.LET(_xlpm.a,{1},_xlpm.a))"
+  },
+  {
+   "id": "let:array#6",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,_xlfn.SEQUENCE(3),ROWS(_xlpm.x))"
+  },
+  {
+   "id": "let:array#7",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,_xlfn.SEQUENCE(3),_xlpm.x)"
+  },
+  {
+   "id": "let:array#8",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.c,{TRUE,FALSE},SUM(IF(_xlpm.c,1,2)))"
+  },
+  {
+   "id": "let:array#9",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!B1:B8,SUM(_xlpm.x*2))"
+  },
+  {
+   "id": "let:array#10",
+   "group": "let:array",
+   "fn": "LET",
+   "formula": "SUM(_xlfn.LET(_xlpm.x,D!B1:B8,_xlpm.x*2))"
+  },
+  {
+   "id": "let:ref#1",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:B8,ROWS(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#2",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!D1:D8,SUM(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#3",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!A2,SUM(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#4",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!A2,_xlpm.r+1)"
+  },
+  {
+   "id": "let:ref#5",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:B8,SUMIF(_xlpm.r,\">10\"))"
+  },
+  {
+   "id": "let:ref#6",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:B8,_xlpm.r)"
+  },
+  {
+   "id": "let:ref#7",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:B8,COLUMN(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#8",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!A1,ISBLANK(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#9",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!A1,_xlpm.r)"
+  },
+  {
+   "id": "let:ref#10",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!A1,_xlpm.r&\"\")"
+  },
+  {
+   "id": "let:ref#11",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:B2,TYPE(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#12",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1,TYPE(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#13",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,INDEX(D!B1:C8,0,1),SUM(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#14",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,IF(TRUE,D!A2),SUM(_xlpm.r))"
+  },
+  {
+   "id": "let:ref#15",
+   "group": "let:ref",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!K1:K8,COUNTA(_xlpm.r))"
+  },
+  {
+   "id": "let:result#1",
+   "group": "let:result",
+   "fn": "LET",
+   "formula": "SUM(_xlfn.LET(_xlpm.r,D!D1:D8,_xlpm.r))"
+  },
+  {
+   "id": "let:result#2",
+   "group": "let:result",
+   "fn": "LET",
+   "formula": "SUMIF(_xlfn.LET(_xlpm.r,D!B1:B8,_xlpm.r),\">10\")"
+  },
+  {
+   "id": "let:result#3",
+   "group": "let:result",
+   "fn": "LET",
+   "formula": "ROWS(_xlfn.LET(_xlpm.x,D!B1:B8,_xlpm.x))"
+  },
+  {
+   "id": "let:result#4",
+   "group": "let:result",
+   "fn": "LET",
+   "formula": "COUNTA(_xlfn.LET(_xlpm.r,D!K1:K8,_xlpm.r))"
+  },
+  {
+   "id": "let:result#5",
+   "group": "let:result",
+   "fn": "LET",
+   "formula": "SUM(_xlfn.LET(_xlpm.r,D!A2,_xlpm.r))"
+  },
+  {
+   "id": "let:result#6",
+   "group": "let:result",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!A2,_xlpm.r)"
+  },
+  {
+   "id": "let:scope#1",
+   "group": "let:scope",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.X,1,_xlpm.x+1)"
+  },
+  {
+   "id": "let:scope#2",
+   "group": "let:scope",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.abc,2,_xlpm.ABC*_xlpm.Abc)"
+  },
+  {
+   "id": "let:scope#3",
+   "group": "let:scope",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlfn.LET(_xlpm.x,2,_xlpm.x)+_xlpm.x)"
+  },
+  {
+   "id": "let:scope#4",
+   "group": "let:scope",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,_xlfn.LET(_xlpm.x,10,_xlpm.x+1),_xlpm.x+_xlpm.y)"
+  },
+  {
+   "id": "let:scope#5",
+   "group": "let:scope",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,2,_xlfn.LET(_xlpm.y,_xlpm.x*3,_xlpm.y+_xlpm.x))"
+  },
+  {
+   "id": "let:scope#6",
+   "group": "let:scope",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.x)+_xlfn.LET(_xlpm.x,2,_xlpm.x)"
+  },
+  {
+   "id": "let:nest#1",
+   "group": "let:nest",
+   "fn": "LET",
+   "formula": "SUM(_xlfn.LET(_xlpm.x,1,_xlpm.x),2)"
+  },
+  {
+   "id": "let:nest#2",
+   "group": "let:nest",
+   "fn": "LET",
+   "formula": "IF(TRUE,_xlfn.LET(_xlpm.x,5,_xlpm.x),0)"
+  },
+  {
+   "id": "let:nest#3",
+   "group": "let:nest",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,ROUND(2.567,1),_xlpm.x*2)"
+  },
+  {
+   "id": "let:nest#4",
+   "group": "let:nest",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!B1:B8,MAX(_xlpm.x)-MIN(_xlpm.x))"
+  },
+  {
+   "id": "let:nest#5",
+   "group": "let:nest",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,3,CHOOSE(_xlpm.x,\"a\",\"b\",\"c\"))"
+  },
+  {
+   "id": "let:nest#6",
+   "group": "let:nest",
+   "fn": "LET",
+   "formula": "IFERROR(_xlfn.LET(_xlpm.x,1/0,_xlpm.x),\"e\")"
+  },
+  {
+   "id": "let:names#1",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.sum,5,SUM(_xlpm.sum,1))"
+  },
+  {
+   "id": "let:names#2",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.pi,3,_xlpm.pi*2+PI())"
+  },
+  {
+   "id": "let:names#3",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm._x,1,_xlpm._x+1)"
+  },
+  {
+   "id": "let:names#4",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x.y,1,_xlpm.x.y+1)"
+  },
+  {
+   "id": "let:names#5",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x_1,2,_xlpm.x_1*2)"
+  },
+  {
+   "id": "let:names#6",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.икс,1,_xlpm.икс+1)"
+  },
+  {
+   "id": "let:names#7",
+   "group": "let:names",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.if,1,IF(_xlpm.if,2,3))"
+  },
+  {
+   "id": "let:once#1",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,RAND(),_xlpm.x-_xlpm.x)"
+  },
+  {
+   "id": "let:once#2",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,RAND(),_xlpm.x=_xlpm.x)"
+  },
+  {
+   "id": "let:once#3",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1/0,1)"
+  },
+  {
+   "id": "let:once#4",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,NA(),_xlpm.y,2,_xlpm.y)"
+  },
+  {
+   "id": "let:once#5",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1/0,_xlpm.x+1)"
+  },
+  {
+   "id": "let:once#6",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1/0,IFERROR(_xlpm.x,7))"
+  },
+  {
+   "id": "let:once#7",
+   "group": "let:once",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,1/0,_xlpm.x)"
+  },
+  {
+   "id": "let:count#1",
+   "group": "let:count",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.n_1,1,_xlpm.n_2,_xlpm.n_1+1,_xlpm.n_3,_xlpm.n_2+1,_xlpm.n_4,_xlpm.n_3+1,_xlpm.n_5,_xlpm.n_4+1,_xlpm.n_6,_xlpm.n_5+1,_xlpm.n_7,_xlpm.n_6+1,_xlpm.n_8,_xlpm.n_7+1,_xlpm.n_9,_xlpm.n_8+1,_xlpm.n_10,_xlpm.n_9+1,_xlpm.n_11,_xlpm.n_10+1,_xlpm.n_12,_xlpm.n_11+1,_xlpm.n_13,_xlpm.n_12+1,_xlpm.n_14,_xlpm.n_13+1,_xlpm.n_15,_xlpm.n_14+1,_xlpm.n_16,_xlpm.n_15+1,_xlpm.n_17,_xlpm.n_16+1,_xlpm.n_18,_xlpm.n_17+1,_xlpm.n_19,_xlpm.n_18+1,_xlpm.n_20,_xlpm.n_19+1,_xlpm.n_21,_xlpm.n_20+1,_xlpm.n_22,_xlpm.n_21+1,_xlpm.n_23,_xlpm.n_22+1,_xlpm.n_24,_xlpm.n_23+1,_xlpm.n_25,_xlpm.n_24+1,_xlpm.n_26,_xlpm.n_25+1,_xlpm.n_27,_xlpm.n_26+1,_xlpm.n_28,_xlpm.n_27+1,_xlpm.n_29,_xlpm.n_28+1,_xlpm.n_30,_xlpm.n_29+1,_xlpm.n_31,_xlpm.n_30+1,_xlpm.n_32,_xlpm.n_31+1,_xlpm.n_33,_xlpm.n_32+1,_xlpm.n_34,_xlpm.n_33+1,_xlpm.n_35,_xlpm.n_34+1,_xlpm.n_36,_xlpm.n_35+1,_xlpm.n_37,_xlpm.n_36+1,_xlpm.n_38,_xlpm.n_37+1,_xlpm.n_39,_xlpm.n_38+1,_xlpm.n_40,_xlpm.n_39+1,_xlpm.n_41,_xlpm.n_40+1,_xlpm.n_42,_xlpm.n_41+1,_xlpm.n_43,_xlpm.n_42+1,_xlpm.n_44,_xlpm.n_43+1,_xlpm.n_45,_xlpm.n_44+1,_xlpm.n_46,_xlpm.n_45+1,_xlpm.n_47,_xlpm.n_46+1,_xlpm.n_48,_xlpm.n_47+1,_xlpm.n_49,_xlpm.n_48+1,_xlpm.n_50,_xlpm.n_49+1,_xlpm.n_51,_xlpm.n_50+1,_xlpm.n_52,_xlpm.n_51+1,_xlpm.n_53,_xlpm.n_52+1,_xlpm.n_54,_xlpm.n_53+1,_xlpm.n_55,_xlpm.n_54+1,_xlpm.n_56,_xlpm.n_55+1,_xlpm.n_57,_xlpm.n_56+1,_xlpm.n_58,_xlpm.n_57+1,_xlpm.n_59,_xlpm.n_58+1,_xlpm.n_60,_xlpm.n_59+1,_xlpm.n_61,_xlpm.n_60+1,_xlpm.n_62,_xlpm.n_61+1,_xlpm.n_63,_xlpm.n_62+1,_xlpm.n_64,_xlpm.n_63+1,_xlpm.n_65,_xlpm.n_64+1,_xlpm.n_66,_xlpm.n_65+1,_xlpm.n_67,_xlpm.n_66+1,_xlpm.n_68,_xlpm.n_67+1,_xlpm.n_69,_xlpm.n_68+1,_xlpm.n_70,_xlpm.n_69+1,_xlpm.n_71,_xlpm.n_70+1,_xlpm.n_72,_xlpm.n_71+1,_xlpm.n_73,_xlpm.n_72+1,_xlpm.n_74,_xlpm.n_73+1,_xlpm.n_75,_xlpm.n_74+1,_xlpm.n_76,_xlpm.n_75+1,_xlpm.n_77,_xlpm.n_76+1,_xlpm.n_78,_xlpm.n_77+1,_xlpm.n_79,_xlpm.n_78+1,_xlpm.n_80,_xlpm.n_79+1,_xlpm.n_81,_xlpm.n_80+1,_xlpm.n_82,_xlpm.n_81+1,_xlpm.n_83,_xlpm.n_82+1,_xlpm.n_84,_xlpm.n_83+1,_xlpm.n_85,_xlpm.n_84+1,_xlpm.n_86,_xlpm.n_85+1,_xlpm.n_87,_xlpm.n_86+1,_xlpm.n_88,_xlpm.n_87+1,_xlpm.n_89,_xlpm.n_88+1,_xlpm.n_90,_xlpm.n_89+1,_xlpm.n_91,_xlpm.n_90+1,_xlpm.n_92,_xlpm.n_91+1,_xlpm.n_93,_xlpm.n_92+1,_xlpm.n_94,_xlpm.n_93+1,_xlpm.n_95,_xlpm.n_94+1,_xlpm.n_96,_xlpm.n_95+1,_xlpm.n_97,_xlpm.n_96+1,_xlpm.n_98,_xlpm.n_97+1,_xlpm.n_99,_xlpm.n_98+1,_xlpm.n_100,_xlpm.n_99+1,_xlpm.n_101,_xlpm.n_100+1,_xlpm.n_102,_xlpm.n_101+1,_xlpm.n_103,_xlpm.n_102+1,_xlpm.n_104,_xlpm.n_103+1,_xlpm.n_105,_xlpm.n_104+1,_xlpm.n_106,_xlpm.n_105+1,_xlpm.n_107,_xlpm.n_106+1,_xlpm.n_108,_xlpm.n_107+1,_xlpm.n_109,_xlpm.n_108+1,_xlpm.n_110,_xlpm.n_109+1,_xlpm.n_111,_xlpm.n_110+1,_xlpm.n_112,_xlpm.n_111+1,_xlpm.n_113,_xlpm.n_112+1,_xlpm.n_114,_xlpm.n_113+1,_xlpm.n_115,_xlpm.n_114+1,_xlpm.n_116,_xlpm.n_115+1,_xlpm.n_117,_xlpm.n_116+1,_xlpm.n_118,_xlpm.n_117+1,_xlpm.n_119,_xlpm.n_118+1,_xlpm.n_120,_xlpm.n_119+1,_xlpm.n_121,_xlpm.n_120+1,_xlpm.n_122,_xlpm.n_121+1,_xlpm.n_123,_xlpm.n_122+1,_xlpm.n_124,_xlpm.n_123+1,_xlpm.n_125,_xlpm.n_124+1,_xlpm.n_126,_xlpm.n_125+1,_xlpm.n_126)"
+  },
+  {
+   "id": "let:unbound#1",
+   "group": "let:unbound",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.x)+x"
+  },
+  {
+   "id": "let:unbound#2",
+   "group": "let:unbound",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,x+1,_xlpm.x)"
+  },
+  {
+   "id": "let:unbound#3",
+   "group": "let:unbound",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,_xlpm.x+1,_xlpm.x)"
+  },
+  {
+   "id": "let:unbound#4",
+   "group": "let:unbound",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,_xlpm.y,_xlpm.y,1,_xlpm.x)"
+  },
+  {
+   "id": "let:even#1",
+   "group": "let:even",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1)"
+  },
+  {
+   "id": "let:even#2",
+   "group": "let:even",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,2)"
+  },
+  {
+   "id": "let:file#1",
+   "group": "let:file",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.A1,1,_xlpm.A1)"
+  },
+  {
+   "id": "let:file#2",
+   "group": "let:file",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,1,_xlpm.r)"
+  },
+  {
+   "id": "let:file#3",
+   "group": "let:file",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.c,1,_xlpm.c)"
+  },
+  {
+   "id": "let:file#4",
+   "group": "let:file",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.R1C1,1,_xlpm.R1C1)"
+  },
+  {
+   "id": "let:file#5",
+   "group": "let:file",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.TRUE,1,_xlpm.TRUE)"
+  },
+  {
+   "id": "let:omitted#1",
+   "group": "let:omitted",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,,_xlpm.x)"
+  },
+  {
+   "id": "let:omitted#2",
+   "group": "let:omitted",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,,_xlpm.x+1)"
+  },
+  {
+   "id": "let:omitted#3",
+   "group": "let:omitted",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,)"
+  },
+  {
+   "id": "let:omitted#4",
+   "group": "let:omitted",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,,_xlpm.x)"
+  }
+ ],
+ "values": {
+  "let:value#1": {
+   "t": "n",
+   "v": 2
+  },
+  "let:value#2": {
+   "t": "n",
+   "v": 6
+  },
+  "let:value#3": {
+   "t": "n",
+   "v": 21
+  },
+  "let:value#4": {
+   "t": "s",
+   "v": "ab"
+  },
+  "let:value#5": {
+   "t": "b",
+   "v": false
+  },
+  "let:value#6": {
+   "t": "n",
+   "v": 16
+  },
+  "let:value#7": {
+   "t": "n",
+   "v": 0.05
+  },
+  "let:value#8": {
+   "t": "n",
+   "v": 4
+  },
+  "let:value#9": {
+   "t": "n",
+   "v": 1
+  },
+  "let:array#1": {
+   "t": "n",
+   "v": 6
+  },
+  "let:array#2": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "let:array#3": {
+   "t": "n",
+   "v": 2
+  },
+  "let:array#4": {
+   "t": "n",
+   "v": 64
+  },
+  "let:array#5": {
+   "t": "n",
+   "v": 64
+  },
+  "let:array#6": {
+   "t": "n",
+   "v": 3
+  },
+  "let:array#7": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "let:array#8": {
+   "t": "n",
+   "v": 3
+  },
+  "let:array#9": {
+   "t": "n",
+   "v": 229.5
+  },
+  "let:array#10": {
+   "t": "n",
+   "v": 229.5
+  },
+  "let:ref#1": {
+   "t": "n",
+   "v": 8
+  },
+  "let:ref#2": {
+   "t": "n",
+   "v": 9.5
+  },
+  "let:ref#3": {
+   "t": "n",
+   "v": 0
+  },
+  "let:ref#4": {
+   "t": "n",
+   "v": 3
+  },
+  "let:ref#5": {
+   "t": "n",
+   "v": 106.25
+  },
+  "let:ref#6": {
+   "t": "e",
+   "v": "SPILL"
+  },
+  "let:ref#7": {
+   "t": "n",
+   "v": 2
+  },
+  "let:ref#8": {
+   "t": "b",
+   "v": true
+  },
+  "let:ref#9": {
+   "t": "n",
+   "v": 0
+  },
+  "let:ref#10": {
+   "t": "s",
+   "v": ""
+  },
+  "let:ref#11": {
+   "t": "n",
+   "v": 64
+  },
+  "let:ref#12": {
+   "t": "n",
+   "v": 1
+  },
+  "let:ref#13": {
+   "t": "n",
+   "v": 114.75
+  },
+  "let:ref#14": {
+   "t": "n",
+   "v": 0
+  },
+  "let:ref#15": {
+   "t": "n",
+   "v": 0
+  },
+  "let:result#1": {
+   "t": "n",
+   "v": 9.5
+  },
+  "let:result#2": {
+   "t": "n",
+   "v": 106.25
+  },
+  "let:result#3": {
+   "t": "n",
+   "v": 8
+  },
+  "let:result#4": {
+   "t": "n",
+   "v": 0
+  },
+  "let:result#5": {
+   "t": "n",
+   "v": 0
+  },
+  "let:result#6": {
+   "t": "s",
+   "v": "2"
+  },
+  "let:scope#1": {
+   "t": "n",
+   "v": 2
+  },
+  "let:scope#2": {
+   "t": "n",
+   "v": 4
+  },
+  "let:scope#3": {
+   "t": "n",
+   "v": 3
+  },
+  "let:scope#4": {
+   "t": "n",
+   "v": 12
+  },
+  "let:scope#5": {
+   "t": "n",
+   "v": 8
+  },
+  "let:scope#6": {
+   "t": "n",
+   "v": 3
+  },
+  "let:nest#1": {
+   "t": "n",
+   "v": 3
+  },
+  "let:nest#2": {
+   "t": "n",
+   "v": 5
+  },
+  "let:nest#3": {
+   "t": "n",
+   "v": 5.2
+  },
+  "let:nest#4": {
+   "t": "n",
+   "v": 45.5
+  },
+  "let:nest#5": {
+   "t": "s",
+   "v": "c"
+  },
+  "let:nest#6": {
+   "t": "s",
+   "v": "e"
+  },
+  "let:names#1": {
+   "t": "n",
+   "v": 6
+  },
+  "let:names#2": {
+   "t": "n",
+   "v": 9.141592653589793
+  },
+  "let:names#3": {
+   "t": "n",
+   "v": 2
+  },
+  "let:names#4": {
+   "t": "n",
+   "v": 2
+  },
+  "let:names#5": {
+   "t": "n",
+   "v": 4
+  },
+  "let:names#6": {
+   "t": "n",
+   "v": 2
+  },
+  "let:names#7": {
+   "t": "n",
+   "v": 2
+  },
+  "let:once#1": {
+   "t": "n",
+   "v": 0
+  },
+  "let:once#2": {
+   "t": "b",
+   "v": true
+  },
+  "let:once#3": {
+   "t": "n",
+   "v": 1
+  },
+  "let:once#4": {
+   "t": "n",
+   "v": 2
+  },
+  "let:once#5": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "let:once#6": {
+   "t": "n",
+   "v": 7
+  },
+  "let:once#7": {
+   "t": "n",
+   "v": 1
+  },
+  "let:count#1": {
+   "t": "n",
+   "v": 126
+  },
+  "let:unbound#1": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "let:unbound#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "let:unbound#3": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "let:unbound#4": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "let:even#1": {
+   "t": "n",
+   "v": 1
+  },
+  "let:even#2": {
+   "t": "n",
+   "v": 2
+  },
+  "let:file#1": {
+   "t": "n",
+   "v": 1
+  },
+  "let:file#2": {
+   "t": "n",
+   "v": 1
+  },
+  "let:file#3": {
+   "t": "n",
+   "v": 1
+  },
+  "let:file#4": {
+   "t": "n",
+   "v": 1
+  },
+  "let:file#5": {
+   "t": "n",
+   "v": 1
+  },
+  "let:omitted#1": {
+   "t": "n",
+   "v": 0
+  },
+  "let:omitted#2": {
+   "t": "n",
+   "v": 1
+  },
+  "let:omitted#3": {
+   "t": "n",
+   "v": 0
+  },
+  "let:omitted#4": {
+   "t": "n",
+   "v": 1
+  }
+ }
+}

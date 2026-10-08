@@ -1,0 +1,147 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 369.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "sheets#1",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "S1:S3!A1"
+  },
+  {
+   "id": "sheets#2",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "SUM(S1:S3!A1)"
+  },
+  {
+   "id": "sheets#3",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "ISREF(S1:S3!A1)"
+  },
+  {
+   "id": "sheets#4",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "SUM(S1:S3!A1:A2)"
+  },
+  {
+   "id": "sheets#5",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "'S1:S3'!A1"
+  },
+  {
+   "id": "sheets#6",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "SUM('S1:S3'!A1)"
+  },
+  {
+   "id": "sheets#7",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "SUM('S1:S3'!A1:A2)"
+  },
+  {
+   "id": "sheets#8",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "'S1'!A1"
+  },
+  {
+   "id": "sheets#9",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "'S1'!C5"
+  },
+  {
+   "id": "sheets#10",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "'S3'!C5"
+  },
+  {
+   "id": "sheets#11",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "'S3'!C6"
+  },
+  {
+   "id": "sheets#12",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "S1!A1"
+  },
+  {
+   "id": "sheets#13",
+   "group": "sheets",
+   "fn": "sheets",
+   "formula": "SUM(S2:S3!A1)"
+  }
+ ],
+ "values": {
+  "sheets#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "sheets#2": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "sheets#3": {
+   "t": "b",
+   "v": false
+  },
+  "sheets#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "sheets#5": {
+   "t": "e",
+   "v": "REF"
+  },
+  "sheets#6": {
+   "t": "n",
+   "v": 12
+  },
+  "sheets#7": {
+   "t": "n",
+   "v": 27
+  },
+  "sheets#8": {
+   "t": "n",
+   "v": 1
+  },
+  "sheets#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "sheets#10": {
+   "t": "n",
+   "v": 77
+  },
+  "sheets#11": {
+   "t": "n",
+   "v": 85
+  },
+  "sheets#12": {
+   "t": "n",
+   "v": 1
+  },
+  "sheets#13": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}

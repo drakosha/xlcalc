@@ -1,0 +1,1577 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 369.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "IMREAL#1",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"50%+i\")"
+  },
+  {
+   "id": "IMAGINARY#1",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"50%+i\")"
+  },
+  {
+   "id": "IMREAL#2",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+50%i\")"
+  },
+  {
+   "id": "IMAGINARY#2",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+50%i\")"
+  },
+  {
+   "id": "IMREAL#3",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"50%-50%i\")"
+  },
+  {
+   "id": "IMAGINARY#3",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"50%-50%i\")"
+  },
+  {
+   "id": "IMREAL#4",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"%50+i\")"
+  },
+  {
+   "id": "IMAGINARY#4",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"%50+i\")"
+  },
+  {
+   "id": "IMREAL#5",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"$1+2i\")"
+  },
+  {
+   "id": "IMAGINARY#5",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"$1+2i\")"
+  },
+  {
+   "id": "IMREAL#6",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+$2i\")"
+  },
+  {
+   "id": "IMAGINARY#6",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+$2i\")"
+  },
+  {
+   "id": "IMREAL#7",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"$1,000.5-2i\")"
+  },
+  {
+   "id": "IMAGINARY#7",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"$1,000.5-2i\")"
+  },
+  {
+   "id": "IMREAL#8",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1,000+2i\")"
+  },
+  {
+   "id": "IMAGINARY#8",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1,000+2i\")"
+  },
+  {
+   "id": "IMREAL#9",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+1,000i\")"
+  },
+  {
+   "id": "IMAGINARY#9",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+1,000i\")"
+  },
+  {
+   "id": "IMREAL#10",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1,00+2i\")"
+  },
+  {
+   "id": "IMAGINARY#10",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1,00+2i\")"
+  },
+  {
+   "id": "IMREAL#11",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(1)+2i\")"
+  },
+  {
+   "id": "IMAGINARY#11",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"(1)+2i\")"
+  },
+  {
+   "id": "IMREAL#12",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#12",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+(2)i\")"
+  },
+  {
+   "id": "IMREAL#13",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-(1)+i\")"
+  },
+  {
+   "id": "IMAGINARY#13",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-(1)+i\")"
+  },
+  {
+   "id": "IMREAL#14",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 1/2+i\")"
+  },
+  {
+   "id": "IMAGINARY#14",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 1/2+i\")"
+  },
+  {
+   "id": "IMREAL#15",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+1 1/2i\")"
+  },
+  {
+   "id": "IMAGINARY#15",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+1 1/2i\")"
+  },
+  {
+   "id": "IMREAL#16",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1/2+3i\")"
+  },
+  {
+   "id": "IMAGINARY#16",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1/2+3i\")"
+  },
+  {
+   "id": "IMREAL#17",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1/2/2025+i\")"
+  },
+  {
+   "id": "IMAGINARY#17",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1/2/2025+i\")"
+  },
+  {
+   "id": "IMREAL#18",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"18:30+i\")"
+  },
+  {
+   "id": "IMAGINARY#18",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"18:30+i\")"
+  },
+  {
+   "id": "IMREAL#19",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+18:30i\")"
+  },
+  {
+   "id": "IMAGINARY#19",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+18:30i\")"
+  },
+  {
+   "id": "IMREAL#20",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"6 PM+i\")"
+  },
+  {
+   "id": "IMAGINARY#20",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"6 PM+i\")"
+  },
+  {
+   "id": "IMREAL#21",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\".5+i\")"
+  },
+  {
+   "id": "IMAGINARY#21",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\".5+i\")"
+  },
+  {
+   "id": "IMREAL#22",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1.+i\")"
+  },
+  {
+   "id": "IMAGINARY#22",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1.+i\")"
+  },
+  {
+   "id": "IMREAL#23",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1.5e1+2i\")"
+  },
+  {
+   "id": "IMAGINARY#23",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1.5e1+2i\")"
+  },
+  {
+   "id": "IMREAL#24",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1E+2+3i\")"
+  },
+  {
+   "id": "IMAGINARY#24",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1E+2+3i\")"
+  },
+  {
+   "id": "IMREAL#25",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2E-1i\")"
+  },
+  {
+   "id": "IMAGINARY#25",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2E-1i\")"
+  },
+  {
+   "id": "IMREAL#26",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1e+i\")"
+  },
+  {
+   "id": "IMAGINARY#26",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1e+i\")"
+  },
+  {
+   "id": "IMREAL#27",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\" 1 + 2 i\")"
+  },
+  {
+   "id": "IMAGINARY#27",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\" 1 + 2 i\")"
+  },
+  {
+   "id": "IMREAL#28",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"+1+2i\")"
+  },
+  {
+   "id": "IMAGINARY#28",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"+1+2i\")"
+  },
+  {
+   "id": "IMREAL#29",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"+1-+2i\")"
+  },
+  {
+   "id": "IMAGINARY#29",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"+1-+2i\")"
+  },
+  {
+   "id": "IMREAL#30",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+-2i\")"
+  },
+  {
+   "id": "IMAGINARY#30",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+-2i\")"
+  },
+  {
+   "id": "IMREAL#31",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1--2i\")"
+  },
+  {
+   "id": "IMAGINARY#31",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1--2i\")"
+  },
+  {
+   "id": "IMREAL#32",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"TRUE+i\")"
+  },
+  {
+   "id": "IMAGINARY#32",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"TRUE+i\")"
+  },
+  {
+   "id": "IMREAL#33",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+TRUE i\")"
+  },
+  {
+   "id": "IMAGINARY#33",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+TRUE i\")"
+  },
+  {
+   "id": "IMREAL#34",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 000+2i\")"
+  },
+  {
+   "id": "IMAGINARY#34",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 000+2i\")"
+  },
+  {
+   "id": "IMREAL#35",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+1 000i\")"
+  },
+  {
+   "id": "IMAGINARY#35",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+1 000i\")"
+  },
+  {
+   "id": "IMREAL#36",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1.5.5+i\")"
+  },
+  {
+   "id": "IMAGINARY#36",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1.5.5+i\")"
+  },
+  {
+   "id": "IMREAL#37",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"0x1+i\")"
+  },
+  {
+   "id": "IMAGINARY#37",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"0x1+i\")"
+  },
+  {
+   "id": "IMREAL#38",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2ii\")"
+  },
+  {
+   "id": "IMAGINARY#38",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2ii\")"
+  },
+  {
+   "id": "IMREAL#39",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2j\")"
+  },
+  {
+   "id": "IMAGINARY#39",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2j\")"
+  },
+  {
+   "id": "IMREAL#40",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"50%j\")"
+  },
+  {
+   "id": "IMAGINARY#40",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"50%j\")"
+  },
+  {
+   "id": "IMREAL#41",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1E+308+i\")"
+  },
+  {
+   "id": "IMAGINARY#41",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1E+308+i\")"
+  },
+  {
+   "id": "IMREAL#42",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1E+309+i\")"
+  },
+  {
+   "id": "IMAGINARY#42",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1E+309+i\")"
+  },
+  {
+   "id": "IMREAL#43",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"9.99999999999999E+307+i\")"
+  },
+  {
+   "id": "IMAGINARY#43",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"9.99999999999999E+307+i\")"
+  },
+  {
+   "id": "IMREAL#44",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+ i\")"
+  },
+  {
+   "id": "IMAGINARY#44",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+ i\")"
+  },
+  {
+   "id": "IMREAL#45",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"i\")"
+  },
+  {
+   "id": "IMAGINARY#45",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"i\")"
+  },
+  {
+   "id": "IMREAL#46",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-i\")"
+  },
+  {
+   "id": "IMAGINARY#46",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-i\")"
+  },
+  {
+   "id": "IMREAL#47",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"50%\")"
+  },
+  {
+   "id": "IMAGINARY#47",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"50%\")"
+  },
+  {
+   "id": "IMREAL#48",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"$1\")"
+  },
+  {
+   "id": "IMAGINARY#48",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"$1\")"
+  },
+  {
+   "id": "IMREAL#49",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1,000\")"
+  },
+  {
+   "id": "IMAGINARY#49",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1,000\")"
+  },
+  {
+   "id": "IMREAL#50",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(5)\")"
+  },
+  {
+   "id": "IMAGINARY#50",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"(5)\")"
+  },
+  {
+   "id": "IMREAL#51",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"- 1+i\")"
+  },
+  {
+   "id": "IMAGINARY#51",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"- 1+i\")"
+  },
+  {
+   "id": "IMREAL#52",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"+ 1+i\")"
+  },
+  {
+   "id": "IMAGINARY#52",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"+ 1+i\")"
+  },
+  {
+   "id": "IMREAL#53",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 +2i\")"
+  },
+  {
+   "id": "IMAGINARY#53",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 +2i\")"
+  },
+  {
+   "id": "IMREAL#54",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+ 2i\")"
+  },
+  {
+   "id": "IMAGINARY#54",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+ 2i\")"
+  },
+  {
+   "id": "IMREAL#55",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2 i\")"
+  },
+  {
+   "id": "IMAGINARY#55",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2 i\")"
+  },
+  {
+   "id": "IMREAL#56",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2i \")"
+  },
+  {
+   "id": "IMAGINARY#56",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2i \")"
+  },
+  {
+   "id": "IMREAL#57",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\" i\")"
+  },
+  {
+   "id": "IMAGINARY#57",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\" i\")"
+  },
+  {
+   "id": "IMREAL#58",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"- i\")"
+  },
+  {
+   "id": "IMAGINARY#58",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"- i\")"
+  },
+  {
+   "id": "IMREAL#59",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 + i\")"
+  },
+  {
+   "id": "IMAGINARY#59",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 + i\")"
+  },
+  {
+   "id": "IMREAL#60",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-(1)-(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#60",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-(1)-(2)i\")"
+  },
+  {
+   "id": "IMREAL#61",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-$1-$2i\")"
+  },
+  {
+   "id": "IMAGINARY#61",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-$1-$2i\")"
+  },
+  {
+   "id": "IMREAL#62",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(1+2i)\")"
+  },
+  {
+   "id": "IMAGINARY#62",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"(1+2i)\")"
+  },
+  {
+   "id": "IMREAL#63",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2i%\")"
+  },
+  {
+   "id": "IMAGINARY#63",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2i%\")"
+  },
+  {
+   "id": "IMREAL#64",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-1 1/2+i\")"
+  },
+  {
+   "id": "IMAGINARY#64",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-1 1/2+i\")"
+  },
+  {
+   "id": "IMREAL#65",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+-(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#65",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+-(2)i\")"
+  },
+  {
+   "id": "IMREAL#66",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\" -1+2i\")"
+  },
+  {
+   "id": "IMAGINARY#66",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\" -1+2i\")"
+  },
+  {
+   "id": "IMREAL#67",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1 - 2 i\")"
+  },
+  {
+   "id": "IMAGINARY#67",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1 - 2 i\")"
+  },
+  {
+   "id": "IMREAL#68",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"1+2 j\")"
+  },
+  {
+   "id": "IMAGINARY#68",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"1+2 j\")"
+  },
+  {
+   "id": "IMREAL#69",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#69",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-(2)i\")"
+  },
+  {
+   "id": "IMREAL#70",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"+(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#70",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"+(2)i\")"
+  },
+  {
+   "id": "IMREAL#71",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"(2)i\")"
+  },
+  {
+   "id": "IMAGINARY#71",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"(2)i\")"
+  },
+  {
+   "id": "IMREAL#72",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"-$2i\")"
+  },
+  {
+   "id": "IMAGINARY#72",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"-$2i\")"
+  },
+  {
+   "id": "IMREAL#73",
+   "group": "IMREAL",
+   "fn": "IMREAL",
+   "formula": "IMREAL(\"- 2i\")"
+  },
+  {
+   "id": "IMAGINARY#73",
+   "group": "IMAGINARY",
+   "fn": "IMAGINARY",
+   "formula": "IMAGINARY(\"- 2i\")"
+  },
+  {
+   "id": "IMSUM#1",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"50%+i\",\"1+i\")"
+  },
+  {
+   "id": "IMABS#1",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(\"50%+i\")"
+  },
+  {
+   "id": "IMSUM#2",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"$1+2i\",\"1+i\")"
+  },
+  {
+   "id": "IMABS#2",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(\"$1+2i\")"
+  },
+  {
+   "id": "IMSUM#3",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"1,000+2i\",\"1+i\")"
+  },
+  {
+   "id": "IMABS#3",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(\"1,000+2i\")"
+  },
+  {
+   "id": "IMSUM#4",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"1+50%i\",\"1+i\")"
+  },
+  {
+   "id": "IMABS#4",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(\"1+50%i\")"
+  },
+  {
+   "id": "IMSUM#5",
+   "group": "IMSUM",
+   "fn": "IMSUM",
+   "formula": "IMSUM(\"(1)+2i\",\"1+i\")"
+  },
+  {
+   "id": "IMABS#5",
+   "group": "IMABS",
+   "fn": "IMABS",
+   "formula": "IMABS(\"(1)+2i\")"
+  }
+ ],
+ "values": {
+  "IMREAL#1": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMAGINARY#1": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#2": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#2": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMREAL#3": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMAGINARY#3": {
+   "t": "n",
+   "v": -0.5
+  },
+  "IMREAL#4": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMAGINARY#4": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#5": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#5": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#6": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#6": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#7": {
+   "t": "n",
+   "v": 1000.5
+  },
+  "IMAGINARY#7": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#8": {
+   "t": "n",
+   "v": 1000
+  },
+  "IMAGINARY#8": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#9": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#9": {
+   "t": "n",
+   "v": 1000
+  },
+  "IMREAL#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#10": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#11": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#11": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#12": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#12": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#13": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#13": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#14": {
+   "t": "n",
+   "v": 1.5
+  },
+  "IMAGINARY#14": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#15": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#15": {
+   "t": "n",
+   "v": 1.5
+  },
+  "IMREAL#16": {
+   "t": "n",
+   "v": 46024
+  },
+  "IMAGINARY#16": {
+   "t": "n",
+   "v": 3
+  },
+  "IMREAL#17": {
+   "t": "n",
+   "v": 45659
+  },
+  "IMAGINARY#17": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#18": {
+   "t": "n",
+   "v": 0.7708333333333334
+  },
+  "IMAGINARY#18": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#19": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#19": {
+   "t": "n",
+   "v": 0.7708333333333334
+  },
+  "IMREAL#20": {
+   "t": "n",
+   "v": 0.75
+  },
+  "IMAGINARY#20": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#21": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMAGINARY#21": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#22": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#22": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#23": {
+   "t": "n",
+   "v": 15
+  },
+  "IMAGINARY#23": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#24": {
+   "t": "n",
+   "v": 100
+  },
+  "IMAGINARY#24": {
+   "t": "n",
+   "v": 3
+  },
+  "IMREAL#25": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#25": {
+   "t": "n",
+   "v": 0.2
+  },
+  "IMREAL#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#26": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#27": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#27": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#28": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#28": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#29": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#29": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#30": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#30": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#31": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#31": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#32": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#33": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#34": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#35": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#36": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#36": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#37": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#37": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#38": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#38": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#39": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#39": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#40": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#40": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMREAL#41": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#41": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#42": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#42": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#43": {
+   "t": "n",
+   "v": 9.99999999999999e+307
+  },
+  "IMAGINARY#43": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#44": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#44": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#45": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#45": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#46": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#46": {
+   "t": "n",
+   "v": -1
+  },
+  "IMREAL#47": {
+   "t": "n",
+   "v": 0.5
+  },
+  "IMAGINARY#47": {
+   "t": "n",
+   "v": 0
+  },
+  "IMREAL#48": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#48": {
+   "t": "n",
+   "v": 0
+  },
+  "IMREAL#49": {
+   "t": "n",
+   "v": 1000
+  },
+  "IMAGINARY#49": {
+   "t": "n",
+   "v": 0
+  },
+  "IMREAL#50": {
+   "t": "n",
+   "v": -5
+  },
+  "IMAGINARY#50": {
+   "t": "n",
+   "v": 0
+  },
+  "IMREAL#51": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#51": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#52": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#52": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#53": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#53": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#54": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#54": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#55": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#55": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#56": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#56": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#57": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#57": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#58": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#58": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#59": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#59": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#60": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#60": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#61": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#61": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#62": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#62": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#63": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#63": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#64": {
+   "t": "n",
+   "v": -1.5
+  },
+  "IMAGINARY#64": {
+   "t": "n",
+   "v": 1
+  },
+  "IMREAL#65": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMAGINARY#65": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IMREAL#66": {
+   "t": "n",
+   "v": -1
+  },
+  "IMAGINARY#66": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#67": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#67": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#68": {
+   "t": "n",
+   "v": 1
+  },
+  "IMAGINARY#68": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#69": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#69": {
+   "t": "n",
+   "v": 2
+  },
+  "IMREAL#70": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#70": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#71": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#71": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#72": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#72": {
+   "t": "n",
+   "v": -2
+  },
+  "IMREAL#73": {
+   "t": "n",
+   "v": 0
+  },
+  "IMAGINARY#73": {
+   "t": "n",
+   "v": -2
+  },
+  "IMSUM#1": {
+   "t": "s",
+   "v": "1.5+2i"
+  },
+  "IMABS#1": {
+   "t": "n",
+   "v": 1.118033988749895
+  },
+  "IMSUM#2": {
+   "t": "s",
+   "v": "2+3i"
+  },
+  "IMABS#2": {
+   "t": "n",
+   "v": 2.23606797749979
+  },
+  "IMSUM#3": {
+   "t": "s",
+   "v": "1001+3i"
+  },
+  "IMABS#3": {
+   "t": "n",
+   "v": 1000.0019999979999
+  },
+  "IMSUM#4": {
+   "t": "s",
+   "v": "2+1.5i"
+  },
+  "IMABS#4": {
+   "t": "n",
+   "v": 1.118033988749895
+  },
+  "IMSUM#5": {
+   "t": "s",
+   "v": "3i"
+  },
+  "IMABS#5": {
+   "t": "n",
+   "v": 2.23606797749979
+  }
+ }
+}

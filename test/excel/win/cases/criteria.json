@@ -1,0 +1,707 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 369.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "COUNTIF#1",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,D!A7)"
+  },
+  {
+   "id": "COUNTIF#2",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,D!A8)"
+  },
+  {
+   "id": "COUNTIF#3",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,1/0)"
+  },
+  {
+   "id": "COUNTIF#4",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#DIV/0!\")"
+  },
+  {
+   "id": "COUNTIF#5",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"=#DIV/0!\")"
+  },
+  {
+   "id": "COUNTIF#6",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"<>#DIV/0!\")"
+  },
+  {
+   "id": "COUNTIF#7",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#N/A\")"
+  },
+  {
+   "id": "COUNTIF#8",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"<>#N/A\")"
+  },
+  {
+   "id": "COUNTIF#9",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"=#N/A\")"
+  },
+  {
+   "id": "COUNTIF#10",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#n/a\")"
+  },
+  {
+   "id": "COUNTIF#11",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#DIV*\")"
+  },
+  {
+   "id": "COUNTIF#12",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\">#DIV/0!\")"
+  },
+  {
+   "id": "COUNTIF#13",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"<#N/A\")"
+  },
+  {
+   "id": "COUNTIF#14",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#NUM!\")"
+  },
+  {
+   "id": "COUNTIF#15",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#NULL!\")"
+  },
+  {
+   "id": "COUNTIF#16",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#VALUE!\")"
+  },
+  {
+   "id": "COUNTIF#17",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\" #N/A\")"
+  },
+  {
+   "id": "COUNTIF#18",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A1:A15,\"#DIV/0\")"
+  },
+  {
+   "id": "COUNTIF#19",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A:A,D!A7)"
+  },
+  {
+   "id": "COUNTIF#20",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A:A,\"<>#N/A\")"
+  },
+  {
+   "id": "COUNTIF#21",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(CR!C1:C4,\"#DIV/0!\")"
+  },
+  {
+   "id": "COUNTIF#22",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(CR!C1:C4,\"#N/A\")"
+  },
+  {
+   "id": "COUNTIF#23",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(CR!C1:C4,\"#NUM!\")"
+  },
+  {
+   "id": "COUNTIF#24",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(CR!C1:C4,D!A7)"
+  },
+  {
+   "id": "COUNTIF#25",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(CR!C1:C4,\"<>#N/A\")"
+  },
+  {
+   "id": "COUNTIF#26",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!E1:E8,D!A7)"
+  },
+  {
+   "id": "COUNTIF#27",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!E1:E8,\"<>#DIV/0!\")"
+  },
+  {
+   "id": "ISTEXT#1",
+   "group": "ISTEXT",
+   "fn": "ISTEXT",
+   "formula": "ISTEXT(CR!C1)"
+  },
+  {
+   "id": "SUMIF#1",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,D!A7,CR!A1:A15)"
+  },
+  {
+   "id": "SUMIF#2",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,D!A8,CR!A1:A15)"
+  },
+  {
+   "id": "SUMIF#3",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,\"#N/A\",CR!A1:A15)"
+  },
+  {
+   "id": "SUMIF#4",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,\"<>#DIV/0!\",CR!A1:A15)"
+  },
+  {
+   "id": "SUMIF#5",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,\"=#DIV/0!\",CR!A1:A15)"
+  },
+  {
+   "id": "SUMIF#6",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,\">=#DIV/0!\",CR!A1:A15)"
+  },
+  {
+   "id": "SUMIF#7",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(CR!C1:C4,\"#N/A\",CR!D1:D4)"
+  },
+  {
+   "id": "SUMIF#8",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!E1:E8,D!A7,D!B1:B8)"
+  },
+  {
+   "id": "SUMIF#9",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(D!A1:A15,D!A7)"
+  },
+  {
+   "id": "SUMIF#10",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(CR!B1:B8,\"a\",D!E1:E8)"
+  },
+  {
+   "id": "SUMIF#11",
+   "group": "SUMIF",
+   "fn": "SUMIF",
+   "formula": "SUMIF(CR!B1:B8,\"b\",D!E1:E8)"
+  },
+  {
+   "id": "SUMIFS#1",
+   "group": "SUMIFS",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(CR!A1:A15,D!A1:A15,D!A7)"
+  },
+  {
+   "id": "SUMIFS#2",
+   "group": "SUMIFS",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(CR!A1:A15,D!A1:A15,\"<>#N/A\",D!A1:A15,\"<>#DIV/0!\")"
+  },
+  {
+   "id": "SUMIFS#3",
+   "group": "SUMIFS",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(D!E1:E8,CR!B1:B8,\"a\")"
+  },
+  {
+   "id": "SUMIFS#4",
+   "group": "SUMIFS",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(D!B1:B8,D!E1:E8,\"#DIV/0!\")"
+  },
+  {
+   "id": "COUNTIFS#1",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(D!A1:A15,\"#N/A\",CR!A1:A15,\">100\")"
+  },
+  {
+   "id": "COUNTIFS#2",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(D!A1:A15,D!A7,D!A1:A15,\"<>#N/A\")"
+  },
+  {
+   "id": "COUNTIFS#3",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(D!E1:E8,D!A7)"
+  },
+  {
+   "id": "COUNTIFS#4",
+   "group": "COUNTIFS",
+   "fn": "COUNTIFS",
+   "formula": "COUNTIFS(D!A:A,\"<>#DIV/0!\",D!A:A,\"<>#N/A\")"
+  },
+  {
+   "id": "AVERAGEIF#1",
+   "group": "AVERAGEIF",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(D!A1:A15,\"#N/A\",CR!A1:A15)"
+  },
+  {
+   "id": "AVERAGEIF#2",
+   "group": "AVERAGEIF",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(D!A1:A15,D!A7)"
+  },
+  {
+   "id": "AVERAGEIF#3",
+   "group": "AVERAGEIF",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(CR!B1:B8,\"b\",D!E1:E8)"
+  },
+  {
+   "id": "AVERAGEIF#4",
+   "group": "AVERAGEIF",
+   "fn": "AVERAGEIF",
+   "formula": "AVERAGEIF(D!E1:E8,D!A7,D!B1:B8)"
+  },
+  {
+   "id": "AVERAGEIFS#1",
+   "group": "AVERAGEIFS",
+   "fn": "AVERAGEIFS",
+   "formula": "AVERAGEIFS(CR!A1:A15,D!A1:A15,D!A8)"
+  },
+  {
+   "id": "AVERAGEIFS#2",
+   "group": "AVERAGEIFS",
+   "fn": "AVERAGEIFS",
+   "formula": "AVERAGEIFS(D!B1:B8,D!E1:E8,\"#DIV/0!\")"
+  },
+  {
+   "id": "MAXIFS#1",
+   "group": "MAXIFS",
+   "fn": "MAXIFS",
+   "formula": "_xlfn.MAXIFS(CR!A1:A15,D!A1:A15,\"<>#N/A\")"
+  },
+  {
+   "id": "MAXIFS#2",
+   "group": "MAXIFS",
+   "fn": "MAXIFS",
+   "formula": "_xlfn.MAXIFS(D!E1:E8,CR!B1:B8,\"b\")"
+  },
+  {
+   "id": "MAXIFS#3",
+   "group": "MAXIFS",
+   "fn": "MAXIFS",
+   "formula": "_xlfn.MAXIFS(D!E1:E8,CR!B1:B8,\"a\")"
+  },
+  {
+   "id": "MINIFS#1",
+   "group": "MINIFS",
+   "fn": "MINIFS",
+   "formula": "_xlfn.MINIFS(CR!A1:A15,D!A1:A15,\"#DIV/0!\")"
+  },
+  {
+   "id": "MINIFS#2",
+   "group": "MINIFS",
+   "fn": "MINIFS",
+   "formula": "_xlfn.MINIFS(CR!A1:A15,D!A1:A15,\">#DIV/0!\")"
+  },
+  {
+   "id": "DCOUNTA#1",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A6:A8,1,D!A6:A7)"
+  },
+  {
+   "id": "DCOUNTA#2",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A6:A8,1,D!A6:A8)"
+  },
+  {
+   "id": "DCOUNTA#3",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A6:A8,1,CR!E1:E2)"
+  },
+  {
+   "id": "DCOUNTA#4",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A6:A8,1,CR!F1:F2)"
+  },
+  {
+   "id": "DCOUNTA#5",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A6:A8,1,CR!G1:G2)"
+  },
+  {
+   "id": "DCOUNTA#6",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A6:A8,1,CR!E1:E1)"
+  },
+  {
+   "id": "DCOUNTA#7",
+   "group": "DCOUNTA",
+   "fn": "DCOUNTA",
+   "formula": "DCOUNTA(D!A5:A8,1,CR!E1:E2)"
+  },
+  {
+   "id": "DCOUNT#1",
+   "group": "DCOUNT",
+   "fn": "DCOUNT",
+   "formula": "DCOUNT(D!A6:A8,1,CR!E1:E2)"
+  },
+  {
+   "id": "DGET#1",
+   "group": "DGET",
+   "fn": "DGET",
+   "formula": "DGET(D!A6:A8,1,CR!E1:E2)"
+  },
+  {
+   "id": "DGET#2",
+   "group": "DGET",
+   "fn": "DGET",
+   "formula": "DGET(D!A6:A8,1,D!A6:A7)"
+  },
+  {
+   "id": "DGET#3",
+   "group": "DGET",
+   "fn": "DGET",
+   "formula": "DGET(D!A6:A8,1,CR!G1:G2)"
+  }
+ ],
+ "values": {
+  "COUNTIF#1": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#2": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#3": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#4": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#5": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#6": {
+   "t": "n",
+   "v": 14
+  },
+  "COUNTIF#7": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#8": {
+   "t": "n",
+   "v": 14
+  },
+  "COUNTIF#9": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#10": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#11": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#12": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#13": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#14": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#15": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#16": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#17": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#18": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#19": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#20": {
+   "t": "n",
+   "v": 1048575
+  },
+  "COUNTIF#21": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#22": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#23": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#24": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#25": {
+   "t": "n",
+   "v": 4
+  },
+  "COUNTIF#26": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#27": {
+   "t": "n",
+   "v": 7
+  },
+  "ISTEXT#1": {
+   "t": "b",
+   "v": true
+  },
+  "SUMIF#1": {
+   "t": "n",
+   "v": 64
+  },
+  "SUMIF#2": {
+   "t": "n",
+   "v": 128
+  },
+  "SUMIF#3": {
+   "t": "n",
+   "v": 128
+  },
+  "SUMIF#4": {
+   "t": "n",
+   "v": 32703
+  },
+  "SUMIF#5": {
+   "t": "n",
+   "v": 64
+  },
+  "SUMIF#6": {
+   "t": "n",
+   "v": 192
+  },
+  "SUMIF#7": {
+   "t": "n",
+   "v": 0
+  },
+  "SUMIF#8": {
+   "t": "n",
+   "v": 15
+  },
+  "SUMIF#9": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMIF#10": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMIF#11": {
+   "t": "n",
+   "v": 20
+  },
+  "SUMIFS#1": {
+   "t": "n",
+   "v": 64
+  },
+  "SUMIFS#2": {
+   "t": "n",
+   "v": 32575
+  },
+  "SUMIFS#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMIFS#4": {
+   "t": "n",
+   "v": 15
+  },
+  "COUNTIFS#1": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIFS#2": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIFS#3": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIFS#4": {
+   "t": "n",
+   "v": 1048574
+  },
+  "AVERAGEIF#1": {
+   "t": "n",
+   "v": 128
+  },
+  "AVERAGEIF#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "AVERAGEIF#3": {
+   "t": "n",
+   "v": 5
+  },
+  "AVERAGEIF#4": {
+   "t": "n",
+   "v": 15
+  },
+  "AVERAGEIFS#1": {
+   "t": "n",
+   "v": 128
+  },
+  "AVERAGEIFS#2": {
+   "t": "n",
+   "v": 15
+  },
+  "MAXIFS#1": {
+   "t": "n",
+   "v": 16384
+  },
+  "MAXIFS#2": {
+   "t": "n",
+   "v": 8
+  },
+  "MAXIFS#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "MINIFS#1": {
+   "t": "n",
+   "v": 64
+  },
+  "MINIFS#2": {
+   "t": "n",
+   "v": 128
+  },
+  "DCOUNTA#1": {
+   "t": "n",
+   "v": 1
+  },
+  "DCOUNTA#2": {
+   "t": "n",
+   "v": 2
+  },
+  "DCOUNTA#3": {
+   "t": "n",
+   "v": 1
+  },
+  "DCOUNTA#4": {
+   "t": "n",
+   "v": 1
+  },
+  "DCOUNTA#5": {
+   "t": "n",
+   "v": 1
+  },
+  "DCOUNTA#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DCOUNTA#7": {
+   "t": "n",
+   "v": 0
+  },
+  "DCOUNT#1": {
+   "t": "n",
+   "v": 0
+  },
+  "DGET#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "DGET#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "DGET#3": {
+   "t": "e",
+   "v": "NA"
+  }
+ }
+}

@@ -1,0 +1,157 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 369.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.285,\"0%\")"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.145,\"0%\")"
+  },
+  {
+   "id": "TEXT#3",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.0285,\"0.0%\")"
+  },
+  {
+   "id": "TEXT#4",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1.0005,\"0.0%\")"
+  },
+  {
+   "id": "TEXT#5",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.575,\"0%\")"
+  },
+  {
+   "id": "TEXT#6",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.285,\"0.%\")"
+  },
+  {
+   "id": "TEXT#7",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234500,\"#,##0,\")"
+  },
+  {
+   "id": "TEXT#8",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(2500,\"0,\")"
+  },
+  {
+   "id": "TEXT#9",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1234567500,\"0.0,,\")"
+  },
+  {
+   "id": "TEXT#10",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.565,\"0%\")"
+  },
+  {
+   "id": "TEXT#11",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(1.005,\"0.00\")"
+  },
+  {
+   "id": "TEXT#12",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(2.675,\"0.00\")"
+  },
+  {
+   "id": "TEXT#13",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.285,\"0%\")"
+  },
+  {
+   "id": "TEXT#14",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(0.29,\"0%\")"
+  }
+ ],
+ "values": {
+  "TEXT#1": {
+   "t": "s",
+   "v": "29%"
+  },
+  "TEXT#2": {
+   "t": "s",
+   "v": "15%"
+  },
+  "TEXT#3": {
+   "t": "s",
+   "v": "2.9%"
+  },
+  "TEXT#4": {
+   "t": "s",
+   "v": "100.1%"
+  },
+  "TEXT#5": {
+   "t": "s",
+   "v": "58%"
+  },
+  "TEXT#6": {
+   "t": "s",
+   "v": "29.%"
+  },
+  "TEXT#7": {
+   "t": "s",
+   "v": "1,235"
+  },
+  "TEXT#8": {
+   "t": "s",
+   "v": "3"
+  },
+  "TEXT#9": {
+   "t": "s",
+   "v": "1234.6"
+  },
+  "TEXT#10": {
+   "t": "s",
+   "v": "57%"
+  },
+  "TEXT#11": {
+   "t": "s",
+   "v": "1.01"
+  },
+  "TEXT#12": {
+   "t": "s",
+   "v": "2.68"
+  },
+  "TEXT#13": {
+   "t": "s",
+   "v": "-29%"
+  },
+  "TEXT#14": {
+   "t": "s",
+   "v": "29%"
+  }
+ }
+}

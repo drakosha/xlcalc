@@ -1,0 +1,737 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 369.6,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "ACCRINT#1",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#2",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2024,8,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#3",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,1,1),DATE(2023,7,1),DATE(2024,1,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#4",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,15),0.05,1000,2,1,FALSE)"
+  },
+  {
+   "id": "ACCRINT#5",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,4,1),DATE(2024,11,15),0.05,1000,4,1)"
+  },
+  {
+   "id": "ACCRINT#6",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,3,1),DATE(2024,3,1),DATE(2025,6,1),0.05,1000,1,1)"
+  },
+  {
+   "id": "ACCRINT#7",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,2,15),DATE(2024,7,1),DATE(2025,3,1),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#8",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,9,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#9",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,1),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#10",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,2,29),DATE(2024,8,31),DATE(2025,3,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#11",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,1,1),DATE(2023,7,1),DATE(2024,8,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#12",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,15),0.05,1000,2,4)"
+  },
+  {
+   "id": "ACCRINT#13",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(1,39691,39569,0.1,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#14",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(100,39691,39569,0.1,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#15",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(39508,1,39569,0.1,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#16",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(39508,39400,39569,0.1,1000,2,0)"
+  },
+  {
+   "id": "ACCRINTM#1",
+   "group": "ACCRINTM",
+   "fn": "ACCRINTM",
+   "formula": "ACCRINTM(1,DATE(2008,6,15),0.1,1000,3)"
+  },
+  {
+   "id": "PRICE#1",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(1,DATE(2017,11,15),0.0575,0.065,100,2,0)"
+  },
+  {
+   "id": "PRICE#2",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(135,DATE(2017,11,15),0.0575,0.065,100,2,0)"
+  },
+  {
+   "id": "PRICE#3",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(136,DATE(2017,11,15),0.0575,0.065,100,2,0)"
+  },
+  {
+   "id": "PRICE#4",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(137,DATE(2017,11,15),0.0575,0.065,100,2,0)"
+  },
+  {
+   "id": "PRICE#5",
+   "group": "PRICE",
+   "fn": "PRICE",
+   "formula": "PRICE(0,DATE(2017,11,15),0.0575,0.065,100,2,1)"
+  },
+  {
+   "id": "COUPNUM#1",
+   "group": "COUPNUM",
+   "fn": "COUPNUM",
+   "formula": "COUPNUM(135,DATE(2017,11,15),2,0)"
+  },
+  {
+   "id": "DURATION#1",
+   "group": "DURATION",
+   "fn": "DURATION",
+   "formula": "DURATION(1,DATE(2048,1,1),0.08,0.09,2,1)"
+  },
+  {
+   "id": "MDURATION#1",
+   "group": "MDURATION",
+   "fn": "MDURATION",
+   "formula": "MDURATION(0,DATE(2048,1,1),0.08,0.09,2,1)"
+  },
+  {
+   "id": "YIELD#1",
+   "group": "YIELD",
+   "fn": "YIELD",
+   "formula": "YIELD(136,DATE(2017,11,15),0.0575,95,100,2,0)"
+  },
+  {
+   "id": "AMORDEGRC#1",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,0,DATE(2008,12,31),300,0,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#2",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,0,DATE(2008,12,31),300,2,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#3",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,0,DATE(2008,12,31),300,1,0.15,0)"
+  },
+  {
+   "id": "AMORDEGRC#4",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,1,DATE(2008,12,31),300,1,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#5",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,0,DATE(2008,12,31),300,3,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#6",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(2008,1,1),DATE(2008,12,31),300,1,0.15,1)"
+  },
+  {
+   "id": "AMORLINC#1",
+   "group": "AMORLINC",
+   "fn": "AMORLINC",
+   "formula": "AMORLINC(2400,0,DATE(2008,12,31),300,0,0.15,1)"
+  },
+  {
+   "id": "XNPV#1",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,{-1000,600,600},{0,365,730})"
+  },
+  {
+   "id": "XNPV#2",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,{-1000,600,600},{1,366,731})"
+  },
+  {
+   "id": "XNPV#3",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,{-1000,600,600},{40000,0,40100})"
+  },
+  {
+   "id": "XNPV#4",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,{-1000,600},{0.5,365})"
+  },
+  {
+   "id": "XIRR#1",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR({-1000,600,600},{0,365,730})"
+  },
+  {
+   "id": "XIRR#2",
+   "group": "XIRR",
+   "fn": "XIRR",
+   "formula": "XIRR({-1000,600,600},{1,366,731})"
+  },
+  {
+   "id": "WORKDAY#1",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A1)"
+  },
+  {
+   "id": "WORKDAY#2",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A1:A2)"
+  },
+  {
+   "id": "WORKDAY#3",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A1:A3)"
+  },
+  {
+   "id": "WORKDAY#4",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A4)"
+  },
+  {
+   "id": "WORKDAY#5",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A1:A6)"
+  },
+  {
+   "id": "WORKDAY#6",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A5)"
+  },
+  {
+   "id": "WORKDAY#7",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A7)"
+  },
+  {
+   "id": "WORKDAY#8",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,H!A8)"
+  },
+  {
+   "id": "WORKDAY#9",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,\"1/6/2025\")"
+  },
+  {
+   "id": "WORKDAY#10",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,{\"1/6/2025\"})"
+  },
+  {
+   "id": "WORKDAY.INTL#1",
+   "group": "WORKDAY.INTL",
+   "fn": "WORKDAY.INTL",
+   "formula": "_xlfn.WORKDAY.INTL(DATE(2025,1,1),5,1,H!A1)"
+  },
+  {
+   "id": "NETWORKDAYS#1",
+   "group": "NETWORKDAYS",
+   "fn": "NETWORKDAYS",
+   "formula": "NETWORKDAYS(DATE(2025,1,1),DATE(2025,1,10),H!A1)"
+  },
+  {
+   "id": "NETWORKDAYS.INTL#1",
+   "group": "NETWORKDAYS.INTL",
+   "fn": "NETWORKDAYS.INTL",
+   "formula": "_xlfn.NETWORKDAYS.INTL(DATE(2025,1,1),DATE(2025,1,10),1,H!A1:A2)"
+  },
+  {
+   "id": "ACCRINT#17",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,1),0.05,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#18",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,1),0.05,1000,2,2)"
+  },
+  {
+   "id": "ACCRINT#19",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,1),0.05,1000,2,3)"
+  },
+  {
+   "id": "ACCRINT#20",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2025,1,1),0.05,1000,2,4)"
+  },
+  {
+   "id": "ACCRINT#21",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2024,1,1),DATE(2024,4,1),DATE(2024,10,1),0.05,1000,4,1)"
+  },
+  {
+   "id": "ACCRINT#22",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,8,1),DATE(2024,7,1),DATE(2024,8,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#23",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(DATE(2023,8,1),DATE(2024,7,1),DATE(2024,3,15),0.05,1000,2,1)"
+  },
+  {
+   "id": "ACCRINT#24",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(58,39691,39569,0.1,1000,2,0)"
+  },
+  {
+   "id": "ACCRINT#25",
+   "group": "ACCRINT",
+   "fn": "ACCRINT",
+   "formula": "ACCRINT(60,39691,39569,0.1,1000,2,0)"
+  },
+  {
+   "id": "AMORDEGRC#7",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(2008,8,19),DATE(2008,12,31),2000,1,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#8",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(2008,8,19),DATE(2008,12,31),2000,2,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#9",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(2008,8,19),DATE(2008,12,31),1500,1,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#10",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(2008,8,19),DATE(2008,12,31),300,5,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#11",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(2008,8,19),DATE(2008,12,31),2300,0,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#12",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(1950,1,1),DATE(2008,12,31),300,0,0.15,1)"
+  },
+  {
+   "id": "AMORDEGRC#13",
+   "group": "AMORDEGRC",
+   "fn": "AMORDEGRC",
+   "formula": "AMORDEGRC(2400,DATE(1950,1,1),DATE(2008,12,31),300,1,0.15,1)"
+  },
+  {
+   "id": "AMORLINC#2",
+   "group": "AMORLINC",
+   "fn": "AMORLINC",
+   "formula": "AMORLINC(2400,DATE(1950,1,1),DATE(2008,12,31),300,0,0.15,1)"
+  },
+  {
+   "id": "AMORLINC#3",
+   "group": "AMORLINC",
+   "fn": "AMORLINC",
+   "formula": "AMORLINC(2400,DATE(1950,1,1),DATE(2008,12,31),300,1,0.15,1)"
+  },
+  {
+   "id": "XNPV#5",
+   "group": "XNPV",
+   "fn": "XNPV",
+   "formula": "XNPV(0.1,{-1000,600,600},{0,0,365})"
+  },
+  {
+   "id": "WORKDAY#11",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(DATE(2025,1,1),5,{\"1/6/2025\";\"abc\"})"
+  }
+ ],
+ "values": {
+  "ACCRINT#1": {
+   "t": "n",
+   "v": 51.92307692307692
+  },
+  "ACCRINT#2": {
+   "t": "n",
+   "v": 31.181318681318682
+  },
+  "ACCRINT#3": {
+   "t": "n",
+   "v": 51.93370165745856
+  },
+  "ACCRINT#4": {
+   "t": "n",
+   "v": 52.197802197802204
+  },
+  "ACCRINT#5": {
+   "t": "n",
+   "v": 43.68131868131868
+  },
+  "ACCRINT#6": {
+   "t": "n",
+   "v": 112.56830601092895
+  },
+  "ACCRINT#7": {
+   "t": "n",
+   "v": 51.92307692307692
+  },
+  "ACCRINT#8": {
+   "t": "n",
+   "v": 85.43956043956045
+  },
+  "ACCRINT#9": {
+   "t": "n",
+   "v": 50.27472527472527
+  },
+  "ACCRINT#10": {
+   "t": "n",
+   "v": 52.03804347826087
+  },
+  "ACCRINT#11": {
+   "t": "n",
+   "v": 81.21546961325967
+  },
+  "ACCRINT#12": {
+   "t": "n",
+   "v": 51.944444444444436
+  },
+  "ACCRINT#13": {
+   "t": "n",
+   "v": 0
+  },
+  "ACCRINT#14": {
+   "t": "n",
+   "v": 10806.38888888889
+  },
+  "ACCRINT#15": {
+   "t": "n",
+   "v": 16.666666666666664
+  },
+  "ACCRINT#16": {
+   "t": "n",
+   "v": 16.666666666666664
+  },
+  "ACCRINTM#1": {
+   "t": "n",
+   "v": 10852.876712328767
+  },
+  "PRICE#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICE#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PRICE#3": {
+   "t": "n",
+   "v": 88.46781880983484
+  },
+  "PRICE#4": {
+   "t": "n",
+   "v": 88.4675672636994
+  },
+  "PRICE#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COUPNUM#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DURATION#1": {
+   "t": "n",
+   "v": 11.611123050364789
+  },
+  "MDURATION#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "YIELD#1": {
+   "t": "n",
+   "v": 0.06052920408729038
+  },
+  "AMORDEGRC#1": {
+   "t": "n",
+   "v": 2100
+  },
+  "AMORDEGRC#2": {
+   "t": "n",
+   "v": 0
+  },
+  "AMORDEGRC#3": {
+   "t": "n",
+   "v": 113
+  },
+  "AMORDEGRC#4": {
+   "t": "n",
+   "v": 113
+  },
+  "AMORDEGRC#5": {
+   "t": "n",
+   "v": 0
+  },
+  "AMORDEGRC#6": {
+   "t": "n",
+   "v": 563
+  },
+  "AMORLINC#1": {
+   "t": "n",
+   "v": 2100
+  },
+  "XNPV#1": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XNPV#2": {
+   "t": "n",
+   "v": 41.32231404958662
+  },
+  "XNPV#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XNPV#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "XIRR#1": {
+   "t": "n",
+   "v": 0.13066238760948182
+  },
+  "XIRR#2": {
+   "t": "n",
+   "v": 0.13066238760948182
+  },
+  "WORKDAY#1": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY#2": {
+   "t": "n",
+   "v": 45667
+  },
+  "WORKDAY#3": {
+   "t": "n",
+   "v": 45670
+  },
+  "WORKDAY#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WORKDAY#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WORKDAY#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WORKDAY#7": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY#8": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY#9": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY#10": {
+   "t": "n",
+   "v": 45666
+  },
+  "WORKDAY.INTL#1": {
+   "t": "n",
+   "v": 45666
+  },
+  "NETWORKDAYS#1": {
+   "t": "n",
+   "v": 7
+  },
+  "NETWORKDAYS.INTL#1": {
+   "t": "n",
+   "v": 6
+  },
+  "ACCRINT#17": {
+   "t": "n",
+   "v": 50
+  },
+  "ACCRINT#18": {
+   "t": "n",
+   "v": 50.55555555555556
+  },
+  "ACCRINT#19": {
+   "t": "n",
+   "v": 50.2054794520548
+  },
+  "ACCRINT#20": {
+   "t": "n",
+   "v": 50
+  },
+  "ACCRINT#21": {
+   "t": "n",
+   "v": 37.637362637362635
+  },
+  "ACCRINT#22": {
+   "t": "n",
+   "v": 51.969362159579546
+  },
+  "ACCRINT#23": {
+   "t": "n",
+   "v": 30.95287864309604
+  },
+  "ACCRINT#24": {
+   "t": "n",
+   "v": 0
+  },
+  "ACCRINT#25": {
+   "t": "n",
+   "v": 10817.500000000002
+  },
+  "AMORDEGRC#7": {
+   "t": "n",
+   "v": 776
+  },
+  "AMORDEGRC#8": {
+   "t": "n",
+   "v": 0
+  },
+  "AMORDEGRC#9": {
+   "t": "n",
+   "v": 776
+  },
+  "AMORDEGRC#10": {
+   "t": "n",
+   "v": 158
+  },
+  "AMORDEGRC#11": {
+   "t": "n",
+   "v": 100
+  },
+  "AMORDEGRC#12": {
+   "t": "n",
+   "v": 2100
+  },
+  "AMORDEGRC#13": {
+   "t": "n",
+   "v": 113
+  },
+  "AMORLINC#2": {
+   "t": "n",
+   "v": 2100
+  },
+  "AMORLINC#3": {
+   "t": "n",
+   "v": 0
+  },
+  "XNPV#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "WORKDAY#11": {
+   "t": "e",
+   "v": "VALUE"
+  }
+ }
+}
