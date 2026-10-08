@@ -155,6 +155,30 @@ describe('a restore and the hard deadline', () => {
   }, 60_000)
 })
 
+describe('a restore that fails', () => {
+  it("leaves nothing of the session in the thread's memory", async () => {
+    // a book of 16 MB of text; a thread of 96 MB holds a few of them at most
+    const big = (k: number): BookInput => {
+      const cells: BookInput['sheets'][0]['cells'] = {}
+      for (let r = 1; r <= 4000; r++) cells[`A${r}`] = { value: `${k}:${r}:` + 'x'.repeat(4000) }
+      return { sheets: [{ name: 'S', cells }] }
+    }
+    const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 96, maxSessionsPerThread: 1 })
+    kept(calc)
+    const other = await calc.openSession(chainBook(3), { clock: CLOCK })
+    for (let k = 0; k < 10; k++) {
+      const s = await calc.openSession(big(k), { clock: CLOCK })
+      const r = [...x.recs].at(-1)!
+      // the other session comes back and sends this one off the thread with its snapshot
+      await other.setCells(setA1(k))
+      r.journal = [{ seq: r.seq + 1, op: 'setCells', args: [[{ sheet: 'Gone', cell: 'A1', input: { value: 1 } }]], clock: r.clock }]
+      const e = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 1 } }]))
+      expect([e.code, (e.cause as Error).message], `session ${k}`).toEqual(['restore_failed', expect.stringMatching(/unknown sheet "Gone"/)])
+    }
+    expect((await other.result()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...chainBook(3).sheets[0].cells, A1: { value: 9 } } }] }, { clock: CLOCK }).hash)
+  }, 120_000)
+})
+
 describe('a full pool', () => {
   it('a thread over maxSessionsPerThread: the session called least recently leaves it and comes back on its next call', async () => {
     const { calc, inside: x } = await inside({ threads: 1, maxSessionsPerThread: 2 })
