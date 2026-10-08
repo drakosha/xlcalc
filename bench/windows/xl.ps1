@@ -91,6 +91,38 @@ function Look($ws, $s) {
   List @((List $cells), (List $cols), (List $rows))
 }
 
+# a step of a table case, a line as excel-tables.applescript takes it (bench/coverage/tables.ts); a formula typed in
+# the user's language goes in as Excel 365 enters typed text (Formula2Local)
+function Table($wb, [string]$line) {
+  $p = $line -split "`t"
+  $ws = $wb.Worksheets.Item($p[1])
+  switch ($p[0]) {
+    'e' {
+      $rg = $ws.Range($p[2])
+      switch ($p[3]) {
+        'x' { [void]$rg.ClearContents() }
+        'n' { $rg.Value2 = [double]::Parse($p[4], $inv) }
+        'f' { $rg.Formula2 = $p[4] }
+        'l' { $rg.Formula2Local = $p[4] }
+        default { $rg.Value2 = $p[4] }
+      }
+    }
+    'insr' { [void]$ws.Range($p[2]).EntireRow.Insert(-4121) }
+    'delr' { [void]$ws.Range($p[2]).EntireRow.Delete(-4162) }
+    'insc' { [void]$ws.Range($p[2]).EntireColumn.Insert(-4161) }
+    'delc' { [void]$ws.Range($p[2]).EntireColumn.Delete(-4159) }
+    'rename' { $ws.ListObjects.Item($p[2]).Name = $p[3] }
+    'deltable' { [void]$ws.ListObjects.Item($p[2]).Delete() }
+    'convert' { [void]$ws.ListObjects.Item($p[2]).Unlist() }
+    'totals' { $ws.ListObjects.Item($p[2]).ShowTotals = ($p[3] -eq '1') }
+    'copy' { [void]$ws.Range($p[2]).Copy((Rg $wb $p[3] $p[4])) }
+    'cut' { [void]$ws.Range($p[2]).Cut((Rg $wb $p[3] $p[4])) }
+    'renamesheet' { $ws.Name = $p[2] }
+    'delsheet' { [void]$ws.Delete() }
+    default { throw "unknown table step $($p[0])" }
+  }
+}
+
 function Step($xl, $wb, $s) {
   switch ($s.do) {
     'full' { $xl.CalculateFull(); 'null' }
@@ -135,6 +167,17 @@ function Step($xl, $wb, $s) {
         })
     }
     'names' { List ($wb.Names | ForEach-Object { List @((Str $_.Name), (Str $_.RefersTo)) }) }
+    'table' { try { Table $wb $s.line; 'null' } catch { Err $_ } }
+    'formulasLocal' { Grid (Rg $wb $s.sheet $s.range).FormulaLocal }
+    # every table of the sheets but those named in skip: [sheet, name, range, headers shown, totals shown, [columns]]
+    'tables' {
+      List ($wb.Worksheets | Where-Object { $s.skip -notcontains $_.Name } | ForEach-Object {
+          $ws = $_
+          $ws.ListObjects | ForEach-Object { List @((Str $ws.Name), (Str $_.Name), (Str $_.Range.Address()), (Cell $_.ShowHeaders), (Cell $_.ShowTotals), (List ($_.ListColumns | ForEach-Object { Str $_.Name }))) }
+        })
+    }
+    # the book as Excel saves it (xlsx), beside the answers
+    'saveAs' { $wb.SaveAs((Join-Path $out $s.file), 51); 'null' }
     default { throw "unknown step $($s.do)" }
   }
 }
