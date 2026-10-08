@@ -15,6 +15,10 @@ Fixed:
 - xlsx: a calculated column formula that cannot be written, and the properties of row and column styles the model does not have, are reported in `issues`; a shared formula group larger than the JS argument limit is read.
 - A spill that is settled is no longer recomputed by an edit that does not touch it; results hash without sorting the cells again. Cold compute of the synthetic book is a little faster with closures; the values and hashes are the same.
 
+Added:
+
+- Contract: `Session.hash()` and `AsyncSession.hash()`, the values hash of `result()` without building the result.
+
 ## 0.4.1 (2026-10-08)
 
 Internal release; not published to npm. The xlsx reader and writer carry hidden rows, filters, the 1904 date system, iteration and built-in formats; the intersection and range operators; `#NULL!` joins `ErrorCode`.
