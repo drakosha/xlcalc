@@ -81,8 +81,8 @@ function colNo(s: string, at: number): number {
 function readRef(rest: string, at: number): { ref: RangeRef; len: number } | null {
   const next = (len: number) => rest[len] ?? ''
   let m = CELL_RANGE.exec(rest)
-  // the second cell of `S1:S3!A1` is a sheet's name: the first is a cell alone, before the range operator
-  if (m && m[6] !== undefined && next(m[0].length) === '!') m = CELL_RANGE.exec(rest.slice(0, rest.indexOf(':')))
+  // the second cell of `S1:S3!A1` is a sheet's name, of `A1:E2#` a spill reference: the first is a cell alone, before the range operator
+  if (m && m[6] !== undefined && (next(m[0].length) === '!' || next(m[0].length) === '#')) m = CELL_RANGE.exec(rest.slice(0, rest.indexOf(':')))
   if (m && !IDENT_CHAR.test(next(m[0].length))) {
     const r1 = rowNo(m[4], at)
     const c1 = colNo(m[2], at)

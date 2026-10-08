@@ -16,7 +16,7 @@ Changed:
 
 Added:
 
-- The intersection operator, a space between references (`SUM(A1:C3 B2:D4)`, `#NULL!` where they do not meet), and the range operator between references that are not one range (`A1:INDEX(B1:B9,3)`, `Sales[Qty]:Sales[Price]`), read and computed as in Excel, in xlsx files and `fromLegacy` too (`docs/references.md`).
+- The intersection operator, a space between references (`SUM(A1:C3 B2:D4)`, `#NULL!` where they do not meet), and the range operator between references that are not one range (`A1:INDEX(B1:B9,3)`, `Sales[Qty]:Sales[Price]`), read and computed as in Excel, in xlsx files and `fromLegacy` too; a formula with the range operator reads every cell between its ends, a spill reference as an end (`A1:E2#`) as far as the array spills (`docs/references.md`).
 - xlsx: a sheet's filter mode both ways. `readXlsx` gives `filtered: true` to a sheet whose autofilter has criteria (with Excel's mark `filterMode` or without it), whose table's filter has criteria, or that has the mark without an autofilter (an advanced filter), as Excel takes them; the autofilter's range and criteria are reported (`autoFilter`). `writeXlsx` writes a filtered sheet with criteria every row meets, on its first table with a header row or on an autofilter of its own with the mark, so Excel counts its hidden rows as filtered. Hidden rows and columns, `dateSystem` (`workbookPr date1904`, dates typed in as 1904 serial numbers) and `iteration` (`calcPr iterate`, `iterateCount`, `iterateDelta`) are written too. Checked through Excel 16.113: 8 files with filters in each form and 9 more books of the round trip, their answers predicted before Excel ran them.
 
 ## 0.4.0 (2026-10-08)

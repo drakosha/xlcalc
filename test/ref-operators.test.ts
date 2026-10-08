@@ -76,3 +76,65 @@ describe('the reference operators computed', () => {
     expect(moved.ok && moved.book.sheets[0].cells.E1.formula).toBe('SUM(A1:C4 B3:D5)')
   })
 })
+
+describe('what the range operator reads: every cell between its ends', () => {
+  const both = (book: BookInput) => {
+    const [a, b] = [compute(book), compute(book, { execution: 'eval' })]
+    expect(a.hash).toBe(b.hash)
+    return a
+  }
+  const middle: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'E1*10' }, C1: { value: 1 }, E1: { value: 5 }, D1: { formula: 'SUM(A1:A1:C1)' }, D2: { formula: 'SUM(A1:C1)' } } }] }
+
+  it('a formula between the ends is computed before the range is read', () => {
+    const c = both(middle).sheets[0].cells
+    expect([c.D1.value, c.D2.value]).toEqual([52, 52])
+  })
+
+  it('an edit that a formula between the ends depends on reaches the reader in a session, as a full computation gives', () => {
+    const session = openSession(middle)
+    const changes = session.setCells([{ sheet: 'S', cell: 'E1', input: { value: 100 } }])
+    expect(changes.find((x) => x.cell === 'D1')?.value).toBe(1002)
+    expect(compute(session.book()).hash).toBe(session.result().hash)
+  })
+
+  it('a range around its own cell is a cycle', () => {
+    const own = both({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, C1: { value: 7 }, B1: { formula: 'SUM(A1:A1:C1)' } } }] })
+    expect(own.sheets[0].cells.B1.value).toEqual({ error: 'CYCLE' })
+    const sheets = both({ sheets: [{ name: 'S1', cells: {} }, { name: 'S3', cells: { A1: { value: 7 }, B1: { formula: 'SUM(S1:S3!A1)' } } }] })
+    expect(sheets.sheets[1].cells.B1.value).toEqual({ error: 'CYCLE' })
+  })
+
+  it('ends from INDEX: the cells between the references it can answer, not those it only reads', () => {
+    const cells = { A1: { value: 1 }, D1: { formula: 'E9*2' }, E9: { value: 4 }, G1: { value: 3 }, H5: { formula: 'SUM(INDEX(A1:C1,1,1):INDEX(E1:G1,1,3))' }, M5: { formula: 'SUM(A1:INDEX(A1:A10,MATCH(5,Z1:Z9,0)))' }, Z3: { value: 5 } }
+    const c = both({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
+    expect([c.H5.value, c.M5.value]).toEqual([12, 1])
+    const session = openSession({ sheets: [{ name: 'S', cells }] })
+    expect(session.setCells([{ sheet: 'S', cell: 'E9', input: { value: 10 } }]).find((x) => x.cell === 'H5')?.value).toBe(24)
+  })
+
+  it('a spill reference as an end reads as far as the array spills, and follows it when it grows', () => {
+    const cells = { A1: { value: 1 }, K1: { value: 3 }, B5: { formula: 'SEQUENCE(1,K1)' }, C1: { formula: 'E9*2' }, E2: { formula: 'E9*100' }, E9: { value: 4 }, J9: { formula: 'SUM(A1:B5#)' } }
+    expect(both({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.J9.value).toBe(15)
+    const session = openSession({ sheets: [{ name: 'S', cells }] })
+    expect(session.setCells([{ sheet: 'S', cell: 'K1', input: { value: 4 } }]).find((x) => x.cell === 'J9')?.value).toBe(419)
+    expect(session.setCells([{ sheet: 'S', cell: 'E9', input: { value: 1 } }]).find((x) => x.cell === 'J9')?.value).toBe(113)
+    expect(compute(session.book()).hash).toBe(session.result().hash)
+  })
+
+  it('a formula on the middle sheet of a reference across sheets, and in the second area of a union, comes first too', () => {
+    const book: BookInput = {
+      sheets: [
+        { name: 'Jan', cells: { A1: { value: 1 } } },
+        { name: 'Feb', cells: { A1: { formula: 'Z!A1*10' } } },
+        { name: 'Mar', cells: { A1: { value: 3 } } },
+        { name: 'Z', cells: { A1: { value: 5 }, C1: { value: 1 }, D2: { formula: 'A1*10' }, B1: { formula: 'SUM(Jan:Mar!A1)' }, B2: { formula: 'SUBTOTAL(9,(C1:C2,D1:D2))' }, B3: { formula: 'AGGREGATE(9,4,(C1:C2,D1:D2))' }, B4: { formula: 'SUM(FREQUENCY((C1:C2,D1:D2),10))' } } },
+      ],
+    }
+    const z = both(book).sheets[3].cells
+    expect([z.B1.value, z.B2.value, z.B3.value, z.B4.value]).toEqual([54, 51, 51, 2])
+    const session = openSession(book)
+    session.setCells([{ sheet: 'Z', cell: 'A1', input: { value: 7 } }])
+    const after = session.result().sheets[3].cells
+    expect([after.B1.value, after.B2.value, after.B3.value]).toEqual([74, 71, 71])
+  })
+})

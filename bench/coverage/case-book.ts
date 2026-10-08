@@ -14,7 +14,7 @@ import { spawn } from 'node:child_process'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
-import { markDynamic, READ_COLUMNS } from './book.js'
+import { anchorArray, markDynamic, READ_COLUMNS } from './book.js'
 import { declineRepair, dialogText, excelDialogs, settleRejected, typedValue } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
@@ -72,7 +72,7 @@ export interface FileParts {
  * A formula in the engine's spelling as Excel stores it: newer functions prefixed, LET's names as `_xlpm.x`, `E2#` as
  * `ANCHORARRAY(E2)`, the operator `@x` as `SINGLE(x)`.
  */
-export const fileFormula = (f: string) => single(xl(xlpm(f))).replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+export const fileFormula = (f: string) => anchorArray(single(xl(xlpm(f))))
 
 /** The end of the run quoted by `q` that starts at `i` (`""` and `''` inside it are kept). */
 function quoted(f: string, i: number, q: string): number {

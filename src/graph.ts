@@ -4,7 +4,9 @@
  */
 import type { EngineState, Formula } from './engine.js'
 import { spend } from './exec/budget.js'
+import { bySheet } from './exec/walk.js'
 import type { Area } from './spill/state.js'
+import { Rng } from './values.js'
 
 const WIDE = 64
 
@@ -31,6 +33,24 @@ export function rebuildGraph(state: EngineState) {
     }
     return lo
   }
+  // the formula at a cell, if any
+  const idAt = (s: number, r: number, c: number) => {
+    const col = at.get(s)?.get(c)
+    const i = col ? lowerBound(col, r) : -1
+    return col && col[i]?.r === r ? col[i].id : undefined
+  }
+  // a range operator reaching a spilled array reads as far as the array claims, around its other ends
+  const spanned = (f: Formula): readonly Rng[] => {
+    if (!f.spans) return f.refs
+    const more: Rng[] = []
+    for (const span of f.spans)
+      for (const a of span.anchors) {
+        const id = idAt(a.s, a.r1, a.c1)
+        const x = id === undefined ? undefined : state.spills.claims.get(id)
+        if (x) more.push(...bySheet([...span.boxes.filter((g) => g.s === x.s), new Rng(x.s, x.r1, x.c1, x.r2, x.c2)]).values())
+      }
+    return more.length ? [...f.refs, ...more] : f.refs
+  }
   const succ: number[][] = formulas.map(() => [])
   const indeg = new Array<number>(formulas.length).fill(0)
   const listeners: EngineState['listeners'] = new Map()
@@ -38,7 +58,7 @@ export function rebuildGraph(state: EngineState) {
   for (const f of formulas) {
     if (!f) continue
     spend(1)
-    for (const g of f.refs) {
+    for (const g of spanned(f)) {
       if (g.c2 - g.c1 >= WIDE) {
         let w = wide.get(g.s)
         if (!w) wide.set(g.s, (w = []))
