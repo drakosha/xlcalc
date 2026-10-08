@@ -109,7 +109,8 @@ describe('a thread lost', () => {
     await sa.setCells(setA1(2))
     await sb.setCells(setA1(2))
     // the journal of a no longer replays: its edit names a sheet the book lacks
-    const ra = [...x.recs].find((r) => r.journal.length && r.snapshot.book.sheets[0].cells.B5)!
+    // the pool keeps its sessions in the order they opened
+    const ra = [...x.recs][0]
     ra.journal[0].args = [[{ sheet: 'Gone', cell: 'A1', input: { value: 1 } }]]
     crash(0)
     const e = await fails(sa.setCells(setA1(3)))
@@ -222,8 +223,8 @@ describe('a full pool', () => {
     expect((await fails(p.openSession(chainBook(2)))).code).toBe('too_many_sessions')
     await s1.close()
     await p.openSession(chainBook(2))
-    const big = synthBook({ seed: 1, rows: 1700 }).book
-    const running = p.compute(big)
+    // a book of one chunk of text goes at once and computes long
+    const running = p.compute(heavyBook())
     const waiting = p.compute(chainBook(3))
     expect((await fails(p.compute(chainBook(3)))).code).toBe('queue_full')
     await Promise.all([running, waiting])
@@ -233,7 +234,7 @@ describe('a full pool', () => {
     const p = kept(await pool({ threads: 1 }))
     const s = await p.openSession(chainBook(3), { clock: CLOCK })
     const order: string[] = []
-    const first = p.compute(synthBook({ seed: 1, rows: 900 }).book).then(() => order.push('first job'))
+    const first = p.compute(heavyBook()).then(() => order.push('first job'))
     const job = p.compute(chainBook(3)).then(() => order.push('job'))
     const call = s.setCells(setA1(5)).then(() => order.push('session'))
     await Promise.all([first, job, call])

@@ -11,7 +11,8 @@ import { InputError } from '../input.js'
 import { splitCall, checkCall } from '../async/options.js'
 import { applyOp, checkedMapCell } from '../structure/index.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
-import { CHANGING, fromData, type Answer, type Entry, type FromThread, type Op, type Snapshot, type ToThread } from './protocol.js'
+import { pack, unpackSlowly } from './pack.js'
+import { CHANGING, fromData, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
 
 interface Timers {
   setTimeout(f: () => void, ms: number): unknown
@@ -29,6 +30,8 @@ interface Task {
   /** The pool's own (restore, snapshot, leaving a thread): not counted in `maxQueue`. */
   internal?: boolean
   signal?: AbortSignalLike
+  /** Its book is still being written as text: it waits at the head of its queue, and so do those after it. */
+  pending?: boolean
   unlisten?: () => void
   resolve(v: unknown): void
   reject(e: unknown): void
@@ -67,8 +70,6 @@ const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCel
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
 
-/** A book's sheets and cells copied, as a session copies them, so the caller's later changes do not reach the snapshot. */
-const copyBook = (b: BookInput): BookInput => ({ ...b, sheets: b.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) })
 
 /** What tests look into: the threads and the sessions. */
 export interface PoolInside {
@@ -149,11 +150,13 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   /** The thread's next task: its sessions' first, then a one-off computation. */
   function pump(slot: Slot) {
     while (!slot.busy && !closed) {
-      let task = slot.queue.shift() ?? jobs.shift()
-      if (!task) {
+      const head = slot.queue[0] ?? jobs[0]
+      if (!head) {
         slot.thread?.hold(false)
         return
       }
+      if (head.pending) return
+      let task = head === slot.queue[0] ? slot.queue.shift()! : jobs.shift()!
       const r = task.session
       const t = task.msg.t
       if (r && !slot.resident.has(r) && t !== 'open' && t !== 'restore') {
@@ -208,7 +211,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         return task.resolve(value)
       case 'snapshot':
       case 'drop': {
-        const s = value as { book: BookInput; clock: Clock; seq: number } | null
+        const s = value as { book: Sent; clock: Clock; seq: number } | null
         if (s) {
           r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq }
           r.journal = r.journal.filter((e) => e.seq > s.seq)
@@ -255,16 +258,26 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   }
 
   /** A task in the queue of `slot` (a session's) or in the shared one. */
-  function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false): Promise<unknown> {
+  function submit(msg: Message, at?: { slot: Slot; session: Rec }, signal?: AbortSignalLike, internal = false, book?: Promise<Sent>): Promise<unknown> {
     if (closed) return Promise.reject(closed)
     if (at?.session.gone) return Promise.reject(at.session.gone)
     if (signal?.aborted) return Promise.reject(abortError(signal))
     // a task an idle thread takes at once does not wait
-    const idle = at ? !at.slot.busy && !at.slot.queue.length : slots.some((s) => !s.busy && !s.queue.length)
+    const idle = at ? !at.slot.busy && !at.slot.queue.length : !jobs.length && slots.some((s) => !s.busy && !s.queue.length)
     if (!internal && !idle && o.maxQueue !== undefined && waiting() >= o.maxQueue) return Promise.reject(new CalcError('queue_full', `${o.maxQueue} tasks already wait for a thread`))
     return new Promise((resolve, reject) => {
       const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject }
       const queue = at ? at.slot.queue : jobs
+      // a book written between turns: the task keeps its place in the queue, and goes when the text is ready
+      if (book) {
+        task.pending = true
+        void book.then((sent) => {
+          task.pending = false
+          ;(task.msg as { book: Sent }).book = sent
+          if (at) pump(at.slot)
+          else for (const s of slots) pump(s)
+        })
+      }
       if (signal) {
         const onAbort = () => {
           const i = queue.indexOf(task)
@@ -323,10 +336,11 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       },
       setStyles: (styles) => value(call('setStyles', [styles])),
       setLayout: (edits, co) => value(call('setLayout', [edits], co)),
-      book: () => value(call('book', [])),
+      book: () => value<Sent>(call('book', [])).then(unpackSlowly),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       cells: (sheet, range) => value(call('cells', [sheet, range])),
       result: (co) => value(call('result', [], co)),
+      hash: (co) => value(call('hash', [], co)),
       async close() {
         if (r.gone) return
         const done = submit({ t: 'drop', sid: r.sid }, { slot: r.slot, session: r }, undefined, true)
@@ -342,7 +356,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   return {
     async compute(book, copts) {
       const { signal, timeoutMs, rest } = splitCall<object>(copts)
-      return (await submit({ t: 'compute', book, opts: rest ?? {}, timeoutMs: timeoutMs ?? o.timeoutMs }, undefined, signal)) as never
+      const sent = pack(book)
+      const later = sent instanceof Promise ? sent : undefined
+      return (await submit({ t: 'compute', book: later ? book : (sent as Sent), opts: rest ?? {}, timeoutMs: timeoutMs ?? o.timeoutMs }, undefined, signal, false, later)) as never
     },
     async openSession(book, sopts) {
       if (closed) throw closed
@@ -352,10 +368,13 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       const slot = [...slots].sort((a, b) => a.sessions.size - b.sessions.size || a.queue.length - b.queue.length)[0]
       const given = opts.clock
       delete opts.clock
-      const r: Rec = { sid: ++ids, slot, snapshot: { book: copyBook(book), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, used: ++clock, gone: null, snapshotting: false }
+      // the book is taken now and written as text, between turns of the event loop when it is large; the text is the first snapshot
+      const sent = pack(book)
+      const later = sent instanceof Promise ? sent.then((x) => (r.snapshot.book = x)) : undefined
+      const r: Rec = { sid: ++ids, slot, snapshot: { book: later ? book : (sent as Sent), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, used: ++clock, gone: null, snapshotting: false }
       recs.add(r)
       slot.sessions.add(r)
-      await submit({ t: 'open', sid: r.sid, book, opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal).catch((e) => {
+      await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal, false, later).catch((e) => {
         bury(r, new CalcError('closed', 'the session did not open'))
         throw e
       })

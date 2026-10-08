@@ -14,6 +14,7 @@ import { checkComputeOptions } from '../input.js'
 import { isHiddenRow } from '../layout/hidden.js'
 import { CHANGING, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
 import { workerThreads } from './platform.js'
+import { pack, unpack } from './pack.js'
 
 interface Port {
   postMessage(m: unknown): void
@@ -69,13 +70,16 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       value = await s.setStyles(args[0] as never)
       break
     case 'book':
-      value = await s.book()
+      value = await pack(await s.book())
       break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, args[2] as never)
       break
     case 'result':
       value = await s.result(o)
+      break
+    case 'hash':
+      value = await s.hash(o)
       break
     case 'cells':
       value = await s.cells(args[0] as string, args[1] as string)
@@ -103,10 +107,10 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
   switch (m.t) {
     case 'compute': {
       const c = checkComputeOptions(m.opts)
-      return budgeted(d, c.limits ?? d.limits)(computeSteps(m.book, c), { signal, timeoutMs: m.timeoutMs })
+      return budgeted(d, c.limits ?? d.limits)(computeSteps(unpack(m.book), c), { signal, timeoutMs: m.timeoutMs })
     }
     case 'open': {
-      const h = await open(m.sid, m.book, { ...m.opts, signal, timeoutMs: m.timeoutMs }, null)
+      const h = await open(m.sid, unpack(m.book), { ...m.opts, signal, timeoutMs: m.timeoutMs }, null)
       return { value: null, clock: h.s.clock } satisfies Answer
     }
     case 'call': {
@@ -125,7 +129,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     case 'restore': {
       const { snapshot, journal } = m
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
-      const h = await open(m.sid, snapshot.book, { ...snapshot.opts, signal }, snapshot.clock)
+      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock)
       h.seq = snapshot.seq
       try {
         for (const e of journal as Entry[]) {
@@ -146,11 +150,11 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     }
     case 'snapshot': {
       const h = heldOf(m.sid)
-      return { book: await h.s.book(), clock: h.s.clock, seq: h.seq }
+      return { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq }
     }
     case 'drop': {
       const h = held.get(m.sid)
-      const kept = m.keep && h ? { book: await h.s.book(), clock: h.s.clock, seq: h.seq } : null
+      const kept = m.keep && h ? { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq } : null
       h?.s.kill(new CalcError('closed', 'the session left the thread'))
       held.delete(m.sid)
       return kept

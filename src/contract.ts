@@ -634,6 +634,8 @@ export interface Session {
    */
   cells(sheet: string, range: string): Record<string, CellView>
   result(): ComputeResult
+  /** The values hash `result()` gives, without building the result. */
+  hash(): string
   close(): void
 }
 
@@ -703,6 +705,8 @@ export interface AsyncSession {
   /** As `Session.cells`; from a thread only the rectangle comes back. */
   cells(sheet: string, range: string): Promise<Record<string, CellView>>
   result(opts?: CalcOptions): Promise<ComputeResult>
+  /** As `Session.hash`: from a thread only the hash comes back. */
+  hash(opts?: CalcOptions): Promise<string>
   close(): Promise<void>
 }
 

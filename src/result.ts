@@ -103,6 +103,42 @@ export function cellsIn(state: EngineState, s: number, x: Rect, display: boolean
 }
 
 /** The result; with `display` each cell's shown text and colour after its value. */
+/** The cells of sheet `s` a result lists, in order (input cells and the stored cells of spills), each with the formula it spilled from. */
+function eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined) => void) {
+  const spill = spilled(state, s)
+  for (const addr of sortAddresses([...Object.keys(state.input.sheets[s].cells), ...spill.keys()])) {
+    spend(1)
+    f(addr, spill.get(addr))
+  }
+}
+
+/** The hash's lines for the unstored cells of a large spill whose formula is at `addr` (none for other cells). */
+function fillLines(state: EngineState, s: number, addr: string, value: CellValue | undefined, out: FillLine[]) {
+  if (value === undefined) return
+  const { row, col } = parseAddress(addr)
+  for (const f of state.spills.on.get(state.at.get(key(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: rangeText(f), value })
+}
+
+const hashOf = (state: EngineState, values: Map<string, Map<string, CellValue>>, fills: FillLine[]) => valuesHash(values, CONFIG_VERSION, fills, state.input.locale, state.input.dateSystem, true)
+
+/** The values hash of a state, as its result gives it, without the cells' results (`Session.hash`). */
+export function stateHash(state: EngineState): string {
+  const values = new Map<string, Map<string, CellValue>>()
+  const fills: FillLine[] = []
+  state.input.sheets.forEach((sheet, s) => {
+    const vals = new Map<string, CellValue>()
+    eachCell(state, s, (addr) => {
+      const { row, col } = parseAddress(addr)
+      vals.set(addr, outValue(toCellValue(valueAt(state, s, row, col))))
+      const id = state.at.get(key(s, row, col))
+      const x = id === undefined ? undefined : state.spills.on.get(id)
+      if (x?.fills.length) fillLines(state, s, addr, anchorFields(x).spillFill, fills)
+    })
+    values.set(sheet.name, vals)
+  })
+  return hashOf(state, values, fills)
+}
+
 export function buildResult(state: EngineState, clock: Clock, t0: number, display: boolean): ComputeResult {
   const values = new Map<string, Map<string, CellValue>>()
   const fills: FillLine[] = []
@@ -110,17 +146,12 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
   const sheets = state.input.sheets.map((sheet, s) => {
     const cells: Record<string, CellResult> = {}
     const vals = new Map<string, CellValue>()
-    const spill = spilled(state, s)
-    for (const addr of sortAddresses([...Object.keys(sheet.cells), ...spill.keys()])) {
-      spend(1)
-      const out = cellResult(state, s, addr, look, spill.get(addr))
-      if (out.spillFill !== undefined) {
-        const { row, col } = parseAddress(addr)
-        for (const f of state.spills.on.get(state.at.get(key(s, row, col))!)!.fills) fills.push({ sheet: sheet.name, range: rangeText(f), value: out.spillFill })
-      }
+    eachCell(state, s, (addr, spillOf) => {
+      const out = cellResult(state, s, addr, look, spillOf)
+      fillLines(state, s, addr, out.spillFill, fills)
       cells[addr] = out
       vals.set(addr, out.value)
-    }
+    })
     values.set(sheet.name, vals)
     return { name: sheet.name, cells }
   })
@@ -134,7 +165,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
     nameIssues: state.nameIssues,
     volatile,
     clock: { ...clock },
-    hash: valuesHash(values, CONFIG_VERSION, fills, state.input.locale, state.input.dateSystem, true),
+    hash: hashOf(state, values, fills),
     inputHash: inputHash(state.input),
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,

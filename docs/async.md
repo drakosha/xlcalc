@@ -28,6 +28,8 @@ A session takes its calls in order: each starts when the one before has finished
 
 A session's `clock` is its clock as of its last finished call.
 
+`hash()` answers the values hash `result()` would give, without building the result: from a thread, on the synthetic book of 34,000 rows, 0.5 s with the event loop free (`result()` takes 1.6 s and stops it for 260 ms while the result is read).
+
 `cells(sheet, range)` answers the cells of one rectangle as `result()` gives them, with each cell's own `style`, so a window over a sheet needs no copy of the whole result. From a thread only the rectangle comes back: 20,000 cells of the synthetic book of 34,000 rows take 27 ms there and 16 ms in a synchronous session, where the whole `result()` from the thread takes 1.7 s.
 
 A call that stopped while it recomputed (`setCells`, `setClock` or `setLayout` past its deadline, aborted, or over the limits) leaves the session to compute its book again, and the session's next call does that first. That computation does not count in the next call's `timeoutMs`, only its `signal` and a pool's hard deadline bound it, so a call after a stopped one can take longer than its `timeoutMs` by the time of a cold computation of the book.
@@ -79,6 +81,8 @@ Wrong input still throws `InputError`, from a thread too. A book or an argument 
 
 `createCalcPool(opts)` starts `threads` threads (2 by default). A session's book goes to its thread once, when the session opens; afterwards only edits go there and only changes come back.
 
+A book crosses to and from a thread as JSON text, its cells in chunks of 16,384 written and read between turns of the event loop, so the calling side never stops for a whole book. `openSession` and `compute` take the book at once (its cells, not copies of them: what the caller changes in the book afterwards does not reach the pool, as with a synchronous session) and write it while it waits; a task keeps its place in the queue meanwhile. On the synthetic book of 34,000 rows (506,594 cells of data) opening a session stops the event loop for 62 ms, where copying the book and cloning it to the thread took 324 to 395 ms. A book that JSON cannot hold as it is (a non-finite number or `-0`, a function, a date object or an undefined value in `meta`) goes as objects, by structured clone, as before.
+
 - A session is placed on the thread that holds the fewest sessions and stays there. One-off computations wait in one queue for any thread. A thread that becomes idle takes the next call of its own sessions first, then the next one-off computation.
 - `maxQueue` bounds the tasks that wait for a thread (`queue_full`); a task an idle thread takes at once does not wait, so `maxQueue: 0` refuses only what would wait. `maxSessions` bounds the open sessions of the pool (`too_many_sessions`).
 - `maxSessionsPerThread` bounds the sessions a thread holds at once. Past it, the session called least recently leaves the thread: the thread sends its book back as the session's new snapshot and forgets it, and the session comes back on its next call by opening that snapshot, with no journal to replay (see below). Sessions that take turns on a full thread come back again and again; give the pool enough room for the sessions in use.
@@ -93,7 +97,7 @@ The pool keeps, for each session, a snapshot of its book and a journal of the ca
 
 When a thread is terminated or fails, its task fails, and a new thread starts in its place when a task needs one; a thread that cannot start fails one task at a time. The sessions it held come back on their next call: the new thread opens the snapshot and replays the journal, with the recorded clocks (a live session too), and then takes the call. The call that was running is not in the journal, so the session is as it was before that call, with the hash of a session that never lost its thread. Each changing call carries a sequence number; a thread answers the last one again rather than applying it twice, and refuses one out of order. A session whose restore fails is closed with `restore_failed`, and the thread forgets what it had of it; the other sessions of the thread go on. A session closed while its thread is lost is closed all the same, and so is one whose `close()` waits when the pool closes.
 
-This has a cost on the calling side: it holds a copy of each session's book. On the synthetic book of 3,400 rows (54,778 cells) a snapshot from a thread takes 40 ms and its copy about 9 MB; on one of 34,000 rows (510,682 cells), 541 ms and 61 MB.
+This has a cost on the calling side: it holds each session's book as text. On the synthetic book of 34,000 rows the text takes 29 MB (the book's objects took 68 MB), a new snapshot from the thread stops the event loop for 3 ms (it was 234 to 290 ms), and `book()` takes 450 ms read a chunk at a time, stopping the event loop for 20 ms at most (it was 390 ms in one stretch of 230 ms).
 
 ### In a browser
 

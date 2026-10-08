@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Changed:
+
+- The thread pool sends a book to a thread and back as JSON text, its cells written and read in chunks between turns of the event loop: on the synthetic book of 34,000 rows `openSession` stops the event loop for 62 ms (324 to 395 ms before), a snapshot of a session for 3 ms (234 to 290 ms) and `book()` for 20 ms (230 ms); a session's snapshot takes 29 MB on the calling side (68 MB). The book is taken when the call is made, as before; a book JSON cannot hold as it is goes by structured clone, as before.
+
 Fixed:
 
 - A range made by the range operator found the cells between its ends in more forms: an end under unary plus (`+A1:C1`), an end bound by LET (`SUM(A1:LET(x,C1,x))`), both ends spilled (the corner between them included). Such formulas could be computed before the cells inside the range and miss their edits in a session.
@@ -10,6 +14,11 @@ Fixed:
 - The calculated columns of a table follow the table when rows are inserted or deleted around it, and each new row gets the formula copied to its own row; deleting the first data row keeps the column's formula.
 - xlsx: a calculated column formula that cannot be written, and the properties of row and column styles the model does not have, are reported in `issues`; a shared formula group larger than the JS argument limit is read.
 - A spill that is settled is no longer recomputed by an edit that does not touch it; results hash without sorting the cells again. Cold compute of the synthetic book is a little faster with closures; the values and hashes are the same.
+
+Added:
+
+- `hash()` of a session, in every mode: the values hash without the result. From a thread on the synthetic book of 34,000 rows it takes 0.5 s and only the hash comes back, where `result()` takes 1.6 s.
+- Contract: `Session.hash()` and `AsyncSession.hash()`, the values hash of `result()` without building the result.
 
 ## 0.4.1 (2026-10-08)
 
