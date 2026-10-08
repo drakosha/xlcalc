@@ -115,7 +115,8 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
     if (e instanceof FormulaError) return { ok: false, code: e.code, message: e.message, at: e.at }
     throw e
   }
-  const bound = bindTables(ast, text, ctx)
+  // nothing to bind without tables, but a reference without a table name, which fails
+  const bound = ctx.tables?.length || text.includes('[') ? bindTables(ast, text, ctx) : { ok: true as const, ast, tables: [] }
   if (!bound.ok) return bound
   ast = bound.ast
   const externalSet = new Set((ctx.externalFunctions ?? []).map((f) => f.toUpperCase()))

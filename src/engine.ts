@@ -147,8 +147,13 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
 
-/** Tables as a formula's check sees them: names and columns. */
-const tableNames = (tables: Tables) => tables.list.map((t) => ({ name: t.name, columns: t.cols }))
+/** Tables as a formula's check sees them: names and columns, made once for a book's tables. */
+const named = new WeakMap<Tables, { name: string; columns: string[] }[]>()
+function tableNames(tables: Tables) {
+  let out = named.get(tables)
+  if (!out) named.set(tables, (out = tables.list.map((t) => ({ name: t.name, columns: t.cols }))))
+  return out
+}
 
 function prepare(state: EngineState, s: number, row: number, col: number, text: string): Prepared {
   const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
