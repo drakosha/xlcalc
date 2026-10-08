@@ -6,12 +6,13 @@
  * Ctrl+Shift+Enter, and a formula in a table's totals row as a plain one, the only kind Excel takes there. Values
  * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
  * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
- * sheet gets Excel's filter mark and an autofilter of its own over its cells, whose criteria keep every row (`FILTER`).
+ * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
+ * its own over its cells, with Excel's filter mark.
  */
 import type { CellInput, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
-import { parseRange } from '../../structure/area.js'
+import { parseRange, type Rect } from '../../structure/area.js'
 import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
@@ -57,7 +58,7 @@ export interface SheetContext {
   tableParts: string[]
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): a date's serial counts from it. */
   epoch: number
-  /** A filtered sheet's table whose autofilter holds the criteria (`KEEP_ALL`), in place of an autofilter of the sheet's own. */
+  /** A filtered sheet's table whose autofilter holds the criteria (`KEEP_ALL`), in place of an autofilter of the sheet's own, as Excel keeps a table's filter. */
   filterTable?: string
 }
 
@@ -199,10 +200,16 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   })
   const merges = sheet.merges ?? []
   const used = keys.length ? { r1: Math.floor(first / MAX_COLS), r2: Math.floor(last / MAX_COLS), c1: minCol, c2: maxCol } : undefined
-  const filter = sheet.filtered && !ctx.filterTable ? filterRange(used, rowLines) : undefined
+  let filter = sheet.filtered && !ctx.filterTable ? filterRange(used, rowLines) : undefined
+  // an autofilter of the sheet cannot meet a table: only tables without a header row (no filter of their own) are left
+  const area = filter && parseRange(filter)!
+  if (area && (sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, area))) {
+    issues.add('autoFilter', "the filter mode of a sheet whose tables have no header row is left out: an autofilter over the sheet's cells would meet them", { sheet: sheet.name })
+    filter = undefined
+  }
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
-    (sheet.filtered ? '<sheetPr filterMode="1"/>' : '') +
+    (filter ? '<sheetPr filterMode="1"/>' : '') +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}/></sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
     '<sheetFormatPr defaultRowHeight="15"/>' +
@@ -214,6 +221,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     '</worksheet>'
   return { xml, formulas }
 }
+
+const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2
 
 /** The written cells' rectangle (`cells`: rows and columns, or none) stretched over the hidden rows and the row above the first. */
 function filterRange(cells: { r1: number; r2: number; c1: number; c2: number } | undefined, rowLines: Line<RowInput>[]): string {

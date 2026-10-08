@@ -120,6 +120,30 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     expect([values.D1.value, values.D2.value, values.D3.value]).toEqual([61, 61, 61])
   })
 
+  it("a filtered sheet's criteria go on its first table with a header row, as Excel keeps a table's filter, without the sheet's mark", async () => {
+    const tables = [
+      { name: 'Bare', range: 'F1:F3', headers: false, columns: [{ name: 'c' }] },
+      { name: 'Data', range: 'B1:B7', columns: [{ name: 'n' }] },
+    ]
+    const book = sheet({ rows: { 3: { hidden: true } }, filtered: true, tables })
+    book.sheets[0].cells.B1 = { value: 'n' }
+    const { data, issues } = await writeXlsx(book)
+    expect(issues).toEqual([])
+    expect(await text(data, 'xl/worksheets/sheet1.xml')).not.toMatch(/filterMode|autoFilter/)
+    expect(await text(data, 'xl/tables/table2.xml')).toContain(`<autoFilter ref="B1:B7">${KEEP_ALL}</autoFilter>`)
+    const r = await readXlsx(data)
+    expect(r.book).toEqual(book)
+    expect(compute(r.book).sheets[0].cells.D1.value).toBe(61)
+  })
+
+  it('a filtered sheet whose tables have no header row and meet its cells loses its filter mode, reported', async () => {
+    const book = sheet({ rows: { 3: { hidden: true } }, filtered: true, tables: [{ name: 'Bare', range: 'B2:B7', headers: false, columns: [{ name: 'n' }] }] })
+    const { data, issues } = await writeXlsx(book)
+    expect(codes(issues)).toEqual(['autoFilter'])
+    expect(await text(data, 'xl/worksheets/sheet1.xml')).not.toMatch(/filterMode|autoFilter/)
+    expect((await readXlsx(data)).book.sheets[0].filtered).toBeUndefined()
+  })
+
   it('a filtered sheet without cells or hidden rows gets an autofilter on A1', async () => {
     const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: {}, filtered: true }] })
     expect(await text(data, 'xl/worksheets/sheet1.xml')).toContain(`<autoFilter ref="A1">${KEEP_ALL}</autoFilter>`)

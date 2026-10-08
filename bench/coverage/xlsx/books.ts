@@ -218,6 +218,7 @@ function ownBooks(): RoundTrip[] {
     },
     { id: 'zero-sizes', what: 'a row of height 0 and a column of width 0, not marked hidden', book: filterBook({ rows: { 3: { height: 0 } }, columns: { E: { width: 0 } } }) },
     { id: 'filtered', what: 'a filtered sheet: its hidden rows taken as rows a filter hid', book: filterBook({ rows: Y_ROWS, filtered: true }) },
+    { id: 'filtered-table', what: "a filtered sheet with a table, which holds the sheet's filter mode", book: filterBook({ rows: Y_ROWS, filtered: true, table: true }) },
     { id: 'date1904', what: 'the 1904 date system: dates typed in and computed, negative ones', book: date1904 },
     { id: 'iteration', what: 'iterative calculation with a count and a change of its own over cycles that settle', book: cycles({ maxIterations: 7, maxChange: 0.5 }) },
     { id: 'iteration-default', what: "iterative calculation with Excel's defaults", book: cycles({}) },

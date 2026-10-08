@@ -17,19 +17,21 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  * - `errorValue`: an error the model has no code for (`#GETTING_DATA`, `#FIELD!`, `#BLOCKED!` and the like), read
  *   as `#ERROR!`; or written: `#CYCLE!` as 0, as Excel stores a circular reference.
  * - `dataTable`: a what-if data table (`TABLE()`), read as its stored values.
- * - `date1904`: the 1904 date system: dates are moved to the 1900 system the engine uses.
- * - `calculation`: calculation settings the book does not keep: iterative calculation, the manual mode.
+ * - `calculation`: calculation settings the book does not keep: the manual mode, automatic but for data tables,
+ *   precision as displayed; an iteration count or change out of range, read as Excel's default.
  * - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
  * - `defaultFont`: a default font other than Calibri 11, which the model assumes.
  * - `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
  *   (Excel for Mac starts its own books at 10).
- * - `numberFormat`: a built-in number format Excel shows by the regional settings (read as its en-US code), or
+ * - `numberFormat`: a built-in East Asian date format the model does not have (50 to 58, read as its en-US code), or
  *   one this reader does not know (left out).
- * - `hidden`: hidden sheets (read as visible ones), rows and columns (read with a size of 0).
+ * - `hidden`: hidden sheets, read as visible ones.
  * - `sheetKind`: a chart, dialog or macro sheet, left out.
  * - `cellMetadata`: a cell's rich value (`vm`: a data type, a picture in the cell), read as the value the cell stores.
+ * - `autoFilter`: an autofilter's range, criteria and sort, a table's criteria, an advanced filter (the sheet's filter
+ *   mode is read: `SheetInput.filtered`); written: the filter mode of a sheet whose tables have no header row, left out.
  * - `conditionalFormat`, `dataValidation`, `comment`, `hyperlink`, `drawing` (pictures, charts, shapes),
- *   `autoFilter`, `pivotTable`, `protection`, `frozenPanes`, `outline` (grouped rows and columns), `print`
+ *   `pivotTable`, `protection`, `frozenPanes`, `outline` (grouped rows and columns), `print`
  *   (headers and footers, page breaks, a page setup made by hand), `macros`, `sparkline`, `connection` (data
  *   connections and queries): parts of the file the model does not have, left
  *   out. View settings (zoom, gridlines, the selection) and a page setup Excel writes by default are not reported.
@@ -48,7 +50,6 @@ export type XlsxIssueCode =
   | 'errorConstant'
   | 'errorValue'
   | 'dataTable'
-  | 'date1904'
   | 'calculation'
   | 'style'
   | 'defaultFont'
