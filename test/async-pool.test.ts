@@ -125,6 +125,42 @@ describe('in threads', () => {
     expect(await s.book()).toEqual(y.book())
   }, 60_000)
 
+  it('restructure over tables: mapCell and changes of the synchronous session, refusals as its', async () => {
+    const p = await made({ threads: 1 })
+    const head = { A1: { value: 'Region' }, B1: { value: 'Qty' }, C1: { value: 'Price' } }
+    const rows = Object.fromEntries([2, 3, 4, 5].flatMap((r) => [[`A${r}`, { value: `r${r}` }], [`B${r}`, { value: r }], [`C${r}`, { formula: 'Sales[[#This Row],[Qty]]*2' }]]))
+    const book: BookInput = {
+      sheets: [
+        { name: 'S1', cells: { ...head, ...rows, F3: { value: 'a' }, F4: { value: 1 }, J1: { formula: 'SUM(Sales[Qty])' }, J2: { formula: 'Sales[@Price]' } }, tables: [{ name: 'Sales', range: 'A1:C5', columns: [{ name: 'Region' }, { name: 'Qty' }, { name: 'Price', formula: 'Sales[[#This Row],[Qty]]*2' }] }, { name: 'Side', range: 'F3:F4', columns: [{ name: 'a' }] }] },
+        { name: 'S2', cells: { A1: { formula: 'SUM(Sales[Price])' }, B1: { value: 'x' }, B2: { value: 'y' } } },
+      ],
+    }
+    const ops: StructureOp[] = [
+      { op: 'insertRows', sheet: 'S1', row: 2 },
+      { op: 'insertRows', sheet: 'S1', row: 1 },
+      { op: 'insertRows', sheet: 'S1', row: 6 },
+      { op: 'deleteRows', sheet: 'S1', row: 3, count: 5 },
+      { op: 'insertColumns', sheet: 'S1', column: 'B' },
+      { op: 'addTable', sheet: 'S2', table: { name: 'Two', range: 'B1:B2', columns: [{ name: 'x' }] } },
+      { op: 'renameTable', table: 'two', name: 'Deux' },
+      { op: 'copyRange', from: { sheet: 'S2', range: 'A1' }, to: { sheet: 'S2', range: 'B1' } },
+      { op: 'moveRange', from: { sheet: 'S1', range: 'J1:J3' }, to: { sheet: 'S2', cell: 'D4' } },
+      { op: 'convertTable', table: 'Sales' },
+      { op: 'deleteTable', table: 'Deux' },
+    ]
+    const s = await p.openSession(book, { clock: CLOCK })
+    const y = openSession(book, { clock: CLOCK })
+    for (const op of ops) {
+      const names = y.book().sheets.map((x) => x.name)
+      const [a, b] = [await s.restructure(op), y.restructure(op)]
+      expect(a.ok, JSON.stringify(op)).toBe(b.ok)
+      if (!a.ok || !b.ok) continue
+      expect(a.changes).toEqual(b.changes)
+      for (const sheet of names) for (const cell of ['A1', 'A2', 'B1', 'B2', 'C3', 'D4', 'F2', 'J1', 'J2']) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
+    }
+    expect(await s.book()).toEqual(y.book())
+  }, 60_000)
+
   it('soft deadlines and aborts, waiting and running; input errors come back as InputError', async () => {
     const p = await made({ threads: 1 })
     const big = synthBook({ seed: 1, rows: 1700 }).book
