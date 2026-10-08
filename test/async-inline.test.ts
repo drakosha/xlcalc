@@ -201,6 +201,16 @@ describe('in the same thread', () => {
     expect((await fails(calc.compute(chainBook(2)))).code).toBe('closed')
   }, 60_000)
 
+  it('a session closed before its calculator closes is closed; its running call is stopped', async () => {
+    const calc = createInlineCalc({ sliceMs: 0 })
+    const s = await calc.openSession(chainBook(3000), { clock: CLOCK })
+    const running = s.setCells(setA1(2)).catch((e) => e)
+    const closing = s.close().then(() => 'resolved', (e) => e)
+    await calc.close()
+    expect(await closing).toBe('resolved')
+    expect((await running).code).toBe('closed')
+  })
+
   it('options are checked as input', async () => {
     expect(() => createInlineCalc({ sliceMs: -1 })).toThrow('opts.sliceMs: expected a number of at least 0')
     await expect(createInlineCalc().compute(chainBook(2), { timeoutMs: 'x' } as never)).rejects.toThrow('opts.timeoutMs')
