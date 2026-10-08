@@ -182,7 +182,13 @@ function Step($xl, $wb, $s) {
   }
 }
 
-$xl = New-Object -ComObject Excel.Application
+# the previous job's Excel may still be exiting, and a new one fails to start meanwhile (CO_E_SERVER_EXEC_FAILURE):
+# wait for it, then start Excel, three times at most
+for ($k = 0; $k -lt 30 -and @(Get-Process EXCEL -ErrorAction SilentlyContinue | Where-Object { $_.SessionId -eq 0 }).Count; $k++) { Start-Sleep 1 }
+Get-Process EXCEL -ErrorAction SilentlyContinue | Where-Object { $_.SessionId -eq 0 } | Stop-Process -Force
+for ($k = 1; ; $k++) {
+  try { $xl = New-Object -ComObject Excel.Application; break } catch { if ($k -ge 3) { throw }; Start-Sleep 10 }
+}
 $xl.DisplayAlerts = $false
 try {
   for ($i = 0; $i -lt $job.books.Count; $i++) {
