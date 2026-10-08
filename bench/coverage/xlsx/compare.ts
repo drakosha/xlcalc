@@ -4,10 +4,11 @@
  * its fields rather than its index, a formula as its canonical text, a date as its serial number, spans of rows
  * and columns line by line.
  */
-import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat } from '../../../src/contract.js'
+import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat, TableInput } from '../../../src/contract.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
 import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
-import { canonical, parse } from '../../../src/syntax.js'
+import { canonical, parse, validate } from '../../../src/syntax.js'
+import { tableAt, tablesOf, type Tables } from '../../../src/tables/model.js'
 
 export interface Difference {
   place: string
@@ -54,8 +55,15 @@ function stable(x: unknown): string {
     .join(',')}}`
 }
 
-/** A formula's canonical text; a name's formula may be a union without parentheses. */
-function formulaText(f: string, union = false): string {
+/**
+ * A formula's canonical text; a name's formula may be a union without parentheses. With the book's tables its structured
+ * references are bound to them (`[@Qty]` in a table's cell is `Sales[[#This Row],[Qty]]`), as a file writes them.
+ */
+function formulaText(f: string, union = false, tables?: Tables, enclosing?: string): string {
+  if (tables) {
+    const r = validate(f, { union, tables: tables.list.map((t) => ({ name: t.name, columns: t.cols })), ...(enclosing ? { enclosing } : {}) })
+    if (r.ok) return r.canonical
+  }
   try {
     return canonical(parse(f, { union }))
   } catch {
@@ -83,6 +91,7 @@ function lookOf(book: BookInput, x: { style?: number; format?: NumberFormat }): 
  */
 export function entries(book: BookInput, values?: ComputeResult): Map<string, string> {
   const out = new Map<string, string>()
+  const tables = tablesOf(book)
   book.sheets.forEach((s, i) => {
     out.set(`sheet ${i + 1}`, s.name)
     const res = values?.sheets[i].cells
@@ -101,7 +110,8 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     for (const [addr, c] of Object.entries(s.cells) as [string, CellInput][]) {
       const own = lookOf(book, c)
       const x: Record<string, unknown> = stable(own) === stable(inherited(addr)) ? {} : { ...own }
-      if (c.formula !== undefined) Object.assign(x, res ? fromValue(res[addr]?.value ?? null) : { formula: formulaText(c.formula), array: c.array })
+      const { row, col } = parseAddress(addr)
+      if (c.formula !== undefined) Object.assign(x, res ? fromValue(res[addr]?.value ?? null) : { formula: formulaText(c.formula, false, tables, tableAt(tables, i, row, col)?.name), array: c.array })
       else if (c.value !== undefined && c.value !== null) x.value = typeof c.value === 'object' ? dateToSerial(c.value.date) : c.value
       if (Object.keys(x).length) cells.set(addr, x)
     }
@@ -112,8 +122,26 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     for (const [lo, hi, e] of lines(s.columns, 'c')) for (let c = lo; c <= hi; c++) out.set(`column ${s.name}!${indexToCol(c)}`, stable({ width: e.width, ...lookOf(book, e) }))
     for (const [lo, hi, e] of lines(s.rows, 'r')) for (let r = lo; r <= hi; r++) out.set(`row ${s.name}!${r + 1}`, stable({ height: e.height, ...lookOf(book, e) }))
     if (s.merges?.length) out.set(`merges ${s.name}`, stable([...s.merges].sort()))
+    // a table's columns: a calculated column's formula as stored text; a totals formula of its own (`custom`) and a label
+    // the totals cell holds are left out (the cell holds them; Excel records a label for the text there when it saves)
+    for (const t of s.tables ?? []) {
+      const x = tables.byName.get(t.name.toLocaleUpperCase('ru-RU'))!
+      const foot = (i: number) => (t.totals ? s.cells[`${indexToCol(x.c1 + i)}${x.r2 + 1}`]?.value : undefined)
+      const own = (c: TableInput['columns'][number], i: number) => !c.totals || ('function' in c.totals ? c.totals.function === 'custom' : c.totals.label === foot(i))
+      out.set(
+        `table ${s.name}!${t.name}`,
+        stable({
+          ...t,
+          columns: t.columns.map((c, i) => ({
+            name: c.name,
+            ...(c.formula !== undefined ? { formula: formulaText(c.formula, false, tables, t.name) } : {}),
+            ...(own(c, i) ? {} : { totals: c.totals }),
+          })),
+        }),
+      )
+    }
   })
-  for (const n of book.names ?? []) out.set(`name ${n.scope ?? ''}!${n.name.toUpperCase()}`, formulaText(n.ref, true))
+  for (const n of book.names ?? []) out.set(`name ${n.scope ?? ''}!${n.name.toUpperCase()}`, formulaText(n.ref, true, tables))
   out.set('locale', book.locale ?? 'en-US')
   return out
 }
