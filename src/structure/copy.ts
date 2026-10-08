@@ -17,7 +17,7 @@ import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
 
 /** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
-function copyTransform(dr: number, dc: number): Transform {
+export function copyTransform(dr: number, dc: number): Transform {
   return {
     copy: true,
     ref({ sheet, area }): Outcome {

@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+
+- A range made by the range operator found the cells between its ends in more forms: an end under unary plus (`+A1:C1`), an end bound by LET (`SUM(A1:LET(x,C1,x))`), both ends spilled (the corner between them included). Such formulas could be computed before the cells inside the range and miss their edits in a session.
+- A session took an edit that turns a serial number into a typed date as no change in a book of the 1904 system, and ignored an edit that changes only the area of an old-kind array formula.
+- With `execution: 'eval'`, a formula nested deeper than the JS parser allows (a long flat formula) failed to compile; it now runs as closures, in the same order, with the same values.
+- The calculated columns of a table follow the table when rows are inserted or deleted around it, and each new row gets the formula copied to its own row; deleting the first data row keeps the column's formula.
+- xlsx: a calculated column formula that cannot be written, and the properties of row and column styles the model does not have, are reported in `issues`; a shared formula group larger than the JS argument limit is read.
+- A spill that is settled is no longer recomputed by an edit that does not touch it; results hash without sorting the cells again. Cold compute of the synthetic book is a little faster with closures; the values and hashes are the same.
+
 ## 0.4.1 (2026-10-08)
 
 Internal release; not published to npm. The xlsx reader and writer carry hidden rows, filters, the 1904 date system, iteration and built-in formats; the intersection and range operators; `#NULL!` joins `ErrorCode`.

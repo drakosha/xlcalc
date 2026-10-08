@@ -134,7 +134,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
     nameIssues: state.nameIssues,
     volatile,
     clock: { ...clock },
-    hash: valuesHash(values, CONFIG_VERSION, fills, state.input.locale, state.input.dateSystem),
+    hash: valuesHash(values, CONFIG_VERSION, fills, state.input.locale, state.input.dateSystem, true),
     inputHash: inputHash(state.input),
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,

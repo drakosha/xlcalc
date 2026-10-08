@@ -11,11 +11,12 @@ import { DEFAULT_LOCALE } from './locale/registry.js'
 import { compareAddress, sortAddresses } from './model.js'
 import type { Axis } from './structure/area.js'
 import { Sha256 } from './sha256.js'
+import { to15 } from './values.js'
 
 /** A number for output and hashing: 15 significant digits, no `-0`. */
 export function outNumber(v: number): number {
   if (v === 0) return 0
-  return Number(v.toPrecision(15))
+  return to15(v)
 }
 
 export function canonValue(v: CellValue): string {
@@ -35,14 +36,15 @@ export interface FillLine {
   value: CellValue
 }
 
-/** Values: sheet → address → value; empty cells are skipped. Then the fill ranges, by sheet and their top-left cell. */
-export function canonText(values: Map<string, Map<string, CellValue>>, fills: readonly FillLine[] = []): string {
+/** Values, then fill ranges. `prepared`: buildResult's cells are already address-sorted and rounded by outNumber. */
+export function canonText(values: Map<string, Map<string, CellValue>>, fills: readonly FillLine[] = [], prepared = false): string {
   const lines: string[] = []
   for (const sheet of [...values.keys()].sort(byText)) {
     const cells = values.get(sheet)!
-    for (const addr of sortAddresses(cells.keys())) {
+    const quoted = JSON.stringify(sheet)
+    for (const addr of prepared ? cells.keys() : sortAddresses(cells.keys())) {
       const v = cells.get(addr)!
-      if (v !== null) lines.push(`${JSON.stringify(sheet)}!${addr} ${canonValue(v)}`)
+      if (v !== null) lines.push(`${quoted}!${addr} ${prepared && typeof v === 'number' && Number.isFinite(v) ? `n ${String(v)}` : canonValue(v)}`)
     }
   }
   const top = (f: FillLine) => f.range.split(':')[0]
@@ -55,16 +57,16 @@ const hashedLocale = (locale: string | undefined): string | undefined => (locale
 
 /**
  * The values hash: the configuration version, `;locale=<tag>` for a book in a locale other than en-US, `;date1904`
- * for a book in the 1904 date system, the values and fills.
+ * for a book in the 1904 date system, the values and fills. `prepared` has canonText's internal result-map contract.
  */
-export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string, dateSystem?: 1900 | 1904): string {
+export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string, dateSystem?: 1900 | 1904, prepared = false): string {
   const tag = hashedLocale(locale)
   return new Sha256()
     .update(configVersion)
     .update(tag === undefined ? '' : `;locale=${tag}`)
     .update(dateSystem === 1904 ? ';date1904' : '')
     .update('\n')
-    .update(canonText(values, fills))
+    .update(canonText(values, fills, prepared))
     .hex()
 }
 

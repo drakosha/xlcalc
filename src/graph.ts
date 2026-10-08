@@ -43,12 +43,15 @@ export function rebuildGraph(state: EngineState) {
   const spanned = (f: Formula): readonly Rng[] => {
     if (!f.spans) return f.refs
     const more: Rng[] = []
-    for (const span of f.spans)
+    for (const span of f.spans) {
+      const reached = [...span.boxes]
       for (const a of span.anchors) {
         const id = idAt(a.s, a.r1, a.c1)
         const x = id === undefined ? undefined : state.spills.claims.get(id)
-        if (x) more.push(...bySheet([...span.boxes.filter((g) => g.s === x.s), new Rng(x.s, x.r1, x.c1, x.r2, x.c2)]).values())
+        if (x) reached.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
       }
+      if (reached.length > span.boxes.length) more.push(...bySheet(reached).values())
+    }
     return more.length ? [...f.refs, ...more] : f.refs
   }
   const succ: number[][] = formulas.map(() => [])

@@ -143,7 +143,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const x = valueXml(v, ctx, where(addr), !f)
     return `<c r="${addr}"${sAttr(c)}${x.t}${cm}>${f}<v>${x.v}</v></c>`
   }
-  for (const [addr, c] of Object.entries(sheet.cells)) {
+  for (const addr of Object.keys(sheet.cells)) {
+    const c = sheet.cells[addr]
     if (c.meta !== undefined) issues.add('meta', 'cell meta has no place in a file', where(addr))
     const res = result?.[addr]
     if (c.formula === undefined) {
@@ -167,7 +168,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   }
   // the cells arrays spilled into, with the look their own cells give them
   if (result)
-    for (const [addr, r] of Object.entries(result)) {
+    for (const addr of Object.keys(result)) {
+      const r = result[addr]
       if (r.spillOf !== undefined) put(addr, cellXml(addr, sheet.cells[addr], r.value))
       if (r.spill !== undefined && r.spillFill !== undefined && mode === 'values')
         for (const a of rectCells(r.spill)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))

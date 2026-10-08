@@ -172,7 +172,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     if (!parts[i].length) return
     for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames, t.name === filterTables[i]) })
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames, issues, t.name === filterTables[i]) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
     files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(parts[i].map(({ id }) => [`${REL}/table`, `../tables/table${id}.xml`])) })

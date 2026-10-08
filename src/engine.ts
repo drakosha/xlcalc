@@ -17,7 +17,7 @@ import { epochOf, ymd } from './dates.js'
 import { hiddenRows } from './layout/hidden.js'
 import { rulesOf } from './locale/rules.js'
 import type { RulesClock } from './locale/rules/data.js'
-import { formatAddress, inputScalar, MAX_COLS, parseAddress } from './model.js'
+import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { blocks } from './spill/occupied.js'
@@ -112,12 +112,6 @@ function emptySheet(name: string): SheetData {
   return { name, cols: [], rows: 0, fills: [] }
 }
 
-
-/** A typed value in the book's date system: a date's serial number counts from its day 0 (`epoch` of the 1900 system). */
-function bookScalar(v: CellInput['value'], epoch: number) {
-  const x = inputScalar(v)
-  return epoch && typeof v === 'object' && v !== null ? (x as number) - epoch : x
-}
 
 export function invalidError(code: CheckCode): ErrorCode {
   if (code === 'unknown_function' || code === 'unknown_name') return 'NAME'
@@ -378,4 +372,3 @@ export function debugSource(state: EngineState): string {
   }
   return lines.join('\n')
 }
-
