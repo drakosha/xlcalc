@@ -155,7 +155,7 @@ A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
 ## Hidden rows and filtered sheets
 
-A row or a column is hidden by `hidden: true` in `rows` or `columns`. A sheet whose autofilter has criteria is marked `filtered: true`. Excel then treats every hidden row of the sheet as one the filter hid, whatever hid it. An xlsx file marks such a sheet with `filterMode`.
+A row or a column is hidden by `hidden: true` in `rows` or `columns`, or by a height or width of 0, as Excel takes it. A sheet is marked `filtered: true` when a filter of it has criteria, its autofilter or a table's. Excel then treats every hidden row of the sheet as one the filter hid, whatever hid it. In an xlsx file the criteria decide, not the attribute `filterMode`: Excel takes a sheet as filtered when its autofilter has criteria and the attribute is missing, does not when the attribute stands beside an autofilter without criteria, and writes no attribute for a table's filter ([docs/xlsx.md](xlsx.md)).
 
 On any sheet:
 

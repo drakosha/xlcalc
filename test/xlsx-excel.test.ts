@@ -4,7 +4,9 @@
  * without its repair window, and what Excel saved comes back as the book written, with Excel's values equal to the
  * engine's. Case books: the books of the case sets as Excel saved them read into books that compute every case as
  * the books sent to Excel do, with the values Excel stored equal to its stored answers. Formulas of the old kind: read
- * with `@` where Excel 365 puts it, they compute the values Excel stored. Colours and built-in number formats: the
+ * with `@` where Excel 365 puts it, they compute the values Excel stored. Filters in each form a file holds them: read
+ * with the filter mode Excel took, they compute the values Excel stored. The answers predicted before Excel ran
+ * (`bench/coverage/xlsx/predicted.json`) are Excel's, the misses named. Colours and built-in number formats: the
  * reader's are the ones Excel showed.
  */
 import { createHash } from 'node:crypto'
@@ -13,6 +15,8 @@ import { describe, expect, it } from 'vitest'
 import { colorBook, colorCases } from '../bench/coverage/xlsx/colors.js'
 import { buildRoundTrips, XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
 import { compareBooks, compareCached, entries, type Difference } from '../bench/coverage/xlsx/compare.js'
+import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
+import type { Predicted } from '../bench/coverage/xlsx/predict.js'
 import { formulaCell, OLD_FORMULAS } from '../bench/coverage/xlsx/intersect.js'
 import { PART, sentBook } from '../bench/coverage/xlsx/saved.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
@@ -25,9 +29,19 @@ import { CLOCK, matches, show, toVal } from './excel-cases.js'
 const dir = new URL('./excel/xlsx/', import.meta.url)
 const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dir), 'utf8')) as T
 
+/** The built-in formats Excel for Mac saves otherwise: money and accounting (5 to 8, 41 to 44) as codes, 23 to 26 as General, 27 to 36 as 14 and 21. */
+const RESAVED = [5, 6, 7, 8, ...Array.from({ length: 14 }, (_, i) => 23 + i), 41, 42, 43, 44]
+const BUILTIN_RESAVED = {
+  why: 'Excel for Mac saves the built-in money and accounting formats (5 to 8, 41 to 44) as codes of their own in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21',
+  places: [...RESAVED.map((id) => `cell Formats!A${id}`), 'column Formats!C'],
+}
+
 /** Where what Excel saved differs from the book written, and why. */
 const KNOWN_BOOK: Record<string, { why: string; places: string[] }> = {
   values: { why: 'Excel writes the literal characters of a number format escaped (dd\\.mm\\.yyyy): the same format', places: ['cell Values!E3', 'cell Values!E4', 'cell Values!E5', 'cell Values!E6'] },
+  date1904: { why: 'Excel writes the literal characters of a number format escaped (yyyy\\-mm\\-dd): the same format', places: ['cell Dates!A1', 'cell Dates!A4'] },
+  builtin: BUILTIN_RESAVED,
+  'builtin-ru': BUILTIN_RESAVED,
   'struct-edge-edge': { why: 'Excel writes a range over whole columns or rows as one (A1:A1048576 as A:A, A:XFD as $1:$1048576): the same cells', places: ['cell F!A3', 'cell F!A5', 'cell F!A15'] },
   'spill-names-formulas': { why: 'a name that reads as a cell address (nm2) is not a name in Excel: the writer leaves it out', places: ['name !NM2'] },
   'spill-names-sheet-global': { why: "Excel saves a global name qualified by a sheet without a local one as the book's own name ([0]!x), read as x: the same name", places: ['cell S!E1'] },
@@ -37,8 +51,11 @@ const KNOWN_BOOK: Record<string, { why: string; places: string[] }> = {
 const ISSUES: Record<string, string[]> = {
   'formulas-values': ['errorConstant Data C2 C12 C23'],
   'spills-values': ['errorValue Spill A6', 'errorConstant Spill I1 N1'],
-  styles: ['hidden Styles 9:9 F:F'],
+  filtered: ['autoFilter S'],
+  'filtered-table': ['autoFilter S'],
 }
+
+const predicted = JSON.parse(readFileSync(new URL('../bench/coverage/xlsx/predicted.json', import.meta.url), 'utf8')) as Predicted
 
 describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip through Excel', async () => {
   const run = json<StoredRun>('roundtrip.json')
@@ -57,8 +74,33 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
       const random = (d: Difference) => c.volatile && !Number.isNaN(Number(d.written)) && !Number.isNaN(Number(d.read))
       if (c.mode !== 'values') expect(compareCached(result, read.cached).filter((d) => !random(d))).toEqual([])
       expect(read.issues.map((i) => [i.code, i.sheet ?? i.name, ...(i.cells ?? [])].join(' '))).toEqual(ISSUES[c.id] ?? [])
+      // a book predicted before Excel ran: Excel stored the values predicted; the book came back as predicted, but where Excel saves otherwise
+      const p = predicted.roundtrip[c.id]
+      if (p) {
+        expect(Object.fromEntries(Object.keys(p.values).map((k) => [k, read.cached[read.book.sheets.findIndex((x) => x.name === k.split('!')[0])].cells[k.split('!')[1]]]))).toEqual(p.values)
+        expect(differences.map((d) => d.place).filter((x) => !KNOWN_BOOK[c.id]?.places.includes(x))).toEqual(p.differences)
+      }
     })
   }
+})
+
+describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Excel computed and saved them', () => {
+  const run = json<StoredRun>('filters.json')
+
+  it('every file of the set went through Excel, and only those', () => {
+    expect(Object.keys(run.books).sort()).toEqual(FILTER_FILES.map((c) => c.id).sort())
+  })
+
+  for (const c of FILTER_FILES)
+    it(`${c.id}: ${c.about}`, async () => {
+      const data = await filterFile(c)
+      expect(run.books[c.id].sent, 'the file changed since Excel saw it: run the xlsx filters step').toBe(createHash('sha256').update(data).digest('hex'))
+      const read = await readXlsx(readFileSync(new URL(`filters/${c.id}.xlsx`, dir)))
+      // the filter mode Excel took, as predicted: the engine computes the values Excel stored, which are the ones predicted
+      expect(!!read.book.sheets[0].filtered).toBe(predicted.filters[c.id].filtered)
+      expect(compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)).toEqual([])
+      expect(Object.fromEntries(Object.entries(read.cached[1].cells).map(([a, v]) => [`F!${a}`, v]))).toEqual(predicted.filters[c.id].values)
+    })
 })
 
 describe.skipIf(!existsSync(new URL('colors.json', dir)))('xlsx fill colours as Excel shows them', () => {

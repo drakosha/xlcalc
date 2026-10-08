@@ -320,7 +320,7 @@ A format can also be the number of one of Excel's built-in formats, from 0 to 49
 
 ### Hidden rows and filters
 
-A row or a column is hidden by `hidden: true` in `rows` or `columns`, as an xlsx file stores it. `SUBTOTAL` with codes 101 to 111 and `AGGREGATE` with options 1, 3, 5 and 7 leave out the cells of hidden rows. Hidden columns count, as in Excel.
+A row or a column is hidden by `hidden: true` in `rows` or `columns`, as an xlsx file stores it, or by a height or width of 0, as Excel takes it. `SUBTOTAL` with codes 101 to 111 and `AGGREGATE` with options 1, 3, 5 and 7 leave out the cells of hidden rows. Hidden columns count, as in Excel.
 
 A sheet whose autofilter has criteria is marked `filtered: true`. Excel takes every hidden row of such a sheet as one a filter hid, and `SUBTOTAL` with codes 1 to 11 leaves those out too.
 
@@ -422,7 +422,7 @@ const values = await readXlsx((await writeXlsx(book, { result: compute(book), mo
 console.log(values.book.sheets[0].cells.C2) // → { value: 2 }
 ```
 
-Both functions return promises: the archive is inflated and deflated by the platform's streams. Styles, number formats, widths, heights, merged areas, names, tables and the book's locale go both ways. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
+Both functions return promises: the archive is inflated and deflated by the platform's streams. Styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, merged areas, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
 
 ### Computing without blocking
 
@@ -585,7 +585,7 @@ Notes on semantics:
 - **Syntax.** Stored formulas use English function names and separators (no `;` or decimal commas; text typed in another language goes through `toInvariant`), no R1C1 references, no references to other workbooks, no range or intersection operators between references (`Sales[Qty]:Sales[Price]`, a space between ranges). Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LAMBDA`, …) give `#NAME?`.
 - **Structure operations and styles.** Whole rows or columns copied onto part of a merged area are refused, where Excel pastes them. Excel's fill handle fills the hidden rows of a filtered sheet, while `copyRange` fills only the visible ones, as Fill Down does. A book has no outlines, conditional formats, validation or comments. Styles are kept and moved, not computed: `compute` does not return them.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
-- **xlsx.** A file's conditional formats, validation, comments, pictures, charts and pivot tables are not read, and each is reported in `issues`. Formulas of the old kind, which Excel 365 computes with implicit intersection, are reported and computed as dynamic arrays. Built-in date, time and currency formats are read as the codes Excel for Mac en-US shows. Every formula is written as a dynamic array formula, which Excel 2019 and older show as an array formula. [docs/xlsx.md](docs/xlsx.md) has the full list.
+- **xlsx.** A file's conditional formats, validation, comments, pictures, charts and pivot tables are not read, and each is reported in `issues`. Of a filter the book keeps the filter mode alone: an autofilter's range and criteria are reported, and a filtered sheet is written with criteria that every row meets. Formulas of the old kind are read as the dynamic formulas Excel 365 shows for them, with `@` where it takes one value of a range; the intersection operator is not read. Every formula is written as a dynamic array formula, which Excel 2019 and older show as an array formula. [docs/xlsx.md](docs/xlsx.md) has the full list.
 
 ## Development
 

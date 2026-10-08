@@ -5,12 +5,14 @@
  * (`CellInput.array`) is written over its area without the metadata, as Excel writes one entered with
  * Ctrl+Shift+Enter, and a formula in a table's totals row as a plain one, the only kind Excel takes there. Values
  * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
- * does not parse, or names a sheet, a table or a column the book does not have) is written as its value.
+ * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
+ * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
+ * its own over its cells, with Excel's filter mark.
  */
-import type { CellInput, CellResult, CellValue, SheetInput } from '../../contract.js'
-import { lines } from '../../layout/spans.js'
+import type { CellInput, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
+import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
-import { parseRange } from '../../structure/area.js'
+import { parseRange, type Rect } from '../../structure/area.js'
 import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
@@ -28,6 +30,12 @@ export const MAX_TEXT = 32_767
  * but no width of its own needs one, as Excel reads a column without a width as hidden.
  */
 const DEFAULT_WIDTH = '8.83203125'
+
+/**
+ * The criteria of the autofilter a filtered sheet gets: a cell equal to nothing or not equal to it, which every row
+ * meets. Excel takes the sheet as filtered by them and leaves its rows as the file has them; its Reapply shows every row.
+ */
+export const KEEP_ALL = '<filterColumn colId="0"><customFilters><customFilter val=""/><customFilter operator="notEqual" val=""/></customFilters></filterColumn>'
 
 export interface SheetContext {
   styles: StyleWriter
@@ -48,6 +56,10 @@ export interface SheetContext {
   totalsAt(addr: string): boolean
   /** The relationship ids of the sheet's table parts. */
   tableParts: string[]
+  /** The day 0 of the book's date system in the 1900 system (`epochOf`): a date's serial counts from it. */
+  epoch: number
+  /** A filtered sheet's table whose autofilter holds the criteria (`KEEP_ALL`), in place of an autofilter of the sheet's own, as Excel keeps a table's filter. */
+  filterTable?: string
 }
 
 export interface SheetWritten {
@@ -135,7 +147,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     if (c.meta !== undefined) issues.add('meta', 'cell meta has no place in a file', where(addr))
     const res = result?.[addr]
     if (c.formula === undefined) {
-      const v = c.value === undefined || c.value === null ? undefined : typeof c.value === 'object' ? dateToSerial(c.value.date) : c.value
+      const v = c.value === undefined || c.value === null ? undefined : typeof c.value === 'object' ? dateToSerial(c.value.date) - ctx.epoch : c.value
       put(addr, cellXml(addr, c, v))
       continue
     }
@@ -165,7 +177,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
     const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
-    const attrs = (e.height === 0 ? ' hidden="1"' : e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (xf ? ` s="${xf}" customFormat="1"` : '')
+    const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '')
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
   const keys = [...out.keys()].sort((a, b) => a - b)
@@ -183,19 +195,42 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const dim = keys.length ? `${indexToCol(minCol)}${Math.floor(first / MAX_COLS) + 1}:${indexToCol(maxCol)}${Math.floor(last / MAX_COLS) + 1}` : 'A1'
   const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
     const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
-    const size = e.width === 0 ? ' width="0" customWidth="1" hidden="1"' : e.width !== undefined ? ` width="${e.width}" customWidth="1"` : ` width="${DEFAULT_WIDTH}"`
-    return `<col min="${lo + 1}" max="${hi + 1}"${size}${xf ? ` style="${xf}"` : ''}/>`
+    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"` : ` width="${DEFAULT_WIDTH}"`
+    return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}/>`
   })
   const merges = sheet.merges ?? []
+  const used = keys.length ? { r1: Math.floor(first / MAX_COLS), r2: Math.floor(last / MAX_COLS), c1: minCol, c2: maxCol } : undefined
+  let filter = sheet.filtered && !ctx.filterTable ? filterRange(used, rowLines) : undefined
+  // an autofilter of the sheet cannot meet a table: only tables without a header row (no filter of their own) are left
+  const area = filter && parseRange(filter)!
+  if (area && (sheet.tables ?? []).some((t) => meets(parseRange(t.range)!, area))) {
+    issues.add('autoFilter', "the filter mode of a sheet whose tables have no header row is left out: an autofilter over the sheet's cells would meet them", { sheet: sheet.name })
+    filter = undefined
+  }
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+    (filter ? '<sheetPr filterMode="1"/>' : '') +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}/></sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
     '<sheetFormatPr defaultRowHeight="15"/>' +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
     `<sheetData>${data.join('')}</sheetData>` +
+    (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
     '</worksheet>'
   return { xml, formulas }
+}
+
+const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2
+
+/** The written cells' rectangle (`cells`: rows and columns, or none) stretched over the hidden rows and the row above the first. */
+function filterRange(cells: { r1: number; r2: number; c1: number; c2: number } | undefined, rowLines: Line<RowInput>[]): string {
+  let { r1, r2, c1, c2 } = cells ?? { r1: Infinity, r2: -1, c1: 0, c2: 0 }
+  for (const [lo, hi, e] of rowLines)
+    if (e.hidden) {
+      r1 = Math.min(r1, Math.max(0, lo - 1))
+      r2 = Math.max(r2, hi)
+    }
+  return r2 < 0 ? 'A1' : `${formatAddress(r1, c1)}:${formatAddress(r2, c2)}`
 }

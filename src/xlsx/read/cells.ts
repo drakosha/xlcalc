@@ -1,10 +1,10 @@
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
- * errors, ISO dates of Strict files), formulas with their stored values, rows' heights and styles. A cell is placed
- * by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges are
- * collected for the sheet reader to resolve once every cell is known.
+ * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles and hidden rows. A cell
+ * is placed by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges
+ * are collected for the sheet reader to resolve once every cell is known.
  */
-import type { CellInput, CellValue, ErrorCode, RowInput, Scalar } from '../../contract.js'
+import type { CellInput, CellValue, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Issues } from '../issues.js'
 import type { Xf } from '../styles/read.js'
@@ -18,8 +18,8 @@ export interface CellsContext {
   strings: Strings
   xfs: Xf[]
   meta: CellMetadata
-  /** A number of a date format moved to the 1900 date system (as it is in a book of that system). */
-  date(n: number, xf: Xf | undefined): number
+  /** The day 0 of the book's date system in the 1900 system (`epochOf`): an ISO date's serial counts from it. */
+  epoch: number
   issues: Issues
 }
 
@@ -89,10 +89,9 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       row = a.r ? Number(a.r) - 1 : row + 1
       col = -1
       const line: RowInput = {}
-      if (flag(a.hidden)) {
-        line.height = 0
-        issues.add('hidden', 'hidden rows and columns are read with a size of 0', { sheet, cell: `${row + 1}:${row + 1}` })
-      } else if (a.ht !== undefined && flag(a.customHeight)) line.height = Number(a.ht)
+      if (a.ht !== undefined && flag(a.customHeight)) line.height = Number(a.ht)
+      // Excel hides a row of height 0 whatever its flag
+      if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) Object.assign(line, look(ctx.xfs[Number(a.s)]))
       if (Number(a.outlineLevel ?? 0) > 0) issues.add('outline', 'grouped rows and columns are not in the model', { sheet, cell: `${row + 1}:${row + 1}` })
       if (Object.keys(line).length) out.rows.set(row + 1, line)
@@ -119,7 +118,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     const xf = a.s === undefined ? undefined : ctx.xfs[Number(a.s)]
     const cell: CellInput = look(xf)
     if (xf) for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, { sheet, cell: addr })
-    if (xf?.regional !== undefined) issues.add('numberFormat', 'a built-in date, time or currency format Excel shows by the regional settings, read as its en-US code', { sheet, cell: addr })
+    if (xf?.eastAsian !== undefined) issues.add('numberFormat', 'a built-in East Asian date format the model does not have (50 to 58), read as the code Excel for Mac en-US shows', { sheet, cell: addr })
     if (xf?.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', { sheet, cell: addr })
     // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
@@ -145,8 +144,8 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     } else if (raw !== undefined && t !== 'e') {
       if (t === 'str') value = readText(raw)
       else if (t === 'b') value = raw === '1' || raw === 'true'
-      else if (t === 'd') value = dateToSerial(raw)
-      else if (raw !== '' && Number.isFinite(Number(raw))) value = ctx.date(Number(raw), xf)
+      else if (t === 'd') value = dateToSerial(raw) - ctx.epoch
+      else if (raw !== '' && Number.isFinite(Number(raw))) value = Number(raw)
     }
     const errText = t === 'e' && raw !== undefined ? (rich ?? readText(raw).trim()) : undefined
     const f = body.includes('f') ? F.exec(body) : null
@@ -188,9 +187,9 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
-export function look(xf: Xf | undefined): { style?: number; format?: string } {
+export function look(xf: Xf | undefined): { style?: number; format?: NumberFormat } {
   if (!xf) return {}
-  const out: { style?: number; format?: string } = {}
+  const out: { style?: number; format?: NumberFormat } = {}
   if (xf.style !== undefined) out.style = xf.style
   if (xf.format !== undefined) out.format = xf.format
   return out

@@ -112,38 +112,52 @@ describe('xlsx reader: names', () => {
 })
 
 describe('xlsx reader: the workbook and the sheet around the cells', () => {
-  it('calculation settings, protection, links and macros are reported', async () => {
+  it('calculation settings the book does not keep, protection, links and macros are reported', async () => {
     const r = await read({
       sheets: [{ name: 'S', body: one(1) }],
       workbook: { before: '<workbookProtection lockStructure="1"/>', after: '<calcPr iterate="1" calcMode="manual" fullCalcOnLoad="1"/><externalReferences><externalReference r:id="rIdX"/></externalReferences>' },
       parts: { 'xl/externalLinks/externalLink1.xml': '<externalLink/>' },
     })
-    expect(codes(r.issues)).toEqual([
-      'calculation',
-      'calculation',
-      'protection',
-      'externalLink',
-    ])
+    expect(r.book.iteration).toEqual({})
+    expect(codes(r.issues)).toEqual(['calculation', 'protection', 'externalLink'])
   })
 
-  it('columns, rows and merged areas; hidden and grouped lines reported; equal neighbours in one span', async () => {
+  it('iterative calculation with its count and change; settings out of range read as the defaults and reported; precision as displayed reported', async () => {
+    const calc = async (attrs: string) => {
+      const r = await read({ sheets: [{ name: 'S', body: one(1) }], workbook: { after: `<calcPr calcId="191029" ${attrs}/>` } })
+      return { iteration: r.book.iteration, issues: r.issues.map((i) => i.message) }
+    }
+    expect(await calc('iterate="1" iterateCount="7" iterateDelta="0.5"')).toEqual({ iteration: { maxIterations: 7, maxChange: 0.5 }, issues: [] })
+    expect(await calc('iterate="true" iterateDelta="0"')).toEqual({ iteration: { maxChange: 0 }, issues: [] })
+    expect(await calc('iterateCount="7" iterateDelta="0.5"')).toEqual({ iteration: undefined, issues: [] })
+    expect(await calc('iterate="1" iterateCount="0" iterateDelta="-1"')).toEqual({
+      iteration: {},
+      issues: ['the maximum of iterations "0" is not one of 1 to 32,767: the default, 100, is read', 'the maximum change of iterations "-1" is not a number from 0: the default, 0.001, is read'],
+    })
+    expect(await calc('calcMode="autoNoTable" fullPrecision="0"')).toEqual({
+      iteration: undefined,
+      issues: ['the calculation mode "automatic except for data tables" is not kept', 'precision as displayed is not in the engine: values keep their full precision'],
+    })
+  })
+
+  it('columns, rows and merged areas; hidden lines with their sizes, a line of size 0 hidden; grouped lines reported; equal neighbours in one span', async () => {
     const r = await read({
       sheets: [
         {
           name: 'S',
           body:
-            '<cols><col min="1" max="1" width="20" customWidth="1"/><col min="2" max="3" width="12.5" customWidth="1" style="1"/><col min="4" max="4" width="9" style="1"/><col min="5" max="5" width="9" customWidth="1" hidden="1"/><col min="6" max="6" width="9" outlineLevel="1"/></cols>' +
-            '<sheetData><row r="2" ht="30" customHeight="1"/><row r="3" ht="30" customHeight="1"/><row r="4" ht="18"/><row r="5" hidden="1"/><row r="6" s="1" customFormat="1" outlineLevel="1"/></sheetData>' +
+            '<cols><col min="1" max="1" width="20" customWidth="1"/><col min="2" max="3" width="12.5" customWidth="1" style="1"/><col min="4" max="4" width="9" style="1"/><col min="5" max="5" width="9" customWidth="1" hidden="1"/><col min="6" max="6" width="9" outlineLevel="1"/><col min="7" max="7" width="9" hidden="1"/><col min="8" max="8" width="0" customWidth="1"/></cols>' +
+            '<sheetData><row r="2" ht="30" customHeight="1"/><row r="3" ht="30" customHeight="1"/><row r="4" ht="18"/><row r="5" hidden="1"/><row r="6" s="1" customFormat="1" outlineLevel="1"/><row r="7" ht="25" hidden="1" customHeight="1"/><row r="8" ht="0" customHeight="1"/></sheetData>' +
             '<mergeCells count="3"><mergeCell ref="A1:B2"/><mergeCell ref="B2:C3"/><mergeCell ref="D4:D4"/></mergeCells>',
         },
       ],
       styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="10"/></cellXfs>',
     })
     const s = r.book.sheets[0]
-    expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, format: '0.00%' }, D: { format: '0.00%' }, E: { width: 0 } })
-    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { height: 0 }, 6: { format: '0.00%' } })
+    expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, format: 10 }, D: { format: 10 }, E: { width: 9, hidden: true }, G: { hidden: true }, H: { width: 0, hidden: true } })
+    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { hidden: true }, 6: { format: 10 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true } })
     expect(s.merges).toEqual(['A1:B2'])
-    expect(codes(r.issues)).toEqual(['hidden 5:5 E:E', 'outline 6:6 F:F', 'part B2:C3'])
+    expect(codes(r.issues)).toEqual(['outline 6:6 F:F', 'part B2:C3'])
   })
 
   it('what a sheet has that the model does not: each reported once for the sheet', async () => {
@@ -154,7 +168,8 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     const f = parts({ sheets: [{ name: 'S', body }] })
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId4" Type="${REL}/comments" Target="../comments1.xml"/><Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
-    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'hyperlink', 'autoFilter', 'protection', 'drawing', 'sparkline', 'print', 'frozenPanes', 'comment', 'pivotTable'])
+    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'hyperlink', 'protection', 'drawing', 'sparkline', 'print', 'frozenPanes', 'comment', 'pivotTable', 'autoFilter'])
+    expect(r.book.sheets[0].filtered).toBeUndefined()
   })
 
   it('the locale from its custom property; an unknown one reported; the default font other than Calibri 11 reported', async () => {

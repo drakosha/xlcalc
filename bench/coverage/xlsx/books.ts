@@ -10,6 +10,7 @@ import { synthBook } from '../../../src/synth.js'
 import type { SpillSet } from '../spill/cases.js'
 import type { StructSet } from '../struct/cases.js'
 import type { TableSet } from '../tables/cases.js'
+import { filterBook, Y_ROWS } from './filters.js'
 
 /** The clock the round trip computes its books with. */
 export const XLSX_CLOCK = { now: '2026-10-07T12:00:00Z', seed: 7 }
@@ -139,6 +140,40 @@ const ru: BookInput = {
 
 const en: BookInput = { sheets: [{ name: 'Sheet1', cells: { A1: v('1.5'), B1: f('A1*2'), C1: f('TRUE&""') } }], locale: 'en-US' }
 
+/** Dates typed in and computed in the 1904 date system, a negative date and time among them. */
+const date1904: BookInput = {
+  dateSystem: 1904,
+  sheets: [
+    {
+      name: 'Dates',
+      cells: {
+        A1: { value: { date: '2025-01-31' }, format: 'yyyy-mm-dd' }, A2: { value: { date: '1904-01-01T06:00:00' }, format: 22 }, A3: { value: 0, format: 14 }, A4: { value: -1.5, format: 'yyyy-mm-dd h:mm' },
+        B1: f('DATE(2025,1,31)'), B2: f('YEAR(A1)'), B3: f('A1-A2'), B4: f('TEXT(A1,"yyyy-mm-dd")'), B5: f('DATEVALUE("2025-01-31")'), B6: f('WEEKDAY(A3)'),
+        B7: f('EDATE(A1,1)'), B8: f('DAY(0)'), B9: f('MONTH(A3)'), B10: f('TEXT(A4,"yyyy-mm-dd h:mm")'), B11: f('TEXT(-0.5,"h:mm")'), B12: f('A1=B1'),
+      },
+    },
+  ],
+}
+
+/** Cycles that reach their fixed point exactly, so that Excel, going on from the values written, keeps them. */
+const cycles = (iteration: BookInput['iteration']): BookInput => ({
+  iteration,
+  sheets: [{ name: 'Cycle', cells: { A1: f('MIN(B1+1,5)'), B1: f('A1'), C1: f('IF(D1>=3,3,D1+1)'), D1: f('C1*1'), E1: f('A1+C1') } }],
+})
+
+/** Every built-in format by its number, on cells, a row and a column. */
+const builtin = (locale?: string): BookInput => ({
+  ...(locale ? { locale } : {}),
+  sheets: [
+    {
+      name: 'Formats',
+      cells: { ...Object.fromEntries(Array.from({ length: 49 }, (_, i) => [`A${i + 1}`, { value: 45688.75, format: i + 1 }])), B1: { value: -1234.5, format: 38 }, B2: { value: 0, format: 0 } },
+      rows: { 51: { format: 14 } },
+      columns: { C: { format: 44 } },
+    },
+  ],
+})
+
 /** The books of the structure and spill sets, each once. */
 async function setBooks(): Promise<RoundTrip[]> {
   const out: RoundTrip[] = []
@@ -176,5 +211,18 @@ function ownBooks(): RoundTrip[] {
     { id: 'ru', what: 'a ru-RU book: the locale kept as a custom property', book: ru },
     { id: 'en', what: 'an en-US book with its locale given', book: en },
     { id: 'synth', what: 'the synthetic book (340 rows): SUMIFS over whole columns, names, XLOOKUP, Cyrillic', book: synthBook({ seed: 1, rows: 340 }).book },
+    {
+      id: 'hidden',
+      what: 'rows and columns hidden with and without their sizes and looks; SUBTOTAL and AGGREGATE over them',
+      book: filterBook({ rows: { 3: { hidden: true }, 5: { height: 30, hidden: true }, 6: { hidden: true, format: '0.0' } }, columns: { E: { width: 12, hidden: true }, G: { hidden: true } } }),
+    },
+    { id: 'zero-sizes', what: 'a row of height 0 and a column of width 0, not marked hidden', book: filterBook({ rows: { 3: { height: 0 } }, columns: { E: { width: 0 } } }) },
+    { id: 'filtered', what: 'a filtered sheet: its hidden rows taken as rows a filter hid', book: filterBook({ rows: Y_ROWS, filtered: true }) },
+    { id: 'filtered-table', what: "a filtered sheet with a table, which holds the sheet's filter mode", book: filterBook({ rows: Y_ROWS, filtered: true, table: true }) },
+    { id: 'date1904', what: 'the 1904 date system: dates typed in and computed, negative ones', book: date1904 },
+    { id: 'iteration', what: 'iterative calculation with a count and a change of its own over cycles that settle', book: cycles({ maxIterations: 7, maxChange: 0.5 }) },
+    { id: 'iteration-default', what: "iterative calculation with Excel's defaults", book: cycles({}) },
+    { id: 'builtin', what: 'the built-in number formats 1 to 49 by number on cells, a row and a column', book: builtin() },
+    { id: 'builtin-ru', what: 'the built-in number formats by number in a ru-RU book', book: builtin('ru-RU') },
   ]
 }

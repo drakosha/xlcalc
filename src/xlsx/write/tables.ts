@@ -3,19 +3,20 @@
  * `displayName`), the range, the header and totals row counts, an autofilter over the header and data rows, each
  * column with its name, its totals function or label and its calculated column formula, and Excel's default style.
  * A formula in the totals row that no totals function of its column gives is the column's `custom` totals formula:
- * Excel does not open a file whose totals row holds a formula its table part does not record.
+ * Excel does not open a file whose totals row holds a formula its table part does not record. The table that holds a
+ * filtered sheet's filter mode gets criteria every row meets (`KEEP_ALL`).
  */
 import type { SheetInput, TableInput } from '../../contract.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { fileTree } from './sheet.js'
+import { fileTree, KEEP_ALL } from './sheet.js'
 
 const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
 
-/** The table's part; `id` is unique in the book. */
-export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: Set<string>, tables: { name: string; columns: string[] }[]): string {
+/** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */
+export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: Set<string>, tables: { name: string; columns: string[] }[], filtered = false): string {
   const x = parseRange(t.range)!
   const headers = t.headers !== false
   const totals = t.totals === true
@@ -39,7 +40,8 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: S
     else if (c.totals && 'label' in c.totals) attrs += ` totalsRowLabel="${escapeAttr(c.totals.label)}"`
     return `<tableColumn id="${i + 1}" name="${escapeAttr(c.name)}"${attrs}${inner ? `>${inner}</tableColumn>` : '/>'}`
   })
-  const filter = headers ? `<autoFilter ref="${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2 - (totals ? 1 : 0), x.c2)}"/>` : ''
+  const filterRef = `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2 - (totals ? 1 : 0), x.c2)}`
+  const filter = headers ? (filtered ? `<autoFilter ref="${filterRef}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filterRef}"/>`) : ''
   const counts = (headers ? '' : ' headerRowCount="0"') + (totals ? ' totalsRowCount="1"' : '')
   const name = escapeAttr(t.name)
   const ref = `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`

@@ -1,14 +1,17 @@
 /**
  * Comparing a book with the one read back from a file, and Excel's stored values with the engine's. Both sides
  * are flattened to entries by place (`cell S!A1`, `column S!B`, `name S!rate` …) holding plain values: a style by
- * its fields rather than its index, a formula as its canonical text, a date as its serial number, spans of rows
- * and columns line by line.
+ * its fields rather than its index, a formula as its canonical text, a date as its serial number in the book's date
+ * system, a code equal to a built-in format every locale shows alike as that format's number, spans of rows and
+ * columns line by line (a line of size 0 hidden), iterative calculation with Excel's defaults filled in.
  */
 import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat, TableInput } from '../../../src/contract.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
+import { epochOf } from '../../../src/dates.js'
 import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
 import { canonical, parse, validate } from '../../../src/syntax.js'
 import { tableAt, tablesOf, type Tables } from '../../../src/tables/model.js'
+import { BUILTIN_ID } from '../../../src/xlsx/styles/numfmt.js'
 
 export interface Difference {
   place: string
@@ -80,7 +83,8 @@ function lookOf(book: BookInput, x: { style?: number; format?: NumberFormat }): 
   const out: Look = {}
   const style = normStyle(x.style === undefined ? undefined : book.styles?.[x.style])
   if (style) out.style = style
-  if (x.format !== undefined && x.format !== 'General') out.format = x.format
+  // a file stores a code that every locale shows as a built-in format by that format's number
+  if (x.format !== undefined && x.format !== 'General' && x.format !== 0) out.format = typeof x.format === 'string' ? (BUILTIN_ID.get(x.format) ?? x.format) : x.format
   return out
 }
 
@@ -92,8 +96,10 @@ function lookOf(book: BookInput, x: { style?: number; format?: NumberFormat }): 
 export function entries(book: BookInput, values?: ComputeResult): Map<string, string> {
   const out = new Map<string, string>()
   const tables = tablesOf(book)
+  const epoch = epochOf(book.dateSystem)
   book.sheets.forEach((s, i) => {
     out.set(`sheet ${i + 1}`, s.name)
+    if (s.filtered) out.set(`filtered ${s.name}`, 'true')
     const res = values?.sheets[i].cells
     const cells = new Map<string, Record<string, unknown>>()
     // #CALC! has no formula spelling: the reader leaves it out
@@ -112,15 +118,16 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
       const x: Record<string, unknown> = stable(own) === stable(inherited(addr)) ? {} : { ...own }
       const { row, col } = parseAddress(addr)
       if (c.formula !== undefined) Object.assign(x, res ? fromValue(res[addr]?.value ?? null) : { formula: formulaText(c.formula, false, tables, tableAt(tables, i, row, col)?.name), array: c.array })
-      else if (c.value !== undefined && c.value !== null) x.value = typeof c.value === 'object' ? dateToSerial(c.value.date) : c.value
+      else if (c.value !== undefined && c.value !== null) x.value = typeof c.value === 'object' ? dateToSerial(c.value.date) - epoch : c.value
       if (Object.keys(x).length) cells.set(addr, x)
     }
     if (res)
       for (const [addr, r] of Object.entries(res) as [string, CellResult][])
         if (r.spillOf !== undefined) cells.set(addr, { ...(cells.get(addr) ?? {}), ...fromValue(r.value) })
     for (const [addr, x] of cells) out.set(`cell ${s.name}!${addr}`, stable(x))
-    for (const [lo, hi, e] of lines(s.columns, 'c')) for (let c = lo; c <= hi; c++) out.set(`column ${s.name}!${indexToCol(c)}`, stable({ width: e.width, ...lookOf(book, e) }))
-    for (const [lo, hi, e] of lines(s.rows, 'r')) for (let r = lo; r <= hi; r++) out.set(`row ${s.name}!${r + 1}`, stable({ height: e.height, ...lookOf(book, e) }))
+    // a line of size 0 is hidden in Excel
+    for (const [lo, hi, e] of lines(s.columns, 'c')) for (let c = lo; c <= hi; c++) out.set(`column ${s.name}!${indexToCol(c)}`, stable({ width: e.width, hidden: e.hidden || e.width === 0 || undefined, ...lookOf(book, e) }))
+    for (const [lo, hi, e] of lines(s.rows, 'r')) for (let r = lo; r <= hi; r++) out.set(`row ${s.name}!${r + 1}`, stable({ height: e.height, hidden: e.hidden || e.height === 0 || undefined, ...lookOf(book, e) }))
     if (s.merges?.length) out.set(`merges ${s.name}`, stable([...s.merges].sort()))
     // a table's columns: a calculated column's formula as stored text; a totals formula of its own (`custom`) and a label
     // the totals cell holds are left out (the cell holds them; Excel records a label for the text there when it saves)
@@ -143,6 +150,8 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
   })
   for (const n of book.names ?? []) out.set(`name ${n.scope ?? ''}!${n.name.toUpperCase()}`, formulaText(n.ref, true, tables))
   out.set('locale', book.locale ?? 'en-US')
+  out.set('date system', String(book.dateSystem ?? 1900))
+  if (book.iteration) out.set('iteration', stable({ maxIterations: 100, maxChange: 0.001, ...book.iteration }))
   return out
 }
 

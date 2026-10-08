@@ -8,7 +8,8 @@
  * the fill colours Excel shows for theme colours with tints and for the legacy palette (`xlsx/colors.ts`) into
  * `test/excel/xlsx/colors.json`. `xlsx formats`: the codes Excel en-US shows for the built-in number formats
  * (`xlsx/formats.ts`) into `test/excel/xlsx/formats.json`. `xlsx intersect`: formulas of the old kind computed and saved by Excel
- * (`xlsx/intersect.ts`) into `test/excel/xlsx/intersect/`.
+ * (`xlsx/intersect.ts`) into `test/excel/xlsx/intersect/`. `xlsx filters`: files with filters in each form a file holds
+ * them (`xlsx/filters.ts`) computed and saved by Excel into `test/excel/xlsx/filters/`.
  * `test/excel/xlsx/<step>.json` records what was sent (a hash per book), so a run sends again only the books that
  * changed (`FCOV_FRESH=1` sends all); `FXLSX_ONLY=id,id` limits a run.
  */
@@ -25,6 +26,7 @@ import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
 import { colorBook, colorCases } from './xlsx/colors.js'
 import { compareBooks, compareCached, entries } from './xlsx/compare.js'
 import { fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
+import { FILTER_FILES, filterFile } from './xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
 import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
 
@@ -163,11 +165,25 @@ async function intersect() {
   await send('intersect', [{ id: 'old-formulas', locale: 'en', bytes: async () => data, hash: sha(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
 }
 
+async function filters() {
+  const books = await Promise.all(FILTER_FILES.map(async (c) => ({ id: c.id, locale: 'en' as Locale, data: await filterFile(c) })))
+  await send(
+    'filters',
+    books.map((b) => ({ ...b, bytes: async () => b.data, hash: sha(b.data) })),
+    async (_, saved) => {
+      const read = await readXlsx(saved)
+      const values = compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)
+      return `${values.length} value differences, ${read.book.sheets[0].filtered ? 'filtered' : 'not filtered'}`
+    },
+  )
+}
+
 export async function stepXlsx(what: string | undefined): Promise<void> {
   if (what === 'roundtrip') await roundTrip()
+  else if (what === 'filters') await filters()
   else if (what === 'saved') await saved()
   else if (what === 'colors') await colors()
   else if (what === 'intersect') await intersect()
   else if (what === 'formats') await formats()
-  else throw new Error('xlsx: roundtrip | saved | colors | formats | intersect')
+  else throw new Error('xlsx: roundtrip | saved | filters | colors | formats | intersect')
 }
