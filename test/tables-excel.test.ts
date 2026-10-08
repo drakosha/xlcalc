@@ -18,7 +18,10 @@ const sets = (sub: string) => {
 const SETS = [...sets(''), ...sets('ru-RU/')]
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in the README's Known differences). */
-const KNOWN: Readonly<Record<string, string>> = {}
+const KNOWN: Readonly<Record<string, string>> = {
+  'ops-held:rename-cell': "a table renamed to a name Excel does not take (AB12): Excel's object model makes it one (AB12_), as its name box refuses it; renameTable refuses with table_name",
+  'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1); renameTable refuses with table_name",
+}
 
 describe.each(SETS)('tables $sub$name', (set) => {
   const mod = import(`../bench/coverage/tables/${set.name}.ts`) as Promise<TableSet>

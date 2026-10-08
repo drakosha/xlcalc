@@ -4,7 +4,7 @@
  * read through mirror formulas written after the steps, with the formulas and the tables of every sheet.
  * `npx tsx bench/coverage/run.ts tables <set> [ru]` stores the answers in `test/excel/tables/[ru-RU/]<set>.json`;
  * `test/tables-excel.test.ts` compares the engine with them without Excel.
- * `FTABLES_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
+ * `FTABLES_ONLY=id,id` runs only those cases, `FTABLES_AGAIN=id,id` runs those again, `FCOV_FRESH=1` runs every case again.
  */
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -166,7 +166,9 @@ export async function stepTables(set: string, locale: Locale): Promise<void> {
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredTables) : null
   const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
   const answers: Record<string, TableAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
+  // FTABLES_AGAIN=id,id runs those cases again (a fix in the harness), keeping the other answers
+  const again = new Set(process.env.FTABLES_AGAIN?.split(',') ?? [])
+  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c) && !again.has(c.id)) answers[c.id] = prev.answers[c.id]
   const t0 = Date.now()
   mkdirSync(join(target, '..'), { recursive: true })
   const save = () => {

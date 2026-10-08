@@ -137,8 +137,7 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
       if (o.withMeta !== undefined && typeof o.withMeta !== 'boolean') throw new InputError('op.withMeta', `expected a boolean, got ${JSON.stringify(o.withMeta)}`)
       if (o.op === 'copyRange') {
         const target = rangeOf(to.range, 'op.to.range')
-        const tables = copyTables(book, fromSheet, src, toSheet, target)
-        r = tables.refuse ? { ok: false, code: 'table', message: tables.refuse } : tables.after(copyRows(book, fromSheet, src, toSheet, target, o.withMeta === true, values))
+        r = copyTables(book, fromSheet, src, toSheet, target).after(copyRows(book, fromSheet, src, toSheet, target, o.withMeta === true, values))
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)

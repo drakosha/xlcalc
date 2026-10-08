@@ -47,7 +47,7 @@ on run argv
 							if item 4 of parts is "x" then
 								clear contents rg
 							else if item 4 of parts is "n" then
-								set value of rg to ((item 5 of parts) as number)
+								set value of rg to (my num(item 5 of parts))
 							else if item 4 of parts is "f" then
 								set formula2 of rg to (item 5 of parts)
 							else
@@ -142,6 +142,11 @@ on run argv
 	if d is missing value then error "JSON: " & (e's localizedDescription() as text)
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
+
+-- a number from its text with a decimal point, whatever the system's locale (`as number` reads the locale's separator)
+on num(s)
+	return ((current application's NSString's stringWithString:s)'s doubleValue()) as real
+end num
 
 -- a sheet name with its apostrophes doubled, for a quoted reference
 on quoted(s)

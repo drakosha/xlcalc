@@ -106,10 +106,10 @@ const abs = (r: number, c: number) => formatAddress(r, c).replace(/^([A-Z]+)(\d+
 
 /**
  * The text a reference becomes when its table turns into cells (Excel's Convert to Range): its cells with `$` and the
- * sheet, the formula's row kept relative (`'S'!$B4`); a part the table lacks (a totals row) gives its whole range, as
- * Excel converts it.
+ * sheet, the formula's row kept relative (`'S'!$B4`; `row` null in a name, relative to A1); a part the table lacks (a
+ * totals row) gives its whole range, as Excel converts it.
  */
-export function convertedText(t: Table, spec: TableSpec, row: number, sheet: string): string {
+export function convertedText(t: Table, spec: TableSpec, row: number | null, sheet: string): string {
   const head = t.headers ? t.r1 : -1
   const first = t.r1 + (t.headers ? 1 : 0)
   const last = t.r2 - (t.totals ? 1 : 0)
@@ -121,7 +121,7 @@ export function convertedText(t: Table, spec: TableSpec, row: number, sheet: str
   if ((has('headers') && !has('data') && head < 0) || (has('totals') && !has('data') && !t.totals)) return `${quoteSheet(sheet)}!${abs(t.r1, t.c1)}:${abs(t.r2, t.c2)}`
   if (has('all')) [r1, r2] = [t.r1, t.r2]
   else if (has('row')) {
-    ;[r1, r2] = [row, row]
+    ;[r1, r2] = [row ?? 0, row ?? 0]
     relative = true
   } else if (has('headers') && !has('data')) r1 = r2 = head
   else if (has('totals') && !has('data')) r1 = r2 = t.r2
@@ -130,7 +130,8 @@ export function convertedText(t: Table, spec: TableSpec, row: number, sheet: str
     if (has('totals') && t.totals) r2 = t.r2
   }
   let [c1, c2] = [t.c1, t.c2]
-  if (spec.cols) {
+  // in a name, Excel turns the formula's row of some columns into the whole row of the table (the set `ops-held`)
+  if (spec.cols && !(row === null && has('row'))) {
     const [a, b = a] = spec.cols.map((c) => t.index.get(tableKey(c)) ?? 0)
     ;[c1, c2] = [t.c1 + Math.min(a, b), t.c1 + Math.max(a, b)]
   }

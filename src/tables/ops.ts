@@ -66,7 +66,7 @@ export function tableOp(book: BookInput, op: TableOp): RestructureResult {
   }
   // convertTable: references become the cells they meant
   const sheet = book.sheets[t.s].name
-  const out = rewriteBookTables(book, (x, spec, at) => (tableKey(x.name) === key ? { text: convertedText(x, spec, at?.r ?? 0, sheet) } : undefined))
+  const out = rewriteBookTables(book, (x, spec, at) => (tableKey(x.name) === key ? { text: convertedText(x, spec, at ? at.r : null, sheet) } : undefined))
   return { ok: true, book: withTable(out, key, null), mapCell: same }
 }
 

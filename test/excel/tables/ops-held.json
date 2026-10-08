@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 30.4
+  "seconds": 2.3
  },
  "cases": [
   {
@@ -4339,7 +4339,7 @@
     },
     "S!C1": {
      "t": "s",
-     "v": "Price"
+     "v": "1.5"
     },
     "S!D1": {
      "t": "s",
@@ -4436,13 +4436,13 @@
    },
    "formulas": {
     "S!J1": "=SUM(Sales[Qty])",
-    "S!D2": "=[@Qty]*[@Price]",
-    "S!J2": "=SUM(Sales[[Region]:[Price]])",
-    "S!D3": "=[@Qty]*[@Price]",
+    "S!D2": "=[@Qty]*[@[1.5]]",
+    "S!J2": "=SUM(Sales[[Region]:[1.5]])",
+    "S!D3": "=[@Qty]*[@[1.5]]",
     "S!J3": "=ROWS(Sales[#All])",
-    "S!D4": "=[@Qty]*[@Price]",
-    "S!J4": "=Sales[@Price]",
-    "S!D5": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@[1.5]]",
+    "S!J4": "=Sales[@[1.5]]",
+    "S!D5": "=[@Qty]*[@[1.5]]",
     "S!J5": "=SUM(B2:C5)",
     "S!J6": "=SUM(A1:D5)"
    },
@@ -4456,14 +4456,11 @@
      "columns": [
       "Region",
       "Qty",
-      "Price",
+      "1.5",
       "Total"
      ]
     }
-   ],
-   "refused": {
-    "0": "-1700 Не удается превратить \"1.5\" в тип number."
-   }
+   ]
   },
   "head-dup-three": {
    "values": {
