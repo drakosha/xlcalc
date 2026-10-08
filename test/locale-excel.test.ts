@@ -21,7 +21,7 @@ describe('ru-RU locale data against Excel', () => {
   })
 
   it('separators, TRUE/FALSE and error literals are what Excel writes', () => {
-    const { tag: _tag, functions: _f, ...rest } = ruRU
+    const { tag: _tag, functions: _f, tableItems: _t, ...rest } = ruRU
     expect(rest).toEqual({
       decimalSeparator: d.decimalSeparator,
       listSeparator: d.listSeparator,

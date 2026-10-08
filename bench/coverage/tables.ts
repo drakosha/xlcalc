@@ -48,7 +48,7 @@ function stepLines(c: TableCase): string[] {
   return (c.steps ?? []).map((step: TableStep) => {
     if ('edit' in step) {
       const { sheet, cell, value: v } = step.edit
-      const kind = v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : `f\t=${v.formula}`
+      const kind = v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : 'local' in v ? `l\t${v.local}` : `f\t=${v.formula}`
       return `e\t${sheet}\t${cell}\t${kind}`
     }
     const o = step.op

@@ -141,3 +141,21 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
   if (!ALLOWED.has(sorted.join(','))) fail(`a structured reference cannot take ${sorted.map((a) => AREA_WORDS[a]).join(' and ')} together`)
   return { spec: cols ? { areas: sorted, cols } : { areas: sorted }, end: j + 1 }
 }
+
+/** Characters of a column name that Excel shows in brackets after `@` (`[@[Unit Price]]`). */
+const SPECIAL = /[\s,:.[\]#'"{}$^&*+=\-<>/@]/
+
+/**
+ * The text between a structured reference's brackets as Excel shows it: the formula's row as `@` (`@Qty`, `@[Unit
+ * Price]`, `@[Qty]:[Price]`, `@` alone), the rest as stored.
+ */
+export function shownSpec(spec: TableSpec, style: SpecStyle = {}): string {
+  if (spec.areas.length !== 1 || spec.areas[0] !== 'row') return specText(spec, style)
+  if (!spec.cols) return '@'
+  const [a, b] = spec.cols
+  if (b !== undefined) return `@[${escapeColumn(a)}]:[${escapeColumn(b)}]`
+  return SPECIAL.test(a) ? `@[${escapeColumn(a)}]` : `@${escapeColumn(a)}`
+}
+
+/** Whether Excel shows a reference in its own table without the table's name: one column or a span, of the data or the formula's row. */
+export const unnamedInTable = (spec: TableSpec) => !!spec.cols && (spec.areas.length === 0 || (spec.areas.length === 1 && spec.areas[0] === 'row'))

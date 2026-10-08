@@ -5,8 +5,8 @@
  * does whitespace. The output is lexed again on the target side: a piece that would read differently there
  * (`1.5` typed in ru-RU, where the decimal separator is `,`) is a syntax error at its place in the input.
  */
-import { ERROR_LITERALS, INVARIANT, lex, numberRule, type Piece, type Syntax } from './lex.js'
-import type { Locale, Translation } from './types.js'
+import { ERROR_LITERALS, INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
+import type { Locale, TableItem, Translation } from './types.js'
 
 /** Reading one syntax and translating out of it. */
 interface Side {
@@ -20,6 +20,8 @@ interface Side {
   fn: ReadonlyMap<string, string>
   word: ReadonlyMap<string, string>
   err: ReadonlyMap<string, string>
+  /** The other side's specifier of a structured reference (upper-case keys of this side's, English ones too on the local side). */
+  item: ReadonlyMap<string, string>
 }
 
 /** A locale's two sides: the invariant one (`toLocal` reads it) and the local one. */
@@ -44,8 +46,10 @@ export function sides(loc: Locale): Sides {
     ['FALSE', loc.booleans.FALSE],
   ]
   const fns = Object.entries(loc.functions)
+  const items = TABLE_ITEMS.map((w): [string, string] => [w, loc.tableItems?.[w] ?? w])
+  const itemKeys = (xs: [string, string][]) => new Map(xs.map(([k, v]) => [k.toLocaleUpperCase('ru-RU'), v]))
   return {
-    invariant: { name: 'the invariant syntax', syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors) },
+    invariant: { name: 'the invariant syntax', syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: itemKeys(items) },
     local: {
       name: loc.tag,
       syn: local,
@@ -55,9 +59,12 @@ export function sides(loc: Locale): Sides {
       // the locale's own words win over the English ones
       word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
       err: upperKeys([...same(ERROR_LITERALS), ...swap(errors)]),
+      item: itemKeys([...same(TABLE_ITEMS), ...swap(items)]),
     },
   }
 }
+
+const TABLE_ITEMS: TableItem[] = ['#All', '#Data', '#Headers', '#Totals', '#This Row']
 
 const fail = (at: number, message: string): Fail => ({ ok: false, code: 'syntax', message, at })
 
@@ -81,6 +88,7 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
     else if (p.k === 'fn') text = from.fn.get(text.toUpperCase()) ?? text
     else if (p.k === 'err') text = from.err.get(text.toUpperCase()) ?? text
     else if (p.k === 'list') text = to.syn.list
+    else if (p.k === 'tbl') text = tableText(text, from.item, from.syn.list, to.syn.list)
     else if (p.k === 'col') text = to.syn.arrayColumn
     else if (p.k === 'row') text = to.syn.arrayRow
     else if (p.k === 'word') {

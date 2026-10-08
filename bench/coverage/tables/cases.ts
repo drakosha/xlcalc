@@ -7,8 +7,11 @@ import type { BookInput, CellInput, RangeRef, StructureOp, TableColumn, TableInp
 
 /** A step after the computation, Excel recalculating after each: a cell typed or cleared, or an operation. */
 export type TableStep =
-  /** A number or a text typed, a formula entered (`{ formula }`, as Excel 365 enters it), null to clear the cell. */
-  | { edit: { sheet: string; cell: string; value: number | string | null | { formula: string } } }
+  /**
+   * A number or a text typed, a formula entered (`{ formula }`, as Excel 365 enters it; `{ local }` typed in the user's
+   * language, in a set run in ru-RU), null to clear the cell.
+   */
+  | { edit: { sheet: string; cell: string; value: number | string | null | { formula: string } | { local: string } } }
   | { op: StructureOp }
 
 /** A table as Excel lists it after the steps: its sheet, name, range, rows shown, column names. */

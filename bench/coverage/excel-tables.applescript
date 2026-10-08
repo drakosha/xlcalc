@@ -4,7 +4,7 @@
 -- language with `local`), and the tables of every sheet. Close without saving. Alerts are off during the steps.
 -- Arguments: book path (inside Excel's sandbox), steps as lines "kind<TAB>args..." (see below), rectangles as lines
 -- "sheet<TAB>range<TAB>mirror range", "1" to read formulas in the user's language too (else empty).
--- Steps: e sheet range n|s|f|x value (a number, a text, a formula as Excel 365 enters it, cleared); insr, delr, insc,
+-- Steps: e sheet range n|s|f|l|x value (a number, a text, a formula as Excel 365 enters it, one in the user's language, cleared); insr, delr, insc,
 -- delc sheet range (the entire rows or columns of the range); rename sheet table name; deltable sheet table; convert
 -- sheet table; totals sheet table 1|0; copy sheet range sheet range; cut sheet range sheet cell; renamesheet sheet
 -- name; delsheet sheet.
@@ -50,6 +50,8 @@ on run argv
 								set value of rg to (my num(item 5 of parts))
 							else if item 4 of parts is "f" then
 								set formula2 of rg to (item 5 of parts)
+							else if item 4 of parts is "l" then
+								set formula local of rg to (item 5 of parts)
 							else
 								set value of rg to (item 5 of parts)
 							end if

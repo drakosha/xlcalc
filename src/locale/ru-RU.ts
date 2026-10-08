@@ -111,4 +111,5 @@ export const ruRU: Locale = {
     XLOOKUP: 'ПРОСМОТРX', XMATCH: 'ПОИСКПОЗX', XNPV: 'ЧИСТНЗ', XOR: 'ИСКЛИЛИ', YEAR: 'ГОД', YEARFRAC: 'ДОЛЯГОДА',
     YIELD: 'ДОХОД', YIELDDISC: 'ДОХОДСКИДКА', YIELDMAT: 'ДОХОДПОГАШ', 'Z.TEST': 'Z.ТЕСТ', ZTEST: 'ZТЕСТ',
   },
+  tableItems: { '#All': '#Все', '#Data': '#Данные', '#Headers': '#Заголовки', '#Totals': '#Итоги', '#This Row': '#Эта строка' },
 }

@@ -5,7 +5,8 @@
  */
 import type { ValidateContext, ValidateResult } from '../contract.js'
 import { checkString, checkValidateContext, InputError } from '../input.js'
-import { validate } from '../syntax.js'
+import { FormulaError, parse, sheetKey, tokenize, validate, type Tok } from '../syntax.js'
+import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { ERROR_LITERALS } from './lex.js'
 import { sides, translate, type Sides } from './translate.js'
 import type { Locale, Translation } from './types.js'
@@ -50,6 +51,7 @@ function checkLocale(locale: unknown): Locale {
   if (Object.keys(loc.booleans as object).length !== 2) throw new InputError('locale.booleans', 'expected both TRUE and FALSE')
   words(loc.errors, 'locale.errors', ERROR_LITERALS, /^#\S+$/u, 'an error literal starting with #')
   words(loc.functions, 'locale.functions', null, WORD, 'a function name')
+  if (loc.tableItems !== undefined) words(loc.tableItems, 'locale.tableItems', ['#All', '#Data', '#Headers', '#Totals', '#This Row'], /^#[^[\]'@]+$/u, 'a specifier starting with #')
   return locale as Locale
 }
 
@@ -64,10 +66,45 @@ function sidesOf(locale: Locale): Sides {
 
 const result = (r: ReturnType<typeof translate>): Translation => (r.ok ? { ok: true, formula: r.formula } : r)
 
-/** A stored formula as `locale` shows it: `SUM(A1:A3,1.5)` is `СУММ(A1:A3;1,5)` in ru-RU. */
-export function toLocal(formula: string, locale: Locale): Translation {
+/**
+ * A stored formula as `locale` shows it: `SUM(A1:A3,1.5)` is `СУММ(A1:A3;1,5)` in ru-RU. Structured references are shown
+ * as Excel shows them, the formula's row as `@` (`Sales[[#This Row],[Qty]]` is `Sales[@Qty]`) and a table alone by its
+ * name (`Sales[]` is `Sales`); `opts.table`, the table of the formula's cell, drops its name before a column of its own
+ * (`[@Qty]`, `SUM([Qty])`), as Excel shows a formula inside a table.
+ */
+export function toLocal(formula: string, locale: Locale, opts: { table?: string } = {}): Translation {
   const s = sidesOf(locale)
-  return result(translate(checkString(formula, 'formula'), s.invariant, s.local))
+  if (opts.table !== undefined) checkString(opts.table, 'opts.table')
+  return result(translate(shownTables(checkString(formula, 'formula'), opts.table), s.invariant, s.local))
+}
+
+const SPACE = new Set([' ', '\t', '\n', '\r'])
+
+/** The structured references of a formula as Excel shows them (`toLocal`); a formula that does not parse as it is. */
+function shownTables(formula: string, table: string | undefined): string {
+  if (!formula.includes('[')) return formula
+  let toks: Tok[]
+  try {
+    parse(formula)
+    toks = tokenize(formula)
+  } catch (e) {
+    if (e instanceof FormulaError) return formula
+    throw e
+  }
+  let out = ''
+  let pos = 0
+  for (let k = 0; k < toks.length - 1; k++) {
+    const tok = toks[k]
+    if (tok.t !== 'table') continue
+    let end = toks[k + 1].at
+    while (end > tok.at && SPACE.has(formula[end - 1])) end--
+    const own = table !== undefined && (tok.table === null || sheetKey(tok.table) === sheetKey(table))
+    const name = own && unnamedInTable(tok.spec) ? '' : (tok.table ?? table ?? '')
+    const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec)}]`
+    out += formula.slice(pos, tok.at) + text
+    pos = end
+  }
+  return pos === 0 ? formula : out + formula.slice(pos)
 }
 
 /**

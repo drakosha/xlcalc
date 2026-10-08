@@ -7,7 +7,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { cellsOf } from '../bench/coverage/case-book.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { TableAnswer, TableCase, TableShape } from '../bench/coverage/tables/cases.js'
-import { InputError, openSession, type BookInput, type ComputeResult } from '../src/index.js'
+import { enUS, InputError, openSession, ruRU, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
@@ -40,7 +40,9 @@ export function engineAnswer(c: TableCase): EngineAnswer {
       return
     }
     const { sheet, cell, value: v } = step.edit
-    const input = v === null ? null : typeof v === 'object' ? { formula: v.formula } : { value: v }
+    const local = v !== null && typeof v === 'object' && 'local' in v ? toInvariant(v.local, ruRU) : null
+    if (local && !local.ok) throw new Error(`${c.id}: ${local.message}`)
+    const input = v === null ? null : typeof v === 'object' ? { formula: local?.ok ? local.formula : (v as { formula: string }).formula } : { value: v }
     try {
       s.setCells(cellsOf(cell).addrs.map((a) => ({ sheet, cell: a, input })))
     } catch (e) {
@@ -64,6 +66,13 @@ export function engineAnswer(c: TableCase): EngineAnswer {
   }
   s.close()
   return { values, formulas, tables: shapes(book), refused, book, result }
+}
+
+/** The table holding a cell of the book. */
+function enclosingOf(book: BookInput, sheet: string, addr: string): string | undefined {
+  const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
+  const { row, col } = parseAddress(addr)
+  return tableAt(tablesOf(book), s, row, col)?.name
 }
 
 /** Excel's formula text (`=[@Qty]*2`, as Excel shows it) at a cell of the book as stored text, read with the book's tables. */
@@ -100,6 +109,16 @@ export function differences(c: TableCase, x: TableAnswer): string[] {
     const [sheet, addr] = k.split('!')
     const stored = storedText(got.book, sheet, addr, shown)
     if (stored !== got.formulas[k]) out.push(`${k}: Excel ${shown} (${stored}), engine ${got.formulas[k] ?? 'no formula'}`)
+    // the text Excel shows, en-US and in the user's language: toLocal with the table of the cell
+    if (got.formulas[k] === undefined) continue
+    const table = enclosingOf(got.book, sheet, addr)
+    // (the stored text quotes every sheet name, Excel only the names that need it)
+    const unquoted = (f: string) => f.replace(/'([\p{L}_][\p{L}\p{N}_.]*)'!/gu, '$1!')
+    const en = toLocal(got.formulas[k], enUS, { table })
+    if (en.ok && `=${unquoted(en.formula)}` !== shown) out.push(`${k}: Excel shows ${shown}, toLocal ${en.formula}`)
+    const ru = x.local?.[k]
+    const loc = ru === undefined ? null : toLocal(got.formulas[k], ruRU, { table })
+    if (loc?.ok && `=${unquoted(loc.formula)}` !== ru) out.push(`${k}: Excel ru-RU shows ${ru}, toLocal ${loc.formula}`)
   }
   return out
 }
