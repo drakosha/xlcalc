@@ -50,6 +50,10 @@
       "types": "./dist/xlsx.d.ts",
       "default": "./dist/xlsx.js"
     },
+    "./worker": {
+      "types": "./dist/worker/index.d.ts",
+      "default": "./dist/worker/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -80,6 +84,7 @@
     "esbuild": "^0.28.2",
     "exceljs": "^4.4.0",
     "jszip": "^3.10.2",
+    "playwright-core": "1.63.0",
     "publint": "^0.3.25",
     "tsx": "^4.22.4",
     "typescript": "~6.0.3",

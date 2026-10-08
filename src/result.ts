@@ -3,6 +3,7 @@ import { inputHash, outNumber, valuesHash, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, Clock, ComputeResult } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
+import { spend } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
 import { formatAddress, msToSerial, parseAddress, sortAddresses } from './model.js'
@@ -57,6 +58,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
     const vals = new Map<string, CellValue>()
     const spill = spilled(state, s)
     for (const addr of sortAddresses([...Object.keys(sheet.cells), ...spill.keys()])) {
+      spend(1)
       const { row, col } = parseAddress(addr)
       const inCell = sheet.cells[addr] ?? {}
       const value = outValue(toCellValue(valueAt(state, s, row, col)))

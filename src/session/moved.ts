@@ -2,6 +2,7 @@
 import type { CellRef } from '../contract.js'
 import { key, type EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
+import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import type { Looks } from '../shown.js'
 import { shownKey } from './looks.js'
@@ -21,6 +22,7 @@ export function movedChanges(old: EngineState, next: EngineState, mapCell: (ref:
   old.ctx.sheets.forEach((sh, s) =>
     sh.cols.forEach((col, c) =>
       col?.forEach((v, r) => {
+        spend(1)
         const to = v === null ? null : mapCell({ sheet: old.sheetNames[s], cell: formatAddress(r, c) })
         if (!to) return
         const p = parseAddress(to.cell)
@@ -34,6 +36,7 @@ export function movedChanges(old: EngineState, next: EngineState, mapCell: (ref:
   next.ctx.sheets.forEach((sh, s) =>
     sh.cols.forEach((col, c) =>
       col?.forEach((v, r) => {
+        spend(1)
         const k = `${s}:${r}:${c}`
         if (!same(carried.get(k) ?? null, v) || (looks && v !== null && shown.get(k) !== shownKey(looks[1], next, s, r, c))) out.push([s, r, c])
         carried.delete(k)

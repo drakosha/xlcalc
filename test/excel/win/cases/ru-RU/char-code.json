@@ -1,0 +1,3067 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 22.3,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "CHAR#1",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(1)"
+  },
+  {
+   "id": "CHAR#2",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(2)"
+  },
+  {
+   "id": "CHAR#3",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(3)"
+  },
+  {
+   "id": "CHAR#4",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(4)"
+  },
+  {
+   "id": "CHAR#5",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(5)"
+  },
+  {
+   "id": "CHAR#6",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(6)"
+  },
+  {
+   "id": "CHAR#7",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(7)"
+  },
+  {
+   "id": "CHAR#8",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(8)"
+  },
+  {
+   "id": "CHAR#9",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(9)"
+  },
+  {
+   "id": "CHAR#10",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(10)"
+  },
+  {
+   "id": "CHAR#11",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(11)"
+  },
+  {
+   "id": "CHAR#12",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(12)"
+  },
+  {
+   "id": "CHAR#13",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(13)"
+  },
+  {
+   "id": "CHAR#14",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(14)"
+  },
+  {
+   "id": "CHAR#15",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(15)"
+  },
+  {
+   "id": "CHAR#16",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(16)"
+  },
+  {
+   "id": "CHAR#17",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(17)"
+  },
+  {
+   "id": "CHAR#18",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(18)"
+  },
+  {
+   "id": "CHAR#19",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(19)"
+  },
+  {
+   "id": "CHAR#20",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(20)"
+  },
+  {
+   "id": "CHAR#21",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(21)"
+  },
+  {
+   "id": "CHAR#22",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(22)"
+  },
+  {
+   "id": "CHAR#23",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(23)"
+  },
+  {
+   "id": "CHAR#24",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(24)"
+  },
+  {
+   "id": "CHAR#25",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(25)"
+  },
+  {
+   "id": "CHAR#26",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(26)"
+  },
+  {
+   "id": "CHAR#27",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(27)"
+  },
+  {
+   "id": "CHAR#28",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(28)"
+  },
+  {
+   "id": "CHAR#29",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(29)"
+  },
+  {
+   "id": "CHAR#30",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(30)"
+  },
+  {
+   "id": "CHAR#31",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(31)"
+  },
+  {
+   "id": "CHAR#32",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(32)"
+  },
+  {
+   "id": "CHAR#33",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(33)"
+  },
+  {
+   "id": "CHAR#34",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(34)"
+  },
+  {
+   "id": "CHAR#35",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(35)"
+  },
+  {
+   "id": "CHAR#36",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(36)"
+  },
+  {
+   "id": "CHAR#37",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(37)"
+  },
+  {
+   "id": "CHAR#38",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(38)"
+  },
+  {
+   "id": "CHAR#39",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(39)"
+  },
+  {
+   "id": "CHAR#40",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(40)"
+  },
+  {
+   "id": "CHAR#41",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(41)"
+  },
+  {
+   "id": "CHAR#42",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(42)"
+  },
+  {
+   "id": "CHAR#43",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(43)"
+  },
+  {
+   "id": "CHAR#44",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(44)"
+  },
+  {
+   "id": "CHAR#45",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(45)"
+  },
+  {
+   "id": "CHAR#46",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(46)"
+  },
+  {
+   "id": "CHAR#47",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(47)"
+  },
+  {
+   "id": "CHAR#48",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(48)"
+  },
+  {
+   "id": "CHAR#49",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(49)"
+  },
+  {
+   "id": "CHAR#50",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(50)"
+  },
+  {
+   "id": "CHAR#51",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(51)"
+  },
+  {
+   "id": "CHAR#52",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(52)"
+  },
+  {
+   "id": "CHAR#53",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(53)"
+  },
+  {
+   "id": "CHAR#54",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(54)"
+  },
+  {
+   "id": "CHAR#55",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(55)"
+  },
+  {
+   "id": "CHAR#56",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(56)"
+  },
+  {
+   "id": "CHAR#57",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(57)"
+  },
+  {
+   "id": "CHAR#58",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(58)"
+  },
+  {
+   "id": "CHAR#59",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(59)"
+  },
+  {
+   "id": "CHAR#60",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(60)"
+  },
+  {
+   "id": "CHAR#61",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(61)"
+  },
+  {
+   "id": "CHAR#62",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(62)"
+  },
+  {
+   "id": "CHAR#63",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(63)"
+  },
+  {
+   "id": "CHAR#64",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(64)"
+  },
+  {
+   "id": "CHAR#65",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(65)"
+  },
+  {
+   "id": "CHAR#66",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(66)"
+  },
+  {
+   "id": "CHAR#67",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(67)"
+  },
+  {
+   "id": "CHAR#68",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(68)"
+  },
+  {
+   "id": "CHAR#69",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(69)"
+  },
+  {
+   "id": "CHAR#70",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(70)"
+  },
+  {
+   "id": "CHAR#71",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(71)"
+  },
+  {
+   "id": "CHAR#72",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(72)"
+  },
+  {
+   "id": "CHAR#73",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(73)"
+  },
+  {
+   "id": "CHAR#74",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(74)"
+  },
+  {
+   "id": "CHAR#75",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(75)"
+  },
+  {
+   "id": "CHAR#76",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(76)"
+  },
+  {
+   "id": "CHAR#77",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(77)"
+  },
+  {
+   "id": "CHAR#78",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(78)"
+  },
+  {
+   "id": "CHAR#79",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(79)"
+  },
+  {
+   "id": "CHAR#80",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(80)"
+  },
+  {
+   "id": "CHAR#81",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(81)"
+  },
+  {
+   "id": "CHAR#82",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(82)"
+  },
+  {
+   "id": "CHAR#83",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(83)"
+  },
+  {
+   "id": "CHAR#84",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(84)"
+  },
+  {
+   "id": "CHAR#85",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(85)"
+  },
+  {
+   "id": "CHAR#86",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(86)"
+  },
+  {
+   "id": "CHAR#87",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(87)"
+  },
+  {
+   "id": "CHAR#88",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(88)"
+  },
+  {
+   "id": "CHAR#89",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(89)"
+  },
+  {
+   "id": "CHAR#90",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(90)"
+  },
+  {
+   "id": "CHAR#91",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(91)"
+  },
+  {
+   "id": "CHAR#92",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(92)"
+  },
+  {
+   "id": "CHAR#93",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(93)"
+  },
+  {
+   "id": "CHAR#94",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(94)"
+  },
+  {
+   "id": "CHAR#95",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(95)"
+  },
+  {
+   "id": "CHAR#96",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(96)"
+  },
+  {
+   "id": "CHAR#97",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(97)"
+  },
+  {
+   "id": "CHAR#98",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(98)"
+  },
+  {
+   "id": "CHAR#99",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(99)"
+  },
+  {
+   "id": "CHAR#100",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(100)"
+  },
+  {
+   "id": "CHAR#101",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(101)"
+  },
+  {
+   "id": "CHAR#102",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(102)"
+  },
+  {
+   "id": "CHAR#103",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(103)"
+  },
+  {
+   "id": "CHAR#104",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(104)"
+  },
+  {
+   "id": "CHAR#105",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(105)"
+  },
+  {
+   "id": "CHAR#106",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(106)"
+  },
+  {
+   "id": "CHAR#107",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(107)"
+  },
+  {
+   "id": "CHAR#108",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(108)"
+  },
+  {
+   "id": "CHAR#109",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(109)"
+  },
+  {
+   "id": "CHAR#110",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(110)"
+  },
+  {
+   "id": "CHAR#111",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(111)"
+  },
+  {
+   "id": "CHAR#112",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(112)"
+  },
+  {
+   "id": "CHAR#113",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(113)"
+  },
+  {
+   "id": "CHAR#114",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(114)"
+  },
+  {
+   "id": "CHAR#115",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(115)"
+  },
+  {
+   "id": "CHAR#116",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(116)"
+  },
+  {
+   "id": "CHAR#117",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(117)"
+  },
+  {
+   "id": "CHAR#118",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(118)"
+  },
+  {
+   "id": "CHAR#119",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(119)"
+  },
+  {
+   "id": "CHAR#120",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(120)"
+  },
+  {
+   "id": "CHAR#121",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(121)"
+  },
+  {
+   "id": "CHAR#122",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(122)"
+  },
+  {
+   "id": "CHAR#123",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(123)"
+  },
+  {
+   "id": "CHAR#124",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(124)"
+  },
+  {
+   "id": "CHAR#125",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(125)"
+  },
+  {
+   "id": "CHAR#126",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(126)"
+  },
+  {
+   "id": "CHAR#127",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(127)"
+  },
+  {
+   "id": "CODE#1",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(1))"
+  },
+  {
+   "id": "CODE#2",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(2))"
+  },
+  {
+   "id": "CODE#3",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(3))"
+  },
+  {
+   "id": "CODE#4",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(4))"
+  },
+  {
+   "id": "CODE#5",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(5))"
+  },
+  {
+   "id": "CODE#6",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(6))"
+  },
+  {
+   "id": "CODE#7",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(7))"
+  },
+  {
+   "id": "CODE#8",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(8))"
+  },
+  {
+   "id": "CODE#9",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(9))"
+  },
+  {
+   "id": "CODE#10",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(10))"
+  },
+  {
+   "id": "CODE#11",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(11))"
+  },
+  {
+   "id": "CODE#12",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(12))"
+  },
+  {
+   "id": "CODE#13",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(13))"
+  },
+  {
+   "id": "CODE#14",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(14))"
+  },
+  {
+   "id": "CODE#15",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(15))"
+  },
+  {
+   "id": "CODE#16",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(16))"
+  },
+  {
+   "id": "CODE#17",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(17))"
+  },
+  {
+   "id": "CODE#18",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(18))"
+  },
+  {
+   "id": "CODE#19",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(19))"
+  },
+  {
+   "id": "CODE#20",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(20))"
+  },
+  {
+   "id": "CODE#21",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(21))"
+  },
+  {
+   "id": "CODE#22",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(22))"
+  },
+  {
+   "id": "CODE#23",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(23))"
+  },
+  {
+   "id": "CODE#24",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(24))"
+  },
+  {
+   "id": "CODE#25",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(25))"
+  },
+  {
+   "id": "CODE#26",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(26))"
+  },
+  {
+   "id": "CODE#27",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(27))"
+  },
+  {
+   "id": "CODE#28",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(28))"
+  },
+  {
+   "id": "CODE#29",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(29))"
+  },
+  {
+   "id": "CODE#30",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(30))"
+  },
+  {
+   "id": "CODE#31",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(31))"
+  },
+  {
+   "id": "CODE#32",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(32))"
+  },
+  {
+   "id": "CODE#33",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(33))"
+  },
+  {
+   "id": "CODE#34",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(34))"
+  },
+  {
+   "id": "CODE#35",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(35))"
+  },
+  {
+   "id": "CODE#36",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(36))"
+  },
+  {
+   "id": "CODE#37",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(37))"
+  },
+  {
+   "id": "CODE#38",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(38))"
+  },
+  {
+   "id": "CODE#39",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(39))"
+  },
+  {
+   "id": "CODE#40",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(40))"
+  },
+  {
+   "id": "CODE#41",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(41))"
+  },
+  {
+   "id": "CODE#42",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(42))"
+  },
+  {
+   "id": "CODE#43",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(43))"
+  },
+  {
+   "id": "CODE#44",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(44))"
+  },
+  {
+   "id": "CODE#45",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(45))"
+  },
+  {
+   "id": "CODE#46",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(46))"
+  },
+  {
+   "id": "CODE#47",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(47))"
+  },
+  {
+   "id": "CODE#48",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(48))"
+  },
+  {
+   "id": "CODE#49",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(49))"
+  },
+  {
+   "id": "CODE#50",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(50))"
+  },
+  {
+   "id": "CODE#51",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(51))"
+  },
+  {
+   "id": "CODE#52",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(52))"
+  },
+  {
+   "id": "CODE#53",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(53))"
+  },
+  {
+   "id": "CODE#54",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(54))"
+  },
+  {
+   "id": "CODE#55",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(55))"
+  },
+  {
+   "id": "CODE#56",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(56))"
+  },
+  {
+   "id": "CODE#57",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(57))"
+  },
+  {
+   "id": "CODE#58",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(58))"
+  },
+  {
+   "id": "CODE#59",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(59))"
+  },
+  {
+   "id": "CODE#60",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(60))"
+  },
+  {
+   "id": "CODE#61",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(61))"
+  },
+  {
+   "id": "CODE#62",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(62))"
+  },
+  {
+   "id": "CODE#63",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(63))"
+  },
+  {
+   "id": "CODE#64",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(64))"
+  },
+  {
+   "id": "CODE#65",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(65))"
+  },
+  {
+   "id": "CODE#66",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(66))"
+  },
+  {
+   "id": "CODE#67",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(67))"
+  },
+  {
+   "id": "CODE#68",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(68))"
+  },
+  {
+   "id": "CODE#69",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(69))"
+  },
+  {
+   "id": "CODE#70",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(70))"
+  },
+  {
+   "id": "CODE#71",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(71))"
+  },
+  {
+   "id": "CODE#72",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(72))"
+  },
+  {
+   "id": "CODE#73",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(73))"
+  },
+  {
+   "id": "CODE#74",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(74))"
+  },
+  {
+   "id": "CODE#75",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(75))"
+  },
+  {
+   "id": "CODE#76",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(76))"
+  },
+  {
+   "id": "CODE#77",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(77))"
+  },
+  {
+   "id": "CODE#78",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(78))"
+  },
+  {
+   "id": "CODE#79",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(79))"
+  },
+  {
+   "id": "CODE#80",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(80))"
+  },
+  {
+   "id": "CODE#81",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(81))"
+  },
+  {
+   "id": "CODE#82",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(82))"
+  },
+  {
+   "id": "CODE#83",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(83))"
+  },
+  {
+   "id": "CODE#84",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(84))"
+  },
+  {
+   "id": "CODE#85",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(85))"
+  },
+  {
+   "id": "CODE#86",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(86))"
+  },
+  {
+   "id": "CODE#87",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(87))"
+  },
+  {
+   "id": "CODE#88",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(88))"
+  },
+  {
+   "id": "CODE#89",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(89))"
+  },
+  {
+   "id": "CODE#90",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(90))"
+  },
+  {
+   "id": "CODE#91",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(91))"
+  },
+  {
+   "id": "CODE#92",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(92))"
+  },
+  {
+   "id": "CODE#93",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(93))"
+  },
+  {
+   "id": "CODE#94",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(94))"
+  },
+  {
+   "id": "CODE#95",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(95))"
+  },
+  {
+   "id": "CODE#96",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(96))"
+  },
+  {
+   "id": "CODE#97",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(97))"
+  },
+  {
+   "id": "CODE#98",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(98))"
+  },
+  {
+   "id": "CODE#99",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(99))"
+  },
+  {
+   "id": "CODE#100",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(100))"
+  },
+  {
+   "id": "CODE#101",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(101))"
+  },
+  {
+   "id": "CODE#102",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(102))"
+  },
+  {
+   "id": "CODE#103",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(103))"
+  },
+  {
+   "id": "CODE#104",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(104))"
+  },
+  {
+   "id": "CODE#105",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(105))"
+  },
+  {
+   "id": "CODE#106",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(106))"
+  },
+  {
+   "id": "CODE#107",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(107))"
+  },
+  {
+   "id": "CODE#108",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(108))"
+  },
+  {
+   "id": "CODE#109",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(109))"
+  },
+  {
+   "id": "CODE#110",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(110))"
+  },
+  {
+   "id": "CODE#111",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(111))"
+  },
+  {
+   "id": "CODE#112",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(112))"
+  },
+  {
+   "id": "CODE#113",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(113))"
+  },
+  {
+   "id": "CODE#114",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(114))"
+  },
+  {
+   "id": "CODE#115",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(115))"
+  },
+  {
+   "id": "CODE#116",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(116))"
+  },
+  {
+   "id": "CODE#117",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(117))"
+  },
+  {
+   "id": "CODE#118",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(118))"
+  },
+  {
+   "id": "CODE#119",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(119))"
+  },
+  {
+   "id": "CODE#120",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(120))"
+  },
+  {
+   "id": "CODE#121",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(121))"
+  },
+  {
+   "id": "CODE#122",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(122))"
+  },
+  {
+   "id": "CODE#123",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(123))"
+  },
+  {
+   "id": "CODE#124",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(124))"
+  },
+  {
+   "id": "CODE#125",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(125))"
+  },
+  {
+   "id": "CODE#126",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(126))"
+  },
+  {
+   "id": "CODE#127",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(127))"
+  },
+  {
+   "id": "CHAR#128",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(0)"
+  },
+  {
+   "id": "CHAR#129",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(256)"
+  },
+  {
+   "id": "CHAR#130",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(-1)"
+  },
+  {
+   "id": "CHAR#131",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(65.9)"
+  },
+  {
+   "id": "CHAR#132",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(65.1)"
+  },
+  {
+   "id": "CHAR#133",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(0.5)"
+  },
+  {
+   "id": "CHAR#134",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(0.99999)"
+  },
+  {
+   "id": "CHAR#135",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(127.9)"
+  },
+  {
+   "id": "CHAR#136",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(1E+300)"
+  },
+  {
+   "id": "CHAR#137",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(-0.5)"
+  },
+  {
+   "id": "CHAR#138",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(\"65\")"
+  },
+  {
+   "id": "CHAR#139",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(\" 65 \")"
+  },
+  {
+   "id": "CHAR#140",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(\"6.5E+1\")"
+  },
+  {
+   "id": "CHAR#141",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(\"1,5\")"
+  },
+  {
+   "id": "CHAR#142",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(\"abc\")"
+  },
+  {
+   "id": "CHAR#143",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(\"\")"
+  },
+  {
+   "id": "CHAR#144",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(TRUE)"
+  },
+  {
+   "id": "CHAR#145",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(FALSE)"
+  },
+  {
+   "id": "CHAR#146",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(D!A1)"
+  },
+  {
+   "id": "CHAR#147",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(G!B1)"
+  },
+  {
+   "id": "CHAR#148",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(G!B2)"
+  },
+  {
+   "id": "CHAR#149",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(NA())"
+  },
+  {
+   "id": "CHAR#150",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "CHAR(1/0)"
+  },
+  {
+   "id": "CHAR#151",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "_xlfn.TEXTJOIN(\"|\",FALSE,CHAR({65,66,67}))"
+  },
+  {
+   "id": "CHAR#152",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "_xlfn.TEXTJOIN(\"|\",FALSE,CHAR(G!A1:A2))"
+  },
+  {
+   "id": "CHAR#153",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "_xlfn.TEXTJOIN(\"|\",FALSE,CHAR({1;127}))"
+  },
+  {
+   "id": "CHAR#154",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "LEN(CHAR(200))"
+  },
+  {
+   "id": "CHAR#155",
+   "group": "CHAR",
+   "fn": "CHAR",
+   "formula": "ISTEXT(CHAR(255))"
+  },
+  {
+   "id": "CODE#128",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"A\")"
+  },
+  {
+   "id": "CODE#129",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"abc\")"
+  },
+  {
+   "id": "CODE#130",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\" \")"
+  },
+  {
+   "id": "CODE#131",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"~\")"
+  },
+  {
+   "id": "CODE#132",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"\")"
+  },
+  {
+   "id": "CODE#133",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(65)"
+  },
+  {
+   "id": "CODE#134",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(1.5)"
+  },
+  {
+   "id": "CODE#135",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(-1)"
+  },
+  {
+   "id": "CODE#136",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(0.5)"
+  },
+  {
+   "id": "CODE#137",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(D!A1)"
+  },
+  {
+   "id": "CODE#138",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(G!B2)"
+  },
+  {
+   "id": "CODE#139",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(G!B1)"
+  },
+  {
+   "id": "CODE#140",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(NA())"
+  },
+  {
+   "id": "CODE#141",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(CHAR(10)&\"x\")"
+  },
+  {
+   "id": "CODE#142",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"中\")"
+  },
+  {
+   "id": "CODE#143",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"😀\")"
+  },
+  {
+   "id": "CODE#144",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"ā\")"
+  },
+  {
+   "id": "CODE#145",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"Ā\")"
+  },
+  {
+   "id": "CODE#146",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"ŋ\")"
+  },
+  {
+   "id": "CODE#147",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"ğ\")"
+  },
+  {
+   "id": "CODE#148",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "CODE(\"ʃ\")"
+  },
+  {
+   "id": "CODE#149",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "SUM(CODE({\"A\",\"b\"}))"
+  },
+  {
+   "id": "CODE#150",
+   "group": "CODE",
+   "fn": "CODE",
+   "formula": "SUM(CODE(G!A3:A4))"
+  }
+ ],
+ "values": {
+  "CHAR#1": {
+   "t": "s",
+   "v": "\u0001"
+  },
+  "CHAR#2": {
+   "t": "s",
+   "v": "\u0002"
+  },
+  "CHAR#3": {
+   "t": "s",
+   "v": "\u0003"
+  },
+  "CHAR#4": {
+   "t": "s",
+   "v": "\u0004"
+  },
+  "CHAR#5": {
+   "t": "s",
+   "v": "\u0005"
+  },
+  "CHAR#6": {
+   "t": "s",
+   "v": "\u0006"
+  },
+  "CHAR#7": {
+   "t": "s",
+   "v": "\u0007"
+  },
+  "CHAR#8": {
+   "t": "s",
+   "v": "\b"
+  },
+  "CHAR#9": {
+   "t": "s",
+   "v": "\t"
+  },
+  "CHAR#10": {
+   "t": "s",
+   "v": "\n"
+  },
+  "CHAR#11": {
+   "t": "s",
+   "v": "\u000b"
+  },
+  "CHAR#12": {
+   "t": "s",
+   "v": "\f"
+  },
+  "CHAR#13": {
+   "t": "s",
+   "v": "\r"
+  },
+  "CHAR#14": {
+   "t": "s",
+   "v": "\u000e"
+  },
+  "CHAR#15": {
+   "t": "s",
+   "v": "\u000f"
+  },
+  "CHAR#16": {
+   "t": "s",
+   "v": "\u0010"
+  },
+  "CHAR#17": {
+   "t": "s",
+   "v": "\u0011"
+  },
+  "CHAR#18": {
+   "t": "s",
+   "v": "\u0012"
+  },
+  "CHAR#19": {
+   "t": "s",
+   "v": "\u0013"
+  },
+  "CHAR#20": {
+   "t": "s",
+   "v": "\u0014"
+  },
+  "CHAR#21": {
+   "t": "s",
+   "v": "\u0015"
+  },
+  "CHAR#22": {
+   "t": "s",
+   "v": "\u0016"
+  },
+  "CHAR#23": {
+   "t": "s",
+   "v": "\u0017"
+  },
+  "CHAR#24": {
+   "t": "s",
+   "v": "\u0018"
+  },
+  "CHAR#25": {
+   "t": "s",
+   "v": "\u0019"
+  },
+  "CHAR#26": {
+   "t": "s",
+   "v": "\u001a"
+  },
+  "CHAR#27": {
+   "t": "s",
+   "v": "\u001b"
+  },
+  "CHAR#28": {
+   "t": "s",
+   "v": "\u001c"
+  },
+  "CHAR#29": {
+   "t": "s",
+   "v": "\u001d"
+  },
+  "CHAR#30": {
+   "t": "s",
+   "v": "\u001e"
+  },
+  "CHAR#31": {
+   "t": "s",
+   "v": "\u001f"
+  },
+  "CHAR#32": {
+   "t": "s",
+   "v": " "
+  },
+  "CHAR#33": {
+   "t": "s",
+   "v": "!"
+  },
+  "CHAR#34": {
+   "t": "s",
+   "v": "\""
+  },
+  "CHAR#35": {
+   "t": "s",
+   "v": "#"
+  },
+  "CHAR#36": {
+   "t": "s",
+   "v": "$"
+  },
+  "CHAR#37": {
+   "t": "s",
+   "v": "%"
+  },
+  "CHAR#38": {
+   "t": "s",
+   "v": "&"
+  },
+  "CHAR#39": {
+   "t": "s",
+   "v": "'"
+  },
+  "CHAR#40": {
+   "t": "s",
+   "v": "("
+  },
+  "CHAR#41": {
+   "t": "s",
+   "v": ")"
+  },
+  "CHAR#42": {
+   "t": "s",
+   "v": "*"
+  },
+  "CHAR#43": {
+   "t": "s",
+   "v": "+"
+  },
+  "CHAR#44": {
+   "t": "s",
+   "v": ","
+  },
+  "CHAR#45": {
+   "t": "s",
+   "v": "-"
+  },
+  "CHAR#46": {
+   "t": "s",
+   "v": "."
+  },
+  "CHAR#47": {
+   "t": "s",
+   "v": "/"
+  },
+  "CHAR#48": {
+   "t": "s",
+   "v": "0"
+  },
+  "CHAR#49": {
+   "t": "s",
+   "v": "1"
+  },
+  "CHAR#50": {
+   "t": "s",
+   "v": "2"
+  },
+  "CHAR#51": {
+   "t": "s",
+   "v": "3"
+  },
+  "CHAR#52": {
+   "t": "s",
+   "v": "4"
+  },
+  "CHAR#53": {
+   "t": "s",
+   "v": "5"
+  },
+  "CHAR#54": {
+   "t": "s",
+   "v": "6"
+  },
+  "CHAR#55": {
+   "t": "s",
+   "v": "7"
+  },
+  "CHAR#56": {
+   "t": "s",
+   "v": "8"
+  },
+  "CHAR#57": {
+   "t": "s",
+   "v": "9"
+  },
+  "CHAR#58": {
+   "t": "s",
+   "v": ":"
+  },
+  "CHAR#59": {
+   "t": "s",
+   "v": ";"
+  },
+  "CHAR#60": {
+   "t": "s",
+   "v": "<"
+  },
+  "CHAR#61": {
+   "t": "s",
+   "v": "="
+  },
+  "CHAR#62": {
+   "t": "s",
+   "v": ">"
+  },
+  "CHAR#63": {
+   "t": "s",
+   "v": "?"
+  },
+  "CHAR#64": {
+   "t": "s",
+   "v": "@"
+  },
+  "CHAR#65": {
+   "t": "s",
+   "v": "A"
+  },
+  "CHAR#66": {
+   "t": "s",
+   "v": "B"
+  },
+  "CHAR#67": {
+   "t": "s",
+   "v": "C"
+  },
+  "CHAR#68": {
+   "t": "s",
+   "v": "D"
+  },
+  "CHAR#69": {
+   "t": "s",
+   "v": "E"
+  },
+  "CHAR#70": {
+   "t": "s",
+   "v": "F"
+  },
+  "CHAR#71": {
+   "t": "s",
+   "v": "G"
+  },
+  "CHAR#72": {
+   "t": "s",
+   "v": "H"
+  },
+  "CHAR#73": {
+   "t": "s",
+   "v": "I"
+  },
+  "CHAR#74": {
+   "t": "s",
+   "v": "J"
+  },
+  "CHAR#75": {
+   "t": "s",
+   "v": "K"
+  },
+  "CHAR#76": {
+   "t": "s",
+   "v": "L"
+  },
+  "CHAR#77": {
+   "t": "s",
+   "v": "M"
+  },
+  "CHAR#78": {
+   "t": "s",
+   "v": "N"
+  },
+  "CHAR#79": {
+   "t": "s",
+   "v": "O"
+  },
+  "CHAR#80": {
+   "t": "s",
+   "v": "P"
+  },
+  "CHAR#81": {
+   "t": "s",
+   "v": "Q"
+  },
+  "CHAR#82": {
+   "t": "s",
+   "v": "R"
+  },
+  "CHAR#83": {
+   "t": "s",
+   "v": "S"
+  },
+  "CHAR#84": {
+   "t": "s",
+   "v": "T"
+  },
+  "CHAR#85": {
+   "t": "s",
+   "v": "U"
+  },
+  "CHAR#86": {
+   "t": "s",
+   "v": "V"
+  },
+  "CHAR#87": {
+   "t": "s",
+   "v": "W"
+  },
+  "CHAR#88": {
+   "t": "s",
+   "v": "X"
+  },
+  "CHAR#89": {
+   "t": "s",
+   "v": "Y"
+  },
+  "CHAR#90": {
+   "t": "s",
+   "v": "Z"
+  },
+  "CHAR#91": {
+   "t": "s",
+   "v": "["
+  },
+  "CHAR#92": {
+   "t": "s",
+   "v": "\\"
+  },
+  "CHAR#93": {
+   "t": "s",
+   "v": "]"
+  },
+  "CHAR#94": {
+   "t": "s",
+   "v": "^"
+  },
+  "CHAR#95": {
+   "t": "s",
+   "v": "_"
+  },
+  "CHAR#96": {
+   "t": "s",
+   "v": "`"
+  },
+  "CHAR#97": {
+   "t": "s",
+   "v": "a"
+  },
+  "CHAR#98": {
+   "t": "s",
+   "v": "b"
+  },
+  "CHAR#99": {
+   "t": "s",
+   "v": "c"
+  },
+  "CHAR#100": {
+   "t": "s",
+   "v": "d"
+  },
+  "CHAR#101": {
+   "t": "s",
+   "v": "e"
+  },
+  "CHAR#102": {
+   "t": "s",
+   "v": "f"
+  },
+  "CHAR#103": {
+   "t": "s",
+   "v": "g"
+  },
+  "CHAR#104": {
+   "t": "s",
+   "v": "h"
+  },
+  "CHAR#105": {
+   "t": "s",
+   "v": "i"
+  },
+  "CHAR#106": {
+   "t": "s",
+   "v": "j"
+  },
+  "CHAR#107": {
+   "t": "s",
+   "v": "k"
+  },
+  "CHAR#108": {
+   "t": "s",
+   "v": "l"
+  },
+  "CHAR#109": {
+   "t": "s",
+   "v": "m"
+  },
+  "CHAR#110": {
+   "t": "s",
+   "v": "n"
+  },
+  "CHAR#111": {
+   "t": "s",
+   "v": "o"
+  },
+  "CHAR#112": {
+   "t": "s",
+   "v": "p"
+  },
+  "CHAR#113": {
+   "t": "s",
+   "v": "q"
+  },
+  "CHAR#114": {
+   "t": "s",
+   "v": "r"
+  },
+  "CHAR#115": {
+   "t": "s",
+   "v": "s"
+  },
+  "CHAR#116": {
+   "t": "s",
+   "v": "t"
+  },
+  "CHAR#117": {
+   "t": "s",
+   "v": "u"
+  },
+  "CHAR#118": {
+   "t": "s",
+   "v": "v"
+  },
+  "CHAR#119": {
+   "t": "s",
+   "v": "w"
+  },
+  "CHAR#120": {
+   "t": "s",
+   "v": "x"
+  },
+  "CHAR#121": {
+   "t": "s",
+   "v": "y"
+  },
+  "CHAR#122": {
+   "t": "s",
+   "v": "z"
+  },
+  "CHAR#123": {
+   "t": "s",
+   "v": "{"
+  },
+  "CHAR#124": {
+   "t": "s",
+   "v": "|"
+  },
+  "CHAR#125": {
+   "t": "s",
+   "v": "}"
+  },
+  "CHAR#126": {
+   "t": "s",
+   "v": "~"
+  },
+  "CHAR#127": {
+   "t": "s",
+   "v": ""
+  },
+  "CODE#1": {
+   "t": "n",
+   "v": 1
+  },
+  "CODE#2": {
+   "t": "n",
+   "v": 2
+  },
+  "CODE#3": {
+   "t": "n",
+   "v": 3
+  },
+  "CODE#4": {
+   "t": "n",
+   "v": 4
+  },
+  "CODE#5": {
+   "t": "n",
+   "v": 5
+  },
+  "CODE#6": {
+   "t": "n",
+   "v": 6
+  },
+  "CODE#7": {
+   "t": "n",
+   "v": 7
+  },
+  "CODE#8": {
+   "t": "n",
+   "v": 8
+  },
+  "CODE#9": {
+   "t": "n",
+   "v": 9
+  },
+  "CODE#10": {
+   "t": "n",
+   "v": 10
+  },
+  "CODE#11": {
+   "t": "n",
+   "v": 11
+  },
+  "CODE#12": {
+   "t": "n",
+   "v": 12
+  },
+  "CODE#13": {
+   "t": "n",
+   "v": 13
+  },
+  "CODE#14": {
+   "t": "n",
+   "v": 14
+  },
+  "CODE#15": {
+   "t": "n",
+   "v": 15
+  },
+  "CODE#16": {
+   "t": "n",
+   "v": 16
+  },
+  "CODE#17": {
+   "t": "n",
+   "v": 17
+  },
+  "CODE#18": {
+   "t": "n",
+   "v": 18
+  },
+  "CODE#19": {
+   "t": "n",
+   "v": 19
+  },
+  "CODE#20": {
+   "t": "n",
+   "v": 20
+  },
+  "CODE#21": {
+   "t": "n",
+   "v": 21
+  },
+  "CODE#22": {
+   "t": "n",
+   "v": 22
+  },
+  "CODE#23": {
+   "t": "n",
+   "v": 23
+  },
+  "CODE#24": {
+   "t": "n",
+   "v": 24
+  },
+  "CODE#25": {
+   "t": "n",
+   "v": 25
+  },
+  "CODE#26": {
+   "t": "n",
+   "v": 26
+  },
+  "CODE#27": {
+   "t": "n",
+   "v": 27
+  },
+  "CODE#28": {
+   "t": "n",
+   "v": 28
+  },
+  "CODE#29": {
+   "t": "n",
+   "v": 29
+  },
+  "CODE#30": {
+   "t": "n",
+   "v": 30
+  },
+  "CODE#31": {
+   "t": "n",
+   "v": 31
+  },
+  "CODE#32": {
+   "t": "n",
+   "v": 32
+  },
+  "CODE#33": {
+   "t": "n",
+   "v": 33
+  },
+  "CODE#34": {
+   "t": "n",
+   "v": 34
+  },
+  "CODE#35": {
+   "t": "n",
+   "v": 35
+  },
+  "CODE#36": {
+   "t": "n",
+   "v": 36
+  },
+  "CODE#37": {
+   "t": "n",
+   "v": 37
+  },
+  "CODE#38": {
+   "t": "n",
+   "v": 38
+  },
+  "CODE#39": {
+   "t": "n",
+   "v": 39
+  },
+  "CODE#40": {
+   "t": "n",
+   "v": 40
+  },
+  "CODE#41": {
+   "t": "n",
+   "v": 41
+  },
+  "CODE#42": {
+   "t": "n",
+   "v": 42
+  },
+  "CODE#43": {
+   "t": "n",
+   "v": 43
+  },
+  "CODE#44": {
+   "t": "n",
+   "v": 44
+  },
+  "CODE#45": {
+   "t": "n",
+   "v": 45
+  },
+  "CODE#46": {
+   "t": "n",
+   "v": 46
+  },
+  "CODE#47": {
+   "t": "n",
+   "v": 47
+  },
+  "CODE#48": {
+   "t": "n",
+   "v": 48
+  },
+  "CODE#49": {
+   "t": "n",
+   "v": 49
+  },
+  "CODE#50": {
+   "t": "n",
+   "v": 50
+  },
+  "CODE#51": {
+   "t": "n",
+   "v": 51
+  },
+  "CODE#52": {
+   "t": "n",
+   "v": 52
+  },
+  "CODE#53": {
+   "t": "n",
+   "v": 53
+  },
+  "CODE#54": {
+   "t": "n",
+   "v": 54
+  },
+  "CODE#55": {
+   "t": "n",
+   "v": 55
+  },
+  "CODE#56": {
+   "t": "n",
+   "v": 56
+  },
+  "CODE#57": {
+   "t": "n",
+   "v": 57
+  },
+  "CODE#58": {
+   "t": "n",
+   "v": 58
+  },
+  "CODE#59": {
+   "t": "n",
+   "v": 59
+  },
+  "CODE#60": {
+   "t": "n",
+   "v": 60
+  },
+  "CODE#61": {
+   "t": "n",
+   "v": 61
+  },
+  "CODE#62": {
+   "t": "n",
+   "v": 62
+  },
+  "CODE#63": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#64": {
+   "t": "n",
+   "v": 64
+  },
+  "CODE#65": {
+   "t": "n",
+   "v": 65
+  },
+  "CODE#66": {
+   "t": "n",
+   "v": 66
+  },
+  "CODE#67": {
+   "t": "n",
+   "v": 67
+  },
+  "CODE#68": {
+   "t": "n",
+   "v": 68
+  },
+  "CODE#69": {
+   "t": "n",
+   "v": 69
+  },
+  "CODE#70": {
+   "t": "n",
+   "v": 70
+  },
+  "CODE#71": {
+   "t": "n",
+   "v": 71
+  },
+  "CODE#72": {
+   "t": "n",
+   "v": 72
+  },
+  "CODE#73": {
+   "t": "n",
+   "v": 73
+  },
+  "CODE#74": {
+   "t": "n",
+   "v": 74
+  },
+  "CODE#75": {
+   "t": "n",
+   "v": 75
+  },
+  "CODE#76": {
+   "t": "n",
+   "v": 76
+  },
+  "CODE#77": {
+   "t": "n",
+   "v": 77
+  },
+  "CODE#78": {
+   "t": "n",
+   "v": 78
+  },
+  "CODE#79": {
+   "t": "n",
+   "v": 79
+  },
+  "CODE#80": {
+   "t": "n",
+   "v": 80
+  },
+  "CODE#81": {
+   "t": "n",
+   "v": 81
+  },
+  "CODE#82": {
+   "t": "n",
+   "v": 82
+  },
+  "CODE#83": {
+   "t": "n",
+   "v": 83
+  },
+  "CODE#84": {
+   "t": "n",
+   "v": 84
+  },
+  "CODE#85": {
+   "t": "n",
+   "v": 85
+  },
+  "CODE#86": {
+   "t": "n",
+   "v": 86
+  },
+  "CODE#87": {
+   "t": "n",
+   "v": 87
+  },
+  "CODE#88": {
+   "t": "n",
+   "v": 88
+  },
+  "CODE#89": {
+   "t": "n",
+   "v": 89
+  },
+  "CODE#90": {
+   "t": "n",
+   "v": 90
+  },
+  "CODE#91": {
+   "t": "n",
+   "v": 91
+  },
+  "CODE#92": {
+   "t": "n",
+   "v": 92
+  },
+  "CODE#93": {
+   "t": "n",
+   "v": 93
+  },
+  "CODE#94": {
+   "t": "n",
+   "v": 94
+  },
+  "CODE#95": {
+   "t": "n",
+   "v": 95
+  },
+  "CODE#96": {
+   "t": "n",
+   "v": 96
+  },
+  "CODE#97": {
+   "t": "n",
+   "v": 97
+  },
+  "CODE#98": {
+   "t": "n",
+   "v": 98
+  },
+  "CODE#99": {
+   "t": "n",
+   "v": 99
+  },
+  "CODE#100": {
+   "t": "n",
+   "v": 100
+  },
+  "CODE#101": {
+   "t": "n",
+   "v": 101
+  },
+  "CODE#102": {
+   "t": "n",
+   "v": 102
+  },
+  "CODE#103": {
+   "t": "n",
+   "v": 103
+  },
+  "CODE#104": {
+   "t": "n",
+   "v": 104
+  },
+  "CODE#105": {
+   "t": "n",
+   "v": 105
+  },
+  "CODE#106": {
+   "t": "n",
+   "v": 106
+  },
+  "CODE#107": {
+   "t": "n",
+   "v": 107
+  },
+  "CODE#108": {
+   "t": "n",
+   "v": 108
+  },
+  "CODE#109": {
+   "t": "n",
+   "v": 109
+  },
+  "CODE#110": {
+   "t": "n",
+   "v": 110
+  },
+  "CODE#111": {
+   "t": "n",
+   "v": 111
+  },
+  "CODE#112": {
+   "t": "n",
+   "v": 112
+  },
+  "CODE#113": {
+   "t": "n",
+   "v": 113
+  },
+  "CODE#114": {
+   "t": "n",
+   "v": 114
+  },
+  "CODE#115": {
+   "t": "n",
+   "v": 115
+  },
+  "CODE#116": {
+   "t": "n",
+   "v": 116
+  },
+  "CODE#117": {
+   "t": "n",
+   "v": 117
+  },
+  "CODE#118": {
+   "t": "n",
+   "v": 118
+  },
+  "CODE#119": {
+   "t": "n",
+   "v": 119
+  },
+  "CODE#120": {
+   "t": "n",
+   "v": 120
+  },
+  "CODE#121": {
+   "t": "n",
+   "v": 121
+  },
+  "CODE#122": {
+   "t": "n",
+   "v": 122
+  },
+  "CODE#123": {
+   "t": "n",
+   "v": 123
+  },
+  "CODE#124": {
+   "t": "n",
+   "v": 124
+  },
+  "CODE#125": {
+   "t": "n",
+   "v": 125
+  },
+  "CODE#126": {
+   "t": "n",
+   "v": 126
+  },
+  "CODE#127": {
+   "t": "n",
+   "v": 127
+  },
+  "CHAR#128": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#129": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#130": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#131": {
+   "t": "s",
+   "v": "A"
+  },
+  "CHAR#132": {
+   "t": "s",
+   "v": "A"
+  },
+  "CHAR#133": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#134": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#135": {
+   "t": "s",
+   "v": ""
+  },
+  "CHAR#136": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#137": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#138": {
+   "t": "s",
+   "v": "A"
+  },
+  "CHAR#139": {
+   "t": "s",
+   "v": "A"
+  },
+  "CHAR#140": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#141": {
+   "t": "s",
+   "v": "\u0001"
+  },
+  "CHAR#142": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#143": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#144": {
+   "t": "s",
+   "v": "\u0001"
+  },
+  "CHAR#145": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#146": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#147": {
+   "t": "s",
+   "v": "A"
+  },
+  "CHAR#148": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CHAR#149": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CHAR#150": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "CHAR#151": {
+   "t": "s",
+   "v": "A|B|C"
+  },
+  "CHAR#152": {
+   "t": "s",
+   "v": "A|a"
+  },
+  "CHAR#153": {
+   "t": "s",
+   "v": "\u0001|"
+  },
+  "CHAR#154": {
+   "t": "n",
+   "v": 1
+  },
+  "CHAR#155": {
+   "t": "b",
+   "v": true
+  },
+  "CODE#128": {
+   "t": "n",
+   "v": 65
+  },
+  "CODE#129": {
+   "t": "n",
+   "v": 97
+  },
+  "CODE#130": {
+   "t": "n",
+   "v": 32
+  },
+  "CODE#131": {
+   "t": "n",
+   "v": 126
+  },
+  "CODE#132": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CODE#133": {
+   "t": "n",
+   "v": 54
+  },
+  "CODE#134": {
+   "t": "n",
+   "v": 49
+  },
+  "CODE#135": {
+   "t": "n",
+   "v": 45
+  },
+  "CODE#136": {
+   "t": "n",
+   "v": 48
+  },
+  "CODE#137": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CODE#138": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CODE#139": {
+   "t": "n",
+   "v": 54
+  },
+  "CODE#140": {
+   "t": "e",
+   "v": "NA"
+  },
+  "CODE#141": {
+   "t": "n",
+   "v": 10
+  },
+  "CODE#142": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#143": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#144": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#145": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#146": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#147": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#148": {
+   "t": "n",
+   "v": 63
+  },
+  "CODE#149": {
+   "t": "n",
+   "v": 163
+  },
+  "CODE#150": {
+   "t": "n",
+   "v": 164
+  }
+ }
+}

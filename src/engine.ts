@@ -10,6 +10,7 @@
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
+import { count, due, run, spend, type Steps } from './exec/budget.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
@@ -159,7 +160,11 @@ function prepare(state: EngineState, s: number, row: number, col: number, text: 
 
 // ---------- assembly ----------
 
-export function createState(book: BookInput, opts: EngineOptions): EngineState {
+/** A book compiled and computed at once. */
+export const createState = (book: BookInput, opts: EngineOptions): EngineState => run(buildState(book, opts))
+
+/** A book compiled and computed, in steps: between two formulas compiled or computed. */
+export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineState> {
   const sheetNames = book.sheets.map((s) => s.name)
   const sheetIdx = new Map(sheetNames.map((n, i) => [sheetKey(n), i]))
   if (sheetIdx.size !== sheetNames.length) throw new Error('duplicate sheet name')
@@ -217,7 +222,8 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
     spills: newSpills(),
   }
   const pending: Formula[] = []
-  input.sheets.forEach((sheet, s) => {
+  for (let s = 0; s < input.sheets.length; s++) {
+    const sheet = input.sheets[s]
     for (const [addr, cellIn] of Object.entries(sheet.cells)) {
       const { row, col } = parseAddress(addr)
       if (blocks(cellIn)) state.spills.occupied.set(s, row, col, true, true)
@@ -226,6 +232,9 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
         if (v !== null) put(ctx.sheets[s], row, col, v)
         continue
       }
+      if (due()) yield
+      spend(1)
+      count(pending.length + state.invalid.size + 1)
       const p = prepare(state, s, row, col, cellIn.formula)
       if (!p.ok) {
         state.invalid.set(key(s, row, col), p.invalid)
@@ -236,12 +245,12 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
       pending.push(f)
       if (f.nested) mark(ctx, s, row, col, true)
     }
-  })
+  }
   state.compiler.link(pending)
   state.formulas = pending
   for (const f of state.formulas) state.at.set(key(f!.s, f!.r, f!.c), f!.id)
   rebuildGraph(state)
-  evaluateAll(state)
+  yield* evaluateAll(state)
   return state
 }
 
@@ -249,7 +258,7 @@ export function createState(book: BookInput, opts: EngineOptions): EngineState {
  * Edits applied atomically, one recomputation of dependents; returns the changed cells (`s:r:c`).
  * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass.
  */
-export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile = false): string[] {
+export function* applyEdits(state: EngineState, edits: CellEdit[], withVolatile = false): Steps<string[]> {
   const track = tracker()
   const dirty = new Set<number>()
   const fresh: Formula[] = []
@@ -292,6 +301,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
       structural = true
     } else write(state, s, row, col, input ? bookScalar(input.value, state.ctx.rules.epoch) : null, track)
   }
+  count(state.at.size + state.invalid.size)
   state.compiler.link(fresh)
   if (structural) rebuildGraph(state)
   // formulas reading the cells, arrays spilled over them or waiting for them
@@ -300,7 +310,7 @@ export function applyEdits(state: EngineState, edits: CellEdit[], withVolatile =
   if (withVolatile) for (const id of state.volatile) dirty.add(id)
   // cells that were in a cycle are recomputed in case the cycle is broken
   if (structural) for (const f of state.formulas) if (f && isErr(state.ctx.sheets[f.s].cols[f.c]?.[f.r]) && (state.ctx.sheets[f.s].cols[f.c]![f.r] as CErr).code === 'CYCLE') dirty.add(f.id)
-  recompute(state, dirty, track)
+  yield* recompute(state, dirty, track)
   return changed(state, track)
 }
 
@@ -311,20 +321,20 @@ export function setNow(state: EngineState, now: number, seed: number) {
 }
 
 /** A new clock: recomputes volatile cells and their dependents. */
-export function applyClock(state: EngineState, now: number, seed: number): string[] {
+export function* applyClock(state: EngineState, now: number, seed: number): Steps<string[]> {
   setNow(state, now, seed)
   const track = tracker()
-  recompute(state, new Set(state.volatile), track)
+  yield* recompute(state, new Set(state.volatile), track)
   return changed(state, track)
 }
 
 /** Merged areas of a sheet were added or removed (`rects`): the arrays whose range meets them are computed again. */
-export function applyMerges(state: EngineState, s: number, rects: Rect[]): string[] {
+export function* applyMerges(state: EngineState, s: number, rects: Rect[]): Steps<string[]> {
   const track = tracker()
   const dirty = new Set<number>()
   state.spills.merges.delete(s)
   for (const m of [state.spills.on, state.spills.wait]) for (const [id, x] of m) if (x.s === s && rects.some((r) => meets(r, x))) dirty.add(id)
-  recompute(state, dirty, track)
+  yield* recompute(state, dirty, track)
   return changed(state, track)
 }
 
@@ -332,13 +342,13 @@ export function applyMerges(state: EngineState, s: number, rects: Rect[]): strin
  * Hidden rows or the filter mode of sheet `s` changed: the formulas calling SUBTOTAL or AGGREGATE over the rows hidden
  * before or now are computed again.
  */
-export function applyHidden(state: EngineState, s: number): string[] {
+export function* applyHidden(state: EngineState, s: number): Steps<string[]> {
   const before = state.ctx.hidden.get(s)?.spans ?? []
   setHidden(state.ctx, s, state.input.sheets[s])
   const track = tracker()
   const readers = new Set<number>()
   for (const [r1, r2] of [...before, ...(state.ctx.hidden.get(s)?.spans ?? [])]) readersOf(state, { s, r1, r2, c1: 0, c2: MAX_COLS - 1 }, readers)
-  recompute(state, new Set([...readers].filter((id) => state.formulas[id]!.nested)), track)
+  yield* recompute(state, new Set([...readers].filter((id) => state.formulas[id]!.nested)), track)
   return changed(state, track)
 }
 

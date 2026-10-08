@@ -8,6 +8,7 @@
  */
 import { collator } from './collate.js'
 import { textToNumber } from './dates.js'
+import { spend } from './exec/budget.js'
 import { readsClock, type RulesClock } from './locale/rules/data.js'
 import { to15 } from './values.js'
 
@@ -192,6 +193,9 @@ function critKey(c: Crit): string | null {
 
 export type CritIndex = Map<string, number[]>
 
+/** Values between two checks of the computation's budget in long loops (65,536 − 1, a mask). */
+const STRIDE = 0xffff
+
 export function buildIndex(flat: readonly CritValue[], rules: CritRules = EN_CRIT): CritIndex {
   const ix: CritIndex = new Map()
   // a text repeated down a column is read once (a text always has a key)
@@ -202,6 +206,7 @@ export function buildIndex(flat: readonly CritValue[], rules: CritRules = EN_CRI
     return k
   }
   for (let i = 0; i < flat.length; i++) {
+    if ((i & STRIDE) === 0) spend(Math.min(STRIDE + 1, flat.length - i))
     const v = flat[i]
     const k = typeof v === 'string' ? (texts.get(v) ?? textKey(v)) : eqKey(v, rules)
     if (k === null) continue
@@ -239,7 +244,13 @@ export function select(cols: CritColumn[], n: number, rules: CritRules = EN_CRIT
     for (let i = 0; i < cols.length; i++) if (i !== used && !matches(cols[i].flat[p] ?? null, cols[i].crit, rules)) return
     out.push(p)
   }
-  if (cand) for (const p of cand) check(p)
-  else for (let p = 0; p < n; p++) check(p)
+  if (cand) {
+    spend(cand.length)
+    for (const p of cand) check(p)
+  } else
+    for (let p = 0; p < n; p++) {
+      if ((p & STRIDE) === 0) spend(Math.min(STRIDE + 1, n - p))
+      check(p)
+    }
   return out
 }

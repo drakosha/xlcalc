@@ -24,7 +24,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth', './xlsx'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth', './xlsx', './worker'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -53,6 +53,8 @@ describe('built package', () => {
     expect(out.edited).toBe(session.result().hash)
     // the synthetic book written to xlsx and read back computes to the same values
     expect(out.xlsx).toBe(out.hash)
+    // and in a thread of the pool, which an open pool does not keep the process alive for
+    expect(out.threads).toEqual({ hash: out.hash, edited: out.edited })
     session.close()
     expect(out.functions).toBe(FUNCTION_NAMES.length)
     expect(out.engine).toEqual(['compute', 'displayValue', 'openSession', 'restructure', 'validateFormula', 'validateName'])

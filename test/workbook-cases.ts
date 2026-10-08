@@ -6,7 +6,7 @@
 import type { Val } from '../bench/coverage/formulajs.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { FileParts } from '../bench/coverage/case-book.js'
-import type { Step, WorkbookCase } from '../bench/coverage/workbook/cases.js'
+import type { Step, WorkbookAnswer, WorkbookCase } from '../bench/coverage/workbook/cases.js'
 import { openSession, type BookInput, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
 import { patchLines, parseSpan } from '../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../src/model.js'
@@ -82,3 +82,11 @@ export function differences(c: WorkbookCase, excel: Record<string, Val>, shown: 
   }
   return out
 }
+
+/**
+ * A recalculation, a full calculation or an edit computes Excel's cycles again from the values they hold, the
+ * engine's from 0 (`BookInput.iteration`): in the set `iterate`, a cell of a read after the first may differ where
+ * Excel's value moved from its previous read, and must match where it did not.
+ */
+export const goesOn = (set: string, excel: WorkbookAnswer['reads'], read: number, cell: string) =>
+  set === 'iterate' && read > 0 && JSON.stringify(excel[read].values[cell]) !== JSON.stringify(excel[read - 1].values[cell])

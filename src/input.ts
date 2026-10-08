@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { LOCALES } from './locale/registry.js'
@@ -330,6 +330,14 @@ function checkExecution(v: unknown, path: string) {
 
 const CLOCK_HINT = ' (pass the clock as { clock: { now, seed } })'
 
+/** `limits`: whole numbers of at least 1. */
+export function checkLimits(v: unknown, path: string): CalcLimits {
+  const o = object(v, path, 'limits such as { formulas: 100000, cells: 10000000 }')
+  onlyKeys(o, path, ['formulas', 'cells'])
+  for (const k of ['formulas', 'cells']) if (o[k] !== undefined) checkNumber(o[k], `${path}.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
+  return o as CalcLimits
+}
+
 /** A tag of the package's locales. */
 function checkLocale(v: unknown, path: string) {
   if (!LOCALES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALES.keys()].join(', ')})`)
@@ -338,8 +346,9 @@ function checkLocale(v: unknown, path: string) {
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyKeys(o, path, ['clock', 'externals', 'execution', 'display'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyKeys(o, path, ['clock', 'externals', 'execution', 'display', 'limits'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
+  if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
   if (o.execution !== undefined) checkExecution(o.execution, `${path}.execution`)
   if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
@@ -349,8 +358,9 @@ export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution', 'display'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
+  if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
   if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)

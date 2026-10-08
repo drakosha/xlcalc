@@ -1,8 +1,8 @@
 /**
  * CHAR and CODE by the Windows code page of the book's locale: Windows-1252 in en-US, Windows-1251 in ru-RU, as
- * Excel for Windows computes them. Excel for Mac answers codes 128–255 by Mac Roman and Mac Cyrillic instead;
- * codes 1–127, the argument edges and the code of a character outside the page are as Excel computes them
- * (`bench/coverage/sets/char-code.ts`). Undefined bytes of a page are the C1 controls of the same value, as
+ * Excel for Windows computes them. Excel for Mac answers codes 128–255 by Mac Roman and Mac Cyrillic instead, and 95
+ * (`_`) for a character outside its page where Windows answers 63 (`?`); codes 1–127 and the argument edges are as both
+ * compute them (`bench/coverage/sets/char-code.ts`). Undefined bytes of a page are the C1 controls of the same value, as
  * Windows converts them (`test/codepage.test.ts` checks the tables against the published ones).
  */
 import type { Cx, FnDef } from '../../args.js'
@@ -26,8 +26,8 @@ export const CODE_PAGES: Readonly<Record<string, string>> = {
   ),
 }
 
-/** Excel's code of a character outside its code page: `_` (measured on Mac Roman and Mac Cyrillic). */
-const OUTSIDE = 95
+/** Excel for Windows's code of a character outside its code page: `?`, as Windows converts it (Excel for Mac answers 95, `_`). */
+const OUTSIDE = 63
 
 const page = (cx: Cx) => CODE_PAGES[cx.rules.locale.tag]
 

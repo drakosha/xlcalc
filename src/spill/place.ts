@@ -8,6 +8,7 @@ import type { Arg } from '../args.js'
 import type { Arr } from '../arrays/value.js'
 import { canonValue } from '../canon.js'
 import { toCellValue, key, type EngineState, type Formula } from '../engine.js'
+import { allot, spend } from '../exec/budget.js'
 import { invalidate, put, same, shown, track, type Tracker } from '../evaluate.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
@@ -29,12 +30,14 @@ function listing(a: Arr): { h: number; w: number; fill?: V } {
   const fill = shown(a.at(a.rows - 1, a.cols - 1))
   let h = 1
   let w = 1
-  for (let r = 0; r < a.h; r++)
+  for (let r = 0; r < a.h; r++) {
+    spend(a.w)
     for (let c = 0; c < a.w; c++)
       if (!same(shown(a.v[r * a.w + c]), fill)) {
         h = Math.max(h, r + 1)
         w = Math.max(w, c + 1)
       }
+  }
   return h === a.rows && w === a.cols ? { h, w } : { h, w, fill }
 }
 
@@ -94,16 +97,19 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
   const sp = state.spills
   const sh = state.ctx.sheets[f.s]
   const { h, w, fill } = listing(a)
+  allot(h * w)
   const old = sp.on.get(f.id)
   note(state, f.s, f.r, f.c, t)
   // cells of the old spill that the new one does not store, then the new ones (read before the old fills go)
   if (old) eachCell(old, (r, c) => (r >= f.r + h || c >= f.c + w) && clear(state, f.s, r, c, t))
-  for (let r = 0; r < h; r++)
+  for (let r = 0; r < h; r++) {
+    spend(w)
     for (let c = 0; c < w; c++) {
       if (r === 0 && c === 0) continue
       track(state, t, f.s, f.r + r, f.c + c)
       put(sh, f.r + r, f.c + c, shown(a.at(r, c)))
     }
+  }
   if (old) sh.fills = sh.fills.filter((x) => !old.fills.includes(x))
   const fills: Fill[] = []
   if (fill !== undefined) {

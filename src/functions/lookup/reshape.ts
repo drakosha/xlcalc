@@ -6,12 +6,14 @@
 import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
 import { isMany } from '../../arrays/lift.js'
 import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
+import { allot, spend } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 
 /** Rows `rs` and columns `cs` (zero-based) of an array. */
 function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
+  allot(rs.length * cs.length)
   const v: V[] = []
   for (const r of rs) for (const c of cs) v.push(a.at(r, c))
   return new Arr(rs.length, cs.length, rs.length, cs.length, v)
@@ -80,6 +82,7 @@ function stack(across: boolean): FnDef {
       const parts = xs.flatMap((x) => stackParts(cx, x))
       const rows = across ? Math.max(...parts.map((p) => p.rows)) : parts.reduce((s, p) => s + p.rows, 0)
       const cols = across ? parts.reduce((s, p) => s + p.cols, 0) : Math.max(...parts.map((p) => p.cols))
+      allot(rows * cols)
       const v: V[] = new Array(rows * cols).fill(E.NA)
       let at = 0
       for (const p of parts) {
@@ -97,12 +100,15 @@ function values(g: Grid, ignore: number, byCol: boolean, v: V[]) {
   const [outer, inner] = byCol ? [a.cols, a.rows] : [a.rows, a.cols]
   // a whole column without blanks: only its occupied part
   const stop = ignore & 1 && a.fill === null ? (byCol ? Math.min(outer, a.w) : Math.min(outer, a.h)) : outer
-  for (let i = 0; i < stop; i++)
+  allot(v.length + stop * inner)
+  for (let i = 0; i < stop; i++) {
+    spend(inner)
     for (let j = 0; j < inner; j++) {
       const x = byCol ? a.at(j, i) : a.at(i, j)
       if ((x === null && ignore & 1) || (isErr(x) && ignore & 2)) continue
       v.push(x)
     }
+  }
 }
 
 /** TOCOL, TOROW: the values of an array, or of each area of a union or of a reference across sheets in turn. */
@@ -135,6 +141,7 @@ function wrap(rows: boolean): FnDef {
       const a = fromGrid(g)
       const len = a.rows * a.cols
       const lines = Math.ceil(len / n)
+      allot(lines * n)
       const v: V[] = []
       for (let i = 0; i < lines; i++) for (let j = 0; j < n; j++) v.push(i * n + j < len ? a.at(a.rows === 1 ? 0 : i * n + j, a.rows === 1 ? i * n + j : 0) : pad)
       const out = new Arr(lines, n, lines, n, v)
@@ -166,6 +173,7 @@ export const functions: Record<string, FnDef> = {
       const r = rows === undefined ? g.rows : Math.trunc(rows)
       const c = cols === undefined ? g.cols : Math.trunc(cols)
       if (r < g.rows || c < g.cols) return E.VALUE
+      allot(r * c)
       const a = fromGrid(g)
       const v: V[] = []
       for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) v.push(i < a.rows && j < a.cols ? a.at(i, j) : pad)
