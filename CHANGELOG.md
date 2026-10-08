@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 (2026-10-08)
+
+Internal release; not published to npm. Adds asynchronous and threaded computation (`createInlineCalc`, `xlcalc/worker`), Excel tables with structured references, `Session.cells` and `copyFormula`.
 
 A synchronous session call that throws while it recomputes (over its limits, say) leaves the session as it was before the call; the session computes its book again on its next call.
 
