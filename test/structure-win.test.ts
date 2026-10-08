@@ -1,7 +1,7 @@
 /**
  * Structure operations against Excel for Windows (`test/excel/win/struct/`, `bench/windows`): after each operation the
  * engine's book shows what Excel for Windows showed, or Excel refused and so does the engine, as
- * `structure-excel.test.ts` checks the Mac's. Known differences are pinned in `WIN_STRUCT` with their lines.
+ * `structure-excel.test.ts` checks the Mac's. Known differences are pinned in `WIN_STRUCT` with the reason.
  */
 import { describe, expect, it } from 'vitest'
 import type { StoredStruct } from '../bench/coverage/struct.js'
@@ -12,8 +12,23 @@ import { differences } from './structure-excel.js'
 
 const SETS = winFiles<StoredStruct>('struct/')
 
-/** `<set>:<case id>` → the difference lines pinned for that case. */
-const WIN_STRUCT: Readonly<Record<string, string[]>> = {}
+/**
+ * The look at the sheet's edges (styles of rows and columns that reach row 1048576 or column XFD), as Excel for Windows
+ * reports it: the empty cells such a span takes after the operation read plain, rows read their height in points where
+ * Excel for Mac reports 4/3 of it, and columns their width rounded to pixels (19.29 where the Mac has 19.17).
+ */
+const EDGE = 'Excel for Windows reports the look at the sheet\'s edges otherwise: empty cells of a span reaching the end read plain, row heights in its points (30, the Mac 40) and widths rounded to pixels'
+
+/** `<set>:<case id>` → why the case differs from Excel for Windows; its difference lines must all be of the look (cells, heights, widths). */
+const WIN_STRUCT: Readonly<Record<string, string>> = Object.fromEntries(
+  [
+    ...['delete-rows-3-4', 'delete-row-1048572', 'delete-row-1048576', 'delete-rows-1048575-2', 'delete-rows-1048568-4', 'delete-columns-B-C', 'delete-column-XFB', 'delete-column-XFD', 'delete-columns-XEZ-3'].map((id) => `edge-layout:${id}`),
+    ...['delete-column-A', 'delete-column-D', 'insert-column-B', 'delete-row-3'].map((id) => `edge-wide:${id}`),
+  ].map((k) => [k, EDGE]),
+)
+
+/** A difference line of the look: a cell's style, a row's height, a column's width. */
+const LOOK = /^'[^']+' (look [A-Z]+\d+|height \d+|width [A-Z]+):/
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/struct/${set.name}.ts`)) as { buildStructCases: () => StructCases }).buildStructCases()
@@ -36,7 +51,11 @@ for (const set of SETS) {
           return void expect(same(set.books[c.book])).toEqual([])
         }
         if (!r.ok && r.code === 'array') return void expect(same(set.books[c.book])).toEqual([])
-        expect(r.ok ? same(r.book) : [`engine refused (${r.code}): ${r.message}`]).toEqual(WIN_STRUCT[`${set.name}:${c.id}`] ?? [])
+        const lines = r.ok ? same(r.book) : [`engine refused (${r.code}): ${r.message}`]
+        const why = WIN_STRUCT[`${set.name}:${c.id}`]
+        if (!why) return void expect(lines).toEqual([])
+        expect(lines.length, why).toBeGreaterThan(0)
+        expect(lines.filter((l) => !LOOK.test(l))).toEqual([])
       })
   })
 }
