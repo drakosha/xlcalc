@@ -49,11 +49,9 @@ const PARTED: Readonly<Record<string, string>> = {
   'params:NETWORKDAYS.INTL#e3': 'an error as the weekend: #VALUE! in Excel, #NUM! here',
   'params:XIRR#r3': "XIRR's guess given a range: #VALUE! in Excel, lifted here",
   'nesting:MATCH#array-r3': 'Excel parts the two kinds',
-  'nesting:ACCRINT#array-e1': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:ACCRINT#array-e2': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:CUMIPMT#array-e1': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:GROWTH#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
-  'nesting:PRICE#array-e1': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:TREND#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:XIRR#array-r3': 'inside SUMPRODUCT Excel does not lift the call',
 }
