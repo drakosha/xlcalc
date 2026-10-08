@@ -76,6 +76,9 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'result':
       value = await s.result(o)
       break
+    case 'cells':
+      value = await s.cells(args[0] as string, args[1] as string)
+      break
     default:
       value = await (s[op] as (a: unknown, o: CalcOptions) => Promise<unknown>)(args[0], o)
   }

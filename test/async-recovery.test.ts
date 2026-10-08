@@ -9,7 +9,7 @@ import { CalcError, compute, openSession, type BookInput, type Calc, type CellEd
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
 import { createPool } from '../src/worker/pool.js'
-import { chainBook, CLOCK, heavyBook, setA1, slowBook } from './async-books.js'
+import { chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
 import { inside, pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 
@@ -33,8 +33,12 @@ describe('a thread lost', () => {
   it('past its hard deadline: the call fails, the session comes back with the hash of one that never lost its thread', async () => {
     const synth = synthBook({ seed: 1, rows: 340 })
     const book: BookInput = { ...synth.book, sheets: [...synth.book.sheets, ...slowBook(1500).sheets] }
-    // the heavy edit takes many seconds; the others well under the deadline even on a loaded machine
-    const p = kept(await pool({ threads: 1, hardTimeoutMs: 2000 }))
+    // the deadline is eight openings of the book, the heaviest task but one, as fast as the machine runs them now; the
+    // heavy edit, a product of 1500 × 1500 matrices, takes thousands of them
+    const cal = await pool({ threads: 1 })
+    const opening = await medianMs(3, async () => (await cal.openSession(book, { clock: CLOCK })).close())
+    await cal.close()
+    const p = kept(await pool({ threads: 1, hardTimeoutMs: Math.ceil(8 * opening) }))
     const s = await p.openSession(book, { clock: CLOCK })
     const y = openSession(book, { clock: CLOCK })
     const list = edits(4, 12, synth)
@@ -128,24 +132,39 @@ describe('a thread lost', () => {
   })
 })
 
+/** A call of the heavy book in a thread, now: the median of five, in a pool without deadlines. */
+async function heavyCallMs(): Promise<number> {
+  const p = await pool({ threads: 1 })
+  try {
+    const s = await p.openSession(heavyBook(), { clock: CLOCK })
+    return await medianMs(5, (i) => s.setCells(setA1(100 + i)))
+  } finally {
+    await p.close()
+  }
+}
+
+// the deadline is five calls of the heavy book as fast as the machine runs them now, the journal twelve calls:
+// each call fits, their replay would not
+const CALLS = 5
+const JOURNAL = 12
+
 describe('a restore and the hard deadline', () => {
-  // each call of the heavy book takes about 150 ms, well under the deadline; ten of them replayed would not be
   it('a session that left a full thread comes back within the deadline however long its journal was', async () => {
-    const p = kept(await pool({ threads: 1, hardTimeoutMs: 800, maxSessionsPerThread: 1 }))
+    const p = kept(await pool({ threads: 1, hardTimeoutMs: Math.ceil(CALLS * (await heavyCallMs())), maxSessionsPerThread: 1 }))
     const a = await p.openSession(heavyBook(), { clock: CLOCK })
     const y = openSession(heavyBook(), { clock: CLOCK })
-    for (let i = 2; i < 12; i++) expect(await a.setCells(setA1(i))).toEqual(y.setCells(setA1(i)))
+    for (let i = 2; i < 2 + JOURNAL; i++) expect(await a.setCells(setA1(i))).toEqual(y.setCells(setA1(i)))
     await p.openSession(chainBook(3), { clock: CLOCK })
     expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
     expect((await a.result()).hash).toBe(y.result().hash)
   }, 60_000)
 
   it('after a crash the replay of a long journal has a deadline of every call it replays', async () => {
-    const { calc, crash } = await inside({ threads: 1, hardTimeoutMs: 800 })
+    const { calc, crash } = await inside({ threads: 1, hardTimeoutMs: Math.ceil(CALLS * (await heavyCallMs())) })
     kept(calc)
     const a = await calc.openSession(heavyBook(), { clock: CLOCK })
     const y = openSession(heavyBook(), { clock: CLOCK })
-    for (let i = 2; i < 10; i++) {
+    for (let i = 2; i < 2 + JOURNAL; i++) {
       await a.setCells(setA1(i))
       y.setCells(setA1(i))
     }

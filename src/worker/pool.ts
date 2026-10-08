@@ -325,6 +325,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       setLayout: (edits, co) => value(call('setLayout', [edits], co)),
       book: () => value(call('book', [])),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
+      cells: (sheet, range) => value(call('cells', [sheet, range])),
       result: (co) => value(call('result', [], co)),
       async close() {
         if (r.gone) return

@@ -28,15 +28,9 @@ A session takes its calls in order: each starts when the one before has finished
 
 A session's `clock` is its clock as of its last finished call.
 
-A call that stopped while it recomputed (`setCells`, `setClock` or `setLayout` past its deadline, aborted, or over the limits) leaves the session to compute its book again, and the session's next call does that first, within that call's own soft deadline. When a cold computation of the book takes longer than the deadline the host gives its calls, every next call stops the same way, `result()` too. After a call has stopped, give the next one a deadline that covers a cold computation of the book (the time `openSession` took is a measure), or none:
+`cells(sheet, range)` answers the cells of one rectangle as `result()` gives them, with each cell's own `style`, so a window over a sheet needs no copy of the whole result. From a thread only the rectangle comes back: 20,000 cells of the synthetic book of 34,000 rows take 27 ms there and 16 ms in a synchronous session, where the whole `result()` from the thread takes 1.7 s.
 
-```js
-try {
-  await session.setCells(edits, { timeoutMs: 200 })
-} catch (e) {
-  if (e.code === 'soft_timeout') await session.result({ timeoutMs: 10_000 }) // the book computed again, then calls as before
-}
-```
+A call that stopped while it recomputed (`setCells`, `setClock` or `setLayout` past its deadline, aborted, or over the limits) leaves the session to compute its book again, and the session's next call does that first. That computation does not count in the next call's `timeoutMs`, only its `signal` and a pool's hard deadline bound it, so a call after a stopped one can take longer than its `timeoutMs` by the time of a cold computation of the book.
 
 ## Deadlines and cancellation
 

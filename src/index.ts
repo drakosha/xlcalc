@@ -27,6 +27,7 @@ export { CalcError } from './exec/budget.js'
 export { createInlineCalc } from './async/inline.js'
 export { enUS, ruRU, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 export { restructure } from './structure/index.js'
+export { copyFormula, type CopyContext } from './structure/copy.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 
 /**

@@ -16,10 +16,14 @@ Fixed:
 
 Changed:
 
+- The call after a stopped one computes the session's book again outside its own `timeoutMs` (its `signal` and a pool's hard deadline still bound it), so a session whose cold computation is longer than its calls' deadline no longer fails every call after one has stopped; such a call can take longer than its `timeoutMs` by that computation.
 - `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
 
 Added:
 
+- `cells(sheet, range)` of a session, in every mode: the cells of a rectangle as `result()` gives them, for a window over a sheet. From a thread only the rectangle comes back: 20,000 cells of the synthetic book of 34,000 rows in 27 ms, where the whole result takes 1.7 s.
+- `copyFormula(text, from, to, book?)`: the text of a formula copied from one cell to another, as `copyRange` pastes it (`docs/structure.md`).
+- Contract: `Session.cells(sheet, range)` and `AsyncSession.cells(sheet, range)`, the cells of a rectangle as `result()` gives them, with each cell's own `style` (`CellView`), for a window over a sheet.
 - Excel for Windows is a second oracle: `bench/windows` sends the Mac harness's books to Excel for Windows over SSH and COM, stores its answers in `test/excel/win/`, and `test/excel-win.test.ts` checks the engine against them (`bench/windows/README.md`).
 - Computation in the same thread in portions, `createInlineCalc`: it gives way to the event loop between formulas (slices of `sliceMs`), and a call stops at its soft deadline (`timeoutMs`) or when its `signal` fires, with `CalcError`. A session's calls are taken in order, and a call that fails changes nothing (`docs/async.md`).
 - Computation in threads, `createCalcPool` from the new subpath `xlcalc/worker`: Node `worker_threads` or Web Workers on one protocol. A session's book lives in its thread; edits go there and changes come back. A task past `hardTimeoutMs` terminates its thread, `maxHeapMb` bounds a Node thread's heap, `maxQueue` and `maxSessions` refuse more work, `maxSessionsPerThread` sends the session called least recently off a full thread. The pool keeps a snapshot and a journal of each session: a session whose thread was lost, or that left a full thread, comes back on its next call with the hash it would have had. Checked against the synchronous engine on the case books in both execution modes, and in headless Chromium.
