@@ -114,6 +114,10 @@ Deleting a sheet removes it with its cells. References to it become `#REF!` foll
 
 `insertSheet` adds an empty sheet before another one or at the end. `moveSheet` moves a sheet. Neither changes a formula, except a reference across sheets whose end moves. Such a reference covers the sheets between its ends in the book's order, so a sheet inserted or moved between them is read and one moved out is not. [References](references.md) has the rules for its ends.
 
+## Tables
+
+Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns a name (`Column1`); references to a deleted column or table become `#REF!`. Rows or columns inserted into two tables at once, deleted from two tables that keep some of theirs, and a header row deleted alone are refused with `table`. `addTable`, `renameTable`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
+
 ## Names, references across sheets and old-kind arrays
 
 Names' formulas change like cells' formulas: each part of a union on its own, a reference without `$` not at all under inserted and deleted lines ([Names](names.md)). A reference across sheets stays under rows and columns and changes with its end sheets ([References](references.md)). The area of an array formula of the old kind moves with its cell; an operation that would change part of it is refused with `array` ([Formulas of the old kind](legacy.md)).
@@ -213,4 +217,4 @@ Copies were applied through AppleScript's `copy range` with a destination, Excel
 - Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does.
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
 - Outline levels, conditional formats, data validation, comments and charts are not part of a book.
-- Structured references and references to other workbooks are not read, so they never occur in a valid formula.
+- References to other workbooks are not read, so they never occur in a valid formula.

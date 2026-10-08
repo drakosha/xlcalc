@@ -7,7 +7,8 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  * - `richText`: text with formatted runs, read as its plain text.
  * - `name`: a name the book does not take (a built-in `_xlnm.` name, one on a sheet left out), a hidden name read as
  *   a visible one, or a name the writer left out.
- * - `table`: a table (list object), and formulas with structured references to tables.
+ * - `table`: a table the model cannot hold (over another table or a merged area, its name taken), left out; a header
+ *   cell that does not hold its column's name as text, given it; a structured reference without a table name.
  * - `externalLink`: links to other workbooks, and formulas that reference them (`[1]Sheet!A1`).
  * - `userFunction`: a call of a function the file marks as user-defined (`_xludf.`), a macro or add-in function.
  * - `formula`: a formula the engine does not parse, read as written (its cell computes to an error), or a formula
