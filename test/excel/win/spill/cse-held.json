@@ -1,0 +1,837 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 34
+ },
+ "cases": [
+  {
+   "id": "column-longer",
+   "about": "a column over a longer area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "F1": {
+        "formula": "B1:B3/10",
+        "array": "F1:F4"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F1:F4"
+    }
+   ],
+   "predicted": {
+    "S!F1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!F4": {
+     "t": "e",
+     "v": "NA"
+    }
+   }
+  },
+  {
+   "id": "outer-product",
+   "about": "a column times a row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "F6": {
+        "formula": "A1:A2*B1:C1",
+        "array": "F6:G7"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F6:G7"
+    }
+   ],
+   "predicted": {
+    "S!F6": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 100
+    },
+    "S!F7": {
+     "t": "n",
+     "v": 20
+    },
+    "S!G7": {
+     "t": "n",
+     "v": 200
+    }
+   }
+  },
+  {
+   "id": "sum-row",
+   "about": "one value over a row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "F9": {
+        "formula": "SUM(A1:A5)",
+        "array": "F9:G9"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "F9:G9"
+    }
+   ],
+   "predicted": {
+    "S!F9": {
+     "t": "n",
+     "v": 15
+    },
+    "S!G9": {
+     "t": "n",
+     "v": 15
+    }
+   }
+  },
+  {
+   "id": "transpose-longer",
+   "about": "TRANSPOSE over a longer row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "H1": {
+        "formula": "TRANSPOSE(B1:B3)",
+        "array": "H1:K1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H1:K1"
+    }
+   ],
+   "predicted": {
+    "S!H1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!K1": {
+     "t": "e",
+     "v": "NA"
+    }
+   }
+  },
+  {
+   "id": "row-times",
+   "about": "ROW() times ten over a column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "H3": {
+        "formula": "ROW()*10",
+        "array": "H3:H5"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H3:H5"
+    }
+   ],
+   "predicted": {
+    "S!H3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 40
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 50
+    }
+   }
+  },
+  {
+   "id": "single-max",
+   "about": "one cell over products",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "H7": {
+        "formula": "MAX(A1:A5*B1:B5)",
+        "array": "H7"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H7"
+    }
+   ],
+   "predicted": {
+    "S!H7": {
+     "t": "n",
+     "v": 250
+    }
+   }
+  },
+  {
+   "id": "readers",
+   "about": "formulas reading an area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "F1": {
+        "formula": "B1:B3/10",
+        "array": "F1:F4"
+       },
+       "I1": {
+        "formula": "SUM(F1:F3)"
+       },
+       "I2": {
+        "formula": "COUNT(F1:F4)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "I1:I2"
+    }
+   ],
+   "predicted": {
+    "S!I1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "precedent-edit",
+   "about": "a value the array reads, edited",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "J1": {
+        "formula": "A1:A3+1",
+        "array": "J1:J3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "J1:J3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A2",
+     "value": 10
+    }
+   ],
+   "predicted": {
+    "S!J1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 11
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 4
+    }
+   }
+  },
+  {
+   "id": "part-edit",
+   "about": "a value typed into part of the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "J5": {
+        "formula": "A1:A2",
+        "array": "J5:J6"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "J5:J6"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "J6",
+     "value": 9
+    }
+   ],
+   "predicted": {
+    "S!J5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  }
+ ],
+ "answers": {
+  "column-longer": {
+   "values": {
+    "S!F1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!F4": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!F1": "=B1:B3/10",
+    "S!F2": "=B1:B3/10",
+    "S!F3": "=B1:B3/10",
+    "S!F4": "=B1:B3/10"
+   }
+  },
+  "outer-product": {
+   "values": {
+    "S!F6": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 100
+    },
+    "S!F7": {
+     "t": "n",
+     "v": 20
+    },
+    "S!G7": {
+     "t": "n",
+     "v": 200
+    }
+   },
+   "formulas": {
+    "S!F6": "=A1:A2*B1:C1",
+    "S!G6": "=A1:A2*B1:C1",
+    "S!F7": "=A1:A2*B1:C1",
+    "S!G7": "=A1:A2*B1:C1"
+   }
+  },
+  "sum-row": {
+   "values": {
+    "S!F9": {
+     "t": "n",
+     "v": 15
+    },
+    "S!G9": {
+     "t": "n",
+     "v": 15
+    }
+   },
+   "formulas": {
+    "S!F9": "=SUM(A1:A5)",
+    "S!G9": "=SUM(A1:A5)"
+   }
+  },
+  "transpose-longer": {
+   "values": {
+    "S!H1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!K1": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!H1": "=TRANSPOSE(B1:B3)",
+    "S!I1": "=TRANSPOSE(B1:B3)",
+    "S!J1": "=TRANSPOSE(B1:B3)",
+    "S!K1": "=TRANSPOSE(B1:B3)"
+   }
+  },
+  "row-times": {
+   "values": {
+    "S!H3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 40
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 50
+    }
+   },
+   "formulas": {
+    "S!H3": "=ROW()*10",
+    "S!H4": "=ROW()*10",
+    "S!H5": "=ROW()*10"
+   }
+  },
+  "single-max": {
+   "values": {
+    "S!H7": {
+     "t": "n",
+     "v": 250
+    }
+   },
+   "formulas": {
+    "S!H7": "=MAX(A1:A5*B1:B5)"
+   }
+  },
+  "readers": {
+   "values": {
+    "S!I1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!I1": "=SUM(F1:F3)",
+    "S!I2": "=COUNT(F1:F4)"
+   }
+  },
+  "precedent-edit": {
+   "values": {
+    "S!J1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 11
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!J1": "=A1:A3+1",
+    "S!J2": "=A1:A3+1",
+    "S!J3": "=A1:A3+1"
+   }
+  },
+  "part-edit": {
+   "values": {
+    "S!J5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!J5": "=A1:A2",
+    "S!J6": "=A1:A2"
+   }
+  }
+ }
+}

@@ -1,0 +1,1225 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 65.3
+ },
+ "cases": [
+  {
+   "id": "cross-B1-A2",
+   "about": "a column from B1, a row from A2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-B1-A3",
+   "about": "a column from B1, a row from A3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-B1-A4",
+   "about": "a column from B1, a row from A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-C1-A2",
+   "about": "a column from C1, a row from A2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-C1-A3",
+   "about": "a column from C1, a row from A3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-C1-A4",
+   "about": "a column from C1, a row from A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-D1-A2",
+   "about": "a column from D1, a row from A2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "D1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-D1-A3",
+   "about": "a column from D1, a row from A3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "D1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-D1-A4",
+   "about": "a column from D1, a row from A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "D1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-C1-A2-row-first",
+   "about": "the row anchor read before the column anchor",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:D4"
+    },
+    {
+     "sheet": "S",
+     "range": "A1:D1"
+    }
+   ]
+  },
+  {
+   "id": "cross-B1-A3-col-first",
+   "about": "the column anchor read before the row anchor",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(4)"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,4)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "B1:B5"
+    },
+    {
+     "sheet": "S",
+     "range": "A1:A5"
+    },
+    {
+     "sheet": "S",
+     "range": "C1:E5"
+    }
+   ]
+  },
+  {
+   "id": "cross-far",
+   "about": "a column from E1 and a row from A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "E1": {
+        "formula": "SEQUENCE(6)"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,6)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:G7"
+    }
+   ]
+  },
+  {
+   "id": "cross-long-row",
+   "about": "a short column from C1, a long row from A2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(2)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,8)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:I3"
+    }
+   ]
+  },
+  {
+   "id": "cross-long-col",
+   "about": "a long column from C1, a short row from A2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(8)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D9"
+    }
+   ]
+  },
+  {
+   "id": "dep-B1-A3-row-reads",
+   "about": "the row from A3 reads the column anchor B1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,5)+0*B1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "dep-B1-A3-col-reads",
+   "about": "the column from B1 reads the row anchor A3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(5)+0*A3"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "dep-D1-A4-row-reads",
+   "about": "the row from A4 reads the column anchor D1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "D1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,5)+0*D1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "dep-D1-A4-col-reads",
+   "about": "the column from D1 reads the row anchor A4",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "D1": {
+        "formula": "SEQUENCE(5)+0*A4"
+       },
+       "A4": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "dep-C1-A2-row-reads",
+   "about": "the row from A2 reads the column anchor C1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(5)"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,5)+0*C1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "dep-C1-A2-col-reads",
+   "about": "the column from C1 reads the row anchor A2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(5)+0*A2"
+       },
+       "A2": {
+        "formula": "SEQUENCE(1,5)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:F6"
+    }
+   ]
+  },
+  {
+   "id": "cross-second-sheet",
+   "about": "the pair of cross-B1-A3 on a second sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "P",
+      "cells": {
+       "A1": {
+        "value": 1
+       }
+      }
+     },
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(4)"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,4)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E5"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "cross-B1-A2": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(5)",
+    "S!A2": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-B1-A3": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(5)",
+    "S!A3": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-B1-A4": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(5)",
+    "S!A4": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-C1-A2": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(5)",
+    "S!A2": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-C1-A3": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(5)",
+    "S!A3": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-C1-A4": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(5)",
+    "S!A4": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-D1-A2": {
+   "values": {
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!D1": "=SEQUENCE(5)",
+    "S!A2": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-D1-A3": {
+   "values": {
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!D1": "=SEQUENCE(5)",
+    "S!A3": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-D1-A4": {
+   "values": {
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!D1": "=SEQUENCE(5)",
+    "S!A4": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-C1-A2-row-first": {
+   "values": {
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    }
+   },
+   "formulas": {
+    "S!A2": "=SEQUENCE(1,3)",
+    "S!C1": "=SEQUENCE(3)"
+   }
+  },
+  "cross-B1-A3-col-first": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(4)",
+    "S!A3": "=SEQUENCE(1,4)"
+   }
+  },
+  "cross-far": {
+   "values": {
+    "S!E1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F4": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=SEQUENCE(6)",
+    "S!A4": "=SEQUENCE(1,6)"
+   }
+  },
+  "cross-long-row": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 7
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 8
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(2)",
+    "S!A2": "=SEQUENCE(1,8)"
+   }
+  },
+  "cross-long-col": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(8)",
+    "S!A2": "=SEQUENCE(1,3)"
+   }
+  },
+  "dep-B1-A3-row-reads": {
+   "values": {
+    "S!B1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(5)",
+    "S!A3": "=SEQUENCE(1,5)+0*B1"
+   }
+  },
+  "dep-B1-A3-col-reads": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(5)+0*A3",
+    "S!A3": "=SEQUENCE(1,5)"
+   }
+  },
+  "dep-D1-A4-row-reads": {
+   "values": {
+    "S!D1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A4": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!D1": "=SEQUENCE(5)",
+    "S!A4": "=SEQUENCE(1,5)+0*D1"
+   }
+  },
+  "dep-D1-A4-col-reads": {
+   "values": {
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!D1": "=SEQUENCE(5)+0*A4",
+    "S!A4": "=SEQUENCE(1,5)"
+   }
+  },
+  "dep-C1-A2-row-reads": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(5)",
+    "S!A2": "=SEQUENCE(1,5)+0*C1"
+   }
+  },
+  "dep-C1-A2-col-reads": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(5)+0*A2",
+    "S!A2": "=SEQUENCE(1,5)"
+   }
+  },
+  "cross-second-sheet": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(4)",
+    "S!A3": "=SEQUENCE(1,4)"
+   }
+  }
+ }
+}

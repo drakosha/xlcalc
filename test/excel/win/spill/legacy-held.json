@@ -1,0 +1,348 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 20.5
+ },
+ "cases": [
+  {
+   "id": "positions",
+   "about": "formulas of the old kind over both sheets, names, arrays and LET",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "H6": {
+        "formula": "IF(A1:A10>5,\"big\",\"small\")"
+       },
+       "H2": {
+        "formula": "SUMPRODUCT((A1:A10>5)*B1:B10)"
+       },
+       "H3": {
+        "formula": "INDEX(A1:B10,0,1)*10"
+       },
+       "H4": {
+        "formula": "nm*2"
+       },
+       "H5": {
+        "formula": "ROW(A1:A10)*2"
+       },
+       "H7": {
+        "formula": "{5,6,7}+A1:A10"
+       },
+       "H8": {
+        "formula": "SUM(A1:A10*2)"
+       },
+       "H9": {
+        "formula": "VLOOKUP(A:A,A:B,2,FALSE)"
+       },
+       "H11": {
+        "formula": "A1:A10"
+       },
+       "H12": {
+        "formula": "TRANSPOSE(A1:A3)"
+       },
+       "H10": {
+        "formula": "LET(x,A1:A10,x*3)"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "B4": {
+        "formula": "S!A1:A10*S!B1:B10"
+       },
+       "E2": {
+        "formula": "SUM(S!A:A)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nm",
+      "ref": "'S'!$B$1:$B$10"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "T",
+     "range": "B4"
+    },
+    {
+     "sheet": "S",
+     "range": "H6"
+    },
+    {
+     "sheet": "S",
+     "range": "H2"
+    },
+    {
+     "sheet": "S",
+     "range": "H3"
+    },
+    {
+     "sheet": "S",
+     "range": "H4"
+    },
+    {
+     "sheet": "S",
+     "range": "H5"
+    },
+    {
+     "sheet": "S",
+     "range": "H7"
+    },
+    {
+     "sheet": "S",
+     "range": "H8"
+    },
+    {
+     "sheet": "S",
+     "range": "H9"
+    },
+    {
+     "sheet": "S",
+     "range": "H11"
+    },
+    {
+     "sheet": "T",
+     "range": "E2"
+    },
+    {
+     "sheet": "S",
+     "range": "H12"
+    },
+    {
+     "sheet": "S",
+     "range": "H10"
+    }
+   ],
+   "legacy": [
+    "T!B4",
+    "S!H6",
+    "S!H2",
+    "S!H3",
+    "S!H4",
+    "S!H5",
+    "S!H7",
+    "S!H8",
+    "S!H9",
+    "S!H11",
+    "T!E2",
+    "S!H12",
+    "S!H10"
+   ],
+   "predicted": {
+    "T!B4": {
+     "t": "n",
+     "v": 160
+    },
+    "S!H6": {
+     "t": "s",
+     "v": "big"
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 400
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 80
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 2
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 12
+    },
+    "S!H8": {
+     "t": "n",
+     "v": 16
+    },
+    "S!H9": {
+     "t": "n",
+     "v": 90
+    },
+    "S!H11": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "T!E2": {
+     "t": "n",
+     "v": 55
+    },
+    "S!H12": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H10": {
+     "t": "n",
+     "v": 30
+    }
+   }
+  }
+ ],
+ "answers": {
+  "positions": {
+   "values": {
+    "T!B4": {
+     "t": "n",
+     "v": 160
+    },
+    "S!H6": {
+     "t": "s",
+     "v": "big"
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 400
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 30
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 80
+    },
+    "S!H5": {
+     "t": "n",
+     "v": 2
+    },
+    "S!H7": {
+     "t": "n",
+     "v": 12
+    },
+    "S!H8": {
+     "t": "n",
+     "v": 16
+    },
+    "S!H9": {
+     "t": "n",
+     "v": 90
+    },
+    "S!H11": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "T!E2": {
+     "t": "n",
+     "v": 55
+    },
+    "S!H12": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H10": {
+     "t": "n",
+     "v": 30
+    }
+   },
+   "formulas": {
+    "T!B4": "=S!A1:A10*S!B1:B10",
+    "S!H6": "=IF(A1:A10>5,\"big\",\"small\")",
+    "S!H2": "=SUMPRODUCT((A1:A10>5)*B1:B10)",
+    "S!H3": "=INDEX(A1:B10,0,1)*10",
+    "S!H4": "=nm*2",
+    "S!H5": "=ROW(A1:A10)*2",
+    "S!H7": "={5,6,7}+A1:A10",
+    "S!H8": "=SUM(A1:A10*2)",
+    "S!H9": "=VLOOKUP(A:A,A:B,2,FALSE)",
+    "S!H11": "=A1:A10",
+    "T!E2": "=SUM(S!A:A)",
+    "S!H12": "=TRANSPOSE(A1:A3)",
+    "S!H10": "=LET(x,A1:A10,x*3)"
+   },
+   "formulas2": {
+    "T!B4": "=@S!A1:A10*@S!B1:B10",
+    "S!H6": "=IF(@A1:A10>5,\"big\",\"small\")",
+    "S!H2": "=SUMPRODUCT((A1:A10>5)*B1:B10)",
+    "S!H3": "=@INDEX(A1:B10,0,1)*10",
+    "S!H4": "=@nm*2",
+    "S!H5": "=@ROW(A1:A10)*2",
+    "S!H7": "=@{5,6,7}+@A1:A10",
+    "S!H8": "=SUM(@A1:A10*2)",
+    "S!H9": "=VLOOKUP(@A:A,A:B,2,FALSE)",
+    "S!H11": "=@A1:A10",
+    "T!E2": "=SUM(S!A:A)",
+    "S!H12": "=@TRANSPOSE(@A1:A3)",
+    "S!H10": "=LET(x,A1:A10,@x*3)"
+   }
+  }
+ }
+}

@@ -1,0 +1,1218 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 32
+ },
+ "cases": [
+  {
+   "id": "relative-other-sheet",
+   "about": "a relative name used on another sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "C4": {
+        "formula": "nxt"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nxt",
+      "ref": "'S'!XFD1"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "T",
+     "range": "C4"
+    }
+   ],
+   "predicted": {
+    "T!C4": {
+     "t": "n",
+     "v": 40
+    }
+   }
+  },
+  {
+   "id": "union-area",
+   "about": "a union name: INDEX by area, AREAS, COUNT",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G1": {
+        "formula": "INDEX(uu,2,2,2)"
+       },
+       "G2": {
+        "formula": "AREAS(uu)"
+       },
+       "G3": {
+        "formula": "SUM(INDEX(uu,0,0,1))"
+       },
+       "G4": {
+        "formula": "COUNT(uu)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "uu",
+      "ref": "'S'!$A$1:$B$2,'S'!$D$1:$E$2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G4"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 33
+    },
+    "S!G4": {
+     "t": "n",
+     "v": 8
+    }
+   }
+  },
+  {
+   "id": "array-arith",
+   "about": "an array constant name under operators",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G1": {
+        "formula": "arr/10"
+       },
+       "G3": {
+        "formula": "SUM(arr*arr)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "arr",
+      "ref": "{10,20,30}"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:I3"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 1400
+    }
+   }
+  },
+  {
+   "id": "index-criteria",
+   "about": "INDEX's reference as a name in criteria functions",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G1": {
+        "formula": "SUMIF(colb,\">20\")"
+       },
+       "G2": {
+        "formula": "COUNTIF(colb,\">=30\")"
+       },
+       "G3": {
+        "formula": "MAX(colb)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "colb",
+      "ref": "INDEX('S'!$A$1:$C$5,0,2)"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G3"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 120
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 50
+    }
+   }
+  },
+  {
+   "id": "qualified-local",
+   "about": "a global name over another sheet's local name",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G1": {
+        "formula": "kk"
+       },
+       "G2": {
+        "formula": "k"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "formula": "k"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "k",
+      "ref": "1"
+     },
+     {
+      "name": "k",
+      "ref": "5",
+      "scope": "T"
+     },
+     {
+      "name": "kk",
+      "ref": "T!k*2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "let-in-name",
+   "about": "LET in a name over a range",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G1": {
+        "formula": "SUM(sqa)"
+       },
+       "H1": {
+        "formula": "sqa"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "sqa",
+      "ref": "LET(a,'S'!$A$1:$A$3,a*a)"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:H3"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 14
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 9
+    }
+   }
+  },
+  {
+   "id": "relative-chain",
+   "about": "a name over a relative name",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "formula": "lften"
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "lf",
+      "ref": "'S'!XFD1"
+     },
+     {
+      "name": "lften",
+      "ref": "lf*10"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C3"
+    }
+   ],
+   "predicted": {
+    "S!C3": {
+     "t": "n",
+     "v": 300
+    }
+   }
+  },
+  {
+   "id": "spill-ref",
+   "about": "a name over a spill reference",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "A10": {
+        "formula": "SEQUENCE(3)"
+       },
+       "G1": {
+        "formula": "SUM(sp)"
+       },
+       "G2": {
+        "formula": "ROWS(sp)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "sp",
+      "ref": "'S'!$A$10#"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "at-name",
+   "about": "@ before a name over a column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G3": {
+        "formula": "@nr"
+       },
+       "G7": {
+        "formula": "@nr"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nr",
+      "ref": "'S'!$A$1:$A$5"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G3"
+    },
+    {
+     "sheet": "S",
+     "range": "G7"
+    }
+   ],
+   "predicted": {
+    "S!G3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G7": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   }
+  },
+  {
+   "id": "formula-twice",
+   "about": "a name over a cell used twice in one formula",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "D1": {
+        "value": 1
+       },
+       "E1": {
+        "value": 2
+       },
+       "D2": {
+        "value": 3
+       },
+       "E2": {
+        "value": 4
+       },
+       "G1": {
+        "formula": "half+half"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "half",
+      "ref": "'S'!$B$1/2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    }
+   }
+  }
+ ],
+ "answers": {
+  "relative-other-sheet": {
+   "values": {
+    "T!C4": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "T!C4": "=nxt"
+   }
+  },
+  "union-area": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 33
+    },
+    "S!G4": {
+     "t": "n",
+     "v": 8
+    }
+   },
+   "formulas": {
+    "S!G1": "=INDEX(uu,2,2,2)",
+    "S!G2": "=AREAS(uu)",
+    "S!G3": "=SUM(INDEX(uu,0,0,1))",
+    "S!G4": "=COUNT(uu)"
+   }
+  },
+  "array-arith": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 1400
+    }
+   },
+   "formulas": {
+    "S!G1": "=arr/10",
+    "S!G3": "=SUM(arr*arr)"
+   }
+  },
+  "index-criteria": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 120
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 50
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUMIF(colb,\">20\")",
+    "S!G2": "=COUNTIF(colb,\">=30\")",
+    "S!G3": "=MAX(colb)"
+   }
+  },
+  "qualified-local": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!G1": "=kk",
+    "S!G2": "=k"
+   }
+  },
+  "let-in-name": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 14
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 9
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(sqa)",
+    "S!H1": "=sqa"
+   }
+  },
+  "relative-chain": {
+   "values": {
+    "S!C3": {
+     "t": "n",
+     "v": 300
+    }
+   },
+   "formulas": {
+    "S!C3": "=lften"
+   }
+  },
+  "spill-ref": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(sp)",
+    "S!G2": "=ROWS(sp)"
+   }
+  },
+  "at-name": {
+   "values": {
+    "S!G3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G7": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   },
+   "formulas": {
+    "S!G3": "=@nr",
+    "S!G7": "=@nr"
+   }
+  },
+  "formula-twice": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!G1": "=half+half"
+   }
+  }
+ }
+}
