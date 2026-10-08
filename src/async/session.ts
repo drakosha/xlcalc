@@ -95,7 +95,8 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     result: (co) => call(() => core.result(), co),
     close() {
       if (ended) return Promise.resolve()
-      const done = plain(() => core.close())
+      // closing waits for the calls made before it, and closes the session whatever stops them
+      const done = queue.run(async () => core.close())
       ended = new CalcError('closed', 'the session is closed')
       return done
     },
