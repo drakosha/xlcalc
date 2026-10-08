@@ -1,9 +1,10 @@
 /**
  * A formula as a file stores it, in the engine's spelling: the prefixes of newer functions and of LET's names go
  * (`_xlfn.`, `_xlfn._xlws.`, `_xlpm.`, `_xludf.`), `_xlfn.ANCHORARRAY(E2)` becomes the spill reference `E2#` and
- * `_xlfn.SINGLE(x)` the operator `@x`. What the engine has no spelling for is reported: user-defined functions,
- * structured references to tables, references to other workbooks, a LET name that reads as a reference or a boolean
- * once its prefix goes. Text in quotes is left as it is.
+ * `_xlfn.SINGLE(x)` the operator `@x`; a column name that starts with `@` in a structured reference gets its escape
+ * (`Sales[@at]` in a file is `Sales['@at]`). What the engine has no spelling for is reported: user-defined functions,
+ * a structured reference without a table name, references to other workbooks, a LET name that reads as a reference or
+ * a boolean once its prefix goes. Text in quotes is left as it is.
  */
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
@@ -89,8 +90,13 @@ export function fromFile(src: string): Converted {
     }
     if (c === '[') {
       const end = bracket(src, i)
-      found.add(IDENT.test(src[i - 1] ?? '') || /[@#[]/.test(src[i + 1] ?? '') ? 'table' : 'externalLink')
-      out += src.slice(i, end)
+      const run = src.slice(i, end)
+      // a structured reference: a file writes no `@` for the formula's row, so one before a column name is part of it
+      if (IDENT.test(src[i - 1] ?? '')) out += run.replace(/(^|[^'])\[@/g, "$1['@")
+      else {
+        found.add(/[@#[]/.test(src[i + 1] ?? '') ? 'table' : 'externalLink')
+        out += run
+      }
       i = end
       continue
     }

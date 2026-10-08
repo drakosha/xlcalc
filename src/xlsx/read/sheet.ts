@@ -19,6 +19,7 @@ import { attributes, element, elements, flag, has } from '../xml/scan.js'
 import { look, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
+import { readTables } from './tables.js'
 
 export interface SheetSource {
   name: string
@@ -28,6 +29,8 @@ export interface SheetSource {
   sheets: string[]
   /** A formula of the old kind as the dynamic one (`legacyConverter` over the book's names), undefined when the same. */
   legacy(ast: Ast, sheet: string): Ast | undefined
+  /** The sheet's table parts. */
+  tables: string[]
 }
 
 export interface SheetRead {
@@ -48,7 +51,6 @@ const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
   ['picture', 'drawing', 'pictures, charts and shapes are not in the model'],
   ['oleObjects', 'drawing', 'pictures, charts and shapes are not in the model'],
   ['controls', 'drawing', 'pictures, charts and shapes are not in the model'],
-  ['tableParts', 'table', 'tables (list objects) are not in the model: their cells are read as plain cells'],
   ['sparklineGroups', 'sparkline', 'sparklines are not in the model'],
   ['headerFooter', 'print', 'print settings (headers and footers, page breaks, page setup) are not in the model'],
   ['rowBreaks', 'print', 'print settings (headers and footers, page breaks, page setup) are not in the model'],
@@ -232,5 +234,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (rows) sheet.rows = rows
   const m = merges(tail, name, ctx.issues)
   if (m) sheet.merges = m
+  const tables = readTables(src.tables, name, read.cells, m, ctx.issues)
+  if (tables.length) sheet.tables = tables
   return { sheet, cached: read.cached }
 }

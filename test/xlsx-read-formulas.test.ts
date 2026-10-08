@@ -1,7 +1,7 @@
 /**
  * The reader on formulas: the file's spelling turned into the engine's (prefixes, spill references, the @ operator),
  * shared formulas spread to their cells as copyRange pastes them, array formulas of both kinds, formulas of the old
- * kind with `@` where Excel 365 puts it, and what the engine cannot take (user functions, tables, other workbooks)
+ * kind with `@` where Excel 365 puts it, and what the engine cannot take (user functions, other workbooks)
  * reported on its cells.
  */
 import { describe, expect, it } from 'vitest'
@@ -44,7 +44,9 @@ describe("xlsx reader: formulas in the engine's spelling", () => {
 
   it('what the engine has no spelling for is found; references across sheets are read', () => {
     expect(fromFile('_xludf.MYFN(1)')).toEqual({ formula: 'MYFN(1)', found: ['userFunction'] })
-    expect(fromFile('SUM(Table1[Amount])+Table1[[#This Row],[Qty]]').found).toEqual(['table'])
+    expect(fromFile('SUM(Table1[Amount])+Table1[[#This Row],[Qty]]')).toEqual({ formula: 'SUM(Table1[Amount])+Table1[[#This Row],[Qty]]', found: [] })
+    expect(fromFile('SUM(T[@at])+T[[#Headers],[@b]]').formula).toBe("SUM(T['@at])+T[[#Headers],['@b]]")
+    expect(fromFile('[@Qty]*2').found).toEqual(['table'])
     expect(fromFile('[1]Sheet1!A1+\'[2]My sheet\'!B2').found).toEqual(['externalLink'])
     expect(fromFile('[0]!rate*2')).toEqual({ formula: 'rate*2', found: [] })
     expect(fromFile("SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)")).toEqual({ formula: "SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)", found: [] })
@@ -128,6 +130,6 @@ describe('xlsx reader: formulas of the file', () => {
       '<row r="1"><c r="A1"><f>_xlfn.SINGLE(B1:B3)</f></c><c r="B1"><f>_xludf.MYFN(1)</f></c><c r="C1"><f>SUM(T[x])</f></c><c r="D1"><f>[1]S!A1</f></c><c r="E1"><f>SUM(S:T!A1)</f></c><c r="F1"><f>A1 B1</f></c><c r="G1"><f>SUM(</f></c></row>',
     )
     expect(r.book.sheets[0].cells).toMatchObject({ A1: { formula: '@B1:B3' }, B1: { formula: 'MYFN(1)' }, C1: { formula: 'SUM(T[x])' }, D1: { formula: '[1]S!A1' }, E1: { formula: 'SUM(S:T!A1)' } })
-    expect(codes(r.issues)).toEqual(['userFunction B1', 'table C1', 'externalLink D1', 'formula F1 G1'])
+    expect(codes(r.issues)).toEqual(['userFunction B1', 'externalLink D1', 'formula F1 G1'])
   })
 })
