@@ -123,12 +123,19 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
       const h = await open(m.sid, snapshot.book, { ...snapshot.opts, signal }, snapshot.clock)
       h.seq = snapshot.seq
-      for (const e of journal as Entry[]) {
-        h.planned = e.clock
-        const a = await invoke(h, e.op, e.args, { signal })
-        if (a.clock.now !== e.clock.now || a.clock.seed !== e.clock.seed) throw new CalcError('restore_failed', `the replay of call ${e.seq} took another clock`)
-        h.seq = e.seq
-        h.last = a
+      try {
+        for (const e of journal as Entry[]) {
+          h.planned = e.clock
+          const a = await invoke(h, e.op, e.args, { signal })
+          if (a.clock.now !== e.clock.now || a.clock.seed !== e.clock.seed) throw new CalcError('restore_failed', `the replay of call ${e.seq} took another clock`)
+          h.seq = e.seq
+          h.last = a
+        }
+      } catch (e) {
+        // a restore that fails leaves nothing of the session behind: the pool closes it
+        h.s.kill(new CalcError('closed', 'the session could not be restored'))
+        held.delete(m.sid)
+        throw e
       }
       h.planned = null
       return null
