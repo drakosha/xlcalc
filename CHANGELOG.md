@@ -16,6 +16,7 @@ Fixed:
 
 Changed:
 
+- The call after a stopped one computes the session's book again outside its own `timeoutMs` (its `signal` and a pool's hard deadline still bound it), so a session whose cold computation is longer than its calls' deadline no longer fails every call after one has stopped; such a call can take longer than its `timeoutMs` by that computation.
 - `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
 
 Added:

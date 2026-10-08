@@ -9,7 +9,7 @@
  */
 import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, Clock, ComputeResult, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
-import { limitsBudget, run, withBudget, type Steps } from './exec/budget.js'
+import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
@@ -69,7 +69,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   function* ready(): Steps<EngineState> {
     const s = st()
     if (stale) {
-      state = yield* build(s.input)
+      // what an earlier call left to do does not count in this call's soft deadline
+      state = yield* untimed(build(s.input))
       stale = false
     }
     return state!

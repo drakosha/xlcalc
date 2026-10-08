@@ -131,6 +131,23 @@ export function withBudget<T>(b: Budget | null | undefined, f: () => T): T {
   }
 }
 
+/**
+ * Steps outside the soft deadline of the computation running them (a session computing its book again after a stopped
+ * call): the signal and a pool's hard deadline still bound them, and the deadline moves on by their time.
+ */
+export function* untimed<T>(steps: Steps<T>): Steps<T> {
+  const b = active
+  if (b === null || b.deadline === Infinity) return yield* steps
+  const deadline = b.deadline
+  const t0 = nowMs()
+  b.deadline = Infinity
+  try {
+    return yield* steps
+  } finally {
+    b.deadline = deadline + (nowMs() - t0)
+  }
+}
+
 /** Runs steps to their end at once. */
 export function run<T>(g: Steps<T>): T {
   for (;;) {

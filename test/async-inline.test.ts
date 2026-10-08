@@ -114,9 +114,17 @@ describe('in the same thread', () => {
     expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
     expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs: 50 })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
     expect((await s.result({ timeoutMs: 50 })).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...heavyBook().sheets[0].cells, C1: { value: 5 } } }] }, { clock: CLOCK }).hash)
-    // an abort still stops it
-    expect((await fails(s.setCells(setA1(3), { timeoutMs: 50 }))).code).toBe('soft_timeout')
-    expect((await fails(s.result({ signal: AbortSignal.timeout(20) }))).code).toBe('aborted')
+    // a signal still stops it, between the formulas of the book
+    const t = await calc.openSession(chainBook(20_000), { clock: CLOCK })
+    expect((await fails(t.setCells(setA1(2), { signal: AbortSignal.abort() }))).code).toBe('aborted')
+    const stop = new AbortController()
+    const first = t.setCells(setA1(3), { signal: stop.signal })
+    setImmediate(() => stop.abort())
+    expect((await fails(first)).code).toBe('aborted')
+    const again = new AbortController()
+    const next = t.result({ signal: again.signal })
+    setImmediate(() => again.abort())
+    expect((await fails(next)).code).toBe('aborted')
   }, 60_000)
 
   it('calls made without waiting are taken in order, each with its own changes', async () => {
