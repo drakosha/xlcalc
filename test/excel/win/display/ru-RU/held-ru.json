@@ -1,13 +1,13 @@
 {
  "meta": {
-  "version": "16.0.17928.20148",
+  "version": "16.0.20430.20146",
   "platform": "Windows",
   "locale": "ru-RU",
   "ui": "ru-RU (Excel 1049)",
   "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
   "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "seconds": 23.8
+  "seconds": 35.2
  },
  "cases": [
   {
