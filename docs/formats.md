@@ -152,6 +152,8 @@ The cases write a format as a custom code, so a code equal to a built-in format 
 
 The 1904 date system was checked with the workbook set `date1904` (`bench/coverage/workbook/`): the same cells and `TEXT` formulas in a book of each system.
 
+Excel for Windows showed the same sets (`bench/windows`, `test/display-win.test.ts`): 7,929 of 9,819 cells in en-US and 2,434 of 3,130 in ru-RU show what the engine shows. Nearly all the others meet a column's edge, where Windows, laying text out in pixels, shows what the engine shows at another width; the rest are Windows's built-in codes and its ru-RU month names, long date and short time.
+
 AppleScript returns no colour for an exact 0 in a format of fewer than three sections (`[Red]0`) and for text under a coloured text section (`[Red]@`), though Excel draws the colour on screen there. The engine gives the section's colour in these places, and the comparison accepts any colour.
 
 ## Known differences

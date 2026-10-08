@@ -1,39 +1,47 @@
 # Excel for Windows as a second oracle
 
-The harness in `bench/coverage` takes its answers from Excel for Mac. This one sends the same books to Excel for Windows and stores its answers beside them, in `test/excel/win/`, so the engine can be checked against both and every place where the two Excels part can be seen case by case.
+The harness in `bench/coverage` takes its answers from Excel for Mac. This one sends the same books to Excel for Windows and stores its answers beside them, in `test/excel/win/`, so the engine is checked against both and every place where the two Excels part shows case by case.
 
-The books are the Mac harness's own: the case sets, the probes, the measurement, the display, spill, workbook and structure sets are written by the same code (`bench/coverage/book.ts`, `case-book.ts`, `display.ts`, `struct.ts`), byte for byte. Only the way Excel is driven differs: COM through PowerShell over SSH instead of AppleScript.
+The books are the Mac harness's own: the measurement, the probes, the case sets, the legacy sets, and the display, tables, spill, workbook and structure sets are written by the same code (`bench/coverage/book.ts`, `case-book.ts`, `display.ts`, `tables.ts`, `struct.ts`, `xlsx/filters.ts`), byte for byte. Only the way Excel is driven differs: COM through PowerShell over SSH instead of AppleScript.
 
 ## Where the answers are
 
 `test/excel/win/` has the Mac's layout:
 
 - `coverage/excel-en.json`, `coverage/excel-ru.json`: the measurement (its cases are in `test/excel/coverage/cases.json`).
-- `probes.json`, `cases/<set>.json`, `cases/ru-RU/<set>.json`, `legacy/<set>.json`: the probes and the case sets.
-- `display/<set>.json`, `display/ru-RU/<set>.json`, `spill/<set>.json`, `workbook/<set>.json`, `struct/<set>.json`.
+- `probes.json`, `cases/<set>.json`, `cases/ru-RU/<set>.json`, `legacy/<set>.json`: the probes, the case sets, the formulas of the old kind (each at the row it had in the Mac's run, as implicit intersection takes the row).
+- `display/`, `display/ru-RU/`, `tables/`, `tables/ru-RU/`, `spill/`, `workbook/`, `struct/`: the book sets.
+- `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them.
 
-Each file's `meta` names Excel's version and the settings it computed with: the interface language, the regional format with its decimal, thousands and list separators, the system locale with its code page, and the screen's dpi. A formula Excel for Windows does not take when it opens a book is listed in `rejected` of its set.
+Each file's `meta` names Excel's version and the settings it computed with: the interface language, the regional format with its decimal, thousands and list separators, the system locale with its code page, and the screen's dpi. A formula Excel for Windows does not take when it opens a book would be listed in `rejected` of its set; none is.
 
-`test/excel-win.test.ts` checks the engine against the formula answers (`test/excel-win-cases.ts` has the cases' books and `WIN_KNOWN`, the engine's answers pinned where it knowingly differs from Excel for Windows, each with its reason). `npx tsx bench/windows/compare.ts` prints, for the stored answers, the cases where Windows and the Mac part, with the engine's answer and which of the two it follows, and the cases where both Excels agree and the engine does not.
+## The tests and the differences
+
+Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `display-win`, `tables-win`, `spill-win`, `workbook-win`, `structure-win`, `legacy-win`, `xlsx-win`. Where the engine knowingly differs from Excel for Windows, the test pins it with the reason: `WIN_KNOWN` in `test/excel-win-known.ts` for formulas (reasons in `WIN_REASONS`, `test/excel-win-cases.ts`, or the Mac's own where both Excels agree), rules by reason for what cells show (`WIN_SHOWN`), and lists by case in the others. The engine follows Excel for Mac wherever the two Excels part, except `CHAR` and `CODE`, which follow the Windows code pages.
+
+`npx tsx bench/windows/compare.ts > bench/windows/differences.md` writes the table of the formula cases where Windows and the Mac part (the Mac's answer, Windows's, the engine's, which of the two the engine follows, and the class: a platform difference with its reason, or noise), and the cases where both Excels agree and the engine does not.
 
 ## Running it
 
 ```sh
 npx tsx bench/windows/run.ts env            # the machine's settings, and Excel's as it starts with them
 npx tsx bench/windows/run.ts all ru         # everything the Mac has answers for in ru-RU
-npx tsx bench/windows/run.ts all en         # the same in en-US: the formulas, the display, spill, workbook and struct sets
+npx tsx bench/windows/run.ts all en         # the same in en-US
+npx tsx bench/windows/run.ts functions en   # the formula cases only; books en: the book sets only
 npx tsx bench/windows/run.ts set char-code ru
 npx tsx bench/windows/run.ts display general
+npx tsx bench/windows/run.ts tables ops
 npx tsx bench/windows/run.ts struct rows
+npx tsx bench/windows/run.ts xlsx filters
 ```
 
 A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`.
 
-Changing the system locale needs a restart, which the harness does itself (it waits up to ten minutes for SSH). Run all of one locale before the other: `all ru`, then `all en`.
+Changing the system locale needs a restart, which the harness does itself: it waits until the machine is up from a new boot, ten minutes at most. Run all of one locale before the other, `all en` and then `all ru`, which also leaves the machine in its own locale.
 
 ## The machine
 
-`windows-host` is a virtual machine with Windows 11 Pro (Russian), Office ProPlus 2024 (Excel 16.0.17928, dynamic arrays) with the English language pack, and OpenSSH with key login; its SSH shell is PowerShell 5.1. The harness keeps its files in `C:\xlcalc\`: `bin\` the scripts (copied from here at the start of a command), `work\` the jobs, `lock\` the lock.
+`windows-host` is a virtual machine with Windows 11 Pro (Russian), Office ProPlus 2024 with the English language pack, and OpenSSH with key login; its SSH shell is PowerShell 5.1. Excel is 16.0.20430.20146 (Current Channel): Office updated itself from 16.0.17928 during the first run, so its automatic updates are off now (the policy `enableautomaticupdates` = 0 under `HKLM\SOFTWARE\Policies\Microsoft\office\16.0\common\officeupdate`, and the scheduled tasks Office Automatic Updates 2.0 and Office Feature Updates disabled), and every answer is from that build. The harness keeps its files in `C:\xlcalc\`: `bin\` the scripts (copied from here at the start of a command), `work\` the jobs, `lock\` the lock.
 
 What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 
@@ -45,18 +53,19 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 
 ## How a job runs
 
-`remote.ts` writes the books here and a `job.json` listing each book's steps, copies the directory to `C:\xlcalc\work\` with `scp`, runs `xl.ps1` on it and copies back `out\`. `xl.ps1` starts one Excel, opens the books one by one, takes their steps (a full calculation, edits, reads of ranges, shown text, a structure operation) and writes each book's answer as soon as it is done; at the end it checks that no book is left open and quits Excel.
+`remote.ts` writes the books here and a `job.json` listing each book's steps, copies the directory to `C:\xlcalc\work\` with `scp`, runs `xl.ps1` on it and copies back `out\`. `xl.ps1` starts one Excel, opens the books one by one, takes their steps (a full calculation, edits, reads of ranges, shown text, a structure or table operation, a save) and writes each book's answer as soon as it is done; at the end it checks that no book is left open and quits Excel.
 
 - A range is read in one call: `Value2` gives numbers, text, booleans and errors as COM codes (`-2146826281` is `#DIV/0!`, 0x800A0000 plus Excel's error number), so the wrapper and mirror columns the Mac reads are not needed. They stay in the books, which are the Mac's.
 - A formula case's book is checked to still hold its formulas (`HasFormula`): a book Excel repaired on opening loses them. A book Excel does not open, opens repaired or hangs on is halved down to the formula at fault, which is stored as not taken.
 - A job holds up to 40 books. Each SSH call costs seconds on this machine (a new PowerShell starts), so the harness shares one SSH connection per run and puts as many books in a job as it can.
-- A job that runs past its time (Excel waits on a window nobody sees) is stopped with Excel; the books done keep their answers and the rest run again.
+- A job that runs past its time (Excel waits on a window nobody sees) is stopped with Excel; the books done keep their answers and the rest run again. Excel that is still exiting from the previous job is waited for: a new one fails to start meanwhile.
 - Excel started over SSH runs in session 0. It opens no file ("cannot access the file") unless the system profile has a desktop folder, `C:\Windows\System32\config\systemprofile\Desktop` and its `SysWOW64` twin; `host.ps1 -do clean` makes sure of them, stops Excel processes left in session 0 and removes the jobs' files. An interactive user's Excel is left alone.
+- A number is typed into a table through `Formula` (its text with a decimal point): `Value2` with a number into a table's header failed now and then with an invalid cast.
 
 ## What is not run here
 
-- The xlsx step (Excel saving the books it computed) and the ru-RU formula text snapshot (`bench/locale`): both work through COM (`SaveAs`, `FormulaLocal`) but are not ported.
-- Mac-only conditions do not carry over: the spill order runs (`order-runs.json`) record Excel for Mac's varying choice and are no set.
+- The xlsx round trip, the saved books, the colours and the built-in formats of `bench/coverage/xlsx.ts`, and the ru-RU formula text snapshot (`bench/locale`): they work through COM (`SaveAs`, `Interior.Color`, `NumberFormat`, `FormulaLocal`) but are not ported; only the filters are.
+- The spill order runs (`order-runs.json`) record Excel for Mac's varying choice and are no set.
 
 ## The first probe
 
@@ -64,4 +73,26 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 
 ## How it was checked
 
-The first set run through the harness, `char-code` in ru-RU, gave 305 answers; 298 equal the Mac's, and the 7 others are `CODE` of characters outside the code page, 63 on Windows and 95 on the Mac. The engine matches all 305.
+Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale; Excel took every formula and opened every book.
+
+| what | locale | cases | as Excel for Mac | the engine as Windows, or for a pinned reason |
+|---|---|---:|---:|---|
+| formulas: measurement, probes, 36 case sets | en-US | 34,349 | 34,316 | 34,277, the 72 others in `WIN_KNOWN` |
+| formulas: measurement, 8 case sets | ru-RU | 7,297 | 7,136 | 7,143, the 154 others in `WIN_KNOWN` |
+| formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
+| cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,929, the others by the rules of `WIN_SHOWN` |
+| cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,434, the others by the rules of `WIN_SHOWN` |
+| tables, 5 sets and 1 | en-US, ru-RU | 87 and 4 | 83 and 4 | all but the 4 the Mac pins too |
+| spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
+| workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
+| structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
+| xlsx filters | en-US | 8 files | | all |
+
+Where the two Excels part, the engine follows the Mac but for `CHAR` and `CODE`. What Excel for Windows does otherwise, by reason:
+
+- Its regional data in ru-RU: Latin sorts before Cyrillic (`"a"<"а"` is TRUE), month names have a capital (`Январь`) and short ones three letters (`фев`, `ноя`), the long date has no weekday, the short time no leading zero; built-in formats by number take Windows's own codes (en-US 14 is `m/d/yyyy`).
+- `CHAR` and `CODE` by the Windows code pages, and 63 for a character outside them.
+- Trigonometry at its poles and complex functions of large arguments from the 13th digit on (`TAN(PI()/2)`), `WEEKNUM` with return type 22, `WEIBULL` with a scale of 1E-300.
+- Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels.
+
+Both Excels agree and the engine does not in 57 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.

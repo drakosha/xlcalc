@@ -1,0 +1,1548 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "fit",
+   "about": "an array of the area size",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:E3"
+    }
+   ]
+  },
+  {
+   "id": "larger",
+   "about": "an area larger than the array: #N/A past it, a column repeated across",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E5"
+       },
+       "F1": {
+        "formula": "A1:A3",
+        "array": "F1:G3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:G5"
+    }
+   ]
+  },
+  {
+   "id": "smaller",
+   "about": "an area smaller than the array: cut",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E2"
+       },
+       "F1": {
+        "formula": "A1:C5",
+        "array": "F1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:G3"
+    }
+   ]
+  },
+  {
+   "id": "row",
+   "about": "a row repeated down, #N/A past its columns",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A5:C5",
+        "array": "E1:G3"
+       },
+       "E5": {
+        "formula": "A5:C5",
+        "array": "E5:H6"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:H6"
+    }
+   ]
+  },
+  {
+   "id": "scalar",
+   "about": "one value fills the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "5",
+        "array": "E1:F2"
+       },
+       "E5": {
+        "formula": "SUM(A1:A3)",
+        "array": "E5:F6"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F6"
+    }
+   ]
+  },
+  {
+   "id": "block",
+   "about": "a 2×2 array over 3×3: #N/A in the third row and column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "SEQUENCE(2,2)",
+        "array": "E1:G3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:G3"
+    }
+   ]
+  },
+  {
+   "id": "position",
+   "about": "ROW and COLUMN in an area: the top-left cell",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "ROW()",
+        "array": "E1:E3"
+       },
+       "F1": {
+        "formula": "COLUMN()",
+        "array": "F1:H1"
+       },
+       "G3": {
+        "formula": "ROW(A1:A3)",
+        "array": "G3:G5"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:H5"
+    }
+   ]
+  },
+  {
+   "id": "single",
+   "about": "one cell: computed as an array, its top-left value, no intersection",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "SUM(A1:A3*B1:B3)",
+        "array": "E1"
+       },
+       "E3": {
+        "formula": "A1:A3",
+        "array": "E3"
+       },
+       "E4": {
+        "formula": "INDEX(A1:B3,0,2)",
+        "array": "E4"
+       },
+       "E2": {
+        "formula": "SEQUENCE(3)",
+        "array": "E2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:E5"
+    }
+   ]
+  },
+  {
+   "id": "readers",
+   "about": "formulas reading the area, a spill reference to it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       },
+       "G1": {
+        "formula": "SUM(E1:E3)"
+       },
+       "G2": {
+        "formula": "E2"
+       },
+       "G3": {
+        "formula": "E1#"
+       },
+       "G4": {
+        "formula": "ROWS(E1#)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:G4"
+    }
+   ]
+  },
+  {
+   "id": "collision",
+   "about": "a spill meeting the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3",
+        "array": "E1:E3"
+       },
+       "D2": {
+        "formula": "SEQUENCE(1,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "D1:G3"
+    }
+   ]
+  },
+  {
+   "id": "transpose",
+   "about": "TRANSPOSE of a column over a row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "TRANSPOSE(A1:A3)",
+        "array": "E1:G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:G1"
+    }
+   ]
+  },
+  {
+   "id": "edit-value",
+   "about": "a value typed into a cell of the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "E2",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "id": "edit-clear-top",
+   "about": "the top-left cell cleared",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "E1",
+     "value": null
+    }
+   ]
+  },
+  {
+   "id": "edit-formula",
+   "about": "a formula entered into a cell of the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "E3",
+     "value": {
+      "formula": "1"
+     }
+    }
+   ]
+  },
+  {
+   "id": "edit-precedent",
+   "about": "a value the array reads",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "A1",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "id": "edit-clear-all",
+   "about": "the whole area cleared",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "E1:E3",
+     "value": null
+    }
+   ]
+  },
+  {
+   "id": "edit-outside",
+   "about": "a value typed next to the area",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "A5": {
+        "value": 5
+       },
+       "B5": {
+        "value": 6
+       },
+       "C5": {
+        "value": 7
+       },
+       "E1": {
+        "formula": "A1:A3*2",
+        "array": "E1:E3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F3"
+    }
+   ],
+   "edits": [
+    {
+     "sheet": "S",
+     "cell": "F2",
+     "value": 5
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "fit": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "larger": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!E4": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!E5": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!F1": "=A1:A3",
+    "S!G1": "=A1:A3",
+    "S!E2": "=A1:A3*2",
+    "S!F2": "=A1:A3",
+    "S!G2": "=A1:A3",
+    "S!E3": "=A1:A3*2",
+    "S!F3": "=A1:A3",
+    "S!G3": "=A1:A3",
+    "S!E4": "=A1:A3*2",
+    "S!E5": "=A1:A3*2"
+   }
+  },
+  "smaller": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!F1": "=A1:C5",
+    "S!G1": "=A1:C5",
+    "S!E2": "=A1:A3*2",
+    "S!F2": "=A1:C5",
+    "S!G2": "=A1:C5"
+   }
+  },
+  "row": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 7
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 7
+    },
+    "S!E5": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F5": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G5": {
+     "t": "n",
+     "v": 7
+    },
+    "S!H5": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!E6": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F6": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 7
+    },
+    "S!H6": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!E1": "=A5:C5",
+    "S!F1": "=A5:C5",
+    "S!G1": "=A5:C5",
+    "S!E2": "=A5:C5",
+    "S!F2": "=A5:C5",
+    "S!G2": "=A5:C5",
+    "S!E3": "=A5:C5",
+    "S!F3": "=A5:C5",
+    "S!G3": "=A5:C5",
+    "S!E5": "=A5:C5",
+    "S!F5": "=A5:C5",
+    "S!G5": "=A5:C5",
+    "S!H5": "=A5:C5",
+    "S!E6": "=A5:C5",
+    "S!F6": "=A5:C5",
+    "S!G6": "=A5:C5",
+    "S!H6": "=A5:C5"
+   }
+  },
+  "scalar": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!E5": {
+     "t": "n",
+     "v": 6
+    },
+    "S!F5": {
+     "t": "n",
+     "v": 6
+    },
+    "S!E6": {
+     "t": "n",
+     "v": 6
+    },
+    "S!F6": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=5",
+    "S!F1": "=5",
+    "S!E2": "=5",
+    "S!F2": "=5",
+    "S!E5": "=SUM(A1:A3)",
+    "S!F5": "=SUM(A1:A3)",
+    "S!E6": "=SUM(A1:A3)",
+    "S!F6": "=SUM(A1:A3)"
+   }
+  },
+  "block": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G1": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!G2": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!E3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!F3": {
+     "t": "e",
+     "v": "NA"
+    },
+    "S!G3": {
+     "t": "e",
+     "v": "NA"
+    }
+   },
+   "formulas": {
+    "S!E1": "=SEQUENCE(2,2)",
+    "S!F1": "=SEQUENCE(2,2)",
+    "S!G1": "=SEQUENCE(2,2)",
+    "S!E2": "=SEQUENCE(2,2)",
+    "S!F2": "=SEQUENCE(2,2)",
+    "S!G2": "=SEQUENCE(2,2)",
+    "S!E3": "=SEQUENCE(2,2)",
+    "S!F3": "=SEQUENCE(2,2)",
+    "S!G3": "=SEQUENCE(2,2)"
+   }
+  },
+  "position": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 8
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G5": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!E1": "=ROW()",
+    "S!F1": "=COLUMN()",
+    "S!G1": "=COLUMN()",
+    "S!H1": "=COLUMN()",
+    "S!E2": "=ROW()",
+    "S!E3": "=ROW()",
+    "S!G3": "=ROW(A1:A3)",
+    "S!G4": "=ROW(A1:A3)",
+    "S!G5": "=ROW(A1:A3)"
+   }
+  },
+  "single": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 140
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!E4": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!E1": "=SUM(A1:A3*B1:B3)",
+    "S!E2": "=SEQUENCE(3)",
+    "S!E3": "=A1:A3",
+    "S!E4": "=INDEX(A1:B3,0,2)"
+   }
+  },
+  "readers": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G1": {
+     "t": "n",
+     "v": 12
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G3": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!G4": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!G1": "=SUM(E1:E3)",
+    "S!E2": "=A1:A3*2",
+    "S!G2": "=E2",
+    "S!E3": "=A1:A3*2",
+    "S!G3": "=E1#",
+    "S!G4": "=ROWS(E1#)"
+   }
+  },
+  "collision": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3",
+    "S!D2": "=SEQUENCE(1,3)",
+    "S!E2": "=A1:A3",
+    "S!E3": "=A1:A3"
+   }
+  },
+  "transpose": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G1": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!E1": "=TRANSPOSE(A1:A3)",
+    "S!F1": "=TRANSPOSE(A1:A3)",
+    "S!G1": "=TRANSPOSE(A1:A3)"
+   }
+  },
+  "edit-value": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-clear-top": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   },
+   "refused": {
+    "0": "-2146827284 You can't change part of an array."
+   }
+  },
+  "edit-formula": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-precedent": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 20
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  },
+  "edit-clear-all": {
+   "values": {},
+   "formulas": {}
+  },
+  "edit-outside": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 5
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!E1": "=A1:A3*2",
+    "S!E2": "=A1:A3*2",
+    "S!E3": "=A1:A3*2"
+   }
+  }
+ }
+}

@@ -1,0 +1,347 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 423.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "held#1",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,5,_xlpm.y,_xlpm.x*2)"
+  },
+  {
+   "id": "held#2",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,5,_xlpm.y,y)"
+  },
+  {
+   "id": "held#5",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.n_1,1,_xlpm.n_2,_xlpm.n_1+1,_xlpm.n_3,_xlpm.n_2+1,_xlpm.n_4,_xlpm.n_3+1,_xlpm.n_5,_xlpm.n_4+1,_xlpm.n_6,_xlpm.n_5+1,_xlpm.n_7,_xlpm.n_6+1,_xlpm.n_8,_xlpm.n_7+1,_xlpm.n_9,_xlpm.n_8+1,_xlpm.n_10,_xlpm.n_9+1,_xlpm.n_11,_xlpm.n_10+1,_xlpm.n_12,_xlpm.n_11+1,_xlpm.n_13,_xlpm.n_12+1,_xlpm.n_14,_xlpm.n_13+1,_xlpm.n_15,_xlpm.n_14+1,_xlpm.n_16,_xlpm.n_15+1,_xlpm.n_17,_xlpm.n_16+1,_xlpm.n_18,_xlpm.n_17+1,_xlpm.n_19,_xlpm.n_18+1,_xlpm.n_20,_xlpm.n_19+1,_xlpm.n_21,_xlpm.n_20+1,_xlpm.n_22,_xlpm.n_21+1,_xlpm.n_23,_xlpm.n_22+1,_xlpm.n_24,_xlpm.n_23+1,_xlpm.n_25,_xlpm.n_24+1,_xlpm.n_26,_xlpm.n_25+1,_xlpm.n_27,_xlpm.n_26+1,_xlpm.n_28,_xlpm.n_27+1,_xlpm.n_29,_xlpm.n_28+1,_xlpm.n_30,_xlpm.n_29+1,_xlpm.n_31,_xlpm.n_30+1,_xlpm.n_32,_xlpm.n_31+1,_xlpm.n_33,_xlpm.n_32+1,_xlpm.n_34,_xlpm.n_33+1,_xlpm.n_35,_xlpm.n_34+1,_xlpm.n_36,_xlpm.n_35+1,_xlpm.n_37,_xlpm.n_36+1,_xlpm.n_38,_xlpm.n_37+1,_xlpm.n_39,_xlpm.n_38+1,_xlpm.n_40,_xlpm.n_39+1,_xlpm.n_41,_xlpm.n_40+1,_xlpm.n_42,_xlpm.n_41+1,_xlpm.n_43,_xlpm.n_42+1,_xlpm.n_44,_xlpm.n_43+1,_xlpm.n_45,_xlpm.n_44+1,_xlpm.n_46,_xlpm.n_45+1,_xlpm.n_47,_xlpm.n_46+1,_xlpm.n_48,_xlpm.n_47+1,_xlpm.n_49,_xlpm.n_48+1,_xlpm.n_50,_xlpm.n_49+1,_xlpm.n_51,_xlpm.n_50+1,_xlpm.n_52,_xlpm.n_51+1,_xlpm.n_53,_xlpm.n_52+1,_xlpm.n_54,_xlpm.n_53+1,_xlpm.n_55,_xlpm.n_54+1,_xlpm.n_56,_xlpm.n_55+1,_xlpm.n_57,_xlpm.n_56+1,_xlpm.n_58,_xlpm.n_57+1,_xlpm.n_59,_xlpm.n_58+1,_xlpm.n_60,_xlpm.n_59+1,_xlpm.n_61,_xlpm.n_60+1,_xlpm.n_62,_xlpm.n_61+1,_xlpm.n_63,_xlpm.n_62+1,_xlpm.n_64,_xlpm.n_63+1,_xlpm.n_65,_xlpm.n_64+1,_xlpm.n_66,_xlpm.n_65+1,_xlpm.n_67,_xlpm.n_66+1,_xlpm.n_68,_xlpm.n_67+1,_xlpm.n_69,_xlpm.n_68+1,_xlpm.n_70,_xlpm.n_69+1,_xlpm.n_71,_xlpm.n_70+1,_xlpm.n_72,_xlpm.n_71+1,_xlpm.n_73,_xlpm.n_72+1,_xlpm.n_74,_xlpm.n_73+1,_xlpm.n_75,_xlpm.n_74+1,_xlpm.n_76,_xlpm.n_75+1,_xlpm.n_77,_xlpm.n_76+1,_xlpm.n_78,_xlpm.n_77+1,_xlpm.n_79,_xlpm.n_78+1,_xlpm.n_80,_xlpm.n_79+1,_xlpm.n_81,_xlpm.n_80+1,_xlpm.n_82,_xlpm.n_81+1,_xlpm.n_83,_xlpm.n_82+1,_xlpm.n_84,_xlpm.n_83+1,_xlpm.n_85,_xlpm.n_84+1,_xlpm.n_86,_xlpm.n_85+1,_xlpm.n_87,_xlpm.n_86+1,_xlpm.n_88,_xlpm.n_87+1,_xlpm.n_89,_xlpm.n_88+1,_xlpm.n_90,_xlpm.n_89+1,_xlpm.n_91,_xlpm.n_90+1,_xlpm.n_92,_xlpm.n_91+1,_xlpm.n_93,_xlpm.n_92+1,_xlpm.n_94,_xlpm.n_93+1,_xlpm.n_95,_xlpm.n_94+1,_xlpm.n_96,_xlpm.n_95+1,_xlpm.n_97,_xlpm.n_96+1,_xlpm.n_98,_xlpm.n_97+1,_xlpm.n_99,_xlpm.n_98+1,_xlpm.n_100,_xlpm.n_99+1,_xlpm.n_101,_xlpm.n_100+1,_xlpm.n_102,_xlpm.n_101+1,_xlpm.n_103,_xlpm.n_102+1,_xlpm.n_104,_xlpm.n_103+1,_xlpm.n_105,_xlpm.n_104+1,_xlpm.n_106,_xlpm.n_105+1,_xlpm.n_107,_xlpm.n_106+1,_xlpm.n_108,_xlpm.n_107+1,_xlpm.n_109,_xlpm.n_108+1,_xlpm.n_110,_xlpm.n_109+1,_xlpm.n_111,_xlpm.n_110+1,_xlpm.n_112,_xlpm.n_111+1,_xlpm.n_113,_xlpm.n_112+1,_xlpm.n_114,_xlpm.n_113+1,_xlpm.n_115,_xlpm.n_114+1,_xlpm.n_116,_xlpm.n_115+1,_xlpm.n_117,_xlpm.n_116+1,_xlpm.n_118,_xlpm.n_117+1,_xlpm.n_119,_xlpm.n_118+1,_xlpm.n_120,_xlpm.n_119+1,_xlpm.n_121,_xlpm.n_120+1,_xlpm.n_122,_xlpm.n_121+1,_xlpm.n_123,_xlpm.n_122+1,_xlpm.n_124,_xlpm.n_123+1,_xlpm.n_125,_xlpm.n_124+1,_xlpm.n_126,_xlpm.n_125+1,_xlpm.n_127,_xlpm.n_126+1)"
+  },
+  {
+   "id": "held#6",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,,ISBLANK(_xlpm.x))"
+  },
+  {
+   "id": "held#7",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,,_xlpm.x&\"\")"
+  },
+  {
+   "id": "held#8",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,,TYPE(_xlpm.x))"
+  },
+  {
+   "id": "held#9",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:B8,INDEX(_xlpm.r,3))"
+  },
+  {
+   "id": "held#10",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.r,D!B1:C8,SUM(INDEX(_xlpm.r,0,2)))"
+  },
+  {
+   "id": "held#11",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.a,D!B1:B3,_xlpm.b,_xlpm.a*2,SUM(_xlpm.b))"
+  },
+  {
+   "id": "held#12",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!B1:B8,COUNTIF(_xlpm.x,\">10\"))"
+  },
+  {
+   "id": "held#13",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.t,\"abc\",LEN(_xlpm.t)&UPPER(_xlpm.t))"
+  },
+  {
+   "id": "held#14",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,2,_xlpm.y,3,_xlfn.LET(_xlpm.x,_xlpm.y,_xlpm.z,_xlpm.x*10,_xlpm.z+_xlpm.x))"
+  },
+  {
+   "id": "held#15",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.v,D!A2,_xlpm.v*1)"
+  },
+  {
+   "id": "held#16",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.v,D!A2,COUNT(_xlpm.v))"
+  },
+  {
+   "id": "held#17",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.v,D!A2,COUNTA(_xlpm.v))"
+  },
+  {
+   "id": "held#18",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.v,{1,2;3,4},ROWS(_xlpm.v)*10+COLUMNS(_xlpm.v))"
+  },
+  {
+   "id": "held#19",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.v,{1,2;3,4},INDEX(_xlpm.v,2,1))"
+  },
+  {
+   "id": "held#20",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,TODAY(),_xlpm.x-_xlpm.x)"
+  },
+  {
+   "id": "held#21",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,NA(),ISNA(_xlpm.x))"
+  },
+  {
+   "id": "held#22",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1/0,_xlpm.y,_xlpm.x,1)"
+  },
+  {
+   "id": "held#23",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!A7,IFERROR(_xlpm.x,\"e\"))"
+  },
+  {
+   "id": "held#24",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.f,SUM(D!B1:B8),_xlpm.f/COUNT(D!B1:B8))"
+  },
+  {
+   "id": "held#25",
+   "group": "held",
+   "fn": "LET",
+   "formula": "SUM(_xlfn.LET(_xlpm.x,{1,2,3},_xlpm.x*_xlpm.x))"
+  },
+  {
+   "id": "held#26",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,{1,2,3},SUM(_xlpm.x*_xlpm.x))"
+  },
+  {
+   "id": "held#27",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,1,_xlpm.y,_xlpm.x+1,_xlpm.z,_xlpm.y+1,_xlpm.x*100+_xlpm.y*10+_xlpm.z)"
+  },
+  {
+   "id": "held#28",
+   "group": "held",
+   "fn": "LET",
+   "formula": "IF(_xlfn.LET(_xlpm.x,TRUE,_xlpm.x),\"y\",\"n\")"
+  },
+  {
+   "id": "held#29",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm._,5,_xlpm._*2)"
+  },
+  {
+   "id": "held#30",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,\"5\",_xlpm.x+1)"
+  },
+  {
+   "id": "held#31",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!K1,_xlpm.x+1)"
+  },
+  {
+   "id": "held#32",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!K1,ISBLANK(_xlpm.x))"
+  },
+  {
+   "id": "held#33",
+   "group": "held",
+   "fn": "LET",
+   "formula": "ROWS(_xlfn.LET(_xlpm.x,D!B1:C8,_xlpm.y,INDEX(_xlpm.x,0,1),_xlpm.y))"
+  },
+  {
+   "id": "held#34",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,5,_xlpm.y,_xlpm.x*2)+1"
+  },
+  {
+   "id": "held#35",
+   "group": "held",
+   "fn": "LET",
+   "formula": "_xlfn.LET(_xlpm.x,D!B1:B8,_xlpm.y,SUM(_xlpm.x))"
+  }
+ ],
+ "values": {
+  "held#1": {
+   "t": "n",
+   "v": 10
+  },
+  "held#2": {
+   "t": "e",
+   "v": "NAME"
+  },
+  "held#5": {
+   "t": "n",
+   "v": 127
+  },
+  "held#6": {
+   "t": "b",
+   "v": true
+  },
+  "held#7": {
+   "t": "s",
+   "v": ""
+  },
+  "held#8": {
+   "t": "n",
+   "v": 1
+  },
+  "held#9": {
+   "t": "n",
+   "v": 15
+  },
+  "held#10": {
+   "t": "n",
+   "v": 108
+  },
+  "held#11": {
+   "t": "n",
+   "v": 54
+  },
+  "held#12": {
+   "t": "n",
+   "v": 5
+  },
+  "held#13": {
+   "t": "s",
+   "v": "3ABC"
+  },
+  "held#14": {
+   "t": "n",
+   "v": 33
+  },
+  "held#15": {
+   "t": "n",
+   "v": 2
+  },
+  "held#16": {
+   "t": "n",
+   "v": 0
+  },
+  "held#17": {
+   "t": "n",
+   "v": 1
+  },
+  "held#18": {
+   "t": "n",
+   "v": 22
+  },
+  "held#19": {
+   "t": "n",
+   "v": 3
+  },
+  "held#20": {
+   "t": "n",
+   "v": 0
+  },
+  "held#21": {
+   "t": "b",
+   "v": true
+  },
+  "held#22": {
+   "t": "n",
+   "v": 1
+  },
+  "held#23": {
+   "t": "s",
+   "v": "e"
+  },
+  "held#24": {
+   "t": "n",
+   "v": 14.34375
+  },
+  "held#25": {
+   "t": "n",
+   "v": 14
+  },
+  "held#26": {
+   "t": "n",
+   "v": 14
+  },
+  "held#27": {
+   "t": "n",
+   "v": 123
+  },
+  "held#28": {
+   "t": "s",
+   "v": "y"
+  },
+  "held#29": {
+   "t": "n",
+   "v": 10
+  },
+  "held#30": {
+   "t": "n",
+   "v": 6
+  },
+  "held#31": {
+   "t": "n",
+   "v": 1
+  },
+  "held#32": {
+   "t": "b",
+   "v": true
+  },
+  "held#33": {
+   "t": "n",
+   "v": 8
+  },
+  "held#34": {
+   "t": "n",
+   "v": 11
+  },
+  "held#35": {
+   "t": "n",
+   "v": 114.75
+  }
+ }
+}

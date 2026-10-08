@@ -1,0 +1,1415 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "column",
+   "about": "a column takes the formula's row, else #VALUE!",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "C1": {
+        "value": 7
+       },
+       "D1": {
+        "value": 8
+       },
+       "E1": {
+        "value": 9
+       },
+       "G1": {
+        "value": 1
+       },
+       "H1": {
+        "value": 2
+       },
+       "G2": {
+        "value": 3
+       },
+       "H2": {
+        "value": 4
+       },
+       "J3": {
+        "formula": "A1:A10"
+       },
+       "J12": {
+        "formula": "A1:A10"
+       },
+       "J4": {
+        "formula": "A1:A10*2"
+       },
+       "J5": {
+        "formula": "A:A"
+       },
+       "J6": {
+        "formula": "$A$1:$A$10+B1:B10"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "B7": {
+        "formula": "S!A1:A10"
+       },
+       "B11": {
+        "formula": "S!A1:A10"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "J3"
+    },
+    {
+     "sheet": "S",
+     "range": "J12"
+    },
+    {
+     "sheet": "S",
+     "range": "J4"
+    },
+    {
+     "sheet": "S",
+     "range": "J5"
+    },
+    {
+     "sheet": "S",
+     "range": "J6"
+    },
+    {
+     "sheet": "T",
+     "range": "B7"
+    },
+    {
+     "sheet": "T",
+     "range": "B11"
+    }
+   ],
+   "legacy": [
+    "S!J3",
+    "S!J12",
+    "S!J4",
+    "S!J5",
+    "S!J6",
+    "T!B7",
+    "T!B11"
+   ]
+  },
+  {
+   "id": "row",
+   "about": "a row takes the formula's column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "C1": {
+        "value": 7
+       },
+       "D1": {
+        "value": 8
+       },
+       "E1": {
+        "value": 9
+       },
+       "G1": {
+        "value": 1
+       },
+       "H1": {
+        "value": 2
+       },
+       "G2": {
+        "value": 3
+       },
+       "H2": {
+        "value": 4
+       },
+       "D12": {
+        "formula": "C1:E1"
+       },
+       "I12": {
+        "formula": "C1:E1"
+       },
+       "C13": {
+        "formula": "1:1"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "D5": {
+        "formula": "S!C1:E1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "D12"
+    },
+    {
+     "sheet": "S",
+     "range": "I12"
+    },
+    {
+     "sheet": "S",
+     "range": "C13"
+    },
+    {
+     "sheet": "T",
+     "range": "D5"
+    }
+   ],
+   "legacy": [
+    "S!D12",
+    "S!I12",
+    "S!C13",
+    "T!D5"
+   ]
+  },
+  {
+   "id": "block",
+   "about": "a block takes the cell in the formula's row and column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "C1": {
+        "value": 7
+       },
+       "D1": {
+        "value": 8
+       },
+       "E1": {
+        "value": 9
+       },
+       "G1": {
+        "value": 1
+       },
+       "H1": {
+        "value": 2
+       },
+       "G2": {
+        "value": 3
+       },
+       "H2": {
+        "value": 4
+       },
+       "J1": {
+        "formula": "G1:H2"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "G2": {
+        "formula": "S!G1:H2"
+       },
+       "H1": {
+        "formula": "S!G1:H2"
+       },
+       "J2": {
+        "formula": "S!G1:H2"
+       },
+       "G5": {
+        "formula": "S!G1:H2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "T",
+     "range": "G2"
+    },
+    {
+     "sheet": "T",
+     "range": "H1"
+    },
+    {
+     "sheet": "T",
+     "range": "J2"
+    },
+    {
+     "sheet": "T",
+     "range": "G5"
+    },
+    {
+     "sheet": "S",
+     "range": "J1"
+    }
+   ],
+   "legacy": [
+    "T!G2",
+    "T!H1",
+    "T!J2",
+    "T!G5",
+    "S!J1"
+   ]
+  },
+  {
+   "id": "calls",
+   "about": "ranges in calls: one value taken in a value argument, the whole range in a reference or array argument",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "C1": {
+        "value": 7
+       },
+       "D1": {
+        "value": 8
+       },
+       "E1": {
+        "value": 9
+       },
+       "G1": {
+        "value": 1
+       },
+       "H1": {
+        "value": 2
+       },
+       "G2": {
+        "value": 3
+       },
+       "H2": {
+        "value": 4
+       },
+       "K1": {
+        "formula": "SUM(A1:A10)"
+       },
+       "K2": {
+        "formula": "SUM(A1:A10*2)"
+       },
+       "K3": {
+        "formula": "SUMPRODUCT(A1:A10*2)"
+       },
+       "K4": {
+        "formula": "ABS(A1:A10)"
+       },
+       "K5": {
+        "formula": "IF(A1:A10>4,\"y\",\"n\")"
+       },
+       "K6": {
+        "formula": "VLOOKUP(A1:A10,A1:B10,2,FALSE)"
+       },
+       "K7": {
+        "formula": "MATCH(A1:A10,A1:A10,0)"
+       },
+       "K8": {
+        "formula": "COUNTIF(A1:A10,A1:A10)"
+       },
+       "K9": {
+        "formula": "SUMIF(A1:A10,\">3\",B1:B10)"
+       },
+       "K10": {
+        "formula": "LEN(B1:B10)"
+       },
+       "K11": {
+        "formula": "ROW(A1:A10)"
+       },
+       "K12": {
+        "formula": "INDEX(A1:B10,0,2)"
+       },
+       "K13": {
+        "formula": "INDEX(A1:B10,3,2)"
+       },
+       "K14": {
+        "formula": "SUM(IF(A1:A10>4,1,0))"
+       },
+       "K15": {
+        "formula": "SUMPRODUCT((A1:A10>4)*1)"
+       },
+       "K16": {
+        "formula": "COLUMN(C1:E1)"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "K1"
+    },
+    {
+     "sheet": "S",
+     "range": "K2"
+    },
+    {
+     "sheet": "S",
+     "range": "K3"
+    },
+    {
+     "sheet": "S",
+     "range": "K4"
+    },
+    {
+     "sheet": "S",
+     "range": "K5"
+    },
+    {
+     "sheet": "S",
+     "range": "K6"
+    },
+    {
+     "sheet": "S",
+     "range": "K7"
+    },
+    {
+     "sheet": "S",
+     "range": "K8"
+    },
+    {
+     "sheet": "S",
+     "range": "K9"
+    },
+    {
+     "sheet": "S",
+     "range": "K10"
+    },
+    {
+     "sheet": "S",
+     "range": "K11"
+    },
+    {
+     "sheet": "S",
+     "range": "K12"
+    },
+    {
+     "sheet": "S",
+     "range": "K13"
+    },
+    {
+     "sheet": "S",
+     "range": "K14"
+    },
+    {
+     "sheet": "S",
+     "range": "K15"
+    },
+    {
+     "sheet": "S",
+     "range": "K16"
+    }
+   ],
+   "legacy": [
+    "S!K1",
+    "S!K2",
+    "S!K3",
+    "S!K4",
+    "S!K5",
+    "S!K6",
+    "S!K7",
+    "S!K8",
+    "S!K9",
+    "S!K10",
+    "S!K11",
+    "S!K12",
+    "S!K13",
+    "S!K14",
+    "S!K15",
+    "S!K16"
+   ]
+  },
+  {
+   "id": "arrays",
+   "about": "arrays: a constant, a function with an array answer, a lookup over a whole column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "C1": {
+        "value": 7
+       },
+       "D1": {
+        "value": 8
+       },
+       "E1": {
+        "value": 9
+       },
+       "G1": {
+        "value": 1
+       },
+       "H1": {
+        "value": 2
+       },
+       "G2": {
+        "value": 3
+       },
+       "H2": {
+        "value": 4
+       },
+       "L1": {
+        "formula": "{1,2,3}"
+       },
+       "L2": {
+        "formula": "{1,2,3}*2"
+       },
+       "L3": {
+        "formula": "SEQUENCE(3)"
+       },
+       "L4": {
+        "formula": "TRANSPOSE(A1:A3)"
+       },
+       "L5": {
+        "formula": "MMULT(G1:H2,G1:H2)"
+       },
+       "L6": {
+        "formula": "VLOOKUP(A:A,A:B,2,FALSE)"
+       },
+       "L7": {
+        "formula": "SUM(COUNTIF(A1:A10,{3,4}))"
+       },
+       "L8": {
+        "formula": "INDEX(A1:A10*2,7)"
+       },
+       "L9": {
+        "formula": "IF(TRUE,A1:A10)"
+       },
+       "L10": {
+        "formula": "CHOOSE(1,A1:A10,B1:B10)"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {}
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "L1"
+    },
+    {
+     "sheet": "S",
+     "range": "L2"
+    },
+    {
+     "sheet": "S",
+     "range": "L3"
+    },
+    {
+     "sheet": "S",
+     "range": "L4"
+    },
+    {
+     "sheet": "S",
+     "range": "L5"
+    },
+    {
+     "sheet": "S",
+     "range": "L6"
+    },
+    {
+     "sheet": "S",
+     "range": "L7"
+    },
+    {
+     "sheet": "S",
+     "range": "L8"
+    },
+    {
+     "sheet": "S",
+     "range": "L9"
+    },
+    {
+     "sheet": "S",
+     "range": "L10"
+    }
+   ],
+   "legacy": [
+    "S!L1",
+    "S!L2",
+    "S!L3",
+    "S!L4",
+    "S!L5",
+    "S!L6",
+    "S!L7",
+    "S!L8",
+    "S!L9",
+    "S!L10"
+   ]
+  },
+  {
+   "id": "names",
+   "about": "names over a range, a constant, an array, a formula, a union",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "A6": {
+        "value": 6
+       },
+       "A7": {
+        "value": 7
+       },
+       "A8": {
+        "value": 8
+       },
+       "A9": {
+        "value": 9
+       },
+       "A10": {
+        "value": 10
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "B6": {
+        "value": 60
+       },
+       "B7": {
+        "value": 70
+       },
+       "B8": {
+        "value": 80
+       },
+       "B9": {
+        "value": 90
+       },
+       "B10": {
+        "value": 100
+       },
+       "C1": {
+        "value": 7
+       },
+       "D1": {
+        "value": 8
+       },
+       "E1": {
+        "value": 9
+       },
+       "G1": {
+        "value": 1
+       },
+       "H1": {
+        "value": 2
+       },
+       "G2": {
+        "value": 3
+       },
+       "H2": {
+        "value": 4
+       },
+       "M2": {
+        "formula": "nr"
+       },
+       "M3": {
+        "formula": "nr*2"
+       },
+       "M4": {
+        "formula": "SUM(nr)"
+       },
+       "M5": {
+        "formula": "nc"
+       },
+       "M6": {
+        "formula": "na"
+       },
+       "M7": {
+        "formula": "nf"
+       },
+       "M8": {
+        "formula": "nu"
+       },
+       "M9": {
+        "formula": "INDEX(nr,2)"
+       },
+       "M10": {
+        "formula": "SUM(nf)"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {}
+     }
+    ],
+    "names": [
+     {
+      "name": "nr",
+      "ref": "'S'!$A$1:$A$10"
+     },
+     {
+      "name": "nc",
+      "ref": "0.2"
+     },
+     {
+      "name": "na",
+      "ref": "{4,5,6}"
+     },
+     {
+      "name": "nf",
+      "ref": "'S'!$A$1:$A$10*3"
+     },
+     {
+      "name": "nu",
+      "ref": "'S'!$A$1:$A$3,'S'!$B$1:$B$3"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "M2"
+    },
+    {
+     "sheet": "S",
+     "range": "M3"
+    },
+    {
+     "sheet": "S",
+     "range": "M4"
+    },
+    {
+     "sheet": "S",
+     "range": "M5"
+    },
+    {
+     "sheet": "S",
+     "range": "M6"
+    },
+    {
+     "sheet": "S",
+     "range": "M7"
+    },
+    {
+     "sheet": "S",
+     "range": "M8"
+    },
+    {
+     "sheet": "S",
+     "range": "M9"
+    },
+    {
+     "sheet": "S",
+     "range": "M10"
+    }
+   ],
+   "legacy": [
+    "S!M2",
+    "S!M3",
+    "S!M4",
+    "S!M5",
+    "S!M6",
+    "S!M7",
+    "S!M8",
+    "S!M9",
+    "S!M10"
+   ]
+  }
+ ],
+ "answers": {
+  "column": {
+   "values": {
+    "S!J3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!J12": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!J4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!J5": {
+     "t": "n",
+     "v": 5
+    },
+    "S!J6": {
+     "t": "n",
+     "v": 66
+    },
+    "T!B7": {
+     "t": "n",
+     "v": 7
+    },
+    "T!B11": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   },
+   "formulas": {
+    "S!J3": "=A1:A10",
+    "S!J12": "=A1:A10",
+    "S!J4": "=A1:A10*2",
+    "S!J5": "=A:A",
+    "S!J6": "=$A$1:$A$10+B1:B10",
+    "T!B7": "=S!A1:A10",
+    "T!B11": "=S!A1:A10"
+   },
+   "formulas2": {
+    "S!J3": "=@A1:A10",
+    "S!J12": "=@A1:A10",
+    "S!J4": "=@A1:A10*2",
+    "S!J5": "=@A:A",
+    "S!J6": "=@$A$1:$A$10+@B1:B10",
+    "T!B7": "=@S!A1:A10",
+    "T!B11": "=@S!A1:A10"
+   }
+  },
+  "row": {
+   "values": {
+    "S!D12": {
+     "t": "n",
+     "v": 8
+    },
+    "S!I12": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!C13": {
+     "t": "n",
+     "v": 7
+    },
+    "T!D5": {
+     "t": "n",
+     "v": 8
+    }
+   },
+   "formulas": {
+    "S!D12": "=C1:E1",
+    "S!I12": "=C1:E1",
+    "S!C13": "=1:1",
+    "T!D5": "=S!C1:E1"
+   },
+   "formulas2": {
+    "S!D12": "=@C1:E1",
+    "S!I12": "=@C1:E1",
+    "S!C13": "=@1:1",
+    "T!D5": "=@S!C1:E1"
+   }
+  },
+  "block": {
+   "values": {
+    "T!G2": {
+     "t": "n",
+     "v": 3
+    },
+    "T!H1": {
+     "t": "n",
+     "v": 2
+    },
+    "T!J2": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "T!G5": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!J1": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   },
+   "formulas": {
+    "T!G2": "=S!G1:H2",
+    "T!H1": "=S!G1:H2",
+    "T!J2": "=S!G1:H2",
+    "T!G5": "=S!G1:H2",
+    "S!J1": "=G1:H2"
+   },
+   "formulas2": {
+    "T!G2": "=@S!G1:H2",
+    "T!H1": "=@S!G1:H2",
+    "T!J2": "=@S!G1:H2",
+    "T!G5": "=@S!G1:H2",
+    "S!J1": "=@G1:H2"
+   }
+  },
+  "calls": {
+   "values": {
+    "S!K1": {
+     "t": "n",
+     "v": 55
+    },
+    "S!K2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!K3": {
+     "t": "n",
+     "v": 110
+    },
+    "S!K4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!K5": {
+     "t": "s",
+     "v": "y"
+    },
+    "S!K6": {
+     "t": "n",
+     "v": 60
+    },
+    "S!K7": {
+     "t": "n",
+     "v": 7
+    },
+    "S!K8": {
+     "t": "n",
+     "v": 1
+    },
+    "S!K9": {
+     "t": "n",
+     "v": 490
+    },
+    "S!K10": {
+     "t": "n",
+     "v": 3
+    },
+    "S!K11": {
+     "t": "n",
+     "v": 1
+    },
+    "S!K12": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!K13": {
+     "t": "n",
+     "v": 30
+    },
+    "S!K14": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!K15": {
+     "t": "n",
+     "v": 6
+    },
+    "S!K16": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!K1": "=SUM(A1:A10)",
+    "S!K2": "=SUM(A1:A10*2)",
+    "S!K3": "=SUMPRODUCT(A1:A10*2)",
+    "S!K4": "=ABS(A1:A10)",
+    "S!K5": "=IF(A1:A10>4,\"y\",\"n\")",
+    "S!K6": "=VLOOKUP(A1:A10,A1:B10,2,FALSE)",
+    "S!K7": "=MATCH(A1:A10,A1:A10,0)",
+    "S!K8": "=COUNTIF(A1:A10,A1:A10)",
+    "S!K9": "=SUMIF(A1:A10,\">3\",B1:B10)",
+    "S!K10": "=LEN(B1:B10)",
+    "S!K11": "=ROW(A1:A10)",
+    "S!K12": "=INDEX(A1:B10,0,2)",
+    "S!K13": "=INDEX(A1:B10,3,2)",
+    "S!K14": "=SUM(IF(A1:A10>4,1,0))",
+    "S!K15": "=SUMPRODUCT((A1:A10>4)*1)",
+    "S!K16": "=COLUMN(C1:E1)"
+   },
+   "formulas2": {
+    "S!K1": "=SUM(A1:A10)",
+    "S!K2": "=SUM(@A1:A10*2)",
+    "S!K3": "=SUMPRODUCT(A1:A10*2)",
+    "S!K4": "=ABS(@A1:A10)",
+    "S!K5": "=IF(@A1:A10>4,\"y\",\"n\")",
+    "S!K6": "=VLOOKUP(@A1:A10,A1:B10,2,FALSE)",
+    "S!K7": "=MATCH(@A1:A10,A1:A10,0)",
+    "S!K8": "=COUNTIF(A1:A10,@A1:A10)",
+    "S!K9": "=SUMIF(A1:A10,\">3\",B1:B10)",
+    "S!K10": "=LEN(@B1:B10)",
+    "S!K11": "=@ROW(A1:A10)",
+    "S!K12": "=@INDEX(A1:B10,0,2)",
+    "S!K13": "=INDEX(A1:B10,3,2)",
+    "S!K14": "=SUM(IF(@A1:A10>4,1,0))",
+    "S!K15": "=SUMPRODUCT((A1:A10>4)*1)",
+    "S!K16": "=@COLUMN(C1:E1)"
+   }
+  },
+  "arrays": {
+   "values": {
+    "S!L1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!L2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!L3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!L4": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!L5": {
+     "t": "n",
+     "v": 7
+    },
+    "S!L6": {
+     "t": "n",
+     "v": 60
+    },
+    "S!L7": {
+     "t": "n",
+     "v": 2
+    },
+    "S!L8": {
+     "t": "n",
+     "v": 14
+    },
+    "S!L9": {
+     "t": "n",
+     "v": 9
+    },
+    "S!L10": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!L1": "={1,2,3}",
+    "S!L2": "={1,2,3}*2",
+    "S!L3": "=SEQUENCE(3)",
+    "S!L4": "=TRANSPOSE(A1:A3)",
+    "S!L5": "=MMULT(G1:H2,G1:H2)",
+    "S!L6": "=VLOOKUP(A:A,A:B,2,FALSE)",
+    "S!L7": "=SUM(COUNTIF(A1:A10,{3,4}))",
+    "S!L8": "=INDEX(A1:A10*2,7)",
+    "S!L9": "=IF(TRUE,A1:A10)",
+    "S!L10": "=CHOOSE(1,A1:A10,B1:B10)"
+   },
+   "formulas2": {
+    "S!L1": "=@{1,2,3}",
+    "S!L2": "=@{1,2,3}*2",
+    "S!L3": "=@SEQUENCE(3)",
+    "S!L4": "=@TRANSPOSE(@A1:A3)",
+    "S!L5": "=@MMULT(G1:H2,G1:H2)",
+    "S!L6": "=VLOOKUP(@A:A,A:B,2,FALSE)",
+    "S!L7": "=SUM(COUNTIF(A1:A10,{3,4}))",
+    "S!L8": "=@INDEX(A1:A10*2,7)",
+    "S!L9": "=@IF(TRUE,A1:A10)",
+    "S!L10": "=@CHOOSE(1,A1:A10,B1:B10)"
+   }
+  },
+  "names": {
+   "values": {
+    "S!M2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!M3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!M4": {
+     "t": "n",
+     "v": 55
+    },
+    "S!M5": {
+     "t": "n",
+     "v": 0.2
+    },
+    "S!M6": {
+     "t": "n",
+     "v": 4
+    },
+    "S!M7": {
+     "t": "n",
+     "v": 3
+    },
+    "S!M8": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!M9": {
+     "t": "n",
+     "v": 2
+    },
+    "S!M10": {
+     "t": "n",
+     "v": 165
+    }
+   },
+   "formulas": {
+    "S!M2": "=nr",
+    "S!M3": "=nr*2",
+    "S!M4": "=SUM(nr)",
+    "S!M5": "=nc",
+    "S!M6": "=na",
+    "S!M7": "=nf",
+    "S!M8": "=nu",
+    "S!M9": "=INDEX(nr,2)",
+    "S!M10": "=SUM(nf)"
+   },
+   "formulas2": {
+    "S!M2": "=@nr",
+    "S!M3": "=@nr*2",
+    "S!M4": "=SUM(nr)",
+    "S!M5": "=nc",
+    "S!M6": "=@na",
+    "S!M7": "=@nf",
+    "S!M8": "=@nu",
+    "S!M9": "=INDEX(nr,2)",
+    "S!M10": "=SUM(nf)"
+   }
+  }
+ }
+}

@@ -69,4 +69,4 @@ The engine builds the rules when it creates a book's state and passes them to op
 
 `test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from ru-RU and en-US.
 
-Excel for Mac is the reference for ru-RU. Excel for Windows may differ in details such as array constants, and was not measured.
+Excel for Mac is the reference for ru-RU. Excel for Windows (16.0.20430, `bench/windows`) computes the same ru-RU sets alike but for its regional data: it sorts Latin before Cyrillic (`"a"<"а"` is TRUE there), writes month names with a capital (`Январь`) and short ones with three letters (`фев`, `ноя`), and its long date `[$-F800]` has no weekday. The engine follows the Mac in these and Windows in `CHAR` and `CODE`; `test/excel-win-cases.ts` lists the cases. Formula text in ru-RU (array constants and the like) was not compared.

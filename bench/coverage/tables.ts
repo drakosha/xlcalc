@@ -36,7 +36,7 @@ export interface StoredTables {
 export const tablesFile = (set: string, locale: Locale = 'en') => join(ROOT, 'test/excel/tables', locale === 'ru' ? 'ru-RU' : '', `${set}.json`)
 
 /** The case's steps as AppleScript lines; a table operation finds its table's sheet by name, renames followed. */
-function stepLines(c: TableCase): string[] {
+export function stepLines(c: TableCase): string[] {
   const where = new Map<string, string>()
   for (const s of c.book.sheets) for (const t of s.tables ?? []) where.set(sheetKey(t.name), s.name)
   const sheetOf = (table: string) => {
@@ -83,7 +83,7 @@ function stepLines(c: TableCase): string[] {
 }
 
 /** The book with the three empty mirror sheets the script writes its mirror formulas into. */
-const withMirrors = (b: BookInput): BookInput => ({ ...b, sheets: [...b.sheets, ...MIRRORS.map((name) => ({ name, cells: {} }))] })
+export const withMirrors = (b: BookInput): BookInput => ({ ...b, sheets: [...b.sheets, ...MIRRORS.map((name) => ({ name, cells: {} }))] })
 
 /** A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed). */
 async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unknown>, id: string): Promise<TableAnswer | null> {

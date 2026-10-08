@@ -1,0 +1,2557 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 59.2,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "number#1",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0,00E+00\")"
+  },
+  {
+   "id": "number#2",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0,00E+00\")"
+  },
+  {
+   "id": "number#3",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0,00E+00\")"
+  },
+  {
+   "id": "number#4",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0,00E+00\")"
+  },
+  {
+   "id": "number#5",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0,00E+00\")"
+  },
+  {
+   "id": "number#6",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0,00E+00\")"
+  },
+  {
+   "id": "number#7",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0,00E+00\")"
+  },
+  {
+   "id": "number#8",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0,0E+0\")"
+  },
+  {
+   "id": "number#9",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0,0E+0\")"
+  },
+  {
+   "id": "number#10",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0,0E+0\")"
+  },
+  {
+   "id": "number#11",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0,0E+0\")"
+  },
+  {
+   "id": "number#12",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0,0E+0\")"
+  },
+  {
+   "id": "number#13",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0,0E+0\")"
+  },
+  {
+   "id": "number#14",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0,0E+0\")"
+  },
+  {
+   "id": "number#15",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"##0,0E+0\")"
+  },
+  {
+   "id": "number#16",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"##0,0E+0\")"
+  },
+  {
+   "id": "number#17",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"##0,0E+0\")"
+  },
+  {
+   "id": "number#18",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"##0,0E+0\")"
+  },
+  {
+   "id": "number#19",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"##0,0E+0\")"
+  },
+  {
+   "id": "number#20",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"##0,0E+0\")"
+  },
+  {
+   "id": "number#21",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"##0,0E+0\")"
+  },
+  {
+   "id": "number#22",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0,00E-00\")"
+  },
+  {
+   "id": "number#23",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0,00E-00\")"
+  },
+  {
+   "id": "number#24",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0,00E-00\")"
+  },
+  {
+   "id": "number#25",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0,00E-00\")"
+  },
+  {
+   "id": "number#26",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0,00E-00\")"
+  },
+  {
+   "id": "number#27",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0,00E-00\")"
+  },
+  {
+   "id": "number#28",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0,00E-00\")"
+  },
+  {
+   "id": "number#29",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0E+00\")"
+  },
+  {
+   "id": "number#30",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0E+00\")"
+  },
+  {
+   "id": "number#31",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0E+00\")"
+  },
+  {
+   "id": "number#32",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0E+00\")"
+  },
+  {
+   "id": "number#33",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0E+00\")"
+  },
+  {
+   "id": "number#34",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0E+00\")"
+  },
+  {
+   "id": "number#35",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0E+00\")"
+  },
+  {
+   "id": "number#36",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Red]0\")"
+  },
+  {
+   "id": "number#37",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Red]0\")"
+  },
+  {
+   "id": "number#38",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Red]0\")"
+  },
+  {
+   "id": "number#39",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Red]0\")"
+  },
+  {
+   "id": "number#40",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Red]0\")"
+  },
+  {
+   "id": "number#41",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Red]0\")"
+  },
+  {
+   "id": "number#42",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Red]0\")"
+  },
+  {
+   "id": "number#43",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Красный]0\")"
+  },
+  {
+   "id": "number#44",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Красный]0\")"
+  },
+  {
+   "id": "number#45",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Красный]0\")"
+  },
+  {
+   "id": "number#46",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Красный]0\")"
+  },
+  {
+   "id": "number#47",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Красный]0\")"
+  },
+  {
+   "id": "number#48",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Красный]0\")"
+  },
+  {
+   "id": "number#49",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Красный]0\")"
+  },
+  {
+   "id": "number#50",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#51",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#52",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#53",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#54",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#55",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#56",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Синий]0;[Красный]-0\")"
+  },
+  {
+   "id": "number#57",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#58",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#59",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#60",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#61",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#62",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#63",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Цвет10]0,00\")"
+  },
+  {
+   "id": "number#64",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Color10]0\")"
+  },
+  {
+   "id": "number#65",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Color10]0\")"
+  },
+  {
+   "id": "number#66",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Color10]0\")"
+  },
+  {
+   "id": "number#67",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Color10]0\")"
+  },
+  {
+   "id": "number#68",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Color10]0\")"
+  },
+  {
+   "id": "number#69",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Color10]0\")"
+  },
+  {
+   "id": "number#70",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Color10]0\")"
+  },
+  {
+   "id": "number#71",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#72",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#73",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#74",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#75",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#76",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#77",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Красный][<0]0;0\")"
+  },
+  {
+   "id": "number#78",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#79",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#80",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#81",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#82",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#83",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#84",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[>100]0,0;[<=-100]-0;0\")"
+  },
+  {
+   "id": "number#85",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#86",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#87",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#88",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#89",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#90",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#91",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[<0]\"\"neg\"\";[>0]\"\"pos\"\";\"\"zero\"\"\")"
+  },
+  {
+   "id": "number#92",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0_)\")"
+  },
+  {
+   "id": "number#93",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0_)\")"
+  },
+  {
+   "id": "number#94",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0_)\")"
+  },
+  {
+   "id": "number#95",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0_)\")"
+  },
+  {
+   "id": "number#96",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0_)\")"
+  },
+  {
+   "id": "number#97",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0_)\")"
+  },
+  {
+   "id": "number#98",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0_)\")"
+  },
+  {
+   "id": "number#99",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"_(0_)\")"
+  },
+  {
+   "id": "number#100",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"_(0_)\")"
+  },
+  {
+   "id": "number#101",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"_(0_)\")"
+  },
+  {
+   "id": "number#102",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"_(0_)\")"
+  },
+  {
+   "id": "number#103",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"_(0_)\")"
+  },
+  {
+   "id": "number#104",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"_(0_)\")"
+  },
+  {
+   "id": "number#105",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"_(0_)\")"
+  },
+  {
+   "id": "number#106",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0*-\")"
+  },
+  {
+   "id": "number#107",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0*-\")"
+  },
+  {
+   "id": "number#108",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0*-\")"
+  },
+  {
+   "id": "number#109",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0*-\")"
+  },
+  {
+   "id": "number#110",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0*-\")"
+  },
+  {
+   "id": "number#111",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0*-\")"
+  },
+  {
+   "id": "number#112",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0*-\")"
+  },
+  {
+   "id": "number#113",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#114",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#115",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#116",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#117",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#118",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#119",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"_(* # ##0_);_(* (# ##0);_(* \"\"-\"\"_);_(@_)\")"
+  },
+  {
+   "id": "number#120",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"# ?/?\")"
+  },
+  {
+   "id": "number#121",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"# ?/?\")"
+  },
+  {
+   "id": "number#122",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"# ?/?\")"
+  },
+  {
+   "id": "number#123",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"# ?/?\")"
+  },
+  {
+   "id": "number#124",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"# ?/?\")"
+  },
+  {
+   "id": "number#125",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"# ?/?\")"
+  },
+  {
+   "id": "number#126",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"# ?/?\")"
+  },
+  {
+   "id": "number#127",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"?/?\")"
+  },
+  {
+   "id": "number#128",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"?/?\")"
+  },
+  {
+   "id": "number#129",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"?/?\")"
+  },
+  {
+   "id": "number#130",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"?/?\")"
+  },
+  {
+   "id": "number#131",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"?/?\")"
+  },
+  {
+   "id": "number#132",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"?/?\")"
+  },
+  {
+   "id": "number#133",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"?/?\")"
+  },
+  {
+   "id": "number#134",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#135",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#136",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#137",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#138",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#139",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#140",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"Основной\"\" шт\"\"\")"
+  },
+  {
+   "id": "number#141",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#142",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#143",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#144",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#145",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#146",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#147",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"\"\"x\"\"Основной\")"
+  },
+  {
+   "id": "number#148",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#149",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#150",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#151",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#152",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#153",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#154",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[Красный]Основной\")"
+  },
+  {
+   "id": "number#155",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#156",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#157",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#158",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#159",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#160",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#161",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"# ##0,00 [$₽-419]\")"
+  },
+  {
+   "id": "number#162",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#163",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#164",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#165",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#166",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#167",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#168",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"# ##0,00 ₽\")"
+  },
+  {
+   "id": "number#169",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#170",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#171",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#172",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#173",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#174",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#175",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"[$-409]0,00\")"
+  },
+  {
+   "id": "number#176",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1234.567,\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "number#177",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-1234.567,\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "number#178",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "number#179",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(0.5,\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "number#180",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(-0.5,\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "number#181",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(1E+15,\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "number#182",
+   "group": "number",
+   "fn": "TEXT",
+   "formula": "TEXT(\"abc\",\"0;-0;0;\"\"текст: \"\"@\")"
+  },
+  {
+   "id": "date#1",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[ч]:мм:сс\")"
+  },
+  {
+   "id": "date#2",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[ч]:мм:сс\")"
+  },
+  {
+   "id": "date#3",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[ч]:мм:сс\")"
+  },
+  {
+   "id": "date#4",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[ч]:мм:сс\")"
+  },
+  {
+   "id": "date#5",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[ч]:мм:сс\")"
+  },
+  {
+   "id": "date#6",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[ч]:мм:сс\")"
+  },
+  {
+   "id": "date#7",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[ч]:мм\")"
+  },
+  {
+   "id": "date#8",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[ч]:мм\")"
+  },
+  {
+   "id": "date#9",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[ч]:мм\")"
+  },
+  {
+   "id": "date#10",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[ч]:мм\")"
+  },
+  {
+   "id": "date#11",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[ч]:мм\")"
+  },
+  {
+   "id": "date#12",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[ч]:мм\")"
+  },
+  {
+   "id": "date#13",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[мм]:сс\")"
+  },
+  {
+   "id": "date#14",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[мм]:сс\")"
+  },
+  {
+   "id": "date#15",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[мм]:сс\")"
+  },
+  {
+   "id": "date#16",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[мм]:сс\")"
+  },
+  {
+   "id": "date#17",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[мм]:сс\")"
+  },
+  {
+   "id": "date#18",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[мм]:сс\")"
+  },
+  {
+   "id": "date#19",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[сс]\")"
+  },
+  {
+   "id": "date#20",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[сс]\")"
+  },
+  {
+   "id": "date#21",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[сс]\")"
+  },
+  {
+   "id": "date#22",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[сс]\")"
+  },
+  {
+   "id": "date#23",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[сс]\")"
+  },
+  {
+   "id": "date#24",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[сс]\")"
+  },
+  {
+   "id": "date#25",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[ч]\")"
+  },
+  {
+   "id": "date#26",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[ч]\")"
+  },
+  {
+   "id": "date#27",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[ч]\")"
+  },
+  {
+   "id": "date#28",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[ч]\")"
+  },
+  {
+   "id": "date#29",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[ч]\")"
+  },
+  {
+   "id": "date#30",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[ч]\")"
+  },
+  {
+   "id": "date#31",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"ч:мм:сс,0\")"
+  },
+  {
+   "id": "date#32",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"ч:мм:сс,0\")"
+  },
+  {
+   "id": "date#33",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"ч:мм:сс,0\")"
+  },
+  {
+   "id": "date#34",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"ч:мм:сс,0\")"
+  },
+  {
+   "id": "date#35",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"ч:мм:сс,0\")"
+  },
+  {
+   "id": "date#36",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"ч:мм:сс,0\")"
+  },
+  {
+   "id": "date#37",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"мм:сс,00\")"
+  },
+  {
+   "id": "date#38",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"мм:сс,00\")"
+  },
+  {
+   "id": "date#39",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"мм:сс,00\")"
+  },
+  {
+   "id": "date#40",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"мм:сс,00\")"
+  },
+  {
+   "id": "date#41",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"мм:сс,00\")"
+  },
+  {
+   "id": "date#42",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"мм:сс,00\")"
+  },
+  {
+   "id": "date#43",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[Красный]ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "date#44",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[Красный]ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "date#45",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[Красный]ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "date#46",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[Красный]ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "date#47",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[Красный]ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "date#48",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[Красный]ДД.ММ.ГГГГ\")"
+  },
+  {
+   "id": "date#49",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[$-409]ММММ\")"
+  },
+  {
+   "id": "date#50",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[$-409]ММММ\")"
+  },
+  {
+   "id": "date#51",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[$-409]ММММ\")"
+  },
+  {
+   "id": "date#52",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[$-409]ММММ\")"
+  },
+  {
+   "id": "date#53",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[$-409]ММММ\")"
+  },
+  {
+   "id": "date#54",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[$-409]ММММ\")"
+  },
+  {
+   "id": "date#55",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"[$-419]ММММ\")"
+  },
+  {
+   "id": "date#56",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"[$-419]ММММ\")"
+  },
+  {
+   "id": "date#57",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"[$-419]ММММ\")"
+  },
+  {
+   "id": "date#58",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"[$-419]ММММ\")"
+  },
+  {
+   "id": "date#59",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"[$-419]ММММ\")"
+  },
+  {
+   "id": "date#60",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"[$-419]ММММ\")"
+  },
+  {
+   "id": "date#61",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"ДД/ММ/ГГГГ\")"
+  },
+  {
+   "id": "date#62",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"ДД/ММ/ГГГГ\")"
+  },
+  {
+   "id": "date#63",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"ДД/ММ/ГГГГ\")"
+  },
+  {
+   "id": "date#64",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"ДД/ММ/ГГГГ\")"
+  },
+  {
+   "id": "date#65",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"ДД/ММ/ГГГГ\")"
+  },
+  {
+   "id": "date#66",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"ДД/ММ/ГГГГ\")"
+  },
+  {
+   "id": "date#67",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.75,\"ДДДД\")"
+  },
+  {
+   "id": "date#68",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0,\"ДДДД\")"
+  },
+  {
+   "id": "date#69",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(-1,\"ДДДД\")"
+  },
+  {
+   "id": "date#70",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(45688.999999,\"ДДДД\")"
+  },
+  {
+   "id": "date#71",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(0.75/86400,\"ДДДД\")"
+  },
+  {
+   "id": "date#72",
+   "group": "date",
+   "fn": "TEXT",
+   "formula": "TEXT(1.5,\"ДДДД\")"
+  }
+ ],
+ "values": {
+  "number#1": {
+   "t": "s",
+   "v": "1,23E+03"
+  },
+  "number#2": {
+   "t": "s",
+   "v": "-1,23E+03"
+  },
+  "number#3": {
+   "t": "s",
+   "v": "0,00E+00"
+  },
+  "number#4": {
+   "t": "s",
+   "v": "5,00E-01"
+  },
+  "number#5": {
+   "t": "s",
+   "v": "-5,00E-01"
+  },
+  "number#6": {
+   "t": "s",
+   "v": "1,00E+15"
+  },
+  "number#7": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#8": {
+   "t": "s",
+   "v": "1,2E+3"
+  },
+  "number#9": {
+   "t": "s",
+   "v": "-1,2E+3"
+  },
+  "number#10": {
+   "t": "s",
+   "v": "0,0E+0"
+  },
+  "number#11": {
+   "t": "s",
+   "v": "5,0E-1"
+  },
+  "number#12": {
+   "t": "s",
+   "v": "-5,0E-1"
+  },
+  "number#13": {
+   "t": "s",
+   "v": "1,0E+15"
+  },
+  "number#14": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#15": {
+   "t": "s",
+   "v": "1,2E+3"
+  },
+  "number#16": {
+   "t": "s",
+   "v": "-1,2E+3"
+  },
+  "number#17": {
+   "t": "s",
+   "v": "000,0E+0"
+  },
+  "number#18": {
+   "t": "s",
+   "v": "500,0E-3"
+  },
+  "number#19": {
+   "t": "s",
+   "v": "-500,0E-3"
+  },
+  "number#20": {
+   "t": "s",
+   "v": "1,0E+15"
+  },
+  "number#21": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#22": {
+   "t": "s",
+   "v": "1,23E03"
+  },
+  "number#23": {
+   "t": "s",
+   "v": "-1,23E03"
+  },
+  "number#24": {
+   "t": "s",
+   "v": "0,00E00"
+  },
+  "number#25": {
+   "t": "s",
+   "v": "5,00E-01"
+  },
+  "number#26": {
+   "t": "s",
+   "v": "-5,00E-01"
+  },
+  "number#27": {
+   "t": "s",
+   "v": "1,00E15"
+  },
+  "number#28": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#29": {
+   "t": "s",
+   "v": "1E+03"
+  },
+  "number#30": {
+   "t": "s",
+   "v": "-1E+03"
+  },
+  "number#31": {
+   "t": "s",
+   "v": "0E+00"
+  },
+  "number#32": {
+   "t": "s",
+   "v": "5E-01"
+  },
+  "number#33": {
+   "t": "s",
+   "v": "-5E-01"
+  },
+  "number#34": {
+   "t": "s",
+   "v": "1E+15"
+  },
+  "number#35": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#36": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#37": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#38": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#39": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#40": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#41": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#42": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#43": {
+   "t": "s",
+   "v": "1235"
+  },
+  "number#44": {
+   "t": "s",
+   "v": "-1235"
+  },
+  "number#45": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#46": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#47": {
+   "t": "s",
+   "v": "-1"
+  },
+  "number#48": {
+   "t": "s",
+   "v": "1000000000000000"
+  },
+  "number#49": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#50": {
+   "t": "s",
+   "v": "1235"
+  },
+  "number#51": {
+   "t": "s",
+   "v": "-1235"
+  },
+  "number#52": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#53": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#54": {
+   "t": "s",
+   "v": "-1"
+  },
+  "number#55": {
+   "t": "s",
+   "v": "1000000000000000"
+  },
+  "number#56": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#57": {
+   "t": "s",
+   "v": "1234,57"
+  },
+  "number#58": {
+   "t": "s",
+   "v": "-1234,57"
+  },
+  "number#59": {
+   "t": "s",
+   "v": "0,00"
+  },
+  "number#60": {
+   "t": "s",
+   "v": "0,50"
+  },
+  "number#61": {
+   "t": "s",
+   "v": "-0,50"
+  },
+  "number#62": {
+   "t": "s",
+   "v": "1000000000000000,00"
+  },
+  "number#63": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#64": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#65": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#66": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#67": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#68": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#69": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#70": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#71": {
+   "t": "s",
+   "v": "1235"
+  },
+  "number#72": {
+   "t": "s",
+   "v": "1235"
+  },
+  "number#73": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#74": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#75": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#76": {
+   "t": "s",
+   "v": "1000000000000000"
+  },
+  "number#77": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#78": {
+   "t": "s",
+   "v": "1234,6"
+  },
+  "number#79": {
+   "t": "s",
+   "v": "-1235"
+  },
+  "number#80": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#81": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#82": {
+   "t": "s",
+   "v": "-1"
+  },
+  "number#83": {
+   "t": "s",
+   "v": "1000000000000000,0"
+  },
+  "number#84": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#85": {
+   "t": "s",
+   "v": "pos"
+  },
+  "number#86": {
+   "t": "s",
+   "v": "neg"
+  },
+  "number#87": {
+   "t": "s",
+   "v": "zero"
+  },
+  "number#88": {
+   "t": "s",
+   "v": "pos"
+  },
+  "number#89": {
+   "t": "s",
+   "v": "neg"
+  },
+  "number#90": {
+   "t": "s",
+   "v": "pos"
+  },
+  "number#91": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#92": {
+   "t": "s",
+   "v": "1235 "
+  },
+  "number#93": {
+   "t": "s",
+   "v": "-1235 "
+  },
+  "number#94": {
+   "t": "s",
+   "v": "0 "
+  },
+  "number#95": {
+   "t": "s",
+   "v": "1 "
+  },
+  "number#96": {
+   "t": "s",
+   "v": "-1 "
+  },
+  "number#97": {
+   "t": "s",
+   "v": "1000000000000000 "
+  },
+  "number#98": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#99": {
+   "t": "s",
+   "v": " 1235 "
+  },
+  "number#100": {
+   "t": "s",
+   "v": "- 1235 "
+  },
+  "number#101": {
+   "t": "s",
+   "v": " 0 "
+  },
+  "number#102": {
+   "t": "s",
+   "v": " 1 "
+  },
+  "number#103": {
+   "t": "s",
+   "v": "- 1 "
+  },
+  "number#104": {
+   "t": "s",
+   "v": " 1000000000000000 "
+  },
+  "number#105": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#106": {
+   "t": "s",
+   "v": "1235"
+  },
+  "number#107": {
+   "t": "s",
+   "v": "-1235"
+  },
+  "number#108": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#109": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#110": {
+   "t": "s",
+   "v": "-1"
+  },
+  "number#111": {
+   "t": "s",
+   "v": "1000000000000000"
+  },
+  "number#112": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#113": {
+   "t": "s",
+   "v": " 1 235 "
+  },
+  "number#114": {
+   "t": "s",
+   "v": " (1 235)"
+  },
+  "number#115": {
+   "t": "s",
+   "v": " - "
+  },
+  "number#116": {
+   "t": "s",
+   "v": " 1 "
+  },
+  "number#117": {
+   "t": "s",
+   "v": " (1)"
+  },
+  "number#118": {
+   "t": "s",
+   "v": " 1 000 000 000 000 000 "
+  },
+  "number#119": {
+   "t": "s",
+   "v": " abc "
+  },
+  "number#120": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#121": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#122": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#123": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#124": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#125": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#126": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#127": {
+   "t": "s",
+   "v": "8642/7"
+  },
+  "number#128": {
+   "t": "s",
+   "v": "-8642/7"
+  },
+  "number#129": {
+   "t": "s",
+   "v": "0/1"
+  },
+  "number#130": {
+   "t": "s",
+   "v": "1/2"
+  },
+  "number#131": {
+   "t": "s",
+   "v": "-1/2"
+  },
+  "number#132": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "number#133": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#134": {
+   "t": "s",
+   "v": "1234,567 шт"
+  },
+  "number#135": {
+   "t": "s",
+   "v": "-1234,567 шт"
+  },
+  "number#136": {
+   "t": "s",
+   "v": "0 шт"
+  },
+  "number#137": {
+   "t": "s",
+   "v": "0,5 шт"
+  },
+  "number#138": {
+   "t": "s",
+   "v": "-0,5 шт"
+  },
+  "number#139": {
+   "t": "s",
+   "v": "1E+15 шт"
+  },
+  "number#140": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#141": {
+   "t": "s",
+   "v": "x1234,567"
+  },
+  "number#142": {
+   "t": "s",
+   "v": "-x1234,567"
+  },
+  "number#143": {
+   "t": "s",
+   "v": "x0"
+  },
+  "number#144": {
+   "t": "s",
+   "v": "x0,5"
+  },
+  "number#145": {
+   "t": "s",
+   "v": "-x0,5"
+  },
+  "number#146": {
+   "t": "s",
+   "v": "x1E+15"
+  },
+  "number#147": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#148": {
+   "t": "s",
+   "v": "1234,567"
+  },
+  "number#149": {
+   "t": "s",
+   "v": "-1234,567"
+  },
+  "number#150": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#151": {
+   "t": "s",
+   "v": "0,5"
+  },
+  "number#152": {
+   "t": "s",
+   "v": "-0,5"
+  },
+  "number#153": {
+   "t": "s",
+   "v": "1E+15"
+  },
+  "number#154": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#155": {
+   "t": "s",
+   "v": "1,23₽"
+  },
+  "number#156": {
+   "t": "s",
+   "v": "-1,23₽"
+  },
+  "number#157": {
+   "t": "s",
+   "v": "0,00₽"
+  },
+  "number#158": {
+   "t": "s",
+   "v": "0,00₽"
+  },
+  "number#159": {
+   "t": "s",
+   "v": "0,00₽"
+  },
+  "number#160": {
+   "t": "s",
+   "v": "1 000 000 000 000,00₽"
+  },
+  "number#161": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#162": {
+   "t": "s",
+   "v": "1 234,57 ₽"
+  },
+  "number#163": {
+   "t": "s",
+   "v": "-1 234,57 ₽"
+  },
+  "number#164": {
+   "t": "s",
+   "v": "0,00 ₽"
+  },
+  "number#165": {
+   "t": "s",
+   "v": "0,50 ₽"
+  },
+  "number#166": {
+   "t": "s",
+   "v": "-0,50 ₽"
+  },
+  "number#167": {
+   "t": "s",
+   "v": "1 000 000 000 000 000,00 ₽"
+  },
+  "number#168": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#169": {
+   "t": "s",
+   "v": "1234,57"
+  },
+  "number#170": {
+   "t": "s",
+   "v": "-1234,57"
+  },
+  "number#171": {
+   "t": "s",
+   "v": "0,00"
+  },
+  "number#172": {
+   "t": "s",
+   "v": "0,50"
+  },
+  "number#173": {
+   "t": "s",
+   "v": "-0,50"
+  },
+  "number#174": {
+   "t": "s",
+   "v": "1000000000000000,00"
+  },
+  "number#175": {
+   "t": "s",
+   "v": "abc"
+  },
+  "number#176": {
+   "t": "s",
+   "v": "1235"
+  },
+  "number#177": {
+   "t": "s",
+   "v": "-1235"
+  },
+  "number#178": {
+   "t": "s",
+   "v": "0"
+  },
+  "number#179": {
+   "t": "s",
+   "v": "1"
+  },
+  "number#180": {
+   "t": "s",
+   "v": "-1"
+  },
+  "number#181": {
+   "t": "s",
+   "v": "1000000000000000"
+  },
+  "number#182": {
+   "t": "s",
+   "v": "текст: abc"
+  },
+  "date#1": {
+   "t": "s",
+   "v": "1096530:00:00"
+  },
+  "date#2": {
+   "t": "s",
+   "v": "0:00:00"
+  },
+  "date#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#4": {
+   "t": "s",
+   "v": "1096536:00:00"
+  },
+  "date#5": {
+   "t": "s",
+   "v": "0:00:01"
+  },
+  "date#6": {
+   "t": "s",
+   "v": "36:00:00"
+  },
+  "date#7": {
+   "t": "s",
+   "v": "1096530:00"
+  },
+  "date#8": {
+   "t": "s",
+   "v": "0:00"
+  },
+  "date#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#10": {
+   "t": "s",
+   "v": "1096536:00"
+  },
+  "date#11": {
+   "t": "s",
+   "v": "0:00"
+  },
+  "date#12": {
+   "t": "s",
+   "v": "36:00"
+  },
+  "date#13": {
+   "t": "s",
+   "v": "65791800:00"
+  },
+  "date#14": {
+   "t": "s",
+   "v": "00:00"
+  },
+  "date#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#16": {
+   "t": "s",
+   "v": "65792160:00"
+  },
+  "date#17": {
+   "t": "s",
+   "v": "00:01"
+  },
+  "date#18": {
+   "t": "s",
+   "v": "2160:00"
+  },
+  "date#19": {
+   "t": "s",
+   "v": "3947508000"
+  },
+  "date#20": {
+   "t": "s",
+   "v": "00"
+  },
+  "date#21": {
+   "t": "s",
+   "v": "-86400"
+  },
+  "date#22": {
+   "t": "s",
+   "v": "3947529600"
+  },
+  "date#23": {
+   "t": "s",
+   "v": "01"
+  },
+  "date#24": {
+   "t": "s",
+   "v": "129600"
+  },
+  "date#25": {
+   "t": "s",
+   "v": "1096530"
+  },
+  "date#26": {
+   "t": "s",
+   "v": "0"
+  },
+  "date#27": {
+   "t": "s",
+   "v": "-24"
+  },
+  "date#28": {
+   "t": "s",
+   "v": "1096536"
+  },
+  "date#29": {
+   "t": "s",
+   "v": "0"
+  },
+  "date#30": {
+   "t": "s",
+   "v": "36"
+  },
+  "date#31": {
+   "t": "s",
+   "v": "18:00:00,0"
+  },
+  "date#32": {
+   "t": "s",
+   "v": "0:00:00,0"
+  },
+  "date#33": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#34": {
+   "t": "s",
+   "v": "23:59:59,9"
+  },
+  "date#35": {
+   "t": "s",
+   "v": "0:00:00,8"
+  },
+  "date#36": {
+   "t": "s",
+   "v": "12:00:00,0"
+  },
+  "date#37": {
+   "t": "s",
+   "v": "00:00,00"
+  },
+  "date#38": {
+   "t": "s",
+   "v": "00:00,00"
+  },
+  "date#39": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#40": {
+   "t": "s",
+   "v": "59:59,91"
+  },
+  "date#41": {
+   "t": "s",
+   "v": "00:00,75"
+  },
+  "date#42": {
+   "t": "s",
+   "v": "00:00,00"
+  },
+  "date#43": {
+   "t": "s",
+   "v": "31.01.2025"
+  },
+  "date#44": {
+   "t": "s",
+   "v": "00.01.1900"
+  },
+  "date#45": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#46": {
+   "t": "s",
+   "v": "01.02.2025"
+  },
+  "date#47": {
+   "t": "s",
+   "v": "00.01.1900"
+  },
+  "date#48": {
+   "t": "s",
+   "v": "01.01.1900"
+  },
+  "date#49": {
+   "t": "s",
+   "v": "January"
+  },
+  "date#50": {
+   "t": "s",
+   "v": "January"
+  },
+  "date#51": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#52": {
+   "t": "s",
+   "v": "February"
+  },
+  "date#53": {
+   "t": "s",
+   "v": "January"
+  },
+  "date#54": {
+   "t": "s",
+   "v": "January"
+  },
+  "date#55": {
+   "t": "s",
+   "v": "Январь"
+  },
+  "date#56": {
+   "t": "s",
+   "v": "Январь"
+  },
+  "date#57": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#58": {
+   "t": "s",
+   "v": "Февраль"
+  },
+  "date#59": {
+   "t": "s",
+   "v": "Январь"
+  },
+  "date#60": {
+   "t": "s",
+   "v": "Январь"
+  },
+  "date#61": {
+   "t": "s",
+   "v": "31/01/2025"
+  },
+  "date#62": {
+   "t": "s",
+   "v": "00/01/1900"
+  },
+  "date#63": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#64": {
+   "t": "s",
+   "v": "01/02/2025"
+  },
+  "date#65": {
+   "t": "s",
+   "v": "00/01/1900"
+  },
+  "date#66": {
+   "t": "s",
+   "v": "01/01/1900"
+  },
+  "date#67": {
+   "t": "s",
+   "v": "пятница"
+  },
+  "date#68": {
+   "t": "s",
+   "v": "суббота"
+  },
+  "date#69": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "date#70": {
+   "t": "s",
+   "v": "суббота"
+  },
+  "date#71": {
+   "t": "s",
+   "v": "суббота"
+  },
+  "date#72": {
+   "t": "s",
+   "v": "воскресенье"
+  }
+ }
+}

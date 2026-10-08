@@ -1,0 +1,267 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "sums",
+   "about": "references across four sheets in lists, in reverse order, stacked, under an operator, alone",
+   "book": {
+    "sheets": [
+     {
+      "name": "Q1",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 10
+       },
+       "B1": {
+        "value": true
+       }
+      }
+     },
+     {
+      "name": "Q2",
+      "cells": {
+       "A1": {
+        "value": 2
+       },
+       "A2": {
+        "value": 20
+       },
+       "B1": {
+        "value": "x"
+       }
+      }
+     },
+     {
+      "name": "Q3",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 30
+       },
+       "B1": {
+        "value": true
+       }
+      }
+     },
+     {
+      "name": "Q4",
+      "cells": {
+       "A1": {
+        "value": 4
+       },
+       "A2": {
+        "value": 40
+       },
+       "B1": {
+        "value": "x"
+       }
+      }
+     },
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SUM('Q1:Q3'!A1:A2)"
+       },
+       "A2": {
+        "formula": "AVERAGE('Q2:Q4'!A1)"
+       },
+       "A3": {
+        "formula": "MAX('Q1:Q4'!A:A)"
+       },
+       "A4": {
+        "formula": "COUNT('Q1:Q4'!A1:B2)"
+       },
+       "A5": {
+        "formula": "SUM('Q3:Q1'!A1)"
+       },
+       "A6": {
+        "formula": "ROWS(VSTACK('Q1:Q4'!A1:A2))"
+       },
+       "A7": {
+        "formula": "INDEX(VSTACK('Q1:Q4'!A1:A2),5)"
+       },
+       "A8": {
+        "formula": "SUM('Q1:Q4'!A1:A2*2)"
+       },
+       "A9": {
+        "formula": "'Q1:Q2'!A1"
+       },
+       "A10": {
+        "formula": "COUNTA('Q1:Q4'!A1:B2)"
+       },
+       "A11": {
+        "formula": "STDEV('Q1:Q4'!A1)"
+       },
+       "A12": {
+        "formula": "PRODUCT('Q1:Q2'!A1:A2)"
+       },
+       "A13": {
+        "formula": "SUMIF('Q1:Q4'!A1:A2,\">1\")"
+       },
+       "A14": {
+        "formula": "SUM('Q2:Q2'!A1:A2)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A14"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 66
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 40
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!A5": {
+     "t": "n",
+     "v": 6
+    },
+    "S!A6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!A7": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A8": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!A9": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!A10": {
+     "t": "n",
+     "v": 12
+    },
+    "S!A11": {
+     "t": "n",
+     "v": 1.29099444873581
+    },
+    "S!A12": {
+     "t": "n",
+     "v": 400
+    },
+    "S!A13": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!A14": {
+     "t": "n",
+     "v": 22
+    }
+   }
+  }
+ ],
+ "answers": {
+  "sums": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 66
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 40
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 8
+    },
+    "S!A5": {
+     "t": "n",
+     "v": 6
+    },
+    "S!A6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!A7": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A8": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!A9": {
+     "t": "e",
+     "v": "REF"
+    },
+    "S!A10": {
+     "t": "n",
+     "v": 12
+    },
+    "S!A11": {
+     "t": "n",
+     "v": 1.2909944487358056
+    },
+    "S!A12": {
+     "t": "n",
+     "v": 400
+    },
+    "S!A13": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!A14": {
+     "t": "n",
+     "v": 22
+    }
+   },
+   "formulas": {
+    "S!A1": "=SUM('Q1:Q3'!A1:A2)",
+    "S!A2": "=AVERAGE('Q2:Q4'!A1)",
+    "S!A3": "=MAX('Q1:Q4'!A:A)",
+    "S!A4": "=COUNT('Q1:Q4'!A1:B2)",
+    "S!A5": "=SUM('Q1:Q3'!A1)",
+    "S!A6": "=ROWS(VSTACK('Q1:Q4'!A1:A2))",
+    "S!A7": "=INDEX(VSTACK('Q1:Q4'!A1:A2),5)",
+    "S!A8": "=SUM('Q1:Q4'!A1:A2*2)",
+    "S!A9": "='Q1:Q2'!A1",
+    "S!A10": "=COUNTA('Q1:Q4'!A1:B2)",
+    "S!A11": "=STDEV('Q1:Q4'!A1)",
+    "S!A12": "=PRODUCT('Q1:Q2'!A1:A2)",
+    "S!A13": "=SUMIF('Q1:Q4'!A1:A2,\">1\")",
+    "S!A14": "=SUM('Q2'!A1:A2)"
+   }
+  }
+ }
+}

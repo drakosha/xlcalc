@@ -1,0 +1,927 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 423.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "DAY#1",
+   "group": "DAY",
+   "fn": "DAY",
+   "formula": "DAY(\" 2025-01-31\")"
+  },
+  {
+   "id": "DAY#2",
+   "group": "DAY",
+   "fn": "DAY",
+   "formula": "DAY(\"2025-01-31 \")"
+  },
+  {
+   "id": "DAY#3",
+   "group": "DAY",
+   "fn": "DAY",
+   "formula": "DAY(\"  2025-01-31\")"
+  },
+  {
+   "id": "MONTH#1",
+   "group": "MONTH",
+   "fn": "MONTH",
+   "formula": "MONTH(\" 2025-01-31\")"
+  },
+  {
+   "id": "MONTH#2",
+   "group": "MONTH",
+   "fn": "MONTH",
+   "formula": "MONTH(\"2025-01-31 \")"
+  },
+  {
+   "id": "MONTH#3",
+   "group": "MONTH",
+   "fn": "MONTH",
+   "formula": "MONTH(\"  2025-01-31\")"
+  },
+  {
+   "id": "YEAR#1",
+   "group": "YEAR",
+   "fn": "YEAR",
+   "formula": "YEAR(\" 2025-01-31\")"
+  },
+  {
+   "id": "YEAR#2",
+   "group": "YEAR",
+   "fn": "YEAR",
+   "formula": "YEAR(\"2025-01-31 \")"
+  },
+  {
+   "id": "YEAR#3",
+   "group": "YEAR",
+   "fn": "YEAR",
+   "formula": "YEAR(\"  2025-01-31\")"
+  },
+  {
+   "id": "WEEKDAY#1",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(\" 2025-01-31\")"
+  },
+  {
+   "id": "WEEKDAY#2",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(\"2025-01-31 \")"
+  },
+  {
+   "id": "WEEKDAY#3",
+   "group": "WEEKDAY",
+   "fn": "WEEKDAY",
+   "formula": "WEEKDAY(\"  2025-01-31\")"
+  },
+  {
+   "id": "ISOWEEKNUM#1",
+   "group": "ISOWEEKNUM",
+   "fn": "ISOWEEKNUM",
+   "formula": "_xlfn.ISOWEEKNUM(\" 2025-01-31\")"
+  },
+  {
+   "id": "ISOWEEKNUM#2",
+   "group": "ISOWEEKNUM",
+   "fn": "ISOWEEKNUM",
+   "formula": "_xlfn.ISOWEEKNUM(\"2025-01-31 \")"
+  },
+  {
+   "id": "ISOWEEKNUM#3",
+   "group": "ISOWEEKNUM",
+   "fn": "ISOWEEKNUM",
+   "formula": "_xlfn.ISOWEEKNUM(\"  2025-01-31\")"
+  },
+  {
+   "id": "WEEKNUM#1",
+   "group": "WEEKNUM",
+   "fn": "WEEKNUM",
+   "formula": "WEEKNUM(\" 2025-01-31\")"
+  },
+  {
+   "id": "WEEKNUM#2",
+   "group": "WEEKNUM",
+   "fn": "WEEKNUM",
+   "formula": "WEEKNUM(\"2025-01-31 \")"
+  },
+  {
+   "id": "WEEKNUM#3",
+   "group": "WEEKNUM",
+   "fn": "WEEKNUM",
+   "formula": "WEEKNUM(\"  2025-01-31\")"
+  },
+  {
+   "id": "DATEVALUE#1",
+   "group": "DATEVALUE",
+   "fn": "DATEVALUE",
+   "formula": "DATEVALUE(\" 2025-01-31\")"
+  },
+  {
+   "id": "DATEVALUE#2",
+   "group": "DATEVALUE",
+   "fn": "DATEVALUE",
+   "formula": "DATEVALUE(\"2025-01-31 \")"
+  },
+  {
+   "id": "DATEVALUE#3",
+   "group": "DATEVALUE",
+   "fn": "DATEVALUE",
+   "formula": "DATEVALUE(\"  2025-01-31\")"
+  },
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\" 2025-01-31\")"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"2025-01-31 \")"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"  2025-01-31\")"
+  },
+  {
+   "id": "ABS#1",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\" 2025-01-31\")"
+  },
+  {
+   "id": "ABS#2",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"2025-01-31 \")"
+  },
+  {
+   "id": "ABS#3",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"  2025-01-31\")"
+  },
+  {
+   "id": "N#1",
+   "group": "N",
+   "fn": "N",
+   "formula": "N(\" 2025-01-31\")"
+  },
+  {
+   "id": "N#2",
+   "group": "N",
+   "fn": "N",
+   "formula": "N(\"2025-01-31 \")"
+  },
+  {
+   "id": "N#3",
+   "group": "N",
+   "fn": "N",
+   "formula": "N(\"  2025-01-31\")"
+  },
+  {
+   "id": "INT#1",
+   "group": "INT",
+   "fn": "INT",
+   "formula": "INT(\" 2025-01-31\")"
+  },
+  {
+   "id": "INT#2",
+   "group": "INT",
+   "fn": "INT",
+   "formula": "INT(\"2025-01-31 \")"
+  },
+  {
+   "id": "INT#3",
+   "group": "INT",
+   "fn": "INT",
+   "formula": "INT(\"  2025-01-31\")"
+  },
+  {
+   "id": "HOUR#1",
+   "group": "HOUR",
+   "fn": "HOUR",
+   "formula": "HOUR(\" 6:30\")"
+  },
+  {
+   "id": "HOUR#2",
+   "group": "HOUR",
+   "fn": "HOUR",
+   "formula": "HOUR(\"6:30 \")"
+  },
+  {
+   "id": "MINUTE#1",
+   "group": "MINUTE",
+   "fn": "MINUTE",
+   "formula": "MINUTE(\" 6:30\")"
+  },
+  {
+   "id": "MINUTE#2",
+   "group": "MINUTE",
+   "fn": "MINUTE",
+   "formula": "MINUTE(\"6:30 \")"
+  },
+  {
+   "id": "SECOND#1",
+   "group": "SECOND",
+   "fn": "SECOND",
+   "formula": "SECOND(\" 6:30\")"
+  },
+  {
+   "id": "SECOND#2",
+   "group": "SECOND",
+   "fn": "SECOND",
+   "formula": "SECOND(\"6:30 \")"
+  },
+  {
+   "id": "TIMEVALUE#1",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\" 6:30\")"
+  },
+  {
+   "id": "TIMEVALUE#2",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\"6:30 \")"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\" 6:30\")"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "VALUE(\"6:30 \")"
+  },
+  {
+   "id": "ABS#4",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\" 6:30\")"
+  },
+  {
+   "id": "ABS#5",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\"6:30 \")"
+  },
+  {
+   "id": "DAYS#1",
+   "group": "DAYS",
+   "fn": "DAYS",
+   "formula": "_xlfn.DAYS(\" 2025-01-31\",\"2025-01-01\")"
+  },
+  {
+   "id": "DAYS#2",
+   "group": "DAYS",
+   "fn": "DAYS",
+   "formula": "_xlfn.DAYS(\"2025-12-31\",\" 2025-01-31\")"
+  },
+  {
+   "id": "DATEDIF#1",
+   "group": "DATEDIF",
+   "fn": "DATEDIF",
+   "formula": "DATEDIF(\" 2025-01-31\",\"2025-12-31\",\"d\")"
+  },
+  {
+   "id": "DAYS360#1",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(\" 2025-01-31\",\"2025-12-31\")"
+  },
+  {
+   "id": "EDATE#1",
+   "group": "EDATE",
+   "fn": "EDATE",
+   "formula": "EDATE(\" 2025-01-31\",1)"
+  },
+  {
+   "id": "EOMONTH#1",
+   "group": "EOMONTH",
+   "fn": "EOMONTH",
+   "formula": "EOMONTH(\" 2025-01-31\",0)"
+  },
+  {
+   "id": "NETWORKDAYS#1",
+   "group": "NETWORKDAYS",
+   "fn": "NETWORKDAYS",
+   "formula": "NETWORKDAYS(\" 2025-01-31\",\"2025-12-31\")"
+  },
+  {
+   "id": "WORKDAY#1",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(\" 2025-01-31\",1)"
+  },
+  {
+   "id": "YEARFRAC#1",
+   "group": "YEARFRAC",
+   "fn": "YEARFRAC",
+   "formula": "YEARFRAC(\" 2025-01-31\",\"2025-12-31\")"
+  },
+  {
+   "id": "operators#1",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" 2025-01-31\"+0"
+  },
+  {
+   "id": "operators#2",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" 2025-01-31\"=45688"
+  },
+  {
+   "id": "TEXT#1",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\" 2025-01-31\",\"0\")"
+  },
+  {
+   "id": "DATE#1",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,\" 31\")"
+  },
+  {
+   "id": "DAYS#3",
+   "group": "DAYS",
+   "fn": "DAYS",
+   "formula": "_xlfn.DAYS(\"2025-01-31 \",\"2025-01-01\")"
+  },
+  {
+   "id": "DAYS#4",
+   "group": "DAYS",
+   "fn": "DAYS",
+   "formula": "_xlfn.DAYS(\"2025-12-31\",\"2025-01-31 \")"
+  },
+  {
+   "id": "DATEDIF#2",
+   "group": "DATEDIF",
+   "fn": "DATEDIF",
+   "formula": "DATEDIF(\"2025-01-31 \",\"2025-12-31\",\"d\")"
+  },
+  {
+   "id": "DAYS360#2",
+   "group": "DAYS360",
+   "fn": "DAYS360",
+   "formula": "DAYS360(\"2025-01-31 \",\"2025-12-31\")"
+  },
+  {
+   "id": "EDATE#2",
+   "group": "EDATE",
+   "fn": "EDATE",
+   "formula": "EDATE(\"2025-01-31 \",1)"
+  },
+  {
+   "id": "EOMONTH#2",
+   "group": "EOMONTH",
+   "fn": "EOMONTH",
+   "formula": "EOMONTH(\"2025-01-31 \",0)"
+  },
+  {
+   "id": "NETWORKDAYS#2",
+   "group": "NETWORKDAYS",
+   "fn": "NETWORKDAYS",
+   "formula": "NETWORKDAYS(\"2025-01-31 \",\"2025-12-31\")"
+  },
+  {
+   "id": "WORKDAY#2",
+   "group": "WORKDAY",
+   "fn": "WORKDAY",
+   "formula": "WORKDAY(\"2025-01-31 \",1)"
+  },
+  {
+   "id": "YEARFRAC#2",
+   "group": "YEARFRAC",
+   "fn": "YEARFRAC",
+   "formula": "YEARFRAC(\"2025-01-31 \",\"2025-12-31\")"
+  },
+  {
+   "id": "operators#3",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\"2025-01-31 \"+0"
+  },
+  {
+   "id": "operators#4",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\"2025-01-31 \"=45688"
+  },
+  {
+   "id": "TEXT#2",
+   "group": "TEXT",
+   "fn": "TEXT",
+   "formula": "TEXT(\"2025-01-31 \",\"0\")"
+  },
+  {
+   "id": "DATE#2",
+   "group": "DATE",
+   "fn": "DATE",
+   "formula": "DATE(2025,1,\"31 \")"
+  },
+  {
+   "id": "operators#5",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" 6:30\"+0"
+  },
+  {
+   "id": "operators#6",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\"6:30 \"+0"
+  },
+  {
+   "id": "operators#7",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" 5\"+0"
+  },
+  {
+   "id": "operators#8",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\"5 \"+0"
+  },
+  {
+   "id": "operators#9",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\"  5\"+0"
+  },
+  {
+   "id": "operators#10",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" 1E+3\"+0"
+  },
+  {
+   "id": "operators#11",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" (5)\"+0"
+  },
+  {
+   "id": "operators#12",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "\" 50%\"+0"
+  },
+  {
+   "id": "ABS#6",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\" 5\")"
+  },
+  {
+   "id": "ABS#7",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\" (5)\")"
+  },
+  {
+   "id": "ABS#8",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "ABS(\" 50%\")"
+  },
+  {
+   "id": "TIMEVALUE#3",
+   "group": "TIMEVALUE",
+   "fn": "TIMEVALUE",
+   "formula": "TIMEVALUE(\" 2025-01-31 6:30\")"
+  },
+  {
+   "id": "COUNTIF#1",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A6,\" 2025-01-31\")"
+  },
+  {
+   "id": "COUNTIF#2",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(D!A6,\">= 2025-01-31\")"
+  },
+  {
+   "id": "COUNTIF#3",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(G!A1,45688)"
+  },
+  {
+   "id": "COUNTIF#4",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(G!A2,5)"
+  },
+  {
+   "id": "COUNTIF#5",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(G!A3,TIME(6,30,0))"
+  },
+  {
+   "id": "COUNTIF#6",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(G!A4,45688)"
+  },
+  {
+   "id": "COUNTIF#7",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(G!A1,\">=45688\")"
+  },
+  {
+   "id": "COUNTIF#8",
+   "group": "COUNTIF",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(G!A2,\">4\")"
+  }
+ ],
+ "values": {
+  "DAY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DAY#2": {
+   "t": "n",
+   "v": 31
+  },
+  "DAY#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MONTH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MONTH#2": {
+   "t": "n",
+   "v": 1
+  },
+  "MONTH#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "YEAR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "YEAR#2": {
+   "t": "n",
+   "v": 2025
+  },
+  "YEAR#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEEKDAY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEEKDAY#2": {
+   "t": "n",
+   "v": 6
+  },
+  "WEEKDAY#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISOWEEKNUM#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ISOWEEKNUM#2": {
+   "t": "n",
+   "v": 5
+  },
+  "ISOWEEKNUM#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEEKNUM#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WEEKNUM#2": {
+   "t": "n",
+   "v": 5
+  },
+  "WEEKNUM#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DATEVALUE#1": {
+   "t": "n",
+   "v": 45688
+  },
+  "DATEVALUE#2": {
+   "t": "n",
+   "v": 45688
+  },
+  "DATEVALUE#3": {
+   "t": "n",
+   "v": 45688
+  },
+  "VALUE#1": {
+   "t": "n",
+   "v": 45688
+  },
+  "VALUE#2": {
+   "t": "n",
+   "v": 45688
+  },
+  "VALUE#3": {
+   "t": "n",
+   "v": 45688
+  },
+  "ABS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#2": {
+   "t": "n",
+   "v": 45688
+  },
+  "ABS#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "N#1": {
+   "t": "n",
+   "v": 0
+  },
+  "N#2": {
+   "t": "n",
+   "v": 0
+  },
+  "N#3": {
+   "t": "n",
+   "v": 0
+  },
+  "INT#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "INT#2": {
+   "t": "n",
+   "v": 45688
+  },
+  "INT#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HOUR#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "HOUR#2": {
+   "t": "n",
+   "v": 6
+  },
+  "MINUTE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "MINUTE#2": {
+   "t": "n",
+   "v": 30
+  },
+  "SECOND#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SECOND#2": {
+   "t": "n",
+   "v": 0
+  },
+  "TIMEVALUE#1": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "TIMEVALUE#2": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "VALUE#4": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "VALUE#5": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "ABS#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#5": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "DAYS#1": {
+   "t": "n",
+   "v": 30
+  },
+  "DAYS#2": {
+   "t": "n",
+   "v": 334
+  },
+  "DATEDIF#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "DAYS360#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "EDATE#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "EOMONTH#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "NETWORKDAYS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "WORKDAY#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "YEARFRAC#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#2": {
+   "t": "b",
+   "v": false
+  },
+  "TEXT#1": {
+   "t": "s",
+   "v": " 2025-01-31"
+  },
+  "DATE#1": {
+   "t": "n",
+   "v": 45688
+  },
+  "DAYS#3": {
+   "t": "n",
+   "v": 30
+  },
+  "DAYS#4": {
+   "t": "n",
+   "v": 334
+  },
+  "DATEDIF#2": {
+   "t": "n",
+   "v": 334
+  },
+  "DAYS360#2": {
+   "t": "n",
+   "v": 330
+  },
+  "EDATE#2": {
+   "t": "n",
+   "v": 45716
+  },
+  "EOMONTH#2": {
+   "t": "n",
+   "v": 45688
+  },
+  "NETWORKDAYS#2": {
+   "t": "n",
+   "v": 239
+  },
+  "WORKDAY#2": {
+   "t": "n",
+   "v": 45691
+  },
+  "YEARFRAC#2": {
+   "t": "n",
+   "v": 0.9166666666666666
+  },
+  "operators#3": {
+   "t": "n",
+   "v": 45688
+  },
+  "operators#4": {
+   "t": "b",
+   "v": false
+  },
+  "TEXT#2": {
+   "t": "s",
+   "v": "45688"
+  },
+  "DATE#2": {
+   "t": "n",
+   "v": 45688
+  },
+  "operators#5": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#6": {
+   "t": "n",
+   "v": 0.2708333333333333
+  },
+  "operators#7": {
+   "t": "n",
+   "v": 5
+  },
+  "operators#8": {
+   "t": "n",
+   "v": 5
+  },
+  "operators#9": {
+   "t": "n",
+   "v": 5
+  },
+  "operators#10": {
+   "t": "n",
+   "v": 1000
+  },
+  "operators#11": {
+   "t": "n",
+   "v": -5
+  },
+  "operators#12": {
+   "t": "n",
+   "v": 0.5
+  },
+  "ABS#6": {
+   "t": "n",
+   "v": 5
+  },
+  "ABS#7": {
+   "t": "n",
+   "v": 5
+  },
+  "ABS#8": {
+   "t": "n",
+   "v": 0.5
+  },
+  "TIMEVALUE#3": {
+   "t": "n",
+   "v": 0.27083333333575865
+  },
+  "COUNTIF#1": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#2": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#3": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#4": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#5": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#6": {
+   "t": "n",
+   "v": 1
+  },
+  "COUNTIF#7": {
+   "t": "n",
+   "v": 0
+  },
+  "COUNTIF#8": {
+   "t": "n",
+   "v": 0
+  }
+ }
+}

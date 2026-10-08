@@ -1,0 +1,457 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 423.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "space#1",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3 D!C2:D4)"
+  },
+  {
+   "id": "space#2",
+   "group": "space",
+   "fn": "space",
+   "formula": "D!B1:C3 D!C2:C2"
+  },
+  {
+   "id": "space#3",
+   "group": "space",
+   "fn": "space",
+   "formula": "D!B1:B3 D!C1:C3"
+  },
+  {
+   "id": "space#4",
+   "group": "space",
+   "fn": "space",
+   "formula": "ERROR.TYPE(D!B1:B3 D!C1:C3)"
+  },
+  {
+   "id": "space#5",
+   "group": "space",
+   "fn": "space",
+   "formula": "ROWS(D!B1:C3 D!C2:D4)"
+  },
+  {
+   "id": "space#6",
+   "group": "space",
+   "fn": "space",
+   "formula": "COLUMNS(D!B1:C3 D!B2:D2)"
+  },
+  {
+   "id": "space#7",
+   "group": "space",
+   "fn": "space",
+   "formula": "D!B:B D!3:3"
+  },
+  {
+   "id": "space#8",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3  D!C2:D4)"
+  },
+  {
+   "id": "space#9",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM((D!B1:C3) (D!C2:D4))"
+  },
+  {
+   "id": "space#10",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3 (D!C2:D4))"
+  },
+  {
+   "id": "space#11",
+   "group": "space",
+   "fn": "space",
+   "formula": "-D!B1:C3 D!C2:C2"
+  },
+  {
+   "id": "space#12",
+   "group": "space",
+   "fn": "space",
+   "formula": "D!B1:C3 D!C2:C2*2"
+  },
+  {
+   "id": "space#13",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3 D!C2:D4+1)"
+  },
+  {
+   "id": "space#14",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM((D!B1:B3 D!B2:B4,D!C1))"
+  },
+  {
+   "id": "space#15",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM((D!B1:B3,D!C1:C3) D!B2:C2)"
+  },
+  {
+   "id": "space#16",
+   "group": "space",
+   "fn": "space",
+   "formula": "INDEX(D!B1:C3,0,1) D!B2:C2"
+  },
+  {
+   "id": "space#17",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3 INDEX(D!B1:D4,0,2))"
+  },
+  {
+   "id": "space#18",
+   "group": "space",
+   "fn": "space",
+   "formula": "D!B1:B3 Jan!A1:A3"
+  },
+  {
+   "id": "space#19",
+   "group": "space",
+   "fn": "space",
+   "formula": "ISREF(D!B1:C3 D!C2:D4)"
+  },
+  {
+   "id": "space#20",
+   "group": "space",
+   "fn": "space",
+   "formula": "ISREF(D!B1:B3 D!C1:C3)"
+  },
+  {
+   "id": "space#21",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3 D!C2:D4 D!C3:E5)"
+  },
+  {
+   "id": "space#22",
+   "group": "space",
+   "fn": "space",
+   "formula": "COUNT(D!B1:B3 D!C1:C3)"
+  },
+  {
+   "id": "space#23",
+   "group": "space",
+   "fn": "space",
+   "formula": "IFERROR(D!B1:B3 D!C1:C3,\"none\")"
+  },
+  {
+   "id": "space#24",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B2:B3 D!B2:B3)"
+  },
+  {
+   "id": "space#25",
+   "group": "space",
+   "fn": "space",
+   "formula": "D!A:A D!1:1"
+  },
+  {
+   "id": "space#26",
+   "group": "space",
+   "fn": "space",
+   "formula": "MATCH(11,D!B1:C3 D!C1:C3,0)"
+  },
+  {
+   "id": "space#27",
+   "group": "space",
+   "fn": "space",
+   "formula": "@D!B1:C3 D!C2:C2"
+  },
+  {
+   "id": "space#28",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(Jan:Mar!A1:A3 Jan:Mar!A2:B2)"
+  },
+  {
+   "id": "space#29",
+   "group": "space",
+   "fn": "space",
+   "formula": "SUM(D!B1:C3\nD!C2:D4)"
+  },
+  {
+   "id": "blank#1",
+   "group": "blank",
+   "fn": "blank",
+   "formula": "D!B1 + D!B2"
+  },
+  {
+   "id": "blank#2",
+   "group": "blank",
+   "fn": "blank",
+   "formula": "SUM( D!B1:B3 )"
+  },
+  {
+   "id": "blank#3",
+   "group": "blank",
+   "fn": "blank",
+   "formula": "SUM(D!B1:B3 ,D!C1)"
+  },
+  {
+   "id": "blank#4",
+   "group": "blank",
+   "fn": "blank",
+   "formula": "SUM(D!B1:B3, D!C1)"
+  },
+  {
+   "id": "blank#5",
+   "group": "blank",
+   "fn": "blank",
+   "formula": "( D!B1 )*2"
+  },
+  {
+   "id": "null#1",
+   "group": "null",
+   "fn": "null",
+   "formula": "#NULL!"
+  },
+  {
+   "id": "null#2",
+   "group": "null",
+   "fn": "null",
+   "formula": "ISERR(#NULL!)"
+  },
+  {
+   "id": "null#3",
+   "group": "null",
+   "fn": "null",
+   "formula": "IF(ISERROR(D!B1:B3 D!C1:C3),ERROR.TYPE(#NULL!),0)"
+  },
+  {
+   "id": "range#1",
+   "group": "range",
+   "fn": "range",
+   "formula": "SUM(D!B1:INDEX(D!B1:B8,3))"
+  },
+  {
+   "id": "range#2",
+   "group": "range",
+   "fn": "range",
+   "formula": "SUM(INDEX(D!B1:B8,2):D!B4)"
+  },
+  {
+   "id": "range#3",
+   "group": "range",
+   "fn": "range",
+   "formula": "ROWS(D!B1:INDEX(D!B1:B8,5))"
+  },
+  {
+   "id": "range#4",
+   "group": "range",
+   "fn": "range",
+   "formula": "SUM(D!B1:B2:C3)"
+  },
+  {
+   "id": "range#5",
+   "group": "range",
+   "fn": "range",
+   "formula": "SUM(D!B1:D!C3)"
+  },
+  {
+   "id": "range#6",
+   "group": "range",
+   "fn": "range",
+   "formula": "SUM(D!B1:Jan!A1)"
+  },
+  {
+   "id": "range#7",
+   "group": "range",
+   "fn": "range",
+   "formula": "SUM(D!B1:C3 D!C2:INDEX(D!C1:C8,4))"
+  }
+ ],
+ "values": {
+  "space#1": {
+   "t": "n",
+   "v": 18
+  },
+  "space#2": {
+   "t": "n",
+   "v": 7
+  },
+  "space#3": {
+   "t": "e",
+   "v": "NULL"
+  },
+  "space#4": {
+   "t": "n",
+   "v": 1
+  },
+  "space#5": {
+   "t": "n",
+   "v": 2
+  },
+  "space#6": {
+   "t": "n",
+   "v": 2
+  },
+  "space#7": {
+   "t": "n",
+   "v": 15
+  },
+  "space#8": {
+   "t": "n",
+   "v": 18
+  },
+  "space#9": {
+   "t": "n",
+   "v": 18
+  },
+  "space#10": {
+   "t": "n",
+   "v": 18
+  },
+  "space#11": {
+   "t": "n",
+   "v": -7
+  },
+  "space#12": {
+   "t": "n",
+   "v": 14
+  },
+  "space#13": {
+   "t": "n",
+   "v": 20
+  },
+  "space#14": {
+   "t": "n",
+   "v": 25
+  },
+  "space#15": {
+   "t": "n",
+   "v": 15
+  },
+  "space#16": {
+   "t": "n",
+   "v": 8
+  },
+  "space#17": {
+   "t": "n",
+   "v": 20
+  },
+  "space#18": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "space#19": {
+   "t": "b",
+   "v": true
+  },
+  "space#20": {
+   "t": "b",
+   "v": false
+  },
+  "space#21": {
+   "t": "n",
+   "v": 11
+  },
+  "space#22": {
+   "t": "n",
+   "v": 0
+  },
+  "space#23": {
+   "t": "s",
+   "v": "none"
+  },
+  "space#24": {
+   "t": "n",
+   "v": 23
+  },
+  "space#25": {
+   "t": "n",
+   "v": 0
+  },
+  "space#26": {
+   "t": "n",
+   "v": 3
+  },
+  "space#27": {
+   "t": "n",
+   "v": 7
+  },
+  "space#28": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "space#29": {
+   "t": "n",
+   "v": 18
+  },
+  "blank#1": {
+   "t": "n",
+   "v": 12
+  },
+  "blank#2": {
+   "t": "n",
+   "v": 27
+  },
+  "blank#3": {
+   "t": "n",
+   "v": 29
+  },
+  "blank#4": {
+   "t": "n",
+   "v": 29
+  },
+  "blank#5": {
+   "t": "n",
+   "v": 8
+  },
+  "null#1": {
+   "t": "e",
+   "v": "NULL"
+  },
+  "null#2": {
+   "t": "b",
+   "v": true
+  },
+  "null#3": {
+   "t": "n",
+   "v": 1
+  },
+  "range#1": {
+   "t": "n",
+   "v": 27
+  },
+  "range#2": {
+   "t": "n",
+   "v": 39
+  },
+  "range#3": {
+   "t": "n",
+   "v": 5
+  },
+  "range#4": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "range#5": {
+   "t": "n",
+   "v": 47
+  },
+  "range#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "range#7": {
+   "t": "n",
+   "v": 18
+  }
+ }
+}

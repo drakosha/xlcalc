@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- Excel for Windows answers for every set the Mac has answers for, in both locales (Excel 16.0.20430: 34,349 formula cases in en-US, 7,297 in ru-RU, 6,999 formulas of the old kind, 12,949 cells shown, and the tables, spill, workbook, structure and xlsx filter sets), with tests against them; where the two Excels part, the engine follows Excel for Mac but in `CHAR` and `CODE`, and `bench/windows/differences.md` lists the cases with their reasons.
+
 ## 0.4.2 (2026-10-09)
 
 Internal release; not published to npm. Fixes from a review, books sent to pool threads as text in chunks, `Session.hash()`.

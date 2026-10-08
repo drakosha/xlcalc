@@ -1,0 +1,1583 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 423.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "compare#1",
+   "group": "compare",
+   "formula": "\"a\"<\"а\""
+  },
+  {
+   "id": "compare#2",
+   "group": "compare",
+   "formula": "\"a\"<\"b\""
+  },
+  {
+   "id": "compare#3",
+   "group": "compare",
+   "formula": "\"a\"<\"Б\""
+  },
+  {
+   "id": "compare#4",
+   "group": "compare",
+   "formula": "\"a\"<\"z\""
+  },
+  {
+   "id": "compare#5",
+   "group": "compare",
+   "formula": "\"a\"<\"я\""
+  },
+  {
+   "id": "compare#6",
+   "group": "compare",
+   "formula": "\"a\"<\"е\""
+  },
+  {
+   "id": "compare#7",
+   "group": "compare",
+   "formula": "\"a\"<\"ё\""
+  },
+  {
+   "id": "compare#8",
+   "group": "compare",
+   "formula": "\"a\"<\"e\""
+  },
+  {
+   "id": "compare#9",
+   "group": "compare",
+   "formula": "\"a\"<\"é\""
+  },
+  {
+   "id": "compare#10",
+   "group": "compare",
+   "formula": "\"a\"<\"й\""
+  },
+  {
+   "id": "compare#11",
+   "group": "compare",
+   "formula": "\"a\"<\"и\""
+  },
+  {
+   "id": "compare#12",
+   "group": "compare",
+   "formula": "\"a\"<\"ь\""
+  },
+  {
+   "id": "compare#13",
+   "group": "compare",
+   "formula": "\"a\"<\"ъ\""
+  },
+  {
+   "id": "compare#14",
+   "group": "compare",
+   "formula": "\"a\"<\"1\""
+  },
+  {
+   "id": "compare#15",
+   "group": "compare",
+   "formula": "\"а\"<\"b\""
+  },
+  {
+   "id": "compare#16",
+   "group": "compare",
+   "formula": "\"а\"<\"Б\""
+  },
+  {
+   "id": "compare#17",
+   "group": "compare",
+   "formula": "\"а\"<\"z\""
+  },
+  {
+   "id": "compare#18",
+   "group": "compare",
+   "formula": "\"а\"<\"я\""
+  },
+  {
+   "id": "compare#19",
+   "group": "compare",
+   "formula": "\"а\"<\"е\""
+  },
+  {
+   "id": "compare#20",
+   "group": "compare",
+   "formula": "\"а\"<\"ё\""
+  },
+  {
+   "id": "compare#21",
+   "group": "compare",
+   "formula": "\"а\"<\"e\""
+  },
+  {
+   "id": "compare#22",
+   "group": "compare",
+   "formula": "\"а\"<\"é\""
+  },
+  {
+   "id": "compare#23",
+   "group": "compare",
+   "formula": "\"а\"<\"й\""
+  },
+  {
+   "id": "compare#24",
+   "group": "compare",
+   "formula": "\"а\"<\"и\""
+  },
+  {
+   "id": "compare#25",
+   "group": "compare",
+   "formula": "\"а\"<\"ь\""
+  },
+  {
+   "id": "compare#26",
+   "group": "compare",
+   "formula": "\"а\"<\"ъ\""
+  },
+  {
+   "id": "compare#27",
+   "group": "compare",
+   "formula": "\"а\"<\"1\""
+  },
+  {
+   "id": "compare#28",
+   "group": "compare",
+   "formula": "\"b\"<\"Б\""
+  },
+  {
+   "id": "compare#29",
+   "group": "compare",
+   "formula": "\"b\"<\"z\""
+  },
+  {
+   "id": "compare#30",
+   "group": "compare",
+   "formula": "\"b\"<\"я\""
+  },
+  {
+   "id": "compare#31",
+   "group": "compare",
+   "formula": "\"b\"<\"е\""
+  },
+  {
+   "id": "compare#32",
+   "group": "compare",
+   "formula": "\"b\"<\"ё\""
+  },
+  {
+   "id": "compare#33",
+   "group": "compare",
+   "formula": "\"b\"<\"e\""
+  },
+  {
+   "id": "compare#34",
+   "group": "compare",
+   "formula": "\"b\"<\"é\""
+  },
+  {
+   "id": "compare#35",
+   "group": "compare",
+   "formula": "\"b\"<\"й\""
+  },
+  {
+   "id": "compare#36",
+   "group": "compare",
+   "formula": "\"b\"<\"и\""
+  },
+  {
+   "id": "compare#37",
+   "group": "compare",
+   "formula": "\"b\"<\"ь\""
+  },
+  {
+   "id": "compare#38",
+   "group": "compare",
+   "formula": "\"b\"<\"ъ\""
+  },
+  {
+   "id": "compare#39",
+   "group": "compare",
+   "formula": "\"b\"<\"1\""
+  },
+  {
+   "id": "compare#40",
+   "group": "compare",
+   "formula": "\"Б\"<\"z\""
+  },
+  {
+   "id": "compare#41",
+   "group": "compare",
+   "formula": "\"Б\"<\"я\""
+  },
+  {
+   "id": "compare#42",
+   "group": "compare",
+   "formula": "\"Б\"<\"е\""
+  },
+  {
+   "id": "compare#43",
+   "group": "compare",
+   "formula": "\"Б\"<\"ё\""
+  },
+  {
+   "id": "compare#44",
+   "group": "compare",
+   "formula": "\"Б\"<\"e\""
+  },
+  {
+   "id": "compare#45",
+   "group": "compare",
+   "formula": "\"Б\"<\"é\""
+  },
+  {
+   "id": "compare#46",
+   "group": "compare",
+   "formula": "\"Б\"<\"й\""
+  },
+  {
+   "id": "compare#47",
+   "group": "compare",
+   "formula": "\"Б\"<\"и\""
+  },
+  {
+   "id": "compare#48",
+   "group": "compare",
+   "formula": "\"Б\"<\"ь\""
+  },
+  {
+   "id": "compare#49",
+   "group": "compare",
+   "formula": "\"Б\"<\"ъ\""
+  },
+  {
+   "id": "compare#50",
+   "group": "compare",
+   "formula": "\"Б\"<\"1\""
+  },
+  {
+   "id": "compare#51",
+   "group": "compare",
+   "formula": "\"z\"<\"я\""
+  },
+  {
+   "id": "compare#52",
+   "group": "compare",
+   "formula": "\"z\"<\"е\""
+  },
+  {
+   "id": "compare#53",
+   "group": "compare",
+   "formula": "\"z\"<\"ё\""
+  },
+  {
+   "id": "compare#54",
+   "group": "compare",
+   "formula": "\"z\"<\"e\""
+  },
+  {
+   "id": "compare#55",
+   "group": "compare",
+   "formula": "\"z\"<\"é\""
+  },
+  {
+   "id": "compare#56",
+   "group": "compare",
+   "formula": "\"z\"<\"й\""
+  },
+  {
+   "id": "compare#57",
+   "group": "compare",
+   "formula": "\"z\"<\"и\""
+  },
+  {
+   "id": "compare#58",
+   "group": "compare",
+   "formula": "\"z\"<\"ь\""
+  },
+  {
+   "id": "compare#59",
+   "group": "compare",
+   "formula": "\"z\"<\"ъ\""
+  },
+  {
+   "id": "compare#60",
+   "group": "compare",
+   "formula": "\"z\"<\"1\""
+  },
+  {
+   "id": "compare#61",
+   "group": "compare",
+   "formula": "\"я\"<\"е\""
+  },
+  {
+   "id": "compare#62",
+   "group": "compare",
+   "formula": "\"я\"<\"ё\""
+  },
+  {
+   "id": "compare#63",
+   "group": "compare",
+   "formula": "\"я\"<\"e\""
+  },
+  {
+   "id": "compare#64",
+   "group": "compare",
+   "formula": "\"я\"<\"é\""
+  },
+  {
+   "id": "compare#65",
+   "group": "compare",
+   "formula": "\"я\"<\"й\""
+  },
+  {
+   "id": "compare#66",
+   "group": "compare",
+   "formula": "\"я\"<\"и\""
+  },
+  {
+   "id": "compare#67",
+   "group": "compare",
+   "formula": "\"я\"<\"ь\""
+  },
+  {
+   "id": "compare#68",
+   "group": "compare",
+   "formula": "\"я\"<\"ъ\""
+  },
+  {
+   "id": "compare#69",
+   "group": "compare",
+   "formula": "\"я\"<\"1\""
+  },
+  {
+   "id": "compare#70",
+   "group": "compare",
+   "formula": "\"е\"<\"ё\""
+  },
+  {
+   "id": "compare#71",
+   "group": "compare",
+   "formula": "\"е\"<\"e\""
+  },
+  {
+   "id": "compare#72",
+   "group": "compare",
+   "formula": "\"е\"<\"é\""
+  },
+  {
+   "id": "compare#73",
+   "group": "compare",
+   "formula": "\"е\"<\"й\""
+  },
+  {
+   "id": "compare#74",
+   "group": "compare",
+   "formula": "\"е\"<\"и\""
+  },
+  {
+   "id": "compare#75",
+   "group": "compare",
+   "formula": "\"е\"<\"ь\""
+  },
+  {
+   "id": "compare#76",
+   "group": "compare",
+   "formula": "\"е\"<\"ъ\""
+  },
+  {
+   "id": "compare#77",
+   "group": "compare",
+   "formula": "\"е\"<\"1\""
+  },
+  {
+   "id": "compare#78",
+   "group": "compare",
+   "formula": "\"ё\"<\"e\""
+  },
+  {
+   "id": "compare#79",
+   "group": "compare",
+   "formula": "\"ё\"<\"é\""
+  },
+  {
+   "id": "compare#80",
+   "group": "compare",
+   "formula": "\"ё\"<\"й\""
+  },
+  {
+   "id": "compare#81",
+   "group": "compare",
+   "formula": "\"ё\"<\"и\""
+  },
+  {
+   "id": "compare#82",
+   "group": "compare",
+   "formula": "\"ё\"<\"ь\""
+  },
+  {
+   "id": "compare#83",
+   "group": "compare",
+   "formula": "\"ё\"<\"ъ\""
+  },
+  {
+   "id": "compare#84",
+   "group": "compare",
+   "formula": "\"ё\"<\"1\""
+  },
+  {
+   "id": "compare#85",
+   "group": "compare",
+   "formula": "\"e\"<\"é\""
+  },
+  {
+   "id": "compare#86",
+   "group": "compare",
+   "formula": "\"e\"<\"й\""
+  },
+  {
+   "id": "compare#87",
+   "group": "compare",
+   "formula": "\"e\"<\"и\""
+  },
+  {
+   "id": "compare#88",
+   "group": "compare",
+   "formula": "\"e\"<\"ь\""
+  },
+  {
+   "id": "compare#89",
+   "group": "compare",
+   "formula": "\"e\"<\"ъ\""
+  },
+  {
+   "id": "compare#90",
+   "group": "compare",
+   "formula": "\"e\"<\"1\""
+  },
+  {
+   "id": "compare#91",
+   "group": "compare",
+   "formula": "\"é\"<\"й\""
+  },
+  {
+   "id": "compare#92",
+   "group": "compare",
+   "formula": "\"é\"<\"и\""
+  },
+  {
+   "id": "compare#93",
+   "group": "compare",
+   "formula": "\"é\"<\"ь\""
+  },
+  {
+   "id": "compare#94",
+   "group": "compare",
+   "formula": "\"é\"<\"ъ\""
+  },
+  {
+   "id": "compare#95",
+   "group": "compare",
+   "formula": "\"é\"<\"1\""
+  },
+  {
+   "id": "compare#96",
+   "group": "compare",
+   "formula": "\"й\"<\"и\""
+  },
+  {
+   "id": "compare#97",
+   "group": "compare",
+   "formula": "\"й\"<\"ь\""
+  },
+  {
+   "id": "compare#98",
+   "group": "compare",
+   "formula": "\"й\"<\"ъ\""
+  },
+  {
+   "id": "compare#99",
+   "group": "compare",
+   "formula": "\"й\"<\"1\""
+  },
+  {
+   "id": "compare#100",
+   "group": "compare",
+   "formula": "\"и\"<\"ь\""
+  },
+  {
+   "id": "compare#101",
+   "group": "compare",
+   "formula": "\"и\"<\"ъ\""
+  },
+  {
+   "id": "compare#102",
+   "group": "compare",
+   "formula": "\"и\"<\"1\""
+  },
+  {
+   "id": "compare#103",
+   "group": "compare",
+   "formula": "\"ь\"<\"ъ\""
+  },
+  {
+   "id": "compare#104",
+   "group": "compare",
+   "formula": "\"ь\"<\"1\""
+  },
+  {
+   "id": "compare#105",
+   "group": "compare",
+   "formula": "\"ъ\"<\"1\""
+  },
+  {
+   "id": "equal#1",
+   "group": "equal",
+   "formula": "\"ё\"=\"е\""
+  },
+  {
+   "id": "equal#2",
+   "group": "equal",
+   "formula": "\"Ё\"=\"ё\""
+  },
+  {
+   "id": "equal#3",
+   "group": "equal",
+   "formula": "\"é\"=\"e\""
+  },
+  {
+   "id": "equal#4",
+   "group": "equal",
+   "formula": "\"Е\"=\"е\""
+  },
+  {
+   "id": "equal#5",
+   "group": "equal",
+   "formula": "\"й\"=\"и\""
+  },
+  {
+   "id": "equal#6",
+   "group": "equal",
+   "formula": "\"ь\"=\"ъ\""
+  },
+  {
+   "id": "equal#7",
+   "group": "equal",
+   "formula": "\"абв\"=\"АБВ\""
+  },
+  {
+   "id": "equal#8",
+   "group": "equal",
+   "formula": "\"x1\"=\"х1\""
+  },
+  {
+   "id": "sort#1",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),1,1)"
+  },
+  {
+   "id": "sort#2",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),2,1)"
+  },
+  {
+   "id": "sort#3",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),3,1)"
+  },
+  {
+   "id": "sort#4",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),4,1)"
+  },
+  {
+   "id": "sort#5",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),5,1)"
+  },
+  {
+   "id": "sort#6",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),6,1)"
+  },
+  {
+   "id": "sort#7",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),7,1)"
+  },
+  {
+   "id": "sort#8",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),8,1)"
+  },
+  {
+   "id": "sort#9",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),9,1)"
+  },
+  {
+   "id": "sort#10",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),10,1)"
+  },
+  {
+   "id": "sort#11",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),11,1)"
+  },
+  {
+   "id": "sort#12",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),12,1)"
+  },
+  {
+   "id": "sort#13",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),13,1)"
+  },
+  {
+   "id": "sort#14",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),14,1)"
+  },
+  {
+   "id": "sort#15",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),15,1)"
+  },
+  {
+   "id": "sort#16",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),16,1)"
+  },
+  {
+   "id": "sort#17",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),17,1)"
+  },
+  {
+   "id": "sort#18",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),18,1)"
+  },
+  {
+   "id": "sort#19",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),19,1)"
+  },
+  {
+   "id": "sort#20",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),20,1)"
+  },
+  {
+   "id": "sort#21",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),21,1)"
+  },
+  {
+   "id": "sort#22",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),22,1)"
+  },
+  {
+   "id": "sort#23",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),23,1)"
+  },
+  {
+   "id": "sort#24",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),24,1)"
+  },
+  {
+   "id": "sort#25",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),25,1)"
+  },
+  {
+   "id": "sort#26",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),26,1)"
+  },
+  {
+   "id": "sort#27",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),27,1)"
+  },
+  {
+   "id": "sort#28",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),28,1)"
+  },
+  {
+   "id": "sort#29",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),29,1)"
+  },
+  {
+   "id": "sort#30",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30),30,1)"
+  },
+  {
+   "id": "sort#31",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),1,1)"
+  },
+  {
+   "id": "sort#32",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),4,1)"
+  },
+  {
+   "id": "sort#33",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),7,1)"
+  },
+  {
+   "id": "sort#34",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),10,1)"
+  },
+  {
+   "id": "sort#35",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),13,1)"
+  },
+  {
+   "id": "sort#36",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),16,1)"
+  },
+  {
+   "id": "sort#37",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),19,1)"
+  },
+  {
+   "id": "sort#38",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),22,1)"
+  },
+  {
+   "id": "sort#39",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),25,1)"
+  },
+  {
+   "id": "sort#40",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),28,1)"
+  },
+  {
+   "id": "criteria#1",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<м\")"
+  },
+  {
+   "id": "criteria#2",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<b\")"
+  },
+  {
+   "id": "criteria#3",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<я\")"
+  },
+  {
+   "id": "criteria#4",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\">z\")"
+  },
+  {
+   "id": "criteria#5",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<ё\")"
+  },
+  {
+   "id": "criteria#6",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<=е\")"
+  },
+  {
+   "id": "criteria#7",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<é\")"
+  },
+  {
+   "id": "criteria#8",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\">=а\")"
+  },
+  {
+   "id": "criteria#9",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\"<Б\")"
+  },
+  {
+   "id": "criteria#10",
+   "group": "criteria",
+   "formula": "COUNTIF(O!A1:A30,\">9\")"
+  },
+  {
+   "id": "match#1",
+   "group": "match",
+   "formula": "MATCH(\"Ё\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#2",
+   "group": "match",
+   "formula": "MATCH(\"е\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#3",
+   "group": "match",
+   "formula": "MATCH(\"é\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#4",
+   "group": "match",
+   "formula": "MATCH(\"E\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#5",
+   "group": "match",
+   "formula": "MATCH(\"й\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#6",
+   "group": "match",
+   "formula": "MATCH(\"х1\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#7",
+   "group": "match",
+   "formula": "MATCH(\"x1\",O!A1:A30,0)"
+  },
+  {
+   "id": "match#8",
+   "group": "match",
+   "formula": "MATCH(\"АБ\",O!A1:A30,0)"
+  },
+  {
+   "id": "unique#1",
+   "group": "unique",
+   "formula": "ROWS(_xlfn.UNIQUE({\"е\";\"ё\";\"Е\";\"e\";\"é\"}))"
+  },
+  {
+   "id": "unique#2",
+   "group": "unique",
+   "formula": "ROWS(_xlfn.UNIQUE({\"и\";\"й\";\"И\"}))"
+  },
+  {
+   "id": "unique#3",
+   "group": "unique",
+   "formula": "ROWS(_xlfn.UNIQUE({\"x1\";\"х1\"}))"
+  }
+ ],
+ "values": {
+  "compare#1": {
+   "t": "b",
+   "v": true
+  },
+  "compare#2": {
+   "t": "b",
+   "v": true
+  },
+  "compare#3": {
+   "t": "b",
+   "v": true
+  },
+  "compare#4": {
+   "t": "b",
+   "v": true
+  },
+  "compare#5": {
+   "t": "b",
+   "v": true
+  },
+  "compare#6": {
+   "t": "b",
+   "v": true
+  },
+  "compare#7": {
+   "t": "b",
+   "v": true
+  },
+  "compare#8": {
+   "t": "b",
+   "v": true
+  },
+  "compare#9": {
+   "t": "b",
+   "v": true
+  },
+  "compare#10": {
+   "t": "b",
+   "v": true
+  },
+  "compare#11": {
+   "t": "b",
+   "v": true
+  },
+  "compare#12": {
+   "t": "b",
+   "v": true
+  },
+  "compare#13": {
+   "t": "b",
+   "v": true
+  },
+  "compare#14": {
+   "t": "b",
+   "v": false
+  },
+  "compare#15": {
+   "t": "b",
+   "v": false
+  },
+  "compare#16": {
+   "t": "b",
+   "v": true
+  },
+  "compare#17": {
+   "t": "b",
+   "v": false
+  },
+  "compare#18": {
+   "t": "b",
+   "v": true
+  },
+  "compare#19": {
+   "t": "b",
+   "v": true
+  },
+  "compare#20": {
+   "t": "b",
+   "v": true
+  },
+  "compare#21": {
+   "t": "b",
+   "v": false
+  },
+  "compare#22": {
+   "t": "b",
+   "v": false
+  },
+  "compare#23": {
+   "t": "b",
+   "v": true
+  },
+  "compare#24": {
+   "t": "b",
+   "v": true
+  },
+  "compare#25": {
+   "t": "b",
+   "v": true
+  },
+  "compare#26": {
+   "t": "b",
+   "v": true
+  },
+  "compare#27": {
+   "t": "b",
+   "v": false
+  },
+  "compare#28": {
+   "t": "b",
+   "v": true
+  },
+  "compare#29": {
+   "t": "b",
+   "v": true
+  },
+  "compare#30": {
+   "t": "b",
+   "v": true
+  },
+  "compare#31": {
+   "t": "b",
+   "v": true
+  },
+  "compare#32": {
+   "t": "b",
+   "v": true
+  },
+  "compare#33": {
+   "t": "b",
+   "v": true
+  },
+  "compare#34": {
+   "t": "b",
+   "v": true
+  },
+  "compare#35": {
+   "t": "b",
+   "v": true
+  },
+  "compare#36": {
+   "t": "b",
+   "v": true
+  },
+  "compare#37": {
+   "t": "b",
+   "v": true
+  },
+  "compare#38": {
+   "t": "b",
+   "v": true
+  },
+  "compare#39": {
+   "t": "b",
+   "v": false
+  },
+  "compare#40": {
+   "t": "b",
+   "v": false
+  },
+  "compare#41": {
+   "t": "b",
+   "v": true
+  },
+  "compare#42": {
+   "t": "b",
+   "v": true
+  },
+  "compare#43": {
+   "t": "b",
+   "v": true
+  },
+  "compare#44": {
+   "t": "b",
+   "v": false
+  },
+  "compare#45": {
+   "t": "b",
+   "v": false
+  },
+  "compare#46": {
+   "t": "b",
+   "v": true
+  },
+  "compare#47": {
+   "t": "b",
+   "v": true
+  },
+  "compare#48": {
+   "t": "b",
+   "v": true
+  },
+  "compare#49": {
+   "t": "b",
+   "v": true
+  },
+  "compare#50": {
+   "t": "b",
+   "v": false
+  },
+  "compare#51": {
+   "t": "b",
+   "v": true
+  },
+  "compare#52": {
+   "t": "b",
+   "v": true
+  },
+  "compare#53": {
+   "t": "b",
+   "v": true
+  },
+  "compare#54": {
+   "t": "b",
+   "v": false
+  },
+  "compare#55": {
+   "t": "b",
+   "v": false
+  },
+  "compare#56": {
+   "t": "b",
+   "v": true
+  },
+  "compare#57": {
+   "t": "b",
+   "v": true
+  },
+  "compare#58": {
+   "t": "b",
+   "v": true
+  },
+  "compare#59": {
+   "t": "b",
+   "v": true
+  },
+  "compare#60": {
+   "t": "b",
+   "v": false
+  },
+  "compare#61": {
+   "t": "b",
+   "v": false
+  },
+  "compare#62": {
+   "t": "b",
+   "v": false
+  },
+  "compare#63": {
+   "t": "b",
+   "v": false
+  },
+  "compare#64": {
+   "t": "b",
+   "v": false
+  },
+  "compare#65": {
+   "t": "b",
+   "v": false
+  },
+  "compare#66": {
+   "t": "b",
+   "v": false
+  },
+  "compare#67": {
+   "t": "b",
+   "v": false
+  },
+  "compare#68": {
+   "t": "b",
+   "v": false
+  },
+  "compare#69": {
+   "t": "b",
+   "v": false
+  },
+  "compare#70": {
+   "t": "b",
+   "v": true
+  },
+  "compare#71": {
+   "t": "b",
+   "v": false
+  },
+  "compare#72": {
+   "t": "b",
+   "v": false
+  },
+  "compare#73": {
+   "t": "b",
+   "v": true
+  },
+  "compare#74": {
+   "t": "b",
+   "v": true
+  },
+  "compare#75": {
+   "t": "b",
+   "v": true
+  },
+  "compare#76": {
+   "t": "b",
+   "v": true
+  },
+  "compare#77": {
+   "t": "b",
+   "v": false
+  },
+  "compare#78": {
+   "t": "b",
+   "v": false
+  },
+  "compare#79": {
+   "t": "b",
+   "v": false
+  },
+  "compare#80": {
+   "t": "b",
+   "v": true
+  },
+  "compare#81": {
+   "t": "b",
+   "v": true
+  },
+  "compare#82": {
+   "t": "b",
+   "v": true
+  },
+  "compare#83": {
+   "t": "b",
+   "v": true
+  },
+  "compare#84": {
+   "t": "b",
+   "v": false
+  },
+  "compare#85": {
+   "t": "b",
+   "v": true
+  },
+  "compare#86": {
+   "t": "b",
+   "v": true
+  },
+  "compare#87": {
+   "t": "b",
+   "v": true
+  },
+  "compare#88": {
+   "t": "b",
+   "v": true
+  },
+  "compare#89": {
+   "t": "b",
+   "v": true
+  },
+  "compare#90": {
+   "t": "b",
+   "v": false
+  },
+  "compare#91": {
+   "t": "b",
+   "v": true
+  },
+  "compare#92": {
+   "t": "b",
+   "v": true
+  },
+  "compare#93": {
+   "t": "b",
+   "v": true
+  },
+  "compare#94": {
+   "t": "b",
+   "v": true
+  },
+  "compare#95": {
+   "t": "b",
+   "v": false
+  },
+  "compare#96": {
+   "t": "b",
+   "v": false
+  },
+  "compare#97": {
+   "t": "b",
+   "v": true
+  },
+  "compare#98": {
+   "t": "b",
+   "v": true
+  },
+  "compare#99": {
+   "t": "b",
+   "v": false
+  },
+  "compare#100": {
+   "t": "b",
+   "v": true
+  },
+  "compare#101": {
+   "t": "b",
+   "v": true
+  },
+  "compare#102": {
+   "t": "b",
+   "v": false
+  },
+  "compare#103": {
+   "t": "b",
+   "v": false
+  },
+  "compare#104": {
+   "t": "b",
+   "v": false
+  },
+  "compare#105": {
+   "t": "b",
+   "v": false
+  },
+  "equal#1": {
+   "t": "b",
+   "v": false
+  },
+  "equal#2": {
+   "t": "b",
+   "v": true
+  },
+  "equal#3": {
+   "t": "b",
+   "v": false
+  },
+  "equal#4": {
+   "t": "b",
+   "v": true
+  },
+  "equal#5": {
+   "t": "b",
+   "v": false
+  },
+  "equal#6": {
+   "t": "b",
+   "v": false
+  },
+  "equal#7": {
+   "t": "b",
+   "v": true
+  },
+  "equal#8": {
+   "t": "b",
+   "v": false
+  },
+  "sort#1": {
+   "t": "s",
+   "v": "1"
+  },
+  "sort#2": {
+   "t": "s",
+   "v": "10"
+  },
+  "sort#3": {
+   "t": "s",
+   "v": "9"
+  },
+  "sort#4": {
+   "t": "s",
+   "v": "A"
+  },
+  "sort#5": {
+   "t": "s",
+   "v": "ab"
+  },
+  "sort#6": {
+   "t": "s",
+   "v": "abc"
+  },
+  "sort#7": {
+   "t": "s",
+   "v": "Abc"
+  },
+  "sort#8": {
+   "t": "s",
+   "v": "b"
+  },
+  "sort#9": {
+   "t": "s",
+   "v": "e"
+  },
+  "sort#10": {
+   "t": "s",
+   "v": "é"
+  },
+  "sort#11": {
+   "t": "s",
+   "v": "ea"
+  },
+  "sort#12": {
+   "t": "s",
+   "v": "éa"
+  },
+  "sort#13": {
+   "t": "s",
+   "v": "x1"
+  },
+  "sort#14": {
+   "t": "s",
+   "v": "z"
+  },
+  "sort#15": {
+   "t": "s",
+   "v": "Z"
+  },
+  "sort#16": {
+   "t": "s",
+   "v": "а"
+  },
+  "sort#17": {
+   "t": "s",
+   "v": "аб"
+  },
+  "sort#18": {
+   "t": "s",
+   "v": "абв"
+  },
+  "sort#19": {
+   "t": "s",
+   "v": "Абв"
+  },
+  "sort#20": {
+   "t": "s",
+   "v": "Б"
+  },
+  "sort#21": {
+   "t": "s",
+   "v": "е"
+  },
+  "sort#22": {
+   "t": "s",
+   "v": "ё"
+  },
+  "sort#23": {
+   "t": "s",
+   "v": "Ё"
+  },
+  "sort#24": {
+   "t": "s",
+   "v": "ж"
+  },
+  "sort#25": {
+   "t": "s",
+   "v": "и"
+  },
+  "sort#26": {
+   "t": "s",
+   "v": "й"
+  },
+  "sort#27": {
+   "t": "s",
+   "v": "х1"
+  },
+  "sort#28": {
+   "t": "s",
+   "v": "ъ"
+  },
+  "sort#29": {
+   "t": "s",
+   "v": "ь"
+  },
+  "sort#30": {
+   "t": "s",
+   "v": "я"
+  },
+  "sort#31": {
+   "t": "s",
+   "v": "я"
+  },
+  "sort#32": {
+   "t": "s",
+   "v": "х1"
+  },
+  "sort#33": {
+   "t": "s",
+   "v": "ж"
+  },
+  "sort#34": {
+   "t": "s",
+   "v": "е"
+  },
+  "sort#35": {
+   "t": "s",
+   "v": "Абв"
+  },
+  "sort#36": {
+   "t": "s",
+   "v": "z"
+  },
+  "sort#37": {
+   "t": "s",
+   "v": "éa"
+  },
+  "sort#38": {
+   "t": "s",
+   "v": "e"
+  },
+  "sort#39": {
+   "t": "s",
+   "v": "Abc"
+  },
+  "sort#40": {
+   "t": "s",
+   "v": "9"
+  },
+  "criteria#1": {
+   "t": "n",
+   "v": 26
+  },
+  "criteria#2": {
+   "t": "n",
+   "v": 7
+  },
+  "criteria#3": {
+   "t": "n",
+   "v": 29
+  },
+  "criteria#4": {
+   "t": "n",
+   "v": 15
+  },
+  "criteria#5": {
+   "t": "n",
+   "v": 21
+  },
+  "criteria#6": {
+   "t": "n",
+   "v": 21
+  },
+  "criteria#7": {
+   "t": "n",
+   "v": 9
+  },
+  "criteria#8": {
+   "t": "n",
+   "v": 15
+  },
+  "criteria#9": {
+   "t": "n",
+   "v": 19
+  },
+  "criteria#10": {
+   "t": "n",
+   "v": 0
+  },
+  "match#1": {
+   "t": "n",
+   "v": 5
+  },
+  "match#2": {
+   "t": "n",
+   "v": 6
+  },
+  "match#3": {
+   "t": "n",
+   "v": 14
+  },
+  "match#4": {
+   "t": "n",
+   "v": 15
+  },
+  "match#5": {
+   "t": "n",
+   "v": 21
+  },
+  "match#6": {
+   "t": "n",
+   "v": 30
+  },
+  "match#7": {
+   "t": "n",
+   "v": 29
+  },
+  "match#8": {
+   "t": "n",
+   "v": 28
+  },
+  "unique#1": {
+   "t": "n",
+   "v": 4
+  },
+  "unique#2": {
+   "t": "n",
+   "v": 2
+  },
+  "unique#3": {
+   "t": "n",
+   "v": 2
+  }
+ }
+}

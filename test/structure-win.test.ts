@@ -1,7 +1,7 @@
 /**
  * Structure operations against Excel for Windows (`test/excel/win/struct/`, `bench/windows`): after each operation the
  * engine's book shows what Excel for Windows showed, or Excel refused and so does the engine, as
- * `structure-excel.test.ts` checks the Mac's. Known differences are pinned in `WIN_STRUCT` with their lines.
+ * `structure-excel.test.ts` checks the Mac's. Known differences are pinned in `WIN_STRUCT` with the reason.
  */
 import { describe, expect, it } from 'vitest'
 import type { StoredStruct } from '../bench/coverage/struct.js'
@@ -12,8 +12,42 @@ import { differences } from './structure-excel.js'
 
 const SETS = winFiles<StoredStruct>('struct/')
 
-/** `<set>:<case id>` → the difference lines pinned for that case. */
-const WIN_STRUCT: Readonly<Record<string, string[]>> = {}
+/** The look at the sheet's edges (styles of rows and columns that reach row 1048576 or column XFD) as Excel for Windows reports it. */
+const EDGE = 'Excel for Windows reports the look at the sheet\'s edges otherwise: the empty cells a span reaching the end takes after the operation read plain'
+
+/**
+ * Sizes in Excel for Windows's units, which the engine's look (in the Mac's) does not share: a row's height in points,
+ * 3/4 of what Excel for Mac reports (30 for the Mac's 40, 20 for 26.75), and a column's width rounded to whole pixels
+ * of a 7-pixel digit (13.29 for the Mac's 13.17). Such a line is the same size and does not count as a difference.
+ */
+function sameSize(line: string): boolean {
+  const m = /^'[^']+' (height|width) \w+: Excel ([\d.]+), engine ([\d.]+)$/.exec(line)
+  if (!m) return false
+  const [win, engine] = [Number(m[2]), Number(m[3])]
+  return m[1] === 'height' ? Math.abs((win * 4) / 3 - engine) <= 0.25 : Math.abs(win - engine) <= 0.2
+}
+
+/**
+ * `<set>:<case id>` → why the case differs from Excel for Windows: a reason, and its difference lines must all be of the
+ * look; or the lines themselves, pinned as `structure-excel.test.ts` pins the Mac's.
+ */
+const WIN_STRUCT: Readonly<Record<string, string | string[]>> = {
+  ...Object.fromEntries(
+    [
+      ...['delete-rows-3-4', 'delete-row-1048572', 'delete-row-1048576', 'delete-rows-1048575-2', 'delete-rows-1048568-4', 'delete-columns-B-C', 'delete-column-XFB', 'delete-column-XFD', 'delete-columns-XEZ-3'].map((id) => `edge-layout:${id}`),
+      ...['delete-column-A', 'delete-column-D', 'insert-column-B', 'delete-row-3'].map((id) => `edge-wide:${id}`),
+    ].map((k) => [k, EDGE]),
+  ),
+  // whole columns copied onto part of a merged area: Excel pastes them, on Windows as on the Mac; the engine refuses
+  'styles:copy-S!D:D-S!C1': ['engine refused (merged): the pasted cells land on part of the merged area S!B10:C11'],
+  'styles-checks:copy-S!C:C-S!I1': ['engine refused (merged): the pasted cells land on part of the merged area S!I2:J2'],
+  // Excel's fill handle (Range.AutoFill) fills the hidden rows of a filtered sheet too, on Windows as on the Mac; the
+  // engine's copyRange fills the visible rows only
+  'hidden:filtered-fill-handle': ['D4', 'E4', 'D7', 'E7', 'D8', 'E8', 'D11', 'E11'].map((a) => `'S'!${a}: Excel ${JSON.stringify(a[0] === 'D' ? 'top' : `=A${a.slice(1)}+1000`)}, engine ""`),
+}
+
+/** A difference line of the look: a cell's style, a row's height, a column's width. */
+const LOOK = /^'[^']+' (look [A-Z]+\d+|height \d+|width [A-Z]+):/
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/struct/${set.name}.ts`)) as { buildStructCases: () => StructCases }).buildStructCases()
@@ -30,13 +64,17 @@ for (const set of SETS) {
       it(`${c.id}: as Excel for Windows`, () => {
         const a = set.answers[c.id]
         const r = restructure(set.books[c.book], c.op)
-        const same = (book: BookInput) => differences(book, a, String(set.meta.read), look, set.widths !== false)
+        const same = (book: BookInput) => differences(book, a, String(set.meta.read), look, set.widths !== false).filter((l) => !sameSize(l))
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           return void expect(same(set.books[c.book])).toEqual([])
         }
         if (!r.ok && r.code === 'array') return void expect(same(set.books[c.book])).toEqual([])
-        expect(r.ok ? same(r.book) : [`engine refused (${r.code}): ${r.message}`]).toEqual(WIN_STRUCT[`${set.name}:${c.id}`] ?? [])
+        const lines = r.ok ? same(r.book) : [`engine refused (${r.code}): ${r.message}`]
+        const why = WIN_STRUCT[`${set.name}:${c.id}`] ?? []
+        if (Array.isArray(why)) return void expect(lines).toEqual(why)
+        expect(lines.length, why).toBeGreaterThan(0)
+        expect(lines.filter((l) => !LOOK.test(l))).toEqual([])
       })
   })
 }

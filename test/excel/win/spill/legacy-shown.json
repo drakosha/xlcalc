@@ -1,0 +1,2162 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "params",
+   "about": "the dynamic text of the params cases that part",
+   "book": {
+    "sheets": [
+     {
+      "name": "D",
+      "cells": {
+       "A2": {
+        "value": "2"
+       },
+       "A3": {
+        "value": "abc"
+       },
+       "A4": {
+        "value": true
+       },
+       "A5": {
+        "value": false
+       },
+       "A6": {
+        "value": 45688
+       },
+       "A7": {
+        "formula": "1/0"
+       },
+       "A8": {
+        "formula": "NA()"
+       },
+       "A9": {
+        "value": "Привет Мир"
+       },
+       "A10": {
+        "value": "1.5"
+       },
+       "A11": {
+        "value": "1,5"
+       },
+       "A12": {
+        "value": 0
+       },
+       "A13": {
+        "formula": "\"\""
+       },
+       "A14": {
+        "formula": "CHAR(9)&\"abc\"&CHAR(10)"
+       },
+       "A15": {
+        "value": 45688.75
+       },
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 8
+       },
+       "B3": {
+        "value": 15
+       },
+       "B4": {
+        "value": 16
+       },
+       "B5": {
+        "value": 23
+       },
+       "B6": {
+        "value": 42
+       },
+       "B7": {
+        "value": -3.5
+       },
+       "B8": {
+        "value": 10.25
+       },
+       "C1": {
+        "value": 2
+       },
+       "C2": {
+        "value": 7
+       },
+       "C3": {
+        "value": 11
+       },
+       "C4": {
+        "value": 19
+       },
+       "C5": {
+        "value": 21
+       },
+       "C6": {
+        "value": 40
+       },
+       "C7": {
+        "value": -1
+       },
+       "C8": {
+        "value": 9
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": "2"
+       },
+       "D3": {
+        "value": "abc"
+       },
+       "D4": {
+        "value": true
+       },
+       "D6": {
+        "value": 5
+       },
+       "D7": {
+        "value": false
+       },
+       "D8": {
+        "value": 3.5
+       },
+       "E1": {
+        "value": 1
+       },
+       "E2": {
+        "value": 2
+       },
+       "E3": {
+        "formula": "1/0"
+       },
+       "E4": {
+        "value": 4
+       },
+       "E5": {
+        "value": 5
+       },
+       "E6": {
+        "value": 6
+       },
+       "E7": {
+        "value": 7
+       },
+       "E8": {
+        "value": 8
+       },
+       "AV1": {
+        "value": 4
+       },
+       "AV2": {
+        "value": 5
+       },
+       "AV3": {
+        "value": 8
+       },
+       "AV4": {
+        "value": 7
+       },
+       "AV5": {
+        "value": 11
+       },
+       "AV6": {
+        "value": 4
+       },
+       "AV7": {
+        "value": 3
+       },
+       "F1": {
+        "value": "Аренда"
+       },
+       "F2": {
+        "value": "аренда"
+       },
+       "F3": {
+        "value": "Арендй"
+       },
+       "F4": {
+        "value": "Арeнда*"
+       },
+       "F5": {
+        "value": "x*y"
+       },
+       "F6": {
+        "value": "Чай"
+       },
+       "F7": {
+        "value": "Чаи"
+       },
+       "G1": {
+        "value": 1
+       },
+       "G2": {
+        "value": 2
+       },
+       "G3": {
+        "value": 4
+       },
+       "G4": {
+        "value": 8
+       },
+       "G5": {
+        "value": 16
+       },
+       "G6": {
+        "value": 32
+       },
+       "G7": {
+        "value": 64
+       },
+       "H1": {
+        "value": 45657
+       },
+       "H2": {
+        "value": 45658
+       },
+       "H3": {
+        "value": 45659
+       },
+       "H4": {
+        "value": 45689
+       },
+       "H5": {
+        "value": 45717
+       },
+       "H6": {
+        "value": 45473
+       },
+       "H7": {
+        "value": 46022
+       },
+       "I1": {
+        "value": -10000
+       },
+       "I2": {
+        "value": 3000
+       },
+       "I3": {
+        "value": 4200
+       },
+       "I4": {
+        "value": 6800
+       },
+       "I5": {
+        "value": 1200
+       },
+       "J1": {
+        "value": -10000
+       },
+       "J2": {
+        "value": 2750
+       },
+       "J3": {
+        "value": 4250
+       },
+       "J4": {
+        "value": 3250
+       },
+       "J5": {
+        "value": 2750
+       },
+       "I7": {
+        "value": -10000
+       },
+       "I8": {
+        "value": "3000"
+       },
+       "I9": {
+        "value": 4200
+       },
+       "I11": {
+        "value": 6800
+       },
+       "I13": {
+        "value": -10000
+       },
+       "I14": {
+        "value": 3000
+       },
+       "I15": {
+        "formula": "NA()"
+       },
+       "I16": {
+        "value": 6800
+       },
+       "I17": {
+        "value": 1200
+       },
+       "J7": {
+        "value": 100
+       },
+       "J8": {
+        "value": 200
+       },
+       "J9": {
+        "value": 300
+       },
+       "J10": {
+        "value": 400
+       },
+       "J11": {
+        "value": 500
+       },
+       "AU7": {
+        "value": 39508
+       },
+       "AU8": {
+        "value": 39448
+       },
+       "AU9": {
+        "value": 39751
+       },
+       "AU10": {
+        "value": 39859
+       },
+       "AU11": {
+        "value": 39904
+       },
+       "AU1": {
+        "value": 39448
+       },
+       "AU2": {
+        "value": 39508
+       },
+       "AU3": {
+        "value": 39751
+       },
+       "AU4": {
+        "value": 39859
+       },
+       "AU5": {
+        "value": 39904
+       },
+       "L1": {
+        "value": 1
+       },
+       "M1": {
+        "value": "one"
+       },
+       "N1": {
+        "value": 10
+       },
+       "L2": {
+        "value": 2
+       },
+       "M2": {
+        "value": "two"
+       },
+       "N2": {
+        "value": 20
+       },
+       "L3": {
+        "value": 3
+       },
+       "M3": {
+        "value": "three"
+       },
+       "N3": {
+        "value": 30
+       },
+       "L4": {
+        "value": 5
+       },
+       "M4": {
+        "value": "five"
+       },
+       "N4": {
+        "value": 50
+       },
+       "L5": {
+        "value": 8
+       },
+       "M5": {
+        "value": "eight"
+       },
+       "N5": {
+        "value": 80
+       },
+       "L6": {
+        "value": 13
+       },
+       "M6": {
+        "value": "thirteen"
+       },
+       "N6": {
+        "value": 130
+       },
+       "L8": {
+        "value": 1
+       },
+       "M8": {
+        "value": 2
+       },
+       "N8": {
+        "value": 3
+       },
+       "O8": {
+        "value": 5
+       },
+       "P8": {
+        "value": 8
+       },
+       "Q8": {
+        "value": 13
+       },
+       "L9": {
+        "value": "one"
+       },
+       "M9": {
+        "value": "two"
+       },
+       "N9": {
+        "value": "three"
+       },
+       "O9": {
+        "value": "five"
+       },
+       "P9": {
+        "value": "eight"
+       },
+       "Q9": {
+        "value": "thirteen"
+       },
+       "L10": {
+        "value": 10
+       },
+       "M10": {
+        "value": 20
+       },
+       "N10": {
+        "value": 30
+       },
+       "O10": {
+        "value": 50
+       },
+       "P10": {
+        "value": 80
+       },
+       "Q10": {
+        "value": 130
+       },
+       "P1": {
+        "value": 1
+       },
+       "Q1": {
+        "value": 2
+       },
+       "P2": {
+        "value": 3
+       },
+       "Q2": {
+        "value": 4
+       },
+       "R1": {
+        "value": 5
+       },
+       "S1": {
+        "value": 6
+       },
+       "R2": {
+        "value": 7
+       },
+       "S2": {
+        "value": 8
+       },
+       "P4": {
+        "value": 1
+       },
+       "Q4": {
+        "value": 2
+       },
+       "R4": {
+        "value": 3
+       },
+       "P5": {
+        "value": 4
+       },
+       "Q5": {
+        "value": 5
+       },
+       "R5": {
+        "value": 6
+       },
+       "U1": {
+        "value": "Tree"
+       },
+       "V1": {
+        "value": "Height"
+       },
+       "W1": {
+        "value": "Age"
+       },
+       "X1": {
+        "value": "Yield"
+       },
+       "Y1": {
+        "value": "Profit"
+       },
+       "U2": {
+        "value": "Apple"
+       },
+       "V2": {
+        "value": 18
+       },
+       "W2": {
+        "value": 20
+       },
+       "X2": {
+        "value": 14
+       },
+       "Y2": {
+        "value": 105
+       },
+       "U3": {
+        "value": "Pear"
+       },
+       "V3": {
+        "value": 12
+       },
+       "W3": {
+        "value": 12
+       },
+       "X3": {
+        "value": 10
+       },
+       "Y3": {
+        "value": 96
+       },
+       "U4": {
+        "value": "Cherry"
+       },
+       "V4": {
+        "value": 13
+       },
+       "W4": {
+        "value": 14
+       },
+       "X4": {
+        "value": 9
+       },
+       "Y4": {
+        "value": 105
+       },
+       "U5": {
+        "value": "Apple"
+       },
+       "V5": {
+        "value": 14
+       },
+       "W5": {
+        "value": 15
+       },
+       "X5": {
+        "value": 10
+       },
+       "Y5": {
+        "value": 75
+       },
+       "U6": {
+        "value": "Pear"
+       },
+       "V6": {
+        "value": 9
+       },
+       "W6": {
+        "value": 8
+       },
+       "X6": {
+        "value": 8
+       },
+       "Y6": {
+        "value": 76.8
+       },
+       "U7": {
+        "value": "Apple"
+       },
+       "V7": {
+        "value": 8
+       },
+       "W7": {
+        "value": 9
+       },
+       "X7": {
+        "value": 6
+       },
+       "Y7": {
+        "value": 45
+       },
+       "AA1": {
+        "value": "Tree"
+       },
+       "AB1": {
+        "value": "Height"
+       },
+       "AA2": {
+        "value": "Apple"
+       },
+       "AB2": {
+        "value": ">10"
+       },
+       "AC1": {
+        "value": "Tree"
+       },
+       "AC2": {
+        "value": "Pear"
+       },
+       "AD1": {
+        "value": "Tree"
+       },
+       "AD2": {
+        "value": "a*"
+       },
+       "AE1": {
+        "value": "Tree"
+       },
+       "AE2": {
+        "value": "Cherry"
+       },
+       "AF1": {
+        "value": "Tree"
+       },
+       "AF2": {
+        "value": "Plum"
+       },
+       "AG1": {
+        "value": "Tree"
+       },
+       "AH1": {
+        "value": 0
+       },
+       "AH2": {
+        "value": 1
+       },
+       "AH3": {
+        "value": 2
+       },
+       "AH4": {
+        "value": 3
+       },
+       "AI1": {
+        "value": 0.2
+       },
+       "AI2": {
+        "value": 0.3
+       },
+       "AI3": {
+        "value": 0.1
+       },
+       "AI4": {
+        "value": 0.4
+       },
+       "AK1": {
+        "value": 58
+       },
+       "AL1": {
+        "value": 35
+       },
+       "AK2": {
+        "value": 11
+       },
+       "AL2": {
+        "value": 25
+       },
+       "AK3": {
+        "value": 10
+       },
+       "AL3": {
+        "value": 23
+       },
+       "AK5": {
+        "value": 58
+       },
+       "AL5": {
+        "value": "35"
+       },
+       "AK6": {
+        "value": 11
+       },
+       "AK7": {
+        "value": true
+       },
+       "AL7": {
+        "value": 23
+       },
+       "AK9": {
+        "value": 58
+       },
+       "AL9": {
+        "value": 35
+       },
+       "AK10": {
+        "value": 11
+       },
+       "AL10": {
+        "formula": "1/0"
+       },
+       "AK11": {
+        "value": 10
+       },
+       "AL11": {
+        "value": 23
+       },
+       "AM1": {
+        "value": 45.35
+       },
+       "AN1": {
+        "value": 47.65
+       },
+       "AM2": {
+        "value": 17.56
+       },
+       "AN2": {
+        "value": 18.44
+       },
+       "AM3": {
+        "value": 16.09
+       },
+       "AN3": {
+        "value": 16.91
+       },
+       "AP1": {
+        "value": 41235
+       },
+       "AP2": {
+        "value": 41247
+       },
+       "AP3": {
+        "value": 41295
+       },
+       "AP4": {
+        "value": 39778
+       },
+       "AP5": {
+        "value": 39786
+       },
+       "AP6": {
+        "value": 39834
+       },
+       "AP7": {
+        "value": 38719
+       },
+       "AP8": {
+        "value": 38733
+       },
+       "AQ1": {
+        "value": 0.09
+       },
+       "AQ2": {
+        "value": 0.11
+       },
+       "AQ3": {
+        "value": 0.1
+       },
+       "AR1": {
+        "value": 1
+       },
+       "AR2": {
+        "value": -0.5
+       },
+       "AR3": {
+        "value": 0.0416666666666667
+       },
+       "AR4": {
+        "value": -0.00138888888888889
+       },
+       "AS1": {
+        "value": 1
+       },
+       "AS2": {
+        "value": 2
+       },
+       "AS3": {
+        "value": 2
+       },
+       "AS4": {
+        "value": "a"
+       },
+       "AS5": {
+        "value": "A"
+       },
+       "AS6": {
+        "value": 3
+       },
+       "AS7": {
+        "value": 1
+       },
+       "AS8": {
+        "value": "b"
+       },
+       "AT1": {
+        "value": 0
+       },
+       "AT2": {
+        "value": 10
+       },
+       "AT3": {
+        "value": 20
+       },
+       "AW1": {
+        "value": true
+       },
+       "AW2": {
+        "value": false
+       },
+       "AW3": {
+        "value": "abc"
+       },
+       "AX1": {
+        "value": true
+       },
+       "AX2": {
+        "value": true
+       },
+       "AX3": {
+        "value": 1
+       },
+       "AY1": {
+        "value": 3
+       },
+       "AY2": {
+        "value": 5
+       },
+       "AY3": {
+        "value": 7
+       },
+       "AY4": {
+        "value": 10
+       },
+       "AY5": {
+        "value": 11
+       },
+       "AZ1": {
+        "value": 1
+       },
+       "AZ2": {
+        "value": 2
+       },
+       "AZ3": {
+        "value": 3
+       },
+       "AZ4": {
+        "value": 4
+       },
+       "AZ5": {
+        "value": 5
+       },
+       "BA1": {
+        "value": 6
+       },
+       "BA2": {
+        "value": 7
+       },
+       "BB1": {
+        "value": 33100
+       },
+       "BB2": {
+        "value": 47300
+       },
+       "BB3": {
+        "value": 69000
+       },
+       "BB4": {
+        "value": 102000
+       },
+       "BB5": {
+        "value": 150000
+       },
+       "BB6": {
+        "value": 220000
+       },
+       "BC1": {
+        "value": 11
+       },
+       "BC2": {
+        "value": 12
+       },
+       "BC3": {
+        "value": 13
+       },
+       "BC4": {
+        "value": 14
+       },
+       "BC5": {
+        "value": 15
+       },
+       "BC6": {
+        "value": 16
+       },
+       "BD1": {
+        "value": 17
+       },
+       "BD2": {
+        "value": 18
+       },
+       "BE1": {
+        "value": 89
+       },
+       "BE2": {
+        "value": 88
+       },
+       "BE3": {
+        "value": 92
+       },
+       "BE4": {
+        "value": 101
+       },
+       "BE5": {
+        "value": 94
+       },
+       "BE6": {
+        "value": 97
+       },
+       "BE7": {
+        "value": 95
+       },
+       "BF1": {
+        "value": 1
+       },
+       "BF2": {
+        "value": 2
+       },
+       "BF3": {
+        "value": 2
+       },
+       "BF4": {
+        "value": 3
+       },
+       "BF5": {
+        "value": 5
+       },
+       "BF6": {
+        "value": 2
+       },
+       "BG1": {
+        "value": 1
+       },
+       "BG2": {
+        "value": 2
+       },
+       "BG3": {
+        "value": 3
+       },
+       "BG4": {
+        "value": 4
+       },
+       "BG5": {
+        "value": 3
+       },
+       "BG6": {
+        "value": 2
+       },
+       "BG7": {
+        "value": 1
+       },
+       "BG8": {
+        "value": 2
+       },
+       "BG9": {
+        "value": 3
+       },
+       "BG10": {
+        "value": 5
+       },
+       "BG11": {
+        "value": 6
+       },
+       "BG12": {
+        "value": 1
+       },
+       "BH1": {
+        "value": "a"
+       },
+       "BH3": {
+        "value": "Б"
+       }
+      }
+     },
+     {
+      "name": "C",
+      "cells": {
+       "A104": {
+        "formula": "@GROWTH('D'!BB1:BB6,'D'!BC1:BC6,17,'D'!B1:B3)"
+       },
+       "A322": {
+        "formula": "MATCH(5,'D'!L1:L6,'D'!B1:B3)"
+       },
+       "A9": {
+        "formula": "NETWORKDAYS.INTL(38718,38749,@'D'!B1:B3,'D'!AP1:AP8)"
+       },
+       "A10": {
+        "formula": "NETWORKDAYS.INTL(38718,38749,(@'D'!B1:B3+0),'D'!AP1:AP8)"
+       },
+       "A19": {
+        "formula": "@TREND('D'!AY1:AY5,'D'!AZ1:AZ5,6,'D'!B1:B3)"
+       },
+       "A112": {
+        "formula": "XIRR('D'!J1:J5,'D'!AU1:AU5,'D'!B1:B3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "C",
+     "range": "A104"
+    },
+    {
+     "sheet": "C",
+     "range": "A322"
+    },
+    {
+     "sheet": "C",
+     "range": "A9"
+    },
+    {
+     "sheet": "C",
+     "range": "A10"
+    },
+    {
+     "sheet": "C",
+     "range": "A19"
+    },
+    {
+     "sheet": "C",
+     "range": "A112"
+    }
+   ]
+  },
+  {
+   "id": "nesting",
+   "about": "the dynamic text of the nesting cases that part",
+   "book": {
+    "sheets": [
+     {
+      "name": "D",
+      "cells": {
+       "A2": {
+        "value": "2"
+       },
+       "A3": {
+        "value": "abc"
+       },
+       "A4": {
+        "value": true
+       },
+       "A5": {
+        "value": false
+       },
+       "A6": {
+        "value": 45688
+       },
+       "A7": {
+        "formula": "1/0"
+       },
+       "A8": {
+        "formula": "NA()"
+       },
+       "A9": {
+        "value": "Привет Мир"
+       },
+       "A10": {
+        "value": "1.5"
+       },
+       "A11": {
+        "value": "1,5"
+       },
+       "A12": {
+        "value": 0
+       },
+       "A13": {
+        "formula": "\"\""
+       },
+       "A14": {
+        "formula": "CHAR(9)&\"abc\"&CHAR(10)"
+       },
+       "A15": {
+        "value": 45688.75
+       },
+       "B1": {
+        "value": 4
+       },
+       "B2": {
+        "value": 8
+       },
+       "B3": {
+        "value": 15
+       },
+       "B4": {
+        "value": 16
+       },
+       "B5": {
+        "value": 23
+       },
+       "B6": {
+        "value": 42
+       },
+       "B7": {
+        "value": -3.5
+       },
+       "B8": {
+        "value": 10.25
+       },
+       "C1": {
+        "value": 2
+       },
+       "C2": {
+        "value": 7
+       },
+       "C3": {
+        "value": 11
+       },
+       "C4": {
+        "value": 19
+       },
+       "C5": {
+        "value": 21
+       },
+       "C6": {
+        "value": 40
+       },
+       "C7": {
+        "value": -1
+       },
+       "C8": {
+        "value": 9
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": "2"
+       },
+       "D3": {
+        "value": "abc"
+       },
+       "D4": {
+        "value": true
+       },
+       "D6": {
+        "value": 5
+       },
+       "D7": {
+        "value": false
+       },
+       "D8": {
+        "value": 3.5
+       },
+       "E1": {
+        "value": 1
+       },
+       "E2": {
+        "value": 2
+       },
+       "E3": {
+        "formula": "1/0"
+       },
+       "E4": {
+        "value": 4
+       },
+       "E5": {
+        "value": 5
+       },
+       "E6": {
+        "value": 6
+       },
+       "E7": {
+        "value": 7
+       },
+       "E8": {
+        "value": 8
+       },
+       "AV1": {
+        "value": 4
+       },
+       "AV2": {
+        "value": 5
+       },
+       "AV3": {
+        "value": 8
+       },
+       "AV4": {
+        "value": 7
+       },
+       "AV5": {
+        "value": 11
+       },
+       "AV6": {
+        "value": 4
+       },
+       "AV7": {
+        "value": 3
+       },
+       "F1": {
+        "value": "Аренда"
+       },
+       "F2": {
+        "value": "аренда"
+       },
+       "F3": {
+        "value": "Арендй"
+       },
+       "F4": {
+        "value": "Арeнда*"
+       },
+       "F5": {
+        "value": "x*y"
+       },
+       "F6": {
+        "value": "Чай"
+       },
+       "F7": {
+        "value": "Чаи"
+       },
+       "G1": {
+        "value": 1
+       },
+       "G2": {
+        "value": 2
+       },
+       "G3": {
+        "value": 4
+       },
+       "G4": {
+        "value": 8
+       },
+       "G5": {
+        "value": 16
+       },
+       "G6": {
+        "value": 32
+       },
+       "G7": {
+        "value": 64
+       },
+       "H1": {
+        "value": 45657
+       },
+       "H2": {
+        "value": 45658
+       },
+       "H3": {
+        "value": 45659
+       },
+       "H4": {
+        "value": 45689
+       },
+       "H5": {
+        "value": 45717
+       },
+       "H6": {
+        "value": 45473
+       },
+       "H7": {
+        "value": 46022
+       },
+       "I1": {
+        "value": -10000
+       },
+       "I2": {
+        "value": 3000
+       },
+       "I3": {
+        "value": 4200
+       },
+       "I4": {
+        "value": 6800
+       },
+       "I5": {
+        "value": 1200
+       },
+       "J1": {
+        "value": -10000
+       },
+       "J2": {
+        "value": 2750
+       },
+       "J3": {
+        "value": 4250
+       },
+       "J4": {
+        "value": 3250
+       },
+       "J5": {
+        "value": 2750
+       },
+       "I7": {
+        "value": -10000
+       },
+       "I8": {
+        "value": "3000"
+       },
+       "I9": {
+        "value": 4200
+       },
+       "I11": {
+        "value": 6800
+       },
+       "I13": {
+        "value": -10000
+       },
+       "I14": {
+        "value": 3000
+       },
+       "I15": {
+        "formula": "NA()"
+       },
+       "I16": {
+        "value": 6800
+       },
+       "I17": {
+        "value": 1200
+       },
+       "J7": {
+        "value": 100
+       },
+       "J8": {
+        "value": 200
+       },
+       "J9": {
+        "value": 300
+       },
+       "J10": {
+        "value": 400
+       },
+       "J11": {
+        "value": 500
+       },
+       "AU7": {
+        "value": 39508
+       },
+       "AU8": {
+        "value": 39448
+       },
+       "AU9": {
+        "value": 39751
+       },
+       "AU10": {
+        "value": 39859
+       },
+       "AU11": {
+        "value": 39904
+       },
+       "AU1": {
+        "value": 39448
+       },
+       "AU2": {
+        "value": 39508
+       },
+       "AU3": {
+        "value": 39751
+       },
+       "AU4": {
+        "value": 39859
+       },
+       "AU5": {
+        "value": 39904
+       },
+       "L1": {
+        "value": 1
+       },
+       "M1": {
+        "value": "one"
+       },
+       "N1": {
+        "value": 10
+       },
+       "L2": {
+        "value": 2
+       },
+       "M2": {
+        "value": "two"
+       },
+       "N2": {
+        "value": 20
+       },
+       "L3": {
+        "value": 3
+       },
+       "M3": {
+        "value": "three"
+       },
+       "N3": {
+        "value": 30
+       },
+       "L4": {
+        "value": 5
+       },
+       "M4": {
+        "value": "five"
+       },
+       "N4": {
+        "value": 50
+       },
+       "L5": {
+        "value": 8
+       },
+       "M5": {
+        "value": "eight"
+       },
+       "N5": {
+        "value": 80
+       },
+       "L6": {
+        "value": 13
+       },
+       "M6": {
+        "value": "thirteen"
+       },
+       "N6": {
+        "value": 130
+       },
+       "L8": {
+        "value": 1
+       },
+       "M8": {
+        "value": 2
+       },
+       "N8": {
+        "value": 3
+       },
+       "O8": {
+        "value": 5
+       },
+       "P8": {
+        "value": 8
+       },
+       "Q8": {
+        "value": 13
+       },
+       "L9": {
+        "value": "one"
+       },
+       "M9": {
+        "value": "two"
+       },
+       "N9": {
+        "value": "three"
+       },
+       "O9": {
+        "value": "five"
+       },
+       "P9": {
+        "value": "eight"
+       },
+       "Q9": {
+        "value": "thirteen"
+       },
+       "L10": {
+        "value": 10
+       },
+       "M10": {
+        "value": 20
+       },
+       "N10": {
+        "value": 30
+       },
+       "O10": {
+        "value": 50
+       },
+       "P10": {
+        "value": 80
+       },
+       "Q10": {
+        "value": 130
+       },
+       "P1": {
+        "value": 1
+       },
+       "Q1": {
+        "value": 2
+       },
+       "P2": {
+        "value": 3
+       },
+       "Q2": {
+        "value": 4
+       },
+       "R1": {
+        "value": 5
+       },
+       "S1": {
+        "value": 6
+       },
+       "R2": {
+        "value": 7
+       },
+       "S2": {
+        "value": 8
+       },
+       "P4": {
+        "value": 1
+       },
+       "Q4": {
+        "value": 2
+       },
+       "R4": {
+        "value": 3
+       },
+       "P5": {
+        "value": 4
+       },
+       "Q5": {
+        "value": 5
+       },
+       "R5": {
+        "value": 6
+       },
+       "U1": {
+        "value": "Tree"
+       },
+       "V1": {
+        "value": "Height"
+       },
+       "W1": {
+        "value": "Age"
+       },
+       "X1": {
+        "value": "Yield"
+       },
+       "Y1": {
+        "value": "Profit"
+       },
+       "U2": {
+        "value": "Apple"
+       },
+       "V2": {
+        "value": 18
+       },
+       "W2": {
+        "value": 20
+       },
+       "X2": {
+        "value": 14
+       },
+       "Y2": {
+        "value": 105
+       },
+       "U3": {
+        "value": "Pear"
+       },
+       "V3": {
+        "value": 12
+       },
+       "W3": {
+        "value": 12
+       },
+       "X3": {
+        "value": 10
+       },
+       "Y3": {
+        "value": 96
+       },
+       "U4": {
+        "value": "Cherry"
+       },
+       "V4": {
+        "value": 13
+       },
+       "W4": {
+        "value": 14
+       },
+       "X4": {
+        "value": 9
+       },
+       "Y4": {
+        "value": 105
+       },
+       "U5": {
+        "value": "Apple"
+       },
+       "V5": {
+        "value": 14
+       },
+       "W5": {
+        "value": 15
+       },
+       "X5": {
+        "value": 10
+       },
+       "Y5": {
+        "value": 75
+       },
+       "U6": {
+        "value": "Pear"
+       },
+       "V6": {
+        "value": 9
+       },
+       "W6": {
+        "value": 8
+       },
+       "X6": {
+        "value": 8
+       },
+       "Y6": {
+        "value": 76.8
+       },
+       "U7": {
+        "value": "Apple"
+       },
+       "V7": {
+        "value": 8
+       },
+       "W7": {
+        "value": 9
+       },
+       "X7": {
+        "value": 6
+       },
+       "Y7": {
+        "value": 45
+       },
+       "AA1": {
+        "value": "Tree"
+       },
+       "AB1": {
+        "value": "Height"
+       },
+       "AA2": {
+        "value": "Apple"
+       },
+       "AB2": {
+        "value": ">10"
+       },
+       "AC1": {
+        "value": "Tree"
+       },
+       "AC2": {
+        "value": "Pear"
+       },
+       "AD1": {
+        "value": "Tree"
+       },
+       "AD2": {
+        "value": "a*"
+       },
+       "AE1": {
+        "value": "Tree"
+       },
+       "AE2": {
+        "value": "Cherry"
+       },
+       "AF1": {
+        "value": "Tree"
+       },
+       "AF2": {
+        "value": "Plum"
+       },
+       "AG1": {
+        "value": "Tree"
+       },
+       "AH1": {
+        "value": 0
+       },
+       "AH2": {
+        "value": 1
+       },
+       "AH3": {
+        "value": 2
+       },
+       "AH4": {
+        "value": 3
+       },
+       "AI1": {
+        "value": 0.2
+       },
+       "AI2": {
+        "value": 0.3
+       },
+       "AI3": {
+        "value": 0.1
+       },
+       "AI4": {
+        "value": 0.4
+       },
+       "AK1": {
+        "value": 58
+       },
+       "AL1": {
+        "value": 35
+       },
+       "AK2": {
+        "value": 11
+       },
+       "AL2": {
+        "value": 25
+       },
+       "AK3": {
+        "value": 10
+       },
+       "AL3": {
+        "value": 23
+       },
+       "AK5": {
+        "value": 58
+       },
+       "AL5": {
+        "value": "35"
+       },
+       "AK6": {
+        "value": 11
+       },
+       "AK7": {
+        "value": true
+       },
+       "AL7": {
+        "value": 23
+       },
+       "AK9": {
+        "value": 58
+       },
+       "AL9": {
+        "value": 35
+       },
+       "AK10": {
+        "value": 11
+       },
+       "AL10": {
+        "formula": "1/0"
+       },
+       "AK11": {
+        "value": 10
+       },
+       "AL11": {
+        "value": 23
+       },
+       "AM1": {
+        "value": 45.35
+       },
+       "AN1": {
+        "value": 47.65
+       },
+       "AM2": {
+        "value": 17.56
+       },
+       "AN2": {
+        "value": 18.44
+       },
+       "AM3": {
+        "value": 16.09
+       },
+       "AN3": {
+        "value": 16.91
+       },
+       "AP1": {
+        "value": 41235
+       },
+       "AP2": {
+        "value": 41247
+       },
+       "AP3": {
+        "value": 41295
+       },
+       "AP4": {
+        "value": 39778
+       },
+       "AP5": {
+        "value": 39786
+       },
+       "AP6": {
+        "value": 39834
+       },
+       "AP7": {
+        "value": 38719
+       },
+       "AP8": {
+        "value": 38733
+       },
+       "AQ1": {
+        "value": 0.09
+       },
+       "AQ2": {
+        "value": 0.11
+       },
+       "AQ3": {
+        "value": 0.1
+       },
+       "AR1": {
+        "value": 1
+       },
+       "AR2": {
+        "value": -0.5
+       },
+       "AR3": {
+        "value": 0.0416666666666667
+       },
+       "AR4": {
+        "value": -0.00138888888888889
+       },
+       "AS1": {
+        "value": 1
+       },
+       "AS2": {
+        "value": 2
+       },
+       "AS3": {
+        "value": 2
+       },
+       "AS4": {
+        "value": "a"
+       },
+       "AS5": {
+        "value": "A"
+       },
+       "AS6": {
+        "value": 3
+       },
+       "AS7": {
+        "value": 1
+       },
+       "AS8": {
+        "value": "b"
+       },
+       "AT1": {
+        "value": 0
+       },
+       "AT2": {
+        "value": 10
+       },
+       "AT3": {
+        "value": 20
+       },
+       "AW1": {
+        "value": true
+       },
+       "AW2": {
+        "value": false
+       },
+       "AW3": {
+        "value": "abc"
+       },
+       "AX1": {
+        "value": true
+       },
+       "AX2": {
+        "value": true
+       },
+       "AX3": {
+        "value": 1
+       },
+       "AY1": {
+        "value": 3
+       },
+       "AY2": {
+        "value": 5
+       },
+       "AY3": {
+        "value": 7
+       },
+       "AY4": {
+        "value": 10
+       },
+       "AY5": {
+        "value": 11
+       },
+       "AZ1": {
+        "value": 1
+       },
+       "AZ2": {
+        "value": 2
+       },
+       "AZ3": {
+        "value": 3
+       },
+       "AZ4": {
+        "value": 4
+       },
+       "AZ5": {
+        "value": 5
+       },
+       "BA1": {
+        "value": 6
+       },
+       "BA2": {
+        "value": 7
+       },
+       "BB1": {
+        "value": 33100
+       },
+       "BB2": {
+        "value": 47300
+       },
+       "BB3": {
+        "value": 69000
+       },
+       "BB4": {
+        "value": 102000
+       },
+       "BB5": {
+        "value": 150000
+       },
+       "BB6": {
+        "value": 220000
+       },
+       "BC1": {
+        "value": 11
+       },
+       "BC2": {
+        "value": 12
+       },
+       "BC3": {
+        "value": 13
+       },
+       "BC4": {
+        "value": 14
+       },
+       "BC5": {
+        "value": 15
+       },
+       "BC6": {
+        "value": 16
+       },
+       "BD1": {
+        "value": 17
+       },
+       "BD2": {
+        "value": 18
+       },
+       "BE1": {
+        "value": 89
+       },
+       "BE2": {
+        "value": 88
+       },
+       "BE3": {
+        "value": 92
+       },
+       "BE4": {
+        "value": 101
+       },
+       "BE5": {
+        "value": 94
+       },
+       "BE6": {
+        "value": 97
+       },
+       "BE7": {
+        "value": 95
+       },
+       "BF1": {
+        "value": 1
+       },
+       "BF2": {
+        "value": 2
+       },
+       "BF3": {
+        "value": 2
+       },
+       "BF4": {
+        "value": 3
+       },
+       "BF5": {
+        "value": 5
+       },
+       "BF6": {
+        "value": 2
+       },
+       "BG1": {
+        "value": 1
+       },
+       "BG2": {
+        "value": 2
+       },
+       "BG3": {
+        "value": 3
+       },
+       "BG4": {
+        "value": 4
+       },
+       "BG5": {
+        "value": 3
+       },
+       "BG6": {
+        "value": 2
+       },
+       "BG7": {
+        "value": 1
+       },
+       "BG8": {
+        "value": 2
+       },
+       "BG9": {
+        "value": 3
+       },
+       "BG10": {
+        "value": 5
+       },
+       "BG11": {
+        "value": 6
+       },
+       "BG12": {
+        "value": 1
+       },
+       "BH1": {
+        "value": "a"
+       },
+       "BH3": {
+        "value": "Б"
+       }
+      }
+     },
+     {
+      "name": "C",
+      "cells": {
+       "A8": {
+        "formula": "SUMPRODUCT(ACCRINT(('D'!B1:B3+0),39691,39569,0.1,1000,2,0,FALSE))"
+       },
+       "A10": {
+        "formula": "SUMPRODUCT(ACCRINT(39508,('D'!B1:B3+0),39569,0.1,1000,2,0,FALSE))"
+       },
+       "A288": {
+        "formula": "SUMPRODUCT(CUMIPMT(('D'!B1:B3+0),360,125000,13,24,0))"
+       },
+       "A83": {
+        "formula": "SUMPRODUCT(GROWTH('D'!BB1:BB6,'D'!BC1:BC6,17,'D'!B1:B3))"
+       },
+       "A179": {
+        "formula": "SUMPRODUCT(MATCH(5,'D'!L1:L6,'D'!B1:B3))"
+       },
+       "A357": {
+        "formula": "SUMPRODUCT(PRICE(('D'!B1:B3+0),DATE(2017,11,15),0.0575,0.065,100,2,0))"
+       },
+       "A338": {
+        "formula": "SUMPRODUCT(TREND('D'!AY1:AY5,'D'!AZ1:AZ5,6,'D'!B1:B3))"
+       },
+       "A158": {
+        "formula": "SUMPRODUCT(XIRR('D'!J1:J5,'D'!AU1:AU5,'D'!B1:B3))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "C",
+     "range": "A8"
+    },
+    {
+     "sheet": "C",
+     "range": "A10"
+    },
+    {
+     "sheet": "C",
+     "range": "A288"
+    },
+    {
+     "sheet": "C",
+     "range": "A83"
+    },
+    {
+     "sheet": "C",
+     "range": "A179"
+    },
+    {
+     "sheet": "C",
+     "range": "A357"
+    },
+    {
+     "sheet": "C",
+     "range": "A338"
+    },
+    {
+     "sheet": "C",
+     "range": "A158"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "params": {
+   "values": {
+    "C!A104": {
+     "t": "n",
+     "v": 320196.71836347244
+    },
+    "C!A322": {
+     "t": "n",
+     "v": 4
+    },
+    "C!A9": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "C!A10": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "C!A19": {
+     "t": "n",
+     "v": 13.499999999999996
+    },
+    "C!A112": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   },
+   "formulas": {
+    "C!A104": "=@GROWTH(D!BB1:BB6,D!BC1:BC6,17,D!B1:B3)",
+    "C!A322": "=MATCH(5,D!L1:L6,D!B1:B3)",
+    "C!A9": "=NETWORKDAYS.INTL(38718,38749,@D!B1:B3,D!AP1:AP8)",
+    "C!A10": "=NETWORKDAYS.INTL(38718,38749,(@D!B1:B3+0),D!AP1:AP8)",
+    "C!A19": "=@TREND(D!AY1:AY5,D!AZ1:AZ5,6,D!B1:B3)",
+    "C!A112": "=XIRR(D!J1:J5,D!AU1:AU5,D!B1:B3)"
+   }
+  },
+  "nesting": {
+   "values": {
+    "C!A8": {
+     "t": "n",
+     "v": 0
+    },
+    "C!A10": {
+     "t": "e",
+     "v": "NUM"
+    },
+    "C!A288": {
+     "t": "n",
+     "v": -40500000
+    },
+    "C!A83": {
+     "t": "n",
+     "v": 320196.71836347244
+    },
+    "C!A179": {
+     "t": "n",
+     "v": 4
+    },
+    "C!A357": {
+     "t": "e",
+     "v": "NUM"
+    },
+    "C!A338": {
+     "t": "n",
+     "v": 13.499999999999996
+    },
+    "C!A158": {
+     "t": "e",
+     "v": "VALUE"
+    }
+   },
+   "formulas": {
+    "C!A8": "=SUMPRODUCT(ACCRINT((D!B1:B3+0),39691,39569,0.1,1000,2,0,FALSE))",
+    "C!A10": "=SUMPRODUCT(ACCRINT(39508,(D!B1:B3+0),39569,0.1,1000,2,0,FALSE))",
+    "C!A288": "=SUMPRODUCT(CUMIPMT((D!B1:B3+0),360,125000,13,24,0))",
+    "C!A83": "=SUMPRODUCT(GROWTH(D!BB1:BB6,D!BC1:BC6,17,D!B1:B3))",
+    "C!A179": "=SUMPRODUCT(MATCH(5,D!L1:L6,D!B1:B3))",
+    "C!A357": "=SUMPRODUCT(PRICE((D!B1:B3+0),DATE(2017,11,15),0.0575,0.065,100,2,0))",
+    "C!A338": "=SUMPRODUCT(TREND(D!AY1:AY5,D!AZ1:AZ5,6,D!B1:B3))",
+    "C!A158": "=SUMPRODUCT(XIRR(D!J1:J5,D!AU1:AU5,D!B1:B3))"
+   }
+  }
+ }
+}

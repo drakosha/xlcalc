@@ -1,0 +1,5473 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 19.6
+ },
+ "cases": [
+  {
+   "id": "held#1",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#2",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#3",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "-1 ₽"
+   }
+  },
+  {
+   "id": "held#4",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "-1 ₽"
+   }
+  },
+  {
+   "id": "held#5",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#6",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "1 000 000 ₽"
+   }
+  },
+  {
+   "id": "held#7",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "45 001 ₽"
+   }
+  },
+  {
+   "id": "held#8",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "45 001 ₽"
+   }
+  },
+  {
+   "id": "held#9",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#10",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#11",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "-0 ₽"
+   }
+  },
+  {
+   "id": "held#12",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "-0 ₽"
+   }
+  },
+  {
+   "id": "held#13",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 5,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#14",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 5,
+   "width": 12,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#15",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#16",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#17",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "-1 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#18",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "-1 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#19",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#20",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "1 000 000 ₽"
+   }
+  },
+  {
+   "id": "held#21",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "45 001 ₽"
+   }
+  },
+  {
+   "id": "held#22",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "45 001 ₽"
+   }
+  },
+  {
+   "id": "held#23",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#24",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#25",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "-0 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#26",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "-0 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#27",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 6,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#28",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 6,
+   "width": 12,
+   "predicted": {
+    "text": "0 ₽"
+   }
+  },
+  {
+   "id": "held#29",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "0,25 ₽"
+   }
+  },
+  {
+   "id": "held#30",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "0,25 ₽"
+   }
+  },
+  {
+   "id": "held#31",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "-0,75 ₽"
+   }
+  },
+  {
+   "id": "held#32",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "-0,75 ₽"
+   }
+  },
+  {
+   "id": "held#33",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#34",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#35",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#36",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "45 000,50 ₽"
+   }
+  },
+  {
+   "id": "held#37",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#38",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#39",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "-0,00 ₽"
+   }
+  },
+  {
+   "id": "held#40",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "-0,00 ₽"
+   }
+  },
+  {
+   "id": "held#41",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 7,
+   "predicted": {
+    "text": "0,00 ₽"
+   }
+  },
+  {
+   "id": "held#42",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 7,
+   "width": 12,
+   "predicted": {
+    "text": "0,00 ₽"
+   }
+  },
+  {
+   "id": "held#43",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "0,25 ₽"
+   }
+  },
+  {
+   "id": "held#44",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "0,25 ₽"
+   }
+  },
+  {
+   "id": "held#45",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "-0,75 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#46",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "-0,75 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#47",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#48",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#49",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#50",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "45 000,50 ₽"
+   }
+  },
+  {
+   "id": "held#51",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#52",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#53",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "-0,00 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#54",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "-0,00 ₽",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#55",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 8,
+   "predicted": {
+    "text": "0,00 ₽"
+   }
+  },
+  {
+   "id": "held#56",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 8,
+   "width": 12,
+   "predicted": {
+    "text": "0,00 ₽"
+   }
+  },
+  {
+   "id": "held#57",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#58",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "00.01.1900"
+   }
+  },
+  {
+   "id": "held#59",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#60",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#61",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#62",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "26.11.4637"
+   }
+  },
+  {
+   "id": "held#63",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#64",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "15.03.2023"
+   }
+  },
+  {
+   "id": "held#65",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#66",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#67",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#68",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#69",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 14,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#70",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 14,
+   "width": 12,
+   "predicted": {
+    "text": "00.01.1900"
+   }
+  },
+  {
+   "id": "held#71",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "00.янв.00"
+   }
+  },
+  {
+   "id": "held#72",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "00.янв.00"
+   }
+  },
+  {
+   "id": "held#73",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#74",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#75",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#76",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "26.нояб.37"
+   }
+  },
+  {
+   "id": "held#77",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#78",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "15.март.23"
+   }
+  },
+  {
+   "id": "held#79",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#80",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#81",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#82",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#83",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 15,
+   "predicted": {
+    "text": "00.янв.00"
+   }
+  },
+  {
+   "id": "held#84",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 15,
+   "width": 12,
+   "predicted": {
+    "text": "00.янв.00"
+   }
+  },
+  {
+   "id": "held#85",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "00.янв"
+   }
+  },
+  {
+   "id": "held#86",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "00.янв"
+   }
+  },
+  {
+   "id": "held#87",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#88",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#89",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "26.нояб"
+   }
+  },
+  {
+   "id": "held#90",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "26.нояб"
+   }
+  },
+  {
+   "id": "held#91",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "15.март"
+   }
+  },
+  {
+   "id": "held#92",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "15.март"
+   }
+  },
+  {
+   "id": "held#93",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#94",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#95",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#96",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#97",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 16,
+   "predicted": {
+    "text": "00.янв"
+   }
+  },
+  {
+   "id": "held#98",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 16,
+   "width": 12,
+   "predicted": {
+    "text": "00.янв"
+   }
+  },
+  {
+   "id": "held#99",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "янв.00"
+   }
+  },
+  {
+   "id": "held#100",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "янв.00"
+   }
+  },
+  {
+   "id": "held#101",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#102",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#103",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "нояб.37"
+   }
+  },
+  {
+   "id": "held#104",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "нояб.37"
+   }
+  },
+  {
+   "id": "held#105",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "март.23"
+   }
+  },
+  {
+   "id": "held#106",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "март.23"
+   }
+  },
+  {
+   "id": "held#107",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#108",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#109",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#110",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#111",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 17,
+   "predicted": {
+    "text": "янв.00"
+   }
+  },
+  {
+   "id": "held#112",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 17,
+   "width": 12,
+   "predicted": {
+    "text": "янв.00"
+   }
+  },
+  {
+   "id": "held#113",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "6:00 AM"
+   }
+  },
+  {
+   "id": "held#114",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "6:00 AM"
+   }
+  },
+  {
+   "id": "held#115",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#116",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#117",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "3:00 AM"
+   }
+  },
+  {
+   "id": "held#118",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "3:00 AM"
+   }
+  },
+  {
+   "id": "held#119",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "12:00 PM"
+   }
+  },
+  {
+   "id": "held#120",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "12:00 PM"
+   }
+  },
+  {
+   "id": "held#121",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#122",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#123",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#124",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#125",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 18,
+   "predicted": {
+    "text": "12:00 AM"
+   }
+  },
+  {
+   "id": "held#126",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 18,
+   "width": 12,
+   "predicted": {
+    "text": "12:00 AM"
+   }
+  },
+  {
+   "id": "held#127",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#128",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "6:00:00 AM"
+   }
+  },
+  {
+   "id": "held#129",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#130",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#131",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#132",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "3:00:00 AM"
+   }
+  },
+  {
+   "id": "held#133",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#134",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "12:00:00 PM"
+   }
+  },
+  {
+   "id": "held#135",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#136",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#137",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#138",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#139",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 19,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#140",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 19,
+   "width": 12,
+   "predicted": {
+    "text": "12:00:00 AM"
+   }
+  },
+  {
+   "id": "held#141",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "06:00"
+   }
+  },
+  {
+   "id": "held#142",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "06:00"
+   }
+  },
+  {
+   "id": "held#143",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#144",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#145",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "03:00"
+   }
+  },
+  {
+   "id": "held#146",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "03:00"
+   }
+  },
+  {
+   "id": "held#147",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "12:00"
+   }
+  },
+  {
+   "id": "held#148",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "12:00"
+   }
+  },
+  {
+   "id": "held#149",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#150",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#151",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#152",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#153",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 20,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#154",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 20,
+   "width": 12,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#155",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "06:00:00"
+   }
+  },
+  {
+   "id": "held#156",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "06:00:00"
+   }
+  },
+  {
+   "id": "held#157",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#158",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#159",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "03:00:00"
+   }
+  },
+  {
+   "id": "held#160",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "03:00:00"
+   }
+  },
+  {
+   "id": "held#161",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "12:00:00"
+   }
+  },
+  {
+   "id": "held#162",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "12:00:00"
+   }
+  },
+  {
+   "id": "held#163",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#164",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#165",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#166",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#167",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 21,
+   "predicted": {
+    "text": "00:00:00"
+   }
+  },
+  {
+   "id": "held#168",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 21,
+   "width": 12,
+   "predicted": {
+    "text": "00:00:00"
+   }
+  },
+  {
+   "id": "held#169",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#170",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#171",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#172",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#173",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#174",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#175",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#176",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#177",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#178",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#179",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#180",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#181",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 22,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#182",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 22,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#183",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#184",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#185",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "-1"
+   }
+  },
+  {
+   "id": "held#186",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "-1"
+   }
+  },
+  {
+   "id": "held#187",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "1 000 000"
+   }
+  },
+  {
+   "id": "held#188",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "1 000 000"
+   }
+  },
+  {
+   "id": "held#189",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "45 001"
+   }
+  },
+  {
+   "id": "held#190",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "45 001"
+   }
+  },
+  {
+   "id": "held#191",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#192",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#193",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "-0"
+   }
+  },
+  {
+   "id": "held#194",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "-0"
+   }
+  },
+  {
+   "id": "held#195",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 37,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#196",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 37,
+   "width": 12,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#197",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#198",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#199",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "-1",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#200",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "-1",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#201",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "1 000 000"
+   }
+  },
+  {
+   "id": "held#202",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "1 000 000"
+   }
+  },
+  {
+   "id": "held#203",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "45 001"
+   }
+  },
+  {
+   "id": "held#204",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "45 001"
+   }
+  },
+  {
+   "id": "held#205",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#206",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#207",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "-0",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#208",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "-0",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#209",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 38,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#210",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 38,
+   "width": 12,
+   "predicted": {
+    "text": "0"
+   }
+  },
+  {
+   "id": "held#211",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "0,25"
+   }
+  },
+  {
+   "id": "held#212",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "0,25"
+   }
+  },
+  {
+   "id": "held#213",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "-0,75"
+   }
+  },
+  {
+   "id": "held#214",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "-0,75"
+   }
+  },
+  {
+   "id": "held#215",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#216",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "1 000 000,13"
+   }
+  },
+  {
+   "id": "held#217",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "45 000,50"
+   }
+  },
+  {
+   "id": "held#218",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "45 000,50"
+   }
+  },
+  {
+   "id": "held#219",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#220",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#221",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "-0,00"
+   }
+  },
+  {
+   "id": "held#222",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "-0,00"
+   }
+  },
+  {
+   "id": "held#223",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 39,
+   "predicted": {
+    "text": "0,00"
+   }
+  },
+  {
+   "id": "held#224",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 39,
+   "width": 12,
+   "predicted": {
+    "text": "0,00"
+   }
+  },
+  {
+   "id": "held#225",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "0,25"
+   }
+  },
+  {
+   "id": "held#226",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "0,25"
+   }
+  },
+  {
+   "id": "held#227",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "-0,75",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#228",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "-0,75",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#229",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#230",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "1 000 000,13"
+   }
+  },
+  {
+   "id": "held#231",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "45 000,50"
+   }
+  },
+  {
+   "id": "held#232",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "45 000,50"
+   }
+  },
+  {
+   "id": "held#233",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#234",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#235",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "-0,00",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#236",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "-0,00",
+    "color": "#FF0000"
+   }
+  },
+  {
+   "id": "held#237",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 40,
+   "predicted": {
+    "text": "0,00"
+   }
+  },
+  {
+   "id": "held#238",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 40,
+   "width": 12,
+   "predicted": {
+    "text": "0,00"
+   }
+  },
+  {
+   "id": "held#239",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": "                    0 "
+   }
+  },
+  {
+   "id": "held#240",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": "                             0 "
+   }
+  },
+  {
+   "id": "held#241",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": "-                  1 "
+   }
+  },
+  {
+   "id": "held#242",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": "-                            1 "
+   }
+  },
+  {
+   "id": "held#243",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#244",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": "         1 000 000 "
+   }
+  },
+  {
+   "id": "held#245",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": "       45 001 "
+   }
+  },
+  {
+   "id": "held#246",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": "                45 001 "
+   }
+  },
+  {
+   "id": "held#247",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#248",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#249",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": "-                  0 "
+   }
+  },
+  {
+   "id": "held#250",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": "-                            0 "
+   }
+  },
+  {
+   "id": "held#251",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 41,
+   "predicted": {
+    "text": "                    0 "
+   }
+  },
+  {
+   "id": "held#252",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 41,
+   "width": 12,
+   "predicted": {
+    "text": "                             0 "
+   }
+  },
+  {
+   "id": "held#253",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": "                0 ₽ "
+   }
+  },
+  {
+   "id": "held#254",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": "                         0 ₽ "
+   }
+  },
+  {
+   "id": "held#255",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": "-              1 ₽ "
+   }
+  },
+  {
+   "id": "held#256",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": "-                        1 ₽ "
+   }
+  },
+  {
+   "id": "held#257",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#258",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": "     1 000 000 ₽ "
+   }
+  },
+  {
+   "id": "held#259",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": "   45 001 ₽ "
+   }
+  },
+  {
+   "id": "held#260",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": "            45 001 ₽ "
+   }
+  },
+  {
+   "id": "held#261",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#262",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#263",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": "-              0 ₽ "
+   }
+  },
+  {
+   "id": "held#264",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": "-                        0 ₽ "
+   }
+  },
+  {
+   "id": "held#265",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 42,
+   "predicted": {
+    "text": "                0 ₽ "
+   }
+  },
+  {
+   "id": "held#266",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 42,
+   "width": 12,
+   "predicted": {
+    "text": "                         0 ₽ "
+   }
+  },
+  {
+   "id": "held#267",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": "            0,25 "
+   }
+  },
+  {
+   "id": "held#268",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": "                      0,25 "
+   }
+  },
+  {
+   "id": "held#269",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": "-           0,75 "
+   }
+  },
+  {
+   "id": "held#270",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": "-                    0,75 "
+   }
+  },
+  {
+   "id": "held#271",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#272",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": "  1 000 000,13 "
+   }
+  },
+  {
+   "id": "held#273",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#274",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": "         45 000,50 "
+   }
+  },
+  {
+   "id": "held#275",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#276",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#277",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": "-           0,00 "
+   }
+  },
+  {
+   "id": "held#278",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": "-                    0,00 "
+   }
+  },
+  {
+   "id": "held#279",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 43,
+   "predicted": {
+    "text": "            0,00 "
+   }
+  },
+  {
+   "id": "held#280",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 43,
+   "width": 12,
+   "predicted": {
+    "text": "                      0,00 "
+   }
+  },
+  {
+   "id": "held#281",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": "        0,25 ₽ "
+   }
+  },
+  {
+   "id": "held#282",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": "                  0,25 ₽ "
+   }
+  },
+  {
+   "id": "held#283",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": "-       0,75 ₽ "
+   }
+  },
+  {
+   "id": "held#284",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": "-                0,75 ₽ "
+   }
+  },
+  {
+   "id": "held#285",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#286",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#287",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#288",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": "     45 000,50 ₽ "
+   }
+  },
+  {
+   "id": "held#289",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#290",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": " ИСТИНА "
+   }
+  },
+  {
+   "id": "held#291",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": "-       0,00 ₽ "
+   }
+  },
+  {
+   "id": "held#292",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": "-                0,00 ₽ "
+   }
+  },
+  {
+   "id": "held#293",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 44,
+   "predicted": {
+    "text": "        0,00 ₽ "
+   }
+  },
+  {
+   "id": "held#294",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 44,
+   "width": 12,
+   "predicted": {
+    "text": "                  0,00 ₽ "
+   }
+  },
+  {
+   "id": "held#295",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#296",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#297",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#298",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#299",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#300",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#301",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#302",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#303",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#304",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#305",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#306",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#307",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 45,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#308",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 45,
+   "width": 12,
+   "predicted": {
+    "text": "00:00"
+   }
+  },
+  {
+   "id": "held#309",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "6:00:00"
+   }
+  },
+  {
+   "id": "held#310",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "6:00:00"
+   }
+  },
+  {
+   "id": "held#311",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#312",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#313",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#314",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#315",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#316",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#317",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#318",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#319",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#320",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#321",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 46,
+   "predicted": {
+    "text": "0:00:00"
+   }
+  },
+  {
+   "id": "held#322",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 46,
+   "width": 12,
+   "predicted": {
+    "text": "0:00:00"
+   }
+  },
+  {
+   "id": "held#323",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#324",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#325",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#326",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#327",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#328",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#329",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#330",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#331",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#332",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#333",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "#########"
+   }
+  },
+  {
+   "id": "held#334",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "#############"
+   }
+  },
+  {
+   "id": "held#335",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 47,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#336",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 47,
+   "width": 12,
+   "predicted": {
+    "text": "00:00,0"
+   }
+  },
+  {
+   "id": "held#337",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "250,0E-3"
+   }
+  },
+  {
+   "id": "held#338",
+   "cell": {
+    "value": 0.25
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "250,0E-3"
+   }
+  },
+  {
+   "id": "held#339",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "-750,0E-3"
+   }
+  },
+  {
+   "id": "held#340",
+   "cell": {
+    "value": -0.75
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "-750,0E-3"
+   }
+  },
+  {
+   "id": "held#341",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "1,0E+6"
+   }
+  },
+  {
+   "id": "held#342",
+   "cell": {
+    "value": 1000000.125
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "1,0E+6"
+   }
+  },
+  {
+   "id": "held#343",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "45,0E+3"
+   }
+  },
+  {
+   "id": "held#344",
+   "cell": {
+    "value": 45000.5
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "45,0E+3"
+   }
+  },
+  {
+   "id": "held#345",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#346",
+   "cell": {
+    "value": true
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "ИСТИНА"
+   }
+  },
+  {
+   "id": "held#347",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "-1,0E-3"
+   }
+  },
+  {
+   "id": "held#348",
+   "cell": {
+    "value": -0.001
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "-1,0E-3"
+   }
+  },
+  {
+   "id": "held#349",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 48,
+   "predicted": {
+    "text": "100,0E-12"
+   }
+  },
+  {
+   "id": "held#350",
+   "cell": {
+    "value": 1e-10
+   },
+   "numFmtId": 48,
+   "width": 12,
+   "predicted": {
+    "text": "100,0E-12"
+   }
+  }
+ ],
+ "answers": {
+  "held#1": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#2": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#3": {
+   "text": "-1 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#4": {
+   "text": "-1 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#5": {
+   "text": "########",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#6": {
+   "text": "1 000 000 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#7": {
+   "text": "45 001 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#8": {
+   "text": "45 001 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#9": {
+   "text": "ИСТИНА",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#10": {
+   "text": "ИСТИНА",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#11": {
+   "text": "-0 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#12": {
+   "text": "-0 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#13": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#14": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;-# ##0 ₽",
+   "local": "# ##0 ₽;-# ##0 ₽"
+  },
+  "held#15": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#16": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#17": {
+   "text": "-1 ₽",
+   "color": "#FF0000",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#18": {
+   "text": "-1 ₽",
+   "color": "#FF0000",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#19": {
+   "text": "########",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#20": {
+   "text": "1 000 000 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#21": {
+   "text": "45 001 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#22": {
+   "text": "45 001 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#23": {
+   "text": "ИСТИНА",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#24": {
+   "text": "ИСТИНА",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#25": {
+   "text": "-0 ₽",
+   "color": "#FF0000",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#26": {
+   "text": "-0 ₽",
+   "color": "#FF0000",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#27": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#28": {
+   "text": "0 ₽",
+   "code": "# ##0 ₽;[Красный]-# ##0 ₽",
+   "local": "# ##0 ₽;[Красный]-# ##0 ₽"
+  },
+  "held#29": {
+   "text": "0,25 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#30": {
+   "text": "0,25 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#31": {
+   "text": "-0,75 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#32": {
+   "text": "-0,75 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#33": {
+   "text": "########",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#34": {
+   "text": "###########",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#35": {
+   "text": "########",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#36": {
+   "text": "45 000,50 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#37": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#38": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#39": {
+   "text": "-0,00 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#40": {
+   "text": "-0,00 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#41": {
+   "text": "0,00 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#42": {
+   "text": "0,00 ₽",
+   "code": "# ##0,00 ₽;-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;-# ##0,00 ₽"
+  },
+  "held#43": {
+   "text": "0,25 ₽",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#44": {
+   "text": "0,25 ₽",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#45": {
+   "text": "-0,75 ₽",
+   "color": "#FF0000",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#46": {
+   "text": "-0,75 ₽",
+   "color": "#FF0000",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#47": {
+   "text": "########",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#48": {
+   "text": "###########",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#49": {
+   "text": "########",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#50": {
+   "text": "45 000,50 ₽",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#51": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#52": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#53": {
+   "text": "-0,00 ₽",
+   "color": "#FF0000",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#54": {
+   "text": "-0,00 ₽",
+   "color": "#FF0000",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#55": {
+   "text": "0,00 ₽",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#56": {
+   "text": "0,00 ₽",
+   "code": "# ##0,00 ₽;[Красный]-# ##0,00 ₽",
+   "local": "# ##0,00 ₽;[Красный]-# ##0,00 ₽"
+  },
+  "held#57": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#58": {
+   "text": "00.01.1900",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#59": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#60": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#61": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#62": {
+   "text": "26.11.4637",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#63": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#64": {
+   "text": "15.03.2023",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#65": {
+   "text": "ИСТИНА",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#66": {
+   "text": "ИСТИНА",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#67": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#68": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#69": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#70": {
+   "text": "00.01.1900",
+   "code": "ДД.ММ.ГГГГ",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "held#71": {
+   "text": "00.янв.00",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#72": {
+   "text": "00.янв.00",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#73": {
+   "text": "########",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#74": {
+   "text": "###########",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#75": {
+   "text": "26.ноя.37",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#76": {
+   "text": "26.ноя.37",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#77": {
+   "text": "########",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#78": {
+   "text": "15.мар.23",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#79": {
+   "text": "ИСТИНА",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#80": {
+   "text": "ИСТИНА",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#81": {
+   "text": "########",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#82": {
+   "text": "###########",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#83": {
+   "text": "00.янв.00",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#84": {
+   "text": "00.янв.00",
+   "code": "ДД.МММ.ГГ",
+   "local": "ДД.МММ.ГГ"
+  },
+  "held#85": {
+   "text": "00.янв",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#86": {
+   "text": "00.янв",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#87": {
+   "text": "########",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#88": {
+   "text": "###########",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#89": {
+   "text": "26.ноя",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#90": {
+   "text": "26.ноя",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#91": {
+   "text": "15.мар",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#92": {
+   "text": "15.мар",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#93": {
+   "text": "ИСТИНА",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#94": {
+   "text": "ИСТИНА",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#95": {
+   "text": "########",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#96": {
+   "text": "###########",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#97": {
+   "text": "00.янв",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#98": {
+   "text": "00.янв",
+   "code": "ДД.МММ",
+   "local": "ДД.МММ"
+  },
+  "held#99": {
+   "text": "янв.00",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#100": {
+   "text": "янв.00",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#101": {
+   "text": "########",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#102": {
+   "text": "###########",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#103": {
+   "text": "ноя.37",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#104": {
+   "text": "ноя.37",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#105": {
+   "text": "мар.23",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#106": {
+   "text": "мар.23",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#107": {
+   "text": "ИСТИНА",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#108": {
+   "text": "ИСТИНА",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#109": {
+   "text": "########",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#110": {
+   "text": "###########",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#111": {
+   "text": "янв.00",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#112": {
+   "text": "янв.00",
+   "code": "МММ.ГГ",
+   "local": "МММ.ГГ"
+  },
+  "held#113": {
+   "text": "6:00 AM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#114": {
+   "text": "6:00 AM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#115": {
+   "text": "########",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#116": {
+   "text": "###########",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#117": {
+   "text": "3:00 AM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#118": {
+   "text": "3:00 AM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#119": {
+   "text": "12:00 PM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#120": {
+   "text": "12:00 PM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#121": {
+   "text": "ИСТИНА",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#122": {
+   "text": "ИСТИНА",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#123": {
+   "text": "########",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#124": {
+   "text": "###########",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#125": {
+   "text": "12:00 AM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#126": {
+   "text": "12:00 AM",
+   "code": "ч:мм AM/PM",
+   "local": "ч:мм AM/PM"
+  },
+  "held#127": {
+   "text": "########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#128": {
+   "text": "6:00:00 AM",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#129": {
+   "text": "########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#130": {
+   "text": "###########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#131": {
+   "text": "########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#132": {
+   "text": "3:00:00 AM",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#133": {
+   "text": "########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#134": {
+   "text": "12:00:00 PM",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#135": {
+   "text": "ИСТИНА",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#136": {
+   "text": "ИСТИНА",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#137": {
+   "text": "########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#138": {
+   "text": "###########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#139": {
+   "text": "########",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#140": {
+   "text": "12:00:00 AM",
+   "code": "ч:мм:сс AM/PM",
+   "local": "ч:мм:сс AM/PM"
+  },
+  "held#141": {
+   "text": "6:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#142": {
+   "text": "6:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#143": {
+   "text": "########",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#144": {
+   "text": "###########",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#145": {
+   "text": "3:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#146": {
+   "text": "3:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#147": {
+   "text": "12:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#148": {
+   "text": "12:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#149": {
+   "text": "ИСТИНА",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#150": {
+   "text": "ИСТИНА",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#151": {
+   "text": "########",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#152": {
+   "text": "###########",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#153": {
+   "text": "0:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#154": {
+   "text": "0:00",
+   "code": "ч:мм",
+   "local": "ч:мм"
+  },
+  "held#155": {
+   "text": "6:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#156": {
+   "text": "6:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#157": {
+   "text": "########",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#158": {
+   "text": "###########",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#159": {
+   "text": "3:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#160": {
+   "text": "3:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#161": {
+   "text": "12:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#162": {
+   "text": "12:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#163": {
+   "text": "ИСТИНА",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#164": {
+   "text": "ИСТИНА",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#165": {
+   "text": "########",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#166": {
+   "text": "###########",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#167": {
+   "text": "0:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#168": {
+   "text": "0:00:00",
+   "code": "ч:мм:сс",
+   "local": "ч:мм:сс"
+  },
+  "held#169": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#170": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#171": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#172": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#173": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#174": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#175": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#176": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#177": {
+   "text": "ИСТИНА",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#178": {
+   "text": "ИСТИНА",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#179": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#180": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#181": {
+   "text": "########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#182": {
+   "text": "###########",
+   "code": "ДД.ММ.ГГГГ ч:мм",
+   "local": "ДД.ММ.ГГГГ ч:мм"
+  },
+  "held#183": {
+   "text": "0",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#184": {
+   "text": "0",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#185": {
+   "text": "-1",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#186": {
+   "text": "-1",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#187": {
+   "text": "1 000 000",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#188": {
+   "text": "1 000 000",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#189": {
+   "text": "45 001",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#190": {
+   "text": "45 001",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#191": {
+   "text": "ИСТИНА",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#192": {
+   "text": "ИСТИНА",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#193": {
+   "text": "-0",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#194": {
+   "text": "-0",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#195": {
+   "text": "0",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#196": {
+   "text": "0",
+   "code": "# ##0;-# ##0",
+   "local": "# ##0;-# ##0"
+  },
+  "held#197": {
+   "text": "0",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#198": {
+   "text": "0",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#199": {
+   "text": "-1",
+   "color": "#FF0000",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#200": {
+   "text": "-1",
+   "color": "#FF0000",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#201": {
+   "text": "1 000 000",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#202": {
+   "text": "1 000 000",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#203": {
+   "text": "45 001",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#204": {
+   "text": "45 001",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#205": {
+   "text": "ИСТИНА",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#206": {
+   "text": "ИСТИНА",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#207": {
+   "text": "-0",
+   "color": "#FF0000",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#208": {
+   "text": "-0",
+   "color": "#FF0000",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#209": {
+   "text": "0",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#210": {
+   "text": "0",
+   "code": "# ##0;[Красный]-# ##0",
+   "local": "# ##0;[Красный]-# ##0"
+  },
+  "held#211": {
+   "text": "0,25",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#212": {
+   "text": "0,25",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#213": {
+   "text": "-0,75",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#214": {
+   "text": "-0,75",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#215": {
+   "text": "########",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#216": {
+   "text": "1 000 000,13",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#217": {
+   "text": "45 000,50",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#218": {
+   "text": "45 000,50",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#219": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#220": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#221": {
+   "text": "-0,00",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#222": {
+   "text": "-0,00",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#223": {
+   "text": "0,00",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#224": {
+   "text": "0,00",
+   "code": "# ##0,00;-# ##0,00",
+   "local": "# ##0,00;-# ##0,00"
+  },
+  "held#225": {
+   "text": "0,25",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#226": {
+   "text": "0,25",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#227": {
+   "text": "-0,75",
+   "color": "#FF0000",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#228": {
+   "text": "-0,75",
+   "color": "#FF0000",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#229": {
+   "text": "########",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#230": {
+   "text": "1 000 000,13",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#231": {
+   "text": "45 000,50",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#232": {
+   "text": "45 000,50",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#233": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#234": {
+   "text": "ИСТИНА",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#235": {
+   "text": "-0,00",
+   "color": "#FF0000",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#236": {
+   "text": "-0,00",
+   "color": "#FF0000",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#237": {
+   "text": "0,00",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#238": {
+   "text": "0,00",
+   "code": "# ##0,00;[Красный]-# ##0,00",
+   "local": "# ##0,00;[Красный]-# ##0,00"
+  },
+  "held#239": {
+   "text": "                0 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#240": {
+   "text": "                       0 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#241": {
+   "text": "-              1 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#242": {
+   "text": "-                     1 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#243": {
+   "text": "########",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#244": {
+   "text": "       1 000 000 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#245": {
+   "text": "      45 001 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#246": {
+   "text": "            45 001 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#247": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#248": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#249": {
+   "text": "-              0 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#250": {
+   "text": "-                     0 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#251": {
+   "text": "                0 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#252": {
+   "text": "                       0 ",
+   "code": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-",
+   "local": "_-* # ##0_-;-* # ##0_-;_-* \"-\"_-;_-@_-"
+  },
+  "held#253": {
+   "text": "            0 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#254": {
+   "text": "                   0 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#255": {
+   "text": "-           1 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#256": {
+   "text": "-                 1 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#257": {
+   "text": "########",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#258": {
+   "text": "   1 000 000 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#259": {
+   "text": "  45 001 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#260": {
+   "text": "         45 001 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#261": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#262": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#263": {
+   "text": "-           0 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#264": {
+   "text": "-                 0 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#265": {
+   "text": "            0 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#266": {
+   "text": "                   0 ₽ ",
+   "code": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-",
+   "local": "_-* # ##0 ₽_-;-* # ##0 ₽_-;_-* \"-\" ₽_-;_-@_-"
+  },
+  "held#267": {
+   "text": "          0,25 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#268": {
+   "text": "                 0,25 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#269": {
+   "text": "-        0,75 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#270": {
+   "text": "-               0,75 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#271": {
+   "text": "########",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#272": {
+   "text": " 1 000 000,13 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#273": {
+   "text": "########",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#274": {
+   "text": "      45 000,50 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#275": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#276": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#277": {
+   "text": "-        0,00 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#278": {
+   "text": "-               0,00 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#279": {
+   "text": "          0,00 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#280": {
+   "text": "                 0,00 ",
+   "code": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-",
+   "local": "_-* # ##0,00_-;-* # ##0,00_-;_-* \"-\"??_-;_-@_-"
+  },
+  "held#281": {
+   "text": "      0,25 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#282": {
+   "text": "             0,25 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#283": {
+   "text": "-     0,75 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#284": {
+   "text": "-           0,75 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#285": {
+   "text": "########",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#286": {
+   "text": "###########",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#287": {
+   "text": "########",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#288": {
+   "text": "   45 000,50 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#289": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#290": {
+   "text": " ИСТИНА ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#291": {
+   "text": "-     0,00 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#292": {
+   "text": "-           0,00 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#293": {
+   "text": "      0,00 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#294": {
+   "text": "             0,00 ₽ ",
+   "code": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-",
+   "local": "_-* # ##0,00 ₽_-;-* # ##0,00 ₽_-;_-* \"-\"?? ₽_-;_-@_-"
+  },
+  "held#295": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#296": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#297": {
+   "text": "########",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#298": {
+   "text": "###########",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#299": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#300": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#301": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#302": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#303": {
+   "text": "ИСТИНА",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#304": {
+   "text": "ИСТИНА",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#305": {
+   "text": "########",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#306": {
+   "text": "###########",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#307": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#308": {
+   "text": "00:00",
+   "code": "мм:сс",
+   "local": "мм:сс"
+  },
+  "held#309": {
+   "text": "6:00:00",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#310": {
+   "text": "6:00:00",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#311": {
+   "text": "########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#312": {
+   "text": "###########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#313": {
+   "text": "########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#314": {
+   "text": "###########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#315": {
+   "text": "########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#316": {
+   "text": "###########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#317": {
+   "text": "ИСТИНА",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#318": {
+   "text": "ИСТИНА",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#319": {
+   "text": "########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#320": {
+   "text": "###########",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#321": {
+   "text": "0:00:00",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#322": {
+   "text": "0:00:00",
+   "code": "[ч]:мм:сс",
+   "local": "[ч]:мм:сс"
+  },
+  "held#323": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#324": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#325": {
+   "text": "########",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#326": {
+   "text": "###########",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#327": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#328": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#329": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#330": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#331": {
+   "text": "ИСТИНА",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#332": {
+   "text": "ИСТИНА",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#333": {
+   "text": "########",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#334": {
+   "text": "###########",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#335": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#336": {
+   "text": "00:00,0",
+   "code": "мм:сс,0",
+   "local": "мм:сс,0"
+  },
+  "held#337": {
+   "text": "250,0E-3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#338": {
+   "text": "250,0E-3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#339": {
+   "text": "-750,0E-3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#340": {
+   "text": "-750,0E-3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#341": {
+   "text": "1,0E+6",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#342": {
+   "text": "1,0E+6",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#343": {
+   "text": "45,0E+3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#344": {
+   "text": "45,0E+3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#345": {
+   "text": "ИСТИНА",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#346": {
+   "text": "ИСТИНА",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#347": {
+   "text": "-1,0E-3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#348": {
+   "text": "-1,0E-3",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#349": {
+   "text": "100,0E-12",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  },
+  "held#350": {
+   "text": "100,0E-12",
+   "code": "##0,0E+0",
+   "local": "##0,0E+0"
+  }
+ }
+}

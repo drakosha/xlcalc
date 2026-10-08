@@ -8,7 +8,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import type { RangeRef } from '../../src/contract.js'
-import { cellsOf as rectCells, writeCaseBook, type RectsAnswer } from '../coverage/case-book.js'
+import { cellsOf as rectCells, MIRRORS, writeCaseBook, type RectsAnswer } from '../coverage/case-book.js'
 import { place, writeBook as writeDisplayBook, type StoredDisplay } from '../coverage/display.js'
 import type { DisplayAnswer, DisplayCase, DisplaySet } from '../coverage/display/cases.js'
 import { partsOf, type SpillAnswer, type StoredSpill } from '../coverage/spill.js'
@@ -16,9 +16,12 @@ import type { SpillCase, SpillSet } from '../coverage/spill/cases.js'
 import { inCaseOrder } from '../coverage/stored.js'
 import { cellsOf as structCells, LOOK, lookArgs, lookOf, opArgs, READ, styled, writeBook as writeStructBook, type ExcelStructAnswer, type RawLook, type StoredStruct } from '../coverage/struct.js'
 import type { StructCase, StructSet } from '../coverage/struct/cases.js'
+import { stepLines, withMirrors, type StoredTables } from '../coverage/tables.js'
+import type { TableAnswer, TableCase, TableSet } from '../coverage/tables/cases.js'
 import { checkCycles, type StoredWorkbook } from '../coverage/workbook.js'
 import type { Step as BookStep, WorkbookAnswer, WorkbookCase, WorkbookSet } from '../coverage/workbook/cases.js'
 import { formatAddress } from '../../src/model.js'
+import { writeXlsx } from '../../src/xlsx.js'
 import { valOf, winFile, type WinCell } from './functions.js'
 import { inJobs, metaOf, type Answer, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -219,6 +222,68 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
   save()
   console.log(`workbook ${set}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered`)
   if (failed.length) throw new Error(`workbook ${set}: Excel did not load ${failed.join('; ')}`)
+}
+
+// ---- tables
+
+/**
+ * A table case: its book as `writeXlsx` writes it with the three empty mirror sheets (the Mac's file), Excel computing
+ * it fully and after each step; then the rectangles' values and formulas (in the user's language too for a local set)
+ * and the tables of every sheet.
+ */
+export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void> {
+  const mod = (await import(`../coverage/tables/${set}.js`)) as TableSet
+  const cases = mod.buildTableCases()
+  const local = mod.local === true || tag === 'ru-RU'
+  const file = winFile(`tables/${tag === 'en-US' ? '' : 'ru-RU/'}${set}.json`)
+  const same = (c: TableCase) => JSON.stringify(c)
+  const prev = stored<StoredTables>(file, same)
+  const answers: Record<string, TableAnswer> = {}
+  for (const c of cases) if (prev.has(same(c))) answers[c.id] = prev.get(same(c)) as TableAnswer
+  const t0 = Date.now()
+  const save = () => write(file, { meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, cases, answers: inCaseOrder(cases, answers) })
+  const todo = cases.filter((c) => !answers[c.id])
+  const reads = (c: TableCase): Step[] => c.read.flatMap((g) => [{ do: 'values', ...g }, { do: 'formulas', ...g }, ...(local ? [{ do: 'formulasLocal', ...g }] : [])])
+  await caseJobs(
+    `tables-${set}`,
+    todo,
+    async (c, f) => {
+      const { data, issues } = await writeXlsx(withMirrors(c.book))
+      if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
+      writeFileSync(f, data)
+      return { file: f, steps: [{ do: 'full' }, ...stepLines(c).flatMap((line): Step[] => [{ do: 'table', line }, { do: 'calc' }]), ...reads(c), { do: 'tables', skip: [...MIRRORS] }] }
+    },
+    (c, a) => {
+      const n = stepLines(c).length
+      const per = local ? 3 : 2
+      const raw = a.answers.slice(1 + 2 * n)
+      const rect = rectsOf(c.read, raw.slice(0, c.read.length * per).filter((_, i) => i % per < 2))
+      const localText: Record<string, string> = {}
+      if (local)
+        c.read.forEach((g, i) => {
+          const fs = raw[i * per + 2] as string[][]
+          const { cols, addrs } = rectCells(g.range)
+          addrs.forEach((x, k) => {
+            const t = String(fs[Math.floor(k / cols)][k % cols])
+            if (t.startsWith('=')) localText[`${g.sheet}!${x}`] = t
+          })
+        })
+      const tables = (raw.at(-1) as [string, string, string, boolean, boolean, string[]][]).map(([sheet, name, range, headers, totals, columns]) => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns }))
+      const answer: TableAnswer = { values: rect.values, formulas: rect.formulas, ...(local ? { local: localText } : {}), tables }
+      for (let i = 0; i < n; i++) {
+        const r = a.answers[1 + 2 * i] as { error?: string } | null
+        if (r?.error) (answer.refused ??= {})[i] = r.error
+      }
+      answers[c.id] = answer
+    },
+    (c, why) => {
+      console.log(`${c.id}: Excel did not load the book (${why})`)
+      answers[c.id] = { values: {}, formulas: {}, tables: [], rejected: true }
+    },
+    save,
+  )
+  save()
+  console.log(`tables ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered`)
 }
 
 // ---- structure operations

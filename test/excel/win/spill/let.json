@@ -1,0 +1,344 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "shadow",
+   "about": "a LET name over a defined name; the defined name in a value, before its LET name, and outside",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 10
+       },
+       "A2": {
+        "value": 20
+       },
+       "B1": {
+        "formula": "LET(nm,5,nm+1)"
+       },
+       "B2": {
+        "formula": "LET(x,nm,x+1)"
+       },
+       "B3": {
+        "formula": "LET(nm,nm+1,nm)"
+       },
+       "B4": {
+        "formula": "LET(nm,5,nm)+nm"
+       },
+       "B5": {
+        "formula": "LET(loc,1,loc)+loc"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nm",
+      "ref": "'S'!$A$1"
+     },
+     {
+      "name": "loc",
+      "ref": "'S'!$A$2",
+      "scope": "S"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B5"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 11
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 11
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 15
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 21
+    }
+   }
+  },
+  {
+   "id": "spill",
+   "about": "LET's arrays spill: a range, a computed array, a range by a name",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "C1": {
+        "formula": "LET(x,A1:A3,x*2)"
+       },
+       "D1": {
+        "formula": "LET(s,SEQUENCE(1,2),s+10)"
+       },
+       "D3": {
+        "formula": "LET(r,nm,r)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nm",
+      "ref": "'S'!$A$1:$A$2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 12
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  },
+  {
+   "id": "text",
+   "about": "formula text as Excel shows it: names in their own case, omitted arguments",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "formula": "LET(X,1,x+1)"
+       },
+       "B2": {
+        "formula": "IF(A1,,1)"
+       },
+       "B3": {
+        "formula": "LET(x,,x)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:B3"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 0
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 0
+    }
+   }
+  }
+ ],
+ "answers": {
+  "shadow": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 11
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 11
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 15
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 21
+    }
+   },
+   "formulas": {
+    "S!B1": "=LET(nm,5,nm+1)",
+    "S!B2": "=LET(x,nm,x+1)",
+    "S!B3": "=LET(nm,nm+1,nm)",
+    "S!B4": "=LET(nm,5,nm)+nm",
+    "S!B5": "=LET(loc,1,loc)+loc"
+   }
+  },
+  "spill": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 12
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!C1": "=LET(x,A1:A3,x*2)",
+    "S!D1": "=LET(s,SEQUENCE(1,2),s+10)",
+    "S!D3": "=LET(r,nm,r)"
+   }
+  },
+  "text": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 0
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 0
+    }
+   },
+   "formulas": {
+    "S!B1": "=LET(X,1,X+1)",
+    "S!B2": "=IF(A1,,1)",
+    "S!B3": "=LET(x,,x)"
+   }
+  }
+ }
+}

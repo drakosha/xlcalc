@@ -1,0 +1,5849 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "read": "A1:Z60",
+  "look": "A1:J24",
+  "seconds": 0
+ },
+ "books": {
+  "manual": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": "n"
+      },
+      "B1": {
+       "value": "k"
+      },
+      "C1": {
+       "value": "f"
+      },
+      "D2": {
+       "value": "top"
+      },
+      "E2": {
+       "formula": "A2+1000"
+      },
+      "A2": {
+       "value": 2
+      },
+      "B2": {
+       "value": "x"
+      },
+      "C2": {
+       "formula": "A2*10"
+      },
+      "A3": {
+       "value": 3
+      },
+      "B3": {
+       "value": "x"
+      },
+      "C3": {
+       "formula": "A3*10"
+      },
+      "A4": {
+       "value": 4
+      },
+      "B4": {
+       "value": "x"
+      },
+      "C4": {
+       "formula": "A4*10"
+      },
+      "A5": {
+       "value": 5
+      },
+      "B5": {
+       "value": "x"
+      },
+      "C5": {
+       "formula": "A5*10"
+      },
+      "A6": {
+       "value": 6
+      },
+      "B6": {
+       "value": "x"
+      },
+      "C6": {
+       "formula": "A6*10"
+      },
+      "A7": {
+       "value": 7
+      },
+      "B7": {
+       "value": "y"
+      },
+      "C7": {
+       "formula": "A7*10"
+      },
+      "A8": {
+       "value": 8
+      },
+      "B8": {
+       "value": "y"
+      },
+      "C8": {
+       "formula": "A8*10"
+      },
+      "A9": {
+       "value": 9
+      },
+      "B9": {
+       "value": "x"
+      },
+      "C9": {
+       "formula": "A9*10"
+      },
+      "A10": {
+       "value": 10
+      },
+      "B10": {
+       "value": "x"
+      },
+      "C10": {
+       "formula": "A10*10"
+      },
+      "A11": {
+       "value": 11
+      },
+      "B11": {
+       "value": "y"
+      },
+      "C11": {
+       "formula": "A11*10"
+      },
+      "A12": {
+       "value": 12
+      },
+      "B12": {
+       "value": "x"
+      },
+      "C12": {
+       "formula": "A12*10"
+      },
+      "A13": {
+       "value": 13
+      },
+      "B13": {
+       "value": "x"
+      },
+      "C13": {
+       "formula": "A13*10"
+      },
+      "A14": {
+       "value": 14
+      },
+      "B14": {
+       "value": "x"
+      },
+      "C14": {
+       "formula": "A14*10"
+      },
+      "A15": {
+       "value": 15
+      },
+      "B15": {
+       "value": "x"
+      },
+      "C15": {
+       "formula": "A15*10"
+      },
+      "A16": {
+       "value": 16
+      },
+      "B16": {
+       "value": "x"
+      },
+      "C16": {
+       "formula": "A16*10"
+      }
+     },
+     "rows": {
+      "4": {
+       "hidden": true
+      },
+      "11": {
+       "hidden": true
+      },
+      "7:8": {
+       "hidden": true
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {}
+    }
+   ]
+  },
+  "filtered": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": "n"
+      },
+      "B1": {
+       "value": "k"
+      },
+      "C1": {
+       "value": "f"
+      },
+      "D2": {
+       "value": "top"
+      },
+      "E2": {
+       "formula": "A2+1000"
+      },
+      "A2": {
+       "value": 2
+      },
+      "B2": {
+       "value": "x"
+      },
+      "C2": {
+       "formula": "A2*10"
+      },
+      "A3": {
+       "value": 3
+      },
+      "B3": {
+       "value": "x"
+      },
+      "C3": {
+       "formula": "A3*10"
+      },
+      "A4": {
+       "value": 4
+      },
+      "B4": {
+       "value": "x"
+      },
+      "C4": {
+       "formula": "A4*10"
+      },
+      "A5": {
+       "value": 5
+      },
+      "B5": {
+       "value": "x"
+      },
+      "C5": {
+       "formula": "A5*10"
+      },
+      "A6": {
+       "value": 6
+      },
+      "B6": {
+       "value": "x"
+      },
+      "C6": {
+       "formula": "A6*10"
+      },
+      "A7": {
+       "value": 7
+      },
+      "B7": {
+       "value": "y"
+      },
+      "C7": {
+       "formula": "A7*10"
+      },
+      "A8": {
+       "value": 8
+      },
+      "B8": {
+       "value": "y"
+      },
+      "C8": {
+       "formula": "A8*10"
+      },
+      "A9": {
+       "value": 9
+      },
+      "B9": {
+       "value": "x"
+      },
+      "C9": {
+       "formula": "A9*10"
+      },
+      "A10": {
+       "value": 10
+      },
+      "B10": {
+       "value": "x"
+      },
+      "C10": {
+       "formula": "A10*10"
+      },
+      "A11": {
+       "value": 11
+      },
+      "B11": {
+       "value": "y"
+      },
+      "C11": {
+       "formula": "A11*10"
+      },
+      "A12": {
+       "value": 12
+      },
+      "B12": {
+       "value": "x"
+      },
+      "C12": {
+       "formula": "A12*10"
+      },
+      "A13": {
+       "value": 13
+      },
+      "B13": {
+       "value": "x"
+      },
+      "C13": {
+       "formula": "A13*10"
+      },
+      "A14": {
+       "value": 14
+      },
+      "B14": {
+       "value": "x"
+      },
+      "C14": {
+       "formula": "A14*10"
+      },
+      "A15": {
+       "value": 15
+      },
+      "B15": {
+       "value": "x"
+      },
+      "C15": {
+       "formula": "A15*10"
+      },
+      "A16": {
+       "value": 16
+      },
+      "B16": {
+       "value": "x"
+      },
+      "C16": {
+       "formula": "A16*10"
+      }
+     },
+     "rows": {
+      "4": {
+       "hidden": true
+      },
+      "11": {
+       "hidden": true
+      },
+      "7:8": {
+       "hidden": true
+      }
+     },
+     "filtered": true
+    },
+    {
+     "name": "T",
+     "cells": {}
+    }
+   ]
+  },
+  "columns": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 10
+      },
+      "B1": {
+       "value": 11
+      },
+      "C1": {
+       "value": 12
+      },
+      "D1": {
+       "value": 13
+      },
+      "E1": {
+       "value": 14
+      },
+      "F1": {
+       "value": 15
+      },
+      "A2": {
+       "value": 20
+      },
+      "B2": {
+       "value": 21
+      },
+      "C2": {
+       "value": 22
+      },
+      "D2": {
+       "value": 23
+      },
+      "E2": {
+       "value": 24
+      },
+      "F2": {
+       "value": 25
+      },
+      "A3": {
+       "value": 30
+      },
+      "B3": {
+       "value": 31
+      },
+      "C3": {
+       "value": 32
+      },
+      "D3": {
+       "value": 33
+      },
+      "E3": {
+       "value": 34
+      },
+      "F3": {
+       "value": 35
+      },
+      "G1": {
+       "formula": "SUM(A1:F1)"
+      }
+     },
+     "columns": {
+      "C:D": {
+       "width": 10,
+       "hidden": true
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {}
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "manual-copy",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G2:I16"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-other",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2:C16"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-rows",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "2:16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "2:16"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-onto",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "D3:E16"
+    }
+   }
+  },
+  {
+   "id": "manual-fill-down",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "D2:E16"
+    }
+   },
+   "via": "fillDown"
+  },
+  {
+   "id": "manual-fill-handle",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "D2:E16"
+    }
+   },
+   "via": "autofill"
+  },
+  {
+   "id": "manual-move",
+   "book": "manual",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "G2"
+    }
+   }
+  },
+  {
+   "id": "manual-insert-before",
+   "book": "manual",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 7
+   }
+  },
+  {
+   "id": "manual-insert-inside",
+   "book": "manual",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 8,
+    "count": 2
+   }
+  },
+  {
+   "id": "manual-insert-after",
+   "book": "manual",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 9
+   }
+  },
+  {
+   "id": "manual-delete-inside",
+   "book": "manual",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 8
+   }
+  },
+  {
+   "id": "manual-delete-around",
+   "book": "manual",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 6,
+    "count": 4
+   }
+  },
+  {
+   "id": "manual-copy-cell",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-visible",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C3"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2:C3"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-over-hidden",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G6:I7"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-same-cell",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G2"
+    }
+   }
+  },
+  {
+   "id": "manual-insert-hidden",
+   "book": "manual",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 7,
+    "count": 2
+   }
+  },
+  {
+   "id": "manual-delete-hidden",
+   "book": "manual",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 7,
+    "count": 2
+   }
+  },
+  {
+   "id": "manual-insert-columns",
+   "book": "manual",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "B",
+    "count": 2
+   }
+  },
+  {
+   "id": "manual-tile-over-hidden",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G2:I9"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-tiled",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2:C23"
+    }
+   }
+  },
+  {
+   "id": "manual-copy-below",
+   "book": "manual",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G12:I22"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G2:I16"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-other",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2:C16"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-rows",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "2:16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "2:16"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-onto",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "D3:E16"
+    }
+   }
+  },
+  {
+   "id": "filtered-fill-down",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "D2:E16"
+    }
+   },
+   "via": "fillDown"
+  },
+  {
+   "id": "filtered-fill-handle",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "D2:E2"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "D2:E16"
+    }
+   },
+   "via": "autofill"
+  },
+  {
+   "id": "filtered-move",
+   "book": "filtered",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "G2"
+    }
+   }
+  },
+  {
+   "id": "filtered-insert-before",
+   "book": "filtered",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 7
+   }
+  },
+  {
+   "id": "filtered-insert-inside",
+   "book": "filtered",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 8,
+    "count": 2
+   }
+  },
+  {
+   "id": "filtered-insert-after",
+   "book": "filtered",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 9
+   }
+  },
+  {
+   "id": "filtered-delete-inside",
+   "book": "filtered",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 8
+   }
+  },
+  {
+   "id": "filtered-delete-around",
+   "book": "filtered",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 6,
+    "count": 4
+   }
+  },
+  {
+   "id": "filtered-copy-cell",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-visible",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C3"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2:C3"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-over-hidden",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G6:I7"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-same-cell",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G2"
+    }
+   }
+  },
+  {
+   "id": "filtered-insert-hidden",
+   "book": "filtered",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 7,
+    "count": 2
+   }
+  },
+  {
+   "id": "filtered-delete-hidden",
+   "book": "filtered",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 7,
+    "count": 2
+   }
+  },
+  {
+   "id": "filtered-insert-columns",
+   "book": "filtered",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "B",
+    "count": 2
+   }
+  },
+  {
+   "id": "filtered-tile-over-hidden",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G2:I9"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-tiled",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "T",
+     "range": "A2:C23"
+    }
+   }
+  },
+  {
+   "id": "filtered-copy-below",
+   "book": "filtered",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A2:C16"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "G12:I22"
+    }
+   }
+  },
+  {
+   "id": "columns-insert-before",
+   "book": "columns",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "C"
+   }
+  },
+  {
+   "id": "columns-insert-inside",
+   "book": "columns",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "D"
+   }
+  },
+  {
+   "id": "columns-insert-after",
+   "book": "columns",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "E"
+   }
+  },
+  {
+   "id": "columns-delete",
+   "book": "columns",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "C"
+   }
+  },
+  {
+   "id": "columns-copy",
+   "book": "columns",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "A1:F3"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "A10:F12"
+    }
+   }
+  }
+ ],
+ "files": {
+  "filtered": {
+   "sheets": {
+    "S": {
+     "filter": {
+      "range": "A1:C16",
+      "keep": {
+       "1": [
+        "x"
+       ]
+      }
+     }
+    }
+   }
+  }
+ },
+ "answers": {
+  "manual-copy": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "=G2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "=G3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "G4": "4",
+      "H4": "x",
+      "I4": "=G4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "G5": "5",
+      "H5": "x",
+      "I5": "=G5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "6",
+      "H6": "x",
+      "I6": "=G6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "G7": "7",
+      "H7": "y",
+      "I7": "=G7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "G8": "8",
+      "H8": "y",
+      "I8": "=G8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "G9": "9",
+      "H9": "x",
+      "I9": "=G9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "G10": "10",
+      "H10": "x",
+      "I10": "=G10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "G11": "11",
+      "H11": "y",
+      "I11": "=G11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "G12": "12",
+      "H12": "x",
+      "I12": "=G12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "G13": "13",
+      "H13": "x",
+      "I13": "=G13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "G14": "14",
+      "H14": "x",
+      "I14": "=G14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "G15": "15",
+      "H15": "x",
+      "I15": "=G15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "G16": "16",
+      "H16": "x",
+      "I16": "=G16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-other": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$16",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-rows": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$E$16",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-onto": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "D3": "top",
+      "E3": "=A3+1000",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "D4": "top",
+      "E4": "=A4+1000",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "D5": "top",
+      "E5": "=A5+1000",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "D6": "top",
+      "E6": "=A6+1000",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "D7": "top",
+      "E7": "=A7+1000",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "D8": "top",
+      "E8": "=A8+1000",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "D9": "top",
+      "E9": "=A9+1000",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "D10": "top",
+      "E10": "=A10+1000",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "D11": "top",
+      "E11": "=A11+1000",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "D12": "top",
+      "E12": "=A12+1000",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "D13": "top",
+      "E13": "=A13+1000",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "D14": "top",
+      "E14": "=A14+1000",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "D15": "top",
+      "E15": "=A15+1000",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "D16": "top",
+      "E16": "=A16+1000"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-fill-down": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "D3": "top",
+      "E3": "=A3+1000",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "D4": "top",
+      "E4": "=A4+1000",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "D5": "top",
+      "E5": "=A5+1000",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "D6": "top",
+      "E6": "=A6+1000",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "D7": "top",
+      "E7": "=A7+1000",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "D8": "top",
+      "E8": "=A8+1000",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "D9": "top",
+      "E9": "=A9+1000",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "D10": "top",
+      "E10": "=A10+1000",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "D11": "top",
+      "E11": "=A11+1000",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "D12": "top",
+      "E12": "=A12+1000",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "D13": "top",
+      "E13": "=A13+1000",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "D14": "top",
+      "E14": "=A14+1000",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "D15": "top",
+      "E15": "=A15+1000",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "D16": "top",
+      "E16": "=A16+1000"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-fill-handle": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "D3": "top",
+      "E3": "=A3+1000",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "D4": "top",
+      "E4": "=A4+1000",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "D5": "top",
+      "E5": "=A5+1000",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "D6": "top",
+      "E6": "=A6+1000",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "D7": "top",
+      "E7": "=A7+1000",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "D8": "top",
+      "E8": "=A8+1000",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "D9": "top",
+      "E9": "=A9+1000",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "D10": "top",
+      "E10": "=A10+1000",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "D11": "top",
+      "E11": "=A11+1000",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "D12": "top",
+      "E12": "=A12+1000",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "D13": "top",
+      "E13": "=A13+1000",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "D14": "top",
+      "E14": "=A14+1000",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "D15": "top",
+      "E15": "=A15+1000",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "D16": "top",
+      "E16": "=A16+1000"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-move": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "D2": "top",
+      "E2": "=G2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "=G2*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "=G3*10",
+      "G4": "4",
+      "H4": "x",
+      "I4": "=G4*10",
+      "G5": "5",
+      "H5": "x",
+      "I5": "=G5*10",
+      "G6": "6",
+      "H6": "x",
+      "I6": "=G6*10",
+      "G7": "7",
+      "H7": "y",
+      "I7": "=G7*10",
+      "G8": "8",
+      "H8": "y",
+      "I8": "=G8*10",
+      "G9": "9",
+      "H9": "x",
+      "I9": "=G9*10",
+      "G10": "10",
+      "H10": "x",
+      "I10": "=G10*10",
+      "G11": "11",
+      "H11": "y",
+      "I11": "=G11*10",
+      "G12": "12",
+      "H12": "x",
+      "I12": "=G12*10",
+      "G13": "13",
+      "H13": "x",
+      "I13": "=G13*10",
+      "G14": "14",
+      "H14": "x",
+      "I14": "=G14*10",
+      "G15": "15",
+      "H15": "x",
+      "I15": "=G15*10",
+      "G16": "16",
+      "H16": "x",
+      "I16": "=G16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-insert-before": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$17",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A8": "7",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "8",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "9",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "10",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "11",
+      "B12": "y",
+      "C12": "=A12*10",
+      "A13": "12",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "13",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "14",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "15",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "16",
+      "B17": "x",
+      "C17": "=A17*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "8",
+       "9",
+       "12"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-insert-inside": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$18",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A10": "8",
+      "B10": "y",
+      "C10": "=A10*10",
+      "A11": "9",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "10",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "11",
+      "B13": "y",
+      "C13": "=A13*10",
+      "A14": "12",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "13",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "14",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "15",
+      "B17": "x",
+      "C17": "=A17*10",
+      "A18": "16",
+      "B18": "x",
+      "C18": "=A18*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "10",
+       "13"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-insert-after": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$17",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A10": "9",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "10",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "11",
+      "B12": "y",
+      "C12": "=A12*10",
+      "A13": "12",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "13",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "14",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "15",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "16",
+      "B17": "x",
+      "C17": "=A17*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "12"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-delete-inside": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$15",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "9",
+      "B8": "x",
+      "C8": "=A8*10",
+      "A9": "10",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "11",
+      "B10": "y",
+      "C10": "=A10*10",
+      "A11": "12",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "13",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "14",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "15",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "16",
+      "B15": "x",
+      "C15": "=A15*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "10"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-delete-around": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$12",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "10",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "11",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "12",
+      "B8": "x",
+      "C8": "=A8*10",
+      "A9": "13",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "14",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "15",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "16",
+      "B12": "x",
+      "C12": "=A12*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-cell": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$16",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-visible": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$3",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-over-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "2",
+      "H6": "x",
+      "I6": "=G6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "G7": "3",
+      "H7": "x",
+      "I7": "=G7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-same-cell": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "=G2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "=G3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "G4": "4",
+      "H4": "x",
+      "I4": "=G4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "G5": "5",
+      "H5": "x",
+      "I5": "=G5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "6",
+      "H6": "x",
+      "I6": "=G6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "G7": "7",
+      "H7": "y",
+      "I7": "=G7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "G8": "8",
+      "H8": "y",
+      "I8": "=G8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "G9": "9",
+      "H9": "x",
+      "I9": "=G9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "G10": "10",
+      "H10": "x",
+      "I10": "=G10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "G11": "11",
+      "H11": "y",
+      "I11": "=G11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "G12": "12",
+      "H12": "x",
+      "I12": "=G12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "G13": "13",
+      "H13": "x",
+      "I13": "=G13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "G14": "14",
+      "H14": "x",
+      "I14": "=G14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "G15": "15",
+      "H15": "x",
+      "I15": "=G15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "G16": "16",
+      "H16": "x",
+      "I16": "=G16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-insert-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$18",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A9": "7",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "8",
+      "B10": "y",
+      "C10": "=A10*10",
+      "A11": "9",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "10",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "11",
+      "B13": "y",
+      "C13": "=A13*10",
+      "A14": "12",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "13",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "14",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "15",
+      "B17": "x",
+      "C17": "=A17*10",
+      "A18": "16",
+      "B18": "x",
+      "C18": "=A18*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "9",
+       "10",
+       "13"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-delete-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$14",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "9",
+      "B7": "x",
+      "C7": "=A7*10",
+      "A8": "10",
+      "B8": "x",
+      "C8": "=A8*10",
+      "A9": "11",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "12",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "13",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "14",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "15",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "16",
+      "B14": "x",
+      "C14": "=A14*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "9"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-insert-columns": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$16",
+     "cells": {
+      "A1": "n",
+      "D1": "k",
+      "E1": "f",
+      "A2": "2",
+      "D2": "x",
+      "E2": "=A2*10",
+      "F2": "top",
+      "G2": "=A2+1000",
+      "A3": "3",
+      "D3": "x",
+      "E3": "=A3*10",
+      "A4": "4",
+      "D4": "x",
+      "E4": "=A4*10",
+      "A5": "5",
+      "D5": "x",
+      "E5": "=A5*10",
+      "A6": "6",
+      "D6": "x",
+      "E6": "=A6*10",
+      "A7": "7",
+      "D7": "y",
+      "E7": "=A7*10",
+      "A8": "8",
+      "D8": "y",
+      "E8": "=A8*10",
+      "A9": "9",
+      "D9": "x",
+      "E9": "=A9*10",
+      "A10": "10",
+      "D10": "x",
+      "E10": "=A10*10",
+      "A11": "11",
+      "D11": "y",
+      "E11": "=A11*10",
+      "A12": "12",
+      "D12": "x",
+      "E12": "=A12*10",
+      "A13": "13",
+      "D13": "x",
+      "E13": "=A13*10",
+      "A14": "14",
+      "D14": "x",
+      "E14": "=A14*10",
+      "A15": "15",
+      "D15": "x",
+      "E15": "=A15*10",
+      "A16": "16",
+      "D16": "x",
+      "E16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-tile-over-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "=G2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "=G3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "G4": "2",
+      "H4": "x",
+      "I4": "=G4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "G5": "3",
+      "H5": "x",
+      "I5": "=G5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "2",
+      "H6": "x",
+      "I6": "=G6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "G7": "3",
+      "H7": "x",
+      "I7": "=G7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "G8": "2",
+      "H8": "x",
+      "I8": "=G8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "G9": "3",
+      "H9": "x",
+      "I9": "=G9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-tiled": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$16",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "manual-copy-below": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$26",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "G12": "2",
+      "H12": "x",
+      "I12": "=G12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "G13": "3",
+      "H13": "x",
+      "I13": "=G13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "G14": "4",
+      "H14": "x",
+      "I14": "=G14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "G15": "5",
+      "H15": "x",
+      "I15": "=G15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "G16": "6",
+      "H16": "x",
+      "I16": "=G16*10",
+      "G17": "7",
+      "H17": "y",
+      "I17": "=G17*10",
+      "G18": "8",
+      "H18": "y",
+      "I18": "=G18*10",
+      "G19": "9",
+      "H19": "x",
+      "I19": "=G19*10",
+      "G20": "10",
+      "H20": "x",
+      "I20": "=G20*10",
+      "G21": "11",
+      "H21": "y",
+      "I21": "=G21*10",
+      "G22": "12",
+      "H22": "x",
+      "I22": "=G22*10",
+      "G23": "13",
+      "H23": "x",
+      "I23": "=G23*10",
+      "G24": "14",
+      "H24": "x",
+      "I24": "=G24*10",
+      "G25": "15",
+      "H25": "x",
+      "I25": "=G25*10",
+      "G26": "16",
+      "H26": "x",
+      "I26": "=G26*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy": {
+   "error": "op: -2146827284 This action won't work on multiple selections.",
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-other": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$12",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "20",
+      "A3": "3",
+      "B3": "x",
+      "C3": "30",
+      "A4": "5",
+      "B4": "x",
+      "C4": "50",
+      "A5": "6",
+      "B5": "x",
+      "C5": "60",
+      "A6": "9",
+      "B6": "x",
+      "C6": "90",
+      "A7": "10",
+      "B7": "x",
+      "C7": "100",
+      "A8": "12",
+      "B8": "x",
+      "C8": "120",
+      "A9": "13",
+      "B9": "x",
+      "C9": "130",
+      "A10": "14",
+      "B10": "x",
+      "C10": "140",
+      "A11": "15",
+      "B11": "x",
+      "C11": "150",
+      "A12": "16",
+      "B12": "x",
+      "C12": "160"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-rows": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$E$12",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "20",
+      "D2": "top",
+      "E2": "1002",
+      "A3": "3",
+      "B3": "x",
+      "C3": "30",
+      "A4": "5",
+      "B4": "x",
+      "C4": "50",
+      "A5": "6",
+      "B5": "x",
+      "C5": "60",
+      "A6": "9",
+      "B6": "x",
+      "C6": "90",
+      "A7": "10",
+      "B7": "x",
+      "C7": "100",
+      "A8": "12",
+      "B8": "x",
+      "C8": "120",
+      "A9": "13",
+      "B9": "x",
+      "C9": "130",
+      "A10": "14",
+      "B10": "x",
+      "C10": "140",
+      "A11": "15",
+      "B11": "x",
+      "C11": "150",
+      "A12": "16",
+      "B12": "x",
+      "C12": "160"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-onto": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "D3": "top",
+      "E3": "=A3+1000",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "D5": "top",
+      "E5": "=A5+1000",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "D6": "top",
+      "E6": "=A6+1000",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "D9": "top",
+      "E9": "=A9+1000",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "D10": "top",
+      "E10": "=A10+1000",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "D12": "top",
+      "E12": "=A12+1000",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "D13": "top",
+      "E13": "=A13+1000",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "D14": "top",
+      "E14": "=A14+1000",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "D15": "top",
+      "E15": "=A15+1000",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "D16": "top",
+      "E16": "=A16+1000"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-fill-down": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "D3": "top",
+      "E3": "=A3+1000",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "D5": "top",
+      "E5": "=A5+1000",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "D6": "top",
+      "E6": "=A6+1000",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "D9": "top",
+      "E9": "=A9+1000",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "D10": "top",
+      "E10": "=A10+1000",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "D12": "top",
+      "E12": "=A12+1000",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "D13": "top",
+      "E13": "=A13+1000",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "D14": "top",
+      "E14": "=A14+1000",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "D15": "top",
+      "E15": "=A15+1000",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "D16": "top",
+      "E16": "=A16+1000"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-fill-handle": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "D3": "top",
+      "E3": "=A3+1000",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "D4": "top",
+      "E4": "=A4+1000",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "D5": "top",
+      "E5": "=A5+1000",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "D6": "top",
+      "E6": "=A6+1000",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "D7": "top",
+      "E7": "=A7+1000",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "D8": "top",
+      "E8": "=A8+1000",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "D9": "top",
+      "E9": "=A9+1000",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "D10": "top",
+      "E10": "=A10+1000",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "D11": "top",
+      "E11": "=A11+1000",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "D12": "top",
+      "E12": "=A12+1000",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "D13": "top",
+      "E13": "=A13+1000",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "D14": "top",
+      "E14": "=A14+1000",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "D15": "top",
+      "E15": "=A15+1000",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "D16": "top",
+      "E16": "=A16+1000"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-move": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "D2": "top",
+      "E2": "=G2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "=G2*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "=G3*10",
+      "G4": "4",
+      "H4": "x",
+      "I4": "=G4*10",
+      "G5": "5",
+      "H5": "x",
+      "I5": "=G5*10",
+      "G6": "6",
+      "H6": "x",
+      "I6": "=G6*10",
+      "G7": "7",
+      "H7": "y",
+      "I7": "=G7*10",
+      "G8": "8",
+      "H8": "y",
+      "I8": "=G8*10",
+      "G9": "9",
+      "H9": "x",
+      "I9": "=G9*10",
+      "G10": "10",
+      "H10": "x",
+      "I10": "=G10*10",
+      "G11": "11",
+      "H11": "y",
+      "I11": "=G11*10",
+      "G12": "12",
+      "H12": "x",
+      "I12": "=G12*10",
+      "G13": "13",
+      "H13": "x",
+      "I13": "=G13*10",
+      "G14": "14",
+      "H14": "x",
+      "I14": "=G14*10",
+      "G15": "15",
+      "H15": "x",
+      "I15": "=G15*10",
+      "G16": "16",
+      "H16": "x",
+      "I16": "=G16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-insert-before": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$17",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A8": "7",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "8",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "9",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "10",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "11",
+      "B12": "y",
+      "C12": "=A12*10",
+      "A13": "12",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "13",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "14",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "15",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "16",
+      "B17": "x",
+      "C17": "=A17*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "8",
+       "9",
+       "12"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-insert-inside": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$17",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A9": "8",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "9",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "10",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "11",
+      "B12": "y",
+      "C12": "=A12*10",
+      "A13": "12",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "13",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "14",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "15",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "16",
+      "B17": "x",
+      "C17": "=A17*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "9",
+       "12"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-insert-after": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$17",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A10": "9",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "10",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "11",
+      "B12": "y",
+      "C12": "=A12*10",
+      "A13": "12",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "13",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "14",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "15",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "16",
+      "B17": "x",
+      "C17": "=A17*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "12"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-delete-inside": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$15",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "9",
+      "B8": "x",
+      "C8": "=A8*10",
+      "A9": "10",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "11",
+      "B10": "y",
+      "C10": "=A10*10",
+      "A11": "12",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "13",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "14",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "15",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "16",
+      "B15": "x",
+      "C15": "=A15*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "10"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-delete-around": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$14",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "7",
+      "B6": "y",
+      "C6": "=A6*10",
+      "A7": "8",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "10",
+      "B8": "x",
+      "C8": "=A8*10",
+      "A9": "11",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "12",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "13",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "14",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "15",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "16",
+      "B14": "x",
+      "C14": "=A14*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "6",
+       "7",
+       "9"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-cell": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$12",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "20",
+      "A3": "3",
+      "B3": "x",
+      "C3": "30",
+      "A4": "5",
+      "B4": "x",
+      "C4": "50",
+      "A5": "6",
+      "B5": "x",
+      "C5": "60",
+      "A6": "9",
+      "B6": "x",
+      "C6": "90",
+      "A7": "10",
+      "B7": "x",
+      "C7": "100",
+      "A8": "12",
+      "B8": "x",
+      "C8": "120",
+      "A9": "13",
+      "B9": "x",
+      "C9": "130",
+      "A10": "14",
+      "B10": "x",
+      "C10": "140",
+      "A11": "15",
+      "B11": "x",
+      "C11": "150",
+      "A12": "16",
+      "B12": "x",
+      "C12": "160"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-visible": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$3",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-over-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "2",
+      "H6": "x",
+      "I6": "=G6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "G7": "3",
+      "H7": "x",
+      "I7": "=G7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-same-cell": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "20",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "30",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "G4": "5",
+      "H4": "x",
+      "I4": "50",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "G5": "6",
+      "H5": "x",
+      "I5": "60",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "9",
+      "H6": "x",
+      "I6": "90",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "G7": "10",
+      "H7": "x",
+      "I7": "100",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "G8": "12",
+      "H8": "x",
+      "I8": "120",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "G9": "13",
+      "H9": "x",
+      "I9": "130",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "G10": "14",
+      "H10": "x",
+      "I10": "140",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "G11": "15",
+      "H11": "x",
+      "I11": "150",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "G12": "16",
+      "H12": "x",
+      "I12": "160",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-insert-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$18",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A9": "7",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "8",
+      "B10": "y",
+      "C10": "=A10*10",
+      "A11": "9",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "10",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "11",
+      "B13": "y",
+      "C13": "=A13*10",
+      "A14": "12",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "13",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "14",
+      "B16": "x",
+      "C16": "=A16*10",
+      "A17": "15",
+      "B17": "x",
+      "C17": "=A17*10",
+      "A18": "16",
+      "B18": "x",
+      "C18": "=A18*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "9",
+       "10",
+       "13"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-delete-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$14",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "9",
+      "B7": "x",
+      "C7": "=A7*10",
+      "A8": "10",
+      "B8": "x",
+      "C8": "=A8*10",
+      "A9": "11",
+      "B9": "y",
+      "C9": "=A9*10",
+      "A10": "12",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "13",
+      "B11": "x",
+      "C11": "=A11*10",
+      "A12": "14",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "15",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "16",
+      "B14": "x",
+      "C14": "=A14*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "9"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-insert-columns": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$16",
+     "cells": {
+      "A1": "n",
+      "D1": "k",
+      "E1": "f",
+      "A2": "2",
+      "D2": "x",
+      "E2": "=A2*10",
+      "F2": "top",
+      "G2": "=A2+1000",
+      "A3": "3",
+      "D3": "x",
+      "E3": "=A3*10",
+      "A4": "4",
+      "D4": "x",
+      "E4": "=A4*10",
+      "A5": "5",
+      "D5": "x",
+      "E5": "=A5*10",
+      "A6": "6",
+      "D6": "x",
+      "E6": "=A6*10",
+      "A7": "7",
+      "D7": "y",
+      "E7": "=A7*10",
+      "A8": "8",
+      "D8": "y",
+      "E8": "=A8*10",
+      "A9": "9",
+      "D9": "x",
+      "E9": "=A9*10",
+      "A10": "10",
+      "D10": "x",
+      "E10": "=A10*10",
+      "A11": "11",
+      "D11": "y",
+      "E11": "=A11*10",
+      "A12": "12",
+      "D12": "x",
+      "E12": "=A12*10",
+      "A13": "13",
+      "D13": "x",
+      "E13": "=A13*10",
+      "A14": "14",
+      "D14": "x",
+      "E14": "=A14*10",
+      "A15": "15",
+      "D15": "x",
+      "E15": "=A15*10",
+      "A16": "16",
+      "D16": "x",
+      "E16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-tile-over-hidden": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "G2": "2",
+      "H2": "x",
+      "I2": "=G2*10",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "G3": "3",
+      "H3": "x",
+      "I3": "=G3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "G5": "2",
+      "H5": "x",
+      "I5": "=G5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "G6": "3",
+      "H6": "x",
+      "I6": "=G6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "G9": "2",
+      "H9": "x",
+      "I9": "=G9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "G10": "3",
+      "H10": "x",
+      "I10": "=G10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-tiled": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$E$16",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$2:$C$23",
+     "cells": {
+      "A2": "2",
+      "B2": "x",
+      "C2": "20",
+      "A3": "3",
+      "B3": "x",
+      "C3": "30",
+      "A4": "5",
+      "B4": "x",
+      "C4": "50",
+      "A5": "6",
+      "B5": "x",
+      "C5": "60",
+      "A6": "9",
+      "B6": "x",
+      "C6": "90",
+      "A7": "10",
+      "B7": "x",
+      "C7": "100",
+      "A8": "12",
+      "B8": "x",
+      "C8": "120",
+      "A9": "13",
+      "B9": "x",
+      "C9": "130",
+      "A10": "14",
+      "B10": "x",
+      "C10": "140",
+      "A11": "15",
+      "B11": "x",
+      "C11": "150",
+      "A12": "16",
+      "B12": "x",
+      "C12": "160",
+      "A13": "2",
+      "B13": "x",
+      "C13": "20",
+      "A14": "3",
+      "B14": "x",
+      "C14": "30",
+      "A15": "5",
+      "B15": "x",
+      "C15": "50",
+      "A16": "6",
+      "B16": "x",
+      "C16": "60",
+      "A17": "9",
+      "B17": "x",
+      "C17": "90",
+      "A18": "10",
+      "B18": "x",
+      "C18": "100",
+      "A19": "12",
+      "B19": "x",
+      "C19": "120",
+      "A20": "13",
+      "B20": "x",
+      "C20": "130",
+      "A21": "14",
+      "B21": "x",
+      "C21": "140",
+      "A22": "15",
+      "B22": "x",
+      "C22": "150",
+      "A23": "16",
+      "B23": "x",
+      "C23": "160"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "filtered-copy-below": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$I$22",
+     "cells": {
+      "A1": "n",
+      "B1": "k",
+      "C1": "f",
+      "A2": "2",
+      "B2": "x",
+      "C2": "=A2*10",
+      "D2": "top",
+      "E2": "=A2+1000",
+      "A3": "3",
+      "B3": "x",
+      "C3": "=A3*10",
+      "A4": "4",
+      "B4": "x",
+      "C4": "=A4*10",
+      "A5": "5",
+      "B5": "x",
+      "C5": "=A5*10",
+      "A6": "6",
+      "B6": "x",
+      "C6": "=A6*10",
+      "A7": "7",
+      "B7": "y",
+      "C7": "=A7*10",
+      "A8": "8",
+      "B8": "y",
+      "C8": "=A8*10",
+      "A9": "9",
+      "B9": "x",
+      "C9": "=A9*10",
+      "A10": "10",
+      "B10": "x",
+      "C10": "=A10*10",
+      "A11": "11",
+      "B11": "y",
+      "C11": "=A11*10",
+      "A12": "12",
+      "B12": "x",
+      "C12": "=A12*10",
+      "G12": "2",
+      "H12": "x",
+      "I12": "20",
+      "A13": "13",
+      "B13": "x",
+      "C13": "=A13*10",
+      "G13": "3",
+      "H13": "x",
+      "I13": "30",
+      "A14": "14",
+      "B14": "x",
+      "C14": "=A14*10",
+      "G14": "5",
+      "H14": "x",
+      "I14": "50",
+      "A15": "15",
+      "B15": "x",
+      "C15": "=A15*10",
+      "G15": "6",
+      "H15": "x",
+      "I15": "60",
+      "A16": "16",
+      "B16": "x",
+      "C16": "=A16*10",
+      "G16": "9",
+      "H16": "x",
+      "I16": "90",
+      "G17": "10",
+      "H17": "x",
+      "I17": "100",
+      "G18": "12",
+      "H18": "x",
+      "I18": "120",
+      "G19": "13",
+      "H19": "x",
+      "I19": "130",
+      "G20": "14",
+      "H20": "x",
+      "I20": "140",
+      "G21": "15",
+      "H21": "x",
+      "I21": "150",
+      "G22": "16",
+      "H22": "x",
+      "I22": "160"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "4",
+       "7",
+       "8",
+       "11"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "columns-insert-before": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$3",
+     "cells": {
+      "A1": "10",
+      "B1": "11",
+      "D1": "12",
+      "E1": "13",
+      "F1": "14",
+      "G1": "15",
+      "H1": "=SUM(A1:G1)",
+      "A2": "20",
+      "B2": "21",
+      "D2": "22",
+      "E2": "23",
+      "F2": "24",
+      "G2": "25",
+      "A3": "30",
+      "B3": "31",
+      "D3": "32",
+      "E3": "33",
+      "F3": "34",
+      "G3": "35"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "D",
+       "E"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "columns-insert-inside": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$3",
+     "cells": {
+      "A1": "10",
+      "B1": "11",
+      "C1": "12",
+      "E1": "13",
+      "F1": "14",
+      "G1": "15",
+      "H1": "=SUM(A1:G1)",
+      "A2": "20",
+      "B2": "21",
+      "C2": "22",
+      "E2": "23",
+      "F2": "24",
+      "G2": "25",
+      "A3": "30",
+      "B3": "31",
+      "C3": "32",
+      "E3": "33",
+      "F3": "34",
+      "G3": "35"
+     },
+     "look": {
+      "cells": {},
+      "widths": {
+       "D": 9.29
+      },
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "C",
+       "E"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "columns-insert-after": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$H$3",
+     "cells": {
+      "A1": "10",
+      "B1": "11",
+      "C1": "12",
+      "D1": "13",
+      "F1": "14",
+      "G1": "15",
+      "H1": "=SUM(A1:G1)",
+      "A2": "20",
+      "B2": "21",
+      "C2": "22",
+      "D2": "23",
+      "F2": "24",
+      "G2": "25",
+      "A3": "30",
+      "B3": "31",
+      "C3": "32",
+      "D3": "33",
+      "F3": "34",
+      "G3": "35"
+     },
+     "look": {
+      "cells": {},
+      "widths": {
+       "E": 9.29
+      },
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "C",
+       "D"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "columns-delete": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$F$3",
+     "cells": {
+      "A1": "10",
+      "B1": "11",
+      "C1": "13",
+      "D1": "14",
+      "E1": "15",
+      "F1": "=SUM(A1:E1)",
+      "A2": "20",
+      "B2": "21",
+      "C2": "23",
+      "D2": "24",
+      "E2": "25",
+      "A3": "30",
+      "B3": "31",
+      "C3": "33",
+      "D3": "34",
+      "E3": "35"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "C"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  },
+  "columns-copy": {
+   "sheets": [
+    {
+     "name": "S",
+     "used": "$A$1:$G$12",
+     "cells": {
+      "A1": "10",
+      "B1": "11",
+      "C1": "12",
+      "D1": "13",
+      "E1": "14",
+      "F1": "15",
+      "G1": "=SUM(A1:F1)",
+      "A2": "20",
+      "B2": "21",
+      "C2": "22",
+      "D2": "23",
+      "E2": "24",
+      "F2": "25",
+      "A3": "30",
+      "B3": "31",
+      "C3": "32",
+      "D3": "33",
+      "E3": "34",
+      "F3": "35",
+      "A10": "10",
+      "B10": "11",
+      "C10": "12",
+      "D10": "13",
+      "E10": "14",
+      "F10": "15",
+      "A11": "20",
+      "B11": "21",
+      "C11": "22",
+      "D11": "23",
+      "E11": "24",
+      "F11": "25",
+      "A12": "30",
+      "B12": "31",
+      "C12": "32",
+      "D12": "33",
+      "E12": "34",
+      "F12": "35"
+     },
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": [],
+      "hidden": [
+       "C",
+       "D"
+      ]
+     }
+    },
+    {
+     "name": "T",
+     "used": "$A$1",
+     "cells": {},
+     "look": {
+      "cells": {},
+      "widths": {},
+      "heights": {},
+      "merges": []
+     }
+    }
+   ],
+   "extra": [],
+   "names": []
+  }
+ }
+}

@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "mixed",
+   "about": "@ over two columns, a call, a whole column, an array, an error counted",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "A5": {
+        "value": 5
+       },
+       "B1": {
+        "value": 10
+       },
+       "B2": {
+        "value": 20
+       },
+       "B3": {
+        "value": 30
+       },
+       "B4": {
+        "value": 40
+       },
+       "B5": {
+        "value": 50
+       },
+       "C1": {
+        "value": 100
+       },
+       "C2": {
+        "value": 200
+       },
+       "C3": {
+        "value": 300
+       },
+       "C4": {
+        "value": 400
+       },
+       "C5": {
+        "value": 500
+       },
+       "H3": {
+        "formula": "@B1:B5+@C1:C5"
+       },
+       "I2": {
+        "formula": "@INDEX(A1:C5,0,3)"
+       },
+       "H4": {
+        "formula": "SUM(@A:A,1)"
+       },
+       "H1": {
+        "formula": "@{7,8;9,10}"
+       },
+       "I5": {
+        "formula": "@(B1:B5/10)"
+       },
+       "H9": {
+        "formula": "COUNTA(@A1:A5)"
+       },
+       "I3": {
+        "formula": "@T!A1:A5"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A1": {
+        "value": "a"
+       },
+       "A2": {
+        "value": "b"
+       },
+       "A3": {
+        "value": "c"
+       },
+       "A4": {
+        "value": "d"
+       },
+       "A5": {
+        "value": "e"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "H1:I9"
+    }
+   ],
+   "predicted": {
+    "S!H1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 200
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 330
+    },
+    "S!I3": {
+     "t": "s",
+     "v": "c"
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H9": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  }
+ ],
+ "answers": {
+  "mixed": {
+   "values": {
+    "S!H1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 200
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 330
+    },
+    "S!I3": {
+     "t": "s",
+     "v": "c"
+    },
+    "S!H4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!I5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!H9": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!H1": "=@{7,8;9,10}",
+    "S!I2": "=@INDEX(A1:C5,0,3)",
+    "S!H3": "=@B1:B5+@C1:C5",
+    "S!I3": "=@T!A1:A5",
+    "S!H4": "=SUM(@A:A,1)",
+    "S!I5": "=@(B1:B5/10)",
+    "S!H9": "=COUNTA(@A1:A5)"
+   }
+  }
+ }
+}

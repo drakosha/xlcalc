@@ -39,6 +39,27 @@ export function valOf(c: WinCell): Val | null {
   return { t: 'other', v: c.other }
 }
 
+/**
+ * A legacy set's books as the Mac's run had them: implicit intersection takes a formula's row, so each case goes to the
+ * row it stood in there (a new book where the rows start again, `rows` of the Mac's answers).
+ */
+function macBooks(cases: Probe[], set: string): Probe[][] | null {
+  const file = join(ROOT, `test/excel/legacy/${set}.json`)
+  if (!existsSync(file)) return null
+  const rows = (JSON.parse(readFileSync(file, 'utf8')) as { rows: Record<string, number> }).rows
+  const out: Probe[][] = []
+  for (const c of cases) {
+    if (!rows[c.id]) return null
+    const last = out.at(-1)?.at(-1)
+    if (!last || rows[c.id] !== rows[last.id] + 1) {
+      if (rows[c.id] !== 1) return null
+      out.push([])
+    }
+    out.at(-1)!.push(c)
+  }
+  return out
+}
+
 /** The books of a run as the Mac harness makes them: the measurement's of whole functions, up to PART cases, the others' runs of PART. */
 function parts(cases: Probe[], byFunction: boolean): Probe[][] {
   if (!byFunction) return Array.from({ length: Math.ceil(cases.length / PART) }, (_, k) => cases.slice(k * PART, (k + 1) * PART))
@@ -174,7 +195,10 @@ export async function stepFunctions(names: string[], tag: Tag, e: WinEnv): Promi
     }
     runs.push(r)
     const todo = t.cases.filter((c) => !got.values[c.id] && !got.rejected.includes(c.id))
-    queue.push(...parts(todo, !!t.valuesOnly).map((part) => ({ r, part })))
+    // a legacy set run whole goes into the Mac's books, so each formula intersects at its Mac row
+    const books = t.legacy && todo.length === t.cases.length ? macBooks(todo, name.slice('legacy/'.length)) : null
+    if (t.legacy && !books) console.log(`${name}: not in the Mac's books (some answers kept, or the Mac's rows do not fit)`)
+    queue.push(...(books ?? parts(todo, !!t.valuesOnly)).map((part) => ({ r, part })))
   }
   await inJobs(
     `functions-${tag}`,

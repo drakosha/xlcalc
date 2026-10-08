@@ -1,0 +1,350 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 423.5,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "criteria#1",
+   "group": "criteria",
+   "formula": "COUNTIF(N!A1,\"TRUE\")"
+  },
+  {
+   "id": "criteria#2",
+   "group": "criteria",
+   "formula": "COUNTIF(N!B1,\"TRUE\")"
+  },
+  {
+   "id": "criteria#3",
+   "group": "criteria",
+   "formula": "COUNTIF(N!A1,TRUE)"
+  },
+  {
+   "id": "criteria#4",
+   "group": "criteria",
+   "formula": "COUNTIF(N!C1,\"ИСТИНА\")"
+  },
+  {
+   "id": "criteria#5",
+   "group": "criteria",
+   "formula": "COUNTIF(N!B1,\"ИСТИНА\")"
+  },
+  {
+   "id": "criteria#6",
+   "group": "criteria",
+   "formula": "COUNTIF(N!D1,\"<>2\")"
+  },
+  {
+   "id": "criteria#7",
+   "group": "criteria",
+   "formula": "COUNTIF(N!E1,\"<>2\")"
+  },
+  {
+   "id": "criteria#8",
+   "group": "criteria",
+   "formula": "COUNTIF(N!D1,\"=2\")"
+  },
+  {
+   "id": "criteria#9",
+   "group": "criteria",
+   "formula": "COUNTIF(N!D1,2)"
+  },
+  {
+   "id": "criteria#10",
+   "group": "criteria",
+   "formula": "COUNTIF(N!D1,\">1\")"
+  },
+  {
+   "id": "criteria#11",
+   "group": "criteria",
+   "formula": "COUNTIF(N!D1,\"<3\")"
+  },
+  {
+   "id": "criteria#12",
+   "group": "criteria",
+   "formula": "COUNTIF(N!F1,1000)"
+  },
+  {
+   "id": "criteria#13",
+   "group": "criteria",
+   "formula": "COUNTIF(N!F1,1)"
+  },
+  {
+   "id": "criteria#14",
+   "group": "criteria",
+   "formula": "COUNTIF(N!G1,45688)"
+  },
+  {
+   "id": "criteria#15",
+   "group": "criteria",
+   "formula": "COUNTIF(N!H1,0.5)"
+  },
+  {
+   "id": "criteria#16",
+   "group": "criteria",
+   "formula": "COUNTIF(N!I1,1000)"
+  },
+  {
+   "id": "criteria#17",
+   "group": "criteria",
+   "formula": "COUNTIF(N!J1,1.5)"
+  },
+  {
+   "id": "criteria#18",
+   "group": "criteria",
+   "formula": "COUNTIF(N!K1,45688)"
+  },
+  {
+   "id": "criteria#19",
+   "group": "criteria",
+   "formula": "COUNTIF(N!K1,\"2025-01-31\")"
+  },
+  {
+   "id": "criteria#20",
+   "group": "criteria",
+   "formula": "COUNTIF(N!G1,\"1/31/2025\")"
+  },
+  {
+   "id": "criteria#21",
+   "group": "criteria",
+   "formula": "COUNTIF(N!L1,2.5)"
+  },
+  {
+   "id": "criteria#22",
+   "group": "criteria",
+   "formula": "COUNTIF(N!M1,2.5)"
+  },
+  {
+   "id": "criteria#23",
+   "group": "criteria",
+   "formula": "COUNTIF(N!L1,\"<>2.5\")"
+  },
+  {
+   "id": "criteria#24",
+   "group": "criteria",
+   "formula": "COUNTIF(N!M1,\"<>2,5\")"
+  },
+  {
+   "id": "criteria#25",
+   "group": "criteria",
+   "formula": "COUNTIF(N!H1,\"<>0.5\")"
+  },
+  {
+   "id": "criteria#26",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\">=1/1/2025\")"
+  },
+  {
+   "id": "criteria#27",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"1/31/2025\")"
+  },
+  {
+   "id": "criteria#28",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"Jan 31, 2025\")"
+  },
+  {
+   "id": "criteria#29",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"<2025-02-01\")"
+  },
+  {
+   "id": "criteria#30",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"31.01.2025\")"
+  },
+  {
+   "id": "criteria#31",
+   "group": "criteria",
+   "formula": "COUNTIF(N!O1,\"31 янв 2025\")"
+  },
+  {
+   "id": "criteria#32",
+   "group": "criteria",
+   "formula": "COUNTIF(N!P1,\"50%\")"
+  },
+  {
+   "id": "criteria#33",
+   "group": "criteria",
+   "formula": "COUNTIF(N!Q1,\"$1,000\")"
+  },
+  {
+   "id": "criteria#34",
+   "group": "criteria",
+   "formula": "COUNTIF(N!Q1,\"1,000\")"
+  },
+  {
+   "id": "criteria#35",
+   "group": "criteria",
+   "formula": "COUNTIF(N!Q1,\"1 000\")"
+  },
+  {
+   "id": "criteria#36",
+   "group": "criteria",
+   "formula": "COUNTIF(N!P1,\"1/2\")"
+  },
+  {
+   "id": "criteria#37",
+   "group": "criteria",
+   "formula": "COUNTIF(N!P1,\">1 1/4\")"
+  }
+ ],
+ "values": {
+  "criteria#1": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#2": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#3": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#4": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#5": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#6": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#7": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#8": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#9": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#10": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#11": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#12": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#13": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#14": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#15": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#16": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#17": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#18": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#19": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#20": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#21": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#22": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#23": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#24": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#25": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#26": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#27": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#28": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#29": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#30": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#31": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#32": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#33": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#34": {
+   "t": "n",
+   "v": 1
+  },
+  "criteria#35": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#36": {
+   "t": "n",
+   "v": 0
+  },
+  "criteria#37": {
+   "t": "n",
+   "v": 0
+  }
+ }
+}

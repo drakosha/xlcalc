@@ -1,0 +1,1229 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 0
+ },
+ "cases": [
+  {
+   "id": "text-rect",
+   "about": "an empty text inside a rectangle",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B2": {
+        "formula": "SEQUENCE(2,2)"
+       },
+       "C3": {
+        "value": ""
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D4"
+    }
+   ],
+   "predicted": {
+    "S!B2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!C3": {
+     "t": "s",
+     "v": ""
+    }
+   }
+  },
+  {
+   "id": "merged-row",
+   "about": "a row meets a merged area at its end",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(1,4)"
+       }
+      },
+      "merges": [
+       "D1:D2"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E3"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    }
+   }
+  },
+  {
+   "id": "merged-below",
+   "about": "a merged area just below a row",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(1,4)"
+       }
+      },
+      "merges": [
+       "A2:D3"
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 4
+    }
+   }
+  },
+  {
+   "id": "ref-rect",
+   "about": "E2# of a rectangle in functions",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "E2": {
+        "formula": "SEQUENCE(2,3)"
+       },
+       "I1": {
+        "formula": "SUM(E2#)"
+       },
+       "I2": {
+        "formula": "ROWS(E2#)"
+       },
+       "I3": {
+        "formula": "COLUMNS(E2#)"
+       },
+       "I4": {
+        "formula": "INDEX(E2#,2,3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:I4"
+    }
+   ],
+   "predicted": {
+    "S!E2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 21
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!I3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!I4": {
+     "t": "n",
+     "v": 6
+    }
+   }
+  },
+  {
+   "id": "name-row",
+   "about": "a name over a row spill",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(1,4)"
+       },
+       "A3": {
+        "formula": "COLUMNS(nm)"
+       },
+       "A4": {
+        "formula": "SUM(nm)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nm",
+      "ref": "'S'!$B$1#"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E4"
+    }
+   ],
+   "predicted": {
+    "S!B1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 10
+    }
+   }
+  },
+  {
+   "id": "col-text",
+   "about": "a whole column meets an empty text",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "B1": {
+        "formula": "A:A*2"
+       },
+       "B5": {
+        "value": ""
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "B1:B5"
+    }
+   ],
+   "predicted": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!B5": {
+     "t": "s",
+     "v": ""
+    }
+   }
+  },
+  {
+   "id": "row-blocked",
+   "about": "a whole row meets a value",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "B1": {
+        "value": 2
+       },
+       "A2": {
+        "formula": "1:1*2"
+       },
+       "Z2": {
+        "value": 5
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A2:B2"
+    },
+    {
+     "sheet": "S",
+     "range": "Z2"
+    }
+   ],
+   "predicted": {
+    "S!A2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!Z2": {
+     "t": "n",
+     "v": 5
+    }
+   }
+  },
+  {
+   "id": "one-const-ref",
+   "about": "A1# of a 1×1 constant in arithmetic",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "{7}"
+       },
+       "B1": {
+        "formula": "SUM(A1#)"
+       },
+       "C1": {
+        "formula": "A1#*2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:D2"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 14
+    }
+   }
+  },
+  {
+   "id": "transpose",
+   "about": "a column transposed spills right",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "C1": {
+        "formula": "TRANSPOSE(A1:A3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:F2"
+    }
+   ],
+   "predicted": {
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "blocked-chain",
+   "about": "a spill reference to a blocked anchor",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "C3": {
+        "value": "x"
+       },
+       "D1": {
+        "formula": "C1#"
+       },
+       "E1": {
+        "formula": "ROWS(C1#)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:F4"
+    }
+   ],
+   "predicted": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!C3": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "sum-partial",
+   "about": "ranges over part of a spill and a whole column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(4)"
+       },
+       "C1": {
+        "formula": "SUM(A2:A3)"
+       },
+       "C2": {
+        "formula": "SUM(A3:A9)"
+       },
+       "C3": {
+        "formula": "COUNT(A:A)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C5"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 4
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 7
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 4
+    }
+   }
+  },
+  {
+   "id": "other-sheet-reader",
+   "about": "a spilled cell and a whole column read from another sheet",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)*10"
+       }
+      }
+     },
+     {
+      "name": "T",
+      "cells": {
+       "B2": {
+        "formula": "S!A3+1"
+       },
+       "B3": {
+        "formula": "SUM(S!A:A)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A4"
+    },
+    {
+     "sheet": "T",
+     "range": "B1:B4"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 30
+    },
+    "T!B2": {
+     "t": "n",
+     "v": 31
+    },
+    "T!B3": {
+     "t": "n",
+     "v": 60
+    }
+   }
+  },
+  {
+   "id": "dep-cross",
+   "about": "the column reads the row anchor: the row spills",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "SEQUENCE(4)+0*A3"
+       },
+       "A3": {
+        "formula": "SEQUENCE(1,4)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:E5"
+    }
+   ],
+   "predicted": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    }
+   }
+  },
+  {
+   "id": "edge-rect",
+   "about": "a rectangle ending on the last row and column",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "XFC1048575": {
+        "formula": "SEQUENCE(2,2)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "XFB1048574:XFD1048576"
+    }
+   ],
+   "predicted": {
+    "S!XFC1048575": {
+     "t": "n",
+     "v": 1
+    },
+    "S!XFD1048575": {
+     "t": "n",
+     "v": 2
+    },
+    "S!XFC1048576": {
+     "t": "n",
+     "v": 3
+    },
+    "S!XFD1048576": {
+     "t": "n",
+     "v": 4
+    }
+   }
+  },
+  {
+   "id": "empty-element",
+   "about": "a lifted IF over a blank cell spills 0 there",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "IF({1;0;1},\"a\",B9)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A4"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 0
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "a"
+    }
+   }
+  },
+  {
+   "id": "error-block",
+   "about": "a formula giving an error in the range",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "formula": "SEQUENCE(3)"
+       },
+       "A2": {
+        "formula": "1/0"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:A4"
+    }
+   ],
+   "predicted": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "e",
+     "v": "DIV0"
+    }
+   }
+  },
+  {
+   "id": "filter-rect",
+   "about": "FILTER of two columns spills a rectangle",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "A4": {
+        "value": 4
+       },
+       "B1": {
+        "value": "a"
+       },
+       "B2": {
+        "value": "b"
+       },
+       "B3": {
+        "value": "c"
+       },
+       "B4": {
+        "value": "d"
+       },
+       "D1": {
+        "formula": "FILTER(A1:B4,A1:A4>2)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "D1:E3"
+    }
+   ],
+   "predicted": {
+    "S!D1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!E1": {
+     "t": "s",
+     "v": "c"
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "s",
+     "v": "d"
+    }
+   }
+  }
+ ],
+ "answers": {
+  "text-rect": {
+   "values": {
+    "S!B2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!C3": {
+     "t": "s",
+     "v": ""
+    }
+   },
+   "formulas": {
+    "S!B2": "=SEQUENCE(2,2)"
+   }
+  },
+  "merged-row": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(1,4)"
+   }
+  },
+  "merged-below": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(1,4)"
+   }
+  },
+  "ref-rect": {
+   "values": {
+    "S!I1": {
+     "t": "n",
+     "v": 21
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!F2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!I2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!F3": {
+     "t": "n",
+     "v": 5
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 6
+    },
+    "S!I3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!I4": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!I1": "=SUM(E2#)",
+    "S!E2": "=SEQUENCE(2,3)",
+    "S!I2": "=ROWS(E2#)",
+    "S!I3": "=COLUMNS(E2#)",
+    "S!I4": "=INDEX(E2#,2,3)"
+   }
+  },
+  "name-row": {
+   "values": {
+    "S!B1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(1,4)",
+    "S!A3": "=COLUMNS(nm)",
+    "S!A4": "=SUM(nm)"
+   }
+  },
+  "col-text": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!B5": {
+     "t": "s",
+     "v": ""
+    }
+   },
+   "formulas": {
+    "S!B1": "=A:A*2"
+   }
+  },
+  "row-blocked": {
+   "values": {
+    "S!A2": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!Z2": {
+     "t": "n",
+     "v": 5
+    }
+   },
+   "formulas": {
+    "S!A2": "=1:1*2"
+   }
+  },
+  "one-const-ref": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 14
+    }
+   },
+   "formulas": {
+    "S!A1": "={7}",
+    "S!B1": "=SUM(A1#)",
+    "S!C1": "=A1#*2"
+   }
+  },
+  "transpose": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!D1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!C1": "=TRANSPOSE(A1:A3)"
+   }
+  },
+  "blocked-chain": {
+   "values": {
+    "S!C1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!D1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C3": {
+     "t": "s",
+     "v": "x"
+    }
+   },
+   "formulas": {
+    "S!C1": "=SEQUENCE(3)",
+    "S!D1": "=C1#",
+    "S!E1": "=ROWS(C1#)"
+   }
+  },
+  "sum-partial": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 7
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(4)",
+    "S!C1": "=SUM(A2:A3)",
+    "S!C2": "=SUM(A3:A9)",
+    "S!C3": "=COUNT(A:A)"
+   }
+  },
+  "other-sheet-reader": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 30
+    },
+    "T!B2": {
+     "t": "n",
+     "v": 31
+    },
+    "T!B3": {
+     "t": "n",
+     "v": 60
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)*10",
+    "T!B2": "=S!A3+1",
+    "T!B3": "=SUM(S!A:A)"
+   }
+  },
+  "dep-cross": {
+   "values": {
+    "S!B1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!B1": "=SEQUENCE(4)+0*A3",
+    "S!A3": "=SEQUENCE(1,4)"
+   }
+  },
+  "edge-rect": {
+   "values": {
+    "S!XFC1048575": {
+     "t": "n",
+     "v": 1
+    },
+    "S!XFD1048575": {
+     "t": "n",
+     "v": 2
+    },
+    "S!XFC1048576": {
+     "t": "n",
+     "v": 3
+    },
+    "S!XFD1048576": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!XFC1048575": "=SEQUENCE(2,2)"
+   }
+  },
+  "empty-element": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 0
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "a"
+    }
+   },
+   "formulas": {
+    "S!A1": "=IF({1;0;1},\"a\",B9)"
+   }
+  },
+  "error-block": {
+   "values": {
+    "S!A1": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!A2": {
+     "t": "e",
+     "v": "DIV0"
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(3)",
+    "S!A2": "=1/0"
+   }
+  },
+  "filter-rect": {
+   "values": {
+    "S!D1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!E1": {
+     "t": "s",
+     "v": "c"
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E2": {
+     "t": "s",
+     "v": "d"
+    }
+   },
+   "formulas": {
+    "S!D1": "=FILTER(A1:B4,A1:A4>2)"
+   }
+  }
+ }
+}
