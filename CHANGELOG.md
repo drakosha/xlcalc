@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Changed:
+
+- The thread pool sends a book to a thread and back as JSON text, its cells written and read in chunks between turns of the event loop: on the synthetic book of 34,000 rows `openSession` stops the event loop for 62 ms (324 to 395 ms before), a snapshot of a session for 3 ms (234 to 290 ms) and `book()` for 20 ms (230 ms); a session's snapshot takes 29 MB on the calling side (68 MB). The book is taken when the call is made, as before; a book JSON cannot hold as it is goes by structured clone, as before.
+
 Fixed:
 
 - A range made by the range operator found the cells between its ends in more forms: an end under unary plus (`+A1:C1`), an end bound by LET (`SUM(A1:LET(x,C1,x))`), both ends spilled (the corner between them included). Such formulas could be computed before the cells inside the range and miss their edits in a session.

@@ -5,6 +5,9 @@
 import type { BookInput, CalcLimits, CellRef, Clock, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
+import type { Sent } from './pack.js'
+
+export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
 export const CHANGING = ['setCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout'] as const
@@ -18,9 +21,10 @@ export interface Entry {
   clock: Clock
 }
 
+
 /** A session's book at sequence number `seq`: what a restore opens before it replays the journal. */
 export interface Snapshot {
-  book: BookInput
+  book: Sent
   /** The session's options without the clock. */
   opts: SessionOptions
   clock: Clock
@@ -33,8 +37,8 @@ export type Outline = BookInput
 /** To a thread. A thread runs one task at a time; `cancel` may come while it runs. */
 export type ToThread =
   | { t: 'init'; sliceMs: number; limits?: CalcLimits }
-  | { t: 'compute'; task: number; book: BookInput; opts: object; timeoutMs?: number }
-  | { t: 'open'; task: number; sid: number; book: BookInput; opts: SessionOptions; timeoutMs?: number }
+  | { t: 'compute'; task: number; book: Sent; opts: object; timeoutMs?: number }
+  | { t: 'open'; task: number; sid: number; book: Sent; opts: SessionOptions; timeoutMs?: number }
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }
   | { t: 'restore'; task: number; sid: number; snapshot: Snapshot; journal: Entry[] }
   | { t: 'snapshot'; task: number; sid: number }
