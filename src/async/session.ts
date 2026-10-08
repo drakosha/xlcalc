@@ -94,6 +94,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
     cells: (sheet, range) => call(() => core.cells(sheet, range)),
     result: (co) => call(() => core.result(), co),
+    hash: (co) => call(() => core.hash(), co),
     close() {
       if (ended) return Promise.resolve()
       // closing waits for the calls made before it, and closes the session whatever stops them
