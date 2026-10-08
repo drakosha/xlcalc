@@ -73,7 +73,7 @@ Excel for Mac saves some built-in formats otherwise than by their number: the mo
 
 ### Columns, rows and merged areas
 
-A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out. A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, and so does the reader, whether the file marks it hidden or not. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
+A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out. A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, whether the file marks it hidden or not, and so do the reader and the engine. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
 
 ```js
 // <row r="5" ht="30" hidden="1" customHeight="1">, <col min="5" max="5" width="12" hidden="1" customWidth="1"/>
@@ -240,7 +240,7 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 
 | step | what | result |
 |---|---|---|
-| `roundtrip` | 181 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, the books of the structure, spill and table sets (names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them), hidden rows and columns with their sizes, lines of size 0, filtered sheets with and without a table, the 1904 date system, iterative calculation and the built-in formats by number in en-US and ru-RU | every file opens, every book reads back as written, and Excel's values equal the engine's; Excel hides a row of height 0, which the engine counts in a book that does not say `hidden` |
+| `roundtrip` | 181 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, the books of the structure, spill and table sets (names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them), hidden rows and columns with their sizes, lines of size 0, filtered sheets with and without a table, the 1904 date system, iterative calculation and the built-in formats by number in en-US and ru-RU | every file opens, every book reads back as written, and Excel's values equal the engine's |
 | `filters` | 8 files with a filter in each form a file holds it, `SUBTOTAL` and `AGGREGATE` over the rows it hid | read with the filter mode Excel took, every formula computes the value Excel stored |
 | `saved` | 91 books of the case sets, 28,831 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
 | `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` and the one with the intersection operator |
@@ -263,7 +263,6 @@ The answers to the filter files and to nine books of the round trip were predict
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
 - In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - The intersection operator, a space between two ranges, is not read: such a formula is reported.
-- Excel takes a row of height 0 as hidden. The reader reads it so, but a book that gives a row `height: 0` without `hidden` computes `SUBTOTAL` 101 to 111 and `AGGREGATE` as if the row were shown.
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.

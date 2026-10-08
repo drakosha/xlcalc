@@ -320,7 +320,7 @@ A format can also be the number of one of Excel's built-in formats, from 0 to 49
 
 ### Hidden rows and filters
 
-A row or a column is hidden by `hidden: true` in `rows` or `columns`, as an xlsx file stores it. `SUBTOTAL` with codes 101 to 111 and `AGGREGATE` with options 1, 3, 5 and 7 leave out the cells of hidden rows. Hidden columns count, as in Excel.
+A row or a column is hidden by `hidden: true` in `rows` or `columns`, as an xlsx file stores it, or by a height or width of 0, as Excel takes it. `SUBTOTAL` with codes 101 to 111 and `AGGREGATE` with options 1, 3, 5 and 7 leave out the cells of hidden rows. Hidden columns count, as in Excel.
 
 A sheet whose autofilter has criteria is marked `filtered: true`. Excel takes every hidden row of such a sheet as one a filter hid, and `SUBTOTAL` with codes 1 to 11 leaves those out too.
 
