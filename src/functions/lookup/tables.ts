@@ -6,17 +6,24 @@ import { Areas, E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
 /**
+ * A table given as one value, not a reference or an array: Excel reads it as a number and finds nothing in it, so
+ * `MATCH(5,5,0)` is #N/A and `MATCH(5,"x",0)` #VALUE! (the set `single-values`); null for a table to search.
+ */
+const oneValue = (cx: Cx, table: Arg): CErr | null => (table instanceof Rng || table instanceof Arr ? null : isErr(cx.rules.toNum(cx.scalar(table))) ? E.VALUE : E.NA)
+
+/**
  * Excel reads the index, looks up the key, and only then checks the index against the table. An array or a
  * range of several cells as the index answers the found line at each number, shaped as the index; the first
  * number in order that is not valid is the whole answer; a call lifted by the key or the match mode reads the
  * index's top-left number (`liftFirst`).
  */
 const tableLookup = (horizontal: boolean): FnDef => ({
-  args: 'a G R a?',
+  args: 'a R R a?',
   cx: true,
   array: true,
   liftFirst: [2],
-  fn: (cx: Cx, key: V, table: Grid, idx: V | Rng | Arr, approx: V = true): V | Arr => {
+  fn: (cx: Cx, key: V, given: Arg, idx: V | Rng | Arr, approx: V = true): V | Arr => {
+    if (isErr(given)) return given
     const k = keyOf(key)
     if (isErr(k)) return k
     const many = idx instanceof Arr || (idx instanceof Rng && (idx.r2 > idx.r1 || idx.c2 > idx.c1))
@@ -24,6 +31,9 @@ const tableLookup = (horizontal: boolean): FnDef => ({
     if (isErr(n)) return n
     const a = cx.rules.toBool(approx)
     if (isErr(a)) return a
+    const one = oneValue(cx, given)
+    if (one) return one
+    const table = cx.grid(given)
     const pos = find(horizontal ? row(table) : column(table), k, a ? 1 : 0, true, cx.rules.compare)
     if (pos < 0) return E.NA
     const size = horizontal ? table.rows : table.cols
@@ -56,11 +66,15 @@ const column = (g: Grid): Line => ({ at: (j) => gridAt(g, j * g.cols), n: g.rows
 /** A wide range is read along its first row, any other along its first column. */
 const along = (g: Grid): Line => (g.cols > g.rows ? row(g) : column(g))
 
-function match(cx: Cx, key: V, range: Grid, type: V | Rng = 1): V {
+function match(cx: Cx, key: V, given: Arg, type: V | Rng = 1): V {
+  if (isErr(given)) return given
   const k = keyOf(key)
   if (isErr(k)) return k
   const t = indexArg(cx, type, 'type')
   if (isErr(t)) return t
+  const one = oneValue(cx, given)
+  if (one) return one
+  const range = cx.grid(given)
   if (range.rows !== 1 && range.cols !== 1) return E.NA
   // the type's sign counts, not its whole part: −0.5 is a descending match
   const pos = find(along(range), k, Math.sign(t), true, cx.rules.compare)
@@ -129,6 +143,6 @@ export const functions: Record<string, FnDef> = {
   HLOOKUP: tableLookup(true),
   INDEX: { args: 'R w w? w?', array: true, areas: true, fn: index },
   LOOKUP: { args: 'a G R?', cx: true, fn: lookup },
-  MATCH: { args: 'a G r?', cx: true, fn: match },
+  MATCH: { args: 'a R r?', cx: true, fn: match },
   VLOOKUP: tableLookup(false),
 }

@@ -99,3 +99,6 @@ export function buildProbes(): Probe[] {
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
   buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
 )
+
+/** The predictions Excel did not confirm: a table or values given as one value are read as a number first, so numeric text and numbers find nothing (#N/A) and then sizes count (#NUM!). */
+export const MISSED: readonly string[] = ['MATCH#2', 'MATCH#6', 'MATCH#7', 'VLOOKUP#3', 'HLOOKUP#1', 'XIRR#1', 'XNPV#1']

@@ -9,6 +9,7 @@ Changed:
 - Contract: `ErrorCode` gains `NULL`, Excel's `#NULL!`: the intersection of ranges that do not meet. The literal `#NULL!` was read as `ERROR` (shown as `#ERROR!`) before; `ERROR` remains the error of a formula that does not compute.
 - `S1:S3!A1`, with sheets named like cells, is the range operator between the cell S1 and `'S3'!A1`, as Excel reads it: `#VALUE!` on another sheet, A1:S1 on S3 (it was a reference across the sheets S1 to S3, which `'S1:S3'!A1` still is).
 - `SUBTOTAL`, `AGGREGATE` and `FREQUENCY` take a union area by area, `FREQUENCY` a reference across sheets too, as Excel does (they answered `#VALUE!` or `#REF!`); a reference across sheets that `SWITCH` compares is `#REF!`.
+- One value where a function takes a table, an array or dates, as Excel takes it: the table of `VLOOKUP`, `HLOOKUP` and `MATCH` (`#N/A`, `#VALUE!` for text that is no number), `XLOOKUP`'s lookup array (the return array's one row or column), `WRAPROWS` and `WRAPCOLS` of fewer values than the count (one line, not padded), text as the array of `F.TEST`, `FTEST` and `MIRR` (no numbers, `#DIV/0!`), a boolean or text as `XIRR`'s and `XNPV`'s values or dates (`#VALUE!` before the sizes count).
 - `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
 
 Added:
