@@ -7,7 +7,7 @@
 import { afterAll, describe, expect, it } from 'vitest'
 import { CalcError, compute, openSession, type BookInput, type Calc, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, heavyBook, setA1, slowBook } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
@@ -162,7 +162,8 @@ describe('in threads', () => {
   }, 60_000)
 
   it('soft deadlines and aborts, waiting and running; input errors come back as InputError', async () => {
-    const p = await made({ threads: 1 })
+    // slices of 5 ms: the thread reads a cancel within one, however fast it computes
+    const p = await made({ threads: 1, sliceMs: 5 })
     const big = synthBook({ seed: 1, rows: 1700 }).book
     expect((await fails(p.compute(big, { clock: CLOCK, timeoutMs: 5 }))).code).toBe('soft_timeout')
     // one running, one waiting: both aborted
@@ -172,7 +173,7 @@ describe('in threads', () => {
     wait.abort('not needed')
     const w = await fails(waiting)
     expect([w.code, w.cause]).toEqual(['aborted', 'not needed'])
-    setTimeout(() => run.abort('stop'), 30)
+    setImmediate(() => run.abort('stop'))
     const r = await fails(running)
     expect([r.code, r.cause]).toEqual(['aborted', 'stop'])
     // the thread goes on
@@ -197,8 +198,11 @@ describe('in threads', () => {
   it('the call after a stopped one: computing the book again in the thread does not count in its soft deadline', async () => {
     const p = await made({ threads: 1 })
     const s = await p.openSession(heavyBook(), { clock: CLOCK })
-    expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
-    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs: 50 })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
+    const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
+    expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
+    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
   }, 60_000)
 
   it('maxHeapMb without limits.cells: arrays larger than a 32nd of the heap give CalcError', async () => {

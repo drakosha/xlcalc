@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { CalcError, compute, createInlineCalc, openSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, heavyBook, setA1 } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
@@ -81,11 +81,16 @@ describe('in the same thread', () => {
   }, 60_000)
 
   it('formulas of any cost: the slice and the soft deadline hold', async () => {
-    // 300 formulas that each sort 10,000 values: a few milliseconds each, where a check counted formulas
-    const cells: BookInput['sheets'][0]['cells'] = {}
-    for (let r = 1; r <= 10_000; r++) cells[`A${r}`] = { value: (r * 7919) % 10_007 }
-    for (let r = 1; r <= 300; r++) cells[`B${r}`] = { formula: 'INDEX(SORT(A$1:A$10000),ROW())' }
-    const book = { sheets: [{ name: 'S', cells }] }
+    // formulas that each sort 10,000 values: a few milliseconds each, where a check counted formulas
+    const sorting = (n: number): BookInput => {
+      const cells: BookInput['sheets'][0]['cells'] = {}
+      for (let r = 1; r <= 10_000; r++) cells[`A${r}`] = { value: (r * 7919) % 10_007 }
+      for (let r = 1; r <= n; r++) cells[`B${r}`] = { formula: 'INDEX(SORT(A$1:A$10000),ROW())' }
+      return { sheets: [{ name: 'S', cells }] }
+    }
+    // one formula's time as the machine runs it now; the bounds below are a slice or the deadline and a few of those
+    const formula = Math.max(0, ((await medianMs(3, () => compute(sorting(40), { clock: CLOCK }))) - (await medianMs(3, () => compute(sorting(0), { clock: CLOCK })))) / 40)
+    const book = sorting(300)
     const calc = createInlineCalc({ sliceMs: 10 })
     let last = performance.now()
     let worst = 0
@@ -102,18 +107,20 @@ describe('in the same thread', () => {
     const took = performance.now() - t0
     done = true
     expect(e.code).toBe('soft_timeout')
-    expect(took).toBeLessThan(200)
-    // a slice and the formula in flight when it ends (a sort, a few ms; more while the code is cold), with room for a loaded machine
-    expect(worst).toBeLessThan(50)
+    // without a check before each formula the deadline was seen at the end, after 300 formulas, and the loop never ran
+    expect(took).toBeLessThan(100 + 10 * formula + 50)
+    expect(worst).toBeLessThan(10 + 10 * formula + 50)
   }, 60_000)
 
   it('the call after a stopped one: computing the book again does not count in its soft deadline', async () => {
     const calc = createInlineCalc({ sliceMs: 5 })
-    // a cold computation of about 150 ms, longer than the calls' deadline of 50 ms
+    // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
     const s = await calc.openSession(heavyBook(), { clock: CLOCK })
-    expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
-    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs: 50 })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
-    expect((await s.result({ timeoutMs: 50 })).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...heavyBook().sheets[0].cells, C1: { value: 5 } } }] }, { clock: CLOCK }).hash)
+    const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
+    expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
+    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
+    expect((await s.result({ timeoutMs })).hash).toBe(compute(await s.book(), { clock: CLOCK }).hash)
     // a signal still stops it, between the formulas of the book
     const t = await calc.openSession(chainBook(20_000), { clock: CLOCK })
     expect((await fails(t.setCells(setA1(2), { signal: AbortSignal.abort() }))).code).toBe('aborted')
