@@ -6,7 +6,7 @@
  */
 import type { CellInput, CellValue, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
-import type { Issues } from '../issues.js'
+import type { Issues, Where } from '../issues.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -92,7 +92,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       if (a.ht !== undefined && flag(a.customHeight)) line.height = Number(a.ht)
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
-      if (a.s !== undefined && flag(a.customFormat)) Object.assign(line, look(ctx.xfs[Number(a.s)]))
+      if (a.s !== undefined && flag(a.customFormat)) Object.assign(line, look(ctx.xfs[Number(a.s)], issues, { sheet, cell: `${row + 1}:${row + 1}` }))
       if (Number(a.outlineLevel ?? 0) > 0) issues.add('outline', 'grouped rows and columns are not in the model', { sheet, cell: `${row + 1}:${row + 1}` })
       if (Object.keys(line).length) out.rows.set(row + 1, line)
       continue
@@ -116,10 +116,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     // the address as written when it is already the model's spelling (upper case), else spelled out
     const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     const xf = a.s === undefined ? undefined : ctx.xfs[Number(a.s)]
-    const cell: CellInput = look(xf)
-    if (xf) for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, { sheet, cell: addr })
-    if (xf?.eastAsian !== undefined) issues.add('numberFormat', 'a built-in East Asian date format the model does not have (50 to 58), read as the code Excel for Mac en-US shows', { sheet, cell: addr })
-    if (xf?.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', { sheet, cell: addr })
+    const cell: CellInput = look(xf, issues, { sheet, cell: addr })
     // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
     if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
@@ -187,8 +184,11 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
-export function look(xf: Xf | undefined): { style?: number; format?: NumberFormat } {
+export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; format?: NumberFormat } {
   if (!xf) return {}
+  for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, where)
+  if (xf.eastAsian !== undefined) issues.add('numberFormat', 'a built-in East Asian date format the model does not have (50 to 58), read as the code Excel for Mac en-US shows', where)
+  if (xf.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', where)
   const out: { style?: number; format?: NumberFormat } = {}
   if (xf.style !== undefined) out.style = xf.style
   if (xf.format !== undefined) out.format = xf.format

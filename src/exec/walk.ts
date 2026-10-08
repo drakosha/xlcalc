@@ -189,6 +189,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'paren':
       case 'at':
         return reach(n.a, out, anchors)
+      case 'un':
+        // go() reads a single cell under +, but keeps a multi-cell reference.
+        if (n.op === '+' && many(n.a)) reach(n.a, out, anchors)
+        return
       case 'union':
         return n.items.forEach((x) => reach(x, out, anchors))
       case 'bin':
@@ -207,8 +211,14 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         ;[bound, scope] = outer
         return
       }
-      case 'let':
-        return reach(n.body ?? n.binds[n.binds.length - 1].value, out, anchors)
+      case 'let': {
+        const outer = bound
+        bound = [...bound]
+        for (const x of n.binds) bound[x.slot] = x.value
+        reach(n.body ?? n.binds[n.binds.length - 1].value, out, anchors)
+        bound = outer
+        return
+      }
       case 'local':
         return reach(bound[n.slot], out, anchors)
       case 'fn': {

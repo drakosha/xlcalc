@@ -8,10 +8,11 @@
 import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { LIMIT, withSpan, type Area, type Axis } from './area.js'
+import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
+import { copyTransform } from './copy.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, shiftLines, shiftMerges } from './layout.js'
-import { offsetsStay, rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { offsetsStay, rewriteCell, rewriteFormula, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
@@ -101,10 +102,25 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
         if (to) cells[to] = relocated(next, addr, to)
       }
     }
-    if (!moving) return changed ? { ...s, cells } : s
+    const list = s.tables?.map((ti) => {
+      const first = parseRange(ti.range)!.r1 + (ti.headers !== false ? 1 : 0)
+      // If the first data row is deleted, take the calculated formula at the first surviving row.
+      const dr = moving && axis === 'r' && n < 0 && first >= at && first < at + count ? at + count - first : 0
+      const columns = ti.columns.map((c) => {
+        if (c.formula === undefined) return c
+        const source = dr ? rewriteFormula(c.formula, s.name, s.name, copyTransform(dr, 0), names) : c.formula
+        const formula = rewriteFormula(source, s.name, s.name, t, names)
+        return formula === c.formula ? c : { ...c, formula }
+      })
+      if (columns.every((c, i) => c === ti.columns[i])) return ti
+      changed = true
+      return { ...ti, columns }
+    })
+    const tableFields = list ? { tables: list } : {}
+    if (!moving) return changed ? { ...s, cells, ...tableFields } : s
     // the new lines take the format of the line before them
     if (n > 0) Object.assign(cells, formatBefore(s, axis, at, n))
-    const layout = { ...s, cells, [lines]: shiftLines(s[lines], axis, at, n), merges }
+    const layout = { ...s, cells, ...tableFields, [lines]: shiftLines(s[lines], axis, at, n), merges }
     for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] === undefined) delete layout[k]
     return layout
   })

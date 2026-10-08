@@ -33,6 +33,8 @@ const unlinked = (): Arg => {
   throw new Error('a formula computed before link')
 }
 
+const stackOverflow = (e: unknown) => e instanceof RangeError || (e instanceof Error && e.name === 'InternalError' && /too much recursion/i.test(e.message))
+
 export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
   if (execution === 'closures') {
     const b = closureBackend(rt)
@@ -44,16 +46,36 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
       link() {},
     }
   }
+  // Retain the AST only until link, for JS engines whose parser cannot compile a deep expression.
+  const fallbacks = new WeakMap<() => Arg, () => () => Arg>()
   return {
     formula(ctx, ast, s, r, c) {
       const b = jsBackend()
       const { code, ...info } = walk(ctx, ast, s, r, c, b)
-      return { ...info, source: b.source(code), fn: unlinked }
+      const f = { ...info, source: b.source(code), fn: () => unlinked() }
+      fallbacks.set(f.fn, () => walk(ctx, ast, s, r, c, closureBackend(rt)).code)
+      return f
     },
     link(batch) {
       if (!batch.length) return
-      const fns = compileSources(rt, batch.map((f) => f.source!))
-      batch.forEach((f, i) => (f.fn = fns[i]))
+      let fns: (() => Arg)[]
+      try {
+        fns = compileSources(rt, batch.map((f) => f.source!))
+      } catch (e) {
+        if (!stackOverflow(e)) throw e
+        fns = batch.map((f) => {
+          try {
+            return compileSources(rt, [f.source!])[0]
+          } catch (e) {
+            if (!stackOverflow(e)) throw e
+            return fallbacks.get(f.fn)?.() ?? f.fn
+          }
+        })
+      }
+      batch.forEach((f, i) => {
+        fallbacks.delete(f.fn)
+        f.fn = fns[i]
+      })
     },
   }
 }

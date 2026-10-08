@@ -12,6 +12,8 @@ import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.j
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { rectOf, type Area, type Axis } from '../structure/area.js'
+import { copyTransform } from '../structure/copy.js'
+import { rewriteFormula, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
 import { tableKey, tablesOf } from './model.js'
 
@@ -130,6 +132,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       : b
   const after = (b: BookInput): BookInput => {
     const sh = b.sheets[s]
+    const names = sheetNames(b)
     const cells = { ...sh.cells }
     const list: TableInput[] = []
     for (const ti of sh.tables ?? []) {
@@ -141,7 +144,14 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       }
       const t = tables.find((x) => x.name === ti.name)!
       const r = axis === 'r' ? { r1: p.lo, r2: p.hi, c1: t.c1, c2: t.c2 } : { r1: t.r1, r2: t.r2, c1: p.lo, c2: p.hi }
-      let columns = p.columns
+      const first = r.r1 + (t.headers ? 1 : 0)
+      let columns = p.columns.map((c) => {
+        const next = ti.columns.find((x) => x.name === c.name) ?? c
+        // References were shifted with the old first row. Re-anchor the template on a newly inserted first row.
+        return next.formula !== undefined && axis === 'r' && n > 0 && t.headers && at === t.r1 + 1 && p.grown.length
+          ? { ...next, formula: rewriteFormula(next.formula, sh.name, sh.name, copyTransform(-count, 0), names) }
+          : next
+      })
       if (axis === 'c' && p.grown.length) {
         // new columns take the first free names, left to right
         columns = columns.map((c) => c)
@@ -157,7 +167,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
           columns.forEach((c, i) => {
             if (c.formula === undefined) return
             const addr = formatAddress(row, r.c1 + i)
-            cells[addr] = { ...cells[addr], formula: c.formula }
+            cells[addr] = { ...cells[addr], formula: rewriteFormula(c.formula, sh.name, sh.name, copyTransform(row - first, 0), names) }
           })
       const next: TableInput = { ...ti, range: `${formatAddress(r.r1, r.c1)}:${formatAddress(r.r2, r.c2)}`, columns }
       if (p.totals) next.totals = true

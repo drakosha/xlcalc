@@ -207,7 +207,10 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker): 
       if (state.input.iteration) cyclesMoved(state, next)
       else for (const f of state.formulas) if (f && (state.topo[f.id] < 0) !== isCycle(state.rt.cell(f.s, f.r, f.c))) next.add(f.id)
     }
-    if (!next.size) return
+    if (!next.size) {
+      sp.touched.length = 0
+      return
+    }
     lists = ordered(state, next)
   }
 }

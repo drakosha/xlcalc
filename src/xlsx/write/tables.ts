@@ -10,28 +10,30 @@ import type { SheetInput, TableInput } from '../../contract.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
+import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, KEEP_ALL } from './sheet.js'
 
 const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
 
 /** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */
-export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: Set<string>, tables: { name: string; columns: string[] }[], filtered = false): string {
+export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: Set<string>, tables: { name: string; columns: string[] }[], issues: Issues, filtered = false): string {
   const x = parseRange(t.range)!
   const headers = t.headers !== false
   const totals = t.totals === true
-  const file = (f: string | undefined) => {
+  const file = (f: string | undefined, cell: string) => {
     const tree = f === undefined ? null : fileTree(f, sheets, tables, t.name)
+    if (f !== undefined && !tree) issues.add('formula', `a formula of table ${t.name} that the file cannot hold is left out`, { sheet: sheet.name, cell })
     return tree ? escapeText(toFile(tree)) : undefined
   }
   const cols = t.columns.map((c, i) => {
     let attrs = ''
     let inner = ''
-    const calc = file(c.formula)
+    const calc = file(c.formula, formatAddress(x.r1 + (headers ? 1 : 0), x.c1 + i))
     if (calc) inner += `<calculatedColumnFormula>${calc}</calculatedColumnFormula>`
     // Excel opens a formula in the totals row only with its column's function, `custom` with the formula for any other
     const foot = totals ? sheet.cells[formatAddress(x.r2, x.c1 + i)] : undefined
-    const own = foot?.formula === undefined ? undefined : file(foot.formula)
+    const own = foot?.formula === undefined ? undefined : file(foot.formula, formatAddress(x.r2, x.c1 + i))
     const fn = c.totals && 'function' in c.totals ? c.totals.function : undefined
     if (own && (fn === undefined || fn === 'custom')) {
       attrs += ' totalsRowFunction="custom"'

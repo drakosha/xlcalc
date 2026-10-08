@@ -84,7 +84,13 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
     }
     const formula = read.cells[s.master]!.formula!
     const at = [s.master, ...s.copies].map(parseAddress)
-    const box = { r1: Math.min(...at.map((a) => a.row)), r2: Math.max(...at.map((a) => a.row)), c1: Math.min(...at.map((a) => a.col)), c2: Math.max(...at.map((a) => a.col)) }
+    const box = { r1: Infinity, r2: -1, c1: Infinity, c2: -1 }
+    for (const a of at) {
+      box.r1 = Math.min(box.r1, a.row)
+      box.r2 = Math.max(box.r2, a.row)
+      box.c1 = Math.min(box.c1, a.col)
+      box.c2 = Math.max(box.c2, a.col)
+    }
     // copies spread thin over a large area are pasted one by one
     const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [`${formatAddress(box.r1, box.c1)}:${formatAddress(box.r2, box.c2)}`]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
@@ -103,7 +109,8 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
 /** The formulas of the sheet in the engine's spelling, those of the old kind as dynamic ones. */
 function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string, ReadFormula> {
   const out = new Map<string, ReadFormula>()
-  for (const [addr, cell] of Object.entries(read.cells)) {
+  for (const addr of Object.keys(read.cells)) {
+    const cell = read.cells[addr]
     if (cell.formula === undefined) continue
     const f = readFormula(cell.formula, issues, { sheet: src.name, cell: addr })
     const dynamic = f.ast && read.old.has(addr) ? src.legacy(f.ast, src.name) : undefined
@@ -158,7 +165,7 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     if (a.width !== undefined && flag(a.customWidth)) col.width = Math.min(255, Number(a.width))
     // Excel hides a column of width 0 whatever its flag
     if (flag(a.hidden) || col.width === 0) col.hidden = true
-    if (a.style !== undefined) Object.assign(col, look(read.xfs[Number(a.style)]))
+    if (a.style !== undefined) Object.assign(col, look(read.xfs[Number(a.style)], read.issues, where))
     if (Number(a.outlineLevel ?? 0) > 0) read.issues.add('outline', 'grouped rows and columns are not in the model', where)
     if (Object.keys(col).length) lines.push([lo, hi, col])
   }

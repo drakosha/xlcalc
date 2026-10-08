@@ -88,6 +88,12 @@ export function inputScalar(v: CellInput['value']): Scalar {
   return v
 }
 
+/** A typed date in the book counts from its epoch rather than from the 1900 system's day 0. */
+export function bookScalar(v: CellInput['value'], epoch: number): Scalar {
+  const x = inputScalar(v)
+  return epoch && typeof v === 'object' && v !== null ? (x as number) - epoch : x
+}
+
 /** A moment (UTC ms) as a serial number with a day fraction; the engine clock runs in UTC. */
 export function msToSerial(ms: number): number {
   const serial = (ms - EPOCH_MS) / DAY_MS

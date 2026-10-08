@@ -3,11 +3,11 @@ import type { BookInput, CellEdit, CellInput, LayoutEdit, SheetInput } from '../
 import type { EngineState } from '../engine.js'
 import { InputError } from '../input.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
-import { inputScalar } from '../model.js'
+import { bookScalar } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
 /** What a cell computes from: its formula, or its value (a date as its serial number). */
-const content = (c: CellInput | null | undefined) => (c?.formula !== undefined ? `f${c.formula}` : `v${JSON.stringify(inputScalar(c?.value))}`)
+const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula !== undefined ? `f${JSON.stringify([c.formula, c.array])}` : `v${JSON.stringify(bookScalar(c?.value, epoch))}`)
 
 /**
  * The edits that change a cell's value or formula, the last one per cell; the others (a new style, format or
@@ -21,7 +21,7 @@ export function contentEdits(s: EngineState, edits: CellEdit[]): CellEdit[] {
   }
   const out: CellEdit[] = []
   for (const [e, cells] of last.values()) {
-    if (content(cells[e.cell]) !== content(e.input)) out.push(e)
+    if (content(cells[e.cell], s.ctx.rules.epoch) !== content(e.input, s.ctx.rules.epoch)) out.push(e)
     else if (e.input) cells[e.cell] = e.input
     else delete cells[e.cell]
   }
