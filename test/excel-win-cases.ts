@@ -50,6 +50,12 @@ export const WIN_REASONS = {
   winMonthCase: 'Month names in ru-RU `TEXT` (`ММММ`, `МММММ`): Excel for Windows writes them with a capital (`Январь`, `Я`), Excel for Mac and the engine in lower case (`январь`, `я`).',
   winMonthShort: 'Short month names in ru-RU `TEXT` (`МММ`): Excel for Windows takes three letters (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`), Excel for Mac and the engine `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`.',
   winLongDate: '`[$-F800]` in ru-RU is the long date of the system: on Windows `31 января 2025 г.`, without the weekday; on the Mac and here `пятница, 31 января 2025 г.`.',
+  winVersion:
+    'Excel 2024 for Windows (16.0.17928, not a Microsoft 365 build) lacks what Excel for Mac 16.113 has: `PERCENTOF` is `#NAME?`, and `EXPAND` with an omitted or blank argument answers otherwise (`ARRAYTOTEXT(EXPAND(,2,3,0),1)` is `#VALUE!`, `COUNTA(EXPAND(D!K1,2,1,1))` 1).',
+  winWeeknum: '`WEEKNUM` with return type 22, which Microsoft does not list: Excel for Windows answers a week (`WEEKNUM(45658,22)` is 1), Excel for Mac and the engine `#NUM!`.',
+  winWeibull: '`WEIBULL` and `WEIBULL.DIST` with a scale of 1E-300: `#NUM!` in Excel for Windows, `#DIV/0!` in Excel for Mac and here.',
+  winMath:
+    'Trigonometry where the last bits decide: Excel for Windows computes `TAN(PI()/2)` as 16324552277619072, Excel for Mac and the engine 1.63312393531954E+16; the same for `SEC`, `CSC`, `COT` at their poles and for `IMTAN`, `IMCOS`, `IMSIN`, `IMPOWER` of large arguments, which Windows gives with other digits from the 13th on.',
 } as const
 
 export type Reason = keyof typeof WIN_REASONS | keyof typeof REASONS | keyof typeof RU_REASONS
