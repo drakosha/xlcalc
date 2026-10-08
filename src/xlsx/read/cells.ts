@@ -1,8 +1,8 @@
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
- * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles and hidden rows. A cell is placed
- * by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges are
- * collected for the sheet reader to resolve once every cell is known.
+ * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles and hidden rows. A cell
+ * is placed by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges
+ * are collected for the sheet reader to resolve once every cell is known.
  */
 import type { CellInput, CellValue, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'

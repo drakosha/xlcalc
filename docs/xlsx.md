@@ -249,6 +249,8 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 
 The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line, a line of size 0 as hidden, a code that every locale shows as a built-in format as that format's number.
 
+The 98 files of the workbook sets (`bench/coverage/workbook/`: hidden rows and columns, autofilters with and without criteria and the filter mark, the 1904 date system, iterative calculation), which Excel opened and computed step by step, read into the books the engine was checked with against Excel's answers, and compute the same values (`test/xlsx-workbook.test.ts`).
+
 The answers to the filter files and to nine books of the round trip were predicted and committed before Excel ran them (`bench/coverage/xlsx/predicted.json`): the filter mode of 8 files and 118 values, all as Excel gave them. The books were predicted to come back without differences, and three did not: Excel saved the built-in formats of two by codes and escaped the literal characters of the date formats of the third.
 
 ## Known differences
@@ -263,5 +265,5 @@ The answers to the filter files and to nine books of the round trip were predict
 - The intersection operator, a space between two ranges, is not read: such a formula is reported.
 - Excel takes a row of height 0 as hidden. The reader reads it so, but a book that gives a row `height: 0` without `hidden` computes `SUBTOTAL` 101 to 111 and `AGGREGATE` as if the row were shown.
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
-- A style or height given to a span of rows is written row by row, so a span to the last row writes a million rows.
+- A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.
