@@ -10,7 +10,7 @@
 import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
-import { count, due, run, spend, type Steps } from './exec/budget.js'
+import { count, due, run, step, type Steps } from './exec/budget.js'
 import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
@@ -238,7 +238,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
         continue
       }
       if (due()) yield
-      spend(1)
+      step()
       count(pending.length + state.invalid.size + 1)
       const p = prepare(state, s, row, col, cellIn.formula)
       if (!p.ok) {

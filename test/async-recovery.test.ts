@@ -9,7 +9,7 @@ import { CalcError, compute, openSession, type BookInput, type Calc, type CellEd
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
 import { createPool } from '../src/worker/pool.js'
-import { chainBook, CLOCK, setA1, slowBook } from './async-books.js'
+import { chainBook, CLOCK, heavyBook, setA1, slowBook } from './async-books.js'
 import { inside, pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 
@@ -126,6 +126,57 @@ describe('a thread lost', () => {
     await new Promise((resolve) => setTimeout(resolve, 200))
     expect(started).toBeLessThanOrEqual(4)
   })
+})
+
+describe('a restore and the hard deadline', () => {
+  // each call of the heavy book takes about 150 ms, well under the deadline; ten of them replayed would not be
+  it('a session that left a full thread comes back within the deadline however long its journal was', async () => {
+    const p = kept(await pool({ threads: 1, hardTimeoutMs: 800, maxSessionsPerThread: 1 }))
+    const a = await p.openSession(heavyBook(), { clock: CLOCK })
+    const y = openSession(heavyBook(), { clock: CLOCK })
+    for (let i = 2; i < 12; i++) expect(await a.setCells(setA1(i))).toEqual(y.setCells(setA1(i)))
+    await p.openSession(chainBook(3), { clock: CLOCK })
+    expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
+    expect((await a.result()).hash).toBe(y.result().hash)
+  }, 60_000)
+
+  it('after a crash the replay of a long journal has a deadline of every call it replays', async () => {
+    const { calc, crash } = await inside({ threads: 1, hardTimeoutMs: 800 })
+    kept(calc)
+    const a = await calc.openSession(heavyBook(), { clock: CLOCK })
+    const y = openSession(heavyBook(), { clock: CLOCK })
+    for (let i = 2; i < 10; i++) {
+      await a.setCells(setA1(i))
+      y.setCells(setA1(i))
+    }
+    crash(0)
+    expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
+    expect((await a.result()).hash).toBe(y.result().hash)
+  }, 60_000)
+})
+
+describe('a restore that fails', () => {
+  it("leaves nothing of the session in the thread's memory", async () => {
+    // a book of 16 MB of text; a thread of 96 MB holds a few of them at most
+    const big = (k: number): BookInput => {
+      const cells: BookInput['sheets'][0]['cells'] = {}
+      for (let r = 1; r <= 4000; r++) cells[`A${r}`] = { value: `${k}:${r}:` + 'x'.repeat(4000) }
+      return { sheets: [{ name: 'S', cells }] }
+    }
+    const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 96, maxSessionsPerThread: 1 })
+    kept(calc)
+    const other = await calc.openSession(chainBook(3), { clock: CLOCK })
+    for (let k = 0; k < 10; k++) {
+      const s = await calc.openSession(big(k), { clock: CLOCK })
+      const r = [...x.recs].at(-1)!
+      // the other session comes back and sends this one off the thread with its snapshot
+      await other.setCells(setA1(k))
+      r.journal = [{ seq: r.seq + 1, op: 'setCells', args: [[{ sheet: 'Gone', cell: 'A1', input: { value: 1 } }]], clock: r.clock }]
+      const e = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 1 } }]))
+      expect([e.code, (e.cause as Error).message], `session ${k}`).toEqual(['restore_failed', expect.stringMatching(/unknown sheet "Gone"/)])
+    }
+    expect((await other.result()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...chainBook(3).sheets[0].cells, A1: { value: 9 } } }] }, { clock: CLOCK }).hash)
+  }, 120_000)
 })
 
 describe('a full pool', () => {

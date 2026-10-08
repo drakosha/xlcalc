@@ -86,6 +86,17 @@ export function spend(n: number): void {
   if (active !== null && (active.left -= n) <= 0) active.look()
 }
 
+/**
+ * A formula is about to be computed or compiled. Its cost is unknown (one sorts thousands of values), so a computation
+ * with a deadline or slices looks at the clock and the signal before each one; one with limits alone counts it.
+ */
+export function step(): void {
+  if (active !== null) {
+    if (active.sliceEnd !== Infinity || active.deadline !== Infinity) active.look()
+    else spend(1)
+  }
+}
+
 /** The computation's slice is used up: a step boundary yields. */
 export const due = (): boolean => active !== null && active.due
 
