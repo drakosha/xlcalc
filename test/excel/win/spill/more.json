@@ -1,13 +1,13 @@
 {
  "meta": {
-  "version": "16.0.17928.20148",
+  "version": "16.0.20430.20146",
   "platform": "Windows",
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 37.9
+  "seconds": 32.7
  },
  "cases": [
   {
@@ -530,11 +530,7 @@
     },
     "S!B1": {
      "t": "n",
-     "v": 2
-    },
-    "S!A2": {
-     "t": "n",
-     "v": 2
+     "v": 1
     }
    },
    "formulas": {
@@ -546,7 +542,7 @@
    "values": {
     "S!A1": {
      "t": "n",
-     "v": 0.9802847814218167
+     "v": 0.7447752514465069
     }
    },
    "formulas": {
