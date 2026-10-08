@@ -131,9 +131,11 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
       return { book: await h.s.book(), clock: h.s.clock, seq: h.seq }
     }
     case 'drop': {
-      held.get(m.sid)?.s.kill(new CalcError('closed', 'the session left the thread'))
+      const h = held.get(m.sid)
+      const kept = m.keep && h ? { book: await h.s.book(), clock: h.s.clock, seq: h.seq } : null
+      h?.s.kill(new CalcError('closed', 'the session left the thread'))
       held.delete(m.sid)
-      return null
+      return kept
     }
   }
 }

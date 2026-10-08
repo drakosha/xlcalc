@@ -140,7 +140,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     }
     slot.busy = task
     slot.thread.hold(true)
-    if (o.hardTimeoutMs !== undefined) slot.timer = g.setTimeout(() => slot.busy === task && lose(slot, { code: 'hard_timeout', message: `the task ran past hardTimeoutMs (${o.hardTimeoutMs} ms); its thread was terminated` }), o.hardTimeoutMs)
+    if (o.hardTimeoutMs === undefined) return
+    // a restore opens the book and replays the journal: each of those was answered within the deadline once
+    const ms = o.hardTimeoutMs * (task.msg.t === 'restore' ? 1 + task.msg.journal.length : 1)
+    slot.timer = g.setTimeout(() => slot.busy === task && lose(slot, { code: 'hard_timeout', message: `the task ran past its hard deadline (${ms} ms); its thread was terminated` }), ms)
   }
 
   /** The thread's next task: its sessions' first, then a one-off computation. */
@@ -168,7 +171,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         if (out) {
           slot.queue.unshift(task)
           slot.resident.delete(out)
-          task = { id: ++ids, msg: { t: 'drop', sid: out.sid }, session: out, internal: true, resolve() {}, reject() {} }
+          // it leaves with a snapshot, so that bringing it back replays nothing
+          task = { id: ++ids, msg: { t: 'drop', sid: out.sid, keep: out.journal.length > 0 }, session: out, internal: true, resolve() {}, reject() {} }
         }
       }
       send(slot, task)
@@ -202,11 +206,14 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         slot.resident.add(r)
         if (msg.t === 'open') r.snapshot.clock = r.clock = (value as Answer).clock
         return task.resolve(value)
-      case 'snapshot': {
-        const s = value as { book: BookInput; clock: Clock; seq: number }
-        r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq }
-        r.journal = r.journal.filter((e) => e.seq > s.seq)
-        r.snapshotting = false
+      case 'snapshot':
+      case 'drop': {
+        const s = value as { book: BookInput; clock: Clock; seq: number } | null
+        if (s) {
+          r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq }
+          r.journal = r.journal.filter((e) => e.seq > s.seq)
+        }
+        if (msg.t === 'snapshot') r.snapshotting = false
         return task.resolve(null)
       }
       case 'call': {

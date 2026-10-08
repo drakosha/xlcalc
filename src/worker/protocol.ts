@@ -38,7 +38,8 @@ export type ToThread =
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }
   | { t: 'restore'; task: number; sid: number; snapshot: Snapshot; journal: Entry[] }
   | { t: 'snapshot'; task: number; sid: number }
-  | { t: 'drop'; task: number; sid: number }
+  /** `keep`: the session leaves a full thread, its book comes back as its new snapshot. */
+  | { t: 'drop'; task: number; sid: number; keep?: boolean }
   | { t: 'cancel'; task: number }
 
 export interface ErrorData {
