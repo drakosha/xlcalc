@@ -8,7 +8,7 @@ import { InputError } from '../input.js'
 
 /** The session calls that change the session: they go into its journal. */
 export const CHANGING = ['setCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout'] as const
-export type Op = (typeof CHANGING)[number] | 'book' | 'explain' | 'result'
+export type Op = (typeof CHANGING)[number] | 'book' | 'explain' | 'cells' | 'result'
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {
@@ -38,7 +38,8 @@ export type ToThread =
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }
   | { t: 'restore'; task: number; sid: number; snapshot: Snapshot; journal: Entry[] }
   | { t: 'snapshot'; task: number; sid: number }
-  | { t: 'drop'; task: number; sid: number }
+  /** `keep`: the session leaves a full thread, its book comes back as its new snapshot. */
+  | { t: 'drop'; task: number; sid: number; keep?: boolean }
   | { t: 'cancel'; task: number }
 
 export interface ErrorData {

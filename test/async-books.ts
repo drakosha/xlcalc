@@ -34,3 +34,17 @@ export const setA1 = (value: number): CellEdit[] => [{ sheet: 'S', cell: 'A1', i
 
 /** A book whose formula in B1 is heavy (a matrix product of `n` × `n`) once A1 is above 1. */
 export const slowBook = (n = 700): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: `IF(A1>1,SUM(MMULT(SEQUENCE(${n},${n}),SEQUENCE(${n},${n}))),A1)` }, B2: { formula: 'B1+1' } } }] })
+
+/** A book where every edit of A1 recomputes a matrix product of `n` × `n` (300: about 150 ms). */
+export const heavyBook = (n = 300): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: `SUM(MMULT(SEQUENCE(${n},${n}),SEQUENCE(${n},${n})))+A1` } } }] })
+
+/** The median time of `n` calls of `f`: how fast the machine runs now, for deadlines a test sets at any speed. */
+export async function medianMs(n: number, f: (i: number) => unknown): Promise<number> {
+  const xs: number[] = []
+  for (let i = 0; i < n; i++) {
+    const t = performance.now()
+    await f(i)
+    xs.push(performance.now() - t)
+  }
+  return xs.sort((a, b) => a - b)[n >> 1]
+}

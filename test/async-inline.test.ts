@@ -4,9 +4,9 @@
  * `CalcError`, calls taken in order with their own changes, a stopped call that changes nothing, limits, closing.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, compute, createInlineCalc, openSession } from '../src/index.js'
+import { CalcError, compute, createInlineCalc, openSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
-import { BOOKS, chainBook, CLOCK, setA1 } from './async-books.js'
+import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
@@ -78,6 +78,60 @@ describe('in the same thread', () => {
     expect((await fails(calc.compute(book, { signal: AbortSignal.abort() }))).code).toBe('aborted')
     // the calculator's default deadline applies to every call
     expect((await fails(createInlineCalc({ sliceMs: 1, timeoutMs: 5 }).compute(book, { clock: CLOCK }))).code).toBe('soft_timeout')
+  }, 60_000)
+
+  it('formulas of any cost: the slice and the soft deadline hold', async () => {
+    // formulas that each sort 10,000 values: a few milliseconds each, where a check counted formulas
+    const sorting = (n: number): BookInput => {
+      const cells: BookInput['sheets'][0]['cells'] = {}
+      for (let r = 1; r <= 10_000; r++) cells[`A${r}`] = { value: (r * 7919) % 10_007 }
+      for (let r = 1; r <= n; r++) cells[`B${r}`] = { formula: 'INDEX(SORT(A$1:A$10000),ROW())' }
+      return { sheets: [{ name: 'S', cells }] }
+    }
+    // one formula's time as the machine runs it now; the bounds below are a slice or the deadline and a few of those
+    const formula = Math.max(0, ((await medianMs(3, () => compute(sorting(40), { clock: CLOCK }))) - (await medianMs(3, () => compute(sorting(0), { clock: CLOCK })))) / 40)
+    const book = sorting(300)
+    const calc = createInlineCalc({ sliceMs: 10 })
+    let last = performance.now()
+    let worst = 0
+    let done = false
+    const tick = () => {
+      const now = performance.now()
+      worst = Math.max(worst, now - last)
+      last = now
+      if (!done) setImmediate(tick)
+    }
+    setImmediate(tick)
+    const t0 = performance.now()
+    const e = await fails(calc.compute(book, { timeoutMs: 100 }))
+    const took = performance.now() - t0
+    done = true
+    expect(e.code).toBe('soft_timeout')
+    // without a check before each formula the deadline was seen at the end, after 300 formulas, and the loop never ran
+    expect(took).toBeLessThan(100 + 10 * formula + 50)
+    expect(worst).toBeLessThan(10 + 10 * formula + 50)
+  }, 60_000)
+
+  it('the call after a stopped one: computing the book again does not count in its soft deadline', async () => {
+    const calc = createInlineCalc({ sliceMs: 5 })
+    // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
+    const s = await calc.openSession(heavyBook(), { clock: CLOCK })
+    const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
+    expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
+    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
+    expect((await s.result({ timeoutMs })).hash).toBe(compute(await s.book(), { clock: CLOCK }).hash)
+    // a signal still stops it, between the formulas of the book
+    const t = await calc.openSession(chainBook(20_000), { clock: CLOCK })
+    expect((await fails(t.setCells(setA1(2), { signal: AbortSignal.abort() }))).code).toBe('aborted')
+    const stop = new AbortController()
+    const first = t.setCells(setA1(3), { signal: stop.signal })
+    setImmediate(() => stop.abort())
+    expect((await fails(first)).code).toBe('aborted')
+    const again = new AbortController()
+    const next = t.result({ signal: again.signal })
+    setImmediate(() => again.abort())
+    expect((await fails(next)).code).toBe('aborted')
   }, 60_000)
 
   it('calls made without waiting are taken in order, each with its own changes', async () => {
@@ -173,6 +227,16 @@ describe('in the same thread', () => {
     for (const p of [running, waiting, job]) expect((await fails(p)).code).toBe('closed')
     expect((await fails(calc.compute(chainBook(2)))).code).toBe('closed')
   }, 60_000)
+
+  it('a session closed before its calculator closes is closed; its running call is stopped', async () => {
+    const calc = createInlineCalc({ sliceMs: 0 })
+    const s = await calc.openSession(chainBook(3000), { clock: CLOCK })
+    const running = s.setCells(setA1(2)).catch((e) => e)
+    const closing = s.close().then(() => 'resolved', (e) => e)
+    await calc.close()
+    expect(await closing).toBe('resolved')
+    expect((await running).code).toBe('closed')
+  })
 
   it('options are checked as input', async () => {
     expect(() => createInlineCalc({ sliceMs: -1 })).toThrow('opts.sliceMs: expected a number of at least 0')

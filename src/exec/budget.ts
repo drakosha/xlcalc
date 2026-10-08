@@ -86,6 +86,17 @@ export function spend(n: number): void {
   if (active !== null && (active.left -= n) <= 0) active.look()
 }
 
+/**
+ * A formula is about to be computed or compiled. Its cost is unknown (one sorts thousands of values), so a computation
+ * with a deadline or slices looks at the clock and the signal before each one; one with limits alone counts it.
+ */
+export function step(): void {
+  if (active !== null) {
+    if (active.sliceEnd !== Infinity || active.deadline !== Infinity) active.look()
+    else spend(1)
+  }
+}
+
 /** The computation's slice is used up: a step boundary yields. */
 export const due = (): boolean => active !== null && active.due
 
@@ -117,6 +128,23 @@ export function withBudget<T>(b: Budget | null | undefined, f: () => T): T {
     return f()
   } finally {
     active = outer
+  }
+}
+
+/**
+ * Steps outside the soft deadline of the computation running them (a session computing its book again after a stopped
+ * call): the signal and a pool's hard deadline still bound them, and the deadline moves on by their time.
+ */
+export function* untimed<T>(steps: Steps<T>): Steps<T> {
+  const b = active
+  if (b === null || b.deadline === Infinity) return yield* steps
+  const deadline = b.deadline
+  const t0 = nowMs()
+  b.deadline = Infinity
+  try {
+    return yield* steps
+  } finally {
+    b.deadline = deadline + (nowMs() - t0)
   }
 }
 

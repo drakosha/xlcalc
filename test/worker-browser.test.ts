@@ -80,7 +80,7 @@ describe.skipIf(!chrome)('in a browser', () => {
       const slow = compute({ sheets: [{ name: 'S', cells: { A1: { value: 0.5 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1500,1500),SEQUENCE(1500,1500))),A1)' } } }] }, { clock }).hash
       expect(out.error).toBeUndefined()
       expect(out).toMatchObject({ worker: 'function', pool: hash, eval: hash, edited: session.result().hash, killed: 'hard_timeout', restored: slow, inline: compute(synthBook({ seed: 1, rows: 1700 }).book, { clock }).hash })
-      expect(out.heap).toMatch(/^opts\.maxHeapMb: a thread's memory limit needs Node's worker_threads/)
+      expect(out.heap).toMatch(/^opts\.maxHeapMb: a thread's memory limit needs the pool's own Node worker_threads/)
       expect(out.ticks).toBeGreaterThan(5)
     } finally {
       await browser.close()

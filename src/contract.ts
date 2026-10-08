@@ -418,6 +418,11 @@ export interface CellEdit extends CellRef {
  * cells it no longer lists are listed when their value changed. With `display`, a cell whose shown text or colour
  * changed is listed too (a new format, a column's width), with its value.
  */
+/** A cell of `Session.cells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`). */
+export interface CellView extends CellResult {
+  style?: number
+}
+
 export interface CellChange extends CellRef, Partial<CellDisplay> {
   value: CellValue
   spill?: string
@@ -620,6 +625,12 @@ export interface Session {
    */
   book(): BookInput
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
+  /**
+   * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`) as `result()` gives
+   * them, by address: the same cells (spilled ones too, empty ones left out) with the same fields, and each cell's own
+   * `style`. For a window over a sheet: it costs what the rectangle holds, not the book.
+   */
+  cells(sheet: string, range: string): Record<string, CellView>
   result(): ComputeResult
   close(): void
 }
@@ -687,6 +698,8 @@ export interface AsyncSession {
   /** The session's book; from a thread, a copy. */
   book(): Promise<BookInput>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
+  /** As `Session.cells`; from a thread only the rectangle comes back. */
+  cells(sheet: string, range: string): Promise<Record<string, CellView>>
   result(opts?: CalcOptions): Promise<ComputeResult>
   close(): Promise<void>
 }

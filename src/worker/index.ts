@@ -22,8 +22,8 @@ declare const Worker: new (url: ScriptUrl, opts: { type: 'module' }) => WorkerLi
 export function createCalcPool(opts?: CalcPoolOptions): Calc {
   const o = checkPoolOptions(opts)
   const wt = workerThreads()
+  if (o.maxHeapMb !== undefined && (o.spawn || !wt)) throw new InputError('opts.maxHeapMb', "a thread's memory limit needs the pool's own Node worker_threads; Web Workers and spawned workers have none")
   if (o.spawn) return createPool(o, webSpawn(o.spawn))
   if (wt) return createPool(o, nodeSpawn(wt, new URL('./thread.js', (import.meta as { url: string }).url), o.maxHeapMb))
-  if (o.maxHeapMb !== undefined) throw new InputError('opts.maxHeapMb', "a thread's memory limit needs Node's worker_threads; Web Workers have none")
   return createPool(o, webSpawn(() => new Worker(new URL('./thread.js', (import.meta as { url: string }).url), { type: 'module' })))
 }

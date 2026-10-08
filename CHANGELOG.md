@@ -2,8 +2,6 @@
 
 ## Unreleased
 
-A synchronous session call that throws while it recomputes (over its limits, say) leaves the session as it was before the call; the session computes its book again on its next call.
-
 Changed:
 
 - Contract: `ErrorCode` gains `NULL`, Excel's `#NULL!`: the intersection of ranges that do not meet. The literal `#NULL!` was read as `ERROR` (shown as `#ERROR!`) before; `ERROR` remains the error of a formula that does not compute.
@@ -11,11 +9,37 @@ Changed:
 - `SUBTOTAL`, `AGGREGATE` and `FREQUENCY` take a union area by area, `FREQUENCY` a reference across sheets too, as Excel does (they answered `#VALUE!` or `#REF!`); a reference across sheets that `SWITCH` compares is `#REF!`.
 - One value where a function takes a table, an array or dates, as Excel takes it: the table of `VLOOKUP`, `HLOOKUP` and `MATCH` (`#N/A`, `#VALUE!` for text that is no number), `XLOOKUP`'s lookup array (the return array's one row or column), `WRAPROWS` and `WRAPCOLS` of fewer values than the count (one line, not padded), text as the array of `F.TEST`, `FTEST` and `MIRR` (no numbers, `#DIV/0!`), a boolean or text as `XIRR`'s and `XNPV`'s values or dates (`#VALUE!` before the sizes count).
 - Financial and date functions at edges, as Excel computes them: `ACCRINT` on basis 1 over several coupon periods, and with a settlement on a coupon date; a coupon period before 1900 (`ACCRINT` 0, `PRICE` `#NUM!`); serial 0 as `ACCRINT`'s issue or first interest date and in `XNPV`'s dates (`#NUM!`); the first period of `AMORDEGRC` and `AMORLINC` capped at cost less salvage, and `AMORDEGRC`'s period that passes the salvage; date text among the holidays of `WORKDAY` and `NETWORKDAYS` (it was `#VALUE!`).
-- `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
 
 Added:
 
 - The intersection operator, a space between references (`SUM(A1:C3 B2:D4)`, `#NULL!` where they do not meet), and the range operator between references that are not one range (`A1:INDEX(B1:B9,3)`, `Sales[Qty]:Sales[Price]`), read and computed as in Excel, in xlsx files and `fromLegacy` too (`docs/references.md`).
+
+## 0.4.0 (2026-10-08)
+
+Internal release; not published to npm. Adds asynchronous and threaded computation (`createInlineCalc`, `xlcalc/worker`), Excel tables with structured references, `Session.cells` and `copyFormula`.
+
+A synchronous session call that throws while it recomputes (over its limits, say) leaves the session as it was before the call; the session computes its book again on its next call.
+
+Fixed:
+
+- The thread pool: a book or an edit that a structured clone cannot carry to a thread (a function in a cell's `meta`) is refused with `InputError` and the thread stays free; it used to leave the thread busy for good, and an answer arriving later threw an uncaught `DataCloneError`.
+- The thread pool: a session that leaves a full thread (`maxSessionsPerThread`) takes its book along as a new snapshot, so it comes back without replaying its journal, and a restore after a lost thread has the hard deadline of the opening and of each call it replays; such a session was closed with `restore_failed` when its journal took longer to replay than one task's `hardTimeoutMs`.
+- Computation with a deadline or slices looks at the clock before each formula: 300 formulas that each sort 10,000 values ran 698 ms past a soft deadline of 100 ms without a yield, now they stop at 100 ms with slices of 10 to 21 ms.
+- Closing: a session's `close()` waiting when its pool or its calculator closes resolves (it hung in a pool and was refused in the same thread), and so does one whose thread is lost while it closes.
+- `maxQueue` counts only the tasks no idle thread takes: `maxQueue: 0` refused every task.
+- `maxHeapMb` with `spawn` throws `InputError`: such a worker has no memory limit, and the option was ignored.
+- A restore that fails leaves nothing of the session in the thread; each one kept its book there until the thread died.
+
+Changed:
+
+- The call after a stopped one computes the session's book again outside its own `timeoutMs` (its `signal` and a pool's hard deadline still bound it), so a session whose cold computation is longer than its calls' deadline no longer fails every call after one has stopped; such a call can take longer than its `timeoutMs` by that computation.
+- `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
+
+Added:
+
+- `cells(sheet, range)` of a session, in every mode: the cells of a rectangle as `result()` gives them, for a window over a sheet. From a thread only the rectangle comes back: 20,000 cells of the synthetic book of 34,000 rows in 27 ms, where the whole result takes 1.7 s.
+- `copyFormula(text, from, to, book?)`: the text of a formula copied from one cell to another, as `copyRange` pastes it (`docs/structure.md`).
+- Contract: `Session.cells(sheet, range)` and `AsyncSession.cells(sheet, range)`, the cells of a rectangle as `result()` gives them, with each cell's own `style` (`CellView`), for a window over a sheet.
 - Excel for Windows is a second oracle: `bench/windows` sends the Mac harness's books to Excel for Windows over SSH and COM, stores its answers in `test/excel/win/`, and `test/excel-win.test.ts` checks the engine against them (`bench/windows/README.md`).
 - Computation in the same thread in portions, `createInlineCalc`: it gives way to the event loop between formulas (slices of `sliceMs`), and a call stops at its soft deadline (`timeoutMs`) or when its `signal` fires, with `CalcError`. A session's calls are taken in order, and a call that fails changes nothing (`docs/async.md`).
 - Computation in threads, `createCalcPool` from the new subpath `xlcalc/worker`: Node `worker_threads` or Web Workers on one protocol. A session's book lives in its thread; edits go there and changes come back. A task past `hardTimeoutMs` terminates its thread, `maxHeapMb` bounds a Node thread's heap, `maxQueue` and `maxSessions` refuse more work, `maxSessionsPerThread` sends the session called least recently off a full thread. The pool keeps a snapshot and a journal of each session: a session whose thread was lost, or that left a full thread, comes back on its next call with the hash it would have had. Checked against the synchronous engine on the case books in both execution modes, and in headless Chromium.

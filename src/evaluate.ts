@@ -6,7 +6,7 @@
 import { isMany } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import { key, type EngineState, type Formula } from './engine.js'
-import { due, located, spend, type Steps } from './exec/budget.js'
+import { due, located, step, type Steps } from './exec/budget.js'
 import { formatAddress } from './model.js'
 import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
@@ -77,7 +77,7 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
   let moved = false
   for (const id of ids) {
     if (due()) yield
-    spend(1)
+    step()
     const f = state.formulas[id]!
     spills.done.set(id, ++spills.step)
     if (clock) clock.read = false
