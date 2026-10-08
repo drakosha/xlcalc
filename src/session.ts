@@ -7,12 +7,12 @@
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call.
  */
-import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, Clock, ComputeResult, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
+import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, CellView, Clock, ComputeResult, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkStyles } from './input.js'
+import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
@@ -22,8 +22,9 @@ import { checkTables } from './tables/check.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
-import { buildResult, clockSerial, spillFields } from './result.js'
+import { buildResult, cellsIn, clockSerial, spillFields } from './result.js'
 import { cellLooks } from './shown.js'
+import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
@@ -45,6 +46,7 @@ export interface SessionSteps {
   setLayout(edits: LayoutEdit[]): Steps<CellChange[]>
   book(): BookInput
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
+  cells(sheet: string, range: string): Steps<Record<string, CellView>>
   result(): Steps<ComputeResult>
   close(): void
 }
@@ -238,6 +240,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const e = explainCell(s, i, row, col, o.depth ?? 3, o.maxNodes ?? 200, o.expand ?? false)
       return { ...e, text: explainText(e.root) }
     },
+    *cells(sheet: string, range: string) {
+      const s = yield* ready()
+      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+      const x = parseRange(checkString(range, 'range'))
+      if (!x) throw new InputError('range', `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(range)}`)
+      return cellsIn(s, i, x, display)
+    },
     *result() {
       const t0 = nowMs()
       return buildResult(yield* ready(), clock, t0, display)
@@ -268,6 +277,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     setLayout: (edits) => now(() => core.setLayout(edits)),
     book: () => core.book(),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
+    cells: (sheet, range) => now(() => core.cells(sheet, range)),
     result: () => now(() => core.result()),
     close: () => core.close(),
   }
