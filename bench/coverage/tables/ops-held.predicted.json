@@ -1,0 +1,2309 @@
+{
+ "ins-other-header": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!F7": {
+    "t": "s",
+    "v": "a"
+   },
+   "S!G7": {
+    "t": "s",
+    "v": "b"
+   },
+   "S!J7": {
+    "t": "n",
+    "v": 381
+   },
+   "S!F8": {
+    "t": "n",
+    "v": 1
+   },
+   "S!G8": {
+    "t": "n",
+    "v": 2
+   },
+   "S!F9": {
+    "t": "n",
+    "v": 3
+   },
+   "S!G9": {
+    "t": "n",
+    "v": 4
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J7": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   },
+   {
+    "sheet": "S",
+    "name": "Side",
+    "range": "F7:G9",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "a",
+     "b"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "ins-past-other": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!F1": {
+    "t": "s",
+    "v": "a"
+   },
+   "S!G1": {
+    "t": "s",
+    "v": "b"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!F2": {
+    "t": "n",
+    "v": 1
+   },
+   "S!G2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!F3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!G3": {
+    "t": "n",
+    "v": 4
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 6
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 0
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A6": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B6": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C6": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D6": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J7": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "Sales[[#This Row],[Price]]",
+   "S!D6": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J6": "SUM(B2:C6)",
+   "S!J7": "SUM(A1:D6)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D6",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   },
+   {
+    "sheet": "S",
+    "name": "Side",
+    "range": "F1:G3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "a",
+     "b"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "ins-other-last": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!F1": {
+    "t": "s",
+    "v": "a"
+   },
+   "S!G1": {
+    "t": "s",
+    "v": "b"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!F2": {
+    "t": "n",
+    "v": 1
+   },
+   "S!G2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!F3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!G3": {
+    "t": "n",
+    "v": 4
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   },
+   {
+    "sheet": "S",
+    "name": "Side",
+    "range": "F1:G3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "a",
+     "b"
+    ]
+   }
+  ],
+  "refused": [
+   0
+  ]
+ },
+ "del-only-row": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "a"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "b"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 0
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 1
+   },
+   "S!K2": {
+    "t": "s",
+    "v": "outside"
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(T[b])",
+   "S!J2": "ROWS(T[])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "T",
+    "range": "A1:B2",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "a",
+     "b"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "del-data-totals-all": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 0
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 0
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!J2": "SUM(Sales[[Region]:[Price]])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D2",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "del-first-rows": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 6
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 76
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 266
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "Sales[[#This Row],[Price]]",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "SUM(B2:C3)",
+   "S!J4": "SUM(A1:D3)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "insc-before-last": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Column1"
+   },
+   "S!E1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!K1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!E2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!K2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!E3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!K3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!E4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!K4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!E5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!K5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!K6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!K1": "SUM(Sales[Qty])",
+   "S!E2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!K2": "SUM(Sales[[Region]:[Price]])",
+   "S!E3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!K3": "ROWS(Sales[#All])",
+   "S!E4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!K4": "Sales[[#This Row],[Price]]",
+   "S!E5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!K5": "SUM(B2:C5)",
+   "S!K6": "SUM(A1:E5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:E5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Column1",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "delc-middle-span": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!I1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!C2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!I2": {
+    "t": "n",
+    "v": 100
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!C3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!I3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!C4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!I4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!C5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!I5": {
+    "t": "n",
+    "v": 100
+   },
+   "S!I6": {
+    "t": "e",
+    "v": "REF"
+   }
+  },
+  "formulas": {
+   "S!I1": "SUM(#REF!)",
+   "S!C2": "#REF!*Sales[[#This Row],[Price]]",
+   "S!I2": "SUM(Sales[[Region]:[Price]])",
+   "S!C3": "#REF!*Sales[[#This Row],[Price]]",
+   "S!I3": "ROWS(Sales[#All])",
+   "S!C4": "#REF!*Sales[[#This Row],[Price]]",
+   "S!I4": "Sales[[#This Row],[Price]]",
+   "S!C5": "#REF!*Sales[[#This Row],[Price]]",
+   "S!I5": "SUM(B2:B5)",
+   "S!I6": "SUM(A1:C5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:C5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "copy-header": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": [
+   0
+  ]
+ },
+ "cut-header": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": [
+   0
+  ]
+ },
+ "copy-in-table": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "move-to-table": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!F1": {
+    "t": "s",
+    "v": "a"
+   },
+   "S!G1": {
+    "t": "s",
+    "v": "b"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!F2": {
+    "t": "n",
+    "v": 1
+   },
+   "S!G2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!F3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!G3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!F4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!G4": {
+    "t": "n",
+    "v": 6
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 321
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!G3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   },
+   {
+    "sheet": "S",
+    "name": "Side",
+    "range": "F1:G4",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "a",
+     "b"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "rename-cell": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": [
+   0
+  ]
+ },
+ "rename-name": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   },
+   "S!J7": {
+    "t": "n",
+    "v": 10
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)",
+   "S!J7": "SUM(rate)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": [
+   0
+  ]
+ },
+ "head-bool": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "TRUE"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[TRUE])",
+   "S!D2": "Sales[[#This Row],[TRUE]]*Sales[[#This Row],[Price]]",
+   "S!J2": "SUM(Sales[[Region]:[Price]])",
+   "S!D3": "Sales[[#This Row],[TRUE]]*Sales[[#This Row],[Price]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[TRUE]]*Sales[[#This Row],[Price]]",
+   "S!J4": "Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[TRUE]]*Sales[[#This Row],[Price]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "TRUE",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "head-decimal": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "1.5"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[1.5]]",
+   "S!J2": "SUM(Sales[[Region]:[1.5]])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[1.5]]",
+   "S!J3": "ROWS(Sales[#All])",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[1.5]]",
+   "S!J4": "Sales[[#This Row],[1.5]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[1.5]]",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "1.5",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "head-dup-three": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty3"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Qty2"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 6
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "a"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 4
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "b"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 4
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty2])",
+   "S!J2": "SUM(Sales[Qty3])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:C3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Qty",
+     "Qty3",
+     "Qty2"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "convert-names": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 111
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!J4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!J5": {
+    "t": "n",
+    "v": 111
+   },
+   "S!J6": {
+    "t": "n",
+    "v": 381
+   },
+   "Other!A1": {
+    "t": "n",
+    "v": 381
+   },
+   "Other!B2": {
+    "t": "n",
+    "v": 4
+   },
+   "Other!A3": {
+    "t": "n",
+    "v": 20
+   },
+   "Other!A4": {
+    "t": "n",
+    "v": 60
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM('S'!$B$2:$B$5)",
+   "S!D2": "'S'!$B2*'S'!$C2",
+   "S!J2": "SUM('S'!$A$2:$C$5)",
+   "S!D3": "'S'!$B3*'S'!$C3",
+   "S!J3": "ROWS('S'!$A$1:$D$5)",
+   "S!D4": "'S'!$B4*'S'!$C4",
+   "S!J4": "'S'!$C4",
+   "S!D5": "'S'!$B5*'S'!$C5",
+   "S!J5": "SUM(B2:C5)",
+   "S!J6": "SUM(A1:D5)",
+   "Other!A1": "SUM(nt)",
+   "Other!B2": "ROWS(nt)",
+   "Other!A3": "nr",
+   "Other!A4": "nr*2"
+  },
+  "tables": [],
+  "refused": []
+ }
+}
