@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 19.8,
+  "seconds": 1.8,
   "date": "2026-10-08"
  },
  "books": {
@@ -292,6 +292,9 @@
   },
   "single-values-1": {
    "sent": "50546acf72456f1327844f182ea8832a13303558056261a31c69b9222c6efb69"
+  },
+  "ref-deps-1": {
+   "sent": "2dd1377b461e9389ee23c83a81e56473270d3d4ab1878e0d418cdfce4c8f91ab"
   }
  }
 }
