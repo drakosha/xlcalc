@@ -157,8 +157,8 @@ export interface Book {
   steps: Step[]
 }
 
-/** A book's answer: one value per step, or why Excel did not open it; undefined when the job stopped before it. */
-export type Answer = { answers: unknown[]; seconds: number } | { rejected: string; seconds: number } | undefined
+/** A book's answer: one value per step (and the file a `saveAs` step saved), or why Excel did not open it; undefined when the job stopped before it. */
+export type Answer = { answers: unknown[]; seconds: number; saved?: Uint8Array } | { rejected: string; seconds: number } | undefined
 
 let jobs = 0
 
@@ -188,14 +188,19 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
       child.on('close', (code) => {
         clearTimeout(timer)
         if (code === 0) resolve(false)
-        else if (code !== null) reject(new Error(`xl.ps1 ${label}: exit ${code}: ${err.trim().split('\n').slice(0, 3).join(' ')}`))
+        else if (code !== null) reject(new Error(`xl.ps1 ${label}: exit ${code}: ${err.trim().split('\n').slice(0, 12).join(' | ')}`))
       })
     })
     if (timedOut) console.log(`${label}: the job ran past ${timeout / 1000} s, Excel stopped: ${host('clean')}`)
     exec('scp', ['-q', '-r', ...OPTS, `${HOST}:C:/xlcalc/work/${name}/out`, local], 300_000)
     const done = join(local, 'out')
     if (!timedOut && JSON.parse(readFileSync(join(done, 'done.json'), 'utf8')).booksLeft !== 0) throw new Error(`${label}: Excel had books open at the end`)
-    return books.map((_, i) => (existsSync(join(done, `${i}.json`)) ? (JSON.parse(readFileSync(join(done, `${i}.json`), 'utf8')) as Answer) : undefined))
+    return books.map((_, i) => {
+      if (!existsSync(join(done, `${i}.json`))) return undefined
+      const a = JSON.parse(readFileSync(join(done, `${i}.json`), 'utf8')) as Answer
+      const saved = join(done, `${i}.saved.xlsx`)
+      return a && 'answers' in a && existsSync(saved) ? { ...a, saved: new Uint8Array(readFileSync(saved)) } : a
+    })
   } finally {
     // the machine's copy goes with the next `clean`
     if (!process.env.XLWIN_KEEP) rmSync(local, { recursive: true, force: true })

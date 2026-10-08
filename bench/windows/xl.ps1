@@ -176,8 +176,8 @@ function Step($xl, $wb, $s) {
           $ws.ListObjects | ForEach-Object { List @((Str $ws.Name), (Str $_.Name), (Str $_.Range.Address()), (Cell $_.ShowHeaders), (Cell $_.ShowTotals), (List ($_.ListColumns | ForEach-Object { Str $_.Name }))) }
         })
     }
-    # the book as Excel saves it (xlsx), beside the answers
-    'saveAs' { $wb.SaveAs((Join-Path $out $s.file), 51); 'null' }
+    # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
+    'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     default { throw "unknown step $($s.do)" }
   }
 }

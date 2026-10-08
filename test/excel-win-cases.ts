@@ -8,10 +8,11 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput } from '../src/contract.js'
-import { compute } from '../src/index.js'
+import { compute, FUNCTION_NAMES } from '../src/index.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal } from './excel-cases.js'
 import { RU_REASONS } from './excel-ru-cases.js'
 import { caseBook, loadSet } from './excel-sets.js'
+import { WIN_KNOWN_CASES } from './excel-win-known.js'
 
 export type Tag = 'en-US' | 'ru-RU'
 
@@ -42,10 +43,16 @@ export const WIN_SETS: WinSet[] = [
   ...jsons('cases/ru-RU/').map((f) => ({ name: f.slice(0, -5), tag: 'ru-RU' as Tag, ...read(`cases/ru-RU/${f}`) })),
 ]
 
-/** Reasons that only Excel for Windows shows; each is a line of the README's "Excel for Windows" known differences. */
-export const WIN_REASONS = {} as const
+/** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
+export const WIN_REASONS = {
+  winCollation:
+    'Text order in ru-RU: Excel for Windows puts Latin before Cyrillic, as Windows sorts; Excel for Mac and the engine put Cyrillic first (`"a"<"а"` is TRUE on Windows, FALSE on the Mac and here), in comparisons, criteria and SORT.',
+  winMonthCase: 'Month names in ru-RU `TEXT` (`ММММ`, `МММММ`): Excel for Windows writes them with a capital (`Январь`, `Я`), Excel for Mac and the engine in lower case (`январь`, `я`).',
+  winMonthShort: 'Short month names in ru-RU `TEXT` (`МММ`): Excel for Windows takes three letters (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`), Excel for Mac and the engine `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`.',
+  winLongDate: '`[$-F800]` in ru-RU is the long date of the system: on Windows `31 января 2025 г.`, without the weekday; on the Mac and here `пятница, 31 января 2025 г.`.',
+} as const
 
-type Reason = keyof typeof WIN_REASONS | keyof typeof REASONS | keyof typeof RU_REASONS
+export type Reason = keyof typeof WIN_REASONS | keyof typeof REASONS | keyof typeof RU_REASONS
 
 export const winReasonText = (r: Reason): string =>
   r in WIN_REASONS ? WIN_REASONS[r as keyof typeof WIN_REASONS] : r in RU_REASONS ? RU_REASONS[r as keyof typeof RU_REASONS] : REASONS[r as keyof typeof REASONS]
@@ -54,7 +61,7 @@ export const winReasonText = (r: Reason): string =>
  * Cases where the engine knowingly differs from Excel for Windows, by `<locale>:<source>:<case id>` (`measurement`,
  * `probes` or a set's name): the engine's answer pinned instead of Windows's. An entry whose case matches fails.
  */
-export const WIN_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>> = {}
+export const WIN_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>> = WIN_KNOWN_CASES
 
 /** A case passes: it matches Excel for Windows, or it is in WIN_KNOWN, differs and gives exactly the pinned answer. */
 export function winVerdict(key: string, fn: string | undefined, win: Val, engine: Val): { ok: boolean; why?: string } {
@@ -82,8 +89,9 @@ const inTag = (book: BookInput, tag: Tag): BookInput => (tag === 'ru-RU' ? { ...
 /** The cases a stored run has, as the harness sent them, and the book that holds them. */
 async function casesOf(set: WinSet): Promise<{ cases: Probe[]; book: BookInput; current: boolean }> {
   if (set.name === 'measurement') {
-    const cases = CASES.map((c) => ({ id: c.id, group: c.fn, fn: c.fn, formula: c.formula }))
-    return { cases, book: excelBook(CASES), current: true }
+    // as the Mac's measurement tests: the whitelisted functions' cases, in one book
+    const whitelisted = CASES.filter((c) => FUNCTION_NAMES.includes(c.fn))
+    return { cases: whitelisted.map((c) => ({ id: c.id, group: c.fn, fn: c.fn, formula: c.formula })), book: excelBook(whitelisted), current: true }
   }
   const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set.name === 'probes' ? { buildProbes, SHEETS: PROBE_SHEETS } : await loadSet(set.name)
   const cases = mod.buildProbes()
