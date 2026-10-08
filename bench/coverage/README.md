@@ -54,11 +54,11 @@ Needed: Node 24+, `soffice` on `PATH` (LibreOffice), Excel for Mac (the measurem
 ## The code
 
 - `excel-functions.json`: the function list of Microsoft's page "Excel functions (alphabetical)" (name, category, the version that brought it).
-- `signatures.ts`: the signature table of the set's functions: argument kinds and typical calls, hand-written edge cases, `_xlfn.` prefixes, the array-size guard.
+- `signatures.ts`: the signature table of the set's functions: argument kinds and typical calls, hand-written edge cases, the array-size guard, and `XLFN`, the one table of `_xlfn.` prefixes the measurement and every case set write (`xl` in `sets/arrays/common.ts`).
 - `data.ts`: the data sheet of the synthetic book (sheet `D`).
 - `cases.ts`: the case generator; `cases.test.ts` checks the size guard over every case.
 - `formulajs.ts`, `fj-worker.ts`: formulajs called through the adapter and bare in a child process; a case that hangs for over 5 s is killed and marked.
-- `book.ts`: the xlsx book (ExcelJS, no cached values), its case formulas written as dynamic array formulas.
+- `book.ts`: the xlsx book (ExcelJS, no cached values), its case formulas written as dynamic array formulas, and `READ_COLUMNS`, the formulas that read a cell without an error (type code, number, text), which the mirror sheets of `case-book.ts` use too; `excel.ts` turns what they read back into values (`typedValue`). `case-book.ts` writes the books of the steps `spill` and `workbook`, and its formula cells and names serve `struct.ts` too.
 - `libreoffice.ts`: recalculation by `soffice --headless` with an en-US profile, reading the XML.
 - `excel.ts`, `excel-read.applescript`: Excel through `osascript`.
 - `sets/fuzz.ts`, `sets/fuzz/`: the random check, formulas over the whitelist from a seed (argument kinds and counts frozen in `sets/fuzz/spec.json`, each formula with its own stream of random numbers); `sets/fuzz-rules.ts`: the Excel rules it found, as cases.

@@ -21,6 +21,16 @@ const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url
 /** ERROR.TYPE → error code. */
 const ERROR_TYPE: Record<number, ErrCode> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
 
+/** A cell read through its type code (`READ_COLUMNS` in `book.ts`: 0 number, -1 TRUE, -2 FALSE, -3 text, > 0 ERROR.TYPE), number and text. */
+export function typedValue(type: number, num: unknown, text: unknown): Val {
+  if (type === 0) return { t: 'n', v: Number(num) }
+  if (type === -1) return { t: 'b', v: true }
+  if (type === -2) return { t: 'b', v: false }
+  if (type === -3) return { t: 's', v: String(text) }
+  if (type > 0) return { t: 'e', v: ERROR_TYPE[type] ?? 'ERROR' }
+  return { t: 'other', v: `type ${type}` }
+}
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 const LOCK = join(homedir(), '.cache/xlcalc-excel.lock')
@@ -208,14 +218,7 @@ end tell`
 function parseRead(out: string, n: number): Val[] {
   const [types, nums, strs] = JSON.parse(out) as [number[][], number[][], string[][]]
   if (types.length !== n || nums.length !== n || strs.length !== n) throw new Error(`Excel gave ${types.length}/${nums.length}/${strs.length} rows of ${n}`)
-  return types.map(([t], i): Val => {
-    if (t === 0) return { t: 'n', v: nums[i][0] }
-    if (t === -1) return { t: 'b', v: true }
-    if (t === -2) return { t: 'b', v: false }
-    if (t === -3) return { t: 's', v: strs[i][0] }
-    if (t > 0) return { t: 'e', v: ERROR_TYPE[t] ?? 'ERROR' }
-    return { t: 'other', v: `type ${t}` }
-  })
+  return types.map(([t], i) => typedValue(t, nums[i][0], strs[i][0]))
 }
 
 /** The values of a book's case formulas by row; the book is copied into the sandbox and removed after. A part is small, so the wait is short (3 minutes). */

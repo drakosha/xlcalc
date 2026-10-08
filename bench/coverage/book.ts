@@ -20,6 +20,13 @@ import type { SheetCells } from './probes.js'
 
 export const CASE_SHEET = 'C'
 
+/** The formulas of the read columns over a cell `x`, which never give an error: its type code, its number, its text. */
+export const READ_COLUMNS = {
+  type: (x: string) => `IF(ISERROR(${x}),ERROR.TYPE(${x}),IF(ISNUMBER(${x}),0,IF(ISLOGICAL(${x}),IF(${x},-1,-2),IF(ISTEXT(${x}),-3,-4))))`,
+  num: (x: string) => `IF(ISNUMBER(${x}),${x},0)`,
+  text: (x: string) => `IF(ISTEXT(${x}),${x},"")`,
+}
+
 /**
  * `sheets`: further data sheets by name, values or formulas by A1 address (the probes of `probes.ts`, the case sets).
  * `legacy`: the case formulas are written as formulas of the old kind (no array, no dynamic metadata), which Excel
@@ -44,9 +51,9 @@ export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: str
   cases.forEach((x, i) => {
     const r = i + 1
     c.getCell(`A${r}`).value = (legacy ? { formula: x.formula } : { formula: x.formula, shareType: 'array', ref: `A${r}` }) as ExcelJS.CellFormulaValue
-    c.getCell(`B${r}`).value = { formula: `IF(ISERROR(A${r}),ERROR.TYPE(A${r}),IF(ISNUMBER(A${r}),0,IF(ISLOGICAL(A${r}),IF(A${r},-1,-2),IF(ISTEXT(A${r}),-3,-4))))` } as ExcelJS.CellFormulaValue
-    c.getCell(`C${r}`).value = { formula: `IF(ISNUMBER(A${r}),A${r},0)` } as ExcelJS.CellFormulaValue
-    c.getCell(`D${r}`).value = { formula: `IF(ISTEXT(A${r}),A${r},"")` } as ExcelJS.CellFormulaValue
+    c.getCell(`B${r}`).value = { formula: READ_COLUMNS.type(`A${r}`) } as ExcelJS.CellFormulaValue
+    c.getCell(`C${r}`).value = { formula: READ_COLUMNS.num(`A${r}`) } as ExcelJS.CellFormulaValue
+    c.getCell(`D${r}`).value = { formula: READ_COLUMNS.text(`A${r}`) } as ExcelJS.CellFormulaValue
     c.getCell(`E${r}`).value = x.id
   })
   // a stub under the last case: an array answer does not spill there either

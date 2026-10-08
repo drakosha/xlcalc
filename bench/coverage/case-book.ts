@@ -14,8 +14,8 @@ import { spawn } from 'node:child_process'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
-import { markDynamic } from './book.js'
-import { declineRepair, dialogText, excelDialogs, settleRejected } from './excel.js'
+import { markDynamic, READ_COLUMNS } from './book.js'
+import { declineRepair, dialogText, excelDialogs, settleRejected, typedValue } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
@@ -122,8 +122,6 @@ function single(f: string): string {
   return out
 }
 
-const ERROR_TYPE: Record<number, Extract<Val, { t: 'e' }>['v']> = { 1: 'NULL', 2: 'DIV0', 3: 'VALUE', 4: 'REF', 5: 'NAME', 6: 'NUM', 7: 'NA', 8: 'GETTING_DATA', 9: 'SPILL', 14: 'CALC' }
-
 /** A cell's format as ExcelJS writes it: a code; a built-in format by its number is written by the display step only. */
 export function formatCode(format: NumberFormat): string {
   if (typeof format === 'number') throw new Error(`the built-in format ${format} by its number: only the display step writes it`)
@@ -149,10 +147,22 @@ export function mirrorRanges(read: RangeRef[]): string[] {
   })
 }
 
+/** The read columns, a blank cell typed -5 apart. */
 const MIRROR: Record<(typeof MIRRORS)[number], (x: string) => string> = {
-  WT: (x) => `IF(ISBLANK(${x}),-5,IF(ISERROR(${x}),ERROR.TYPE(${x}),IF(ISNUMBER(${x}),0,IF(ISLOGICAL(${x}),IF(${x},-1,-2),IF(ISTEXT(${x}),-3,-4)))))`,
-  WN: (x) => `IF(ISNUMBER(${x}),${x},0)`,
-  WX: (x) => `IF(ISTEXT(${x}),${x},"")`,
+  WT: (x) => `IF(ISBLANK(${x}),-5,${READ_COLUMNS.type(x)})`,
+  WN: READ_COLUMNS.num,
+  WX: READ_COLUMNS.text,
+}
+
+/** A formula cell as ExcelJS writes it: an array formula over `ref` (a dynamic one where `markDynamic` marks it), else a plain one. */
+export const formulaValue = (formula: string, ref?: string): ExcelJS.CellFormulaValue =>
+  ({ formula: fileFormula(formula), ...(ref ? { shareType: 'array', ref } : {}) }) as ExcelJS.CellFormulaValue
+
+/** The book's names with their scope, in place of ExcelJS's model, a cell matrix without `#`, formulas or scope. */
+export function writeNames(wb: ExcelJS.Workbook, book: BookInput): void {
+  const index = new Map(book.sheets.map((s, i) => [s.name, i]))
+  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
+  Object.defineProperty(wb.definedNames, 'model', { get: () => names })
 }
 
 /** The case's book as xlsx: its formulas as dynamic array formulas, its names, merged areas, looks and file parts, then the mirror sheets. */
@@ -166,7 +176,7 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
       const result = parts.cached?.[`${s.name}!${addr}`]
       // an old-kind array formula over its area; a dynamic array formula, or a plain one where `plain` says
       const array = cell.array !== undefined || !parts.plain || parts.plain.arrays?.includes(`${s.name}!${addr}`)
-      if (cell.formula !== undefined) x.value = { formula: fileFormula(cell.formula), ...(array ? { shareType: 'array', ref: cell.array ?? addr } : {}), ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
+      if (cell.formula !== undefined) x.value = { ...formulaValue(cell.formula, array ? (cell.array ?? addr) : undefined), ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
       else if (cell.value !== null && typeof cell.value === 'object') x.value = new Date(Date.parse(`${cell.value.date}${cell.value.date.includes('T') ? '' : 'T00:00:00'}Z`))
       else if (cell.value !== undefined) x.value = cell.value
       if (cell.format !== undefined) x.numFmt = formatCode(cell.format)
@@ -191,10 +201,7 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
       src.addrs.forEach((a, k) => (ws.getCell(dst.addrs[k]).value = { formula: MIRROR[m](`${quoteSheet(g.sheet)}!${a}`) } as ExcelJS.CellValue))
     })
   }
-  // ExcelJS keeps names in a cell matrix (no `#`, no formulas, no scope): its model is replaced by the case's names
-  const index = new Map(book.sheets.map((s, i) => [s.name, i]))
-  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
-  Object.defineProperty(wb.definedNames, 'model', { get: () => names })
+  writeNames(wb, book)
   await wb.xlsx.writeFile(file)
   await markDynamic(file, book.sheets.length, (i, addr) => book.sheets[i]?.cells[addr]?.array !== undefined)
   if (parts.sheets || parts.iterate) await writeParts(file, book, parts)
@@ -318,8 +325,7 @@ export function answerOf(read: RangeRef[], raw: [unknown, unknown, unknown, unkn
       if (f.startsWith('=')) out.formulas[key] = f
       if (out.formulas2 && f.startsWith('=')) out.formulas2[key] = String(f2s[r][j])
       if (type === -5) return
-      out.values[key] =
-        type === 0 ? { t: 'n', v: Number(nums[r][j]) } : type === -1 ? { t: 'b', v: true } : type === -2 ? { t: 'b', v: false } : type === -3 ? { t: 's', v: String(strs[r][j]) } : type > 0 ? { t: 'e', v: ERROR_TYPE[type] ?? 'ERROR' } : { t: 'other', v: `type ${type}` }
+      out.values[key] = typedValue(type, nums[r][j], strs[r][j])
     })
   })
   return out
