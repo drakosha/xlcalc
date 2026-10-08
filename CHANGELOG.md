@@ -21,6 +21,8 @@ Changed:
 
 Added:
 
+- `cells(sheet, range)` of a session, in every mode: the cells of a rectangle as `result()` gives them, for a window over a sheet. From a thread only the rectangle comes back: 20,000 cells of the synthetic book of 34,000 rows in 27 ms, where the whole result takes 1.7 s.
+- `copyFormula(text, from, to, book?)`: the text of a formula copied from one cell to another, as `copyRange` pastes it (`docs/structure.md`).
 - Contract: `Session.cells(sheet, range)` and `AsyncSession.cells(sheet, range)`, the cells of a rectangle as `result()` gives them, with each cell's own `style` (`CellView`), for a window over a sheet.
 - Excel for Windows is a second oracle: `bench/windows` sends the Mac harness's books to Excel for Windows over SSH and COM, stores its answers in `test/excel/win/`, and `test/excel-win.test.ts` checks the engine against them (`bench/windows/README.md`).
 - Computation in the same thread in portions, `createInlineCalc`: it gives way to the event loop between formulas (slices of `sliceMs`), and a call stops at its soft deadline (`timeoutMs`) or when its `signal` fires, with `CalcError`. A session's calls are taken in order, and a call that fails changes nothing (`docs/async.md`).
