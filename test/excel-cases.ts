@@ -102,8 +102,6 @@ export function matches(fn: string | undefined, excel: Val, engine: Val): boolea
 
 /** Reasons of known differences; each is a line of the README's "Known differences from Excel". */
 export const REASONS = {
-  severalAreas:
-    'A union or a reference across sheets in `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY`: Excel takes each area there (`FREQUENCY` and `SORTBY` answer an array), the engine answers `#VALUE!` or `#REF!`; a reference across sheets that `SWITCH` compares is `#REF!` in Excel and `#VALUE!` here.',
   rateZeroRoot:
     '`RATE` with a rate of exactly 0 as the answer gives 0 or a value within 1e-10 of it; Excel answers its own rounding noise up to about 2e-9 or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
@@ -142,30 +140,20 @@ export const REASONS = {
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
-  'areas:fn:union:AGGREGATE#3': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:AGGREGATE#3': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:AGGREGATE#4': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:AGGREGATE#4': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:AGGREGATE#5': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:AGGREGATE#5': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:FREQUENCY#1': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:FREQUENCY#1': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:FREQUENCY#2': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:FREQUENCY#2': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#1': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#1': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#2': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#2': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#4': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#4': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#5': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#5': { reason: 'severalAreas', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SUBTOTAL#2': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:SUBTOTAL#3': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:SUBTOTAL#4': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:SUBTOTAL#5': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SWITCH#2': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SWITCH#4': { reason: 'severalAreas', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union:AGGREGATE#3': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:AGGREGATE#3': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union:AGGREGATE#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:AGGREGATE#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union:AGGREGATE#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:AGGREGATE#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:union:SORTBY#1': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:SORTBY#1': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union:SORTBY#2': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:SORTBY#2': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union:SORTBY#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:SORTBY#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
+  'areas:fn:union:SORTBY#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
+  'areas:fn:cube:SORTBY#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },

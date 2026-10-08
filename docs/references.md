@@ -33,6 +33,9 @@ A union is written in parentheses inside a call: `SUM((A1:A3,C1:C3))`. A name's 
 | formula | gives |
 |---|---|
 | `SUM((A1:A3,C1:C3))`, `COUNT`, `MAX`, `AVERAGE`, `LARGE`, `MEDIAN`, `STDEV` | the function over every part |
+| `SUBTOTAL(9,(A1:A3,C1:C3))`, `AGGREGATE(9,6,(A1:A3,C1:C3))` | the function over every part, nested `SUBTOTAL` cells and hidden rows skipped as in one range; an area counted twice where parts overlap |
+| `FREQUENCY((A1:A3,C1:C3),E1:E3)`, a union of bins | the counts over every part's numbers |
+| `SORTBY((A1:A3,C1:C3),…)`, a union as a sort order too | `#VALUE!` |
 | `INDEX((A1:A3,C1:C3),2,1,2)` | C2, from the second area |
 | `INDEX((A1:A3,C1:C3),2,1,3)` | `#REF!`, no third area |
 | `AREAS((A1:A3,C1:C3))` | 2 |
@@ -44,9 +47,9 @@ A union is written in parentheses inside a call: `SUM((A1:A3,C1:C3))`. A name's 
 
 `'Jan:Mar'!A1:B2` covers the sheets from Jan to Mar in the book's order, Feb between them included. The ends can come in either order. Sheet names that read as cell addresses (`S1`, `Q3`) must be quoted: Excel does not read `S1:S3!A1` as a reference across sheets.
 
-The list functions take each sheet's rectangle in turn: `SUM`, `COUNT`, `COUNTA`, `AVERAGE`, `MAX`, `MIN`, `PRODUCT`, `STDEV`, `VAR` and the others over lists of numbers, `AND`, `OR`. `VSTACK`, `HSTACK`, `TOCOL` and `TOROW` stack the sheets' rectangles. `CHOOSE` and `IF` pass one on.
+The list functions take each sheet's rectangle in turn: `SUM`, `COUNT`, `COUNTA`, `AVERAGE`, `MAX`, `MIN`, `PRODUCT`, `STDEV`, `VAR` and the others over lists of numbers, `AND`, `OR`, and `FREQUENCY`, as its data or its bins. `VSTACK`, `HSTACK`, `TOCOL` and `TOROW` stack the sheets' rectangles. `CHOOSE` and `IF` pass one on.
 
-Alone or under an operator it is `#REF!` (`=Jan:Mar!A1+1`). `INDEX`, `AREAS` and `ROWS` give `#VALUE!`, `ISREF` gives FALSE.
+Alone or under an operator it is `#REF!` (`=Jan:Mar!A1+1`). `INDEX`, `AREAS`, `ROWS`, `SUBTOTAL` and `AGGREGATE` give `#VALUE!`, `SORTBY` and a value `SWITCH` compares give `#REF!`, `ISREF` gives FALSE.
 
 ## Other functions
 
@@ -68,11 +71,8 @@ A function that does not take several areas gives an error, which depends on the
 
 ## How it was checked
 
-The set `areas` (989 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
+The set `areas` (1,137 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above; its case ids name the function and the argument (`fn:union:SUBTOTAL#2`). The set `areas-each` (52 cases) measures how `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY` take them: 40 of its 47 predicted answers came out as predicted, and the misses were all `SORTBY`, which takes neither. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
 
 ## Known differences
 
-- `SUBTOTAL` and `AGGREGATE` take each area of a union in Excel and give `#VALUE!` here.
-- `FREQUENCY` and `SORTBY` take a union or a reference across sheets in Excel and answer an array; here they give `#VALUE!` or `#REF!`.
-- A reference across sheets that `SWITCH` compares is `#REF!` in Excel and `#VALUE!` here.
 - The intersection operator, a space between two ranges, is not read, nor the range operator between two references (`Sales[Qty]:Sales[Price]`, `A1:INDEX(…)`).

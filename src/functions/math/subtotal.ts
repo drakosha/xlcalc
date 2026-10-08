@@ -2,10 +2,11 @@
  * SUBTOTAL and AGGREGATE on the statistical functions. A cell whose formula calls either of them (anywhere in the
  * formula) is skipped as nested, as in Excel. Hidden rows (the workbook set `hidden`): SUBTOTAL 101–111 and
  * AGGREGATE's options 1, 3, 5, 7 skip them all, SUBTOTAL 1–11 only on a filtered sheet, AGGREGATE's even options
- * never; hidden columns count. AGGREGATE 14–19 take an array too, which has no rows to skip. This engine's own.
+ * never; hidden columns count. AGGREGATE 14–19 take an array too, which has no rows to skip. A union is taken area by
+ * area, a reference across sheets is #VALUE! (the set `areas-each`). This engine's own.
  */
 import { Arr } from '../../arrays/value.js'
-import { E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import type { Cx, FnDef, Grid, HiddenRule } from '../../args.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { functions as stat } from '../statistical/descriptive.js'
@@ -34,12 +35,14 @@ interface Skip {
  * (errors too), the rest take the numbers and stop at the first error, unless errors are skipped. AGGREGATE 14–19
  * (`k`) also take an array.
  */
-function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr)[], skip: Skip, k?: number): V {
+function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr | Areas)[], skip: Skip, k?: number): V {
   const xs: number[] = []
   let filled = 0
   let first: CErr | undefined
-  for (const x of refs) {
-    // only references, and an array for 14–19: a value in their place is #VALUE!
+  // a union's areas in turn
+  const parts = refs.flatMap((x): readonly (V | Rng | Arr | Areas)[] => (x instanceof Areas && !x.cube ? x.list : [x]))
+  for (const x of parts) {
+    // only references, and an array for 14–19: a value or a reference across sheets in their place is #VALUE!
     if (!(x instanceof Rng) && !(x instanceof Arr && k !== undefined)) return isErr(x) ? x : E.VALUE
     for (const v of x instanceof Rng ? cx.counted(x, skip.nested, skip.hidden) : cx.grid(x).v) {
       if (v === null) continue
@@ -56,13 +59,13 @@ function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr)[], skip: Skip
   return first ?? apply(NAMES[code - 1], xs, k)
 }
 
-function subtotal(cx: Cx, code: number, refs: (V | Rng)[]): V {
+function subtotal(cx: Cx, code: number, refs: (V | Rng | Areas)[]): V {
   const t = whole(code)
   const c = t > 100 ? t - 100 : t
   return c < 1 || c > 11 || (t > 11 && t < 101) ? E.VALUE : over(cx, c, refs, { nested: true, hidden: t > 100 ? 'all' : 'filtered', errors: false })
 }
 
-function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr)[]): V {
+function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr | Areas)[]): V {
   const c = whole(code)
   const o = Math.trunc(option)
   if (c < 1 || c > 19 || o < 0 || o > 7) return E.VALUE
@@ -78,6 +81,6 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr)[]
 }
 
 export const functions: Record<string, FnDef> = {
-  AGGREGATE: { args: 'n n R', rep: 1, max: NEWER_MAX_ARGS, cx: true, fn: aggregate },
-  SUBTOTAL: { args: 'n R', rep: 1, cx: true, fn: subtotal },
+  AGGREGATE: { args: 'n n R', rep: 1, max: NEWER_MAX_ARGS, cx: true, areas: true, fn: aggregate },
+  SUBTOTAL: { args: 'n R', rep: 1, cx: true, areas: true, fn: subtotal },
 }

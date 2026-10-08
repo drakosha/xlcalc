@@ -86,3 +86,6 @@ export function buildProbes(): Probe[] {
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
   buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
 )
+
+/** The predictions Excel did not confirm: SORTBY takes neither a union nor a reference across sheets. */
+export const MISSED: readonly string[] = ['SORTBY#1', 'SORTBY#3', 'SORTBY#4', 'SORTBY#5', 'SORTBY#6', 'SORTBY#7', 'SORTBY#8']
