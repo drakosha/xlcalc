@@ -47,11 +47,6 @@ const KNOWN_BOOK: Record<string, { why: string; places: string[] }> = {
   'spill-names-sheet-global': { why: "Excel saves a global name qualified by a sheet without a local one as the book's own name ([0]!x), read as x: the same name", places: ['cell S!E1'] },
 }
 
-/** Where Excel's values differ from the engine's over the book written, and why. */
-const KNOWN_VALUES: Record<string, { why: string; places: string[] }> = {
-  'zero-sizes': { why: 'Excel takes a row of height 0 as hidden; the engine counts it unless `hidden` says so (the reader reads it hidden)', places: ['F!A2', 'F!A4', 'F!A5'] },
-}
-
 /** The issues of reading what Excel saved, by book: what the book itself makes the reader report. */
 const ISSUES: Record<string, string[]> = {
   'formulas-values': ['errorConstant Data C2 C12 C23'],
@@ -77,7 +72,7 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
       expect(differences.map((d) => d.place)).toEqual(KNOWN_BOOK[c.id]?.places ?? [])
       // a volatile book's random numbers are Excel's own: they are compared as numbers
       const random = (d: Difference) => c.volatile && !Number.isNaN(Number(d.written)) && !Number.isNaN(Number(d.read))
-      if (c.mode !== 'values') expect(compareCached(result, read.cached).filter((d) => !random(d)).map((d) => d.place)).toEqual(KNOWN_VALUES[c.id]?.places ?? [])
+      if (c.mode !== 'values') expect(compareCached(result, read.cached).filter((d) => !random(d))).toEqual([])
       expect(read.issues.map((i) => [i.code, i.sheet ?? i.name, ...(i.cells ?? [])].join(' '))).toEqual(ISSUES[c.id] ?? [])
       // a book predicted before Excel ran: Excel stored the values predicted; the book came back as predicted, but where Excel saves otherwise
       const p = predicted.roundtrip[c.id]

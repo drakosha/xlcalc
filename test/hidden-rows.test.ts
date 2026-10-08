@@ -64,6 +64,23 @@ describe('hidden rows and filtered sheets', () => {
     session.close()
   })
 
+  it('a row of height 0 is hidden, as Excel takes it (the xlsx round trip, book zero-sizes): in a book, in a session and through a pool outline alike', () => {
+    const b = book()
+    const zero = values({ sheets: [{ ...b.sheets[0], rows: { 2: { height: 0 }, '3:4': { height: 15 } }, columns: { A: { width: 0 } } }] })
+    expect([zero.C1.value, zero.C2.value, zero.C3.value, zero.C4.value, zero.C5.value]).toEqual([4095, 4093, 4093, 4095, 11])
+    const byHeight = openSession(book(), { clock })
+    const byFlag = openSession(book(), { clock })
+    const edits: [LayoutEdit, LayoutEdit][] = [
+      [{ sheet: 'S', rows: '2:3', set: { height: 0 } }, { sheet: 'S', rows: '2:3', set: { hidden: true } }],
+      [{ sheet: 'S', filtered: true }, { sheet: 'S', filtered: true }],
+      [{ sheet: 'S', rows: '3', set: { height: 20 } }, { sheet: 'S', rows: '3', set: { hidden: null } }],
+    ]
+    for (const [h, f] of edits) expect(byHeight.setLayout([h])).toEqual(byFlag.setLayout([f]))
+    expect(byHeight.result().sheets[0].cells.C1.value).toBe(4093)
+    byHeight.close()
+    byFlag.close()
+  })
+
   it('AGGREGATE 14–19 take an array, 1–13 do not', () => {
     const cells: Record<string, CellInput> = { A1: { value: 3 }, A2: { value: 0 }, A3: { value: 5 }, B1: { formula: 'AGGREGATE(14,6,10/A1:A3,1)' }, B2: { formula: 'AGGREGATE(15,0,A1:A3*2,2)' }, B3: { formula: 'AGGREGATE(9,6,A1:A3*2)' } }
     const v = values({ sheets: [{ name: 'S', cells }] })
