@@ -28,14 +28,14 @@ function weekendOf(w: V | undefined): boolean[] | CErr {
 const SAT_SUN = weekendOf(1) as boolean[]
 const allWeekend = (w: boolean[]) => w.every(Boolean)
 
-/** Holidays: whole dates; a boolean is #VALUE! (the ToolPak rule), so is text in a range. */
+/** Holidays: whole dates, date text in a range too (the set `findate-edges`); a boolean is #VALUE! (the ToolPak rule), so is other text. */
 function holidaysOf(x: Segment | undefined, rules: Rules): number[] | CErr {
   const out: number[] = []
   if (x === undefined) return out
   for (const v of Array.isArray(x) ? (x as readonly V[]) : [x as V]) {
     if (v === null && Array.isArray(x)) continue
     if (isErr(v)) return v
-    if (typeof v === 'boolean' || (typeof v === 'string' && Array.isArray(x))) return E.VALUE
+    if (typeof v === 'boolean') return E.VALUE
     const d = toDate(v, rules)
     if (isErr(d)) return d
     out.push(d)

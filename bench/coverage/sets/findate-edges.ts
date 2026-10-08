@@ -108,3 +108,10 @@ export function buildProbes(): Probe[] {
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
   buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
 )
+
+/**
+ * The predictions Excel did not confirm: ACCRINT whose issue's period begins before 1900 is 0, not #NUM!; DURATION
+ * from day 1 is computed (the day is a coupon date); XIRR takes a date of 0; AMORDEGRC's period that passes the
+ * salvage takes its whole amount.
+ */
+export const MISSED: readonly string[] = ['ACCRINT#13', 'DURATION#1', 'XIRR#1', 'AMORDEGRC#7', 'AMORDEGRC#9']

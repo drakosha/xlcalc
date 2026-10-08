@@ -120,8 +120,6 @@ export const REASONS = {
     '`FTEST` of a sample with itself is 1 − 3·2^-53 in Excel and 1 − 2^-52 here: the last bits of a number Excel computes by another algorithm can differ, which shows only when the difference is magnified (`(1-FTEST(A1:A8,A1:A8))*2^52` is 1.5 in Excel, 1 here).',
   letFileName:
     'A LET name that reads as a reference or a boolean (`A1`, `TRUE`): an xlsx file writes LET\'s names with the prefix `_xlpm.`, so Excel loads `LET(_xlpm.A1,1,_xlpm.A1)` (1); formula text has no prefix, there such a word is a reference or a boolean, and `LET(A1,1,A1)` is a syntax error here, as Excel refuses that text.',
-  analysisDateZero:
-    'Serial date 0 in the bond functions: `ACCRINT` with an issue or first interest date of 0 and `PRICE` with a settlement date of 0 are `#NUM!` in Excel and computed here; `AMORDEGRC` with a purchase date of 0 is 113 in Excel and −47885 here.',
   codePage:
     '`CHAR` and `CODE` take codes 128–255 from the Windows code page of the book\'s locale (Windows-1252 in en-US, Windows-1251 in ru-RU), as Excel for Windows does; Excel for Mac takes Mac Roman and Mac Cyrillic (`CHAR(200)` is `È` here and `»` in Excel for Mac en-US, `CODE("Ж")` in ru-RU 198 here and 134 there).',
   outsideCode: '`CODE` of a character outside the code page of the book\'s locale is 63 (`?`), as Excel for Windows answers; Excel for Mac answers 95 (`_`): `CODE("中")`, and `CODE("Ж")` in en-US.',
@@ -200,10 +198,6 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
   'let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
-  'omit:all:ACCRINT#2': { reason: 'analysisDateZero', engine: { t: 'n', v: 10833.0555555556 } },
-  'omit:all:ACCRINT#6': { reason: 'analysisDateZero', engine: { t: 'n', v: 16.6666666666667 } },
-  'omit:all:PRICE#2': { reason: 'analysisDateZero', engine: { t: 'n', v: 100 } },
-  'omit:all:AMORDEGRC#6': { reason: 'analysisDateZero', engine: { t: 'n', v: -47885 } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives exactly the pinned answer. */
