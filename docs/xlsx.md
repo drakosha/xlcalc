@@ -198,7 +198,7 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 |---|---|---|
 | `roundtrip` | 172 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, and the books of the structure, spill and table sets, names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them | every file opens, every book reads back as written, and Excel's values equal the engine's |
 | `saved` | 91 books of the case sets, 28,831 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
-| `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` and the one with the intersection operator |
+| `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` |
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
 | `formats` | the built-in number formats 1 to 58 | the reader's codes equal Excel's |
 
@@ -213,7 +213,6 @@ The round trip compares books by what they mean: a style by its fields, a formul
 - A built-in date, time or currency format reads as the code Excel for Mac en-US shows. Excel for Windows en-US shows format 14 as `m/d/yyyy`, and ru-RU as `dd.mm.yyyy`.
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
 - In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
-- The intersection operator, a space between two ranges, is not read: such a formula is reported.
 - Hidden rows and columns lose the size they had before they were hidden.
 - A style or height given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.

@@ -23,9 +23,9 @@ export type Crit =
   | { op: string; kind: 'blank' }
   | { op: string; kind: 'err'; code: string }
 
-/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers; #ERROR! is how this engine reads #NULL!. */
+/** Error texts in a criterion (any case) and their order, ERROR.TYPE's numbers. */
 const ERRORS: Record<string, [code: string, rank: number]> = {
-  '#NULL!': ['ERROR', 1],
+  '#NULL!': ['NULL', 1],
   '#DIV/0!': ['DIV0', 2],
   '#VALUE!': ['VALUE', 3],
   '#REF!': ['REF', 4],
@@ -35,7 +35,8 @@ const ERRORS: Record<string, [code: string, rank: number]> = {
   '#SPILL!': ['SPILL', 9],
   '#CALC!': ['CALC', 14],
 }
-const ERROR_RANK: Record<string, number> = Object.fromEntries(Object.values(ERRORS))
+// a formula that does not compute (#ERROR!) ranks as ERROR.TYPE numbers it
+const ERROR_RANK: Record<string, number> = { ...Object.fromEntries(Object.values(ERRORS)), ERROR: 1 }
 
 /** A criterion's error text by a locale's error texts (`'#N/A': '#Н/Д'`; one not given keeps its English text): the error code, or undefined. */
 export function errorWords(local: Readonly<Record<string, string>>): (text: string) => string | undefined {

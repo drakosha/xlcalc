@@ -203,5 +203,4 @@ The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the
 - Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `restructure` (`insertRows` inside it fills the calculated columns).
 - A table renamed to a name Excel does not take (`AB12`) or to a defined name: Excel's object model makes the name one it takes (`AB12_`, `Rate_1`), as its name box refuses it; `renameTable` refuses with `table_name`.
 - Excel's Fill Right and fill handle move the column of a structured reference (`SUM(Sales[Qty])` filled right is `SUM(Sales[Price])`); `copyRange`, as copy and paste, keeps it.
-- The range and intersection operators between references (`Sales[Qty]:Sales[Price]`, `Sales[Qty] Sales[@]`) are not read.
 - An array formula of the old kind over several cells cannot be in a table, as in Excel; one over a single cell computes `[#This Row]` by its own row.

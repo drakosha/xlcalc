@@ -11,7 +11,7 @@ import { FUNCTIONS } from '../functions.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
 import type { ErrorCode } from '../contract.js'
-import { canonical, type Ast, type BinOp, type RangeRef } from '../syntax.js'
+import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
@@ -63,6 +63,8 @@ export interface Backend<T> {
   areas(list: Rng[]): T
   /** A union of references (#VALUE! unless they are references on one sheet). */
   union(items: T[]): T
+  /** The intersection (a space) or the range operator (`:`) of two references. */
+  refOp(op: RefOp, a: T, b: T): T
   /** `@x` at row `r`, column `c`: a reference's cell there, an array's top-left value. */
   at(a: T, r: number, c: number): T
   /** An external function, by the canonical text of its call. */
@@ -213,6 +215,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       case 'pct':
         return b.unary('pct', go(n.a), many(n.a))
       case 'bin': {
+        if (isRefOp(n.op)) return value(b.refOp(n.op, go(n.a, true), go(n.b, true)), n, rangeOk)
         const x = go(n.a)
         return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b))
       }

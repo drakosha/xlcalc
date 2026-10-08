@@ -62,7 +62,12 @@ export interface Bind {
 /** A value of an array constant. */
 export type Lit = Extract<Ast, { k: 'num' | 'str' | 'bool' | 'err' }>
 
-export type BinOp = '+' | '-' | '*' | '/' | '^' | '&' | '=' | '<>' | '<' | '>' | '<=' | '>='
+export type BinOp = '+' | '-' | '*' | '/' | '^' | '&' | '=' | '<>' | '<' | '>' | '<=' | '>=' | RefOp
+
+/** The reference operators: the intersection (a space) and the range operator between references (`A1:INDEX(…)`). */
+export type RefOp = ' ' | ':'
+
+export const isRefOp = (op: BinOp): op is RefOp => op === ' ' || op === ':'
 
 export class FormulaError extends Error {
   constructor(

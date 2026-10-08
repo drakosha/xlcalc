@@ -79,3 +79,6 @@ export function buildProbes(): Probe[] {
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(
   buildProbes().flatMap((p, i) => (CASES[i][2] ? [[p.id, CASES[i][2]]] : [])),
 )
+
+/** The predictions Excel did not confirm: C3 without a sheet is on the formula's sheet, so `D!B1:B2:C3` joins two sheets. */
+export const MISSED: readonly string[] = ['range#4']

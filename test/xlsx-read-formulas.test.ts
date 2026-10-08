@@ -130,6 +130,7 @@ describe('xlsx reader: formulas of the file', () => {
       '<row r="1"><c r="A1"><f>_xlfn.SINGLE(B1:B3)</f></c><c r="B1"><f>_xludf.MYFN(1)</f></c><c r="C1"><f>SUM(T[x])</f></c><c r="D1"><f>[1]S!A1</f></c><c r="E1"><f>SUM(S:T!A1)</f></c><c r="F1"><f>A1 B1</f></c><c r="G1"><f>SUM(</f></c></row>',
     )
     expect(r.book.sheets[0].cells).toMatchObject({ A1: { formula: '@B1:B3' }, B1: { formula: 'MYFN(1)' }, C1: { formula: 'SUM(T[x])' }, D1: { formula: '[1]S!A1' }, E1: { formula: 'SUM(S:T!A1)' } })
-    expect(codes(r.issues)).toEqual(['userFunction B1', 'externalLink D1', 'formula F1 G1'])
+    expect(r.book.sheets[0].cells.F1).toEqual({ formula: 'A1 B1' })
+    expect(codes(r.issues)).toEqual(['userFunction B1', 'externalLink D1', 'formula G1'])
   })
 })

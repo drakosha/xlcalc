@@ -74,7 +74,7 @@ describe('xlsx reader: cells', () => {
   it('an error typed into a cell is read as a formula of that error; an error the model has no code for is reported', async () => {
     const r = await sheet('<row r="1"><c r="A1" t="e"><v>#N/A</v></c><c r="B1" t="e"><v>#NULL!</v></c><c r="C1" t="e"><v>#GETTING_DATA</v></c><c r="D1" t="e"><f>X()</f><v>#BLOCKED!</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '#N/A' }, B1: { formula: '#NULL!' }, D1: { formula: 'X()' } })
-    expect(r.cached[0].cells).toEqual({ A1: { error: 'NA' }, B1: { error: 'ERROR' }, D1: { error: 'ERROR' } })
+    expect(r.cached[0].cells).toEqual({ A1: { error: 'NA' }, B1: { error: 'NULL' }, D1: { error: 'ERROR' } })
     expect(codes(r.issues)).toEqual(['errorValue C1', 'errorValue D1', 'errorConstant A1 B1'])
   })
 
