@@ -7,6 +7,7 @@
 import { abortError } from '../async/queue.js'
 import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcPoolOptions, Clock, SessionOptions, StructureOp } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
+import { InputError } from '../input.js'
 import { splitCall, checkCall } from '../async/options.js'
 import { applyOp, checkedMapCell } from '../structure/index.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
@@ -60,6 +61,12 @@ interface Rec {
   snapshotting: boolean
 }
 
+/** The argument a task carries to its thread, as an `InputError` names it. */
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts' }
+
+/** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
+const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
+
 /** A book's sheets and cells copied, as a session copies them, so the caller's later changes do not reach the snapshot. */
 const copyBook = (b: BookInput): BookInput => ({ ...b, sheets: b.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) })
 
@@ -105,6 +112,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     task.reject(task.signal?.aborted && e instanceof CalcError && e.code === 'aborted' ? abortError(task.signal) : e)
   }
 
+  /** A task that will not run: the caller's fails with `why`; the pool's own (a snapshot, leaving a thread) have nothing left to do. */
+  const refuse = (task: Task, why: unknown) => (task.internal ? task.resolve(null) : fail(task, why))
+
   /** A session is gone: its waiting tasks are refused. */
   function bury(r: Rec, why: CalcError) {
     r.gone ??= why
@@ -113,7 +123,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     r.slot.resident.delete(r)
     for (const t of r.slot.queue.filter((x) => x.session === r && x.msg.t !== 'drop')) {
       r.slot.queue.splice(r.slot.queue.indexOf(t), 1)
-      if (!t.internal) fail(t, why)
+      refuse(t, why)
     }
   }
 
@@ -121,10 +131,15 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     // a changing call gets the session's next sequence number when it reaches the thread
     const m = task.msg
     if (m.t === 'call' && task.session && (CHANGING as readonly string[]).includes(m.op)) task.msg = { ...m, seq: task.session.seq + 1 }
-    slot.busy = task
     slot.thread ??= start(slot)
+    try {
+      slot.thread.post({ ...task.msg, task: task.id } as ToThread)
+    } catch (e) {
+      // nothing reached the thread: the task fails alone, the thread stays free
+      return refuse(task, unsendable(m.t === 'call' ? m.op : m.t, e))
+    }
+    slot.busy = task
     slot.thread.hold(true)
-    slot.thread.post({ ...task.msg, task: task.id } as ToThread)
     if (o.hardTimeoutMs !== undefined) slot.timer = g.setTimeout(() => slot.busy === task && lose(slot, { code: 'hard_timeout', message: `the task ran past hardTimeoutMs (${o.hardTimeoutMs} ms); its thread was terminated` }), o.hardTimeoutMs)
   }
 
@@ -225,7 +240,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       const r = task.session
       if (r && task.msg.t === 'restore') bury(r, new CalcError('restore_failed', `the session could not be restored: ${l.message}`, { cause: e }))
       if (task.msg.t === 'snapshot' && r) r.snapshotting = false
-      fail(task, e)
+      // a session leaving its thread has left it when the thread is gone
+      if (task.msg.t === 'drop') task.resolve(null)
+      else fail(task, e)
     }
     pump(slot)
   }
@@ -235,7 +252,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     if (closed) return Promise.reject(closed)
     if (at?.session.gone) return Promise.reject(at.session.gone)
     if (signal?.aborted) return Promise.reject(abortError(signal))
-    if (!internal && o.maxQueue !== undefined && waiting() >= o.maxQueue) return Promise.reject(new CalcError('queue_full', `${o.maxQueue} tasks already wait for a thread`))
+    // a task an idle thread takes at once does not wait
+    const idle = at ? !at.slot.busy && !at.slot.queue.length : slots.some((s) => !s.busy && !s.queue.length)
+    if (!internal && !idle && o.maxQueue !== undefined && waiting() >= o.maxQueue) return Promise.reject(new CalcError('queue_full', `${o.maxQueue} tasks already wait for a thread`))
     return new Promise((resolve, reject) => {
       const task: Task = { id: ++ids, msg, session: at?.session, signal, internal, resolve, reject }
       const queue = at ? at.slot.queue : jobs
@@ -266,7 +285,13 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         r.used = ++clock
         // the journal keeps its own copy of what a changing call was given
         const changing = (CHANGING as readonly string[]).includes(op)
-        const msg: Message = { t: 'call', sid: r.sid, op, args: changing ? g.structuredClone(args) : args, timeoutMs: c.timeoutMs ?? o.timeoutMs }
+        let kept = args
+        try {
+          if (changing) kept = g.structuredClone(args)
+        } catch (e) {
+          throw unsendable(op, e)
+        }
+        const msg: Message = { t: 'call', sid: r.sid, op, args: kept, timeoutMs: c.timeoutMs ?? o.timeoutMs }
         return submit(msg, { slot: r.slot, session: r }, c.signal) as Promise<Answer>
       } catch (e) {
         return Promise.reject(e)
@@ -333,9 +358,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       closed = new CalcError('closed', 'the pool is closed')
       for (const t of jobs.splice(0)) fail(t, closed)
       for (const s of slots) {
-        for (const t of s.queue.splice(0)) if (!t.internal) fail(t, closed)
+        // a session closing is closed with the pool; the pool's own tasks end
+        for (const t of s.queue.splice(0)) (t.msg.t === 'drop' ? t.resolve(null) : refuse(t, closed))
         g.clearTimeout(s.timer)
-        if (s.busy && !s.busy.internal) fail(s.busy, closed)
+        if (s.busy) (s.busy.msg.t === 'drop' ? s.busy.resolve(null) : refuse(s.busy, closed))
         s.busy = null
         s.thread?.terminate()
       }

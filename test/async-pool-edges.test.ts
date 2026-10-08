@@ -21,6 +21,12 @@ afterAll(() => Promise.all(open.map((p) => p.close())))
 const settled = (p: Promise<unknown>, ms = 3000): Promise<unknown> =>
   Promise.race([p.then((v) => ['resolved', v], (e) => ['rejected', e]), new Promise((resolve) => setTimeout(() => resolve('hung'), ms))])
 
+/** Only how `p` settled: 'resolved', 'rejected' or 'hung'. */
+const outcome = async (p: Promise<unknown>): Promise<unknown> => {
+  const r = await settled(p)
+  return Array.isArray(r) ? r[0] : r
+}
+
 // a function in meta: no JSON value, and a structured clone cannot take it
 const unsendable = { value: 1, meta: { f: () => 1 } } as unknown as CellInput
 const bad: BookInput = { sheets: [{ name: 'S', cells: { A1: unsendable } }] }
@@ -30,7 +36,7 @@ describe('the pool at its edges', () => {
     const p = await made({ threads: 1 })
     await expect(p.compute(bad)).rejects.toThrow(InputError)
     await expect(p.compute(bad)).rejects.toThrow(/^book: cannot be sent to a thread/)
-    expect(await settled(p.compute(chainBook(2)))).toMatchObject(['resolved'])
+    expect(await outcome(p.compute(chainBook(2)))).toBe('resolved')
     // one running, the bad one waiting: the answer of the first sends the second, which fails alone
     const good = p.compute(synthBook({ seed: 1, rows: 340 }).book)
     const worse = p.compute(bad)
@@ -58,17 +64,17 @@ describe('the pool at its edges', () => {
     const closing = s.close()
     crash(0)
     expect(await settled(closing)).toEqual(['resolved', undefined])
-    expect(await settled(calc.compute(chainBook(2)))).toMatchObject(['resolved'])
+    expect(await outcome(calc.compute(chainBook(2)))).toBe('resolved')
   }, 30_000)
 
   it('maxQueue 0: a task that an idle thread takes at once is no task waiting', async () => {
     const p = await made({ threads: 1, maxQueue: 0 })
-    expect(await settled(p.compute(chainBook(2)))).toMatchObject(['resolved'])
+    expect(await outcome(p.compute(chainBook(2)))).toBe('resolved')
     const running = p.compute(synthBook({ seed: 1, rows: 900 }).book)
     await expect(p.compute(chainBook(2))).rejects.toMatchObject({ code: 'queue_full' })
     await running
     const s = await p.openSession(chainBook(2))
-    expect(await settled(s.setCells(setA1(4)))).toMatchObject(['resolved'])
+    expect(await outcome(s.setCells(setA1(4)))).toBe('resolved')
   }, 30_000)
 
   it('maxHeapMb with a spawn of its own is refused: such a worker has no memory limit', () => {
