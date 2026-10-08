@@ -26,8 +26,10 @@ export function differences(c: Parameters<typeof engineAnswer>[0], x: TableAnswe
   const out: string[] = []
   if (x.rejected) return ['Excel did not load the book']
   const got = engineAnswer(c)
-  const refused = (r: Record<number, string> | undefined) => Object.keys(r ?? {}).join(',')
-  if (refused(got.refused) !== refused(x.refused)) out.push(`refused steps: Excel ${refused(x.refused) || 'none'} (${Object.values(x.refused ?? {}).join('; ')}), engine ${refused(got.refused) || 'none'} (${Object.values(got.refused).join('; ')})`)
+  // Excel refuses some steps without an error (rows deleted from two tables): the book stays as it was, which the
+  // values, formulas and tables below check; every step it answered with an error the engine refuses too
+  const missed = Object.keys(x.refused ?? {}).filter((i) => !(i in got.refused))
+  if (missed.length) out.push(`steps Excel refused and the engine took: ${missed.map((i) => `${i} (${x.refused![Number(i)]})`).join(', ')}`)
   const shape = (t: TableAnswer['tables'][number]) => JSON.stringify(t)
   const ex = x.tables.map(shape).sort()
   const en = got.tables.map(shape).sort()

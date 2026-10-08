@@ -16,6 +16,7 @@ import { shift } from './shift.js'
 import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { tableOp } from '../tables/ops.js'
+import { rewriteBookTables } from '../tables/rewrite.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -143,9 +144,13 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
     case 'renameSheet':
       r = renameSheet(book, named(o.sheet, 'op.sheet'), checkString(o.name, 'op.name'))
       break
-    case 'deleteSheet':
-      r = deleteSheet(book, named(o.sheet, 'op.sheet'))
+    case 'deleteSheet': {
+      // references to the sheet's tables are lost with it
+      const sheet = named(o.sheet, 'op.sheet')
+      const gone = book.sheets.findIndex((s) => s.name === sheet)
+      r = deleteSheet(book.sheets.length > 1 ? rewriteBookTables(book, (t) => (t.s === gone ? 'lost' : undefined)) : book, sheet)
       break
+    }
     case 'insertSheet':
       r = insertSheet(book, checkString(o.name, 'op.name'), o.before === undefined ? undefined : named(o.before, 'op.before'))
       break
@@ -156,7 +161,7 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
     case 'renameTable':
     case 'deleteTable':
     case 'convertTable':
-      r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>, values)
+      r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>)
       break
   }
   return r

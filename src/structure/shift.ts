@@ -12,6 +12,7 @@ import { LIMIT, withSpan, type Axis } from './area.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { tableShift } from '../tables/shift.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
 export function insertSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
@@ -55,7 +56,10 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
  * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
  * not empty).
  */
-export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n: number): RestructureResult {
+export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): RestructureResult {
+  const tables = tableShift(input, sheet, axis, at, n)
+  if (tables.refuse) return { ok: false, code: 'table', message: tables.refuse }
+  const book = tables.before(input)
   const count = Math.abs(n)
   const max = LIMIT[axis]
   const pos = (addr: string) => {
@@ -110,5 +114,5 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
     if (i < at) return ref
     return i >= at + count ? { sheet: ref.sheet, cell: place(ref.cell, i - count) } : null
   }
-  return { ok: true, book: out, mapCell }
+  return { ok: true, book: tables.after(out), mapCell }
 }
