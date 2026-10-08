@@ -85,6 +85,7 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   NUM: '#NUM!',
   REF: '#REF!',
   VALUE: '#VALUE!',
+  NULL: '#NULL!',
   CYCLE: '#CYCLE!',
   SPILL: '#SPILL!',
   CALC: '#CALC!',
