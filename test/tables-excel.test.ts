@@ -21,6 +21,8 @@ const SETS = [...sets(''), ...sets('ru-RU/')]
 const KNOWN: Readonly<Record<string, string>> = {
   'ops-held:rename-cell': "a table renamed to a name Excel does not take (AB12): Excel's object model makes it one (AB12_), as its name box refuses it; renameTable refuses with table_name",
   'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1); renameTable refuses with table_name",
+  'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row; setCells leaves the table as it is",
+  'more:type-calc': "a formula typed into an empty column of a table: Excel's AutoCorrect fills the column with it; setCells puts it in its cell",
 }
 
 describe.each(SETS)('tables $sub$name', (set) => {

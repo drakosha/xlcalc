@@ -103,8 +103,8 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
 
 /**
  * A copy of `src` of sheet `from` pasted over `target` of `to`: a table the copy takes whole becomes a new table at each
- * paste, named after it with the first free number (`Sales2`), its formulas' references to the table taken to the new
- * one; the other pasted formulas that leave their source's table name it, and header cells pasted over rename their
+ * paste, named after it with the book's count of tables and two (`Sales3` from a book of one table), its formulas'
+ * references to the table taken to the new one; the other pasted formulas that leave their source's table name it, and header cells pasted over rename their
  * columns.
  */
 export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: RestructureResult): RestructureResult } {
@@ -126,7 +126,8 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
     for (const t of whole) {
       const x = { r1: t.r1 + dr, r2: t.r2 + dr, c1: t.c1 + dc, c2: t.c2 + dc }
       if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue
-      let n = 2
+      // Excel numbers a copy by the book's count of tables and two (the set `more`: Sales3 in a book of one table)
+      let n = taken.length + 2
       while (taken.some((k) => tableKey(k) === tableKey(`${t.name}${n}`))) n++
       taken.push(`${t.name}${n}`)
       copies.push({ t, x, name: `${t.name}${n}` })
