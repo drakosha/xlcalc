@@ -1,12 +1,12 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 0.1,
+  "seconds": 13.5,
   "date": "2026-10-08"
  },
  "books": {
   "values": {
-   "sent": "c1b5abc06131b5e8f5cfce423d9fe4b6dc2ccb8749ab10731a65bd7118bb3650"
+   "sent": "c0851334cb3603bf4650a35409ed63d5913091e9403215d6d4a0b8714d48dea7"
   },
   "escapes": {
    "sent": "94dcb97be535b402449a260331b93df99d7f527df6995f2750ec281193925c36"
@@ -15,16 +15,16 @@
    "sent": "b8d981b851a8476ea1b8d1e8617b6ed3ef610bd4cdbbfed1900dde2642d55a47"
   },
   "formulas-values": {
-   "sent": "f40728e330a26872fb87513054206831d469c7c374023e4043a66bf54a5a63bb"
+   "sent": "31866631817e46c87b9f48e0c25cd0f7dd685bfe19d3db68f10c9dc1cea99b6b"
   },
   "spills": {
    "sent": "7feb66446219a4da2af237fc5b2bd11eab088c896080c0e6b45243194ede05e7"
   },
   "spills-values": {
-   "sent": "8302083c18ab8376df67582591221b46875164c0626934fe97117b69ceeaac92"
+   "sent": "6b147ceb756ae22f2e1013b353edcdebb4a5417f2af473feba1503e2907f7d88"
   },
   "styles": {
-   "sent": "ad0557806ee116a66ffd7c6690e8d2c7fa766b221f409251f843faa872dd4ad1"
+   "sent": "a11ddcd2599a00bffd7612cbfeaa1ef11919c2f651bd879a433ae4904c1a2bdd"
   },
   "sheet-names": {
    "sent": "aff6ee3f11919d0db09d930151d378d6bfe05afd0d03710e6af15d5dcbd763a2"
@@ -520,6 +520,33 @@
   },
   "tables-ops-held-convert-names": {
    "sent": "cf150788a63161e7f11f1a5b9a3e09663e7866477ca20a176cab32c1707be783"
+  },
+  "hidden": {
+   "sent": "9a6a8194740cc3346aafb3b2aba6f8a50c16199f5c82a3eb977580682191c871"
+  },
+  "zero-sizes": {
+   "sent": "852de6040a68c67981bd9dade83e0ae87edd95f9b41ef4e01ca5f96e9cec8b84"
+  },
+  "filtered": {
+   "sent": "b84c5a559b13e8556e7a4978091b9910bd703453c4b541d2ef005d098a4041af"
+  },
+  "filtered-table": {
+   "sent": "90ea70546fa9a72a67e06c97d4bef6b271c907198a5ef1a80c2fc371aed3262c"
+  },
+  "date1904": {
+   "sent": "c1009032cbca0cdf6361ef73f868844f91a7d45dc0face85ed6f75b61cfbcc10"
+  },
+  "iteration": {
+   "sent": "6a173f3dab03765959fc4ffbfac4911203c3e2c032b3382e62e9c85c2910cb6d"
+  },
+  "iteration-default": {
+   "sent": "f108ae3df1c322292709a74f1140d326b9232933492ae75d8ba79b712ef5fee6"
+  },
+  "builtin": {
+   "sent": "ee47982e43692b0edde9f0266fa2446cc68d81e43909afb128bf4b87b31765d9"
+  },
+  "builtin-ru": {
+   "sent": "f30c13e6c04b362723b58bac12672e7d78219d47769563827f7999a5b83a3350"
   }
  }
 }

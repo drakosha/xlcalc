@@ -199,7 +199,8 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')
-  const calc = dynamic || book.iteration ? `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>` : ''
+  // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
+  const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
   files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })

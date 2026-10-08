@@ -51,9 +51,10 @@ describe('xlsx settings: iterative calculation', () => {
     expect(await text(data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1" iterate="1" iterateCount="7" iterateDelta="0.5"/>')
   })
 
-  it('a book without formulas keeps its setting; a book without the setting writes none', async () => {
+  it('a book without formulas keeps its setting; a book without the setting turns it off, as Excel keeps the one it has without calcPr', async () => {
     const { data } = await writeXlsx({ iteration: {}, sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
     expect(await text(data, 'xl/workbook.xml')).toContain('<calcPr iterate="1"/>')
+    expect(await text((await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })).data, 'xl/workbook.xml')).toContain('<calcPr/>')
     const plain = await writeXlsx({ sheets: [{ name: 'S', cells }] })
     expect(await text(plain.data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1"/>')
     expect((await readXlsx(plain.data)).book.iteration).toBeUndefined()
