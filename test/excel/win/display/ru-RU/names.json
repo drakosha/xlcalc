@@ -1,0 +1,786 @@
+{
+ "meta": {
+  "version": "16.0.17928.20148",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 19.3
+ },
+ "cases": [
+  {
+   "id": "names#1",
+   "cell": {
+    "value": 45688.75,
+    "format": "d mmmm yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#2",
+   "cell": {
+    "value": 45658.25,
+    "format": "d mmmm yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#3",
+   "cell": {
+    "value": 45688.75,
+    "format": "dd mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#4",
+   "cell": {
+    "value": 45658.25,
+    "format": "dd mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#5",
+   "cell": {
+    "value": 45688.75,
+    "format": "d mmm yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#6",
+   "cell": {
+    "value": 45658.25,
+    "format": "d mmm yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#7",
+   "cell": {
+    "value": 45688.75,
+    "format": "mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#8",
+   "cell": {
+    "value": 45658.25,
+    "format": "mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#9",
+   "cell": {
+    "value": 45688.75,
+    "format": "mmmm d"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#10",
+   "cell": {
+    "value": 45658.25,
+    "format": "mmmm d"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#11",
+   "cell": {
+    "value": 45688.75,
+    "format": "d\" \"mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#12",
+   "cell": {
+    "value": 45658.25,
+    "format": "d\" \"mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#13",
+   "cell": {
+    "value": 45688.75,
+    "format": "d-mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#14",
+   "cell": {
+    "value": 45658.25,
+    "format": "d-mmmm"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#15",
+   "cell": {
+    "value": 45688.75,
+    "format": "[$-F800]dddd, mmmm dd, yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#16",
+   "cell": {
+    "value": 45658.25,
+    "format": "[$-F800]dddd, mmmm dd, yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#17",
+   "cell": {
+    "value": 45688.75,
+    "format": "[$-F400]h:mm:ss AM/PM"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#18",
+   "cell": {
+    "value": 45658.25,
+    "format": "[$-F400]h:mm:ss AM/PM"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#19",
+   "cell": {
+    "value": 45688.75,
+    "format": "[$-409]d mmmm yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "names#20",
+   "cell": {
+    "value": 45658.25,
+    "format": "[$-409]d mmmm yyyy"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#1",
+   "cell": {
+    "value": 99999999,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#2",
+   "cell": {
+    "value": 99999999,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#3",
+   "cell": {
+    "value": 99999999,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#4",
+   "cell": {
+    "value": 100000000,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#5",
+   "cell": {
+    "value": 100000000,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#6",
+   "cell": {
+    "value": 100000000,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#7",
+   "cell": {
+    "value": 999999999,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#8",
+   "cell": {
+    "value": 999999999,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#9",
+   "cell": {
+    "value": 999999999,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#10",
+   "cell": {
+    "value": 1000000000,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#11",
+   "cell": {
+    "value": 1000000000,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#12",
+   "cell": {
+    "value": 1000000000,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#13",
+   "cell": {
+    "value": 1000000001,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#14",
+   "cell": {
+    "value": 1000000001,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#15",
+   "cell": {
+    "value": 1000000001,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#16",
+   "cell": {
+    "value": 2000000000,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#17",
+   "cell": {
+    "value": 2000000000,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#18",
+   "cell": {
+    "value": 2000000000,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#19",
+   "cell": {
+    "value": 123456789.5,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#20",
+   "cell": {
+    "value": 123456789.5,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#21",
+   "cell": {
+    "value": 123456789.5,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#22",
+   "cell": {
+    "value": 1000000000.5,
+    "format": "?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#23",
+   "cell": {
+    "value": 1000000000.5,
+    "format": "??/??"
+   },
+   "width": 40
+  },
+  {
+   "id": "fraction#24",
+   "cell": {
+    "value": 1000000000.5,
+    "format": "# ?/?"
+   },
+   "width": 40
+  },
+  {
+   "id": "text-number#1",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 2
+  },
+  {
+   "id": "text-number#2",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 2
+  },
+  {
+   "id": "text-number#3",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 2
+  },
+  {
+   "id": "text-number#4",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 3
+  },
+  {
+   "id": "text-number#5",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 3
+  },
+  {
+   "id": "text-number#6",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 3
+  },
+  {
+   "id": "text-number#7",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 4
+  },
+  {
+   "id": "text-number#8",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 4
+  },
+  {
+   "id": "text-number#9",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 4
+  },
+  {
+   "id": "text-number#10",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 5
+  },
+  {
+   "id": "text-number#11",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 5
+  },
+  {
+   "id": "text-number#12",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 5
+  },
+  {
+   "id": "text-number#13",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 6
+  },
+  {
+   "id": "text-number#14",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 6
+  },
+  {
+   "id": "text-number#15",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 6
+  },
+  {
+   "id": "text-number#16",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 8
+  },
+  {
+   "id": "text-number#17",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 8
+  },
+  {
+   "id": "text-number#18",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 8
+  },
+  {
+   "id": "text-number#19",
+   "cell": {
+    "value": 0.3333333333333333,
+    "format": "@"
+   },
+   "width": 12
+  },
+  {
+   "id": "text-number#20",
+   "cell": {
+    "value": 1234567.891,
+    "format": "@"
+   },
+   "width": 12
+  },
+  {
+   "id": "text-number#21",
+   "cell": {
+    "value": -0.5,
+    "format": "@"
+   },
+   "width": 12
+  },
+  {
+   "id": "unmatched#1",
+   "cell": {
+    "value": 0,
+    "format": "[>5]0;[<-5]0"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#2",
+   "cell": {
+    "value": 3,
+    "format": "[>5]0;[<-5]0;"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#3",
+   "cell": {
+    "value": -1,
+    "format": "[>5]0"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#4",
+   "cell": {
+    "value": 0,
+    "format": "[Red][<0]0;[Blue][>0]0"
+   },
+   "width": 10
+  },
+  {
+   "id": "unmatched#5",
+   "cell": {
+    "value": 3,
+    "format": "[>5]\"big\";[<-5]\"small\""
+   },
+   "width": 10
+  }
+ ],
+ "answers": {
+  "names#1": {
+   "text": "31 Январь 2025"
+  },
+  "names#2": {
+   "text": "1 Январь 2025"
+  },
+  "names#3": {
+   "text": "31 Январь"
+  },
+  "names#4": {
+   "text": "01 Январь"
+  },
+  "names#5": {
+   "text": "31 янв 2025"
+  },
+  "names#6": {
+   "text": "1 янв 2025"
+  },
+  "names#7": {
+   "text": "Январь"
+  },
+  "names#8": {
+   "text": "Январь"
+  },
+  "names#9": {
+   "text": "Январь 31"
+  },
+  "names#10": {
+   "text": "Январь 1"
+  },
+  "names#11": {
+   "text": "31 Январь"
+  },
+  "names#12": {
+   "text": "1 Январь"
+  },
+  "names#13": {
+   "text": "31-Январь"
+  },
+  "names#14": {
+   "text": "1-Январь"
+  },
+  "names#15": {
+   "text": "31 января 2025 г."
+  },
+  "names#16": {
+   "text": "1 января 2025 г."
+  },
+  "names#17": {
+   "text": "18:00:00"
+  },
+  "names#18": {
+   "text": "6:00:00"
+  },
+  "names#19": {
+   "text": "31 January 2025"
+  },
+  "names#20": {
+   "text": "1 January 2025"
+  },
+  "fraction#1": {
+   "text": "99999999/1"
+  },
+  "fraction#2": {
+   "text": "99999999/1 "
+  },
+  "fraction#3": {
+   "text": "99999999    "
+  },
+  "fraction#4": {
+   "text": "100000000/1"
+  },
+  "fraction#5": {
+   "text": "100000000/1 "
+  },
+  "fraction#6": {
+   "text": "100000000    "
+  },
+  "fraction#7": {
+   "text": "999999999/1"
+  },
+  "fraction#8": {
+   "text": "999999999/1 "
+  },
+  "fraction#9": {
+   "text": "999999999    "
+  },
+  "fraction#10": {
+   "text": "1000000000/1"
+  },
+  "fraction#11": {
+   "text": "1000000000/1 "
+  },
+  "fraction#12": {
+   "text": "1000000000    "
+  },
+  "fraction#13": {
+   "text": "1000000001/1"
+  },
+  "fraction#14": {
+   "text": "1000000001/1 "
+  },
+  "fraction#15": {
+   "text": "1000000001    "
+  },
+  "fraction#16": {
+   "text": "2000000000/1"
+  },
+  "fraction#17": {
+   "text": "2000000000/1 "
+  },
+  "fraction#18": {
+   "text": "2000000000    "
+  },
+  "fraction#19": {
+   "text": "246913579/2"
+  },
+  "fraction#20": {
+   "text": "246913579/2 "
+  },
+  "fraction#21": {
+   "text": "123456789 1/2"
+  },
+  "fraction#22": {
+   "text": "2000000001/2"
+  },
+  "fraction#23": {
+   "text": "2000000001/2 "
+  },
+  "fraction#24": {
+   "text": "1000000000 1/2"
+  },
+  "text-number#1": {
+   "text": "0"
+  },
+  "text-number#2": {
+   "text": "#"
+  },
+  "text-number#3": {
+   "text": "#"
+  },
+  "text-number#4": {
+   "text": "0"
+  },
+  "text-number#5": {
+   "text": "##"
+  },
+  "text-number#6": {
+   "text": "-1"
+  },
+  "text-number#7": {
+   "text": "0,3"
+  },
+  "text-number#8": {
+   "text": "###"
+  },
+  "text-number#9": {
+   "text": "-1"
+  },
+  "text-number#10": {
+   "text": "0,33"
+  },
+  "text-number#11": {
+   "text": "####"
+  },
+  "text-number#12": {
+   "text": "-0,5"
+  },
+  "text-number#13": {
+   "text": "0,333"
+  },
+  "text-number#14": {
+   "text": "1E+06"
+  },
+  "text-number#15": {
+   "text": "-0,5"
+  },
+  "text-number#16": {
+   "text": "0,33333"
+  },
+  "text-number#17": {
+   "text": "1234568"
+  },
+  "text-number#18": {
+   "text": "-0,5"
+  },
+  "text-number#19": {
+   "text": "0,333333333"
+  },
+  "text-number#20": {
+   "text": "1234567,891"
+  },
+  "text-number#21": {
+   "text": "-0,5"
+  },
+  "unmatched#1": {
+   "text": "#########"
+  },
+  "unmatched#2": {
+   "text": ""
+  },
+  "unmatched#3": {
+   "text": "-1"
+  },
+  "unmatched#4": {
+   "text": "#########"
+  },
+  "unmatched#5": {
+   "text": "#########"
+  }
+ }
+}
