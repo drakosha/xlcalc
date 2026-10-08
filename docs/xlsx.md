@@ -15,7 +15,7 @@ const { data } = await writeXlsx(book, { result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` or an `ArrayBuffer`, and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells, columns, rows and merged areas, names, the style table and the locale.
+- `book` is a `BookInput`: sheets with their cells, columns, rows, merged areas and filter mode, names, the style table, the locale, the date system and iterative calculation.
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order. These are what Excel computed when it saved the file, so you can compare them with the engine's result.
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
 
@@ -67,13 +67,46 @@ Each cell format of the file becomes a style of the book's table and a number fo
 
 Colours become `#RRGGBB`. A theme colour with a tint is computed as Excel shows it, and the legacy palette or the book's own palette gives indexed colours.
 
-A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives it the code Excel for Mac en-US shows: format 14 is `m/d/yy`, format 4 is `#,##0.00`. Excel shows the date, time and currency ones by the regional settings, so they are reported.
+A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/25` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported.
+
+Excel for Mac saves some built-in formats otherwise than by their number: the money and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file Excel saved holds them so.
 
 ### Columns, rows and merged areas
 
-A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out. Hidden rows and columns get a size of 0 and are reported. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
+A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out. A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, whether the file marks it hidden or not, and so do the reader and the engine. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
+
+```js
+// <row r="5" ht="30" hidden="1" customHeight="1">, <col min="5" max="5" width="12" hidden="1" customWidth="1"/>
+rows: { 5: { height: 30, hidden: true } }, columns: { E: { width: 12, hidden: true } }
+```
 
 A merged area that overlaps another is left out and reported.
+
+### Filters
+
+A sheet whose rows a filter hid gets `filtered: true`. Then `SUBTOTAL` with codes 1 to 11 leaves out its hidden rows too, as Excel does, and so do structure operations ([docs/structure.md](structure.md)). Excel takes a sheet as filtered by what its filters hold, not by the mark `filterMode` alone:
+
+| in the file | the sheet |
+|---|---|
+| an autofilter with criteria, with the mark or without it | filtered |
+| a table's filter with criteria | filtered |
+| the mark without an autofilter, as an advanced filter leaves it | filtered |
+| an autofilter without criteria, with the mark or without it | not filtered |
+
+Every hidden row of a filtered sheet counts as one the filter hid, whatever hid it. The book keeps the filter mode alone: the autofilter's range, its criteria and its sort, a table's criteria and an advanced filter are reported.
+
+### The date system and calculation
+
+A file with `workbookPr date1904` gives a book with `dateSystem: 1904`. Numbers stay as the file stores them: in such a book serial 0 is 1 January 1904, and ISO dates of Strict files count from there too.
+
+`calcPr iterate` gives `iteration`, with `maxIterations` from `iterateCount` and `maxChange` from `iterateDelta` when the file has them. A count outside 1 to 32,767 or a change below 0 is read as Excel's default and reported. The count and the change of a book without iterative calculation are not kept: they change nothing.
+
+```js
+// <calcPr iterate="1" iterateCount="7" iterateDelta="0.5"/>
+iteration: { maxIterations: 7, maxChange: 0.5 }
+```
+
+The manual calculation mode, "automatic except for data tables" and precision as displayed are reported.
 
 ### Names
 
@@ -107,16 +140,16 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `errorValue` | an error the model has no code for, such as `#GETTING_DATA` |
 | `dataTable` | a what-if data table, read as its stored values |
 | `name` | built-in names, hidden names, names of a sheet left out |
-| `date1904` | the 1904 date system: numbers in date formats move to the 1900 system |
-| `calculation` | iterative calculation, the manual mode |
+| `calculation` | the manual mode, automatic but for data tables, precision as displayed, an iteration count or change out of range |
 | `style` | pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript, protection |
 | `defaultFont` | a default font other than Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
-| `numberFormat` | a built-in format shown by the regional settings, or an unknown one |
-| `hidden` | hidden sheets, rows and columns |
+| `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
+| `hidden` | hidden sheets, read as visible ones |
+| `autoFilter` | an autofilter's range, criteria and sort, a table's criteria, an advanced filter |
 | `sheetKind` | chart, dialog and macro sheets, left out |
 | `cellMetadata` | a rich value in a cell, such as a data type or a picture |
-| `conditionalFormat`, `dataValidation`, `comment`, `hyperlink`, `drawing`, `autoFilter`, `pivotTable`, `protection`, `frozenPanes`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
+| `conditionalFormat`, `dataValidation`, `comment`, `hyperlink`, `drawing`, `pivotTable`, `protection`, `frozenPanes`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
 | `locale` | a locale the package does not have |
 | `part` | a missing sheet part, a cell outside the sheet |
 
@@ -154,7 +187,17 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 
 ### Styles, columns and rows
 
-Styles, number formats, widths, heights and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits. A number format that Excel would show by the regional settings, such as `m/d/yy`, is written as a custom code, so every locale shows what `format` says.
+Styles, number formats, widths, heights, hidden rows and columns and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits.
+
+A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
+
+### Filters
+
+A filtered sheet is written so that Excel takes it as filtered. Its first table with a header row gets criteria in its filter that every row meets, a cell equal to nothing or not equal to it, as Excel keeps a table's filter. A sheet without such a table gets Excel's mark `filterMode` and an autofilter with those criteria over its cells and hidden rows. Excel leaves the rows as the file has them, and its Reapply shows every row. A sheet whose tables have no header row and meet its cells cannot have an autofilter there: its filter mode is left out and reported.
+
+### The date system and calculation
+
+`dateSystem: 1904` is written as `workbookPr date1904`, and dates typed in (`{ date: '2025-01-31' }`) as serial numbers of 1904, 44226. `iteration` is written as `calcPr iterate` with the count and the change the book gives. Every file has `calcPr`: without it Excel keeps the calculation settings it has from a book opened before, iterative calculation among them.
 
 ### What the file cannot hold
 
@@ -165,6 +208,7 @@ Styles, number formats, widths, heights and merged areas are written as the book
 | `textLength` | text over 32,767 characters is cut |
 | `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
+| `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
 
 ## Speed
 
@@ -184,7 +228,7 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 - `zip/` reads and writes the archive. Inflating and deflating go through `DecompressionStream` and `CompressionStream`.
 - `xml/` holds the text layer: entities, Excel's escapes, and elements found by regular expressions.
 - `read/` reads the package, the workbook, the sheets and their cells, and the cell metadata.
-- `styles/` turns styles.xml into the style table and holds the built-in number formats and the colours.
+- `styles/` turns styles.xml into the style table and holds the codes of the East Asian built-in formats, the codes the writer stores by number, and the colours.
 - `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
 - `write/` writes the workbook, the sheets and styles.xml.
 
@@ -196,13 +240,18 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 
 | step | what | result |
 |---|---|---|
-| `roundtrip` | 172 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, and the books of the structure, spill and table sets, names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them | every file opens, every book reads back as written, and Excel's values equal the engine's |
+| `roundtrip` | 181 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, the books of the structure, spill and table sets (names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them), hidden rows and columns with their sizes, lines of size 0, filtered sheets with and without a table, the 1904 date system, iterative calculation and the built-in formats by number in en-US and ru-RU | every file opens, every book reads back as written, and Excel's values equal the engine's |
+| `filters` | 8 files with a filter in each form a file holds it, `SUBTOTAL` and `AGGREGATE` over the rows it hid | read with the filter mode Excel took, every formula computes the value Excel stored |
 | `saved` | 96 books of the case sets, 29,078 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
 | `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` |
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
-| `formats` | the built-in number formats 1 to 58 | the reader's codes equal Excel's |
+| `formats` | the built-in number formats 1 to 58 | the codes Excel en-US shows equal the engine's for 1 to 49 and the reader's for 50 to 58 |
 
-The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line.
+The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line, a line of size 0 as hidden, a code that every locale shows as a built-in format as that format's number.
+
+The 98 files of the workbook sets (`bench/coverage/workbook/`: hidden rows and columns, autofilters with and without criteria and the filter mark, the 1904 date system, iterative calculation), which Excel opened and computed step by step, read into the books the engine was checked with against Excel's answers, and compute the same values (`test/xlsx-workbook.test.ts`).
+
+The answers to the filter files and to nine books of the round trip were predicted and committed before Excel ran them (`bench/coverage/xlsx/predicted.json`): the filter mode of 8 files and 118 values, all as Excel gave them. The books were predicted to come back without differences, and three did not: Excel saved the built-in formats of two by codes and escaped the literal characters of the date formats of the third.
 
 ## Known differences
 
@@ -210,9 +259,9 @@ The round trip compares books by what they mean: a style by its fields, a formul
 - Excel saves a range over whole columns or rows as such, so `A1:A1048576` comes back as `A:A`.
 - Excel saves a global name qualified by a sheet that has no name of its own, `'S'!x`, as the book's name `[0]!x`. It comes back as `x`, the same name.
 - Excel saves a LET that ends with a value with its last name as the calculation. With 127 names that makes 255 arguments, one more than the engine takes, so such a formula does not parse after Excel saved it.
-- A built-in date, time or currency format reads as the code Excel for Mac en-US shows. Excel for Windows en-US shows format 14 as `m/d/yyyy`, and ru-RU as `dd.mm.yyyy`.
+- Excel for Mac saves the built-in money and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General and the East Asian 27 to 36 as 14 and 21, so a book read from a file Excel saved has these codes and numbers.
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
 - In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
-- Hidden rows and columns lose the size they had before they were hidden.
-- A style or height given to a span of rows is written row by row, so a span to the last row writes a million rows.
+- An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
+- A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.

@@ -97,7 +97,7 @@ export interface ColumnInput {
   width?: number
   style?: number
   format?: NumberFormat
-  /** Hidden (xlsx `hidden`). SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
+  /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
   hidden?: boolean
 }
 
@@ -109,7 +109,8 @@ export interface RowInput {
   format?: NumberFormat
   /**
    * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
-   * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does.
+   * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does. A row of
+   * `height` 0 is hidden too, as Excel takes it.
    */
   hidden?: boolean
 }
@@ -125,8 +126,9 @@ export interface SheetInput {
   /** Merged areas (`B2:D3`), as xlsx `<mergeCell>`: two cells or more each, none overlapping another. */
   merges?: string[]
   /**
-   * The sheet's autofilter has criteria (Excel's filter mode): every hidden row of the sheet counts as one a filter
-   * hid, which SUBTOTAL skips with codes 1–11 too and a copy leaves out, as Excel does whatever hid the row.
+   * A filter of the sheet has criteria, its autofilter's or a table's (Excel's filter mode): every hidden row of the
+   * sheet counts as one a filter hid, which SUBTOTAL skips with codes 1–11 too and a copy leaves out, as Excel does
+   * whatever hid the row.
    */
   filtered?: boolean
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or array area of several cells meets one. */

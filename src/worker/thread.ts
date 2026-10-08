@@ -11,6 +11,7 @@ import type { AbortSignalLike, BookInput, CalcOptions, Clock, StructureOp } from
 import { currentClock } from '../env.js'
 import { CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
+import { isHiddenRow } from '../layout/hidden.js'
 import { CHANGING, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
 import { workerThreads } from './platform.js'
 
@@ -39,7 +40,7 @@ let current: { task: number; abort(reason?: unknown): void } | null = null
 function outlineOf(book: BookInput): Outline {
   return {
     sheets: book.sheets.map((s) => {
-      const rows = Object.entries(s.rows ?? {}).filter(([, r]) => r.hidden)
+      const rows = Object.entries(s.rows ?? {}).filter(([, r]) => isHiddenRow(r))
       return {
         name: s.name,
         cells: {},

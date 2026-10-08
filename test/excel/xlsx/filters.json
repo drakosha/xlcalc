@@ -1,0 +1,33 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "seconds": 7.3,
+  "date": "2026-10-08"
+ },
+ "books": {
+  "filter": {
+   "sent": "207e85b2093f2910b26d177937a004a18369c61ed541b5e5c0753e61da1d1930"
+  },
+  "filter-unmarked": {
+   "sent": "a4b1719122b05de74f2c7ed53e615451a39da9db3d29c14ce9f79decec2421f7"
+  },
+  "filter-none": {
+   "sent": "38b022c9a6cb0d84c21933c715d153f5f47b6999752b6515b1a31a31d7b8f02b"
+  },
+  "advanced": {
+   "sent": "5788eac62033fecfad200e8990721ddf5902f94493f8e960c60e2c3d696a4736"
+  },
+  "table": {
+   "sent": "13563e4f343775d19ba1c6977d9e1fd2a3d9fef474099855e83a3b8abbb64d10"
+  },
+  "table-unmarked": {
+   "sent": "a4eb735e9149f18a18615c1bd0a420eedceeafa6833235db3c6a0c67aba61b7e"
+  },
+  "table-none": {
+   "sent": "fb071cea6921c5d2d80e29f79cbc7be2187609b9ab3fec798e76c3d7b29b1bc7"
+  },
+  "keep-all-table": {
+   "sent": "6d3319afe4d540900b197f0c45d500aa6a2f561c73c9b712a04bdea75ebaf246"
+  }
+ }
+}

@@ -2,8 +2,8 @@
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
  * cells as a copy and paste spreads them (`restructure`'s copyRange), array formulas of the old kind over their area,
- * the cells an array spilled into left to the stored values, columns, rows, merged areas, and what the sheet has that
- * the model does not, reported.
+ * the cells an array spilled into left to the stored values, columns, rows, merged areas, the filter mode, and what the
+ * sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
@@ -15,7 +15,7 @@ import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
-import { attributes, element, elements, flag, has } from '../xml/scan.js'
+import { attributes, element, elements, flag, has, type Element } from '../xml/scan.js'
 import { look, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
@@ -44,7 +44,6 @@ const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
   ['conditionalFormattings', 'conditionalFormat', 'conditional formatting is not in the model'],
   ['dataValidations', 'dataValidation', 'data validation is not in the model'],
   ['hyperlinks', 'hyperlink', 'hyperlinks are not in the model'],
-  ['autoFilter', 'autoFilter', 'an autofilter and its sort are not in the model'],
   ['sheetProtection', 'protection', 'sheet protection is not in the model'],
   ['protectedRanges', 'protection', 'sheet protection is not in the model'],
   ['drawing', 'drawing', 'pictures, charts and shapes are not in the model'],
@@ -156,10 +155,9 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     if (!(lo >= 0 && hi >= lo && hi < 16384)) continue
     const col: ColumnInput = {}
     const where = { sheet: read.sheet, cell: `${spanKey(lo, hi, 'c').replace(/^([A-Z]+)$/, '$1:$1')}` }
-    if (flag(a.hidden)) {
-      col.width = 0
-      read.issues.add('hidden', 'hidden rows and columns are read with a size of 0', where)
-    } else if (a.width !== undefined && flag(a.customWidth)) col.width = Math.min(255, Number(a.width))
+    if (a.width !== undefined && flag(a.customWidth)) col.width = Math.min(255, Number(a.width))
+    // Excel hides a column of width 0 whatever its flag
+    if (flag(a.hidden) || col.width === 0) col.hidden = true
     if (a.style !== undefined) Object.assign(col, look(read.xfs[Number(a.style)]))
     if (Number(a.outlineLevel ?? 0) > 0) read.issues.add('outline', 'grouped rows and columns are not in the model', where)
     if (Object.keys(col).length) lines.push([lo, hi, col])
@@ -181,6 +179,28 @@ function merges(rest: string, sheet: string, issues: Issues): string[] | undefin
     }
   }
   return xs.length ? xs.map(mergeText) : undefined
+}
+
+/** Whether an autofilter, a sheet's or a table's, has criteria: a column with a filter of any kind. */
+export function hasCriteria(filter: Element | undefined): boolean {
+  return !!filter?.body && elements(filter.body, 'filterColumn').some((c) => !!c.body && /<[\w.:-]+[\s/>]/.test(c.body))
+}
+
+/**
+ * Excel's filter mode: an autofilter with criteria, the sheet's or a table's, or the mark of an advanced filter (no
+ * autofilter). The mark beside an autofilter without criteria is not taken, as Excel does not take it. The range and
+ * the criteria are reported.
+ */
+function filterMode(head: string, tail: string, src: SheetSource, issues: Issues): boolean {
+  const where = { sheet: src.name }
+  const own = element(tail, 'autoFilter')
+  const mark = flag(attributes(element(head, 'sheetPr')?.attrs ?? '').filterMode)
+  const tables = src.tables.some((x) => hasCriteria(element(x, 'autoFilter')))
+  const criteria = hasCriteria(own)
+  if (own) issues.add('autoFilter', criteria ? "an autofilter's range, criteria and sort are not in the model: the sheet is read as filtered, the rows it hid as hidden" : 'an autofilter without criteria (its buttons and sort) is not in the model', where)
+  else if (mark && !tables) issues.add('autoFilter', 'an advanced filter is not in the model: the sheet is read as filtered, the rows it hid as hidden', where)
+  if (tables) issues.add('autoFilter', "a table's filter criteria are not in the model: the sheet is read as filtered, the rows they hid as hidden", where)
+  return criteria || tables || (mark && !own)
 }
 
 function features(head: string, tail: string, src: SheetSource, issues: Issues) {
@@ -228,6 +248,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', 'an error typed into a cell is read as a formula of that error', { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
+  if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true
   const cols = columns(head, ctx)
   if (cols) sheet.columns = cols
   const rows = spans<RowInput>([...read.rows].map(([r, v]) => [r - 1, r - 1, v]), 'r')
