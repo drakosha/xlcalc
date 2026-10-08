@@ -1,9 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.4.1 (2026-10-08)
+
+Internal release; not published to npm. The xlsx reader and writer carry hidden rows, filters, the 1904 date system, iteration and built-in formats; the intersection and range operators; `#NULL!` joins `ErrorCode`.
 
 Changed:
 
+- Contract: `ErrorCode` gains `NULL`, Excel's `#NULL!`: the intersection of ranges that do not meet. The literal `#NULL!` was read as `ERROR` (shown as `#ERROR!`) before; `ERROR` remains the error of a formula that does not compute.
+- `S1:S3!A1`, with sheets named like cells, is the range operator between the cell S1 and `'S3'!A1`, as Excel reads it: `#VALUE!` on another sheet, A1:S1 on S3 (it was a reference across the sheets S1 to S3, which `'S1:S3'!A1` still is).
+- `SUBTOTAL`, `AGGREGATE` and `FREQUENCY` take a union area by area, `FREQUENCY` a reference across sheets too, as Excel does (they answered `#VALUE!` or `#REF!`); a reference across sheets that `SWITCH` compares is `#REF!`.
+- One value where a function takes a table, an array or dates, as Excel takes it: the table of `VLOOKUP`, `HLOOKUP` and `MATCH` (`#N/A`, `#VALUE!` for text that is no number), `XLOOKUP`'s lookup array (the return array's one row or column), `WRAPROWS` and `WRAPCOLS` of fewer values than the count (one line, not padded), text as the array of `F.TEST`, `FTEST` and `MIRR` (no numbers, `#DIV/0!`), a boolean or text as `XIRR`'s and `XNPV`'s values or dates (`#VALUE!` before the sizes count).
+- Financial and date functions at edges, as Excel computes them: `ACCRINT` on basis 1 over several coupon periods, and with a settlement on a coupon date; a coupon period before 1900 (`ACCRINT` 0, `PRICE` `#NUM!`); serial 0 as `ACCRINT`'s issue or first interest date and in `XNPV`'s dates (`#NUM!`); the first period of `AMORDEGRC` and `AMORLINC` capped at cost less salvage, and `AMORDEGRC`'s period that passes the salvage; date text among the holidays of `WORKDAY` and `NETWORKDAYS` (it was `#VALUE!`).
 - A row of height 0 is hidden for `SUBTOTAL` 101–111 and `AGGREGATE`, and on a filtered sheet for `SUBTOTAL` 1–11 and the structure operations, in a book, in a session's `setLayout` and in the thread pool, as Excel takes it (an xlsx round trip through Excel); it was counted unless `hidden` said so.
 - Contract: a row of `height` 0 is hidden (`RowInput.hidden`) and a column of `width` 0 too (`ColumnInput.hidden`), as Excel takes them; `SheetInput.filtered` says that a table's filter with criteria makes its sheet filtered as well as the sheet's autofilter.
 - `readXlsx` reads what the book now holds instead of approximating it: hidden rows and columns get `hidden: true` and keep their sizes (they were read with a size of 0), and a row of height 0 or a column of width 0 is hidden as Excel takes it; a file of the 1904 date system gives `dateSystem: 1904` with its numbers as stored (they were moved to the 1900 system); `calcPr iterate` gives `iteration`; a built-in number format is read by its number, 1 to 49 (it was the code Excel for Mac en-US shows). The issue code `date1904` is gone, `hidden` is about hidden sheets alone, `calculation` no longer reports iterative calculation, and `numberFormat` reports only the East Asian formats 50 to 58 and unknown ones.
@@ -11,6 +18,7 @@ Changed:
 
 Added:
 
+- The intersection operator, a space between references (`SUM(A1:C3 B2:D4)`, `#NULL!` where they do not meet), and the range operator between references that are not one range (`A1:INDEX(B1:B9,3)`, `Sales[Qty]:Sales[Price]`), read and computed as in Excel, in xlsx files and `fromLegacy` too; a formula with the range operator reads every cell between its ends, a spill reference as an end (`A1:E2#`) as far as the array spills (`docs/references.md`).
 - xlsx: a sheet's filter mode both ways. `readXlsx` gives `filtered: true` to a sheet whose autofilter has criteria (with Excel's mark `filterMode` or without it), whose table's filter has criteria, or that has the mark without an autofilter (an advanced filter), as Excel takes them; the autofilter's range and criteria are reported (`autoFilter`). `writeXlsx` writes a filtered sheet with criteria every row meets, on its first table with a header row or on an autofilter of its own with the mark, so Excel counts its hidden rows as filtered. Hidden rows and columns, `dateSystem` (`workbookPr date1904`, dates typed in as 1904 serial numbers) and `iteration` (`calcPr iterate`, `iterateCount`, `iterateDelta`) are written too. Checked through Excel 16.113: 8 files with filters in each form and 9 more books of the round trip, their answers predicted before Excel ran them.
 
 ## 0.4.0 (2026-10-08)

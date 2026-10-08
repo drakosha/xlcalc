@@ -15,6 +15,7 @@ const GENERIC: Record<ErrorCode, string> = {
   NUM: 'number out of range',
   REF: 'invalid reference',
   VALUE: 'wrong type of value',
+  NULL: 'ranges do not intersect',
   CYCLE: 'circular reference',
   SPILL: 'array result does not fit',
   CALC: 'empty array or text too long',

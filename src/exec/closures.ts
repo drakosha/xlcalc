@@ -11,7 +11,7 @@ import { once, OPERATORS, type Backend, type Operator } from './walk.js'
 type Fn = () => Arg
 
 export function closureBackend(rt: Runtime): Backend<Fn> {
-  const { cell, spill, scalar, cmp, L1, L2, C, F, FL, LZ, ext, I, U } = rt
+  const { cell, spill, scalar, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO } = rt
   // the runtime's scalar operators get what the walk proved to be one value
   const op1 = (name: 'neg' | 'pct') => rt[name] as (a: Arg) => V
   const op2 = (name: Operator) => rt[name] as (a: Arg, b: Arg) => V
@@ -52,6 +52,7 @@ export function closureBackend(rt: Runtime): Backend<Fn> {
       return () => a
     },
     union: (items) => () => U(...items.map((a) => a())),
+    refOp: (op, a, b) => () => RO(op, a(), b()),
     at: (a, r, c) => () => I(a(), r, c),
     let: (count, build) => {
       // the uses read the current computation's values

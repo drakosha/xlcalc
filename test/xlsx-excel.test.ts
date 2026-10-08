@@ -185,8 +185,7 @@ describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx formulas of t
       return show(mine) !== show(excel) && !unread.has(a) && !(mine.t === 'e' && mine.v === 'NAME') ? [`${a} ${f} read as ${read.book.sheets[0].cells[a].formula}: engine ${show(mine)}, Excel ${show(excel)}`] : []
     })
     expect(off).toEqual([])
-    // the intersection operator, a space between two ranges
-    expect([...unread]).toEqual([formulaCell(OLD_FORMULAS.indexOf('C1:C3 D2:E2'))])
+    expect([...unread]).toEqual([])
   })
 })
 

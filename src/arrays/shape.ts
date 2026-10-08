@@ -9,7 +9,7 @@ import type { NameDef } from '../exec/walk.js'
 import { FUNCTIONS } from '../functions.js'
 import type { ErrorCode } from '../contract.js'
 import type { Rect } from '../structure/area.js'
-import type { Ast } from '../syntax.js'
+import { isRefOp, type Ast } from '../syntax.js'
 
 /** A name's definition as the names of sheet `scope` show it (`exec/walk.ts`). */
 export type NameRef = (n: Extract<Ast, { k: 'name' }>, scope: number) => NameDef | undefined
@@ -105,6 +105,12 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
       case 'pct':
         return { s: go(n.a).s, ref: false }
       case 'bin':
+        // the intersection and the range operator answer a reference of one cell or more
+        if (isRefOp(n.op)) {
+          go(n.a)
+          go(n.b)
+          return { s: 1, ref: true }
+        }
         return { s: max(go(n.a).s, go(n.b).s), ref: false }
       case 'fn':
         return call(n.name, n.args.map(go), n.args)

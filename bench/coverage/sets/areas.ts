@@ -7,7 +7,7 @@
  */
 import type { Probe, SheetCells } from '../probes.js'
 import { DEFS } from '../../../src/functions.js'
-import { collector } from './arrays/common.js'
+import { collector, xl } from './arrays/common.js'
 import { eachCall } from '../legacy/params.js'
 
 export const UNION = '(D!B1:B3,D!C1:C3)'
@@ -38,10 +38,9 @@ const kindAt = (fn: string, i: number): string | undefined => {
 export function buildProbes(): Probe[] {
   const { out, add } = collector()
   eachCall((name, call, v) => {
-    // the range variants of `legacy/params`, the range made a union or a reference across sheets
+    // the range variants of `legacy/params`, the range made a union or a reference across sheets; ids by function and argument, so a change of kinds moves no other case
     if (v?.kind !== 'r' || !RANGES.includes(kindAt(name, v.at - 1) ?? '')) return
-    add(`fn:union`, name, call.replace('D!B1:B3', UNION))
-    add(`fn:cube`, name, call.replace('D!B1:B3', CUBE))
+    for (const [group, x] of [['fn:union', UNION], ['fn:cube', CUBE]]) out.push({ id: `${group}:${name}#${v.at}`, group, fn: name, formula: xl(call.replace('D!B1:B3', x)) })
   })
   const forms = (group: string, ...fs: string[]) => add(group, group, ...fs)
   forms('cube', CUBE, `${CUBE}+1`, 'Jan:Mar!A1', 'Jan:Mar!A1+1', 'SUM(Jan:Mar!A1)', 'SUM(Mar:Jan!A1:A3)', 'SUM(Jan:Jan!A1:A3)', 'SUM(Feb:Mar!A1:A3)', 'SUM(Jan:Mar!A:A)', 'SUM(Jan:Mar!1:1)', "SUM('Jan:Mar'!A1:A3)", 'SUM(Jan:Mar!A1:B3)', 'COUNTA(Jan:Mar!B1:B3)')

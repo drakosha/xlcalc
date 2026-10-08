@@ -1,6 +1,6 @@
-# The @ operator, unions and references across sheets
+# The @ operator, unions, references across sheets and the reference operators
 
-Three kinds of references that Excel files use. `@A1:A10` takes one cell of a range. `(A1:A3,C1:C3)` joins ranges of one sheet. `'Jan:Mar'!A1:B2` is the same rectangle on every sheet from Jan to Mar.
+Kinds of references that Excel files use. `@A1:A10` takes one cell of a range. `(A1:A3,C1:C3)` joins ranges of one sheet. `'Jan:Mar'!A1:B2` is the same rectangle on every sheet from Jan to Mar. `A1:C3 B2:D4` is the cells two ranges share, and `A1:INDEX(B1:B9,3)` the range from one reference to another.
 
 The rules below were measured in Excel 16.113 for Mac (en-US) with dynamic array formulas.
 
@@ -33,6 +33,9 @@ A union is written in parentheses inside a call: `SUM((A1:A3,C1:C3))`. A name's 
 | formula | gives |
 |---|---|
 | `SUM((A1:A3,C1:C3))`, `COUNT`, `MAX`, `AVERAGE`, `LARGE`, `MEDIAN`, `STDEV` | the function over every part |
+| `SUBTOTAL(9,(A1:A3,C1:C3))`, `AGGREGATE(9,6,(A1:A3,C1:C3))` | the function over every part, nested `SUBTOTAL` cells and hidden rows skipped as in one range; an area counted twice where parts overlap |
+| `FREQUENCY((A1:A3,C1:C3),E1:E3)`, a union of bins | the counts over every part's numbers |
+| `SORTBY((A1:A3,C1:C3),…)`, a union as a sort order too | `#VALUE!` |
 | `INDEX((A1:A3,C1:C3),2,1,2)` | C2, from the second area |
 | `INDEX((A1:A3,C1:C3),2,1,3)` | `#REF!`, no third area |
 | `AREAS((A1:A3,C1:C3))` | 2 |
@@ -42,11 +45,31 @@ A union is written in parentheses inside a call: `SUM((A1:A3,C1:C3))`. A name's 
 
 ## References across sheets
 
-`'Jan:Mar'!A1:B2` covers the sheets from Jan to Mar in the book's order, Feb between them included. The ends can come in either order. Sheet names that read as cell addresses (`S1`, `Q3`) must be quoted: Excel does not read `S1:S3!A1` as a reference across sheets.
+`'Jan:Mar'!A1:B2` covers the sheets from Jan to Mar in the book's order, Feb between them included. The ends can come in either order. Sheet names that read as cell addresses (`S1`, `Q3`) must be quoted there: Excel reads `S1:S3!A1` as the range operator between the cell S1 of the formula's own sheet and A1 on S3, so it is `#VALUE!` on any other sheet and the range A1:S1 on S3. One such sheet alone needs no quotes (`S1!A1`).
 
-The list functions take each sheet's rectangle in turn: `SUM`, `COUNT`, `COUNTA`, `AVERAGE`, `MAX`, `MIN`, `PRODUCT`, `STDEV`, `VAR` and the others over lists of numbers, `AND`, `OR`. `VSTACK`, `HSTACK`, `TOCOL` and `TOROW` stack the sheets' rectangles. `CHOOSE` and `IF` pass one on.
+The list functions take each sheet's rectangle in turn: `SUM`, `COUNT`, `COUNTA`, `AVERAGE`, `MAX`, `MIN`, `PRODUCT`, `STDEV`, `VAR` and the others over lists of numbers, `AND`, `OR`, and `FREQUENCY`, as its data or its bins. `VSTACK`, `HSTACK`, `TOCOL` and `TOROW` stack the sheets' rectangles. `CHOOSE` and `IF` pass one on.
 
-Alone or under an operator it is `#REF!` (`=Jan:Mar!A1+1`). `INDEX`, `AREAS` and `ROWS` give `#VALUE!`, `ISREF` gives FALSE.
+Alone or under an operator it is `#REF!` (`=Jan:Mar!A1+1`). `INDEX`, `AREAS`, `ROWS`, `SUBTOTAL` and `AGGREGATE` give `#VALUE!`, `SORTBY` and a value `SWITCH` compares give `#REF!`, `ISREF` gives FALSE.
+
+## The intersection and the range operator
+
+A space between two references is the intersection operator: the cells both cover. Line breaks count as spaces. A space next to an operator, a parenthesis that opens or a comma is no operator (`SUM( A1:A3 , B1 )`).
+
+| formula | gives |
+|---|---|
+| `SUM(A1:C3 B2:D4)` | the sum of B2:C3 |
+| `A1:C3 C2:C2` | C2's value |
+| `A1:A3 C1:C3` | `#NULL!`: the ranges do not meet |
+| `ERROR.TYPE(A1:A3 C1:C3)`, `ISREF(A1:A3 C1:C3)` | 1, FALSE |
+| `(A1:A3,C1:C3) A2:C2` | A2 and C2, a union |
+| `A1:C3 INDEX(A1:D4,0,2)` | B1:B3: a call that answers a reference takes part |
+| `A1:A3 'Jan'!A1:A3`, `'Jan:Mar'!A1:A3 'Jan:Mar'!A2:B2` | `#VALUE!`: other sheets, references across sheets |
+
+`:` between two references that are not one range is the range operator: the rectangle around both. `A1:INDEX(B1:B9,3)` is A1:B3, `INDEX(B1:B9,2):B4` is B2:B4, `Sales[Qty]:Sales[Price]` the columns from Qty to Price. A reference without a sheet is on the formula's sheet, so `'D'!B1:B2:C3` joins two sheets and is `#VALUE!`, as `A1:'Jan'!A1` is. A spill reference can be an end (`A1:E2#` reaches as far as the array spills).
+
+A formula with the range operator reads every cell between the ends, so a formula there is computed first, an edit that changes it reaches the reader, and a range around the formula's own cell is a cycle (`SUM(A1:A1:C1)` in B1). Where an end comes from a call, the cells between are those around the references the call can answer, `INDEX`'s array say, not those it only reads, such as `MATCH`'s lookup range in `A1:INDEX(A1:A9,MATCH(5,Z1:Z9,0))`. A spill reference reaches as far as its array spilled at the last computation, and when the array grows the reader is computed again.
+
+`:` binds tightest, then the space, then `@` and the other operators: `-A1:C3 C2:C2` is minus C2, `@A1:C3 C2:C2` is C2. The comma of a union joins whole operands. The canonical text keeps one space for the intersection.
 
 ## Other functions
 
@@ -68,11 +91,4 @@ A function that does not take several areas gives an error, which depends on the
 
 ## How it was checked
 
-The set `areas` (989 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.
-
-## Known differences
-
-- `SUBTOTAL` and `AGGREGATE` take each area of a union in Excel and give `#VALUE!` here.
-- `FREQUENCY` and `SORTBY` take a union or a reference across sheets in Excel and answer an array; here they give `#VALUE!` or `#REF!`.
-- A reference across sheets that `SWITCH` compares is `#REF!` in Excel and `#VALUE!` here.
-- The intersection operator, a space between two ranges, is not read, nor the range operator between two references (`Sales[Qty]:Sales[Price]`, `A1:INDEX(…)`).
+The set `areas` (1,137 cases) puts a union and a reference across sheets into every argument of every whitelisted function that takes a range, and adds the forms above; its case ids name the function and the argument (`fn:union:SUBTOTAL#2`). The set `areas-each` (52 cases) measures how `SUBTOTAL`, `AGGREGATE`, `FREQUENCY` and `SORTBY` take them: 40 of its 47 predicted answers came out as predicted, and the misses were all `SORTBY`, which takes neither. The set `intersect` (44 cases) measures the intersection and the range operator, 40 of its 41 predicted answers as predicted (the miss: `'D'!B1:B2:C3`, whose C3 is on the formula's sheet), and `sheet-cells` (13 cases) the sheets named like cells, all 11 predictions as predicted. The set `ref-deps` (11 cases) puts formulas between the ends of ranges, on the middle sheet of a reference across sheets and in the second area of a union, all 11 predictions as predicted. The spill sets `at` (8 books) and `at-held` measure `@`. The struct set `cube` (20 operations) measures structure operations, sheets inserted and moved included. The sets `at-held` (7 cells) and `cube-held` (14 cells) were predicted before Excel computed them, and all cells came out as predicted.

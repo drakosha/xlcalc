@@ -129,17 +129,20 @@ function flatten(column: boolean): FnDef {
   }
 }
 
-/** WRAPROWS, WRAPCOLS: a row or column cut into rows (columns) of `n`, the last padded (#N/A by default). */
+/**
+ * WRAPROWS, WRAPCOLS: a row or column cut into rows (columns) of `n`, the last padded (#N/A by default); fewer values
+ * than `n` make one line of their own length, not padded (`WRAPROWS({1,2,3},5)` is {1,2,3}).
+ */
 function wrap(rows: boolean): FnDef {
   return {
     args: 'G n a?',
     array: true,
     fn: (g: Grid, count: number, pad: V = E.NA) => {
       if (g.rows > 1 && g.cols > 1) return E.VALUE
-      const n = Math.trunc(count)
-      if (n < 1) return E.NUM
+      if (Math.trunc(count) < 1) return E.NUM
       const a = fromGrid(g)
       const len = a.rows * a.cols
+      const n = Math.min(Math.trunc(count), len)
       const lines = Math.ceil(len / n)
       allot(lines * n)
       const v: V[] = []

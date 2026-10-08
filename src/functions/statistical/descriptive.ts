@@ -3,10 +3,10 @@
  * come from formula.js 4.6.1 (https://github.com/formulajs/formulajs), src/statistical.js: Copyright (c) 2014
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); empty input, coercion and domain checks follow Excel.
  */
-import { eachValue, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
+import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { devsq, gridNumbers, max, mean, min, sorted, sum } from './common.js'
 
@@ -125,12 +125,22 @@ function mode(grids: Grid[]): V {
 /**
  * FREQUENCY: how many numbers of the data fall at or below each bin and above the bins before it (bins taken
  * in sorted order, answered in their own order; a repeated bin counts nothing), and above the last bin. Bins
- * without numbers are one bin at 0, as in Excel.
+ * without numbers are one bin at 0, as in Excel. A union or a reference across sheets gives the numbers of each area.
  */
-function frequency(data: Grid, bins: Grid): V | Arr {
-  const xs = gridNumbers(data)
+function frequency(cx: Cx, data: Arg, bins: Arg): V | Arr {
+  const numbers = (x: Arg): number[] | CErr => {
+    if (isErr(x)) return x
+    const out: number[] = []
+    for (const g of x instanceof Areas ? x.list : [x]) {
+      const xs = gridNumbers(cx.grid(g))
+      if (isErr(xs)) return xs
+      out.push(...xs)
+    }
+    return out
+  }
+  const xs = numbers(data)
   if (isErr(xs)) return xs
-  const found = gridNumbers(bins)
+  const found = numbers(bins)
   if (isErr(found)) return found
   const bs = found.length ? found : [0]
   const order = bs.map((_, i) => i).sort((a, b) => bs[a] - bs[b] || a - b)
@@ -231,7 +241,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   'MODE.SNGL': { args: 'G', rep: 1, max: NEWER_MAX_ARGS, fn: mode },
-  FREQUENCY: { args: 'G G', array: true, fn: frequency },
+  FREQUENCY: { args: 'R R', array: true, cx: true, areas: true, fn: frequency },
   'PERCENTILE.EXC': { args: 'N n', empty: 'NUM', fn: percentileExc },
   'PERCENTILE.INC': { args: 'N n', empty: 'NUM', fn: percentileInc },
   'PERCENTRANK.EXC': { args: 'N n i?', empty: 'NA', fn: percentRankExc },

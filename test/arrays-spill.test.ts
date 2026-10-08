@@ -16,7 +16,9 @@ describe('spill references in the syntax', () => {
   it('E2# parses, prints back and is valid; # follows a cell only', () => {
     expect(canonical(parse("SUM(e2#)+'Data'!$B$3#*2"))).toBe("SUM(E2#)+'Data'!$B$3#*2")
     expect(validateFormula('S!E2#', { sheets: ['S'] })).toMatchObject({ ok: true, canonical: "'S'!E2#", sheets: ['S'] })
-    expect(validateFormula('A1:B2#')).toMatchObject({ ok: false, code: 'syntax', message: 'a spill reference (#) follows a single cell' })
+    expect(validateFormula('A:B#')).toMatchObject({ ok: false, code: 'syntax', message: 'a spill reference (#) follows a single cell' })
+    // the range operator to a spill reference, as Excel reads it
+    expect(validateFormula('A1:B2#')).toMatchObject({ ok: true, canonical: 'A1:B2#' })
   })
 
   it('a lost spill reference is read and written as Excel writes it', () => {

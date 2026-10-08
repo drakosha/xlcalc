@@ -9,6 +9,7 @@ import { liftCaller, liftLazy } from './arrays/call.js'
 import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
+import type { RefOp } from './syntax/ast.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
 import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
@@ -295,7 +296,31 @@ export function makeRuntime(ctx: RuntimeContext) {
     return list.every((g) => g.s === list[0].s) ? new Areas(list) : E.VALUE
   }
 
-  return { cell, spill, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, E, cx }
+  /**
+   * A reference operator: the intersection (`' '`) of the areas of two references, #NULL! where none meet, or the
+   * range operator (`':'`), the rectangle around both. Anything but references on one sheet is #VALUE!.
+   */
+  const RO = (op: RefOp, x: Arg, y: Arg): Arg => {
+    if (isErr(x)) return x
+    if (isErr(y)) return y
+    const parts = (z: Arg) => (z instanceof Rng ? [z] : z instanceof Areas && !z.cube ? z.list : null)
+    const a = parts(x)
+    const b = parts(y)
+    if (!a || !b || [...a, ...b].some((g) => g.s !== a[0].s)) return E.VALUE
+    if (op === ':') {
+      const all = [...a, ...b]
+      return new Rng(a[0].s, Math.min(...all.map((g) => g.r1)), Math.min(...all.map((g) => g.c1)), Math.max(...all.map((g) => g.r2)), Math.max(...all.map((g) => g.c2)))
+    }
+    const met: Rng[] = []
+    for (const g of a)
+      for (const h of b) {
+        const [r1, c1, r2, c2] = [Math.max(g.r1, h.r1), Math.max(g.c1, h.c1), Math.min(g.r2, h.r2), Math.min(g.c2, h.c2)]
+        if (r1 <= r2 && c1 <= c2) met.push(new Rng(g.s, r1, c1, r2, c2))
+      }
+    return !met.length ? E.NULL : met.length === 1 ? met[0] : new Areas(met)
+  }
+
+  return { cell, spill, flat, bounds, scalar, view, add, sub, mul, div, pow, neg, pct, cat, cmp, L1, L2, C, F, FL, LZ, ext, I, U, RO, E, cx }
 }
 
 export type Runtime = ReturnType<typeof makeRuntime>

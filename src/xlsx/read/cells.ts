@@ -48,9 +48,9 @@ export interface SheetCells {
   errors: Set<string>
 }
 
-/** Error texts by the model's codes; `#NULL!` is what the engine calls #ERROR!. */
+/** Error texts by the model's codes. */
 const ERRORS: Record<string, ErrorCode> = {
-  '#NULL!': 'ERROR',
+  '#NULL!': 'NULL',
   '#DIV/0!': 'DIV0',
   '#VALUE!': 'VALUE',
   '#REF!': 'REF',

@@ -242,8 +242,8 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 |---|---|---|
 | `roundtrip` | 181 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, the books of the structure, spill and table sets (names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them), hidden rows and columns with their sizes, lines of size 0, filtered sheets with and without a table, the 1904 date system, iterative calculation and the built-in formats by number in en-US and ru-RU | every file opens, every book reads back as written, and Excel's values equal the engine's |
 | `filters` | 8 files with a filter in each form a file holds it, `SUBTOTAL` and `AGGREGATE` over the rows it hid | read with the filter mode Excel took, every formula computes the value Excel stored |
-| `saved` | 91 books of the case sets, 28,831 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
-| `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` and the one with the intersection operator |
+| `saved` | 97 books of the case sets, 29,089 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
+| `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` |
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
 | `formats` | the built-in number formats 1 to 58 | the codes Excel en-US shows equal the engine's for 1 to 49 and the reader's for 50 to 58 |
 
@@ -262,7 +262,6 @@ The answers to the filter files and to nine books of the round trip were predict
 - Excel for Mac saves the built-in money and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General and the East Asian 27 to 36 as 14 and 21, so a book read from a file Excel saved has these codes and numbers.
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
 - In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
-- The intersection operator, a space between two ranges, is not read: such a formula is reported.
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.

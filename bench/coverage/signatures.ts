@@ -546,8 +546,9 @@ export const ARRAY_SIZE: Readonly<Record<string, readonly number[]>> = { MUNIT: 
 export const SIZE_LIMIT = 100
 
 /**
- * Functions written with a prefix in OOXML (newer than Excel 2007). The check: Excel gives `#NAME?` on every
- * case of a function it has when the prefix is missing.
+ * Functions written with a prefix in OOXML (newer than Excel 2007), for the measurement and every case set (`xl` in
+ * `sets/arrays/common.ts` puts them in a formula). The check: Excel gives `#NAME?` on every case of a function it
+ * has when the prefix is missing.
  */
 export const XLFN: Record<string, string> = Object.fromEntries(
   [
@@ -563,5 +564,8 @@ export const XLFN: Record<string, string> = Object.fromEntries(
     'QUARTILE.INC', 'RANK.AVG', 'RANK.EQ', 'RRI', 'SEC', 'SECH', 'SKEW.P', 'STDEV.P', 'STDEV.S', 'SWITCH', 'T.DIST', 'T.DIST.2T',
     'T.DIST.RT', 'T.INV', 'T.INV.2T', 'T.TEST', 'TAKE', 'TEXTJOIN', 'UNICHAR', 'UNICODE', 'UNIQUE', 'VAR.P', 'VAR.S', 'VSTACK',
     'WEIBULL.DIST', 'WORKDAY.INTL', 'XOR', 'Z.TEST',
-  ].map((n) => [n, `_xlfn.${n}`] as const).concat([['SORT', '_xlfn._xlws.SORT']]),
+    // the newer functions the measurement lacks
+    'ARRAYTOTEXT', 'FORECAST.LINEAR', 'LET', 'PERCENTOF', 'RANDARRAY', 'SEQUENCE', 'SORTBY', 'TEXTAFTER', 'TEXTBEFORE', 'TEXTSPLIT',
+    'TOCOL', 'TOROW', 'VALUETOTEXT', 'WRAPCOLS', 'WRAPROWS', 'XLOOKUP', 'XMATCH',
+  ].map((n) => [n, `_xlfn.${n}`] as const).concat([['SORT', '_xlfn._xlws.SORT'], ['FILTER', '_xlfn._xlws.FILTER']]),
 )

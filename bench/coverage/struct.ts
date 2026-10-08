@@ -16,7 +16,7 @@ import ExcelJS from 'exceljs'
 import { inCaseOrder } from './stored.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import { markDynamic } from './book.js'
-import { fileFormula, formatCode, writeParts, type FileParts } from './case-book.js'
+import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
 import type { BookInput, CellStyle, NumberFormat, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
@@ -153,16 +153,12 @@ export async function writeBook(c: StructCase, book: BookInput, file: string, dy
     for (const [addr, cell] of Object.entries(s.cells)) {
       if (cell.value !== null && typeof cell.value === 'object') throw new Error(`${c.id}: dates are not used in structure cases`)
       // an old-kind array formula over its area, else a dynamic one in a dynamic set
-      const array = cell.array !== undefined ? { shareType: 'array', ref: cell.array } : dynamic ? { shareType: 'array', ref: addr } : {}
-      const formula = cell.formula === undefined ? undefined : { formula: fileFormula(cell.formula), ...array }
+      const formula = cell.formula === undefined ? undefined : formulaValue(cell.formula, cell.array ?? (dynamic ? addr : undefined))
       ws.getCell(addr).value = (formula ?? cell.value ?? null) as ExcelJS.CellValue
     }
     if (styled(book)) writeLayout(c, book, s, ws)
   }
-  // ExcelJS keeps names in a cell matrix (no whole columns, no scope): its model is replaced by ours
-  const index = new Map(book.sheets.map((s, i) => [s.name, i]))
-  const names = (book.names ?? []).map((n) => ({ name: n.name, ranges: [fileFormula(n.ref)], ...(n.scope !== undefined ? { localSheetId: index.get(n.scope) } : {}) }))
-  Object.defineProperty(wb.definedNames, 'model', { get: () => names })
+  writeNames(wb, book)
   await wb.xlsx.writeFile(file)
   if (dynamic) await markDynamic(file, book.sheets.length, (i, addr) => book.sheets[i].cells[addr]?.array !== undefined)
   const parts = partsOf(c, book, files)

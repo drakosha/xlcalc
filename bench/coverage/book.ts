@@ -20,6 +20,16 @@ import type { SheetCells } from './probes.js'
 
 export const CASE_SHEET = 'C'
 
+/** Spill references (`E2#`) as a file writes them, `_xlfn.ANCHORARRAY(E2)`. */
+export const anchorArray = (f: string) => f.replace(/((?:'(?:[^']|'')+'|[A-Za-z_][\w.]*)!)?\$?[A-Z]{1,3}\$?\d+#/g, (m) => `_xlfn.ANCHORARRAY(${m.slice(0, -1)})`)
+
+/** The formulas of the read columns over a cell `x`, which never give an error: its type code, its number, its text. */
+export const READ_COLUMNS = {
+  type: (x: string) => `IF(ISERROR(${x}),ERROR.TYPE(${x}),IF(ISNUMBER(${x}),0,IF(ISLOGICAL(${x}),IF(${x},-1,-2),IF(ISTEXT(${x}),-3,-4))))`,
+  num: (x: string) => `IF(ISNUMBER(${x}),${x},0)`,
+  text: (x: string) => `IF(ISTEXT(${x}),${x},"")`,
+}
+
 /**
  * `sheets`: further data sheets by name, values or formulas by A1 address (the probes of `probes.ts`, the case sets).
  * `legacy`: the case formulas are written as formulas of the old kind (no array, no dynamic metadata), which Excel
@@ -29,7 +39,7 @@ export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: str
   const wb = new ExcelJS.Workbook()
   for (const [name, cells] of Object.entries(sheets)) {
     const ws = wb.addWorksheet(name)
-    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = (typeof v === 'object' ? { formula: v.formula } : v) as ExcelJS.CellValue
+    for (const [addr, v] of Object.entries(cells)) ws.getCell(addr).value = (typeof v === 'object' ? { formula: anchorArray(v.formula), ...(v.dynamic ? { shareType: 'array', ref: addr } : {}) } : v) as ExcelJS.CellValue
   }
   const d = wb.addWorksheet(DATA_SHEET)
   for (const [addr, v] of dataCells()) {
@@ -43,10 +53,10 @@ export async function writeBook(cases: Pick<Case, 'id' | 'formula'>[], file: str
   const c = wb.addWorksheet(CASE_SHEET)
   cases.forEach((x, i) => {
     const r = i + 1
-    c.getCell(`A${r}`).value = (legacy ? { formula: x.formula } : { formula: x.formula, shareType: 'array', ref: `A${r}` }) as ExcelJS.CellFormulaValue
-    c.getCell(`B${r}`).value = { formula: `IF(ISERROR(A${r}),ERROR.TYPE(A${r}),IF(ISNUMBER(A${r}),0,IF(ISLOGICAL(A${r}),IF(A${r},-1,-2),IF(ISTEXT(A${r}),-3,-4))))` } as ExcelJS.CellFormulaValue
-    c.getCell(`C${r}`).value = { formula: `IF(ISNUMBER(A${r}),A${r},0)` } as ExcelJS.CellFormulaValue
-    c.getCell(`D${r}`).value = { formula: `IF(ISTEXT(A${r}),A${r},"")` } as ExcelJS.CellFormulaValue
+    c.getCell(`A${r}`).value = (legacy ? { formula: anchorArray(x.formula) } : { formula: anchorArray(x.formula), shareType: 'array', ref: `A${r}` }) as ExcelJS.CellFormulaValue
+    c.getCell(`B${r}`).value = { formula: READ_COLUMNS.type(`A${r}`) } as ExcelJS.CellFormulaValue
+    c.getCell(`C${r}`).value = { formula: READ_COLUMNS.num(`A${r}`) } as ExcelJS.CellFormulaValue
+    c.getCell(`D${r}`).value = { formula: READ_COLUMNS.text(`A${r}`) } as ExcelJS.CellFormulaValue
     c.getCell(`E${r}`).value = x.id
   })
   // a stub under the last case: an array answer does not spill there either

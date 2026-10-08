@@ -6,6 +6,7 @@
  * Computed as dynamic array formulas (Excel 365).
  */
 import type { Probe } from '../probes.js'
+import { xl } from './arrays/common.js'
 
 export const SHEETS: Record<string, Record<string, number | string | boolean>> = {
   CR: {
@@ -36,7 +37,6 @@ export function buildProbes(): Probe[] {
     count.set(fn, n)
     out.push({ id: `${fn}#${n}`, group: fn, fn, formula })
   }
-  const X = '_xlfn.'
   for (const c of ['D!A7', 'D!A8', '1/0', '"#DIV/0!"', '"=#DIV/0!"', '"<>#DIV/0!"', '"#N/A"', '"<>#N/A"', '"=#N/A"', '"#n/a"', '"#DIV*"', '">#DIV/0!"', '"<#N/A"', '"#NUM!"', '"#NULL!"', '"#VALUE!"', '" #N/A"', '"#DIV/0"'])
     add('COUNTIF', `COUNTIF(D!A1:A15,${c})`)
   for (const f of ['COUNTIF(D!A:A,D!A7)', 'COUNTIF(D!A:A,"<>#N/A")', 'COUNTIF(CR!C1:C4,"#DIV/0!")', 'COUNTIF(CR!C1:C4,"#N/A")', 'COUNTIF(CR!C1:C4,"#NUM!")', 'COUNTIF(CR!C1:C4,D!A7)', 'COUNTIF(CR!C1:C4,"<>#N/A")', 'COUNTIF(D!E1:E8,D!A7)', 'COUNTIF(D!E1:E8,"<>#DIV/0!")'])
@@ -51,8 +51,8 @@ export function buildProbes(): Probe[] {
     add('COUNTIFS', f)
   for (const f of ['AVERAGEIF(D!A1:A15,"#N/A",CR!A1:A15)', 'AVERAGEIF(D!A1:A15,D!A7)', 'AVERAGEIF(CR!B1:B8,"b",D!E1:E8)', 'AVERAGEIF(D!E1:E8,D!A7,D!B1:B8)']) add('AVERAGEIF', f)
   for (const f of ['AVERAGEIFS(CR!A1:A15,D!A1:A15,D!A8)', 'AVERAGEIFS(D!B1:B8,D!E1:E8,"#DIV/0!")']) add('AVERAGEIFS', f)
-  for (const f of [`${X}MAXIFS(CR!A1:A15,D!A1:A15,"<>#N/A")`, `${X}MAXIFS(D!E1:E8,CR!B1:B8,"b")`, `${X}MAXIFS(D!E1:E8,CR!B1:B8,"a")`]) add('MAXIFS', f)
-  for (const f of [`${X}MINIFS(CR!A1:A15,D!A1:A15,"#DIV/0!")`, `${X}MINIFS(CR!A1:A15,D!A1:A15,">#DIV/0!")`]) add('MINIFS', f)
+  for (const f of ['MAXIFS(CR!A1:A15,D!A1:A15,"<>#N/A")', 'MAXIFS(D!E1:E8,CR!B1:B8,"b")', 'MAXIFS(D!E1:E8,CR!B1:B8,"a")']) add('MAXIFS', xl(f))
+  for (const f of ['MINIFS(CR!A1:A15,D!A1:A15,"#DIV/0!")', 'MINIFS(CR!A1:A15,D!A1:A15,">#DIV/0!")']) add('MINIFS', xl(f))
   for (const c of ['D!A6:A7', 'D!A6:A8', 'CR!E1:E2', 'CR!F1:F2', 'CR!G1:G2', 'CR!E1:E1']) add('DCOUNTA', `DCOUNTA(D!A6:A8,1,${c})`)
   add('DCOUNTA', 'DCOUNTA(D!A5:A8,1,CR!E1:E2)')
   add('DCOUNT', 'DCOUNT(D!A6:A8,1,CR!E1:E2)')

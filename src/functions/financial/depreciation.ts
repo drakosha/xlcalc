@@ -37,13 +37,14 @@ const ASSET = { check: { 5: need((rate: number, [cost, purchased, first, salvage
 const badBasis = (basis: number) => !validBasis(basis) || basis === 2
 
 export const functions: Record<string, FnDef> = {
-  // declining by rate × coefficient, rounded; the year before the life's end takes half the rest, the last year the same again
+  // declining by rate × coefficient, rounded; the first period no more than cost less salvage; the year before the life's
+  // end takes half the rest, the last year the same again; the period that passes the salvage takes its whole amount, later ones nothing
   AMORDEGRC: atp('x e e x x x j?', (cost: number, purchased: number, first: number, salvage: number, period: number, rate: number, basis = 0) => {
     if (badBasis(basis)) return E.NUM
     const r = rate * coefficient(1 / rate)
     if (Number.isNaN(r)) return E.NUM
     const last = Math.floor(1 / rate)
-    let dep = round(amorFirst(purchased, first, basis) * r * cost, 0)
+    let dep = Math.min(round(amorFirst(purchased, first, basis) * r * cost, 0), cost - salvage)
     let book = cost - dep
     let rest = book - salvage
     const n = Math.trunc(period)
@@ -58,7 +59,7 @@ export const functions: Record<string, FnDef> = {
       }
       dep = round(k + 2 === last ? book * 0.5 : r * book, 0)
       rest -= dep
-      if (rest < 0) return n - k <= 1 ? round(book * 0.5, 0) : 0
+      if (rest < 0) return n - k <= 1 ? dep : 0
       book -= dep
     }
     return dep
@@ -66,7 +67,8 @@ export const functions: Record<string, FnDef> = {
   AMORLINC: atp('x e e x x x j?', (cost: number, purchased: number, first: number, salvage: number, period: number, rate: number, basis = 0) => {
     if (badBasis(basis)) return E.NUM
     const full = cost * rate
-    const first0 = amorFirst(purchased, first, basis) * full
+    // the first period no more than cost less salvage
+    const first0 = Math.min(amorFirst(purchased, first, basis) * full, cost - salvage)
     const n = Math.trunc(period)
     if (n === 0) return first0
     const fulls = Math.floor((cost - salvage - first0) / full)
