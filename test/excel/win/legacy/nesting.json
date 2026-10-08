@@ -1,13 +1,13 @@
 {
  "meta": {
-  "version": "16.0.17928.20148",
+  "version": "16.0.20430.20146",
   "platform": "Windows",
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 369.6,
+  "seconds": 423.4,
   "legacy": true
  },
  "cases": [
@@ -29856,28 +29856,28 @@
    "v": "NUM"
   },
   "PERCENTOF#array-call": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 3
   },
   "PERCENTOF#ref-call": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 3
   },
   "PERCENTOF#array-r1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 6.75
   },
   "PERCENTOF#array-e1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 6.75
   },
   "PERCENTOF#array-r2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.4444444444444444
   },
   "PERCENTOF#array-e2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.4444444444444444
   },
   "PERCENTRANK#array-call": {
    "t": "e",
@@ -36962,12 +36962,12 @@
   "PERCENTILE.INC#array-e1": "=SUMPRODUCT(PERCENTILE.INC((D!B1:B3+0),0.3))",
   "PERCENTILE.INC#array-r2": "=SUMPRODUCT(PERCENTILE.INC(D!B1:B8,D!B1:B3))",
   "PERCENTILE.INC#array-e2": "=SUMPRODUCT(PERCENTILE.INC(D!B1:B8,(D!B1:B3+0)))",
-  "PERCENTOF#array-call": "=SUMPRODUCT(_xlfn.PERCENTOF(D!B1:B2,4))",
-  "PERCENTOF#ref-call": "=SUM(_xlfn.PERCENTOF(D!B1:B2,4))",
-  "PERCENTOF#array-r1": "=SUMPRODUCT(_xlfn.PERCENTOF(D!B1:B3,4))",
-  "PERCENTOF#array-e1": "=SUMPRODUCT(_xlfn.PERCENTOF((@D!B1:B3+0),4))",
-  "PERCENTOF#array-r2": "=SUMPRODUCT(_xlfn.PERCENTOF(D!B1:B2,D!B1:B3))",
-  "PERCENTOF#array-e2": "=SUMPRODUCT(_xlfn.PERCENTOF(D!B1:B2,(@D!B1:B3+0)))",
+  "PERCENTOF#array-call": "=SUMPRODUCT(PERCENTOF(D!B1:B2,4))",
+  "PERCENTOF#ref-call": "=SUM(PERCENTOF(D!B1:B2,4))",
+  "PERCENTOF#array-r1": "=SUMPRODUCT(PERCENTOF(D!B1:B3,4))",
+  "PERCENTOF#array-e1": "=SUMPRODUCT(PERCENTOF((D!B1:B3+0),4))",
+  "PERCENTOF#array-r2": "=SUMPRODUCT(PERCENTOF(D!B1:B2,D!B1:B3))",
+  "PERCENTOF#array-e2": "=SUMPRODUCT(PERCENTOF(D!B1:B2,(D!B1:B3+0)))",
   "PERCENTRANK#array-call": "=SUMPRODUCT(PERCENTRANK(GAMMALN(4),15,3))",
   "PERCENTRANK#ref-call": "=SUM(PERCENTRANK(GAMMALN(4),15,3))",
   "PERCENTRANK#array-r1": "=SUMPRODUCT(PERCENTRANK(D!B1:B3,15,3))",

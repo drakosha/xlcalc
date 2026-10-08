@@ -1,13 +1,13 @@
 {
  "meta": {
-  "version": "16.0.17928.20148",
+  "version": "16.0.20430.20146",
   "platform": "Windows",
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 369.6,
+  "seconds": 423.5,
   "dynamic": true
  },
  "cases": [
@@ -9348,20 +9348,20 @@
    "v": 3.4
   },
   "fn:union:PERCENTOF#1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 11.75
   },
   "fn:cube:PERCENTOF#1": {
    "t": "e",
-   "v": "NAME"
+   "v": "VALUE"
   },
   "fn:union:PERCENTOF#2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.2553191489361702
   },
   "fn:cube:PERCENTOF#2": {
    "t": "e",
-   "v": "NAME"
+   "v": "VALUE"
   },
   "fn:union:PERCENTRANK#1": {
    "t": "n",

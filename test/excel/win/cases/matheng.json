@@ -1,13 +1,13 @@
 {
  "meta": {
-  "version": "16.0.17928.20148",
+  "version": "16.0.20430.20146",
   "platform": "Windows",
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
   "system": "en-US (code page 1252)",
   "dpi": 96,
-  "seconds": 369.6,
+  "seconds": 423.5,
   "dynamic": true
  },
  "cases": [
@@ -30592,40 +30592,40 @@
    "v": "NA"
   },
   "PERCENTOF#1": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.10457516339869281
   },
   "PERCENTOF#2": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.5
   },
   "PERCENTOF#3": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.034858387799564274
   },
   "PERCENTOF#4": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.08278867102396514
   },
   "PERCENTOF#5": {
    "t": "e",
-   "v": "NAME"
+   "v": "DIV0"
   },
   "PERCENTOF#6": {
    "t": "e",
-   "v": "NAME"
+   "v": "DIV0"
   },
   "PERCENTOF#7": {
    "t": "e",
-   "v": "NAME"
+   "v": "NUM"
   },
   "PERCENTOF#8": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.5
   },
   "PERCENTOF#9": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0.1
   },
   "BITLSHIFT#28": {
    "t": "n",
@@ -31025,39 +31025,39 @@
   },
   "PERCENTOF#10": {
    "t": "e",
-   "v": "NAME"
+   "v": "NUM"
   },
   "PERCENTOF#11": {
    "t": "e",
-   "v": "NAME"
+   "v": "NUM"
   },
   "PERCENTOF#12": {
    "t": "e",
-   "v": "NAME"
+   "v": "NUM"
   },
   "PERCENTOF#13": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": -0.5
   },
   "PERCENTOF#14": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": -0.5
   },
   "PERCENTOF#15": {
    "t": "e",
-   "v": "NAME"
+   "v": "DIV0"
   },
   "PERCENTOF#16": {
    "t": "e",
-   "v": "NAME"
+   "v": "DIV0"
   },
   "PERCENTOF#17": {
    "t": "e",
-   "v": "NAME"
+   "v": "DIV0"
   },
   "PERCENTOF#18": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0
   },
   "FACTDOUBLE#18": {
    "t": "e",
@@ -31289,15 +31289,15 @@
   },
   "PERCENTOF#19": {
    "t": "e",
-   "v": "NAME"
+   "v": "VALUE"
   },
   "PERCENTOF#20": {
-   "t": "e",
-   "v": "NAME"
+   "t": "n",
+   "v": 0
   },
   "PERCENTOF#21": {
    "t": "e",
-   "v": "NAME"
+   "v": "VALUE"
   },
   "MOD#66": {
    "t": "n",
