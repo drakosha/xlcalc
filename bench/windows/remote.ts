@@ -62,22 +62,24 @@ function syncScripts() {
   exec('scp', ['-q', ...OPTS, join(HERE, 'host.ps1'), join(HERE, 'xl.ps1'), `${HOST}:C:/xlcalc/bin/`], 120_000)
 }
 
-/** Restarts the machine and waits for SSH (a new system locale needs it). */
+const bootTime = () => ssh('(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString(\'o\')', 30_000)
+
+/** Restarts the machine and waits until it is up from a new boot (a new system locale needs it). */
 async function restart() {
   console.log('windows-host: restarting for the system locale')
+  const before = bootTime()
   try {
     ssh('Restart-Computer -Force', 30_000)
   } catch {
     // the connection may drop as the machine goes down
   }
-  await sleep(30_000)
   for (let i = 0; ; i++) {
     if (i > 60) throw new Error('windows-host did not come back in 10 minutes')
+    await sleep(10_000)
     try {
-      ssh('echo up', 20_000)
-      return
+      if (bootTime() !== before) return
     } catch {
-      await sleep(10_000)
+      // down, or not answering yet
     }
   }
 }
