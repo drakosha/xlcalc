@@ -18,6 +18,7 @@ import { checkArrayEdits } from './spill/fixed.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { headerEdits } from './tables/headers.js'
+import { checkTables } from './tables/check.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
@@ -150,6 +151,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setNames(names: NameInput[]) {
       const old = yield* ready()
       checkNames(names, 'names')
+      // tables and names share one namespace
+      checkTables({ ...old.input, names }, 'book')
       const at = clock
       if (live) tick(old)
       try {

@@ -45,7 +45,8 @@ export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table 
       const named = tok.table !== null || qualify
       if (ch === 'lost') now = '#REF!'
       else if (ch && 'text' in ch) now = ch.text
-      else if (ch || (qualify && tok.table === null)) now = `${named ? (ch?.table ?? t.name) : ''}[${specText(ch?.cols ? { ...tok.spec, cols: ch.cols } : tok.spec)}]`
+      // a new name for the table leaves a reference written without it as it is
+      else if ((ch && (ch.cols || named)) || (qualify && tok.table === null)) now = `${named ? (ch?.table ?? t.name) : ''}[${specText(ch?.cols ? { ...tok.spec, cols: ch.cols } : tok.spec)}]`
     } else if (tok.t === 'ident' && tok.sheet === undefined) {
       // a table's name alone is its data
       const t = tables.byName.get(tableKey(tok.v))

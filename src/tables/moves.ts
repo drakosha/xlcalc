@@ -102,8 +102,10 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
 }
 
 /**
- * A copy of `src` of sheet `from` pasted over `target` of `to`: afterwards the pasted formulas that leave their source's
- * table name it, and header cells pasted over rename their columns.
+ * A copy of `src` of sheet `from` pasted over `target` of `to`: a table the copy takes whole becomes a new table at each
+ * paste, named after it with the first free number (`Sales2`), its formulas' references to the table taken to the new
+ * one; the other pasted formulas that leave their source's table name it, and header cells pasted over rename their
+ * columns.
  */
 export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: RestructureResult): RestructureResult } {
   const tables = tablesOf(book)
@@ -112,6 +114,23 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
   const pasted: Rect = { r1: target.r1, c1: target.c1, r2: Math.max(target.r2, target.r1 + h - 1), c2: Math.max(target.c2, target.c1 + w - 1) }
   const renamed = (r: RestructureResult): RestructureResult => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
   if (!tables.list.some((t) => t.s === fs && meets(t, src))) return { after: renamed }
+  // the tiles of the paste, as copyRange lays them, and the tables copied whole onto each
+  const tiled = (target.r2 - target.r1 + 1) % h === 0 && (target.c2 - target.c1 + 1) % w === 0
+  const offsets: [number, number][] = []
+  if (tiled) for (let r = target.r1; r <= target.r2; r += h) for (let c = target.c1; c <= target.c2; c += w) offsets.push([r - src.r1, c - src.c1])
+  else offsets.push([target.r1 - src.r1, target.c1 - src.c1])
+  const whole = tables.list.filter((t) => t.s === fs && contains(src, t))
+  const taken = tables.list.map((t) => t.name)
+  const copies: { t: Table; x: Rect; name: string }[] = []
+  for (const [dr, dc] of offsets)
+    for (const t of whole) {
+      const x = { r1: t.r1 + dr, r2: t.r2 + dr, c1: t.c1 + dc, c2: t.c2 + dc }
+      if (tables.list.some((o) => o.s === ts && meets(o, x)) || copies.some((o) => meets(o.x, x))) continue
+      let n = 2
+      while (taken.some((k) => tableKey(k) === tableKey(`${t.name}${n}`))) n++
+      taken.push(`${t.name}${n}`)
+      copies.push({ t, x, name: `${t.name}${n}` })
+    }
   return {
     after(r) {
       if (!r.ok) return r
@@ -123,12 +142,18 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
         if (row < pasted.r1 || col < pasted.c1 || row > pasted.r2 || col > pasted.c2) continue
         const t = tableAt(tables, fs, src.r1 + ((row - target.r1) % h), src.c1 + ((col - target.c1) % w))
         if (!t || tableAt(tables, ts, row, col) === t) continue
-        const formula = qualified(cell.formula, tables, t)
+        // inside a copy of its table: the references to the table are to the copy, those without a name stay so
+        const copy = copies.find((c) => c.t === t && row >= c.x.r1 && row <= c.x.r2 && col >= c.x.c1 && col <= c.x.c2)
+        const formula = copy ? rewriteTableRefs(cell.formula, tables, t, null, (x) => (x === t ? { table: copy.name } : undefined)) : qualified(cell.formula, tables, t)
         if (formula !== cell.formula) (cells ??= { ...sheet.cells })[addr] = { ...cell, formula }
       }
-      if (!cells) return renamed(r)
       const sheets = [...r.book.sheets]
-      sheets[ts] = { ...sheet, cells }
+      sheets[ts] = { ...sheet, ...(cells ? { cells } : {}) }
+      if (copies.length)
+        sheets[ts] = {
+          ...sheets[ts],
+          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`, columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: rewriteTableRefs(c.formula, tables, t, null, (y) => (y === t ? { table: name } : undefined)) })) }))],
+        }
       return renamed({ ...r, book: { ...r.book, sheets } })
     },
   }

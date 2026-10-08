@@ -105,7 +105,8 @@ export function differences(c: TableCase, x: TableAnswer): string[] {
       if (want !== have) out.push(`${k}: Excel ${JSON.stringify(want ?? 'blank')}, engine ${JSON.stringify(have ?? 'blank')}`)
     } else if (!compare(want, have).ok) out.push(`${k}: Excel ${JSON.stringify(want)}, engine ${JSON.stringify(have)}`)
   }
-  for (const [k, shown] of Object.entries(x.formulas)) {
+  for (const [k, typed] of Object.entries(x.formulas)) {
+    let shown = typed
     const [sheet, addr] = k.split('!')
     const stored = storedText(got.book, sheet, addr, shown)
     if (stored !== got.formulas[k]) out.push(`${k}: Excel ${shown} (${stored}), engine ${got.formulas[k] ?? 'no formula'}`)
@@ -114,11 +115,13 @@ export function differences(c: TableCase, x: TableAnswer): string[] {
     const table = enclosingOf(got.book, sheet, addr)
     // (the stored text quotes every sheet name, Excel only the names that need it)
     const unquoted = (f: string) => f.replace(/'([\p{L}_][\p{L}\p{N}_.]*)'!/gu, '$1!')
+    // nor the spaces typed between a reference's items (`[[#Data], [Price]]`)
+    shown = shown.replace(/([,;]) +\[/g, '$1[')
     const en = toLocal(got.formulas[k], enUS, { table })
     if (en.ok && `=${unquoted(en.formula)}` !== shown) out.push(`${k}: Excel shows ${shown}, toLocal ${en.formula}`)
     const ru = x.local?.[k]
     const loc = ru === undefined ? null : toLocal(got.formulas[k], ruRU, { table })
-    if (loc?.ok && `=${unquoted(loc.formula)}` !== ru) out.push(`${k}: Excel ru-RU shows ${ru}, toLocal ${loc.formula}`)
+    if (loc?.ok && `=${unquoted(loc.formula)}` !== ru?.replace(/([,;]) +\[/g, '$1[')) out.push(`${k}: Excel ru-RU shows ${ru}, toLocal ${loc.formula}`)
   }
   return out
 }
