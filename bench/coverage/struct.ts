@@ -146,7 +146,7 @@ function partsOf(c: StructCase, book: BookInput, files: FileParts = {}): FilePar
  * their scope, the layout of a styled book with its hidden lines and filters; with `dynamic`, formulas as dynamic
  * array formulas (Excel 365).
  */
-async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: boolean, files?: FileParts): Promise<void> {
+export async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: boolean, files?: FileParts): Promise<void> {
   const wb = new ExcelJS.Workbook()
   for (const s of book.sheets) {
     const ws = wb.addWorksheet(s.name)
@@ -174,7 +174,7 @@ async function writeBook(c: StructCase, book: BookInput, file: string, dynamic: 
  * `range` takes cell ranges only: whole columns and rows are spelled as cells (`B1:B1048576`), rows and
  * columns to insert or delete as the cells of their first column or row.
  */
-function opArgs(c: StructCase): string[] {
+export function opArgs(c: StructCase): string[] {
   const o = c.op
   const cells = (r: string) => r.replace(/^([A-Z]+):([A-Z]+)$/, (_, a, b) => `${a}1:${b}1048576`).replace(/^(\d+):(\d+)$/, (_, a, b) => `A${a}:XFD${b}`)
   switch (o.op) {
@@ -212,7 +212,7 @@ function colAt(letters: string, plus: number): string {
 }
 
 /** Formulas of `READ` as Excel returns them (a list of rows) by address, empty cells left out. */
-function cellsOf(rows: unknown): Record<string, string> {
+export function cellsOf(rows: unknown): Record<string, string> {
   const out: Record<string, string> = {}
   const grid = Array.isArray(rows) ? (rows as unknown[][]) : [[rows]]
   const [, c0, r0] = /^([A-Z]+)(\d+)/.exec(READ)!
@@ -226,7 +226,7 @@ function cellsOf(rows: unknown): Record<string, string> {
 }
 
 /** The cells, columns and rows of the look's rectangles (`LOOK,…`) as AppleScript arguments (lines). */
-function lookArgs(look: string): [string, string, string] {
+export function lookArgs(look: string): [string, string, string] {
   const [cells, cols, rows] = [new Set<string>(), new Set<string>(), new Set<string>()]
   for (const rect of look.split(',')) {
     const [a, b] = rect.split(':').map(parseAddress)
@@ -237,10 +237,10 @@ function lookArgs(look: string): [string, string, string] {
   return [[...cells].join('\n'), [...cols].join('\n'), [...rows].join('\n')]
 }
 
-type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number, boolean][], [string, boolean, number, boolean][]]
+export type RawLook = [[string, boolean, number[], string, string][], [string, boolean, number, boolean][], [string, boolean, number, boolean][]]
 
 /** Excel's look of a sheet: a white fill is no fill (cases do not use white), sizes of the standard size are left out. */
-function lookOf([cells, widths, heights]: RawLook): SheetLook {
+export function lookOf([cells, widths, heights]: RawLook): SheetLook {
   const hex = (rgb: number[]) => `#${rgb.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`
   const out: SheetLook = { cells: {}, widths: {}, heights: {}, merges: [] }
   for (const [addr, bold, rgb, format, merge] of cells) {

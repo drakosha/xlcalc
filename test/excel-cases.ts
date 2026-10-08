@@ -131,6 +131,7 @@ export const REASONS = {
     'Serial date 0 in the bond functions: `ACCRINT` with an issue or first interest date of 0 and `PRICE` with a settlement date of 0 are `#NUM!` in Excel and computed here; `AMORDEGRC` with a purchase date of 0 is 113 in Excel and −47885 here.',
   codePage:
     '`CHAR` and `CODE` take codes 128–255 from the Windows code page of the book\'s locale (Windows-1252 in en-US, Windows-1251 in ru-RU), as Excel for Windows does; Excel for Mac takes Mac Roman and Mac Cyrillic (`CHAR(200)` is `È` here and `»` in Excel for Mac en-US, `CODE("Ж")` in ru-RU 198 here and 134 there).',
+  outsideCode: '`CODE` of a character outside the code page of the book\'s locale is 63 (`?`), as Excel for Windows answers; Excel for Mac answers 95 (`_`): `CODE("中")`, and `CODE("Ж")` in en-US.',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
@@ -169,6 +170,17 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },
   'measurement:CHAR#3': { reason: 'codePage', engine: { t: 's', v: 'È' } },
+  'measurement:CODE#3': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'measurement:CODE#5': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'measurement:CODE#6': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'measurement:CODE#12': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#142': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#143': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#144': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#145': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#146': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#147': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
+  'char-code:CODE#148': { reason: 'outsideCode', engine: { t: 'n', v: 63 } },
   'measurement:CHIINV#7': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },
   'measurement:CHISQ.INV#14': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000208709.154 } },
   'measurement:CHISQ.INV.RT#15': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000232617.1965 } },

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `CODE` of a character outside the code page of the book's locale is 63 (`?`), as Excel for Windows answers (it was 95, `_`, Excel for Mac's answer): `CODE("中")`, and `CODE("Ж")` in en-US.
+- Excel for Windows is a second oracle: `bench/windows` sends the Mac harness's books to Excel for Windows over SSH and COM, stores its answers in `test/excel/win/`, and `test/excel-win.test.ts` checks the engine against them (`bench/windows/README.md`).
+
 ## 0.3.1 (2026-10-07)
 
 Internal release; not published to npm.

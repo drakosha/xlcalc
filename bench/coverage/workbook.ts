@@ -48,7 +48,7 @@ function stepLine(s: Step): string {
  * A book with a circular reference and without iterative calculation makes Excel show a warning window on opening,
  * which stops the run: such a case is refused before Excel sees it (the engine finds the cycle).
  */
-function checkCycles(c: WorkbookCase) {
+export function checkCycles(c: WorkbookCase) {
   if (c.file?.iterate) return
   const cycle = compute(c.book, { display: false }).issues.find((i) => i.error === 'CYCLE')
   if (cycle) throw new Error(`${c.id}: ${cycle.sheet}!${cycle.cell} is in a circular reference and the case has no iterative calculation (Excel would show a warning window)`)
