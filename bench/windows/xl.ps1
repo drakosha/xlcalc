@@ -101,7 +101,9 @@ function Table($wb, [string]$line) {
       $rg = $ws.Range($p[2])
       switch ($p[3]) {
         'x' { [void]$rg.ClearContents() }
-        'n' { $rg.Value2 = [double]::Parse($p[4], $inv) }
+        # a number typed: its text with a decimal point, as Formula reads it in any locale (Value2 with a Double into a
+        # table's header failed now and then with an invalid cast)
+        'n' { $rg.Formula = $p[4] }
         'f' { $rg.Formula2 = $p[4] }
         'l' { $rg.Formula2Local = $p[4] }
         default { $rg.Value2 = $p[4] }

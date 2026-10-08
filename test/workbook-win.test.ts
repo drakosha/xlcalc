@@ -13,7 +13,20 @@ import { differences, engineReads, goesOn } from './workbook-cases.js'
 const SETS = winFiles<StoredWorkbook>('workbook/')
 
 /** `<set>:<case>` → cell → why it differs from Excel for Windows (at any read). */
-const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {}
+const PIXELS = 'a date that does not fit shows `#` across the cell: Excel for Windows measures the column in pixels, the engine in the Mac\'s points, so the count of `#` differs'
+const OUTSIDE = {
+  'F!A82': 'COUPDAYS is not in the whitelist (#NAME?), as on the Mac',
+  'F!A92': 'XIRR stops within 1e-8 of the root in Excel, the engine finds the root (SOFT in the case sets), as on the Mac',
+}
+/** Excel starts a cycle from what the file stores, on Windows as on the Mac; the engine from 0. */
+const START = 'Excel starts a cycle from what the file stores: 50 here, empty text (#VALUE! in arithmetic) where it stores none; the engine starts from 0'
+const WIN_BOOK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  'date1904-held:held': { 'S!A9': PIXELS },
+  'date1904:d1900': { ...OUTSIDE, ...Object.fromEntries(['S!A4', 'S!A5', 'S!A7', 'S!A14', 'S!A17', 'S!A18', 'S!A20'].map((k) => [k, PIXELS])) },
+  'date1904:d1904': { ...OUTSIDE, 'S!A11': PIXELS },
+  'iterate:counter-blank': { 'S!A1': START, 'S!B1': START },
+  'iterate:counter-cached': { 'S!A1': START, 'S!B1': START },
+}
 
 for (const set of SETS) {
   const built = ((await import(`../bench/coverage/workbook/${set.name}.ts`)) as { buildWorkbookCases: () => WorkbookCase[] }).buildWorkbookCases()

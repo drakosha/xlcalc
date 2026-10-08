@@ -12,9 +12,14 @@ import { differences } from './tables-cases.js'
 const SETS = [...winFiles<StoredTables>('tables/').map((s) => ({ ...s, sub: '' })), ...winFiles<StoredTables>('tables/ru-RU/').map((s) => ({ ...s, sub: 'ru-RU/' }))]
 
 /** `<set>:<case>` → why the engine's answer differs from Excel for Windows's. */
-const WIN_TABLES: Readonly<Record<string, string>> = {}
+const WIN_TABLES: Readonly<Record<string, string>> = {
+  'ops-held:rename-cell': "a table renamed to a name Excel does not take (AB12): Excel's object model makes it one (AB12_), as on the Mac; renameTable refuses with table_name",
+  'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1), as on the Mac; renameTable refuses with table_name",
+  'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row, as on the Mac; setCells leaves the table as it is",
+  'more:type-calc': "a formula typed into an empty column of a table: Excel's AutoCorrect fills the column with it, as on the Mac; setCells puts it in its cell",
+}
 
-describe.each(SETS)('tables $sub$name against Excel for Windows', (set) => {
+describe.each(SETS)('tables $name ($sub) against Excel for Windows', (set) => {
   const mod = import(`../bench/coverage/tables/${set.name}.ts`) as Promise<TableSet>
   it.each(set.cases.map((c) => [c.id, c] as const))('%s', async (id, c) => {
     expect((await mod).buildTableCases().find((x) => x.id === id), "the stored case is the generator's current one").toEqual(c)
