@@ -4,6 +4,7 @@
  * with one row (column) is repeated down (across), otherwise a position outside it is #N/A. Only the
  * occupied part of the operands is computed, the rest is one `fill` value.
  */
+import { allot, spend } from '../exec/budget.js'
 import { Areas, E, Rng, type V } from '../values.js'
 import { Arr } from './value.js'
 
@@ -51,9 +52,11 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
       h = Math.max(h, extent(x.rows, x.h, filled, rows))
       w = Math.max(w, extent(x.cols, x.w, filled, cols))
     }
+  allot(h * w)
   const out: V[] = new Array(h * w)
   const args: V[] = new Array(xs.length)
-  for (let r = 0; r < h; r++)
+  for (let r = 0; r < h; r++) {
+    spend(w)
     for (let c = 0; c < w; c++) {
       let outside = false
       for (let i = 0; i < xs.length; i++) {
@@ -63,6 +66,7 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
       }
       out[r * w + c] = outside ? E.NA : f(args)
     }
+  }
   const fill = h < rows || w < cols ? f(xs.map((x) => (x instanceof Arr ? x.fill : x))) : null
   return new Arr(rows, cols, h, w, out, fill)
 }

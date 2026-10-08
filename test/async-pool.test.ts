@@ -1,0 +1,172 @@
+/**
+ * The thread pool: the same values and hashes as the synchronous engine on the case books in both execution modes;
+ * sessions whose book lives in a thread (edits go there, changes come back), two of them on one thread with their
+ * calls mixed; `mapCell` of a structure operation as the synchronous session's; soft deadlines and aborts, waiting
+ * and running.
+ */
+import { afterAll, describe, expect, it } from 'vitest'
+import { CalcError, compute, openSession, type BookInput, type Calc, type StructureOp } from '../src/index.js'
+import { synthBook } from '../src/synth.js'
+import { BOOKS, chainBook, CLOCK, setA1, slowBook } from './async-books.js'
+import { pool } from './fixtures/pool.js'
+import { randomBook } from './seeded-books.js'
+import { edits } from './session-edits.js'
+
+const fails = async (p: Promise<unknown>): Promise<CalcError> => {
+  try {
+    await p
+  } catch (e) {
+    expect(e).toBeInstanceOf(CalcError)
+    return e as CalcError
+  }
+  throw new Error('expected CalcError')
+}
+
+const open: Calc[] = []
+const made = async (...a: Parameters<typeof pool>) => {
+  const p = await pool(...a)
+  open.push(p)
+  return p
+}
+afterAll(() => Promise.all(open.map((p) => p.close())))
+
+describe.each(['closures', 'eval'] as const)('in threads, execution %s', (execution) => {
+  it('the case books: values and hashes as the synchronous engine', async () => {
+    const p = await made({ threads: 2 })
+    const results = await Promise.all(BOOKS.map(([, book]) => p.compute(book, { clock: CLOCK, execution })))
+    for (const [i, [name, book]] of BOOKS.entries()) {
+      const sync = compute(book, { clock: CLOCK, execution })
+      expect(results[i].hash, name).toBe(sync.hash)
+      expect(results[i].sheets, name).toEqual(sync.sheets)
+      expect(results[i].issues, name).toEqual(sync.issues)
+    }
+  }, 120_000)
+
+  it('a session over 40 edits: the same changes and hash after each as a synchronous session', async () => {
+    const synth = synthBook({ seed: 1, rows: 340 })
+    const p = await made({ threads: 1 })
+    const s = await p.openSession(synth.book, { clock: CLOCK, execution })
+    const sync = openSession(synth.book, { clock: CLOCK, execution })
+    for (const batch of edits(5, 40, synth)) {
+      expect(await s.setCells(batch)).toEqual(sync.setCells(batch))
+      expect((await s.result()).hash).toBe(sync.result().hash)
+    }
+    const report = synth.book.sheets.at(-1)!
+    const cell = Object.keys(report.cells).find((k) => report.cells[k].formula)!
+    expect(await s.explain(report.name, cell)).toEqual(sync.explain(report.name, cell))
+    expect(await s.book()).toEqual(sync.book())
+    await s.close()
+  }, 120_000)
+})
+
+describe('in threads', () => {
+  it('two sessions on one thread, their calls mixed without waiting: each has its own changes and hash', async () => {
+    const p = await made({ threads: 1 })
+    const [a, b] = [chainBook(400), synthBook({ seed: 2, rows: 200 }).book]
+    const [sa, sb] = await Promise.all([p.openSession(a, { clock: CLOCK }), p.openSession(b, { clock: CLOCK })])
+    const [ya, yb] = [openSession(a, { clock: CLOCK }), openSession(b, { clock: CLOCK })]
+    const eb = edits(9, 8, synthBook({ seed: 2, rows: 200 }))
+    const pending: Promise<unknown>[] = []
+    const expected: unknown[] = []
+    for (let i = 0; i < 8; i++) {
+      pending.push(sa.setCells(setA1(i + 2)), sb.setCells(eb[i]), sa.result().then((r) => r.hash))
+      expected.push(ya.setCells(setA1(i + 2)), yb.setCells(eb[i]), ya.result().hash)
+    }
+    expect(await Promise.all(pending)).toEqual(expected)
+    expect([(await sa.result()).hash, (await sb.result()).hash]).toEqual([ya.result().hash, yb.result().hash])
+  }, 60_000)
+
+  it('names, the clock, layout, styles and a live session as in the same thread', async () => {
+    const p = await made({ threads: 1 })
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'A1+1' }, A3: { value: 5 }, B1: { formula: 'x*2' }, B2: { formula: 'SUBTOTAL(109,A3:A4)' }, A4: { value: 7 } } }], names: [{ name: 'x', ref: "'S'!$A$3" }] }
+    const s = await p.openSession(book, { clock: CLOCK })
+    const y = openSession(book, { clock: CLOCK })
+    const next = { now: '2026-10-05T00:00:00Z', seed: 1 }
+    expect(await s.setClock(next)).toEqual(y.setClock(next))
+    expect(s.clock).toEqual(next)
+    expect(await s.setNames([{ name: 'x', ref: "'S'!$A$2" }])).toEqual(y.setNames([{ name: 'x', ref: "'S'!$A$2" }]))
+    expect(await s.setLayout([{ sheet: 'S', rows: '4', set: { hidden: true } }])).toEqual(y.setLayout([{ sheet: 'S', rows: '4', set: { hidden: true } }]))
+    await s.setStyles([{ font: { bold: true } }])
+    y.setStyles([{ font: { bold: true } }])
+    expect((await s.result()).hash).toBe(y.result().hash)
+    expect(await s.book()).toEqual(y.book())
+    const live = await p.openSession(chainBook(5), { live: true })
+    await live.setCells(setA1(3))
+    expect((await live.result()).hash).toBe(compute(await live.book(), { clock: live.clock }).hash)
+  })
+
+  it('restructure: the changes and mapCell of the synchronous session, the book from book()', async () => {
+    const p = await made({ threads: 1 })
+    const book = randomBook(5)
+    book.sheets[1] = { ...book.sheets[1], rows: { '3': { hidden: true }, '7:9': { hidden: true, height: 20 } }, filtered: true }
+    const ops: StructureOp[] = [
+      { op: 'insertRows', sheet: 'S1', row: 4, count: 2 },
+      { op: 'deleteRows', sheet: 'S2', row: 2, count: 8 },
+      { op: 'insertRows', sheet: 'S2', row: 6, count: 3 },
+      { op: 'deleteColumns', sheet: 'S 3', column: 'B', count: 2 },
+      { op: 'moveRange', from: { sheet: 'S1', range: 'A1:C5' }, to: { sheet: 'S 3', cell: 'D10' } },
+      { op: 'copyRange', from: { sheet: 'S2', range: 'A1:B10' }, to: { sheet: 'S1', range: 'F1:G10' } },
+      { op: 'renameSheet', sheet: 's1', name: 'One' },
+      { op: 'insertSheet', name: 'New', before: 'S2' },
+      { op: 'moveSheet', sheet: 'S2', before: 'One' },
+      { op: 'deleteSheet', sheet: 'New' },
+      { op: 'insertRows', sheet: 'S 3', row: 1048576, count: 1 },
+    ]
+    const s = await p.openSession(book, { clock: CLOCK })
+    const y = openSession(book, { clock: CLOCK })
+    for (const op of ops) {
+      const names = y.book().sheets.map((x) => x.name)
+      const [a, b] = [await s.restructure(op), y.restructure(op)]
+      expect(a.ok, JSON.stringify(op)).toBe(b.ok)
+      if (!a.ok || !b.ok) continue
+      expect(a.changes).toEqual(b.changes)
+      for (const sheet of names) for (const cell of ['A1', 'B2', 'C5', 'D9', 'A12', 'F3', 'G10', 'H20']) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
+    }
+    expect(await s.book()).toEqual(y.book())
+  }, 60_000)
+
+  it('soft deadlines and aborts, waiting and running; input errors come back as InputError', async () => {
+    const p = await made({ threads: 1 })
+    const big = synthBook({ seed: 1, rows: 1700 }).book
+    expect((await fails(p.compute(big, { clock: CLOCK, timeoutMs: 5 }))).code).toBe('soft_timeout')
+    // one running, one waiting: both aborted
+    const [run, wait] = [new AbortController(), new AbortController()]
+    const running = p.compute(big, { signal: run.signal })
+    const waiting = p.compute(big, { signal: wait.signal })
+    wait.abort('not needed')
+    const w = await fails(waiting)
+    expect([w.code, w.cause]).toEqual(['aborted', 'not needed'])
+    setTimeout(() => run.abort('stop'), 30)
+    const r = await fails(running)
+    expect([r.code, r.cause]).toEqual(['aborted', 'stop'])
+    // the thread goes on
+    expect((await p.compute(chainBook(3), { clock: CLOCK })).hash).toBe(compute(chainBook(3), { clock: CLOCK }).hash)
+    const s = await p.openSession(chainBook(3))
+    await expect(s.setCells([{ sheet: 'Nope', cell: 'A1', input: { value: 1 } }])).rejects.toThrow(/^edits\[0\]\.sheet: unknown sheet/)
+    await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }], { deadline: 1 } as never)).rejects.toThrow('opts: unknown field "deadline"')
+    await expect(p.compute(chainBook(3), { clok: 1 } as never)).rejects.toThrow('opts: unknown field "clok"')
+  }, 60_000)
+
+  it('a session call past its soft deadline in a thread changes nothing', async () => {
+    const p = await made({ threads: 1 })
+    const s = await p.openSession(slowBook(), { clock: CLOCK })
+    const before = (await s.result()).hash
+    expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
+    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 1 })
+    expect((await s.result()).hash).toBe(before)
+    const y = openSession(slowBook(), { clock: CLOCK })
+    expect(await s.setCells(setA1(0.5))).toEqual(y.setCells(setA1(0.5)))
+  }, 60_000)
+
+  it('maxHeapMb without limits.cells: arrays larger than a 32nd of the heap give CalcError', async () => {
+    const p = await made({ threads: 1, maxHeapMb: 64 })
+    const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(3000000))' } } }] }))
+    expect([e.limit, e.max]).toEqual(['cells', 2_097_152])
+  })
+
+  it('limits in a thread: CalcError with the cell', async () => {
+    const p = await made({ threads: 1, limits: { cells: 1000 } })
+    const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { C3: { formula: 'SUM(SEQUENCE(100,100))' } } }] }))
+    expect([e.code, e.limit, e.cell, e.size]).toEqual(['limit', 'cells', { sheet: 'S', cell: 'C3' }, 10_000])
+  })
+})

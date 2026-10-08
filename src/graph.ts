@@ -3,6 +3,7 @@
  * Besides the references, a spilled array (its claim, `spill/state.ts`) comes before the formulas reading its range.
  */
 import type { EngineState, Formula } from './engine.js'
+import { spend } from './exec/budget.js'
 import type { Area } from './spill/state.js'
 
 const WIDE = 64
@@ -36,6 +37,7 @@ export function rebuildGraph(state: EngineState) {
   const wide: EngineState['wide'] = new Map()
   for (const f of formulas) {
     if (!f) continue
+    spend(1)
     for (const g of f.refs) {
       if (g.c2 - g.c1 >= WIDE) {
         let w = wide.get(g.s)

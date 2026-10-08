@@ -6,6 +6,7 @@
 import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { arr } from '../../arrays/value.js'
+import { allot } from '../../exec/budget.js'
 import { Areas, E, isErr, Rng, type V } from '../../values.js'
 
 /** A name that reads as an A1 address within the grid, an R1C1 reference or a boolean. */
@@ -38,6 +39,7 @@ const position = (row: boolean): FnDef => ({
     const from = (row ? ref.r1 : ref.c1) + 1
     const n = row ? ref.r2 - ref.r1 + 1 : ref.c2 - ref.c1 + 1
     if (n === 1) return from
+    allot(n)
     const v = Array.from({ length: n }, (_, i) => from + i)
     return row ? arr(n, 1, v) : arr(1, n, v)
   },

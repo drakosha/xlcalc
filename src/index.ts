@@ -9,11 +9,13 @@ import { openSession } from './session.js'
 import { restructure } from './structure/index.js'
 import { epochOf } from './dates.js'
 import { createState, debugSource } from './engine.js'
-import { currentClock, nowMs } from './env.js'
+import { limitsBudget, run, withBudget } from './exec/budget.js'
+import { computeSteps } from './compute.js'
+import { currentClock } from './env.js'
 import { checkBook, checkCellValue, checkComputeOptions, checkDisplayOptions, checkString, checkValidateContext } from './input.js'
 import { displayRules } from './locale/rules.js'
 import { columnPoints, room } from './numfmt.js'
-import { buildResult, clockSerial } from './result.js'
+import { clockSerial } from './result.js'
 import { validate, validateName as checkName } from './syntax.js'
 
 export * from './contract.js'
@@ -21,6 +23,8 @@ export { FUNCTION_NAMES } from './functions.js'
 export { CONFIG_VERSION } from './config.js'
 export { openSession } from './session.js'
 export { InputError } from './input.js'
+export { CalcError } from './exec/budget.js'
+export { createInlineCalc } from './async/inline.js'
 export { enUS, ruRU, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 export { restructure } from './structure/index.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
@@ -31,12 +35,8 @@ export { fromLegacy, type LegacyContext } from './legacy/convert.js'
  * shape throws `InputError`; invalid formulas do not throw, they give error values with reasons in `issues`.
  */
 export function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
-  const t0 = nowMs()
   const o = checkComputeOptions(opts)
-  checkBook(book)
-  const clock = o.clock ?? currentClock()
-  const state = createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
-  return buildResult(state, clock, t0, o.display !== false)
+  return withBudget(limitsBudget(o.limits), () => run(computeSteps(book, o)))
 }
 
 export function validateFormula(text: string, ctx?: ValidateContext): ValidateResult {
