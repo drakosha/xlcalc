@@ -4,9 +4,12 @@
  * is a whole multiple of the source's size is tiled with copies, any other is pasted once at its top-left
  * cell, as Excel's Range.Copy does. Empty source cells clear the cells they land on.
  */
-import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
+import type { BookInput, CellInput, CellRef, RestructureResult, TableInput } from '../contract.js'
+import { checkAddress, checkString, InputError } from '../input.js'
 import { formatAddress, parseAddress } from '../model.js'
-import { sheetKey } from '../syntax.js'
+import { FormulaError, sheetKey, tokenize } from '../syntax.js'
+import { tableAt, tablesOf } from '../tables/model.js'
+import { rewriteTableRefs } from '../tables/rewrite.js'
 import { isFull, LIMIT, span, type Area, type Axis, type Bound, type Rect } from './area.js'
 import { carryNames, shiftRect, within } from './move.js'
 import { arrayRefusal, copiedCells, relocated } from './arrays.js'
@@ -93,4 +96,49 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   pasteLayout(source, out, paste)
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
   return { ok: true, book: out, mapCell }
+}
+
+/** What `copyFormula` reads of a book: its sheets' names and their tables; a `BookInput` is one. */
+export interface CopyContext {
+  sheets: { name: string; tables?: TableInput[] }[]
+}
+
+/** The sheets a formula names, each as it spells it: without a book they are the sheets references point to. */
+function namedSheets(text: string): Map<string, string> {
+  const out = new Map<string, string>()
+  try {
+    for (const tok of tokenize(text)) if (tok.t === 'ref') for (const s of [tok.sheet, tok.last]) if (s) out.set(sheetKey(s), s)
+  } catch (e) {
+    if (!(e instanceof FormulaError)) throw e
+  }
+  return out
+}
+
+/** A cell of the book, checked: its sheet as the book spells it (any sheet without a book) and its row and column. */
+function place(ref: unknown, path: string, book: CopyContext | undefined): { sheet: string; row: number; col: number } {
+  if (typeof ref !== 'object' || ref === null) throw new InputError(path, 'expected a cell such as { sheet: "Sheet1", cell: "B2" }')
+  const { sheet, cell } = ref as CellRef
+  const name = checkString(sheet, `${path}.sheet`)
+  const known = book?.sheets.find((s) => sheetKey(s.name) === sheetKey(name))
+  if (book && !known) throw new InputError(`${path}.sheet`, `unknown sheet ${JSON.stringify(name)}`)
+  return { sheet: known?.name ?? name, ...parseAddress(checkAddress(cell, `${path}.cell`)) }
+}
+
+/**
+ * The text of a formula copied from cell `from` to cell `to`, as `copyRange` pastes it: relative parts move by the
+ * offset, absolute ones stay, a reference pushed past the sheet's edge is `#REF!`, only the changed references are
+ * rewritten. With the book (its sheets' names and tables), a formula copied out of a table names the table in its
+ * references to it, as Excel pastes it; without it the formula's own sheet names are taken as written.
+ */
+export function copyFormula(text: string, from: CellRef, to: CellRef, book?: CopyContext): string {
+  const formula = checkString(text, 'text')
+  const [a, b] = [place(from, 'from', book), place(to, 'to', book)]
+  const names = book ? sheetNames(book as BookInput) : namedSheets(formula)
+  const out = rewriteFormula(formula, b.sheet, b.sheet, copyTransform(b.row - a.row, b.col - a.col), names)
+  if (!book) return out
+  const tables = tablesOf(book as BookInput)
+  const index = (name: string) => book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))
+  const t = tableAt(tables, index(a.sheet), a.row, a.col)
+  // out of its table, as copyRange pastes it (`tables/moves.ts`): the references to the table without a name get its name
+  return t && tableAt(tables, index(b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
 }
