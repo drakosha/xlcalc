@@ -21,7 +21,15 @@ export interface Locale {
   readonly errors: Readonly<Record<string, string>>
   /** Function names by invariant name (`SUM: 'СУММ'`); a function not listed keeps its English name. */
   readonly functions: Readonly<Record<string, string>>
+  /**
+   * The specifiers of structured references by their invariant text (`'#Data': '#Данные'`); without them, or for one
+   * not listed, the English one. Between a reference's items the list separator stands (`[#Данные];[Qty]` in ru-RU).
+   */
+  readonly tableItems?: Readonly<Partial<Record<TableItem, string>>>
 }
+
+/** The specifiers of structured references, invariant text. */
+export type TableItem = '#All' | '#Data' | '#Headers' | '#Totals' | '#This Row'
 
 /** The result of translating formula text: the text, or a check code with the position in the given text. */
 export type Translation = { ok: true; formula: string } | { ok: false; code: 'syntax'; message: string; at: number }

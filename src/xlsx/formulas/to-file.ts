@@ -7,6 +7,7 @@
 import type { Ast } from '../../syntax/ast.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { quoteSheet } from '../../syntax/print.js'
+import { specText } from '../../syntax/table.js'
 import { XLFN, XLWS } from './prefixes.js'
 
 const fn = (name: string) => (XLWS.has(name) ? `_xlfn._xlws.${name}` : XLFN.has(name) ? `_xlfn.${name}` : name)
@@ -33,6 +34,8 @@ export function toFile(ast: Ast): string {
       }
       case 'ref3d':
         return `${quoteSheet(`${n.first}:${n.last}`)}!${n.ref.text}`
+      case 'table':
+        return `${n.table ?? ''}[${specText(n.spec, { file: true })}]`
       case 'name':
         return (n.sheet === undefined ? '' : `${quoteSheet(n.sheet)}!`) + n.name
       case 'at':

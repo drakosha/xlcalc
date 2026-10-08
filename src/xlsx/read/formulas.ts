@@ -7,7 +7,7 @@ import type { XlsxIssueCode } from '../types.js'
 
 const FOUND: Record<Found, [XlsxIssueCode, string]> = {
   userFunction: ['userFunction', 'a user-defined function (a macro or an add-in) is not in the engine'],
-  table: ['table', 'structured references to tables are not in the engine: the formula is read as written and computes to an error'],
+  table: ['table', 'a structured reference without a table name is not in a file: the formula is read as written and computes to an error'],
   externalLink: ['externalLink', 'references to other workbooks are not in the engine: the formula is read as written and computes to an error'],
   letName: ['formula', 'a LET name that reads as a reference or a boolean once its _xlpm. prefix goes: the formula changes its meaning'],
 }

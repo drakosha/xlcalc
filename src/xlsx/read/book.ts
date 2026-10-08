@@ -21,6 +21,8 @@ import { cellMetadata } from './metadata.js'
 import { relsOf, type Rel } from './package.js'
 import { readSheet } from './sheet.js'
 import { readStrings } from './strings.js'
+import { formatAddress } from '../../model.js'
+import { parseRange } from '../../structure/area.js'
 
 
 /** Days between the 1904 and the 1900 date systems' day 0. */
@@ -141,12 +143,26 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
       continue
     }
     if (d.hidden) issues.add('hidden', 'a hidden sheet is read as a visible one', { sheet: d.name })
+    const sheetRels = await relsOf(archive, d.part!)
+    const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
     const read = readSheet(
-      { name: d.name, xml, rels: await relsOf(archive, d.part!), sheets: all, legacy },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined) },
       { sheet: d.name, strings, xfs: table.xfs, meta, date: dateOf, issues },
     )
     sheets.push(read.sheet)
     cached.push({ name: d.name, cells: read.cached })
+  }
+  // table names are unique through the book and apart from the defined names
+  const taken = new Set(names.map((n) => n.name.toUpperCase()))
+  for (const sh of sheets) {
+    if (!sh.tables) continue
+    sh.tables = sh.tables.filter((t) => {
+      const k = t.name.toLocaleUpperCase('ru-RU')
+      if (!taken.has(k)) return taken.add(k)
+      issues.add('table', `the table ${t.name} is left out: its name is another table's or a defined name`, { sheet: sh.name })
+      return false
+    })
+    if (!sh.tables.length) delete sh.tables
   }
   const book: BookInput = { sheets }
   if (names.length) book.names = names
@@ -155,10 +171,24 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   if (tag) book.locale = tag
   // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time)
   try {
-    checkBook({ ...book, sheets: sheets.map((s) => ({ ...s, cells: {} })) })
+    checkBook({ ...book, sheets: sheets.map((s) => ({ ...s, cells: headerCells(s) })) })
   } catch (e) {
     if (e instanceof InputError) throw new Error(`xlsx: the file's book is not valid: ${e.message}`)
     throw e
   }
   return { book, cached, issues: issues.list() }
+}
+
+/** The header cells of a sheet's tables, which the check of its tables reads. */
+function headerCells(s: SheetInput): SheetInput['cells'] {
+  const out: SheetInput['cells'] = {}
+  for (const t of s.tables ?? []) {
+    const x = parseRange(t.range)
+    if (!x || t.headers === false) continue
+    for (let c = x.c1; c <= x.c2; c++) {
+      const a = formatAddress(x.r1, c)
+      if (s.cells[a]) out[a] = s.cells[a]
+    }
+  }
+  return out
 }

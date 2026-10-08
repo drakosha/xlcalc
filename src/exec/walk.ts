@@ -10,6 +10,7 @@ import { Arr } from '../arrays/value.js'
 import { FUNCTIONS } from '../functions.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { decode, type Area, type Bound, type Rect } from '../structure/area.js'
+import type { ErrorCode } from '../contract.js'
 import { canonical, type Ast, type BinOp, type RangeRef } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 
@@ -26,6 +27,8 @@ export interface CodegenContext {
   name(name: string, scope: number): NameDef | undefined
   /** The area of an array formula of the old kind: `ROW()` and `COLUMN()` give its rows and columns. */
   area?: Rect
+  /** A structured reference in the formula's row `r`: its sheet and rectangle, or the error it gives (`tables/model.ts`). */
+  table?(n: Extract<Ast, { k: 'table' }>, r: number): (Rect & { s: number }) | ErrorCode
 }
 
 export type Operator = 'add' | 'sub' | 'mul' | 'div' | 'pow' | 'cat'
@@ -122,7 +125,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
   // a name as the names of `scope` show it, or as its sheet's (`'S'!rate`)
   const resolve: NameRef = (n, scope) => ctx.name(n.name, n.sheet === undefined ? scope : ctx.sheet(n.sheet))
-  const shape = shapes(ast, s, resolve, !!ctx.area)
+  const table = (n: Extract<Ast, { k: 'table' }>) => ctx.table?.(n, r) ?? 'REF'
+  const shape = shapes(ast, s, resolve, !!ctx.area, table)
   const many = (n: Ast) => (shape.get(n) ?? 0) > 0
   // the code of a use of each LET name, by slot (a name's formula has its own LET names)
   let uses: T[] = []
@@ -161,6 +165,14 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         if (n.ref.spill) return b.spill(g.s, g.r1, g.c1)
         if (n.ref.kind === 'cell' && !rangeOk) return b.cell(g.s, g.r1, g.c1)
         return b.range(g, !rangeOk && g.r2 === g.r1 && g.c2 === g.c1)
+      }
+      case 'table': {
+        const x = table(n)
+        if (typeof x === 'string') return b.value(E[x])
+        const g = new Rng(x.s, x.r1, x.c1, x.r2, x.c2)
+        info.refs.push(g)
+        const one = g.r2 === g.r1 && g.c2 === g.c1
+        return one && !rangeOk ? b.cell(g.s, g.r1, g.c1) : b.range(g, false)
       }
       case 'ref3d': {
         // under an operator or alone Excel answers #REF! for it

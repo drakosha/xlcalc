@@ -1,8 +1,8 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 2,
-  "date": "2026-10-07"
+  "seconds": 0.1,
+  "date": "2026-10-08"
  },
  "books": {
   "values": {
@@ -433,6 +433,93 @@
   },
   "spill-names-chain": {
    "sent": "8d53606b77da5f0b806fbdd98127bbf95de17c89795cca09c6b5f92900099862"
+  },
+  "tables-refs-parts": {
+   "sent": "329718feff129ee5c41a7fc0748407e206b33d8d342cec0f3b50bc442bf03328"
+  },
+  "tables-refs-this-row": {
+   "sent": "57ef09912023c19e885442a3e73f32f3fa0aa9d3875ef9bbfa81862f8de90442"
+  },
+  "tables-refs-inside": {
+   "sent": "ad6bf89a06fdeb2f2f1eb64a508b6e2f23e6b6ec533a684151603540bc1bb7c3"
+  },
+  "tables-refs-no-headers": {
+   "sent": "ac2e8b534888ce704e93569ad43d21e412725ce59326044129e4ba18ad290624"
+  },
+  "tables-refs-totals": {
+   "sent": "dd7f8ee5b017da60d933343aaf27fe3254ecd2f953c4bc33c24c37fed7365a8e"
+  },
+  "tables-refs-escapes": {
+   "sent": "0825096cbf935180cdbfa548df227a65107da460cfe94ae226cd25e89bf6a43b"
+  },
+  "tables-refs-names": {
+   "sent": "80404ea21f0deae46a4353af93ce7c22672271f7ce10afc485d90f16a694257d"
+  },
+  "tables-refs-spill": {
+   "sent": "7e53972b7c1338d85ea406bb68953f57a387635780a39b61c2963ddd5bbaf53a"
+  },
+  "tables-refs-held-offset": {
+   "sent": "1ffe8e72ee13f24ca32e99c674b79ad80785b6644fb7a0d1abffabad82ccbee3"
+  },
+  "tables-refs-held-totals-row": {
+   "sent": "43b6c92e079a13db656b18771ab00f4b88a579ef14649c22d59103df22816c95"
+  },
+  "tables-refs-held-escapes": {
+   "sent": "8adbbe51559284a9f86b3c84d0c5d3a051910223398e69c968f03a3a7b7bc481"
+  },
+  "tables-refs-held-names": {
+   "sent": "a5c6611b432a4bfb4b2ad65ec2b7d58a50094fb90c9a7ee1c5c889a60e5e4836"
+  },
+  "tables-refs-held-arrays": {
+   "sent": "d6834f55716caf872a1ce4db547c1ad31d1ab969d57b0298d1608f1720ab4a26"
+  },
+  "tables-ops-ins-inside": {
+   "sent": "95477cb98eb79e1029b3d2b157caaea8650b6fc5b91dd19cb17f716e3ce7706a"
+  },
+  "tables-ops-ins-totals": {
+   "sent": "b6f615c0206903cd0a514ff6fe32249ad3bd94339fffa4be780d20a83250ceda"
+  },
+  "tables-ops-ins-no-header": {
+   "sent": "c2d2b9beb37388a67508faaede6b21d5a002d59f778d2ff9fc02f9dd2033015a"
+  },
+  "tables-ops-ins-two": {
+   "sent": "78199a694e2a3edd010deabd7ae4924b66992b7f9b2e3a1bb810ba016ccdc45e"
+  },
+  "tables-ops-ins-grow-move": {
+   "sent": "16fcf9ea0bacf3075d99b73661614adfc8da6b6d9bed8af082e53ca4b5a38e21"
+  },
+  "tables-ops-ins-below": {
+   "sent": "c7fdf3f4d5c0a71d50422a2cde123e025632f278ed2738e153442481b15b04ec"
+  },
+  "tables-ops-insc-taken": {
+   "sent": "7eb57f88dcb957cb43ab48e214cd8664f557d2b84cb890e0b0a4fd8728038665"
+  },
+  "tables-ops-held-ins-other-header": {
+   "sent": "18ddd7233d0ab82637ae419fbbe6da36750ec1e07f423a81ce8639cb839f2504"
+  },
+  "tables-ops-held-ins-past-other": {
+   "sent": "2481776b20bf23727e8585de2b94f719d9194becd0da8f79d6cf6f11dd801ef4"
+  },
+  "tables-ops-held-del-only-row": {
+   "sent": "b62462a2f2886dc3808cdcdbdc76ffc97fc7b6e97fbf747fcc4149951dd712b1"
+  },
+  "tables-ops-held-del-data-totals-all": {
+   "sent": "262134ed5b5e1dd93ffc9e84169af0976cd32946843b2c627f4a6134ef45d3bf"
+  },
+  "tables-ops-held-del-first-rows": {
+   "sent": "be536f2782992279e3ea426b583b6980086533e46ab2e590bebc7c4b586c547c"
+  },
+  "tables-ops-held-move-to-table": {
+   "sent": "f2828c2c6e86c1c4759c62e065e0699e9085d3713a1ff2ed94c713a43e186544"
+  },
+  "tables-ops-held-rename-name": {
+   "sent": "dc03dacf5cb1379233a9541a71c8711e95e1e648d8175959d709e1967e87becc"
+  },
+  "tables-ops-held-head-dup-three": {
+   "sent": "0a422950a814ed716e8f4c1154a1ab30355dc0d8d5fc1824d83659e696033fa0"
+  },
+  "tables-ops-held-convert-names": {
+   "sent": "cf150788a63161e7f11f1a5b9a3e09663e7866477ca20a176cab32c1707be783"
   }
  }
 }

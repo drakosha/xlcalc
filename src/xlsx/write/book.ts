@@ -8,6 +8,7 @@ import type { BookInput, ComputeResult } from '../../contract.js'
 import { checkBook, InputError } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
+import { bindTables } from '../../syntax/check.js'
 import { sheetKey } from '../../syntax/print.js'
 import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
@@ -18,6 +19,9 @@ import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { writeSheet } from './sheet.js'
 import { StyleWriter } from './styles.js'
+import { tableXml } from './tables.js'
+import { tableAt, tablesOf } from '../../tables/model.js'
+import { parseAddress } from '../../model.js'
 
 const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
 const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
@@ -57,7 +61,7 @@ const rels = (items: [type: string, target: string][]) =>
 const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]*$/u
 const NOT_NAME = /^(?:[A-Z]{1,3}\d+|R\d*C\d*|R|C|TRUE|FALSE)$/i
 
-function definedNames(book: BookInput, issues: Issues): string {
+function definedNames(book: BookInput, issues: Issues, tables: { name: string; columns: string[] }[]): string {
   const index = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))
   const seen = new Set<string>()
   const out: string[] = []
@@ -66,7 +70,9 @@ function definedNames(book: BookInput, issues: Issues): string {
     const key = `${scope ?? ''}\n${n.name.toUpperCase()}`
     let text: string | undefined
     try {
-      text = toFile(parse(n.ref, { union: true }))
+      // a table's name alone is its data, which a file writes `Sales[]`
+      const bound = bindTables(parse(n.ref, { union: true }), n.ref, { tables })
+      if (bound.ok) text = toFile(bound.ast)
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
     }
@@ -78,7 +84,7 @@ function definedNames(book: BookInput, issues: Issues): string {
           : seen.has(key)
             ? 'a name given twice'
             : text === undefined
-              ? 'a name whose reference does not parse'
+              ? 'a name whose reference does not parse or names a table or a column the book does not have'
               : undefined
     if (why) {
       issues.add('name', `${why} is left out of the file`, { name: n.name })
@@ -118,7 +124,33 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   const sheetKeys = new Set(book.sheets.map((s) => sheetKey(s.name)))
   const rich: (keyof typeof RICH_TYPE)[] = []
   const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
-  const sheets = book.sheets.map((s, i) => writeSheet(s, i, { styles, string, issues, sheets: sheetKeys, mode, result: cells?.[i], richError }))
+  const tables = tablesOf(book)
+  const tableNames = tables.list.map((t) => ({ name: t.name, columns: t.cols }))
+  // table parts are numbered through the book, each sheet's from rId1 of its own relationships
+  let tableId = 0
+  const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
+  const sheets = book.sheets.map((s, i) =>
+    writeSheet(s, i, {
+      styles,
+      string,
+      issues,
+      sheets: sheetKeys,
+      mode,
+      result: cells?.[i],
+      richError,
+      tables: tableNames,
+      tableAt: (addr) => {
+        const { row, col } = parseAddress(addr)
+        return tableAt(tables, i, row, col)?.name
+      },
+      totalsAt: (addr) => {
+        const { row, col } = parseAddress(addr)
+        const t = tableAt(tables, i, row, col)
+        return !!t?.totals && row === t.r2
+      },
+      tableParts: parts[i].map((_, k) => `rId${k + 1}`),
+    }),
+  )
   const dynamic = sheets.some((s) => s.formulas)
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
@@ -127,6 +159,12 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: s.xml })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
+    if (!parts[i].length) return
+    for (const { t, id } of parts[i]) {
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames) })
+      contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
+    }
+    files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(parts[i].map(({ id }) => [`${REL}/table`, `../tables/table${id}.xml`])) })
   })
   files.push({ name: 'xl/styles.xml', text: styles.xml() })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
@@ -151,7 +189,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   }
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')
   const calc = dynamic ? '<calcPr fullCalcOnLoad="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}"><bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}"><bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

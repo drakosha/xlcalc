@@ -86,6 +86,10 @@ A merged area that overlaps another is left out and reported.
 | `_xlnm.Print_Area` and other built-in names | left out and reported |
 | `_xlfn.XLOOKUP` (Excel's placeholder for a newer function) | left out |
 
+### Tables
+
+A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, each column with its calculated column formula and its totals function or label. Structured references come in the stored spelling, which is a file's but for a column name that starts with `@` (`Sales[@at]` in a file is `Sales['@at]`). A header cell that does not hold its column's name as text is given it, and a table the model cannot hold, over another or over a merged area, is left out; both are reported. [docs/tables.md](tables.md) has the rules.
+
 ### The locale
 
 xlsx has no place for the book's locale. The writer keeps it in a custom document property named `xlcalc.locale`, and the reader reads it back. Excel keeps the property when it saves the file. A file without it gives a book without a locale, that is en-US.
@@ -96,7 +100,7 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 |---|---|
 | `richText` | formatted runs of text |
 | `userFunction` | a user-defined function (`_xludf.`) |
-| `table` | tables, and structured references in formulas |
+| `table` | a table left out (over another table or a merged area, its name taken), a header cell given its column's name, a structured reference without a table name |
 | `externalLink` | links to other workbooks, and formulas that use them |
 | `formula` | a formula the engine does not parse, kept as written |
 | `errorConstant` | an error stored as a value, read as a formula of it |
@@ -140,9 +144,13 @@ The spilled cells are written with their values. `#SPILL!` and `#CALC!` are writ
 
 Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.SORT`), LET's names become `_xlpm.x`, `E2#` becomes `_xlfn.ANCHORARRAY(E2)` and `@x` becomes `_xlfn.SINGLE(x)`. Sheet names are always quoted.
 
-A cell with `array` is written as an array formula of the old kind over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A name's formula is written as the book has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
+A cell with `array` is written as an array formula of the old kind over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A formula in a table's totals row is written as a plain formula, the only kind Excel opens there. A name's formula is written as the book has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 
 A file with formulas asks Excel to compute the book when it opens it, so Excel shows its own values over the stored ones.
+
+### Tables
+
+Each table is written as a table part, as Excel writes one: its name, range, header and totals rows, an autofilter over the header and data, its columns with their calculated column formulas and totals. A formula of the totals row that no totals function of its column gives is recorded as the column's custom totals formula, without which Excel does not open the file, and a table's name alone in a defined name is written `Sales[]`.
 
 ### Styles, columns and rows
 
@@ -155,8 +163,8 @@ Styles, number formats, widths, heights and merged areas are written as the book
 | `meta` | a cell's `meta` is left out |
 | `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference |
 | `textLength` | text over 32,767 characters is cut |
-| `formula` | a formula that does not parse, or names a sheet the book does not have, is written as its value |
-| `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse, is left out |
+| `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
+| `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
 
 ## Speed
 
@@ -188,7 +196,7 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 
 | step | what | result |
 |---|---|---|
-| `roundtrip` | 143 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, and the books of the structure and spill sets, names of any formula, `@`, references across sheets and array formulas of the old kind among them | every file opens, every book reads back as written, and Excel's values equal the engine's |
+| `roundtrip` | 172 books written by `writeXlsx`: values, escapes, formulas, spills, styles, sheet names, both locales, the synthetic book, and the books of the structure, spill and table sets, names of any formula, `@`, references across sheets, array formulas of the old kind and tables with structured references among them | every file opens, every book reads back as written, and Excel's values equal the engine's |
 | `saved` | 91 books of the case sets, 28,831 cases, as the harness sends them to Excel | read back, every case computes as in the book sent, and the values Excel stored equal its stored answers |
 | `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` and the one with the intersection operator |
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |

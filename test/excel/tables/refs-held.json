@@ -1,0 +1,994 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 3.8
+ },
+ "cases": [
+  {
+   "id": "offset",
+   "about": "a table at C4 with a totals row, read from beside it: its rows at the edges of the data, the totals",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C4": {
+        "value": "Code"
+       },
+       "D4": {
+        "value": "Qty"
+       },
+       "E4": {
+        "value": "Amount"
+       },
+       "C5": {
+        "value": "a"
+       },
+       "D5": {
+        "value": 1
+       },
+       "E5": {
+        "value": 10.5
+       },
+       "C6": {
+        "value": "b"
+       },
+       "D6": {
+        "value": 4
+       },
+       "E6": {
+        "value": 20
+       },
+       "C7": {
+        "value": "c"
+       },
+       "D7": {
+        "value": 2
+       },
+       "E7": {
+        "value": -3
+       },
+       "C8": {
+        "value": "b"
+       },
+       "D8": {
+        "value": 7
+       },
+       "E8": {
+        "value": 0.25
+       },
+       "C9": {
+        "value": "Total"
+       },
+       "D9": {
+        "formula": "SUBTOTAL(109,[Qty])"
+       },
+       "E9": {
+        "formula": "SUBTOTAL(101,[Amount])"
+       },
+       "H1": {
+        "formula": "AVERAGE(Orders[Amount])"
+       },
+       "H2": {
+        "formula": "SUMPRODUCT(Orders[Qty],Orders[Amount])"
+       },
+       "H3": {
+        "formula": "MATCH(\"b\",Orders[Code],0)"
+       },
+       "H4": {
+        "formula": "Orders[@Code]"
+       },
+       "H5": {
+        "formula": "Orders[@Code]"
+       },
+       "H6": {
+        "formula": "Orders[@Qty]*2"
+       },
+       "H8": {
+        "formula": "Orders[@Amount]"
+       },
+       "H9": {
+        "formula": "Orders[@Amount]"
+       },
+       "H10": {
+        "formula": "Orders[@Code]"
+       },
+       "H11": {
+        "formula": "ROWS(Orders[[#Data],[#Totals]])"
+       },
+       "H12": {
+        "formula": "INDEX(Orders[#All],1,2)"
+       },
+       "H13": {
+        "formula": "Orders[[#Totals],[Amount]]"
+       },
+       "H14": {
+        "formula": "COUNTA(Orders[[#All],[Code]])"
+       },
+       "H15": {
+        "formula": "SUM(Orders[[#Headers],[#Data],[Qty]:[Amount]])"
+       },
+       "H16": {
+        "formula": "COLUMNS(Orders[[Code]:[Amount]])"
+       },
+       "H17": {
+        "formula": "XLOOKUP(7,Orders[Qty],Orders[Code])"
+       },
+       "H18": {
+        "formula": "MAX(Orders[[#Totals],[Qty]:[Amount]])"
+       },
+       "H19": {
+        "formula": "SUMIFS(Orders[Amount],Orders[Code],\"b\",Orders[Qty],\">5\")"
+       }
+      },
+      "tables": [
+       {
+        "name": "Orders",
+        "range": "C4:E9",
+        "columns": [
+         {
+          "name": "Code"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Amount"
+         }
+        ],
+        "totals": true
+       }
+      ]
+     },
+     {
+      "name": "T",
+      "cells": {
+       "A5": {
+        "formula": "Orders[@Qty]"
+       },
+       "A9": {
+        "formula": "Orders[@Qty]"
+       },
+       "B4": {
+        "formula": "Orders[@Code]"
+       },
+       "C10": {
+        "formula": "Orders[[#Totals],[Qty]]"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C4:F9"
+    },
+    {
+     "sheet": "S",
+     "range": "H1:H19"
+    },
+    {
+     "sheet": "T",
+     "range": "A1:C10"
+    }
+   ]
+  },
+  {
+   "id": "totals-row",
+   "about": "formulas in a totals row: the formula's row there, the totals of another column, the data above",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "B1": {
+        "value": "y"
+       },
+       "C1": {
+        "value": "z"
+       },
+       "A2": {
+        "value": 1
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "formula": "[@x]+[@y]"
+       },
+       "A3": {
+        "value": 3
+       },
+       "B3": {
+        "value": 4
+       },
+       "C3": {
+        "formula": "[@x]+[@y]"
+       },
+       "A4": {
+        "formula": "ROWS([#Data])"
+       },
+       "B4": {
+        "formula": "[@y]"
+       },
+       "C4": {
+        "formula": "Tab[[#Totals],[x]]+SUM([z])"
+       }
+      },
+      "tables": [
+       {
+        "name": "Tab",
+        "range": "A1:C4",
+        "columns": [
+         {
+          "name": "x"
+         },
+         {
+          "name": "y"
+         },
+         {
+          "name": "z"
+         }
+        ],
+        "totals": true
+       }
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C4"
+    }
+   ]
+  },
+  {
+   "id": "escapes",
+   "about": "more names that take ' before a character: a # first, brackets inside, two apostrophes",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "#n"
+       },
+       "B1": {
+        "value": "a[1]"
+       },
+       "C1": {
+        "value": "it's"
+       },
+       "D1": {
+        "value": "Sp ace"
+       },
+       "A2": {
+        "value": 1
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 3
+       },
+       "D2": {
+        "value": 4
+       },
+       "A3": {
+        "value": 5
+       },
+       "B3": {
+        "value": 6
+       },
+       "C3": {
+        "value": 7
+       },
+       "D3": {
+        "value": 8
+       },
+       "A4": {
+        "value": 9
+       },
+       "B4": {
+        "value": 10
+       },
+       "C4": {
+        "value": 11
+       },
+       "D4": {
+        "value": 12
+       },
+       "G1": {
+        "formula": "SUM(E[['#n]:[a'[1']]])"
+       },
+       "G2": {
+        "formula": "E[[#Headers],[it''s]]"
+       },
+       "G3": {
+        "formula": "SUM(E['#n])+SUM(E[a'[1']])"
+       },
+       "G4": {
+        "formula": "E[@it''s]"
+       },
+       "G5": {
+        "formula": "COUNT(E[#Data])"
+       }
+      },
+      "tables": [
+       {
+        "name": "E",
+        "range": "A1:D4",
+        "columns": [
+         {
+          "name": "#n"
+         },
+         {
+          "name": "a[1]"
+         },
+         {
+          "name": "it's"
+         },
+         {
+          "name": "Sp ace"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G5"
+    }
+   ]
+  },
+  {
+   "id": "names",
+   "about": "names: a bare table, its formula row used on rows inside and outside the data, a name over another sheet's table",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "B1": {
+        "value": "y"
+       },
+       "A2": {
+        "value": 1
+       },
+       "B2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "B3": {
+        "value": 4
+       },
+       "A4": {
+        "value": 5
+       },
+       "B4": {
+        "value": 6
+       },
+       "E1": {
+        "formula": "ROWS(nt)"
+       },
+       "E2": {
+        "formula": "ny"
+       },
+       "E3": {
+        "formula": "ny"
+       },
+       "E5": {
+        "formula": "ny"
+       },
+       "F1": {
+        "formula": "SUM(nt)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Tab",
+        "range": "A1:B4",
+        "columns": [
+         {
+          "name": "x"
+         },
+         {
+          "name": "y"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "name": "U",
+      "cells": {
+       "A3": {
+        "formula": "ny*10"
+       },
+       "A4": {
+        "formula": "ny*10"
+       },
+       "B1": {
+        "formula": "COUNT(nall)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "nt",
+      "ref": "Tab"
+     },
+     {
+      "name": "ny",
+      "ref": "Tab[[#This Row],[y]]"
+     },
+     {
+      "name": "nall",
+      "ref": "Tab[#All]"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "E1:F5"
+    },
+    {
+     "sheet": "U",
+     "range": "A1:B4"
+    }
+   ]
+  },
+  {
+   "id": "arrays",
+   "about": "an array from the left into a table, a one-value array inside one, a reference to a table spilled below it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B4": {
+        "value": "x"
+       },
+       "C4": {
+        "value": "y"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "formula": "{7}"
+       },
+       "B6": {
+        "value": 2
+       },
+       "C6": {
+        "formula": "SUM(SEQUENCE(3))"
+       },
+       "A5": {
+        "formula": "SEQUENCE(1,3)"
+       },
+       "A1": {
+        "formula": "SEQUENCE(1,1)"
+       },
+       "A9": {
+        "formula": "Tab[#All]"
+       },
+       "E1": {
+        "formula": "TRANSPOSE(Tab[y])"
+       }
+      },
+      "tables": [
+       {
+        "name": "Tab",
+        "range": "B4:C6",
+        "columns": [
+         {
+          "name": "x"
+         },
+         {
+          "name": "y"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:H12"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "offset": {
+   "values": {
+    "S!C4": {
+     "t": "s",
+     "v": "Code"
+    },
+    "S!D4": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!E4": {
+     "t": "s",
+     "v": "Amount"
+    },
+    "S!C5": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!E5": {
+     "t": "n",
+     "v": 10.5
+    },
+    "S!C6": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!D6": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E6": {
+     "t": "n",
+     "v": 20
+    },
+    "S!C7": {
+     "t": "s",
+     "v": "c"
+    },
+    "S!D7": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E7": {
+     "t": "n",
+     "v": -3
+    },
+    "S!C8": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!D8": {
+     "t": "n",
+     "v": 7
+    },
+    "S!E8": {
+     "t": "n",
+     "v": 0.25
+    },
+    "S!C9": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!D9": {
+     "t": "n",
+     "v": 14
+    },
+    "S!E9": {
+     "t": "n",
+     "v": 6.9375
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 6.9375
+    },
+    "S!H2": {
+     "t": "n",
+     "v": 86.25
+    },
+    "S!H3": {
+     "t": "n",
+     "v": 2
+    },
+    "S!H4": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H5": {
+     "t": "s",
+     "v": "a"
+    },
+    "S!H6": {
+     "t": "n",
+     "v": 8
+    },
+    "S!H8": {
+     "t": "n",
+     "v": 0.25
+    },
+    "S!H9": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H10": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!H11": {
+     "t": "n",
+     "v": 5
+    },
+    "S!H12": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!H13": {
+     "t": "n",
+     "v": 6.9375
+    },
+    "S!H14": {
+     "t": "n",
+     "v": 6
+    },
+    "S!H15": {
+     "t": "n",
+     "v": 41.75
+    },
+    "S!H16": {
+     "t": "n",
+     "v": 3
+    },
+    "S!H17": {
+     "t": "s",
+     "v": "b"
+    },
+    "S!H18": {
+     "t": "n",
+     "v": 14
+    },
+    "S!H19": {
+     "t": "n",
+     "v": 0.25
+    },
+    "T!B4": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "T!A5": {
+     "t": "n",
+     "v": 1
+    },
+    "T!A9": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "T!C10": {
+     "t": "n",
+     "v": 14
+    }
+   },
+   "formulas": {
+    "S!D9": "=SUBTOTAL(109,[Qty])",
+    "S!E9": "=SUBTOTAL(101,[Amount])",
+    "S!H1": "=AVERAGE(Orders[Amount])",
+    "S!H2": "=SUMPRODUCT(Orders[Qty],Orders[Amount])",
+    "S!H3": "=MATCH(\"b\",Orders[Code],0)",
+    "S!H4": "=Orders[@Code]",
+    "S!H5": "=Orders[@Code]",
+    "S!H6": "=Orders[@Qty]*2",
+    "S!H8": "=Orders[@Amount]",
+    "S!H9": "=Orders[@Amount]",
+    "S!H10": "=Orders[@Code]",
+    "S!H11": "=ROWS(Orders[[#Data],[#Totals]])",
+    "S!H12": "=INDEX(Orders[#All],1,2)",
+    "S!H13": "=Orders[[#Totals],[Amount]]",
+    "S!H14": "=COUNTA(Orders[[#All],[Code]])",
+    "S!H15": "=SUM(Orders[[#Headers],[#Data],[Qty]:[Amount]])",
+    "S!H16": "=COLUMNS(Orders[[Code]:[Amount]])",
+    "S!H17": "=XLOOKUP(7,Orders[Qty],Orders[Code])",
+    "S!H18": "=MAX(Orders[[#Totals],[Qty]:[Amount]])",
+    "S!H19": "=SUMIFS(Orders[Amount],Orders[Code],\"b\",Orders[Qty],\">5\")",
+    "T!B4": "=Orders[@Code]",
+    "T!A5": "=Orders[@Qty]",
+    "T!A9": "=Orders[@Qty]",
+    "T!C10": "=Orders[[#Totals],[Qty]]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Orders",
+     "range": "C4:E9",
+     "headers": true,
+     "totals": true,
+     "columns": [
+      "Code",
+      "Qty",
+      "Amount"
+     ]
+    }
+   ]
+  },
+  "totals-row": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "y"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "z"
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 3
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 7
+    },
+    "S!A4": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B4": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 12
+    }
+   },
+   "formulas": {
+    "S!C2": "=[@x]+[@y]",
+    "S!C3": "=[@x]+[@y]",
+    "S!A4": "=ROWS(Tab[#Data])",
+    "S!B4": "=[@y]",
+    "S!C4": "=Tab[[#Totals],[x]]+SUM([z])"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tab",
+     "range": "A1:C4",
+     "headers": true,
+     "totals": true,
+     "columns": [
+      "x",
+      "y",
+      "z"
+     ]
+    }
+   ]
+  },
+  "escapes": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 33
+    },
+    "S!G2": {
+     "t": "s",
+     "v": "it's"
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 33
+    },
+    "S!G4": {
+     "t": "n",
+     "v": 11
+    },
+    "S!G5": {
+     "t": "n",
+     "v": 12
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(E[['#n]:[a'[1']]])",
+    "S!G2": "=E[[#Headers],[it''s]]",
+    "S!G3": "=SUM(E['#n])+SUM(E[a'[1']])",
+    "S!G4": "=E[@[it''s]]",
+    "S!G5": "=COUNT(E[#Data])"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "E",
+     "range": "A1:D4",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "#n",
+      "a[1]",
+      "it's",
+      "Sp ace"
+     ]
+    }
+   ]
+  },
+  "names": {
+   "values": {
+    "S!E1": {
+     "t": "n",
+     "v": 3
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 21
+    },
+    "S!E2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!E3": {
+     "t": "n",
+     "v": 4
+    },
+    "S!E5": {
+     "t": "e",
+     "v": "VALUE"
+    },
+    "U!B1": {
+     "t": "n",
+     "v": 6
+    },
+    "U!A3": {
+     "t": "n",
+     "v": 40
+    },
+    "U!A4": {
+     "t": "n",
+     "v": 60
+    }
+   },
+   "formulas": {
+    "S!E1": "=ROWS(nt)",
+    "S!F1": "=SUM(nt)",
+    "S!E2": "=ny",
+    "S!E3": "=ny",
+    "S!E5": "=ny",
+    "U!B1": "=COUNT(nall)",
+    "U!A3": "=ny*10",
+    "U!A4": "=ny*10"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tab",
+     "range": "A1:B4",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x",
+      "y"
+     ]
+    }
+   ]
+  },
+  "arrays": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!E1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!F1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!B4": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C4": {
+     "t": "s",
+     "v": "y"
+    },
+    "S!A5": {
+     "t": "e",
+     "v": "SPILL"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 7
+    },
+    "S!B6": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C6": {
+     "t": "n",
+     "v": 6
+    },
+    "S!A9": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!B9": {
+     "t": "s",
+     "v": "y"
+    },
+    "S!A10": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B10": {
+     "t": "n",
+     "v": 7
+    },
+    "S!A11": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B11": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!A1": "=SEQUENCE(1,1)",
+    "S!E1": "=TRANSPOSE(Tab[y])",
+    "S!A5": "=SEQUENCE(1,3)",
+    "S!C5": "={7}",
+    "S!C6": "=SUM(SEQUENCE(3))",
+    "S!A9": "=Tab[#All]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Tab",
+     "range": "B4:C6",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x",
+      "y"
+     ]
+    }
+   ]
+  }
+ }
+}

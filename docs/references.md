@@ -75,4 +75,4 @@ The set `areas` (989 cases) puts a union and a reference across sheets into ever
 - `SUBTOTAL` and `AGGREGATE` take each area of a union in Excel and give `#VALUE!` here.
 - `FREQUENCY` and `SORTBY` take a union or a reference across sheets in Excel and answer an array; here they give `#VALUE!` or `#REF!`.
 - A reference across sheets that `SWITCH` compares is `#REF!` in Excel and `#VALUE!` here.
-- The intersection operator, a space between two ranges, is not read.
+- The intersection operator, a space between two ranges, is not read, nor the range operator between two references (`Sales[Qty]:Sales[Price]`, `A1:INDEX(…)`).

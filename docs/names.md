@@ -39,6 +39,8 @@ A reference without `$` is relative to A1. Used in a cell, it moves by that cell
 
 The offset wraps round the edges of the sheet, so a name can point to the cell above or to the left. A part with `$` stays where it is. `ROW()` and `COLUMN()` in a name give the row and column of the cell that uses it.
 
+A name cannot be a table's: tables and names share one namespace ([Tables](tables.md)). A name's formula can hold a structured reference (`Sales[Qty]`); `Sales[[#This Row],[Price]]` takes the row of the cell that uses the name.
+
 ## Scope
 
 A name with a `scope` sheet is seen on that sheet only and wins over a global name of the same name. `'T'!rate` is the name `rate` as sheet T sees it: T's own, else the global one.

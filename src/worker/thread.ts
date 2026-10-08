@@ -35,13 +35,20 @@ const held = new Map<number, Held>()
 const waiting: Exclude<ToThread, { t: 'init' | 'cancel' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
 
-/** What `applyOp` reads of a book for `mapCell`: the sheets' names, their hidden rows and filter mode. */
+/** What `applyOp` reads of a book for `mapCell`: the sheets' names, their hidden rows and filter mode, their tables (a table deleted takes its cells). */
 function outlineOf(book: BookInput): Outline {
   return {
     sheets: book.sheets.map((s) => {
       const rows = Object.entries(s.rows ?? {}).filter(([, r]) => r.hidden)
-      return { name: s.name, cells: {}, ...(rows.length ? { rows: Object.fromEntries(rows.map(([k]) => [k, { hidden: true }])) } : {}), ...(s.filtered ? { filtered: true } : {}) }
+      return {
+        name: s.name,
+        cells: {},
+        ...(rows.length ? { rows: Object.fromEntries(rows.map(([k]) => [k, { hidden: true }])) } : {}),
+        ...(s.filtered ? { filtered: true } : {}),
+        ...(s.tables ? { tables: s.tables } : {}),
+      }
     }),
+    ...(book.names ? { names: book.names } : {}),
   }
 }
 

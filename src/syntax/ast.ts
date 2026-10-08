@@ -1,5 +1,6 @@
 /** The formula AST, the parser's error with its check code, and the text of error values. */
 import type { CheckCode, ErrorCode } from '../contract.js'
+import type { TableSpec } from './table.js'
 
 export interface RangeRef {
   /** Zero-based rows and columns; a whole column has r1 = 0, r2 = MAX_ROWS - 1. */
@@ -23,6 +24,11 @@ export type Ast =
   | { k: 'ref'; sheet: string | null; ref: RangeRef }
   /** A reference across the sheets from `first` to `last` in the book's order (`'Sheet1:Sheet3'!A1:B2`). */
   | { k: 'ref3d'; first: string; last: string; ref: RangeRef }
+  /**
+   * A structured reference: a table's areas and columns (`Sales[[#Headers],[Qty]]`); `table` null inside a table
+   * (`[@Qty]`), whose name the formula's cell gives.
+   */
+  | { k: 'table'; table: string | null; spec: TableSpec }
   /** A defined name; with `sheet`, the name as that sheet sees it (`'Sheet2'!rate`). */
   | { k: 'name'; name: string; sheet?: string }
   /** Implicit intersection (`@x`): a reference's cell in the formula's row or column, an array's top-left value. */

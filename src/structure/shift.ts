@@ -8,10 +8,11 @@
 import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { LIMIT, withSpan, type Axis } from './area.js'
+import { LIMIT, withSpan, type Area, type Axis } from './area.js'
 import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { emptiedTable, tableShift } from '../tables/shift.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
 export function insertSpan(lo: number, hi: number, at: number, n: number, max: number, cell: boolean): [number, number] | null {
@@ -37,13 +38,16 @@ export function deleteSpan(lo: number, hi: number, at: number, n: number, max: n
 
 type SpanFn = (lo: number, hi: number, at: number, n: number, max: number, cell: boolean) => [number, number] | null
 
-/** The transform of every reference to `sheet` along `axis`. */
-function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: SpanFn): Transform {
+/**
+ * The transform of every reference to `sheet` along `axis`; `edge` gives the span of a reference into a table's data
+ * that rows inserted into the table grow at its edge (`tables/shift.ts`).
+ */
+function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: SpanFn, edge?: (area: Area) => [number, number] | undefined): Transform {
   const key = sheetKey(sheet)
   return {
     ref({ sheet: s, area }): Outcome {
       if (sheetKey(s) !== key) return undefined
-      const next = fn(area[axis].lo.i, area[axis].hi.i, at, n, LIMIT[axis], area.kind === 'cell')
+      const next = edge?.(area) ?? fn(area[axis].lo.i, area[axis].hi.i, at, n, LIMIT[axis], area.kind === 'cell')
       if (!next) return 'lost'
       return next[0] === area[axis].lo.i && next[1] === area[axis].hi.i ? undefined : { sheet: s, area: withSpan(area, axis, next[0], next[1]) }
     },
@@ -55,7 +59,12 @@ function shiftTransform(sheet: string, axis: Axis, at: number, n: number, fn: Sp
  * Inserting refuses when a cell or a merged area would leave the sheet (Excel refuses for cells that are
  * not empty).
  */
-export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n: number): RestructureResult {
+export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n: number): RestructureResult {
+  const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
+  if (emptied) return keepFirstRow(input, sheet, at, -n, emptied)
+  const tables = tableShift(input, sheet, axis, at, n)
+  if (tables.refuse) return { ok: false, code: 'table', message: tables.refuse }
+  const book = tables.before(input)
   const count = Math.abs(n)
   const max = LIMIT[axis]
   const pos = (addr: string) => {
@@ -76,7 +85,7 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
   if (cut) return { ok: false, code: 'array', message: cut }
   const merges = shiftMerges(target.merges, axis, at, n)
   if (merges === null) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push a merged area of ${target.name} off the sheet` }
-  const t = shiftTransform(target.name, axis, at, count, n > 0 ? insertSpan : deleteSpan)
+  const t = shiftTransform(target.name, axis, at, count, n > 0 ? insertSpan : deleteSpan, tables.edge)
   const names = sheetNames(book)
   const sheets = book.sheets.map((s) => {
     const moving = s === target
@@ -110,5 +119,31 @@ export function shift(book: BookInput, sheet: string, axis: Axis, at: number, n:
     if (i < at) return ref
     return i >= at + count ? { sheet: ref.sheet, cell: place(ref.cell, i - count) } : null
   }
-  return { ok: true, book: out, mapCell }
+  return { ok: true, book: tables.after(out), mapCell }
+}
+
+/** Rows deleted over every data row of a table: its first data row stays, its cells in the table cleared; the rest go. */
+function keepFirstRow(book: BookInput, sheet: string, at: number, count: number, cols: { c1: number; c2: number }): RestructureResult {
+  const r = count > 1 ? shift(book, sheet, 'r', at + 1, 1 - count) : { ok: true as const, book, mapCell: (ref: CellRef): CellRef | null => ref }
+  if (!r.ok) return r
+  const key = sheetKey(sheet)
+  const sheets = r.book.sheets.map((s) => {
+    if (sheetKey(s.name) !== key) return s
+    const cells = { ...s.cells }
+    for (let c = cols.c1; c <= cols.c2; c++) {
+      const addr = formatAddress(at, c)
+      const cell = cells[addr]
+      if (!cell) continue
+      const { value: _, formula: __, array: ___, ...look } = cell
+      if (Object.keys(look).length) cells[addr] = look
+      else delete cells[addr]
+    }
+    return { ...s, cells }
+  })
+  const cleared = (ref: CellRef) => {
+    if (sheetKey(ref.sheet) !== key) return false
+    const p = parseAddress(ref.cell)
+    return p.row === at && p.col >= cols.c1 && p.col <= cols.c2
+  }
+  return { ok: true, book: { ...r.book, sheets }, mapCell: (ref) => (cleared(ref) ? null : r.mapCell(ref)) }
 }

@@ -11,6 +11,13 @@ import { derive, loadSnapshot, type Derived } from './derive.js'
 
 const TAGS: Record<string, { tag: string; name: string }> = { ru: { tag: 'ru-RU', name: 'ruRU' } }
 
+/**
+ * The specifiers of structured references, which the snapshot's books have none of: as Excel 16.113 ru-RU shows them
+ * (`#Все`, `#Данные`, `#Заголовки`, `#Итоги`) and takes them typed (`#Эта строка`, shown as `@`); the table set
+ * `locale` checks them (`test/excel/tables/ru-RU/locale.json`).
+ */
+const TABLE_ITEMS: Record<string, Record<string, string>> = { 'ru-RU': { '#All': '#Все', '#Data': '#Данные', '#Headers': '#Заголовки', '#Totals': '#Итоги', '#This Row': '#Эта строка' } }
+
 /** `key: 'value'` entries packed into lines of at most `width` characters. */
 function pack(entries: [string, string][], indent: string, width = 120): string {
   const lines: string[] = []
@@ -50,7 +57,7 @@ ${pack(errors, '    ')}
   },
   functions: {
 ${pack(differ, '    ')}
-  },
+  },${TABLE_ITEMS[tag] ? `\n  tableItems: { ${Object.entries(TABLE_ITEMS[tag]).map(([k, v]) => `${q(k)}: ${q(v)}`).join(', ')} },` : ''}
 }
 `
 }

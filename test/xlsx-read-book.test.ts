@@ -154,7 +154,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     const f = parts({ sheets: [{ name: 'S', body }] })
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId4" Type="${REL}/comments" Target="../comments1.xml"/><Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
-    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'hyperlink', 'autoFilter', 'protection', 'drawing', 'table', 'sparkline', 'print', 'frozenPanes', 'comment', 'pivotTable'])
+    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'hyperlink', 'autoFilter', 'protection', 'drawing', 'sparkline', 'print', 'frozenPanes', 'comment', 'pivotTable'])
   })
 
   it('the locale from its custom property; an unknown one reported; the default font other than Calibri 11 reported', async () => {
