@@ -1,23 +1,24 @@
 /**
  * styles.xml as the model's style table: each cell format (`<xf>` of `<cellXfs>`) becomes a style of the book
- * (font, solid fill, borders, alignment; equal ones shared) and a number format code. What a style cannot hold
- * (pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript, protection, a font's
- * outline or shadow) is named per cell format, for the reader to report on the cells that use it.
+ * (font, solid fill, borders, alignment; equal ones shared) and a number format, a code or a built-in format's number.
+ * What a style cannot hold (pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript,
+ * protection, a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
  */
-import type { AlignmentStyle, BorderLine, CellStyle, FontStyle } from '../../contract.js'
+import type { AlignmentStyle, BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
+import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
-import { BUILTIN, REGIONAL } from './numfmt.js'
+import { BUILTIN } from './numfmt.js'
 
 /** A cell format as the model sees it. */
 export interface Xf {
   /** The book style, by index; none for a format that looks as the default. */
   style?: number
-  /** The number format code; none for General. */
-  format?: string
-  /** A built-in format Excel shows by the regional settings (`REGIONAL`). */
-  regional?: number
+  /** The number format, a code or a built-in format's number; none for General. */
+  format?: NumberFormat
+  /** A built-in format the model does not have, read as the code Excel for Mac en-US shows (50 to 58). */
+  eastAsian?: number
   /** A built-in number format this reader does not know. */
   unknownFormat?: number
   /** What the style table cannot hold. */
@@ -171,10 +172,16 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
       xf.style = i
     }
     const id = Number(a.numFmtId ?? 0)
-    const code = formats.get(id) ?? BUILTIN[id]
-    if (code !== undefined && code !== 'General') xf.format = code
-    else if (code === undefined && id !== 0) xf.unknownFormat = id
-    if (!formats.has(id) && REGIONAL.has(id)) xf.regional = id
+    const own = formats.get(id)
+    // a format of the file's own by its code, a built-in one by its number, as the model keeps it
+    if (own !== undefined) {
+      if (own !== 'General') xf.format = own
+    } else if (isBuiltin(id)) {
+      if (id !== 0) xf.format = id
+    } else if (BUILTIN[id] !== undefined) {
+      xf.format = BUILTIN[id]
+      xf.eastAsian = id
+    } else xf.unknownFormat = id
     return xf
   })
   return { styles, xfs, ...(fonts.length ? { font: { name: base.name, size: base.size } } : {}) }

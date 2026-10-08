@@ -78,21 +78,23 @@ describe('xlsx reader: cells', () => {
     expect(codes(r.issues)).toEqual(['errorValue C1', 'errorValue D1', 'errorConstant A1 B1'])
   })
 
-  it('numbers stay numbers whatever their format; a format with a letter m is not taken for a date', async () => {
+  it('numbers stay numbers whatever their format; a built-in format is read by its number', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"><v>45000</v></c><c r="B1" s="2"><v>5</v></c><c r="C1" s="3"><v>45000.5</v></c></row>', { styles: DATE_STYLES })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, format: 'm/d/yy' }, B1: { value: 5, format: '0 m' }, C1: { value: 45000.5, format: 'dd.mm.yyyy' } })
-    expect(codes(r.issues)).toEqual(['numberFormat A1'])
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, format: 14 }, B1: { value: 5, format: '0 m' }, C1: { value: 45000.5, format: 'dd.mm.yyyy' } })
+    expect(r.issues).toEqual([])
   })
 
-  it('the 1904 date system: numbers in date formats move to the 1900 system, others stay', async () => {
+  it("the 1904 date system: the book's date system, numbers as the file stores them, ISO dates counted from 1904", async () => {
     const r = await read({
-      sheets: [{ name: 'S', body: '<sheetData><row r="1"><c r="A1" s="1"><v>0</v></c><c r="B1" s="3"><v>45000</v></c><c r="C1" s="2"><v>5</v></c><c r="D1"><v>7</v></c><c r="E1" s="1"><f>A1+1</f><v>1</v></c></row></sheetData>' }],
+      sheets: [{ name: 'S', body: '<sheetData><row r="1"><c r="A1" s="1"><v>0</v></c><c r="B1" s="3"><v>45000</v></c><c r="C1" s="2"><v>5</v></c><c r="D1"><v>7</v></c><c r="E1" s="1"><f>A1+1</f><v>1</v></c><c r="F1" t="d"><v>1904-01-02T12:00:00</v></c></row></sheetData>' }],
       styles: DATE_STYLES,
       workbook: { before: '<workbookPr date1904="1"/>' },
     })
-    expect(r.book.sheets[0].cells).toMatchObject({ A1: { value: 1462 }, B1: { value: 46462 }, C1: { value: 5 }, D1: { value: 7 } })
-    expect(r.cached[0].cells).toEqual({ E1: 1463 })
-    expect(r.issues.map((i) => i.code)).toContain('date1904')
+    expect(r.book.dateSystem).toBe(1904)
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 0, format: 14 }, B1: { value: 45000, format: 'dd.mm.yyyy' }, C1: { value: 5, format: '0 m' }, D1: { value: 7 }, E1: { formula: 'A1+1', format: 14 }, F1: { value: 1.5 } })
+    expect(r.cached[0].cells).toEqual({ E1: 1 })
+    expect(r.issues).toEqual([])
+    expect((await sheet('<row r="1"><c r="A1"><v>1</v></c></row>')).book.dateSystem).toBeUndefined()
   })
 
   it('ISO dates of Strict files (t="d") as serial numbers', async () => {
@@ -108,6 +110,6 @@ describe('xlsx reader: cells', () => {
 
   it('an empty cell with a style keeps its look; one with the default look is no cell', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"/><c r="B1" s="0"/><c r="C1"/></row>', { styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="2"/></cellXfs>' })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { format: '0.00' } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { format: 2 } })
   })
 })

@@ -5,12 +5,13 @@
  * Everything the book cannot hold is reported in `issues`, nothing is dropped silently.
  */
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
+import { epochOf } from '../../dates.js'
 import { checkBook, InputError } from '../../input.js'
 import { LOCALES } from '../../locale/registry.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
-import { readStyles, type Xf } from '../styles/read.js'
+import { readStyles } from '../styles/read.js'
 import type { XlsxRead } from '../types.js'
 import { attr, attributes, element, elements, flag, has } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
@@ -23,19 +24,6 @@ import { readSheet } from './sheet.js'
 import { readStrings } from './strings.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
-
-
-/** Days between the 1904 and the 1900 date systems' day 0. */
-const DAYS_1904 = 1462
-
-/**
- * A number format that shows a date (a time alone, or a duration, is the same in both date systems): a year, a
- * day or month with a separator, or a month's or day's name. A unit such as `0 m` is no date.
- */
-function hasDate(code: string): boolean {
-  const s = code.replace(/"[^"]*"|\\.|\[[^\]]*\]/g, '')
-  return /y/i.test(s) || /(?:d{1,4}|m{1,5})\s*[/.\- ]\s*(?:d{1,4}|m{1,5}|y{1,4})/i.test(s) || /m{3,}|d{3,}/i.test(s)
-}
 
 /** Parts the workbook links to that the model has no place for, by relationship kind. */
 const LINKED: Record<string, ['macros' | 'pivotTable' | 'connection' | 'externalLink', string]> = {
@@ -86,11 +74,24 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
   return out
 }
 
-function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
-  if (flag(attributes(element(xml, 'workbookPr')?.attrs ?? '').date1904)) issues.add('date1904', 'the book uses the 1904 date system: numbers in date formats are moved to the 1900 system the engine uses')
+/** The calculation settings the book keeps (iterative calculation), and the others reported. */
+function calculation(xml: string, issues: Issues): BookInput['iteration'] {
   const calc = attributes(element(xml, 'calcPr')?.attrs ?? '')
-  if (flag(calc.iterate)) issues.add('calculation', 'iterative calculation is not in the engine: a circular reference computes to #CYCLE!')
   if (calc.calcMode === 'manual') issues.add('calculation', 'the manual calculation mode is not kept')
+  if (calc.calcMode === 'autoNoTable') issues.add('calculation', 'the calculation mode "automatic except for data tables" is not kept')
+  if (!flag(calc.fullPrecision, true)) issues.add('calculation', 'precision as displayed is not in the engine: values keep their full precision')
+  if (!flag(calc.iterate)) return undefined
+  const out: NonNullable<BookInput['iteration']> = {}
+  const count = Number(calc.iterateCount)
+  if (calc.iterateCount !== undefined && Number.isInteger(count) && count >= 1 && count <= 32_767) out.maxIterations = count
+  else if (calc.iterateCount !== undefined) issues.add('calculation', `the maximum of iterations ${JSON.stringify(calc.iterateCount)} is not one of 1 to 32,767: the default, 100, is read`)
+  const change = Number(calc.iterateDelta)
+  if (calc.iterateDelta !== undefined && change >= 0 && change <= Number.MAX_VALUE) out.maxChange = change
+  else if (calc.iterateDelta !== undefined) issues.add('calculation', `the maximum change of iterations ${JSON.stringify(calc.iterateDelta)} is not a number from 0: the default, 0.001, is read`)
+  return out
+}
+
+function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
   if (has(xml, 'workbookProtection')) issues.add('protection', 'workbook protection is not in the model')
   if (has(xml, 'externalReferences')) issues.add('externalLink', 'links to other workbooks are not in the model')
   if (has(xml, 'pivotCaches') || has(xml, 'slicerCaches')) issues.add('pivotTable', 'pivot tables are not in the model: their cells are read as stored')
@@ -116,9 +117,9 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const table = readStyles(stylesXml, palette(themeXml, stylesXml))
   if (table.font && (table.font.name !== 'Calibri' || table.font.size !== 11))
     issues.add('defaultFont', `the default font ${table.font.name ?? '(no name)'} ${table.font.size ?? '(no size)'} is read as Calibri 11, the model's default`)
+  const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
-  const date1904 = flag(attributes(element(wb, 'workbookPr')?.attrs ?? '').date1904)
-  const dateOf = (n: number, xf: Xf | undefined) => (date1904 && xf?.format !== undefined && hasDate(xf.format) ? n + DAYS_1904 : n)
+  const dateSystem = flag(attributes(element(wb, 'workbookPr')?.attrs ?? '').date1904) ? 1904 : 1900
   const byId = new Map(rels.map((r) => [r.id, r]))
   const decls: SheetDecl[] = elements(element(wb, 'sheets')?.body ?? '', 'sheet').map((e) => {
     const a = attributes(e.attrs)
@@ -147,7 +148,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
     const read = readSheet(
       { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined) },
-      { sheet: d.name, strings, xfs: table.xfs, meta, date: dateOf, issues },
+      { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues },
     )
     sheets.push(read.sheet)
     cached.push({ name: d.name, cells: read.cached })
@@ -169,6 +170,8 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   if (table.styles.length) book.styles = table.styles
   const tag = await locale(archive, root, issues)
   if (tag) book.locale = tag
+  if (dateSystem === 1904) book.dateSystem = 1904
+  if (iteration) book.iteration = iteration
   // the cells are valid as the reader builds them: the rest of the book is checked (the cells' check is most of the time)
   try {
     checkBook({ ...book, sheets: sheets.map((s) => ({ ...s, cells: headerCells(s) })) })

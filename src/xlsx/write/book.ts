@@ -1,10 +1,11 @@
 /**
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
- * workbook, its sheets, styles, shared strings, the dynamic array metadata when there are formulas, and the
- * book's locale as a custom document property (xlsx has no place for it). A formula file asks Excel to compute
- * the book on opening, so Excel shows its own values over the ones written.
+ * workbook, its sheets, styles, shared strings, the dynamic array metadata when there are formulas, the date system and
+ * iterative calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula
+ * file asks Excel to compute the book on opening, so Excel shows its own values over the ones written.
  */
 import type { BookInput, ComputeResult } from '../../contract.js'
+import { epochOf } from '../../dates.js'
 import { checkBook, InputError } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
@@ -96,6 +97,12 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
   return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
 }
 
+/** Iterative calculation as `calcPr`'s attributes; what the book leaves out is Excel's default (100 rounds, a change of 0.001). */
+function iterationAttrs(it: BookInput['iteration']): string {
+  if (!it) return ''
+  return ' iterate="1"' + (it.maxIterations !== undefined ? ` iterateCount="${it.maxIterations}"` : '') + (it.maxChange !== undefined ? ` iterateDelta="${it.maxChange}"` : '')
+}
+
 /** The result's cells by sheet of the book; the result must be the book's (same sheets, in order). */
 function resultCells(book: BookInput, result: ComputeResult | undefined) {
   if (!result) return undefined
@@ -149,6 +156,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
         return !!t?.totals && row === t.r2
       },
       tableParts: parts[i].map((_, k) => `rId${k + 1}`),
+      epoch: epochOf(book.dateSystem),
     }),
   )
   const dynamic = sheets.some((s) => s.formulas)
@@ -188,8 +196,9 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')
-  const calc = dynamic ? '<calcPr fullCalcOnLoad="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}"><bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
+  const calc = dynamic || book.iteration ? `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>` : ''
+  const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {
