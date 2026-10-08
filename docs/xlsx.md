@@ -69,7 +69,7 @@ Colours become `#RRGGBB`. A theme colour with a tint is computed as Excel shows 
 
 A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/25` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported.
 
-Excel for Mac saves some built-in formats otherwise than by their number: the money and accounting ones (5 to 8, 41 to 44) as codes in the language it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file Excel saved holds them so.
+Excel for Mac saves some built-in formats otherwise than by their number: the money and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file Excel saved holds them so.
 
 ### Columns, rows and merged areas
 
@@ -259,7 +259,7 @@ The answers to the filter files and to nine books of the round trip were predict
 - Excel saves a range over whole columns or rows as such, so `A1:A1048576` comes back as `A:A`.
 - Excel saves a global name qualified by a sheet that has no name of its own, `'S'!x`, as the book's name `[0]!x`. It comes back as `x`, the same name.
 - Excel saves a LET that ends with a value with its last name as the calculation. With 127 names that makes 255 arguments, one more than the engine takes, so such a formula does not parse after Excel saved it.
-- Excel for Mac saves the built-in money and accounting formats (5 to 8, 41 to 44) as codes in the language it runs in, 23 to 26 as General and the East Asian 27 to 36 as 14 and 21, so a book read from a file Excel saved has these codes and numbers.
+- Excel for Mac saves the built-in money and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General and the East Asian 27 to 36 as 14 and 21, so a book read from a file Excel saved has these codes and numbers.
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
 - In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - The intersection operator, a space between two ranges, is not read: such a formula is reported.
