@@ -104,6 +104,17 @@ Relative parts of references move with the copy and absolute ones (`$`) stay. A 
 
 A target that is a whole multiple of the source's size is tiled with copies, so fill down is a copy of the first row over the rows below. Any other target gets one copy at its top-left cell, as Excel's `Range.Copy` does. Other formulas and names do not change. A formula copied to another sheet that uses a name local to the source sheet gets the name defined on the target sheet, with its references to the source sheet pointed at the target, on the same condition as for a move.
 
+`copyFormula(text, from, to, book?)` gives the text of one formula copied from cell `from` to cell `to` (each `{ sheet, cell }`) by the same rules, for an interface that shows a paste before it makes it. Given the book (a `BookInput`, or its sheets' names and tables alone), a formula copied out of a table names the table in its references to it, as a copy does (`[@Price]` becomes `Sales[[#This Row],[Price]]`); without it the formula's references keep the sheet names they are written with.
+
+```js
+import { copyFormula } from 'xlcalc'
+
+console.log(copyFormula('A1+$B$2+SUM(C1:C3)', { sheet: 'S', cell: 'D1' }, { sheet: 'S', cell: 'E3' })) // → B3+$B$2+SUM(D3:D5)
+console.log(copyFormula('A1*2', { sheet: 'S', cell: 'B2' }, { sheet: 'S', cell: 'A1' })) // → #REF!*2
+```
+
+What a copy does beyond one formula's text is `copyRange`'s alone: it leaves out the rows a filter hid, copies part of an old-kind array formula's area as arrays of their own, points the formulas of a table copied whole at the copy, and turns a formula pasted on a table's header into the header's text.
+
 ## Renaming and deleting sheets
 
 Renaming a sheet renames every reference to it, `'S'!#REF!` included, and the scope of its local names. The new name must follow Excel's rules (1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History` in any case) and differ from the other sheets' names, compared without regard to case. Renaming to another case is allowed. A book whose sheet names break these rules is an `InputError`.
@@ -183,6 +194,8 @@ Styles and layout change through the session so that its book stays the host's b
 Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
 ## How it was checked
+
+`test/copy-formula.test.ts` checks `copyFormula` against `copyRange` on every copy of the structure sets and the table sets: each formula of the source at each place the copy pastes it, 317 and 8 of them.
 
 `npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel through AppleScript and stores what every sheet shows in `A1:Z60`, with the defined names, in `test/excel/struct/<set>.json`. For books with styles it also reads the look of `A1:J24`: bold, fill colour and number format of each cell, widths and heights that are not standard, and the merged areas. `test/structure-excel.test.ts` compares `restructure` with the stored answers without Excel.
 

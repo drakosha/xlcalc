@@ -92,6 +92,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     setLayout: (edits, co) => call(() => core.setLayout(edits), co),
     book: () => plain(() => core.book()),
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
+    cells: (sheet, range) => call(() => core.cells(sheet, range)),
     result: (co) => call(() => core.result(), co),
     close() {
       if (ended) return Promise.resolve()
