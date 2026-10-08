@@ -11,12 +11,16 @@ import { computed, differences } from './spill-cases.js'
 
 const SETS = winFiles<StoredSpill>('spill/')
 
+/**
+ * Cases whose answer Excel for Windows changes from run to run, as Excel for Mac does (`order-runs.json`): not compared.
+ * Two arrays over one cell let either spill (the first run of Excel 16.0.17928 let the upper one, the run stored the
+ * lower one, as the engine); a size drawn into a cell is a draw.
+ */
+const VARIES: ReadonlySet<string> = new Set(['base:cross', 'base:cross-rect', 'more:volatile-cell'])
+
 /** `<set>:<case>` → why the engine's answer differs from Excel for Windows's. */
 const WIN_SPILL: Readonly<Record<string, string>> = {
-  'base:cross': 'two independent arrays over one cell: Excel for Windows let the other spill (Excel for Mac varies between runs), the engine lets the lower one spill',
-  'base:cross-rect': 'two independent arrays over one cell: Excel for Windows let the other spill (Excel for Mac varies between runs), the engine lets the lower one spill',
   'more:volatile-sizes': 'ten sizes drawn in one book: Excel for Windows gives #SPILL! as the Mac does (the sizes change between its passes), the engine draws once and spills',
-  'more:volatile-cell': "a size from a cell holding a draw: Excel and the engine draw that cell's value differently",
   'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here, as on the Mac",
   'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument, the engine lifts them, as on the Mac',
 }
@@ -30,7 +34,7 @@ for (const set of SETS) {
       expect(built.filter((c) => !set.answers[c.id])).toEqual([])
     })
 
-    for (const c of set.cases.filter((x) => !set.answers[x.id]?.rejected))
+    for (const c of set.cases.filter((x) => !set.answers[x.id]?.rejected && !VARIES.has(`${set.name}:${x.id}`)))
       it(`${c.id}: ${c.about}`, () => {
         const diffs = differences(c, set.answers[c.id], computed(c))
         const known = WIN_SPILL[`${set.name}:${c.id}`]
