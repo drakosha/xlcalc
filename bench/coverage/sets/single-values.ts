@@ -75,6 +75,18 @@ const CASES: [string, string, Val?][] = [
   ['XNPV', 'XNPV(0.09,TRUE,D!AU1:AU5)', e('VALUE')],
   ['XNPV', 'XNPV(0.09,D!J1:J5,D!AU1)', e('NUM')],
   ['XNPV', 'XNPV(0.1,-100,39448)'],
+  // second run: a table read as a number
+  ['MATCH', 'MATCH(5,"TRUE",0)', e('VALUE')],
+  ['MATCH', 'MATCH(5,"1/1/2025",0)', e('NA')],
+  ['VLOOKUP', 'VLOOKUP(5,TRUE,1,FALSE)', e('NA')],
+  ['HLOOKUP', 'HLOOKUP("a","a",1,FALSE)', e('VALUE')],
+  ['MATCH', 'MATCH(5,NA(),0)', e('NA')],
+  ['MATCH', 'MATCH(5,1/0,0)', e('DIV0')],
+  ['XLOOKUP', 'XLOOKUP(0,0,D!M1:M6,,,-1)'],
+  ['XLOOKUP', 'ROWS(XLOOKUP(5,5,D!M1:M3))', n(3)],
+  ['XNPV', 'XNPV(0.09,D!A3,D!AU1:AU5)', e('VALUE')],
+  ['XIRR', 'XIRR(D!J1:J5,D!A3)', e('VALUE')],
+  ['WRAPCOLS', 'ARRAYTOTEXT(WRAPCOLS({1,2,3},5),1)', s('{1;2;3}')],
 ]
 
 export function buildProbes(): Probe[] {
