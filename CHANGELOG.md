@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.1 (2026-10-08)
+
+Internal release; not published to npm. The xlsx reader and writer carry hidden rows, filters, the 1904 date system, iteration and built-in formats; the intersection and range operators; `#NULL!` joins `ErrorCode`.
 
 Changed:
 
