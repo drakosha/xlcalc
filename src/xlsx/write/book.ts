@@ -8,6 +8,7 @@ import type { BookInput, ComputeResult } from '../../contract.js'
 import { checkBook, InputError } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
+import { bindTables } from '../../syntax/check.js'
 import { sheetKey } from '../../syntax/print.js'
 import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
@@ -60,7 +61,7 @@ const rels = (items: [type: string, target: string][]) =>
 const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]*$/u
 const NOT_NAME = /^(?:[A-Z]{1,3}\d+|R\d*C\d*|R|C|TRUE|FALSE)$/i
 
-function definedNames(book: BookInput, issues: Issues): string {
+function definedNames(book: BookInput, issues: Issues, tables: { name: string; columns: string[] }[]): string {
   const index = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))
   const seen = new Set<string>()
   const out: string[] = []
@@ -69,7 +70,9 @@ function definedNames(book: BookInput, issues: Issues): string {
     const key = `${scope ?? ''}\n${n.name.toUpperCase()}`
     let text: string | undefined
     try {
-      text = toFile(parse(n.ref, { union: true }))
+      // a table's name alone is its data, which a file writes `Sales[]`
+      const bound = bindTables(parse(n.ref, { union: true }), n.ref, { tables })
+      if (bound.ok) text = toFile(bound.ast)
     } catch (e) {
       if (!(e instanceof FormulaError)) throw e
     }
@@ -81,7 +84,7 @@ function definedNames(book: BookInput, issues: Issues): string {
           : seen.has(key)
             ? 'a name given twice'
             : text === undefined
-              ? 'a name whose reference does not parse'
+              ? 'a name whose reference does not parse or names a table or a column the book does not have'
               : undefined
     if (why) {
       issues.add('name', `${why} is left out of the file`, { name: n.name })
@@ -186,7 +189,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   }
   const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')
   const calc = dynamic ? '<calcPr fullCalcOnLoad="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}"><bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}"><bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

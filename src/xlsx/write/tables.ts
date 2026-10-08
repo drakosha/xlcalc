@@ -2,6 +2,8 @@
  * Table parts (`xl/tables/tableN.xml`) from a sheet's tables, as Excel writes them: the name twice (`name` and
  * `displayName`), the range, the header and totals row counts, an autofilter over the header and data rows, each
  * column with its name, its totals function or label and its calculated column formula, and Excel's default style.
+ * A formula in the totals row that no totals function of its column gives is the column's `custom` totals formula:
+ * Excel does not open a file whose totals row holds a formula its table part does not record.
  */
 import type { SheetInput, TableInput } from '../../contract.js'
 import { formatAddress } from '../../model.js'
@@ -26,12 +28,15 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: S
     let inner = ''
     const calc = file(c.formula)
     if (calc) inner += `<calculatedColumnFormula>${calc}</calculatedColumnFormula>`
-    if (c.totals && 'label' in c.totals) attrs += ` totalsRowLabel="${escapeAttr(c.totals.label)}"`
-    else if (c.totals) {
-      attrs += ` totalsRowFunction="${c.totals.function}"`
-      const own = c.totals.function === 'custom' && totals ? file(sheet.cells[formatAddress(x.r2, x.c1 + i)]?.formula) : undefined
-      if (own) inner += `<totalsRowFormula>${own}</totalsRowFormula>`
-    }
+    // Excel opens a formula in the totals row only with its column's function, `custom` with the formula for any other
+    const foot = totals ? sheet.cells[formatAddress(x.r2, x.c1 + i)] : undefined
+    const own = foot?.formula === undefined ? undefined : file(foot.formula)
+    const fn = c.totals && 'function' in c.totals ? c.totals.function : undefined
+    if (own && (fn === undefined || fn === 'custom')) {
+      attrs += ' totalsRowFunction="custom"'
+      inner += `<totalsRowFormula>${own}</totalsRowFormula>`
+    } else if (fn) attrs += ` totalsRowFunction="${fn}"`
+    else if (c.totals && 'label' in c.totals) attrs += ` totalsRowLabel="${escapeAttr(c.totals.label)}"`
     return `<tableColumn id="${i + 1}" name="${escapeAttr(c.name)}"${attrs}${inner ? `>${inner}</tableColumn>` : '/>'}`
   })
   const filter = headers ? `<autoFilter ref="${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2 - (totals ? 1 : 0), x.c2)}"/>` : ''
