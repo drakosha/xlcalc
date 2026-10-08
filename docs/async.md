@@ -28,6 +28,8 @@ A session takes its calls in order: each starts when the one before has finished
 
 A session's `clock` is its clock as of its last finished call.
 
+`hash()` answers the values hash `result()` would give, without building the result: from a thread, on the synthetic book of 34,000 rows, 0.5 s with the event loop free (`result()` takes 1.6 s and stops it for 260 ms while the result is read).
+
 `cells(sheet, range)` answers the cells of one rectangle as `result()` gives them, with each cell's own `style`, so a window over a sheet needs no copy of the whole result. From a thread only the rectangle comes back: 20,000 cells of the synthetic book of 34,000 rows take 27 ms there and 16 ms in a synchronous session, where the whole `result()` from the thread takes 1.7 s.
 
 A call that stopped while it recomputed (`setCells`, `setClock` or `setLayout` past its deadline, aborted, or over the limits) leaves the session to compute its book again, and the session's next call does that first. That computation does not count in the next call's `timeoutMs`, only its `signal` and a pool's hard deadline bound it, so a call after a stopped one can take longer than its `timeoutMs` by the time of a cold computation of the book.

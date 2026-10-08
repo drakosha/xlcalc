@@ -11,7 +11,7 @@ export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
 export const CHANGING = ['setCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout'] as const
-export type Op = (typeof CHANGING)[number] | 'book' | 'explain' | 'cells' | 'result'
+export type Op = (typeof CHANGING)[number] | 'book' | 'explain' | 'cells' | 'result' | 'hash'
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {

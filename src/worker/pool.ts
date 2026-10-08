@@ -340,6 +340,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       cells: (sheet, range) => value(call('cells', [sheet, range])),
       result: (co) => value(call('result', [], co)),
+      hash: (co) => value(call('hash', [], co)),
       async close() {
         if (r.gone) return
         const done = submit({ t: 'drop', sid: r.sid }, { slot: r.slot, session: r }, undefined, true)

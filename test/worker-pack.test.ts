@@ -67,7 +67,7 @@ describe('a book as text', () => {
     book.sheets[1] = { name: 'Other', cells: {} }
     const s = await opening
     expect(await s.book()).toEqual(before)
-    expect((await s.result()).hash).toBe(compute(before, { clock: CLOCK }).hash)
+    expect(await s.hash()).toBe(compute(before, { clock: CLOCK }).hash)
   }, 60_000)
 
   it('tasks keep their order while a large book is written', async () => {
@@ -102,6 +102,6 @@ describe('a book as text', () => {
     done = true
     // the pool copied the book and cloned it to the thread in one stretch: more than half a clone
     expect(worst).toBeLessThan(clone / 3)
-    expect((await s.result()).hash).toBe(openSession(book, { clock: CLOCK }).result().hash)
+    expect(await s.hash()).toBe(openSession(book, { clock: CLOCK }).hash())
   }, 60_000)
 })

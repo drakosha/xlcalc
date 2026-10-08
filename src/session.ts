@@ -22,7 +22,7 @@ import { checkTables } from './tables/check.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
-import { buildResult, cellsIn, clockSerial, spillFields } from './result.js'
+import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
 import { cellLooks } from './shown.js'
 import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
@@ -48,6 +48,7 @@ export interface SessionSteps {
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
   cells(sheet: string, range: string): Steps<Record<string, CellView>>
   result(): Steps<ComputeResult>
+  hash(): Steps<string>
   close(): void
 }
 
@@ -247,6 +248,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (!x) throw new InputError('range', `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(range)}`)
       return cellsIn(s, i, x, display)
     },
+    *hash() {
+      return stateHash(yield* ready())
+    },
     *result() {
       const t0 = nowMs()
       return buildResult(yield* ready(), clock, t0, display)
@@ -279,6 +283,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     cells: (sheet, range) => now(() => core.cells(sheet, range)),
     result: () => now(() => core.result()),
+    hash: () => now(() => core.hash()),
     close: () => core.close(),
   }
 }
