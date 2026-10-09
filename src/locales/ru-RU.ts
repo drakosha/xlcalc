@@ -162,6 +162,16 @@ export const RU_RU: LocaleFile = {
     ),
     columnWord: 'Столбец',
   },
+  // the Russian alphabet and the ruble sign in Calibri 11, measured by fills as the Latin letters (`test/excel/display/widths.json`)
+  glyphWidths: [
+    [4, 'гт'],
+    [5, 'авеёзксучхьэяГЕЁЗТ'],
+    [6, '₽бдийлнпрцъАБВКРСУХЧЬЭЯ'],
+    [7, 'мфыДИЙЛНОПЦЪ'],
+    [8, 'жшщюФЫ'],
+    [9, 'ЖМ'],
+    [10, 'ШЩЮ'],
+  ],
 }
 
 /** ru-RU's codes of built-in formats, as en-US codes: the ruble after the amount, a minus for negatives, hours without a leading zero (Windows's `ч:мм`). */

@@ -10,4 +10,10 @@ export interface LocaleFile {
   readonly text: Locale
   /** The rules of computation as data (`regionalRules`); en-US has none, its rules are the engine's own code (`rules.ts`). */
   readonly regional?: RegionalData
+  /**
+   * Widths of the letters of the locale's script in Calibri 11 in Excel for Mac, in points, by characters of equal width,
+   * for what a cell shows by its column's width (`numfmt/glyphs.ts`, where Latin letters, digits and signs are); they
+   * count in books of every locale.
+   */
+  readonly glyphWidths?: readonly (readonly [number, string])[]
 }
