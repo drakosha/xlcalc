@@ -3,6 +3,7 @@
  * part in brackets and printing it as an xlsx file stores it. `'` takes the next character as it is (`[`, `]`, `#`,
  * `'`, and `@` before a column name); `@` before a column is the formula's row, `[#This Row]` in stored text.
  */
+import { caseKey } from '../collate.js'
 import { bad } from './ast.js'
 
 /** A table's rows a reference takes: all of them, the data, the header row, the totals row, the formula's row. */
@@ -24,8 +25,8 @@ const ALLOWED = new Set(['', 'all', 'headers', 'data', 'totals', 'row', 'headers
 
 /** An area by its word in any case, `words` (a locale's) beside the stored ones. */
 export function areaOf(word: string, words: Record<TableArea, string> = AREA_WORDS): TableArea | undefined {
-  const w = word.toLocaleUpperCase('ru-RU')
-  for (const k of ORDER) if (AREA_WORDS[k].toUpperCase() === w || words[k].toLocaleUpperCase('ru-RU') === w) return k
+  const w = caseKey(word)
+  for (const k of ORDER) if (caseKey(AREA_WORDS[k]) === w || caseKey(words[k]) === w) return k
   return undefined
 }
 

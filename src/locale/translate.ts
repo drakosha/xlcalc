@@ -5,6 +5,7 @@
  * does whitespace. The output is lexed again on the target side: a piece that would read differently there
  * (`1.5` typed in ru-RU, where the decimal separator is `,`) is a syntax error at its place in the input.
  */
+import { caseKey } from '../collate.js'
 import { ERROR_LITERALS, INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
 import type { Locale, TableItem, Translation } from './types.js'
 
@@ -32,7 +33,7 @@ export interface Sides {
 
 type Fail = Extract<Translation, { ok: false }>
 
-const upperKeys = (entries: [string, string][]) => new Map(entries.map(([k, v]) => [k.toUpperCase(), v]))
+const upperKeys = (entries: [string, string][]) => new Map(entries.map(([k, v]) => [caseKey(k), v]))
 const byLength = (xs: string[]) => [...new Set(xs)].sort((a, b) => b.length - a.length)
 const swap = (xs: [string, string][]) => xs.map(([a, b]): [string, string] => [b, a])
 const same = (xs: string[]) => xs.map((x): [string, string] => [x, x])
@@ -47,9 +48,8 @@ export function sides(loc: Locale): Sides {
   ]
   const fns = Object.entries(loc.functions)
   const items = TABLE_ITEMS.map((w): [string, string] => [w, loc.tableItems?.[w] ?? w])
-  const itemKeys = (xs: [string, string][]) => new Map(xs.map(([k, v]) => [k.toLocaleUpperCase('ru-RU'), v]))
   return {
-    invariant: { name: 'the invariant syntax', syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: itemKeys(items) },
+    invariant: { name: 'the invariant syntax', syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: upperKeys(items) },
     local: {
       name: loc.tag,
       syn: local,
@@ -59,7 +59,7 @@ export function sides(loc: Locale): Sides {
       // the locale's own words win over the English ones
       word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
       err: upperKeys([...same(ERROR_LITERALS), ...swap(errors)]),
-      item: itemKeys([...same(TABLE_ITEMS), ...swap(items)]),
+      item: upperKeys([...same(TABLE_ITEMS), ...swap(items)]),
     },
   }
 }
@@ -69,7 +69,7 @@ const TABLE_ITEMS: TableItem[] = ['#All', '#Data', '#Headers', '#Totals', '#This
 const fail = (at: number, message: string): Fail => ({ ok: false, code: 'syntax', message, at })
 
 /** A name in quotes because it reads as a boolean of the side (`'ИСТИНА'`), which stands for the name where it is no boolean. */
-const quotedWord = (text: string, side: Side) => text.length > 2 && text.startsWith("'") && text.endsWith("'") && side.word.has(text.slice(1, -1).toUpperCase())
+const quotedWord = (text: string, side: Side) => text.length > 2 && text.startsWith("'") && text.endsWith("'") && side.word.has(caseKey(text.slice(1, -1)))
 
 /** A translated text; `back` maps a position in it to the input: the same character, or the start of a translated piece. */
 export interface Translated {
@@ -88,23 +88,23 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
   for (const [i, p] of pieces.entries()) {
     let text = p.text
     if (p.k === 'num') text = text.replace(from.syn.decimal, to.syn.decimal)
-    else if (p.k === 'fn') text = from.fn.get(text.toUpperCase()) ?? text
-    else if (p.k === 'err') text = from.err.get(text.toUpperCase()) ?? text
+    else if (p.k === 'fn') text = from.fn.get(caseKey(text)) ?? text
+    else if (p.k === 'err') text = from.err.get(caseKey(text)) ?? text
     else if (p.k === 'list') text = to.syn.list
     else if (p.k === 'tbl') text = tableText(text, from.item, from.syn.list, to.syn.list)
     else if (p.k === 'col') text = to.syn.arrayColumn
     else if (p.k === 'row') text = to.syn.arrayRow
     else if (p.k === 'word') {
-      const w = from.word.get(text.toUpperCase())
+      const w = from.word.get(caseKey(text))
       if (w === undefined && p.arr) return fail(offset + p.at, `unexpected ${JSON.stringify(text)} in an array constant`)
       // a name that reads as a boolean on the other side goes in quotes, as Excel ru-RU shows a name ИСТИНА ('ИСТИНА');
       // a table's name before its brackets does not (ИСТИНА[Qty])
-      if (w === undefined && to.word.has(text.toUpperCase()) && pieces[i + 1]?.k !== 'tbl') {
+      if (w === undefined && to.word.has(caseKey(text)) && pieces[i + 1]?.k !== 'tbl') {
         out.push({ ...p, k: 'raw', text: `'${text}'` })
         continue
       }
       text = w ?? text
-    } else if (p.k === 'raw' && quotedWord(text, from) && !to.word.has(text.slice(1, -1).toUpperCase())) {
+    } else if (p.k === 'raw' && quotedWord(text, from) && !to.word.has(caseKey(text.slice(1, -1)))) {
       out.push({ ...p, k: 'word', text: text.slice(1, -1) })
       continue
     } else if (special[p.arr ? 1 : 0].has(text)) return fail(offset + p.at, `unexpected ${JSON.stringify(text)}`) // `,` outside a number in ru-RU

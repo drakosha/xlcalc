@@ -4,6 +4,7 @@
  * strings, styles, the theme and the cell metadata of dynamic arrays come from the workbook's relationships.
  * Everything the book cannot hold is reported in `issues`, nothing is dropped silently.
  */
+import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
 import { checkBook, InputError } from '../../input.js'
@@ -158,7 +159,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   for (const sh of sheets) {
     if (!sh.tables) continue
     sh.tables = sh.tables.filter((t) => {
-      const k = t.name.toLocaleUpperCase('ru-RU')
+      const k = caseKey(t.name)
       if (!taken.has(k)) return taken.add(k)
       issues.add('table', `the table ${t.name} is left out: its name is another table's or a defined name`, { sheet: sh.name })
       return false
