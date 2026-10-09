@@ -19,7 +19,10 @@ for (let i = 0; i < ROWS; i++) {
 }
 
 /** A column from row 1: its header, then its values. */
-const column = (c: string, header: string, ...xs: number[]) => Object.fromEntries([[`${c}1`, header], ...xs.map((x, i) => [`${c}${i + 2}`, x])])
+const column = (c: string, header: string, ...xs: (number | { formula: string })[]) => Object.fromEntries([[`${c}1`, header], ...xs.map((x, i) => [`${c}${i + 2}`, x])])
+
+/** ±1E308 by a formula: Excel takes a file holding 1E+308 as a value for a damaged one (above 9.99999999999999E+307). */
+const MAX = { formula: '1E+307*10' }, MIN = { formula: '-1E+307*10' }
 
 /**
  * Sheet Edge: each data set under a header, so the database functions take it too; Q1:U2 the criteria (a header over
@@ -32,9 +35,9 @@ export const SHEETS: SheetCells = {
     ...column('D', 't', 1e-200, 2e-200),
     ...column('E', 'u', 1, 2),
     ...column('F', 'o', 1e300, -1e300),
-    ...column('G', 'm', 1e308, 1e308, 1e308),
-    ...column('H', 'cx', 1e308, -1e308, 1e-200),
-    ...column('I', 'cy', 0, 0, 1e308),
+    ...column('G', 'm', MAX, MAX, MAX),
+    ...column('H', 'cx', MAX, MIN, 1e-200),
+    ...column('I', 'cy', 0, 0, MAX),
     ...column('J', 'sx', 1, 2, 3),
     ...column('K', 'sy', 1, 2.00000001, 3),
     ...column('L', 'ix', 0.25, 0.5, 0.75),
