@@ -286,11 +286,15 @@ export function makeRuntime(ctx: RuntimeContext) {
   for (const [name, def] of Object.entries(DEFS)) {
     const caller = makeCaller(def, cx)
     // one range is read cell by cell, never made whole, so `limits.cells` does not bound it
-    F[name] = ['SUM', 'COUNT', 'MIN', 'MAX'].includes(name)
+    F[name] = ['SUM', 'COUNT', 'COUNTA', 'MIN', 'MAX', 'AVERAGE'].includes(name)
       ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng
-        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell)
+        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell) ?? caller(...args)
         : caller(...args)
-      : caller
+      : name === 'COUNTIF' || name === 'COUNTIFS'
+        ? (...args: Arg[]) => args.length === 2 && args[0] instanceof Rng
+          ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell)
+          : caller(...args)
+        : caller
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */

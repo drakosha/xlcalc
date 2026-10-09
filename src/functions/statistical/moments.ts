@@ -1,25 +1,15 @@
 /** Compensated, corrected two-pass moments; exact binary sums for ill-conditioned or out-of-scale inputs. */
 import { spend } from '../../exec/budget.js'
 import { exactMoments, predict, ratio, rootRatio, type ExactMoments } from './exact-moments.js'
-
-class Sum {
-  private sum = 0
-  private correction = 0
-  add(x: number) {
-    const next = this.sum + x
-    this.correction += Math.abs(this.sum) >= Math.abs(x) ? (this.sum - next) + x : (x - next) + this.sum
-    this.sum = next
-  }
-  get value() { return this.sum + this.correction }
-}
+import { CompensatedSum as Sum, meanOf } from './sum.js'
 
 export function stableMean(xs: readonly number[]): number {
   if (!xs.length) return NaN
   const sum = new Sum()
   let constant = true
   for (const x of xs) { spend(1); sum.add(x); constant &&= x === xs[0] }
-  if (constant) return xs[0]
-  if (Number.isFinite(sum.value)) return sum.value / xs.length
+  const value = meanOf(sum, xs.length, xs[0], constant)
+  if (value !== undefined) return value
   const exact = exactMoments(xs)
   return exact ? ratio(exact.sx, exact.n, exact.ex) : NaN
 }

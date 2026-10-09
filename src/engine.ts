@@ -199,7 +199,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     cache,
     flat: new RangeCache(cache),
     index: new RangeCache(cache),
-    aggregates: new RangeAggregates(),
+    aggregates: new RangeAggregates(cache),
     nested: new Map(),
     hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),

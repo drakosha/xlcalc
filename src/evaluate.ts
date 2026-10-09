@@ -67,6 +67,7 @@ export function write(state: EngineState, s: number, r: number, c: number, v: V,
  */
 function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = false, delta = 0): Steps<boolean> {
   const { rt, spills } = state
+  if (ids.length >= 64) state.ctx.aggregates.invalidateCells(ids.map((id) => state.formulas[id]!))
   // a formula that reads the clock's year joins the volatile ones; one that no longer does leaves them
   const { clock } = state.ctx.rules
   let clocked = false

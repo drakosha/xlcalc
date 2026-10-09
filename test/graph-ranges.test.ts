@@ -1,10 +1,25 @@
 import { describe, expect, it } from 'vitest'
 import { compute, openSession, type BookInput, type CellInput } from '../src/index.js'
-import { createState } from '../src/engine.js'
+import { applyEdits, createState } from '../src/engine.js'
+import { run } from '../src/exec/budget.js'
 import { formatAddress } from '../src/model.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
+
+it('drops affected aggregate prefixes once before a large formula batch', () => {
+  const n = 1024, cells: Record<string, CellInput> = { D1: { value: 1 } }
+  for (let r = 1; r <= n; r++) { cells[`A${r}`] = { formula: '$D$1' }; cells[`B${r}`] = { formula: `SUM($A$1:A${r})` } }
+  const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1 })
+  let probes = 0
+  const invalidate = state.ctx.aggregates.invalidate.bind(state.ctx.aggregates)
+  state.ctx.aggregates.invalidate = (area) => invalidate(new Proxy(area, {
+    get(target, key, receiver) { if (key === 'r1' || key === 'r2') probes++; return Reflect.get(target, key, receiver) },
+  }))
+  run(applyEdits(state, [{ sheet: 'S', cell: 'D1', input: { value: 2 } }]))
+  expect(state.rt.cell(0, n - 1, 1)).toBe(n * 2)
+  expect(probes).toBeLessThan(n * 100)
+})
 
 it.each([false, true])('compresses overlapping formula ranges, horizontal=%s', (horizontal) => {
   const n = 1024, cells: Record<string, CellInput> = {}

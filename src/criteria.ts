@@ -192,6 +192,20 @@ function critKey(c: Crit): string | null {
   return null
 }
 
+/** One-column COUNTIF uses the same equality keys as the selection index; other criteria use the scan rules. */
+export function criterionMatcher(c: Crit, rules: CritRules): (v: CritValue) => boolean {
+  const key = critKey(c)
+  if (key === null) return (v) => matches(v, c, rules)
+  // Per read only: text dates without a year must read the clock again on the next call.
+  const texts = new Map<string, string>()
+  return (v) => {
+    if (typeof v !== 'string') return eqKey(v, rules) === key
+    let value = texts.get(v)
+    if (value === undefined) { value = eqKey(v, rules)!; texts.set(v, value) }
+    return value === key
+  }
+}
+
 export type CritIndex = Map<string, number[]>
 
 /** Values between two checks of the computation's budget in long loops (65,536 − 1, a mask). */
