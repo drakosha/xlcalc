@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { LOCALES } from './locale/registry.js'
@@ -432,6 +432,25 @@ export function checkValidateContext(v: unknown, path = 'ctx'): ValidateContext 
   return o as ValidateContext
 }
 
+/** `validateName`'s options: the book's locale. */
+export function checkNameOptions(v: unknown, path = 'opts'): NameOptions {
+  if (v === undefined) return {}
+  const o = object(v, path, "options such as { locale: 'ru-RU' }")
+  onlyKeys(o, path, ['locale'])
+  if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
+  return o as NameOptions
+}
+
+/** `validateNames`'s context: the book's sheets, which a name's scope needs, its tables, external functions and locale. */
+export function checkNamesContext(v: unknown, path = 'ctx'): NamesContext {
+  const o = object(v, path, "a context such as { sheets: ['Data'], locale: 'ru-RU' }")
+  onlyKeys(o, path, ['sheets', 'tables', 'externalFunctions', 'locale'])
+  if (o.sheets === undefined) throw new InputError(`${path}.sheets`, "expected the book's sheet names, an array of strings")
+  const { locale, ...rest } = o
+  checkValidateContext(rest, path)
+  if (locale !== undefined) checkLocale(locale, `${path}.locale`)
+  return o as unknown as NamesContext
+}
 
 /** `displayValue`'s value: a number, text, a boolean, null or an error `{ error: code }`. */
 export function checkCellValue(v: unknown, path: string): CellValue {

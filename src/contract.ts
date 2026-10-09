@@ -385,6 +385,12 @@ export interface NameIssue {
   name: string
   scope?: string
   reason: string
+  /**
+   * The book has no such name: one Excel would not take, a duplicate, an unknown scope sheet, a formula that does not
+   * parse or a reference without its sheet; a formula using the word finds no name. False: the name is in the book and
+   * gives an error where it is used (an unknown sheet, table or function in its formula).
+   */
+  dropped: boolean
 }
 
 export interface ComputeResult {
@@ -422,6 +428,23 @@ export type ValidateResult =
   | { ok: false; code: CheckCode; message: string; at: number }
 
 export type NameCheck = { ok: true } | { ok: false; message: string }
+
+/** The book whose rules `validateName` checks a name by. */
+export interface NameOptions {
+  /** A tag of the package's locales (`BookInput.locale`); en-US without one. */
+  locale?: string
+}
+
+/** The parts of a book `validateNames` checks names against. */
+export interface NamesContext {
+  /** Sheets of the book: a name's scope must be one of them, and its formula's references to others give `#REF!`. */
+  sheets: string[]
+  /** Tables of the book with their columns, for the structured references of names' formulas. */
+  tables?: { name: string; columns: string[] }[]
+  externalFunctions?: string[]
+  /** The book's locale (`BookInput.locale`); en-US without one. */
+  locale?: string
+}
 
 /** A cell edit; `input: null` clears the cell. */
 export interface CellEdit extends CellRef {
@@ -781,8 +804,10 @@ export interface CalcPoolOptions {
 export interface FormulaEngine {
   compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
-  /** Excel's rules for a name (`NameInput.name`) in an en-US book; a ru-RU book also refuses ИСТИНА and ЛОЖЬ. */
-  validateName(name: string): NameCheck
+  /** Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; ru-RU also refuses ИСТИНА and ЛОЖЬ). */
+  validateName(name: string, opts?: NameOptions): NameCheck
+  /** The issues of a book's names, as `ComputeResult.nameIssues` gives them for a book with these sheets, tables and locale. */
+  validateNames(names: NameInput[], ctx: NamesContext): NameIssue[]
   openSession(book: BookInput, opts?: SessionOptions): Session
   restructure(book: BookInput, op: StructureOp): RestructureResult
   /** A value as a cell shows it, without a book: by a format, in a locale and a column's width. */
