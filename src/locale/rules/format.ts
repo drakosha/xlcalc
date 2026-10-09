@@ -5,7 +5,8 @@
  * hours and seconds in either case, `М` the month or, after hours or before seconds, minutes as en-US `m`, `м`
  * minutes always), the General format by its name, among literals too (`Основной "шт."`), its colour names
  * (`[Красный]`, `[Цвет10]`), `AM/PM`. Latin letters are literals. Excel refuses a point before a digit placeholder
- * in a number format and a space in a fraction format. A cell reads an xlsx file's en-US codes and writes the
+ * in a number format, where the point is no separator of the locale, and the group separator (a space) in a fraction
+ * format. A cell reads an xlsx file's en-US codes and writes the
  * locale's separators, names and date separator (`dd/mm/yyyy` shows `31.01.2025`).
  */
 import type { ErrorCode } from '../../contract.js'
@@ -24,6 +25,7 @@ function regionalCodes(data: RegionalData): Codes {
   // letters read in either case; the month and minute letters differ by case only
   const letters = new Map([codes.day, codes.year, codes.hour, codes.second].map((c, i) => [c.toLowerCase(), 'dyhs'[i]]))
   const letter = (ch: string) => (ch === codes.month ? 'm' : ch === codes.minute ? 'n' : letters.get(ch.toLowerCase()))
+  const pointRefused = decimal !== '.' && group !== '.'
   return {
     decimal,
     group,
@@ -33,11 +35,12 @@ function regionalCodes(data: RegionalData): Codes {
     letter,
     same: (a, b) => (a === codes.month || a === codes.minute ? a === b : a.toLowerCase() === b.toLowerCase()),
     currency: data.currency.symbol,
-    // a point before a digit placeholder in a number section, or a space in a fraction section
+    // a point before a digit placeholder in a number section, where the point is no separator of the locale (ru-RU), or
+    // the group separator in a fraction section
     refuses: (sec) => {
       const b = bare(sec)
       const date = [...b].some((ch) => letter(ch) !== undefined) || /AM\/PM|A\/P/i.test(b)
-      return (!date && /\.[^]*[0#?]/.test(b)) || (/[0#?]\//.test(b) && b.includes(group))
+      return (!date && pointRefused && /\.[^]*[0#?]/.test(b)) || (/[0#?]\//.test(b) && b.includes(group))
     },
   }
 }
