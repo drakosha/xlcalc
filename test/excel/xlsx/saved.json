@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 3.6,
+  "seconds": 1.4,
   "date": "2026-10-09"
  },
  "books": {
@@ -307,6 +307,9 @@
   },
   "stat-edges-held-1": {
    "sent": "1551e65290b614813f3405c0645f727fd8ac7954590843fa651d5487f7ed17c7"
+  },
+  "lookup-own-held-1": {
+   "sent": "9e3619e73857e5500996e895bdca9e6a5dcc58de9a3d3704eebc2e55ab119d5c"
   }
  }
 }

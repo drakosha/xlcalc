@@ -97,6 +97,10 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:stat-edges-held:FORECAST.LINEAR#4': { reason: 'momentRange', engine: { t: 'n', v: 3.33333333333333e+307 } },
   'en-US:stat-edges-held:STEYX#2': { reason: 'momentRounding', engine: { t: 'n', v: 8.16496575965492e-9 } },
   'en-US:stat-edges-held:STEYX#3': { reason: 'momentRounding', engine: { t: 'n', v: 8.16496575965492e-9 } },
+  'en-US:lookup-own-held:LOOKUP#5': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
+  'en-US:lookup-own-held:LOOKUP#7': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
+  'en-US:lookup-own-held:LOOKUP#8': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
+  'en-US:lookup-own-held:LOOKUP#9': { reason: 'lookupReadZone', engine: { t: 'e', v: 'CYCLE' as never } },
   'ru-RU:locale:format#244': { reason: 'secondDecimal', engine: { t: 's', v: "-,500,00" } },
   'ru-RU:text-format-ru-more:TEXT#13': { reason: 'winLongDate', engine: { t: 's', v: "пятница, 31 января 2025 г." } },
 }

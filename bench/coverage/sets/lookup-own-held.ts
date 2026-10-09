@@ -54,3 +54,9 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][1]]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike), all the engine's #CYCLE!: Excel follows the cells
+ * LOOKUP reads and finds no cycle; the engine counts every cell it may read, its own among them (`lookupReadZone`).
+ */
+export const MISSED: readonly string[] = ['LOOKUP#5', 'LOOKUP#7', 'LOOKUP#8', 'LOOKUP#9']
