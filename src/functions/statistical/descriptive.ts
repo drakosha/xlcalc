@@ -9,9 +9,10 @@ import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 import { devsq, gridNumbers, max, mean, min, sorted, sum } from './common.js'
+import { momentValue } from './moments.js'
 
-const variance = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : devsq(xs) / (xs.length - ddof))
-const stdev = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : Math.sqrt(devsq(xs) / (xs.length - ddof)))
+const variance = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : momentValue(xs, xs.length - ddof))
+const stdev = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : momentValue(xs, xs.length - ddof, true))
 
 function median(xs: number[]): number {
   const s = sorted(xs)

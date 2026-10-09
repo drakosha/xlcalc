@@ -1,0 +1,11 @@
+# Numerical stability of statistical moments
+
+The statistical and database functions share the helpers in `src/functions/statistical/moments.ts`. Means use compensated summation. Central sums use a corrected two-pass calculation, subtracting the correction for the rounded mean. This follows the corrected two-pass approach described by Chan, Golub and LeVeque (1983), also described in [Apache Commons Math's variance documentation](https://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/org/apache/commons/math3/stat/descriptive/moment/Variance.html).
+
+Ill-conditioned moments and intermediate overflow/underflow use `exact-moments.ts`: each finite input double is decoded as an integer times a power of two. BigInt accumulators keep the sums, squares and paired products exactly, with independent scales for x and y. The central sums, covariance and regression ratios are formed before conversion back to a double. The final division and square root still use double precision. No external numerical library is used.
+
+The fallback also handles cancellation in a small intercept and in STEYX's residual variance. Large ordinary inputs continue through the double-precision path. Every input loop checks the calculation budget; calculation inside a function remains one synchronous evaluation step.
+
+Excel's established domain behavior remains authoritative: the stored Excel answers for `STDEV.P(1E300,-1E300)` and its variants are `#NUM!`. An overflowing variance remains an error even when its mathematical square root would fit in a double.
+
+`test/statistical-stability.test.ts` pins the large-mean/small-spread failure, small scales, constant large inputs, covariance across scales, small regression residuals and intercepts, database statistics and the recorded Excel overflow behavior. The large-offset example uses exact rational arithmetic on the stored binary values, rather than assuming decimal input values are represented exactly. A separate Fraction/Decimal check compared 60 generated datasets in both execution modes, 1,320 results, at relative tolerance 2e-12. These mathematical references supplement the existing saved Excel answers; no live Excel run was used for the added cases.

@@ -7,6 +7,7 @@ import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
+import { momentValue, stableMean } from './statistical/moments.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V, rules: Rules): Crit | null {
@@ -71,12 +72,6 @@ function selected(db: Grid, field: V | undefined, criteria: Grid, rules: Rules):
 
 const numbers = (vs: V[]) => vs.filter((v): v is number => typeof v === 'number')
 
-/** Sum of squared deviations, in two passes. */
-function squares(xs: number[]): number {
-  const mean = xs.reduce((s, x) => s + x, 0) / xs.length
-  return xs.reduce((s, x) => s + (x - mean) ** 2, 0)
-}
-
 /**
  * The field as Excel reads it: a value as it is (an error is the answer), a reference to one cell by its value
  * (an error there is #VALUE!), a reference to several cells #VALUE!; an array is lifted.
@@ -106,7 +101,7 @@ const dfn = (f: (vs: V[]) => V, errors = true): FnDef => ({
 const over = (f: (xs: number[]) => V) => dfn((vs) => f(numbers(vs)))
 
 export const functions: Record<string, FnDef> = {
-  DAVERAGE: over((xs) => (xs.length ? xs.reduce((s, x) => s + x, 0) / xs.length : E.DIV0)),
+  DAVERAGE: over((xs) => (xs.length ? stableMean(xs) : E.DIV0)),
   // DCOUNT passes over errors, the other functions answer with them
   DCOUNT: dfn((vs) => numbers(vs).length, false),
   DCOUNTA: dfn((vs) => vs.filter((v) => v !== null).length, false),
@@ -115,9 +110,9 @@ export const functions: Record<string, FnDef> = {
   DMAX: over((xs) => xs.reduce((m, x) => (x > m ? x : m), xs.length ? -Infinity : 0)),
   DMIN: over((xs) => xs.reduce((m, x) => (x < m ? x : m), xs.length ? Infinity : 0)),
   DPRODUCT: over((xs) => (xs.length ? xs.reduce((p, x) => p * x, 1) : 0)),
-  DSTDEV: over((xs) => (xs.length < 2 ? E.DIV0 : Math.sqrt(squares(xs) / (xs.length - 1)))),
-  DSTDEVP: over((xs) => (xs.length < 1 ? E.DIV0 : Math.sqrt(squares(xs) / xs.length))),
+  DSTDEV: over((xs) => (xs.length < 2 ? E.DIV0 : momentValue(xs, xs.length - 1, true))),
+  DSTDEVP: over((xs) => (xs.length < 1 ? E.DIV0 : momentValue(xs, xs.length, true))),
   DSUM: over((xs) => xs.reduce((s, x) => s + x, 0)),
-  DVAR: over((xs) => (xs.length < 2 ? E.DIV0 : squares(xs) / (xs.length - 1))),
-  DVARP: over((xs) => (xs.length < 1 ? E.DIV0 : squares(xs) / xs.length)),
+  DVAR: over((xs) => (xs.length < 2 ? E.DIV0 : momentValue(xs, xs.length - 1))),
+  DVARP: over((xs) => (xs.length < 1 ? E.DIV0 : momentValue(xs, xs.length))),
 }
