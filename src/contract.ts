@@ -312,6 +312,29 @@ export interface DisplayOptions {
   dateSystem?: 1900 | 1904
 }
 
+/** `parseEntry`'s options: the book text is typed into and the cell it goes to. */
+export interface EntryOptions {
+  /** The book's locale, a tag of `LOCALES` (`'en-US'` by default): numbers, dates, booleans, errors and formulas are read as Excel reads them there. */
+  locale?: string
+  /** The book's date system, as `BookInput.dateSystem`; 1900 without it. */
+  dateSystem?: 1900 | 1904
+  /**
+   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.cells`): its `format` (the one
+   * it shows by: its row's or column's without its own), `style` and `meta`; other fields are not read. The new input
+   * keeps its style and meta, and its format where Excel keeps it.
+   */
+  cell?: { format?: NumberFormat; style?: number; meta?: JsonValue } | null
+  /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
+  now?: string
+}
+
+/**
+ * Text typed into a cell as Excel takes it (`parseEntry`): the cell's new input, `null` when nothing is left of the
+ * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message and the
+ * position in the typed text.
+ */
+export type EntryResult = { ok: true; input: CellInput | null } | { ok: false; code: CheckCode; message: string; at: number }
+
 /**
  * Size limits of a computation. A book over them is not computed: the call throws `CalcError` with code `limit`, so a
  * result is either exact or absent and the values hash never depends on the limits.
