@@ -6,7 +6,7 @@ import type { AsyncRestructureResult, AsyncSession, AsyncSessionOptions, CalcLim
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
 import { callBudget, drive } from './drive.js'
-import { checkCall, splitCall } from './options.js'
+import { callLimits, checkCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
 
 /** What a calculator gives its sessions. */
@@ -38,7 +38,7 @@ export function budgeted(d: InlineDefaults, limits: CalcLimits | undefined) {
 
 export async function openInlineSession(book: Parameters<typeof openSteps>[0], opts: AsyncSessionOptions | undefined, d: InlineDefaults, hooks?: SessionHooks): Promise<InlineSession> {
   const { signal, timeoutMs, rest } = splitCall<SessionOptions>(opts)
-  const o = { ...rest, limits: rest?.limits ?? d.limits } as SessionOptions
+  const o = { ...rest, limits: callLimits(d.limits, rest?.limits) } as SessionOptions
   const go = budgeted(d, o.limits)
   const core = await go(openSteps(book, o, hooks), { signal, timeoutMs })
   const queue = new Serial()

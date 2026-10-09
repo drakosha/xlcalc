@@ -8,7 +8,7 @@ import type { Arg } from '../args.js'
 import type { Arr } from '../arrays/value.js'
 import { canonValue } from '../canon.js'
 import { toCellValue, key, type EngineState, type Formula } from '../engine.js'
-import { allot, spend } from '../exec/budget.js'
+import { allotSpill, spend } from '../exec/budget.js'
 import { invalidate, put, same, shown, track, type Tracker } from '../evaluate.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
@@ -97,7 +97,7 @@ function place(state: EngineState, f: Formula, a: Arr, area: Area, t?: Tracker) 
   const sp = state.spills
   const sh = state.ctx.sheets[f.s]
   const { h, w, fill } = listing(a)
-  allot(h * w)
+  allotSpill(h * w)
   const old = sp.on.get(f.id)
   note(state, f.s, f.r, f.c, t)
   // cells of the old spill that the new one does not store, then the new ones (read before the old fills go)

@@ -333,8 +333,8 @@ const CLOCK_HINT = ' (pass the clock as { clock: { now, seed } })'
 /** `limits`: whole numbers of at least 1. */
 export function checkLimits(v: unknown, path: string): CalcLimits {
   const o = object(v, path, 'limits such as { formulas: 100000, cells: 10000000 }')
-  onlyKeys(o, path, ['formulas', 'cells'])
-  for (const k of ['formulas', 'cells']) if (o[k] !== undefined) checkNumber(o[k], `${path}.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
+  onlyKeys(o, path, ['formulas', 'cells', 'spill'])
+  for (const k of ['formulas', 'cells', 'spill']) if (o[k] !== undefined) checkNumber(o[k], `${path}.${k}`, 1, Number.MAX_SAFE_INTEGER, true)
   return o as CalcLimits
 }
 

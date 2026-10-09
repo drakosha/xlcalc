@@ -426,7 +426,7 @@ Both functions return promises: the archive is inflated and deflated by the plat
 
 ### Computing without blocking
 
-`createInlineCalc()` computes in the same thread, in slices that let timers and input run between them; `createCalcPool()` from `xlcalc/worker` computes in a pool of threads, where a session's book lives in its thread. Both have one API: `compute`, `openSession` and the session's methods return promises, and every call takes `timeoutMs`, a soft deadline of computing time, and `signal`, an `AbortSignal`. A call that fails changes nothing. `limits` bound the formulas of a book and the values of one array, in the synchronous `compute` and `openSession` too; over them the call throws `CalcError` rather than computing.
+`createInlineCalc()` computes in the same thread, in slices that let timers and input run between them; `createCalcPool()` from `xlcalc/worker` computes in a pool of threads, where a session's book lives in its thread. Both have one API: `compute`, `openSession` and the session's methods return promises, and every call takes `timeoutMs`, a soft deadline of computing time, and `signal`, an `AbortSignal`. A call that fails changes nothing. `limits` bound the formulas of a book, the values of one array and the cells of one spill, in the synchronous `compute` and `openSession` too; over them the call throws `CalcError` rather than computing.
 
 ```js
 import { createInlineCalc } from 'xlcalc'
@@ -462,7 +462,7 @@ From `xlcalc`:
 
 | export | |
 |---|---|
-| `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
+| `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
 | `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range)`, `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
