@@ -7,6 +7,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { CellLook, ExcelStructAnswer, SheetLook, StoredStruct } from '../bench/coverage/struct.js'
 import type { BookInput, CellInput, SheetInput } from '../src/contract.js'
+import { isHiddenRow } from '../src/layout/hidden.js'
 import { mergeText, parseMerge } from '../src/layout/merges.js'
 import { lineAt } from '../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
@@ -89,7 +90,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }
-  // a hidden line shows no size, as Excel reads it
+  // a hidden line shows no size, as Excel reads it; a row of height 0 is hidden
   const hidden = (k: string) => (out.hidden ??= []).includes(k) || out.hidden.push(k)
   for (let c = a.col; c <= b.col; c++) {
     const col = lineAt(sheet.columns, 'c', c)
@@ -98,7 +99,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
   }
   for (let r = a.row; r <= b.row; r++) {
     const row = lineAt(sheet.rows, 'r', r)
-    if (row?.hidden) hidden(String(r + 1))
+    if (row && isHiddenRow(row)) hidden(String(r + 1))
     else if (row?.height !== undefined) out.heights[String(r + 1)] = shownHeight(row.height)
   }
   const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
