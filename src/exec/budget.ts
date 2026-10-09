@@ -11,11 +11,11 @@ import { nowMs } from '../env.js'
 export class CalcError extends Error {
   readonly code: CalcErrorCode
   // declared only: a field without a value is no property of the error
-  declare limit?: 'formulas' | 'cells'
+  declare limit?: keyof CalcLimits
   declare max?: number
   declare size?: number
   declare cell?: CellRef
-  constructor(code: CalcErrorCode, message: string, details: { limit?: 'formulas' | 'cells'; max?: number; size?: number; cell?: CellRef; cause?: unknown } = {}) {
+  constructor(code: CalcErrorCode, message: string, details: { limit?: keyof CalcLimits; max?: number; size?: number; cell?: CellRef; cause?: unknown } = {}) {
     const { cause, ...rest } = details
     super(message, cause === undefined ? undefined : { cause })
     this.name = 'CalcError'
