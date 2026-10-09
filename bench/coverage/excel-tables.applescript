@@ -33,7 +33,12 @@ on run argv
 	set mirror to {"IF(ISBLANK(#),-5,IF(ISERROR(#),ERROR.TYPE(#),IF(ISNUMBER(#),0,IF(ISLOGICAL(#),IF(#,-1,-2),IF(ISTEXT(#),-3,-4)))))", "IF(ISNUMBER(#),#,0)", "IF(ISTEXT(#),#,\"\")"}
 	tell application "Microsoft Excel"
 		with timeout of 90 seconds
-			set wb to open workbook workbook file name hfs
+			-- a book Excel refuses to open answers -50 here, with or without its repair window
+			try
+				set wb to open workbook workbook file name hfs
+			on error msg number n
+				error "the book did not open: " & msg number n
+			end try
 			calculate full
 			repeat with ln in steps
 				if (length of ln) > 0 then

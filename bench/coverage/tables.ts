@@ -85,17 +85,22 @@ export function stepLines(c: TableCase): string[] {
 /** The book with the three empty mirror sheets the script writes its mirror formulas into. */
 export const withMirrors = (b: BookInput): BookInput => ({ ...b, sheets: [...b.sheets, ...MIRRORS.map((name) => ({ name, cells: {} }))] })
 
-/** A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed). */
-async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unknown>, id: string): Promise<TableAnswer | null> {
-  if (!declineRepair()) {
+/**
+ * A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed),
+ * or, with `refused`, an error from `open workbook` with no window at all.
+ */
+async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unknown>, id: string, refused = false): Promise<TableAnswer | null> {
+  let declined = declineRepair()
+  if (!declined) {
     execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to activate'])
     await sleep(2000)
-    if (!declineRepair()) return null
+    declined = declineRepair()
+    if (!declined && !refused) return null
   }
   child.kill()
   await exited
   await settleRejected()
-  console.log(`${id}: Excel did not load the book (repair window declined)`)
+  console.log(`${id}: Excel did not load the book (${declined ? 'repair window declined' : 'open workbook refused it, no window'})`)
   return { values: {}, formulas: {}, tables: [], rejected: true }
 }
 
@@ -125,11 +130,9 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
         const after = dialogText()
         if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
         if (code !== 0) {
-          // the book did not open (`wb` undefined): a repair window Excel shows on another Space
-          if (/-2753|wb/.test(err)) {
-            const r = await rejectedBook(child, exited, c.id)
-            if (r) return r
-          }
+          // the book did not open (`wb` undefined, an error from `open workbook`, a timeout): a repair window on another Space
+          const r = await rejectedBook(child, exited, c.id, /the book did not open/.test(err))
+          if (r) return r
           throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
         }
         const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: [string, string, string, boolean, boolean, string[]][] }
