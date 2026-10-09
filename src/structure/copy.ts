@@ -72,11 +72,13 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const sheet = source.sheets.find((s) => sheetKey(s.name) === fk)!
   // the cells of part of an array formula's area copy as array formulas of their own
   const parts = copiedCells(sheet, src, (f, r, c) => rewriteFormula(f, from, from, copyTransform(r, c), names))
-  const copied = [...Object.entries(sheet.cells).filter(([addr]) => (spend(1), within(src, addr) && !parts.some(([a]) => a === addr))), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
+  const inSrc = Object.keys(sheet.cells).filter((addr) => (spend(1), within(src, addr) && !parts.some(([a]) => a === addr)))
+  const copied = [...inSrc.map((addr): [string, CellInput] => [addr, sheet.cells[addr]]), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== tk) return s
     const cells: Record<string, CellInput> = {}
-    for (const [addr, cell] of Object.entries(s.cells)) {
+    for (const addr of Object.keys(s.cells)) {
+      const cell = s.cells[addr]
       spend(1)
       if (!within(pasted, addr)) cells[addr] = cell
     }

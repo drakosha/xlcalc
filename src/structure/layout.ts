@@ -84,7 +84,8 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
 export function formatBefore(sheet: SheetInput, axis: Axis, at: number, n: number): Record<string, CellInput> {
   const out: Record<string, CellInput> = {}
   if (at === 0) return out
-  for (const [addr, cell] of Object.entries(sheet.cells)) {
+  for (const addr of Object.keys(sheet.cells)) {
+    const cell = sheet.cells[addr]
     spend(1)
     const p = parseAddress(addr)
     if ((axis === 'r' ? p.row : p.col) !== at - 1 || (cell.style === undefined && cell.format === undefined)) continue

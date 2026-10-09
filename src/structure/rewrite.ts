@@ -165,7 +165,8 @@ export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, s
     sheets: book.sheets.map((s) => {
       const name = rename(s.name)
       let cells: Record<string, CellInput> | undefined
-      for (const [addr, cell] of Object.entries(s.cells)) {
+      for (const addr of Object.keys(s.cells)) {
+        const cell = s.cells[addr]
         const next = rewriteCell(cell, s.name, name, t, sheets)
         if (next !== cell) (cells ??= { ...s.cells })[addr] = next
       }

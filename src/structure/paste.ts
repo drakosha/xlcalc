@@ -80,7 +80,8 @@ function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: 
     if (Object.keys(style).length || Object.keys(format).length) to.cells[addr] = { ...cell, ...style, ...format }
   }
   const own = new Set<string>()
-  for (const [addr, cell] of Object.entries(from.cells)) {
+  for (const addr of Object.keys(from.cells)) {
+    const cell = from.cells[addr]
     spend(1)
     const p = parseAddress(addr)
     if (p.row < src.r1 || p.row > src.r2 || p.col < src.c1 || p.col > src.c2) continue

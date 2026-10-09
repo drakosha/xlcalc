@@ -72,7 +72,8 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
     before(b) {
       const sheet = b.sheets[fs]
       let cells: Record<string, CellInput> | undefined
-      for (const [addr, cell] of Object.entries(sheet.cells)) {
+      for (const addr of Object.keys(sheet.cells)) {
+        const cell = sheet.cells[addr]
         spend(1)
         if (cell.formula === undefined) continue
         const { row, col } = parseAddress(addr)
@@ -143,7 +144,8 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       if (!r.ok) return r
       const sheet = r.book.sheets[ts]
       let cells: Record<string, CellInput> | undefined
-      for (const [addr, cell] of Object.entries(sheet.cells)) {
+      for (const addr of Object.keys(sheet.cells)) {
+        const cell = sheet.cells[addr]
         spend(1)
         if (cell.formula === undefined) continue
         const { row, col } = parseAddress(addr)

@@ -93,7 +93,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const moving = s === target
     const cells: Record<string, CellInput> = {}
     let changed = moving
-    for (const [addr, cell] of Object.entries(s.cells)) {
+    for (const addr of Object.keys(s.cells)) {
+      const cell = s.cells[addr]
       const next = rewriteCell(cell, s.name, s.name, t, names)
       changed ||= next !== cell
       if (!moving) cells[addr] = next

@@ -26,7 +26,8 @@ export function clipped(book: BookInput, from: string, src: Rect, values: Values
   const row = new Map(visible.map((r, k) => [r, src.r1 + k]))
   const cells: Record<string, CellInput> = {}
   // looks and meta of the cells, then the values over them
-  for (const [addr, cell] of Object.entries(sheet.cells)) {
+  for (const addr of Object.keys(sheet.cells)) {
+    const cell = sheet.cells[addr]
     spend(1)
     const p = parseAddress(addr)
     const r = row.get(p.row)

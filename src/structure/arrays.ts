@@ -14,7 +14,8 @@ import type { Paste } from './paste.js'
 /** The array formulas of a sheet: their cell and area. */
 export function areasOf(sheet: SheetInput): [string, Rect][] {
   const out: [string, Rect][] = []
-  for (const [addr, c] of Object.entries(sheet.cells)) {
+  for (const addr of Object.keys(sheet.cells)) {
+    const c = sheet.cells[addr]
     spend(1)
     if (c.array !== undefined && c.formula !== undefined) out.push([addr, parseRange(c.array)!])
   }
