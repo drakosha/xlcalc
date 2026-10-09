@@ -11,7 +11,7 @@ import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import type { RefOp } from './syntax/ast.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
-import { allot, spend, unlimitedRangeCells } from './exec/budget.js'
+import { allot, spend } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
@@ -273,8 +273,9 @@ export function makeRuntime(ctx: RuntimeContext) {
   const FL: Record<string, (...a: any[]) => Arg> = {}
   for (const [name, def] of Object.entries(DEFS)) {
     const caller = makeCaller(def, cx)
+    // one range is read cell by cell, never made whole, so `limits.cells` does not bound it
     F[name] = ['SUM', 'COUNT', 'MIN', 'MAX'].includes(name)
-      ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng && unlimitedRangeCells()
+      ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng
         ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell)
         : caller(...args)
       : caller
