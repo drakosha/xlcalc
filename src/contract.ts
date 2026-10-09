@@ -345,7 +345,10 @@ export interface ComputeOptions {
 export interface CellResult extends Partial<CellDisplay> {
   /** The value: numbers stay numbers whatever the format shows. */
   value: CellValue
-  /** Canonical formula text (sheet always quoted, function names upper-case). */
+  /**
+   * Canonical formula text (sheet always quoted, function names upper-case), with sheets, tables and defined names
+   * spelled as the book names them, as Excel shows them (`ставка*2` with the name `Ставка` is `Ставка*2`).
+   */
   formula?: string
   format?: NumberFormat
   meta?: JsonValue
