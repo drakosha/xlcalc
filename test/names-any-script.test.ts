@@ -143,14 +143,13 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     expect((await writeXlsx({ ...ru, locale: 'en-US' })).issues).toEqual([])
   })
 
-  it('a table takes ? and \\ inside its name, and in a ru-RU book the name ИСТИНА, which a defined name may not (tables/names-tables-held, names-ru-tables-held)', () => {
+  it('a table takes ? and \\ inside its name, and in a ru-RU book not the name ИСТИНА, as Excel for Windows (tables/names-tables-held, names-ru-tables-held)', () => {
     const cells = { A1: { value: 'Кол' }, A2: { value: 1 }, B1: { formula: 'SUM(T[Кол])' } }
     const withTable = (locale?: string): BookInput => ({ sheets: [{ name: 'S', cells, tables: [{ name: 'T', range: 'A1:A2', columns: [{ name: 'Кол' }] }] }], ...(locale ? { locale } : {}) })
     for (const name of ['Прод?ажи', 'Прод\\ажи']) expect(restructure(withTable(), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: true })
     expect(restructure(withTable(), { op: 'renameTable', table: 'T', name: '?Продажи' })).toMatchObject({ ok: false, code: 'table_name' })
-    const r = restructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name: 'ИСТИНА' })
-    expect(r.ok && r.book.sheets[0].cells.B1).toEqual({ formula: 'SUM(ИСТИНА[Кол])' })
-    expect(restructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name: 'TRUE' })).toMatchObject({ ok: false, code: 'table_name' })
+    for (const name of ['ИСТИНА', 'ложь', 'TRUE']) expect(restructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: false, code: 'table_name' })
+    expect(restructure(withTable(), { op: 'renameTable', table: 'T', name: 'ИСТИНА' })).toMatchObject({ ok: true })
     expect(toLocal('SUM(ИСТИНА[Кол])', ruRU)).toEqual({ ok: true, formula: 'СУММ(ИСТИНА[Кол])' })
   })
 
