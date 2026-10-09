@@ -10,7 +10,7 @@ import { compute, openSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { pack, unpack, unpackSlowly, type Sent } from '../src/worker/pack.js'
 import { BOOKS, chainBook, CLOCK } from './async-books.js'
-import { pool } from './fixtures/pool.js'
+import { inside, pool } from './fixtures/pool.js'
 
 const pools: { close(): Promise<void> }[] = []
 afterAll(() => Promise.all(pools.map((p) => p.close())))
@@ -69,6 +69,58 @@ describe('a book as text', () => {
     expect(await s.book()).toEqual(before)
     expect(await s.hash()).toBe(compute(before, { clock: CLOCK }).hash)
   }, 60_000)
+
+  // more cells than one chunk, so the book is written between turns; -0 sends it as objects once a chunk finds it
+  const large = (negZero: boolean): BookInput => {
+    const cells: BookInput['sheets'][number]['cells'] = Object.fromEntries(Array.from({ length: 16_385 }, (_, i) => [`A${i + 1}`, { value: i + 1 }]))
+    if (negZero) cells.A16385 = { value: -0 }
+    cells.B1 = { formula: "'S'!A2" }
+    cells.B2 = { formula: 'k*A3' }
+    return { names: [{ name: 'k', ref: '2' }], sheets: [{ name: 'S', cells }] }
+  }
+  // the caller renames the sheet and changes a name's formula while the book is written
+  const change = (book: BookInput) => {
+    book.sheets[0].name = 'Changed'
+    book.names![0].ref = '5'
+  }
+
+  describe.each(['closures', 'eval'] as const)('is taken at once in each form, %s', (execution) => {
+    it.each([['as text', false], ['as objects', true]] as const)('%s: openSession and compute', async (_, negZero) => {
+      const before = large(negZero)
+      const expected = compute(before, { clock: CLOCK, execution }).hash
+      const p = await pool({ threads: 1 })
+      pools.push(p)
+      const book = large(negZero)
+      const opening = p.openSession(book, { clock: CLOCK, execution })
+      const computing = p.compute(book, { clock: CLOCK, execution })
+      change(book)
+      const s = await opening
+      const r = await computing
+      expect([r.sheets[0].name, r.sheets[0].cells.B1.value, r.sheets[0].cells.B2.value, r.hash]).toEqual(['S', 2, 6, expected])
+      expect(await s.hash()).toBe(expected)
+      expect((await s.book()).sheets[0].name).toBe('S')
+    }, 60_000)
+
+    it('as objects: a session comes back as it was taken after its thread is lost and after it left a full thread', async () => {
+      const expected = compute(large(true), { clock: CLOCK, execution }).hash
+      const lost = await inside({ threads: 1 })
+      pools.push(lost.calc)
+      const book = large(true)
+      const opening = lost.calc.openSession(book, { clock: CLOCK, execution })
+      change(book)
+      const s = await opening
+      lost.crash(0)
+      expect(await s.hash()).toBe(expected)
+      const full = await pool({ threads: 1, maxSessionsPerThread: 1 })
+      pools.push(full)
+      const other = large(true)
+      const first = full.openSession(other, { clock: CLOCK, execution })
+      change(other)
+      const left = await first
+      await full.openSession(chainBook(2), { clock: CLOCK, execution })
+      expect(await left.hash()).toBe(expected)
+    }, 60_000)
+  })
 
   it('tasks keep their order while a large book is written', async () => {
     const p = await pool({ threads: 1 })
