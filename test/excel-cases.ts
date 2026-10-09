@@ -108,14 +108,10 @@ export const REASONS = {
     '`GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) give the quantile where Excel\'s iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom) and probabilities near 1 with shapes under 0.03; Excel\'s own `GAMMA.DIST` at the engine\'s answer gives the probability back.',
   binomInvTie:
     '`BINOM.INV` where alpha equals the probability of no success, (1 − p)^n, exactly: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they part on `BINOM.INV(3,0.25,0.421875)`, 0 in Excel and 1 here.',
-  lookupPastEnd: '`LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.',
   textDigits:
     'A number that Excel computes by another algorithm can differ from the engine\'s in the 15th significant digit, within the tests\' relative tolerance of 1e-9; turned into text (`&`, `TEXTJOIN`) the last digit then differs (`TEXTJOIN(";",FALSE,BESSELK(10,3))` is `2.72527006358477E-05` in Excel and `2.72527006358476E-05` here).',
-  sortbyOrders:
-    '`SORTBY` with an array or a range of several cells as a sort order is `#VALUE!`; Excel answers an array the size of the orders (the first sorted value, then blanks, or an error where a sort fails).',
   linestConstantColumn:
     '`LINEST` with a constant x variable besides the intercept: both give it coefficient 0 and the same fit, but Excel\'s statistics count it as a variable in some way the engine does not reproduce (`LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE)`: degrees of freedom 1 in Excel, 2 here, and the F statistic and the intercept\'s standard error differ).',
-  rowsOfIfs: '`ROWS` and `COLUMNS` of an `IFS` that answers an error: Excel counts 1 (`ROWS(IFS("x",1,TRUE,2))`), the engine answers the error.',
   lastBits:
     '`FTEST` of a sample with itself is 1 − 3·2^-53 in Excel and 1 − 2^-52 here: the last bits of a number Excel computes by another algorithm can differ, which shows only when the difference is magnified (`(1-FTEST(A1:A8,A1:A8))*2^52` is 1.5 in Excel, 1 here).',
   letFileName:
@@ -135,20 +131,6 @@ export const REASONS = {
  * the tests, so the list stays current.
  */
 export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engine: Val }>> = {
-  'areas:fn:union:AGGREGATE#3': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:AGGREGATE#3': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:AGGREGATE#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:AGGREGATE#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:AGGREGATE#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:AGGREGATE#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:union:SORTBY#1': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#1': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#2': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#2': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#4': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
-  'areas:fn:union:SORTBY#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'areas:fn:cube:SORTBY#5': { reason: 'sortbyOrders', engine: { t: 'e', v: 'REF' } },
   'findate:RATE#20': { reason: 'rateZeroRoot', engine: { t: 'n', v: 4.17387402722136e-11 } },
   'findate:RATE#23': { reason: 'rateZeroRoot', engine: { t: 'n', v: 2.1421887871288e-10 } },
   'findate:RATE#24': { reason: 'rateZeroRoot', engine: { t: 'n', v: 1.22749297268431e-10 } },
@@ -181,22 +163,15 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat:GAMMAINV#16': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990052413.58303 } },
   'stat:GAMMAINV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
   'stat:BINOM.INV#30': { reason: 'binomInvTie', engine: { t: 'n', v: 1 } },
-  'fuzz:1#697': { reason: 'lookupPastEnd', engine: { t: 'e', v: 'REF' } },
   'fuzz:1#234': { reason: 'textDigits', engine: { t: 's', v: '2.72527006358476E-05' } },
   'fuzz:1#403': { reason: 'textDigits', engine: { t: 's', v: '4.18382560777941E-23' } },
   'fuzz:1#947': { reason: 'textDigits', engine: { t: 's', v: '0.00803735952120296' } },
   'fuzz:1#1327': { reason: 'textDigits', engine: { t: 's', v: '0.1963093102686' } },
-  'fuzz:1#185': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'fuzz:1#232': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'fuzz:1#426': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
   'fuzz-rules:LINEST#41': { reason: 'linestConstantColumn', engine: { t: 'n', v: 0.474341649025257 } },
   'fuzz-rules:LINEST#42': { reason: 'linestConstantColumn', engine: { t: 'n', v: 56.3333333333333 } },
   'fuzz-rules:LINEST#43': { reason: 'linestConstantColumn', engine: { t: 'n', v: 2 } },
   'fuzz:1#1263': { reason: 'excelContext', engine: { t: 'e', v: 'NUM' } },
   'fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: '2048.47532711546' } },
-  'fuzz:2#411': { reason: 'sortbyOrders', engine: { t: 'e', v: 'NUM' } },
-  'fuzz:2#1577': { reason: 'sortbyOrders', engine: { t: 'e', v: 'VALUE' } },
-  'fuzz:2#165': { reason: 'rowsOfIfs', engine: { t: 'e', v: 'VALUE' } },
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
   'let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },

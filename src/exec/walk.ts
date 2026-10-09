@@ -239,6 +239,24 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     info.refs.push(...boxes)
     if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
+  /**
+   * LOOKUP's result row, column or cell (a row) widened to the length of a longer lookup range or array constant, or to
+   * the sheet's end where the lookup array's length is known only once computed: Excel reads on past the result's end.
+   */
+  const lookupResult = (look: Ast | undefined, res: Ast | undefined): T | undefined => {
+    if (!look || res?.k !== 'ref' || res.ref.spill) return undefined
+    const x = rect(res)
+    const [h, w] = [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
+    if (h > 1 && w > 1) return undefined
+    const size = look.k === 'ref' && !look.ref.spill ? rect(look) : undefined
+    const [rows, cols] = size ? [size.r2 - size.r1 + 1, size.c2 - size.c1 + 1] : look.k === 'arr' ? [look.rows.length, look.rows[0].length] : [1, 1]
+    // a wide lookup range is read along its first row, any other along its first column
+    const n = size || look.k === 'arr' || !many(look) ? Math.max(rows, cols) : Infinity
+    if (n <= h * w) return undefined
+    const g = new Rng(ctx.sheet(res.sheet), x.r1, x.c1, h > 1 ? Math.min(x.r1 + n, MAX_ROWS) - 1 : x.r2, h > 1 ? x.c2 : Math.min(x.c1 + n, MAX_COLS) - 1)
+    info.refs.push(g)
+    return b.range(g, false)
+  }
   // an argument left out: a value, or not given
   const omitted = (v: V | undefined) => (v === undefined ? b.absent() : b.value(v))
   // a value that may be a reference, read as a value where one value goes
@@ -328,8 +346,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         }
         if (spec.volatile) info.volatile = true
         if (n.name === 'SUBTOTAL' || n.name === 'AGGREGATE') info.nested = true
+        const past = n.name === 'LOOKUP' && n.args.length === 3 ? lookupResult(n.args[1], n.args[2]) : undefined
         // a reference across sheets is passed to any argument, which takes it or answers its error
-        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : go(a, spec.range(i) || a.k === 'ref3d')))
+        const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, spec.range(i) || a.k === 'ref3d')))
         let code: T
         if (spec.lazy) {
           // lifted when a lifting argument is an array

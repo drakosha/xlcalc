@@ -35,7 +35,7 @@ npx tsx bench/windows/run.ts struct rows
 npx tsx bench/windows/run.ts xlsx filters
 ```
 
-A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`.
+A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`. `XLWIN_CODEPAGE=any` sets only the interface language and the regional format and leaves the system locale as it is, with no restart, for a set that reads no code page (no `CHAR`, `CODE`); the answers' `meta` names the code page they were computed with.
 
 Changing the system locale needs a restart, which the harness does itself: it waits until the machine is up from a new boot, ten minutes at most. Run all of one locale before the other, `all en` and then `all ru`, which also leaves the machine in its own locale.
 
@@ -89,6 +89,8 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
 
+The sets `known-held` and `legacy/ifs-text` (45 formulas) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all 45 answers are the Mac's.
+
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 
 - Its regional data in ru-RU: Latin sorts before Cyrillic (`"a"<"а"` is TRUE), month names have a capital (`Январь`) and short ones three letters (`фев`, `ноя`), the short and long time no leading zero; built-in formats by number take Windows's own codes (en-US 14 is `m/d/yyyy`). The engine follows Windows, but for the long date `[$-F800]`, which has no weekday on Windows and keeps the Mac's here.
@@ -96,4 +98,4 @@ What Excel for Windows does otherwise than Excel for Mac, by reason, and which o
 - Trigonometry at its poles and complex functions of large arguments from the 13th digit on (`TAN(PI()/2)`), `WEEKNUM` with return type 22, `WEIBULL` with a scale of 1E-300. The engine follows the Mac.
 - Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels. The engine lays cells out as the Mac does.
 
-Both Excels agree and the engine does not in 57 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
+Both Excels agree and the engine does not in 36 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.

@@ -4,6 +4,7 @@
  * engine's own (lazy: a branch not taken is not computed).
  */
 import { directError, eachValue, type Arg, type Cx, type FnDef, type Segment } from '../args.js'
+import { arr } from '../arrays/value.js'
 import type { Rules } from '../locale/rules.js'
 import { Areas, E, isErr, sameType, type CErr, type V } from '../values.js'
 import { NEWER_MAX_ARGS } from './common.js'
@@ -71,10 +72,12 @@ export const functions: Record<string, FnDef> = {
     args: 'a P',
     rep: 2,
     cx: true,
+    array: true,
     fn: (cx: Cx, rest: V[]) => {
       for (let i = 0; i < rest.length; i += 2) {
         const c = cx.rules.toBool(rest[i])
-        if (isErr(c)) return c
+        // a condition of text that is no boolean: Excel's #VALUE! is an array of one there (ROWS counts 1), an error given as one is the answer itself
+        if (isErr(c)) return isErr(rest[i]) ? c : arr(1, 1, [c])
         if (c) return rest[i + 1]
       }
       return E.NA

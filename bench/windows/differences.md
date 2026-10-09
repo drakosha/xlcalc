@@ -10,7 +10,7 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | ru-RU | measurement | 5260 | 5252 | 5256 | 5248 | 0 |
 | en-US | probes | 959 | 959 | 959 | 959 | 0 |
 | en-US | areas-each | 52 | 52 | 52 | 52 | 0 |
-| en-US | areas | 1137 | 1137 | 1123 | 1123 | 0 |
+| en-US | areas | 1137 | 1137 | 1137 | 1137 | 0 |
 | en-US | arity | 62 | 62 | 62 | 62 | 0 |
 | en-US | arrays | 2428 | 2428 | 2428 | 2428 | 0 |
 | en-US | char-code | 305 | 298 | 305 | 298 | 0 |
@@ -25,7 +25,7 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | findate | 1615 | 1614 | 1611 | 1611 | 0 |
 | en-US | format-scale | 14 | 14 | 14 | 14 | 0 |
 | en-US | fuzz-rules | 302 | 302 | 299 | 299 | 0 |
-| en-US | fuzz | 4000 | 3999 | 3988 | 3987 | 0 |
+| en-US | fuzz | 4000 | 3999 | 3995 | 3994 | 0 |
 | en-US | intersect | 44 | 44 | 44 | 44 | 0 |
 | en-US | lead-spaces | 91 | 91 | 91 | 91 | 0 |
 | en-US | let-held | 33 | 33 | 33 | 33 | 0 |
@@ -264,38 +264,17 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | ru-RU | measurement | CHISQ.INV#14 | `_xlfn.CHISQ.INV(0.93,10000000000)` | #NUM | 10000208709.154 | gammaInvConvergence |
 | ru-RU | measurement | CHISQ.INV.RT#15 | `_xlfn.CHISQ.INV.RT(0.050001,10000000000)` | #NUM | 10000232617.1965 | gammaInvConvergence |
 | ru-RU | measurement | GAMMAINV#8 | `GAMMAINV(0.068094,10000000000,2)` | #NUM | 19999701973.2484 | gammaInvConvergence |
-| en-US | areas | fn:union:AGGREGATE#3 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,(D!B1:B3,D!C1:C3),D!AW1:AW4,D!B7)` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:AGGREGATE#3 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,Jan:Mar!A1:A3,D!AW1:AW4,D!B7)` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:union:AGGREGATE#4 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,D!C2,(D!B1:B3,D!C1:C3),D!B7)` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:AGGREGATE#4 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,D!C2,Jan:Mar!A1:A3,D!B7)` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:union:AGGREGATE#5 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,D!C2,D!AW1:AW4,(D!B1:B3,D!C1:C3))` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:AGGREGATE#5 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,D!C2,D!AW1:AW4,Jan:Mar!A1:A3)` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:union:SORTBY#1 | `_xlfn.SORTBY((D!B1:B3,D!C1:C3),D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),RIGHT("Sale Price",5))` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:SORTBY#1 | `_xlfn.SORTBY(Jan:Mar!A1:A3,D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),RIGHT("Sale Price",5))` | #SPILL | #REF | sortbyOrders |
-| en-US | areas | fn:union:SORTBY#2 | `_xlfn.SORTBY(D!M1:M6,(D!B1:B3,D!C1:C3),D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),RIGHT("Sale Price",5))` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:SORTBY#2 | `_xlfn.SORTBY(D!M1:M6,Jan:Mar!A1:A3,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),RIGHT("Sale Price",5))` | #SPILL | #REF | sortbyOrders |
-| en-US | areas | fn:union:SORTBY#4 | `_xlfn.SORTBY(D!M1:M6,D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),(D!B1:B3,D!C1:C3),RIGHT("Sale Price",5))` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:SORTBY#4 | `_xlfn.SORTBY(D!M1:M6,D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),Jan:Mar!A1:A3,RIGHT("Sale Price",5))` | #SPILL | #REF | sortbyOrders |
-| en-US | areas | fn:union:SORTBY#5 | `_xlfn.SORTBY(D!M1:M6,D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),(D!B1:B3,D!C1:C3))` | #SPILL | #VALUE | sortbyOrders |
-| en-US | areas | fn:cube:SORTBY#5 | `_xlfn.SORTBY(D!M1:M6,D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),Jan:Mar!A1:A3)` | #SPILL | #REF | sortbyOrders |
 | en-US | findate | RATE#20 | `RATE(10,-100,1000,0,1)` | -1.487997633973174e-9 | 4.17387402722136e-11 | rateZeroRoot |
 | en-US | findate | RATE#23 | `RATE(5,-200,1000,0,1)` | -1.6302285183735498e-9 | 2.1421887871288e-10 | rateZeroRoot |
 | en-US | findate | RATE#24 | `RATE(10,-100,1000,0,0,0.05)` | #NUM | 1.22749297268431e-10 | rateZeroRoot |
 | en-US | fuzz-rules | LINEST#41 | `INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),2,4)` | 0.10319961748964883 | 0.474341649025257 | linestConstantColumn |
 | en-US | fuzz-rules | LINEST#42 | `INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),4,1)` | 615.6878650646264 | 56.3333333333333 | linestConstantColumn |
 | en-US | fuzz-rules | LINEST#43 | `INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),4,2)` | 1 | 2 | linestConstantColumn |
-| en-US | fuzz | 1#185 | `_xlfn.AGGREGATE(_xlfn.SORTBY(D!P1:Q2,{0.5;-1},-1,D!P4:R5,D!E1:E8)>=59,4,D!C2,D!AW1:AW4,D!B7)` | #SPILL | #VALUE | sortbyOrders |
-| en-US | fuzz | 1#232 | `_xlfn.TEXTJOIN(";",FALSE,_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!M1:M6,D!N1:N6,-1,D!U1:Y7,D!E1:E8),0))` | "#VALUE!, #VALUE!, #DIV/0!, #VALUE!, #VALUE!, #VALUE!, #VALUE!, #VALUE!" | #VALUE | sortbyOrders |
 | en-US | fuzz | 1#234 | `_xlfn.TEXTJOIN(";",FALSE,BESSELK(10,3))` | "2.72527006358477E-05" | "2.72527006358476E-05" | textDigits |
 | en-US | fuzz | 1#403 | `_xlfn.TEXTJOIN(";",FALSE,_xlfn.ERFC.PRECISE(7))` | "4.18382560777942E-23" | "4.18382560777941E-23" | textDigits |
-| en-US | fuzz | 1#426 | `_xlfn.SORTBY({"x";""},D!N1:N6,D!C1:C8)^IMCONJUGATE("3+4i")` | #SPILL | #VALUE | sortbyOrders |
-| en-US | fuzz | 1#697 | `INDEX(LOOKUP(4.19,D!L1:L6,D!B2:B3),1,1)` | 16 | #REF | lookupPastEnd |
 | en-US | fuzz | 1#947 | `_xlfn.TEXTJOIN(";",FALSE,RATE(48,-200,8000,4,D!A15,0.5))` | "0.00803735952148241" | "0.00803735952120296" | textDigits |
 | en-US | fuzz | 1#1327 | `_xlfn.TEXTJOIN(";",FALSE,IRR(D!I1:I5))` | "0.196309310268599" | "0.1963093102686" | textDigits |
-| en-US | fuzz | 2#165 | `ROWS(_xlfn.IFS("x y",D!A15,TRUE,2))` | 1 | #VALUE | rowsOfIfs |
-| en-US | fuzz | 2#411 | `_xlfn.SORTBY(D!M1:M6,D!N1:N6,D!F1:F7>XIRR({2,"a";TRUE,#N/A}+"",D!AU1:AU5),FACT(5),RIGHT("Sale Price",5))` | #SPILL | #NUM | sortbyOrders |
 | en-US | fuzz | 2#472 | `_xlfn.TEXTJOIN(";",FALSE,FV(0.005,10,-200,7,TRUE))` | "2048.47532711544" | "2048.47532711546" | textDigits |
-| en-US | fuzz | 2#1577 | `_xlfn.SORTBY(SLN(30000,1E+3," 2 "),D!N1:N6,D!H1:H7,{1,2,3},D!P1:Q2)` | #SPILL | #VALUE | sortbyOrders |
 | en-US | let | let:file#1 | `_xlfn.LET(_xlpm.A1,1,_xlpm.A1)` | 1 | #ERROR | letFileName |
 | en-US | let | let:file#5 | `_xlfn.LET(_xlpm.TRUE,1,_xlpm.TRUE)` | 1 | #ERROR | letFileName |
 | en-US | near-integer | literal#7 | `(1-FTEST(D!C1:C8,D!C1:C8))*2^52` | 1.5 | 1 | lastBits |

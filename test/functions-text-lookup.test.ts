@@ -1,6 +1,6 @@
 /**
  * Lookup and database functions beyond the Excel case set: the formula's own cell (ROW, COLUMN), sessions,
- * large whole columns, INDEX answering a reference, and the documented difference of LOOKUP past its result range.
+ * large whole columns, INDEX answering a reference, and LOOKUP past the end of its result range.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, openSession, type CellInput, type CellValue } from '../src/index.js'
@@ -24,13 +24,27 @@ describe('lookup and database functions beyond the Excel cases', () => {
     expect([v.D1, v.D2, v.D3, v.D4, v.D5]).toEqual([6, 4, 4, 2, 4])
   })
 
-  it('LOOKUP past the end of a shorter result range is #REF! (Excel reads on)', () => {
-    const cells: Record<string, CellInput> = { E1: { formula: 'LOOKUP(3,A1:A3,B1:B2)' }, E2: { formula: 'LOOKUP(2,A1:A3,B1:B2)' } }
+  it('LOOKUP reads on past the end of a shorter result row, column or cell, after a formula there and again when it changes', () => {
+    const cells: Record<string, CellInput> = {
+      E1: { formula: 'LOOKUP(3,A1:A3,B1:B2)' },
+      E2: { formula: 'LOOKUP(2,A1:A3,B1:B2)' },
+      E3: { formula: 'LOOKUP(3,{1,2,3},C6:D6)' },
+      // one cell reads on as a row; a computed lookup array reads on as far as the sheet goes, past its end a blank
+      E4: { formula: 'LOOKUP(3,A1:A3,G1)' },
+      E5: { formula: 'LOOKUP(3,A1:A3+0,B1:B2)' },
+      E7: { formula: 'LOOKUP(3,A1:A3,B1048575:B1048576)' },
+    }
     for (let r = 1; r <= 3; r++) cells[`A${r}`] = { value: r }
-    cells.B1 = { value: 'x' }
-    cells.B2 = { value: 'y' }
+    Object.assign(cells, { B1: { value: 'x' }, B2: { value: 'y' }, B3: { formula: 'UPPER("z")' }, C6: { value: 'c' }, D6: { value: 'd' }, E6: { value: 'e' }, I1: { formula: 'LOWER("I")' } })
     const v = sheet(cells)
-    expect([v.E1, v.E2]).toEqual([err('REF'), 'y'])
+    expect([v.E1, v.E2, v.E3, v.E4, v.E5, v.E7]).toEqual(['Z', 'y', 'e', 'i', 'Z', 0])
+    const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
+    const changed = s.setCells([
+      { sheet: 'S', cell: 'B3', input: { value: 'w' } },
+      { sheet: 'S', cell: 'I1', input: { value: 'v' } },
+    ])
+    expect(Object.fromEntries(changed.filter((c) => /^E\d$/.test(c.cell)).map((c) => [c.cell, c.value]))).toEqual({ E1: 'w', E4: 'v', E5: 'w' })
+    s.close()
   })
 
   it('approximate lookups over whole columns of 200,000 sorted numbers, exact ones too', () => {
