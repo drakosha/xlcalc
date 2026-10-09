@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.2 (2026-10-09)
+
+Internal release; not published to npm. Caches of ranges, aggregates and exact lookups, stable statistical moments, and a fix of cached ranges after a sheet grew.
+
+Fixed:
+
+- A session read a cached range with the shape of the sheet at the time it was cached: after a write outside the range grew the sheet (`Data!E1000` beside a formula over `Data!A1:D256`), a formula over the range computed again gave a wrong value (1 where 3 was right), and a whole-column spill freed of an obstruction gave `#N/A` in sums over it. A cached range now keeps the shape it was read with.
+
+Changed:
+
+- Variance, standard deviation, covariance, correlation, regression and the database statistics use compensated sums and a corrected two-pass calculation, and exact binary sums where doubles lose the scale (a small spread around a large mean, values near 1e-200 or near the largest double, a small intercept or residual after cancellation). Ordinary data give the same values; such data give the mathematically exact answer, which can differ from Excel's in the last digits. Excel has not computed these cases; the stored Excel answers all still match ([docs/statistics.md](docs/statistics.md)).
+- Faster sessions over large ranges: cached ranges and criteria indexes are found by sheet and column when an edit drops them; `SUM`, `COUNT`, `MIN` and `MAX` of one range keep their answers until the range changes; a repeated exact lookup in an unchanged range uses an index built after enough scans ([docs/cache.md](docs/cache.md)). On the synthetic book an edit of a criterion cell takes 0.77 to 0.80 ms at p95 instead of 0.98 to 1.1 (3,400 rows); a cold compute and `hash()` take what they took, and every hash is the same.
+
 ## 0.6.1 (2026-10-09)
 
 Internal release; not published to npm. Defined names in any script.
