@@ -4,7 +4,7 @@
  */
 import type { EngineState, Formula } from './engine.js'
 import { spend } from './exec/budget.js'
-import { bySheet } from './exec/walk.js'
+import { bySheet, pastEnd } from './exec/walk.js'
 import type { Area } from './spill/state.js'
 import { Rng } from './values.js'
 import { AreaIndex } from './area-index.js'
@@ -31,7 +31,7 @@ export function rebuildGraph(state: EngineState) {
     const i = col ? lowerBound(col, r, rowOf) : -1
     return col && col[i]?.r === r ? col[i].id : undefined
   }
-  // a range operator reaching a spilled array reads as far as the array claims, around its other ends
+  // a range operator reaching a spilled array reads as far as the array claims, around its other ends; LOOKUP past it
   const spanned = (f: Formula): readonly Rng[] => {
     if (!f.spans) return f.refs
     const more: Rng[] = []
@@ -42,7 +42,8 @@ export function rebuildGraph(state: EngineState) {
         const x = id === undefined ? undefined : state.spills.claims.get(id)
         if (x) reached.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
       }
-      if (reached.length > span.boxes.length) more.push(...bySheet(reached).values())
+      if (span.past) more.push(...reached.flatMap((g) => pastEnd(g, span.past!)))
+      else if (reached.length > span.boxes.length) more.push(...bySheet(reached).values())
     }
     return more.length ? [...f.refs, ...more] : f.refs
   }

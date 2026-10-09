@@ -98,7 +98,15 @@ export interface Span {
   boxes: Rng[]
   /** The cells of its spill references. */
   anchors: Rng[]
+  /** A spill LOOKUP's result may read on past: the arrays' cells and `past` more down and to the right (`pastEnd`). */
+  past?: number
 }
+
+/** The cells LOOKUP may read past what a rectangle answers, `n` long: on down its columns and right along its rows. */
+export const pastEnd = (g: Rng, n: number): Rng[] => [
+  new Rng(g.s, g.r1, g.c1, Math.min(g.r2 + n, MAX_ROWS) - 1, g.c2),
+  new Rng(g.s, g.r1, g.c1, g.r2, Math.min(g.c2 + n, MAX_COLS) - 1),
+]
 
 /** What a formula reads and how it behaves, the same in both modes. */
 export interface FormulaInfo {
@@ -242,17 +250,26 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   /**
    * LOOKUP's result row, column or cell (a row) widened to the length of a longer lookup range or array constant, or to
    * the sheet's end where the lookup array's length is known only once computed: Excel reads on past the result's end.
+   * A result a spill, a function or an operator answers is read on as it comes (`tables.ts`): what it can answer,
+   * widened so, is among the references, a spill's as far as it spills (`graph.ts`).
    */
   const lookupResult = (look: Ast | undefined, res: Ast | undefined): T | undefined => {
-    if (!look || res?.k !== 'ref' || res.ref.spill) return undefined
-    const x = rect(res)
-    const [h, w] = [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
-    if (h > 1 && w > 1) return undefined
+    if (!look || !res) return undefined
     const size = look.k === 'ref' && !look.ref.spill ? rect(look) : undefined
     const [rows, cols] = size ? [size.r2 - size.r1 + 1, size.c2 - size.c1 + 1] : look.k === 'arr' ? [look.rows.length, look.rows[0].length] : [1, 1]
     // a wide lookup range is read along its first row, any other along its first column
     const n = size || look.k === 'arr' || !many(look) ? Math.max(rows, cols) : Infinity
-    if (n <= h * w) return undefined
+    if (res.k !== 'ref' || res.ref.spill) {
+      const reached: Rng[] = []
+      const anchors: Rng[] = []
+      reach(res, reached, anchors)
+      for (const g of reached) info.refs.push(...pastEnd(g, n))
+      if (anchors.length) (info.spans ??= []).push({ boxes: [], anchors, past: n })
+      return undefined
+    }
+    const x = rect(res)
+    const [h, w] = [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
+    if ((h > 1 && w > 1) || n <= h * w) return undefined
     const g = new Rng(ctx.sheet(res.sheet), x.r1, x.c1, h > 1 ? Math.min(x.r1 + n, MAX_ROWS) - 1 : x.r2, h > 1 ? x.c2 : Math.min(x.c1 + n, MAX_COLS) - 1)
     info.refs.push(g)
     return b.range(g, false)

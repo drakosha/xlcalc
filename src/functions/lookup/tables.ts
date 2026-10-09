@@ -84,10 +84,9 @@ function match(cx: Cx, key: V, given: Arg, type: V | Rng = 1): V {
 
 /**
  * LOOKUP: array form reads the last row (column) of the array, vector form the result at the same position.
- * Excel reads on past the end of a shorter result range: the walk widens a result row, column or cell to the lookup
- * range's length or to the sheet's end (`exec/walk.ts`), so those cells are among the formula's references; past the
- * sheet's end a cell is blank, past what the walk cannot widen (a reference a function answers) it is #REF!. Past the
- * end of a value or an array it is #N/A.
+ * Excel reads on past the end of a shorter result reference, whatever answers it: a column down, a row or a cell to the
+ * right, a blank past the sheet's end; the walk counts those cells among the formula's references (`exec/walk.ts`).
+ * Past the end of a value or an array it is #N/A.
  */
 function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   const k = keyOf(key)
@@ -99,7 +98,9 @@ function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   const g = cx.grid(result)
   if (g.rows > 1 && g.cols > 1) return E.NA
   if (pos < g.rows * g.cols) return gridAt(g, pos)
-  return result instanceof Rng ? (result.r2 === MAX_ROWS - 1 || result.c2 === MAX_COLS - 1 ? null : E.REF) : E.NA
+  if (!(result instanceof Rng)) return E.NA
+  const [r, c] = g.rows > 1 ? [result.r1 + pos, result.c1] : [result.r1, result.c1 + pos]
+  return r < MAX_ROWS && c < MAX_COLS ? cx.scalar(new Rng(result.s, r, c, r, c)) : null
 }
 
 /** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */

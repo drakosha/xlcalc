@@ -47,6 +47,33 @@ describe('lookup and database functions beyond the Excel cases', () => {
     s.close()
   })
 
+  it('LOOKUP reads on past a reference that a function or a spill answers, after formulas there and again when they or the spill change', () => {
+    const cells: Record<string, CellInput> = {
+      E1: { formula: 'LOOKUP(3,A1:A3,IF(TRUE,B1:B2))' },
+      E2: { formula: 'LOOKUP(3,A1:A3,CHOOSE(1,B1:B2))' },
+      E3: { formula: 'LOOKUP(3,A1:A3+0,(B1:B2))' },
+      // one cell reads on as a row
+      E4: { formula: 'LOOKUP(2,A1:A3,INDEX(B1:B2,1))' },
+      E6: { formula: 'LOOKUP(3,A1:A3,G1#)' },
+      E7: { formula: 'LOOKUP(3,A1:A3,TAKE(G1#,-1))' },
+      G1: { formula: 'SEQUENCE(K1)' },
+    }
+    for (let r = 1; r <= 3; r++) cells[`A${r}`] = { value: r }
+    Object.assign(cells, { B1: { value: 'x' }, B2: { value: 'y' }, B3: { formula: 'UPPER("z")' }, C1: { formula: 'LOWER("C")' }, G3: { formula: 'UPPER("g")' }, I1: { value: 'i1' }, I2: { formula: 'LOWER("I")' }, K1: { value: 2 } })
+    const v = sheet(cells)
+    expect([v.E1, v.E2, v.E3, v.E4, v.E6, v.E7]).toEqual(['Z', 'Z', 'Z', 'c', 'G', 'i'])
+    const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock })
+    const edit = (cell: string, value: string | number) =>
+      Object.fromEntries(s.setCells([{ sheet: 'S', cell, input: { value } }]).filter((c) => /^E\d$/.test(c.cell)).map((c) => [c.cell, c.value]))
+    expect(edit('B3', 'w')).toEqual({ E1: 'w', E2: 'w', E3: 'w' })
+    expect(edit('G3', 'h')).toEqual({ E6: 'h' })
+    expect(edit('I2', 'j')).toEqual({ E7: 'j' })
+    // an array of one value does not spill: G1# is the cell G1, read on along row 1, and so is TAKE's last cell
+    expect(edit('K1', 1)).toEqual({ E6: 'i1', E7: 'i1' })
+    expect(s.hash()).toBe(compute(s.book(), { clock }).hash)
+    s.close()
+  })
+
   it('approximate lookups over whole columns of 200,000 sorted numbers, exact ones too', () => {
     const cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 200_000; r++) {
