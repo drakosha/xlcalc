@@ -6,7 +6,7 @@
 import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
-import { LOCALES } from './locale/registry.js'
+import { LOCALE_FILES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
@@ -340,7 +340,7 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
 
 /** A tag of the package's locales. */
 function checkLocale(v: unknown, path: string) {
-  if (!LOCALES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALES.keys()].join(', ')})`)
+  if (!LOCALE_FILES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALE_FILES.keys()].join(', ')})`)
 }
 
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {

@@ -7,13 +7,17 @@ import type { ValidateContext, ValidateResult } from '../contract.js'
 import { checkString, checkValidateContext, InputError } from '../input.js'
 import { FormulaError, parse, sheetKey, tokenize, validate, type Tok } from '../syntax.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
+import { EN_US } from '../locales/en-US.js'
+import { RU_RU } from '../locales/ru-RU.js'
 import { ERROR_LITERALS } from './lex.js'
 import { sides, translate, type Sides } from './translate.js'
 import type { Locale, Translation } from './types.js'
 
-export { enUS } from './en-US.js'
-export { ruRU } from './ru-RU.js'
 export type { Locale, Translation } from './types.js'
+
+/** en-US's and ru-RU's formula text, exported by name. */
+export const enUS: Locale = EN_US.text
+export const ruRU: Locale = RU_RU.text
 
 const WORD = /^[\p{L}_][\p{L}\p{N}_.]*$/u
 // characters that start or end other pieces of a formula, or that a name holds (`?`); `:` and `\` only inside array

@@ -1,6 +1,6 @@
 /**
- * CHAR and CODE by the Windows code page of the book's locale (`Rules.codePage`): Windows-1252 in en-US, Windows-1251 in
- * ru-RU (`src/locale/rules/ru-RU.ts`), as Excel for Windows computes them. Excel for Mac answers codes 128–255 by Mac Roman
+ * CHAR and CODE by the Windows code page of the book's locale (`Rules.codePage`, from its locale file): Windows-1252 in
+ * en-US, Windows-1251 in ru-RU, as Excel for Windows computes them. Excel for Mac answers codes 128–255 by Mac Roman
  * and Mac Cyrillic instead, and 95 (`_`) for a character outside its page where Windows answers 63 (`?`); codes 1–127 and
  * the argument edges are as both compute them (`bench/coverage/sets/char-code.ts`). Undefined bytes of a page are the C1
  * controls of the same value, as Windows converts them (`test/codepage.test.ts` checks the pages against the published ones).

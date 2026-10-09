@@ -5,8 +5,10 @@
  * (`bench/locale/snapshot.ts`). The locale data equals what that text gives (`bench/locale/derive.ts`, a
  * reading independent of the library's lexer), and translation reproduces Excel's text both ways.
  */
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { derive, loadSnapshot } from '../bench/locale/derive.js'
+import { formulaText, withPart } from '../bench/locale/generate.js'
 import { ruRU, toInvariant, toLocal } from '../src/index.js'
 
 const snap = loadSnapshot('ru-RU')
@@ -45,6 +47,11 @@ describe('ru-RU locale data against Excel', () => {
     expect(d.unknown).toEqual(['ENCODEURL', 'FILTERXML', 'REGEXEXTRACT', 'REGEXREPLACE', 'REGEXTEST', 'WEBSERVICE'])
     expect(d.dropped).toEqual(['CALL', 'REGISTER.ID'])
     expect(snap.rejected).toEqual(['#SPILL!', '#CALC!', '#FIELD!', '#BLOCKED!', '#CONNECT!', '#BUSY!', '#UNKNOWN!', '#PYTHON!'].map((e) => `err:${e}`))
+  })
+
+  it('the locale file holds what bench/locale/generate.ts writes between its marks', () => {
+    const source = readFileSync(new URL('../src/locales/ru-RU.ts', import.meta.url), 'utf8')
+    expect(withPart(source, formulaText(d, snap.meta.excel))).toBe(source)
   })
 
   it('no Russian name is the English name of another function (English names are read in Russian text too)', () => {

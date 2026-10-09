@@ -12,6 +12,7 @@ import type { ErrorCode } from '../../contract.js'
 import { colorNames } from '../../numfmt/palette.js'
 import { builtinCodes, generalFormat, type Codes, type Dialect, type Names, type Style } from '../../numfmt.js'
 import { ERROR_TEXT } from '../../syntax.js'
+import type { Locale } from '../types.js'
 import type { RegionalData } from './data.js'
 
 /** A section without its quoted text and escaped characters. */
@@ -42,8 +43,8 @@ function regionalCodes(data: RegionalData): Codes {
 }
 
 /** TEXT's dialect of a locale, and the style a cell's display writes with (its date separator the locale's). */
-export function formatDialects(data: RegionalData, number: (text: string) => number | null, names: (lcid: string) => Names | undefined): { text: Dialect; cell: Style } {
-  const { decimal, locale } = data
+export function formatDialects(locale: Locale, data: RegionalData, number: (text: string) => number | null, names: (lcid: string) => Names | undefined): { text: Dialect; cell: Style } {
+  const { decimal } = data
   const style: Style = {
     decimal,
     group: data.group,

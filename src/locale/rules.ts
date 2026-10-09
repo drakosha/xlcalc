@@ -11,14 +11,14 @@ import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders }
 import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
-import { enUS } from './en-US.js'
+import { EN_US } from '../locales/en-US.js'
+import { LOCALE_FILES } from './registry.js'
 import type { RegionalData, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
-import { RU_RU } from './rules/ru-RU.js'
 import type { Locale } from './types.js'
 
-/** The data of the locales other than en-US, by tag (one line per locale of `LOCALES`). */
-export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([['ru-RU', RU_RU]])
+/** The rules of computation of the locales whose file has them (all but en-US), by tag. */
+export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([...LOCALE_FILES].flatMap(([tag, f]) => (f.regional ? [[tag, f.regional] as const] : [])))
 
 export interface Rules extends CritRules {
   /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
@@ -91,11 +91,11 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
   return {
     epoch,
     ...EN_CRIT,
-    ...coercions(number, enUS.booleans, generalText),
+    ...coercions(number, EN_US.text.booleans, generalText),
     clock,
     critNumber: argument,
     cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
-    locale: enUS,
+    locale: EN_US.text,
     decimal: '.',
     group: ',',
     currency: { symbol: '$', before: true, space: '', negative: '()' },
@@ -127,6 +127,6 @@ export function displayRules(tag: string | undefined, epoch = 0): Rules {
  * `epoch` of the 1900 one, reading `clock` for dates without a year.
  */
 export function rulesOf(tag: string | undefined, clock: RulesClock, epoch = 0): Rules {
-  const data = tag === undefined ? undefined : REGIONAL.get(tag)
-  return data ? regionalRules(data, clock, namesOf, epoch) : englishRules(clock, epoch)
+  const file = tag === undefined ? undefined : LOCALE_FILES.get(tag)
+  return file?.regional ? regionalRules(file.text, file.regional, clock, namesOf, epoch) : englishRules(clock, epoch)
 }

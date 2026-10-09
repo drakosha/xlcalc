@@ -1,14 +1,11 @@
 /**
- * What a locale other than en-US gives its rules of computation (`regional.ts`): the formula-text locale for
- * TRUE, FALSE and error texts, number separators, the currency format, month and day names, TEXT's format
- * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock
- * that completes a date written without a year, whose reads make a formula depend on the clock.
+ * What a locale other than en-US gives its rules of computation (`regional.ts`), beside its formula text for TRUE,
+ * FALSE and error texts (`LocaleFile`): number separators, the currency format, month and day names, TEXT's format
+ * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock that
+ * completes a date written without a year, whose reads make a formula depend on the clock.
  */
-import type { Locale } from '../types.js'
 
 export interface RegionalData {
-  /** The formula-text locale: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
-  readonly locale: Locale
   /** The decimal separator of numbers in text, and the group separator (a plain space in ru-RU). */
   readonly decimal: string
   readonly group: string
