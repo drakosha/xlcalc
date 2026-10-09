@@ -5,10 +5,15 @@
  * completes a date written without a year, whose reads make a formula depend on the clock.
  */
 
+/** The order of day, month and year in date text (`dates.ts`). */
+export type DateOrder = 'dmy' | 'mdy' | 'ymd'
+
 export interface RegionalData {
   /** The decimal separator of numbers in text, and the group separator (a plain space in ru-RU). */
   readonly decimal: string
   readonly group: string
+  /** The order of day, month and year in date text of numbers: `dmy` (`31.01.2025`), `mdy` (`1/31/2025`) or `ymd` (`2025/1/31`). */
+  readonly dateOrder: DateOrder
   /** DOLLAR's and VALUE's currency: its symbol after the amount, a space between, a negative amount with a minus. */
   readonly currency: { readonly symbol: string; readonly before: boolean; readonly space: string; readonly negative: '()' | '-' }
   /** Month names in the nominative as TEXT writes them (`MMMM`), short ones (`MMM`); date text reads a prefix of a full name. */

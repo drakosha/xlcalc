@@ -13,13 +13,13 @@ import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
 import type { Locale } from '../types.js'
 import type { RegionalData, RulesClock } from './data.js'
-import { dmyDates } from './dates.js'
+import { regionalDates } from './dates.js'
 import { formatDialects } from './format.js'
 import { numberReader } from './numbers.js'
 
 export function regionalRules(locale: Locale, data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined, epoch = 0): Rules {
   const { decimal, group, currency } = data
-  const dates = inSystem({ date: dmyDates(data, clock), decimal }, epoch)
+  const dates = inSystem({ date: regionalDates(data, clock), decimal }, epoch)
   const { value: valueText, argument } = textReaders(numberReader(data), dates)
   const numberText = (n: number) => generalText(n).replace('.', decimal)
   const { toNum, toText, toBool } = coercions(argument, locale.booleans, numberText)

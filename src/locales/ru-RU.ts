@@ -132,6 +132,8 @@ export const RU_RU: LocaleFile = {
   regional: {
     decimal: ',',
     group: ' ',
+    // date text day first: `31.01.2025`, `1.5` is 1 May
+    dateOrder: 'dmy',
     currency: { symbol: '₽', before: false, space: ' ', negative: '-' },
     // Windows's names: the nominative with a capital, three letters short (Excel for Mac: `январь`, `февр`, `сент`)
     months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
