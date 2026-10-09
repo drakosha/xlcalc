@@ -16,7 +16,7 @@ import type { SpillCase, SpillSet } from '../coverage/spill/cases.js'
 import { inCaseOrder } from '../coverage/stored.js'
 import { cellsOf as structCells, LOOK, lookArgs, lookOf, opArgs, READ, styled, writeBook as writeStructBook, type ExcelStructAnswer, type RawLook, type StoredStruct } from '../coverage/struct.js'
 import type { StructCase, StructSet } from '../coverage/struct/cases.js'
-import { stepLines, withMirrors, type StoredTables } from '../coverage/tables.js'
+import { addsNames, stepLines, withMirrors, type StoredTables } from '../coverage/tables.js'
 import type { TableAnswer, TableCase, TableSet } from '../coverage/tables/cases.js'
 import { checkCycles, type StoredWorkbook } from '../coverage/workbook.js'
 import type { Step as BookStep, WorkbookAnswer, WorkbookCase, WorkbookSet } from '../coverage/workbook/cases.js'
@@ -251,7 +251,8 @@ export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void
       const { data, issues } = await writeXlsx(withMirrors(c.book))
       if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
       writeFileSync(f, data)
-      return { file: f, steps: [{ do: 'full' }, ...stepLines(c).flatMap((line): Step[] => [{ do: 'table', line }, { do: 'calc' }]), ...reads(c), { do: 'tables', skip: [...MIRRORS] }] }
+      const names: Step[] = addsNames(c) ? [{ do: 'names', visible: true }] : []
+      return { file: f, steps: [{ do: 'full' }, ...stepLines(c).flatMap((line): Step[] => [{ do: 'table', line }, { do: 'calc' }]), ...reads(c), ...names, { do: 'tables', skip: [...MIRRORS] }] }
     },
     (c, a) => {
       const n = stepLines(c).length
@@ -270,6 +271,7 @@ export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void
         })
       const tables = (raw.at(-1) as [string, string, string, boolean, boolean, string[]][]).map(([sheet, name, range, headers, totals, columns]) => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns }))
       const answer: TableAnswer = { values: rect.values, formulas: rect.formulas, ...(local ? { local: localText } : {}), tables }
+      if (addsNames(c)) answer.names = (raw.at(-2) as [string, string][]).map(([name]) => name)
       for (let i = 0; i < n; i++) {
         const r = a.answers[1 + 2 * i] as { error?: string } | null
         if (r?.error) (answer.refused ??= {})[i] = r.error

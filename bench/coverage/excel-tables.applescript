@@ -7,9 +7,10 @@
 -- Steps: e sheet range n|s|f|l|x value (a number, a text, a formula as Excel 365 enters it, one in the user's language, cleared); insr, delr, insc,
 -- delc sheet range (the entire rows or columns of the range); rename sheet table name; deltable sheet table; convert
 -- sheet table; totals sheet table 1|0; copy sheet range sheet range; cut sheet range sheet cell; renamesheet sheet
--- name; delsheet sheet.
+-- name; delsheet sheet; name scope name formula (a defined name added, global with an empty scope).
 -- Output: JSON {"steps": [the error of each step, "" when Excel took it], "rects": [[types, numbers, texts,
--- formulas, local formulas or ""], ...], "tables": [[sheet, name, range, headers shown, totals shown, [column names]], ...]}.
+-- formulas, local formulas or ""], ...], "tables": [[sheet, name, range, headers shown, totals shown, [column names]], ...],
+-- "names": [the visible defined names, a sheet's own as Sheet!name]}.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -84,6 +85,12 @@ on run argv
 							set name of worksheet (item 2 of parts) of wb to (item 3 of parts)
 						else if k is "delsheet" then
 							delete worksheet (item 2 of parts) of wb
+						else if k is "name" then
+							if item 2 of parts is "" then
+								make new named item at wb with properties {name:(item 3 of parts), references:(item 4 of parts)}
+							else
+								make new named item at worksheet (item 2 of parts) of wb with properties {name:(item 3 of parts), references:(item 4 of parts)}
+							end if
 						else
 							error "unknown step " & k
 						end if
@@ -141,10 +148,16 @@ on run argv
 					end repeat
 				end if
 			end repeat
+			-- by index: the elements of `named items of wb` do not resolve
+			set namesOut to {}
+			repeat with i from 1 to (count of named items of wb)
+				set nm to named item i of wb
+				if visible of nm then set end of namesOut to (name of nm)
+			end repeat
 			close wb saving no
 		end timeout
 	end tell
-	set d0 to current application's NSDictionary's dictionaryWithObjects:{stepsOut, out, tablesOut} forKeys:{"steps", "rects", "tables"}
+	set d0 to current application's NSDictionary's dictionaryWithObjects:{stepsOut, out, tablesOut, namesOut} forKeys:{"steps", "rects", "tables", "names"}
 	set {d, e} to current application's NSJSONSerialization's dataWithJSONObject:d0 options:0 |error|:(reference)
 	if d is missing value then error "JSON: " & (e's localizedDescription() as text)
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text

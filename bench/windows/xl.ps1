@@ -95,7 +95,8 @@ function Look($ws, $s) {
 # the user's language goes in as Excel 365 enters typed text (Formula2Local)
 function Table($wb, [string]$line) {
   $p = $line -split "`t"
-  $ws = $wb.Worksheets.Item($p[1])
+  # a name's step has its scope there, empty for a global name
+  $ws = if ($p[1]) { $wb.Worksheets.Item($p[1]) } else { $null }
   switch ($p[0]) {
     'e' {
       $rg = $ws.Range($p[2])
@@ -121,6 +122,7 @@ function Table($wb, [string]$line) {
     'cut' { [void]$ws.Range($p[2]).Cut((Rg $wb $p[3] $p[4])) }
     'renamesheet' { $ws.Name = $p[2] }
     'delsheet' { [void]$ws.Delete() }
+    'name' { if ($ws) { [void]$ws.Names.Add($p[2], $p[3]) } else { [void]$wb.Names.Add($p[2], $p[3]) } }
     default { throw "unknown table step $($p[0])" }
   }
 }
@@ -168,7 +170,8 @@ function Step($xl, $wb, $s) {
           Str ([string]$f)
         })
     }
-    'names' { List ($wb.Names | ForEach-Object { List @((Str $_.Name), (Str $_.RefersTo)) }) }
+    # with visible, the names Excel shows only (it keeps hidden ones such as _xlfn. names)
+    'names' { List ($wb.Names | Where-Object { -not $s.visible -or $_.Visible } | ForEach-Object { List @((Str $_.Name), (Str $_.RefersTo)) }) }
     'table' { try { Table $wb $s.line; 'null' } catch { Err $_ } }
     'formulasLocal' { Grid (Rg $wb $s.sheet $s.range).FormulaLocal }
     # every table of the sheets but those named in skip: [sheet, name, range, headers shown, totals shown, [columns]]
