@@ -42,7 +42,7 @@ export interface CellInput {
 /**
  * A number format: a format code as an xlsx file stores it, or the number of one of Excel's built-in formats, 0 to
  * 49, as a file stores a cell's format with no code of its own (`numFmtId`). Excel shows some built-in formats by the
- * locale: 14 is the locale's short date (`m/d/yy` in en-US, `dd.mm.yyyy` in ru-RU), 5 to 8 and 37 to 44 its money
+ * locale: 14 is the locale's short date (`m/d/yyyy` in en-US, `dd.mm.yyyy` in ru-RU), 5 to 8 and 37 to 44 its money
  * and number formats, 15 to 22 its other dates and times. A code is shown as written whatever the locale.
  */
 export type NumberFormat = string | number
