@@ -728,7 +728,7 @@ export interface InlineCalcOptions {
   sliceMs?: number
   /** The soft deadline of every call that gives none. */
   timeoutMs?: number
-  /** The limits of every computation that gives none. */
+  /** The limits of every computation; a computation's own `limits` take their place field by field, the others stay. */
   limits?: CalcLimits
 }
 
@@ -755,7 +755,7 @@ export interface CalcPoolOptions {
   /** Sessions a thread holds; past it the session called least recently leaves the thread and comes back on its next call. */
   maxSessionsPerThread?: number
   /**
-   * The limits of every computation that gives none. With `maxHeapMb`, `cells` is `maxHeapMb · 2^20 / 64` where not
+   * The limits of every computation; a computation's own `limits` take their place field by field, the others stay. With `maxHeapMb`, `cells` is `maxHeapMb · 2^20 / 64` where not
    * given, and `spill` the smaller of `cells` and `maxHeapMb · 2^20 / 1024` where not given: one allocation larger than
    * what a thread's heap has left (a large array, the tables of a large spill's cells) stops the whole process, not the
    * thread.
