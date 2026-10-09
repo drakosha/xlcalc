@@ -239,17 +239,21 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     info.refs.push(...boxes)
     if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
-  /** LOOKUP's result row or column widened to a longer lookup range or array constant: Excel reads on past its end, so those cells are references too. */
+  /**
+   * LOOKUP's result row, column or cell (a row) widened to the length of a longer lookup range or array constant, or to
+   * the sheet's end where the lookup array's length is known only once computed: Excel reads on past the result's end.
+   */
   const lookupResult = (look: Ast | undefined, res: Ast | undefined): T | undefined => {
-    if (res?.k !== 'ref' || res.ref.spill) return undefined
-    const size = look?.k === 'ref' && !look.ref.spill ? rect(look) : undefined
-    const [rows, cols] = size ? [size.r2 - size.r1 + 1, size.c2 - size.c1 + 1] : look?.k === 'arr' ? [look.rows.length, look.rows[0].length] : [0, 0]
-    // a wide lookup range is read along its first row, any other along its first column
-    const n = cols > rows ? cols : rows
+    if (!look || res?.k !== 'ref' || res.ref.spill) return undefined
     const x = rect(res)
     const [h, w] = [x.r2 - x.r1 + 1, x.c2 - x.c1 + 1]
-    if ((h > 1) === (w > 1) || n <= h * w) return undefined
-    const g = new Rng(ctx.sheet(res.sheet), x.r1, x.c1, h > 1 ? Math.min(x.r1 + n, MAX_ROWS) - 1 : x.r2, w > 1 ? Math.min(x.c1 + n, MAX_COLS) - 1 : x.c2)
+    if (h > 1 && w > 1) return undefined
+    const size = look.k === 'ref' && !look.ref.spill ? rect(look) : undefined
+    const [rows, cols] = size ? [size.r2 - size.r1 + 1, size.c2 - size.c1 + 1] : look.k === 'arr' ? [look.rows.length, look.rows[0].length] : [1, 1]
+    // a wide lookup range is read along its first row, any other along its first column
+    const n = size || look.k === 'arr' || !many(look) ? Math.max(rows, cols) : Infinity
+    if (n <= h * w) return undefined
+    const g = new Rng(ctx.sheet(res.sheet), x.r1, x.c1, h > 1 ? Math.min(x.r1 + n, MAX_ROWS) - 1 : x.r2, h > 1 ? x.c2 : Math.min(x.c1 + n, MAX_COLS) - 1)
     info.refs.push(g)
     return b.range(g, false)
   }
