@@ -9,7 +9,8 @@ import { epochOf } from '../../dates.js'
 import { checkBook, InputError } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
-import { bindTables, reservedName } from '../../syntax/check.js'
+import { bindTables, nameProblem } from '../../syntax/check.js'
+import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
 import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
@@ -58,11 +59,10 @@ function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): string {
 const rels = (items: [type: string, target: string][]) =>
   `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${target}"/>`).join('')}</Relationships>`
 
-/** A name the file holds: letters of any script, `_` or `\` first, `\` and `?` inside too; not reserved (`reservedName`). */
-const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]*$/u
-
 function definedNames(book: BookInput, issues: Issues, tables: { name: string; columns: string[] }[]): string {
   const index = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))
+  // Excel ru-RU does not load a file with a name ИСТИНА: the names the book's locale takes
+  const booleans = localeBooleans(book.locale)
   const seen = new Set<string>()
   const out: string[] = []
   for (const n of book.names ?? []) {
@@ -77,7 +77,7 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
       if (!(e instanceof FormulaError)) throw e
     }
     const why =
-      !NAME.test(n.name) || reservedName(n.name) !== null || n.name.length > 255
+      nameProblem(n.name, booleans) !== null
         ? 'a name Excel does not take'
         : n.scope !== undefined && scope === undefined
           ? 'a name of a sheet the book does not have'

@@ -156,20 +156,25 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }
 
-const NAME = /^[\p{L}_\\][\p{L}\p{N}_.]{0,254}$/u
+const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]{0,254}$/u
 
-/** Why Excel would not take a word that reads as a reference or a boolean as a name (null when it would). */
-export function reservedName(name: string): string | null {
+/**
+ * Why Excel would not take a word that reads as a reference or a boolean as a name (null when it would); `booleans`
+ * are the book's locale's words for TRUE and FALSE (ИСТИНА and ЛОЖЬ in ru-RU, which Excel ru-RU refuses).
+ */
+export function reservedName(name: string, booleans: readonly string[] = []): string | null {
   // a cell address in Latin letters only (`АБ12` is a name), R1C1 with `R` and `C` alone too
   if (/^[A-Za-z]{1,3}[0-9]+$/.test(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'a name must not look like a cell address or an R1C1 reference'
   if (/^(TRUE|FALSE)$/i.test(name)) return 'TRUE and FALSE are reserved'
+  const up = name.toUpperCase()
+  if (booleans.some((b) => b.toUpperCase() === up)) return `${name} is a boolean in the book's locale`
   return null
 }
 
 /** Why Excel would not take a name, a defined name's or a table's (null when it would): its rules for names, the namespace aside. */
-export function nameProblem(name: string): string | null {
-  if (!NAME.test(name)) return 'a name starts with a letter of any script, _ or \\ and has only letters, digits, _ and . (255 characters at most)'
-  return reservedName(name)
+export function nameProblem(name: string, booleans: readonly string[] = []): string | null {
+  if (!NAME.test(name)) return 'a name starts with a letter of any script, _ or \\, and has only letters, digits, _, ., \\ and ? (255 characters at most)'
+  return reservedName(name, booleans)
 }
 
 /** A valid defined name by Excel's rules (`nameProblem`). */

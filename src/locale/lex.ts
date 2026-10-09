@@ -154,6 +154,8 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
     IDENT.lastIndex = i
     const id = IDENT.exec(src)
     if (id) {
+      // in an array constant a separator ends a word: `\` may be one (`{TRUE\FALSE}`), and a name holds no `\`
+      if (depth > 0) id[0] = id[0].split(syn.arrayColumn)[0].split(syn.arrayRow)[0]
       const end = i + id[0].length
       // an unquoted sheet name keeps its `!`
       if (src[end] === '!') {

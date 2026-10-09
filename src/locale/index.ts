@@ -16,8 +16,9 @@ export { ruRU } from './ru-RU.js'
 export type { Locale, Translation } from './types.js'
 
 const WORD = /^[\p{L}_][\p{L}\p{N}_.]*$/u
-// characters that start or end other pieces of a formula; `:` and `\` only inside array constants (ru-RU: `{1;2:3;4}`)
-const RESERVED = /[\p{L}\p{N}\s"'#(){}[\]!$+\-*/^&=<>%_@]/u
+// characters that start or end other pieces of a formula, or that a name holds (`?`); `:` and `\` only inside array
+// constants (ru-RU: `{1;2:3;4}`)
+const RESERVED = /[\p{L}\p{N}\s"'#(){}[\]!$+\-*/^&=<>%_@?]/u
 
 function separator(loc: Record<string, unknown>, key: string, inArrays: boolean): string {
   const v = checkString(loc[key], `locale.${key}`)
