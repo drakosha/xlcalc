@@ -9,7 +9,6 @@
  * (`bench/coverage/xlsx/predicted.json`) are Excel's, the misses named. Colours and built-in number formats: the
  * reader's are the ones Excel showed.
  */
-import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { colorBook, colorCases } from '../bench/coverage/xlsx/colors.js'
@@ -17,6 +16,7 @@ import { buildRoundTrips, XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
 import { compareBooks, compareCached, entries, type Difference } from '../bench/coverage/xlsx/compare.js'
 import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
 import type { Predicted } from '../bench/coverage/xlsx/predict.js'
+import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { formulaCell, OLD_FORMULAS } from '../bench/coverage/xlsx/intersect.js'
 import { PART, sentBook } from '../bench/coverage/xlsx/saved.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
@@ -65,7 +65,7 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
       const { data } = await writeXlsx(c.book, { result, mode: c.mode })
       const sent = run.books[c.id]
       expect(sent, 'no Excel answer: run the xlsx roundtrip step').toBeDefined()
-      expect(sent.sent, 'the writer changed since Excel saw the file: run the xlsx roundtrip step').toBe(createHash('sha256').update(data).digest('hex'))
+      expect(sent.sent, 'the writer changed since Excel saw the file: run the xlsx roundtrip step').toBe(await partsHash(data))
       expect(sent.rejected).toBeUndefined()
       const read = await readXlsx(readFileSync(new URL(`roundtrip/${c.id}.xlsx`, dir)))
       const differences: Difference[] = compareBooks(entries(c.book, c.mode === 'values' ? result : undefined), entries(read.book))
@@ -94,7 +94,7 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
   for (const c of FILTER_FILES)
     it(`${c.id}: ${c.about}`, async () => {
       const data = await filterFile(c)
-      expect(run.books[c.id].sent, 'the file changed since Excel saw it: run the xlsx filters step').toBe(createHash('sha256').update(data).digest('hex'))
+      expect(run.books[c.id].sent, 'the file changed since Excel saw it: run the xlsx filters step').toBe(await partsHash(data))
       const read = await readXlsx(readFileSync(new URL(`filters/${c.id}.xlsx`, dir)))
       // the filter mode Excel took, as predicted: the engine computes the values Excel stored, which are the ones predicted
       expect(!!read.book.sheets[0].filtered).toBe(predicted.filters[c.id].filtered)

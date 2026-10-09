@@ -5,6 +5,8 @@
 import { inflate, text } from './platform.js'
 
 export interface Archive {
+  /** The entries' names, in the archive's order. */
+  readonly names: readonly string[]
   /** The bytes of an entry by name in any case; undefined when there is none. */
   bytes(name: string): Promise<Uint8Array | undefined>
   /** The text of an entry (UTF-8, line ends as XML reads them), undefined when there is none. */
@@ -69,6 +71,7 @@ export function openArchive(bytes: Uint8Array): Archive {
     return out
   }
   return {
+    names: list.map((e) => e.name),
     bytes: bytesOf,
     async text(name) {
       const b = await bytesOf(name)
