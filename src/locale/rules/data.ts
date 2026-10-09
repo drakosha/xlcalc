@@ -14,7 +14,7 @@ export interface RegionalData {
   readonly group: string
   /** The order of day, month and year in date text of numbers: `dmy` (`31.01.2025`), `mdy` (`1/31/2025`) or `ymd` (`2025/1/31`). */
   readonly dateOrder: DateOrder
-  /** DOLLAR's and VALUE's currency: its symbol after the amount, a space between, a negative amount with a minus. */
+  /** DOLLAR's and VALUE's currency: the symbol, before the amount or after it (VALUE reads it there), the space between, a negative amount in parentheses or with a minus. */
   readonly currency: { readonly symbol: string; readonly before: boolean; readonly space: string; readonly negative: '()' | '-' }
   /** Month names in the nominative as TEXT writes them (`MMMM`), short ones (`MMM`); date text reads a prefix of a full name. */
   readonly months: readonly string[]

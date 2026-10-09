@@ -1,7 +1,8 @@
 /**
  * Rules of computation that are a locale's data rather than code written for ru-RU: the order of day, month and year in
- * date text (`RegionalData.dateOrder`). ru-RU reads as Excel ru-RU does (its sets in `test/excel/cases/ru-RU/`); the other
- * orders are the engine's own rules, by analogy with en-US, and are checked here on ru-RU's data with that one field changed.
+ * date text (`RegionalData.dateOrder`) and where the currency symbol stands (`currency.before`). ru-RU reads as Excel
+ * ru-RU does (its sets in `test/excel/cases/ru-RU/`); the other orders and a symbol before the amount are the engine's
+ * own rules, by analogy with en-US, and are checked here on ru-RU's data with that one field changed.
  */
 import { describe, expect, it } from 'vitest'
 import { serialOf } from '../src/dates.js'
@@ -45,5 +46,16 @@ describe('the order of date text', () => {
 
   it('year first: two digits of the year first too', () => {
     expect(read({ dateOrder: 'ymd' }, ['2025/1/31', '25.1.31', '1/31', '31.01.2025'])).toEqual([serialOf(2025, 1, 31), serialOf(2025, 1, 31), serialOf(2026, 1, 31), null])
+  })
+})
+
+describe('the currency symbol in number text', () => {
+  it('ru-RU reads it after the amount only', () => {
+    expect(read({}, ['1 234,5 ₽', '-1 234,5 ₽', '₽1 234,5', '1 1/2 ₽', '5% ₽'])).toEqual([1234.5, -1234.5, null, 1.5, null])
+  })
+
+  it('a symbol written before the amount is read there, with a sign before or after it, as en-US reads $', () => {
+    const before = { currency: { symbol: '€', before: true, space: ' ', negative: '-' as const } }
+    expect(read(before, ['€ 1 234,5', '-€ 5', '€-5', '(€5)', '-€-5', '1 234,5 €', '€ 1 1/2', '€5%', '5'])).toEqual([1234.5, -5, -5, -5, null, null, null, null, 5])
   })
 })
