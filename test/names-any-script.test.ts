@@ -4,7 +4,7 @@
  * any case, one namespace with tables, and a name kept through structure operations and an xlsx file.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, restructure, ruRU, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
+import { compute, InputError, openSession, restructure, ruRU, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 
 /** Sheet S with A1 = 100 and the formulas given, and the names. */
@@ -108,5 +108,46 @@ describe('defined names in letters of any script', () => {
     const read = await readXlsx(data)
     expect(read.book.names).toEqual([{ name: 'Ставка', ref: '0.5', scope: 'S' }, { name: 'НДС_2025', ref: "'S'!$A$1" }])
     expect(compute(read.book, { display: false }).sheets[0].cells.A1.value).toBe(1)
+  })
+})
+
+describe("Excel's rules for names where it was measured (tables/names-more-held, names-ru-more-held)", () => {
+  it('a question mark and a backslash inside a name; a question mark first is no name', async () => {
+    for (const ok of ['Став?ка', 'Rate?', 'Став\\ка', 'a\\b?c']) expect([ok, validateName(ok)]).toEqual([ok, { ok: true }])
+    expect(validateName('?Ставка').ok).toBe(false)
+    const b = book({ B1: 'Став?ка*2', B2: 'Став\\ка*2', B3: 'Rate?*2' }, [{ name: 'Став?ка', ref: '5' }, { name: 'Став\\ка', ref: '6' }, { name: 'Rate?', ref: '7' }])
+    const v = values(b)
+    expect(v.issues).toEqual([])
+    expect([v.cells.B1, v.cells.B2, v.cells.B3]).toEqual([10, 12, 14])
+    expect(validateLocalFormula('=Став?ка*2+0,5', ruRU, { names: ['Став?ка'] })).toMatchObject({ ok: true, canonical: 'Став?ка*2+0.5' })
+    expect(toLocal('Став\\ка*2+1.5', ruRU)).toEqual({ ok: true, formula: 'Став\\ка*2+1,5' })
+    const { data, issues } = await writeXlsx(b)
+    expect(issues).toEqual([])
+    expect((await readXlsx(data)).book.names).toEqual(b.names)
+  })
+
+  it('a ru-RU book takes no name ИСТИНА or ЛОЖЬ, in any case, and its file leaves them out; an en-US book takes them', async () => {
+    const names = [{ name: 'ИСТИНА', ref: '11' }, { name: 'ложь', ref: '12' }, { name: 'ИСТИНА_1', ref: '1' }]
+    const ru: BookInput = { ...book({ B1: 'ИСТИНА_1+1' }, names), locale: 'ru-RU' }
+    const r = compute(ru, { display: false })
+    expect(r.nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
+    expect(r.sheets[0].cells.B1.value).toBe(2)
+    expect(compute({ ...ru, locale: 'en-US' }, { display: false }).nameIssues).toEqual([])
+    const s = openSession(ru)
+    s.setNames([...names, { name: 'Ложь', ref: '3' }])
+    expect(s.result().nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
+    s.close()
+    const file = await writeXlsx(ru)
+    expect(file.issues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
+    expect((await readXlsx(file.data)).book.names).toEqual([{ name: 'ИСТИНА_1', ref: '1' }])
+    expect((await writeXlsx({ ...ru, locale: 'en-US' })).issues).toEqual([])
+  })
+
+  it('toLocal quotes a name that reads as a boolean of the locale, as Excel ru-RU shows it, and toInvariant reads it back', () => {
+    expect(toLocal('ИСТИНА+1', ruRU)).toEqual({ ok: true, formula: "'ИСТИНА'+1" })
+    expect(toLocal('SUM(ложь,TRUE)', ruRU)).toEqual({ ok: true, formula: "СУММ('ложь';ИСТИНА)" })
+    expect(toInvariant("='ИСТИНА'+1", ruRU)).toEqual({ ok: true, formula: 'ИСТИНА+1' })
+    expect(toInvariant('=ИСТИНА+1', ruRU)).toEqual({ ok: true, formula: 'TRUE+1' })
+    expect(toInvariant("='Лист'!A1", ruRU)).toEqual({ ok: true, formula: "'Лист'!A1" })
   })
 })
