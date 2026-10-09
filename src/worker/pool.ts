@@ -77,10 +77,13 @@ export interface PoolInside {
   recs: Set<Rec>
 }
 
+/** Bytes of a thread's heap per value of the default `limits.cells`: over three times the worst measured for one spill that took the process down (`docs/async.md`). */
+const HEAP_PER_CELL = 1024
+
 export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: PoolInside) => void): Calc {
   const perThread = o.maxSessionsPerThread ?? Infinity
   const snapshotEvery = o.snapshotEvery ?? 64
-  const limits = o.maxHeapMb && o.limits?.cells === undefined ? { ...o.limits, cells: Math.floor((o.maxHeapMb * 2 ** 20) / 32) } : o.limits
+  const limits = o.maxHeapMb && o.limits?.cells === undefined ? { ...o.limits, cells: Math.floor((o.maxHeapMb * 2 ** 20) / HEAP_PER_CELL) } : o.limits
   const jobs: Task[] = []
   const recs = new Set<Rec>()
   let ids = 0
