@@ -48,7 +48,7 @@ A call that stops by its deadline or its signal throws `CalcError` with `soft_ti
 
 ## Limits
 
-`limits` bound what a book may make: `formulas`, the formulas of the book, `cells`, the values of one range read whole or one array, and `spill`, the values one spill fills. They are options of `compute` and `openSession` too, not only of the calculators.
+`limits` bound what a book may make: `formulas`, the formulas of the book, `cells`, the values of one range read whole or one array, and `spill`, the values one spill fills. They are options of `compute` and `openSession` too, not only of the calculators. A calculator's `limits` hold for every call; a call's own `limits` take their place field by field, so a call that gives `formulas` alone keeps the calculator's `cells` and `spill`.
 
 ```js
 compute(book, { limits: { formulas: 100_000, cells: 5_000_000, spill: 500_000 } })
