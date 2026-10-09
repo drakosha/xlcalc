@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.3 (2026-10-09)
+
+Internal release; not published to npm. Three known differences from Excel in lookups closed, measured in Excel for Mac and Windows.
+
+Changed:
+
+- `SORTBY` with an array or a range of several cells as a sort order answers an array of the orders' size, as Excel does: the first value of the sort by the orders' first elements, then blanks where every order is 1 or -1, `#VALUE!` where an order is another number or has no value at that position, an order's error where it holds one (`SORTBY(A1:A6,B1:B6,{1;-1})` is `{"one";}`). It was `#VALUE!`.
+- `LOOKUP` reads on past the end of a result range shorter than its lookup range, as Excel does: a column or a row along itself, one cell as a row (`LOOKUP(4.19,L1:L6,B2)` reads D2), past the sheet's edge a blank; those cells are among the formula's references, so a session recomputes it when they change. It was `#REF!`; a result range that a function returns (`IF(TRUE,B2:B3)`) still is.
+- `IFS` whose condition is text that is no boolean answers its `#VALUE!` as an array of one error, as Excel does: `ROWS` and `COLUMNS` of it are 1, `TYPE` 64; an error given as a condition or a value is the answer as it is. `fromLegacy` writes `TYPE` of such an array without `@`.
+
+Added:
+
+- The case sets `known-held` (37 cases) and `legacy/ifs-text` (8), with the engine's answers committed before Excel computed them: 33 of 45 predictions held, and the engine was fixed for the 12 that did not; Excel for Mac and Windows agree on all 45.
+- The Windows harness takes `XLWIN_CODEPAGE=any` to run a set that reads no code page without restarting the machine for one.
+
 ## 0.6.2 (2026-10-09)
 
 Internal release; not published to npm. Caches of ranges, aggregates and exact lookups, stable statistical moments, and a fix of cached ranges after a sheet grew.
