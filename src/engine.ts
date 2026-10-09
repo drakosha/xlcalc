@@ -20,7 +20,7 @@ import { rulesOf } from './locale/rules.js'
 import type { RulesClock } from './locale/rules/data.js'
 import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
-import { RangeCache } from './range-cache.js'
+import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
 import { AreaIndex } from './area-index.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
@@ -58,6 +58,8 @@ export interface EngineOptions {
   externals?: Externals
   /** `closures` by default. */
   execution?: Execution
+  /** What the range caches may hold, shared with other books: those of this heap by default. */
+  cache?: CacheBudget
 }
 
 export interface EngineState {
@@ -186,14 +188,16 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       return ymd(Math.floor(ctx.now) + epoch).y
     },
   }
+  const cache = opts.cache ?? heapCaches
   const ctx: RuntimeContext = {
     sheets: sheetNames.map(emptySheet),
     now: opts.now - epoch,
     seed: opts.seed,
     rules: rulesOf(book.locale, clock, epoch),
     externals: opts.externals?.values ?? {},
-    flat: new RangeCache(),
-    index: new RangeCache(),
+    cache,
+    flat: new RangeCache(cache),
+    index: new RangeCache(cache),
     aggregates: new RangeAggregates(),
     nested: new Map(),
     hidden: new Map(),

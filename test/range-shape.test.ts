@@ -8,7 +8,8 @@ describe.each(['closures', 'eval'] as const)('cached range shape, %s', (executio
     const opts = { clock, execution, display: false }
     const s = openSession({ sheets: [
       { name: 'Data', cells: { A1: { value: 1 }, A2: { value: 2 } } },
-      { name: 'Q', cells: { A1: { formula: 'INDEX(Data!A1:D256*1,2,1)+B1' }, B1: { value: 0 } } },
+      // the range is read twice, so its values are cached from the first computation on
+      { name: 'Q', cells: { A1: { formula: 'INDEX(Data!A1:D256*1,2,1)+COUNTA(Data!A1:D256)*0+B1' }, B1: { value: 0 } } },
     ] }, opts)
     try {
       expect(s.cells('Q', 'A1').A1.value).toBe(2)
