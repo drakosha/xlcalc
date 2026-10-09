@@ -80,7 +80,10 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const target = book.sheets.find((s) => sheetKey(s.name) === sheetKey(sheet))!
   const lines = axis === 'r' ? 'rows' : 'columns'
   if (n > 0) {
-    const off = Object.keys(target.cells).find((a) => (spend(1), pos(a) >= max - count))
+    const off = Object.keys(target.cells).find((a) => {
+      spend(1)
+      return pos(a) >= max - count
+    })
     if (off) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push ${target.name}!${off} off the sheet` }
   }
   const cut = shiftRefusal(target, axis, at, n)
