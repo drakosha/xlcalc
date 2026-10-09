@@ -77,7 +77,7 @@ function rowBook(cases: Probe[], rows: Record<string, number>, sheets?: SheetCel
   return book
 }
 
-for (const name of ['params', 'nesting', 'calls', 'blocks']) {
+for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text']) {
   const set = load<Stored>(name)
   const sheets = ((await import(`../bench/coverage/legacy/${name}.ts`)) as { SHEETS?: SheetCells }).SHEETS
 

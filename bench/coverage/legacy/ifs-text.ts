@@ -29,3 +29,6 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][1]]))
+
+/** The predictions Excel did not confirm: Excel 365 shows `TYPE(IFS("x",1))` with no `@`, so TYPE takes IFS's array whole (64). */
+export const MISSED: readonly string[] = ['IFS#4']

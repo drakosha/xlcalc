@@ -67,3 +67,10 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): SORTBY puts the first sorted value in the first
+ * place only, the others blank (or an error), with no row or column of an order repeated; LOOKUP reads a result of
+ * one cell as a row, reads on with a computed lookup array too, and past the sheet's end reads a blank.
+ */
+export const MISSED: readonly string[] = ['SORTBY#1', 'SORTBY#2', 'SORTBY#3', 'SORTBY#4', 'SORTBY#5', 'SORTBY#6', 'LOOKUP#1', 'LOOKUP#2', 'LOOKUP#3', 'LOOKUP#7', 'LOOKUP#9']
