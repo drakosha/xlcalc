@@ -6,9 +6,9 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 
 ## Where the answers are
 
-`test/excel/win/` has the Mac's layout:
+`test/excel/win/` has the Mac's layout, en-US's answers at the top of each directory and another locale's in a directory named by its tag (`bench/coverage/locales.ts`):
 
-- `coverage/excel-en.json`, `coverage/excel-ru.json`: the measurement (its cases are in `test/excel/coverage/cases.json`).
+- `coverage/excel-en.json`, `coverage/excel-ru.json`, `coverage/excel-<tag>.json` for another locale: the measurement (its cases are in `test/excel/coverage/cases.json`).
 - `probes.json`, `cases/<set>.json`, `cases/ru-RU/<set>.json`, `legacy/<set>.json`: the probes, the case sets, the formulas of the old kind (each at the row it had in the Mac's run, as implicit intersection takes the row).
 - `display/`, `display/ru-RU/`, `tables/`, `tables/ru-RU/`, `spill/`, `workbook/`, `struct/`: the book sets.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
@@ -22,6 +22,8 @@ Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `d
 `npx tsx bench/windows/compare.ts > bench/windows/differences.md` writes the table of the formula cases where Windows and the Mac part (the Mac's answer, Windows's, the engine's, which of the two the engine follows, and the class: a platform difference with its reason, or noise), and the cases where both Excels agree and the engine does not.
 
 ## Running it
+
+A command that takes a locale takes `en`, `ru` or the tag of one of the package's locales (`de-DE`), en-US when it names none.
 
 ```sh
 npx tsx bench/windows/run.ts env            # the machine's settings, and Excel's as it starts with them
@@ -40,6 +42,10 @@ A command takes the machine's lock, puts the machine in the locale it needs, and
 
 Changing the system locale needs a restart, which the harness does itself: it waits until the machine is up from a new boot, ten minutes at most. Run all of one locale before the other, `all en` and then `all ru`, which also leaves the machine in its own locale.
 
+### Another locale
+
+`npx tsx bench/windows/run.ts all de-DE` computes in de-DE what the Mac has answers for in de-DE, into the directories of its tag. The tag must be one of the package's: Excel's interface language id and the system code page it checks come from the locale's file (`regional.lcid`, `regional.codePage`, through `windowsLocale` in `bench/coverage/locales.ts`), and another tag stops before the machine is touched. The machine needs the language: Excel's interface language follows the Windows display language, so a new language needs its Windows language pack and Office's language pack for it, as the English one is installed here. Without them the run stops on its check of the settings (`windows-host is not in de-DE: language ..., Excel interface ...`). That has not been tried with a third language.
+
 ## The machine
 
 `windows-host` is a virtual machine with Windows 11 Pro (Russian), Office ProPlus 2024 with the English language pack, and OpenSSH with key login; its SSH shell is PowerShell 5.1. Excel is 16.0.20430.20146 (Current Channel): Office updated itself from 16.0.17928 during the first run, so its automatic updates are off now (the policy `enableautomaticupdates` = 0 under `HKLM\SOFTWARE\Policies\Microsoft\office\16.0\common\officeupdate`, and the scheduled tasks Office Automatic Updates 2.0 and Office Feature Updates disabled), and every answer is from that build. The harness keeps its files in `C:\xlcalc\`: `bin\` the scripts (copied from here at the start of a command), `work\` the jobs, `lock\` the lock.
@@ -50,7 +56,7 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 - The regional format: `Set-Culture` (en-US: `.` and `,`; ru-RU: `,` and a space, list separator `;`).
 - `CHAR` and `CODE` follow the system code page: `Set-WinSystemLocale` and a restart (en-US 1252, ru-RU 1251).
 
-`host.ps1 -do env` reports all of these and starts Excel to read its interface language (`LanguageSettings.LanguageID(2)`: 1033 or 1049); a run refuses to start when any of them is not the locale's.
+`host.ps1 -do env` reports all of these and starts Excel to read its interface language (`LanguageSettings.LanguageID(2)`: 1033 or 1049, the locale's `lcid`); a run refuses to start when any of them is not the locale's.
 
 ## How a job runs
 
