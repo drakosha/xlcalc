@@ -98,15 +98,23 @@ export interface Span {
   boxes: Rng[]
   /** The cells of its spill references. */
   anchors: Rng[]
-  /** A spill LOOKUP's result may read on past: the arrays' cells and `past` more down and to the right (`pastEnd`). */
+  /** A spill LOOKUP's result may read on past: the arrays' cells and the next ones, `past` long in all (`pastEnd`). */
   past?: number
+  /** The result may be a part of the arrays (`pastEnd`). */
+  part?: boolean
 }
 
-/** The cells LOOKUP may read past what a rectangle answers, `n` long: on down its columns and right along its rows. */
-export const pastEnd = (g: Rng, n: number): Rng[] => [
-  new Rng(g.s, g.r1, g.c1, Math.min(g.r2 + n, MAX_ROWS) - 1, g.c2),
-  new Rng(g.s, g.r1, g.c1, g.r2, Math.min(g.c2 + n, MAX_COLS) - 1),
-]
+/**
+ * The cells LOOKUP may read from a reference a rectangle answers, `n` long: a column on down, a row or a cell on to the
+ * right, a larger one not at all (#N/A). Where the reference may be a part of the rectangle (`part`: INDEX, TAKE,
+ * `@`, an intersection), any column of it on down to `n` past its end and any row on to the right.
+ */
+export function pastEnd(g: Rng, n: number, part = false): Rng[] {
+  const [column, row] = [g.r2 > g.r1, g.c2 > g.c1]
+  if (part) return [new Rng(g.s, g.r1, g.c1, Math.min(g.r2 + n, MAX_ROWS) - 1, g.c2), new Rng(g.s, g.r1, g.c1, g.r2, Math.min(g.c2 + n, MAX_COLS) - 1)]
+  if (column && row) return []
+  return [column ? new Rng(g.s, g.r1, g.c1, Math.max(g.r2, Math.min(g.r1 + n, MAX_ROWS) - 1), g.c2) : new Rng(g.s, g.r1, g.c1, g.r2, Math.max(g.c2, Math.min(g.c1 + n, MAX_COLS) - 1))]
+}
 
 /** What a formula reads and how it behaves, the same in both modes. */
 export interface FormulaInfo {
@@ -179,34 +187,42 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
    * The rectangles a node can answer as a reference, for the cells between the ends of the range operator: the
    * references a call can answer (INDEX's, TAKE's and DROP's array, XLOOKUP's return array and `if_not_found`, the
    * passed arguments of CHOOSE, IF, IFS and SWITCH), not those it reads; a spill reference's cell goes to `anchors` too.
+   * `parts` collects the rectangles of which a part may be answered (`part`): under INDEX, TAKE, DROP, XLOOKUP, `@`, an
+   * intersection or the range operator.
    */
-  const reach = (n: Ast, out: Rng[], anchors: Rng[]): void => {
+  const reach = (n: Ast, out: Rng[], anchors: Rng[], parts?: Set<Rng>, part = false): void => {
+    const on = (x: Ast, p = part) => reach(x, out, anchors, parts, p)
+    const add = (g: Rng) => {
+      out.push(g)
+      if (part) parts?.add(g)
+    }
     switch (n.k) {
       case 'ref': {
         const x = rect(n)
         const g = new Rng(ctx.sheet(n.sheet), x.r1, x.c1, x.r2, x.c2)
-        out.push(g)
+        add(g)
         if (n.ref.spill) anchors.push(g)
         return
       }
       case 'table': {
         const x = table(n)
-        if (typeof x !== 'string') out.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
+        if (typeof x !== 'string') add(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
         return
       }
       case 'paren':
+        return on(n.a)
       case 'at':
-        return reach(n.a, out, anchors)
+        return on(n.a, true)
       case 'un':
         // go() reads a single cell under +, but keeps a multi-cell reference.
-        if (n.op === '+' && many(n.a)) reach(n.a, out, anchors)
+        if (n.op === '+' && many(n.a)) on(n.a)
         return
       case 'union':
-        return n.items.forEach((x) => reach(x, out, anchors))
+        return n.items.forEach((x) => on(x))
       case 'bin':
         // an intersection lies in its left operand, a range around both
-        if (n.op === ' ') reach(n.a, out, anchors)
-        else if (n.op === ':') [n.a, n.b].forEach((x) => reach(x, out, anchors))
+        if (n.op === ' ') on(n.a, true)
+        else if (n.op === ':') [n.a, n.b].forEach((x) => on(x, true))
         return
       case 'name': {
         const d = resolve(n, scope)
@@ -214,7 +230,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const outer: [Ast[], number] = [bound, scope]
         ;[bound, scope] = [[], -1]
         inside.add(d)
-        reach(d.ast, out, anchors)
+        on(d.ast)
         inside.delete(d)
         ;[bound, scope] = outer
         return
@@ -223,17 +239,18 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
         const outer = bound
         bound = [...bound]
         for (const x of n.binds) bound[x.slot] = x.value
-        reach(n.body ?? n.binds[n.binds.length - 1].value, out, anchors)
+        on(n.body ?? n.binds[n.binds.length - 1].value)
         bound = outer
         return
       }
       case 'local':
-        return reach(bound[n.slot], out, anchors)
+        return on(bound[n.slot])
       case 'fn': {
         const spec = FUNCTIONS[n.name]
+        const cut = n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' || n.name === 'XLOOKUP'
         const answers = (i: number) =>
           n.name === 'INDEX' || n.name === 'TAKE' || n.name === 'DROP' ? i === 0 : n.name === 'XLOOKUP' ? i >= 2 && i <= 3 : !!spec?.refs && spec.mode(i) === 'pass'
-        n.args.forEach((a, i) => answers(i) && reach(a, out, anchors))
+        n.args.forEach((a, i) => answers(i) && on(a, part || cut))
         return
       }
     }
@@ -262,9 +279,14 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     if (res.k !== 'ref' || res.ref.spill) {
       const reached: Rng[] = []
       const anchors: Rng[] = []
-      reach(res, reached, anchors)
-      for (const g of reached) info.refs.push(...pastEnd(g, n))
-      if (anchors.length) (info.spans ??= []).push({ boxes: [], anchors, past: n })
+      const parts = new Set<Rng>()
+      reach(res, reached, anchors, parts)
+      // a spill's cell reads on as far as its array spills, in the array's direction: the graph's (a span)
+      for (const g of reached) if (!anchors.includes(g)) info.refs.push(...pastEnd(g, n, parts.has(g)))
+      for (const part of [false, true]) {
+        const of = anchors.filter((g) => parts.has(g) === part)
+        if (of.length) (info.spans ??= []).push({ boxes: [], anchors: of, past: n, part })
+      }
       return undefined
     }
     const x = rect(res)

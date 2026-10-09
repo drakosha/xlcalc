@@ -41,9 +41,10 @@ export function rebuildGraph(state: EngineState) {
         const id = idAt(a.s, a.r1, a.c1)
         const x = id === undefined ? undefined : state.spills.claims.get(id)
         if (x) reached.push(new Rng(x.s, x.r1, x.c1, x.r2, x.c2))
+        // LOOKUP reads on past the array in its direction, or past the cell when it has not spilled
+        if (span.past) more.push(...pastEnd(x ? new Rng(x.s, x.r1, x.c1, x.r2, x.c2) : a, span.past, span.part))
       }
-      if (span.past) more.push(...reached.flatMap((g) => pastEnd(g, span.past!)))
-      else if (reached.length > span.boxes.length) more.push(...bySheet(reached).values())
+      if (!span.past && reached.length > span.boxes.length) more.push(...bySheet(reached).values())
     }
     return more.length ? [...f.refs, ...more] : f.refs
   }
