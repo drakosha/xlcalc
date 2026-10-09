@@ -32,6 +32,8 @@ Character widths were measured by fills (`0*x` repeats `x` across the column, an
 | 9 | `m M Ж М` |
 | 10 | `W Ш Щ Ю` |
 
+Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and the letters of another script in its locale's file (`glyphWidths`: the Cyrillic letters and `₽` in ru-RU's). They count in books of every locale. A character that no table has counts as a digit.
+
 A merged area is as wide as its columns together.
 
 ## Values that do not fit
@@ -96,7 +98,7 @@ An xlsx file stores some formats by number alone, without a code. A format here 
 | 41 to 44 | the accounting formats with `$` | the accounting formats with `₽` after the amount |
 | 45 to 49 | `mm:ss`, `[h]:mm:ss`, `mm:ss.0`, `##0.0E+0`, `@` | the same |
 
-In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, `src/locale/rules/ru-RU.ts` the ru-RU ones.
+In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, ru-RU's locale file (`src/locales/ru-RU.ts`) the ru-RU ones.
 
 The codes are those Excel for Windows shows. Excel for Mac shows the short date of en-US as `m/d/yy` (`1/31/25`) and the times of ru-RU with a leading zero (`06:00`); the engine follows Windows there.
 
@@ -127,7 +129,7 @@ Format colours are the eight names `[Black]`, `[White]`, `[Red]`, `[Green]`, `[B
 
 ## How the engine does it
 
-`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths, `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
+`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (with the letters of the locale files), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
 
 `src/shown.ts` finds a cell's format and width. Sessions compare what cells show before and after an edit that recomputes nothing (`src/session/looks.ts`) and after a structure operation (`src/session/moved.ts`).
 
