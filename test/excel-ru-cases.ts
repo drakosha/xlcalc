@@ -7,6 +7,7 @@
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
+import type { Probe, SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput } from '../src/contract.js'
 import { compute } from '../src/index.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal, type ExcelCase } from './excel-cases.js'
@@ -239,13 +240,19 @@ export function runRuCases(cases: readonly ExcelCase[] = CASES): RuOutcome[] {
   })
 }
 
+/** The engine's answers to a case set's cases, computed in one ru-RU book as Excel ru-RU computes them. */
+export function ruAnswers(probes: readonly Probe[], sheets?: SheetCells): Val[] {
+  const cells = compute(inRu(caseBook(probes, sheets)), { clock: CLOCK }).sheets.at(-1)!.cells
+  return probes.map((_, i) => toVal(cells[`A${i + 1}`].value))
+}
+
 /** A ru-RU case set computed in one ru-RU book, with its generator's current cases. */
 export async function runRuSet(set: StoredSet): Promise<{ current: boolean; outcomes: (RuOutcome & { group: string })[] }> {
   const mod = await loadSet(set.name)
   const probes = mod.buildProbes()
-  const cells = compute(inRu(caseBook(probes, mod.SHEETS)), { clock: CLOCK }).sheets.at(-1)!.cells
+  const answers = ruAnswers(probes, mod.SHEETS)
   const outcomes = probes.map((p, i) => {
-    const engine = toVal(cells[`A${i + 1}`].value)
+    const engine = answers[i]
     const v = ruVerdict(`${set.name}:${p.id}`, p.fn, set.values[p.id], engine)
     return { id: p.id, fn: p.fn, group: p.fn ?? p.group, formula: p.formula, excel: set.values[p.id], engine, ok: v.ok, why: v.why }
   })

@@ -1,0 +1,266 @@
+{
+ "MATCH#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MATCH#2": {
+  "t": "e",
+  "v": "NA"
+ },
+ "MATCH#3": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MATCH#4": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MATCH#5": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MATCH#6": {
+  "t": "e",
+  "v": "NA"
+ },
+ "MATCH#7": {
+  "t": "e",
+  "v": "NA"
+ },
+ "MATCH#8": {
+  "t": "e",
+  "v": "NA"
+ },
+ "MATCH#9": {
+  "t": "e",
+  "v": "NA"
+ },
+ "VLOOKUP#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "VLOOKUP#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "VLOOKUP#3": {
+  "t": "e",
+  "v": "NA"
+ },
+ "HLOOKUP#1": {
+  "t": "e",
+  "v": "NA"
+ },
+ "XMATCH#1": {
+  "t": "e",
+  "v": "NA"
+ },
+ "LOOKUP#1": {
+  "t": "e",
+  "v": "NA"
+ },
+ "XLOOKUP#1": {
+  "t": "s",
+  "v": "{\"one\":\"two\":\"three\":\"five\":\"eight\":\"thirteen\"}"
+ },
+ "XLOOKUP#2": {
+  "t": "s",
+  "v": "{\"one\":\"two\":\"three\":\"five\":\"eight\":\"thirteen\"}"
+ },
+ "XLOOKUP#3": {
+  "t": "e",
+  "v": "NA"
+ },
+ "XLOOKUP#4": {
+  "t": "s",
+  "v": "none"
+ },
+ "XLOOKUP#5": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XLOOKUP#6": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XLOOKUP#7": {
+  "t": "s",
+  "v": "{\"one\";10}"
+ },
+ "XLOOKUP#8": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XLOOKUP#9": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XMATCH#2": {
+  "t": "n",
+  "v": 1
+ },
+ "WRAPROWS#1": {
+  "t": "s",
+  "v": "{1;2;3}"
+ },
+ "WRAPROWS#2": {
+  "t": "s",
+  "v": "{1;2;3}"
+ },
+ "WRAPROWS#3": {
+  "t": "s",
+  "v": "{7}"
+ },
+ "WRAPROWS#4": {
+  "t": "s",
+  "v": "{4;8}"
+ },
+ "WRAPROWS#5": {
+  "t": "s",
+  "v": "{1;2;3}"
+ },
+ "WRAPROWS#6": {
+  "t": "s",
+  "v": "{1;2;3:4;0;0}"
+ },
+ "WRAPCOLS#1": {
+  "t": "s",
+  "v": "{1:2:3}"
+ },
+ "WRAPCOLS#2": {
+  "t": "s",
+  "v": "{5}"
+ },
+ "WRAPCOLS#3": {
+  "t": "s",
+  "v": "{\"a\"}"
+ },
+ "F.TEST#1": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "F.TEST#2": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "F.TEST#3": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "F.TEST#4": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "FTEST#1": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "MIRR#1": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "MIRR#2": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "T.TEST#1": {
+  "t": "e",
+  "v": "NA"
+ },
+ "CORREL#1": {
+  "t": "e",
+  "v": "NA"
+ },
+ "IRR#1": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "SUMPRODUCT#1": {
+  "t": "n",
+  "v": 0
+ },
+ "XIRR#1": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "XIRR#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XIRR#3": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XIRR#4": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "XIRR#5": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XNPV#1": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "XNPV#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XNPV#3": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XNPV#4": {
+  "t": "e",
+  "v": "NUM"
+ },
+ "XNPV#5": {
+  "t": "n",
+  "v": -100
+ },
+ "MATCH#10": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MATCH#11": {
+  "t": "e",
+  "v": "NA"
+ },
+ "VLOOKUP#4": {
+  "t": "e",
+  "v": "NA"
+ },
+ "HLOOKUP#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "MATCH#12": {
+  "t": "e",
+  "v": "NA"
+ },
+ "MATCH#13": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "XLOOKUP#10": {
+  "t": "e",
+  "v": "SPILL"
+ },
+ "XLOOKUP#11": {
+  "t": "n",
+  "v": 3
+ },
+ "XNPV#6": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "XIRR#6": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "WRAPCOLS#4": {
+  "t": "s",
+  "v": "{1:2:3}"
+ }
+}
