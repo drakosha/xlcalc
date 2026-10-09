@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.8.0 (2026-10-10)
+
+Internal release; not published to npm. A locale is one file, and lookups and statistics measured at their edges in Excel.
+
+Added:
+
+- Contract: `LOCALES`, the package's locales by tag (`LOCALES.get('ru-RU') === ruRU`). The contract's comments name the locales by it instead of listing their tags.
+- A locale is one file of `src/locales/` and a line of its list (`src/locales/index.ts`): its formula text, which `bench/locale/generate.ts <tag>` writes between marks, its regional data and the widths of its script's letters. The tests against Excel and the harnesses of the Mac and of Windows take any locale of the list by its tag; a locale without Excel's answers skips its tests against Excel. `docs/locale.md` describes adding one.
+- Case sets measured in Excel for Mac and Windows with the engine's answers committed before: `stat-edges-held` (111 cases), `lookup-held` (19), `lookup-own-held` (9), and `lookup-rules` (14), measured after the misses.
+- A seeded test of sessions against full computations aimed at the range caches, in both execution modes.
+
+Changed:
+
+- The order of day, month and year in date text, the side the currency is read on, the published table of the code page and the widths of Cyrillic letters are data of a locale; names are compared by one locale-independent key. ru-RU and en-US compute as before.
+- `SORTBY` with an array of sort orders answers position by position, as Excel does: the orders are expanded as an operator's operands, each position gives the sort's error or its first value, the next ones a blank (`{2;-1}` gives `{#VALUE!;"thirteen"}`).
+- `LOOKUP` reads on past the end of a result that a spill, a function, parentheses or an operator answers, as it did past a reference written in the formula: a column down, a row or a cell to the right. It was `#REF!`.
+
+Known differences:
+
+- Variance, standard deviation, covariance, correlation and regression on data where doubles lose the scale (a small spread around 10^12, values near 1E-200, three values of 1E+308): the engine gives the exact answer, Excel for Mac and Windows lose digits, up to all of them, or answer `#NUM!` and `#DIV/0!` (40 cases).
+- `LINEST` over data with a large offset keeps fewer digits than Excel (2 against 14 over 10,000 rows near 10^12), while `SLOPE` is exact there.
+- `LOOKUP` in a cell it may read past its result's end is `#CYCLE!`, where Excel computes the cell it read: the engine counts every cell the lookup may read among the formula's references.
+
 ## 0.7.0 (2026-10-10)
 
 Internal release; not published to npm. Names checked in a book's locale and without the book, a budget for the range caches, and what Excel had not measured.
