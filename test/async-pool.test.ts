@@ -5,7 +5,7 @@
  * and running.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, compute, openSession, type BookInput, type Calc, type StructureOp } from '../src/index.js'
+import { CalcError, compute, openSession, type BookInput, type Calc, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
 import { pool } from './fixtures/pool.js'
@@ -241,6 +241,15 @@ describe('in threads', () => {
     const given = await made({ threads: 1, maxHeapMb: 64, limits: { spill: 100_000 } })
     expect((await given.compute(one('SEQUENCE(40000,2)'), { clock: CLOCK })).hash).toBe(compute(one('SEQUENCE(40000,2)'), { clock: CLOCK }).hash)
     expect((await fails(given.compute(one('SUM(SEQUENCE(1048577))')))).max).toBe(1_048_576)
+  }, 30_000)
+
+  it('a pool of 384 MB opens a running total over 10,000 rows: a sum of one range is not made whole', async () => {
+    const p = await made({ threads: 1, maxHeapMb: 384 })
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= 10_000; r++) { cells[`A${r}`] = { value: 1 }; cells[`B${r}`] = { formula: `SUM($A$1:A${r})` } }
+    const b: BookInput = { sheets: [{ name: 'S', cells }] }
+    const s = await p.openSession(b, { clock: CLOCK })
+    expect(await s.hash()).toBe(compute(b, { clock: CLOCK }).hash)
   }, 30_000)
 
   it('limits in a thread: CalcError with the cell', async () => {

@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { compute, openSession, type BookInput, type CellInput } from '../src/index.js'
-import { applyEdits, createState } from '../src/engine.js'
-import { Budget, CalcError, run, withBudget } from '../src/exec/budget.js'
-import { MAX_COLS } from '../src/model.js'
+import { createState } from '../src/engine.js'
+import { CalcError } from '../src/exec/budget.js'
 import { Rng } from '../src/values.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -55,14 +54,21 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
     } finally { s.close() }
   })
 
-  it('does not let intermediate checkpoints bypass a new range read limit', () => {
-    const state = createState({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] }, { now: 0, seed: 1, execution })
-    const read = (range: Rng) => withBudget(new Budget({ cells: 1024 }), () => state.rt.F.SUM(range))
-    const parent = new Rng(0, 0, 0, 511, MAX_COLS - 1)
-    expect(read(parent)).toBe(1)
-    run(applyEdits(state, [{ sheet: 'S', cell: 'E1000', input: { value: 1 } }]))
-    expect(read(parent)).toBe(1)
-    expect(() => read(new Rng(0, 0, 0, 255, MAX_COLS - 1))).toThrow(CalcError)
+  it('computes one range of more values than limits.cells, which a function that reads the range whole is refused', () => {
+    const cells: Record<string, CellInput> = {}
+    for (let r = 1; r <= 3000; r++) { cells[`A${r}`] = { value: r % 7 }; cells[`B${r}`] = { formula: `SUM($A$1:A${r})+COUNT($A$1:A${r})+MIN($A$1:A${r})+MAX($A$1:A${r})` } }
+    const book: BookInput = { sheets: [{ name: 'S', cells }] }
+    const limits = { cells: 1000 }
+    expect(compute(book, { clock, execution, limits }).hash).toBe(compute(book, { clock, execution }).hash)
+    const s = openSession(book, { clock, execution, display: false, limits })
+    try {
+      s.setCells([{ sheet: 'S', cell: 'A1500', input: { value: 100 } }])
+      expect(s.hash()).toBe(compute(s.book(), { clock, execution, display: false }).hash)
+    } finally { s.close() }
+    for (const formula of ['AVERAGE(A1:A3000)', 'SUM(A1:A3000,1)', 'SUM(A1:A3000*1)']) {
+      const e = (() => { try { compute({ sheets: [{ name: 'S', cells: { ...cells, D1: { formula } } }] }, { clock, execution, limits }) } catch (x) { return x } })()
+      expect(e instanceof CalcError && e.limit, formula).toBe('cells')
+    }
   })
 
   it('keeps horizontal prefixes and column extensions in their original addition order', () => {
