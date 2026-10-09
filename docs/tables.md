@@ -158,7 +158,7 @@ A number or a boolean typed into a header cell becomes its text (`2024`). A clea
 
 ### Copies and moves
 
-A formula copied or moved out of its table gets the table's name in its references: `[@Qty]*[@Price]` pasted outside is `Sales[@Qty]*Sales[@Price]`. A copy of a whole table is a new table, named after it with a number (`Sales3` from a book of one table, as Excel numbers it), whose formulas refer to the new table. A whole table cut and pasted moves, to another sheet too.
+A formula copied or moved out of its table gets the table's name in its references: `[@Qty]*[@Price]` pasted outside is `Sales[@Qty]*Sales[@Price]`. A copy of a whole table is a new table, named after it with a number (`Sales3` from a book of one table, as Excel numbers it), whose formulas refer to the new table. A whole table cut and pasted moves, to another sheet too. The formula of a calculated column, which a row inserted into the table gets, is copied and moved with the table as the formulas of its cells are: `A2*2` in a table pasted ten rows down becomes `A12*2`, and a reference to a cell left behind gets its sheet when the table moves to another sheet.
 
 A paste over header cells renames their columns to what lands there: the text of a value, or of a formula's value (a copy of `=SUM(Sales[Qty])` over a header gives the column the name `11`). Header cells cut away leave their columns named `Column1` and on.
 
@@ -173,7 +173,7 @@ A paste over header cells renames their columns to what lands there: the text of
 
 `convertTable` writes what Excel's Convert to Range writes: `Sales[Qty]` becomes `'S'!$B$2:$B$5`, `Sales[@Qty]` in row 4 becomes `'S'!$B4` (the row relative), `Sales[#All]` the whole range. A part the table lacks becomes the whole table (`Sales[[#Totals],[Qty]]` without a totals row is `'S'!$A$1:$D$5`), and in a name the formula's row of a column becomes the whole row of the table, as Excel converts them.
 
-Deleting a sheet takes the references to its tables: they become `#REF!`. Renaming it changes nothing, as tables are named without their sheet.
+Deleting a sheet takes the references to its tables: they become `#REF!`. Renaming it changes nothing, as tables are named without their sheet. A reference by address in the formula of a calculated column follows a renamed, moved or deleted sheet as in a cell's formula: `'S'!A2` becomes `'Data'!A2` when S is renamed to Data, and `#REF!A2` when S is deleted.
 
 ## xlsx
 

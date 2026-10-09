@@ -7,10 +7,10 @@
 import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
-import { contains, hi, isFull, lo, meets, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
+import { contains, hi, isFull, lo, meets, parseRange, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
 import { arrayRefusal, relocated } from './arrays.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
-import { rewriteCell, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { rewriteCell, rewriteNames, rewriteTemplates, sheetNames, type Outcome, type Transform } from './rewrite.js'
 
 type Pair = [number, number]
 
@@ -164,7 +164,9 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
         cells[addr] = next
       }
     }
-    return changed ? { ...s, cells } : s
+    // a table the move takes whole goes to `to` with its cells (`tables/moves.ts`), the others stay on their sheet
+    const tables = rewriteTemplates(s.tables, s.name, (ti) => (k === fk && contains(src, parseRange(ti.range)!) ? to : s.name), t, names)
+    return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
   })
   Object.assign(sheets.find((s) => sheetKey(s.name) === tk)!.cells, moved)
   const out: BookInput = { ...book, sheets }

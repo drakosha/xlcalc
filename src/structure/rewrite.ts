@@ -2,7 +2,7 @@
  * Rewriting the references of formula text in place: only the text of a changed reference is replaced,
  * the rest of the formula keeps its spelling. A formula that does not parse is left as written.
  */
-import type { BookInput, CellInput, NameInput } from '../contract.js'
+import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '../contract.js'
 import { FormulaError, parse, quoteSheet, sheetKey, tokenize, type Tok } from '../syntax.js'
 import { decode, encode, sameArea, type Area } from './area.js'
 
@@ -132,8 +132,27 @@ export function rewriteNames(names: NameInput[] | undefined, t: Transform, sheet
 }
 
 /**
- * Every formula of the book (and the names) rewritten in place, for operations that move no cells;
- * `rename` gives a sheet's new name.
+ * The formulas of a sheet's calculated columns rewritten as the formulas of their first data rows are: `host` is the
+ * sheet before the operation, `moved` gives a table's sheet after it. The same array when nothing changed.
+ */
+export function rewriteTemplates(tables: TableInput[] | undefined, host: string, moved: (table: TableInput) => string, t: Transform, sheets: Map<string, string>): TableInput[] | undefined {
+  if (!tables) return tables
+  let out: TableInput[] | undefined
+  tables.forEach((table, i) => {
+    let columns: TableColumn[] | undefined
+    table.columns.forEach((c, j) => {
+      if (c.formula === undefined) return
+      const formula = rewriteFormula(c.formula, host, moved(table), t, sheets)
+      if (formula !== c.formula) (columns ??= [...table.columns])[j] = { ...c, formula }
+    })
+    if (columns) (out ??= [...tables])[i] = { ...table, columns }
+  })
+  return out ?? tables
+}
+
+/**
+ * Every formula of the book (the names and the calculated columns too) rewritten in place, for operations that move
+ * no cells; `rename` gives a sheet's new name.
  */
 export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, string>, rename = (name: string) => name): BookInput {
   const out: BookInput = {
@@ -145,7 +164,8 @@ export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, s
         const next = rewriteCell(cell, s.name, name, t, sheets)
         if (next !== cell) (cells ??= { ...s.cells })[addr] = next
       }
-      return cells || name !== s.name ? { ...s, name, cells: cells ?? s.cells } : s
+      const tables = rewriteTemplates(s.tables, s.name, () => name, t, sheets)
+      return cells || name !== s.name || tables !== s.tables ? { ...s, name, cells: cells ?? s.cells, ...(tables ? { tables } : {}) } : s
     }),
   }
   const names = rewriteNames(book.names, t, sheets)
