@@ -1,5 +1,5 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
-import { inputHash, outNumber, valuesHash, type FillLine } from './canon.js'
+import { inputHash, outNumber, sheetOrder, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, CellView, Clock, ComputeResult } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
@@ -102,12 +102,15 @@ export function cellsIn(state: EngineState, s: number, x: Rect, display: boolean
   return out
 }
 
-/** The result; with `display` each cell's shown text and colour after its value. */
 /** The cells of sheet `s` a result lists, in order (input cells and the stored cells of spills), each with the formula it spilled from. */
 function eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined) => void) {
   const spill = spilled(state, s)
+  let last: string | undefined
   for (const addr of sortAddresses([...Object.keys(state.input.sheets[s].cells), ...spill.keys()])) {
     spend(1)
+    // once: an input cell that does not block a spill (a format or a style alone) is a spilled one too
+    if (addr === last) continue
+    last = addr
     f(addr, spill.get(addr))
   }
 }
@@ -119,42 +122,42 @@ function fillLines(state: EngineState, s: number, addr: string, value: CellValue
   for (const f of state.spills.on.get(state.at.get(key(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: rangeText(f), value })
 }
 
-const hashOf = (state: EngineState, values: Map<string, Map<string, CellValue>>, fills: FillLine[]) => valuesHash(values, CONFIG_VERSION, fills, state.input.locale, state.input.dateSystem, true)
+/** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */
+const hasher = (state: EngineState) => new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
 
 /** The values hash of a state, as its result gives it, without the cells' results (`Session.hash`). */
 export function stateHash(state: EngineState): string {
-  const values = new Map<string, Map<string, CellValue>>()
+  const w = hasher(state)
   const fills: FillLine[] = []
-  state.input.sheets.forEach((sheet, s) => {
-    const vals = new Map<string, CellValue>()
+  for (const s of sheetOrder(state.input.sheets.map((x) => x.name))) {
+    const quoted = JSON.stringify(state.input.sheets[s].name)
     eachCell(state, s, (addr) => {
       const { row, col } = parseAddress(addr)
-      vals.set(addr, outValue(toCellValue(valueAt(state, s, row, col))))
+      w.cell(quoted, addr, outValue(toCellValue(valueAt(state, s, row, col))), true)
       const id = state.at.get(key(s, row, col))
       const x = id === undefined ? undefined : state.spills.on.get(id)
       if (x?.fills.length) fillLines(state, s, addr, anchorFields(x).spillFill, fills)
     })
-    values.set(sheet.name, vals)
-  })
-  return hashOf(state, values, fills)
+  }
+  return w.hex(fills)
 }
 
+/** The result; with `display` each cell's shown text and colour after its value. Sheets are read in the hash's order, listed in the book's. */
 export function buildResult(state: EngineState, clock: Clock, t0: number, display: boolean): ComputeResult {
-  const values = new Map<string, Map<string, CellValue>>()
+  const w = hasher(state)
   const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
-  const sheets = state.input.sheets.map((sheet, s) => {
-    const cells: Record<string, CellResult> = {}
-    const vals = new Map<string, CellValue>()
+  const sheets = state.input.sheets.map(({ name }) => ({ name, cells: {} as Record<string, CellResult> }))
+  for (const s of sheetOrder(sheets.map((x) => x.name))) {
+    const { name, cells } = sheets[s]
+    const quoted = JSON.stringify(name)
     eachCell(state, s, (addr, spillOf) => {
       const out = cellResult(state, s, addr, look, spillOf)
       fillLines(state, s, addr, out.spillFill, fills)
       cells[addr] = out
-      vals.set(addr, out.value)
+      w.cell(quoted, addr, out.value, true)
     })
-    values.set(sheet.name, vals)
-    return { name: sheet.name, cells }
-  })
+  }
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
     .sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
@@ -165,7 +168,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
     nameIssues: state.nameIssues,
     volatile,
     clock: { ...clock },
-    hash: hashOf(state, values, fills),
+    hash: w.hex(fills),
     inputHash: inputHash(state.input),
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,

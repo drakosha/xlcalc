@@ -36,38 +36,65 @@ export interface FillLine {
   value: CellValue
 }
 
-/** Values, then fill ranges. `prepared`: buildResult's cells are already address-sorted and rounded by outNumber. */
-export function canonText(values: Map<string, Map<string, CellValue>>, fills: readonly FillLine[] = [], prepared = false): string {
-  const lines: string[] = []
-  for (const sheet of [...values.keys()].sort(byText)) {
-    const cells = values.get(sheet)!
-    const quoted = JSON.stringify(sheet)
-    for (const addr of prepared ? cells.keys() : sortAddresses(cells.keys())) {
-      const v = cells.get(addr)!
-      if (v !== null) lines.push(`${quoted}!${addr} ${prepared && typeof v === 'number' && Number.isFinite(v) ? `n ${String(v)}` : canonValue(v)}`)
-    }
-  }
-  const top = (f: FillLine) => f.range.split(':')[0]
-  for (const f of [...fills].sort((a, b) => byText(a.sheet, b.sheet) || compareAddress(top(a), top(b)))) lines.push(`${JSON.stringify(f.sheet)}!${f.range} ${canonValue(f.value)}`)
-  return lines.join('\n')
-}
+/** Sheets in the order of the canonical text: by name, code unit by code unit. */
+export const sheetOrder = (names: readonly string[]): number[] => names.map((_, i) => i).sort((a, b) => byText(names[a], names[b]))
 
 /** A locale that takes part in the hashes: one given and not en-US, so books computed as before hash as before. */
 const hashedLocale = (locale: string | undefined): string | undefined => (locale === DEFAULT_LOCALE ? undefined : locale)
 
-/**
- * The values hash: the configuration version, `;locale=<tag>` for a book in a locale other than en-US, `;date1904`
- * for a book in the 1904 date system, the values and fills. `prepared` has canonText's internal result-map contract.
- */
+/** Lines hashed at once. */
+const PORTION = 1024
+
+/** The values hash written as the lines come, without the canonical text or a map of the values: lines joined by `\n`, none after the last. */
+export class ValuesHasher {
+  private readonly h = new Sha256()
+  /** Lines not hashed yet: a portion is hashed as one joined string, faster than a string per line. */
+  private pending: string[] = []
+  private started = false
+
+  /** The header: the configuration version, `;locale=<tag>` for a locale other than en-US, `;date1904` for the 1904 system, `\n`. */
+  constructor(configVersion: string, locale?: string, dateSystem?: 1900 | 1904) {
+    const tag = hashedLocale(locale)
+    this.h.update(`${configVersion}${tag === undefined ? '' : `;locale=${tag}`}${dateSystem === 1904 ? ';date1904' : ''}\n`)
+  }
+
+  /** A cell's line, none for an empty cell; cells come by sheet (`sheetOrder`), then address, each once. `prepared`: rounded by outNumber already. */
+  cell(quoted: string, addr: string, v: CellValue, prepared: boolean): void {
+    if (v !== null) this.line(`${quoted}!${addr} ${prepared && typeof v === 'number' && Number.isFinite(v) ? `n ${String(v)}` : canonValue(v)}`)
+  }
+
+  /** The digest after the fills' lines, by sheet, then top-left cell. The hasher must not be used afterwards. */
+  hex(fills: readonly FillLine[]): string {
+    const top = (f: FillLine) => f.range.split(':')[0]
+    for (const f of [...fills].sort((a, b) => byText(a.sheet, b.sheet) || compareAddress(top(a), top(b)))) this.line(`${JSON.stringify(f.sheet)}!${f.range} ${canonValue(f.value)}`)
+    this.flush()
+    return this.h.hex()
+  }
+
+  private line(text: string): void {
+    if (this.pending.push(text) === PORTION) this.flush()
+  }
+
+  /** Whole lines per update, so a character is never split between two. */
+  private flush(): void {
+    if (!this.pending.length) return
+    if (this.started) this.h.update('\n')
+    this.h.update(this.pending.join('\n'))
+    this.pending = []
+    this.started = true
+  }
+}
+
+/** The values hash of values by sheet name and address; `prepared`: a result's, by address already and rounded by outNumber. */
 export function valuesHash(values: Map<string, Map<string, CellValue>>, configVersion: string, fills: readonly FillLine[] = [], locale?: string, dateSystem?: 1900 | 1904, prepared = false): string {
-  const tag = hashedLocale(locale)
-  return new Sha256()
-    .update(configVersion)
-    .update(tag === undefined ? '' : `;locale=${tag}`)
-    .update(dateSystem === 1904 ? ';date1904' : '')
-    .update('\n')
-    .update(canonText(values, fills, prepared))
-    .hex()
+  const w = new ValuesHasher(configVersion, locale, dateSystem)
+  const names = [...values.keys()]
+  for (const i of sheetOrder(names)) {
+    const cells = values.get(names[i])!
+    const quoted = JSON.stringify(names[i])
+    for (const addr of prepared ? cells.keys() : sortAddresses(cells.keys())) w.cell(quoted, addr, cells.get(addr)!, prepared)
+  }
+  return w.hex(fills)
 }
 
 /** JSON with sorted object keys: the order of fields in the input does not affect the hash. */
