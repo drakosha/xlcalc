@@ -292,22 +292,22 @@ async function stepProbes(set: string | undefined, tag: string, legacy = false) 
 }
 
 const step = process.argv[2]
-/** The locale the step's last argument names (`en`, `ru` or a tag), en-US when none. */
-const tagAt = (i: number) => parseTag(process.argv[i])
+/** The locale a step names (`excel <locale>`, `probes|display|tables <set> <locale>`), en-US when none: read before Excel's lock is taken. */
+const locale = parseTag(process.argv[step === 'excel' ? 3 : 4])
 const t0 = Date.now()
 if (step === 'cases') await stepCases()
 else if (step === 'fj') await stepFj()
 else if (step === 'lo') await stepLo()
-else if (step === 'excel') await withExcelLock(() => stepExcel(tagAt(3)))
+else if (step === 'excel') await withExcelLock(() => stepExcel(locale))
 else if (step === 'report') writeReport(resultFile, REPORT)
-else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], tagAt(4)))
+else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], locale))
 else if (step === 'legacy') await withExcelLock(() => stepProbes(process.argv[3], 'en-US', true))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
-else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], tagAt(4)))
+else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], locale))
 else if (step === 'xlsx') await withExcelLock(() => stepXlsx(process.argv[3]))
 else if (step === 'workbook') await withExcelLock(() => stepWorkbook(process.argv[3]))
-else if (step === 'tables') await withExcelLock(() => stepTables(process.argv[3], tagAt(4)))
+else if (step === 'tables') await withExcelLock(() => stepTables(process.argv[3], locale))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
