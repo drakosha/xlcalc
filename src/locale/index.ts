@@ -76,13 +76,13 @@ const result = (r: ReturnType<typeof translate>): Translation => (r.ok ? { ok: t
 export function toLocal(formula: string, locale: Locale, opts: { table?: string } = {}): Translation {
   const s = sidesOf(locale)
   if (opts.table !== undefined) checkString(opts.table, 'opts.table')
-  return result(translate(shownTables(checkString(formula, 'formula'), opts.table), s.invariant, s.local))
+  return result(translate(shownTables(checkString(formula, 'formula'), opts.table, s.local.syn.list), s.invariant, s.local))
 }
 
 const SPACE = new Set([' ', '\t', '\n', '\r'])
 
-/** The structured references of a formula as Excel shows them (`toLocal`); a formula that does not parse as it is. */
-function shownTables(formula: string, table: string | undefined): string {
+/** The structured references of a formula as Excel shows them in a locale with the list separator `list` (`toLocal`); a formula that does not parse as it is. */
+function shownTables(formula: string, table: string | undefined, list: string): string {
   if (!formula.includes('[')) return formula
   let toks: Tok[]
   try {
@@ -101,7 +101,7 @@ function shownTables(formula: string, table: string | undefined): string {
     while (end > tok.at && SPACE.has(formula[end - 1])) end--
     const own = table !== undefined && (tok.table === null || sheetKey(tok.table) === sheetKey(table))
     const name = own && unnamedInTable(tok.spec) ? '' : (tok.table ?? table ?? '')
-    const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec)}]`
+    const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec, {}, list)}]`
     out += formula.slice(pos, tok.at) + text
     pos = end
   }

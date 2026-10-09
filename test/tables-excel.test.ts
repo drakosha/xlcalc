@@ -31,6 +31,7 @@ const KNOWN: Readonly<Record<string, string>> = {
   'names-ru-tables-held:rename-bool': 'a table renamed ИСТИНА in ru-RU: Excel for Mac keeps the name, Excel for Windows makes ИСТИНА_ of it as of a defined name; renameTable refuses with table_name, as Windows',
   'names-ru-tables-held:rename-bool-lower': 'a table renamed ложь in ru-RU: Excel for Mac keeps the name, Excel for Windows makes ложь_ of it as of a defined name; renameTable refuses with table_name, as Windows',
   'names-ru-tables-held:rename-true': "a table renamed TRUE in ru-RU, a name Excel for Mac does not take: its object model makes one (TRUE_); renameTable refuses with table_name",
+  'headers-ru-held:text-iso': 'text typed into a header cell that Excel reads as a date (2025-01-31): Excel names the column by the date as it shows it (31.01.2025); setCells takes text as text, and the column is named 2025-01-31',
 }
 
 describe.each(SETS)('tables $sub$name', (set) => {

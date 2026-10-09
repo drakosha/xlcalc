@@ -142,19 +142,20 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
   return { spec: cols ? { areas: sorted, cols } : { areas: sorted }, end: j + 1 }
 }
 
-/** Characters of a column name that Excel shows in brackets after `@` (`[@[Unit Price]]`). */
-const SPECIAL = /[\s,:.[\]#'"{}$^&*+=\-<>/@]/
+/** Characters of a column name that Excel shows in brackets after `@` (`[@[Unit Price]]`), with the list separator of the formula's locale. */
+const SPECIAL = /[\s:.[\]#'"{}$^&*+=\-<>/@]/
 
 /**
  * The text between a structured reference's brackets as Excel shows it: the formula's row as `@` (`@Qty`, `@[Unit
- * Price]`, `@[Qty]:[Price]`, `@` alone), the rest as stored.
+ * Price]`, `@[Qty]:[Price]`, `@` alone), the rest as stored. `list`, the list separator of the locale it is shown in,
+ * puts a name in brackets after `@` too (`@[1,5]` in en-US, `@1,5` in ru-RU: the set `tables/headers-ru-held`).
  */
-export function shownSpec(spec: TableSpec, style: SpecStyle = {}): string {
+export function shownSpec(spec: TableSpec, style: SpecStyle = {}, list = ','): string {
   if (spec.areas.length !== 1 || spec.areas[0] !== 'row') return specText(spec, style)
   if (!spec.cols) return '@'
   const [a, b] = spec.cols
   if (b !== undefined) return `@[${escapeColumn(a)}]:[${escapeColumn(b)}]`
-  return SPECIAL.test(a) ? `@[${escapeColumn(a)}]` : `@${escapeColumn(a)}`
+  return SPECIAL.test(a) || a.includes(list) ? `@[${escapeColumn(a)}]` : `@${escapeColumn(a)}`
 }
 
 /** Whether Excel shows a reference in its own table without the table's name: one column or a span, of the data or the formula's row. */

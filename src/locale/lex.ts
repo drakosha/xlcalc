@@ -61,11 +61,13 @@ function bracketEnd(src: string, i: number): number {
 
 /**
  * A structured reference's brackets with its specifiers in other words (`#Data` as `#Данные`, `words` mapping upper-case
- * words of one side to the other's) and its items' separator `from` as `to`; null when the brackets do not close.
+ * words of one side to the other's) and its items' separator `from` as `to`; null when the brackets do not close. A
+ * column written alone (`Sales[1,5]`, `[@1,5]`) has no items: a separator there is part of its name.
  */
 export function tableText(run: string, words: ReadonlyMap<string, string>, from: string, to: string): string {
   let out = ''
   let depth = 0
+  const items = run.slice(1).trimStart().startsWith('[')
   for (let j = 0; j < run.length; j++) {
     const ch = run[j]
     if (ch === "'") {
@@ -75,7 +77,7 @@ export function tableText(run: string, words: ReadonlyMap<string, string>, from:
     }
     if (ch === '[') depth++
     else if (ch === ']') depth--
-    else if (ch === from && depth === 1) {
+    else if (ch === from && depth === 1 && items) {
       out += to
       continue
     } else if (ch === '#' && run[j - 1] === '[') {

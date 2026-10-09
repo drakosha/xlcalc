@@ -7,7 +7,7 @@
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call.
  */
-import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, CellView, Clock, ComputeResult, Explanation, ExplainOptions, LayoutEdit, NameInput, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
+import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, CellView, Clock, ComputeResult, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
@@ -50,6 +50,18 @@ export interface SessionSteps {
   result(): Steps<ComputeResult>
   hash(): Steps<string>
   close(): void
+}
+
+/**
+ * The name a number or a boolean typed into a header cell gives its column: as the cell's own number format shows it,
+ * without the column's width (`1,50` by `0.00`, `31.01.2025` by the short date in ru-RU), or as `&` writes it where the
+ * format shows it as General does (`0,000000001`, not `1E-09`): the set `tables/headers-ru-held`.
+ */
+function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined): string {
+  const plain = String(s.ctx.rules.toText(v))
+  if (format === undefined || typeof v !== 'number') return plain
+  const shown = s.ctx.rules.display(v, format, Infinity).text
+  return shown === s.ctx.rules.display(v, undefined, Infinity).text ? plain : shown
 }
 
 /** Opens a session in steps: the book checked, then computed. */
@@ -113,7 +125,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkEdits(edits, sheetIndex(s), styleCount(s))
       checkArrayEdits(s, edits)
       // a table's header cell typed over renames its column and the references to it: the book is built again
-      const renamed = headerEdits(s.input, edits, (v) => String(s.ctx.rules.toText(v)))
+      const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
       if (renamed) {
         const at = clock
         if (live) tick(s)
