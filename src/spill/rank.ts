@@ -6,6 +6,7 @@
  * the one further down.
  */
 import type { EngineState } from '../engine.js'
+import { indegrees, releaseReady } from '../graph/order.js'
 
 /** Formula `a` spills where its array and `b`'s meet. */
 export function beats(state: EngineState, a: number, b: number): boolean {
@@ -24,15 +25,15 @@ function ranks(state: EngineState): Map<number, number> {
     const [x, y] = [place(a), place(b)]
     return y[0] - x[0] || y[1] - x[1] || y[2] - x[2]
   }
-  const indeg = new Array<number>(formulas.length).fill(0)
-  for (const f of formulas) if (f) for (const n of succ[f.id]) indeg[n]++
+  const indeg = indegrees(succ)
   const heap = new Heap(before)
   formulas.forEach((f, id) => f && indeg[id] === 0 && heap.push(id))
+  const ready = (id: number) => heap.push(id)
   const out = new Map<number, number>()
   while (heap.size) {
     const id = heap.pop()
     out.set(id, out.size)
-    for (const n of succ[id]) if (--indeg[n] === 0) heap.push(n)
+    releaseReady(id, succ, indeg, formulas.length, ready)
   }
   return out
 }

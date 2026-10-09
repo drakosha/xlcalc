@@ -8,7 +8,7 @@ import { Arr } from './arrays/value.js'
 import { key, type EngineState, type Formula } from './engine.js'
 import { due, located, step, type Steps } from './exec/budget.js'
 import { formatAddress } from './model.js'
-import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
+import { descendants, markVolatile, readersOf, rebuildGraph } from './graph.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { describeAt, endSpill, fixed, release, spill } from './spill/place.js'
 import type { Area } from './spill/state.js'
@@ -170,14 +170,7 @@ const spillCycle = (state: EngineState) => [...state.spills.claims.keys()].some(
 
 /** The formulas of `dirty` and what depends on them: in topological order, then those in a cycle. */
 function ordered(state: EngineState, dirty: Set<number>): [number[], number[]] {
-  const stack = [...dirty]
-  while (stack.length)
-    for (const n of successors(state, stack.pop()!))
-      if (!dirty.has(n)) {
-        dirty.add(n)
-        stack.push(n)
-      }
-  const live = [...dirty].filter((id) => state.formulas[id])
+  const live = [...descendants(state, dirty)].filter((id) => state.formulas[id])
   return [live.filter((id) => state.topo[id] >= 0).sort((a, b) => state.topo[a] - state.topo[b]), live.filter((id) => state.topo[id] < 0)]
 }
 
