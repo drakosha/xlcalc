@@ -173,7 +173,7 @@ console.log(validateFormula("sum(Sales!b1:b3, 'Q1 data'!A1)", { sheets: ['Sales'
 // → SUM('Sales'!B1:B3,'Q1 data'!A1)
 const bad = validateFormula('SUM(B1:B3', { sheets: ['Sales'] })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax expected ), found end of formula 9
-console.log(validateName('Q1').ok, validateName('tax_rate').ok) // → false true
+console.log(validateName('Q1').ok, validateName('tax_rate').ok, validateName('Ставка').ok) // → false true true
 ```
 
 Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to another workbook), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
@@ -202,7 +202,7 @@ const result = compute({
 console.log(result.sheets[1].cells.A1.value) // → 3
 ```
 
-A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in `nameIssues`.
+A name follows Excel's rules for names, in letters of any script (`Ставка`, `НДС_2025`), and is compared in any case: `ставка` is the name `Ставка`. A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in `nameIssues`.
 
 A name can hold any formula: a constant (`0.2`), a calculation (`'Data'!$B$1*2`), a reference from `INDEX`, a union. A reference without `$` moves with the cell that uses the name. [docs/names.md](docs/names.md) has the rules.
 

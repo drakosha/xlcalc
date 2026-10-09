@@ -9,17 +9,8 @@ import { parseMerge } from '../layout/merges.js'
 import { formatAddress } from '../model.js'
 import { arrayArea } from '../array-areas.js'
 import { meets, parseRange, type Rect } from '../structure/area.js'
+import { nameProblem } from '../syntax.js'
 import { tableKey } from './model.js'
-
-const NAME = /^[\p{L}_\\][\p{L}\p{N}_.]{0,254}$/u
-
-/** Why Excel would not take a table name (null when it would): its rules for names, the namespace aside. */
-export function tableNameProblem(name: string): string | null {
-  if (!NAME.test(name)) return 'a table name starts with a letter, _ or \\ and has only letters, digits, _ and . (255 characters at most)'
-  if (/^[A-Za-z]{1,3}[0-9]+$/.test(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'a table name must not look like a cell address or an R1C1 reference'
-  if (/^(TRUE|FALSE)$/i.test(name)) return 'TRUE and FALSE are reserved'
-  return null
-}
 
 const TOTALS = ['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom']
 
@@ -47,7 +38,7 @@ function table(v: unknown, path: string, cells: Record<string, CellInput>): Rect
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   only(v, path, ['name', 'range', 'headers', 'totals', 'columns'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
-  const problem = tableNameProblem(v.name)
+  const problem = nameProblem(v.name)
   if (problem) throw new InputError(`${path}.name`, `${JSON.stringify(v.name)}: ${problem}`)
   const x = typeof v.range === 'string' && /^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(v.range) ? parseRange(v.range) : null
   if (!x) throw new InputError(`${path}.range`, `expected a range such as "B2:E10" within the sheet, got ${JSON.stringify(v.range)}`)

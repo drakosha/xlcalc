@@ -91,8 +91,8 @@ describe('formula parsing', () => {
     expect(code('BALANCE("x")')).toBe('unknown_function')
   })
 
-  it('names: Latin, not an address, not R1C1, not TRUE', () => {
-    expect(validateName('data_amt').ok).toBe(true)
-    for (const bad of ['Q1', 'R1C1', 'TRUE', 'Сумма', '1x', 'a b']) expect(validateName(bad).ok).toBe(false)
+  it('names: letters of any script, not an address, not R1C1, not TRUE', () => {
+    for (const ok of ['data_amt', 'Сумма']) expect(validateName(ok).ok).toBe(true)
+    for (const bad of ['Q1', 'R1C1', 'R', 'TRUE', '1x', 'a b']) expect(validateName(bad).ok).toBe(false)
   })
 })

@@ -178,7 +178,11 @@ export interface TableColumn {
 export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 
 export interface NameInput {
-  /** Latin letters, digits, `_` and `.`; not a cell address, not R1C1, not TRUE/FALSE. */
+  /**
+   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`,
+   * at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE (`Ставка`,
+   * `НДС_2025` and `АБ12` are names). Compared in any case: `ставка` is the name `Ставка`.
+   */
   name: string
   /**
    * What the name refers to: a formula without `=`, as Excel's "Refers to" and xlsx `<definedName>` hold it. A
