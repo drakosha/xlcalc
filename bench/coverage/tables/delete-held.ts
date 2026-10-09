@@ -2,8 +2,8 @@
  * Held out: rows deleted that take one table whole and part of another, predicted by the engine before Excel took them
  * (`delete-held.predicted.json`, from `predict.ts`): a table below or beside the other gone with some of the other's
  * data rows, its last rows, its totals row, all its data, its first rows; the other's header row among the rows; a
- * table without a header row cut; columns deleted the same way. Formulas over both tables are on Other, which no
- * deletion touches, and below them on S.
+ * table without a header row cut; columns deleted the same way. Then, predicted after Excel refused all of those, both
+ * tables taken whole. Formulas over both tables are on Other, which no deletion touches, and below them on S.
  */
 import type { StructureOp } from '../../../src/contract.js'
 import { book, on, sales, table, type CellSpec, type TableCase } from './cases.js'
@@ -56,5 +56,9 @@ export function buildTableCases(): TableCase[] {
   add('side-header', "a table beside Sales gone with Sales's header row and first two data rows", rows(1, 3), ['Side', 'a', 'b', 'F1:G3'], sales(), side('F1', 2))
   const cols: StructureOp = { op: 'deleteColumns', sheet: 'S', column: 'D', count: 4 }
   add('columns-side', "a table right of Sales gone with Sales's last column, the calculated one", cols, ['Side', 'a', 'b', 'F1:G3'], sales(), side('F1', 2))
+  // both tables whole: rows, and columns
+  add('both-whole-below', 'Sales and the table below it gone whole, with the rows between', rows(1, 10), ['Below', 'x', 'y', 'A8:B10'], sales(), below())
+  add('both-whole-side', 'Sales and a table beside it gone whole', rows(1, 5), ['Side', 'a', 'b', 'F1:G3'], sales(), side('F1', 2))
+  add('columns-both-whole', 'Sales and a table right of it gone whole with their columns', { op: 'deleteColumns', sheet: 'S', column: 'A', count: 7 }, ['Side', 'a', 'b', 'F1:G3'], sales(), side('F1', 2))
   return cases
 }

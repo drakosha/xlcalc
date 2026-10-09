@@ -1475,5 +1475,214 @@
    }
   ],
   "refused": []
+ },
+ "both-whole-below": {
+  "values": {
+   "S!A4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!B4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A6": {
+    "t": "e",
+    "v": "REF"
+   }
+  },
+  "formulas": {
+   "S!A4": "SUM(#REF!)",
+   "S!B4": "SUM(#REF!)",
+   "Other!A1": "SUM(#REF!)",
+   "Other!B1": "SUM(#REF!)",
+   "Other!A2": "ROWS(#REF!)",
+   "Other!B2": "ROWS(#REF!)",
+   "Other!A3": "SUM(#REF!)",
+   "Other!B3": "SUM(#REF!)",
+   "Other!A4": "COLUMNS(#REF!)",
+   "Other!B4": "SUM('S'!#REF!)",
+   "Other!A5": "SUM('S'!#REF!)",
+   "Other!B5": "#REF!",
+   "Other!A6": "#REF!"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "both-whole-side": {
+  "values": {
+   "S!A9": {
+    "t": "e",
+    "v": "REF"
+   },
+   "S!B9": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A6": {
+    "t": "e",
+    "v": "REF"
+   }
+  },
+  "formulas": {
+   "S!A9": "SUM(#REF!)",
+   "S!B9": "SUM(#REF!)",
+   "Other!A1": "SUM(#REF!)",
+   "Other!B1": "SUM(#REF!)",
+   "Other!A2": "ROWS(#REF!)",
+   "Other!B2": "ROWS(#REF!)",
+   "Other!A3": "SUM(#REF!)",
+   "Other!B3": "SUM(#REF!)",
+   "Other!A4": "COLUMNS(#REF!)",
+   "Other!B4": "SUM('S'!#REF!)",
+   "Other!A5": "SUM('S'!#REF!)",
+   "Other!B5": "#REF!",
+   "Other!A6": "#REF!"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "columns-both-whole": {
+  "values": {
+   "Other!A1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B1": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B2": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B3": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B4": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!B5": {
+    "t": "e",
+    "v": "REF"
+   },
+   "Other!A6": {
+    "t": "e",
+    "v": "REF"
+   }
+  },
+  "formulas": {
+   "Other!A1": "SUM(#REF!)",
+   "Other!B1": "SUM(#REF!)",
+   "Other!A2": "ROWS(#REF!)",
+   "Other!B2": "ROWS(#REF!)",
+   "Other!A3": "SUM(#REF!)",
+   "Other!B3": "SUM(#REF!)",
+   "Other!A4": "COLUMNS(#REF!)",
+   "Other!B4": "SUM('S'!#REF!)",
+   "Other!A5": "SUM('S'!#REF!)",
+   "Other!B5": "#REF!",
+   "Other!A6": "#REF!"
+  },
+  "tables": [],
+  "refused": []
  }
 }
