@@ -751,7 +751,8 @@ export interface CalcPoolOptions {
   maxSessionsPerThread?: number
   /**
    * The limits of every computation that gives none. With `maxHeapMb` and without `cells`, `cells` is
-   * `maxHeapMb · 2^20 / 32`: one array larger than a thread's heap stops the whole process, not the thread.
+   * `maxHeapMb · 2^20 / 1024`: one allocation larger than what a thread's heap has left (a large array, the cells of a
+   * large spill) stops the whole process, not the thread.
    */
   limits?: CalcLimits
   /** Calls kept in a session's journal before the pool takes a new snapshot of its book; 64 by default. */
