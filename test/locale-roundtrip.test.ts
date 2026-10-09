@@ -1,11 +1,11 @@
 /**
  * The round trip: every formula of the coverage measurement, the Excel case sets and the probes, in the
- * engine's canonical form, shown in a locale and read back, is the same text. A formula the parser does
- * not take goes round as it is written.
+ * engine's canonical form, shown in each of the package's locales (`LOCALES`) and read back, is the same text. A
+ * formula the parser does not take goes round as it is written.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { enUS, ruRU, toInvariant, toLocal, type Locale } from '../src/index.js'
+import { LOCALES, ruRU, toInvariant, toLocal } from '../src/index.js'
 import { canonical, parse } from '../src/syntax.js'
 import { CASES, engineFormula } from './excel-cases.js'
 import { SETS } from './excel-sets.js'
@@ -27,7 +27,7 @@ describe('round trip through a locale', () => {
     expect(FORMULAS.length).toBeGreaterThan(14_000)
   })
 
-  for (const loc of [ruRU, enUS] as Locale[]) {
+  for (const loc of LOCALES.values()) {
     it(`${loc.tag}: toInvariant(toLocal(f)) is f for every formula`, () => {
       const off = FORMULAS.flatMap((f) => {
         const shown = toLocal(f, loc)
