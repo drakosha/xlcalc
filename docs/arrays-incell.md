@@ -73,6 +73,8 @@ A case whose answer is an array is checked through a wrapper that returns one va
 
 All case sets of the library are computed as dynamic array formulas, so the whole acceptance follows Excel 365.
 
+The set `known-held` (37 cases) was predicted before Excel computed it, to check rules taken from a few answers of the random check: `SORTBY` with an array of orders, `LOOKUP` past the end of a shorter result, `IFS` with a condition of text under `ROWS`, `TYPE` and `VSTACK`, and `SWITCH`, `IF` and `CHOOSE` beside it. Excel for Mac and Excel for Windows gave the same 37 answers, and 26 came out as predicted. The 11 misses are now the engine's rules: `SORTBY` answers by position rather than element by element (6), and `LOOKUP` reads a result of one cell as a row, reads on with a computed lookup array and reads a blank past the sheet's end (5). All 11 `IFS` cases came out as predicted.
+
 The shared collector and array helpers were additionally compared with frozen build `69b4d1f` in both execution modes and locales: 2,600 complete results matched in values, issues and both hashes, including edits, whole-column fills, row/column selection, old-style arrays and conditional aggregates. Across 672 limit checks, the result or cell-limit error also matched at limits of 4, 20 and 100 values. These used local builds and the saved Excel fixtures, without a live Excel run.
 
 On Node 26.7, 2026-10-09, seven alternating measured pairs after two warmup pairs (ten calls per sample) gave these medians for arrays of 34,000 elements. MAXA and AVERAGEA used mixed numbers, text and booleans; FILTER retained every third row; CHOOSECOLS selected the same column three times.

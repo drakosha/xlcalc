@@ -89,6 +89,8 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
 
+The sets `known-held` and `legacy/ifs-text` (45 formulas) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all 45 answers are the Mac's.
+
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 
 - Its regional data in ru-RU: Latin sorts before Cyrillic (`"a"<"а"` is TRUE), month names have a capital (`Январь`) and short ones three letters (`фев`, `ноя`), the short and long time no leading zero; built-in formats by number take Windows's own codes (en-US 14 is `m/d/yyyy`). The engine follows Windows, but for the long date `[$-F800]`, which has no weekday on Windows and keeps the Mac's here.
