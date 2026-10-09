@@ -216,6 +216,15 @@ describe('in threads', () => {
     for (const fits of [one('SUM(SEQUENCE(1048576))'), one('SEQUENCE(32768,2)')]) expect((await p.compute(fits, { clock: CLOCK })).hash).toBe(compute(fits, { clock: CLOCK }).hash)
   })
 
+  it("a call's limits keep the bounds the heap gives where they do not give their own", async () => {
+    const p = await made({ threads: 1, maxHeapMb: 64 })
+    const array = await fails(p.compute(one('SUM(SEQUENCE(2000000))'), { limits: { formulas: 1_000 } }))
+    expect([array.code, array.limit, array.max]).toEqual(['limit', 'cells', 1_048_576])
+    const s = await p.openSession(one('1'), { clock: CLOCK, limits: { formulas: 1_000 } })
+    const spill = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SEQUENCE(40000,2)' } }]))
+    expect([spill.code, spill.limit, spill.max]).toEqual(['limit', 'spill', 65_536])
+  }, 30_000)
+
   it('a pool of 384 MB computes SUM(SEQUENCE(500000)) and TOCOL of a whole column; its spills stay bounded by the heap', async () => {
     const p = await made({ threads: 1, maxHeapMb: 384 })
     const data = { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 } }

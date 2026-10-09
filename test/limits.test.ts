@@ -92,6 +92,17 @@ describe('limits', () => {
     await calc.close()
   })
 
+  it("a call's limits take the place of the calculator's field by field: the fields it does not give stay", async () => {
+    const calc = createInlineCalc({ limits: { cells: 1_000 } })
+    const b = book({ A1: { formula: 'SUM(SEQUENCE(2000))' } })
+    const e = (await calc.compute(b, { clock, limits: { formulas: 10 } }).catch((x: unknown) => x)) as CalcError
+    expect([e.code, e.limit, e.max]).toEqual(['limit', 'cells', 1_000])
+    const s = await calc.openSession(book({ A1: { value: 1 } }), { clock, limits: { formulas: 10 } })
+    const f = (await s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(2000))' } }]).catch((x: unknown) => x)) as CalcError
+    expect([f.code, f.limit, f.max]).toEqual(['limit', 'cells', 1_000])
+    await calc.close()
+  })
+
   it('a session call over the limits changes nothing, and the session goes on', () => {
     const b = book({ A1: { value: 2 }, A2: { formula: 'A1*10' }, A3: { formula: 'SUM(A1:A2)' } })
     const s = openSession(b, { clock, limits: { formulas: 3, cells: 10_000 } })
