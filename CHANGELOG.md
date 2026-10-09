@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0 (2026-10-09)
+
+Internal release; not published to npm. A thread pool's default limit on one array measured, and in the same thread a result that gives way to the event loop and a structure operation that stops at its deadline.
+
+Changed:
+
+- A pool with `maxHeapMb` and without `limits.cells` takes `cells` of `maxHeapMb · 2^20 / 1024`, a value per KB of heap (262,144 values for 256 MB; it was a 32nd of the heap's bytes, 8 million values). Measured on Node 24 and 26 with heaps of 256 to 1024 MB: a large spill read by `compute`, `result()`, `hash()` or `setCells` brought the whole process down from 300 bytes of heap per value (1.57 million values in a heap of 384 MB), which the old default let through; other arrays from 30 bytes. Formulas over whole columns are computed on their occupied rows and stay within the limit; an array over it, such as `TOCOL(A:A)` or `SEQUENCE(500000)` in a pool of 384 MB, is `CalcError` with `limit`, and `limits.cells` given to the pool allows more.
+- Contract: the doc of `CalcPoolOptions.limits` names the new default and why.
+- In the same thread (`createInlineCalc`) `result()`, `hash()` and `cells()` give way to the event loop between portions, as a computation does: on the synthetic book of 34,000 rows the event loop waits about 50 ms at most, where `result()` held it for its whole second.
+- A structure operation checks the deadline and the signal as it rewrites and moves cells: a session's `restructure` with `timeoutMs` stops with `soft_timeout` and leaves the session as it was (47 ms with `timeoutMs: 20` on the synthetic book of 34,000 rows, where it ran 1.9 s). In the same thread a signal that fires while it runs is seen when it ends. Structure operations walk a sheet's cells by their keys, which makes them faster on large sheets.
+
+Added:
+
+- The thread pool is checked in headless Firefox and WebKit besides Chromium, with Node's hashes in each; WebKit stands for Safari.
+
 ## 0.4.4 (2026-10-09)
 
 Internal release; not published to npm. Fixes from a second review (calculated columns under copies, moves and sheet operations, long lists of dependents, the thread pool's fallback to objects), text with a line break read as a number, and a faster `Session.hash()`.
