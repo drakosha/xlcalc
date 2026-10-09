@@ -143,6 +143,17 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     expect((await writeXlsx({ ...ru, locale: 'en-US' })).issues).toEqual([])
   })
 
+  it('a table takes ? and \\ inside its name, and in a ru-RU book the name ИСТИНА, which a defined name may not (tables/names-tables-held, names-ru-tables-held)', () => {
+    const cells = { A1: { value: 'Кол' }, A2: { value: 1 }, B1: { formula: 'SUM(T[Кол])' } }
+    const withTable = (locale?: string): BookInput => ({ sheets: [{ name: 'S', cells, tables: [{ name: 'T', range: 'A1:A2', columns: [{ name: 'Кол' }] }] }], ...(locale ? { locale } : {}) })
+    for (const name of ['Прод?ажи', 'Прод\\ажи']) expect(restructure(withTable(), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: true })
+    expect(restructure(withTable(), { op: 'renameTable', table: 'T', name: '?Продажи' })).toMatchObject({ ok: false, code: 'table_name' })
+    const r = restructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name: 'ИСТИНА' })
+    expect(r.ok && r.book.sheets[0].cells.B1).toEqual({ formula: 'SUM(ИСТИНА[Кол])' })
+    expect(restructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name: 'TRUE' })).toMatchObject({ ok: false, code: 'table_name' })
+    expect(toLocal('SUM(ИСТИНА[Кол])', ruRU)).toEqual({ ok: true, formula: 'СУММ(ИСТИНА[Кол])' })
+  })
+
   it('toLocal quotes a name that reads as a boolean of the locale, as Excel ru-RU shows it, and toInvariant reads it back', () => {
     expect(toLocal('ИСТИНА+1', ruRU)).toEqual({ ok: true, formula: "'ИСТИНА'+1" })
     expect(toLocal('SUM(ложь,TRUE)', ruRU)).toEqual({ ok: true, formula: "СУММ('ложь';ИСТИНА)" })
