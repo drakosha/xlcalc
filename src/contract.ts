@@ -143,9 +143,10 @@ export interface SheetInput {
  */
 export interface TableInput {
   /**
-   * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`, at most 255
-   * characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE. Tables and defined names share
-   * one namespace: no other table and no defined name of the book has the name, in any case.
+   * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at
+   * most 255 characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE in any locale (a ru-RU
+   * book's table may be named ИСТИНА). Tables and defined names share one namespace: no other table and no defined name
+   * of the book has the name, in any case.
    */
   name: string
   /** The table's rectangle, its header and totals rows included (`B2:E10`), with one data row at least. */
@@ -180,9 +181,9 @@ export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' |
 export interface NameInput {
   /**
    * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`,
-   * `\` and `?`, at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE, and
-   * in a ru-RU book not its booleans ИСТИНА and ЛОЖЬ, in any case (`Ставка`, `НДС_2025`, `АБ12` and `Став?ка` are
-   * names). Compared in any case: `ставка` is the name `Ставка`.
+   * `\` and `?`, at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE. A
+   * defined name of a ru-RU book is not its booleans ИСТИНА and ЛОЖЬ either, in any case, which Excel ru-RU refuses
+   * (`Ставка`, `НДС_2025`, `АБ12` and `Став?ка` are names). Compared in any case: `ставка` is the name `Ставка`.
    */
   name: string
   /**
