@@ -79,7 +79,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 
 | what | locale | cases | as Excel for Mac | the engine as Windows, or for a pinned reason |
 |---|---|---:|---:|---|
-| formulas: measurement, probes, 36 case sets | en-US | 34,349 | 34,316 | 34,282, the 67 others in `WIN_KNOWN` |
+| formulas: measurement, probes, 40 case sets | en-US | 34,502 | 34,469 | 34,391, the 111 others in `WIN_KNOWN` |
 | formulas: measurement, 8 case sets | ru-RU | 7,297 | 7,136 | 7,291, the 6 others in `WIN_KNOWN` |
 | the order of text, the set `collation-more` (Windows alone) | ru-RU | 62 | | 62 |
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
@@ -92,7 +92,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | xlsx filters | en-US | 8 files | | all |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
-The sets `known-held` and `legacy/ifs-text` (45 formulas) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all 45 answers are the Mac's.
+The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit.
 
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 
@@ -102,4 +102,4 @@ What Excel for Windows does otherwise than Excel for Mac, by reason, and which o
 - A table's name in ru-RU: Excel for Windows makes `ИСТИНА_` of a table renamed `ИСТИНА`, as both Excels refuse such a defined name, and keeps a table renamed `TRUE`; Excel for Mac keeps `ИСТИНА` and makes `TRUE_`. The engine refuses both, following Windows for `ИСТИНА`.
 - Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels. The engine lays cells out as the Mac does.
 
-Both Excels agree and the engine does not in 36 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
+Both Excels agree and the engine does not in 80 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
