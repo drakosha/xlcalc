@@ -1,6 +1,6 @@
 /**
- * Built-in number formats by number beyond the Excel cases (`test/excel/display/builtin.json` and its ru-RU twin): on
- * rows and columns, through a session and `displayValue`, and the checks of the input.
+ * Built-in number formats by number beyond the Excel cases (`test/excel/win/display/builtin.json` and its ru-RU twin, as
+ * Excel for Windows shows them): on rows and columns, through a session and `displayValue`, and the checks of the input.
  */
 import { describe, expect, it } from 'vitest'
 import { compute, displayValue, InputError, openSession, type BookInput } from '../src/index.js'
@@ -13,7 +13,7 @@ const book = (locale?: string): BookInput => ({
 describe('built-in formats by number', () => {
   it('show by the locale, on a cell, a row and a column', () => {
     const texts = (b: BookInput) => Object.values(compute(b).sheets[0].cells).map((c) => c.text)
-    expect(texts(book())).toEqual(['1/31/25', '1/31/25 18:00', '(1,235)'])
+    expect(texts(book())).toEqual(['1/31/2025', '1/31/2025 18:00', '(1,235)'])
     expect(texts(book('ru-RU'))).toEqual(['31.01.2025', '31.01.2025 18:00', '-1 235'])
     expect(compute(book()).sheets[0].cells.A1.format).toBe(14)
   })
@@ -27,7 +27,7 @@ describe('built-in formats by number', () => {
 
   it('displayValue takes them', () => {
     expect(displayValue(0.75, { format: 20 })).toEqual({ text: '18:00' })
-    expect(displayValue(0.25, { format: 20, locale: 'ru-RU' })).toEqual({ text: '06:00' })
+    expect(displayValue(0.25, { format: 20, locale: 'ru-RU' })).toEqual({ text: '6:00' })
   })
 
   it('are the numbers 0 to 49', () => {

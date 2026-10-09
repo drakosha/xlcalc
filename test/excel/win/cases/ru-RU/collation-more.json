@@ -1,0 +1,575 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 19.2,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "compare#1",
+   "group": "compare",
+   "formula": "\"ёа\"<\"еб\""
+  },
+  {
+   "id": "compare#2",
+   "group": "compare",
+   "formula": "\"еб\"<\"ёа\""
+  },
+  {
+   "id": "compare#3",
+   "group": "compare",
+   "formula": "\"еа\"<\"ёб\""
+  },
+  {
+   "id": "compare#4",
+   "group": "compare",
+   "formula": "\"ёб\"<\"еа\""
+  },
+  {
+   "id": "compare#5",
+   "group": "compare",
+   "formula": "\"Ёа\"<\"еб\""
+  },
+  {
+   "id": "compare#6",
+   "group": "compare",
+   "formula": "\"йа\"<\"иб\""
+  },
+  {
+   "id": "compare#7",
+   "group": "compare",
+   "formula": "\"иа\"<\"йб\""
+  },
+  {
+   "id": "compare#8",
+   "group": "compare",
+   "formula": "\"йб\"<\"иа\""
+  },
+  {
+   "id": "compare#9",
+   "group": "compare",
+   "formula": "\"éa\"<\"eb\""
+  },
+  {
+   "id": "compare#10",
+   "group": "compare",
+   "formula": "\"eb\"<\"éa\""
+  },
+  {
+   "id": "compare#11",
+   "group": "compare",
+   "formula": "\"ea\"<\"éb\""
+  },
+  {
+   "id": "compare#12",
+   "group": "compare",
+   "formula": "\"аБ\"<\"Аб\""
+  },
+  {
+   "id": "compare#13",
+   "group": "compare",
+   "formula": "\"Аб\"<\"аБ\""
+  },
+  {
+   "id": "compare#14",
+   "group": "compare",
+   "formula": "\"ёж\"<\"ежа\""
+  },
+  {
+   "id": "compare#15",
+   "group": "compare",
+   "formula": "\"ежик\"<\"ёжик\""
+  },
+  {
+   "id": "compare#16",
+   "group": "compare",
+   "formula": "\"ёжик\"<\"ежик\""
+  },
+  {
+   "id": "compare#17",
+   "group": "compare",
+   "formula": "\"шёл\"<\"шел\""
+  },
+  {
+   "id": "compare#18",
+   "group": "compare",
+   "formula": "\"шел\"<\"шёл\""
+  },
+  {
+   "id": "compare#19",
+   "group": "compare",
+   "formula": "\"ъ\"<\"ы\""
+  },
+  {
+   "id": "compare#20",
+   "group": "compare",
+   "formula": "\"ы\"<\"ь\""
+  },
+  {
+   "id": "compare#21",
+   "group": "compare",
+   "formula": "\"ь\"<\"э\""
+  },
+  {
+   "id": "compare#22",
+   "group": "compare",
+   "formula": "\"э\"<\"ю\""
+  },
+  {
+   "id": "compare#23",
+   "group": "compare",
+   "formula": "\"a1\"<\"а1\""
+  },
+  {
+   "id": "compare#24",
+   "group": "compare",
+   "formula": "\"Z\"<\"а\""
+  },
+  {
+   "id": "compare#25",
+   "group": "compare",
+   "formula": "\"z\"<\"Ё\""
+  },
+  {
+   "id": "compare#26",
+   "group": "compare",
+   "formula": "\"ё\"<\"ж\""
+  },
+  {
+   "id": "compare#27",
+   "group": "compare",
+   "formula": "\"Ё\"<\"ж\""
+  },
+  {
+   "id": "equal#1",
+   "group": "equal",
+   "formula": "\"аб\"=\"АБ\""
+  },
+  {
+   "id": "equal#2",
+   "group": "equal",
+   "formula": "\"ёа\"=\"Ёа\""
+  },
+  {
+   "id": "equal#3",
+   "group": "equal",
+   "formula": "\"шел\"=\"шёл\""
+  },
+  {
+   "id": "equal#4",
+   "group": "equal",
+   "formula": "\"Ab\"=\"aB\""
+  },
+  {
+   "id": "sort#1",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),1,1)"
+  },
+  {
+   "id": "sort#2",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),2,1)"
+  },
+  {
+   "id": "sort#3",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),3,1)"
+  },
+  {
+   "id": "sort#4",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),4,1)"
+  },
+  {
+   "id": "sort#5",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),5,1)"
+  },
+  {
+   "id": "sort#6",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),6,1)"
+  },
+  {
+   "id": "sort#7",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),7,1)"
+  },
+  {
+   "id": "sort#8",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),8,1)"
+  },
+  {
+   "id": "sort#9",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),9,1)"
+  },
+  {
+   "id": "sort#10",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),10,1)"
+  },
+  {
+   "id": "sort#11",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),11,1)"
+  },
+  {
+   "id": "sort#12",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),12,1)"
+  },
+  {
+   "id": "sort#13",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),13,1)"
+  },
+  {
+   "id": "sort#14",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),14,1)"
+  },
+  {
+   "id": "sort#15",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),15,1)"
+  },
+  {
+   "id": "sort#16",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),16,1)"
+  },
+  {
+   "id": "sort#17",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),17,1)"
+  },
+  {
+   "id": "sort#18",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),18,1)"
+  },
+  {
+   "id": "sort#19",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),19,1)"
+  },
+  {
+   "id": "sort#20",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),20,1)"
+  },
+  {
+   "id": "sort#21",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),21,1)"
+  },
+  {
+   "id": "sort#22",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),22,1)"
+  },
+  {
+   "id": "sort#23",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),23,1)"
+  },
+  {
+   "id": "sort#24",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),24,1)"
+  },
+  {
+   "id": "sort#25",
+   "group": "sort",
+   "formula": "INDEX(_xlfn._xlws.SORT(W!A1:A25),25,1)"
+  },
+  {
+   "id": "criteria#1",
+   "group": "criteria",
+   "formula": "COUNTIF(W!A1:A25,\"<ёб\")"
+  },
+  {
+   "id": "criteria#2",
+   "group": "criteria",
+   "formula": "COUNTIF(W!A1:A25,\"<=еа\")"
+  },
+  {
+   "id": "criteria#3",
+   "group": "criteria",
+   "formula": "COUNTIF(W!A1:A25,\">ёа\")"
+  },
+  {
+   "id": "criteria#4",
+   "group": "criteria",
+   "formula": "COUNTIF(W!A1:A25,\"<иб\")"
+  },
+  {
+   "id": "criteria#5",
+   "group": "criteria",
+   "formula": "COUNTIF(W!A1:A25,\">=Ёа\")"
+  },
+  {
+   "id": "criteria#6",
+   "group": "criteria",
+   "formula": "COUNTIF(W!A1:A25,\"<ы\")"
+  }
+ ],
+ "values": {
+  "compare#1": {
+   "t": "b",
+   "v": true
+  },
+  "compare#2": {
+   "t": "b",
+   "v": false
+  },
+  "compare#3": {
+   "t": "b",
+   "v": true
+  },
+  "compare#4": {
+   "t": "b",
+   "v": false
+  },
+  "compare#5": {
+   "t": "b",
+   "v": true
+  },
+  "compare#6": {
+   "t": "b",
+   "v": false
+  },
+  "compare#7": {
+   "t": "b",
+   "v": true
+  },
+  "compare#8": {
+   "t": "b",
+   "v": false
+  },
+  "compare#9": {
+   "t": "b",
+   "v": true
+  },
+  "compare#10": {
+   "t": "b",
+   "v": false
+  },
+  "compare#11": {
+   "t": "b",
+   "v": true
+  },
+  "compare#12": {
+   "t": "b",
+   "v": false
+  },
+  "compare#13": {
+   "t": "b",
+   "v": false
+  },
+  "compare#14": {
+   "t": "b",
+   "v": true
+  },
+  "compare#15": {
+   "t": "b",
+   "v": true
+  },
+  "compare#16": {
+   "t": "b",
+   "v": false
+  },
+  "compare#17": {
+   "t": "b",
+   "v": false
+  },
+  "compare#18": {
+   "t": "b",
+   "v": true
+  },
+  "compare#19": {
+   "t": "b",
+   "v": true
+  },
+  "compare#20": {
+   "t": "b",
+   "v": true
+  },
+  "compare#21": {
+   "t": "b",
+   "v": true
+  },
+  "compare#22": {
+   "t": "b",
+   "v": true
+  },
+  "compare#23": {
+   "t": "b",
+   "v": true
+  },
+  "compare#24": {
+   "t": "b",
+   "v": true
+  },
+  "compare#25": {
+   "t": "b",
+   "v": true
+  },
+  "compare#26": {
+   "t": "b",
+   "v": true
+  },
+  "compare#27": {
+   "t": "b",
+   "v": true
+  },
+  "equal#1": {
+   "t": "b",
+   "v": true
+  },
+  "equal#2": {
+   "t": "b",
+   "v": true
+  },
+  "equal#3": {
+   "t": "b",
+   "v": false
+  },
+  "equal#4": {
+   "t": "b",
+   "v": true
+  },
+  "sort#1": {
+   "t": "s",
+   "v": "a1"
+  },
+  "sort#2": {
+   "t": "s",
+   "v": "Ab"
+  },
+  "sort#3": {
+   "t": "s",
+   "v": "aB"
+  },
+  "sort#4": {
+   "t": "s",
+   "v": "ea"
+  },
+  "sort#5": {
+   "t": "s",
+   "v": "éa"
+  },
+  "sort#6": {
+   "t": "s",
+   "v": "eb"
+  },
+  "sort#7": {
+   "t": "s",
+   "v": "éb"
+  },
+  "sort#8": {
+   "t": "s",
+   "v": "а1"
+  },
+  "sort#9": {
+   "t": "s",
+   "v": "еа"
+  },
+  "sort#10": {
+   "t": "s",
+   "v": "Еа"
+  },
+  "sort#11": {
+   "t": "s",
+   "v": "ёа"
+  },
+  "sort#12": {
+   "t": "s",
+   "v": "ЁА"
+  },
+  "sort#13": {
+   "t": "s",
+   "v": "еб"
+  },
+  "sort#14": {
+   "t": "s",
+   "v": "ёб"
+  },
+  "sort#15": {
+   "t": "s",
+   "v": "ежик"
+  },
+  "sort#16": {
+   "t": "s",
+   "v": "ёжик"
+  },
+  "sort#17": {
+   "t": "s",
+   "v": "иа"
+  },
+  "sort#18": {
+   "t": "s",
+   "v": "иб"
+  },
+  "sort#19": {
+   "t": "s",
+   "v": "йа"
+  },
+  "sort#20": {
+   "t": "s",
+   "v": "йб"
+  },
+  "sort#21": {
+   "t": "s",
+   "v": "шел"
+  },
+  "sort#22": {
+   "t": "s",
+   "v": "шёл"
+  },
+  "sort#23": {
+   "t": "s",
+   "v": "ъ"
+  },
+  "sort#24": {
+   "t": "s",
+   "v": "ы"
+  },
+  "sort#25": {
+   "t": "s",
+   "v": "ь"
+  },
+  "criteria#1": {
+   "t": "n",
+   "v": 13
+  },
+  "criteria#2": {
+   "t": "n",
+   "v": 10
+  },
+  "criteria#3": {
+   "t": "n",
+   "v": 13
+  },
+  "criteria#4": {
+   "t": "n",
+   "v": 17
+  },
+  "criteria#5": {
+   "t": "n",
+   "v": 15
+  },
+  "criteria#6": {
+   "t": "n",
+   "v": 23
+  }
+ }
+}

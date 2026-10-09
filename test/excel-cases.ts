@@ -123,6 +123,8 @@ export const REASONS = {
   codePage:
     '`CHAR` and `CODE` take codes 128–255 from the Windows code page of the book\'s locale (Windows-1252 in en-US, Windows-1251 in ru-RU), as Excel for Windows does; Excel for Mac takes Mac Roman and Mac Cyrillic (`CHAR(200)` is `È` here and `»` in Excel for Mac en-US, `CODE("Ж")` in ru-RU 198 here and 134 there).',
   outsideCode: '`CODE` of a character outside the code page of the book\'s locale is 63 (`?`), as Excel for Windows answers; Excel for Mac answers 95 (`_`): `CODE("中")`, and `CODE("Ж")` in en-US.',
+  macMonthCase:
+    'Excel for Mac writes month names in ru-RU in lower case (`TEXT` with `ММММ`, `МММММ` or `[$-419]mmmm`, and cells: `январь`, `я`); the engine writes them with a capital, as Excel for Windows does (`Январь`, `Я`).',
   excelContext:
     '`WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).',
 } as const
@@ -198,6 +200,11 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
   'let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
+  'text-format:date#78': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
+  'text-format:date#79': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
+  'text-format:date#82': { reason: 'macMonthCase', engine: { t: 's', v: "Февраль" } },
+  'text-format:date#83': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
+  'text-format:date#84': { reason: 'macMonthCase', engine: { t: 's', v: "Январь" } },
 }
 
 /** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives exactly the pinned answer. */

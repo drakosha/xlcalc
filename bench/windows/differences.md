@@ -7,7 +7,7 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | locale | source | cases | Windows = Mac | engine = Windows | all three agree | not taken by Windows |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | en-US | measurement | 5260 | 5255 | 5256 | 5251 | 0 |
-| ru-RU | measurement | 5260 | 5252 | 5253 | 5248 | 0 |
+| ru-RU | measurement | 5260 | 5252 | 5256 | 5248 | 0 |
 | en-US | probes | 959 | 959 | 959 | 959 | 0 |
 | en-US | areas-each | 52 | 52 | 52 | 52 | 0 |
 | en-US | areas | 1137 | 1137 | 1123 | 1123 | 0 |
@@ -41,17 +41,17 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | stat | 2678 | 2676 | 2663 | 2663 | 0 |
 | en-US | subtotal | 503 | 503 | 503 | 503 | 0 |
 | en-US | text-format-more | 22 | 22 | 22 | 22 | 0 |
-| en-US | text-format | 479 | 474 | 474 | 474 | 0 |
+| en-US | text-format | 479 | 474 | 479 | 474 | 0 |
 | en-US | text | 1229 | 1229 | 1229 | 1229 | 0 |
 | en-US | time-text | 286 | 286 | 286 | 286 | 0 |
 | ru-RU | char-code | 305 | 298 | 305 | 298 | 0 |
-| ru-RU | collation | 174 | 84 | 84 | 84 | 0 |
+| ru-RU | collation | 174 | 84 | 174 | 84 | 0 |
 | ru-RU | criteria-text | 37 | 37 | 37 | 37 | 0 |
 | ru-RU | lead-spaces | 91 | 91 | 91 | 91 | 0 |
-| ru-RU | locale | 1109 | 1061 | 1060 | 1060 | 0 |
+| ru-RU | locale | 1109 | 1061 | 1108 | 1060 | 0 |
 | ru-RU | logical-text | 51 | 51 | 51 | 51 | 0 |
-| ru-RU | text-format-ru-more | 16 | 13 | 13 | 13 | 0 |
-| ru-RU | text-format-ru | 254 | 249 | 249 | 249 | 0 |
+| ru-RU | text-format-ru-more | 16 | 13 | 15 | 13 | 0 |
+| ru-RU | text-format-ru | 254 | 249 | 254 | 249 | 0 |
 
 ## Windows and the Mac part
 
@@ -67,9 +67,9 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | ru-RU | measurement | CODE#5 | CODE | `CODE("Привет Мир")` | 143 | 207 | 207 | Windows | platform: the engine follows Windows |
 | ru-RU | measurement | CODE#8 | CODE | `CODE(TRUE)` | 136 | 200 | 200 | Windows | platform: the engine follows Windows |
 | ru-RU | measurement | CODE#12 | CODE | `CODE(D!A9)` | 143 | 207 | 207 | Windows | platform: the engine follows Windows |
-| ru-RU | measurement | SORT#9 | SORT | `INDEX(_xlfn._xlws.SORT(D!F1:F7),1,1)` | "Аренда" | "x*y" | "Аренда" | Mac | platform: winCollation |
-| ru-RU | measurement | SORT#10 | SORT | `INDEX(_xlfn._xlws.SORT(D!F1:F7),2,1)` | "аренда" | "Арeнда*" | "аренда" | Mac | platform: winCollation |
-| ru-RU | measurement | SORT#11 | SORT | `INDEX(_xlfn._xlws.SORT(D!F1:F7),7,1)` | "x*y" | "Чай" | "x*y" | Mac | platform: winCollation |
+| ru-RU | measurement | SORT#9 | SORT | `INDEX(_xlfn._xlws.SORT(D!F1:F7),1,1)` | "Аренда" | "x*y" | "x*y" | Windows | platform: the engine follows Windows |
+| ru-RU | measurement | SORT#10 | SORT | `INDEX(_xlfn._xlws.SORT(D!F1:F7),2,1)` | "аренда" | "Арeнда*" | "Арeнда*" | Windows | platform: the engine follows Windows |
+| ru-RU | measurement | SORT#11 | SORT | `INDEX(_xlfn._xlws.SORT(D!F1:F7),7,1)` | "x*y" | "Чай" | "Чай" | Windows | platform: the engine follows Windows |
 | en-US | char-code | CODE#142 | CODE | `CODE("中")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | en-US | char-code | CODE#143 | CODE | `CODE("😀")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | en-US | char-code | CODE#144 | CODE | `CODE("ā")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
@@ -93,11 +93,11 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | matheng | COT#9 | COT | `_xlfn.COT(-PI())` | 8165619676597685 | 8162276138809536 | 8165619676597690 | Mac | platform: winMath |
 | en-US | stat | WEIBULL#28 | WEIBULL | `WEIBULL(5,2,1E-300,FALSE)` | #DIV0 | #NUM | #DIV0 | Mac | platform: winWeibull |
 | en-US | stat | WEIBULL.DIST#28 | WEIBULL.DIST | `_xlfn.WEIBULL.DIST(5,2,1E-300,FALSE)` | #DIV0 | #NUM | #DIV0 | Mac | platform: winWeibull |
-| en-US | text-format | date#78 | TEXT | `TEXT(45688.75,"[$-419]mmmm")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| en-US | text-format | date#79 | TEXT | `TEXT(0,"[$-419]mmmm")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| en-US | text-format | date#82 | TEXT | `TEXT(45688.999999,"[$-419]mmmm")` | "февраль" | "Февраль" | "февраль" | Mac | platform: winMonthCase |
-| en-US | text-format | date#83 | TEXT | `TEXT(0.75/86400,"[$-419]mmmm")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| en-US | text-format | date#84 | TEXT | `TEXT(1.5,"[$-419]mmmm")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
+| en-US | text-format | date#78 | TEXT | `TEXT(45688.75,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| en-US | text-format | date#79 | TEXT | `TEXT(0,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| en-US | text-format | date#82 | TEXT | `TEXT(45688.999999,"[$-419]mmmm")` | "февраль" | "Февраль" | "Февраль" | Windows | platform: the engine follows Windows |
+| en-US | text-format | date#83 | TEXT | `TEXT(0.75/86400,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| en-US | text-format | date#84 | TEXT | `TEXT(1.5,"[$-419]mmmm")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#142 | CODE | `CODE("中")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#143 | CODE | `CODE("😀")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#144 | CODE | `CODE("ā")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
@@ -105,152 +105,152 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | ru-RU | char-code | CODE#146 | CODE | `CODE("ŋ")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#147 | CODE | `CODE("ğ")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
 | ru-RU | char-code | CODE#148 | CODE | `CODE("ʃ")` | 95 | 63 | 63 | Windows | platform: the engine follows Windows |
-| ru-RU | collation | compare#1 | compare | `"a"<"а"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#3 | compare | `"a"<"Б"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#5 | compare | `"a"<"я"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#6 | compare | `"a"<"е"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#7 | compare | `"a"<"ё"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#10 | compare | `"a"<"й"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#11 | compare | `"a"<"и"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#12 | compare | `"a"<"ь"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#13 | compare | `"a"<"ъ"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#15 | compare | `"а"<"b"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#17 | compare | `"а"<"z"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#21 | compare | `"а"<"e"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#22 | compare | `"а"<"é"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#28 | compare | `"b"<"Б"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#30 | compare | `"b"<"я"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#31 | compare | `"b"<"е"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#32 | compare | `"b"<"ё"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#35 | compare | `"b"<"й"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#36 | compare | `"b"<"и"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#37 | compare | `"b"<"ь"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#38 | compare | `"b"<"ъ"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#40 | compare | `"Б"<"z"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#44 | compare | `"Б"<"e"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#45 | compare | `"Б"<"é"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#51 | compare | `"z"<"я"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#52 | compare | `"z"<"е"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#53 | compare | `"z"<"ё"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#56 | compare | `"z"<"й"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#57 | compare | `"z"<"и"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#58 | compare | `"z"<"ь"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#59 | compare | `"z"<"ъ"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#63 | compare | `"я"<"e"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#64 | compare | `"я"<"é"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#71 | compare | `"е"<"e"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#72 | compare | `"е"<"é"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#78 | compare | `"ё"<"e"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#79 | compare | `"ё"<"é"` | true | false | true | Mac | platform: winCollation |
-| ru-RU | collation | compare#86 | compare | `"e"<"й"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#87 | compare | `"e"<"и"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#88 | compare | `"e"<"ь"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#89 | compare | `"e"<"ъ"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#91 | compare | `"é"<"й"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#92 | compare | `"é"<"и"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#93 | compare | `"é"<"ь"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | compare#94 | compare | `"é"<"ъ"` | false | true | false | Mac | platform: winCollation |
-| ru-RU | collation | sort#4 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),4,1)` | "а" | "A" | "а" | Mac | platform: winCollation |
-| ru-RU | collation | sort#5 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),5,1)` | "аб" | "ab" | "аб" | Mac | platform: winCollation |
-| ru-RU | collation | sort#6 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),6,1)` | "абв" | "abc" | "абв" | Mac | platform: winCollation |
-| ru-RU | collation | sort#7 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),7,1)` | "Абв" | "Abc" | "Абв" | Mac | platform: winCollation |
-| ru-RU | collation | sort#8 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),8,1)` | "Б" | "b" | "Б" | Mac | platform: winCollation |
-| ru-RU | collation | sort#9 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),9,1)` | "е" | "e" | "е" | Mac | platform: winCollation |
-| ru-RU | collation | sort#10 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),10,1)` | "ё" | "é" | "ё" | Mac | platform: winCollation |
-| ru-RU | collation | sort#11 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),11,1)` | "Ё" | "ea" | "Ё" | Mac | platform: winCollation |
-| ru-RU | collation | sort#12 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),12,1)` | "ж" | "éa" | "ж" | Mac | platform: winCollation |
-| ru-RU | collation | sort#13 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),13,1)` | "и" | "x1" | "и" | Mac | platform: winCollation |
-| ru-RU | collation | sort#14 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),14,1)` | "й" | "z" | "й" | Mac | platform: winCollation |
-| ru-RU | collation | sort#15 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),15,1)` | "х1" | "Z" | "х1" | Mac | platform: winCollation |
-| ru-RU | collation | sort#16 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),16,1)` | "ъ" | "а" | "ъ" | Mac | platform: winCollation |
-| ru-RU | collation | sort#17 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),17,1)` | "ь" | "аб" | "ь" | Mac | platform: winCollation |
-| ru-RU | collation | sort#18 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),18,1)` | "я" | "абв" | "я" | Mac | platform: winCollation |
-| ru-RU | collation | sort#19 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),19,1)` | "A" | "Абв" | "A" | Mac | platform: winCollation |
-| ru-RU | collation | sort#20 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),20,1)` | "ab" | "Б" | "ab" | Mac | platform: winCollation |
-| ru-RU | collation | sort#21 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),21,1)` | "abc" | "е" | "abc" | Mac | platform: winCollation |
-| ru-RU | collation | sort#22 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),22,1)` | "Abc" | "ё" | "Abc" | Mac | platform: winCollation |
-| ru-RU | collation | sort#23 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),23,1)` | "b" | "Ё" | "b" | Mac | platform: winCollation |
-| ru-RU | collation | sort#24 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),24,1)` | "e" | "ж" | "e" | Mac | platform: winCollation |
-| ru-RU | collation | sort#25 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),25,1)` | "é" | "и" | "é" | Mac | platform: winCollation |
-| ru-RU | collation | sort#26 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),26,1)` | "ea" | "й" | "ea" | Mac | platform: winCollation |
-| ru-RU | collation | sort#27 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),27,1)` | "éa" | "х1" | "éa" | Mac | platform: winCollation |
-| ru-RU | collation | sort#28 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),28,1)` | "x1" | "ъ" | "x1" | Mac | platform: winCollation |
-| ru-RU | collation | sort#29 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),29,1)` | "z" | "ь" | "z" | Mac | platform: winCollation |
-| ru-RU | collation | sort#30 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),30,1)` | "Z" | "я" | "Z" | Mac | platform: winCollation |
-| ru-RU | collation | sort#31 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),1,1)` | "z" | "я" | "z" | Mac | platform: winCollation |
-| ru-RU | collation | sort#32 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),4,1)` | "éa" | "х1" | "éa" | Mac | platform: winCollation |
-| ru-RU | collation | sort#33 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),7,1)` | "e" | "ж" | "e" | Mac | platform: winCollation |
-| ru-RU | collation | sort#34 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),10,1)` | "Abc" | "е" | "Abc" | Mac | platform: winCollation |
-| ru-RU | collation | sort#35 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),13,1)` | "я" | "Абв" | "я" | Mac | platform: winCollation |
-| ru-RU | collation | sort#36 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),16,1)` | "х1" | "z" | "х1" | Mac | platform: winCollation |
-| ru-RU | collation | sort#37 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),19,1)` | "ж" | "éa" | "ж" | Mac | platform: winCollation |
-| ru-RU | collation | sort#38 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),22,1)` | "е" | "e" | "е" | Mac | platform: winCollation |
-| ru-RU | collation | sort#39 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),25,1)` | "Абв" | "Abc" | "Абв" | Mac | platform: winCollation |
-| ru-RU | collation | criteria#1 | criteria | `COUNTIF(O!A1:A30,"<м")` | 14 | 26 | 14 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#2 | criteria | `COUNTIF(O!A1:A30,"<b")` | 22 | 7 | 22 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#3 | criteria | `COUNTIF(O!A1:A30,"<я")` | 17 | 29 | 17 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#4 | criteria | `COUNTIF(O!A1:A30,">z")` | 0 | 15 | 0 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#5 | criteria | `COUNTIF(O!A1:A30,"<ё")` | 9 | 21 | 9 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#6 | criteria | `COUNTIF(O!A1:A30,"<=е")` | 9 | 21 | 9 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#7 | criteria | `COUNTIF(O!A1:A30,"<é")` | 24 | 9 | 24 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#8 | criteria | `COUNTIF(O!A1:A30,">=а")` | 27 | 15 | 27 | Mac | platform: winCollation |
-| ru-RU | collation | criteria#9 | criteria | `COUNTIF(O!A1:A30,"<Б")` | 7 | 19 | 7 | Mac | platform: winCollation |
-| ru-RU | locale | format#7 | format | `TEXT(45688.75,"ММММ")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#8 | format | `TEXT(45688.75,"МММММ")` | "я" | "Я" | "я" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#11 | format | `TEXT(45688.75,"ДД ММММ ГГГГ")` | "31 январь 2025" | "31 Январь 2025" | "31 январь 2025" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#12 | format | `TEXT(45688.75,"ММММ ГГГГ")` | "январь 2025" | "Январь 2025" | "январь 2025" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#267 | format | `TEXT(DATE(2025,1,15),"ММММ")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#269 | format | `TEXT(DATE(2025,1,15),"ДД ММММ")` | "15 январь" | "15 Январь" | "15 январь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#270 | format | `TEXT(DATE(2025,1,15),"МММММ")` | "я" | "Я" | "я" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#271 | format | `TEXT(DATE(2025,2,15),"ММММ")` | "февраль" | "Февраль" | "февраль" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#272 | format | `TEXT(DATE(2025,2,15),"МММ")` | "февр" | "фев" | "февр" | Mac | platform: winMonthShort |
-| ru-RU | locale | format#273 | format | `TEXT(DATE(2025,2,15),"ДД ММММ")` | "15 февраль" | "15 Февраль" | "15 февраль" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#274 | format | `TEXT(DATE(2025,2,15),"МММММ")` | "ф" | "Ф" | "ф" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#275 | format | `TEXT(DATE(2025,3,15),"ММММ")` | "март" | "Март" | "март" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#276 | format | `TEXT(DATE(2025,3,15),"МММ")` | "март" | "мар" | "март" | Mac | platform: winMonthShort |
-| ru-RU | locale | format#277 | format | `TEXT(DATE(2025,3,15),"ДД ММММ")` | "15 март" | "15 Март" | "15 март" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#278 | format | `TEXT(DATE(2025,3,15),"МММММ")` | "м" | "М" | "м" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#279 | format | `TEXT(DATE(2025,4,15),"ММММ")` | "апрель" | "Апрель" | "апрель" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#281 | format | `TEXT(DATE(2025,4,15),"ДД ММММ")` | "15 апрель" | "15 Апрель" | "15 апрель" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#282 | format | `TEXT(DATE(2025,4,15),"МММММ")` | "а" | "А" | "а" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#283 | format | `TEXT(DATE(2025,5,15),"ММММ")` | "май" | "Май" | "май" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#285 | format | `TEXT(DATE(2025,5,15),"ДД ММММ")` | "15 май" | "15 Май" | "15 май" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#286 | format | `TEXT(DATE(2025,5,15),"МММММ")` | "м" | "М" | "м" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#287 | format | `TEXT(DATE(2025,6,15),"ММММ")` | "июнь" | "Июнь" | "июнь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#288 | format | `TEXT(DATE(2025,6,15),"МММ")` | "июнь" | "июн" | "июнь" | Mac | platform: winMonthShort |
-| ru-RU | locale | format#289 | format | `TEXT(DATE(2025,6,15),"ДД ММММ")` | "15 июнь" | "15 Июнь" | "15 июнь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#290 | format | `TEXT(DATE(2025,6,15),"МММММ")` | "и" | "И" | "и" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#291 | format | `TEXT(DATE(2025,7,15),"ММММ")` | "июль" | "Июль" | "июль" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#292 | format | `TEXT(DATE(2025,7,15),"МММ")` | "июль" | "июл" | "июль" | Mac | platform: winMonthShort |
-| ru-RU | locale | format#293 | format | `TEXT(DATE(2025,7,15),"ДД ММММ")` | "15 июль" | "15 Июль" | "15 июль" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#294 | format | `TEXT(DATE(2025,7,15),"МММММ")` | "и" | "И" | "и" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#295 | format | `TEXT(DATE(2025,8,15),"ММММ")` | "август" | "Август" | "август" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#297 | format | `TEXT(DATE(2025,8,15),"ДД ММММ")` | "15 август" | "15 Август" | "15 август" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#298 | format | `TEXT(DATE(2025,8,15),"МММММ")` | "а" | "А" | "а" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#299 | format | `TEXT(DATE(2025,9,15),"ММММ")` | "сентябрь" | "Сентябрь" | "сентябрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#300 | format | `TEXT(DATE(2025,9,15),"МММ")` | "сент" | "сен" | "сент" | Mac | platform: winMonthShort |
-| ru-RU | locale | format#301 | format | `TEXT(DATE(2025,9,15),"ДД ММММ")` | "15 сентябрь" | "15 Сентябрь" | "15 сентябрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#302 | format | `TEXT(DATE(2025,9,15),"МММММ")` | "с" | "С" | "с" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#303 | format | `TEXT(DATE(2025,10,15),"ММММ")` | "октябрь" | "Октябрь" | "октябрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#305 | format | `TEXT(DATE(2025,10,15),"ДД ММММ")` | "15 октябрь" | "15 Октябрь" | "15 октябрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#306 | format | `TEXT(DATE(2025,10,15),"МММММ")` | "о" | "О" | "о" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#307 | format | `TEXT(DATE(2025,11,15),"ММММ")` | "ноябрь" | "Ноябрь" | "ноябрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#308 | format | `TEXT(DATE(2025,11,15),"МММ")` | "нояб" | "ноя" | "нояб" | Mac | platform: winMonthShort |
-| ru-RU | locale | format#309 | format | `TEXT(DATE(2025,11,15),"ДД ММММ")` | "15 ноябрь" | "15 Ноябрь" | "15 ноябрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#310 | format | `TEXT(DATE(2025,11,15),"МММММ")` | "н" | "Н" | "н" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#311 | format | `TEXT(DATE(2025,12,15),"ММММ")` | "декабрь" | "Декабрь" | "декабрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#313 | format | `TEXT(DATE(2025,12,15),"ДД ММММ")` | "15 декабрь" | "15 Декабрь" | "15 декабрь" | Mac | platform: winMonthCase |
-| ru-RU | locale | format#314 | format | `TEXT(DATE(2025,12,15),"МММММ")` | "д" | "Д" | "д" | Mac | platform: winMonthCase |
-| ru-RU | locale | criteria#30 | criteria | `COUNTIF(L!A1:A16,"<м")` | 4 | 6 | 4 | Mac | platform: winCollation |
-| ru-RU | locale | criteria#31 | criteria | `COUNTIF(L!A1:A16,">a")` | 2 | 3 | 2 | Mac | platform: winCollation |
-| ru-RU | text-format-ru-more | TEXT#11 | TEXT | `TEXT(45688,"Д ММММ ГГГГ")` | "31 январь 2025" | "31 Январь 2025" | "31 январь 2025" | Mac | platform: winMonthCase |
-| ru-RU | text-format-ru-more | TEXT#12 | TEXT | `TEXT(45688,"ДД ММММ")` | "31 январь" | "31 Январь" | "31 январь" | Mac | platform: winMonthCase |
+| ru-RU | collation | compare#1 | compare | `"a"<"а"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#3 | compare | `"a"<"Б"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#5 | compare | `"a"<"я"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#6 | compare | `"a"<"е"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#7 | compare | `"a"<"ё"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#10 | compare | `"a"<"й"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#11 | compare | `"a"<"и"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#12 | compare | `"a"<"ь"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#13 | compare | `"a"<"ъ"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#15 | compare | `"а"<"b"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#17 | compare | `"а"<"z"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#21 | compare | `"а"<"e"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#22 | compare | `"а"<"é"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#28 | compare | `"b"<"Б"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#30 | compare | `"b"<"я"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#31 | compare | `"b"<"е"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#32 | compare | `"b"<"ё"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#35 | compare | `"b"<"й"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#36 | compare | `"b"<"и"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#37 | compare | `"b"<"ь"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#38 | compare | `"b"<"ъ"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#40 | compare | `"Б"<"z"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#44 | compare | `"Б"<"e"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#45 | compare | `"Б"<"é"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#51 | compare | `"z"<"я"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#52 | compare | `"z"<"е"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#53 | compare | `"z"<"ё"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#56 | compare | `"z"<"й"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#57 | compare | `"z"<"и"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#58 | compare | `"z"<"ь"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#59 | compare | `"z"<"ъ"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#63 | compare | `"я"<"e"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#64 | compare | `"я"<"é"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#71 | compare | `"е"<"e"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#72 | compare | `"е"<"é"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#78 | compare | `"ё"<"e"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#79 | compare | `"ё"<"é"` | true | false | false | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#86 | compare | `"e"<"й"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#87 | compare | `"e"<"и"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#88 | compare | `"e"<"ь"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#89 | compare | `"e"<"ъ"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#91 | compare | `"é"<"й"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#92 | compare | `"é"<"и"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#93 | compare | `"é"<"ь"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | compare#94 | compare | `"é"<"ъ"` | false | true | true | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#4 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),4,1)` | "а" | "A" | "A" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#5 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),5,1)` | "аб" | "ab" | "ab" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#6 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),6,1)` | "абв" | "abc" | "abc" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#7 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),7,1)` | "Абв" | "Abc" | "Abc" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#8 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),8,1)` | "Б" | "b" | "b" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#9 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),9,1)` | "е" | "e" | "e" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#10 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),10,1)` | "ё" | "é" | "é" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#11 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),11,1)` | "Ё" | "ea" | "ea" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#12 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),12,1)` | "ж" | "éa" | "éa" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#13 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),13,1)` | "и" | "x1" | "x1" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#14 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),14,1)` | "й" | "z" | "z" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#15 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),15,1)` | "х1" | "Z" | "Z" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#16 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),16,1)` | "ъ" | "а" | "а" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#17 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),17,1)` | "ь" | "аб" | "аб" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#18 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),18,1)` | "я" | "абв" | "абв" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#19 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),19,1)` | "A" | "Абв" | "Абв" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#20 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),20,1)` | "ab" | "Б" | "Б" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#21 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),21,1)` | "abc" | "е" | "е" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#22 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),22,1)` | "Abc" | "ё" | "ё" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#23 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),23,1)` | "b" | "Ё" | "Ё" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#24 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),24,1)` | "e" | "ж" | "ж" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#25 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),25,1)` | "é" | "и" | "и" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#26 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),26,1)` | "ea" | "й" | "й" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#27 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),27,1)` | "éa" | "х1" | "х1" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#28 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),28,1)` | "x1" | "ъ" | "ъ" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#29 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),29,1)` | "z" | "ь" | "ь" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#30 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30),30,1)` | "Z" | "я" | "я" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#31 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),1,1)` | "z" | "я" | "я" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#32 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),4,1)` | "éa" | "х1" | "х1" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#33 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),7,1)` | "e" | "ж" | "ж" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#34 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),10,1)` | "Abc" | "е" | "е" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#35 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),13,1)` | "я" | "Абв" | "Абв" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#36 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),16,1)` | "х1" | "z" | "z" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#37 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),19,1)` | "ж" | "éa" | "éa" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#38 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),22,1)` | "е" | "e" | "e" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | sort#39 | sort | `INDEX(_xlfn._xlws.SORT(O!A1:A30,1,-1),25,1)` | "Абв" | "Abc" | "Abc" | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#1 | criteria | `COUNTIF(O!A1:A30,"<м")` | 14 | 26 | 26 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#2 | criteria | `COUNTIF(O!A1:A30,"<b")` | 22 | 7 | 7 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#3 | criteria | `COUNTIF(O!A1:A30,"<я")` | 17 | 29 | 29 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#4 | criteria | `COUNTIF(O!A1:A30,">z")` | 0 | 15 | 15 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#5 | criteria | `COUNTIF(O!A1:A30,"<ё")` | 9 | 21 | 21 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#6 | criteria | `COUNTIF(O!A1:A30,"<=е")` | 9 | 21 | 21 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#7 | criteria | `COUNTIF(O!A1:A30,"<é")` | 24 | 9 | 9 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#8 | criteria | `COUNTIF(O!A1:A30,">=а")` | 27 | 15 | 15 | Windows | platform: the engine follows Windows |
+| ru-RU | collation | criteria#9 | criteria | `COUNTIF(O!A1:A30,"<Б")` | 7 | 19 | 19 | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#7 | format | `TEXT(45688.75,"ММММ")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#8 | format | `TEXT(45688.75,"МММММ")` | "я" | "Я" | "Я" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#11 | format | `TEXT(45688.75,"ДД ММММ ГГГГ")` | "31 январь 2025" | "31 Январь 2025" | "31 Январь 2025" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#12 | format | `TEXT(45688.75,"ММММ ГГГГ")` | "январь 2025" | "Январь 2025" | "Январь 2025" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#267 | format | `TEXT(DATE(2025,1,15),"ММММ")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#269 | format | `TEXT(DATE(2025,1,15),"ДД ММММ")` | "15 январь" | "15 Январь" | "15 Январь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#270 | format | `TEXT(DATE(2025,1,15),"МММММ")` | "я" | "Я" | "Я" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#271 | format | `TEXT(DATE(2025,2,15),"ММММ")` | "февраль" | "Февраль" | "Февраль" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#272 | format | `TEXT(DATE(2025,2,15),"МММ")` | "февр" | "фев" | "фев" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#273 | format | `TEXT(DATE(2025,2,15),"ДД ММММ")` | "15 февраль" | "15 Февраль" | "15 Февраль" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#274 | format | `TEXT(DATE(2025,2,15),"МММММ")` | "ф" | "Ф" | "Ф" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#275 | format | `TEXT(DATE(2025,3,15),"ММММ")` | "март" | "Март" | "Март" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#276 | format | `TEXT(DATE(2025,3,15),"МММ")` | "март" | "мар" | "мар" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#277 | format | `TEXT(DATE(2025,3,15),"ДД ММММ")` | "15 март" | "15 Март" | "15 Март" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#278 | format | `TEXT(DATE(2025,3,15),"МММММ")` | "м" | "М" | "М" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#279 | format | `TEXT(DATE(2025,4,15),"ММММ")` | "апрель" | "Апрель" | "Апрель" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#281 | format | `TEXT(DATE(2025,4,15),"ДД ММММ")` | "15 апрель" | "15 Апрель" | "15 Апрель" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#282 | format | `TEXT(DATE(2025,4,15),"МММММ")` | "а" | "А" | "А" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#283 | format | `TEXT(DATE(2025,5,15),"ММММ")` | "май" | "Май" | "Май" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#285 | format | `TEXT(DATE(2025,5,15),"ДД ММММ")` | "15 май" | "15 Май" | "15 Май" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#286 | format | `TEXT(DATE(2025,5,15),"МММММ")` | "м" | "М" | "М" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#287 | format | `TEXT(DATE(2025,6,15),"ММММ")` | "июнь" | "Июнь" | "Июнь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#288 | format | `TEXT(DATE(2025,6,15),"МММ")` | "июнь" | "июн" | "июн" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#289 | format | `TEXT(DATE(2025,6,15),"ДД ММММ")` | "15 июнь" | "15 Июнь" | "15 Июнь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#290 | format | `TEXT(DATE(2025,6,15),"МММММ")` | "и" | "И" | "И" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#291 | format | `TEXT(DATE(2025,7,15),"ММММ")` | "июль" | "Июль" | "Июль" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#292 | format | `TEXT(DATE(2025,7,15),"МММ")` | "июль" | "июл" | "июл" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#293 | format | `TEXT(DATE(2025,7,15),"ДД ММММ")` | "15 июль" | "15 Июль" | "15 Июль" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#294 | format | `TEXT(DATE(2025,7,15),"МММММ")` | "и" | "И" | "И" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#295 | format | `TEXT(DATE(2025,8,15),"ММММ")` | "август" | "Август" | "Август" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#297 | format | `TEXT(DATE(2025,8,15),"ДД ММММ")` | "15 август" | "15 Август" | "15 Август" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#298 | format | `TEXT(DATE(2025,8,15),"МММММ")` | "а" | "А" | "А" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#299 | format | `TEXT(DATE(2025,9,15),"ММММ")` | "сентябрь" | "Сентябрь" | "Сентябрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#300 | format | `TEXT(DATE(2025,9,15),"МММ")` | "сент" | "сен" | "сен" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#301 | format | `TEXT(DATE(2025,9,15),"ДД ММММ")` | "15 сентябрь" | "15 Сентябрь" | "15 Сентябрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#302 | format | `TEXT(DATE(2025,9,15),"МММММ")` | "с" | "С" | "С" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#303 | format | `TEXT(DATE(2025,10,15),"ММММ")` | "октябрь" | "Октябрь" | "Октябрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#305 | format | `TEXT(DATE(2025,10,15),"ДД ММММ")` | "15 октябрь" | "15 Октябрь" | "15 Октябрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#306 | format | `TEXT(DATE(2025,10,15),"МММММ")` | "о" | "О" | "О" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#307 | format | `TEXT(DATE(2025,11,15),"ММММ")` | "ноябрь" | "Ноябрь" | "Ноябрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#308 | format | `TEXT(DATE(2025,11,15),"МММ")` | "нояб" | "ноя" | "ноя" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#309 | format | `TEXT(DATE(2025,11,15),"ДД ММММ")` | "15 ноябрь" | "15 Ноябрь" | "15 Ноябрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#310 | format | `TEXT(DATE(2025,11,15),"МММММ")` | "н" | "Н" | "Н" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#311 | format | `TEXT(DATE(2025,12,15),"ММММ")` | "декабрь" | "Декабрь" | "Декабрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#313 | format | `TEXT(DATE(2025,12,15),"ДД ММММ")` | "15 декабрь" | "15 Декабрь" | "15 Декабрь" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | format#314 | format | `TEXT(DATE(2025,12,15),"МММММ")` | "д" | "Д" | "Д" | Windows | platform: the engine follows Windows |
+| ru-RU | locale | criteria#30 | criteria | `COUNTIF(L!A1:A16,"<м")` | 4 | 6 | 6 | Windows | platform: the engine follows Windows |
+| ru-RU | locale | criteria#31 | criteria | `COUNTIF(L!A1:A16,">a")` | 2 | 3 | 3 | Windows | platform: the engine follows Windows |
+| ru-RU | text-format-ru-more | TEXT#11 | TEXT | `TEXT(45688,"Д ММММ ГГГГ")` | "31 январь 2025" | "31 Январь 2025" | "31 Январь 2025" | Windows | platform: the engine follows Windows |
+| ru-RU | text-format-ru-more | TEXT#12 | TEXT | `TEXT(45688,"ДД ММММ")` | "31 январь" | "31 Январь" | "31 Январь" | Windows | platform: the engine follows Windows |
 | ru-RU | text-format-ru-more | TEXT#13 | TEXT | `TEXT(45688,"[$-F800]ДДДД, ММММ ДД, ГГГГ")` | "пятница, 31 января 2025 г." | "31 января 2025 г." | "пятница, 31 января 2025 г." | Mac | platform: winLongDate |
-| ru-RU | text-format-ru | date#55 | TEXT | `TEXT(45688.75,"[$-419]ММММ")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| ru-RU | text-format-ru | date#56 | TEXT | `TEXT(0,"[$-419]ММММ")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| ru-RU | text-format-ru | date#58 | TEXT | `TEXT(45688.999999,"[$-419]ММММ")` | "февраль" | "Февраль" | "февраль" | Mac | platform: winMonthCase |
-| ru-RU | text-format-ru | date#59 | TEXT | `TEXT(0.75/86400,"[$-419]ММММ")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
-| ru-RU | text-format-ru | date#60 | TEXT | `TEXT(1.5,"[$-419]ММММ")` | "январь" | "Январь" | "январь" | Mac | platform: winMonthCase |
+| ru-RU | text-format-ru | date#55 | TEXT | `TEXT(45688.75,"[$-419]ММММ")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| ru-RU | text-format-ru | date#56 | TEXT | `TEXT(0,"[$-419]ММММ")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| ru-RU | text-format-ru | date#58 | TEXT | `TEXT(45688.999999,"[$-419]ММММ")` | "февраль" | "Февраль" | "Февраль" | Windows | platform: the engine follows Windows |
+| ru-RU | text-format-ru | date#59 | TEXT | `TEXT(0.75/86400,"[$-419]ММММ")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
+| ru-RU | text-format-ru | date#60 | TEXT | `TEXT(1.5,"[$-419]ММММ")` | "январь" | "Январь" | "Январь" | Windows | platform: the engine follows Windows |
 
 ## Windows and the Mac agree, the engine does not
 

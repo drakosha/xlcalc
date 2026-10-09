@@ -1,10 +1,11 @@
 /**
  * Excel's built-in number formats by number (`numFmtId` 0 to 49, which an xlsx file stores without a code): the codes
- * Excel 16.113 for Mac en-US shows them by (the display set `builtin`). A locale shows some of them by its own codes
- * (`Style.builtin`): the short and medium dates and times, money, numbers with negatives in parentheses.
+ * Excel for Windows en-US shows them by (the display set `builtin`, `test/excel/win/display/`), as Excel for Mac but
+ * the short date, `m/d/yyyy` (the Mac's `m/d/yy`). A locale shows some of them by its own codes (`Style.builtin`): the
+ * short and medium dates and times, money, numbers with negatives in parentheses.
  */
 
-const SHORT_DATE = 'm/d/yy'
+const SHORT_DATE = 'm/d/yyyy'
 const LONG_TIME = 'h:mm:ss'
 
 /** en-US's codes, by number; 23 to 26 are General, 27 to 36 (East Asian dates and times elsewhere) the short date or time. */

@@ -2,8 +2,8 @@
  * What cells show against Excel for Windows (`test/excel/win/display/`, `bench/windows`): every case's shown text and
  * colour, computed by `compute` in the book the harness laid out, as `display-excel.test.ts` does for the Mac. Excel
  * for Windows lays text out in pixels (a digit of Calibri 11 is 7 pixels at 96 dpi) where the engine follows the Mac's
- * points, so cases near a column's edge part; such differences, and the places where Windows's own regional data differ
- * from the Mac's, are covered by the rules of `WIN_SHOWN`, each with its reason.
+ * points, so cases near a column's edge part; such differences, and the long date the engine keeps as the Mac's, are
+ * covered by the rules of `WIN_SHOWN`, each with its reason.
  */
 import { describe, expect, it } from 'vitest'
 import type { StoredDisplay } from '../bench/coverage/display.js'
@@ -34,24 +34,16 @@ const atSomeWidth = (s: Shown) => {
   const formats = [formatted(s.c).format, ...(s.c.numFmtId !== undefined && s.win.code !== undefined ? [s.win.code] : [])]
   return formats.some((format) => WIDTHS.some((w) => displayValue(s.value, { format, locale: s.locale, width: w }).text === s.win.text))
 }
-const SHORT_MONTHS: [RegExp, string][] = [[/февр/g, 'фев'], [/март/g, 'мар'], [/июнь/g, 'июн'], [/июль/g, 'июл'], [/сент/g, 'сен'], [/нояб/g, 'ноя']]
 
 /**
  * Why a case shows otherwise in Excel for Windows: each reason with the test of the cases it covers. The engine shows
- * cells as Excel for Mac does; a difference no rule covers fails, and so does a rule that covers no case.
+ * cells as Excel for Windows does where the two Excels' regional data part, and lays them out as Excel for Mac does; a
+ * difference no rule covers fails, and so does a rule that covers no case.
  */
 const WIN_SHOWN: readonly [string, (s: Shown) => boolean][] = [
-  ['a built-in format by number is the code of Windows\'s regional settings (en-US 14 is `m/d/yyyy`, `1/31/2025`; the Mac\'s `m/d/yy`, `1/31/25`): the engine shows Windows\'s text with the code Windows reports', (s) => {
-    if (s.c.numFmtId === undefined || s.win.code === undefined || typeof s.c.cell.value !== 'number') return false
-    return displayValue(s.c.cell.value, { format: s.win.code, locale: s.locale, width: s.c.width }).text === s.win.text
-  }],
   ['Excel for Windows lays text out in pixels (a digit of Calibri 11 is 7 pixels at 96 dpi), the engine in the Mac\'s points: near the edge of a column the cell shows `#`, fewer digits of General, or a fill, as the engine shows it at another width', atSomeWidth],
   ['General with an exponent of three digits (below 1E-99) in a narrow column: Excel for Windows shows `#`, Excel for Mac and the engine `0` or the number', (s) => typeof s.value === 'number' && s.value !== 0 && Math.abs(s.value) < 1e-99 && /^#+$/.test(s.win.text)],
-  ['ru-RU built-in date formats by number (15 to 17): Windows reports its own regional code (`ДД.МММ.ГГ`, three-letter months), which fits columns where the Mac\'s `dd.mmm.yy` with `нояб` does not', (s) => s.locale === 'ru-RU' && [15, 16, 17].includes(s.c.numFmtId ?? -1)],
-  ['ru-RU month names: Excel for Windows writes them with a capital (`Январь`, `Я`), Excel for Mac and the engine in lower case', (s) => s.win.text !== s.engine.text && s.win.text.toLowerCase() === s.engine.text.toLowerCase()],
-  ['ru-RU short month names: Excel for Windows takes three letters (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`), Excel for Mac and the engine `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`', (s) => SHORT_MONTHS.reduce((t, [re, x]) => t.replace(re, x), s.engine.text).toLowerCase() === s.win.text.toLowerCase()],
-  ['`[$-F800]` and `[$-F400]` are the system\'s long date and time: Windows ru-RU writes `31 января 2025 г.` without the weekday and the hour without a leading zero', (s) => /\[\$-F[48]00\]/i.test(String(s.c.cell.format))],
-  ['ru-RU built-in time formats by number: Windows takes its own short time, the hour without a leading zero (`6:00`, the Mac `06:00`)', (s) => s.c.numFmtId !== undefined && s.engine.text.replace(/(^|\s)0(\d:)/g, '$1$2') === s.win.text],
+  ['`[$-F800]` is the system\'s long date: Windows ru-RU writes `31 января 2025 г.` without the weekday', (s) => /\[\$-F800\]/i.test(String(s.c.cell.format))],
 ]
 
 for (const set of SETS) {

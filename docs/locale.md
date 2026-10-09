@@ -30,7 +30,7 @@ The locale enters the hashes only when it is set and is not en-US: `inputHash` g
 
 ### What changes in ru-RU
 
-| | ru-RU, as Excel 16.113 for Mac computes |
+| | ru-RU, as Excel 16.113 for Mac computes, and as Excel for Windows where the two part |
 |---|---|
 | numbers in text | `1 234,5` and `1 2345` (a plain space before groups of three digits or more; a no-break space is no separator), `,5`, `(1,5)`, `1,5%`, `%(1,5)`, `1,5E+3`, `1 1/2`, `1 234,5 ₽` (the ruble after the amount). `$`, `р.` and `1.234,5` are not numbers |
 | dates in text | day, month, year with `.`, `/` or `-`: `31.01.2025`, `1/2/2025` is 1 February, `31.01.25`; also `2025-01-31` and `2025.1.31`. A month by three letters or more of its nominative name in any case: `31 январь 2025`, `31.янв.2025`, `15 июн. 2025` (not the genitive `января`, not English names). `янв 2025` and `янв-25` are the 1st |
@@ -38,13 +38,14 @@ The locale enters the hashes only when it is set and is not en-US: `inputHash` g
 | times | as in en-US, with a decimal comma in seconds (`18:30:15,5`) and the English `AM`/`PM` |
 | numbers as text | a decimal comma: `"a"&1.5` is `a1,5`, `1,23456789012345E+20`; complex numbers too (`1,5-2,25i`) |
 | booleans | `ИСТИНА` and `ЛОЖЬ` both ways, any case when read; `"TRUE"` is `#VALUE!` where a boolean is expected |
-| TEXT codes | `Д`, `Г`, `ч`, `с` in either case; `М` is the month, or minutes after hours or before seconds; `м` is always minutes; `,` is the decimal point and a space the group separator; `Основной` is General; Latin letters are literals (`yyyy` stays `yyyy`); month names in the nominative (`январь`, short `янв`, `февр`, `сент`, `нояб`), days `пятница`, `Пт` |
+| TEXT codes | `Д`, `Г`, `ч`, `с` in either case; `М` is the month, or minutes after hours or before seconds; `м` is always minutes; `,` is the decimal point and a space the group separator; `Основной` is General; Latin letters are literals (`yyyy` stays `yyyy`); month names in the nominative with a capital (`Январь`, `Я` for `МММММ`), short ones of three letters (`янв`, `фев`, `сен`, `ноя`), as Excel for Windows writes them; days `пятница`, `Пт` |
 | DOLLAR, FIXED | `1 234,57 ₽`, `-1 234,57 ₽`, `-0,00 ₽` (a minus even when rounded to zero), `1 234 567,89` |
 | VALUE and NUMBERVALUE | read as above; NUMBERVALUE's default separators are `,` and a space, and the rest of its text is read as VALUE reads it (`NUMBERVALUE("1.5")` is a date) |
 | complex text | each part is read as VALUE reads it: `IMSUM("1.5+2i")` is `46143+2i` |
 | errors, arrays as text | `#Н/Д` and the other Russian error texts in VALUETOTEXT, ARRAYTOTEXT and criteria; ARRAYTOTEXT writes `{1,5;2:ИСТИНА}` and `1,5; 2` |
 | criteria | numbers, dates and words of the locale in criterion text and in cell text: `">1,5"`, `">=01.01.2026"`, `"01.05"`, `"ИСТИНА"` (`"TRUE"` is text) |
-| text order | Cyrillic before Latin (en-US: Latin first) |
+| text order | Latin before Cyrillic, as in en-US and as Excel for Windows sorts (Excel for Mac ru-RU puts Cyrillic first) |
+| times of built-in formats | the hour without a leading zero (`6:00` for the formats 20 and 21 and `[$-F400]`), as Excel for Windows shows them |
 | CHAR, CODE | Windows-1251 (en-US: Windows-1252) |
 
 ### Dates without a year
@@ -55,7 +56,14 @@ Whether a cell reads the year depends on its data (`VALUE(A1)` reads it only whe
 
 ### Text order
 
-Excel en-US sorts Latin before Cyrillic, ru-RU Cyrillic before Latin. Both compare without regard to case but with regard to accents: `ё` comes after `е` and `й` after `и`, and neither pair is equal. `Intl.Collator` with the locale's tag and `sensitivity: 'accent'` gives Excel's order on all 174 measured cases. Operators, criteria, lookups and sorting all use it.
+Text sorts Latin before Cyrillic in both locales, as Excel for Windows sorts in every locale; Excel for Mac ru-RU puts Cyrillic first, and the engine follows Windows there. The order is case-insensitive and accent-sensitive: `"аб"="АБ"` is TRUE, `"ё"="е"` and `"й"="и"` are FALSE. An accent and `ё` weigh only where the letters are otherwise equal, while `й` is a letter of its own after `и`:
+
+- `"ёа"<"еб"` is TRUE, as `"éa"<"eb"`: the second letter decides before the accent.
+- `"шел"<"шёл"` is TRUE: with the letters equal, the plain one comes first.
+- `"йа"<"иб"` is FALSE: `й` comes after every word that starts with `и`.
+- `ъ`, `ы`, `ь` come in that order, after `й` and before `э`, `ю`, `я`.
+
+`Intl.Collator` with the en-US order (`collation: 'en-US'` in both locales) and `sensitivity: 'accent'` gives Excel for Windows's order on all 236 measured cases of ru-RU and 174 of en-US. Operators, criteria, lookups and sorting all use it.
 
 ## How the engine does it
 
@@ -65,8 +73,10 @@ The engine builds the rules when it creates a book's state and passes them to op
 
 ## How it was checked
 
-`test/excel-ru.test.ts` computes the measurement's book with `locale: 'ru-RU'` and compares every whitelisted function's cases with Excel ru-RU's answers in `test/excel/coverage/excel-ru.json`. `test/excel-ru-probes.test.ts` does the same for the ru-RU case sets in `test/excel/cases/ru-RU/`, among them `locale` (1,109 cases) and `collation` (174). `npx tsx bench/coverage/run.ts probes <set> ru` computes a set in Excel ru-RU. Known differences are listed in `RU_KNOWN` with a line each in the README.
+`test/excel-ru.test.ts` computes the measurement's book with `locale: 'ru-RU'` and compares every whitelisted function's cases with Excel ru-RU's answers in `test/excel/coverage/excel-ru.json`. `test/excel-ru-probes.test.ts` does the same for the ru-RU case sets in `test/excel/cases/ru-RU/`, among them `locale` (1,109 cases) and `collation` (174). `npx tsx bench/coverage/run.ts probes <set> ru` computes a set in Excel ru-RU. Known differences are listed in `RU_KNOWN` with a line each in the README; among them are the cases where the engine follows Excel for Windows and the Mac answers otherwise (the order of text, month names).
+
+`test/excel-win.test.ts` checks the same books against Excel for Windows (`test/excel/win/`, `bench/windows`), with the set `collation-more` (62 cases of the order inside Cyrillic and Latin) measured in Windows alone.
 
 `test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from ru-RU and en-US.
 
-Excel for Mac is the reference for ru-RU. Excel for Windows (16.0.20430, `bench/windows`) computes the same ru-RU sets alike but for its regional data: it sorts Latin before Cyrillic (`"a"<"а"` is TRUE there), writes month names with a capital (`Январь`) and short ones with three letters (`фев`, `ноя`), and its long date `[$-F800]` has no weekday. The engine follows the Mac in these and Windows in `CHAR` and `CODE`; `test/excel-win-cases.ts` lists the cases. Formula text in ru-RU (array constants and the like) was not compared.
+Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.

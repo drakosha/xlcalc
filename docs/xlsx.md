@@ -67,7 +67,7 @@ Each cell format of the file becomes a style of the book's table and a number fo
 
 Colours become `#RRGGBB`. A theme colour with a tint is computed as Excel shows it, and the legacy palette or the book's own palette gives indexed colours.
 
-A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/25` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported.
+A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported.
 
 Excel for Mac saves some built-in formats otherwise than by their number: the money and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file Excel saved holds them so.
 
@@ -189,7 +189,7 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 
 Styles, number formats, widths, heights, hidden rows and columns and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits.
 
-A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
+A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
 
 ### Filters
 

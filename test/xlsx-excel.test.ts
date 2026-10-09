@@ -190,8 +190,11 @@ describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx formulas of t
 })
 
 describe.skipIf(!existsSync(new URL('formats.json', dir)))('xlsx built-in number formats as Excel shows them', () => {
-  it('the reader reads each built-in format as the code Excel for Mac en-US gives it', () => {
+  it('the reader reads each built-in format as the code Excel en-US gives it: Windows\'s to 49, the Mac\'s from 50', () => {
     const stored = json<{ formats: Record<string, string> }>('formats.json').formats
-    expect({ ...BUILTIN }).toEqual(stored)
+    // what Excel for Windows reports for the formats 0 to 49 (its short date is m/d/yyyy, the Mac's m/d/yy)
+    const win = JSON.parse(readFileSync(new URL('../win/display/builtin.json', dir), 'utf8')) as { cases: { id: string; numFmtId: number }[]; answers: Record<string, { code: string }> }
+    const windows = Object.fromEntries(win.cases.map((c) => [String(c.numFmtId), win.answers[c.id].code]))
+    expect({ ...BUILTIN }).toEqual(Object.fromEntries(Object.entries(stored).map(([id, code]) => [id, Number(id) <= 49 ? windows[id] : code])))
   })
 })

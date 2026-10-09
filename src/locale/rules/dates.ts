@@ -16,8 +16,9 @@ const DAY_NAME = /^(\d{1,2})[ .-](\p{L}+)(?:(?:\. ?|[ -])(\d{4}|\d{2}))?$/u
 const NAME_YEAR = /^(\p{L}+)(?:\. ?|[ -])(\d{4}|\d{2})$/u
 
 export function dmyDates(data: RegionalData, clock: RulesClock): (s: string) => number | null {
-  // a month by a prefix of its name, three letters at least; 0 if none
-  const month = (word: string) => (word.length < 3 ? 0 : data.months.findIndex((m) => m.startsWith(word)) + 1)
+  // a month by a prefix of its name, three letters at least, in any case (the text comes in lower case); 0 if none
+  const names = data.months.map((m) => m.toLowerCase())
+  const month = (word: string) => (word.length < 3 ? 0 : names.findIndex((m) => m.startsWith(word)) + 1)
   return (s) => {
     let m = YMD.exec(s)
     if (m) return calendarDate(Number(m[1]), Number(m[2]), Number(m[3]))

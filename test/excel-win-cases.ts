@@ -45,10 +45,6 @@ export const WIN_SETS: WinSet[] = [
 
 /** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
 export const WIN_REASONS = {
-  winCollation:
-    'Text order in ru-RU: Excel for Windows puts Latin before Cyrillic, as Windows sorts; Excel for Mac and the engine put Cyrillic first (`"a"<"а"` is TRUE on Windows, FALSE on the Mac and here), in comparisons, criteria and SORT.',
-  winMonthCase: 'Month names in ru-RU `TEXT` (`ММММ`, `МММММ`): Excel for Windows writes them with a capital (`Январь`, `Я`), Excel for Mac and the engine in lower case (`январь`, `я`).',
-  winMonthShort: 'Short month names in ru-RU `TEXT` (`МММ`): Excel for Windows takes three letters (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`), Excel for Mac and the engine `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`.',
   winLongDate: '`[$-F800]` in ru-RU is the long date of the system: on Windows `31 января 2025 г.`, without the weekday; on the Mac and here `пятница, 31 января 2025 г.`.',
   winWeeknum: '`WEEKNUM` with return type 22, which Microsoft does not list: Excel for Windows answers a week (`WEEKNUM(45658,22)` is 1), Excel for Mac and the engine `#NUM!`.',
   winWeibull: '`WEIBULL` and `WEIBULL.DIST` with a scale of 1E-300: `#NUM!` in Excel for Windows, `#DIV/0!` in Excel for Mac and here.',
