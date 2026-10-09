@@ -85,7 +85,7 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
   // characters with a meaning on the other side: in an array constant its separators, elsewhere the list separator
   const special = [new Set([to.syn.decimal, to.syn.list]), new Set([to.syn.decimal, to.syn.arrayColumn, to.syn.arrayRow])]
   const out: Piece[] = []
-  for (const p of pieces) {
+  for (const [i, p] of pieces.entries()) {
     let text = p.text
     if (p.k === 'num') text = text.replace(from.syn.decimal, to.syn.decimal)
     else if (p.k === 'fn') text = from.fn.get(text.toUpperCase()) ?? text
@@ -97,8 +97,9 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
     else if (p.k === 'word') {
       const w = from.word.get(text.toUpperCase())
       if (w === undefined && p.arr) return fail(offset + p.at, `unexpected ${JSON.stringify(text)} in an array constant`)
-      // a name that reads as a boolean on the other side goes in quotes, as Excel ru-RU shows a name ИСТИНА ('ИСТИНА')
-      if (w === undefined && to.word.has(text.toUpperCase())) {
+      // a name that reads as a boolean on the other side goes in quotes, as Excel ru-RU shows a name ИСТИНА ('ИСТИНА');
+      // a table's name before its brackets does not (ИСТИНА[Qty])
+      if (w === undefined && to.word.has(text.toUpperCase()) && pieces[i + 1]?.k !== 'tbl') {
         out.push({ ...p, k: 'raw', text: `'${text}'` })
         continue
       }
