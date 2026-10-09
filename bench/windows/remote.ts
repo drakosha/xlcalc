@@ -9,8 +9,10 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSyn
 import { homedir, hostname } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { windowsLocale } from '../coverage/locales.js'
 
-export type Tag = 'en-US' | 'ru-RU'
+/** A locale's tag, one of the package's: the machine's language, regional format and code page are set by it. */
+export type Tag = string
 
 /** `user@host` of the Windows machine. */
 export const HOST = process.env.XLWIN_HOST ?? 'user@windows-host'
@@ -20,9 +22,6 @@ export const OUT = join(HERE, 'out')
 /** One SSH connection shared by the calls of a run: a logon on the machine costs seconds. */
 const OPTS = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', '-o', 'ControlMaster=auto', '-o', `ControlPath=${join(homedir(), '.cache/xlwin-%C')}`, '-o', 'ControlPersist=120']
 const OWNER = `${hostname()}:${process.pid}`
-
-/** What the language of a tag means on Windows: Excel's interface language id and the system code page. */
-const WANT: Record<Tag, { lcid: number; codepage: number }> = { 'en-US': { lcid: 1033, codepage: 1252 }, 'ru-RU': { lcid: 1049, codepage: 1251 } }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
@@ -89,15 +88,16 @@ const ANY_CODEPAGE = process.env.XLWIN_CODEPAGE === 'any'
 
 /** The machine in the locale wanted (interface, regional format, code page), restarting it when the system locale changes; Excel checked as it starts. */
 async function ensureLocale(tag: Tag): Promise<WinEnv> {
+  const want = windowsLocale(tag)
   let e = env()
-  const system = !ANY_CODEPAGE && (e.system !== tag || e.codepage !== WANT[tag].codepage)
+  const system = !ANY_CODEPAGE && (e.system !== tag || e.codepage !== want.codepage)
   if (e.ui !== tag || e.culture !== tag || system) {
     const r = host(ANY_CODEPAGE ? 'ui' : 'locale', tag)
     if (r.endsWith('restart')) await restart()
     e = env()
   }
-  const codepage = !ANY_CODEPAGE && [e.system !== tag && `system locale ${e.system}`, e.codepage !== WANT[tag].codepage && `code page ${e.codepage}`]
-  const bad = [e.ui !== tag && `language ${e.ui}`, e.culture !== tag && `format ${e.culture}`, ...(codepage || []), e.excelUI !== WANT[tag].lcid && `Excel interface ${e.excelUI}`, e.books !== 0 && `${e.books} books open`].filter(Boolean)
+  const codepage = !ANY_CODEPAGE && [e.system !== tag && `system locale ${e.system}`, e.codepage !== want.codepage && `code page ${e.codepage}`]
+  const bad = [e.ui !== tag && `language ${e.ui}`, e.culture !== tag && `format ${e.culture}`, ...(codepage || []), e.excelUI !== want.lcid && `Excel interface ${e.excelUI}`, e.books !== 0 && `${e.books} books open`].filter(Boolean)
   if (bad.length) throw new Error(`windows-host is not in ${tag}: ${bad.join(', ')}`)
   return e
 }
@@ -144,6 +144,8 @@ export const metaOf = (e: WinEnv, tag: Tag) => ({
 
 /** Runs `fn` holding the machine's lock, with the machine in `tag`; Excel left by a job cut short is stopped before and after. */
 export async function withWindowsExcel<T>(tag: Tag, fn: (e: WinEnv) => Promise<T>): Promise<T> {
+  // a tag Windows cannot be set to stops here, before the machine is touched
+  windowsLocale(tag)
   syncScripts()
   await lock()
   try {

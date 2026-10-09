@@ -14,6 +14,7 @@ import type { CaseSet } from '../coverage/cases.js'
 import type { ErrCode } from '../coverage/data.js'
 import type { Val } from '../coverage/formulajs.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../coverage/probes.js'
+import { localeDir, measurementFile } from '../coverage/locales.js'
 import { inCaseOrder } from '../coverage/stored.js'
 import { inJobs, metaOf, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
 
@@ -99,23 +100,23 @@ interface Target {
   legacy?: true
 }
 
-/** `measurement`, `probes`, a set of `sets/` or `legacy/<set>`, in en-US or ru-RU. */
+/** `measurement`, `probes`, a set of `sets/` or `legacy/<set>`, in a locale (the probes and the legacy sets in en-US only). */
 export async function target(name: string, tag: Tag): Promise<Target> {
-  const ru = tag === 'ru-RU'
+  const en = tag === 'en-US'
   if (name === 'measurement') {
     const set = JSON.parse(readFileSync(join(ROOT, 'test/excel/coverage/cases.json'), 'utf8')) as CaseSet
     const cases = set.cases.map((c) => ({ id: c.id, group: c.fn, fn: c.fn, formula: c.formula }))
-    return { cases, sheets: {}, file: winFile(`coverage/excel-${ru ? 'ru' : 'en'}.json`), valuesOnly: true }
+    return { cases, sheets: {}, file: winFile(`coverage/${measurementFile(tag)}`), valuesOnly: true }
   }
   if (name === 'probes') {
-    if (ru) throw new Error('the probes are computed in en-US only, as on the Mac')
+    if (!en) throw new Error('the probes are computed in en-US only, as on the Mac')
     return { cases: buildProbes(), sheets: PROBE_SHEETS, file: winFile('probes.json') }
   }
   const [dir, set] = name.startsWith('legacy/') ? ['legacy', name.slice(7)] : ['sets', name]
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  if (dir === 'legacy' && ru) throw new Error('the legacy sets are computed in en-US only, as on the Mac')
+  if (dir === 'legacy' && !en) throw new Error('the legacy sets are computed in en-US only, as on the Mac')
   const mod = (await import(`../coverage/${dir}/${set}.js`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
-  return { cases: mod.buildProbes(), sheets: mod.SHEETS ?? {}, file: winFile(`${dir === 'legacy' ? 'legacy' : 'cases'}/${ru ? 'ru-RU/' : ''}${set}.json`), ...(dir === 'legacy' ? { legacy: true as const } : {}) }
+  return { cases: mod.buildProbes(), sheets: mod.SHEETS ?? {}, file: winFile(`${dir === 'legacy' ? 'legacy' : 'cases'}/${localeDir(tag)}${set}.json`), ...(dir === 'legacy' ? { legacy: true as const } : {}) }
 }
 
 /** A part of a target's cases. */

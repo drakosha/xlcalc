@@ -3,7 +3,8 @@
  * it, computed fully and saved by Excel (`SaveAs`, xlsx) into `test/excel/win/xlsx/filters/`, with `filters.json`
  * recording what was sent (a hash per file) or Excel's refusal. Formats (`bench/coverage/xlsx/formats.ts`): the codes
  * Excel shows for the built-in number formats 1 to 58 of the Mac step's book, `NumberFormat` and `NumberFormatLocal`,
- * into `test/excel/win/xlsx/[ru-RU/]formats.json`. `test/xlsx-win.test.ts` reads both.
+ * into `test/excel/win/xlsx/formats.json`, another locale's into `xlsx/<tag>/formats.json`. `test/xlsx-win.test.ts`
+ * reads them.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -11,6 +12,7 @@ import { dirname, join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
+import { localeDir } from '../coverage/locales.js'
 import { winFile } from './functions.js'
 import { inJobs, metaOf, OUT, runJob, type Tag, type WinEnv } from './remote.js'
 
@@ -52,7 +54,7 @@ export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
 
 /** The codes Excel for Windows shows for the built-in formats 1 to 58 in `tag`: `formats` in English (`NumberFormat`), `local` in the user's language. */
 export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {
-  const file = winFile(`xlsx/${tag === 'en-US' ? '' : 'ru-RU/'}formats.json`)
+  const file = winFile(`xlsx/${localeDir(tag)}formats.json`)
   const book = join(OUT, 'xlsx-formats.xlsx')
   mkdirSync(OUT, { recursive: true })
   writeFileSync(book, await formatBook())
