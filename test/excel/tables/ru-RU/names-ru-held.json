@@ -1,0 +1,796 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "seconds": 11.3
+ },
+ "cases": [
+  {
+   "id": "typed",
+   "about": "Cyrillic names in formulas of the file, shown in Russian, and typed in Russian in any case",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "Ставка*2"
+       },
+       "B2": {
+        "formula": "SUM(Ставка,НДС_2025)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ставка",
+      "ref": "0.2"
+     },
+     {
+      "name": "НДС_2025",
+      "ref": "'S'!$A$1"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=Ставка*10"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "local": "=СУММ(Ставка;НДС_2025;0,5)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C3",
+      "value": {
+       "local": "=СУММ(ставка;1)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "function-word",
+   "about": "a name Сумма beside the function СУММ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "SUM(Сумма)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Сумма",
+      "ref": "5"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=СУММ(Сумма;1)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "local": "=Сумма*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "summ",
+   "about": "a name СУММ, SUM's Russian name: without ( it is the name",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "СУММ*2"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "СУММ",
+      "ref": "7"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=СУММ(СУММ;1)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "local": "=СУММ+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "bool-word",
+   "about": "a name ИСТИНА: the name in the formula of the file, the boolean TRUE when typed in Russian",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "ИСТИНА+1"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "ИСТИНА",
+      "ref": "11"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=ИСТИНА+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "scope",
+   "about": "a sheet's own Cyrillic name on a sheet named in Cyrillic, typed in Russian",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "'Лист'!Ставка*2"
+       }
+      }
+     },
+     {
+      "name": "Лист",
+      "cells": {
+       "A1": {
+        "formula": "Ставка"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ставка",
+      "ref": "0.2"
+     },
+     {
+      "name": "Ставка",
+      "ref": "0.3",
+      "scope": "Лист"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=Лист!Ставка+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C1"
+    },
+    {
+     "sheet": "Лист",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "cell-like",
+   "about": "Cyrillic letters and digits are a name in ru-RU too (АБ12)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "АБ12",
+      "ref": "1"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=АБ12*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "r1c1-like",
+   "about": "R1C1 of ru-RU is in Latin letters: Cyrillic К2С3, С2К3, С and К are names",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "К2С3",
+      "ref": "1"
+     },
+     {
+      "name": "С2К3",
+      "ref": "10"
+     },
+     {
+      "name": "С",
+      "ref": "100"
+     },
+     {
+      "name": "К",
+      "ref": "1000"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=К2С3+С2К3+С+К"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "rename-cyrillic",
+   "about": "a table renamed in Cyrillic, then a formula over it typed in Russian",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "Продажи"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "J2",
+      "value": {
+       "local": "=СУММ(Продажи[Price])"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:J5"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "typed": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 0.4
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 100.2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 100.7
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 1.2
+    }
+   },
+   "formulas": {
+    "S!B1": "=Ставка*2",
+    "S!C1": "=Ставка*10",
+    "S!B2": "=SUM(Ставка,НДС_2025)",
+    "S!C2": "=SUM(Ставка,НДС_2025,0.5)",
+    "S!C3": "=SUM(Ставка,1)"
+   },
+   "local": {
+    "S!B1": "=Ставка*2",
+    "S!C1": "=Ставка*10",
+    "S!B2": "=СУММ(Ставка;НДС_2025)",
+    "S!C2": "=СУММ(Ставка;НДС_2025;0,5)",
+    "S!C3": "=СУММ(Ставка;1)"
+   },
+   "tables": []
+  },
+  "function-word": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!B1": "=SUM(Сумма)",
+    "S!C1": "=SUM(Сумма,1)",
+    "S!C2": "=Сумма*2"
+   },
+   "local": {
+    "S!B1": "=СУММ(Сумма)",
+    "S!C1": "=СУММ(Сумма;1)",
+    "S!C2": "=Сумма*2"
+   },
+   "tables": []
+  },
+  "summ": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 14
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 8
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 8
+    }
+   },
+   "formulas": {
+    "S!B1": "=СУММ*2",
+    "S!C1": "=SUM(СУММ,1)",
+    "S!C2": "=СУММ+1"
+   },
+   "local": {
+    "S!B1": "=СУММ*2",
+    "S!C1": "=СУММ(СУММ;1)",
+    "S!C2": "=СУММ+1"
+   },
+   "tables": []
+  },
+  "bool-word": {
+   "values": {},
+   "formulas": {},
+   "tables": [],
+   "rejected": true
+  },
+  "scope": {
+   "values": {
+    "S!B1": {
+     "t": "n",
+     "v": 0.6
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 1.3
+    },
+    "Лист!A1": {
+     "t": "n",
+     "v": 0.3
+    }
+   },
+   "formulas": {
+    "S!B1": "=Лист!Ставка*2",
+    "S!C1": "=Лист!Ставка+1",
+    "Лист!A1": "=Ставка"
+   },
+   "local": {
+    "S!B1": "=Лист!Ставка*2",
+    "S!C1": "=Лист!Ставка+1",
+    "Лист!A1": "=Ставка"
+   },
+   "tables": []
+  },
+  "cell-like": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!C1": "=АБ12*2"
+   },
+   "local": {
+    "S!C1": "=АБ12*2"
+   },
+   "tables": []
+  },
+  "r1c1-like": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 1111
+    }
+   },
+   "formulas": {
+    "S!C1": "=К2С3+С2К3+С+К"
+   },
+   "local": {
+    "S!C1": "=К2С3+С2К3+С+К"
+   },
+   "tables": []
+  },
+  "rename-cyrillic": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 100
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Продажи[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=SUM(Продажи[Price])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "local": {
+    "S!J1": "=СУММ(Продажи[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=СУММ(Продажи[Price])",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Продажи",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  }
+ }
+}
