@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url'
 import { compute } from '../../src/index.js'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { writeBook } from './book.js'
-import { ensureExcel, excelVersion, type Locale } from './excel.js'
+import { ensureExcel, excelVersion } from './excel.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { buildRoundTrips, XLSX_CLOCK } from './xlsx/books.js'
 import { colorBook, colorCases } from './xlsx/colors.js'
@@ -55,8 +55,8 @@ function load(step: string): StoredRun {
   return existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredRun) : { meta: {}, books: {} }
 }
 
-/** Sends the books that changed through Excel in the locale given, storing what Excel saved under `dir`. */
-async function send(step: string, books: { id: string; locale: Locale; bytes: () => Promise<Uint8Array>; hash: string }[], report: (id: string, saved: Uint8Array) => Promise<string>) {
+/** Sends the books that changed through Excel in each book's locale (a tag), storing what Excel saved under `dir`. */
+async function send(step: string, books: { id: string; locale: string; bytes: () => Promise<Uint8Array>; hash: string }[], report: (id: string, saved: Uint8Array) => Promise<string>) {
   const run = load(step)
   const dir = join(DATA, step)
   mkdirSync(dir, { recursive: true })
@@ -72,7 +72,7 @@ async function send(step: string, books: { id: string; locale: Locale; bytes: ()
       delete run.books[id]
       rmSync(join(dir, `${id}.xlsx`), { force: true })
     }
-  for (const locale of ['en', 'ru'] as const) {
+  for (const locale of [...new Set(books.map((b) => b.locale))].sort()) {
     const todo = books.filter((b) => b.locale === locale && (!ONLY || ONLY.includes(b.id)) && !(run.books[b.id]?.sent === b.hash && (run.books[b.id].rejected || existsSync(join(dir, `${b.id}.xlsx`)))))
     if (!todo.length) continue
     await ensureExcel(locale)
@@ -100,7 +100,7 @@ async function roundTrip() {
     cases.map(async (c) => {
       const result = compute(c.book, { clock: XLSX_CLOCK })
       const { data } = await writeXlsx(c.book, { result, mode: c.mode })
-      return { id: c.id, locale: (c.book.locale === 'ru-RU' ? 'ru' : 'en') as Locale, bytes: async () => data, hash: sha(data), c, result }
+      return { id: c.id, locale: c.book.locale ?? 'en-US', bytes: async () => data, hash: sha(data), c, result }
     }),
   )
   await send('roundtrip', books, async (id, saved) => {
@@ -130,7 +130,7 @@ async function saved() {
   const parts = await caseParts()
   const books = parts.map((p) => ({
     id: p.id,
-    locale: 'en' as Locale,
+    locale: 'en-US',
     hash: sha(JSON.stringify({ formulas: p.probes.map((x) => x.formula), sheets: p.sheets })),
     bytes: async () => {
       const file = join(OUT, `case-${p.id}.xlsx`)
@@ -143,7 +143,7 @@ async function saved() {
 
 async function colors() {
   const cases = colorCases()
-  await ensureExcel('en')
+  await ensureExcel('en-US')
   const shown = await fillColors(await colorBook(cases), cases.map((c) => c.cell))
   const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', date: new Date().toISOString().slice(0, 10) }
   mkdirSync(DATA, { recursive: true })
@@ -152,7 +152,7 @@ async function colors() {
 }
 
 async function formats() {
-  await ensureExcel('en')
+  await ensureExcel('en-US')
   const shown = await numberFormats(await formatBook(), FORMAT_IDS.map((id) => `A${id}`))
   const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', date: new Date().toISOString().slice(0, 10) }
   mkdirSync(DATA, { recursive: true })
@@ -162,11 +162,11 @@ async function formats() {
 
 async function intersect() {
   const data = await oldFormulaBook(OLD_FORMULAS)
-  await send('intersect', [{ id: 'old-formulas', locale: 'en', bytes: async () => data, hash: sha(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
+  await send('intersect', [{ id: 'old-formulas', locale: 'en-US', bytes: async () => data, hash: sha(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
 }
 
 async function filters() {
-  const books = await Promise.all(FILTER_FILES.map(async (c) => ({ id: c.id, locale: 'en' as Locale, data: await filterFile(c) })))
+  const books = await Promise.all(FILTER_FILES.map(async (c) => ({ id: c.id, locale: 'en-US', data: await filterFile(c) })))
   await send(
     'filters',
     books.map((b) => ({ ...b, bytes: async () => b.data, hash: sha(b.data) })),

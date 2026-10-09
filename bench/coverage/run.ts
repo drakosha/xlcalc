@@ -6,19 +6,23 @@
  *   npx tsx bench/coverage/run.ts lo         LibreOffice en-US
  *   npx tsx bench/coverage/run.ts excel en   Excel en-US (restarts Excel with the English interface and locale)
  *   npx tsx bench/coverage/run.ts excel ru   Excel ru-RU (restarts Excel without arguments)
+ *   npx tsx bench/coverage/run.ts excel T    Excel in the locale T (a tag such as de-DE) into excel-T.json
  *   npx tsx bench/coverage/run.ts report     the comparison, the summary and the report's tables
  *   npx tsx bench/coverage/run.ts all        all of the above; Excel is left running without arguments
  *   npx tsx bench/coverage/run.ts probes     Excel en-US probes outside the measurement (probes.ts) into test/excel/probes.json
  *   npx tsx bench/coverage/run.ts probes X   the set sets/X.ts into test/excel/cases/X.json (test: test/excel-sets.test.ts)
- *   npx tsx bench/coverage/run.ts probes X ru   the same set in Excel ru-RU into test/excel/cases/ru-RU/X.json (test: test/excel-ru-probes.test.ts)
+ *   npx tsx bench/coverage/run.ts probes X ru   the same set in Excel ru-RU into test/excel/cases/ru-RU/X.json (test: test/excel-locales-sets.test.ts)
+ *   npx tsx bench/coverage/run.ts probes X T    the same set in Excel in the locale T into test/excel/cases/T/X.json
  *   npx tsx bench/coverage/run.ts legacy X   the set legacy/X.ts written as formulas of the old kind into test/excel/legacy/X.json, with each formula as Excel 365 shows it
  *   npx tsx bench/coverage/run.ts struct X   the structure operations of struct/X.ts into test/excel/struct/X.json (test: test/structure-excel.test.ts)
  *   npx tsx bench/coverage/run.ts spill X    the spill cases of spill/X.ts into test/excel/spill/X.json (test: test/spill-excel.test.ts)
- *   npx tsx bench/coverage/run.ts display X [ru]   cells shown by display/X.ts into test/excel/display/[ru-RU/]X.json (test: test/display-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts display X [ru|T]   cells shown by display/X.ts into test/excel/display/[ru-RU/ or T/]X.json (test: test/display-excel.test.ts)
  *   npx tsx bench/coverage/run.ts xlsx X     the xlsx subpath through Excel (roundtrip | saved | colors | formats | intersect) into test/excel/xlsx/ (test: test/xlsx-excel.test.ts)
  *   npx tsx bench/coverage/run.ts workbook X   book-level features of workbook/X.ts into test/excel/workbook/X.json (test: test/workbook-excel.test.ts)
- *   npx tsx bench/coverage/run.ts tables X [ru]   tables and structured references of tables/X.ts into test/excel/tables/[ru-RU/]X.json (test: test/tables-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts tables X [ru|T]   tables and structured references of tables/X.ts into test/excel/tables/[ru-RU/ or T/]X.json (test: test/tables-excel.test.ts)
  *
+ * A locale is `en`, `ru` or a tag (`locales.ts`); en-US's answers are at the top of their directory, another locale's
+ * in a directory of its tag.
  * FCOV_ONLY=ABS,SUM limits the functions (a trial run): everything is then written to out/.
  * Excel computes in parts of up to 400 cases; after each part Excel is checked for a modal window.
  */
@@ -29,9 +33,10 @@ import { fileURLToPath } from 'node:url'
 import { inCaseOrder } from './stored.js'
 import { writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock, type Locale } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
+import { localeDir, localeMeta, measurementFile, parseTag } from './locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from './probes.js'
 import { writeReport } from './report.js'
 import { stepStruct } from './struct.js'
@@ -46,10 +51,10 @@ const ROOT = join(HERE, '../..')
 const ONLY = process.env.FCOV_ONLY?.split(',').filter(Boolean)
 const OUT = join(HERE, 'out')
 const BOOK = join(OUT, 'book.xlsx')
-/** The measurement files the tests read; the rest (formulajs, LibreOffice, the summary) only feed the report. */
-const TESTED = ['cases.json', 'excel-en.json', 'excel-ru.json']
+/** The measurement files the tests read, the cases and Excel's answers in each locale; the rest (formulajs, LibreOffice, the summary) only feed the report. */
+const tested = (name: string) => name === 'cases.json' || name.startsWith('excel-')
 /** A measurement file: under test/excel/coverage if the tests read it, else under bench/coverage/data; all in out/ on a trial run. */
-const resultFile = (name: string) => join(ONLY ? OUT : TESTED.includes(name) ? join(ROOT, 'test/excel/coverage') : join(HERE, 'data'), name)
+const resultFile = (name: string) => join(ONLY ? OUT : tested(name) ? join(ROOT, 'test/excel/coverage') : join(HERE, 'data'), name)
 const REPORT = ONLY ? join(OUT, 'report.md') : join(ROOT, 'docs/coverage-formulajs.md')
 
 export interface Column<T = Val> {
@@ -169,27 +174,24 @@ interface ExcelColumn extends Column {
   meta: Column['meta'] & { parts: number; done: number; stopped?: string; dynamic: true }
 }
 
-/** The locale in an answer file's metadata. */
-const LOCALE_META: Record<Locale, string> = { en: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', ru: 'ru-RU (the system language and locale)' }
-
 /**
  * Excel in parts: before and after each part Excel is checked for a window that is not a book (a modal
  * dialog). If there is one, the run stops with the dialog's text and the part's number; the parts done are
  * in the file already. A new run goes on from the first part not done (FCOV_FRESH=1 starts over).
  */
-async function stepExcel(locale: Locale) {
+async function stepExcel(tag: string) {
   const cs = cases()
-  const name = `excel-${locale}.json`
+  const name = measurementFile(tag)
   const file = resultFile(name)
-  await ensureExcel(locale)
+  await ensureExcel(tag)
   const ps = parts(cs)
   const stored = existsSync(file) && !process.env.FCOV_FRESH ? load<ExcelColumn>(name) : null
-  const col: ExcelColumn = stored ?? { meta: { version: excelVersion(), locale: LOCALE_META[locale], seconds: 0, parts: ps.length, done: 0, dynamic: true }, values: {} }
+  const col: ExcelColumn = stored ?? { meta: { version: excelVersion(), locale: localeMeta(tag), seconds: 0, parts: ps.length, done: 0, dynamic: true }, values: {} }
   delete col.meta.stopped
   const stop = (k: number, why: string) => {
     col.meta.stopped = `part ${k + 1} of ${ps.length} (${ps[k][0].id} … ${ps[k][ps[k].length - 1].id}): ${why}`
     save(name, col)
-    throw new Error(`Excel ${locale}: ${col.meta.stopped}`)
+    throw new Error(`Excel ${tag}: ${col.meta.stopped}`)
   }
   mkdirSync(OUT, { recursive: true })
   for (let k = 0; k < ps.length; k++) {
@@ -197,7 +199,7 @@ async function stepExcel(locale: Locale) {
     if (part.every((c) => c.id in col.values)) continue
     const before = dialogText()
     if (before) stop(k, `before the part Excel has a window that is not a book: ${before}`)
-    const book = join(OUT, `part-${locale}-${k + 1}.xlsx`)
+    const book = join(OUT, `part-${tag}-${k + 1}.xlsx`)
     await writeBook(part, book)
     const t0 = Date.now()
     let vals: Val[] | null = null
@@ -214,7 +216,7 @@ async function stepExcel(locale: Locale) {
     col.meta.seconds = Math.round((Number(col.meta.seconds) + (Date.now() - t0) / 1000) * 10) / 10
     col.meta.done = ps.filter((p) => p.every((c) => c.id in col.values)).length
     save(name, col)
-    console.log(`Excel ${locale}: part ${k + 1}/${ps.length}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    console.log(`Excel ${tag}: part ${k + 1}/${ps.length}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
   }
 }
 
@@ -222,17 +224,17 @@ async function stepExcel(locale: Locale) {
  * Probes in Excel in parts of PART, with the same check for modal windows before and after each part. Without
  * a set name these are `probes.ts` and `test/excel/probes.json` (en-US only); with `<set>`, the generator
  * `sets/<set>.ts` (exporting `buildProbes()` and, when it needs data sheets, `SHEETS`) and the answers in
- * `test/excel/cases/<set>.json` for en-US, `test/excel/cases/ru-RU/<set>.json` for ru-RU. A file per set lets
- * parallel branches add their cases without touching shared files.
+ * `test/excel/cases/<set>.json` for en-US, `test/excel/cases/<tag>/<set>.json` for another locale (`ru-RU/`). A file
+ * per set lets parallel branches add their cases without touching shared files.
  */
-async function stepProbes(set: string | undefined, locale: Locale, legacy = false) {
+async function stepProbes(set: string | undefined, tag: string, legacy = false) {
   if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  if (set === undefined && locale !== 'en') throw new Error('the probes of probes.ts are computed in en-US only; a set in ru-RU: probes <set> ru')
+  if (set === undefined && tag !== 'en-US') throw new Error('the probes of probes.ts are computed in en-US only; a set in another locale: probes <set> <locale>')
   const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./${legacy ? 'legacy' : 'sets'}/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
-  const tag = `${set ?? 'probes'}-${locale}`
-  const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/${legacy ? 'legacy' : 'cases'}/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
+  const stem = `${set ?? 'probes'}-${tag}`
+  const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/${legacy ? 'legacy' : 'cases'}/${localeDir(tag)}${set}.json`)
   // going on: answers whose formula is unchanged are taken from the file (FCOV_FRESH=1 starts over)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as LegacyAnswers & { cases: Probe[]; values: Record<string, Val> }) : null
   const was = new Map(prev?.cases.map((c) => [c.id, c.formula]) ?? [])
@@ -248,7 +250,7 @@ async function stepProbes(set: string | undefined, locale: Locale, legacy = fals
   const rejected: Probe[] = []
   const t0 = Date.now()
   const save = () => {
-    const meta = { version: excelVersion(), locale: LOCALE_META[locale], seconds: (Date.now() - t0) / 1000, ...(legacy ? { legacy: true } : { dynamic: true }) }
+    const meta = { version: excelVersion(), locale: localeMeta(tag), seconds: (Date.now() - t0) / 1000, ...(legacy ? { legacy: true } : { dynamic: true }) }
     const more = legacy ? { formulas: inCaseOrder(ps, formulas), rows: inCaseOrder(ps, rows) } : {}
     writeFileSync(target, JSON.stringify({ meta, cases: ps, values: inCaseOrder(ps, values), ...more, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
   }
@@ -257,7 +259,7 @@ async function stepProbes(set: string | undefined, locale: Locale, legacy = fals
     if (declineRepair()) console.log('closed a leftover book repair window')
     const before = dialogText()
     if (before) throw new Error(`probes ${label}: Excel has a window that is not a book: ${before}`)
-    const book = join(OUT, `${tag}-${label}.xlsx`)
+    const book = join(OUT, `${stem}-${label}.xlsx`)
     // the read script expects a column of two cells at least: a single case gets a pad
     const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
     await writeBook(sent, book, sheets, legacy)
@@ -275,7 +277,7 @@ async function stepProbes(set: string | undefined, locale: Locale, legacy = fals
     await run(cases.slice(0, mid), `${label}a`)
     await run(cases.slice(mid), `${label}b`)
   }
-  await ensureExcel(locale)
+  await ensureExcel(tag)
   mkdirSync(OUT, { recursive: true })
   mkdirSync(dirname(target), { recursive: true })
   for (let k = 0; k * PART < ps.length; k++) {
@@ -283,38 +285,40 @@ async function stepProbes(set: string | undefined, locale: Locale, legacy = fals
     if (!part.length) continue
     await run(part, String(k + 1))
     save()
-    console.log(`probes ${tag}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    console.log(`probes ${stem}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
   }
   save()
   if (rejected.length) throw new Error(`Excel does not load ${rejected.length} formulas, remove them from the generator: ${rejected.map((p) => `${p.id} ${p.formula}`).join('; ')}`)
 }
 
 const step = process.argv[2]
+/** The locale the step's last argument names (`en`, `ru` or a tag), en-US when none. */
+const tagAt = (i: number) => parseTag(process.argv[i])
 const t0 = Date.now()
 if (step === 'cases') await stepCases()
 else if (step === 'fj') await stepFj()
 else if (step === 'lo') await stepLo()
-else if (step === 'excel') await withExcelLock(() => stepExcel(process.argv[3] as Locale))
+else if (step === 'excel') await withExcelLock(() => stepExcel(tagAt(3)))
 else if (step === 'report') writeReport(resultFile, REPORT)
-else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
-else if (step === 'legacy') await withExcelLock(() => stepProbes(process.argv[3], 'en', true))
+else if (step === 'probes') await withExcelLock(() => stepProbes(process.argv[3], tagAt(4)))
+else if (step === 'legacy') await withExcelLock(() => stepProbes(process.argv[3], 'en-US', true))
 else if (step === 'struct') await withExcelLock(() => stepStruct(process.argv[3]))
 else if (step === 'spill') await withExcelLock(() => stepSpill(process.argv[3]))
-else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
+else if (step === 'display') await withExcelLock(() => stepDisplay(process.argv[3], tagAt(4)))
 else if (step === 'xlsx') await withExcelLock(() => stepXlsx(process.argv[3]))
 else if (step === 'workbook') await withExcelLock(() => stepWorkbook(process.argv[3]))
-else if (step === 'tables') await withExcelLock(() => stepTables(process.argv[3], process.argv[4] === 'ru' ? 'ru' : 'en'))
+else if (step === 'tables') await withExcelLock(() => stepTables(process.argv[3], tagAt(4)))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
   await stepLo()
   await withExcelLock(async () => {
-    await stepExcel('en')
-    await stepExcel('ru')
+    await stepExcel('en-US')
+    await stepExcel('ru-RU')
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru | report | all | probes [set [ru]] | legacy set | struct set | spill set | display set [ru] | workbook set | tables set [ru] | xlsx roundtrip|saved|colors|formats|intersect')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | xlsx roundtrip|saved|colors|formats|intersect')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

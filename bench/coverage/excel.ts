@@ -2,8 +2,8 @@
  * Excel for Mac as the oracle: a book goes into Excel's sandbox (Excel opens it from there without asking for
  * access), `excel-read.applescript` opens it, recalculates, reads three columns that never hold an error and
  * closes it without saving. The interface language and the calculation locale come from Excel's launch
- * arguments (`-AppleLanguages (en) -AppleLocale en_US` for en-US, none for the system's ru-RU); Excel's
- * settings are not changed.
+ * arguments (`launchArgs` in `locales.ts`: `-AppleLanguages (en) -AppleLocale en_US` for en-US, none for the
+ * system's ru-RU); Excel's settings are not changed.
  */
 import { execFileSync, spawn } from 'node:child_process'
 import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -12,8 +12,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { ErrCode } from './data.js'
 import type { Val } from './formulajs.js'
-
-export type Locale = 'en' | 'ru'
+import { launchArgs } from './locales.js'
 
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url))
@@ -101,19 +100,8 @@ function countWorkbooks(): number {
   return Number(osa('tell application "Microsoft Excel" to count workbooks'))
 }
 
-/** The running Excel's mode: en (English interface and locale), ru (the system's), else other. */
-const localeOf = (args: string): Locale | 'other' => {
-  const lang = /-AppleLanguages \(en\)/.test(args)
-  const loc = /-AppleLocale en_US/.test(args)
-  return lang && loc ? 'en' : !lang && !loc && !/-Apple(Languages|Locale)/.test(args) ? 'ru' : 'other'
-}
-
-/**
- * Launch arguments: the English interface and locale for en-US. The interface language changes computation,
- * not only display: with the Russian interface the text "TRUE" is no boolean (`IF("TRUE",1,2)` is #VALUE!)
- * and a boolean becomes the text ИСТИНА; with the English one `IF("TRUE",1,2)` is 1.
- */
-const LAUNCH: Record<Locale, string[]> = { en: ['--args', '-AppleLanguages', '(en)', '-AppleLocale', 'en_US'], ru: [] }
+/** Whether the running Excel was started for a locale: its interface language and region arguments are the locale's launch arguments. */
+const startedFor = (args: string, tag: string) => (args.match(/-Apple(?:Languages|Locale) \S+/g) ?? []).join(' ') === launchArgs(tag).join(' ')
 
 export function excelVersion(): string {
   return osa('tell application "Microsoft Excel" to get version')
@@ -123,19 +111,20 @@ export function excelVersion(): string {
  * Excel in the locale wanted: if it runs in another, with no books open it quits and starts again (`open -a`,
  * for en-US with `--args -AppleLanguages (en) -AppleLocale en_US`). Open books: refused.
  */
-export async function ensureExcel(locale: Locale): Promise<void> {
+export async function ensureExcel(tag: string): Promise<void> {
   const p = excelProcess()
-  if (p && localeOf(p.args) === locale) return closeStartupBook()
+  if (p && startedFor(p.args, tag)) return closeStartupBook()
   if (p) {
     const n = countWorkbooks()
-    if (n !== 0) throw new Error(`Excel has ${n} books open; restart for the locale ${locale} cancelled`)
+    if (n !== 0) throw new Error(`Excel has ${n} books open; restart for the locale ${tag} cancelled`)
     osa('tell application "Microsoft Excel" to quit')
     for (let i = 0; excelProcess(); i++) {
       if (i > 120) throw new Error('Excel did not quit in 60 s')
       await sleep(500)
     }
   }
-  execFileSync('open', ['-a', 'Microsoft Excel', ...LAUNCH[locale]])
+  const args = launchArgs(tag)
+  execFileSync('open', ['-a', 'Microsoft Excel', ...(args.length ? ['--args', ...args] : [])])
   for (let i = 0; ; i++) {
     if (i > 120) throw new Error('Excel did not start in 60 s')
     await sleep(500)
@@ -149,18 +138,18 @@ export async function ensureExcel(locale: Locale): Promise<void> {
     }
   }
   const q = excelProcess()!
-  if (localeOf(q.args) !== locale) throw new Error(`Excel started in the wrong locale: ${q.args}`)
+  if (!startedFor(q.args, tag)) throw new Error(`Excel started in the wrong locale: ${q.args}`)
   closeStartupBook()
 }
 
 /**
- * Started without a document, Excel opens an empty new book ("Book1", "Книга1" in Russian): a new book with no
- * file and no edits is closed without saving. Any other open book: refused.
+ * Started without a document, Excel opens an empty new book ("Book1", "Книга1" in Russian, named in the interface's
+ * language): a new book with no file and no edits is closed without saving. Any other open book: refused.
  */
 function closeStartupBook() {
   if (countWorkbooks() === 1) {
     const [name, saved, path] = osa('tell application "Microsoft Excel" to get {name, saved, path} of workbook 1').split(/,\s*/)
-    if (/^(Книга|Book)\d+$/.test(name) && saved === 'true' && !path) osa(`tell application "Microsoft Excel" to close workbook "${name}" saving no`)
+    if (saved === 'true' && !path) osa(`tell application "Microsoft Excel" to close workbook "${name}" saving no`)
   }
   const n = countWorkbooks()
   if (n !== 0) throw new Error(`Excel has ${n} books open (not the empty startup book)`)
