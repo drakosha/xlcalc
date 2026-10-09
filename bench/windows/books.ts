@@ -13,6 +13,7 @@ import { place, writeBook as writeDisplayBook, type StoredDisplay } from '../cov
 import type { DisplayAnswer, DisplayCase, DisplaySet } from '../coverage/display/cases.js'
 import { partsOf, type SpillAnswer, type StoredSpill } from '../coverage/spill.js'
 import type { SpillCase, SpillSet } from '../coverage/spill/cases.js'
+import { localeDir } from '../coverage/locales.js'
 import { inCaseOrder } from '../coverage/stored.js'
 import { cellsOf as structCells, LOOK, lookArgs, lookOf, opArgs, READ, styled, writeBook as writeStructBook, type ExcelStructAnswer, type RawLook, type StoredStruct } from '../coverage/struct.js'
 import type { StructCase, StructSet } from '../coverage/struct/cases.js'
@@ -56,7 +57,7 @@ async function displayBook(cases: DisplayCase[], file: string) {
 export async function stepDisplay(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const mod = (await import(`../coverage/display/${set}.js`)) as DisplaySet
   const cases = mod.buildDisplayCases()
-  const file = winFile(`display/${tag === 'en-US' ? '' : 'ru-RU/'}${set}.json`)
+  const file = winFile(`display/${localeDir(tag)}${set}.json`)
   const same = (c: DisplayCase) => JSON.stringify({ ...c, predicted: undefined })
   const prev = stored<StoredDisplay>(file, same)
   const answers: Record<string, DisplayAnswer> = {}
@@ -234,8 +235,9 @@ export async function stepWorkbook(set: string, tag: Tag, e: WinEnv): Promise<vo
 export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const mod = (await import(`../coverage/tables/${set}.js`)) as TableSet
   const cases = mod.buildTableCases()
-  const local = mod.local === true || tag === 'ru-RU'
-  const file = winFile(`tables/${tag === 'en-US' ? '' : 'ru-RU/'}${set}.json`)
+  // formulas typed and read in the user's language in every locale but en-US, as on the Mac
+  const local = mod.local === true || tag !== 'en-US'
+  const file = winFile(`tables/${localeDir(tag)}${set}.json`)
   const same = (c: TableCase) => JSON.stringify(c)
   const prev = stored<StoredTables>(file, same)
   const answers: Record<string, TableAnswer> = {}

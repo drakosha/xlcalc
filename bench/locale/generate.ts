@@ -5,7 +5,8 @@
  *
  * Only the part between the file's two marks is written: the separators, TRUE and FALSE, error literals and the function
  * names that differ from the English ones, as the constant `FORMULA_TEXT`. The rest of the file is written by hand, so a
- * new locale's file starts as a copy of another's. `test/locale-excel.test.ts` checks ru-RU's text against the snapshot.
+ * new locale's file starts as a copy of another's. `test/locale-excel.test.ts` checks every locale's text against its
+ * snapshot, where it has one.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'

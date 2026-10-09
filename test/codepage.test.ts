@@ -5,7 +5,7 @@
  * `TextDecoder`, where it has them. A byte the published table leaves undefined is the C1 control of the same value, as
  * Windows and `TextDecoder` convert it.
  */
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { LOCALES } from '../src/locale/registry.js'
 import { displayRules } from '../src/locale/rules.js'
@@ -17,9 +17,14 @@ const pageOf = (tag: string) => displayRules(tag).codePage.chars
 /** The published table of each locale's code page, by the name its data gives. */
 const PAGES = Object.fromEntries([...LOCALES.keys()].map((tag) => [tag, displayRules(tag).codePage.name]))
 
+/** The file of a code page's published table (`windows-1251` is `CP1251.TXT`). */
+const tableFile = (name: string) => new URL(`./fixtures/unicode/${name.replace('windows-', 'CP')}.TXT`, import.meta.url)
+
 /** Bytes 128–255 of a published table: the character, or the C1 control of the same value where it is undefined. */
 function published(name: string): string {
-  const text = readFileSync(new URL(`./fixtures/unicode/${name.replace('windows-', 'CP')}.TXT`, import.meta.url), 'utf8')
+  const file = tableFile(name)
+  if (!existsSync(file)) throw new Error(`no published table of ${name}: add test/fixtures/unicode/${file.pathname.split('/').pop()} from https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/`)
+  const text = readFileSync(file, 'utf8')
   const map = new Map<number, number>()
   for (const m of text.matchAll(/^0x([0-9A-F]{2})\t0x([0-9A-F]{4})\t/gm)) map.set(parseInt(m[1], 16), parseInt(m[2], 16))
   return String.fromCharCode(...Array.from({ length: 128 }, (_, i) => map.get(128 + i) ?? 128 + i))

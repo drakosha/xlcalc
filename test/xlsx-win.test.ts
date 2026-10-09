@@ -2,11 +2,13 @@
  * The xlsx filter files as Excel for Windows computed and saved them (`test/excel/win/xlsx/filters/`, `bench/windows`):
  * read back, each has the filter mode Excel for Mac took, and the engine computes the values Excel for Windows stored,
  * as `xlsx-excel.test.ts` checks the Mac's. The built-in number formats 1 to 58 as Excel for Windows shows them in
- * en-US and ru-RU (`xlsx/[ru-RU/]formats.json`): 1 to 49 as the display set `builtin` read them, 50 to 58 pinned.
+ * each locale (`xlsx/formats.json` in en-US, `xlsx/<tag>/formats.json` in another): 1 to 49 as the display set `builtin`
+ * read them, 50 to 58 pinned.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
 import { compareCached } from '../bench/coverage/xlsx/compare.js'
 import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
@@ -44,10 +46,7 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
  */
 const EAST_ASIAN_READ = 'm/d/yy'
 
-describe.each([
-  ['en-US', ''],
-  ['ru-RU', 'ru-RU/'],
-])('xlsx built-in number formats as Excel for Windows %s shows them', (tag, sub) => {
+describe.each(TAGS.map((tag) => [tag, localeDir(tag)]))('xlsx built-in number formats as Excel for Windows %s shows them', (tag, sub) => {
   const file = new URL(`${sub}formats.json`, dir)
   it.skipIf(!existsSync(file))('1 to 49 are the codes the display set builtin read; 50 to 58 are the short date, which the reader reads as the Mac\'s code', () => {
     const run = JSON.parse(readFileSync(file, 'utf8')) as { meta: { locale: string }; formats: Record<string, string>; local: Record<string, string> }

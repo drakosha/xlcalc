@@ -2,7 +2,7 @@
  * Tables against Excel: each case of `tables/<set>.ts` is a small book with tables, written by `writeXlsx` with three
  * empty mirror sheets; Excel computes it, takes the case's steps (`excel-tables.applescript`) and its rectangles are
  * read through mirror formulas written after the steps, with the formulas and the tables of every sheet.
- * `npx tsx bench/coverage/run.ts tables <set> [ru]` stores the answers in `test/excel/tables/[ru-RU/]<set>.json`;
+ * `npx tsx bench/coverage/run.ts tables <set> [ru|<tag>]` stores the answers in `test/excel/tables/[ru-RU/ or <tag>/]<set>.json`;
  * `test/tables-excel.test.ts` compares the engine with them without Excel.
  * `FTABLES_ONLY=id,id` runs only those cases, `FTABLES_AGAIN=id,id` runs those again, `FCOV_FRESH=1` runs every case again.
  */
@@ -13,7 +13,8 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inCaseOrder } from './stored.js'
 import { answerOf, MIRRORS, mirrorRanges } from './case-book.js'
-import { declineRepair, dialogText, ensureExcel, excelDialogs, excelVersion, settleRejected, type Locale } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelDialogs, excelVersion, settleRejected } from './excel.js'
+import { localeDir, localeMeta } from './locales.js'
 import type { TableAnswer, TableCase, TableSet, TableShape, TableStep } from './tables/cases.js'
 import type { BookInput } from '../../src/contract.js'
 import { colToIndex, indexToCol } from '../../src/model.js'
@@ -32,8 +33,8 @@ export interface StoredTables {
   answers: Record<string, TableAnswer>
 }
 
-/** The stored answers of a set: `test/excel/tables/<set>.json`, in `ru-RU/` for ru. */
-export const tablesFile = (set: string, locale: Locale = 'en') => join(ROOT, 'test/excel/tables', locale === 'ru' ? 'ru-RU' : '', `${set}.json`)
+/** The stored answers of a set: `test/excel/tables/<set>.json`, in a directory of its tag for a locale other than en-US (`ru-RU/`). */
+export const tablesFile = (set: string, tag = 'en-US') => join(ROOT, 'test/excel/tables', localeDir(tag), `${set}.json`)
 
 /** The case's steps as AppleScript lines; a table operation finds its table's sheet by name, renames followed. */
 export function stepLines(c: TableCase): string[] {
@@ -165,12 +166,13 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
 }
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
-export async function stepTables(set: string, locale: Locale): Promise<void> {
+export async function stepTables(set: string, tag: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./tables/${set}.js`)) as TableSet
   const cases = mod.buildTableCases()
-  const local = mod.local === true || locale === 'ru'
-  const target = tablesFile(set, locale)
+  // formulas typed and read in the user's language in every locale but en-US
+  const local = mod.local === true || tag !== 'en-US'
+  const target = tablesFile(set, tag)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredTables) : null
   const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
   const answers: Record<string, TableAnswer> = {}
@@ -180,10 +182,10 @@ export async function stepTables(set: string, locale: Locale): Promise<void> {
   const t0 = Date.now()
   mkdirSync(join(target, '..'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: locale === 'ru' ? 'ru-RU (the system language and locale)' : 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
+    const meta = { version: excelVersion(), locale: localeMeta(tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
-  await ensureExcel(locale)
+  await ensureExcel(tag)
   let done = 0
   try {
     const only = process.env.FTABLES_ONLY?.split(',')

@@ -19,7 +19,8 @@ describe('the book locale', () => {
     for (const tag of ['en-US', 'ru-RU']) expect(() => compute(book(tag), { clock })).not.toThrow()
     for (const bad of ['de-DE', 'ru-ru', 'ru', '', 'toString']) {
       expect(() => compute(book(bad), { clock })).toThrow(InputError)
-      expect(() => compute(book(bad), { clock })).toThrow(/^book\.locale: unknown locale .* \(expected en-US, ru-RU\)$/)
+      expect(() => compute(book(bad), { clock })).toThrow(`(expected ${[...LOCALES.keys()].join(', ')})`)
+      expect(() => compute(book(bad), { clock })).toThrow(/^book\.locale: unknown locale .* \(expected [^()]*\)$/)
     }
     expect(() => compute({ ...book(), locale: 7 } as unknown as BookInput, { clock })).toThrow('book.locale: expected a string, got number 7')
     expect(() => openSession(book('xx-XX'), { clock })).toThrow(InputError)

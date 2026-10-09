@@ -332,7 +332,7 @@ export async function stepStruct(set: string): Promise<void> {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', read: READ, ...(Object.values(books).some(styled) ? { look: lookRects } : {}), seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, books, cases, ...(dynamic ? { dynamic } : {}), ...(widths === false ? { widths } : {}), ...(files ? { files } : {}), answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
-  await ensureExcel('en')
+  await ensureExcel('en-US')
   let done = 0
   try {
     const only = process.env.FSTRUCT_ONLY?.split(',')
