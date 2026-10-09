@@ -8,7 +8,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { cellsOf } from '../bench/coverage/case-book.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { TableAnswer, TableCase, TableShape } from '../bench/coverage/tables/cases.js'
-import { compute, enUS, InputError, openSession, ruRU, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
+import { compute, enUS, InputError, LOCALES, openSession, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
@@ -32,6 +32,9 @@ export interface EngineAnswer {
 /** The tables of a book as Excel lists them. */
 export const shapes = (book: BookInput): TableShape[] =>
   book.sheets.flatMap((s) => (s.tables ?? []).map((t) => ({ sheet: s.name, name: t.name, range: t.range.includes(':') ? t.range : `${t.range}:${t.range}`, headers: t.headers !== false, totals: t.totals === true, columns: t.columns.map((c) => c.name) })))
+
+/** The formula text of a case's locale, in which its typed formulas (`{ local }`) and Excel's local text are. */
+const localeOf = (c: TableCase) => LOCALES.get(c.book.locale ?? 'en-US')!
 
 export function engineAnswer(c: TableCase): EngineAnswer {
   const s = openSession(c.book, { clock: CLOCK })
@@ -60,7 +63,7 @@ export function engineAnswer(c: TableCase): EngineAnswer {
       return
     }
     const { sheet, cell, value: v } = step.edit
-    const local = v !== null && typeof v === 'object' && 'local' in v ? toInvariant(v.local, ruRU) : null
+    const local = v !== null && typeof v === 'object' && 'local' in v ? toInvariant(v.local, localeOf(c)) : null
     if (local && !local.ok) throw new Error(`${c.id}: ${local.message}`)
     const input = v === null ? null : typeof v === 'object' ? { formula: local?.ok ? local.formula : (v as { formula: string }).formula } : { value: v }
     // a cell typed over keeps its style and number format, as in Excel
@@ -150,9 +153,9 @@ export function differences(c: TableCase, x: TableAnswer): string[] {
     shown = shown.replace(/([,;]) +\[/g, '$1[')
     const en = toLocal(got.formulas[k], enUS, { table })
     if (en.ok && `=${unquoted(en.formula)}` !== shown) out.push(`${k}: Excel shows ${shown}, toLocal ${en.formula}`)
-    const ru = x.local?.[k]
-    const loc = ru === undefined ? null : toLocal(got.formulas[k], ruRU, { table })
-    if (loc?.ok && `=${unquoted(loc.formula)}` !== ru?.replace(/([,;]) +\[/g, '$1[')) out.push(`${k}: Excel ru-RU shows ${ru}, toLocal ${loc.formula}`)
+    const local = x.local?.[k]
+    const loc = local === undefined ? null : toLocal(got.formulas[k], localeOf(c), { table })
+    if (loc?.ok && `=${unquoted(loc.formula)}` !== local?.replace(/([,;]) +\[/g, '$1[')) out.push(`${k}: Excel ${c.book.locale} shows ${local}, toLocal ${loc.formula}`)
   }
   return out
 }

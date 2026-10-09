@@ -8,6 +8,7 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
+import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { compute, displayValue, type CellValue } from '../src/index.js'
 import { CLOCK, displayBook, formatted, sameShown } from './display-cases.js'
 import { winFiles } from './excel-win-cases.js'
@@ -15,7 +16,7 @@ import { winFiles } from './excel-win-cases.js'
 /** The reasons that covered a case, filled as the sets run. */
 const used = new Set<string>()
 
-const SETS = [...winFiles<StoredDisplay>('display/').map((s) => ({ ...s, locale: 'en-US' })), ...winFiles<StoredDisplay>('display/ru-RU/').map((s) => ({ ...s, locale: 'ru-RU' }))]
+const SETS = TAGS.flatMap((locale) => winFiles<StoredDisplay>(`display/${localeDir(locale)}`).map((s) => ({ ...s, locale })))
 
 /** A case's cell as Excel for Windows showed it and as the engine shows it. */
 interface Shown {

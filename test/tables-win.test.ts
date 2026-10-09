@@ -6,10 +6,11 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredTables } from '../bench/coverage/tables.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
+import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { winFiles } from './excel-win-cases.js'
 import { differences } from './tables-cases.js'
 
-const SETS = [...winFiles<StoredTables>('tables/').map((s) => ({ ...s, sub: '' })), ...winFiles<StoredTables>('tables/ru-RU/').map((s) => ({ ...s, sub: 'ru-RU/' }))]
+const SETS = TAGS.flatMap((tag) => winFiles<StoredTables>(`tables/${localeDir(tag)}`).map((s) => ({ ...s, sub: localeDir(tag) })))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel for Windows's. */
 const WIN_TABLES: Readonly<Record<string, string>> = {

@@ -3,7 +3,8 @@
  * a given width; Excel shows the book and the text of every case's cell (`string value`, VBA's `Range.Text`)
  * is read back with the colour of its display format's font. `npx tsx bench/coverage/run.ts display <set>`
  * stores the answers of Excel en-US in `test/excel/display/<set>.json`, `display <set> ru` those of Excel ru-RU
- * in `test/excel/display/ru-RU/<set>.json`; `test/display-excel.test.ts` compares the engine with them.
+ * in `test/excel/display/ru-RU/<set>.json` (another locale's in a directory of its tag, `display <set> <tag>`);
+ * `test/display-excel.test.ts` compares the engine with them.
  * Cases go into books of at most `PART` cells, one column per width; a rerun keeps the answers of unchanged
  * cases (`FCOV_FRESH=1` runs every case again). A book Excel refuses to load (its repair window is declined, as
  * the `probes` step does) is halved down to the refused cases, which the step names.
@@ -15,7 +16,8 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { inCaseOrder } from './stored.js'
-import { dialogText, ensureExcel, excelVersion, runScriptWatched, type Locale } from './excel.js'
+import { dialogText, ensureExcel, excelVersion, runScriptWatched } from './excel.js'
+import { localeDir, localeMeta } from './locales.js'
 import { formatCode } from './case-book.js'
 import { xl } from './sets/arrays/common.js'
 import { formatAddress, inputScalar } from '../../src/model.js'
@@ -45,7 +47,7 @@ export interface StoredDisplay {
 }
 
 /** Where the answers of a set are stored for a locale. */
-export const displayFile = (set: string, locale: Locale) => join(ROOT, `test/excel/display/${locale === 'en' ? '' : 'ru-RU/'}${set}.json`)
+export const displayFile = (set: string, tag: string) => join(ROOT, `test/excel/display/${localeDir(tag)}${set}.json`)
 
 /** The address of each case: columns by width and span (from B, one empty column between them), cases down from row 1. */
 export function place(cases: DisplayCase[]): Map<string, { row: number; col: number }> {
@@ -131,11 +133,11 @@ async function runPart(cases: DisplayCase[], label: string): Promise<DisplayAnsw
 }
 
 /** Runs the set's cases without a stored answer for the same case and stores the answers after each part. */
-export async function stepDisplay(set: string, locale: Locale): Promise<void> {
+export async function stepDisplay(set: string, tag: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const mod = (await import(`./display/${set}.js`)) as DisplaySet
   const cases = mod.buildDisplayCases()
-  const target = displayFile(set, locale)
+  const target = displayFile(set, tag)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredDisplay) : null
   const same = (c: DisplayCase) => JSON.stringify({ ...c, predicted: undefined })
   const was = new Map(prev?.cases.map((c) => [c.id, same(c)]) ?? [])
@@ -144,10 +146,10 @@ export async function stepDisplay(set: string, locale: Locale): Promise<void> {
   const t0 = Date.now()
   mkdirSync(join(target, '..'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: locale === 'en' ? 'en-US (-AppleLanguages (en) -AppleLocale en_US)' : 'ru-RU (system language and locale)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
+    const meta = { version: excelVersion(), locale: localeMeta(tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
-  await ensureExcel(locale)
+  await ensureExcel(tag)
   const todo = cases.filter((c) => !answers[c.id])
   const rejected: string[] = []
   try {
@@ -160,12 +162,12 @@ export async function stepDisplay(set: string, locale: Locale): Promise<void> {
       await run(part.slice(part.length >> 1), `${label}b`)
     }
     for (let k = 0; k * PART < todo.length; k++) {
-      await run(todo.slice(k * PART, (k + 1) * PART), `${set} ${locale} part ${k + 1}`)
+      await run(todo.slice(k * PART, (k + 1) * PART), `${set} ${tag} part ${k + 1}`)
       save()
     }
   } finally {
     save()
-    console.log(`display ${set} ${locale}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    console.log(`display ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
   }
   if (rejected.length) throw new Error(`Excel does not load the cases ${rejected.join(', ')}: remove them from the set`)
 }

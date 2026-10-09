@@ -1,0 +1,107 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 40.1,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "LOOKUP#1",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Ls!C1"
+  },
+  {
+   "id": "LOOKUP#2",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Ls!C2"
+  },
+  {
+   "id": "LOOKUP#3",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Ls!C3"
+  },
+  {
+   "id": "LOOKUP#4",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Lt!C1"
+  },
+  {
+   "id": "LOOKUP#5",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Lv!C1"
+  },
+  {
+   "id": "LOOKUP#6",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Lr!I10"
+  },
+  {
+   "id": "LOOKUP#7",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Lq!E10"
+  },
+  {
+   "id": "LOOKUP#8",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Lp!E10"
+  },
+  {
+   "id": "LOOKUP#9",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "Lu!F2"
+  }
+ ],
+ "values": {
+  "LOOKUP#1": {
+   "t": "s",
+   "v": ""
+  },
+  "LOOKUP#2": {
+   "t": "s",
+   "v": "7"
+  },
+  "LOOKUP#3": {
+   "t": "s",
+   "v": "x"
+  },
+  "LOOKUP#4": {
+   "t": "s",
+   "v": "50"
+  },
+  "LOOKUP#5": {
+   "t": "s",
+   "v": ""
+  },
+  "LOOKUP#6": {
+   "t": "s",
+   "v": "F"
+  },
+  "LOOKUP#7": {
+   "t": "s",
+   "v": "F"
+  },
+  "LOOKUP#8": {
+   "t": "s",
+   "v": "F"
+  },
+  "LOOKUP#9": {
+   "t": "s",
+   "v": "c5"
+  }
+ }
+}

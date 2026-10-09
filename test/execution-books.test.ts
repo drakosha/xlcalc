@@ -1,6 +1,6 @@
 /**
  * The two execution modes against each other (`execution-compare.ts`) on every case book: the coverage
- * measurement, the case sets of `test/excel/cases/`, the probes, the measurement and the sets in ru-RU, the
+ * measurement, the case sets of `test/excel/cases/`, the probes, the measurement in every other locale and its sets, the
  * semantics cases, the synthetic book, the seeded books of the structure tests, the spill cases and the spill
  * book with its seeded edits, the table cases before and after their steps, and a book of every kind of compiled node. Values (cell by cell, without
  * tolerance: `Object.is`), issues with their reasons and check codes, volatile cells and hashes are equal.
@@ -11,7 +11,7 @@ import { buildProbes, PROBE_SHEETS } from '../bench/coverage/probes.js'
 import type { BookInput, CellInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { CASES, excelBook } from './excel-cases.js'
-import { RU_SETS } from './excel-ru-cases.js'
+import { LOCALE_SETS, LOCALE_TAGS } from './excel-locale-cases.js'
 import { caseBook, loadSet, SETS } from './excel-sets.js'
 import { byClosures, byEval, ctx, expectSame, strict } from './execution-compare.js'
 import { randomBook } from './seeded-books.js'
@@ -29,11 +29,11 @@ const BOOKS: [string, BookInput][] = [
     return [`the case set ${s.name}`, caseBook(mod.buildProbes(), mod.SHEETS)]
   }))),
   ['the probes', caseBook(buildProbes(), PROBE_SHEETS)],
-  ['the coverage measurement in ru-RU', { ...excelBook(CASES), locale: 'ru-RU' }],
-  ...(await Promise.all(RU_SETS.map(async (s): Promise<[string, BookInput]> => {
+  ...LOCALE_TAGS.map((tag): [string, BookInput] => [`the coverage measurement in ${tag}`, { ...excelBook(CASES), locale: tag }]),
+  ...(await Promise.all(LOCALE_TAGS.flatMap((tag) => LOCALE_SETS.get(tag)!.map(async (s): Promise<[string, BookInput]> => {
     const mod = await loadSet(s.name)
-    return [`the case set ${s.name} in ru-RU`, { ...caseBook(mod.buildProbes(), mod.SHEETS), locale: 'ru-RU' }]
-  }))),
+    return [`the case set ${s.name} in ${tag}`, { ...caseBook(mod.buildProbes(), mod.SHEETS), locale: tag }]
+  })))),
   ['the semantics cases', semanticsBook(SEMANTICS)],
   ['the synthetic book', synthBook({ seed: 1, rows: 3400 }).book],
   ['the spill book', spillBook()],

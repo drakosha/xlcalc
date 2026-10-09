@@ -9,16 +9,16 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Val } from '../coverage/formulajs.js'
+import { localeDir, measurementFile } from '../coverage/locales.js'
 import { KNOWN, matches, show } from '../../test/excel-cases.js'
-import { RU_KNOWN } from '../../test/excel-ru-cases.js'
+import { KNOWN_BY_LOCALE } from '../../test/excel-locale-cases.js'
 import { runWinSet, WIN_KNOWN, WIN_REASONS, WIN_SETS, type WinOutcome, type WinSet } from '../../test/excel-win-cases.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 
 /** The Mac's answers to the same cases, from the file the Mac harness stored. */
 function macValues(set: WinSet): Record<string, Val> | null {
-  const ru = set.tag === 'ru-RU'
-  const rel = set.name === 'measurement' ? `coverage/excel-${ru ? 'ru' : 'en'}.json` : set.name === 'probes' ? 'probes.json' : `cases/${ru ? 'ru-RU/' : ''}${set.name}.json`
+  const rel = set.name === 'measurement' ? `coverage/${measurementFile(set.tag)}` : set.name === 'probes' ? 'probes.json' : `cases/${localeDir(set.tag)}${set.name}.json`
   const file = join(ROOT, 'test/excel', rel)
   return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as { values: Record<string, Val> }).values : null
 }
@@ -34,7 +34,7 @@ const follows = (o: WinOutcome, mac: Val) => (matches(o.fn, o.win, o.engine) ? '
  * the engine follows Windows, as for CHAR and CODE), or noise where the Mac's own answer is known not to repeat.
  */
 function classOf(set: WinSet, o: WinOutcome): string {
-  const mac = (set.tag === 'ru-RU' ? RU_KNOWN : KNOWN)[`${set.name}:${o.id}`]
+  const mac = (set.tag === 'en-US' ? KNOWN : KNOWN_BY_LOCALE[set.tag])?.[`${set.name}:${o.id}`]
   if (mac?.reason === 'excelContext') return 'noise (the Mac\'s answer does not repeat)'
   const win = WIN_KNOWN[o.key]?.reason
   if (win && win in WIN_REASONS) return `platform: ${win}`

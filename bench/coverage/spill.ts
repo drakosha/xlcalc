@@ -74,7 +74,7 @@ export async function stepSpill(set: string): Promise<void> {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
-  await ensureExcel('en')
+  await ensureExcel('en-US')
   let done = 0
   try {
     const only = process.env.FSPILL_ONLY?.split(',')

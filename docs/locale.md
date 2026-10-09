@@ -78,7 +78,7 @@ A locale added to the package lets books in it compute as Excel in that language
 - the file `src/locales/xx-YY.ts`, which holds everything the engine knows of the locale;
 - the line `export { XX_YY } from './xx-YY.js'` in `src/locales/index.ts`, the list of locale files.
 
-The tags a book takes, `LOCALES`, the rules of computation and the widths of letters all come from that list, and the message for an unknown tag names its tags. No code of the engine changes, as long as the locale's rules are ones the engine reads from data ([What the data cannot say](#what-the-data-cannot-say)).
+The tags a book takes, `LOCALES`, the rules of computation and the widths of letters all come from that list, and the message for an unknown tag names its tags. No code of the engine changes, as long as the locale's rules are ones the engine reads from data ([What the data cannot say](#what-the-data-cannot-say)), and none of the tests and harnesses that compare it with Excel ([Tests and harnesses](#tests-and-harnesses)).
 
 ### The locale file
 
@@ -158,30 +158,66 @@ Some locales need code as well as data:
 
 ### Tests and harnesses
 
-The machinery that compares the engine with Excel is still ru-RU's, and a new locale needs its own or this one made to take a locale:
+A new locale needs no change to the tests or the harnesses. The tests compare the engine with Excel in every locale of `LOCALES` whose answers are stored, and name a locale without them as skipped: `acceptance against Excel xx-YY: no answers of Excel xx-YY to the coverage measurement (test/excel/coverage/excel-xx-YY.json)`. The harnesses take the locale's tag and store its answers in files of their own.
 
-- the differences from Excel: `RU_KNOWN`, `RU_SETS` and `runRuSet` in `test/excel-ru-cases.ts`, used by `test/excel-ru.test.ts` and `test/excel-ru-probes.test.ts`, and `WIN_KNOWN` against Excel for Windows;
-- the expected message for an unknown tag, which lists the tags, in `test/locale-book.test.ts` and `test/display-api.test.ts`;
-- the check of formula text against the snapshot, `test/locale-excel.test.ts`, which reads ru-RU's snapshot and file;
-- the harnesses, which know en-US and ru-RU only. On the Mac, `bench/coverage/excel.ts` has `type Locale = 'en' | 'ru'` and Excel's launch arguments by locale (`LAUNCH`): en-US starts Excel with `-AppleLanguages (en) -AppleLocale en_US`, ru-RU with none, in the system's Russian. `bench/locale/snapshot.ts` takes `en` and `ru`; `bench/locale/generate.ts` takes any tag with a snapshot. On Windows, `bench/windows/remote.ts` has `Tag = 'en-US' | 'ru-RU'` with each locale's code and code page, and the machine needs the language: Excel's interface language follows the Windows display language, so a new language needs its Windows language pack, and Office's language pack for it as well, as the English one is installed there.
+#### Where a locale's answers are
+
+Answers are found by tag (`bench/coverage/locales.ts`). en-US's are at the top of each directory of `test/excel/`, another locale's in a directory named by its tag:
+
+- the case sets: `cases/<set>.json` in en-US, `cases/ru-RU/<set>.json` in ru-RU, `cases/xx-YY/<set>.json` in xx-YY; the same for what cells show (`display/`) and tables (`tables/`);
+- the coverage measurement: `coverage/excel-en.json` and `coverage/excel-ru.json`, as they were first named, and `coverage/excel-xx-YY.json` in another locale;
+- the formula text: `locale/xx-YY.json`;
+- Excel for Windows's answers: the same layout under `win/`, and the built-in formats in `win/xlsx/xx-YY/formats.json`.
+
+A directory of stored answers named by a tag that `LOCALES` lacks fails a test (`bench/coverage/locales.test.ts`), so answers are never left unchecked.
+
+#### Taking the answers on the Mac
+
+The steps of `bench/coverage/run.ts` take a locale as their last argument: `en`, `ru` or a tag. The snapshot comes first, as the locale's file is generated from it:
+
+```sh
+npx tsx bench/locale/snapshot.ts xx-YY             # the formula text, into test/excel/locale/xx-YY.json
+npx tsx bench/coverage/run.ts excel xx-YY          # the coverage measurement, into test/excel/coverage/excel-xx-YY.json
+npx tsx bench/coverage/run.ts probes <set> xx-YY   # a case set, into test/excel/cases/xx-YY/<set>.json
+npx tsx bench/coverage/run.ts display <set> xx-YY  # what cells show
+npx tsx bench/coverage/run.ts tables <set> xx-YY   # tables, with formulas typed and read in the locale's language
+```
+
+Excel for Mac computes in a locale by its launch arguments. en-US starts with `-AppleLanguages (en) -AppleLocale en_US`, and ru-RU with none, in the Russian of the Mac the answers were taken on. Another tag starts with `-AppleLanguages (xx) -AppleLocale xx_YY`; that form has not yet been tried with a third language. The harness knows Excel's window "We found a problem with some content" by its English and Russian text. In another interface language a book Excel refuses waits out the step's three minutes instead of being declined at once, until the window's text is added to `REPAIR` and `declineRepair` in `bench/coverage/excel.ts`.
+
+#### Taking the answers on Windows
+
+`bench/windows/run.ts` takes the same arguments, for the package's locales only (`npx tsx bench/windows/run.ts all xx-YY`). It sets the machine to the locale's language, regional format and system locale, and checks Excel's interface language against the locale's code (`lcid`) and the system code page against its `codePage`. The machine needs the language: Excel's interface language follows the Windows display language, so a new language needs its Windows language pack, and Office's language pack for it as well, as the English one is installed there.
+
+#### Known differences
+
+A case where the engine knowingly differs from Excel in a locale is pinned with its reason: the test passes on the engine's answer, and fails once the case comes to match Excel, until it is taken off the list.
+
+- ru-RU's list is `RU_KNOWN` in `test/excel-ru-known.ts`, with its own reasons in `RU_REASONS`. A new locale's list goes into a file of its own beside it, named in `KNOWN_BY_LOCALE` (`test/excel-locale-cases.ts`); its new reasons join `LOCALE_REASONS` there, and each has a line in the README's known differences.
+- Against Excel for Windows, `WIN_KNOWN` (`test/excel-win-known.ts`) holds every locale's, by keys that start with the tag: `ru-RU:locale:format#244`.
+- What cells show and tables keep their lists by set: `MAC_SHOWN` in `test/display-excel.test.ts`, `KNOWN` in `test/tables-excel.test.ts`.
+
+#### Formula text and code pages
+
+`test/locale-excel.test.ts` checks the formula text of every locale with a snapshot, `test/locale-roundtrip.test.ts` takes the case sets' formulas round every locale's text, and `test/codepage.test.ts` checks each locale's code page against its published table. A new page needs that table in `test/fixtures/unicode/`; the test names the missing file.
 
 ### Accepting a locale
 
 A locale is ready when the engine gives Excel's answers in it, and every difference left is listed with its reason. For ru-RU that is:
 
-- the coverage measurement computed in Excel ru-RU (`npx tsx bench/coverage/run.ts excel ru`) and compared by `test/excel-ru.test.ts`;
+- the coverage measurement computed in Excel ru-RU (`npx tsx bench/coverage/run.ts excel ru`) and compared by `test/excel-locales.test.ts`;
 - the case sets (`npx tsx bench/coverage/run.ts probes <set> ru`), what cells show (`display <set> ru`) and tables (`tables <set> ru`), with their tests, as `bench/coverage/README.md` describes;
 - the same books in Excel for Windows (`npx tsx bench/windows/run.ts all ru`, `bench/windows/README.md`);
-- the differences: `RU_KNOWN` in `test/excel-ru-cases.ts` pins the engine's answer of each case that differs from Excel ru-RU, with a reason from `RU_REASONS`, and `WIN_KNOWN` does the same against Excel for Windows. A pinned case that comes to match Excel fails until it is taken off the list.
+- the differences: `RU_KNOWN` in `test/excel-ru-known.ts` pins the engine's answer of each case that differs from Excel ru-RU, with a reason, and `WIN_KNOWN` does the same against Excel for Windows.
 
-A new locale needs the same: the measurement and the sets computed in its Excel, and its own list of differences.
+A new locale needs the same: the measurement and the sets computed in its Excel, and its own list of differences ([Tests and harnesses](#tests-and-harnesses)).
 
 ## How it was checked
 
-`test/excel-ru.test.ts` computes the measurement's book with `locale: 'ru-RU'` and compares every whitelisted function's cases with Excel ru-RU's answers in `test/excel/coverage/excel-ru.json`. `test/excel-ru-probes.test.ts` does the same for the ru-RU case sets in `test/excel/cases/ru-RU/`, among them `locale` (1,109 cases) and `collation` (174). `npx tsx bench/coverage/run.ts probes <set> ru` computes a set in Excel ru-RU. Known differences are listed in `RU_KNOWN` with a line each in the README; among them are the cases where the engine follows Excel for Windows and the Mac answers otherwise (the order of text, month names).
+`test/excel-locales.test.ts` computes the measurement's book with `locale: 'ru-RU'` and compares every whitelisted function's cases with Excel ru-RU's answers in `test/excel/coverage/excel-ru.json`. `test/excel-locales-sets.test.ts` does the same for the ru-RU case sets in `test/excel/cases/ru-RU/`, among them `locale` (1,109 cases) and `collation` (174). `npx tsx bench/coverage/run.ts probes <set> ru` computes a set in Excel ru-RU. Known differences are listed in `RU_KNOWN` with a line each in the README; among them are the cases where the engine follows Excel for Windows and the Mac answers otherwise (the order of text, month names).
 
 `test/excel-win.test.ts` checks the same books against Excel for Windows (`test/excel/win/`, `bench/windows`), with the set `collation-more` (62 cases of the order inside Cyrillic and Latin) measured in Windows alone.
 
-`test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from ru-RU and en-US.
+`test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas in ru-RU, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from every locale.
 
 Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.

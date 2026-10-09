@@ -1,26 +1,27 @@
 /**
  * Acceptance against Excel for Windows (`test/excel/win/`, written by `bench/windows/`): the coverage measurement, the
- * probes and the case sets, each computed by the engine in the book the harness sent (en-US, or `locale: 'ru-RU'`) and
- * compared with Windows's answers as with the Mac's. Where the engine knowingly differs from Excel for Windows,
+ * probes and the case sets, each computed by the engine in the book the harness sent (en-US, or with the `locale` of
+ * the answers, by the same tags and files as the Mac's: `bench/coverage/locales.ts`) and compared with Windows's answers
+ * as with the Mac's. Where the engine knowingly differs from Excel for Windows,
  * `WIN_KNOWN` pins its answer with a reason; most of those are places where Excel for Windows and for Mac part.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { Val } from '../bench/coverage/formulajs.js'
+import { localeDir, measurementFile, TAGS } from '../bench/coverage/locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput } from '../src/contract.js'
 import { compute, FUNCTION_NAMES } from '../src/index.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal } from './excel-cases.js'
-import { RU_REASONS } from './excel-ru-cases.js'
+import { LOCALE_REASONS } from './excel-locale-cases.js'
 import { caseBook, loadSet } from './excel-sets.js'
 import { WIN_KNOWN_CASES } from './excel-win-known.js'
-
-export type Tag = 'en-US' | 'ru-RU'
 
 /** A stored Windows run of formula cases; `rejected` lists the cases whose formula Excel for Windows did not take. */
 export interface WinSet {
   /** `measurement`, `probes` or a set's name. */
   name: string
-  tag: Tag
+  /** The locale the harness computed it in. */
+  tag: string
   meta: Record<string, string | number | boolean>
   values: Record<string, Val>
   rejected?: string[]
@@ -37,10 +38,9 @@ export const winFiles = <T>(sub: string): (T & { name: string })[] => jsons(sub)
 
 /** Every stored Windows run of formula cases: the measurement and the sets by locale, the probes in en-US. */
 export const WIN_SETS: WinSet[] = [
-  ...(['en', 'ru'] as const).flatMap((l) => (existsSync(new URL(`coverage/excel-${l}.json`, dir)) ? [{ name: 'measurement', tag: (l === 'en' ? 'en-US' : 'ru-RU') as Tag, ...read(`coverage/excel-${l}.json`) }] : [])),
-  ...(existsSync(new URL('probes.json', dir)) ? [{ name: 'probes', tag: 'en-US' as Tag, ...read('probes.json') }] : []),
-  ...jsons('cases/').map((f) => ({ name: f.slice(0, -5), tag: 'en-US' as Tag, ...read(`cases/${f}`) })),
-  ...jsons('cases/ru-RU/').map((f) => ({ name: f.slice(0, -5), tag: 'ru-RU' as Tag, ...read(`cases/ru-RU/${f}`) })),
+  ...TAGS.flatMap((tag) => (existsSync(new URL(`coverage/${measurementFile(tag)}`, dir)) ? [{ name: 'measurement', tag, ...read(`coverage/${measurementFile(tag)}`) }] : [])),
+  ...(existsSync(new URL('probes.json', dir)) ? [{ name: 'probes', tag: 'en-US', ...read('probes.json') }] : []),
+  ...TAGS.flatMap((tag) => jsons(`cases/${localeDir(tag)}`).map((f) => ({ name: f.slice(0, -5), tag, ...read(`cases/${localeDir(tag)}${f}`) }))),
 ]
 
 /** Where Excel for Windows parts from Excel for Mac and the engine follows the Mac: the reasons of `WIN_KNOWN` that the Mac's lists have not. */
@@ -52,10 +52,10 @@ export const WIN_REASONS = {
     'Trigonometry where the last bits decide: Excel for Windows computes `TAN(PI()/2)` as 16324552277619072, Excel for Mac and the engine 1.63312393531954E+16; the same for `SEC`, `CSC`, `COT` at their poles and for `IMTAN`, `IMCOS`, `IMSIN`, `IMPOWER` of large arguments, which Windows gives with other digits from the 13th on.',
 } as const
 
-export type Reason = keyof typeof WIN_REASONS | keyof typeof REASONS | keyof typeof RU_REASONS
+export type Reason = keyof typeof WIN_REASONS | keyof typeof REASONS | keyof typeof LOCALE_REASONS
 
 export const winReasonText = (r: Reason): string =>
-  r in WIN_REASONS ? WIN_REASONS[r as keyof typeof WIN_REASONS] : r in RU_REASONS ? RU_REASONS[r as keyof typeof RU_REASONS] : REASONS[r as keyof typeof REASONS]
+  r in WIN_REASONS ? WIN_REASONS[r as keyof typeof WIN_REASONS] : r in LOCALE_REASONS ? LOCALE_REASONS[r as keyof typeof LOCALE_REASONS] : REASONS[r as keyof typeof REASONS]
 
 /**
  * Cases where the engine knowingly differs from Excel for Windows, by `<locale>:<source>:<case id>` (`measurement`,
@@ -84,7 +84,7 @@ export interface WinOutcome {
   why?: string
 }
 
-const inTag = (book: BookInput, tag: Tag): BookInput => (tag === 'ru-RU' ? { ...book, locale: 'ru-RU' } : book)
+const inTag = (book: BookInput, tag: string): BookInput => (tag === 'en-US' ? book : { ...book, locale: tag })
 
 /** The cases a stored run has, as the harness sent them, and the book that holds them. */
 async function casesOf(set: WinSet): Promise<{ cases: Probe[]; book: BookInput; current: boolean }> {

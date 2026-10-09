@@ -1,0 +1,152 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 4.864,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SORTBY#1",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!M1:M6,D!N1:N6,{2;-1}),1)"
+  },
+  {
+   "id": "SORTBY#2",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!M1:M6,D!N1:N6,{#N/A;-1;1}),1)"
+  },
+  {
+   "id": "SORTBY#3",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!M1:M6,D!N1:N6,{2,1;-1,1}),1)"
+  },
+  {
+   "id": "SORTBY#4",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},D!B1:B8,{#N/A;1}),1)"
+  },
+  {
+   "id": "SORTBY#5",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},D!B1:B8,1),1)"
+  },
+  {
+   "id": "SORTBY#6",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},D!B1:B8,{1;-1;1}),1)"
+  },
+  {
+   "id": "SORTBY#7",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,1/0,{1;#N/A}),1)"
+  },
+  {
+   "id": "SORTBY#8",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C7,{1;#N/A}),1)"
+  },
+  {
+   "id": "LOOKUP#1",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!E2#)&\"\""
+  },
+  {
+   "id": "LOOKUP#2",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,_xlfn.TAKE(Lk!E2#,-1))&\"\""
+  },
+  {
+   "id": "LOOKUP#3",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,(Lk!B2:B3))&\"\""
+  },
+  {
+   "id": "LOOKUP#4",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!B2:Lk!B3)&\"\""
+  },
+  {
+   "id": "LOOKUP#5",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(2,D!L1:L6,INDEX(Lk!B2:B3,2))&\"\""
+  },
+  {
+   "id": "LOOKUP#6",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6+0,IF(TRUE,Lk!B2:B3))&\"\""
+  }
+ ],
+ "values": {
+  "SORTBY#1": {
+   "t": "s",
+   "v": "{#VALUE!;\"thirteen\"}"
+  },
+  "SORTBY#2": {
+   "t": "s",
+   "v": "{#N/A;\"thirteen\";}"
+  },
+  "SORTBY#3": {
+   "t": "s",
+   "v": "{#VALUE!,\"one\";,}"
+  },
+  "SORTBY#4": {
+   "t": "s",
+   "v": "{#N/A;42}"
+  },
+  "SORTBY#5": {
+   "t": "s",
+   "v": "{-3.5;#VALUE!}"
+  },
+  "SORTBY#6": {
+   "t": "s",
+   "v": "{-3.5;#VALUE!;#N/A}"
+  },
+  "SORTBY#7": {
+   "t": "s",
+   "v": "{#DIV/0!;#DIV/0!}"
+  },
+  "SORTBY#8": {
+   "t": "s",
+   "v": "{#VALUE!;#N/A}"
+  },
+  "LOOKUP#1": {
+   "t": "s",
+   "v": "e4"
+  },
+  "LOOKUP#2": {
+   "t": "s",
+   "v": "g3"
+  },
+  "LOOKUP#3": {
+   "t": "s",
+   "v": "b4"
+  },
+  "LOOKUP#4": {
+   "t": "s",
+   "v": "b4"
+  },
+  "LOOKUP#5": {
+   "t": "s",
+   "v": "c3"
+  },
+  "LOOKUP#6": {
+   "t": "s",
+   "v": "b4"
+  }
+ }
+}

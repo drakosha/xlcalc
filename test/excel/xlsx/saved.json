@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "16.113.4",
-  "seconds": 3.8,
+  "seconds": 1.4,
   "date": "2026-10-09"
  },
  "books": {
@@ -298,6 +298,18 @@
   },
   "known-held-1": {
    "sent": "93d9c03d7a1394b452a475a7166b0686975126f56784b59a76eb559bf8d168ee"
+  },
+  "lookup-held-1": {
+   "sent": "4610c82985194a5a31e5af3ca02fc4ed5f376c2ef0aba8d4161b2a454412a3ac"
+  },
+  "lookup-rules-1": {
+   "sent": "a7b8c7f8f94a48dd29e71a09bfb136387f58ae46327bba44981d84b60d0e9128"
+  },
+  "stat-edges-held-1": {
+   "sent": "1551e65290b614813f3405c0645f727fd8ac7954590843fa651d5487f7ed17c7"
+  },
+  "lookup-own-held-1": {
+   "sent": "9e3619e73857e5500996e895bdca9e6a5dcc58de9a3d3704eebc2e55ab119d5c"
   }
  }
 }
