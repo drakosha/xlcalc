@@ -3,9 +3,9 @@
  * typed, structure and table operations), and the rectangles read at the end, with the tables of every sheet.
  */
 import type { Val } from '../formulajs.js'
-import type { BookInput, CellInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
+import type { BookInput, CellInput, NameInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
 
-/** A step after the computation, Excel recalculating after each: a cell typed or cleared, or an operation. */
+/** A step after the computation, Excel recalculating after each: a cell typed or cleared, an operation, a name added. */
 export type TableStep =
   /**
    * A number or a text typed, a formula entered (`{ formula }`, as Excel 365 enters it; `{ local }` typed in the user's
@@ -13,6 +13,8 @@ export type TableStep =
    */
   | { edit: { sheet: string; cell: string; value: number | string | null | { formula: string } | { local: string } } }
   | { op: StructureOp }
+  /** A defined name added through Excel's object model (`Names.Add`), which refuses a name Excel does not take; the engine's `setNames`. */
+  | { name: NameInput }
 
 /** A table as Excel lists it after the steps: its sheet, name, range, rows shown, column names. */
 export interface TableShape {
@@ -51,6 +53,8 @@ export interface TableAnswer {
   tables: TableShape[]
   /** The steps Excel refused, by index: its error. */
   refused?: Record<number, string>
+  /** For a case that adds names: the visible defined names after the steps, a sheet's own as `Sheet!name`. */
+  names?: string[]
   /** Excel did not load the book (the repair window, declined). */
   rejected?: true
 }

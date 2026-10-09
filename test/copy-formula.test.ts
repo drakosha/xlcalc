@@ -81,7 +81,7 @@ describe('copyFormula against copyRange', () => {
         if ('op' in step) {
           if (step.op.op === 'copyRange') n += check(c.id, s.book(), step.op)
           s.restructure(step.op)
-        } else {
+        } else if ('edit' in step) {
           const v = step.edit.value
           if (v !== null && typeof v === 'object' && 'local' in v) break
           s.setCells([{ sheet: step.edit.sheet, cell: step.edit.cell, input: v === null ? null : typeof v === 'object' ? { formula: v.formula } : { value: v } }])

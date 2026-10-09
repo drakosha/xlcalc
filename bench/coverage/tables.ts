@@ -46,6 +46,7 @@ export function stepLines(c: TableCase): string[] {
   }
   const span = (col: string, n = 1) => `${col}1:${indexToCol(colToIndex(col) + n - 1)}1`
   return (c.steps ?? []).map((step: TableStep) => {
+    if ('name' in step) return `name\t${step.name.scope ?? ''}\t${step.name.name}\t=${step.name.ref}`
     if ('edit' in step) {
       const { sheet, cell, value: v } = step.edit
       const kind = v === null ? 'x\t' : typeof v === 'number' ? `n\t${v}` : typeof v === 'string' ? `s\t${v}` : 'local' in v ? `l\t${v.local}` : `f\t=${v.formula}`
@@ -82,20 +83,28 @@ export function stepLines(c: TableCase): string[] {
   })
 }
 
+/** A case that adds names: its answer lists the names Excel has after the steps. */
+export const addsNames = (c: TableCase): boolean => (c.steps ?? []).some((s) => 'name' in s)
+
 /** The book with the three empty mirror sheets the script writes its mirror formulas into. */
 export const withMirrors = (b: BookInput): BookInput => ({ ...b, sheets: [...b.sheets, ...MIRRORS.map((name) => ({ name, cells: {} }))] })
 
-/** A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed). */
-async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unknown>, id: string): Promise<TableAnswer | null> {
-  if (!declineRepair()) {
+/**
+ * A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed),
+ * or, with `refused`, an error from `open workbook` with no window at all.
+ */
+async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unknown>, id: string, refused = false): Promise<TableAnswer | null> {
+  let declined = declineRepair()
+  if (!declined) {
     execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to activate'])
     await sleep(2000)
-    if (!declineRepair()) return null
+    declined = declineRepair()
+    if (!declined && !refused) return null
   }
   child.kill()
   await exited
   await settleRejected()
-  console.log(`${id}: Excel did not load the book (repair window declined)`)
+  console.log(`${id}: Excel did not load the book (${declined ? 'repair window declined' : 'open workbook refused it, no window'})`)
   return { values: {}, formulas: {}, tables: [], rejected: true }
 }
 
@@ -125,16 +134,15 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
         const after = dialogText()
         if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
         if (code !== 0) {
-          // the book did not open (`wb` undefined): a repair window Excel shows on another Space
-          if (/-2753|wb/.test(err)) {
-            const r = await rejectedBook(child, exited, c.id)
-            if (r) return r
-          }
+          // the book did not open (`wb` undefined, an error from `open workbook`, a timeout): a repair window on another Space
+          const r = await rejectedBook(child, exited, c.id, /the book did not open/.test(err))
+          if (r) return r
           throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
         }
-        const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: [string, string, string, boolean, boolean, string[]][] }
+        const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: [string, string, string, boolean, boolean, string[]][]; names: string[] }
         const read = answerOf(c.read, raw.rects, local)
         const answer: TableAnswer = { values: read.values, formulas: read.formulas, ...(local ? { local: read.formulas2 } : {}), tables: raw.tables.map(([sheet, name, range, headers, totals, columns]): TableShape => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns })) }
+        if (addsNames(c)) answer.names = raw.names
         raw.steps.forEach((e, i) => e && ((answer.refused ??= {})[i] = e))
         return answer
       }

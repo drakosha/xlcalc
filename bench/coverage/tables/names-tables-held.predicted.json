@@ -1,0 +1,411 @@
+{
+ "rename-question": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 4
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 100
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Прод?ажи[Qty])",
+   "S!D2": "Прод?ажи[[#This Row],[Qty]]*Прод?ажи[[#This Row],[Price]]",
+   "S!J2": "ROWS(Прод?ажи[])",
+   "S!D3": "Прод?ажи[[#This Row],[Qty]]*Прод?ажи[[#This Row],[Price]]",
+   "S!J3": "SUM(Прод?ажи[Price])",
+   "S!D4": "Прод?ажи[[#This Row],[Qty]]*Прод?ажи[[#This Row],[Price]]",
+   "S!D5": "Прод?ажи[[#This Row],[Qty]]*Прод?ажи[[#This Row],[Price]]"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Прод?ажи",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "rename-backslash": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 4
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!J3": {
+    "t": "n",
+    "v": 100
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Прод\\ажи[Qty])",
+   "S!D2": "Прод\\ажи[[#This Row],[Qty]]*Прод\\ажи[[#This Row],[Price]]",
+   "S!J2": "ROWS(Прод\\ажи[])",
+   "S!D3": "Прод\\ажи[[#This Row],[Qty]]*Прод\\ажи[[#This Row],[Price]]",
+   "S!J3": "SUM(Прод\\ажи[Price])",
+   "S!D4": "Прод\\ажи[[#This Row],[Qty]]*Прод\\ажи[[#This Row],[Price]]",
+   "S!D5": "Прод\\ажи[[#This Row],[Qty]]*Прод\\ажи[[#This Row],[Price]]"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Прод\\ажи",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": []
+ },
+ "rename-question-first": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!C1": {
+    "t": "s",
+    "v": "Price"
+   },
+   "S!D1": {
+    "t": "s",
+    "v": "Total"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 11
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 10
+   },
+   "S!D2": {
+    "t": "n",
+    "v": 20
+   },
+   "S!J2": {
+    "t": "n",
+    "v": 4
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   },
+   "S!C3": {
+    "t": "n",
+    "v": 20
+   },
+   "S!D3": {
+    "t": "n",
+    "v": 60
+   },
+   "S!A4": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B4": {
+    "t": "n",
+    "v": 5
+   },
+   "S!C4": {
+    "t": "n",
+    "v": 30
+   },
+   "S!D4": {
+    "t": "n",
+    "v": 150
+   },
+   "S!A5": {
+    "t": "s",
+    "v": "East"
+   },
+   "S!B5": {
+    "t": "n",
+    "v": 1
+   },
+   "S!C5": {
+    "t": "n",
+    "v": 40
+   },
+   "S!D5": {
+    "t": "n",
+    "v": 40
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Sales[Qty])",
+   "S!D2": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!J2": "ROWS(Sales[])",
+   "S!D3": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!D4": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]",
+   "S!D5": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Sales",
+    "range": "A1:D5",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty",
+     "Price",
+     "Total"
+    ]
+   }
+  ],
+  "refused": [
+   0
+  ]
+ },
+ "file-question": {
+  "values": {
+   "S!A1": {
+    "t": "s",
+    "v": "Region"
+   },
+   "S!B1": {
+    "t": "s",
+    "v": "Qty"
+   },
+   "S!J1": {
+    "t": "n",
+    "v": 5
+   },
+   "S!A2": {
+    "t": "s",
+    "v": "North"
+   },
+   "S!B2": {
+    "t": "n",
+    "v": 2
+   },
+   "S!A3": {
+    "t": "s",
+    "v": "South"
+   },
+   "S!B3": {
+    "t": "n",
+    "v": 3
+   }
+  },
+  "formulas": {
+   "S!J1": "SUM(Прод?ажи[Qty])"
+  },
+  "tables": [
+   {
+    "sheet": "S",
+    "name": "Прод?ажи",
+    "range": "A1:B3",
+    "headers": true,
+    "totals": false,
+    "columns": [
+     "Region",
+     "Qty"
+    ]
+   }
+  ],
+  "refused": []
+ }
+}

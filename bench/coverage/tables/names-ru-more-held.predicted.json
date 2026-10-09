@@ -1,0 +1,198 @@
+{
+ "add-bool": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 1
+   }
+  },
+  "formulas": {
+   "S!C1": "TRUE+1",
+   "S!C2": "FALSE+1"
+  },
+  "tables": [],
+  "refused": [
+   2,
+   3
+  ],
+  "names": [
+   "ИСТИНА",
+   "ЛОЖЬ"
+  ]
+ },
+ "add-cyrillic": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 2
+   },
+   "S!C2": {
+    "t": "n",
+    "v": 1.2
+   }
+  },
+  "formulas": {
+   "S!C1": "Ставка*10",
+   "S!C2": "SUM(Ставка,1)"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "Ставка"
+  ]
+ },
+ "add-shape": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 1111
+   }
+  },
+  "formulas": {
+   "S!C1": "АБ12+К2С3+С+К"
+  },
+  "tables": [],
+  "refused": [
+   4,
+   5,
+   6
+  ],
+  "names": [
+   "АБ12",
+   "К2С3",
+   "С",
+   "К"
+  ]
+ },
+ "add-function": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "n",
+    "v": 15
+   }
+  },
+  "formulas": {
+   "S!C1": "SUM(СУММ,Сумма,SUM)"
+  },
+  "tables": [],
+  "refused": [],
+  "names": [
+   "СУММ",
+   "Сумма",
+   "SUM"
+  ]
+ },
+ "add-chars": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!C1": {
+    "t": "e",
+    "v": "ERROR"
+   },
+   "S!C2": {
+    "t": "e",
+    "v": "ERROR"
+   }
+  },
+  "formulas": {
+   "S!C1": "Став?ка*2",
+   "S!C2": "Став\\ка*2"
+  },
+  "tables": [],
+  "refused": [
+   0,
+   1
+  ],
+  "names": []
+ },
+ "file-bool": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   }
+  },
+  "formulas": {},
+  "tables": [],
+  "refused": []
+ },
+ "file-bool-lower": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   }
+  },
+  "formulas": {},
+  "tables": [],
+  "refused": []
+ },
+ "file-false": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   }
+  },
+  "formulas": {},
+  "tables": [],
+  "refused": []
+ },
+ "file-bool-formula": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!B1": {
+    "t": "e",
+    "v": "NAME"
+   }
+  },
+  "formulas": {
+   "S!B1": "ИСТИНА+1"
+  },
+  "tables": [],
+  "refused": []
+ },
+ "file-bool-inside": {
+  "values": {
+   "S!A1": {
+    "t": "n",
+    "v": 100
+   },
+   "S!B1": {
+    "t": "n",
+    "v": 111
+   }
+  },
+  "formulas": {
+   "S!B1": "ИСТИНА_1+НЕИСТИНА+ИСТИНАЛОЖЬ"
+  },
+  "tables": [],
+  "refused": []
+ }
+}

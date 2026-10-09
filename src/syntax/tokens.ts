@@ -37,8 +37,8 @@ export type Tok =
   | { t: '{' | '}' | ';'; at: number }
   | { t: 'eof'; at: number }
 
-/** An identifier (function or name): a letter, `_` or `\`, then letters, digits, `_` and `.`; the locale lexer reads the same. */
-export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.]*'
+/** An identifier (function or name): a letter, `_` or `\`, then letters, digits, `_`, `.`, `\` and `?`; the locale lexer reads the same. */
+export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.\\\\?]*'
 const IDENT = new RegExp(`^${IDENT_RULE}`, 'u')
 const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
 const UNQUOTED_SHEET = /^([\p{L}_][\p{L}\p{N}_.]*)!/u
@@ -50,7 +50,7 @@ const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\
 const COL_RANGE = /^(\$?)([A-Za-z]{1,3}):(\$?)([A-Za-z]{1,3})/
 const ROW_RANGE = /^(\$?)([0-9]+):(\$?)([0-9]+)/
 const NUMBER = /^(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?/
-const IDENT_CHAR = /[\p{L}\p{N}_.(]/u
+const IDENT_CHAR = /[\p{L}\p{N}_.(\\?]/u
 /** After a bracketed run, what makes it a reference to another workbook (`[1]Sheet1!A1`, `[Book.xlsx]S!A1`, `[1]!name`). */
 const BOOK_SHEET = /^(?:[\p{L}\p{N}_.]+|'(?:[^']|'')+')?!/u
 

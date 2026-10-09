@@ -4,7 +4,7 @@
  * (`exec/walk.ts`).
  */
 import type { NameInput, NameIssue } from './contract.js'
-import { FormulaError, parse, sheetKey, validate, validateName, walk, type Ast } from './syntax.js'
+import { FormulaError, nameProblem, parse, sheetKey, validate, walk, type Ast } from './syntax.js'
 
 export interface PreparedName {
   name: string
@@ -14,17 +14,17 @@ export interface PreparedName {
   ast: Ast
 }
 
-/** Names in the book's order; an invalid one is left out with its issue. */
-export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[], tables: { name: string; columns: string[] }[] = []): { names: PreparedName[]; issues: NameIssue[] } {
+/** Names in the book's order; an invalid one is left out with its issue. `booleans`: the book's locale's words for TRUE and FALSE, no names. */
+export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], externalFunctions: string[], tables: { name: string; columns: string[] }[] = [], booleans: readonly string[] = []): { names: PreparedName[]; issues: NameIssue[] } {
   const out: PreparedName[] = []
   const issues: NameIssue[] = []
   const seen = new Set<string>()
   const sheets = [...sheetIdx.keys()]
   for (const n of names) {
     const issue = (reason: string) => issues.push({ name: n.name, ...(n.scope ? { scope: n.scope } : {}), reason })
-    const ok = validateName(n.name)
-    if (!ok.ok) {
-      issue(ok.message)
+    const problem = nameProblem(n.name, booleans)
+    if (problem) {
+      issue(problem)
       continue
     }
     const scope = n.scope === undefined ? -1 : (sheetIdx.get(sheetKey(n.scope)) ?? -2)

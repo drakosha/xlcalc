@@ -6,6 +6,7 @@ import type { BookInput, RestructureResult, StructureOp, TableInput } from '../c
 import { checkTables } from './check.js'
 import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
+import { localeBooleans } from '../locale/registry.js'
 import { nameProblem, sheetKey } from '../syntax.js'
 import { meets, parseRange } from '../structure/area.js'
 import { parseMerge } from '../layout/merges.js'
@@ -32,7 +33,8 @@ function withTable(book: BookInput, key: string, next: TableInput | null): BookI
 
 /** A name a table can take in the book: Excel's rules, not another table's or a defined name (but `own`). */
 function nameRefusal(book: BookInput, name: string, own?: string): string | null {
-  const problem = nameProblem(name)
+  // not ИСТИНА in ru-RU, as Excel for Windows (Excel for Mac keeps such a table's name)
+  const problem = nameProblem(name, localeBooleans(book.locale))
   if (problem) return `${JSON.stringify(name)}: ${problem}`
   const k = tableKey(name)
   const table = tablesOf(book).list.find((t) => tableKey(t.name) === k && (own === undefined || tableKey(own) !== k))

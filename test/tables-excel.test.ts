@@ -23,6 +23,14 @@ const KNOWN: Readonly<Record<string, string>> = {
   'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1); renameTable refuses with table_name",
   'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row; setCells leaves the table as it is",
   'more:type-calc': "a formula typed into an empty column of a table: Excel's AutoCorrect fills the column with it; setCells puts it in its cell",
+  'names-held:rename-digit': "a table renamed to a name Excel does not take (1Ставка): Excel's object model makes it one (_1Ставка); renameTable refuses with table_name",
+  'names-held:rename-name-case': "a table renamed to a defined name in another case (СТАВКА beside Ставка): Excel's object model makes the name free (СТАВКА_1); renameTable refuses with table_name",
+  'names-tables-held:rename-question-first': "a table renamed to a name Excel does not take (?Продажи): Excel's object model makes it one (_?Продажи); renameTable refuses with table_name",
+  'names-more-held:add-long': 'a formula over a name of 255 letters, typed through AppleScript, which cuts what it sets to 255 characters (the formula loses its end and gives #NAME?); Excel for Windows computes it as the engine does',
+  'names-ru-more-held:add-bool': 'Excel ru-RU takes TRUE and FALSE as defined names; the engine keeps formulas in en-US text, where they are the booleans, and refuses them in every locale',
+  'names-ru-tables-held:rename-bool': 'a table renamed ИСТИНА in ru-RU: Excel for Mac keeps the name, Excel for Windows makes ИСТИНА_ of it as of a defined name; renameTable refuses with table_name, as Windows',
+  'names-ru-tables-held:rename-bool-lower': 'a table renamed ложь in ru-RU: Excel for Mac keeps the name, Excel for Windows makes ложь_ of it as of a defined name; renameTable refuses with table_name, as Windows',
+  'names-ru-tables-held:rename-true': "a table renamed TRUE in ru-RU, a name Excel for Mac does not take: its object model makes one (TRUE_); renameTable refuses with table_name",
 }
 
 describe.each(SETS)('tables $sub$name', (set) => {

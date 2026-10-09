@@ -32,7 +32,7 @@ A sheet lists its tables in `tables` (`TableInput`):
 | `totals` | the last row is a totals row; false by default |
 | `columns` | one entry for each column of the range, left to right: its `name`, the `formula` of a calculated column, its `totals` |
 
-A table's name follows Excel's rules for names, the rules of a defined name ([Defined names](names.md) has them, with what of them was measured): a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`, not a cell address (`T2` is the cell T2) and not `R`, `C` or an R1C1 reference. Tables and defined names share one namespace: no table has the name of another table or of a defined name, in any case, Cyrillic too (a table `Продажи` and a name `ПРОДАЖИ` cannot both be). A table has one data row at least.
+A table's name follows Excel's rules for names, the rules of a defined name ([Defined names](names.md) has them, with how they were measured): a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, not a cell address (`T2` is the cell T2), not `R`, `C` or an R1C1 reference, not TRUE or FALSE, and in a ru-RU book not `ИСТИНА` or `ЛОЖЬ`. Tables and defined names share one namespace: no table has the name of another table or of a defined name, in any case, Cyrillic too (a table `Продажи` and a name `ПРОДАЖИ` cannot both be). A table has one data row at least.
 
 With a header row, its cells hold the columns' names as text: `B1` holds `"Qty"` when the second column is named `Qty`. Column names are unique in a table, in any case, and may hold any characters.
 
@@ -193,16 +193,21 @@ Deleting a sheet takes the references to its tables: they become `#REF!`. Renami
 | `ops-held` | 18 | predicted before Excel took them: inserts beside another table, a table emptied, pastes over header rows, renames Excel refuses |
 | `locale` (ru-RU) | 4 | the Russian specifiers shown and typed, a totals row, the names of new columns |
 | `more` | 5 | whole tables copied and moved, cells typed beside and into a table |
-| `names-held` | 17 | predicted, not yet computed in Excel: defined names in letters of any script, tables renamed to Cyrillic names and to names Excel refuses |
-| `names-ru-held` (ru-RU) | 8 | predicted, not yet computed in Excel: the same names in formulas typed in Russian |
+| `names-held` | 17 | predicted before Excel computed them: defined names in letters of any script, tables renamed to Cyrillic names and to names Excel refuses |
+| `names-ru-held` (ru-RU) | 8 | predicted before Excel computed them: the same names in formulas typed in Russian |
+| `names-more-held` | 12 | predicted before Excel took them: defined names added through Excel's object model where its rules refuse, files with `?` and `\` in a name |
+| `names-ru-more-held` (ru-RU) | 10 | predicted before Excel took them: the same in ru-RU, and files with the name `ИСТИНА` |
+| `names-tables-held` | 4 | predicted before Excel took them: tables named with `?` and `\` |
+| `names-ru-tables-held` (ru-RU) | 3 | predicted before Excel took them: tables renamed `ИСТИНА`, `ложь` and `TRUE` |
 
-The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`).
+The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`). The sets of names came out as predicted on 34 of 54 cases in Excel for Mac; [Defined names](names.md) has the misses and what was fixed.
 
 The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the sets `refs`, `refs-held`, `ops` and `ops-held`: Excel opens each file `writeXlsx` writes and saves it, the files it saved read back to the books written, and the values Excel stored in them equal the engine's.
 
 ## Known differences
 
 - Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `restructure` (`insertRows` inside it fills the calculated columns).
-- A table renamed to a name Excel does not take (`AB12`) or to a defined name: Excel's object model makes the name one it takes (`AB12_`, `Rate_1`), as its name box refuses it; `renameTable` refuses with `table_name`.
+- A table renamed to a name Excel does not take (`AB12`, `1Ставка`, `?Продажи`) or to a defined name: Excel's object model makes the name one it takes (`AB12_`, `_1Ставка`, `_?Продажи`, `Rate_1`), as its name box refuses it; `renameTable` refuses with `table_name`.
+- In ru-RU Excel for Mac keeps a table renamed `ИСТИНА` or `ложь` and makes `TRUE_` of `TRUE`; Excel for Windows makes `ИСТИНА_` and keeps `TRUE`, as both do with a defined name. `renameTable` refuses all three: it follows Windows for `ИСТИНА`, and keeps formulas in en-US text, where `TRUE` is the boolean.
 - Excel's Fill Right and fill handle move the column of a structured reference (`SUM(Sales[Qty])` filled right is `SUM(Sales[Price])`); `copyRange`, as copy and paste, keeps it.
 - An array formula of the old kind over several cells cannot be in a table, as in Excel; one over a single cell computes `[#This Row]` by its own row.

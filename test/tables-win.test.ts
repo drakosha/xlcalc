@@ -17,6 +17,13 @@ const WIN_TABLES: Readonly<Record<string, string>> = {
   'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1), as on the Mac; renameTable refuses with table_name",
   'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row, as on the Mac; setCells leaves the table as it is",
   'more:type-calc': "a formula typed into an empty column of a table: Excel's AutoCorrect fills the column with it, as on the Mac; setCells puts it in its cell",
+  'names-held:rename-digit': "a table renamed to a name Excel does not take (1Ставка): Excel's object model makes it one (_1Ставка), as on the Mac; renameTable refuses with table_name",
+  'names-held:rename-name-case': "a table renamed to a defined name in another case (СТАВКА beside Ставка): Excel's object model makes the name free (СТАВКА_1), as on the Mac; renameTable refuses with table_name",
+  'names-tables-held:rename-question-first': "a table renamed to a name Excel does not take (?Продажи): Excel's object model makes it one (_?Продажи), as on the Mac; renameTable refuses with table_name",
+  'names-ru-more-held:add-bool': 'Excel ru-RU takes TRUE and FALSE as defined names, as on the Mac; the engine keeps formulas in en-US text, where they are the booleans, and refuses them in every locale',
+  'names-ru-tables-held:rename-bool': "a table renamed ИСТИНА in ru-RU, a name Excel for Windows does not take: its object model makes one (ИСТИНА_); renameTable refuses with table_name",
+  'names-ru-tables-held:rename-bool-lower': "a table renamed ложь in ru-RU, a name Excel for Windows does not take: its object model makes one (ложь_); renameTable refuses with table_name",
+  'names-ru-tables-held:rename-true': 'a table renamed TRUE in ru-RU: Excel for Windows keeps the name; the engine keeps formulas in en-US text, where TRUE is the boolean, and refuses it in every locale',
 }
 
 describe.each(SETS)('tables $name ($sub) against Excel for Windows', (set) => {

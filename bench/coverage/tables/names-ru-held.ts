@@ -4,7 +4,8 @@
  * it is, a Russian function name followed by `(` is the function (`СУММ(Сумма;1)`), the same word without it is a name;
  * a name that is a Russian boolean (ИСТИНА) is the name in the file's formulas, while typed in Russian the word is the
  * boolean, as `toInvariant` reads it. Doubtful names have cases of their own: a name Excel would not take makes it
- * repair the file (the case is then `rejected`).
+ * repair the file (the case is then `rejected`). Excel ru-RU did not open the book with the name ИСТИНА, which the
+ * writer now leaves out of a ru-RU book's file, so that book does not go into a file whole any more and is not run again.
  */
 import type { BookInput, NameInput } from '../../../src/contract.js'
 import { book, on, sales, type CellSpec, type TableCase, type TableStep } from './cases.js'

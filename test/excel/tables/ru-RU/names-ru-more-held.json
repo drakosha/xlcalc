@@ -1,0 +1,669 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "seconds": 209.1
+ },
+ "cases": [
+  {
+   "id": "add-bool",
+   "about": "the booleans of ru-RU added as names (ИСТИНА, ЛОЖЬ), and TRUE and FALSE, then ИСТИНА and ЛОЖЬ typed in Russian",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "ИСТИНА",
+      "ref": "11"
+     }
+    },
+    {
+     "name": {
+      "name": "ЛОЖЬ",
+      "ref": "12"
+     }
+    },
+    {
+     "name": {
+      "name": "TRUE",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "FALSE",
+      "ref": "2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=ИСТИНА+1"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "local": "=ЛОЖЬ+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-cyrillic",
+   "about": "a Cyrillic name added, typed in Russian in another case",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Ставка",
+      "ref": "0.2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=Ставка*10"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "local": "=СУММ(ставка;1)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-shape",
+   "about": "names shaped like a cell or R1C1: in Cyrillic letters names (АБ12, К2С3, С, К), in Latin ones refused (AB12, R1C1, R)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "АБ12",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "К2С3",
+      "ref": "10"
+     }
+    },
+    {
+     "name": {
+      "name": "С",
+      "ref": "100"
+     }
+    },
+    {
+     "name": {
+      "name": "К",
+      "ref": "1000"
+     }
+    },
+    {
+     "name": {
+      "name": "AB12",
+      "ref": "2"
+     }
+    },
+    {
+     "name": {
+      "name": "R1C1",
+      "ref": "3"
+     }
+    },
+    {
+     "name": {
+      "name": "R",
+      "ref": "4"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=АБ12+К2С3+С+К"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-function",
+   "about": "function names as names in ru-RU: СУММ, Сумма and SUM, typed without (",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "СУММ",
+      "ref": "7"
+     }
+    },
+    {
+     "name": {
+      "name": "Сумма",
+      "ref": "5"
+     }
+    },
+    {
+     "name": {
+      "name": "SUM",
+      "ref": "3"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=СУММ(СУММ;Сумма;SUM)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-chars",
+   "about": "a question mark and a backslash inside a name (Став?ка, Став\\ка)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [],
+    "locale": "ru-RU"
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Став?ка",
+      "ref": "5"
+     }
+    },
+    {
+     "name": {
+      "name": "Став\\ка",
+      "ref": "6"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "local": "=Став?ка*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "local": "=Став\\ка*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "file-bool",
+   "about": "a file with the name ИСТИНА, which no formula uses",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "ИСТИНА",
+      "ref": "11"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "file-bool-lower",
+   "about": "a file with the name истина, which no formula uses",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "истина",
+      "ref": "11"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "file-false",
+   "about": "a file with the name ЛОЖЬ, which no formula uses",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "ЛОЖЬ",
+      "ref": "12"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "file-bool-formula",
+   "about": "a file with the word ИСТИНА in a formula and no such name: an unknown name",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "ИСТИНА+1"
+       }
+      }
+     }
+    ],
+    "names": [],
+    "locale": "ru-RU"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "file-bool-inside",
+   "about": "a file with names that hold the word: ИСТИНА_1, НЕИСТИНА, ИСТИНАЛОЖЬ",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "ИСТИНА_1+НЕИСТИНА+ИСТИНАЛОЖЬ"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "ИСТИНА_1",
+      "ref": "1"
+     },
+     {
+      "name": "НЕИСТИНА",
+      "ref": "10"
+     },
+     {
+      "name": "ИСТИНАЛОЖЬ",
+      "ref": "100"
+     }
+    ],
+    "locale": "ru-RU"
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "add-bool": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!C1": "=TRUE+1",
+    "S!C2": "=FALSE+1"
+   },
+   "local": {
+    "S!C1": "=ИСТИНА+1",
+    "S!C2": "=ЛОЖЬ+1"
+   },
+   "tables": [],
+   "names": [
+    "FALSE",
+    "TRUE"
+   ],
+   "refused": {
+    "0": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "1": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-cyrillic": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 1.2
+    }
+   },
+   "formulas": {
+    "S!C1": "=Ставка*10",
+    "S!C2": "=SUM(Ставка,1)"
+   },
+   "local": {
+    "S!C1": "=Ставка*10",
+    "S!C2": "=СУММ(Ставка;1)"
+   },
+   "tables": [],
+   "names": [
+    "Ставка"
+   ]
+  },
+  "add-shape": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 1111
+    }
+   },
+   "formulas": {
+    "S!C1": "=АБ12+К2С3+С+К"
+   },
+   "local": {
+    "S!C1": "=АБ12+К2С3+С+К"
+   },
+   "tables": [],
+   "names": [
+    "АБ12",
+    "К",
+    "К2С3",
+    "С"
+   ],
+   "refused": {
+    "4": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "5": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "6": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-function": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 15
+    }
+   },
+   "formulas": {
+    "S!C1": "=SUM(СУММ,Сумма,SUM)"
+   },
+   "local": {
+    "S!C1": "=СУММ(СУММ;Сумма;SUM)"
+   },
+   "tables": [],
+   "names": [
+    "СУММ",
+    "Сумма",
+    "SUM"
+   ]
+  },
+  "add-chars": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 12
+    }
+   },
+   "formulas": {
+    "S!C1": "=Став?ка*2",
+    "S!C2": "=Став\\ка*2"
+   },
+   "local": {
+    "S!C1": "=Став?ка*2",
+    "S!C2": "=Став\\ка*2"
+   },
+   "tables": [],
+   "names": [
+    "Став?ка",
+    "Став\\ка"
+   ]
+  },
+  "file-bool": {
+   "values": {},
+   "formulas": {},
+   "tables": [],
+   "rejected": true
+  },
+  "file-bool-lower": {
+   "values": {},
+   "formulas": {},
+   "tables": [],
+   "rejected": true
+  },
+  "file-false": {
+   "values": {},
+   "formulas": {},
+   "tables": [],
+   "rejected": true
+  },
+  "file-bool-formula": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!B1": "=ИСТИНА+1"
+   },
+   "local": {
+    "S!B1": "='ИСТИНА'+1"
+   },
+   "tables": []
+  },
+  "file-bool-inside": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 111
+    }
+   },
+   "formulas": {
+    "S!B1": "=ИСТИНА_1+НЕИСТИНА+ИСТИНАЛОЖЬ"
+   },
+   "local": {
+    "S!B1": "=ИСТИНА_1+НЕИСТИНА+ИСТИНАЛОЖЬ"
+   },
+   "tables": []
+  }
+ }
+}

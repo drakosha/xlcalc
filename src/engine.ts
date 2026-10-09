@@ -15,6 +15,7 @@ import { FUNCTIONS } from './functions.js'
 import { readersOf, rebuildGraph } from './graph.js'
 import { epochOf, ymd } from './dates.js'
 import { hiddenRows } from './layout/hidden.js'
+import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
 import type { RulesClock } from './locale/rules/data.js'
 import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
@@ -28,7 +29,7 @@ import { endSpill, spillRef } from './spill/place.js'
 import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea } from './array-areas.js'
-import { canonical, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
+import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
 import { specRect, tableAt, tableKey, tablesOf, type Tables } from './tables/model.js'
 import { CErr, E, isErr, type V } from './values.js'
 
@@ -151,11 +152,14 @@ function tableNames(tables: Tables) {
 }
 
 function prepare(state: EngineState, s: number, row: number, col: number, text: string): Prepared {
-  const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
+  const named = (name: string, sheet: string | undefined) => nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
+  const known = (name: string, sheet: string | undefined) => !!named(name, sheet)
   const enclosing = tableAt(state.tables, s, row, col)?.name
   const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { enclosing } : {}) })
   if (!r.ok) return { ok: false, invalid: { code: r.code, message: r.message, at: r.at, error: invalidError(r.code) } }
-  return { ok: true, text: canonical(r.ast, (sh) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]), ast: r.ast }
+  // sheets and names spelled as the book has them, as Excel shows them (`ставка*2` is `Ставка*2`)
+  const sheetOf = (sh: string) => state.sheetNames[state.sheetIdx.get(sheetKey(sh))!]
+  return { ok: true, text: printFormula(r.ast, { sheetOf, nameOf: (name, sheet) => named(name, sheet)?.name ?? name }), ast: r.ast }
 }
 
 // ---------- assembly ----------
@@ -172,7 +176,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const input: BookInput = { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: { ...s.cells } })) }
   const externalFunctions = (opts.externals?.functions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
   const tables = tablesOf(input)
-  const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables))
+  const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale))
   const epoch = epochOf(book.dateSystem)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
   const clock: RulesClock = {

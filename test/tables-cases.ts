@@ -1,13 +1,14 @@
 /**
  * A table case of `bench/coverage/tables/` taken by the engine as Excel took it: the book opened in a session, each
- * step applied (a cell typed through `setCells`, an operation through `restructure`, a refusal noted), and the answer
- * read as the harness reads Excel's: the rectangles' values, their formulas as stored text, the tables.
+ * step applied (a cell typed through `setCells`, an operation through `restructure`, a name added through `setNames`,
+ * a refusal noted), and the answer read as the harness reads Excel's: the rectangles' values, their formulas as stored
+ * text, the tables, the names.
  */
 import type { Val } from '../bench/coverage/formulajs.js'
 import { cellsOf } from '../bench/coverage/case-book.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { TableAnswer, TableCase, TableShape } from '../bench/coverage/tables/cases.js'
-import { enUS, InputError, openSession, ruRU, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
+import { compute, enUS, InputError, openSession, ruRU, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
@@ -22,6 +23,8 @@ export interface EngineAnswer {
   tables: TableShape[]
   /** The steps the engine refused, by index: its message. */
   refused: Record<number, string>
+  /** The names the book computes with, a sheet's own as `Sheet!name`, as Excel lists them. */
+  names: string[]
   book: BookInput
   result: ComputeResult
 }
@@ -34,6 +37,23 @@ export function engineAnswer(c: TableCase): EngineAnswer {
   const s = openSession(c.book, { clock: CLOCK })
   const refused: Record<number, string> = {}
   ;(c.steps ?? []).forEach((step, i) => {
+    if ('name' in step) {
+      // Excel's Names.Add takes a name or refuses it: a name left out with an issue is refused
+      const before = s.book().names ?? []
+      try {
+        s.setNames([...before, step.name])
+      } catch (e) {
+        if (!(e instanceof InputError)) throw e
+        refused[i] = e.message
+        return
+      }
+      const issue = s.result().nameIssues.find((x) => x.name === step.name.name && x.scope === step.name.scope)
+      if (issue) {
+        refused[i] = issue.reason
+        s.setNames(before)
+      }
+      return
+    }
     if ('op' in step) {
       const r = s.restructure(step.op)
       if (!r.ok) refused[i] = `${r.code}: ${r.message}`
@@ -65,7 +85,9 @@ export function engineAnswer(c: TableCase): EngineAnswer {
     }
   }
   s.close()
-  return { values, formulas, tables: shapes(book), refused, book, result }
+  const left = new Set(result.nameIssues.map((x) => `${x.scope ?? ''}!${x.name}`))
+  const names = (book.names ?? []).filter((n) => !left.has(`${n.scope ?? ''}!${n.name}`)).map((n) => (n.scope ? `${n.scope}!${n.name}` : n.name))
+  return { values, formulas, tables: shapes(book), refused, names, book, result }
 }
 
 /** The table holding a cell of the book. */
@@ -88,7 +110,8 @@ export function storedText(book: BookInput, sheet: string, addr: string, shown: 
 /** What differs between the engine's answer and Excel's, as lines (empty when they agree). */
 export function differences(c: TableCase, x: TableAnswer): string[] {
   const out: string[] = []
-  if (x.rejected) return ['Excel did not load the book']
+  // Excel did not load the book over a name it does not take: the engine agrees when it leaves a name of the book out
+  if (x.rejected) return compute(c.book, { display: false }).nameIssues.length ? [] : ['Excel did not load the book']
   const got = engineAnswer(c)
   // Excel refuses some steps without an error (rows deleted from two tables): the book stays as it was, which the
   // values, formulas and tables below check; every step it answered with an error the engine refuses too
@@ -98,6 +121,9 @@ export function differences(c: TableCase, x: TableAnswer): string[] {
   const ex = x.tables.map(shape).sort()
   const en = got.tables.map(shape).sort()
   if (JSON.stringify(ex) !== JSON.stringify(en)) out.push(`tables: Excel ${ex.join(' ')}, engine ${en.join(' ')}`)
+  // the names in any order (Excel lists them sorted), a sheet's name unquoted
+  const nameList = (xs: string[]) => xs.map((n) => n.replace(/^'(.*)'!/, '$1!')).sort()
+  if (x.names && JSON.stringify(nameList(x.names)) !== JSON.stringify(nameList(got.names))) out.push(`names: Excel ${x.names.join(' ')}, engine ${got.names.join(' ')}`)
   for (const k of new Set([...Object.keys(x.values), ...Object.keys(got.values)])) {
     const want = x.values[k]
     const have = got.values[k]

@@ -10,3 +10,9 @@ export const LOCALES: ReadonlyMap<string, Locale> = new Map([
   ['en-US', enUS],
   ['ru-RU', ruRU],
 ])
+
+/** The words of a book's locale for TRUE and FALSE, which are no names there (ИСТИНА and ЛОЖЬ in ru-RU). */
+export function localeBooleans(tag: string | undefined): string[] {
+  const loc = LOCALES.get(tag ?? DEFAULT_LOCALE)
+  return loc ? [loc.booleans.TRUE, loc.booleans.FALSE] : []
+}

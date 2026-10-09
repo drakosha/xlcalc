@@ -85,6 +85,8 @@ export interface PrintOptions {
   bool?: (b: boolean) => string
   /** The sheet name as spelled in the book. */
   sheetOf?: (s: string) => string
+  /** A defined name as spelled where it is defined, seen from its sheet (undefined: the formula's own). */
+  nameOf?: (name: string, sheet: string | undefined) => string
 }
 
 /** Prints an AST; canonical by default. Adapters for other engines substitute their own literals. */
@@ -92,6 +94,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
   const str = opts.str ?? ((s: string) => `"${s.replaceAll('"', '""')}"`)
   const bool = opts.bool ?? ((b: boolean) => (b ? 'TRUE' : 'FALSE'))
   const sheetOf = opts.sheetOf ?? ((s: string) => s)
+  const nameOf = opts.nameOf ?? ((name: string) => name)
   const go = (n: Ast): string => {
     switch (n.k) {
       case 'num':
@@ -109,7 +112,7 @@ export function printFormula(ast: Ast, opts: PrintOptions = {}): string {
       case 'table':
         return `${n.table ?? ''}[${specText(n.spec)}]`
       case 'name':
-        return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + n.name
+        return (n.sheet === undefined ? '' : `${quoteSheet(sheetOf(n.sheet))}!`) + nameOf(n.name, n.sheet)
       case 'at':
         return `@${go(n.a)}`
       case 'union':

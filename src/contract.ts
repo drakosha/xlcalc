@@ -143,9 +143,10 @@ export interface SheetInput {
  */
 export interface TableInput {
   /**
-   * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`, at most 255
-   * characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE. Tables and defined names share
-   * one namespace: no other table and no defined name of the book has the name, in any case.
+   * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at
+   * most 255 characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE, and in a ru-RU book
+   * not ИСТИНА or ЛОЖЬ either, in any case, as Excel for Windows ru-RU refuses them. Tables and defined names share one
+   * namespace: no other table and no defined name of the book has the name, in any case.
    */
   name: string
   /** The table's rectangle, its header and totals rows included (`B2:E10`), with one data row at least. */
@@ -179,9 +180,10 @@ export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' |
 
 export interface NameInput {
   /**
-   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`,
-   * at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE (`Ставка`,
-   * `НДС_2025` and `АБ12` are names). Compared in any case: `ставка` is the name `Ставка`.
+   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`,
+   * `\` and `?`, at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE, and
+   * in a ru-RU book not its booleans ИСТИНА and ЛОЖЬ either, in any case, which Excel ru-RU refuses (`Ставка`,
+   * `НДС_2025`, `АБ12` and `Став?ка` are names). Compared in any case: `ставка` is the name `Ставка`.
    */
   name: string
   /**
@@ -345,7 +347,10 @@ export interface ComputeOptions {
 export interface CellResult extends Partial<CellDisplay> {
   /** The value: numbers stay numbers whatever the format shows. */
   value: CellValue
-  /** Canonical formula text (sheet always quoted, function names upper-case). */
+  /**
+   * Canonical formula text (sheet always quoted, function names upper-case), with sheets, tables and defined names
+   * spelled as the book names them, as Excel shows them (`ставка*2` with the name `Ставка` is `Ставка*2`).
+   */
   formula?: string
   format?: NumberFormat
   meta?: JsonValue
@@ -776,6 +781,7 @@ export interface CalcPoolOptions {
 export interface FormulaEngine {
   compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
+  /** Excel's rules for a name (`NameInput.name`) in an en-US book; a ru-RU book also refuses ИСТИНА and ЛОЖЬ. */
   validateName(name: string): NameCheck
   openSession(book: BookInput, opts?: SessionOptions): Session
   restructure(book: BookInput, op: StructureOp): RestructureResult

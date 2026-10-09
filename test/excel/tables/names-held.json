@@ -1,0 +1,1928 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 23.5
+ },
+ "cases": [
+  {
+   "id": "cyrillic",
+   "about": "names in Cyrillic: a constant and a reference, in formulas of the file and typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "Ставка*2"
+       },
+       "B2": {
+        "formula": "SUM(Ставка,НДС_2025)"
+       },
+       "B3": {
+        "formula": "НДС_2025*Ставка"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ставка",
+      "ref": "0.2"
+     },
+     {
+      "name": "НДС_2025",
+      "ref": "'S'!$A$1"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Ставка*10"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "SUM(НДС_2025,Ставка)"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "any-case",
+   "about": "a Cyrillic name used in other cases is the same name (Excel may show it in the case it was defined in)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "ставка*2"
+       },
+       "B2": {
+        "formula": "СТАВКА+1"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ставка",
+      "ref": "0.2"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "сТаВкА*10"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "cell-like",
+   "about": "Cyrillic letters and digits are a name, not a cell (АБ12; aБ12 with a Latin a)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "АБ12+aБ12*10"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "АБ12",
+      "ref": "1"
+     },
+     {
+      "name": "aБ12",
+      "ref": "2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "r1c1-like",
+   "about": "Cyrillic letters like R1C1 and like R and C alone are names (К2С3, Р1С1, С, К)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "К2С3+Р1С1+С+К"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "К2С3",
+      "ref": "1"
+     },
+     {
+      "name": "Р1С1",
+      "ref": "10"
+     },
+     {
+      "name": "С",
+      "ref": "100"
+     },
+     {
+      "name": "К",
+      "ref": "1000"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "letters",
+   "about": "Ё, Latin and Cyrillic mixed (aБ), Greek (Τιμή)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "Ё+aБ*10+Τιμή*100"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ё",
+      "ref": "1"
+     },
+     {
+      "name": "aБ",
+      "ref": "2"
+     },
+     {
+      "name": "Τιμή",
+      "ref": "3"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "yo",
+   "about": "Ё and Е are two letters: Ёлка and Елка are two names",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "Ёлка"
+       },
+       "B2": {
+        "formula": "Елка"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ёлка",
+      "ref": "1"
+     },
+     {
+      "name": "Елка",
+      "ref": "2"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "dot-underscore",
+   "about": "a dot and an underscore inside, an underscore first",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "НДС.2025+_Ставка*10+Ставка_1.2*100"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "НДС.2025",
+      "ref": "1"
+     },
+     {
+      "name": "_Ставка",
+      "ref": "2"
+     },
+     {
+      "name": "Ставка_1.2",
+      "ref": "3"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "backslash",
+   "about": "a backslash first",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "\\Ставка*2"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "\\Ставка",
+      "ref": "5"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "scope",
+   "about": "a sheet's own Cyrillic name on a sheet named in Cyrillic, over a global one of the same name",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "B1": {
+        "formula": "'Лист'!Ставка*2"
+       },
+       "B2": {
+        "formula": "Ставка"
+       }
+      }
+     },
+     {
+      "name": "Лист",
+      "cells": {
+       "A1": {
+        "formula": "ставка"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Ставка",
+      "ref": "0.2"
+     },
+     {
+      "name": "Ставка",
+      "ref": "0.3",
+      "scope": "Лист"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Лист!Ставка+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C2"
+    },
+    {
+     "sheet": "Лист",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "word-ru",
+   "about": "Russian function names are plain words in en-US: Сумма, and СУММ, SUM's name in ru-RU",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "Сумма*2"
+       },
+       "B2": {
+        "formula": "SUM(Сумма,СУММ)"
+       },
+       "B3": {
+        "formula": "СУММ"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Сумма",
+      "ref": "5"
+     },
+     {
+      "name": "СУММ",
+      "ref": "7"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "word-en",
+   "about": "a name that is an English function's (SUM): the engine takes it, Excel may not",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "SUM*2"
+       },
+       "B2": {
+        "formula": "SUM(SUM,1)"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "SUM",
+      "ref": "3"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "word-bool-ru",
+   "about": "the booleans of ru-RU are plain words in en-US (ИСТИНА, ЛОЖЬ)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       },
+       "B1": {
+        "formula": "ИСТИНА+ЛОЖЬ"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "ИСТИНА",
+      "ref": "11"
+     },
+     {
+      "name": "ЛОЖЬ",
+      "ref": "12"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "rename-cyrillic",
+   "about": "a table renamed in Cyrillic: the references follow",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "Продажи"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "rename-cell-like",
+   "about": "a table renamed to Cyrillic letters and digits (АБ12): not a cell, Excel takes it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "АБ12"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "rename-r1c1-like",
+   "about": "a table renamed to Cyrillic letters like R1C1 (К2С3): Excel takes it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "К2С3"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "rename-digit",
+   "about": "a table renamed to a name with a digit first (1Ставка): Excel refuses (its object model may make a name of it)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "1Ставка"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "rename-name-case",
+   "about": "a table renamed to a defined name in another case (СТАВКА over Ставка): one namespace, Excel refuses (its object model may make the name free)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       },
+       "J3": {
+        "formula": "SUM(Ставка)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "names": [
+     {
+      "name": "Ставка",
+      "ref": "'S'!$C$2"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "СТАВКА"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "cyrillic": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 0.4
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 100.2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 100.2
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!B1": "=Ставка*2",
+    "S!C1": "=Ставка*10",
+    "S!B2": "=SUM(Ставка,НДС_2025)",
+    "S!C2": "=SUM(НДС_2025,Ставка)",
+    "S!B3": "=НДС_2025*Ставка"
+   },
+   "tables": []
+  },
+  "any-case": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 0.4
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 1.2
+    }
+   },
+   "formulas": {
+    "S!B1": "=Ставка*2",
+    "S!C1": "=Ставка*10",
+    "S!B2": "=Ставка+1"
+   },
+   "tables": []
+  },
+  "cell-like": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 21
+    }
+   },
+   "formulas": {
+    "S!B1": "=АБ12+aБ12*10"
+   },
+   "tables": []
+  },
+  "r1c1-like": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 1111
+    }
+   },
+   "formulas": {
+    "S!B1": "=К2С3+Р1С1+С+К"
+   },
+   "tables": []
+  },
+  "letters": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 321
+    }
+   },
+   "formulas": {
+    "S!B1": "=Ё+aБ*10+Τιμή*100"
+   },
+   "tables": []
+  },
+  "yo": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!B1": "=Ёлка",
+    "S!B2": "=Елка"
+   },
+   "tables": []
+  },
+  "dot-underscore": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 321
+    }
+   },
+   "formulas": {
+    "S!B1": "=НДС.2025+_Ставка*10+Ставка_1.2*100"
+   },
+   "tables": []
+  },
+  "backslash": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!B1": "=\\Ставка*2"
+   },
+   "tables": []
+  },
+  "scope": {
+   "values": {
+    "S!B1": {
+     "t": "n",
+     "v": 0.6
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 1.3
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 0.2
+    },
+    "Лист!A1": {
+     "t": "n",
+     "v": 0.3
+    }
+   },
+   "formulas": {
+    "S!B1": "=Лист!Ставка*2",
+    "S!C1": "=Лист!Ставка+1",
+    "S!B2": "=Ставка",
+    "Лист!A1": "=Ставка"
+   },
+   "tables": []
+  },
+  "word-ru": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 12
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 7
+    }
+   },
+   "formulas": {
+    "S!B1": "=Сумма*2",
+    "S!B2": "=SUM(Сумма,СУММ)",
+    "S!B3": "=СУММ"
+   },
+   "tables": []
+  },
+  "word-en": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!B1": "=SUM*2",
+    "S!B2": "=SUM(SUM,1)"
+   },
+   "tables": []
+  },
+  "word-bool-ru": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!B1": {
+     "t": "n",
+     "v": 23
+    }
+   },
+   "formulas": {
+    "S!B1": "=ИСТИНА+ЛОЖЬ"
+   },
+   "tables": []
+  },
+  "rename-cyrillic": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Продажи[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(Продажи)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Продажи",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-cell-like": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(АБ12[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(АБ12)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "АБ12",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-r1c1-like": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(К2С3[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(К2С3)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "К2С3",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-digit": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(_1Ставка[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(_1Ставка)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "1Ставка",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-name-case": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 10
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(СТАВКА_1[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(СТАВКА_1)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=SUM(Ставка)",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "СТАВКА",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  }
+ }
+}
