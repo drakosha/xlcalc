@@ -96,4 +96,4 @@ What Excel for Windows does otherwise than Excel for Mac, by reason, and which o
 - Trigonometry at its poles and complex functions of large arguments from the 13th digit on (`TAN(PI()/2)`), `WEEKNUM` with return type 22, `WEIBULL` with a scale of 1E-300. The engine follows the Mac.
 - Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels. The engine lays cells out as the Mac does.
 
-Both Excels agree and the engine does not in 57 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
+Both Excels agree and the engine does not in 38 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.

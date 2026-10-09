@@ -148,7 +148,8 @@ function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
 export const functions: Record<string, FnDef> = {
   FILTER: { args: 'G R p?', cx: true, array: true, fn: filter },
   SORT: { args: 'G G? G? b?', array: true, cx: true, fn: sort },
-  // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4)
-  SORTBY: { args: 'G G G?', rep: 2, max: NEWER_MAX_ARGS, array: true, cx: true, fn: sortby },
+  // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4); an order of
+  // several values lifts the call, each element the first value of its sort (the areas and fuzz sets)
+  SORTBY: { args: 'G G G?', rep: 2, max: NEWER_MAX_ARGS, array: true, cx: true, lifts: { from: 2, even: true }, fn: sortby },
   UNIQUE: { args: 'G b? b?', array: true, fn: unique },
 }

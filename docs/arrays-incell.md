@@ -45,6 +45,7 @@ Every whitelisted function's typical call was run with a two-cell range and a tw
 - `VLOOKUP` and `HLOOKUP` take an array or range of column numbers as a whole: the answer has the found row's value at each number, shaped like the numbers, and the first invalid number decides for all (`#VALUE!` below 1, `#REF!` past the table). When the call is lifted by an array of keys, each call reads only the top-left number. `MATCH` reads the top-left cell of a range as its match type.
 - `INDEX`, `TAKE`, `DROP`, `XLOOKUP` (`if_not_found` too), `CHOOSE`, `IF`, `IFS` and `SWITCH` return references when given references, one cell too: `SUMIF(INDEX(A1:C9,0,1),">2")` works, `COUNTA(TAKE(A1:A8,2))` and `COUNTA(IF(TRUE,A1))` skip blank cells, `COLUMN(CHOOSE(1,C1))` is 3. `IFERROR`, `IFNA`, FILTER's `if_empty` and unary `+` return values. Other functions with an array answer return arrays.
 - `HSTACK` and `VSTACK` return the first error passed as a value, but stack references and arrays with the errors inside them.
+- `SORTBY`'s sort orders are read as grids (a union there is `#VALUE!`, a reference across sheets `#REF!`) but lift the call as one-value arguments do (`FnDef.lifts`): the answer has the orders' size, each element the top-left value of its sort or the error that sort answers (`SORTBY(A1:A6,B1:B6,{1;-1})` is two values).
 
 ## Array constants
 
