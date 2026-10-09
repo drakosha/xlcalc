@@ -122,7 +122,8 @@ function Table($wb, [string]$line) {
     'cut' { [void]$ws.Range($p[2]).Cut((Rg $wb $p[3] $p[4])) }
     'renamesheet' { $ws.Name = $p[2] }
     'delsheet' { [void]$ws.Delete() }
-    'name' { if ($ws) { [void]$ws.Names.Add($p[2], $p[3]) } else { [void]$wb.Names.Add($p[2], $p[3]) } }
+    # Names.Add reads its formula in the user's language (=0.2 is an error in ru-RU), RefersTo in English
+    'name' { $n = if ($ws) { $ws.Names.Add($p[2], '=0') } else { $wb.Names.Add($p[2], '=0') }; $n.RefersTo = $p[3] }
     default { throw "unknown table step $($p[0])" }
   }
 }

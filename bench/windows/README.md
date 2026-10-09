@@ -61,6 +61,7 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 - A job that runs past its time (Excel waits on a window nobody sees) is stopped with Excel; the books done keep their answers and the rest run again. Excel that is still exiting from the previous job is waited for: a new one fails to start meanwhile.
 - Excel started over SSH runs in session 0. It opens no file ("cannot access the file") unless the system profile has a desktop folder, `C:\Windows\System32\config\systemprofile\Desktop` and its `SysWOW64` twin; `host.ps1 -do clean` makes sure of them, stops Excel processes left in session 0 and removes the jobs' files. An interactive user's Excel is left alone.
 - A number is typed into a table through `Formula` (its text with a decimal point): `Value2` with a number into a table's header failed now and then with an invalid cast.
+- A defined name is added with `Names.Add` and the formula `=0`, then given its formula through `RefersTo`: `Names.Add` reads its formula in the user's language (`=0.2` is an error in ru-RU), `RefersTo` in English.
 
 ## What is not run here
 
