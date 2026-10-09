@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.3 (2026-10-09)
+
+Internal release; not published to npm. Excel for Windows answers in en-US and ru-RU, and Excel for Windows as the reference where the locale shows or orders text differently from Excel for Mac.
 
 Changed:
 

@@ -1,6 +1,6 @@
 {
   "name": "xlcalc",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Excel-style formula engine for workbooks: compiles a book's formulas to JavaScript, recalculates incrementally, hashes values deterministically, and checks its function whitelist against Excel semantics",
   "keywords": [
     "formula",
