@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.4 (2026-10-09)
+
+Internal release; not published to npm. The rules of names measured in Excel.
+
+Changed:
+
+- A defined name in a formula's text is written as the name is defined, as Excel shows it: `ставка*2` is `Ставка*2` in `result()` and changes, with a name `Ставка` (contract: the doc of `CellResult.formula`).
+- A name may hold `?` and `\` after its first character, as Excel takes them (`Став?ка`, `Rate?`, `Став\ка`; not `?Ставка`), defined names and tables alike. `?` can no longer be a separator of a locale.
+- In a ru-RU book `ИСТИНА` and `ЛОЖЬ` are no names, in any case: Excel ru-RU does not open a file with such a name. The name is left out with an issue, and `writeXlsx` does not write it for a ru-RU book. In en-US they are names, as there.
+- `toLocal` in ru-RU writes a name `ИСТИНА` or `ЛОЖЬ` of an en-US book in quotes (`'ИСТИНА'+1`), as Excel ru-RU shows it, and `toInvariant` reads it back as the name.
+- Contract: the docs of `NameInput.name` and `validateName` give these rules; `validateName` checks those of en-US.
+
+Added:
+
+- Six case sets of names and table names in en-US and ru-RU (`tables/names-held`, `names-more-held`, `names-tables-held` and their ru-RU sets), measured in Excel for Mac 16.113 and Windows 16.0.20430, the engine's answers committed before: 34 (Mac) and 35 (Windows) of 54 predictions held. The harness defines names through Excel's object model, so a name Excel refuses is an answer of the script rather than a window to close.
+- Known differences: a table renamed to a name Excel does not take is renamed by Excel's object model (`_1Ставка`, `СТАВКА_1`) and refused here; `TRUE` and `FALSE` as names in ru-RU, which Excel ru-RU takes and stored formulas read as booleans; tables named `ИСТИНА`, `ложь` or `TRUE` in ru-RU, where Excel for Mac and Windows part (the engine refuses them, as Windows refuses names).
+
 ## 0.6.3 (2026-10-09)
 
 Internal release; not published to npm. Three known differences from Excel in lookups closed, measured in Excel for Mac and Windows.
