@@ -102,6 +102,7 @@ function* evaluate(state: EngineState, ids: number[], t?: Tracker, iterating = f
     const was = state.ctx.sheets[f.s].cols[f.c]?.[f.r] ?? null
     moved ||= typeof v === 'number' && typeof was === 'number' ? Math.abs(v - was) >= delta : (typeof v === 'number') !== (typeof was === 'number')
     write(state, f.s, f.r, f.c, v, t)
+    state.ctx.cache.fit()
   }
   if (clocked) markVolatile(state)
   return moved

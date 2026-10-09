@@ -59,3 +59,36 @@ The synthetic business book did not show a consistent speed improvement from sha
 Separate fresh-process measurements of the 5,000-prefix book retained about 102 MiB before and 7.2 MiB after, measured as heap growth after GC while the session was open, median of five runs. The new implementation opened 34,000 prefix formulas in 194 ms and edited the middle input in 62 ms, retaining about 53 MiB. The old implementation was not run at that size because its separate prefix arrays contain roughly 578 million values.
 
 After sharing `AreaIndex` between the graph and caches, five alternating pairs against `9e6dd70` gave 36.8/35.3 ms for opening 5,000 prefix formulas and 9.6/9.4 ms for the middle edit. Synthetic full compute was 212/210 ms at 3,400 rows and 1,525/1,530 ms at 34,000 rows; edit-A p95 at 34,000 rows was 3.56/3.57 ms. These measurements show no material change in those workloads. A separate comparison against the same frozen build matched 856 complete results and both hashes across both execution modes and locales, including edits, structure operations, spills, numerical edge cases and aggregate function families.
+
+## Cache budget
+
+What the range caches hold is bounded, so a book whose formulas read many large ranges no longer fills the heap with copies of them. Running means, counts and searches down a column (`AVERAGE($A$1:A<row>)`, `COUNTA`, `COUNTIF($A$1:A<row>,">0")`, `MATCH(<row>,$A$1:A<row>,0)`) held an array for every prefix: over 10,000 rows they ran a pool thread of 384 MB out of memory or took its process down, and over 34,000 rows a synchronous session took a Node process of 4 GiB down. They now open and edit in both.
+
+A range's values are kept from its second read on, counted since the range last changed; the first read leaves only a mark. A running mean reads each prefix once, so it fills no cache. The criteria indexes of SUMIFS, COUNTIFS and their kin are kept the same way. A range that one formula reads twice (`AVERAGE(x)+COUNTA(x)`), or that several formulas read, is kept as before.
+
+The kept values and indexes count against one budget in bytes, shared by the books of one heap: the sessions and computations of a pool's thread, or those of the main thread. A range's values count 8 bytes each, a criteria index 16 bytes a position and 80 a distinct value, and each entry or mark 256 bytes more. On Node these estimates came within 13 % of the heap the caches retained, with numbers, text and mixed values. Between two formulas, when the caches hold more than the budget, the entries read least recently are dropped until three quarters of the budget remain. The entries the last formula read stay, so a range larger than the budget that every formula reads is not made again for each. A formula's ranges are not dropped while it computes, so each keeps one shape during it. A dropped range is read again when a formula needs it, so the budget changes times, never values or hashes.
+
+In a pool with `maxHeapMb` the budget is a quarter of a thread's heap: 96 MiB for 384 MB. Elsewhere it is 512 MiB per heap, since the engine reads no heap size from its platform. With it a synchronous session of `AVERAGE($A$1:A<row>)+COUNTA($A$1:A<row>)` over 34,000 rows, whose ranges would hold about 4.6 GB, opens in a Node heap of 1 GiB.
+
+`test/cache-budget.test.ts` checks the order of dropping, the second-read rule, and sessions under a budget of 32 KiB, alone and two sharing it, against full computations through edits, sheet growth and a structure operation, with closures and eval. `test/async-pool.test.ts` opens and edits the running books above in a pool of 384 MB. A random session test with edits, structure operations and spills compared 1,600 hashes with full computations, under the default budget and under one that drops everything after each formula.
+
+One thread of 384 MB, 20 edits spread over column A, hash equal to the synchronous computation's. Before, none of these books opened there at 10,000 rows: the thread ran out of memory, and with `COUNTIF($A$1:A<row>,">0")` the whole process went down.
+
+| Running formula | Rows | Open | Edit p50 | Edit max |
+|---|---:|---:|---:|---:|
+| `AVERAGE($A$1:A<row>)` | 10,000 | 0.56 s | 0.34 s | 0.45 s |
+| `COUNTA($A$1:A<row>)` | 10,000 | 0.24 s | 0.09 s | 0.13 s |
+| `COUNTIF($A$1:A<row>,">0")` | 10,000 | 0.58 s | 0.36 s | 0.47 s |
+| `COUNTIF($A$1:A<row>,1)` | 10,000 | 1.7 s | 1.3 s | 1.6 s |
+| `AVERAGE(...)+COUNTA(...)` | 10,000 | 0.84 s | 0.52 s | 0.80 s |
+| `AVERAGE($A$1:A<row>)` | 34,000 | 6.1 s | 5.2 s | 6.1 s |
+| `COUNTA($A$1:A<row>)` | 34,000 | 1.8 s | 1.4 s | 1.7 s |
+| `COUNTIF($A$1:A<row>,">0")` | 34,000 | 6.4 s | 5.1 s | 6.2 s |
+| `COUNTIF($A$1:A<row>,1)` | 34,000 | 18.7 s | 15.2 s | 18.7 s |
+| `AVERAGE(...)+COUNTA(...)` | 34,000 | 9.3 s | 7.4 s | 9.0 s |
+
+Twelve sessions of `AVERAGE(...)+COUNTA(...)` over 5,000 rows, six on each of two threads of 384 MB, opened in 1.5 s and took an edit each in 1.1 s with the synchronous hashes; before, a thread ran out of memory. These books stay quadratic in time: each formula reads its whole prefix. Keeping every range from its first read, under the same budget, was slower on the running mean over 10,000 rows in the pool (open 0.64 to 0.67 s against 0.56 to 0.58 s, edit p50 0.44 against 0.34 to 0.39 s), and a synchronous session would keep about 400 MB of prefixes where it now keeps none.
+
+Ordinary books are not affected: the synthetic book of 34,000 rows keeps 3.6 MiB by the estimate. Two rounds of alternating pairs with the engine without the budget at a load average of 3 to 5, cold full computation, median of five: 185/196 and 184/185 ms with closures, 194/197 and 183/183 ms with eval at 3,400 rows; 1,599/1,581 and 1,589/1,610 ms with closures, 1,591/1,659 and 1,600/1,601 ms with eval at 34,000 rows; hashes `101578a9c6b600b1` and `e64d5f4d0f0ac632` unchanged. A session of the synthetic book of 34,000 rows under the limits of a 384 MB pool opened in 644/674 and 654/662 ms, retained 52/52 MiB and edited at p95 in 3.47/3.62 and 3.56/3.57 ms; 5,000 running sums opened in 39/40 and 40/41 ms with 8.1/8.2 MiB retained.
+
+Lookup indexes over cached arrays (`src/functions/lookup/exact.ts`) are not counted; they go with their array. The ranges one formula reads are counted only between formulas, so a single formula that reads more than the budget holds it while it computes.

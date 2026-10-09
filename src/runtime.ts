@@ -17,7 +17,7 @@ import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
-import type { RangeCache } from './range-cache.js'
+import type { CacheBudget, RangeCache } from './range-cache.js'
 import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
@@ -43,7 +43,9 @@ export interface RuntimeContext {
   rules: Rules
   /** External function values by the canonical text of the call. */
   externals: Record<string, CellValue>
-  /** Cache of large ranges (flat arrays) and criteria indexes; invalidated by edits. */
+  /** What `flat` and `index` hold together with other books' caches; trimmed between formulas. */
+  cache: CacheBudget
+  /** Cache of large ranges (flat arrays) and criteria indexes, from their second read; invalidated by edits. */
   flat: RangeCache<V[]>
   /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
   nested: Map<number, Set<number>>
@@ -56,6 +58,12 @@ export interface RuntimeContext {
 }
 
 export const BIG_RANGE = 256
+
+// the bytes a cache budget counts, as measured on Node (`docs/cache.md`): a value's slot in a range's array; a
+// position in a criteria index, and a distinct value's key with its list
+const VALUE_BYTES = 8
+const POSITION_BYTES = 16
+const KEY_BYTES = 80
 
 /** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {
@@ -89,7 +97,7 @@ export function makeRuntime(ctx: RuntimeContext) {
 
   const cell = (s: number, r: number, c: number): V => sheets[s].cols[c]?.[r] ?? fillAt(sheets[s].fills, r, c)
 
-  /** Range values row by row; large ones are cached until an edit touches them. */
+  /** Range values row by row; large ones read again are cached until an edit touches them or the budget drops them. */
   const flat = (g: Rng): V[] => {
     const hit = ctx.flat.get(g.key)
     if (hit) return hit
@@ -103,9 +111,9 @@ export function makeRuntime(ctx: RuntimeContext) {
       for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.[b.r1 + r] ?? null
     }
     if (sh.fills.length) fillFlat(sh.fills, b, out)
-    if (out.length >= BIG_RANGE) {
+    if (out.length >= BIG_RANGE && ctx.flat.admits(g.key)) {
       shapes.set(out, b)
-      ctx.flat.set(g.key, out)
+      ctx.flat.set(g.key, out, out.length * VALUE_BYTES)
     }
     return out
   }
@@ -211,11 +219,15 @@ export function makeRuntime(ctx: RuntimeContext) {
   // ---------- criteria ----------
 
   // an index that read the clock's year (text dates without one) is built again by each formula, so each reads it
-  const indexOf = (g: Rng): CritIndex => {
+  const indexOf = (g: Rng, values: readonly V[]): CritIndex => {
     const hit = ctx.index.get(g.key)
     if (hit) return hit
-    const [ix, clocked] = readsClock(rules.clock, () => buildIndex(flat(g), rules))
-    if (!clocked) ctx.index.set(g.key, ix)
+    const [ix, clocked] = readsClock(rules.clock, () => buildIndex(values, rules))
+    if (!clocked && ctx.index.admits(g.key)) {
+      let positions = 0
+      for (const list of ix.values()) positions += list.length
+      ctx.index.set(g.key, ix, positions * POSITION_BYTES + ix.size * KEY_BYTES)
+    }
     return ix
   }
 
@@ -247,7 +259,7 @@ export function makeRuntime(ctx: RuntimeContext) {
       blank &&= matches(null, c, rules)
       h = Math.max(h, bounds(rg).h)
       const f = aligned(rg, w)
-      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg) : () => buildIndex(f, rules) })
+      cols.push({ flat: f, crit: c, index: bounds(rg).w === w ? () => indexOf(rg, f) : () => buildIndex(f, rules) })
     }
     const n = h * w
     return { sel: select(cols, n, rules), rest: blank ? rows * w - n : 0, read: (g) => aligned(g, w) }
