@@ -11,14 +11,14 @@ import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders }
 import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
-import { enUS } from './en-US.js'
-import type { RegionalData, RulesClock } from './rules/data.js'
+import { EN_US } from '../locales/en-US.js'
+import { LOCALE_FILES } from './registry.js'
+import type { CodePage, RegionalData, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
-import { RU_RU } from './rules/ru-RU.js'
 import type { Locale } from './types.js'
 
-/** The data of the locales other than en-US, by tag (one line per locale of `LOCALES`). */
-export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([['ru-RU', RU_RU]])
+/** The rules of computation of the locales whose file has them (all but en-US), by tag. */
+export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([...LOCALE_FILES].flatMap(([tag, f]) => (f.regional ? [[tag, f.regional] as const] : [])))
 
 export interface Rules extends CritRules {
   /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
@@ -52,16 +52,19 @@ export interface Rules extends CritRules {
   compareOp(a: V, b: V): number
   /** An error as text (VALUETOTEXT, ARRAYTOTEXT). */
   errorText(code: ErrorCode): string
-  /** CHAR's and CODE's characters of codes 128–255: the locale's Windows code page. */
-  readonly codePage: string
+  /** CHAR's and CODE's code page: the locale's Windows one. */
+  readonly codePage: CodePage
 }
 
 /** en-US's code page of CHAR and CODE: Windows-1252, an undefined byte the C1 control of its value (`test/codepage.test.ts`). */
-const WINDOWS_1252 = String.fromCharCode(
-  0x20ac, 0x0081, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 0x2030, 0x0160, 0x2039, 0x0152, 0x008d, 0x017d, 0x008f,
-  0x0090, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161, 0x203a, 0x0153, 0x009d, 0x017e, 0x0178,
-  ...Array.from({ length: 96 }, (_, i) => 0xa0 + i),
-)
+const WINDOWS_1252: CodePage = {
+  name: 'windows-1252',
+  chars: String.fromCharCode(
+    0x20ac, 0x0081, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 0x2030, 0x0160, 0x2039, 0x0152, 0x008d, 0x017d, 0x008f,
+    0x0090, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161, 0x203a, 0x0153, 0x009d, 0x017e, 0x0178,
+    ...Array.from({ length: 96 }, (_, i) => 0xa0 + i),
+  ),
+}
 
 /** The month and day names of a locale code (`[$-409]`): en-US's, or a regional locale's. */
 const namesOf = (lcid: string): Names | undefined => (lcid === '409' ? EN_NAMES : [...REGIONAL.values()].find((d) => d.lcid === lcid))
@@ -91,11 +94,11 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
   return {
     epoch,
     ...EN_CRIT,
-    ...coercions(number, enUS.booleans, generalText),
+    ...coercions(number, EN_US.text.booleans, generalText),
     clock,
     critNumber: argument,
     cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
-    locale: enUS,
+    locale: EN_US.text,
     decimal: '.',
     group: ',',
     currency: { symbol: '$', before: true, space: '', negative: '()' },
@@ -127,6 +130,6 @@ export function displayRules(tag: string | undefined, epoch = 0): Rules {
  * `epoch` of the 1900 one, reading `clock` for dates without a year.
  */
 export function rulesOf(tag: string | undefined, clock: RulesClock, epoch = 0): Rules {
-  const data = tag === undefined ? undefined : REGIONAL.get(tag)
-  return data ? regionalRules(data, clock, namesOf, epoch) : englishRules(clock, epoch)
+  const file = tag === undefined ? undefined : LOCALE_FILES.get(tag)
+  return file?.regional ? regionalRules(file.text, file.regional, clock, namesOf, epoch) : englishRules(clock, epoch)
 }

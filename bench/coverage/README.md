@@ -14,7 +14,7 @@ Excel's answers are stored, so the tests run without Excel. Everything the tests
 - `tables/<set>.json`, `tables/ru-RU/<set>.json`: the books with tables of `tables/<set>.ts`, the steps Excel took on them and what it showed after: values, formulas (in Russian too for a ru-RU set) and tables. Test: `test/tables-excel.test.ts`.
 - `workbook/<set>.json`: the books of `workbook/<set>.ts`, whose files hold what the cells alone do not (hidden rows and columns, filters, the 1904 date system, iterative calculation, stored values), and what Excel showed at each step. Test: `test/workbook-excel.test.ts`.
 - `display/<set>.json`, `display/ru-RU/<set>.json`: what cells show, from `display/<set>.ts`. Test: `test/display-excel.test.ts`.
-- `locale/ru-RU.json`: Excel's ru-RU formula text and international settings, written by `bench/locale/snapshot.ts`; `bench/locale/generate.ts` writes `src/locale/ru-RU.ts` from it. Test: `test/locale-excel.test.ts`.
+- `locale/ru-RU.json`: Excel's ru-RU formula text and international settings, written by `bench/locale/snapshot.ts`; `bench/locale/generate.ts ru-RU` writes the formula text of `src/locales/ru-RU.ts` from it. Test: `test/locale-excel.test.ts`.
 - `xlsx/`: the files Excel saved for the xlsx subpath, in `roundtrip/`, `saved/`, `intersect/` and `filters/`, with `roundtrip.json`, `saved.json`, `intersect.json` and `filters.json` recording what was sent (a hash per book); `colors.json` and `formats.json` hold the fill colours and the built-in number formats Excel shows. Test: `test/xlsx-excel.test.ts`.
 - `win/`: Excel for Windows's answers to the same books, in the same layout, written by `bench/windows` (its README). Tests: `test/excel-win.test.ts` and the other `*-win.test.ts`.
 

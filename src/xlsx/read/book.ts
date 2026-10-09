@@ -4,10 +4,11 @@
  * strings, styles, the theme and the cell metadata of dynamic arrays come from the workbook's relationships.
  * Everything the book cannot hold is reported in `issues`, nothing is dropped silently.
  */
+import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
 import { checkBook, InputError } from '../../input.js'
-import { LOCALES } from '../../locale/registry.js'
+import { LOCALE_FILES } from '../../locale/registry.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
@@ -39,7 +40,7 @@ async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<st
   const p = xml && elements(xml, 'property').find((e) => decodeXml(attributes(e.attrs).name ?? '') === LOCALE_PROPERTY)
   if (!p) return undefined
   const tag = readText(element(p.body ?? '', 'lpwstr')?.body ?? '')
-  if (LOCALES.has(tag)) return tag
+  if (LOCALE_FILES.has(tag)) return tag
   issues.add('locale', `the locale ${JSON.stringify(tag)} is not one of the package's, left out`)
   return undefined
 }
@@ -158,7 +159,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   for (const sh of sheets) {
     if (!sh.tables) continue
     sh.tables = sh.tables.filter((t) => {
-      const k = t.name.toLocaleUpperCase('ru-RU')
+      const k = caseKey(t.name)
       if (!taken.has(k)) return taken.add(k)
       issues.add('table', `the table ${t.name} is left out: its name is another table's or a defined name`, { sheet: sh.name })
       return false

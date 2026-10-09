@@ -1,4 +1,5 @@
 /** Traversal of an AST and its text: canonical, or with another engine's literals. */
+import { caseKey } from '../collate.js'
 import { ERROR_TEXT, type Ast } from './ast.js'
 import { specText } from './table.js'
 
@@ -76,7 +77,7 @@ export function mapAst(ast: Ast, f: (n: Ast) => Ast | undefined): Ast {
 }
 
 /** Sheet names compare case-insensitively, as in Excel. */
-export const sheetKey = (s: string) => s.toLocaleUpperCase('ru-RU')
+export const sheetKey = caseKey
 
 export const quoteSheet = (s: string) => `'${s.replaceAll("'", "''")}'`
 

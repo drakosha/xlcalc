@@ -1,6 +1,6 @@
 /**
- * The rules of computation of a locale other than en-US, built from its data (`RegionalData`, ru-RU's in
- * `ru-RU.ts`) and the book's clock: the same coercions as en-US with the locale's number and date text, words,
+ * The rules of computation of a locale other than en-US, built from its formula text and data (`RegionalData`, in its
+ * locale file) and the book's clock: the same coercions as en-US with the locale's number and date text, words,
  * error texts, separators, currency, TEXT codes, text order and code page.
  */
 import type { ErrorCode } from '../../contract.js'
@@ -11,14 +11,15 @@ import { displayWith, formatWith, generalText, styleIn, type Names } from '../..
 import { ERROR_TEXT } from '../../syntax.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
+import type { Locale } from '../types.js'
 import type { RegionalData, RulesClock } from './data.js'
-import { dmyDates } from './dates.js'
+import { regionalDates } from './dates.js'
 import { formatDialects } from './format.js'
 import { numberReader } from './numbers.js'
 
-export function regionalRules(data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined, epoch = 0): Rules {
-  const { locale, decimal, group, currency } = data
-  const dates = inSystem({ date: dmyDates(data, clock), decimal }, epoch)
+export function regionalRules(locale: Locale, data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined, epoch = 0): Rules {
+  const { decimal, group, currency } = data
+  const dates = inSystem({ date: regionalDates(data, clock), decimal }, epoch)
   const { value: valueText, argument } = textReaders(numberReader(data), dates)
   const numberText = (n: number) => generalText(n).replace('.', decimal)
   const { toNum, toText, toBool } = coercions(argument, locale.booleans, numberText)
@@ -28,7 +29,7 @@ export function regionalRules(data: RegionalData, clock: RulesClock, names: (lci
   }
   const compareText = textOrder(data.collation)
   const compare = compareWith(compareText)
-  const formats = formatDialects(data, argument, names)
+  const formats = formatDialects(locale, data, argument, names)
   const [text, cell] = [{ ...formats.text, style: styleIn(formats.text.style, epoch) }, styleIn(formats.cell, epoch)]
   return {
     epoch,

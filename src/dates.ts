@@ -142,7 +142,7 @@ const isDay = (mo: number, d: number) => mo >= 1 && mo <= 12 && d >= 1 && d <= d
  * current year, `year()`, else a year (two digits 1930–2029, or four) on the 1st, so `2/29` is February 2029 in a
  * year that is not leap and `1/32` January 1932; three digits are neither. A day without `year` is no date.
  */
-function monthAnd(mo: number, n: string, year?: () => number): number | null {
+export function monthAnd(mo: number, n: string, year?: () => number): number | null {
   if (mo < 1 || mo > 12 || n.length === 3) return null
   const day = n.length <= 2 && isDay(mo, Number(n))
   if (day && !year) return null

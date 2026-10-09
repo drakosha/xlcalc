@@ -2,23 +2,28 @@
  * Widths of shown text as Excel for Mac lays out Calibri 11, the default font of a book: in points of a column, a
  * digit is 6. Measured by fills (`test/excel/display/widths.json`): a column of xlsx width `w` is
  * `trunc(6w + 21·6/256)` points wide, the padding takes 5, and text fits when the sum of its characters' widths
- * is at most the rest. Characters not in the table count as a digit (a known difference for other scripts).
+ * is at most the rest. The letters of a locale's script are in its file (`glyphWidths`) and count in books of every
+ * locale, as text of any script may stand in any book. Characters not in the table count as a digit (a known
+ * difference for other scripts).
  */
+import { LOCALE_FILES } from '../locale/registry.js'
 
-/** Widths in points, by characters of equal width. */
+/** Widths in points, by characters of equal width: Latin letters, digits and signs. */
 const WIDTHS: [number, string][] = [
   [2, " '"],
   [3, '.,-():{}fijlI'],
-  [4, '/!rstzJгт'],
-  [5, '+#^~<>=?_acegkvxyEFLSTYZавеёзксучхьэяГЕЁЗТ'],
-  [6, '0123456789$₽€£¥bdhnopquABCKPRVXбдийлнпрцъАБВКРСУХЧЬЭЯ'],
-  [7, 'DGHNOQUмфыДИЙЛНОПЦЪ'],
-  [8, '%&wжшщюФЫ'],
-  [9, 'mMЖМ'],
-  [10, 'WШЩЮ'],
+  [4, '/!rstzJ'],
+  [5, '+#^~<>=?_acegkvxyEFLSTYZ'],
+  [6, '0123456789$€£¥bdhnopquABCKPRVX'],
+  [7, 'DGHNOQU'],
+  [8, '%&w'],
+  [9, 'mM'],
+  [10, 'W'],
 ]
 
-const GLYPH = new Map<string, number>(WIDTHS.flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
+const GLYPH = new Map<string, number>(
+  [WIDTHS, ...[...LOCALE_FILES.values()].map((f) => f.glyphWidths ?? [])].flat().flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])),
+)
 
 /** The width of a digit, which a character not in the table takes too. */
 export const DIGIT = 6
