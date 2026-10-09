@@ -57,7 +57,7 @@ const BIG = 'Edge!A2:A10001', STEP = 'Edge!B2:B10001'
 const CASES: [string, string, Val][] = [
   // the data as Excel read them: 1E12 + 82/8192, the extremes, the digits past the 15th
   ['data', '(Edge!A3-1E12)*8192', n(82)],
-  ['data', 'Edge!G2/1E308', n(1)],
+  ['data', 'Edge!G2/1E+307', n(10)],
   ['data', 'Edge!D2/1E-200', n(1)],
   ['data', '(Edge!N2-1.21826130419759E-10)*1E25', n(2.06795153138257)],
   ['data', '(Edge!O3-1.93037870810954E-10)*1E25', n(2.84343335565103)],
