@@ -8,7 +8,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { cellsOf } from '../bench/coverage/case-book.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { TableAnswer, TableCase, TableShape } from '../bench/coverage/tables/cases.js'
-import { enUS, InputError, openSession, ruRU, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
+import { compute, enUS, InputError, openSession, ruRU, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
@@ -110,7 +110,8 @@ export function storedText(book: BookInput, sheet: string, addr: string, shown: 
 /** What differs between the engine's answer and Excel's, as lines (empty when they agree). */
 export function differences(c: TableCase, x: TableAnswer): string[] {
   const out: string[] = []
-  if (x.rejected) return ['Excel did not load the book']
+  // Excel did not load the book over a name it does not take: the engine agrees when it leaves a name of the book out
+  if (x.rejected) return compute(c.book, { display: false }).nameIssues.length ? [] : ['Excel did not load the book']
   const got = engineAnswer(c)
   // Excel refuses some steps without an error (rows deleted from two tables): the book stays as it was, which the
   // values, formulas and tables below check; every step it answered with an error the engine refuses too
