@@ -60,8 +60,8 @@ function lineAt(idx: Arr, bad: (i: number) => CErr | undefined, cell: (i: number
   return arr(idx.rows, idx.cols, out)
 }
 
-const row = (g: Grid): Line => ({ at: (j) => gridAt(g, j), n: g.cols, filled: g.w })
-const column = (g: Grid): Line => ({ at: (j) => gridAt(g, j * g.cols), n: g.rows, filled: g.h })
+const row = (g: Grid): Line => ({ at: (j) => gridAt(g, j), n: g.cols, filled: g.w, values: g.v, stride: 1 })
+const column = (g: Grid): Line => ({ at: (j) => gridAt(g, j * g.cols), n: g.rows, filled: g.h, values: g.v, stride: g.w })
 
 /** A wide range is read along its first row, any other along its first column. */
 const along = (g: Grid): Line => (g.cols > g.rows ? row(g) : column(g))

@@ -17,6 +17,7 @@ import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
+import type { RangeCache } from './range-cache.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
@@ -42,12 +43,12 @@ export interface RuntimeContext {
   /** External function values by the canonical text of the call. */
   externals: Record<string, CellValue>
   /** Cache of large ranges (flat arrays) and criteria indexes; invalidated by edits. */
-  flat: Map<string, V[]>
+  flat: RangeCache<V[]>
   /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
   nested: Map<number, Set<number>>
   /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
   hidden: Map<number, HiddenRows>
-  index: Map<string, CritIndex>
+  index: RangeCache<CritIndex>
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
 }

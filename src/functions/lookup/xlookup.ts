@@ -1,9 +1,8 @@
 /** XLOOKUP and XMATCH, this engine's own. */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
-import { wildRe } from '../../criteria.js'
 import { E, isErr, Rng, sameType, type V } from '../../values.js'
-import type { Compare } from './search.js'
+import { exactMatch, type Compare, type Key } from './search.js'
 
 const MATCH_MODES = [0, -1, 1, 2]
 const SEARCH_MODES = [1, -1, 2, -2]
@@ -21,9 +20,10 @@ function blank(look: Grid, searchMode: number): number {
 }
 
 /** Match modes 0, −1, 1, 2 (wildcards, `~` escaping any character); search modes ±1, ±2 (binary search runs linearly: the same answer on sorted data). */
-function xfind(k: V, look: Grid, matchMode: number, searchMode: number, compare: Compare): number {
+function xfind(k: Key | null, look: Grid, matchMode: number, searchMode: number, compare: Compare): number {
   if (k === null) return blank(look, searchMode)
-  const wild = matchMode === 2 && typeof k === 'string' ? wildRe(k, true) : null
+  if (matchMode === 0 || matchMode === 2)
+    return exactMatch({ at: (i) => look.v[i], n: look.rows * look.cols, filled: look.v.length, values: look.v, stride: 1 }, k, matchMode === 2, compare, searchMode < 0)
   const n = look.v.length
   let pos = -1
   let best: V = null
@@ -31,7 +31,7 @@ function xfind(k: V, look: Grid, matchMode: number, searchMode: number, compare:
     const i = searchMode > 0 ? j : n - 1 - j
     const v = look.v[i]
     if (v === null || isErr(v) || !sameType(v, k)) continue
-    if (wild ? wild.test(v as string) : compare(v, k) === 0) {
+    if (compare(v, k) === 0) {
       pos = i
       break
     }
