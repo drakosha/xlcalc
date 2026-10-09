@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.5 (2026-10-09)
+
+Internal release; not published to npm. Sums of one range in a thread pool, and how to add a locale.
+
+Fixed:
+
+- `SUM`, `COUNT`, `MIN` and `MAX` of one range read it cell by cell under a finite `limits.cells` too, as they do without limits. A pool with `maxHeapMb` always has such a limit, so there these sums made an array of every range and a session kept each one: a running total over 10,000 rows (`SUM($A$1:A<row>)`) ran a thread of 384 MB out of memory, and one over 5,000 rows held 103 MiB where it now holds 8. One range larger than `cells` under these functions is computed rather than refused; values and hashes are the same.
+
+Changed:
+
+- ru-RU's code page of `CHAR` and `CODE` and the word of new table columns' names (`Столбец`) are data of the locale, beside its other regional data. Nothing computes differently.
+
+Added:
+
+- `docs/locale.md` describes adding a locale: its two layers, where it is registered, where its data come from, how it is checked against Excel, and what still needs code (the order of dates, a currency before the amount, the widths of characters, the case of names, the harnesses).
+
 ## 0.6.4 (2026-10-09)
 
 Internal release; not published to npm. The rules of names measured in Excel.
