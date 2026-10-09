@@ -37,6 +37,28 @@ export interface CellInput {
    * without the rest (`Session.setCells`). Only with `formula`.
    */
   array?: string
+  /** A note on the cell (Excel's comment of the old kind). Like a style, it goes with the cell and takes no part in computation. */
+  note?: CellNote
+  /** A hyperlink on the cell; the cell shows its value. Like a style, it goes with the cell and takes no part in computation. */
+  link?: CellLink
+}
+
+/** A note: its author and its text, lines separated by `\n`. */
+export interface CellNote {
+  author?: string
+  text: string
+}
+
+/**
+ * A hyperlink, at least one of `url` and `location`. `url`: an address outside the book, as Excel's Address
+ * (`https://example.com/`, `mailto:a@example.com`, a file). `location`: a place in the book, as Excel's SubAddress
+ * (`'Sheet 2'!B12`, `Data!A1:C3`, a defined name), or with `url` a place in what it points to (the part after `#`).
+ */
+export interface CellLink {
+  url?: string
+  location?: string
+  /** The text Excel shows when the pointer rests on the cell (ScreenTip). */
+  tooltip?: string
 }
 
 /**
@@ -133,6 +155,18 @@ export interface SheetInput {
   filtered?: boolean
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or array area of several cells meets one. */
   tables?: TableInput[]
+  /**
+   * Frozen panes (Excel's Freeze Panes): the first `rows` rows and the first `columns` columns stay in view as the sheet
+   * scrolls, one of them at least (`{ rows: 1 }` freezes the top row). Not part of computation.
+   */
+  frozen?: FrozenPanes
+}
+
+export interface FrozenPanes {
+  /** 1 to 1,048,575. */
+  rows?: number
+  /** 1 to 16,383. */
+  columns?: number
 }
 
 /**
@@ -403,7 +437,7 @@ export interface ComputeResult {
   clock: Clock
   /** sha256 of the canonical text of the values (spilled cells too) together with the engine configuration version. */
   hash: string
-  /** sha256 of the input (sheets, cells, names, and styles, columns, rows and merged areas when there are any; order does not matter). */
+  /** sha256 of the input (sheets, cells, names, and styles, columns, rows, merged areas and frozen panes when there are any; order does not matter). */
   inputHash: string
   configVersion: string
   ms: number
@@ -457,9 +491,11 @@ export interface CellEdit extends CellRef {
  * cells it no longer lists are listed when their value changed. With `display`, a cell whose shown text or colour
  * changed is listed too (a new format, a column's width), with its value.
  */
-/** A cell of `Session.cells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`). */
+/** A cell of `Session.cells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`), `note` and `link`. */
 export interface CellView extends CellResult {
   style?: number
+  note?: CellNote
+  link?: CellLink
 }
 
 export interface CellChange extends CellRef, Partial<CellDisplay> {
@@ -622,6 +658,8 @@ export type LayoutEdit =
   | { sheet: string; merges: string[] }
   /** The sheet's filter mode (`SheetInput.filtered`). */
   | { sheet: string; filtered: boolean }
+  /** The sheet's frozen panes (`SheetInput.frozen`); null unfreezes them. */
+  | { sheet: string; frozen: FrozenPanes | null }
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
@@ -631,7 +669,7 @@ export interface Session {
   readonly clock: Clock
   /**
    * Applied atomically with one recomputation; returns the changed values. An edit that keeps the cell's
-   * value and formula (a new `style`, `format` or `meta`) recomputes nothing; with `display` a new format returns
+   * value and formula (a new `style`, `format`, `meta`, `note` or `link`) recomputes nothing; with `display` a new format returns
    * the cell when its shown text changed. A value or formula put into a spill range stops the array spilling
    * (#SPILL!); clearing it lets the array spill again. Edits that change some cells of an old-kind array formula's
    * area (`CellInput.array`) but not all of them throw `InputError` and change nothing, as Excel refuses to change
@@ -651,7 +689,7 @@ export interface Session {
   setStyles(styles: CellStyle[]): void
   /**
    * Column widths, row heights, row and column styles and formats, hidden rows and columns, merged areas, the filter
-   * mode; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
+   * mode, frozen panes; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
    * or removed area meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count:
    * their formulas over the rows concerned are recomputed. Nothing else is recomputed; the changed values are
    * returned. With `display`, the cells whose shown text or colour a width, a format or a merged area changed are
@@ -667,7 +705,7 @@ export interface Session {
   /**
    * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`) as `result()` gives
    * them, by address: the same cells (spilled ones too, empty ones left out) with the same fields, and each cell's own
-   * `style`. For a window over a sheet: it costs what the rectangle holds, not the book.
+   * `style`, `note` and `link`. For a window over a sheet: it costs what the rectangle holds, not the book.
    */
   cells(sheet: string, range: string): Record<string, CellView>
   result(): ComputeResult
