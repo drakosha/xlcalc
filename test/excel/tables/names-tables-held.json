@@ -1,0 +1,831 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 6.8
+ },
+ "cases": [
+  {
+   "id": "rename-question",
+   "about": "a table renamed with a question mark inside (Прод?ажи), then a reference to it typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "Прод?ажи"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "J3",
+      "value": {
+       "formula": "SUM(Прод?ажи[Price])"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "rename-backslash",
+   "about": "a table renamed with a backslash inside (Прод\\ажи), then a reference to it typed",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "Прод\\ажи"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "J3",
+      "value": {
+       "formula": "SUM(Прод\\ажи[Price])"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "rename-question-first",
+   "about": "a table renamed with a question mark first (?Продажи): no name, Excel makes one of it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       },
+       "J2": {
+        "formula": "ROWS(Sales)"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "op": {
+      "op": "renameTable",
+      "table": "Sales",
+      "name": "?Продажи"
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:K5"
+    }
+   ]
+  },
+  {
+   "id": "file-question",
+   "about": "a file holding a table named with a question mark inside, and a formula over it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "J1": {
+        "formula": "SUM(Прод?ажи[Qty])"
+       }
+      },
+      "tables": [
+       {
+        "name": "Прод?ажи",
+        "range": "A1:B3",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:J3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "rename-question": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 100
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Прод?ажи[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(Прод?ажи)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=SUM(Прод?ажи[Price])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Прод?ажи",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-backslash": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!J3": {
+     "t": "n",
+     "v": 100
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Прод\\ажи[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(Прод\\ажи)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!J3": "=SUM(Прод\\ажи[Price])",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Прод\\ажи",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "rename-question-first": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!C1": {
+     "t": "s",
+     "v": "Price"
+    },
+    "S!D1": {
+     "t": "s",
+     "v": "Total"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 10
+    },
+    "S!D2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 20
+    },
+    "S!D3": {
+     "t": "n",
+     "v": 60
+    },
+    "S!A4": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B4": {
+     "t": "n",
+     "v": 5
+    },
+    "S!C4": {
+     "t": "n",
+     "v": 30
+    },
+    "S!D4": {
+     "t": "n",
+     "v": 150
+    },
+    "S!A5": {
+     "t": "s",
+     "v": "East"
+    },
+    "S!B5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C5": {
+     "t": "n",
+     "v": 40
+    },
+    "S!D5": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(_?Продажи[Qty])",
+    "S!D2": "=[@Qty]*[@Price]",
+    "S!J2": "=ROWS(_?Продажи)",
+    "S!D3": "=[@Qty]*[@Price]",
+    "S!D4": "=[@Qty]*[@Price]",
+    "S!D5": "=[@Qty]*[@Price]"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "?Продажи",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ]
+  },
+  "file-question": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "Region"
+    },
+    "S!B1": {
+     "t": "s",
+     "v": "Qty"
+    },
+    "S!J1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A2": {
+     "t": "s",
+     "v": "North"
+    },
+    "S!B2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "s",
+     "v": "South"
+    },
+    "S!B3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Прод?ажи[Qty])"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Прод?ажи",
+     "range": "A1:B3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty"
+     ]
+    }
+   ]
+  }
+ }
+}
