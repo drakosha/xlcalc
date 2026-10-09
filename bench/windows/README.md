@@ -85,10 +85,10 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
 | cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,979, the others by the rules of `WIN_SHOWN` |
 | cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,569, the others by the rules of `WIN_SHOWN` |
-| tables, 8 sets and 4 | en-US, ru-RU | 120 and 25 | 115 and 22 | all but the 11 the Mac pins too |
+| tables, 9 sets and 5 | en-US, ru-RU | 133 and 38 | 128 and 34 | all but the 12 the Mac pins too, and `headers-ru-held:tiny` (a number typed as its text takes the format of typed exponents) |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
-| structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
+| structure operations, 18 sets | en-US | 317 | 235 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
