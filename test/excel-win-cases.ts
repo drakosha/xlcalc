@@ -11,6 +11,7 @@ import { localeDir, measurementFile, TAGS } from '../bench/coverage/locales.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../bench/coverage/probes.js'
 import type { BookInput } from '../src/contract.js'
 import { compute, FUNCTION_NAMES } from '../src/index.js'
+import { samePin } from '../bench/coverage/compare.js'
 import { CASES, CLOCK, excelBook, matches, REASONS, show, toVal } from './excel-cases.js'
 import { LOCALE_REASONS } from './excel-locale-cases.js'
 import { caseBook, loadSet } from './excel-sets.js'
@@ -63,13 +64,13 @@ export const winReasonText = (r: Reason): string =>
  */
 export const WIN_KNOWN: Readonly<Record<string, { reason: Reason; engine: Val }>> = WIN_KNOWN_CASES
 
-/** A case passes: it matches Excel for Windows, or it is in WIN_KNOWN, differs and gives exactly the pinned answer. */
+/** A case passes: it matches Excel for Windows, or it is in WIN_KNOWN, differs and gives the pinned answer (`samePin`). */
 export function winVerdict(key: string, fn: string | undefined, win: Val, engine: Val): { ok: boolean; why?: string } {
   const known = WIN_KNOWN[key]
   const same = matches(fn, win, engine)
   if (!known) return { ok: same }
   if (same) return { ok: false, why: 'matches Excel for Windows, remove it from WIN_KNOWN' }
-  return engine.t === known.engine.t && engine.v === known.engine.v ? { ok: true } : { ok: false, why: `WIN_KNOWN pins ${show(known.engine)}` }
+  return samePin(known.engine, engine) ? { ok: true } : { ok: false, why: `WIN_KNOWN pins ${show(known.engine)}` }
 }
 
 export interface WinOutcome {

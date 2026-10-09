@@ -8,6 +8,7 @@
  * each locale's known differences are pinned in `KNOWN_BY_LOCALE`, as `KNOWN` does for en-US.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { samePin } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { localeDir, measurementFile, TAGS } from '../bench/coverage/locales.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
@@ -56,13 +57,13 @@ export const LOCALE_SETS: ReadonlyMap<string, StoredSet[]> = new Map(
   }),
 )
 
-/** A case passes: it matches Excel in the locale, or it is a known difference there, differs from Excel and gives exactly the pinned answer. */
+/** A case passes: it matches Excel in the locale, or it is a known difference there, differs from Excel and gives the pinned answer (`samePin`). */
 export function localeVerdict(tag: string, key: string, fn: string | undefined, excel: Val, engine: Val): { ok: boolean; why?: string } {
   const known = KNOWN_BY_LOCALE[tag]?.[key]
   const same = matches(fn, excel, engine)
   if (!known) return { ok: same }
   if (same) return { ok: false, why: `matches Excel, remove it from the known differences of ${tag}` }
-  return engine.t === known.engine.t && engine.v === known.engine.v ? { ok: true } : { ok: false, why: `the known differences of ${tag} pin ${show(known.engine)}` }
+  return samePin(known.engine, engine) ? { ok: true } : { ok: false, why: `the known differences of ${tag} pin ${show(known.engine)}` }
 }
 
 const inLocale = (book: BookInput, tag: string): BookInput => ({ ...book, locale: tag })

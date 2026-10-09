@@ -7,7 +7,7 @@
  * exactly.
  */
 import { readFileSync } from 'node:fs'
-import { compare } from '../bench/coverage/compare.js'
+import { compare, samePin } from '../bench/coverage/compare.js'
 import { DATA_SHEET, dataCells, type Cell } from '../bench/coverage/data.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { BookInput, CellInput, CellValue } from '../src/contract.js'
@@ -234,13 +234,13 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat-edges-held:STEYX#3': { reason: 'momentRounding', engine: { t: 'n', v: 8.16496575965492e-9 } },
 }
 
-/** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives exactly the pinned answer. */
+/** A case passes: it matches Excel, or it is in KNOWN (or OPEN), differs from Excel and gives the pinned answer (`samePin`). */
 export function verdict(key: string, fn: string | undefined, excel: Val, engine: Val): { ok: boolean; why?: string } {
   const known = KNOWN[key] ?? OPEN[key]
   const same = matches(fn, excel, engine)
   if (!known) return { ok: same }
   if (same) return { ok: false, why: `matches Excel, remove it from ${key in KNOWN ? 'KNOWN' : 'OPEN'}` }
-  return engine.t === known.engine.t && engine.v === known.engine.v ? { ok: true } : { ok: false, why: `KNOWN pins ${show(known.engine)}` }
+  return samePin(known.engine, engine) ? { ok: true } : { ok: false, why: `KNOWN pins ${show(known.engine)}` }
 }
 
 /** The clock of every case book: the volatile functions' cases do not depend on it. */
