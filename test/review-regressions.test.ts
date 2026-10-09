@@ -44,7 +44,7 @@ it('a settled spill is not recomputed on an unrelated edit, but blockers and rel
   expect(state.spills.step).toBe(before)
   for (const input of [{ value: 9 }, null]) {
     run(applyEdits(state, [{ sheet: 'S', cell: 'A2', input }]))
-    const r = buildResult(state, clock, 0, false)
+    const r = run(buildResult(state, clock, 0, false))
     expect(r.sheets[0].cells.A1.value).toEqual(input ? { error: 'SPILL' } : 1)
     expect(r.hash).toBe(compute(state.input, { clock, display: false }).hash)
   }

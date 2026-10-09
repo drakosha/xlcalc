@@ -6,6 +6,7 @@
  * past it is `#REF!`, and a range over every row is not changed by rows inserted or deleted.
  */
 import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
@@ -79,7 +80,10 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const target = book.sheets.find((s) => sheetKey(s.name) === sheetKey(sheet))!
   const lines = axis === 'r' ? 'rows' : 'columns'
   if (n > 0) {
-    const off = Object.keys(target.cells).find((a) => pos(a) >= max - count)
+    const off = Object.keys(target.cells).find((a) => {
+      spend(1)
+      return pos(a) >= max - count
+    })
     if (off) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push ${target.name}!${off} off the sheet` }
   }
   const cut = shiftRefusal(target, axis, at, n)
@@ -92,7 +96,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     const moving = s === target
     const cells: Record<string, CellInput> = {}
     let changed = moving
-    for (const [addr, cell] of Object.entries(s.cells)) {
+    for (const addr of Object.keys(s.cells)) {
+      const cell = s.cells[addr]
       const next = rewriteCell(cell, s.name, s.name, t, names)
       changed ||= next !== cell
       if (!moving) cells[addr] = next

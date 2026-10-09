@@ -178,7 +178,11 @@ export interface TableColumn {
 export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' | 'min' | 'stdDev' | 'var' | 'custom'
 
 export interface NameInput {
-  /** Latin letters, digits, `_` and `.`; not a cell address, not R1C1, not TRUE/FALSE. */
+  /**
+   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`,
+   * at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE (`Ставка`,
+   * `НДС_2025` and `АБ12` are names). Compared in any case: `ставка` is the name `Ставка`.
+   */
   name: string
   /**
    * What the name refers to: a formula without `=`, as Excel's "Refers to" and xlsx `<definedName>` hold it. A
@@ -313,8 +317,13 @@ export interface DisplayOptions {
 export interface CalcLimits {
   /** Formulas in the book. */
   formulas?: number
-  /** Values of one range read whole, one array or one spill that a formula makes, checked before they are made. */
+  /** Values of one range read whole or one array that a formula makes, checked before they are made. */
   cells?: number
+  /**
+   * Values one spill may fill (its stored cells: the cells past a large array's last distinct value are not stored),
+   * checked before they are written; `cells` when not given.
+   */
+  spill?: number
 }
 
 export interface ComputeOptions {
@@ -723,7 +732,7 @@ export interface InlineCalcOptions {
   sliceMs?: number
   /** The soft deadline of every call that gives none. */
   timeoutMs?: number
-  /** The limits of every computation that gives none. */
+  /** The limits of every computation; a computation's own `limits` take their place field by field, the others stay. */
   limits?: CalcLimits
 }
 
@@ -750,8 +759,10 @@ export interface CalcPoolOptions {
   /** Sessions a thread holds; past it the session called least recently leaves the thread and comes back on its next call. */
   maxSessionsPerThread?: number
   /**
-   * The limits of every computation that gives none. With `maxHeapMb` and without `cells`, `cells` is
-   * `maxHeapMb · 2^20 / 32`: one array larger than a thread's heap stops the whole process, not the thread.
+   * The limits of every computation; a computation's own `limits` take their place field by field, the others stay. With `maxHeapMb`, `cells` is `maxHeapMb · 2^20 / 64` where not
+   * given, and `spill` the smaller of `cells` and `maxHeapMb · 2^20 / 1024` where not given: one allocation larger than
+   * what a thread's heap has left (a large array, the tables of a large spill's cells) stops the whole process, not the
+   * thread.
    */
   limits?: CalcLimits
   /** Calls kept in a session's journal before the pool takes a new snapshot of its book; 64 by default. */

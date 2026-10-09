@@ -40,12 +40,12 @@ describe('references', () => {
 
   it('invalid names are rejected, formulas using them give #NAME?', () => {
     const book: BookInput = {
-      sheets: [{ name: 'D', cells: data }, { name: 'S', cells: { A1: { formula: 'SUM(Q1)' }, A2: { formula: 'SUM(Сумма)' } } }],
-      names: ['Q1', 'R1C1', 'TRUE', 'Сумма'].map((name) => ({ name, ref: "'D'!$B:$B" })),
+      sheets: [{ name: 'D', cells: data }, { name: 'S', cells: { A1: { formula: 'SUM(Q1)' }, A2: { formula: 'SUM(_1x)' } } }],
+      names: ['Q1', 'R1C1', 'TRUE', '1x'].map((name) => ({ name, ref: "'D'!$B:$B" })),
     }
     const r = compute(book, { clock })
-    expect(r.nameIssues.map((n) => n.name)).toEqual(['Q1', 'R1C1', 'TRUE', 'Сумма'])
-    // Q1 is a cell address (empty), Сумма is an unknown name
+    expect(r.nameIssues.map((n) => n.name)).toEqual(['Q1', 'R1C1', 'TRUE', '1x'])
+    // Q1 is a cell address (empty), _1x an unknown name
     expect(r.sheets[1].cells.A1.value).toBe(0)
     expect(r.sheets[1].cells.A2.value).toEqual({ error: 'NAME' })
   })

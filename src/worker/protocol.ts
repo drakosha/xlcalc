@@ -51,7 +51,7 @@ export interface ErrorData {
   message: string
   code?: string
   path?: string
-  limit?: 'formulas' | 'cells'
+  limit?: keyof CalcLimits
   max?: number
   size?: number
   cell?: CellRef

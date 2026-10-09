@@ -22,6 +22,8 @@ const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   throw new Error('expected CalcError')
 }
 
+const one = (formula: string): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { formula } } }] })
+
 const open: Calc[] = []
 const made = async (...a: Parameters<typeof pool>) => {
   const p = await pool(...a)
@@ -205,11 +207,41 @@ describe('in threads', () => {
     expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
   }, 60_000)
 
-  it('maxHeapMb without limits.cells: arrays larger than a 32nd of the heap give CalcError', async () => {
+  it('maxHeapMb without limits: arrays of more values than the heap has 64 bytes, spills of more than it has KB give CalcError', async () => {
     const p = await made({ threads: 1, maxHeapMb: 64 })
-    const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(3000000))' } } }] }))
-    expect([e.limit, e.max]).toEqual(['cells', 2_097_152])
+    const array = await fails(p.compute(one('SUM(SEQUENCE(1048577))')))
+    expect([array.limit, array.max]).toEqual(['cells', 1_048_576])
+    const spill = await fails(p.compute(one('SEQUENCE(40000,2)')))
+    expect([spill.code, spill.limit, spill.max, spill.size, spill.cell]).toEqual(['limit', 'spill', 65_536, 80_000, { sheet: 'S', cell: 'A1' }])
+    for (const fits of [one('SUM(SEQUENCE(1048576))'), one('SEQUENCE(32768,2)')]) expect((await p.compute(fits, { clock: CLOCK })).hash).toBe(compute(fits, { clock: CLOCK }).hash)
   })
+
+  it("a call's limits keep the bounds the heap gives where they do not give their own", async () => {
+    const p = await made({ threads: 1, maxHeapMb: 64 })
+    const array = await fails(p.compute(one('SUM(SEQUENCE(2000000))'), { limits: { formulas: 1_000 } }))
+    expect([array.code, array.limit, array.max]).toEqual(['limit', 'cells', 1_048_576])
+    const s = await p.openSession(one('1'), { clock: CLOCK, limits: { formulas: 1_000 } })
+    const spill = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SEQUENCE(40000,2)' } }]))
+    expect([spill.code, spill.limit, spill.max]).toEqual(['limit', 'spill', 65_536])
+  }, 30_000)
+
+  it('a pool of 384 MB computes SUM(SEQUENCE(500000)) and TOCOL of a whole column; its spills stay bounded by the heap', async () => {
+    const p = await made({ threads: 1, maxHeapMb: 384 })
+    const data = { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 } }
+    for (const formula of ['SUM(SEQUENCE(500000))', 'TOCOL(A:A)', 'ROWS(TOCOL(A:C))']) {
+      const b: BookInput = { sheets: [{ name: 'S', cells: { ...data, B1: { formula } } }] }
+      expect((await p.compute(b, { clock: CLOCK })).hash, formula).toBe(compute(b, { clock: CLOCK }).hash)
+    }
+    expect((await fails(p.compute(one('SEQUENCE(200000,2)')))).max).toBe(393_216)
+    // a host that raises cells keeps the spill's bound, one that gives spill sets it
+    const raised = await made({ threads: 1, maxHeapMb: 64, limits: { cells: 10_000_000 } })
+    expect((await raised.compute(one('SUM(SEQUENCE(1100000))'), { clock: CLOCK })).sheets[0].cells.A1.value).toBe(605_000_550_000)
+    const kept = await fails(raised.compute(one('SEQUENCE(40000,2)')))
+    expect([kept.limit, kept.max]).toEqual(['spill', 65_536])
+    const given = await made({ threads: 1, maxHeapMb: 64, limits: { spill: 100_000 } })
+    expect((await given.compute(one('SEQUENCE(40000,2)'), { clock: CLOCK })).hash).toBe(compute(one('SEQUENCE(40000,2)'), { clock: CLOCK }).hash)
+    expect((await fails(given.compute(one('SUM(SEQUENCE(1048577))')))).max).toBe(1_048_576)
+  }, 30_000)
 
   it('limits in a thread: CalcError with the cell', async () => {
     const p = await made({ threads: 1, limits: { cells: 1000 } })

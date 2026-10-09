@@ -1,5 +1,50 @@
 # Changelog
 
+## 0.6.1 (2026-10-09)
+
+Internal release; not published to npm. Defined names in any script.
+
+Fixed:
+
+- A defined name takes letters of any script, as in Excel: `Ставка`, `НДС_2025`, `АБ12` (Cyrillic letters are no cell address) are names in `BookInput.names`, `validateName`, `setNames` and formulas, in any case (`ставка` is the name `Ставка`). They answered `a name must start with a latin letter`. Defined names and tables now share one check of Excel's rules: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`, at most 255 characters, not a cell address in Latin letters, not R1C1, not TRUE or FALSE.
+
+Changed:
+
+- `R` and `C` alone are no defined names (Excel reads them as R1C1 references), and a defined name may start with `\`, as a table name already did.
+- Contract: the doc of `NameInput.name` gives these rules.
+
+Added:
+
+- The case sets `tables/names-held` (en-US) and `tables/names-ru-held` (ru-RU): names in Cyrillic in formulas, in any case, beside tables, next to addresses and R1C1, with the engine's answers committed as the prediction; Excel has not computed them yet.
+
+## 0.6.0 (2026-10-09)
+
+Internal release; not published to npm. A spill has a limit of its own, so a thread pool bounds spills by its heap strictly and arrays loosely; a call's limits are taken field by field.
+
+Added:
+
+- Contract: `CalcLimits.spill`, the cells one spill may store (the cells past a large array's last value are not stored, so `A:A*2` over the data rows is not refused); without it `cells` bounds spills too, as before. `CalcError.limit` can be `spill`. `cells` is the values of one range read whole or one array.
+
+Changed:
+
+- A pool with `maxHeapMb` takes, where its `limits` give none, `cells` of a value per 64 bytes of heap (6,291,456 values for 384 MB; 0.5.0 took a value per KB) and `spill` of the smaller of `cells` and a value per KB (393,216 for 384 MB), so `SUM(SEQUENCE(500000))` and `TOCOL(A:A)` compute in such a pool again while a spill stays bounded, also where the host raises `cells`. Measured on Node 24 and 26 with heaps of 256 to 1,024 MB: an array brought the process down from 30 bytes of heap per value, a spill read by `compute`, `result()`, `hash()` or `setCells` from 286; in 1,380 runs at the defaults and at twice them the process never went down.
+- Contract: a calculator's `limits` (`createInlineCalc`, `createCalcPool`) hold for every call, and a call's own `limits` take their place field by field. A call that gave `limits` replaced them whole: one that gave `formulas` alone lost the pool's `cells` and `spill` taken from its heap, and an array the heap could not hold ran the thread out of memory.
+
+## 0.5.0 (2026-10-09)
+
+Internal release; not published to npm. A thread pool's default limit on one array measured, and in the same thread a result that gives way to the event loop and a structure operation that stops at its deadline.
+
+Changed:
+
+- A pool with `maxHeapMb` and without `limits.cells` takes `cells` of `maxHeapMb · 2^20 / 1024`, a value per KB of heap (262,144 values for 256 MB; it was a 32nd of the heap's bytes, 8 million values). Measured on Node 24 and 26 with heaps of 256 to 1024 MB: a large spill read by `compute`, `result()`, `hash()` or `setCells` brought the whole process down from 300 bytes of heap per value (1.57 million values in a heap of 384 MB), which the old default let through; other arrays from 30 bytes. Formulas over whole columns are computed on their occupied rows and stay within the limit; an array over it, such as `TOCOL(A:A)` or `SEQUENCE(500000)` in a pool of 384 MB, is `CalcError` with `limit`, and `limits.cells` given to the pool allows more.
+- Contract: the doc of `CalcPoolOptions.limits` names the new default and why.
+- In the same thread (`createInlineCalc`) `result()`, `hash()` and `cells()` give way to the event loop between portions, as a computation does: on the synthetic book of 34,000 rows the event loop waits about 50 ms at most, where `result()` held it for its whole second.
+- A structure operation checks the deadline and the signal as it rewrites and moves cells: a session's `restructure` with `timeoutMs` stops with `soft_timeout` and leaves the session as it was (47 ms with `timeoutMs: 20` on the synthetic book of 34,000 rows, where it ran 1.9 s). In the same thread a signal that fires while it runs is seen when it ends. Structure operations walk a sheet's cells by their keys, which makes them faster on large sheets.
+
+Added:
+
+- The thread pool is checked in headless Firefox and WebKit besides Chromium, with Node's hashes in each; WebKit stands for Safari.
+
 ## 0.4.4 (2026-10-09)
 
 Internal release; not published to npm. Fixes from a second review (calculated columns under copies, moves and sheet operations, long lists of dependents, the thread pool's fallback to objects), text with a line break read as a number, and a faster `Session.hash()`.

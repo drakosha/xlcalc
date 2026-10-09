@@ -5,7 +5,7 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcPoolOptions, Clock, SessionOptions, StructureOp } from '../contract.js'
+import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, SessionOptions, StructureOp } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { splitCall, checkCall } from '../async/options.js'
@@ -77,10 +77,24 @@ export interface PoolInside {
   recs: Set<Rec>
 }
 
+/** Bytes of a thread's heap per value of the default `limits.cells`: twice the worst measured for one array that took the process down (`docs/async.md`). */
+const HEAP_PER_CELL = 64
+/** Bytes of a thread's heap per value of the default `limits.spill`: over three times the worst measured for one spill that took the process down. */
+const HEAP_PER_SPILLED = 1024
+
+/** The limits of a pool's computations: with `maxHeapMb`, `cells` and `spill` by the heap where the host gives none. */
+function poolLimits(o: CalcPoolOptions): CalcLimits | undefined {
+  if (!o.maxHeapMb) return o.limits
+  const heap = o.maxHeapMb * 2 ** 20
+  const cells = o.limits?.cells ?? Math.floor(heap / HEAP_PER_CELL)
+  // a host that raises `cells` keeps the spill's bound by the heap
+  return { ...o.limits, cells, spill: o.limits?.spill ?? Math.min(cells, Math.floor(heap / HEAP_PER_SPILLED)) }
+}
+
 export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: PoolInside) => void): Calc {
   const perThread = o.maxSessionsPerThread ?? Infinity
   const snapshotEvery = o.snapshotEvery ?? 64
-  const limits = o.maxHeapMb && o.limits?.cells === undefined ? { ...o.limits, cells: Math.floor((o.maxHeapMb * 2 ** 20) / 32) } : o.limits
+  const limits = poolLimits(o)
   const jobs: Task[] = []
   const recs = new Set<Rec>()
   let ids = 0

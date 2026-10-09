@@ -6,7 +6,7 @@ import type { Calc, ComputeOptions, InlineCalcOptions } from '../contract.js'
 import { computeSteps } from '../compute.js'
 import { CalcError, type Budget } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
-import { checkInlineOptions, splitCall } from './options.js'
+import { callLimits, checkInlineOptions, splitCall } from './options.js'
 import { budgeted, openInlineSession, type InlineDefaults, type InlineSession } from './session.js'
 
 /** Milliseconds of computing between two yields by default: a frame stays smooth. */
@@ -23,7 +23,7 @@ export function createInlineCalc(opts?: InlineCalcOptions): Calc {
       if (closed) throw closed
       const { signal, timeoutMs, rest } = splitCall<ComputeOptions>(copts)
       const c = checkComputeOptions(rest)
-      return budgeted(d, c.limits ?? d.limits)(computeSteps(book, c), { signal, timeoutMs })
+      return budgeted(d, callLimits(d.limits, c.limits))(computeSteps(book, c), { signal, timeoutMs })
     },
     async openSession(book, sopts) {
       if (closed) throw closed

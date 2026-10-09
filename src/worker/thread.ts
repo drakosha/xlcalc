@@ -5,6 +5,7 @@
  * replays the journal with the clocks the session had.
  */
 import { abortable } from '../async/queue.js'
+import { callLimits } from '../async/options.js'
 import { budgeted, openInlineSession, type InlineDefaults, type InlineSession } from '../async/session.js'
 import { computeSteps } from '../compute.js'
 import type { AbortSignalLike, BookInput, CalcOptions, Clock, StructureOp } from '../contract.js'
@@ -107,7 +108,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
   switch (m.t) {
     case 'compute': {
       const c = checkComputeOptions(m.opts)
-      return budgeted(d, c.limits ?? d.limits)(computeSteps(unpack(m.book), c), { signal, timeoutMs: m.timeoutMs })
+      return budgeted(d, callLimits(d.limits, c.limits))(computeSteps(unpack(m.book), c), { signal, timeoutMs: m.timeoutMs })
     }
     case 'open': {
       const h = await open(m.sid, unpack(m.book), { ...m.opts, signal, timeoutMs: m.timeoutMs }, null)

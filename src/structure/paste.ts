@@ -7,6 +7,7 @@
  * refused, as Excel refuses them.
  */
 import type { BookInput, ColumnInput, NumberFormat, RowInput, SheetInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
@@ -79,7 +80,9 @@ function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: 
     if (Object.keys(style).length || Object.keys(format).length) to.cells[addr] = { ...cell, ...style, ...format }
   }
   const own = new Set<string>()
-  for (const [addr, cell] of Object.entries(from.cells)) {
+  for (const addr of Object.keys(from.cells)) {
+    const cell = from.cells[addr]
+    spend(1)
     const p = parseAddress(addr)
     if (p.row < src.r1 || p.row > src.r2 || p.col < src.c1 || p.col > src.c2) continue
     own.add(addr)
@@ -90,7 +93,11 @@ function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: 
     for (const [ca, cb] of segments(sc, tc, src.c1, src.c2, dc)) {
       const [s, t] = [lineLook(sr, sc, ra, ca), lineLook(tr, tc, ra + dr, ca + dc)]
       if (s.style === t.style && s.format === t.format) continue
-      for (let r = ra; r <= rb; r++) for (let c = ca; c <= cb; c++) if (!own.has(formatAddress(r, c))) spell(formatAddress(r + dr, c + dc), s, t)
+      for (let r = ra; r <= rb; r++)
+        for (let c = ca; c <= cb; c++) {
+          spend(1)
+          if (!own.has(formatAddress(r, c))) spell(formatAddress(r + dr, c + dc), s, t)
+        }
     }
 }
 

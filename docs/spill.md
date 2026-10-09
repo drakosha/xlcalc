@@ -70,7 +70,7 @@ An error inside a spilled array is listed in `issues`, for example "division by 
 
 An array of up to 65,536 values is stored whole. A larger one is stored up to the last row and column whose values differ from its bottom-right value; the rest of the range holds that one value and is not stored. Such a formula has `spillFill` with the value, and the hash has one line for the unstored part.
 
-So `A:A*2` over 1,000 rows of data stores 1,000 cells and computes in about 16 ms, and `SUM(B:B)` over it reads the million values once, in about 50 ms. An array without such a tail is stored whole: `ROW(A:A)` lists 1,048,576 cells and takes about 3 s and 0.5 GB, as Excel also holds a million cells.
+So `A:A*2` over 1,000 rows of data stores 1,000 cells and computes in about 16 ms, and `SUM(B:B)` over it reads the million values once, in about 50 ms. An array without such a tail is stored whole: `ROW(A:A)` lists 1,048,576 cells and takes about 3 s and 0.5 GB, as Excel also holds a million cells; a thread pool with a heap under 1 GB refuses such a spill by its default `limits.spill` ([async.md](async.md)).
 
 ## How the engine does it
 

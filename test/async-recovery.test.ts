@@ -52,7 +52,7 @@ describe('a thread lost', () => {
   }, 60_000)
 
   it("past the thread's heap (maxHeapMb): out_of_memory, and the process goes on", async () => {
-    const p = kept(await pool({ threads: 1, maxHeapMb: 64, limits: { cells: 2_000_000 } }))
+    const p = kept(await pool({ threads: 1, maxHeapMb: 64, limits: { cells: 2_000_000, spill: 2_000_000 } }))
     const s = await p.openSession(chainBook(50), { clock: CLOCK })
     await s.setCells(setA1(5))
     // twenty arrays of a million values, each spilled down its column: far more than 64 MB, each well under it

@@ -3,6 +3,7 @@
  * the rest of the formula keeps its spelling. A formula that does not parse is left as written.
  */
 import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { FormulaError, parse, quoteSheet, sheetKey, tokenize, type Tok } from '../syntax.js'
 import { decode, encode, sameArea, type Area } from './area.js'
 
@@ -110,6 +111,8 @@ function errText(name: string, tail: string, t: Transform, sheets: Map<string, s
 
 /** A cell with its formula rewritten; the same object when nothing changed. */
 export function rewriteCell(cell: CellInput, host: string, moved: string, t: Transform, sheets: Map<string, string>): CellInput {
+  // a session's operation stops here at its deadline or abort (`exec/budget.ts`), at a value too; without a budget one comparison
+  spend(1)
   if (cell.formula === undefined) return cell
   const formula = rewriteFormula(cell.formula, host, moved, t, sheets)
   return formula === cell.formula ? cell : { ...cell, formula }
@@ -160,7 +163,8 @@ export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, s
     sheets: book.sheets.map((s) => {
       const name = rename(s.name)
       let cells: Record<string, CellInput> | undefined
-      for (const [addr, cell] of Object.entries(s.cells)) {
+      for (const addr of Object.keys(s.cells)) {
+        const cell = s.cells[addr]
         const next = rewriteCell(cell, s.name, name, t, sheets)
         if (next !== cell) (cells ??= { ...s.cells })[addr] = next
       }

@@ -1,6 +1,9 @@
 /** Checks of the asynchronous calls' and the calculators' options, as `input.ts` checks the rest (`InputError`). */
-import type { AbortSignalLike, CalcOptions, CalcPoolOptions, InlineCalcOptions } from '../contract.js'
+import type { AbortSignalLike, CalcLimits, CalcOptions, CalcPoolOptions, InlineCalcOptions } from '../contract.js'
 import { checkLimits, InputError } from '../input.js'
+
+/** A call's limits over the calculator's, field by field: a field the call does not give keeps the calculator's (a pool's bounds by its heap too). */
+export const callLimits = (calc: CalcLimits | undefined, call: CalcLimits | undefined): CalcLimits | undefined => (calc && call ? { ...calc, ...call } : (call ?? calc))
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 

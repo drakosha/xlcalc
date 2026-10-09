@@ -1,20 +1,27 @@
 /**
- * The built package in a real browser (headless Chromium through `playwright-core`, skipped when no Chromium is found:
- * `CHROME_PATH`, else Playwright's own): the pool on Web Workers computes the synthetic book and a session's edits
- * with the hashes of Node's synchronous engine, a hard deadline terminates a worker and the session comes back on a
- * new one, `maxHeapMb` is refused; the same-thread calculator lets timers run while it computes.
+ * The built package in real browsers (headless Chromium, Firefox and WebKit through `playwright-core`, each skipped
+ * when its engine is not found: `CHROME_PATH` or Playwright's own for Chromium, Playwright's own for the others): the
+ * pool on Web Workers computes the synthetic book and a session's edits with the hashes of Node's synchronous engine,
+ * a hard deadline terminates a worker and the session comes back on a new one, `maxHeapMb` is refused; the
+ * same-thread calculator lets timers run while it computes.
  */
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { createServer, type Server } from 'node:http'
+import { tmpdir } from 'node:os'
 import { join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright-core'
+import { chromium, firefox, webkit, type BrowserType } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { compute, openSession } from '../src/index.js'
 import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const chrome = [process.env.CHROME_PATH, chromium.executablePath()].find((p) => p && existsSync(p))
+const found = (...paths: (string | undefined)[]) => paths.find((p) => p && existsSync(p))
+const engines: [string, BrowserType, string | undefined][] = [
+  ['Chromium', chromium, found(process.env.CHROME_PATH, chromium.executablePath())],
+  ['Firefox', firefox, found(firefox.executablePath())],
+  ['WebKit', webkit, found(webkit.executablePath())],
+]
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
 const page = `<!doctype html><meta charset="utf-8"><script type="module">
@@ -64,10 +71,13 @@ beforeAll(async () => {
 })
 afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())))
 
-describe.skipIf(!chrome)('in a browser', () => {
-  it('the pool on Web Workers and the same-thread calculator give the hashes of Node', async () => {
+describe.each(engines)('in %s', (_, engine, executablePath) => {
+  it.skipIf(!executablePath)('the pool on Web Workers and the same-thread calculator give the hashes of Node', async () => {
     expect(existsSync(join(root, 'dist/worker/thread.js')), 'run npm run build first').toBe(true)
-    const browser = await chromium.launch({ executablePath: chrome, headless: true })
+    // macOS 27 denies Firefox from a terminal its app-data folder (microsoft/playwright#42768): a home of its own, kept (its Library cannot be deleted)
+    const home = engine === firefox ? join(tmpdir(), 'xlcalc-firefox-home') : undefined
+    if (home) mkdirSync(home, { recursive: true })
+    const browser = await engine.launch({ executablePath, headless: true, ...(home ? { env: { ...process.env, CFFIXED_USER_HOME: home } } : {}) })
     try {
       const tab = await browser.newPage()
       await tab.goto(base)

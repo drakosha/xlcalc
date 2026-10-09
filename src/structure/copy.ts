@@ -5,6 +5,7 @@
  * cell, as Excel's Range.Copy does. Empty source cells clear the cells they land on.
  */
 import type { BookInput, CellInput, CellRef, RestructureResult, TableInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { checkAddress, checkString, InputError } from '../input.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, sheetKey, tokenize } from '../syntax.js'
@@ -71,14 +72,24 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   const sheet = source.sheets.find((s) => sheetKey(s.name) === fk)!
   // the cells of part of an array formula's area copy as array formulas of their own
   const parts = copiedCells(sheet, src, (f, r, c) => rewriteFormula(f, from, from, copyTransform(r, c), names))
-  const copied = [...Object.entries(sheet.cells).filter(([addr]) => within(src, addr) && !parts.some(([a]) => a === addr)), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
+  const inSrc = Object.keys(sheet.cells).filter((addr) => {
+    spend(1)
+    return within(src, addr) && !parts.some(([a]) => a === addr)
+  })
+  const copied = [...inSrc.map((addr): [string, CellInput] => [addr, sheet.cells[addr]]), ...parts].map(([addr, cell]) => ({ addr, at: parseAddress(addr), cell: withMeta ? cell : withoutMeta(cell) }))
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== tk) return s
     const cells: Record<string, CellInput> = {}
-    for (const [addr, cell] of Object.entries(s.cells)) if (!within(pasted, addr)) cells[addr] = cell
+    for (const addr of Object.keys(s.cells)) {
+      const cell = s.cells[addr]
+      spend(1)
+      if (!within(pasted, addr)) cells[addr] = cell
+    }
     for (const [r, c] of offsets) {
       const t = copyTransform(r, c)
       for (const { addr, at, cell } of copied) {
+        // a paste over a large target stops at the session's deadline or abort (`exec/budget.ts`)
+        spend(1)
         const formula = cell.formula === undefined ? undefined : rewriteFormula(cell.formula, to, to, t, names)
         const dest = formatAddress(at.row + r, at.col + c)
         cells[dest] = relocated(formula === cell.formula ? cell : { ...cell, formula }, addr, dest)

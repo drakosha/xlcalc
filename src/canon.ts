@@ -6,9 +6,10 @@
  * book's locale other than en-US and the 1904 date system.
  */
 import type { BookInput, CellValue } from './contract.js'
+import { paced, run, type Steps } from './exec/budget.js'
 import { lines, spanKey } from './layout/spans.js'
 import { DEFAULT_LOCALE } from './locale/registry.js'
-import { compareAddress, sortAddresses } from './model.js'
+import { addressOrder, compareAddress, sortAddresses } from './model.js'
 import type { Axis } from './structure/area.js'
 import { Sha256 } from './sha256.js'
 import { to15 } from './values.js'
@@ -28,6 +29,16 @@ export function canonValue(v: CellValue): string {
 }
 
 const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+
+/** `sortAddresses` in steps: reading the addresses yields when the computation's slice is used up; the sort itself is one step. */
+export function* sortedSteps(addrs: string[]): Steps<string[]> {
+  const keyed: (readonly [number, string])[] = []
+  for (const a of addrs) {
+    if (paced(1)) yield
+    keyed.push([addressOrder(a), a])
+  }
+  return keyed.sort((x, y) => x[0] - y[0]).map((x) => x[1])
+}
 
 /** A range of a sheet whose cells all hold one value: the unstored cells of a large spilled array. */
 export interface FillLine {
@@ -119,11 +130,17 @@ function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis
  * order), the filter mode, tables (in order), the style table, a locale other than en-US, the 1904 date system and iterative
  * calculation come after their sheet and the names when there are any, so a book without them hashes as before.
  */
-export function inputHash(book: BookInput): string {
+export const inputHash = (book: BookInput): string => run(inputHashSteps(book))
+
+/** `inputHash` in steps: the cells yield when the computation's slice is used up. */
+export function* inputHashSteps(book: BookInput): Steps<string> {
   const h = new Sha256()
   for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
-    for (const addr of sortAddresses(Object.keys(s.cells))) h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
+    for (const addr of yield* sortedSteps(Object.keys(s.cells))) {
+      if (paced(1)) yield
+      h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
+    }
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
     if (s.filtered) h.update('F\n')
