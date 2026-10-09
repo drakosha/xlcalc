@@ -9,6 +9,7 @@ import { parseMerge } from '../layout/merges.js'
 import { formatAddress } from '../model.js'
 import { arrayArea } from '../array-areas.js'
 import { meets, parseRange, type Rect } from '../structure/area.js'
+import { localeBooleans } from '../locale/registry.js'
 import { nameProblem } from '../syntax.js'
 import { tableKey } from './model.js'
 
@@ -34,11 +35,11 @@ function column(v: unknown, path: string): TableColumn {
 }
 
 /** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
-function table(v: unknown, path: string, cells: Record<string, CellInput>): Rect {
+function table(v: unknown, path: string, cells: Record<string, CellInput>, booleans: readonly string[]): Rect {
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   only(v, path, ['name', 'range', 'headers', 'totals', 'columns'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
-  const problem = nameProblem(v.name)
+  const problem = nameProblem(v.name, booleans)
   if (problem) throw new InputError(`${path}.name`, `${JSON.stringify(v.name)}: ${problem}`)
   const x = typeof v.range === 'string' && /^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(v.range) ? parseRange(v.range) : null
   if (!x) throw new InputError(`${path}.range`, `expected a range such as "B2:E10" within the sheet, got ${JSON.stringify(v.range)}`)
@@ -68,6 +69,7 @@ function table(v: unknown, path: string, cells: Record<string, CellInput>): Rect
 export function checkTables(book: BookInput, path = 'book'): void {
   const names = new Map((book.names ?? []).map((n) => [tableKey(n.name), n.name]))
   const taken = new Map<string, string>()
+  const booleans = localeBooleans(book.locale)
   book.sheets.forEach((sheet, s) => {
     if (sheet.tables === undefined) return
     const p = `${path}.sheets[${s}].tables`
@@ -75,7 +77,7 @@ export function checkTables(book: BookInput, path = 'book'): void {
     const rects: [Rect, string][] = []
     sheet.tables.forEach((t, i) => {
       const tp = `${p}[${i}]`
-      const x = table(t, tp, sheet.cells)
+      const x = table(t, tp, sheet.cells, booleans)
       const { name, range } = t as TableInput
       const k = tableKey(name)
       if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a book, in any case)`)
