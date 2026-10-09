@@ -3,7 +3,7 @@ import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type 
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, CellView, Clock, ComputeResult } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
-import { due, spend, type Steps } from './exec/budget.js'
+import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
 import { formatAddress, msToSerial, parseAddress } from './model.js'
@@ -48,8 +48,7 @@ function* spilled(state: EngineState, s: number, within?: Rect): Steps<Map<strin
     const [c1, c2] = within ? [Math.max(x.c1, within.c1), Math.min(x.c1 + x.w - 1, within.c2)] : [x.c1, x.c1 + x.w - 1]
     for (let r = r1; r <= r2; r++)
       for (let c = c1; c <= c2; c++) {
-        spend(1)
-        if (due()) yield
+        if (paced(1)) yield
         if ((r !== x.r1 || c !== x.c1) && !state.spills.occupied.has(s, r, c)) out.set(formatAddress(r, c), from)
       }
   }
@@ -88,22 +87,19 @@ export function* cellsIn(state: EngineState, s: number, x: Rect, display: boolea
   if ((x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL) {
     for (let r = x.r1; r <= x.r2; r++)
       for (let c = x.c1; c <= x.c2; c++) {
-        spend(1)
-        if (due()) yield
+        if (paced(1)) yield
         const a = formatAddress(r, c)
         if (a in cells) inputs.push(a)
       }
   } else
     for (const a of Object.keys(cells)) {
-      spend(1)
-      if (due()) yield
+      if (paced(1)) yield
       const { row, col } = parseAddress(a)
       if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2) inputs.push(a)
     }
   const out: Record<string, CellView> = {}
   for (const addr of yield* sortedSteps([...inputs, ...spill.keys()])) {
-    spend(1)
-    if (due()) yield
+    if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const style = cells[addr]?.style
     if (style !== undefined) view.style = style
@@ -120,8 +116,7 @@ function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: str
   const spill = yield* spilled(state, s)
   let last: string | undefined
   for (const addr of yield* sortedSteps([...Object.keys(state.input.sheets[s].cells), ...spill.keys()])) {
-    spend(1)
-    if (due()) yield
+    if (paced(1)) yield
     // once: an input cell that does not block a spill (a format or a style alone) is a spilled one too
     if (addr === last) continue
     last = addr

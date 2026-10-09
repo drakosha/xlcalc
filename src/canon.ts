@@ -6,7 +6,7 @@
  * book's locale other than en-US and the 1904 date system.
  */
 import type { BookInput, CellValue } from './contract.js'
-import { due, run, spend, type Steps } from './exec/budget.js'
+import { paced, run, type Steps } from './exec/budget.js'
 import { lines, spanKey } from './layout/spans.js'
 import { DEFAULT_LOCALE } from './locale/registry.js'
 import { addressOrder, compareAddress, sortAddresses } from './model.js'
@@ -34,8 +34,7 @@ const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 export function* sortedSteps(addrs: string[]): Steps<string[]> {
   const keyed: (readonly [number, string])[] = []
   for (const a of addrs) {
-    spend(1)
-    if (due()) yield
+    if (paced(1)) yield
     keyed.push([addressOrder(a), a])
   }
   return keyed.sort((x, y) => x[0] - y[0]).map((x) => x[1])
@@ -139,8 +138,7 @@ export function* inputHashSteps(book: BookInput): Steps<string> {
   for (const s of [...book.sheets].sort((a, b) => byText(a.name, b.name))) {
     h.update(`S ${JSON.stringify(s.name)}\n`)
     for (const addr of yield* sortedSteps(Object.keys(s.cells))) {
-      spend(1)
-      if (due()) yield
+      if (paced(1)) yield
       h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
     }
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
