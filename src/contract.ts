@@ -179,9 +179,10 @@ export type TotalsFunction = 'sum' | 'average' | 'count' | 'countNums' | 'max' |
 
 export interface NameInput {
   /**
-   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`,
-   * at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE (`Ставка`,
-   * `НДС_2025` and `АБ12` are names). Compared in any case: `ставка` is the name `Ставка`.
+   * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`,
+   * `\` and `?`, at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE, and
+   * in a ru-RU book not its booleans ИСТИНА and ЛОЖЬ, in any case (`Ставка`, `НДС_2025`, `АБ12` and `Став?ка` are
+   * names). Compared in any case: `ставка` is the name `Ставка`.
    */
   name: string
   /**
@@ -779,6 +780,7 @@ export interface CalcPoolOptions {
 export interface FormulaEngine {
   compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
+  /** Excel's rules for a name (`NameInput.name`) in an en-US book; a ru-RU book also refuses ИСТИНА and ЛОЖЬ. */
   validateName(name: string): NameCheck
   openSession(book: BookInput, opts?: SessionOptions): Session
   restructure(book: BookInput, op: StructureOp): RestructureResult
