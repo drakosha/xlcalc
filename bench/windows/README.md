@@ -17,7 +17,7 @@ Each file's `meta` names Excel's version and the settings it computed with: the 
 
 ## The tests and the differences
 
-Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `display-win`, `tables-win`, `spill-win`, `workbook-win`, `structure-win`, `legacy-win`, `xlsx-win`. Where the engine knowingly differs from Excel for Windows, the test pins it with the reason: `WIN_KNOWN` in `test/excel-win-known.ts` for formulas (reasons in `WIN_REASONS`, `test/excel-win-cases.ts`, or the Mac's own where both Excels agree), rules by reason for what cells show (`WIN_SHOWN`), and lists by case in the others. The engine follows Excel for Mac wherever the two Excels part, except `CHAR` and `CODE`, which follow the Windows code pages.
+Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `display-win`, `tables-win`, `spill-win`, `workbook-win`, `structure-win`, `legacy-win`, `xlsx-win`. Where the engine knowingly differs from Excel for Windows, the test pins it with the reason: `WIN_KNOWN` in `test/excel-win-known.ts` for formulas (reasons in `WIN_REASONS`, `test/excel-win-cases.ts`, or the Mac's own where both Excels agree), rules by reason for what cells show (`WIN_SHOWN`), and lists by case in the others. Where the two Excels' regional data part, the engine follows Excel for Windows (the order of text, month names, built-in formats by number, the times of ru-RU, `CHAR` and `CODE`); elsewhere it follows Excel for Mac.
 
 `npx tsx bench/windows/compare.ts > bench/windows/differences.md` writes the table of the formula cases where Windows and the Mac part (the Mac's answer, Windows's, the engine's, which of the two the engine follows, and the class: a platform difference with its reason, or noise), and the cases where both Excels agree and the engine does not.
 
@@ -77,22 +77,23 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 
 | what | locale | cases | as Excel for Mac | the engine as Windows, or for a pinned reason |
 |---|---|---:|---:|---|
-| formulas: measurement, probes, 36 case sets | en-US | 34,349 | 34,316 | 34,277, the 72 others in `WIN_KNOWN` |
-| formulas: measurement, 8 case sets | ru-RU | 7,297 | 7,136 | 7,143, the 154 others in `WIN_KNOWN` |
+| formulas: measurement, probes, 36 case sets | en-US | 34,349 | 34,316 | 34,282, the 67 others in `WIN_KNOWN` |
+| formulas: measurement, 8 case sets | ru-RU | 7,297 | 7,136 | 7,291, the 6 others in `WIN_KNOWN` |
+| the order of text, the set `collation-more` (Windows alone) | ru-RU | 62 | | 62 |
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
-| cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,929, the others by the rules of `WIN_SHOWN` |
-| cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,434, the others by the rules of `WIN_SHOWN` |
+| cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,979, the others by the rules of `WIN_SHOWN` |
+| cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,569, the others by the rules of `WIN_SHOWN` |
 | tables, 5 sets and 1 | en-US, ru-RU | 87 and 4 | 83 and 4 | all but the 4 the Mac pins too |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
 | structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
 
-Where the two Excels part, the engine follows the Mac but for `CHAR` and `CODE`. What Excel for Windows does otherwise, by reason:
+What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 
-- Its regional data in ru-RU: Latin sorts before Cyrillic (`"a"<"а"` is TRUE), month names have a capital (`Январь`) and short ones three letters (`фев`, `ноя`), the long date has no weekday, the short time no leading zero; built-in formats by number take Windows's own codes (en-US 14 is `m/d/yyyy`).
-- `CHAR` and `CODE` by the Windows code pages, and 63 for a character outside them.
-- Trigonometry at its poles and complex functions of large arguments from the 13th digit on (`TAN(PI()/2)`), `WEEKNUM` with return type 22, `WEIBULL` with a scale of 1E-300.
-- Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels.
+- Its regional data in ru-RU: Latin sorts before Cyrillic (`"a"<"а"` is TRUE), month names have a capital (`Январь`) and short ones three letters (`фев`, `ноя`), the short and long time no leading zero; built-in formats by number take Windows's own codes (en-US 14 is `m/d/yyyy`). The engine follows Windows, but for the long date `[$-F800]`, which has no weekday on Windows and keeps the Mac's here.
+- `CHAR` and `CODE` by the Windows code pages, and 63 for a character outside them. The engine follows Windows.
+- Trigonometry at its poles and complex functions of large arguments from the 13th digit on (`TAN(PI()/2)`), `WEEKNUM` with return type 22, `WEIBULL` with a scale of 1E-300. The engine follows the Mac.
+- Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels. The engine lays cells out as the Mac does.
 
 Both Excels agree and the engine does not in 57 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.

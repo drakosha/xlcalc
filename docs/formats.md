@@ -87,24 +87,26 @@ An xlsx file stores some formats by number alone, without a code. A format here 
 | 1 to 4 | `0`, `0.00`, `#,##0`, `#,##0.00` | the same |
 | 5 to 8 | `$#,##0_);($#,##0)` and the like | `#,##0 "₽";-#,##0 "₽"` and the like |
 | 9 to 13 | `0%`, `0.00%`, `0.00E+00`, `# ?/?`, `# ??/??` | the same |
-| 14, 27 to 31, 36 | `m/d/yy` | `dd.mm.yyyy` |
+| 14, 27 to 31, 36 | `m/d/yyyy` | `dd.mm.yyyy` |
 | 15, 16, 17 | `d-mmm-yy`, `d-mmm`, `mmm-yy` | `dd.mmm.yy`, `dd.mmm`, `mmm.yy` |
 | 18, 19 | `h:mm AM/PM`, `h:mm:ss AM/PM` | the same |
-| 20, 21, 32 to 35 | `h:mm`, `h:mm:ss` | `hh:mm`, `hh:mm:ss` |
-| 22 | `m/d/yy h:mm` | `dd.mm.yyyy hh:mm` |
+| 20, 21, 32 to 35 | `h:mm`, `h:mm:ss` | the same |
+| 22 | `m/d/yyyy h:mm` | `dd.mm.yyyy h:mm` |
 | 37 to 40 | `#,##0_);(#,##0)` and the like | `#,##0;-#,##0` and the like |
 | 41 to 44 | the accounting formats with `$` | the accounting formats with `₽` after the amount |
 | 45 to 49 | `mm:ss`, `[h]:mm:ss`, `mm:ss.0`, `##0.0E+0`, `@` | the same |
 
-In en-US, 14 shows 2025-01-31 as `1/31/25` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, `src/locale/rules/ru-RU.ts` the ru-RU ones.
+In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, `src/locale/rules/ru-RU.ts` the ru-RU ones.
+
+The codes are those Excel for Windows shows. Excel for Mac shows the short date of en-US as `m/d/yy` (`1/31/25`) and the times of ru-RU with a leading zero (`06:00`); the engine follows Windows there.
 
 A format written as a code always shows as written. `format: 'm/d/yy'` shows `1/31/25` in ru-RU too.
 
 ## Locales
 
-A cell's format is read the way xlsx stores it, in en-US syntax, whatever the book's locale. It is shown with the locale's separators, names, booleans, error texts and date separator: in ru-RU `#,##0.00` shows `1 234 567,89`, `mmmm` shows `январь`, TRUE shows `ИСТИНА`, `#N/A` shows `#Н/Д`.
+A cell's format is read the way xlsx stores it, in en-US syntax, whatever the book's locale. It is shown with the locale's separators, names, booleans, error texts and date separator: in ru-RU `#,##0.00` shows `1 234 567,89`, `mmmm` shows `Январь`, TRUE shows `ИСТИНА`, `#N/A` shows `#Н/Д`.
 
-`TEXT` reads the locale's own codes (`# ##0,00`, `ДД.ММ.ГГГГ`, `Основной`) and colour names (`[Красный]`, `[Синий]`, `[Цвет10]`); in ru-RU, `[Red]` and `[Color10]` are `#VALUE!`. Month names in ru-RU are in the nominative (`31 январь 2025`), except in the long date.
+`TEXT` reads the locale's own codes (`# ##0,00`, `ДД.ММ.ГГГГ`, `Основной`) and colour names (`[Красный]`, `[Синий]`, `[Цвет10]`); in ru-RU, `[Red]` and `[Color10]` are `#VALUE!`. Month names in ru-RU are in the nominative with a capital (`31 Январь 2025`), and short ones have three letters (`фев`, `сен`, `ноя`), as Excel for Windows writes them; the long date takes the genitive (`31 января 2025 г.`). Excel for Mac writes them in lower case and its short forms are `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`.
 
 ## Colours
 
@@ -152,7 +154,7 @@ The cases write a format as a custom code, so a code equal to a built-in format 
 
 The 1904 date system was checked with the workbook set `date1904` (`bench/coverage/workbook/`): the same cells and `TEXT` formulas in a book of each system.
 
-Excel for Windows showed the same sets (`bench/windows`, `test/display-win.test.ts`): 7,929 of 9,819 cells in en-US and 2,434 of 3,130 in ru-RU show what the engine shows. Nearly all the others meet a column's edge, where Windows, laying text out in pixels, shows what the engine shows at another width; the rest are Windows's built-in codes and its ru-RU month names, long date and short time.
+Excel for Windows showed the same sets (`bench/windows`, `test/display-win.test.ts`). Its regional data, where they part from the Mac's, are the engine's: the built-in codes, month names in ru-RU, the times of built-in formats. The cells that show otherwise meet a column's edge, where Windows, laying text out in pixels, shows what the engine shows at another width, and the ru-RU long date `[$-F800]`, which the engine keeps as the Mac's. `test/display-excel.test.ts` covers the Mac's answers in the places where the engine follows Windows (`MAC_SHOWN`).
 
 AppleScript returns no colour for an exact 0 in a format of fewer than three sections (`[Red]0`) and for text under a coloured text section (`[Red]@`), though Excel draws the colour on screen there. The engine gives the section's colour in these places, and the comparison accepts any colour.
 

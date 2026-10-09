@@ -2,9 +2,19 @@
 
 ## Unreleased
 
+Changed:
+
+- Where the regional data of Excel for Mac and Excel for Windows part, the engine computes and shows as Excel for Windows does (it followed the Mac); values change, and the values hash of ru-RU books that compare or sort text or write month names changes with them. The synthetic book's hash does not change (`101578a9c6b600b1…`): its values are those of en-US and shown text is no part of the hash.
+  - Text order in ru-RU puts Latin before Cyrillic, as in en-US: `"a"<"а"` is TRUE (it was FALSE), in comparisons, criteria (`COUNTIF(A:A,"<м")`), lookups and `SORT`. Inside each script nothing changes: `ё` and accents weigh only where the letters are otherwise equal (`"ёа"<"еб"` is TRUE), `й` follows every word that starts with `и`.
+  - Month names in ru-RU have a capital in `TEXT` and in cells (`TEXT(45688,"ДД ММММ ГГГГ")` is `31 Январь 2025`, it was `31 январь 2025`; `МММММ` gives `Я`), also under `[$-419]` in en-US books; the short names have three letters (`фев`, `мар`, `июн`, `июл`, `сен`, `ноя`; they were `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`). Date text is read in any case, as before.
+  - Built-in formats by number show as Excel for Windows shows them: in en-US the short date 14, and 22, 27 to 31 and 36, is `m/d/yyyy` (`1/31/2025`, it was `1/31/25`); in ru-RU the times of 20 to 22 and 32 to 35 and the long time `[$-F400]` have no leading zero (`6:00`, it was `06:00`). `readXlsx` reads such a format as its number, as before, and the writer writes the number.
+  - Contract: the doc of `NumberFormat` names `m/d/yyyy` as en-US's short date.
+  - The ru-RU long date `[$-F800]` stays as Excel for Mac writes it (`пятница, 31 января 2025 г.`); Windows's has no weekday.
+
 Added:
 
-- Excel for Windows answers for every set the Mac has answers for, in both locales (Excel 16.0.20430: 34,349 formula cases in en-US, 7,297 in ru-RU, 6,999 formulas of the old kind, 12,949 cells shown, and the tables, spill, workbook, structure and xlsx filter sets), with tests against them; where the two Excels part, the engine follows Excel for Mac but in `CHAR` and `CODE`, and `bench/windows/differences.md` lists the cases with their reasons.
+- The case set `collation-more`: 62 cases of the order of text inside Cyrillic and Latin (`ё`, `й`, case and accents before a later letter), measured in Excel for Windows ru-RU.
+- Excel for Windows answers for every set the Mac has answers for, in both locales (Excel 16.0.20430: 34,349 formula cases in en-US, 7,297 in ru-RU, 6,999 formulas of the old kind, 12,949 cells shown, and the tables, spill, workbook, structure and xlsx filter sets), with tests against them; where the two Excels part in regional data the engine follows Windows (above), elsewhere the Mac, and `bench/windows/differences.md` lists the cases with their reasons.
 
 ## 0.4.2 (2026-10-09)
 
