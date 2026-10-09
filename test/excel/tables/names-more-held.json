@@ -1,0 +1,1105 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 18.7
+ },
+ "cases": [
+  {
+   "id": "add-cyrillic",
+   "about": "a Cyrillic name added, used in its case and in another",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Ставка",
+      "ref": "0.2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Ставка*10"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "ставка+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-scope",
+   "about": "a global name and a sheet's own of the same name added, the sheet's own on a sheet named in Cyrillic",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     },
+     {
+      "name": "Лист",
+      "cells": {}
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Ставка",
+      "ref": "0.2"
+     }
+    },
+    {
+     "name": {
+      "name": "Ставка",
+      "ref": "0.3",
+      "scope": "Лист"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Ставка"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "Лист!Ставка+1"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "Лист",
+      "cell": "A1",
+      "value": {
+       "formula": "ставка"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    },
+    {
+     "sheet": "Лист",
+     "range": "A1"
+    }
+   ]
+  },
+  {
+   "id": "add-shape",
+   "about": "names shaped like a cell or R1C1: in Cyrillic letters names (АБ12, К2С3, С), in Latin ones refused (AB12, R2C3, R, c, RC, R1C); RR is no reference",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "АБ12",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "AB12",
+      "ref": "2"
+     }
+    },
+    {
+     "name": {
+      "name": "К2С3",
+      "ref": "10"
+     }
+    },
+    {
+     "name": {
+      "name": "R2C3",
+      "ref": "20"
+     }
+    },
+    {
+     "name": {
+      "name": "С",
+      "ref": "100"
+     }
+    },
+    {
+     "name": {
+      "name": "R",
+      "ref": "200"
+     }
+    },
+    {
+     "name": {
+      "name": "c",
+      "ref": "300"
+     }
+    },
+    {
+     "name": {
+      "name": "RC",
+      "ref": "400"
+     }
+    },
+    {
+     "name": {
+      "name": "R1C",
+      "ref": "500"
+     }
+    },
+    {
+     "name": {
+      "name": "RR",
+      "ref": "1000"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "АБ12"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "К2С3+С*10"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C3",
+      "value": {
+       "formula": "RR"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-question",
+   "about": "a question mark inside a name (Став?ка, Rate?) and first (?Ставка)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Став?ка",
+      "ref": "5"
+     }
+    },
+    {
+     "name": {
+      "name": "?Ставка",
+      "ref": "6"
+     }
+    },
+    {
+     "name": {
+      "name": "Rate?",
+      "ref": "7"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Став?ка*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "Rate?*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-backslash",
+   "about": "a backslash inside a name (Став\\ка) and first (\\Ставка)",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Став\\ка",
+      "ref": "5"
+     }
+    },
+    {
+     "name": {
+      "name": "\\Ставка",
+      "ref": "6"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Став\\ка*2"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "\\Ставка*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-chars",
+   "about": "a dot, an underscore and a digit inside or first (Став.ка, _Ставка, Ставка1; 1Ставка refused), a space or a hyphen inside refused",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "Став.ка",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "_Ставка",
+      "ref": "2"
+     }
+    },
+    {
+     "name": {
+      "name": "Ставка1",
+      "ref": "3"
+     }
+    },
+    {
+     "name": {
+      "name": "1Ставка",
+      "ref": "4"
+     }
+    },
+    {
+     "name": {
+      "name": "Став ка",
+      "ref": "5"
+     }
+    },
+    {
+     "name": {
+      "name": "Став-ка",
+      "ref": "6"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Став.ка+_Ставка*10+Ставка1*100"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-bool",
+   "about": "TRUE and FALSE refused in any case, the booleans of ru-RU are names in en-US",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "TRUE",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "false",
+      "ref": "2"
+     }
+    },
+    {
+     "name": {
+      "name": "ИСТИНА",
+      "ref": "11"
+     }
+    },
+    {
+     "name": {
+      "name": "ЛОЖЬ",
+      "ref": "12"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ИСТИНА+ЛОЖЬ"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-function",
+   "about": "function names as names: SUM, and СУММ and Сумма, SUM's name and a word in ru-RU",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "SUM",
+      "ref": "3"
+     }
+    },
+    {
+     "name": {
+      "name": "СУММ",
+      "ref": "7"
+     }
+    },
+    {
+     "name": {
+      "name": "Сумма",
+      "ref": "5"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "SUM(SUM,СУММ,Сумма)"
+      }
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C2",
+      "value": {
+       "formula": "SUM*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-long",
+   "about": "a name of 255 letters, and one of 256 refused",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ",
+      "ref": "2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ+1"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "add-table",
+   "about": "a table's name in another case is no defined name (SALES beside the table Sales); Продажи is",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "Region"
+       },
+       "B1": {
+        "value": "Qty"
+       },
+       "C1": {
+        "value": "Price"
+       },
+       "D1": {
+        "value": "Total"
+       },
+       "A2": {
+        "value": "North"
+       },
+       "B2": {
+        "value": 2
+       },
+       "C2": {
+        "value": 10
+       },
+       "D2": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A3": {
+        "value": "South"
+       },
+       "B3": {
+        "value": 3
+       },
+       "C3": {
+        "value": 20
+       },
+       "D3": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A4": {
+        "value": "North"
+       },
+       "B4": {
+        "value": 5
+       },
+       "C4": {
+        "value": 30
+       },
+       "D4": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "A5": {
+        "value": "East"
+       },
+       "B5": {
+        "value": 1
+       },
+       "C5": {
+        "value": 40
+       },
+       "D5": {
+        "formula": "[@Qty]*[@Price]"
+       },
+       "J1": {
+        "formula": "SUM(Sales[Qty])"
+       }
+      },
+      "tables": [
+       {
+        "name": "Sales",
+        "range": "A1:D5",
+        "columns": [
+         {
+          "name": "Region"
+         },
+         {
+          "name": "Qty"
+         },
+         {
+          "name": "Price"
+         },
+         {
+          "name": "Total",
+          "formula": "Sales[[#This Row],[Qty]]*Sales[[#This Row],[Price]]"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "steps": [
+    {
+     "name": {
+      "name": "SALES",
+      "ref": "1"
+     }
+    },
+    {
+     "name": {
+      "name": "Продажи",
+      "ref": "2"
+     }
+    },
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "J2",
+      "value": {
+       "formula": "Продажи*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "J1:J2"
+    }
+   ]
+  },
+  {
+   "id": "file-question",
+   "about": "a file holding a name with a question mark inside (Став?ка): Excel loads it or repairs it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Став?ка",
+      "ref": "5"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Став?ка*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  },
+  {
+   "id": "file-backslash",
+   "about": "a file holding a name with a backslash inside (Став\\ка): Excel loads it or repairs it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 100
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "Став\\ка",
+      "ref": "5"
+     }
+    ]
+   },
+   "steps": [
+    {
+     "edit": {
+      "sheet": "S",
+      "cell": "C1",
+      "value": {
+       "formula": "Став\\ка*2"
+      }
+     }
+    }
+   ],
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "add-cyrillic": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 1.2
+    }
+   },
+   "formulas": {
+    "S!C1": "=Ставка*10",
+    "S!C2": "=Ставка+1"
+   },
+   "tables": [],
+   "names": [
+    "Ставка"
+   ]
+  },
+  "add-scope": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 0.2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 1.3
+    },
+    "Лист!A1": {
+     "t": "n",
+     "v": 0.3
+    }
+   },
+   "formulas": {
+    "S!C1": "=Ставка",
+    "S!C2": "=Лист!Ставка+1",
+    "Лист!A1": "=Ставка"
+   },
+   "tables": [],
+   "names": [
+    "Лист!Ставка",
+    "Ставка"
+   ]
+  },
+  "add-shape": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 1010
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 1000
+    }
+   },
+   "formulas": {
+    "S!C1": "=АБ12",
+    "S!C2": "=К2С3+С*10",
+    "S!C3": "=RR"
+   },
+   "tables": [],
+   "names": [
+    "RR",
+    "АБ12",
+    "К2С3",
+    "С"
+   ],
+   "refused": {
+    "1": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "3": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "5": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "6": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "7": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "8": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-question": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 14
+    }
+   },
+   "formulas": {
+    "S!C1": "=Став?ка*2",
+    "S!C2": "=Rate?*2"
+   },
+   "tables": [],
+   "names": [
+    "Rate?",
+    "Став?ка"
+   ],
+   "refused": {
+    "1": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-backslash": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 12
+    }
+   },
+   "formulas": {
+    "S!C1": "=Став\\ка*2",
+    "S!C2": "=\\Ставка*2"
+   },
+   "tables": [],
+   "names": [
+    "\\Ставка",
+    "Став\\ка"
+   ]
+  },
+  "add-chars": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 321
+    }
+   },
+   "formulas": {
+    "S!C1": "=Став.ка+_Ставка*10+Ставка1*100"
+   },
+   "tables": [],
+   "names": [
+    "_Ставка",
+    "Став.ка",
+    "Ставка1"
+   ],
+   "refused": {
+    "3": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "4": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "5": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-bool": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 23
+    }
+   },
+   "formulas": {
+    "S!C1": "=ИСТИНА+ЛОЖЬ"
+   },
+   "tables": [],
+   "names": [
+    "ИСТИНА",
+    "ЛОЖЬ"
+   ],
+   "refused": {
+    "0": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра.",
+    "1": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-function": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 15
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!C1": "=SUM(SUM,СУММ,Сумма)",
+    "S!C2": "=SUM*2"
+   },
+   "tables": [],
+   "names": [
+    "SUM",
+    "СУММ",
+    "Сумма"
+   ]
+  },
+  "add-long": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "e",
+     "v": "NAME"
+    }
+   },
+   "formulas": {
+    "S!C1": "=ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ"
+   },
+   "tables": [],
+   "names": [
+    "ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ"
+   ],
+   "refused": {
+    "1": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "add-table": {
+   "values": {
+    "S!J1": {
+     "t": "n",
+     "v": 11
+    },
+    "S!J2": {
+     "t": "n",
+     "v": 4
+    }
+   },
+   "formulas": {
+    "S!J1": "=SUM(Sales[Qty])",
+    "S!J2": "=Продажи*2"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "Sales",
+     "range": "A1:D5",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "Region",
+      "Qty",
+      "Price",
+      "Total"
+     ]
+    }
+   ],
+   "names": [
+    "Продажи"
+   ],
+   "refused": {
+    "0": "-50 Получена ошибка от «Microsoft Excel»: Ошибка параметра."
+   }
+  },
+  "file-question": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=Став?ка*2"
+   },
+   "tables": []
+  },
+  "file-backslash": {
+   "values": {
+    "S!A1": {
+     "t": "n",
+     "v": 100
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!C1": "=Став\\ка*2"
+   },
+   "tables": []
+  }
+ }
+}
