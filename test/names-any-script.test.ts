@@ -51,6 +51,22 @@ describe('defined names in letters of any script', () => {
     expect([r.sheets[0].cells.A1.value, r.sheets[0].cells.A2.value, r.sheets[1].cells.A1.value]).toEqual([0.6, 0.2, 0.3])
   })
 
+  it("a formula spells a name as it is defined, as Excel shows it (tables/names-held any-case): typed in any case, a sheet's own too", () => {
+    const b: BookInput = {
+      sheets: [
+        { name: 'S', cells: { A1: { formula: 'ставка*2' }, A2: { formula: "SUM('Лист'!СТАВКА,1)" } } },
+        { name: 'Лист', cells: { A1: { formula: 'ставка' } } },
+      ],
+      names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
+    }
+    const r = compute(b, { display: false })
+    expect([r.sheets[0].cells.A1.formula, r.sheets[0].cells.A2.formula, r.sheets[1].cells.A1.formula]).toEqual(['Ставка*2', "SUM('Лист'!Ставка,1)", 'Ставка'])
+    const s = openSession(b)
+    s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'сТаВкА*10' } }])
+    expect(s.result().sheets[0].cells.B1).toMatchObject({ value: 2, formula: 'Ставка*10' })
+    s.close()
+  })
+
   it('two names that differ only in case are one name: the second is a duplicate', () => {
     const v = values(book({ B1: 'ставка' }, [{ name: 'Ставка', ref: '1' }, { name: 'СТАВКА', ref: '2' }]))
     expect(v.issues).toEqual([{ name: 'СТАВКА', reason: 'duplicate name' }])
