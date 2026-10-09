@@ -5,6 +5,7 @@
  * its own.
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { contains, meets, parseRange, type Axis, type Rect } from './area.js'
@@ -13,7 +14,11 @@ import type { Paste } from './paste.js'
 /** The array formulas of a sheet: their cell and area. */
 export function areasOf(sheet: SheetInput): [string, Rect][] {
   const out: [string, Rect][] = []
-  for (const [addr, c] of Object.entries(sheet.cells)) if (c.array !== undefined && c.formula !== undefined) out.push([addr, parseRange(c.array)!])
+  for (const addr of Object.keys(sheet.cells)) {
+    const c = sheet.cells[addr]
+    spend(1)
+    if (c.array !== undefined && c.formula !== undefined) out.push([addr, parseRange(c.array)!])
+  }
   return out
 }
 

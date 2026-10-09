@@ -152,7 +152,8 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
     const k = sheetKey(s.name)
     const cells: Record<string, CellInput> = {}
     let changed = k === fk || k === tk
-    for (const [addr, cell] of Object.entries(s.cells)) {
+    for (const addr of Object.keys(s.cells)) {
+      const cell = s.cells[addr]
       if (k === fk && within(src, addr)) {
         const p = parseAddress(addr)
         const at = formatAddress(p.row + dr, p.col + dc)

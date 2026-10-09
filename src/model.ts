@@ -100,13 +100,16 @@ export function msToSerial(ms: number): number {
   return serial < 61 ? serial - 1 : serial
 }
 
+/** An address's place in the order of `sortAddresses`: row, then column. */
+export function addressOrder(a: string): number {
+  const { row, col } = parseAddress(a)
+  return row * MAX_COLS + col
+}
+
 /** Addresses in order (row, then column): each address is parsed once, not per comparison. */
 export function sortAddresses(addrs: Iterable<string>): string[] {
   return [...addrs]
-    .map((a) => {
-      const { row, col } = parseAddress(a)
-      return [row * MAX_COLS + col, a] as const
-    })
+    .map((a) => [addressOrder(a), a] as const)
     .sort((x, y) => x[0] - y[0])
     .map((x) => x[1])
 }

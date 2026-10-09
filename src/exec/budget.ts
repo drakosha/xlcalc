@@ -100,6 +100,13 @@ export function step(): void {
 /** The computation's slice is used up: a step boundary yields. */
 export const due = (): boolean => active !== null && active.due
 
+/** Counts `n` units of work as `spend` does, and tells whether the slice is used up: a loop of steps yields then. */
+export function paced(n: number): boolean {
+  if (active === null) return false
+  if ((active.left -= n) <= 0) active.look()
+  return active.due
+}
+
 /** `n` values are about to be made: over `limits.cells` stops the computation, before they are allocated. */
 export function allot(n: number): void {
   if (active !== null && n > active.cells) throw new CalcError('limit', `${n} values in one range or array, over the limit of ${active.cells}`, { limit: 'cells', max: active.cells, size: n })

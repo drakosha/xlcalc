@@ -5,6 +5,7 @@
  * ranges do and are gone when one cell or none is left.
  */
 import type { CellInput, SheetInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { lines, toMap, type Line } from '../layout/spans.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
 import { formatAddress, parseAddress } from '../model.js'
@@ -83,7 +84,9 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
 export function formatBefore(sheet: SheetInput, axis: Axis, at: number, n: number): Record<string, CellInput> {
   const out: Record<string, CellInput> = {}
   if (at === 0) return out
-  for (const [addr, cell] of Object.entries(sheet.cells)) {
+  for (const addr of Object.keys(sheet.cells)) {
+    const cell = sheet.cells[addr]
+    spend(1)
     const p = parseAddress(addr)
     if ((axis === 'r' ? p.row : p.col) !== at - 1 || (cell.style === undefined && cell.format === undefined)) continue
     const copy: CellInput = { ...(cell.format !== undefined ? { format: cell.format } : {}), ...(cell.style !== undefined ? { style: cell.style } : {}) }

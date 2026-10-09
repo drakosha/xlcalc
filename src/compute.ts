@@ -12,5 +12,5 @@ export function* computeSteps(book: BookInput, o: ComputeOptions): Steps<Compute
   checkBook(book)
   const clock = o.clock ?? currentClock()
   const state = yield* buildState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: o.execution })
-  return buildResult(state, clock, t0, o.display !== false)
+  return yield* buildResult(state, clock, t0, o.display !== false)
 }
