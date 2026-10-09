@@ -18,7 +18,8 @@ describe.each(['closures', 'eval'] as const)('text with a line break read as a n
 
   it.each(['en-US', 'ru-RU'])('%s: a session edit that brings such text in', (locale) => {
     const s = openSession(book(locale, '2'), { execution })
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 'x\ny' } }]).map((c) => [c.cell, c.value])).toEqual([['A1', 'x\ny'], ['B1', { error: 'VALUE' }], ['B2', 'no']])
+    const changes = s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 'x\ny' } }]).map((c) => [c.cell, c.value])
+    expect(changes.sort((a, b) => String(a[0]).localeCompare(String(b[0])))).toEqual([['A1', 'x\ny'], ['B1', { error: 'VALUE' }], ['B2', 'no']])
     s.close()
   })
 })

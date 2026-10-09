@@ -278,7 +278,8 @@ export function enNumber(text: string): number | null {
   const t = trimSpaces(text)
   if (t === '') return null
   const { s, paren, percent } = unwrap(t)
-  const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/.exec(s)!
+  // `s`: text with a line break is matched whole and read as no number, not left unmatched
+  const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/s.exec(s)!
   if (sign[1] && sign[3]) return null
   const negative = (sign[1] || sign[3]) === '-'
   if (paren && negative) return null
