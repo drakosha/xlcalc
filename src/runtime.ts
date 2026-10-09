@@ -4,7 +4,7 @@
  * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
  * be bundled and run outside Node.
  */
-import { makeCaller, type Arg, type Cx, type Grid, type HiddenRule } from './args.js'
+import { makeCaller, type Arg, type Bounds, type Cx, type Grid, type HiddenRule } from './args.js'
 import { liftCaller, liftLazy } from './arrays/call.js'
 import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
@@ -75,8 +75,13 @@ export function randAt(seed: number, sheet: string, row: number, col: number, k?
 export function makeRuntime(ctx: RuntimeContext) {
   const { sheets, rules } = ctx
   const { toNum, toText, compareOp } = rules
+  const shapes = new WeakMap<readonly V[], Bounds>()
 
   const bounds = (g: Rng) => {
+    // A write outside the range can grow the sheet without changing this snapshot's stored shape.
+    const hit = ctx.flat.get(g.key)
+    const shape = hit && shapes.get(hit)
+    if (shape) return shape
     const sh = sheets[g.s]
     const [r2, c2] = fillBounds(sh.fills, g, g.r2 === MAX_ROWS - 1 ? Math.max(sh.rows - 1, g.r1) : g.r2, Math.min(g.c2, Math.max(sh.cols.length - 1, g.c1)))
     return { r1: g.r1, c1: g.c1, r2, c2, h: r2 - g.r1 + 1, w: c2 - g.c1 + 1 }
@@ -98,7 +103,10 @@ export function makeRuntime(ctx: RuntimeContext) {
       for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.[b.r1 + r] ?? null
     }
     if (sh.fills.length) fillFlat(sh.fills, b, out)
-    if (out.length >= BIG_RANGE) ctx.flat.set(g.key, out)
+    if (out.length >= BIG_RANGE) {
+      shapes.set(out, b)
+      ctx.flat.set(g.key, out)
+    }
     return out
   }
 

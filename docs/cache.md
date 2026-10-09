@@ -2,6 +2,8 @@
 
 The runtime keeps large range values and SUMIFS/COUNTIFS indexes in `RangeCache` (`src/range-cache.ts`). A cached entry keeps its numeric bounds and is indexed by sheet and column. A write checks the entries in its columns and that sheet's wide ranges, rather than parsing and checking every cached key. The bounds are the referenced area, not just its occupied cells: writing below the occupied part of `A:A` invalidates it too. Deletion and clearing remove the entries from both the values and the column index.
 
+The runtime also keeps each cached value array's materialized shape in a WeakMap. A write outside the referenced range can grow the sheet without invalidating that array. Reads keep the snapshot's original height and row stride; newly occupied sheet bounds cannot be applied to an older, shorter array. The unstored part of the range remains blank. `test/range-shape.test.ts` checks growth in both dimensions and restoration of a blocked whole-column spill, comparing session and full results.
+
 Exact VLOOKUP, HLOOKUP, MATCH, XLOOKUP and XMATCH searches reuse indexes over immutable range or array values (`src/functions/lookup/exact.ts`). The storage array, its stride and length, and the book's comparator identify an index. An edit invalidates the range array; its old lookup indexes are held weakly and can be collected with it.
 
 A scalar index keeps the first and last positions of each number or boolean. Numbers compare exactly, as lookups do, without the output's 15-digit rounding; booleans and numbers stay distinct. A text index groups spellings with the book's comparator, preserving case-insensitive, accent-sensitive equality, including Unicode-equivalent spellings. Lower-cased strings alone are not equality keys. First and last positions preserve duplicate direction.
@@ -43,13 +45,13 @@ Five alternating pairs against the statistics checkpoint `71fd5e6`, same machine
 
 | Book and operation | Before | After |
 |---|---:|---:|
-| 5,000 prefix SUM formulas; open session, closures | 161 ms | 35 ms |
-| Same book: change A2500 to 2 | 83 ms | 9.3 ms |
+| 5,000 prefix SUM formulas; open session, closures | 166 ms | 35 ms |
+| Same book: change A2500 to 2 | 85 ms | 9.3 ms |
 | Same book: open session, eval | 170 ms | 41 ms |
 | Same book: edit, eval | 82 ms | 9.3 ms |
 | synthBook, seed 1, 3,400 rows; full compute | 227 ms | 227 ms |
-| synthBook, seed 1, 34,000 rows; full compute | 1,522 ms | 1,543 ms |
+| synthBook, seed 1, 34,000 rows; full compute | 1,569 ms | 1,535 ms |
 
-The synthetic business book did not show a speed improvement from shared aggregate prefixes. Its edit-A p95 was 1.13/1.01 ms at 3,400 rows and 3.50/3.52 ms at 34,000 rows (before/after).
+The synthetic business book did not show a consistent speed improvement from shared aggregate prefixes. Before the cached-shape fix, a separate paired run at 34,000 rows gave 1,522/1,543 ms, so the sign of that small difference changed between runs. Edit-A p95 was 1.13/1.01 ms at 3,400 rows and 3.62/3.56 ms at 34,000 rows (before/after).
 
-Separate fresh-process measurements of the 5,000-prefix book retained about 102 MiB before and 7.2 MiB after, measured as heap growth after GC while the session was open, median of five runs. The new implementation opened 34,000 prefix formulas in 194 ms and edited the middle input in 60 ms, retaining about 53 MiB. The old implementation was not run at that size because its separate prefix arrays contain roughly 578 million values.
+Separate fresh-process measurements of the 5,000-prefix book retained about 102 MiB before and 7.2 MiB after, measured as heap growth after GC while the session was open, median of five runs. The new implementation opened 34,000 prefix formulas in 194 ms and edited the middle input in 62 ms, retaining about 53 MiB. The old implementation was not run at that size because its separate prefix arrays contain roughly 578 million values.
