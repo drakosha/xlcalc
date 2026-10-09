@@ -239,10 +239,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
     info.refs.push(...boxes)
     if (anchors.length) (info.spans ??= []).push({ boxes, anchors })
   }
-  /**
-   * LOOKUP's result row or column, when shorter than a lookup range or array constant, widened to its length, as far
-   * as the sheet goes: Excel reads on past the end, and so the cells read are among the formula's references.
-   */
+  /** LOOKUP's result row or column widened to a longer lookup range or array constant: Excel reads on past its end, so those cells are references too. */
   const lookupResult = (look: Ast | undefined, res: Ast | undefined): T | undefined => {
     if (res?.k !== 'ref' || res.ref.spill) return undefined
     const size = look?.k === 'ref' && !look.ref.spill ? rect(look) : undefined
