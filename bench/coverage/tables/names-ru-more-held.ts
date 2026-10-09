@@ -3,7 +3,9 @@
  * before Excel ran them (`names-ru-more-held.predicted.json`). Names are added through Excel's object model
  * (`Names.Add`), which refuses a name Excel does not take, and formulas are typed in Russian after. The books with a
  * name in the file measure why Excel ru-RU does not load a file with the name ИСТИНА (`names-ru-held` bool-word): the
- * name alone, in another case, ЛОЖЬ, the word in a formula without the name, the word inside longer names.
+ * name alone, in another case, ЛОЖЬ, the word in a formula without the name, the word inside longer names. The writer
+ * now leaves ИСТИНА and ЛОЖЬ out of a ru-RU book's file, so the books holding them do not go into a file whole any more
+ * and are not run again; their answers stay.
  */
 import type { BookInput, NameInput } from '../../../src/contract.js'
 import { book, on, type CellSpec, type TableCase, type TableStep } from './cases.js'
