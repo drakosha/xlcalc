@@ -105,6 +105,9 @@ export function allot(n: number): void {
   if (active !== null && n > active.cells) throw new CalcError('limit', `${n} values in one range or array, over the limit of ${active.cells}`, { limit: 'cells', max: active.cells, size: n })
 }
 
+/** Range-reading shortcuts keep the original allocation/check path when a caller bounds range cells. */
+export const unlimitedRangeCells = (): boolean => active === null || active.cells === Infinity
+
 /** The book holds `n` formulas: over `limits.formulas` stops the computation. */
 export function count(n: number): void {
   if (active !== null && n > active.formulas) throw new CalcError('limit', `${n} formulas, over the limit of ${active.formulas}`, { limit: 'formulas', max: active.formulas, size: n })

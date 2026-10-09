@@ -20,6 +20,7 @@ import type { RulesClock } from './locale/rules/data.js'
 import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { RangeCache } from './range-cache.js'
+import { RangeAggregates } from './range-aggregate.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { blocks } from './spill/occupied.js'
 import { endSpill, spillRef } from './spill/place.js'
@@ -190,6 +191,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     externals: opts.externals?.values ?? {},
     flat: new RangeCache(),
     index: new RangeCache(),
+    aggregates: new RangeAggregates(),
     nested: new Map(),
     hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),

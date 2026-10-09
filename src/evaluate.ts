@@ -28,6 +28,7 @@ export const shown = (v: V): V => (v === null || v === undefined ? 0 : typeof v 
 export function invalidate(ctx: RuntimeContext, x: Area) {
   ctx.flat.invalidate(x)
   ctx.index.invalidate(x)
+  ctx.aggregates.invalidate(x)
 }
 
 /** The values cells had before a change (by `s:r:c`), and the spills of formulas (by their cell) as `describeSpill` gives them. */

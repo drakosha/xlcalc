@@ -11,13 +11,14 @@ import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import type { RefOp } from './syntax/ast.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
-import { allot, spend } from './exec/budget.js'
+import { allot, spend, unlimitedRangeCells } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
 import type { RangeCache } from './range-cache.js'
+import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
@@ -49,6 +50,7 @@ export interface RuntimeContext {
   /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
   hidden: Map<number, HiddenRows>
   index: RangeCache<CritIndex>
+  aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
 }
@@ -262,7 +264,12 @@ export function makeRuntime(ctx: RuntimeContext) {
   /** The callers that lift a call over arrays in one-value arguments (non-lazy functions). */
   const FL: Record<string, (...a: any[]) => Arg> = {}
   for (const [name, def] of Object.entries(DEFS)) {
-    F[name] = makeCaller(def, cx)
+    const caller = makeCaller(def, cx)
+    F[name] = ['SUM', 'COUNT', 'MIN', 'MAX'].includes(name)
+      ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng && unlimitedRangeCells()
+        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell)
+        : caller(...args)
+      : caller
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */
