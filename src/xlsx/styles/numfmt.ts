@@ -8,7 +8,7 @@
  */
 import { EN_BUILTIN, isBuiltin } from '../../numfmt/builtin.js'
 
-/** The codes Excel for Mac en-US shows for the built-in formats 1 to 58. */
+/** The codes of the built-in formats 1 to 58 in en-US: Excel for Windows's to 49 (`numfmt/builtin.ts`), Excel for Mac's from 50. */
 export const BUILTIN: Readonly<Record<number, string>> = Object.fromEntries(
   Array.from({ length: 58 }, (_, i) => i + 1).map((id) => [id, isBuiltin(id) ? EN_BUILTIN[id] : 'm/d/yy']),
 )
