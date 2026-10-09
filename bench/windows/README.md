@@ -84,7 +84,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
 | cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,979, the others by the rules of `WIN_SHOWN` |
 | cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,569, the others by the rules of `WIN_SHOWN` |
-| tables, 5 sets and 1 | en-US, ru-RU | 87 and 4 | 83 and 4 | all but the 4 the Mac pins too |
+| tables, 8 sets and 4 | en-US, ru-RU | 120 and 25 | 115 and 22 | all but the 11 the Mac pins too |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
 | structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
@@ -95,6 +95,7 @@ What Excel for Windows does otherwise than Excel for Mac, by reason, and which o
 - Its regional data in ru-RU: Latin sorts before Cyrillic (`"a"<"а"` is TRUE), month names have a capital (`Январь`) and short ones three letters (`фев`, `ноя`), the short and long time no leading zero; built-in formats by number take Windows's own codes (en-US 14 is `m/d/yyyy`). The engine follows Windows, but for the long date `[$-F800]`, which has no weekday on Windows and keeps the Mac's here.
 - `CHAR` and `CODE` by the Windows code pages, and 63 for a character outside them. The engine follows Windows.
 - Trigonometry at its poles and complex functions of large arguments from the 13th digit on (`TAN(PI()/2)`), `WEEKNUM` with return type 22, `WEIBULL` with a scale of 1E-300. The engine follows the Mac.
+- A table's name in ru-RU: Excel for Windows makes `ИСТИНА_` of a table renamed `ИСТИНА`, as both Excels refuse such a defined name, and keeps a table renamed `TRUE`; Excel for Mac keeps `ИСТИНА` and makes `TRUE_`. The engine refuses both, following Windows for `ИСТИНА`.
 - Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels. The engine lays cells out as the Mac does.
 
 Both Excels agree and the engine does not in 57 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
