@@ -5,7 +5,7 @@
  */
 import type { Arg, Cx, FnDef, Grid, Segment } from '../../args.js'
 import { isMany } from '../../arrays/lift.js'
-import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
+import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
 import { allot, spend } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
@@ -14,9 +14,7 @@ import { NEWER_MAX_ARGS } from '../common.js'
 /** Rows `rs` and columns `cs` (zero-based) of an array. */
 function pick(a: Arr, rs: readonly number[], cs: readonly number[]): Arr {
   allot(rs.length * cs.length)
-  const v: V[] = []
-  for (const r of rs) for (const c of cs) v.push(a.at(r, c))
-  return new Arr(rs.length, cs.length, rs.length, cs.length, v)
+  return selectArray(a, rs, cs)
 }
 
 const range = (from: number, to: number) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i)
@@ -64,7 +62,7 @@ function takeDrop(take: boolean): FnDef {
 
 /** An argument of HSTACK, VSTACK as arrays: a value, a reference or an array; each area of a union or of a reference across sheets. */
 const stackParts = (cx: Cx, x: Arg): Arr[] =>
-  x instanceof Arr ? [x] : x instanceof Rng ? [fromGrid(cx.grid(x))] : x instanceof Areas ? x.list.flatMap((g) => stackParts(cx, g)) : [new Arr(1, 1, 1, 1, [x])]
+  x instanceof Arr ? [x] : x instanceof Rng ? [fromGrid(cx.grid(x))] : x instanceof Areas ? x.list.flatMap((g) => stackParts(cx, g)) : [asArray(x)]
 
 /**
  * Arrays side by side (`across`) or one under another; shorter ones are padded with #N/A. An error given as a

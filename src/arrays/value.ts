@@ -42,6 +42,29 @@ export class Arr {
 /** A fully stored array from its values row by row. */
 export const arr = (rows: number, cols: number, v: V[]): Arr => new Arr(rows, cols, rows, cols, v)
 
+/** A scalar as one array element; an existing array keeps its stored extent and fill. */
+export const asArray = (value: V | Arr): Arr => value instanceof Arr ? value : arr(1, 1, [value])
+
+/** Element of an operand, repeating a single row or column; undefined outside its referenced size. */
+export function broadcastAt(x: V | Arr, r: number, c: number): V | undefined {
+  if (!(x instanceof Arr)) return x
+  const rr = x.rows === 1 ? 0 : r
+  const cc = x.cols === 1 ? 0 : c
+  return rr >= x.rows || cc >= x.cols ? undefined : x.at(rr, cc)
+}
+
+/** Selected rows and columns in the given order; an omitted axis keeps all positions. Callers check their allocation limit. */
+export function selectArray(a: Arr, rs?: readonly number[], cs?: readonly number[]): Arr {
+  const rows = rs ? rs.length : a.rows, cols = cs ? cs.length : a.cols
+  const v: V[] = []
+  for (let r = 0; r < rows; r++) {
+    const row = rs ? rs[r] : r
+    if (cs) for (const c of cs) v.push(a.at(row, c))
+    else for (let c = 0; c < cols; c++) v.push(a.at(row, c))
+  }
+  return arr(rows, cols, v)
+}
+
 /** A grid (a range's values, a scalar) as an array; an array stays as it is. */
 export const fromGrid = (g: { rows: number; cols: number; h: number; w: number; v: readonly V[] }): Arr => (g instanceof Arr ? g : new Arr(g.rows, g.cols, g.h, g.w, g.v))
 

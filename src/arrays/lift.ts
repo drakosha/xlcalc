@@ -6,7 +6,7 @@
  */
 import { allot, spend } from '../exec/budget.js'
 import { Areas, E, Rng, type V } from '../values.js'
-import { Arr } from './value.js'
+import { Arr, broadcastAt } from './value.js'
 
 /** A value as the runtime passes it: a scalar, a reference or an array. */
 export type Val = V | Rng | Arr
@@ -19,14 +19,6 @@ export const isMany = (x: unknown): x is Rng | Arr => (x instanceof Arr ? x.rows
 
 /** What an operator or a one-value argument lifts over: any array (a 1 × 1 one stays an array, `TYPE({1}+0)` is 64) or a reference of several cells. */
 export const lifts = (x: unknown): x is Rng | Arr => x instanceof Arr || isArea(x)
-
-/** Element (r, c) of an operand, a single row or column repeated; undefined past the operand. */
-function elem(x: V | Arr, r: number, c: number): V | undefined {
-  if (!(x instanceof Arr)) return x
-  const rr = x.rows === 1 ? 0 : r
-  const cc = x.cols === 1 ? 0 : c
-  return rr >= x.rows || cc >= x.cols ? undefined : x.at(rr, cc)
-}
 
 /** How far an operand varies along one dimension of size `n`: its occupied part, all of it when repeated or short. */
 function extent(size: number, used: number, filled: boolean, n: number): number {
@@ -60,7 +52,7 @@ export function liftN(xs: readonly (V | Arr)[], f: (args: V[]) => V): Arr {
     for (let c = 0; c < w; c++) {
       let outside = false
       for (let i = 0; i < xs.length; i++) {
-        const v = elem(xs[i], r, c)
+        const v = broadcastAt(xs[i], r, c)
         if (v === undefined) outside = true
         else args[i] = v
       }

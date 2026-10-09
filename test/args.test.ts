@@ -3,7 +3,8 @@
  * book, empty input, paired arrays, the answer rules (non-finite numbers), and the function specs derived from kinds.
  */
 import { describe, expect, it } from 'vitest'
-import { makeCaller, pairs, specOf, type FnDef, type Grid } from '../src/args.js'
+import { makeCaller, pairs, specOf, type Arg, type FnDef, type Grid } from '../src/args.js'
+import { Arr } from '../src/arrays/value.js'
 import { createState } from '../src/engine.js'
 import { E, isErr, Rng, type V } from '../src/values.js'
 
@@ -32,7 +33,7 @@ const ERR = rng(0, 2, 0, 2)
 const NUMS = rng(0, 4, 2, 4)
 
 /** Calls a one-argument (or repeated) function of the given kind that returns its coerced argument as JSON text. */
-const coerce = (args: string, ...a: (V | Rng)[]) => {
+const coerce = (args: string, ...a: Arg[]) => {
   const r = makeCaller({ args, rep: args.length === 1 && 'NAZVD'.includes(args) ? 1 : undefined, fn: (x: unknown) => JSON.stringify(x) }, cx)(...a)
   return isErr(r) ? r : JSON.parse(r as string)
 }
@@ -73,6 +74,20 @@ describe('argument layer', () => {
     const whole = makeCaller({ args: 'G', fn: (g: Grid) => `${g.rows}x${g.cols} ${g.h}x${g.w}` }, cx)(new Rng(0, 0, 4, 1048575, 4))
     expect(whole).toBe('1048576x1 8x1')
     expect(makeCaller({ args: 'M', fn: () => 'called' }, cx)(rng(0, 2, 2, 2))).toBe(E.DIV0)
+  })
+
+  it('list rules keep array and range coercion distinct, including unstored fill and error order', () => {
+    const a = new Arr(8, 1, 8, 1, [1, '2', 'abc', true, null, 5, false, 3.5])
+    expect(coerce('N', a)).toEqual(coerce('N', MIX))
+    expect(coerce('A', a)).toEqual([1, 5, 3.5])
+    expect(coerce('Y', a)).toEqual([1, 0, 0, 5, 3.5])
+    expect(coerce('Y', MIX)).toEqual([1, 0, 0, 1, 5, 0, 3.5])
+    expect(coerce('Z', a)).toBe(E.VALUE)
+    expect(coerce('D', new Arr(1, 2, 1, 2, [45688.75, 45700.5]))).toEqual([45688, 45700])
+    expect(coerce('N', new Arr(4, 2, 2, 1, [1, 3], 2))).toEqual([1, 2, 3, 2, 2, 2, 2, 2])
+    expect(coerce('N', new Arr(4, 2, 2, 1, [1, 3]))).toEqual([1, 3])
+    expect(coerce('N', new Arr(4, 2, 2, 1, [1, E.NA], E.DIV0))).toBe(E.DIV0)
+    expect(coerce('N', new Arr(4, 1, 2, 1, [1, E.NA], E.DIV0))).toBe(E.NA)
   })
 
   it('rule 2: date and time text in date arguments, the date range', () => {

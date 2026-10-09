@@ -3,11 +3,11 @@
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); the rest this engine's own.
  */
 import { pairs, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
-import { Arr } from '../../arrays/value.js'
+import { Arr, asArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, type Rng, type CErr, type V } from '../../values.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
 import { product, sum, sumSquares } from '../common.js'
-import { asRng, criteriaPairs, resizeRange } from '../criteria.js'
+import { aggregateIf, aggregateIfs } from '../criteria.js'
 
 /** The sum of the numbers at the selected positions; an error there is the answer. */
 function sumAt(values: readonly V[], sel: number[]): V {
@@ -39,8 +39,7 @@ function sumproduct(cx: Cx, xs: Arg[]): V {
   const arrs: Arr[] = []
   for (const x of xs) {
     if (isErr(x)) return x
-    const a = cx.view(x)
-    arrs.push(a instanceof Arr ? a : new Arr(1, 1, 1, 1, [a]))
+    arrs.push(asArray(cx.view(x)))
   }
   const [first] = arrs
   if (arrs.some((a) => a.rows !== first.rows || a.cols !== first.cols)) return E.VALUE
@@ -130,37 +129,18 @@ export const functions: Record<string, FnDef> = {
   PRODUCT: { args: 'N', rep: 1, fn: product },
   SERIESSUM: { args: 'x x x V', cx: true, fn: seriessum },
   SUM: { args: 'N', rep: 1, fn: sum },
-  // the sum range takes the size of the criteria range from its own top-left cell, as in Excel
   SUMIF: {
     args: 'R a R?',
     cx: true,
     criteria: true,
-    fn: (cx: Cx, range: V | Rng, crit: V | Rng, sum?: V | Rng) => {
-      const cg = asRng(range)
-      if (isErr(cg)) return cg
-      if (sum === undefined) {
-        const r = cx.select([[cg, crit]])
-        return isErr(r) ? r : sumAt(r.read(cg), r.sel)
-      }
-      const sg = asRng(sum)
-      if (isErr(sg)) return sg
-      // past the sheet's edge the sum range is cut, and then it no longer fits: #VALUE!
-      const sized = resizeRange(sg, cg)
-      const r = cx.select([[cg, crit]], sized)
-      return isErr(r) ? r : sumAt(r.read(sized), r.sel)
-    },
+    fn: aggregateIf(sumAt),
   },
   SUMIFS: {
     args: 'R R a',
     rep: 2,
     cx: true,
     criteria: true,
-    fn: (cx: Cx, sum: V | Rng, rest: (V | Rng)[]) => {
-      const sg = asRng(sum)
-      if (isErr(sg)) return sg
-      const r = cx.select(criteriaPairs(rest), sg)
-      return isErr(r) ? r : sumAt(r.read(sg), r.sel)
-    },
+    fn: aggregateIfs(sumAt),
   },
   SUMPRODUCT: { args: 'R', rep: 1, cx: true, fn: sumproduct },
   SUMSQ: { args: 'N', rep: 1, fn: sumSquares },

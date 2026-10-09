@@ -325,53 +325,46 @@ function timeOfDay(v: V, rules: Rules): number | CErr {
 /** A number where a boolean is #VALUE! (the former Analysis ToolPak's rule). */
 export const noBool = (v: V, rules: Rules): number | CErr => (typeof v === 'boolean' ? E.VALUE : rules.toNum(v))
 
-/** A range's numbers added to `out` (through `num`, if given), its other cells by `inRange`; an error stops. */
-function numbers(g: Rng, cx: Cx, out: number[], inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number, rules: Rules) => number | CErr): CErr | undefined {
-  const { rules } = cx
-  for (const v of cx.flat(g)) {
-    if (v === null) continue
-    const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inRange(v)
-    if (n === undefined) continue
-    if (isErr(n)) return n
-    out.push(n)
-  }
-}
+type ListOther = (v: Exclude<V, number | null>) => number | CErr | undefined
+type ListNumber = (n: number, rules: Rules) => number | CErr
 
 /**
  * A list kind: a range gives its numbers (through `num`, if given) and its other non-blank cells by
  * `inRange` (a number, an error, or undefined to skip); a direct argument goes through `direct`.
  */
-function list(direct: (v: V, rules: Rules) => number | CErr, inRange: (v: Exclude<V, number | null>) => number | CErr | undefined, num?: (n: number, rules: Rules) => number | CErr, inArray = inRange) {
+function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther, num?: ListNumber, inArray = inRange) {
   return (x: Arg, cx: Cx): number[] | CErr => {
     const out: number[] = []
     const { rules } = cx
-    if (x instanceof Arr) {
-      const take = (v: V): CErr | undefined => {
-        if (v === null) return
-        const n = typeof v === 'number' ? (num ? num(v, rules) : v) : inArray(v)
-        if (n === undefined) return
+    const other = x instanceof Arr ? inArray : inRange
+    // Keep the output and conversion rule local so the JIT can specialize this shared loop.
+    const numbers = (values: readonly V[]): CErr | undefined => {
+      for (const v of values) {
+        if (v === null) continue
+        const n = typeof v === 'number' ? (num ? num(v, rules) : v) : other(v)
+        if (n === undefined) continue
         if (isErr(n)) return n
         out.push(n)
       }
+    }
+    if (x instanceof Arr) {
       // in order: the occupied rows, then the fill past them (a whole column: 0 for B:B*C:C)
       const a = x.w < x.cols && x.fill !== null ? x.full() : x
-      for (const v of a.v) {
-        const e = take(v)
-        if (e) return e
-      }
+      const e = numbers(a.v)
+      if (e) return e
       const rest = a.rows * a.cols - a.h * a.w
       if (rest <= 0 || a.fill === null) return out
       // the fill once, then repeated: a whole column adds a million numbers
       const before = out.length
-      const e = take(a.fill)
-      if (e) return e
+      const error = numbers([a.fill])
+      if (error) return error
       return out.length > before ? out.concat(new Array<number>(rest - 1).fill(out[before])) : out
     }
-    if (x instanceof Rng) return numbers(x, cx, out, inRange, num) ?? out
+    if (x instanceof Rng) return numbers(cx.flat(x)) ?? out
     // each area of several
     if (x instanceof Areas) {
       for (const g of x.list) {
-        const e = numbers(g, cx, out, inRange, num)
+        const e = numbers(cx.flat(g))
         if (e) return e
       }
       return out
@@ -384,6 +377,7 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: (v: Exclud
 }
 
 const errOrSkip = (v: V) => (isErr(v) ? v : undefined)
+const countOther = (v: V) => isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0
 
 /** Coercion of an argument by kind; a CErr result stops the call, except for the kinds in KEEP_ERRORS. */
 const num = (v: V, rules: Rules) => rules.toNum(v)
@@ -408,8 +402,8 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   a: (x, cx) => cx.scalar(x),
   N: list(num, errOrSkip),
   // in an array MAXA, STDEVA and the like take the numbers only; AVERAGEA (`Y`) counts text there as 0 (Excel 365)
-  A: list(num, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, errOrSkip),
-  Y: list(num, (v) => (isErr(v) ? v : typeof v === 'boolean' ? Number(v) : 0), undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
+  A: list(num, countOther, undefined, errOrSkip),
+  Y: list(num, countOther, undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
   D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
   // an empty element of an array counts for COUNTA (as Excel's empty value does): it is read as empty text

@@ -1,6 +1,6 @@
 /** XLOOKUP and XMATCH, this engine's own. */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
-import { Arr } from '../../arrays/value.js'
+import { Arr, asArray } from '../../arrays/value.js'
 import { E, isErr, Rng, sameType, type V } from '../../values.js'
 import { exactMatch, type Compare, type Key } from './search.js'
 
@@ -61,7 +61,7 @@ function xlookup(cx: Cx, key: V, look: Grid, ret: V | Rng | Arr, notFound?: Arg,
   if (isErr(key)) return key
   if (isErr(ret)) return ret
   if (look.cols !== 1 && look.rows !== 1) return E.VALUE
-  const r = ret instanceof Rng || ret instanceof Arr ? ret : new Arr(1, 1, 1, 1, [ret])
+  const r = ret instanceof Rng ? ret : asArray(ret)
   const rows = r instanceof Rng ? r.r2 - r.r1 + 1 : r.rows
   const cols = r instanceof Rng ? r.c2 - r.c1 + 1 : r.cols
   // one value is a row and a column at once: it looks up the return array's one row, else its one column (`XLOOKUP(0,0,A1:A6)` is A1:A6)

@@ -4,6 +4,8 @@ The statistical and database functions share the helpers in `src/functions/stati
 
 Univariate moments and paired regression share the `central` loop, including its correction and fallback decision. The degrees-of-freedom checks for variance and standard deviation live in `statistical/common.ts`, used by both statistical and database functions. Basic sum, sum of squares, product, minimum and maximum reductions live in `functions/common.ts`, preserving the original input order and each aggregate's empty-list result. Conditional math and statistical functions share range validation, SUMIF/AVERAGEIF resizing and criterion pairing in `functions/criteria.ts`.
 
+`aggregateIf` and `aggregateIfs` also share the selection and error handling for SUMIF(S), AVERAGEIF(S), MAXIFS and MINIFS. The reduction is passed once per formula, keeping SUM's accumulation over selected positions separate from the statistical functions' collected numbers.
+
 Ill-conditioned moments and intermediate overflow/underflow use `exact-moments.ts`: each finite input double is decoded as an integer times a power of two. BigInt accumulators keep the sums, squares and paired products exactly, with independent scales for x and y. The central sums, covariance and regression ratios are formed before conversion back to a double. The final division and square root still use double precision. No external numerical library is used.
 
 The fallback also handles cancellation in a small intercept and in STEYX's residual variance. Large ordinary inputs continue through the double-precision path. Every input loop checks the calculation budget; calculation inside a function remains one synchronous evaluation step.

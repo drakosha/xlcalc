@@ -3,7 +3,7 @@
  * its area as Excel fits it, and the session's edits of part of an area refused, as Excel refuses them.
  */
 import type { Arg } from '../args.js'
-import { Arr } from '../arrays/value.js'
+import { Arr, broadcastAt } from '../arrays/value.js'
 import { arrayArea, holds } from '../array-areas.js'
 import type { CellEdit } from '../contract.js'
 import type { EngineState } from '../engine.js'
@@ -23,11 +23,8 @@ export function fit(x: Arg, rows: number, cols: number, view: (x: Arg) => V | Ar
   const v: V[] = new Array(rows * cols)
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++) {
-      if (!(a instanceof Arr)) v[r * cols + c] = a
-      else {
-        const [i, j] = [a.rows === 1 ? 0 : r, a.cols === 1 ? 0 : c]
-        v[r * cols + c] = i < a.rows && j < a.cols ? a.at(i, j) : E.NA
-      }
+      const value = broadcastAt(a, r, c)
+      v[r * cols + c] = value === undefined ? E.NA : value
     }
   return new Arr(rows, cols, rows, cols, v)
 }
