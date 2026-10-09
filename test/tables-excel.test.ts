@@ -1,13 +1,15 @@
 /**
- * Tables against Excel (`test/excel/tables/<set>.json`, from `run.ts tables <set>`; ru-RU sets in `ru-RU/`): each stored
- * case is its generator's current case, Excel loaded its book, and the engine refuses the steps Excel refused, ends with
- * the tables Excel lists, the values Excel shows in the rectangles and the same formulas, read as stored text. The
- * held-out sets (`-held`) keep the answers predicted before Excel ran them.
+ * Tables against Excel (`test/excel/tables/<set>.json`, from `run.ts tables <set> [locale]`; a locale's other than
+ * en-US in a directory of its tag, `ru-RU/`): each stored case is its generator's current case, Excel loaded its book,
+ * and the engine refuses the steps Excel refused, ends with the tables Excel lists, the values Excel shows in the
+ * rectangles and the same formulas, read as stored text. The held-out sets (`-held`) keep the answers predicted before
+ * Excel ran them.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredTables } from '../bench/coverage/tables.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
+import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { differences } from './tables-cases.js'
 
 const dir = new URL('./excel/tables/', import.meta.url)
@@ -15,7 +17,7 @@ const sets = (sub: string) => {
   const d = new URL(sub, dir)
   return existsSync(d) ? readdirSync(d).filter((f) => f.endsWith('.json')).map((f) => ({ name: f.slice(0, -5), sub, ...(JSON.parse(readFileSync(new URL(f, d), 'utf8')) as StoredTables) })) : []
 }
-const SETS = [...sets(''), ...sets('ru-RU/')]
+const SETS = TAGS.flatMap((tag) => sets(localeDir(tag)))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in the README's Known differences). */
 const KNOWN: Readonly<Record<string, string>> = {

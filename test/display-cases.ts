@@ -1,11 +1,12 @@
 /**
- * The display cases measured in Excel (`test/excel/display/`, `run.ts display <set> [ru]`) as books: each case's
- * cell where the harness put it, in a column of its width (a merged area of its span), computed in the locale of
- * the answers; and how an engine's shown text and colour compare with Excel's.
+ * The display cases measured in Excel (`test/excel/display/`, a locale's in a directory of its tag: `run.ts display
+ * <set> [locale]`) as books: each case's cell where the harness put it, in a column of its width (a merged area of
+ * its span), computed in the locale of the answers; and how an engine's shown text and colour compare with Excel's.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { place, type StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
+import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import type { BookInput, CellDisplay, CellValue, SheetInput } from '../src/contract.js'
 import { formatAddress, indexToCol } from '../src/model.js'
 
@@ -13,7 +14,8 @@ export const CLOCK = { now: '2026-10-07T12:00:00Z', seed: 1 }
 
 export interface DisplaySetFile extends StoredDisplay {
   name: string
-  locale: 'en-US' | 'ru-RU'
+  /** The locale Excel showed the cells in. */
+  locale: string
 }
 
 const dir = new URL('./excel/display/', import.meta.url)
@@ -26,8 +28,8 @@ const read = (sub: string, locale: DisplaySetFile['locale']): DisplaySetFile[] =
     .map((f) => ({ name: f.slice(0, -5), locale, ...(JSON.parse(readFileSync(new URL(f, d), 'utf8')) as StoredDisplay) }))
 }
 
-/** The stored answers of Excel en-US and Excel ru-RU. */
-export const DISPLAY_SETS: DisplaySetFile[] = [...read('./', 'en-US'), ...read('./ru-RU/', 'ru-RU')]
+/** The stored answers of Excel in each locale that has them. */
+export const DISPLAY_SETS: DisplaySetFile[] = TAGS.flatMap((tag) => read(`./${localeDir(tag)}`, tag))
 
 /** A case's cell as the engine takes it: a built-in format by its number. */
 export const formatted = (c: DisplayCase) => (c.numFmtId === undefined ? c.cell : { ...c.cell, format: c.numFmtId })
