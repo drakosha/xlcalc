@@ -127,7 +127,7 @@ Deleting a sheet removes it with its cells. References to it become `#REF!` foll
 
 ## Tables
 
-Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns a name (`Column1`); references to a deleted column or table become `#REF!`. Rows or columns inserted into two tables at once, deleted from two tables that keep some of theirs, and a header row deleted alone are refused with `table`. `addTable`, `renameTable`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
+Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns a name (`Column1`); references to a deleted column or table become `#REF!`. Rows or columns inserted into two tables at once, deleted from two tables unless both go whole, and a header row deleted alone are refused with `table`. `addTable`, `renameTable`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
 
 ## Names, references across sheets and old-kind arrays
 

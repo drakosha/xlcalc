@@ -129,7 +129,7 @@ A reference written by address into a table's data grows at its edges as the tab
 | the totals row | loses it |
 | the whole table | is deleted; references to it become `#REF!` |
 
-Excel refuses some, and `restructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows deleted from two tables that keep some of their rows, a header row deleted without the rest of its table.
+Excel refuses some, and `restructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows that meet two tables deleted unless both go whole (one table gone with a single row of another is refused too), a header row deleted without the rest of its table.
 
 ### Columns
 
@@ -137,7 +137,7 @@ A column inserted inside a table, after its first column, adds a column named `C
 
 A deleted column takes the references to it: `Sales[Price]`, `Sales[@Price]` and a span ending on it become `#REF!`, and so does `[@Price]` in a calculated column (`[@Qty]*#REF!`). A span over the deleted column keeps the rest. All the columns of a table deleted delete the table.
 
-Columns inserted into or deleted from two tables one above the other at once are refused with `table`.
+Columns inserted into two tables one above the other at once are refused with `table`, and so are columns that meet two tables deleted unless both go whole.
 
 In a ru-RU book a new column is named `Столбец1`.
 
@@ -199,8 +199,9 @@ Deleting a sheet takes the references to its tables: they become `#REF!`. Renami
 | `names-ru-more-held` (ru-RU) | 10 | predicted before Excel took them: the same in ru-RU, and files with the name `ИСТИНА` |
 | `names-tables-held` | 4 | predicted before Excel took them: tables named with `?` and `\` |
 | `names-ru-tables-held` (ru-RU) | 3 | predicted before Excel took them: tables renamed `ИСТИНА`, `ложь` and `TRUE` |
+| `delete-held` | 13 | predicted before Excel took them: rows and columns deleted that take one table whole and part of another, or both whole |
 
-The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`). The sets of names came out as predicted on 34 of 54 cases in Excel for Mac; [Defined names](names.md) has the misses and what was fixed.
+The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`); `delete-held` on 5 of 13 cases, as Excel for Mac and Excel for Windows both refuse a deletion that takes one table whole and part of another, which the engine took (fixed). The sets of names came out as predicted on 34 of 54 cases in Excel for Mac; [Defined names](names.md) has the misses and what was fixed.
 
 The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the sets `refs`, `refs-held`, `ops` and `ops-held`: Excel opens each file `writeXlsx` writes and saves it, the files it saved read back to the books written, and the values Excel stored in them equal the engine's.
 
