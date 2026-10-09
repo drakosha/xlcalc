@@ -4,19 +4,21 @@
  * (`args.ts`). The functions themselves live in `functions/` by category. No platform imports: the code can
  * be bundled and run outside Node.
  */
-import { makeCaller, type Arg, type Cx, type Grid, type HiddenRule } from './args.js'
+import { makeCaller, type Arg, type Bounds, type Cx, type Grid, type HiddenRule } from './args.js'
 import { liftCaller, liftLazy } from './arrays/call.js'
 import { liftN, lifts } from './arrays/lift.js'
 import { Arr } from './arrays/value.js'
 import type { CellValue } from './contract.js'
 import type { RefOp } from './syntax/ast.js'
 import { buildIndex, errorCrit, matches, parseCrit, select, type CritColumn, type CritIndex } from './criteria.js'
-import { allot, spend } from './exec/budget.js'
+import { allot, spend, unlimitedRangeCells } from './exec/budget.js'
 import { DEFS, FUNCTIONS } from './functions.js'
 import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
+import type { RangeCache } from './range-cache.js'
+import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
 import { fillAt, fillBounds, fillFlat, type Fill } from './spill/fill.js'
@@ -42,12 +44,13 @@ export interface RuntimeContext {
   /** External function values by the canonical text of the call. */
   externals: Record<string, CellValue>
   /** Cache of large ranges (flat arrays) and criteria indexes; invalidated by edits. */
-  flat: Map<string, V[]>
+  flat: RangeCache<V[]>
   /** Cells whose formula calls SUBTOTAL or AGGREGATE, by sheet (row · MAX_COLS + column): those two skip them. */
   nested: Map<number, Set<number>>
   /** Hidden rows by sheet, which SUBTOTAL and AGGREGATE skip by their code. */
   hidden: Map<number, HiddenRows>
-  index: Map<string, CritIndex>
+  index: RangeCache<CritIndex>
+  aggregates: RangeAggregates
   /** A spill reference `E2#` (`docs/spill.md`): the range a cell's array spilled into, the cell alone, or #REF!. */
   spillRef: (s: number, r: number, c: number) => Rng | CErr
 }
@@ -72,8 +75,13 @@ export function randAt(seed: number, sheet: string, row: number, col: number, k?
 export function makeRuntime(ctx: RuntimeContext) {
   const { sheets, rules } = ctx
   const { toNum, toText, compareOp } = rules
+  const shapes = new WeakMap<readonly V[], Bounds>()
 
   const bounds = (g: Rng) => {
+    // A write outside the range can grow the sheet without changing this snapshot's stored shape.
+    const hit = ctx.flat.get(g.key)
+    const shape = hit && shapes.get(hit)
+    if (shape) return shape
     const sh = sheets[g.s]
     const [r2, c2] = fillBounds(sh.fills, g, g.r2 === MAX_ROWS - 1 ? Math.max(sh.rows - 1, g.r1) : g.r2, Math.min(g.c2, Math.max(sh.cols.length - 1, g.c1)))
     return { r1: g.r1, c1: g.c1, r2, c2, h: r2 - g.r1 + 1, w: c2 - g.c1 + 1 }
@@ -95,7 +103,10 @@ export function makeRuntime(ctx: RuntimeContext) {
       for (let r = 0; r < b.h; r++) out[r * b.w + c] = col?.[b.r1 + r] ?? null
     }
     if (sh.fills.length) fillFlat(sh.fills, b, out)
-    if (out.length >= BIG_RANGE) ctx.flat.set(g.key, out)
+    if (out.length >= BIG_RANGE) {
+      shapes.set(out, b)
+      ctx.flat.set(g.key, out)
+    }
     return out
   }
 
@@ -261,7 +272,12 @@ export function makeRuntime(ctx: RuntimeContext) {
   /** The callers that lift a call over arrays in one-value arguments (non-lazy functions). */
   const FL: Record<string, (...a: any[]) => Arg> = {}
   for (const [name, def] of Object.entries(DEFS)) {
-    F[name] = makeCaller(def, cx)
+    const caller = makeCaller(def, cx)
+    F[name] = ['SUM', 'COUNT', 'MIN', 'MAX'].includes(name)
+      ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng && unlimitedRangeCells()
+        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell)
+        : caller(...args)
+      : caller
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */

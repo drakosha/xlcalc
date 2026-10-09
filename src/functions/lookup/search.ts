@@ -5,6 +5,7 @@
 import { wildRe } from '../../criteria.js'
 import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
+import { indexedExact, scannedExact } from './exact.js'
 
 export type Key = Exclude<V, null | CErr>
 
@@ -17,10 +18,22 @@ export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
 const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
-function exact(k: Key, wild: boolean, compare: Compare): (v: V) => boolean {
+export function exactMatch(line: Line, k: Key, wild: boolean, compare: Compare, last = false): number {
   const re = wild && typeof k === 'string' ? wildRe(k, true) : null
-  if (re) return (v) => typeof v === 'string' && re.test(v)
-  return (v) => comparable(v, k) && compare(v, k) === 0
+  if (!re && line.values) {
+    const hit = indexedExact(line.values, line.stride ?? 1, line.filled, k, compare, last)
+    if (hit !== undefined) return hit
+  }
+  for (let j = 0; j < line.filled; j++) {
+    const i = last ? line.filled - 1 - j : j
+    const v = line.at(i)
+    if (re ? typeof v === 'string' && re.test(v) : comparable(v, k) && compare(v, k) === 0) {
+      if (!re && line.values) scannedExact(line.values, line.stride ?? 1, line.filled, k, compare, j + 1)
+      return i
+    }
+  }
+  if (!re && line.values) scannedExact(line.values, line.stride ?? 1, line.filled, k, compare, line.filled)
+  return -1
 }
 
 /** Values along a range: `n` positions as referenced, of which the first `filled` can hold cells (the rest are blank). */
@@ -28,6 +41,9 @@ export interface Line {
   at: (i: number) => V
   n: number
   filled: number
+  /** Immutable storage for cached exact searches, starting at its first value. */
+  values?: readonly V[]
+  stride?: number
 }
 
 /**
@@ -82,9 +98,7 @@ function descend({ at, filled }: Line, k: Key, compare: Compare): number {
 export function find(line: Line, k: Key, mode: number, wild: boolean, compare: Compare): number {
   if (mode > 0) return bisect(line, k, compare)
   if (mode < 0) return descend(line, k, compare)
-  const test = exact(k, wild, compare)
-  for (let i = 0; i < line.filled; i++) if (test(line.at(i))) return i
-  return -1
+  return exactMatch(line, k, wild, compare)
 }
 
 /**

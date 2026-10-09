@@ -26,13 +26,9 @@ export const shown = (v: V): V => (v === null || v === undefined ? 0 : typeof v 
 
 /** Drops the cached large ranges and indexes that meet an area of a sheet. */
 export function invalidate(ctx: RuntimeContext, x: Area) {
-  for (const cache of [ctx.flat, ctx.index] as Map<string, unknown>[]) {
-    if (cache.size === 0) continue
-    for (const k of cache.keys()) {
-      const [ks, r1, c1, r2, c2] = k.split(':').map(Number)
-      if (ks === x.s && meets({ r1, c1, r2, c2 }, x)) cache.delete(k)
-    }
-  }
+  ctx.flat.invalidate(x)
+  ctx.index.invalidate(x)
+  ctx.aggregates.invalidate(x)
 }
 
 /** The values cells had before a change (by `s:r:c`), and the spills of formulas (by their cell) as `describeSpill` gives them. */

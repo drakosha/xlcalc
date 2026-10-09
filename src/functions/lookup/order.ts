@@ -4,7 +4,7 @@
  * occupied rows: past them every row is blank.
  */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
-import { Arr, EMPTY, fromGrid } from '../../arrays/value.js'
+import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
@@ -44,10 +44,7 @@ function sortLines(a: Arr, byCol: boolean, key: (line: number, k: number) => V, 
 
 /** The given rows (columns `byCol`) of an array, in that order. */
 function lineArr(a: Arr, lines: readonly number[], byCol: boolean): Arr {
-  const v: V[] = []
-  if (byCol) for (let r = 0; r < a.rows; r++) for (const c of lines) v.push(a.at(r, c))
-  else for (const r of lines) for (let c = 0; c < a.cols; c++) v.push(a.at(r, c))
-  return byCol ? new Arr(a.rows, lines.length, a.rows, lines.length, v) : new Arr(lines.length, a.cols, lines.length, a.cols, v)
+  return selectArray(a, byCol ? undefined : lines, byCol ? lines : undefined)
 }
 
 /** Sort indexes (1…n) and orders (1 or −1): numbers, an array giving several. */
@@ -130,8 +127,7 @@ function unique(g: Grid, byCol = false, once = false): V | Arr {
 function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
   if (isErr(inc)) return inc
   const a = fromGrid(g)
-  const v = cx.view(inc)
-  const f = v instanceof Arr ? v : new Arr(1, 1, 1, 1, [v])
+  const f = asArray(cx.view(inc))
   const byCol = !(f.cols === 1 && f.rows === a.rows) && f.rows === 1 && f.cols === a.cols
   if (!byCol && !(f.cols === 1 && f.rows === a.rows)) return E.VALUE
   const kept: number[] = []

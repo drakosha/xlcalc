@@ -9,6 +9,7 @@
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
+import { sum, sumSquares } from '../common.js'
 
 interface Data {
   /** Observations × variables. */
@@ -76,7 +77,7 @@ function independent(x: number[][], constant: boolean): number[] {
   const k = x[0]?.length ?? 0
   const cols = Array.from({ length: k }, (_, j) => {
     const c = x.map((row) => row[j])
-    const mean = constant ? c.reduce((s, t) => s + t, 0) / n : 0
+    const mean = constant ? sum(c) / n : 0
     return c.map((t) => t - mean)
   })
   const scale = cols.map((c) => Math.hypot(...c))
@@ -130,7 +131,7 @@ function qr({ x, y }: Data, constant: boolean): Omit<Fit, 'used'> {
     const alpha = a[j][j] > 0 ? -norm : norm
     const v = a.map((row, i) => (i < j ? 0 : row[j]))
     v[j] -= alpha
-    const vv = v.reduce((s, t) => s + t * t, 0)
+    const vv = sumSquares(v)
     if (vv === 0) continue
     for (let c = j; c < p; c++) {
       let d = 0
@@ -157,10 +158,10 @@ function qr({ x, y }: Data, constant: boolean): Omit<Fit, 'used'> {
       rinv[i][j] = -s / a[i][i]
     }
   }
-  const diag = rinv.map((row) => row.reduce((s, t) => s + t * t, 0))
+  const diag = rinv.map(sumSquares)
   let ssresid = 0
   for (let i = p; i < n; i++) ssresid += q[i] * q[i]
-  const my = constant ? y.reduce((s, t) => s + t, 0) / n : 0
+  const my = constant ? sum(y) / n : 0
   const sstot = y.reduce((s, t) => s + (t - my) * (t - my), 0)
   const m = constant ? beta.slice(1) : beta
   // Excel counts at least one fitted parameter: no constant and every variable left out keeps n − 1

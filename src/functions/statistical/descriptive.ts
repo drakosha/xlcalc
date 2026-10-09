@@ -7,11 +7,8 @@ import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } fro
 import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, type CErr, type V } from '../../values.js'
-import { NEWER_MAX_ARGS } from '../common.js'
-import { devsq, gridNumbers, max, mean, min, sorted, sum } from './common.js'
-
-const variance = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : devsq(xs) / (xs.length - ddof))
-const stdev = (xs: number[], ddof: number) => (xs.length - ddof < 1 ? E.DIV0 : Math.sqrt(devsq(xs) / (xs.length - ddof)))
+import { max, min, NEWER_MAX_ARGS, sum } from '../common.js'
+import { devsq, gridNumbers, mean, sorted, stdev, variance } from './common.js'
 
 function median(xs: number[]): number {
   const s = sorted(xs)
@@ -226,11 +223,11 @@ export const functions: Record<string, FnDef> = {
     empty: 'NUM',
     fn: (xs: number[], k: number) => (k < 1 || k > xs.length ? E.NUM : sorted(xs)[xs.length - Math.ceil(k)]),
   },
-  MAX: { args: 'N', rep: 1, fn: (xs: number[]) => (xs.length ? max(xs) : 0) },
-  MAXA: { args: 'A', rep: 1, fn: (xs: number[]) => (xs.length ? max(xs) : 0) },
+  MAX: { args: 'N', rep: 1, fn: max },
+  MAXA: { args: 'A', rep: 1, fn: max },
   MEDIAN: { args: 'N', rep: 1, empty: 'NUM', fn: median },
-  MIN: { args: 'N', rep: 1, fn: (xs: number[]) => (xs.length ? min(xs) : 0) },
-  MINA: { args: 'A', rep: 1, fn: (xs: number[]) => (xs.length ? min(xs) : 0) },
+  MIN: { args: 'N', rep: 1, fn: min },
+  MINA: { args: 'A', rep: 1, fn: min },
   'MODE.MULT': {
     args: 'G',
     rep: 1,

@@ -14,6 +14,8 @@ An array of one element stays an array. An operator or a lifted call over it ret
 
 A blank cell inside an array becomes an empty element (`TRANSPOSE(A1:A2)` over blanks). `ISBLANK` of it is TRUE, `COUNTA` counts it, unlike a blank cell of a range, and it reads as 0 or `""`. A function lifted over a blank cell returns 0 (`IF({1;1},A1:A2)`), and `INDEX` lifted over cells keeps them empty.
 
+`asArray` in `src/arrays/value.ts` wraps scalar values and preserves existing arrays. `selectArray` is the common row/column selection used by the reshaping, sorting and filtering functions; each caller retains its allocation-limit checks. Operators and old-style array formulas share `broadcastAt` for repeating one row or column and detecting positions outside an operand.
+
 ## Element by element
 
 An operator, or a function argument that takes one value, given an array or a range of several cells, is computed element by element:
@@ -30,6 +32,8 @@ Each function declares the kinds of its arguments (`src/args.ts`), and the kind 
 - `p` (IFERROR's alternative, FILTER's `if_empty`) and `P` (CHOOSE's values, the branches of IF, IFS and SWITCH, the arrays of HSTACK and VSTACK) are passed as they are unless the call is lifted. `P` passes a reference on as a reference, even one cell, so `SUM(IF(TRUE,A2))` skips text in A2 while `IF(TRUE,A2)+0` reads it.
 
 So `SUM(B1:B9*C1:C9)` multiplies element by element and sums the products, `SUMIF(A:A,{"a","b"},B:B)` gives two sums, and `IF(A1:A9>0,A1:A9)` keeps the positive values. `IF`, `IFERROR`, `IFNA` and `SWITCH` evaluate only the branch they need, unless their condition or value is an array; then every argument is computed and the function is lifted.
+
+Numeric list kinds share one collector inside `list` in `src/args.ts`. The collector selects the array or reference rule once per argument and uses the same conversion for stored values and the array's fill. The conversion rules remain distinct, including MAXA versus AVERAGEA and the handling of date lists. `test/args.test.ts` checks those differences and the order of errors when a fill lies between stored rows.
 
 ### Exceptions
 
@@ -67,3 +71,20 @@ The `arrays` case set (`bench/coverage/sets/arrays.ts`) is computed in Excel as 
 A case whose answer is an array is checked through a wrapper that returns one value (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or directly, where both Excel and the engine give `#SPILL!` because every neighbour of the case is occupied.
 
 All case sets of the library are computed as dynamic array formulas, so the whole acceptance follows Excel 365.
+
+The shared collector and array helpers were additionally compared with frozen build `69b4d1f` in both execution modes and locales: 2,600 complete results matched in values, issues and both hashes, including edits, whole-column fills, row/column selection, old-style arrays and conditional aggregates. Across 672 limit checks, the result or cell-limit error also matched at limits of 4, 20 and 100 values. These used local builds and the saved Excel fixtures, without a live Excel run.
+
+On Node 26.7, 2026-10-09, seven alternating measured pairs after two warmup pairs (ten calls per sample) gave these medians for arrays of 34,000 elements. MAXA and AVERAGEA used mixed numbers, text and booleans; FILTER retained every third row; CHOOSECOLS selected the same column three times.
+
+| Call | Before | Shared implementation |
+|---|---:|---:|
+| SUM | 0.332 ms | 0.347 ms |
+| MAXA | 0.297 ms | 0.253 ms |
+| AVERAGEA | 0.251 ms | 0.272 ms |
+| FILTER | 0.295 ms | 0.248 ms |
+| SORT | 3.564 ms | 3.429 ms |
+| CHOOSECOLS | 1.064 ms | 0.940 ms |
+
+The SUM and AVERAGEA microbenchmarks retain a small overhead. The collector stays local to the argument handler: moving it to a module-level function slowed mixed-array coercion substantially in the trial. V8's inlining trace showed the original per-element closure being inlined; the module-level collector remained a separate function.
+
+Five alternating pairs of `synthBook({ seed: 1, rows: 34000 })`, with closures and fixed clock/seed, gave 1,561/1,547 ms for full compute and 3.71/3.53 ms for edit-A p95 (before/after). This workload showed no overall regression from the shared helpers.
