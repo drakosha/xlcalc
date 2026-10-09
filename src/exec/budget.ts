@@ -1,8 +1,8 @@
 /**
  * The budget of one computation (`docs/async.md`): a soft deadline, an abort signal and size limits, checked at points
- * inside the engine (`spend`, `allot`, `count`), and the slice of computing after which a step yields (`due`). The
- * computation being run sets its budget active; on the synchronous path without options none is, and each check is
- * one comparison. The engine's loops are generators (`Steps`): `run` takes one to its end at once.
+ * inside the engine (`spend`, `allot`, `allotSpill`, `count`), and the slice of computing after which a step yields
+ * (`due`). The computation being run sets its budget active; on the synchronous path without options none is, and each
+ * check is one comparison. The engine's loops are generators (`Steps`): `run` takes one to its end at once.
  */
 import type { AbortSignalLike, CalcErrorCode, CalcLimits, CellRef } from '../contract.js'
 import { nowMs } from '../env.js'
@@ -38,6 +38,7 @@ export class Budget {
   /** When the current slice ends (`nowMs`). */
   sliceEnd = Infinity
   readonly cells: number
+  readonly spill: number
   readonly formulas: number
 
   constructor(
@@ -48,6 +49,8 @@ export class Budget {
     readonly sliceMs = Infinity,
   ) {
     this.cells = limits.cells ?? Infinity
+    // a host that bounds only `cells` bounds spills by it too, as before `spill` was its own limit
+    this.spill = limits.spill ?? this.cells
     this.formulas = limits.formulas ?? Infinity
   }
 
@@ -112,6 +115,11 @@ export function allot(n: number): void {
   if (active !== null && n > active.cells) throw new CalcError('limit', `${n} values in one range or array, over the limit of ${active.cells}`, { limit: 'cells', max: active.cells, size: n })
 }
 
+/** A spill is about to write `n` stored cells: over `limits.spill` stops the computation, before they are written. */
+export function allotSpill(n: number): void {
+  if (active !== null && n > active.spill) throw new CalcError('limit', `${n} values in one spill, over the limit of ${active.spill}`, { limit: 'spill', max: active.spill, size: n })
+}
+
 /** The book holds `n` formulas: over `limits.formulas` stops the computation. */
 export function count(n: number): void {
   if (active !== null && n > active.formulas) throw new CalcError('limit', `${n} formulas, over the limit of ${active.formulas}`, { limit: 'formulas', max: active.formulas, size: n })
@@ -119,7 +127,7 @@ export function count(n: number): void {
 
 /** A limit error without a cell gets the cell of the formula being computed. */
 export function located(e: unknown, cell: () => CellRef): unknown {
-  if (e instanceof CalcError && e.code === 'limit' && e.limit === 'cells' && !e.cell) {
+  if (e instanceof CalcError && e.code === 'limit' && e.limit !== 'formulas' && !e.cell) {
     e.cell = cell()
     e.message += ` (${e.cell.sheet}!${e.cell.cell})`
   }
@@ -176,4 +184,4 @@ export function portion<T>(g: Steps<T>, b: Budget, how: 'next' | 'throw' = 'next
 }
 
 /** A budget of limits alone (the synchronous path), or none without them. */
-export const limitsBudget = (limits: CalcLimits | undefined): Budget | null => (limits && (limits.cells !== undefined || limits.formulas !== undefined) ? new Budget(limits) : null)
+export const limitsBudget = (limits: CalcLimits | undefined): Budget | null => (limits && (limits.cells !== undefined || limits.spill !== undefined || limits.formulas !== undefined) ? new Budget(limits) : null)
