@@ -144,9 +144,9 @@ export interface SheetInput {
 export interface TableInput {
   /**
    * Excel's rules for names: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at
-   * most 255 characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE, and in a ru-RU book
-   * not ИСТИНА or ЛОЖЬ either, in any case, as Excel for Windows ru-RU refuses them. Tables and defined names share one
-   * namespace: no other table and no defined name of the book has the name, in any case.
+   * most 255 characters; not a cell address (`T2`) or R1C1 (`R`, `C`, `R1C1`), not TRUE or FALSE, and not the book's
+   * locale's words for them either, in any case (ИСТИНА and ЛОЖЬ in ru-RU, as Excel for Windows ru-RU refuses them).
+   * Tables and defined names share one namespace: no other table and no defined name of the book has the name, in any case.
    */
   name: string
   /** The table's rectangle, its header and totals rows included (`B2:E10`), with one data row at least. */
@@ -182,8 +182,8 @@ export interface NameInput {
   /**
    * Excel's rules for names, a table's too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`,
    * `\` and `?`, at most 255 characters; not a cell address (`Q1`) or R1C1 (`R`, `C`, `R2C3`), not TRUE or FALSE, and
-   * in a ru-RU book not its booleans ИСТИНА and ЛОЖЬ either, in any case, which Excel ru-RU refuses (`Ставка`,
-   * `НДС_2025`, `АБ12` and `Став?ка` are names). Compared in any case: `ставка` is the name `Ставка`.
+   * not the book's locale's words for them either, in any case (ИСТИНА and ЛОЖЬ in ru-RU, which Excel ru-RU refuses;
+   * `Ставка`, `НДС_2025`, `АБ12` and `Став?ка` are names). Compared in any case: `ставка` is the name `Ставка`.
    */
   name: string
   /**
@@ -208,10 +208,10 @@ export interface BookInput {
   /** The cell styles that cells, rows and columns refer to by index. */
   styles?: CellStyle[]
   /**
-   * The locale the book is computed in, a BCP 47 tag of one of the package's locales: `'en-US'` (the
-   * default) or `'ru-RU'`. It changes computed values as Excel's regional settings do (text read as a
-   * number or a date, numbers and booleans turned into text, `TEXT` format codes, currency), not the formula
-   * text: formulas stay invariant, and `toLocal` shows them in a locale. An unknown tag is an `InputError`.
+   * The locale the book is computed in, a BCP 47 tag of one of the package's locales, `LOCALES` (`'en-US'` by
+   * default). It changes computed values as Excel's regional settings do (text read as a number or a date, numbers
+   * and booleans turned into text, `TEXT` format codes, currency), not the formula text: formulas stay invariant, and
+   * `toLocal` shows them in a locale. An unknown tag is an `InputError`.
    */
   locale?: string
   /**
@@ -304,7 +304,7 @@ export interface CellDisplay {
 export interface DisplayOptions {
   /** The number format; General without it. */
   format?: NumberFormat
-  /** A tag of the package's locales (`'en-US'`, the default, or `'ru-RU'`). */
+  /** A tag of the package's locales, `LOCALES` (`'en-US'` by default). */
   locale?: string
   /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
   width?: number
@@ -637,9 +637,9 @@ export interface Session {
    * area (`CellInput.array`) but not all of them throw `InputError` and change nothing, as Excel refuses to change
    * part of an array; an edit of its top-left cell that keeps an array formula over the same area changes all of it.
    * An edit of a table's header cell renames its column, as Excel does: the structured references to it follow, a number
-   * or a boolean becomes its text, a cleared cell names the column `Column1` (the first such name free; `Столбец1` in a
-   * ru-RU book), and a name another column has already gives the column further right a number (`Price2`). A formula
-   * in a header cell throws `InputError`.
+   * or a boolean becomes its text, a cleared cell names the column `Column1` (the first such name free, in the word of
+   * the book's locale: `Столбец1` in ru-RU), and a name another column has already gives the column further right a
+   * number (`Price2`). A formula in a header cell throws `InputError`.
    */
   setCells(edits: CellEdit[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]
@@ -804,7 +804,7 @@ export interface CalcPoolOptions {
 export interface FormulaEngine {
   compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
-  /** Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; ru-RU also refuses ИСТИНА and ЛОЖЬ). */
+  /** Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; a locale's words for TRUE and FALSE are refused too, ИСТИНА and ЛОЖЬ in ru-RU). */
   validateName(name: string, opts?: NameOptions): NameCheck
   /** The issues of a book's names, as `ComputeResult.nameIssues` gives them for a book with these sheets, tables and locale. */
   validateNames(names: NameInput[], ctx: NamesContext): NameIssue[]

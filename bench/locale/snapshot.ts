@@ -1,5 +1,5 @@
 /**
- * Excel's own formula text in a locale, for the locale data of `src/locale/` and its tests:
+ * Excel's own formula text in a locale, for the locale files of `src/locales/` and their tests:
  *
  *   npx tsx bench/locale/snapshot.ts ru     Excel with the Russian interface and locale → test/excel/locale/ru-RU.json
  *
@@ -10,7 +10,7 @@
  * (nothing is clicked), except Excel's "problem with some content" window when it rejects a book: it is
  * closed (No) and the part is split down to the formulas Excel does not load, which are listed in `rejected`.
  * A formula Excel deletes while loading (CALL) leaves an empty cell and is listed in `dropped`.
- * Then `npx tsx bench/locale/generate.ts ru` writes the locale file. `LOCALE_PARTS=2` runs only the first
+ * Then `npx tsx bench/locale/generate.ts ru-RU` writes the locale file's formula text. `LOCALE_PARTS=2` runs only the first
  * parts, into `bench/coverage/out/` (a trial).
  */
 import { execFileSync } from 'node:child_process'

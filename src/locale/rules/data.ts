@@ -1,18 +1,26 @@
 /**
- * What a locale other than en-US gives its rules of computation (`regional.ts`): the formula-text locale for
- * TRUE, FALSE and error texts, number separators, the currency format, month and day names, TEXT's format
- * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock
- * that completes a date written without a year, whose reads make a formula depend on the clock.
+ * What a locale other than en-US gives its rules of computation (`regional.ts`), beside its formula text for TRUE,
+ * FALSE and error texts (`LocaleFile`): number separators, the currency format, month and day names, TEXT's format
+ * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock that
+ * completes a date written without a year, whose reads make a formula depend on the clock.
  */
-import type { Locale } from '../types.js'
+
+/** A code page of CHAR and CODE: its name as Unicode publishes its table (`windows-1251`), and its characters of codes 128–255, an undefined byte the C1 control of its value. */
+export interface CodePage {
+  readonly name: string
+  readonly chars: string
+}
+
+/** The order of day, month and year in date text (`dates.ts`). */
+export type DateOrder = 'dmy' | 'mdy' | 'ymd'
 
 export interface RegionalData {
-  /** The formula-text locale: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
-  readonly locale: Locale
   /** The decimal separator of numbers in text, and the group separator (a plain space in ru-RU). */
   readonly decimal: string
   readonly group: string
-  /** DOLLAR's and VALUE's currency: its symbol after the amount, a space between, a negative amount with a minus. */
+  /** The order of day, month and year in date text of numbers: `dmy` (`31.01.2025`), `mdy` (`1/31/2025`) or `ymd` (`2025/1/31`). */
+  readonly dateOrder: DateOrder
+  /** DOLLAR's and VALUE's currency: the symbol, before the amount or after it (VALUE reads it there), the space between, a negative amount in parentheses or with a minus. */
   readonly currency: { readonly symbol: string; readonly before: boolean; readonly space: string; readonly negative: '()' | '-' }
   /** Month names in the nominative as TEXT writes them (`MMMM`), short ones (`MMM`); date text reads a prefix of a full name. */
   readonly months: readonly string[]
@@ -36,8 +44,8 @@ export interface RegionalData {
   readonly collation: string
   /** The built-in formats the locale shows by codes of its own, by number, as en-US codes (`numfmt/builtin.ts`). */
   readonly builtin: Readonly<Record<number, string>>
-  /** CHAR's and CODE's characters of codes 128–255: the locale's Windows code page, an undefined byte the C1 control of its value. */
-  readonly codePage: string
+  /** CHAR's and CODE's code page: the locale's Windows one. */
+  readonly codePage: CodePage
   /** The word of a new table column's name (`Столбец1`), as Excel names a column inserted into a table or a cleared header. */
   readonly columnWord: string
 }

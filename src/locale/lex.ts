@@ -4,6 +4,7 @@
  * constants too) and copies the rest (strings, sheet names, references, operators, whitespace) as raw pieces,
  * so text the engine cannot parse translates as well. Every character of the text belongs to exactly one piece.
  */
+import { caseKey } from '../collate.js'
 import { IDENT_RULE } from '../syntax.js'
 
 /** Separators of formula text on one side of a translation. */
@@ -83,7 +84,7 @@ export function tableText(run: string, words: ReadonlyMap<string, string>, from:
     } else if (ch === '#' && run[j - 1] === '[') {
       const end = run.indexOf(']', j)
       const w = run.slice(j, end < 0 ? run.length : end)
-      out += words.get(w.toLocaleUpperCase('ru-RU')) ?? w
+      out += words.get(caseKey(w)) ?? w
       j += w.length - 1
       continue
     }
@@ -124,8 +125,8 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
       continue
     }
     if (ch === '#') {
-      const head = src.slice(i).toUpperCase()
-      const e = errors.find((x) => head.startsWith(x.toUpperCase()))
+      const head = caseKey(src.slice(i))
+      const e = errors.find((x) => head.startsWith(caseKey(x)))
       if (e) {
         push('err', e.length)
         continue
