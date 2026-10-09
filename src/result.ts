@@ -1,12 +1,12 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
-import { inputHash, outNumber, sheetOrder, ValuesHasher, type FillLine } from './canon.js'
+import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
 import type { CellResult, CellValue, CellView, Clock, ComputeResult } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
-import { spend } from './exec/budget.js'
+import { due, spend, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { formatAddress, msToSerial, parseAddress, sortAddresses } from './model.js'
+import { formatAddress, msToSerial, parseAddress } from './model.js'
 import { cellLooks, type Looks } from './shown.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
@@ -39,14 +39,19 @@ export function spillFields(state: EngineState, s: number, r: number, c: number)
 }
 
 /** The stored cells of a sheet's spills (those in `within`), by address, with their formula's address. */
-function spilled(state: EngineState, s: number, within?: Rect): Map<string, string> {
+function* spilled(state: EngineState, s: number, within?: Rect): Steps<Map<string, string>> {
   const out = new Map<string, string>()
   const xs: Spill[] = [...state.spills.on.values()].filter((x) => x.s === s && (!within || meets(x, within)))
   for (const x of xs) {
     const from = formatAddress(x.r1, x.c1)
     const [r1, r2] = within ? [Math.max(x.r1, within.r1), Math.min(x.r1 + x.h - 1, within.r2)] : [x.r1, x.r1 + x.h - 1]
     const [c1, c2] = within ? [Math.max(x.c1, within.c1), Math.min(x.c1 + x.w - 1, within.c2)] : [x.c1, x.c1 + x.w - 1]
-    for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) if ((r !== x.r1 || c !== x.c1) && !state.spills.occupied.has(s, r, c)) out.set(formatAddress(r, c), from)
+    for (let r = r1; r <= r2; r++)
+      for (let c = c1; c <= c2; c++) {
+        spend(1)
+        if (due()) yield
+        if ((r !== x.r1 || c !== x.c1) && !state.spills.occupied.has(s, r, c)) out.set(formatAddress(r, c), from)
+      }
   }
   return out
 }
@@ -73,27 +78,32 @@ const BY_CELL = 65_536
 
 /**
  * The cells of rectangle `x` of sheet `s` as the result gives them (`Session.cells`), with each cell's own style: the
- * rectangle's cells looked up one by one, or a larger one's found among the sheet's.
+ * rectangle's cells looked up one by one, or a larger one's found among the sheet's. The steps yield between cells.
  */
-export function cellsIn(state: EngineState, s: number, x: Rect, display: boolean): Record<string, CellView> {
+export function* cellsIn(state: EngineState, s: number, x: Rect, display: boolean): Steps<Record<string, CellView>> {
   const cells = state.input.sheets[s].cells
   const look = display ? cellLooks(state) : null
-  const spill = spilled(state, s, x)
+  const spill = yield* spilled(state, s, x)
   const inputs: string[] = []
   if ((x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL) {
     for (let r = x.r1; r <= x.r2; r++)
       for (let c = x.c1; c <= x.c2; c++) {
+        spend(1)
+        if (due()) yield
         const a = formatAddress(r, c)
         if (a in cells) inputs.push(a)
       }
   } else
     for (const a of Object.keys(cells)) {
+      spend(1)
+      if (due()) yield
       const { row, col } = parseAddress(a)
       if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2) inputs.push(a)
     }
   const out: Record<string, CellView> = {}
-  for (const addr of sortAddresses([...inputs, ...spill.keys()])) {
+  for (const addr of yield* sortedSteps([...inputs, ...spill.keys()])) {
     spend(1)
+    if (due()) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const style = cells[addr]?.style
     if (style !== undefined) view.style = style
@@ -102,12 +112,16 @@ export function cellsIn(state: EngineState, s: number, x: Rect, display: boolean
   return out
 }
 
-/** The cells of sheet `s` a result lists, in order (input cells and the stored cells of spills), each with the formula it spilled from. */
-function eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined) => void) {
-  const spill = spilled(state, s)
+/**
+ * The cells of sheet `s` a result lists, in order (input cells and the stored cells of spills), each with the formula it
+ * spilled from; the steps yield between cells when the computation's slice is used up.
+ */
+function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: string | undefined) => void): Steps<void> {
+  const spill = yield* spilled(state, s)
   let last: string | undefined
-  for (const addr of sortAddresses([...Object.keys(state.input.sheets[s].cells), ...spill.keys()])) {
+  for (const addr of yield* sortedSteps([...Object.keys(state.input.sheets[s].cells), ...spill.keys()])) {
     spend(1)
+    if (due()) yield
     // once: an input cell that does not block a spill (a format or a style alone) is a spilled one too
     if (addr === last) continue
     last = addr
@@ -126,12 +140,12 @@ function fillLines(state: EngineState, s: number, addr: string, value: CellValue
 const hasher = (state: EngineState) => new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
 
 /** The values hash of a state, as its result gives it, without the cells' results (`Session.hash`). */
-export function stateHash(state: EngineState): string {
+export function* stateHash(state: EngineState): Steps<string> {
   const w = hasher(state)
   const fills: FillLine[] = []
   for (const s of sheetOrder(state.input.sheets.map((x) => x.name))) {
     const quoted = JSON.stringify(state.input.sheets[s].name)
-    eachCell(state, s, (addr) => {
+    yield* eachCell(state, s, (addr) => {
       const { row, col } = parseAddress(addr)
       w.cell(quoted, addr, outValue(toCellValue(valueAt(state, s, row, col))), true)
       const id = state.at.get(key(s, row, col))
@@ -142,8 +156,11 @@ export function stateHash(state: EngineState): string {
   return w.hex(fills)
 }
 
-/** The result; with `display` each cell's shown text and colour after its value. Sheets are read in the hash's order, listed in the book's. */
-export function buildResult(state: EngineState, clock: Clock, t0: number, display: boolean): ComputeResult {
+/**
+ * The result; with `display` each cell's shown text and colour after its value. Sheets are read in the hash's order,
+ * listed in the book's. The steps yield between cells, so a large book's result does not hold the thread.
+ */
+export function* buildResult(state: EngineState, clock: Clock, t0: number, display: boolean): Steps<ComputeResult> {
   const w = hasher(state)
   const fills: FillLine[] = []
   const look = display ? cellLooks(state) : null
@@ -151,13 +168,14 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
   for (const s of sheetOrder(sheets.map((x) => x.name))) {
     const { name, cells } = sheets[s]
     const quoted = JSON.stringify(name)
-    eachCell(state, s, (addr, spillOf) => {
+    yield* eachCell(state, s, (addr, spillOf) => {
       const out = cellResult(state, s, addr, look, spillOf)
       fillLines(state, s, addr, out.spillFill, fills)
       cells[addr] = out
       w.cell(quoted, addr, out.value, true)
     })
   }
+  const inputHash = yield* inputHashSteps(state.input)
   const volatile = [...state.volatile]
     .map((id) => state.formulas[id]!)
     .sort((a, b) => a.s - b.s || a.r - b.r || a.c - b.c)
@@ -169,7 +187,7 @@ export function buildResult(state: EngineState, clock: Clock, t0: number, displa
     volatile,
     clock: { ...clock },
     hash: w.hex(fills),
-    inputHash: inputHash(state.input),
+    inputHash,
     configVersion: CONFIG_VERSION,
     ms: nowMs() - t0,
   }

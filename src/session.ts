@@ -246,14 +246,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const x = parseRange(checkString(range, 'range'))
       if (!x) throw new InputError('range', `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(range)}`)
-      return cellsIn(s, i, x, display)
+      return yield* cellsIn(s, i, x, display)
     },
     *hash() {
-      return stateHash(yield* ready())
+      return yield* stateHash(yield* ready())
     },
     *result() {
       const t0 = nowMs()
-      return buildResult(yield* ready(), clock, t0, display)
+      return yield* buildResult(yield* ready(), clock, t0, display)
     },
     close() {
       state = null
