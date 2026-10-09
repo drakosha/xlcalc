@@ -205,10 +205,12 @@ describe('in threads', () => {
     expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
   }, 60_000)
 
-  it('maxHeapMb without limits.cells: arrays larger than a 32nd of the heap give CalcError', async () => {
+  it('maxHeapMb without limits.cells: arrays of more values than the heap has KB give CalcError', async () => {
     const p = await made({ threads: 1, maxHeapMb: 64 })
-    const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(3000000))' } } }] }))
-    expect([e.limit, e.max]).toEqual(['cells', 2_097_152])
+    const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(65537))' } } }] }))
+    expect([e.limit, e.max]).toEqual(['cells', 65_536])
+    const fits: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(SEQUENCE(65536))' } } }] }
+    expect((await p.compute(fits, { clock: CLOCK })).hash).toBe(compute(fits, { clock: CLOCK }).hash)
   })
 
   it('limits in a thread: CalcError with the cell', async () => {
