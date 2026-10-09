@@ -173,7 +173,6 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fuzz-rules:LINEST#43': { reason: 'linestConstantColumn', engine: { t: 'n', v: 2 } },
   'fuzz:1#1263': { reason: 'excelContext', engine: { t: 'e', v: 'NUM' } },
   'fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: '2048.47532711546' } },
-  'fuzz:2#165': { reason: 'rowsOfIfs', engine: { t: 'e', v: 'VALUE' } },
   'near-integer:literal#7': { reason: 'lastBits', engine: { t: 'n', v: 1 } },
   'let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
