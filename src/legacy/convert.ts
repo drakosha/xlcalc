@@ -36,8 +36,8 @@ interface Out {
   kind: Kind
 }
 
-/** Arguments whose class the sets show only in part: IFERROR's value passes an array on, N and T take a range's first cell. */
-const SLOTS: Record<string, Record<number, Slot>> = { IFERROR: { 0: 'p' }, IFNA: { 0: 'p' }, N: { 0: 'f' }, T: { 0: 'f' } }
+/** Arguments whose class the sets show only in part: IFERROR's value and TYPE's pass an array on (`TYPE(IFS("x",1))` is 64), N and T take a range's first cell. */
+const SLOTS: Record<string, Record<number, Slot>> = { IFERROR: { 0: 'p' }, IFNA: { 0: 'p' }, N: { 0: 'f' }, T: { 0: 'f' }, TYPE: { 0: 'p' } }
 
 /** Calls that pass on one of their arguments as it is. */
 const PASSING: Record<string, (i: number) => boolean> = { IF: (i) => i > 0, CHOOSE: (i) => i > 0, IFERROR: () => true, IFNA: () => true }
@@ -71,7 +71,8 @@ function classAt(fn: string, i: number): string {
 /** The slot and the evaluation of argument `i` of `fn` (the node `n`) called where `where` says. */
 function argument(fn: string, i: number, n: Ast, where: Where): [Slot, Where] {
   const own = SLOTS[fn]?.[i]
-  if (own) return [own, own === 'p' && where === 'A' ? 'R' : where]
+  // under an argument that takes an array IFERROR's value takes a range as a reference, TYPE's whole (SUMPRODUCT(TYPE(A1:A3)) is 64)
+  if (own) return [own, own === 'p' && where === 'A' && fn !== 'TYPE' ? 'R' : where]
   switch (classAt(fn, i)) {
     case 'v':
       return ['v', where]
