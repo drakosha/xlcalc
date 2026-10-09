@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0 (2026-10-09)
+
+Internal release; not published to npm. A spill has a limit of its own, so a thread pool bounds spills by its heap strictly and arrays loosely; a call's limits are taken field by field.
+
+Added:
+
+- Contract: `CalcLimits.spill`, the cells one spill may store (the cells past a large array's last value are not stored, so `A:A*2` over the data rows is not refused); without it `cells` bounds spills too, as before. `CalcError.limit` can be `spill`. `cells` is the values of one range read whole or one array.
+
+Changed:
+
+- A pool with `maxHeapMb` takes, where its `limits` give none, `cells` of a value per 64 bytes of heap (6,291,456 values for 384 MB; 0.5.0 took a value per KB) and `spill` of the smaller of `cells` and a value per KB (393,216 for 384 MB), so `SUM(SEQUENCE(500000))` and `TOCOL(A:A)` compute in such a pool again while a spill stays bounded, also where the host raises `cells`. Measured on Node 24 and 26 with heaps of 256 to 1,024 MB: an array brought the process down from 30 bytes of heap per value, a spill read by `compute`, `result()`, `hash()` or `setCells` from 286; in 1,380 runs at the defaults and at twice them the process never went down.
+- Contract: a calculator's `limits` (`createInlineCalc`, `createCalcPool`) hold for every call, and a call's own `limits` take their place field by field. A call that gave `limits` replaced them whole: one that gave `formulas` alone lost the pool's `cells` and `spill` taken from its heap, and an array the heap could not hold ran the thread out of memory.
+
 ## 0.5.0 (2026-10-09)
 
 Internal release; not published to npm. A thread pool's default limit on one array measured, and in the same thread a result that gives way to the event loop and a structure operation that stops at its deadline.
