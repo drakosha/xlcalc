@@ -1,0 +1,1122 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.327,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "data#1",
+   "group": "data",
+   "fn": "data",
+   "formula": "(Edge!A3-1E12)*8192"
+  },
+  {
+   "id": "data#2",
+   "group": "data",
+   "fn": "data",
+   "formula": "Edge!G2/1E+307"
+  },
+  {
+   "id": "data#3",
+   "group": "data",
+   "fn": "data",
+   "formula": "Edge!D2/1E-200"
+  },
+  {
+   "id": "data#4",
+   "group": "data",
+   "fn": "data",
+   "formula": "(Edge!N2-1.21826130419759E-10)*1E25"
+  },
+  {
+   "id": "data#5",
+   "group": "data",
+   "fn": "data",
+   "formula": "(Edge!O3-1.93037870810954E-10)*1E25"
+  },
+  {
+   "id": "data#6",
+   "group": "data",
+   "fn": "data",
+   "formula": "(Edge!K3-2)*1E8"
+  },
+  {
+   "id": "AVERAGE#1",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Edge!A2:A10001)"
+  },
+  {
+   "id": "AVERAGE#2",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Edge!A:A)"
+  },
+  {
+   "id": "VAR.P#1",
+   "group": "VAR.P",
+   "fn": "VAR.P",
+   "formula": "_xlfn.VAR.P(Edge!A2:A10001)"
+  },
+  {
+   "id": "VAR.P#2",
+   "group": "VAR.P",
+   "fn": "VAR.P",
+   "formula": "_xlfn.VAR.P(Edge!A:A)"
+  },
+  {
+   "id": "VAR.S#1",
+   "group": "VAR.S",
+   "fn": "VAR.S",
+   "formula": "_xlfn.VAR.S(Edge!A2:A10001)"
+  },
+  {
+   "id": "STDEV.P#1",
+   "group": "STDEV.P",
+   "fn": "STDEV.P",
+   "formula": "_xlfn.STDEV.P(Edge!A2:A10001)"
+  },
+  {
+   "id": "STDEV.P#2",
+   "group": "STDEV.P",
+   "fn": "STDEV.P",
+   "formula": "_xlfn.STDEV.P(Edge!A:A)"
+  },
+  {
+   "id": "STDEV.S#1",
+   "group": "STDEV.S",
+   "fn": "STDEV.S",
+   "formula": "_xlfn.STDEV.S(Edge!A2:A10001)"
+  },
+  {
+   "id": "DEVSQ#1",
+   "group": "DEVSQ",
+   "fn": "DEVSQ",
+   "formula": "DEVSQ(Edge!A2:A10001)"
+  },
+  {
+   "id": "DEVSQ#2",
+   "group": "DEVSQ",
+   "fn": "DEVSQ",
+   "formula": "DEVSQ(Edge!A:A)"
+  },
+  {
+   "id": "COVARIANCE.P#1",
+   "group": "COVARIANCE.P",
+   "fn": "COVARIANCE.P",
+   "formula": "_xlfn.COVARIANCE.P(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "COVARIANCE.S#1",
+   "group": "COVARIANCE.S",
+   "fn": "COVARIANCE.S",
+   "formula": "_xlfn.COVARIANCE.S(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "CORREL#1",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "PEARSON#1",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "RSQ#1",
+   "group": "RSQ",
+   "fn": "RSQ",
+   "formula": "RSQ(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "SLOPE#1",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "SLOPE#2",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!B2:B10001,Edge!A2:A10001)"
+  },
+  {
+   "id": "INTERCEPT#1",
+   "group": "INTERCEPT",
+   "fn": "INTERCEPT",
+   "formula": "INTERCEPT(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "FORECAST.LINEAR#1",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(3,Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "STEYX#1",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(Edge!A2:A10001,Edge!B2:B10001)"
+  },
+  {
+   "id": "LINEST#1",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001),1,1)"
+  },
+  {
+   "id": "LINEST#2",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001),1,2)"
+  },
+  {
+   "id": "DAVERAGE#1",
+   "group": "DAVERAGE",
+   "fn": "DAVERAGE",
+   "formula": "DAVERAGE(Edge!A1:A10001,1,Edge!Q1:Q2)"
+  },
+  {
+   "id": "DVAR#1",
+   "group": "DVAR",
+   "fn": "DVAR",
+   "formula": "DVAR(Edge!A1:A10001,1,Edge!Q1:Q2)"
+  },
+  {
+   "id": "DVARP#1",
+   "group": "DVARP",
+   "fn": "DVARP",
+   "formula": "DVARP(Edge!A1:A10001,1,Edge!Q1:Q2)"
+  },
+  {
+   "id": "DSTDEV#1",
+   "group": "DSTDEV",
+   "fn": "DSTDEV",
+   "formula": "DSTDEV(Edge!A1:A10001,1,Edge!Q1:Q2)"
+  },
+  {
+   "id": "DSTDEVP#1",
+   "group": "DSTDEVP",
+   "fn": "DSTDEVP",
+   "formula": "DSTDEVP(Edge!A1:A10001,1,Edge!Q1:Q2)"
+  },
+  {
+   "id": "AVERAGE#3",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Edge!C2:C3)"
+  },
+  {
+   "id": "VAR.P#3",
+   "group": "VAR.P",
+   "fn": "VAR.P",
+   "formula": "_xlfn.VAR.P(Edge!C2:C3)"
+  },
+  {
+   "id": "VAR.S#2",
+   "group": "VAR.S",
+   "fn": "VAR.S",
+   "formula": "_xlfn.VAR.S(Edge!C2:C3)"
+  },
+  {
+   "id": "STDEV.P#3",
+   "group": "STDEV.P",
+   "fn": "STDEV.P",
+   "formula": "_xlfn.STDEV.P(Edge!C2:C3)"
+  },
+  {
+   "id": "STDEV.S#2",
+   "group": "STDEV.S",
+   "fn": "STDEV.S",
+   "formula": "_xlfn.STDEV.S(Edge!C2:C3)"
+  },
+  {
+   "id": "DEVSQ#3",
+   "group": "DEVSQ",
+   "fn": "DEVSQ",
+   "formula": "DEVSQ(Edge!C2:C3)"
+  },
+  {
+   "id": "COVARIANCE.S#2",
+   "group": "COVARIANCE.S",
+   "fn": "COVARIANCE.S",
+   "formula": "_xlfn.COVARIANCE.S(Edge!C2:C3,Edge!E2:E3)"
+  },
+  {
+   "id": "CORREL#2",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(Edge!C2:C3,Edge!E2:E3)"
+  },
+  {
+   "id": "PEARSON#2",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(Edge!C2:C3,Edge!E2:E3)"
+  },
+  {
+   "id": "RSQ#2",
+   "group": "RSQ",
+   "fn": "RSQ",
+   "formula": "RSQ(Edge!C2:C3,Edge!E2:E3)"
+  },
+  {
+   "id": "SLOPE#3",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!C2:C3,Edge!E2:E3)"
+  },
+  {
+   "id": "SLOPE#4",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!E2:E3,Edge!C2:C3)"
+  },
+  {
+   "id": "FORECAST.LINEAR#2",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(3,Edge!C2:C3,Edge!E2:E3)"
+  },
+  {
+   "id": "DSTDEV#2",
+   "group": "DSTDEV",
+   "fn": "DSTDEV",
+   "formula": "DSTDEV(Edge!C1:C3,1,Edge!U1:U2)"
+  },
+  {
+   "id": "AVERAGE#4",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Edge!D2:D3)"
+  },
+  {
+   "id": "VAR.P#4",
+   "group": "VAR.P",
+   "fn": "VAR.P",
+   "formula": "_xlfn.VAR.P(Edge!D2:D3)"
+  },
+  {
+   "id": "VAR.S#3",
+   "group": "VAR.S",
+   "fn": "VAR.S",
+   "formula": "_xlfn.VAR.S(Edge!D2:D3)"
+  },
+  {
+   "id": "STDEV.P#4",
+   "group": "STDEV.P",
+   "fn": "STDEV.P",
+   "formula": "_xlfn.STDEV.P(Edge!D2:D3)"
+  },
+  {
+   "id": "STDEV.S#3",
+   "group": "STDEV.S",
+   "fn": "STDEV.S",
+   "formula": "_xlfn.STDEV.S(Edge!D2:D3)"
+  },
+  {
+   "id": "DEVSQ#4",
+   "group": "DEVSQ",
+   "fn": "DEVSQ",
+   "formula": "DEVSQ(Edge!D2:D3)"
+  },
+  {
+   "id": "COVARIANCE.S#3",
+   "group": "COVARIANCE.S",
+   "fn": "COVARIANCE.S",
+   "formula": "_xlfn.COVARIANCE.S(Edge!D2:D3,Edge!E2:E3)"
+  },
+  {
+   "id": "CORREL#3",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(Edge!D2:D3,Edge!E2:E3)"
+  },
+  {
+   "id": "PEARSON#3",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(Edge!D2:D3,Edge!E2:E3)"
+  },
+  {
+   "id": "RSQ#3",
+   "group": "RSQ",
+   "fn": "RSQ",
+   "formula": "RSQ(Edge!D2:D3,Edge!E2:E3)"
+  },
+  {
+   "id": "SLOPE#5",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!D2:D3,Edge!E2:E3)"
+  },
+  {
+   "id": "SLOPE#6",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!E2:E3,Edge!D2:D3)"
+  },
+  {
+   "id": "FORECAST.LINEAR#3",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(3,Edge!D2:D3,Edge!E2:E3)"
+  },
+  {
+   "id": "DAVERAGE#2",
+   "group": "DAVERAGE",
+   "fn": "DAVERAGE",
+   "formula": "DAVERAGE(Edge!D1:D3,\"t\",Edge!R1:R2)"
+  },
+  {
+   "id": "DVAR#2",
+   "group": "DVAR",
+   "fn": "DVAR",
+   "formula": "DVAR(Edge!D1:D3,\"t\",Edge!R1:R2)"
+  },
+  {
+   "id": "DVARP#2",
+   "group": "DVARP",
+   "fn": "DVARP",
+   "formula": "DVARP(Edge!D1:D3,\"t\",Edge!R1:R2)"
+  },
+  {
+   "id": "DSTDEV#3",
+   "group": "DSTDEV",
+   "fn": "DSTDEV",
+   "formula": "DSTDEV(Edge!D1:D3,\"t\",Edge!R1:R2)"
+  },
+  {
+   "id": "DSTDEVP#2",
+   "group": "DSTDEVP",
+   "fn": "DSTDEVP",
+   "formula": "DSTDEVP(Edge!D1:D3,\"t\",Edge!R1:R2)"
+  },
+  {
+   "id": "AVERAGE#5",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Edge!F2:F3)"
+  },
+  {
+   "id": "VAR.P#5",
+   "group": "VAR.P",
+   "fn": "VAR.P",
+   "formula": "_xlfn.VAR.P(Edge!F2:F3)"
+  },
+  {
+   "id": "VAR.S#4",
+   "group": "VAR.S",
+   "fn": "VAR.S",
+   "formula": "_xlfn.VAR.S(Edge!F2:F3)"
+  },
+  {
+   "id": "STDEV.P#5",
+   "group": "STDEV.P",
+   "fn": "STDEV.P",
+   "formula": "_xlfn.STDEV.P(Edge!F2:F3)"
+  },
+  {
+   "id": "STDEV.S#4",
+   "group": "STDEV.S",
+   "fn": "STDEV.S",
+   "formula": "_xlfn.STDEV.S(Edge!F2:F3)"
+  },
+  {
+   "id": "DEVSQ#5",
+   "group": "DEVSQ",
+   "fn": "DEVSQ",
+   "formula": "DEVSQ(Edge!F2:F3)"
+  },
+  {
+   "id": "DSTDEV#4",
+   "group": "DSTDEV",
+   "fn": "DSTDEV",
+   "formula": "DSTDEV(Edge!F1:F3,1,Edge!S1:S2)"
+  },
+  {
+   "id": "DVARP#3",
+   "group": "DVARP",
+   "fn": "DVARP",
+   "formula": "DVARP(Edge!F1:F3,1,Edge!S1:S2)"
+  },
+  {
+   "id": "AVERAGE#6",
+   "group": "AVERAGE",
+   "fn": "AVERAGE",
+   "formula": "AVERAGE(Edge!G2:G4)"
+  },
+  {
+   "id": "VAR.P#6",
+   "group": "VAR.P",
+   "fn": "VAR.P",
+   "formula": "_xlfn.VAR.P(Edge!G2:G4)"
+  },
+  {
+   "id": "VAR.S#5",
+   "group": "VAR.S",
+   "fn": "VAR.S",
+   "formula": "_xlfn.VAR.S(Edge!G2:G4)"
+  },
+  {
+   "id": "STDEV.P#6",
+   "group": "STDEV.P",
+   "fn": "STDEV.P",
+   "formula": "_xlfn.STDEV.P(Edge!G2:G4)"
+  },
+  {
+   "id": "STDEV.S#5",
+   "group": "STDEV.S",
+   "fn": "STDEV.S",
+   "formula": "_xlfn.STDEV.S(Edge!G2:G4)"
+  },
+  {
+   "id": "DEVSQ#6",
+   "group": "DEVSQ",
+   "fn": "DEVSQ",
+   "formula": "DEVSQ(Edge!G2:G4)"
+  },
+  {
+   "id": "DAVERAGE#3",
+   "group": "DAVERAGE",
+   "fn": "DAVERAGE",
+   "formula": "DAVERAGE(Edge!G1:G4,1,Edge!T1:T2)"
+  },
+  {
+   "id": "DVAR#3",
+   "group": "DVAR",
+   "fn": "DVAR",
+   "formula": "DVAR(Edge!G1:G4,1,Edge!T1:T2)"
+  },
+  {
+   "id": "COVARIANCE.P#2",
+   "group": "COVARIANCE.P",
+   "fn": "COVARIANCE.P",
+   "formula": "_xlfn.COVARIANCE.P(Edge!H2:H4,Edge!I2:I4)"
+  },
+  {
+   "id": "COVARIANCE.S#4",
+   "group": "COVARIANCE.S",
+   "fn": "COVARIANCE.S",
+   "formula": "_xlfn.COVARIANCE.S(Edge!H2:H4,Edge!I2:I4)"
+  },
+  {
+   "id": "CORREL#4",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(Edge!H2:H4,Edge!I2:I4)"
+  },
+  {
+   "id": "PEARSON#4",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(Edge!H2:H4,Edge!I2:I4)"
+  },
+  {
+   "id": "RSQ#4",
+   "group": "RSQ",
+   "fn": "RSQ",
+   "formula": "RSQ(Edge!H2:H4,Edge!I2:I4)"
+  },
+  {
+   "id": "SLOPE#7",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!I2:I4,Edge!H2:H4)"
+  },
+  {
+   "id": "INTERCEPT#2",
+   "group": "INTERCEPT",
+   "fn": "INTERCEPT",
+   "formula": "INTERCEPT(Edge!I2:I4,Edge!H2:H4)"
+  },
+  {
+   "id": "FORECAST.LINEAR#4",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(1,Edge!I2:I4,Edge!H2:H4)"
+  },
+  {
+   "id": "STEYX#2",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "SLOPE#8",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "INTERCEPT#3",
+   "group": "INTERCEPT",
+   "fn": "INTERCEPT",
+   "formula": "INTERCEPT(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "CORREL#5",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "PEARSON#5",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "RSQ#5",
+   "group": "RSQ",
+   "fn": "RSQ",
+   "formula": "RSQ(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "COVARIANCE.S#5",
+   "group": "COVARIANCE.S",
+   "fn": "COVARIANCE.S",
+   "formula": "_xlfn.COVARIANCE.S(Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "FORECAST.LINEAR#5",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(4,Edge!K2:K4,Edge!J2:J4)"
+  },
+  {
+   "id": "LINEST#3",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!K2:K4,Edge!J2:J4,TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "INTERCEPT#4",
+   "group": "INTERCEPT",
+   "fn": "INTERCEPT",
+   "formula": "INTERCEPT(Edge!M2:M4,Edge!L2:L4)"
+  },
+  {
+   "id": "FORECAST#1",
+   "group": "FORECAST",
+   "fn": "FORECAST",
+   "formula": "FORECAST(0,Edge!M2:M4,Edge!L2:L4)"
+  },
+  {
+   "id": "FORECAST.LINEAR#6",
+   "group": "FORECAST.LINEAR",
+   "fn": "FORECAST.LINEAR",
+   "formula": "_xlfn.FORECAST.LINEAR(0,Edge!M2:M4,Edge!L2:L4)"
+  },
+  {
+   "id": "SLOPE#9",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!M2:M4,Edge!L2:L4)"
+  },
+  {
+   "id": "STEYX#3",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(Edge!M2:M4,Edge!L2:L4)"
+  },
+  {
+   "id": "LINEST#4",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!M2:M4,Edge!L2:L4),1,1)"
+  },
+  {
+   "id": "LINEST#5",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!M2:M4,Edge!L2:L4),1,2)"
+  },
+  {
+   "id": "STEYX#4",
+   "group": "STEYX",
+   "fn": "STEYX",
+   "formula": "STEYX(Edge!O2:O4,Edge!N2:N4)"
+  },
+  {
+   "id": "CORREL#6",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(Edge!O2:O4,Edge!N2:N4)"
+  },
+  {
+   "id": "RSQ#6",
+   "group": "RSQ",
+   "fn": "RSQ",
+   "formula": "RSQ(Edge!O2:O4,Edge!N2:N4)"
+  },
+  {
+   "id": "SLOPE#10",
+   "group": "SLOPE",
+   "fn": "SLOPE",
+   "formula": "SLOPE(Edge!O2:O4,Edge!N2:N4)"
+  },
+  {
+   "id": "INTERCEPT#5",
+   "group": "INTERCEPT",
+   "fn": "INTERCEPT",
+   "formula": "INTERCEPT(Edge!O2:O4,Edge!N2:N4)"
+  },
+  {
+   "id": "LINEST#6",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!O2:O4,Edge!N2:N4,TRUE,TRUE),3,2)"
+  }
+ ],
+ "values": {
+  "data#1": {
+   "t": "n",
+   "v": 82
+  },
+  "data#2": {
+   "t": "n",
+   "v": 10
+  },
+  "data#3": {
+   "t": "n",
+   "v": 1
+  },
+  "data#4": {
+   "t": "n",
+   "v": 2.0679515313825694
+  },
+  "data#5": {
+   "t": "n",
+   "v": 2.8434333556510327
+  },
+  "data#6": {
+   "t": "n",
+   "v": 0.999999993922529
+  },
+  "AVERAGE#1": {
+   "t": "n",
+   "v": 1000000000000.0004
+  },
+  "AVERAGE#2": {
+   "t": "n",
+   "v": 1000000000000.0004
+  },
+  "VAR.P#1": {
+   "t": "n",
+   "v": 0.00015977911949157714
+  },
+  "VAR.P#2": {
+   "t": "n",
+   "v": 0.00015977911949157714
+  },
+  "VAR.S#1": {
+   "t": "n",
+   "v": 0.0001597950990014773
+  },
+  "STDEV.P#1": {
+   "t": "n",
+   "v": 0.012640376556557845
+  },
+  "STDEV.P#2": {
+   "t": "n",
+   "v": 0.012640376556557845
+  },
+  "STDEV.S#1": {
+   "t": "n",
+   "v": 0.012641008622791034
+  },
+  "DEVSQ#1": {
+   "t": "n",
+   "v": 1.5977911949157715
+  },
+  "DEVSQ#2": {
+   "t": "n",
+   "v": 1.5977911949157715
+  },
+  "COVARIANCE.P#1": {
+   "t": "n",
+   "v": 0.006673510642090122
+  },
+  "COVARIANCE.S#1": {
+   "t": "n",
+   "v": 0.006674178059896112
+  },
+  "CORREL#1": {
+   "t": "n",
+   "v": 0.6465902049489168
+  },
+  "PEARSON#1": {
+   "t": "n",
+   "v": 0.6465902049489168
+  },
+  "RSQ#1": {
+   "t": "n",
+   "v": 0.4180788931358824
+  },
+  "SLOPE#1": {
+   "t": "n",
+   "v": 0.010009765624999861
+  },
+  "SLOPE#2": {
+   "t": "n",
+   "v": 41.76710112889263
+  },
+  "INTERCEPT#1": {
+   "t": "n",
+   "v": 999999999999.9904
+  },
+  "FORECAST.LINEAR#1": {
+   "t": "n",
+   "v": 1000000000000.0204
+  },
+  "STEYX#1": {
+   "t": "n",
+   "v": 0.009643518110970913
+  },
+  "LINEST#1": {
+   "t": "n",
+   "v": 0.01000976562500015
+  },
+  "LINEST#2": {
+   "t": "n",
+   "v": 999999999999.9904
+  },
+  "DAVERAGE#1": {
+   "t": "n",
+   "v": 1000000000000.0004
+  },
+  "DVAR#1": {
+   "t": "n",
+   "v": 0.0001597950990014773
+  },
+  "DVARP#1": {
+   "t": "n",
+   "v": 0.00015977911949157714
+  },
+  "DSTDEV#1": {
+   "t": "n",
+   "v": 0.012641008622791034
+  },
+  "DSTDEVP#1": {
+   "t": "n",
+   "v": 0.012640376556557845
+  },
+  "AVERAGE#3": {
+   "t": "n",
+   "v": 1.4999999999999999e+150
+  },
+  "VAR.P#3": {
+   "t": "n",
+   "v": 2.5000000000000016e+299
+  },
+  "VAR.S#2": {
+   "t": "n",
+   "v": 5.000000000000003e+299
+  },
+  "STDEV.P#3": {
+   "t": "n",
+   "v": 5.000000000000002e+149
+  },
+  "STDEV.S#2": {
+   "t": "n",
+   "v": 7.0710678118654775e+149
+  },
+  "DEVSQ#3": {
+   "t": "n",
+   "v": 5e+299
+  },
+  "COVARIANCE.S#2": {
+   "t": "n",
+   "v": 5e+149
+  },
+  "CORREL#2": {
+   "t": "n",
+   "v": 1
+  },
+  "PEARSON#2": {
+   "t": "n",
+   "v": 1
+  },
+  "RSQ#2": {
+   "t": "n",
+   "v": 0.9999999999999996
+  },
+  "SLOPE#3": {
+   "t": "n",
+   "v": 1e+150
+  },
+  "SLOPE#4": {
+   "t": "n",
+   "v": 9.999999999999999e-151
+  },
+  "FORECAST.LINEAR#2": {
+   "t": "n",
+   "v": 2.9999999999999998e+150
+  },
+  "DSTDEV#2": {
+   "t": "n",
+   "v": 7.0710678118654775e+149
+  },
+  "AVERAGE#4": {
+   "t": "n",
+   "v": 1.5e-200
+  },
+  "VAR.P#4": {
+   "t": "n",
+   "v": 0
+  },
+  "VAR.S#3": {
+   "t": "n",
+   "v": 0
+  },
+  "STDEV.P#4": {
+   "t": "n",
+   "v": 0
+  },
+  "STDEV.S#3": {
+   "t": "n",
+   "v": 0
+  },
+  "DEVSQ#4": {
+   "t": "n",
+   "v": 0
+  },
+  "COVARIANCE.S#3": {
+   "t": "n",
+   "v": 5e-201
+  },
+  "CORREL#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "PEARSON#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "RSQ#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SLOPE#5": {
+   "t": "n",
+   "v": 1e-200
+  },
+  "SLOPE#6": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "FORECAST.LINEAR#3": {
+   "t": "n",
+   "v": 3e-200
+  },
+  "DAVERAGE#2": {
+   "t": "n",
+   "v": 1.5e-200
+  },
+  "DVAR#2": {
+   "t": "n",
+   "v": 0
+  },
+  "DVARP#2": {
+   "t": "n",
+   "v": 0
+  },
+  "DSTDEV#3": {
+   "t": "n",
+   "v": 0
+  },
+  "DSTDEVP#2": {
+   "t": "n",
+   "v": 0
+  },
+  "AVERAGE#5": {
+   "t": "n",
+   "v": 0
+  },
+  "VAR.P#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VAR.S#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "STDEV.P#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "STDEV.S#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEVSQ#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DSTDEV#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DVARP#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "AVERAGE#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VAR.P#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "VAR.S#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "STDEV.P#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "STDEV.S#5": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DEVSQ#6": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DAVERAGE#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "DVAR#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COVARIANCE.P#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "COVARIANCE.S#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "CORREL#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "PEARSON#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "RSQ#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "SLOPE#7": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "INTERCEPT#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "FORECAST.LINEAR#4": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "STEYX#2": {
+   "t": "n",
+   "v": 0
+  },
+  "SLOPE#8": {
+   "t": "n",
+   "v": 1
+  },
+  "INTERCEPT#3": {
+   "t": "n",
+   "v": 3.33333316504536e-9
+  },
+  "CORREL#5": {
+   "t": "n",
+   "v": 1
+  },
+  "PEARSON#5": {
+   "t": "n",
+   "v": 1
+  },
+  "RSQ#5": {
+   "t": "n",
+   "v": 1
+  },
+  "COVARIANCE.S#5": {
+   "t": "n",
+   "v": 1
+  },
+  "FORECAST.LINEAR#5": {
+   "t": "n",
+   "v": 4.000000003333334
+  },
+  "LINEST#3": {
+   "t": "n",
+   "v": 8.164965592527551e-9
+  },
+  "INTERCEPT#4": {
+   "t": "n",
+   "v": 3.333333387089965e-9
+  },
+  "FORECAST#1": {
+   "t": "n",
+   "v": 3.333333387089965e-9
+  },
+  "FORECAST.LINEAR#6": {
+   "t": "n",
+   "v": 3.333333387089965e-9
+  },
+  "SLOPE#9": {
+   "t": "n",
+   "v": 2
+  },
+  "STEYX#3": {
+   "t": "n",
+   "v": 0
+  },
+  "LINEST#4": {
+   "t": "n",
+   "v": 2
+  },
+  "LINEST#5": {
+   "t": "n",
+   "v": 3.333333387089965e-9
+  },
+  "STEYX#4": {
+   "t": "n",
+   "v": 7.176370251686123e-13
+  },
+  "CORREL#6": {
+   "t": "n",
+   "v": -0.9999814050881393
+  },
+  "RSQ#6": {
+   "t": "n",
+   "v": 0.9999628105220493
+  },
+  "SLOPE#10": {
+   "t": "n",
+   "v": -0.9740736668130563
+  },
+  "INTERCEPT#5": {
+   "t": "n",
+   "v": 1.8071730037566745e-10
+  },
+  "LINEST#6": {
+   "t": "n",
+   "v": 7.176370251649907e-13
+  }
+ }
+}

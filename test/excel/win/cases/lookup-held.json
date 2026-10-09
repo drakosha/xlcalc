@@ -1,0 +1,207 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 21.1,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SORTBY#1",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},D!B1:B8,{1;-1}),1)"
+  },
+  {
+   "id": "SORTBY#2",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},D!B1:B8,{-1;1}),1)"
+  },
+  {
+   "id": "SORTBY#3",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C7,{1;-1}),1)"
+  },
+  {
+   "id": "SORTBY#4",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,TRANSPOSE(D!C1:C8),{1;-1}),1)"
+  },
+  {
+   "id": "SORTBY#5",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1;-1},D!B1:B6,{1;-1}),1)"
+  },
+  {
+   "id": "SORTBY#6",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{1},D!B1:B8,{1;-1}),1)"
+  },
+  {
+   "id": "SORTBY#7",
+   "group": "SORTBY",
+   "fn": "SORTBY",
+   "formula": "_xlfn.ARRAYTOTEXT(_xlfn.SORTBY(D!B1:B8,D!C1:C8,{-1},D!B1:B8,{1,-1}),1)"
+  },
+  {
+   "id": "LOOKUP#1",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!XFB1)&\"\""
+  },
+  {
+   "id": "LOOKUP#2",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!XFD1)&\"\""
+  },
+  {
+   "id": "LOOKUP#3",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!XFC1:XFD1)&\"\""
+  },
+  {
+   "id": "LOOKUP#4",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!A1048575:A1048576)&\"\""
+  },
+  {
+   "id": "LOOKUP#5",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(5,D!L8:Q8,Lk!A1048575:A1048576)&\"\""
+  },
+  {
+   "id": "LOOKUP#6",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(2,D!L1:L6,Lk!A1048576)&\"\""
+  },
+  {
+   "id": "LOOKUP#7",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,Lk!A1048576:B1048576)&\"\""
+  },
+  {
+   "id": "LOOKUP#8",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,IF(TRUE,Lk!B2:B3))&\"\""
+  },
+  {
+   "id": "LOOKUP#9",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,CHOOSE(1,Lk!B2:B3))&\"\""
+  },
+  {
+   "id": "LOOKUP#10",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,INDEX(Lk!B2:B3,0,1))&\"\""
+  },
+  {
+   "id": "LOOKUP#11",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(2,D!L1:L6,IF(TRUE,Lk!B2))&\"\""
+  },
+  {
+   "id": "LOOKUP#12",
+   "group": "LOOKUP",
+   "fn": "LOOKUP",
+   "formula": "LOOKUP(4.19,D!L1:L6,IF(TRUE,Lk!XFD1))&\"\""
+  }
+ ],
+ "values": {
+  "SORTBY#1": {
+   "t": "s",
+   "v": "{-3.5;#VALUE!}"
+  },
+  "SORTBY#2": {
+   "t": "s",
+   "v": "{-3.5;#VALUE!}"
+  },
+  "SORTBY#3": {
+   "t": "s",
+   "v": "{#VALUE!;#VALUE!}"
+  },
+  "SORTBY#4": {
+   "t": "s",
+   "v": "{#VALUE!;#VALUE!}"
+  },
+  "SORTBY#5": {
+   "t": "s",
+   "v": "{#VALUE!;#VALUE!}"
+  },
+  "SORTBY#6": {
+   "t": "s",
+   "v": "{-3.5;#VALUE!}"
+  },
+  "SORTBY#7": {
+   "t": "s",
+   "v": "{42,#VALUE!}"
+  },
+  "LOOKUP#1": {
+   "t": "s",
+   "v": "xfd"
+  },
+  "LOOKUP#2": {
+   "t": "s",
+   "v": ""
+  },
+  "LOOKUP#3": {
+   "t": "s",
+   "v": ""
+  },
+  "LOOKUP#4": {
+   "t": "s",
+   "v": ""
+  },
+  "LOOKUP#5": {
+   "t": "s",
+   "v": ""
+  },
+  "LOOKUP#6": {
+   "t": "s",
+   "v": "b6"
+  },
+  "LOOKUP#7": {
+   "t": "s",
+   "v": "c6"
+  },
+  "LOOKUP#8": {
+   "t": "s",
+   "v": "b4"
+  },
+  "LOOKUP#9": {
+   "t": "s",
+   "v": "b4"
+  },
+  "LOOKUP#10": {
+   "t": "s",
+   "v": "b4"
+  },
+  "LOOKUP#11": {
+   "t": "s",
+   "v": "c2"
+  },
+  "LOOKUP#12": {
+   "t": "s",
+   "v": ""
+  }
+ }
+}

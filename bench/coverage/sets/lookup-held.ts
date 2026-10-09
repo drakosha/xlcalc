@@ -54,3 +54,10 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): SORTBY answers #VALUE! after the first position
+ * that sorts when it has more than one by-array, and the error of a by-array of another size at every position;
+ * LOOKUP reads on past a reference that a function answers too. The engine follows both now (`lookup-rules`).
+ */
+export const MISSED: readonly string[] = ['SORTBY#1', 'SORTBY#2', 'SORTBY#3', 'SORTBY#4', 'SORTBY#5', 'LOOKUP#8', 'LOOKUP#9', 'LOOKUP#10', 'LOOKUP#11']

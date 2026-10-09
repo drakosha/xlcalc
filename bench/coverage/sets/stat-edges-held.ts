@@ -186,3 +186,17 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/**
+ * The predictions Excel did not confirm, the Mac and Windows alike, all known differences (`KNOWN`): Excel computes the
+ * moments in double precision, so the spread of the large-mean data is lost, the squares of 1E-200 underflow (CORREL
+ * and SLOPE #DIV/0!), sums past 1.8E+308 are #NUM!, STEYX next to a line is 0; and the engine's LINEST loses digits
+ * on the large mean that Excel keeps (LINEST#1).
+ */
+export const MISSED: readonly string[] = [
+  'VAR.P#1', 'VAR.P#2', 'VAR.S#1', 'STDEV.P#1', 'STDEV.P#2', 'STDEV.S#1', 'DEVSQ#1', 'DEVSQ#2', 'CORREL#1',
+  'PEARSON#1', 'RSQ#1', 'SLOPE#2', 'STEYX#1', 'LINEST#1', 'DVAR#1', 'DVARP#1', 'DSTDEV#1', 'DSTDEVP#1', 'CORREL#3',
+  'PEARSON#3', 'RSQ#3', 'SLOPE#6', 'AVERAGE#6', 'VAR.P#6', 'VAR.S#5', 'STDEV.P#6', 'STDEV.S#5', 'DEVSQ#6',
+  'DAVERAGE#3', 'DVAR#3', 'COVARIANCE.P#2', 'COVARIANCE.S#4', 'CORREL#4', 'PEARSON#4', 'RSQ#4', 'SLOPE#7',
+  'INTERCEPT#2', 'FORECAST.LINEAR#4', 'STEYX#2', 'STEYX#3',
+]
