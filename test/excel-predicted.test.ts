@@ -11,7 +11,7 @@ import { matches, show } from './excel-cases.js'
 import { RU_SETS } from './excel-ru-cases.js'
 import { SETS } from './excel-sets.js'
 
-const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'known-held', 'ref-deps', 'sheet-cells', 'single-values']
+const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'known-held', 'lookup-held', 'ref-deps', 'sheet-cells', 'single-values', 'stat-edges-held']
 const LEGACY_PREDICTING = ['ifs-text']
 const RU_PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'ref-deps', 'sheet-cells', 'single-values']
 
