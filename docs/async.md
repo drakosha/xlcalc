@@ -105,6 +105,8 @@ The same pool runs on Web Workers with the same messages, started as `new Worker
 
 `xlcalc` imports nothing of the threads: a page that computes in its own thread does not load them.
 
+The pool is checked in headless Chromium, Firefox and WebKit through Playwright, and gives the hashes of Node in each. WebKit stands there for Safari, which Playwright does not drive.
+
 ## What it costs the synchronous path
 
 The evaluation loops are generators that yield only when a calculator's slice is used up, and each check is one comparison when no calculator runs. On the full synthetic book (3,907 formulas), against the engine before them, five runs each taken in turns, medians: a cold computation 322 and 327 ms with closures, 341 and 336 ms with eval; an edit of a criterion cell 1.9 and 1.8 ms at p95 with closures, 1.8 and 1.9 ms with eval. The values hash is the same.
