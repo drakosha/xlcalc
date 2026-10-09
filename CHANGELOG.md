@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.4 (2026-10-09)
+
+Internal release; not published to npm. Fixes from a second review (calculated columns under copies, moves and sheet operations, long lists of dependents, the thread pool's fallback to objects), text with a line break read as a number, and a faster `Session.hash()`.
+
+Fixed:
+
+- The formula of a table's calculated column, the one a row inserted into the table gets, is copied and moved with the table as the formulas of its cells are, and follows a renamed, moved or deleted sheet and a moved range it refers to. It stayed as it was: a row inserted after `copyRange` or `moveRange` of a table got a formula of the table's old place (`A3*2` where its row is 7), and one inserted after `renameSheet` a reference to the old name (`#REF!`).
+- A volatile cell read by more formulas than a JavaScript call takes arguments (139,999 in Node) threw `RangeError` in `compute` and in a session; `FREQUENCY` over more than about 120,000 numbers answered `#VALUE!`. Both take any number now.
+- Text with a line break where a number is read (`A1*1` over a cell holding `"x\ny"`, in en-US and ru-RU) threw `TypeError` and stopped the whole `compute` or session call; it is no number, `#VALUE!`, as other text.
+- The thread pool: a large book that JSON cannot hold as it is (`-0`, a date in `meta`) took the fields of the book and its sheets (a sheet's name, the names) as they were when its cells had been written, after the call had returned; a sheet renamed meanwhile reached the thread and the session's snapshot (since 0.4.2). They are taken when the call is made, as for a book sent as text.
+
+Changed:
+
+- `Session.hash()` and `result().hash` write the canonical lines to SHA-256 as the cells are read, one canonicalization for both, without the canonical text or a map of the values: on the synthetic book `hash()` takes 30 to 32 ms instead of 36 to 38 at 3,400 rows and 340 ms instead of 443 to 474 at 34,000 rows, a cold compute is no slower (2 to 9 % faster at 34,000 rows), and every hash is the same.
+
 ## 0.4.3 (2026-10-09)
 
 Internal release; not published to npm. Excel for Windows answers in en-US and ru-RU, and Excel for Windows as the reference where the locale shows or orders text differently from Excel for Mac.
