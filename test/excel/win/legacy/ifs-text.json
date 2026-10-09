@@ -1,0 +1,117 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 22.6,
+  "legacy": true
+ },
+ "cases": [
+  {
+   "id": "IFS#1",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "_xlfn.IFS(\"x\",1,TRUE,2)"
+  },
+  {
+   "id": "IFS#2",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "ROWS(_xlfn.IFS(\"x\",1,TRUE,2))"
+  },
+  {
+   "id": "IFS#3",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "COLUMNS(_xlfn.IFS(FALSE,1,\"x\",2))"
+  },
+  {
+   "id": "IFS#4",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "TYPE(_xlfn.IFS(\"x\",1))"
+  },
+  {
+   "id": "IFS#5",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "ROWS(_xlfn.IFS(D!A3,1))"
+  },
+  {
+   "id": "IFS#6",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "SUM(_xlfn.IFS(\"x\",1))"
+  },
+  {
+   "id": "IFS#7",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "ROWS(_xlfn.VSTACK(1,_xlfn.IFS(\"x\",1)))"
+  },
+  {
+   "id": "IFS#8",
+   "group": "ifs",
+   "fn": "IFS",
+   "formula": "ROWS(_xlfn.IFS(TRUE,1/0))"
+  }
+ ],
+ "values": {
+  "IFS#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IFS#2": {
+   "t": "n",
+   "v": 1
+  },
+  "IFS#3": {
+   "t": "n",
+   "v": 1
+  },
+  "IFS#4": {
+   "t": "n",
+   "v": 64
+  },
+  "IFS#5": {
+   "t": "n",
+   "v": 1
+  },
+  "IFS#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "IFS#7": {
+   "t": "n",
+   "v": 2
+  },
+  "IFS#8": {
+   "t": "e",
+   "v": "DIV0"
+  }
+ },
+ "formulas": {
+  "IFS#1": "=@IFS(\"x\",1,TRUE,2)",
+  "IFS#2": "=ROWS(IFS(\"x\",1,TRUE,2))",
+  "IFS#3": "=COLUMNS(IFS(FALSE,1,\"x\",2))",
+  "IFS#4": "=TYPE(IFS(\"x\",1))",
+  "IFS#5": "=ROWS(IFS(D!A3,1))",
+  "IFS#6": "=SUM(IFS(\"x\",1))",
+  "IFS#7": "=ROWS(VSTACK(1,IFS(\"x\",1)))",
+  "IFS#8": "=ROWS(IFS(TRUE,1/0))"
+ },
+ "rows": {
+  "IFS#1": 1,
+  "IFS#2": 2,
+  "IFS#3": 3,
+  "IFS#4": 4,
+  "IFS#5": 5,
+  "IFS#6": 6,
+  "IFS#7": 7,
+  "IFS#8": 8
+ }
+}

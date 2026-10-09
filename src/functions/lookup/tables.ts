@@ -2,6 +2,7 @@
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { arr, Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
+import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { Areas, E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
 import { bisect, find, indexArg, keyOf, type Line } from './search.js'
 
@@ -83,8 +84,10 @@ function match(cx: Cx, key: V, given: Arg, type: V | Rng = 1): V {
 
 /**
  * LOOKUP: array form reads the last row (column) of the array, vector form the result at the same position.
- * Past the end of a result range Excel reads further cells; here that is #REF!, since a session recomputes a
- * formula only for edits inside its references. Past the end of a value or an array it is #N/A.
+ * Excel reads on past the end of a shorter result range: the walk widens a result row, column or cell to the lookup
+ * range's length or to the sheet's end (`exec/walk.ts`), so those cells are among the formula's references; past the
+ * sheet's end a cell is blank, past what the walk cannot widen (a reference a function answers) it is #REF!. Past the
+ * end of a value or an array it is #N/A.
  */
 function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   const k = keyOf(key)
@@ -95,7 +98,8 @@ function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   if (result === undefined) return gridAt(look, look.cols > look.rows ? (look.rows - 1) * look.cols + pos : pos * look.cols + look.cols - 1)
   const g = cx.grid(result)
   if (g.rows > 1 && g.cols > 1) return E.NA
-  return pos < g.rows * g.cols ? gridAt(g, pos) : result instanceof Rng ? E.REF : E.NA
+  if (pos < g.rows * g.cols) return gridAt(g, pos)
+  return result instanceof Rng ? (result.r2 === MAX_ROWS - 1 || result.c2 === MAX_COLS - 1 ? null : E.REF) : E.NA
 }
 
 /** Rows r1…r2 and columns c1…c2 of an array, as an array (a 1 × 1 one is its value). */

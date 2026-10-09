@@ -45,6 +45,7 @@ Every whitelisted function's typical call was run with a two-cell range and a tw
 - `VLOOKUP` and `HLOOKUP` take an array or range of column numbers as a whole: the answer has the found row's value at each number, shaped like the numbers, and the first invalid number decides for all (`#VALUE!` below 1, `#REF!` past the table). When the call is lifted by an array of keys, each call reads only the top-left number. `MATCH` reads the top-left cell of a range as its match type.
 - `INDEX`, `TAKE`, `DROP`, `XLOOKUP` (`if_not_found` too), `CHOOSE`, `IF`, `IFS` and `SWITCH` return references when given references, one cell too: `SUMIF(INDEX(A1:C9,0,1),">2")` works, `COUNTA(TAKE(A1:A8,2))` and `COUNTA(IF(TRUE,A1))` skip blank cells, `COLUMN(CHOOSE(1,C1))` is 3. `IFERROR`, `IFNA`, FILTER's `if_empty` and unary `+` return values. Other functions with an array answer return arrays.
 - `HSTACK` and `VSTACK` return the first error passed as a value, but stack references and arrays with the errors inside them.
+- `SORTBY` with an array or a range of several cells as a sort order is not lifted: it answers an array as large as the orders, the first value of the sort by the orders' first values in the first place and blanks in the others, `#VALUE!` where an order is not 1 or −1 or has no value (an order's row or column is not repeated) and an order's error where it holds one (`SORTBY(A1:A6,B1:B6,{1;-1})` is the first value and a blank, `SORTBY(A1:A6,B1:B6,{1;2})` the first value and `#VALUE!`). This happens before a union or a reference across sheets among its arguments counts.
 
 ## Array constants
 
@@ -71,6 +72,8 @@ The `arrays` case set (`bench/coverage/sets/arrays.ts`) is computed in Excel as 
 A case whose answer is an array is checked through a wrapper that returns one value (SUM, INDEX, ROWS, COLUMNS, COUNTA, CONCAT, TEXTJOIN), or directly, where both Excel and the engine give `#SPILL!` because every neighbour of the case is occupied.
 
 All case sets of the library are computed as dynamic array formulas, so the whole acceptance follows Excel 365.
+
+The set `known-held` (37 cases) was predicted before Excel computed it, to check rules taken from a few answers of the random check: `SORTBY` with an array of orders, `LOOKUP` past the end of a shorter result, `IFS` with a condition of text under `ROWS`, `TYPE` and `VSTACK`, and `SWITCH`, `IF` and `CHOOSE` beside it. Excel for Mac and Excel for Windows gave the same 37 answers, and 26 came out as predicted. The 11 misses are now the engine's rules: `SORTBY` answers by position rather than element by element (6), and `LOOKUP` reads a result of one cell as a row, reads on with a computed lookup array and reads a blank past the sheet's end (5). All 11 `IFS` cases came out as predicted.
 
 The shared collector and array helpers were additionally compared with frozen build `69b4d1f` in both execution modes and locales: 2,600 complete results matched in values, issues and both hashes, including edits, whole-column fills, row/column selection, old-style arrays and conditional aggregates. Across 672 limit checks, the result or cell-limit error also matched at limits of 4, 20 and 100 values. These used local builds and the saved Excel fixtures, without a live Excel run.
 

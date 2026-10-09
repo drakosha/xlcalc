@@ -69,6 +69,7 @@ The other cells of the area hold no input. A session refuses edits that change s
 - `legacy/params` (3,071 formulas): every whitelisted function with a range and an expression over a range put into each of its arguments, read back as Excel 365 shows them (`formula2`) and computed.
 - `legacy/nesting` (3,469) and `legacy/blocks` (346): the same inside SUMPRODUCT, SUM, INDEX, ROWS and MMULT.
 - `legacy/calls` (113): calls whose answer depends on their arguments, array constants, names.
+- `legacy/ifs-text` (8): `IFS` with a condition of text under `ROWS`, `COLUMNS`, `TYPE`, `SUM` and `VSTACK`, predicted before Excel computed it; 7 came out as predicted, and the miss showed that `TYPE` takes a call with an array answer whole (`TYPE(IFS("x",1))` has no `@` and is 64).
 - The coverage measurement computed with formulas of the old kind: every whitelisted case gives Excel's value at its row.
 - `spill/legacy` and `spill/legacy-held`: intersection by row and column, on other sheets and through names. The 13 cells of `legacy-held` were predicted before Excel computed them, and all came out as predicted.
 - `spill/cse`, `spill/cse-held` and `struct/arrays` for array formulas of the old kind. The 25 cells of `cse-held` were predicted before Excel computed them, all as predicted.
