@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.1 (2026-10-09)
+
+Internal release; not published to npm. Defined names in any script.
+
+Fixed:
+
+- A defined name takes letters of any script, as in Excel: `Ставка`, `НДС_2025`, `АБ12` (Cyrillic letters are no cell address) are names in `BookInput.names`, `validateName`, `setNames` and formulas, in any case (`ставка` is the name `Ставка`). They answered `a name must start with a latin letter`. Defined names and tables now share one check of Excel's rules: a letter of any script, `_` or `\` first, then letters, digits, `_` and `.`, at most 255 characters, not a cell address in Latin letters, not R1C1, not TRUE or FALSE.
+
+Changed:
+
+- `R` and `C` alone are no defined names (Excel reads them as R1C1 references), and a defined name may start with `\`, as a table name already did.
+- Contract: the doc of `NameInput.name` gives these rules.
+
+Added:
+
+- The case sets `tables/names-held` (en-US) and `tables/names-ru-held` (ru-RU): names in Cyrillic in formulas, in any case, beside tables, next to addresses and R1C1, with the engine's answers committed as the prediction; Excel has not computed them yet.
+
 ## 0.6.0 (2026-10-09)
 
 Internal release; not published to npm. A spill has a limit of its own, so a thread pool bounds spills by its heap strictly and arrays loosely; a call's limits are taken field by field.
