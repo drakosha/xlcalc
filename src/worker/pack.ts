@@ -17,10 +17,14 @@ export interface Packed {
   sheets: string[][]
 }
 
-/** What a book holds when it is handed over: its sheets' cells taken at once, so later changes of the book do not reach it. */
+/** The book without its sheets' cells. */
+type Head = Omit<BookInput, 'sheets'> & { sheets: Omit<BookInput['sheets'][number], 'cells'>[] }
+
+/** What a book holds when it is handed over: its fields and its sheets' cells taken at once, so later changes of the book do not reach it. */
 interface Capture {
-  book: BookInput
-  /** null when JSON cannot hold the book's fields but the cells. */
+  /** The fields but the cells, the book's and its sheets' copied when handed over. */
+  rest: Head
+  /** `rest` as text; null when JSON cannot hold it. */
   head: string | null
   sheets: { keys: string[]; cells: CellInput[] }[]
 }
@@ -68,12 +72,18 @@ function entries(cells: Record<string, CellInput>): { keys: string[]; cells: Cel
 function capture(book: BookInput): Capture | null {
   const sheets = book && typeof book === 'object' && Array.isArray(book.sheets) ? book.sheets : null
   if (!sheets || !sheets.every((s) => s && typeof s === 'object' && s.cells && typeof s.cells === 'object')) return null
-  const rest = { ...book, sheets: sheets.map(({ cells: _, ...s }) => s) }
-  return { book: { ...book, sheets: [...sheets] }, head: isJson(rest, true) ? JSON.stringify(rest) : null, sheets: sheets.map((s) => entries(s.cells)) }
+  const rest: Head = { ...book, sheets: sheets.map(({ cells: _, ...s }) => s) }
+  return { rest, head: isJson(rest, true) ? JSON.stringify(rest) : null, sheets: sheets.map((s) => entries(s.cells)) }
 }
 
-/** The captured book as objects, for structured clone. */
-const objects = (c: Capture): BookInput => ({ ...c.book, sheets: c.book.sheets.map((s, i) => ({ ...s, cells: Object.fromEntries(c.sheets[i].keys.map((k, j) => [k, c.sheets[i].cells[j]])) })) })
+/**
+ * The captured book as objects, for structured clone: its fields as they were when it was handed over (read back from
+ * the text when there is one, since a book written a chunk at a time comes here after the caller could change it).
+ */
+function objects(c: Capture): BookInput {
+  const head = c.head === null ? c.rest : (JSON.parse(c.head) as Head)
+  return { ...head, sheets: head.sheets.map((s, i) => ({ ...s, cells: Object.fromEntries(c.sheets[i].keys.map((k, j) => [k, c.sheets[i].cells[j]])) })) }
+}
 
 /** One chunk of a sheet's cells as text, or null when JSON cannot hold one of them. */
 function chunk(keys: string[], cells: CellInput[], i: number): string | null {
