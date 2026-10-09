@@ -1,8 +1,10 @@
 /**
  * Acceptance against Excel ru-RU on the case sets computed in ru-RU (`test/excel/cases/ru-RU/`): the locale set
  * (text as numbers, dates and booleans, numbers as text, TEXT codes, DOLLAR, FIXED, NUMBERVALUE, complex text,
- * criteria), the order of text, criteria over text cells, AND/OR/XOR with words as text. Each set's stored cases
- * equal its generator's; known differences are pinned in `RU_KNOWN` (`excel-ru-cases.ts`).
+ * criteria), the order of text, criteria over text cells, AND/OR/XOR with words as text, and en-US sets run again in
+ * ru-RU (unions, intersections, sheets named like cells, one value for a table, financial and date edges, formulas
+ * inside the ranges they make). Each set's stored cases equal its generator's; known differences are pinned in
+ * `RU_KNOWN` (`excel-ru-cases.ts`).
  */
 import { describe, expect, it } from 'vitest'
 import { describeOff, RU_SETS, runRuSet } from './excel-ru-cases.js'

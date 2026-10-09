@@ -127,7 +127,7 @@ Deleting a sheet removes it with its cells. References to it become `#REF!` foll
 
 ## Tables
 
-Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns a name (`Column1`); references to a deleted column or table become `#REF!`. Rows or columns inserted into two tables at once, deleted from two tables that keep some of theirs, and a header row deleted alone are refused with `table`. `addTable`, `renameTable`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
+Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns a name (`Column1`); references to a deleted column or table become `#REF!`. Rows or columns inserted into two tables at once, deleted from two tables unless both go whole, and a header row deleted alone are refused with `table`. `addTable`, `renameTable`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
 
 ## Names, references across sheets and old-kind arrays
 
@@ -159,7 +159,7 @@ A row or a column is hidden by `hidden: true` in `rows` or `columns`, or by a he
 
 On any sheet:
 
-- Inserted rows and columns are shown, even inside a hidden block. They copy every other setting of the line before them.
+- Inserted rows and columns are shown, even inside a hidden block. They copy every other setting of the line before them, its size too: a row inserted under a row of height 0 has height 0 and so is hidden, under a row hidden at height 30 it is shown at 30 (the set `zero-held`, both Excels).
 - Deleted lines take their `hidden` along, and moved or copied whole rows and columns carry it.
 - Cells move and copy without regard to `hidden` on a sheet that is not filtered. A copy of `A2:C16` with rows 4 and 7 hidden by hand copies all 15 rows.
 
@@ -215,10 +215,11 @@ Only two of these recompute values. A merged area added or removed over an array
 | `hidden` | 49 | copies, fills, moves, inserts and deletes over rows hidden by hand and on a filtered sheet, and next to hidden columns |
 | `cube` | 20 | references across sheets and names of any formula: rows and columns, sheets renamed, deleted, inserted and moved, copies |
 | `arrays` | 17 | array formulas of the old kind: lines inserted and deleted around and inside the area, the area moved, copied and pasted over |
+| `zero-held` | 8 | predicted before Excel ran them: rows inserted under rows of height 0, one styled, a span of two, one also marked hidden, and under a row hidden at height 30 |
 
 The look also lists the hidden rows and columns. The set `hidden` writes its filtered book with an autofilter and its criteria, and runs its fills through Excel's Fill Down and fill handle as well as copy and paste.
 
-All cases match except the two known differences below. Of the predicted cases, `checks` matched 21 of 26 and `styles-checks` 17 of 18; the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
+All cases match except the two known differences below. Of the predicted cases, `checks` matched 21 of 26, `styles-checks` 17 of 18 and `zero-held` 8 of 8 (Excel for Windows too); the misses found two wrong rules and a conversion error in the comparison itself, all fixed.
 
 Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number).
 

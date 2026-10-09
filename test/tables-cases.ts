@@ -63,8 +63,13 @@ export function engineAnswer(c: TableCase): EngineAnswer {
     const local = v !== null && typeof v === 'object' && 'local' in v ? toInvariant(v.local, ruRU) : null
     if (local && !local.ok) throw new Error(`${c.id}: ${local.message}`)
     const input = v === null ? null : typeof v === 'object' ? { formula: local?.ok ? local.formula : (v as { formula: string }).formula } : { value: v }
+    // a cell typed over keeps its style and number format, as in Excel
+    const look = (a: string) => {
+      const { value: _, formula: __, ...rest } = s.book().sheets.find((x) => sheetKey(x.name) === sheetKey(sheet))?.cells[a] ?? {}
+      return rest
+    }
     try {
-      s.setCells(cellsOf(cell).addrs.map((a) => ({ sheet, cell: a, input })))
+      s.setCells(cellsOf(cell).addrs.map((a) => ({ sheet, cell: a, input: input && { ...look(a), ...input } })))
     } catch (e) {
       if (!(e instanceof InputError)) throw e
       refused[i] = e.message

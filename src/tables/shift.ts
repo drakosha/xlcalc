@@ -5,8 +5,8 @@
  * inserted columns a free name `Column1`, `Column2` (`Столбец1` in a ru-RU book). Deleted lines shrink it; a table
  * left without data keeps one row, from below; deleting its totals row takes the row away; all its lines gone delete
  * it, and the references to it become #REF!, as do references to a deleted column (one alone or an end of a span).
- * Excel refuses lines inserted into two tables at once (a line inside both), deleted from two tables that keep some
- * of their lines, and a table's header row deleted without the rest.
+ * Excel refuses lines inserted into two tables at once (a line inside both), deleted from two tables when one of them
+ * keeps some of its lines, and a table's header row deleted without the rest.
  */
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
 import { REGIONAL } from '../locale/rules.js'
@@ -56,11 +56,16 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
     const inside = tables.filter((t) => bounds(t, axis)[0] <= at && at <= bounds(t, axis)[1])
     if (inside.length > 1) return { ...none, refuse: `inserting ${lines} there would shift cells of the tables ${inside.map((t) => t.name).join(' and ')} at once` }
   } else {
-    const cut = tables.filter((t) => {
+    const met = tables.filter((t) => {
       const [lo, hi] = bounds(t, axis)
-      return lo <= last && hi >= at && !(at <= lo && last >= hi)
+      return lo <= last && hi >= at
     })
-    if (cut.length > 1) return { ...none, refuse: `deleting these ${lines} would shift cells of the tables ${cut.map((t) => t.name).join(' and ')} at once` }
+    const cut = met.filter((t) => {
+      const [lo, hi] = bounds(t, axis)
+      return !(at <= lo && last >= hi)
+    })
+    // lines that meet two tables go only with both whole (the sets ops and delete-held)
+    if (cut.length && met.length > 1) return { ...none, refuse: `deleting these ${lines} would shift cells of the tables ${met.map((t) => t.name).join(' and ')} at once` }
     const head = cut.find((t) => axis === 'r' && t.headers && t.r1 >= at && t.r1 <= last)
     if (head) return { ...none, refuse: `the header row of the table ${head.name} cannot be deleted without the rest of the table` }
   }

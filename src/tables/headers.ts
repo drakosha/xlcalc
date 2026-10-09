@@ -4,7 +4,7 @@
  * free number), and a name another column has already gives the column further right a number: `Price2`, the first
  * free one. Columns are named from left to right, so a typed name keeps it and the column to its right gives way.
  */
-import type { BookInput, CellEdit, CellInput, Scalar } from '../contract.js'
+import type { BookInput, CellEdit, CellInput, NumberFormat, Scalar } from '../contract.js'
 import { InputError } from '../input.js'
 import { formatAddress, inputScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -15,9 +15,9 @@ import { tableKey, tablesOf } from './model.js'
 /**
  * The book with `edits` applied when some of them type over header cells: the columns renamed, the references to them
  * rewritten, the header cells holding the names; null when no edit touches a header cell. `text` writes a number or a
- * boolean as the book's locale does.
+ * boolean as the book's locale does, by the cell's own number format when it has one.
  */
-export function headerEdits(book: BookInput, edits: CellEdit[], text: (v: Scalar) => string): BookInput | null {
+export function headerEdits(book: BookInput, edits: CellEdit[], text: (v: Scalar, format?: NumberFormat) => string): BookInput | null {
   const tables = tablesOf(book).list.filter((t) => t.headers)
   if (!tables.length) return null
   const typed = new Map<string, Map<number, string | null>>()
@@ -28,7 +28,7 @@ export function headerEdits(book: BookInput, edits: CellEdit[], text: (v: Scalar
     if (!t) return
     if (e.input?.formula !== undefined) throw new InputError(`edits[${i}].input.formula`, `${e.sheet}!${e.cell} is a header cell of the table ${t.name}: it holds its column's name, not a formula`)
     const v = inputScalar(e.input?.value)
-    const name = v === null || v === '' ? null : typeof v === 'string' ? v : text(v)
+    const name = v === null || v === '' ? null : typeof v === 'string' ? v : text(v, e.input?.format)
     if (!typed.has(t.name)) typed.set(t.name, new Map())
     typed.get(t.name)!.set(col - t.c1, name)
   })

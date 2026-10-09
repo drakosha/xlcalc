@@ -39,6 +39,8 @@ export interface SheetParts {
   /** Rows (`5`, `5:9`) and columns (`C`, `B:D`) hidden. */
   hiddenRows?: string[]
   hiddenColumns?: string[]
+  /** Rows (`5`, `5:9`) of height 0, which ExcelJS writes without their height. */
+  zeroRows?: string[]
   /**
    * An autofilter over `range`: the values each column (0 from its left) keeps; the rows it hides are among
    * `hiddenRows`. The sheet is marked as filtered (`<sheetPr filterMode="1">`) unless `mode` is false.
@@ -207,19 +209,21 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
   if (parts.sheets || parts.iterate) await writeParts(file, book, parts)
 }
 
-/** The file parts ExcelJS does not write: hidden rows without cells, an autofilter's criteria, iterative calculation. */
+/** The file parts ExcelJS does not write: hidden rows without cells, rows of height 0, an autofilter's criteria, iterative calculation. */
 export async function writeParts(file: string, book: BookInput, parts: FileParts) {
   const zip = await JSZip.loadAsync(readFileSync(file))
-  for (const [i, s] of book.sheets.entries()) {
-    const p = parts.sheets?.[s.name]
-    if (!p?.hiddenRows && !p?.filter) continue
-    const path = `xl/worksheets/sheet${i + 1}.xml`
-    let xml = await zip.file(path)!.async('string')
-    const hidden = new Set((p.hiddenRows ?? []).flatMap((k) => {
+  // the rows (1-based) of spans `5`, `5:9`
+  const rowsOf = (spans: string[] = []) =>
+    new Set(spans.flatMap((k) => {
       const [lo, hi] = parseSpan(k, 'r')!
       return Array.from({ length: hi - lo + 1 }, (_, j) => lo + j + 1)
     }))
-    xml = hideRows(xml, hidden)
+  for (const [i, s] of book.sheets.entries()) {
+    const p = parts.sheets?.[s.name]
+    if (!p?.hiddenRows && !p?.filter && !p?.zeroRows) continue
+    const path = `xl/worksheets/sheet${i + 1}.xml`
+    let xml = await zip.file(path)!.async('string')
+    xml = markRows(markRows(xml, rowsOf(p.hiddenRows), 'hidden="1"'), rowsOf(p.zeroRows), 'ht="0" customHeight="1"')
     if (p.filter) {
       const cols = Object.entries(p.filter.keep).map(([col, vals]) => `<filterColumn colId="${col}"><filters>${vals.map((v) => `<filter val="${v}"/>`).join('')}</filters></filterColumn>`)
       xml = xml.replace(/<autoFilter ref="([^"]+)"\/>/, `<autoFilter ref="$1">${cols.join('')}</autoFilter>`)
@@ -235,12 +239,12 @@ export async function writeParts(file: string, book: BookInput, parts: FileParts
   writeFileSync(file, await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' }))
 }
 
-/** `hidden="1"` on the rows given (1-based); a row ExcelJS left out (no cells) is written empty. */
-function hideRows(xml: string, rows: Set<number>): string {
+/** `attrs` on the rows given (1-based); a row ExcelJS left out (no cells) is written empty. */
+function markRows(xml: string, rows: Set<number>, attrs: string): string {
   if (!rows.size) return xml
   const todo = new Set(rows)
-  let out = xml.replace(/<row r="(\d+)"/g, (m, r: string) => (todo.delete(Number(r)) ? `${m} hidden="1"` : m))
-  const empty = (r: number) => `<row r="${r}" hidden="1"/>`
+  let out = xml.replace(/<row r="(\d+)"/g, (m, r: string) => (todo.delete(Number(r)) ? `${m} ${attrs}` : m))
+  const empty = (r: number) => `<row r="${r}" ${attrs}/>`
   for (const r of [...todo].sort((a, b) => a - b)) {
     // before the first row past it, else at the end of the sheet's data
     const next = [...out.matchAll(/<row r="(\d+)"/g)].find((m) => Number(m[1]) > r)

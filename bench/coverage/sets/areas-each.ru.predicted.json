@@ -1,0 +1,210 @@
+{
+ "SUBTOTAL#1": {
+  "t": "n",
+  "v": 47
+ },
+ "SUBTOTAL#2": {
+  "t": "n",
+  "v": 7.83333333333333
+ },
+ "SUBTOTAL#3": {
+  "t": "n",
+  "v": 4
+ },
+ "SUBTOTAL#4": {
+  "t": "n",
+  "v": 7
+ },
+ "SUBTOTAL#5": {
+  "t": "n",
+  "v": 40
+ },
+ "SUBTOTAL#6": {
+  "t": "n",
+  "v": 4
+ },
+ "SUBTOTAL#7": {
+  "t": "n",
+  "v": 448
+ },
+ "SUBTOTAL#8": {
+  "t": "n",
+  "v": 4.70814896394184
+ },
+ "SUBTOTAL#9": {
+  "t": "n",
+  "v": 22.1666666666667
+ },
+ "SUBTOTAL#10": {
+  "t": "n",
+  "v": 47
+ },
+ "SUBTOTAL#11": {
+  "t": "n",
+  "v": 66
+ },
+ "SUBTOTAL#12": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "SUBTOTAL#13": {
+  "t": "n",
+  "v": 16.25
+ },
+ "SUBTOTAL#14": {
+  "t": "n",
+  "v": 13
+ },
+ "SUBTOTAL#15": {
+  "t": "n",
+  "v": 9
+ },
+ "SUBTOTAL#16": {
+  "t": "n",
+  "v": 13
+ },
+ "SUBTOTAL#17": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SUBTOTAL#18": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SUBTOTAL#19": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "AGGREGATE#1": {
+  "t": "n",
+  "v": 47
+ },
+ "AGGREGATE#2": {
+  "t": "n",
+  "v": 15
+ },
+ "AGGREGATE#3": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "AGGREGATE#4": {
+  "t": "n",
+  "v": 40
+ },
+ "AGGREGATE#5": {
+  "t": "n",
+  "v": 7.5
+ },
+ "AGGREGATE#6": {
+  "t": "n",
+  "v": 13
+ },
+ "AGGREGATE#7": {
+  "t": "n",
+  "v": 16
+ },
+ "AGGREGATE#8": {
+  "t": "n",
+  "v": 11
+ },
+ "AGGREGATE#9": {
+  "t": "n",
+  "v": 1
+ },
+ "AGGREGATE#10": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "AGGREGATE#11": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "AGGREGATE#12": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "AGGREGATE#13": {
+  "t": "n",
+  "v": 13
+ },
+ "FREQUENCY#1": {
+  "t": "s",
+  "v": "{0:4:2:0}"
+ },
+ "FREQUENCY#2": {
+  "t": "s",
+  "v": "{0:9:0:0}"
+ },
+ "FREQUENCY#3": {
+  "t": "s",
+  "v": "{1:5:2}"
+ },
+ "FREQUENCY#4": {
+  "t": "s",
+  "v": "{1:1:0:6}"
+ },
+ "FREQUENCY#5": {
+  "t": "n",
+  "v": 4
+ },
+ "FREQUENCY#6": {
+  "t": "s",
+  "v": "{2:0}"
+ },
+ "FREQUENCY#7": {
+  "t": "s",
+  "v": "{0:2:0:0}"
+ },
+ "FREQUENCY#8": {
+  "t": "e",
+  "v": "DIV0"
+ },
+ "FREQUENCY#9": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "FREQUENCY#10": {
+  "t": "s",
+  "v": "{0:1:1:4}"
+ },
+ "SORTBY#1": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#2": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#3": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#4": {
+  "t": "e",
+  "v": "REF"
+ },
+ "SORTBY#5": {
+  "t": "e",
+  "v": "REF"
+ },
+ "SORTBY#6": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#7": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#8": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#9": {
+  "t": "e",
+  "v": "VALUE"
+ },
+ "SORTBY#10": {
+  "t": "e",
+  "v": "VALUE"
+ }
+}

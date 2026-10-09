@@ -10,6 +10,7 @@
  *   npx tsx bench/windows/run.ts tables <name> [ru]    tables and their references into tables/[ru-RU/]<name>.json
  *   npx tsx bench/windows/run.ts spill|workbook|struct <name>   a book set (en-US) into <kind>/<name>.json
  *   npx tsx bench/windows/run.ts xlsx filters        the filter files computed and saved by Excel into xlsx/filters/
+ *   npx tsx bench/windows/run.ts xlsx formats [ru]   the codes of the built-in number formats into xlsx/[ru-RU/]formats.json
  *   npx tsx bench/windows/run.ts functions en|ru       the formula cases the Mac has answers for in that locale
  *   npx tsx bench/windows/run.ts books en|ru           the books the Mac has answers for in that locale (display, spill, ...)
  *   npx tsx bench/windows/run.ts all en|ru             both
@@ -22,7 +23,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { stepDisplay, stepSpill, stepStruct, stepTables, stepWorkbook } from './books.js'
 import { stepFunctions } from './functions.js'
-import { stepXlsxFilters } from './xlsx.js'
+import { stepXlsxFilters, stepXlsxFormats } from './xlsx.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
@@ -64,11 +65,12 @@ else if (step === 'display' && a) await withWindowsExcel(tagOf(b), (e) => stepDi
 else if (step === 'tables' && a) await withWindowsExcel(tagOf(b), (e) => stepTables(a, tagOf(b), e))
 else if (step in BOOK_STEPS && a) await withWindowsExcel('en-US', (e) => BOOK_STEPS[step as keyof typeof BOOK_STEPS](a, 'en-US', e))
 else if (step === 'xlsx' && a === 'filters') await withWindowsExcel('en-US', (e) => stepXlsxFilters('en-US', e))
+else if (step === 'xlsx' && a === 'formats') await withWindowsExcel(tagOf(b), (e) => stepXlsxFormats(tagOf(b), e))
 else if (step === 'functions') await withWindowsExcel(tagOf(a), (e) => functions(tagOf(a), e))
 else if (step === 'books') await withWindowsExcel(tagOf(a), (e) => books(tagOf(a), e))
 else if (step === 'all') await withWindowsExcel(tagOf(a), async (e) => (await functions(tagOf(a), e), await books(tagOf(a), e)))
 else {
-  console.error('step: env | measurement en|ru | probes | set <name> [ru] | legacy <name> | display <name> [ru] | tables <name> [ru] | spill|workbook|struct <name> | xlsx filters | functions|books|all en|ru')
+  console.error('step: env | measurement en|ru | probes | set <name> [ru] | legacy <name> | display <name> [ru] | tables <name> [ru] | spill|workbook|struct <name> | xlsx filters | xlsx formats [ru] | functions|books|all en|ru')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

@@ -2,7 +2,7 @@
 
 The harness in `bench/coverage` takes its answers from Excel for Mac. This one sends the same books to Excel for Windows and stores its answers beside them, in `test/excel/win/`, so the engine is checked against both and every place where the two Excels part shows case by case.
 
-The books are the Mac harness's own: the measurement, the probes, the case sets, the legacy sets, and the display, tables, spill, workbook and structure sets are written by the same code (`bench/coverage/book.ts`, `case-book.ts`, `display.ts`, `tables.ts`, `struct.ts`, `xlsx/filters.ts`), byte for byte. Only the way Excel is driven differs: COM through PowerShell over SSH instead of AppleScript.
+The books are the Mac harness's own: the measurement, the probes, the case sets, the legacy sets, and the display, tables, spill, workbook and structure sets are written by the same code (`bench/coverage/book.ts`, `case-book.ts`, `display.ts`, `tables.ts`, `struct.ts`, `xlsx/filters.ts`, `xlsx/formats.ts`), byte for byte. Only the way Excel is driven differs: COM through PowerShell over SSH instead of AppleScript.
 
 ## Where the answers are
 
@@ -11,7 +11,7 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `coverage/excel-en.json`, `coverage/excel-ru.json`: the measurement (its cases are in `test/excel/coverage/cases.json`).
 - `probes.json`, `cases/<set>.json`, `cases/ru-RU/<set>.json`, `legacy/<set>.json`: the probes, the case sets, the formulas of the old kind (each at the row it had in the Mac's run, as implicit intersection takes the row).
 - `display/`, `display/ru-RU/`, `tables/`, `tables/ru-RU/`, `spill/`, `workbook/`, `struct/`: the book sets.
-- `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them.
+- `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
 
 Each file's `meta` names Excel's version and the settings it computed with: the interface language, the regional format with its decimal, thousands and list separators, the system locale with its code page, and the screen's dpi. A formula Excel for Windows does not take when it opens a book would be listed in `rejected` of its set; none is.
 
@@ -33,6 +33,7 @@ npx tsx bench/windows/run.ts display general
 npx tsx bench/windows/run.ts tables ops
 npx tsx bench/windows/run.ts struct rows
 npx tsx bench/windows/run.ts xlsx filters
+npx tsx bench/windows/run.ts xlsx formats ru
 ```
 
 A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`. `XLWIN_CODEPAGE=any` sets only the interface language and the regional format and leaves the system locale as it is, with no restart, for a set that reads no code page (no `CHAR`, `CODE`); the answers' `meta` names the code page they were computed with.
@@ -65,7 +66,7 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 
 ## What is not run here
 
-- The xlsx round trip, the saved books, the colours and the built-in formats of `bench/coverage/xlsx.ts`, and the ru-RU formula text snapshot (`bench/locale`): they work through COM (`SaveAs`, `Interior.Color`, `NumberFormat`, `FormulaLocal`) but are not ported; only the filters are.
+- The xlsx round trip, the saved books and the colours of `bench/coverage/xlsx.ts`, and the ru-RU formula text snapshot (`bench/locale`): they work through COM (`SaveAs`, `Interior.Color`, `FormulaLocal`) but are not ported; only the filters and the built-in formats are.
 - The spill order runs (`order-runs.json`) record Excel for Mac's varying choice and are no set.
 
 ## The first probe
@@ -84,11 +85,12 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
 | cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,979, the others by the rules of `WIN_SHOWN` |
 | cells shown, 6 sets | ru-RU | 3,130 | 2,434 | 2,569, the others by the rules of `WIN_SHOWN` |
-| tables, 8 sets and 4 | en-US, ru-RU | 120 and 25 | 115 and 22 | all but the 11 the Mac pins too |
+| tables, 9 sets and 5 | en-US, ru-RU | 133 and 38 | 128 and 34 | all but the 12 the Mac pins too, and `headers-ru-held:tiny` (a number typed as its text takes the format of typed exponents) |
 | spill, 15 sets | en-US | 175 | 162 | all but 3 pinned and 3 that vary between runs |
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
-| structure operations, 17 sets | en-US | 309 | 228 (sizes in other units) | all but 16 pinned |
+| structure operations, 18 sets | en-US | 317 | 235 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
+| xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
 The sets `known-held` and `legacy/ifs-text` (45 formulas) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all 45 answers are the Mac's.
 

@@ -1,0 +1,23 @@
+/**
+ * The engine's answers to a held-out structure set as its predictions, written before Excel runs the set:
+ * `npx tsx bench/coverage/struct/predict.ts <set>` writes `struct/<set>.predicted.json`, for each case the engine's
+ * refusal, or the look of each sheet after the operation (`LOOK` and the set's `look`, as `test/structure-excel.ts`
+ * compares it) and its cells as Excel shows them, in `READ`.
+ */
+import { writeFileSync } from 'node:fs'
+import type { StructSet } from './cases.js'
+import { LOOK } from '../struct.js'
+import { restructure } from '../../../src/index.js'
+import { lookOf } from '../../../test/structure-excel.js'
+
+const set = process.argv[2]
+if (!/^[a-z0-9-]+$/.test(set ?? '')) throw new Error(`set name: [a-z0-9-], not ${set}`)
+const { books, cases, look = [] } = ((await import(`./${set}.js`)) as StructSet).buildStructCases()
+const rects = [LOOK, ...look].join(',')
+const out: Record<string, unknown> = {}
+for (const c of cases) {
+  const r = restructure(books[c.book], c.op)
+  out[c.id] = r.ok ? { sheets: Object.fromEntries(r.book.sheets.map((s) => [s.name, { look: lookOf(r.book, s, rects), cells: Object.fromEntries(Object.entries(s.cells).map(([a, x]) => [a, x.formula !== undefined ? `=${x.formula}` : String(x.value)])) }])) } : { refused: r.code }
+}
+writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
+console.log(`${set}: ${cases.length} cases predicted`)

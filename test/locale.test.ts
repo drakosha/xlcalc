@@ -49,6 +49,12 @@ describe('translation between the invariant syntax and ru-RU', () => {
     expect(local('_xlfn.ENCODEURL("a b")')).toBe('_xlfn.ENCODEURL("a b")')
   })
 
+  it("a table's column named with a list separator keeps it, in brackets after @ where it is the locale's (tables/ru-RU/headers-ru-held)", () => {
+    expect(local('SUM(Sales[1,5])+Sales[[#This Row],[1,5]]+SUM(Sales[[#Headers],[1,5]])')).toBe('СУММ(Sales[1,5])+Sales[@1,5]+СУММ(Sales[[#Заголовки];[1,5]])')
+    expect(local('SUM(Sales[1,5])+Sales[[#This Row],[1,5]]', enUS)).toBe('SUM(Sales[1,5])+Sales[@[1,5]]')
+    expect(invariant('=СУММ(Sales[1,5])+Sales[@1,5]+Sales[[#Данные];[a;b]]')).toBe('SUM(Sales[1,5])+Sales[@1,5]+Sales[[#Data],[a;b]]')
+  })
+
   it('a leading = is dropped by toInvariant and kept by toLocal', () => {
     expect(invariant('=1,5')).toBe('1.5')
     expect(local('=SUM(1)')).toBe('=СУММ(1)')

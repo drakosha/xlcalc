@@ -17,7 +17,7 @@ import { inCaseOrder } from './stored.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
-import type { BookInput, CellStyle, NumberFormat, SheetInput } from '../../src/contract.js'
+import type { BookInput, CellStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../../src/model.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
@@ -129,14 +129,16 @@ function writeLayout(c: StructCase, book: BookInput, s: SheetInput, ws: ExcelJS.
   }
 }
 
-/** The file parts of a book: its hidden rows, and the autofilter `files` gives each `filtered` sheet. */
+/** The file parts of a book: its hidden rows and rows of height 0, and the autofilter `files` gives each `filtered` sheet. */
 function partsOf(c: StructCase, book: BookInput, files: FileParts = {}): FileParts {
   const sheets: FileParts['sheets'] = {}
   for (const s of book.sheets) {
-    const hiddenRows = lines(s.rows, 'r').flatMap(([lo, hi, e]) => (e.hidden ? [lo === hi ? `${lo + 1}` : `${lo + 1}:${hi + 1}`] : []))
+    const spans = (is: (e: RowInput) => boolean) => lines(s.rows, 'r').flatMap(([lo, hi, e]) => (is(e) ? [lo === hi ? `${lo + 1}` : `${lo + 1}:${hi + 1}`] : []))
+    const hiddenRows = spans((e) => !!e.hidden)
+    const zeroRows = spans((e) => e.height === 0)
     const filter = files.sheets?.[s.name]?.filter
     if (!!s.filtered !== !!filter) throw new Error(`${c.id}: sheet ${s.name} is filtered without a filter in the file, or the other way round`)
-    if (hiddenRows.length || filter) sheets[s.name] = { hiddenRows, ...(filter ? { filter } : {}) }
+    if (hiddenRows.length || zeroRows.length || filter) sheets[s.name] = { hiddenRows, ...(zeroRows.length ? { zeroRows } : {}), ...(filter ? { filter } : {}) }
   }
   return { sheets }
 }
