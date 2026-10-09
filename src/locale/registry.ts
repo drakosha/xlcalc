@@ -16,7 +16,11 @@ export const LOCALE_FILES: ReadonlyMap<string, LocaleFile> = new Map(
     .sort(([a], [b]) => (a < b ? -1 : 1)),
 )
 
-/** The formula text of each locale by tag, for hosts (the package's `LOCALES`); the engine reads `LOCALE_FILES`. */
+/**
+ * The package's locales by BCP 47 tag, each its formula text for `toLocal`, `toInvariant` and `validateLocalFormula`
+ * (`LOCALES.get('ru-RU')`); a book's `locale` and `displayValue`'s take these tags. The map is for reading: the engine
+ * checks tags against its own list.
+ */
 export const LOCALES: ReadonlyMap<string, Locale> = new Map([...LOCALE_FILES].map(([tag, f]) => [tag, f.text]))
 
 /** The words of a book's locale for TRUE and FALSE, which are no names there (ИСТИНА and ЛОЖЬ in ru-RU). */

@@ -15,7 +15,7 @@ import type { Locale, Translation } from './types.js'
 
 export type { Locale, Translation } from './types.js'
 
-/** en-US's and ru-RU's formula text, exported by name. */
+/** en-US's and ru-RU's formula text by name; every locale's is in `LOCALES` by tag. */
 export const enUS: Locale = EN_US.text
 export const ruRU: Locale = RU_RU.text
 

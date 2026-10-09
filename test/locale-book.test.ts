@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { valuesHash } from '../src/canon.js'
 import type { BookInput, CellValue, ComputeResult } from '../src/contract.js'
-import { compute, CONFIG_VERSION, InputError, openSession } from '../src/index.js'
+import { compute, CONFIG_VERSION, enUS, InputError, LOCALES as PUBLIC_LOCALES, openSession, ruRU } from '../src/index.js'
 import { LOCALES } from '../src/locale/registry.js'
 import { displayRules, REGIONAL } from '../src/locale/rules.js'
 
@@ -41,6 +41,13 @@ describe('the book locale', () => {
     expect(ru.hash).toBe(valuesHash(valuesOf(ru), `${CONFIG_VERSION};locale=ru-RU`))
     const none = compute(book(), { clock })
     expect(none.hash).toBe(valuesHash(valuesOf(none), CONFIG_VERSION))
+  })
+
+  it('the package lists its locales by tag: the tags a book takes, each with its formula text', () => {
+    expect([...PUBLIC_LOCALES.keys()]).toEqual(expect.arrayContaining(['en-US', 'ru-RU']))
+    expect(PUBLIC_LOCALES.get('en-US')).toBe(enUS)
+    expect(PUBLIC_LOCALES.get('ru-RU')).toBe(ruRU)
+    for (const tag of PUBLIC_LOCALES.keys()) expect(() => compute(book(tag), { clock })).not.toThrow()
   })
 
   it('every locale of the registry other than en-US has its rules of computation', () => {
