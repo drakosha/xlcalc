@@ -20,7 +20,8 @@ export function numberReader(data: RegionalData): (text: string) => number | nul
     const currency = unwrapped.endsWith(symbol)
     if (currency && percent) return null
     const s = currency ? trimSpaces(unwrapped.slice(0, -symbol.length)) : unwrapped
-    const sign = /^([+-]?) *(.*)$/.exec(s)!
+    // `s`: text with a line break is matched whole and read as no number, not left unmatched
+    const sign = /^([+-]?) *(.*)$/s.exec(s)!
     const negative = sign[1] === '-'
     if (paren && negative) return null
     const body = sign[2]
