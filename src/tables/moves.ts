@@ -13,6 +13,8 @@ import { ERROR_TEXT, sheetKey } from '../syntax.js'
 import { isErr } from '../values.js'
 import { headerEdits } from './headers.js'
 import { contains, meets, type Rect } from '../structure/area.js'
+import { copyTransform } from '../structure/copy.js'
+import { rewriteFormula, sheetNames } from '../structure/rewrite.js'
 import { rewriteTableRefs } from './rewrite.js'
 import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
 
@@ -94,7 +96,9 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
         if (!left.length) delete out.tables
         return out
       })
-      const moved: TableInput[] = land.map(({ t, x }) => ({ ...t.input, range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}` }))
+      // each moved table as the move left it (its calculated columns rewritten with its cells), at its new place
+      const own = (t: Table) => b.sheets[fs].tables!.find((ti) => tableKey(ti.name) === tableKey(t.name))!
+      const moved: TableInput[] = land.map(({ t, x }) => ({ ...own(t), range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}` }))
       sheets[ts] = { ...sheets[ts], tables: [...(sheets[ts].tables ?? []), ...moved] }
       return { ...b, sheets }
     },
@@ -150,10 +154,13 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       }
       const sheets = [...r.book.sheets]
       sheets[ts] = { ...sheet, ...(cells ? { cells } : {}) }
+      // a copy's calculated columns: relative references move by its offset as its cells' do, references to the table go to the copy
+      const names = sheetNames(r.book)
+      const template = (f: string, t: Table, x: Rect, name: string) => rewriteTableRefs(rewriteFormula(f, to, to, copyTransform(x.r1 - t.r1, x.c1 - t.c1), names), tables, t, null, (y) => (y === t ? { table: name } : undefined))
       if (copies.length)
         sheets[ts] = {
           ...sheets[ts],
-          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`, columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: rewriteTableRefs(c.formula, tables, t, null, (y) => (y === t ? { table: name } : undefined)) })) }))],
+          tables: [...(sheets[ts].tables ?? []), ...copies.map(({ t, x, name }) => ({ ...t.input, name, range: `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`, columns: t.input.columns.map((c) => (c.formula === undefined ? c : { ...c, formula: template(c.formula, t, x, name) })) }))],
         }
       return renamed({ ...r, book: { ...r.book, sheets } })
     },
