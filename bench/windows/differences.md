@@ -25,7 +25,7 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | findate | 1615 | 1614 | 1611 | 1611 | 0 |
 | en-US | format-scale | 14 | 14 | 14 | 14 | 0 |
 | en-US | fuzz-rules | 302 | 302 | 299 | 299 | 0 |
-| en-US | fuzz | 4000 | 3999 | 3993 | 3992 | 0 |
+| en-US | fuzz | 4000 | 3999 | 3994 | 3993 | 0 |
 | en-US | intersect | 44 | 44 | 44 | 44 | 0 |
 | en-US | lead-spaces | 91 | 91 | 91 | 91 | 0 |
 | en-US | let-held | 33 | 33 | 33 | 33 | 0 |
@@ -272,7 +272,6 @@ Written by `npx tsx bench/windows/compare.ts` from the formula answers in `test/
 | en-US | fuzz-rules | LINEST#43 | `INDEX(LINEST({1;2;3;5},{1,1,2;2,1,4;3,1,6;4,1,8},TRUE,TRUE),4,2)` | 1 | 2 | linestConstantColumn |
 | en-US | fuzz | 1#234 | `_xlfn.TEXTJOIN(";",FALSE,BESSELK(10,3))` | "2.72527006358477E-05" | "2.72527006358476E-05" | textDigits |
 | en-US | fuzz | 1#403 | `_xlfn.TEXTJOIN(";",FALSE,_xlfn.ERFC.PRECISE(7))` | "4.18382560777942E-23" | "4.18382560777941E-23" | textDigits |
-| en-US | fuzz | 1#697 | `INDEX(LOOKUP(4.19,D!L1:L6,D!B2:B3),1,1)` | 16 | #REF | lookupPastEnd |
 | en-US | fuzz | 1#947 | `_xlfn.TEXTJOIN(";",FALSE,RATE(48,-200,8000,4,D!A15,0.5))` | "0.00803735952148241" | "0.00803735952120296" | textDigits |
 | en-US | fuzz | 1#1327 | `_xlfn.TEXTJOIN(";",FALSE,IRR(D!I1:I5))` | "0.196309310268599" | "0.1963093102686" | textDigits |
 | en-US | fuzz | 2#165 | `ROWS(_xlfn.IFS("x y",D!A15,TRUE,2))` | 1 | #VALUE | rowsOfIfs |

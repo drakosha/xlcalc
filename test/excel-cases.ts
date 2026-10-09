@@ -108,7 +108,6 @@ export const REASONS = {
     '`GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) give the quantile where Excel\'s iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom) and probabilities near 1 with shapes under 0.03; Excel\'s own `GAMMA.DIST` at the engine\'s answer gives the probability back.',
   binomInvTie:
     '`BINOM.INV` where alpha equals the probability of no success, (1 − p)^n, exactly: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they part on `BINOM.INV(3,0.25,0.421875)`, 0 in Excel and 1 here.',
-  lookupPastEnd: '`LOOKUP` with a result range shorter than the lookup range is `#REF!` past its end; Excel reads on past the end of the range.',
   textDigits:
     'A number that Excel computes by another algorithm can differ from the engine\'s in the 15th significant digit, within the tests\' relative tolerance of 1e-9; turned into text (`&`, `TEXTJOIN`) the last digit then differs (`TEXTJOIN(";",FALSE,BESSELK(10,3))` is `2.72527006358477E-05` in Excel and `2.72527006358476E-05` here).',
   linestConstantColumn:

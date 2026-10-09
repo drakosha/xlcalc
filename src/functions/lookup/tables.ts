@@ -83,8 +83,9 @@ function match(cx: Cx, key: V, given: Arg, type: V | Rng = 1): V {
 
 /**
  * LOOKUP: array form reads the last row (column) of the array, vector form the result at the same position.
- * Past the end of a result range Excel reads further cells; here that is #REF!, since a session recomputes a
- * formula only for edits inside its references. Past the end of a value or an array it is #N/A.
+ * Excel reads on past the end of a shorter result range: the walk widens a result row or column to the lookup
+ * range's length (`exec/walk.ts`), so those cells are among the formula's references; past what it widens, which a
+ * session would not recompute for, it is #REF!. Past the end of a value or an array it is #N/A.
  */
 function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
   const k = keyOf(key)
