@@ -67,7 +67,7 @@ Each cell format of the file becomes a style of the book's table and a number fo
 
 Colours become `#RRGGBB`. A theme colour with a tint is computed as Excel shows it, and the legacy palette or the book's own palette gives indexed colours.
 
-A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported.
+A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader gives that number, 1 to 49, which the book shows by its locale as Excel does: format 14 shows 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, the model does not have: they are read as the code Excel for Mac en-US shows, `m/d/yy`, and reported. That code is the Mac's short date, format 14; Excel for Windows shows them as its own 14 too, `m/d/yyyy` in en-US and `ДД.ММ.ГГГГ` in ru-RU, so where the engine shows 2025-01-31 as `1/31/25` (`1.31.25` in ru-RU) Excel for Windows shows `1/31/2025` (`31.01.2025`), as the engine shows format 14 (`test/xlsx-win.test.ts`).
 
 Excel for Mac saves some built-in formats otherwise than by their number: the money and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file Excel saved holds them so.
 
@@ -261,6 +261,7 @@ The answers to the filter files and to nine books of the round trip were predict
 - Excel saves a LET that ends with a value with its last name as the calculation. With 127 names that makes 255 arguments, one more than the engine takes, so such a formula does not parse after Excel saved it.
 - Excel for Mac saves the built-in money and accounting formats (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General and the East Asian 27 to 36 as 14 and 21, so a book read from a file Excel saved has these codes and numbers.
 - Some theme colours with a tint differ from Excel's by up to 3 of 255 in a channel.
+- The East Asian date formats 50 to 58 are read as the code `m/d/yy`, which Excel for Mac en-US shows for them; Excel for Windows shows them as its short date, format 14, in en-US and ru-RU.
 - In a few places Excel computes a formula of the old kind otherwise than the dynamic formula it shows for it. The engine gives the dynamic formula's value. [docs/legacy.md](legacy.md) lists them.
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.

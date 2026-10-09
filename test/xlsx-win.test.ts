@@ -1,7 +1,8 @@
 /**
  * The xlsx filter files as Excel for Windows computed and saved them (`test/excel/win/xlsx/filters/`, `bench/windows`):
  * read back, each has the filter mode Excel for Mac took, and the engine computes the values Excel for Windows stored,
- * as `xlsx-excel.test.ts` checks the Mac's.
+ * as `xlsx-excel.test.ts` checks the Mac's. The built-in number formats 1 to 58 as Excel for Windows shows them in
+ * en-US and ru-RU (`xlsx/[ru-RU/]formats.json`): 1 to 49 as the display set `builtin` read them, 50 to 58 pinned.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
@@ -12,6 +13,7 @@ import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
 import { compute } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
+import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 
 const dir = new URL('./excel/win/xlsx/', import.meta.url)
 const mac = new URL('./excel/xlsx/', import.meta.url)
@@ -33,4 +35,30 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
       expect(!!read.book.sheets[0].filtered).toBe(!!onMac.book.sheets[0].filtered)
       expect(compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)).toEqual([])
     })
+})
+
+/**
+ * Known difference: Excel for Windows shows the built-in formats 50 to 58 (East Asian dates) as its short date, format 14,
+ * in both locales (`m/d/yyyy`, `ДД.ММ.ГГГГ`), as Excel for Mac en-US shows them as its own 14 (`m/d/yy`); the reader
+ * reads them as that Mac code, a format of its own, where it reads 14 by number and shows it by the book's locale.
+ */
+const EAST_ASIAN_READ = 'm/d/yy'
+
+describe.each([
+  ['en-US', ''],
+  ['ru-RU', 'ru-RU/'],
+])('xlsx built-in number formats as Excel for Windows %s shows them', (tag, sub) => {
+  const file = new URL(`${sub}formats.json`, dir)
+  it.skipIf(!existsSync(file))('1 to 49 are the codes the display set builtin read; 50 to 58 are the short date, which the reader reads as the Mac\'s code', () => {
+    const run = JSON.parse(readFileSync(file, 'utf8')) as { meta: { locale: string }; formats: Record<string, string>; local: Record<string, string> }
+    expect(run.meta.locale).toBe(tag)
+    const display = JSON.parse(readFileSync(new URL(`../display/${sub}builtin.json`, dir), 'utf8')) as { cases: { id: string; numFmtId: number }[]; answers: Record<string, { code: string; local: string }> }
+    const shown = Object.fromEntries(display.cases.filter((c) => c.numFmtId > 0).map((c) => [String(c.numFmtId), display.answers[c.id]]))
+    const ids = Object.keys(run.formats)
+    expect(ids.filter((id) => Number(id) <= 49).map((id) => [id, run.formats[id], run.local[id]])).toEqual(Object.entries(shown).map(([id, a]) => [id, a.code, a.local]))
+    for (const id of ids.filter((x) => Number(x) >= 50)) {
+      expect([id, run.formats[id], run.local[id]]).toEqual([id, run.formats[14], run.local[14]])
+      expect(BUILTIN[Number(id)]).toBe(EAST_ASIAN_READ)
+    }
+  })
 })

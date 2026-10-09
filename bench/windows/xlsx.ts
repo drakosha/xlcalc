@@ -1,15 +1,18 @@
 /**
- * The xlsx filters (`bench/coverage/xlsx/filters.ts`) through Excel for Windows: each file, as the Mac step sends it,
- * computed fully and saved by Excel (`SaveAs`, xlsx) into `test/excel/win/xlsx/filters/`, with `filters.json`
- * recording what was sent (a hash per file) or Excel's refusal. `test/xlsx-win.test.ts` reads what Excel saved.
+ * The xlsx steps through Excel for Windows. Filters (`bench/coverage/xlsx/filters.ts`): each file, as the Mac step sends
+ * it, computed fully and saved by Excel (`SaveAs`, xlsx) into `test/excel/win/xlsx/filters/`, with `filters.json`
+ * recording what was sent (a hash per file) or Excel's refusal. Formats (`bench/coverage/xlsx/formats.ts`): the codes
+ * Excel shows for the built-in number formats 1 to 58 of the Mac step's book, `NumberFormat` and `NumberFormatLocal`,
+ * into `test/excel/win/xlsx/[ru-RU/]formats.json`. `test/xlsx-win.test.ts` reads both.
  */
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
+import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
 import { winFile } from './functions.js'
-import { inJobs, metaOf, type Tag, type WinEnv } from './remote.js'
+import { inJobs, metaOf, OUT, runJob, type Tag, type WinEnv } from './remote.js'
 
 const sha = (x: Uint8Array) => createHash('sha256').update(x).digest('hex')
 
@@ -45,4 +48,21 @@ export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
   )
   save()
   console.log(`xlsx filters: ${todo.length} files sent, ${Object.values(run.books).filter((x) => x.rejected).length} refused`)
+}
+
+/** The codes Excel for Windows shows for the built-in formats 1 to 58 in `tag`: `formats` in English (`NumberFormat`), `local` in the user's language. */
+export async function stepXlsxFormats(tag: Tag, e: WinEnv): Promise<void> {
+  const file = winFile(`xlsx/${tag === 'en-US' ? '' : 'ru-RU/'}formats.json`)
+  const book = join(OUT, 'xlsx-formats.xlsx')
+  mkdirSync(OUT, { recursive: true })
+  writeFileSync(book, await formatBook())
+  const t0 = Date.now()
+  const [a] = await runJob('xlsx-formats', [{ file: book, steps: [{ do: 'shown', sheet: 'Formats', cells: FORMAT_IDS.map((id) => `A${id}`), codes: true }] }])
+  if (!a || !('answers' in a)) throw new Error(`xlsx formats: Excel did not read the book: ${a ? a.rejected : 'the job ran past its time'}`)
+  // each cell: its shown text, its colour, NumberFormat, NumberFormatLocal
+  const shown = a.answers[0] as [string, number, string, string][]
+  const by = (k: 2 | 3) => Object.fromEntries(FORMAT_IDS.map((id, i) => [id, shown[i][k]]))
+  mkdirSync(dirname(file), { recursive: true })
+  writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, formats: by(2), local: by(3) }, null, 1) + '\n')
+  console.log(`xlsx formats ${tag}: ${shown.length} read`)
 }
