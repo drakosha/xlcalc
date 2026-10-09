@@ -67,9 +67,74 @@ Text sorts Latin before Cyrillic in both locales, as Excel for Windows sorts in 
 
 ## How the engine does it
 
-`src/locale/rules.ts` defines `Rules`, one object per book. en-US is the engine's own code. Another locale is built by `regionalRules` (`src/locale/rules/regional.ts`) from its data: separators, currency, month and day names, TEXT codes, the collation tag, and the words for TRUE, FALSE and errors. A new locale shaped like ru-RU is a data file and one line in `REGIONAL`.
+`src/locale/rules.ts` defines `Rules`, one object per book. en-US is the engine's own code. Another locale is built by `regionalRules` (`src/locale/rules/regional.ts`) from its data: separators, currency, month and day names, TEXT codes, the collation tag, the code page of CHAR and CODE, the word of new table columns' names, and the words for TRUE, FALSE and errors. Some rules are still code written for ru-RU, so a new locale is its data files and their registration, plus code where its rules differ from those ([Adding a locale](#adding-a-locale)).
 
 The engine builds the rules when it creates a book's state and passes them to operators and criteria through the runtime, and to every function through `Cx.rules`. The argument kinds of `src/args.ts` convert values with the rules, and functions that read or write text themselves (TEXT, DOLLAR, FIXED, VALUE, the complex functions, the lookups and others) use them directly. Code outside a book, such as the parser, works in en-US.
+
+## Adding a locale
+
+A locale added to the package lets books in it compute as Excel in that language and region does, and lets hosts show formulas in its language. Most of a locale is data in two files. Some rules are still code written for ru-RU, listed under [What needs code](#what-needs-code), so a locale such as de-DE or tr-TR is its data, the code its rules need, and a check against Excel as ru-RU had.
+
+### Two layers
+
+Formula text is a `Locale` object (`src/locale/types.ts`): the separators, the words for TRUE and FALSE, error literals, function names and the specifiers of structured references. ru-RU's was taken from Excel: `bench/locale/snapshot.ts` reads Excel's own text of 6,381 formulas and its international settings into `test/excel/locale/ru-RU.json`, `bench/locale/derive.ts` derives the locale's data from them, and `bench/locale/generate.ts` writes `src/locale/ru-RU.ts`. The snapshot's books have no tables, so `generate.ts` keeps the specifiers by hand (`TABLE_ITEMS`), as the table set `locale` measured them.
+
+Computation is a `RegionalData` object (`src/locale/rules/data.ts`), ru-RU's in `src/locale/rules/ru-RU.ts`: the separators of numbers in text, the currency, month and day names, TEXT's codes and colour names, the date separator of cells, Excel's code of the locale (`419`), the long date and time, the collation tag, the built-in formats, the code page of CHAR and CODE (`codePage`, Windows-1251) and the word of new table columns' names (`columnWord`, `Столбец`, which makes `Столбец1`). `regionalRules` (`src/locale/rules/regional.ts`) builds a book's rules from it. en-US has no data of its own: its rules are the engine's code in `src/locale/rules.ts`, where Windows-1252 and `Column` are.
+
+### Registering it
+
+A new locale `xx-YY` takes these places:
+
+- `src/locale/xx-YY.ts`, its `Locale`, exported from `src/locale/index.ts` and `src/index.ts` as `ruRU` is, for `toLocal` and `toInvariant`.
+- A line in `LOCALES` (`src/locale/registry.ts`). A book's `locale` and the locale stored in an xlsx file must be one of its tags, and a locale's words for TRUE and FALSE are no names in its books.
+- `src/locale/rules/xx-YY.ts`, its `RegionalData`, and a line in `REGIONAL` (`src/locale/rules.ts`). A tag in `LOCALES` without one would compute by en-US's rules; `test/locale-book.test.ts` checks that both maps list the same locales besides en-US.
+- The published table of its code page in `PAGES` of `test/codepage.test.ts`, which fails until every locale's page is checked against one.
+- The tags listed in the comments of `BookInput.locale` and `DisplayOptions.locale` (`src/contract.ts`), and in the message `test/locale-book.test.ts` expects for an unknown tag.
+
+### Where the data come from
+
+Function names and the rest of formula text are read from Excel for Mac in the locale's language, as ru-RU's were. The Windows harness has no snapshot of formula text.
+
+Regional data (the separators, the currency, month names, TEXT codes, the order of text, the code page, the word of column names) are checked against Excel for Windows too. Where Excel for Mac and Excel for Windows part, Windows is the reference. ru-RU follows it for the order of text (Latin before Cyrillic), month names (`Январь`, not `январь`), the short and long time, and CHAR and CODE (Windows-1251, not Mac Cyrillic); it keeps one value of the Mac's, the long date `[$-F800]`.
+
+### Accepting a locale
+
+A locale is ready when the engine gives Excel's answers in it, and every difference left is listed with its reason. For ru-RU that is:
+
+- the coverage measurement computed in Excel ru-RU (`npx tsx bench/coverage/run.ts excel ru`) and compared by `test/excel-ru.test.ts`;
+- the case sets (`npx tsx bench/coverage/run.ts probes <set> ru`), what cells show (`display <set> ru`) and tables (`tables <set> ru`), with their tests, as `bench/coverage/README.md` describes;
+- the same books in Excel for Windows (`npx tsx bench/windows/run.ts all ru`, `bench/windows/README.md`);
+- the differences: `RU_KNOWN` in `test/excel-ru-cases.ts` pins the engine's answer of each case that differs from Excel ru-RU, with a reason from `RU_REASONS`, and `WIN_KNOWN` does the same against Excel for Windows. A pinned case that comes to match Excel fails until it is taken off the list.
+
+A new locale needs the same: the measurement and the sets computed in its Excel, and its own list of differences.
+
+### What needs code
+
+These rules are written for ru-RU, or for en-US and ru-RU only. A new locale needs code for them, not only data.
+
+#### Dates in text
+
+`regionalRules` reads the date text of every locale besides en-US as day, month, year (`dmyDates`, `src/locale/rules/dates.ts`): `31.01.2025`, `31/1/25`, also `2025-01-31`, and a month by three letters or more of its nominative name. A locale that writes the month or the year first needs its own reader.
+
+#### Currency in number text
+
+VALUE and the other readers of number text take the currency symbol after the amount only (`numberReader`, `src/locale/rules/numbers.ts`), as in `1 234,5 ₽`. `currency.before` changes what DOLLAR writes, not what is read, so a locale with the symbol before the amount needs code there.
+
+#### Widths of characters
+
+What a cell shows by its column's width adds up the widths of characters measured for Calibri 11 in Excel for Mac (`src/numfmt/glyphs.ts`): the basic Latin letters, the Russian alphabet, digits and some signs. Any other character counts as a digit, so text with `ä`, `ß`, `ş` or `ğ` may fit a column here where Excel shows `#`, or the other way round.
+
+#### Differences from Excel
+
+The machinery that keeps differences from Excel is ru-RU's alone: `RU_KNOWN`, `RU_SETS` and `runRuSet` in `test/excel-ru-cases.ts`, used by `test/excel-ru.test.ts` and `test/excel-ru-probes.test.ts`. A new locale needs its own, or this one made to take a locale.
+
+#### Case of names
+
+Sheet names, table names and the words of formula text are compared in upper case by Russian rules, `toLocaleUpperCase('ru-RU')`: in `src/syntax/print.ts` (`sheetKey`, which table names use too), `src/syntax/table.ts` (the specifiers of structured references), `src/xlsx/read/book.ts` (table names in a file), `src/locale/lex.ts` and `src/locale/translate.ts` (function names, TRUE, FALSE and specifiers in typed text). Defined names are compared with `toUpperCase()` (`src/names.ts`), which is the same for Latin and Cyrillic. Both take `i` and `ı` to `I` and keep `İ` apart, while Turkish rules pair `i` with `İ` and `ı` with `I`; how Excel tr-TR compares such names has not been measured.
+
+#### The harnesses
+
+The harnesses know en-US and ru-RU only. On the Mac, `bench/coverage/excel.ts` has `type Locale = 'en' | 'ru'` and Excel's launch arguments by locale (`LAUNCH`): en-US starts Excel with `-AppleLanguages (en) -AppleLocale en_US`, ru-RU with none, in the system's Russian. `bench/locale/snapshot.ts` takes `en` and `ru`, `bench/locale/generate.ts` `ru` alone. On Windows, `bench/windows/remote.ts` has `Tag = 'en-US' | 'ru-RU'` with each locale's code and code page, and the machine needs the language: Excel's interface language follows the Windows display language, so a new language needs its Windows language pack, and Office's language pack for it as well, as the English one is installed there.
 
 ## How it was checked
 

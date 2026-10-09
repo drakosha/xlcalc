@@ -1,7 +1,7 @@
 /**
  * The rules of computation of a locale other than en-US, built from its data (`RegionalData`, ru-RU's in
  * `ru-RU.ts`) and the book's clock: the same coercions as en-US with the locale's number and date text, words,
- * error texts, separators, currency, TEXT codes and text order.
+ * error texts, separators, currency, TEXT codes, text order and code page.
  */
 import type { ErrorCode } from '../../contract.js'
 import { textOrder } from '../../collate.js'
@@ -48,6 +48,7 @@ export function regionalRules(data: RegionalData, clock: RulesClock, names: (lci
     compare,
     compareOp: operatorOrder(compare),
     errorText: (code: ErrorCode) => locale.errors[ERROR_TEXT[code]] ?? ERROR_TEXT[code],
+    codePage: data.codePage,
     critNumber: argument,
     critBool: word,
     cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),

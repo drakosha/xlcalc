@@ -1,8 +1,8 @@
 /**
  * What a locale other than en-US gives its rules of computation (`regional.ts`): the formula-text locale for
  * TRUE, FALSE and error texts, number separators, the currency format, month and day names, TEXT's format
- * codes, the text order; and the clock that completes a date written without a year, whose reads make a
- * formula depend on the clock.
+ * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock
+ * that completes a date written without a year, whose reads make a formula depend on the clock.
  */
 import type { Locale } from '../types.js'
 
@@ -36,6 +36,10 @@ export interface RegionalData {
   readonly collation: string
   /** The built-in formats the locale shows by codes of its own, by number, as en-US codes (`numfmt/builtin.ts`). */
   readonly builtin: Readonly<Record<number, string>>
+  /** CHAR's and CODE's characters of codes 128–255: the locale's Windows code page, an undefined byte the C1 control of its value. */
+  readonly codePage: string
+  /** The word of a new table column's name (`Столбец1`), as Excel names a column inserted into a table or a cleared header. */
+  readonly columnWord: string
 }
 
 /** The clock as the rules read it: date text without a year takes the clock's year, and reading it sets `read`. */

@@ -9,6 +9,7 @@
  * of their lines, and a table's header row deleted without the rest.
  */
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
+import { REGIONAL } from '../locale/rules.js'
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { rectOf, type Area, type Axis } from '../structure/area.js'
@@ -17,12 +18,9 @@ import { rewriteFormula, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
 import { tableKey, tablesOf } from './model.js'
 
-/** The word of default column names by the book's locale, as Excel names a new column. */
-const COLUMN_WORD: Record<string, string> = { 'ru-RU': 'Столбец' }
-
-/** The first free name `Column<n>` (n from 1) among `taken`, case-insensitively. */
+/** The first free name `Column<n>` (n from 1) among `taken`, case-insensitively, with the word of the book's locale (`columnWord`). */
 export function freeColumnName(taken: string[], locale: string | undefined): string {
-  const word = COLUMN_WORD[locale ?? ''] ?? 'Column'
+  const word = REGIONAL.get(locale ?? '')?.columnWord ?? 'Column'
   const keys = new Set(taken.map(tableKey))
   let n = 1
   while (keys.has(tableKey(`${word}${n}`))) n++

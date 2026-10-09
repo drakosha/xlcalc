@@ -246,7 +246,7 @@ Arguments of an external function must be literals; a call without a value gives
 
 ### Localization
 
-Books store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are typed and shown, as Excel shows them in another language. The package has `ruRU` (Excel with the Russian interface) and `enUS`; a locale is a plain object (the `Locale` type), so another language is another object of the same shape.
+Books store formulas the way xlsx files do: English function names, `,` between arguments, `.` as the decimal separator. A locale changes how formulas are typed and shown, as Excel shows them in another language. The package has `ruRU` (Excel with the Russian interface) and `enUS`; a locale is a plain object (the `Locale` type), so formula text in another language is another object of the same shape. A book computes only in the package's locales; [docs/locale.md](docs/locale.md#adding-a-locale) says what adding one takes.
 
 ```js
 import { ruRU, toInvariant, toLocal, validateLocalFormula } from 'xlcalc'

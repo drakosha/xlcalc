@@ -1,17 +1,21 @@
 /**
- * The code pages of CHAR and CODE (`src/functions/text/codepage.ts`) against the published tables: Unicode's
- * mappings of Windows-1252 and Windows-1251 (`test/fixtures/unicode/`, from
- * https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/) and the platform's `TextDecoder`, where it
- * has them. A byte the published table leaves undefined is the C1 control of the same value, as Windows and
- * `TextDecoder` convert it.
+ * The code pages of CHAR and CODE (`Rules.codePage`: en-US's in `src/locale/rules.ts`, another locale's in its data,
+ * `src/locale/rules/ru-RU.ts`) against the published tables: Unicode's mappings of Windows-1252 and Windows-1251
+ * (`test/fixtures/unicode/`, from https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/) and the platform's
+ * `TextDecoder`, where it has them. A byte the published table leaves undefined is the C1 control of the same value, as
+ * Windows and `TextDecoder` convert it.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { CODE_PAGES } from '../src/functions/text/codepage.js'
 import { LOCALES } from '../src/locale/registry.js'
+import { displayRules } from '../src/locale/rules.js'
 import { compute } from '../src/index.js'
 
+/** The published table of each locale's code page. */
 const PAGES = { 'en-US': 'windows-1252', 'ru-RU': 'windows-1251' } as const
+
+/** A locale's code page, as CHAR and CODE read it from a book's rules. */
+const pageOf = (tag: string) => displayRules(tag).codePage
 
 /** Bytes 128–255 of a published table: the character, or the C1 control of the same value where it is undefined. */
 function published(name: string): string {
@@ -30,16 +34,18 @@ const decoder = (name: string) => {
 }
 
 describe('code pages of CHAR and CODE', () => {
-  it('every locale has one', () => expect(Object.keys(CODE_PAGES).sort()).toEqual([...LOCALES.keys()].sort()))
+  it('every locale has one, checked against a published table', () => expect(Object.keys(PAGES).sort()).toEqual([...LOCALES.keys()].sort()))
 
   for (const [tag, name] of Object.entries(PAGES)) {
-    it(`${tag}: ${name} as Unicode publishes it`, () => expect(CODE_PAGES[tag]).toBe(published(name)))
+    it(`${tag}: ${name} as Unicode publishes it`, () => expect(pageOf(tag)).toBe(published(name)))
 
-    it.skipIf(!decoder(name))(`${tag}: ${name} as TextDecoder reads it`, () => expect(CODE_PAGES[tag]).toBe(decoder(name)!.decode(Uint8Array.from({ length: 128 }, (_, i) => 128 + i))))
+    it.skipIf(!decoder(name))(`${tag}: ${name} as TextDecoder reads it`, () => expect(pageOf(tag)).toBe(decoder(name)!.decode(Uint8Array.from({ length: 128 }, (_, i) => 128 + i))))
 
     it(`${tag}: CODE(CHAR(n)) is n for 1 to 255, a character outside the page is 63`, () => {
       const cells = Object.fromEntries(Array.from({ length: 255 }, (_, i) => [`A${i + 1}`, { formula: `CODE(CHAR(${i + 1}))` }]))
-      Object.assign(cells, { B1: { formula: 'CODE("中")' }, B2: { formula: `CODE("${tag === 'en-US' ? 'Ж' : 'é'}")` } })
+      // a letter of another script, outside the page: `Ж` in en-US, `é` in ru-RU
+      const other = ['Ж', 'é'].find((c) => !pageOf(tag).includes(c))
+      Object.assign(cells, { B1: { formula: 'CODE("中")' }, B2: { formula: `CODE("${other}")` } })
       const out = compute({ locale: tag, sheets: [{ name: 'S', cells }] }).sheets[0].cells
       expect(Array.from({ length: 255 }, (_, i) => out[`A${i + 1}`].value)).toEqual(Array.from({ length: 255 }, (_, i) => i + 1))
       expect([out.B1.value, out.B2.value]).toEqual([63, 63])

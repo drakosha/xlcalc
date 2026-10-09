@@ -2,9 +2,9 @@
  * ru-RU's rules of computation: Excel 16.113 for Mac with the Russian interface and locale. Separators, the
  * currency and the format codes are Excel's international settings (`test/excel/locale/ru-RU.json`); the names
  * and the rest were measured (`test/excel/cases/ru-RU/locale.json`), the colours, the date separator of a cell
- * and the long date too (`test/excel/cases/ru-RU/text-format-ru-more.json`, `test/excel/display/ru-RU/`). Where the two
- * Excels' regional data part, the rules are Excel for Windows's (`test/excel/win/`): the order of text, month names,
- * the short and long time.
+ * and the long date too (`test/excel/cases/ru-RU/text-format-ru-more.json`, `test/excel/display/ru-RU/`), the name of a
+ * new table column (`test/excel/tables/ru-RU/locale.json`). Where the two Excels' regional data part, the rules are
+ * Excel for Windows's (`test/excel/win/`): the order of text, month names, the short and long time, CHAR and CODE.
  */
 import { ruRU } from '../ru-RU.js'
 import type { RegionalData } from './data.js'
@@ -31,6 +31,15 @@ export const RU_RU: RegionalData = {
   collation: 'en-US',
   // the built-in formats Excel ru-RU shows by codes of its own (the display set `builtin`, `NumberFormatLocal`)
   builtin: builtinRu(),
+  // Windows-1251, as Excel for Windows computes CHAR and CODE (Excel for Mac: Mac Cyrillic); `test/codepage.test.ts` checks it
+  codePage: String.fromCharCode(
+    0x0402, 0x0403, 0x201a, 0x0453, 0x201e, 0x2026, 0x2020, 0x2021, 0x20ac, 0x2030, 0x0409, 0x2039, 0x040a, 0x040c, 0x040b, 0x040f,
+    0x0452, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x0098, 0x2122, 0x0459, 0x203a, 0x045a, 0x045c, 0x045b, 0x045f,
+    0x00a0, 0x040e, 0x045e, 0x0408, 0x00a4, 0x0490, 0x00a6, 0x00a7, 0x0401, 0x00a9, 0x0404, 0x00ab, 0x00ac, 0x00ad, 0x00ae, 0x0407,
+    0x00b0, 0x00b1, 0x0406, 0x0456, 0x0491, 0x00b5, 0x00b6, 0x00b7, 0x0451, 0x2116, 0x0454, 0x00bb, 0x0458, 0x0405, 0x0455, 0x0457,
+    ...Array.from({ length: 64 }, (_, i) => 0x0410 + i),
+  ),
+  columnWord: 'Столбец',
 }
 
 /** ru-RU's codes of built-in formats, as en-US codes: the ruble after the amount, a minus for negatives, hours without a leading zero (Windows's `ч:мм`). */
