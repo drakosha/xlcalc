@@ -96,16 +96,30 @@ function sortby(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
  * reference across sheets first (#REF!), then an error given as a value, then a union (#VALUE!).
  */
 function sortOnce(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
+  const s = sortKeys(cx, array, rest)
+  return isErr(s) ? s : sortLines(s.a, s.byCol, s.key, s.desc, cx.rules)
+}
+
+/** What SORTBY sorts: the array, by lines (columns `byCol`), by the keys of each line in their directions. */
+interface Keys {
+  a: Arr
+  byCol: boolean
+  key: (line: number, k: number) => V
+  desc: boolean[]
+}
+
+/** What SORTBY with one value in each order sorts by, or the error it answers, without sorting; `grid` reads an argument. */
+function sortKeys(cx: Cx, array: Arg, rest: (Arg | undefined)[], grid = (x: Arg) => cx.grid(x)): Keys | CErr {
   const args = [array, ...rest]
   if (args.some((x) => x instanceof Areas && x.cube)) return E.REF
   const error = args.find(isErr)
   if (error) return error
   if (args.some((x) => x instanceof Areas)) return E.VALUE
-  const a = fromGrid(cx.grid(array))
+  const a = fromGrid(grid(array))
   const by: Arr[] = []
   const desc: boolean[] = []
   for (let i = 0; i < rest.length; i += 2) {
-    by.push(fromGrid(cx.grid(rest[i] ?? null)))
+    by.push(fromGrid(grid(rest[i] ?? null)))
     const order = rest[i + 1]
     const d = descending(cx, order === undefined ? undefined : cx.scalar(order))
     if (isErr(d)) return d
@@ -114,40 +128,45 @@ function sortOnce(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
   const one = (b: Arr) => b.rows === 1 && b.cols === 1
   const byCol = by[0].rows === 1 && by[0].cols > 1
   for (const b of by) if (!one(b) && (byCol ? b.rows !== 1 || b.cols !== a.cols : b.cols !== 1 || b.rows !== a.rows)) return E.VALUE
-  return sortLines(a, byCol, (line, k) => (one(by[k]) ? by[k].at(0, 0) : byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc, cx.rules)
+  return { a, byCol, key: (line, k) => (one(by[k]) ? by[k].at(0, 0) : byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc }
 }
 
 /**
- * SORTBY with an array or a range of several cells among its orders, as Excel answers it (the set `known-held`): an
- * array as large as the orders, where an order missing at a position (no row or column is repeated), an error or a
- * value other than 1 and −1 answers its error or #VALUE!, the first position the first value of the sort by the
- * orders there, and every other position blank.
+ * SORTBY with an array or a range of several cells among its orders, as Excel answers it (the sets `known-held`,
+ * `lookup-held`, `lookup-rules`): an array as large as the orders, lifted as an operator lifts (an order of one row or
+ * column repeats, past a shorter one #N/A). Each position, in rows, answers the error of the call with the orders
+ * there; the first that sorts gives its first sorted value, the others a blank, or #VALUE! with more than one by-array.
  */
 function byPosition(cx: Cx, array: Arg, rest: (Arg | undefined)[]): Arr {
   const orders = rest.map((x, i) => (i % 2 === 1 && several(x) ? (cx.view(x) as Arr) : x))
   const arrays = orders.filter((x, i): x is Arr => i % 2 === 1 && x instanceof Arr)
   const rows = Math.max(...arrays.map((o) => o.rows))
   const cols = Math.max(...arrays.map((o) => o.cols))
-  // the first order at a position that is not 1 or −1 answers its error there
-  const check = (r: number, c: number): CErr | undefined => {
-    for (let i = 1; i < orders.length; i += 2) {
-      const o = orders[i]
-      const v = o instanceof Arr ? (r < o.rows && c < o.cols ? o.at(r, c) : E.VALUE) : o instanceof Areas ? (o.cube ? E.REF : E.VALUE) : o === undefined ? undefined : cx.scalar(o)
-      const d = descending(cx, v)
-      if (isErr(d)) return d
-    }
+  // an order array's element at a position: its one row or column repeats, past a shorter one #N/A
+  const element = (o: Arr, r: number, c: number): V => {
+    const [i, j] = [o.rows === 1 ? 0 : r, o.cols === 1 ? 0 : c]
+    return i < o.rows && j < o.cols ? o.at(i, j) : E.NA
   }
-  // past the occupied part of every order (or past its size) each position is #VALUE! or a scalar order's error: one fill
+  const at = (r: number, c: number) => orders.map((o, i) => (i % 2 === 1 && o instanceof Arr ? element(o, r, c) : o))
+  // the array and the by-arrays are read once for all positions
+  const grids = new Map<Arg, Grid>()
+  const grid = (x: Arg) => grids.get(x) ?? grids.set(x, cx.grid(x)).get(x)!
+  let sorted = false
+  const answer = (r: number, c: number): V => {
+    const s = sortKeys(cx, array, at(r, c), grid)
+    if (isErr(s)) return s
+    if (sorted) return rest.length > 2 ? E.VALUE : null
+    sorted = true
+    return sortLines(s.a, s.byCol, s.key, s.desc, cx.rules).at(0, 0)
+  }
+  // past the occupied part of every order each position answers alike: one fill
   const h = Math.max(1, ...arrays.map((o) => (o.fill === null ? o.h : o.rows)))
   const w = Math.max(1, ...arrays.map((o) => (o.fill === null ? o.w : o.cols)))
   allot(h * w)
   const out: V[] = new Array(h * w)
-  for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) out[r * w + c] = check(r, c) ?? null
-  if (out[0] === null) {
-    const first = sortOnce(cx, array, orders.map((o, i) => (i % 2 === 1 && o instanceof Arr ? o.at(0, 0) : o)))
-    out[0] = first instanceof Arr ? first.at(0, 0) : first
-  }
-  return new Arr(rows, cols, h, w, out, h < rows || w < cols ? (check(rows, cols) ?? null) : null)
+  for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) out[r * w + c] = answer(r, c)
+  sorted = true
+  return new Arr(rows, cols, h, w, out, h < rows || w < cols ? answer(h < rows ? h : 0, h < rows ? 0 : w) : null)
 }
 
 /** A line's identity for UNIQUE: values by type, text in any case. */
