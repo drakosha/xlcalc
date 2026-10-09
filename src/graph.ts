@@ -124,7 +124,8 @@ export function markVolatile(state: EngineState) {
     const id = stack.pop()!
     if (vol.has(id)) continue
     vol.add(id)
-    stack.push(...successors(state, id))
+    // one push per successor: a cell read by more formulas than a call takes arguments would overflow the stack
+    for (const n of successors(state, id)) stack.push(n)
   }
   state.volatile = vol
 }
