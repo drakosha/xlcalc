@@ -1,7 +1,7 @@
 /** Factorials, binomial coefficients, GCD and LCM with Excel's argument checks. This engine's own. */
 import { gridAt, type Arg, type Cx, type FnDef } from '../../args.js'
 import { E, isErr, whole, type CErr, type V } from '../../values.js'
-import { fact } from '../common.js'
+import { fact, sum } from '../common.js'
 
 /** Excel: COMBIN and COMBINA take n below 2^31 − 1. */
 const MAX_N = 2 ** 31 - 1
@@ -109,7 +109,7 @@ export const functions: Record<string, FnDef> = {
     fn: (cx: Cx, args: Arg[]) => {
       const xs = wholes(cx, args)
       if (isErr(xs)) return xs
-      const total = xs.reduce((s, x) => s + x, 0)
+      const total = sum(xs)
       return fact(total) / xs.reduce((p, x) => p * fact(x), 1)
     },
   },

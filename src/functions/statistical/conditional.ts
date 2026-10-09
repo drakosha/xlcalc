@@ -1,11 +1,9 @@
 /** COUNTIF, COUNTIFS, AVERAGEIF, AVERAGEIFS, MAXIFS and MINIFS, this engine's own, on the criteria index of the runtime. */
-import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Cx, FnDef } from '../../args.js'
-import { E, isErr, Rng, type CErr, type V } from '../../values.js'
-import { NEWER_MAX_ARGS } from '../common.js'
-import { max, mean, min } from './common.js'
-
-const asRng = (x: V | Rng): Rng | CErr => (x instanceof Rng ? x : isErr(x) ? x : E.VALUE)
+import { E, isErr, type Rng, type CErr, type V } from '../../values.js'
+import { max, min, NEWER_MAX_ARGS } from '../common.js'
+import { asRng, criteriaPairs, resizeRange } from '../criteria.js'
+import { mean } from './common.js'
 
 /** The numbers at the selected positions; an error there is the answer. */
 function numbersAt(values: readonly V[], sel: number[]): number[] | CErr {
@@ -15,12 +13,6 @@ function numbersAt(values: readonly V[], sel: number[]): number[] | CErr {
     if (typeof v === 'number') out.push(v)
     else if (isErr(v)) return v
   }
-  return out
-}
-
-function criteriaPairs(rest: (V | Rng)[]): [V | Rng, V | Rng][] {
-  const out: [V | Rng, V | Rng][] = []
-  for (let i = 0; i < rest.length; i += 2) out.push([rest[i], rest[i + 1]])
   return out
 }
 
@@ -49,7 +41,7 @@ export const functions: Record<string, FnDef> = {
       if (avg !== undefined) {
         const a = asRng(avg)
         if (isErr(a)) return a
-        ag = new Rng(a.s, a.r1, a.c1, Math.min(a.r1 + cg.r2 - cg.r1, MAX_ROWS - 1), Math.min(a.c1 + cg.c2 - cg.c1, MAX_COLS - 1))
+        ag = resizeRange(a, cg)
       }
       const r = cx.select([[cg, crit]], ag)
       if (isErr(r)) return r
@@ -79,6 +71,6 @@ export const functions: Record<string, FnDef> = {
       return isErr(r) ? r : r.sel.length + r.rest
     },
   },
-  MAXIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, criteria: true, fn: ifs((xs) => (xs.length ? max(xs) : 0)) },
-  MINIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, criteria: true, fn: ifs((xs) => (xs.length ? min(xs) : 0)) },
+  MAXIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, criteria: true, fn: ifs(max) },
+  MINIFS: { args: 'R R a', rep: 2, max: NEWER_MAX_ARGS, cx: true, criteria: true, fn: ifs(min) },
 }

@@ -4,9 +4,10 @@
  */
 import { pairs, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
-import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, Rng, type CErr, type V } from '../../values.js'
+import { E, isErr, type Rng, type CErr, type V } from '../../values.js'
+import { product, sum, sumSquares } from '../common.js'
+import { asRng, criteriaPairs, resizeRange } from '../criteria.js'
 
 /** The sum of the numbers at the selected positions; an error there is the answer. */
 function sumAt(values: readonly V[], sel: number[]): V {
@@ -18,8 +19,6 @@ function sumAt(values: readonly V[], sel: number[]): V {
   }
   return acc
 }
-
-const asRng = (x: V | Rng): Rng | CErr => (x instanceof Rng ? x : isErr(x) ? x : E.VALUE)
 
 /** Positions of a grid that hold cells, row by row in the referenced width; past them everything is blank. */
 const filled = (g: Grid) => (g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
@@ -128,9 +127,9 @@ export const functions: Record<string, FnDef> = {
       return b === 0 ? E.DIV0 : a / b
     },
   },
-  PRODUCT: { args: 'N', rep: 1, fn: (xs: number[]) => (xs.length ? xs.reduce((p, x) => p * x, 1) : 0) },
+  PRODUCT: { args: 'N', rep: 1, fn: product },
   SERIESSUM: { args: 'x x x V', cx: true, fn: seriessum },
-  SUM: { args: 'N', rep: 1, fn: (xs: number[]) => xs.reduce((s, x) => s + x, 0) },
+  SUM: { args: 'N', rep: 1, fn: sum },
   // the sum range takes the size of the criteria range from its own top-left cell, as in Excel
   SUMIF: {
     args: 'R a R?',
@@ -146,7 +145,7 @@ export const functions: Record<string, FnDef> = {
       const sg = asRng(sum)
       if (isErr(sg)) return sg
       // past the sheet's edge the sum range is cut, and then it no longer fits: #VALUE!
-      const sized = new Rng(sg.s, sg.r1, sg.c1, Math.min(sg.r1 + cg.r2 - cg.r1, MAX_ROWS - 1), Math.min(sg.c1 + cg.c2 - cg.c1, MAX_COLS - 1))
+      const sized = resizeRange(sg, cg)
       const r = cx.select([[cg, crit]], sized)
       return isErr(r) ? r : sumAt(r.read(sized), r.sel)
     },
@@ -159,14 +158,12 @@ export const functions: Record<string, FnDef> = {
     fn: (cx: Cx, sum: V | Rng, rest: (V | Rng)[]) => {
       const sg = asRng(sum)
       if (isErr(sg)) return sg
-      const pairs: [V | Rng, V | Rng][] = []
-      for (let i = 0; i < rest.length; i += 2) pairs.push([rest[i], rest[i + 1]])
-      const r = cx.select(pairs, sg)
+      const r = cx.select(criteriaPairs(rest), sg)
       return isErr(r) ? r : sumAt(r.read(sg), r.sel)
     },
   },
   SUMPRODUCT: { args: 'R', rep: 1, cx: true, fn: sumproduct },
-  SUMSQ: { args: 'N', rep: 1, fn: (xs: number[]) => xs.reduce((s, x) => s + x * x, 0) },
+  SUMSQ: { args: 'N', rep: 1, fn: sumSquares },
   SUMX2MY2: sumx((x, y) => x * x - y * y),
   SUMX2PY2: sumx((x, y) => x * x + y * y),
   SUMXMY2: sumx((x, y) => (x - y) * (x - y)),

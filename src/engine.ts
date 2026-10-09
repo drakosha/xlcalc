@@ -21,6 +21,7 @@ import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { RangeCache } from './range-cache.js'
 import { RangeAggregates } from './range-aggregate.js'
+import { AreaIndex } from './area-index.js'
 import { nameFor, prepareNames, type PreparedName } from './names.js'
 import { blocks } from './spill/occupied.js'
 import { endSpill, spillRef } from './spill/place.js'
@@ -80,10 +81,8 @@ export interface EngineState {
   /** Position in the topological order; -1 for cells in a cycle and cells depending on them. */
   topo: number[]
   order: number[]
-  /** Listeners of narrow ranges: sheet → column → [r1, r2, id]. */
-  listeners: Map<number, Map<number, [number, number, number][]>>
-  /** Listeners of wide ranges (whole rows and more than 64 columns): sheet → [r1, r2, c1, c2, id]. */
-  wide: Map<number, [number, number, number, number, number][]>
+  /** Formula references indexed by sheet and column, with a separate bucket for wide ranges. */
+  listeners: AreaIndex<Area & { id: number }>
   /** Formulas that depend on volatile functions or on `clocked` formulas (directly or through others). */
   volatile: Set<number>
   /** Formulas whose latest computation read the clock's year (date text without a year, by the book's locale). */
@@ -216,8 +215,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     spillSucc: new Map(),
     topo: [],
     order: [],
-    listeners: new Map(),
-    wide: new Map(),
+    listeners: new AreaIndex(),
     volatile: new Set(),
     clocked: new Set(),
     iterated: [],

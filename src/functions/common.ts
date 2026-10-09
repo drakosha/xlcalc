@@ -11,6 +11,14 @@
 /** Excel's largest argument count of a function newer than Excel 2007 (`_xlfn.NAME` in a file): one fewer than its 255, measured by the `arity` set. */
 export const NEWER_MAX_ARGS = 254
 
+/** Numeric aggregates in input order, with Excel's empty-list results. */
+export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
+export const sumSquares = (xs: readonly number[]) => xs.reduce((s, x) => s + x * x, 0)
+export const product = (xs: readonly number[]) => xs.length ? xs.reduce((p, x) => p * x, 1) : 0
+// Do not spread the input into Math.max/min: a whole column can exceed the call argument limit.
+export const max = (xs: readonly number[]) => xs.reduce((m, x) => x > m ? x : m, xs.length ? -Infinity : 0)
+export const min = (xs: readonly number[]) => xs.reduce((m, x) => x < m ? x : m, xs.length ? Infinity : 0)
+
 const FACTS: number[] = [1, 1]
 
 /** n! for a whole n ≥ 0, by products as formula.js computes it (Infinity past 170). */

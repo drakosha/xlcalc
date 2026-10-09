@@ -7,7 +7,8 @@ import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
-import { momentValue, stableMean } from './statistical/moments.js'
+import { max, min, product, sum } from './common.js'
+import { mean, stdev, variance } from './statistical/common.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V, rules: Rules): Crit | null {
@@ -101,18 +102,18 @@ const dfn = (f: (vs: V[]) => V, errors = true): FnDef => ({
 const over = (f: (xs: number[]) => V) => dfn((vs) => f(numbers(vs)))
 
 export const functions: Record<string, FnDef> = {
-  DAVERAGE: over((xs) => (xs.length ? stableMean(xs) : E.DIV0)),
+  DAVERAGE: over((xs) => (xs.length ? mean(xs) : E.DIV0)),
   // DCOUNT passes over errors, the other functions answer with them
   DCOUNT: dfn((vs) => numbers(vs).length, false),
   DCOUNTA: dfn((vs) => vs.filter((v) => v !== null).length, false),
   // one record, else #VALUE! (none or a blank field) or #NUM! (several)
   DGET: dfn((vs) => (vs.length > 1 ? E.NUM : vs.length === 0 || vs[0] === null ? E.VALUE : vs[0]), false),
-  DMAX: over((xs) => xs.reduce((m, x) => (x > m ? x : m), xs.length ? -Infinity : 0)),
-  DMIN: over((xs) => xs.reduce((m, x) => (x < m ? x : m), xs.length ? Infinity : 0)),
-  DPRODUCT: over((xs) => (xs.length ? xs.reduce((p, x) => p * x, 1) : 0)),
-  DSTDEV: over((xs) => (xs.length < 2 ? E.DIV0 : momentValue(xs, xs.length - 1, true))),
-  DSTDEVP: over((xs) => (xs.length < 1 ? E.DIV0 : momentValue(xs, xs.length, true))),
-  DSUM: over((xs) => xs.reduce((s, x) => s + x, 0)),
-  DVAR: over((xs) => (xs.length < 2 ? E.DIV0 : momentValue(xs, xs.length - 1))),
-  DVARP: over((xs) => (xs.length < 1 ? E.DIV0 : momentValue(xs, xs.length))),
+  DMAX: over(max),
+  DMIN: over(min),
+  DPRODUCT: over(product),
+  DSTDEV: over((xs) => stdev(xs, 1)),
+  DSTDEVP: over((xs) => stdev(xs, 0)),
+  DSUM: over(sum),
+  DVAR: over((xs) => variance(xs, 1)),
+  DVARP: over((xs) => variance(xs, 0)),
 }

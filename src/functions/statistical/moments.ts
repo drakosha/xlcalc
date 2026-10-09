@@ -24,27 +24,38 @@ export function stableMean(xs: readonly number[]): number {
   return exact ? ratio(exact.sx, exact.n, exact.ex) : NaN
 }
 
-// Keep a substantial margin before the mean's rounding becomes significant relative to the spread.
+// Keep a margin before the mean's rounding becomes significant relative to the spread.
 const unsafe = (ss: number, mean: number, n: number, distinct: boolean) =>
   !Number.isFinite(ss) || ss < 0 || (distinct && (ss < 1e-280 || Math.abs(mean) * Number.EPSILON > Math.sqrt(ss / n) * 1e-8))
 
-function central(xs: readonly number[]): { ss: number; unsafe: boolean } {
-  const mean = stableMean(xs), squares = new Sum(), deviations = new Sum()
-  let distinct = false
-  for (const x of xs) {
+const corrected = (sum: Sum, dx: Sum, dy: Sum, n: number) => sum.value - (dx.value / n) * dy.value
+
+/** One centered pass for a single series or a pair; paired cross products keep their original order. */
+function central(xs: readonly number[], ys?: readonly number[]): Omit<PairMoments, 'exact'> {
+  const n = xs.length, mx = stableMean(xs), my = ys ? stableMean(ys) : 0
+  const xx = new Sum(), yy = new Sum(), xy = new Sum(), dxs = new Sum(), dys = new Sum()
+  let distinctX = false, distinctY = false
+  for (let i = 0; i < n; i++) {
     spend(1)
-    const d = x - mean
-    deviations.add(d); squares.add(d * d); distinct ||= x !== xs[0]
+    const dx = xs[i] - mx
+    dxs.add(dx); xx.add(dx * dx); distinctX ||= xs[i] !== xs[0]
+    if (ys) {
+      const dy = ys[i] - my
+      dys.add(dy); yy.add(dy * dy); xy.add(dx * dy); distinctY ||= ys[i] !== ys[0]
+    }
   }
-  const ss = squares.value - (deviations.value / xs.length) * deviations.value
-  return { ss, unsafe: unsafe(ss, mean, xs.length, distinct) }
+  const sxx = corrected(xx, dxs, dxs, n), syy = corrected(yy, dys, dys, n), sxy = corrected(xy, dxs, dys, n)
+  return {
+    n, mx, my, xx: sxx, yy: syy, xy: sxy,
+    unsafe: unsafe(sxx, mx, n, distinctX) || (ys !== undefined && (unsafe(syy, my, n, distinctY) || !Number.isFinite(sxy) || (sxx > 0 && syy > 0 && Math.abs(sxy) < Math.sqrt(sxx) * Math.sqrt(syy) * 1e-8))),
+  }
 }
 
 /** divisor=1 gives DEVSQ; n or n-1 gives variance, optionally its root. */
 export function momentValue(xs: readonly number[], divisor: number, root = false): number {
   if (!xs.length) return 0
   const m = central(xs)
-  if (!m.unsafe) return root ? Math.sqrt(m.ss / divisor) : m.ss / divisor
+  if (!m.unsafe) return root ? Math.sqrt(m.xx / divisor) : m.xx / divisor
   const exact = exactMoments(xs)
   if (!exact) return NaN
   const denominator = exact.n * BigInt(divisor)
@@ -65,24 +76,8 @@ export interface PairMoments {
 }
 
 export function pairMoments(xs: readonly number[], ys: readonly number[]): PairMoments {
-  const n = xs.length, mx = stableMean(xs), my = stableMean(ys)
-  const xx = new Sum(), yy = new Sum(), xy = new Sum(), dxs = new Sum(), dys = new Sum()
-  let distinctX = false, distinctY = false
-  for (let i = 0; i < n; i++) {
-    spend(1)
-    const dx = xs[i] - mx, dy = ys[i] - my
-    dxs.add(dx); dys.add(dy); xx.add(dx * dx); yy.add(dy * dy); xy.add(dx * dy)
-    distinctX ||= xs[i] !== xs[0]; distinctY ||= ys[i] !== ys[0]
-  }
-  const sxx = xx.value - (dxs.value / n) * dxs.value
-  const syy = yy.value - (dys.value / n) * dys.value
-  const sxy = xy.value - (dxs.value / n) * dys.value
   let exact: ExactMoments | undefined
-  return {
-    n, mx, my, xx: sxx, yy: syy, xy: sxy,
-    unsafe: unsafe(sxx, mx, n, distinctX) || unsafe(syy, my, n, distinctY) || !Number.isFinite(sxy) || (sxx > 0 && syy > 0 && Math.abs(sxy) < Math.sqrt(sxx) * Math.sqrt(syy) * 1e-8),
-    exact: () => exact ??= exactMoments(xs, ys),
-  }
+  return { ...central(xs, ys), exact: () => exact ??= exactMoments(xs, ys) }
 }
 
 export function covariance(f: PairMoments, divisor: number): number {
