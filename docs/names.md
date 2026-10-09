@@ -35,7 +35,7 @@ Names are compared in any case, Cyrillic too: `ставка` and `СТАВКА` 
 
 A name is written as it is in every locale. In ru-RU a Russian function name followed by `(` is the function and the same word alone is a name: `=СУММ(Сумма;1)` sums the name `Сумма`. A stored formula can hold the word `ИСТИНА` as a name only from an en-US book; `toLocal` shows it in ru-RU in quotes, `'ИСТИНА'`, as Excel ru-RU does, and `toInvariant` reads `'ИСТИНА'` back as the name, while `ИСТИНА` typed in Russian is TRUE. A table named `ИСТИНА` keeps no quotes before its brackets (`ИСТИНА[Qty]`).
 
-These are the rules of Microsoft's pages on defined names and on table names, with what Excel was measured to do beyond them: `\` and `?` inside a name, and the booleans of ru-RU. `validateName` checks the rules of an en-US book.
+These are the rules of Microsoft's pages on defined names and on table names, with what Excel was measured to do beyond them: `\` and `?` inside a name, and the booleans of ru-RU. `validateName(name, { locale })` checks them for a book of that locale, en-US without one.
 
 The rules below were measured in Excel 16.113 for Mac (en-US).
 
@@ -52,6 +52,12 @@ The rules below were measured in Excel 16.113 for Mac (en-US).
 | `'Data'!$B$1#` | `=SUM(sp)` | the spill range of B1 |
 
 A name's formula is written as a file stores it, without `=`, and `readXlsx` reads it so. Every reference in it has its sheet. A name whose formula does not parse, or has a reference without a sheet, is left out with a name issue.
+
+## Names left out and names with errors
+
+A name the book cannot have is left out: one Excel would not take, a second one of the same name and scope, a scope sheet the book lacks, a formula that does not parse or a reference without its sheet. A formula that uses its word finds no name and gives `#NAME?`. A name whose formula refers to a sheet, a table or a function the book lacks stays a name and gives its error where it is used ([Errors and cycles](#errors-and-cycles)).
+
+`ComputeResult.nameIssues` lists both, and `dropped` tells them apart. `validateNames(names, { sheets, tables, locale })` gives the same list without the book, by the same check, so a host can refuse a name before it stores it: whether a name is left out depends only on the names, the sheets' names and the locale.
 
 ## References without `$`
 

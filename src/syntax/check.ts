@@ -177,8 +177,8 @@ export function nameProblem(name: string, booleans: readonly string[] = []): str
   return reservedName(name, booleans)
 }
 
-/** A valid defined name by Excel's rules (`nameProblem`). */
-export function validateName(name: string): NameCheck {
-  const problem = nameProblem(name)
+/** A valid defined name by Excel's rules (`nameProblem`) in a book whose locale's booleans are `booleans`. */
+export function validateName(name: string, booleans: readonly string[] = []): NameCheck {
+  const problem = nameProblem(name, booleans)
   return problem === null ? { ok: true } : { ok: false, message: problem }
 }

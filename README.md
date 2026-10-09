@@ -167,14 +167,19 @@ The array fills its area and never spills. A session refuses to change part of t
 `validateFormula` checks a formula without a book: it returns the canonical text (sheet names quoted, function names upper-case) and what the formula uses, or a check code with a message and a position.
 
 ```js
-import { validateFormula, validateName } from 'xlcalc'
+import { validateFormula, validateName, validateNames } from 'xlcalc'
 
 console.log(validateFormula("sum(Sales!b1:b3, 'Q1 data'!A1)", { sheets: ['Sales', 'Q1 data'] }).canonical)
 // → SUM('Sales'!B1:B3,'Q1 data'!A1)
 const bad = validateFormula('SUM(B1:B3', { sheets: ['Sales'] })
 console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax expected ), found end of formula 9
 console.log(validateName('Q1').ok, validateName('tax_rate').ok, validateName('Ставка').ok) // → false true true
+console.log(validateName('ложь').ok, validateName('ложь', { locale: 'ru-RU' }).ok) // → true false
+const names = [{ name: 'R', ref: '1' }, { name: 'rate', ref: "'Q1 data'!B1" }, { name: 'gone', ref: "'Other'!A1" }]
+console.log(validateNames(names, { sheets: ['Sales', 'Q1 data'] }).map((x) => `${x.name} ${x.dropped}`)) // → [ 'R true', 'gone false' ]
 ```
+
+`validateName` checks a name by Excel's rules for a book of `locale`, en-US without one (a ru-RU book also refuses `ИСТИНА` and `ЛОЖЬ`). `validateNames` gives the name issues a book with these sheets, tables and locale would give, without the book: `dropped` is true for a name the book leaves out (one Excel would not take, a duplicate, an unknown scope sheet, a formula that does not parse or a reference without its sheet), false for one it keeps that gives an error where it is used, so a host can refuse a name before it stores it.
 
 Check codes: `empty`, `syntax`, `too_long` (over 8,192 characters), `too_deep` (over 64 levels of nesting), `external_ref` (a reference to another workbook), `unknown_function`, `unknown_sheet`, `unknown_name`, `unsupported` (an external function called with non-literal arguments). In `compute`, an invalid formula gives `#NAME?` for an unknown function or name, `#REF!` for an unknown sheet or an external reference, and `#ERROR!` otherwise. A formula whose result is an array is valid: it spills.
 
@@ -202,7 +207,7 @@ const result = compute({
 console.log(result.sheets[1].cells.A1.value) // → 3
 ```
 
-A name follows Excel's rules for names, in letters of any script (`Ставка`, `НДС_2025`, `Став?ка`), and is compared in any case: `ставка` is the name `Ставка`, and a formula's text shows it as it is defined (`ставка*2` is `Ставка*2`). A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in `nameIssues`.
+A name follows Excel's rules for names, in letters of any script (`Ставка`, `НДС_2025`, `Став?ка`), and is compared in any case: `ставка` is the name `Ставка`, and a formula's text shows it as it is defined (`ставка*2` is `Ставка*2`). A name with `scope: 'Sheet'` is visible on that sheet only and shadows a global name. Invalid names are reported in `nameIssues`, `dropped` telling a name left out from one kept with an error.
 
 A name can hold any formula: a constant (`0.2`), a calculation (`'Data'!$B$1*2`), a reference from `INDEX`, a union. A reference without `$` moves with the cell that uses the name. [docs/names.md](docs/names.md) has the rules.
 
@@ -466,11 +471,12 @@ From `xlcalc`:
 | `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range)`, `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
-| `validateName(name)` | `{ ok: true }` or `{ ok: false, message }` |
+| `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, message }` by the rules of a book of `opts.locale` |
+| `validateNames(names, ctx)` | the name issues of a book with `ctx.sheets`, `ctx.tables`, `ctx.externalFunctions` and `ctx.locale`, as `compute` gives them, each with `dropped` |
 | `toLocal(formula, locale, opts?)`, `toInvariant(text, locale)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)); `opts.table`, the table of the formula's cell, shows its references as Excel does inside it (`[@Qty]`, [docs/tables.md](docs/tables.md)) |
 | `validateLocalFormula(text, locale, ctx?)` | `validateFormula` for text typed in the locale, positions in `text` |
 | `enUS`, `ruRU` | the locales of the package (`Locale` objects) |
-| `engine` | `compute`, `validateFormula`, `validateName`, `openSession`, `restructure` and `displayValue` as one `FormulaEngine` object |
+| `engine` | `compute`, `validateFormula`, `validateName`, `validateNames`, `openSession`, `restructure` and `displayValue` as one `FormulaEngine` object |
 | `restructure(book, op)` | one structure operation (`StructureOp`): `{ ok: true, book, mapCell }` or `{ ok: false, code, message }`; [docs/structure.md](docs/structure.md) |
 | `copyFormula(text, from, to, book?)` | the text of a formula copied from cell `from` to `to` (`{ sheet, cell }`), as `copyRange` pastes it; with the book, a formula leaving its table names it ([docs/structure.md](docs/structure.md)) |
 | `fromLegacy(formula, { names?, sheet? })` | a file's formula of the old kind as the dynamic formula Excel 365 shows for it, canonical text; [docs/legacy.md](docs/legacy.md) |

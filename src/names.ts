@@ -21,7 +21,7 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
   const seen = new Set<string>()
   const sheets = [...sheetIdx.keys()]
   for (const n of names) {
-    const issue = (reason: string) => issues.push({ name: n.name, ...(n.scope ? { scope: n.scope } : {}), reason })
+    const issue = (reason: string, dropped = true) => issues.push({ name: n.name, ...(n.scope ? { scope: n.scope } : {}), reason, dropped })
     const problem = nameProblem(n.name, booleans)
     if (problem) {
       issue(problem)
@@ -53,7 +53,7 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
     // a formula Excel would not compute stays a name giving its error, as a lost reference does (#REF!)
     const v = validate(n.ref, { sheets, externalFunctions, union: true, tables })
     if (!v.ok) {
-      issue(v.message)
+      issue(v.message, false)
       ast = { k: 'err', code: v.code === 'unknown_sheet' ? 'REF' : v.code === 'unknown_function' || v.code === 'unknown_name' ? 'NAME' : 'ERROR' }
     } else ast = v.ast
     out.push({ name: n.name, scope, ast })

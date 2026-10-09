@@ -69,7 +69,7 @@ describe('defined names in letters of any script', () => {
 
   it('two names that differ only in case are one name: the second is a duplicate', () => {
     const v = values(book({ B1: 'ставка' }, [{ name: 'Ставка', ref: '1' }, { name: 'СТАВКА', ref: '2' }]))
-    expect(v.issues).toEqual([{ name: 'СТАВКА', reason: 'duplicate name' }])
+    expect(v.issues).toEqual([{ name: 'СТАВКА', reason: 'duplicate name', dropped: true }])
     expect(v.cells.B1).toBe(1)
   })
 

@@ -4,7 +4,7 @@
  * the reference graph.
  * The `./unstable/*` subpaths (internals, the synthetic book) are outside semver.
  */
-import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, ValidateContext, ValidateResult } from './contract.js'
+import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, NameInput, NameIssue, NameOptions, NamesContext, ValidateContext, ValidateResult } from './contract.js'
 import { openSession } from './session.js'
 import { restructure } from './structure/index.js'
 import { epochOf } from './dates.js'
@@ -12,11 +12,14 @@ import { createState, debugSource } from './engine.js'
 import { limitsBudget, run, withBudget } from './exec/budget.js'
 import { computeSteps } from './compute.js'
 import { currentClock } from './env.js'
-import { checkBook, checkCellValue, checkComputeOptions, checkDisplayOptions, checkString, checkValidateContext } from './input.js'
+import { checkBook, checkCellValue, checkComputeOptions, checkDisplayOptions, checkNameOptions, checkNames, checkNamesContext, checkString, checkValidateContext } from './input.js'
+import { localeBooleans } from './locale/registry.js'
 import { displayRules } from './locale/rules.js'
 import { columnPoints, room } from './numfmt.js'
 import { clockSerial } from './result.js'
-import { validate, validateName as checkName } from './syntax.js'
+import { FUNCTIONS } from './functions.js'
+import { prepareNames } from './names.js'
+import { sheetKey, validate, validateName as checkName } from './syntax.js'
 
 export * from './contract.js'
 export { FUNCTION_NAMES } from './functions.js'
@@ -47,8 +50,16 @@ export function validateFormula(text: string, ctx?: ValidateContext): ValidateRe
   return rest
 }
 
-export function validateName(name: string): NameCheck {
-  return checkName(checkString(name, 'name'))
+export function validateName(name: string, opts?: NameOptions): NameCheck {
+  return checkName(checkString(name, 'name'), localeBooleans(checkNameOptions(opts).locale))
+}
+
+/** The issues of a book's names, by the same check as a book's (`prepareNames`), without the book. */
+export function validateNames(names: NameInput[], ctx: NamesContext): NameIssue[] {
+  const c = checkNamesContext(ctx)
+  const sheetIdx = new Map(c.sheets.map((name, i) => [sheetKey(name), i]))
+  const externalFunctions = (c.externalFunctions ?? []).map((f) => f.toUpperCase()).filter((f) => !FUNCTIONS[f])
+  return prepareNames(sheetIdx, checkNames(names, 'names'), externalFunctions, c.tables ?? [], localeBooleans(c.locale)).issues
 }
 
 /** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
@@ -70,4 +81,4 @@ export function displayValue(value: CellValue, opts?: DisplayOptions): CellDispl
 }
 
 /** The contract implementation as one object. */
-export const engine: FormulaEngine = { compute, validateFormula, validateName, openSession, restructure, displayValue }
+export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, openSession, restructure, displayValue }
