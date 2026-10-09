@@ -11,7 +11,7 @@ import { valuesHash, type FillLine } from '../src/canon.js'
 import { CONFIG_VERSION } from '../src/config.js'
 import { compute, createInlineCalc, openSession, type BookInput, type CellEdit, type CellInput, type CellValue, type ComputeResult, type Execution, type Session, type StructureOp } from '../src/index.js'
 import { clockSerial, createState, formatAddress, outValue, toCellValue } from '../src/internal.js'
-import { mulberry32 } from '../src/synth.js'
+import { mulberry32, synthBook } from '../src/synth.js'
 import { pool } from './fixtures/pool.js'
 
 const CLOCK = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -210,7 +210,10 @@ function randomSteps(seed: number, book: BookInput, count: number): Step[] {
   return steps
 }
 
-const BOOKS: [string, BookInput][] = [...EDGE, ...Array.from({ length: 24 }, (_, i): [string, BookInput] => [`seeded book ${i + 1}`, randomBook(i + 1)])]
+/** 1024 lines and more: lines hashed in several portions, a portion ending at a sheet's end and within a sheet. */
+const portions: BookInput = { sheets: [sheet('P', Object.fromEntries(Array.from({ length: 2049 }, (_, i) => [`A${i + 1}`, { value: i % 7 ? i / 7 : `ы${i}` }]))), sheet('O', Object.fromEntries(Array.from({ length: 1024 }, (_, i) => [`B${i + 1}`, { value: i }])))] }
+
+const BOOKS: [string, BookInput][] = [...EDGE, ['portions of lines', portions], ['the synthetic book', synthBook({ seed: 1, rows: 340 }).book], ...Array.from({ length: 24 }, (_, i): [string, BookInput] => [`seeded book ${i + 1}`, randomBook(i + 1)])]
 
 // ---------- the tests ----------
 
@@ -277,7 +280,7 @@ describe.each(['closures', 'eval'] as const)('execution %s', (execution: Executi
     const calc = createInlineCalc({ sliceMs: 2 })
     const p = await pool({ threads: 2 })
     pools.push(p)
-    for (const [i, [name, book]] of BOOKS.slice(0, EDGE.length + 6).entries()) {
+    for (const [i, [name, book]] of BOOKS.slice(0, EDGE.length + 8).entries()) {
       const s = openSession(book, { clock: CLOCK, execution })
       const [a, b] = [await calc.openSession(book, { clock: CLOCK, execution }), await p.openSession(book, { clock: CLOCK, execution })]
       const check = async (label: string) => {
