@@ -134,7 +134,8 @@ function frequency(cx: Cx, data: Arg, bins: Arg): V | Arr {
     for (const g of x instanceof Areas ? x.list : [x]) {
       const xs = gridNumbers(cx.grid(g))
       if (isErr(xs)) return xs
-      out.push(...xs)
+      // one push per number: a whole column would overflow the call stack
+      for (const n of xs) out.push(n)
     }
     return out
   }
