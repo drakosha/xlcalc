@@ -12,7 +12,7 @@ import { E } from '../../values.js'
 const OUTSIDE = 63
 
 export const functions: Record<string, FnDef> = {
-  CHAR: { args: 'i', cx: true, fn: (cx: Cx, n: number) => (n < 1 || n > 255 ? E.VALUE : n < 128 ? String.fromCharCode(n) : cx.rules.codePage[n - 128]) },
+  CHAR: { args: 'i', cx: true, fn: (cx: Cx, n: number) => (n < 1 || n > 255 ? E.VALUE : n < 128 ? String.fromCharCode(n) : cx.rules.codePage.chars[n - 128]) },
   CODE: {
     args: 's',
     cx: true,
@@ -20,7 +20,7 @@ export const functions: Record<string, FnDef> = {
       if (s === '') return E.VALUE
       const c = s.charCodeAt(0)
       if (c < 128) return c
-      const at = cx.rules.codePage.indexOf(s[0])
+      const at = cx.rules.codePage.chars.indexOf(s[0])
       return at < 0 ? OUTSIDE : at + 128
     },
   },

@@ -5,6 +5,12 @@
  * completes a date written without a year, whose reads make a formula depend on the clock.
  */
 
+/** A code page of CHAR and CODE: its name as Unicode publishes its table (`windows-1251`), and its characters of codes 128–255, an undefined byte the C1 control of its value. */
+export interface CodePage {
+  readonly name: string
+  readonly chars: string
+}
+
 /** The order of day, month and year in date text (`dates.ts`). */
 export type DateOrder = 'dmy' | 'mdy' | 'ymd'
 
@@ -38,8 +44,8 @@ export interface RegionalData {
   readonly collation: string
   /** The built-in formats the locale shows by codes of its own, by number, as en-US codes (`numfmt/builtin.ts`). */
   readonly builtin: Readonly<Record<number, string>>
-  /** CHAR's and CODE's characters of codes 128–255: the locale's Windows code page, an undefined byte the C1 control of its value. */
-  readonly codePage: string
+  /** CHAR's and CODE's code page: the locale's Windows one. */
+  readonly codePage: CodePage
   /** The word of a new table column's name (`Столбец1`), as Excel names a column inserted into a table or a cleared header. */
   readonly columnWord: string
 }

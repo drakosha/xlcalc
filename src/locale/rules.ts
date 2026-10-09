@@ -13,7 +13,7 @@ import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
 import { LOCALE_FILES } from './registry.js'
-import type { RegionalData, RulesClock } from './rules/data.js'
+import type { CodePage, RegionalData, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
 import type { Locale } from './types.js'
 
@@ -52,16 +52,19 @@ export interface Rules extends CritRules {
   compareOp(a: V, b: V): number
   /** An error as text (VALUETOTEXT, ARRAYTOTEXT). */
   errorText(code: ErrorCode): string
-  /** CHAR's and CODE's characters of codes 128–255: the locale's Windows code page. */
-  readonly codePage: string
+  /** CHAR's and CODE's code page: the locale's Windows one. */
+  readonly codePage: CodePage
 }
 
 /** en-US's code page of CHAR and CODE: Windows-1252, an undefined byte the C1 control of its value (`test/codepage.test.ts`). */
-const WINDOWS_1252 = String.fromCharCode(
-  0x20ac, 0x0081, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 0x2030, 0x0160, 0x2039, 0x0152, 0x008d, 0x017d, 0x008f,
-  0x0090, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161, 0x203a, 0x0153, 0x009d, 0x017e, 0x0178,
-  ...Array.from({ length: 96 }, (_, i) => 0xa0 + i),
-)
+const WINDOWS_1252: CodePage = {
+  name: 'windows-1252',
+  chars: String.fromCharCode(
+    0x20ac, 0x0081, 0x201a, 0x0192, 0x201e, 0x2026, 0x2020, 0x2021, 0x02c6, 0x2030, 0x0160, 0x2039, 0x0152, 0x008d, 0x017d, 0x008f,
+    0x0090, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014, 0x02dc, 0x2122, 0x0161, 0x203a, 0x0153, 0x009d, 0x017e, 0x0178,
+    ...Array.from({ length: 96 }, (_, i) => 0xa0 + i),
+  ),
+}
 
 /** The month and day names of a locale code (`[$-409]`): en-US's, or a regional locale's. */
 const namesOf = (lcid: string): Names | undefined => (lcid === '409' ? EN_NAMES : [...REGIONAL.values()].find((d) => d.lcid === lcid))

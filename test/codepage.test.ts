@@ -1,6 +1,6 @@
 /**
- * The code pages of CHAR and CODE (`Rules.codePage`: en-US's in `src/locale/rules.ts`, another locale's in its data,
- * `src/locale/rules/ru-RU.ts`) against the published tables: Unicode's mappings of Windows-1252 and Windows-1251
+ * The code pages of CHAR and CODE (`Rules.codePage`: en-US's in `src/locale/rules.ts`, another locale's in its file in
+ * `src/locales/`) against the published tables each names: Unicode's mappings of Windows-1252 and Windows-1251
  * (`test/fixtures/unicode/`, from https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/) and the platform's
  * `TextDecoder`, where it has them. A byte the published table leaves undefined is the C1 control of the same value, as
  * Windows and `TextDecoder` convert it.
@@ -11,11 +11,11 @@ import { LOCALES } from '../src/locale/registry.js'
 import { displayRules } from '../src/locale/rules.js'
 import { compute } from '../src/index.js'
 
-/** The published table of each locale's code page. */
-const PAGES = { 'en-US': 'windows-1252', 'ru-RU': 'windows-1251' } as const
-
 /** A locale's code page, as CHAR and CODE read it from a book's rules. */
-const pageOf = (tag: string) => displayRules(tag).codePage
+const pageOf = (tag: string) => displayRules(tag).codePage.chars
+
+/** The published table of each locale's code page, by the name its data gives. */
+const PAGES = Object.fromEntries([...LOCALES.keys()].map((tag) => [tag, displayRules(tag).codePage.name]))
 
 /** Bytes 128–255 of a published table: the character, or the C1 control of the same value where it is undefined. */
 function published(name: string): string {
@@ -34,8 +34,6 @@ const decoder = (name: string) => {
 }
 
 describe('code pages of CHAR and CODE', () => {
-  it('every locale has one, checked against a published table', () => expect(Object.keys(PAGES).sort()).toEqual([...LOCALES.keys()].sort()))
-
   for (const [tag, name] of Object.entries(PAGES)) {
     it(`${tag}: ${name} as Unicode publishes it`, () => expect(pageOf(tag)).toBe(published(name)))
 
