@@ -45,8 +45,7 @@
  * 6. Holidays and payment dates (`D`): a flat list of whole serial numbers.
  * 7. Arrays (`docs/arrays-incell.md`): the list and grid kinds take an array as they take a range (`A`
  *    takes only an array's numbers, `Y` counts its text as 0); a one-value kind given an array or a range
- *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says; so are
- *    the grid arguments `FnDef.lifts` names (SORTBY's orders).
+ *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says.
  */
 import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
@@ -156,8 +155,6 @@ export interface FnDef {
   liftAt?: (i: number, n: number) => boolean
   /** Arguments taken whole that a lifted call reads by their top-left value, as a 1 × 1 array (VLOOKUP's index). */
   liftFirst?: readonly number[]
-  /** Arguments of a whole kind that Excel takes as one value each: an array or a range of several cells there lifts the call (SORTBY's orders). */
-  lifts?: Positions
   /** An argument left out (`f(a,,c)`) where it is not a blank read by kind (`functions/omitted.ts`). */
   omit?: Omission
   /** Where Excel does not load a formula that leaves the argument out. */
@@ -271,7 +268,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   const counts = !parity ? range : min < kinds.length ? `${min}, or ${parity} ${min + 1} to ${max}` : `${range} (${parity})`
   const mode = (i: number): ArgMode => {
     const k = kindAt(i)
-    return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) && !holds(def.lifts, i) ? 'whole' : 'lift'
+    return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'
   }
   const { ranges, omit } = def
   const rangeAt = (i: number) => (ranges === undefined ? 'lift' : ranges === 'first' || ranges === 'error' ? ranges : ranges.includes(i) ? 'error' : 'lift')

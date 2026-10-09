@@ -5,8 +5,9 @@
  */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
+import { allot } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 
 /** Sort rank of a type: numbers, text, booleans, errors, then blanks. */
@@ -74,22 +75,79 @@ function sort(cx: Cx, g: Grid, idx?: Grid, ord?: Grid, byCol = false): V | Arr {
   return sortLines(a, byCol, (line, j) => (byCol ? a.at(k.at[j], line) : a.at(line, k.at[j])), k.desc, cx.rules)
 }
 
-/** SORTBY: by-arrays of one column (row) as long as the array's rows (columns), or one value that keeps the order, each with an optional order. */
-function sortby(cx: Cx, g: Grid, rest: Grid[]): V | Arr {
-  const a = fromGrid(g)
+/** An array, one value too, or a range of several cells: as a sort order it makes SORTBY answer by position. */
+const several = (x: Arg | undefined): x is Rng | Arr => x instanceof Arr || (x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1))
+
+/** A sort order: −1 descending, 1 (TRUE too) or not given ascending, an error itself, anything else #VALUE!. */
+function descending(cx: Cx, o: V | undefined): boolean | CErr {
+  if (o === undefined) return false
+  const n = cx.rules.toNum(o)
+  return isErr(n) ? n : n === 1 || n === -1 ? n === -1 : E.VALUE
+}
+
+/** SORTBY: the array, then by-arrays each with its order; the orders one value each, or by position (`byPosition`). */
+function sortby(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
+  return rest.some((x, i) => i % 2 === 1 && several(x)) ? byPosition(cx, array, rest) : sortOnce(cx, array, rest)
+}
+
+/**
+ * SORTBY with one value in each order: by-arrays of one column (row) as long as the array's rows (columns), or one
+ * value that keeps the order. The array and the by-arrays are read as the grid kind reads them (`args.ts`): a
+ * reference across sheets first (#REF!), then an error given as a value, then a union (#VALUE!).
+ */
+function sortOnce(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
+  const args = [array, ...rest]
+  if (args.some((x) => x instanceof Areas && x.cube)) return E.REF
+  const error = args.find(isErr)
+  if (error) return error
+  if (args.some((x) => x instanceof Areas)) return E.VALUE
+  const a = fromGrid(cx.grid(array))
   const by: Arr[] = []
   const desc: boolean[] = []
   for (let i = 0; i < rest.length; i += 2) {
-    by.push(fromGrid(rest[i]))
-    const o = rest[i + 1] ? cx.rules.toNum(fromGrid(rest[i + 1]).at(0, 0)) : 1
-    if (isErr(o)) return o
-    if (o !== 1 && o !== -1) return E.VALUE
-    desc.push(o === -1)
+    by.push(fromGrid(cx.grid(rest[i] ?? null)))
+    const order = rest[i + 1]
+    const d = descending(cx, order === undefined ? undefined : cx.scalar(order))
+    if (isErr(d)) return d
+    desc.push(d)
   }
   const one = (b: Arr) => b.rows === 1 && b.cols === 1
   const byCol = by[0].rows === 1 && by[0].cols > 1
   for (const b of by) if (!one(b) && (byCol ? b.rows !== 1 || b.cols !== a.cols : b.cols !== 1 || b.rows !== a.rows)) return E.VALUE
   return sortLines(a, byCol, (line, k) => (one(by[k]) ? by[k].at(0, 0) : byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc, cx.rules)
+}
+
+/**
+ * SORTBY with an array or a range of several cells among its orders, as Excel answers it (the set `known-held`): an
+ * array as large as the orders, where an order missing at a position (no row or column is repeated), an error or a
+ * value other than 1 and −1 answers its error or #VALUE!, the first position the first value of the sort by the
+ * orders there, and every other position blank.
+ */
+function byPosition(cx: Cx, array: Arg, rest: (Arg | undefined)[]): Arr {
+  const orders = rest.map((x, i) => (i % 2 === 1 && several(x) ? (cx.view(x) as Arr) : x))
+  const arrays = orders.filter((x, i): x is Arr => i % 2 === 1 && x instanceof Arr)
+  const rows = Math.max(...arrays.map((o) => o.rows))
+  const cols = Math.max(...arrays.map((o) => o.cols))
+  // the first order at a position that is not 1 or −1 answers its error there
+  const check = (r: number, c: number): CErr | undefined => {
+    for (let i = 1; i < orders.length; i += 2) {
+      const o = orders[i]
+      const v = o instanceof Arr ? (r < o.rows && c < o.cols ? o.at(r, c) : E.VALUE) : o instanceof Areas ? (o.cube ? E.REF : E.VALUE) : o === undefined ? undefined : cx.scalar(o)
+      const d = descending(cx, v)
+      if (isErr(d)) return d
+    }
+  }
+  // past the occupied part of every order (or past its size) each position is #VALUE! or a scalar order's error: one fill
+  const h = Math.max(1, ...arrays.map((o) => (o.fill === null ? o.h : o.rows)))
+  const w = Math.max(1, ...arrays.map((o) => (o.fill === null ? o.w : o.cols)))
+  allot(h * w)
+  const out: V[] = new Array(h * w)
+  for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) out[r * w + c] = check(r, c) ?? null
+  if (out[0] === null) {
+    const first = sortOnce(cx, array, orders.map((o, i) => (i % 2 === 1 && o instanceof Arr ? o.at(0, 0) : o)))
+    out[0] = first instanceof Arr ? first.at(0, 0) : first
+  }
+  return new Arr(rows, cols, h, w, out, h < rows || w < cols ? (check(rows, cols) ?? null) : null)
 }
 
 /** A line's identity for UNIQUE: values by type, text in any case. */
@@ -148,7 +206,7 @@ function filter(cx: Cx, g: Grid, inc: Arg, empty?: V | Arr): V | Arr {
 export const functions: Record<string, FnDef> = {
   FILTER: { args: 'G R p?', cx: true, array: true, fn: filter },
   SORT: { args: 'G G? G? b?', array: true, cx: true, fn: sort },
-  // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4); an order of several values lifts the call
-  SORTBY: { args: 'G G G?', rep: 2, max: NEWER_MAX_ARGS, array: true, cx: true, lifts: { from: 2, even: true }, fn: sortby },
+  // each further by-array with its order: 2, 3, 5, 7… arguments (Excel does not load SORTBY with 4); the arguments as given, so orders of several values come before a union or a reference across sheets
+  SORTBY: { args: 'R R p?', rep: 2, max: NEWER_MAX_ARGS, array: true, cx: true, areas: true, fn: sortby },
   UNIQUE: { args: 'G b? b?', array: true, fn: unique },
 }
