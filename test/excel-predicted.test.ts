@@ -8,12 +8,13 @@ import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { matches, show } from './excel-cases.js'
-import { RU_SETS } from './excel-ru-cases.js'
+import { LOCALE_SETS } from './excel-locale-cases.js'
 import { SETS } from './excel-sets.js'
 
 const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'known-held', 'ref-deps', 'sheet-cells', 'single-values']
 const LEGACY_PREDICTING = ['ifs-text']
 const RU_PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'ref-deps', 'sheet-cells', 'single-values']
+const RU_SETS = LOCALE_SETS.get('ru-RU') ?? []
 
 /** A legacy set's stored answers (the converted formula's value is predicted), if Excel ran it. */
 function legacySet(name: string): { cases: { id: string; fn?: string }[]; values: Record<string, Val> } | undefined {
