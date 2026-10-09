@@ -84,15 +84,20 @@ async function restart() {
   }
 }
 
+/** `XLWIN_CODEPAGE=any`: the system locale (the code page of CHAR and CODE) left as it is, so no restart, for sets that read no code page. */
+const ANY_CODEPAGE = process.env.XLWIN_CODEPAGE === 'any'
+
 /** The machine in the locale wanted (interface, regional format, code page), restarting it when the system locale changes; Excel checked as it starts. */
 async function ensureLocale(tag: Tag): Promise<WinEnv> {
   let e = env()
-  if (e.ui !== tag || e.culture !== tag || e.system !== tag || e.codepage !== WANT[tag].codepage) {
-    const r = host('locale', tag)
+  const system = !ANY_CODEPAGE && (e.system !== tag || e.codepage !== WANT[tag].codepage)
+  if (e.ui !== tag || e.culture !== tag || system) {
+    const r = host(ANY_CODEPAGE ? 'ui' : 'locale', tag)
     if (r.endsWith('restart')) await restart()
     e = env()
   }
-  const bad = [e.ui !== tag && `language ${e.ui}`, e.culture !== tag && `format ${e.culture}`, e.system !== tag && `system locale ${e.system}`, e.codepage !== WANT[tag].codepage && `code page ${e.codepage}`, e.excelUI !== WANT[tag].lcid && `Excel interface ${e.excelUI}`, e.books !== 0 && `${e.books} books open`].filter(Boolean)
+  const codepage = !ANY_CODEPAGE && [e.system !== tag && `system locale ${e.system}`, e.codepage !== WANT[tag].codepage && `code page ${e.codepage}`]
+  const bad = [e.ui !== tag && `language ${e.ui}`, e.culture !== tag && `format ${e.culture}`, ...(codepage || []), e.excelUI !== WANT[tag].lcid && `Excel interface ${e.excelUI}`, e.books !== 0 && `${e.books} books open`].filter(Boolean)
   if (bad.length) throw new Error(`windows-host is not in ${tag}: ${bad.join(', ')}`)
   return e
 }

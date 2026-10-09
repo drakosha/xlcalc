@@ -35,7 +35,7 @@ npx tsx bench/windows/run.ts struct rows
 npx tsx bench/windows/run.ts xlsx filters
 ```
 
-A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`.
+A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`. `XLWIN_CODEPAGE=any` sets only the interface language and the regional format and leaves the system locale as it is, with no restart, for a set that reads no code page (no `CHAR`, `CODE`); the answers' `meta` names the code page they were computed with.
 
 Changing the system locale needs a restart, which the harness does itself: it waits until the machine is up from a new boot, ten minutes at most. Run all of one locale before the other, `all en` and then `all ru`, which also leaves the machine in its own locale.
 

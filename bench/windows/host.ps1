@@ -2,6 +2,7 @@
 #   -do env               the settings a run depends on, and Excel's as it starts with them (JSON)
 #   -do locale -arg TAG   interface language, regional format and system locale for TAG (en-US, ru-RU); a new system
 #                         locale needs a restart, which the caller does
+#   -do ui -arg TAG       interface language and regional format for TAG alone, the system locale (code page) as it is
 #   -do lock -arg OWNER   takes the lock (C:\xlcalc\lock), prints "taken" or the owner holding it
 #   -do unlock -arg OWNER drops the lock when OWNER holds it
 #   -do clean             stops the Excel processes outside interactive sessions (left by a job cut short), removes the
@@ -40,14 +41,14 @@ switch ($do) {
     }
     $o | ConvertTo-Json -Compress
   }
-  'locale' {
+  { $_ -in 'locale', 'ui' } {
     # Excel takes the Windows display language of the logon: PreferredUILanguages is written directly, as the
     # override alone stays pending until an interactive logon, while a new SSH logon reads the value written
     New-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name PreferredUILanguages -PropertyType MultiString -Value @($arg) -Force | Out-Null
     Remove-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name PreferredUILanguagesPending -ErrorAction SilentlyContinue
     Set-WinUILanguageOverride -Language $arg
     Set-Culture $arg
-    if ((Get-WinSystemLocale).Name -ne $arg) { Set-WinSystemLocale $arg; 'restart' } else { 'ok' }
+    if ($do -eq 'locale' -and (Get-WinSystemLocale).Name -ne $arg) { Set-WinSystemLocale $arg; 'restart' } else { 'ok' }
   }
   'lock' {
     try {
