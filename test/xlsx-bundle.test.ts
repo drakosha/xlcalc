@@ -29,7 +29,9 @@ describe('xlsx outside Node', () => {
   it('the bundle takes no Node built-ins and no part of the engine that computes', async () => {
     const { code, used } = await bundle()
     expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\b|["']node:/)
-    expect(used.filter((f) => /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
+    // the budget's check (`spend`, a few bytes) comes with copyRange, which pastes shared formulas: a session's copy stops at its deadline
+    const engine = used.filter((f) => /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f) && !/\/exec\/budget\.(ts|js)$/.test(f))
+    expect(engine).toEqual([])
   }, 60_000)
 
   it('runs in an empty context given the web codecs: writes a book and reads it back', async () => {
