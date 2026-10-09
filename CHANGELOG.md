@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.7.0 (2026-10-10)
+
+Internal release; not published to npm. Names checked in a book's locale and without the book, a budget for the range caches, and what Excel had not measured.
+
+Added:
+
+- Contract: `validateName(name, { locale })` checks a name by the rules of a book of that locale: a ru-RU book refuses `ИСТИНА` and `ЛОЖЬ` in any case. Without a locale it checks en-US's rules, as before.
+- Contract: `validateNames(names, { sheets, tables?, externalFunctions?, locale? })` gives the name issues a book with these sheets, tables and locale would give, by the book's own check, without the book; `engine` has it too.
+- Contract: `NameIssue.dropped` is true for a name the book leaves out (one Excel would not take, a duplicate, an unknown scope sheet, a formula that does not parse or a reference without its sheet) and false for one it keeps that gives an error where it is used (an unknown sheet, table or function in its formula).
+- Case sets measured in Excel, with the engine's answers committed before each run: `areas-each`, `intersect`, `sheet-cells`, `single-values`, `findate-edges` and `ref-deps` in Excel for Mac ru-RU (258 of 258 held); `tables/delete-held` (13 cases) and `tables/ru-RU/headers-ru-held` (13) in Excel for Mac and Windows; `struct/zero-held` (8, all held) in both. The Windows harness reads the built-in number formats (`xlsx formats`).
+
+Changed:
+
+- A session's range caches keep a range's values and a criteria index from the range's second read, and the caches of all books in one heap share a budget: a quarter of `maxHeapMb` in a pool's thread (96 MiB for 384 MB), 512 MiB elsewhere. Past it the ranges read least recently are dropped between formulas. A book of running `AVERAGE`, `COUNTA` or `COUNTIF` over growing ranges kept every range: over 10,000 rows it ran a thread of 384 MB out of memory, and over 34,000 rows a synchronous computation brought down a Node process with a heap of 4 GB. Now such books open and are edited (10,000 rows of `AVERAGE` in that pool: 0.56 s to open, 0.34 s an edit). Values and hashes are the same, and the synthetic book computes as fast as before.
+- Rows or columns deleted across two tables are refused unless both tables go whole, as Excel for Mac and Windows refuse them. They were refused only when both tables kept some of their lines.
+- A number typed into a table's header cell names its column as the cell's own number format shows it (`1,50` by `0.00`, `31.01.2025` by format 14 in ru-RU), as Excel does; it was named as General shows it.
+
+Fixed:
+
+- `toLocal` in ru-RU keeps a column named with a comma whole (`Sales[1,5]`; it turned the comma into `;` and changed the reference) and writes `[@1,5]`, as Excel ru-RU does.
+
+Known differences: Excel for Windows shows the built-in formats 50 to 58 (East Asian dates) as its short date, where the reader reads them as `m/d/yy`; Excel reads the text `2025-01-31` typed into a header cell as a date, where `setCells` keeps the text.
+
 ## 0.6.5 (2026-10-09)
 
 Internal release; not published to npm. Sums of one range in a thread pool, and how to add a locale.
