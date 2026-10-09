@@ -4,6 +4,7 @@
  * from a scratch sheet holding them so; a selection of hidden rows only is copied whole.
  */
 import type { BookInput, CellInput, RowInput, SheetInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { entryAt, lines, toMap, type Line } from '../layout/spans.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { ERROR_TEXT, sheetKey } from '../syntax.js'
@@ -26,6 +27,7 @@ export function clipped(book: BookInput, from: string, src: Rect, values: Values
   const cells: Record<string, CellInput> = {}
   // looks and meta of the cells, then the values over them
   for (const [addr, cell] of Object.entries(sheet.cells)) {
+    spend(1)
     const p = parseAddress(addr)
     const r = row.get(p.row)
     if (r === undefined || p.col < src.c1 || p.col > src.c2) continue

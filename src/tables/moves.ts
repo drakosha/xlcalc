@@ -7,6 +7,7 @@
 import type { BookInput, CellInput, RestructureResult, SheetInput, TableInput } from '../contract.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
+import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { clockSerial } from '../result.js'
 import { ERROR_TEXT, sheetKey } from '../syntax.js'
@@ -72,6 +73,7 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
       const sheet = b.sheets[fs]
       let cells: Record<string, CellInput> | undefined
       for (const [addr, cell] of Object.entries(sheet.cells)) {
+        spend(1)
         if (cell.formula === undefined) continue
         const { row, col } = parseAddress(addr)
         if (row < src.r1 || row > src.r2 || col < src.c1 || col > src.c2) continue
@@ -142,6 +144,7 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
       const sheet = r.book.sheets[ts]
       let cells: Record<string, CellInput> | undefined
       for (const [addr, cell] of Object.entries(sheet.cells)) {
+        spend(1)
         if (cell.formula === undefined) continue
         const { row, col } = parseAddress(addr)
         if (row < pasted.r1 || col < pasted.c1 || row > pasted.r2 || col > pasted.c2) continue

@@ -4,6 +4,7 @@
  * that change are rewritten; a formula that does not parse is left as written.
  */
 import type { BookInput, CellInput, TableInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, parse, quoteSheet, tokenize, type Tok } from '../syntax.js'
 import { specText, type TableSpec } from '../syntax/table.js'
@@ -72,6 +73,8 @@ export function rewriteBookTables(book: BookInput, edit: TableEdit): BookInput {
   const sheets = book.sheets.map((sheet, s) => {
     let cells: Record<string, CellInput> | undefined
     for (const [addr, cell] of Object.entries(sheet.cells)) {
+      // a session's operation stops here at its deadline or abort (`exec/budget.ts`)
+      spend(1)
       if (cell.formula === undefined) continue
       const { row, col } = parseAddress(addr)
       const formula = rewriteTableRefs(cell.formula, tables, tableAt(tables, s, row, col), { s, r: row }, edit)

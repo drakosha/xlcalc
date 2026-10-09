@@ -3,6 +3,7 @@
  * the rest of the formula keeps its spelling. A formula that does not parse is left as written.
  */
 import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { FormulaError, parse, quoteSheet, sheetKey, tokenize, type Tok } from '../syntax.js'
 import { decode, encode, sameArea, type Area } from './area.js'
 
@@ -41,6 +42,8 @@ const SPACE = new Set([' ', '\t', '\n', '\r'])
  * the reference of a name, which always has its sheet.
  */
 export function rewriteFormula(text: string, host: string | null, moved: string | null, t: Transform, sheets: Map<string, string>): string {
+  // a session's operation stops here at its deadline or abort (`exec/budget.ts`); without a budget one comparison
+  spend(1)
   try {
     // a name's formula may be a union
     parse(text, { union: host === null })
@@ -110,6 +113,8 @@ function errText(name: string, tail: string, t: Transform, sheets: Map<string, s
 
 /** A cell with its formula rewritten; the same object when nothing changed. */
 export function rewriteCell(cell: CellInput, host: string, moved: string, t: Transform, sheets: Map<string, string>): CellInput {
+  // every cell of the loops over a book counts, a value too
+  spend(1)
   if (cell.formula === undefined) return cell
   const formula = rewriteFormula(cell.formula, host, moved, t, sheets)
   return formula === cell.formula ? cell : { ...cell, formula }

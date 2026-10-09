@@ -1,5 +1,6 @@
 /** The computed values of a book's cells, for a paste of values (a copy from a filtered sheet). */
 import type { CellValue } from '../contract.js'
+import { spend } from '../exec/budget.js'
 import { toCellValue, valueAt, type EngineState } from '../engine.js'
 import { outValue } from '../result.js'
 import { sheetKey } from '../syntax.js'
@@ -17,6 +18,7 @@ export function stateValues(state: EngineState): ValuesIn {
     for (let c = x.c1; c <= Math.min(x.c2, sh.cols.length - 1); c++) {
       if (!sh.cols[c]) continue
       for (let r = x.r1; r <= Math.min(x.r2, sh.rows - 1); r++) {
+        spend(1)
         const v = valueAt(state, s, r, c)
         if (v !== null && v !== undefined) out.push([r, c, outValue(toCellValue(v))])
       }
