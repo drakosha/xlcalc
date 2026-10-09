@@ -36,7 +36,8 @@ export type Outline = BookInput
 
 /** To a thread. A thread runs one task at a time; `cancel` may come while it runs. */
 export type ToThread =
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits }
+  /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`). */
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number }
   | { t: 'compute'; task: number; book: Sent; opts: object; timeoutMs?: number }
   | { t: 'open'; task: number; sid: number; book: Sent; opts: SessionOptions; timeoutMs?: number }
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }

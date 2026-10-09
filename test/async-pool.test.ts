@@ -252,6 +252,19 @@ describe('in threads', () => {
     expect(await s.hash()).toBe(compute(b, { clock: CLOCK }).hash)
   }, 30_000)
 
+  it("a pool of 384 MB opens and edits running AVERAGE, COUNTIF and AVERAGE with COUNTA over 10,000 rows: the ranges' caches stay within a quarter of the heap", async () => {
+    const p = await made({ threads: 1, maxHeapMb: 384 })
+    for (const execution of ['closures', 'eval'] as const)
+      for (const formula of ['AVERAGE($A$1:A<r>)', 'COUNTIF($A$1:A<r>,">0")', 'AVERAGE($A$1:A<r>)+COUNTA($A$1:A<r>)']) {
+        const cells: Record<string, CellInput> = {}
+        for (let r = 1; r <= 10_000; r++) { cells[`A${r}`] = { value: 1 }; cells[`B${r}`] = { formula: formula.replaceAll('<r>', String(r)) } }
+        const s = await p.openSession({ sheets: [{ name: 'S', cells }] }, { clock: CLOCK, execution })
+        await s.setCells([{ sheet: 'S', cell: 'A5000', input: { value: 2 } }])
+        expect(await s.hash(), `${formula}, ${execution}`).toBe(compute(await s.book(), { clock: CLOCK, execution }).hash)
+        await s.close()
+      }
+  }, 120_000)
+
   it('limits in a thread: CalcError with the cell', async () => {
     const p = await made({ threads: 1, limits: { cells: 1000 } })
     const e = await fails(p.compute({ sheets: [{ name: 'S', cells: { C3: { formula: 'SUM(SEQUENCE(100,100))' } } }] }))

@@ -13,6 +13,7 @@ import { currentClock } from '../env.js'
 import { CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
 import { isHiddenRow } from '../layout/hidden.js'
+import { heapCaches } from '../range-cache.js'
 import { CHANGING, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
 import { workerThreads } from './platform.js'
 import { pack, unpack } from './pack.js'
@@ -184,8 +185,11 @@ async function next() {
 }
 
 function receive(m: ToThread) {
-  if (m.t === 'init') d = { sliceMs: m.sliceMs, limits: m.limits }
-  else if (m.t === 'cancel') {
+  if (m.t === 'init') {
+    d = { sliceMs: m.sliceMs, limits: m.limits }
+    // the thread's sessions and computations share its heap, and so one budget of their caches
+    if (m.cacheBytes) heapCaches.cap = m.cacheBytes
+  } else if (m.t === 'cancel') {
     if (current?.task === m.task) current.abort('cancelled by the pool')
   } else {
     waiting.push(m)

@@ -81,6 +81,8 @@ export interface PoolInside {
 const HEAP_PER_CELL = 64
 /** Bytes of a thread's heap per value of the default `limits.spill`: over three times the worst measured for one spill that took the process down. */
 const HEAP_PER_SPILLED = 1024
+/** The part of a thread's heap the range caches of its books may hold together (`docs/cache.md`). */
+const CACHE_SHARE = 1 / 4
 
 /** The limits of a pool's computations: with `maxHeapMb`, `cells` and `spill` by the heap where the host gives none. */
 function poolLimits(o: CalcPoolOptions): CalcLimits | undefined {
@@ -106,7 +108,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       (m) => slot.thread === t && answered(slot, m),
       (l) => slot.thread === t && lose(slot, l),
     )
-    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}) })
+    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}) })
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
