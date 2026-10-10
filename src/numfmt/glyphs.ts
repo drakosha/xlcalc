@@ -7,6 +7,7 @@
  * difference for other scripts).
  */
 import { LOCALE_FILES } from '../locale/registry.js'
+import { advance } from './advances.js'
 import { BLANK, FILL, PAD } from './style.js'
 
 /** Widths in points, by characters of equal width: Latin letters, digits and signs. */
@@ -49,27 +50,37 @@ export const columnPoints = (w: number | undefined): number => (w === undefined 
 export const room = (points: number): number => points - 5
 
 /**
- * The width of text laid out for AutoFit (`Style.layout`): a fill takes no room, a padding `_x` the room of `x`, a `?`
- * with no digit a digit's room.
+ * The width of text laid out for AutoFit (`Style.layout`) by `width`, a character's: a fill takes no room, a padding `_x`
+ * the room of `x`, a `?` with no digit a digit's room.
  */
-export function layoutWidth(s: string): number {
+function laidOut(s: string, width: (ch: string) => number): number {
   let w = 0
   let mark = ''
   for (const ch of s) {
-    if (mark) w += mark === PAD ? glyph(ch) : 0
-    else if (ch === BLANK) w += DIGIT
-    else if (ch !== FILL && ch !== PAD) w += glyph(ch)
+    if (mark) w += mark === PAD ? width(ch) : 0
+    else if (ch !== FILL && ch !== PAD) w += width(ch === BLANK ? '0' : ch)
     mark = !mark && (ch === FILL || ch === PAD) ? ch : ''
   }
   return w
 }
 
+/** Text of ASCII alone (the marks of laid-out text aside), which Excel for Mac measures by the widths it shows it in. */
+const ASCII = /^[\x20-\x7e\uFFFE\uFFFF\u2007]*$/
+
 /**
- * The points of the column AutoFit gives text `w` points wide (`test/excel/fit/autofit.json`): two more than the
- * padding, and from 90 points the padding alone with a thirtieth more of the text, as Excel for Mac measures text
- * wider than it shows it.
+ * The points of the column AutoFit gives laid-out text (`test/excel/fit/`): two points past the padding, or from about 90
+ * points the padding with a thirtieth more of the text, as Excel for Mac measures text for AutoFit. Text of ASCII alone
+ * it measures by the widths it shows it in; other text by the font's advance widths (`advances.ts`), its 11 points
+ * rounded for the first measure.
  */
-export const fitColumn = (w: number): number => Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
+export function fitText(s: string): number {
+  if (ASCII.test(s)) {
+    const w = laidOut(s, glyph)
+    return Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
+  }
+  const u = laidOut(s, advance)
+  return Math.max(Math.floor((u * 11 + 1024) / 2048) + 7, Math.floor((u * 11 * 31) / (2048 * 30)) + 5)
+}
 
 /** The xlsx width of a column of `points`, in 256ths of a digit as Excel writes it. */
 export const widthOf = (points: number): number => Math.floor((points * 256) / DIGIT) / 256

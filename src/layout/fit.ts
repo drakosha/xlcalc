@@ -57,12 +57,13 @@ export interface ColumnState {
 }
 
 /**
- * The width Excel gives a column when `value`, shown by `format`, is typed into one of its cells: a number that does not
- * fit widens a column whose width is the default or one Excel fitted, as AutoFit fits the number; undefined when the
- * column keeps its width (text overflows, a width set by hand stays, a column never narrows).
+ * The width Excel gives a column when `value`, shown by `format`, is typed into one of its cells
+ * (`test/excel/fit/typed.json`): a number the column shows as `#`, or in General in a scientific form other than its
+ * own, widens a column whose width is the default or one Excel fitted, as AutoFit fits the number; undefined when the
+ * column keeps its width (text overflows, General drops decimals, a width set by hand stays, a column never narrows).
  */
 export function typedWidth(rules: Rules, value: CellValue, format: NumberFormat | undefined, column: ColumnState = {}): number | null | undefined {
-  if (typeof value !== 'number' || (column.width !== undefined && !column.fitted)) return undefined
-  const points = rules.fitPoints(value, format)
-  return points === null || points <= columnPoints(column.width) ? undefined : widthAt(points)
+  if (column.width !== undefined && !column.fitted) return undefined
+  const points = rules.typedPoints(value, format, columnPoints(column.width))
+  return points === null ? undefined : widthAt(points)
 }

@@ -7,7 +7,7 @@
 import type { CellDisplay, CellValue, NumberFormat } from './contract.js'
 import { formatDate } from './numfmt/date.js'
 import { generalFit } from './numfmt/general.js'
-import { DIGIT, fitColumn, glyph, hashes, layoutWidth, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
+import { DIGIT, fitText, glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
 import { formatNumber } from './numfmt/number.js'
 import { EN_CODES, parseFormat, type Codes, type Section } from './numfmt/parse.js'
 import { choose, kind, textSection } from './numfmt/select.js'
@@ -135,10 +135,10 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
 const LAID = new WeakMap<Style, Style>()
 
 /**
- * The points of the column AutoFit gives a cell (`test/excel/fit/autofit.json`): its text with the room it needs
- * (`fitColumn`), a padding `_x` as wide as `x` and a `?` with no digit as a digit; General at its full length, each
- * character a digit and a leading minus by its width, a scientific form with the padding alone. Null when the cell
- * shows nothing: a blank, empty text, a number its section cannot show (`#` in any width).
+ * The points of the column AutoFit gives a cell (`test/excel/fit/`): its text as `fitText` measures it, a padding `_x` as
+ * wide as `x` and a `?` with no digit as a digit; General at its full length, each character a digit and a leading minus
+ * by its width, two points past the padding, a scientific form with the padding alone. Null when the cell shows nothing:
+ * a blank, empty text, a number its section cannot show (`#` in any width).
  */
 export function fitPoints(value: CellValue, format: NumberFormat | undefined, style: Style): number | null {
   if (value === null) return null
@@ -157,10 +157,24 @@ export function fitPoints(value: CellValue, format: NumberFormat | undefined, st
     if (chosen.general !== undefined) {
       const g = style.general(Math.abs(chosen.general))
       const w = (chosen.general < 0 ? glyph('-') : 0) + DIGIT * g.length
-      return g.includes('E') ? w + 5 : fitColumn(w)
+      return g.includes('E') ? w + 5 : w + 7
     }
     text = chosen.text
   }
-  const w = text === undefined ? 0 : layoutWidth(text)
-  return w > 0 ? fitColumn(w) : null
+  return text ? fitText(text) : null
+}
+
+/**
+ * The points Excel gives a column of `now` points as a number is typed into one of its cells (`test/excel/fit/typed.json`):
+ * the points AutoFit gives the cell when they are more, but for a number in General the column shows by dropping
+ * decimals; null when the column keeps its width.
+ */
+export function typedPoints(value: CellValue, format: NumberFormat | undefined, style: Style, now: number): number | null {
+  if (typeof value !== 'number') return null
+  const points = fitPoints(value, format, style)
+  if (points === null || points <= now) return null
+  const fmt = typeof format === 'number' ? style.builtin(format) : format
+  const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
+  const { general } = secs ? byChoice(value, secs, style) : { general: value }
+  return general !== undefined && !/[E#]/.test(generalFit(general, now - 5)) ? null : points
 }
