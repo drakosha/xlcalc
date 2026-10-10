@@ -1,0 +1,594 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-10",
+  "seconds": 79.9
+ },
+ "cases": [
+  {
+   "id": "keyh-pct-1",
+   "text": "abc",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-2",
+   "text": "abc5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-3",
+   "text": "=1+2",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-4",
+   "text": "'5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-5",
+   "text": ".5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-6",
+   "text": ",5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-7",
+   "text": "+5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-8",
+   "text": "$5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-9",
+   "text": "(5)",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-10",
+   "text": " 5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-11",
+   "text": "5 ",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-12",
+   "text": "15.03.2026",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-13",
+   "text": "3/15/2026",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-14",
+   "text": "18:30",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-15",
+   "text": "TRUE",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-16",
+   "text": "1,234.5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-17",
+   "text": "1 234,5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-18",
+   "text": "1.5E+3",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-19",
+   "text": "1,5E+3",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-20",
+   "text": "-0.5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-21",
+   "text": "-0,5",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-pct-22",
+   "text": "1/2",
+   "format": "0%"
+  },
+  {
+   "id": "keyh-sign-1",
+   "text": "+1*2"
+  },
+  {
+   "id": "keyh-sign-2",
+   "text": "+(1+2)"
+  },
+  {
+   "id": "keyh-sign-3",
+   "text": "+C1+1"
+  },
+  {
+   "id": "keyh-sign-4",
+   "text": "+10-1"
+  },
+  {
+   "id": "keyh-sign-5",
+   "text": "+2^3"
+  },
+  {
+   "id": "keyh-sign-6",
+   "text": "++5"
+  },
+  {
+   "id": "keyh-sign-7",
+   "text": "-(1+2)"
+  },
+  {
+   "id": "keyh-sign-8",
+   "text": "-C1*2"
+  },
+  {
+   "id": "keyh-sign-9",
+   "text": "+-C1"
+  },
+  {
+   "id": "keyh-sign-10",
+   "text": "-1 -2"
+  },
+  {
+   "id": "keyh-sign-11",
+   "text": "+1 1/2"
+  },
+  {
+   "id": "keyh-no-1",
+   "text": "-1.5"
+  },
+  {
+   "id": "keyh-no-2",
+   "text": "-1,5"
+  },
+  {
+   "id": "keyh-no-3",
+   "text": "- hello world"
+  },
+  {
+   "id": "keyh-no-4",
+   "text": "-15.03.2026"
+  },
+  {
+   "id": "keyh-no-5",
+   "text": "=1+"
+  },
+  {
+   "id": "keyh-no-6",
+   "text": "="
+  },
+  {
+   "id": "keyh-no-7",
+   "text": "-"
+  },
+  {
+   "id": "keyh-no-8",
+   "text": "+"
+  },
+  {
+   "id": "keyh-no-9",
+   "text": "==1"
+  },
+  {
+   "id": "keyh-no-10",
+   "text": "+C1+"
+  },
+  {
+   "id": "keyh-no-11",
+   "text": "-$5"
+  }
+ ],
+ "answers": {
+  "keyh-pct-1": {
+   "cell": {
+    "value": "abc",
+    "format": 9
+   },
+   "text": "abc",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-2": {
+   "cell": {
+    "value": "abc5",
+    "format": 9
+   },
+   "text": "abc5",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-3": {
+   "cell": {
+    "formula": "1+2",
+    "format": 9
+   },
+   "computed": 3,
+   "text": "300%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-4": {
+   "cell": {
+    "value": "5",
+    "format": 9
+   },
+   "text": "5",
+   "code": "0%",
+   "local": "0%",
+   "prefix": "'"
+  },
+  "keyh-pct-5": {
+   "cell": {
+    "value": ".5",
+    "format": 9
+   },
+   "text": ".5",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-6": {
+   "cell": {
+    "value": 0.5,
+    "format": 9
+   },
+   "text": "50%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-7": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-8": {
+   "cell": {
+    "value": "$5",
+    "format": 9
+   },
+   "text": "$5",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-9": {
+   "cell": {
+    "value": -5,
+    "format": 9
+   },
+   "text": "-500%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-10": {
+   "cell": {
+    "value": 5,
+    "format": 9
+   },
+   "text": "500%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-11": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-12": {
+   "cell": {
+    "value": "15.03.2026%",
+    "format": 9
+   },
+   "text": "15.03.2026%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-13": {
+   "cell": {
+    "value": "3/15/2026%",
+    "format": 9
+   },
+   "text": "3/15/2026%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-14": {
+   "cell": {
+    "value": "18:30%",
+    "format": 9
+   },
+   "text": "18:30%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-15": {
+   "cell": {
+    "value": "TRUE",
+    "format": 9
+   },
+   "text": "TRUE",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-16": {
+   "cell": {
+    "value": "1,234.5%",
+    "format": 9
+   },
+   "text": "1,234.5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-17": {
+   "cell": {
+    "value": 12.345,
+    "format": 9
+   },
+   "text": "1235%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-18": {
+   "cell": {
+    "value": "1.5E+3%",
+    "format": 9
+   },
+   "text": "1.5E+3%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-19": {
+   "cell": {
+    "value": 15,
+    "format": 11
+   },
+   "text": "1,50E+01",
+   "code": "0.00E+00",
+   "local": "0,00E+00"
+  },
+  "keyh-pct-20": {
+   "refused": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+   "cell": {
+    "format": 9
+   },
+   "text": "",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-21": {
+   "cell": {
+    "value": -0.005,
+    "format": 9
+   },
+   "text": "-1%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-pct-22": {
+   "cell": {
+    "value": 0.005,
+    "format": 9
+   },
+   "text": "1%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "keyh-sign-1": {
+   "cell": {
+    "formula": "1*2"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-2": {
+   "cell": {
+    "formula": "+(1+2)"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-3": {
+   "cell": {
+    "formula": "+C1+1"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-4": {
+   "cell": {
+    "formula": "10-1"
+   },
+   "computed": 9,
+   "text": "9",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-5": {
+   "cell": {
+    "formula": "2^3"
+   },
+   "computed": 8,
+   "text": "8",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-6": {
+   "cell": {
+    "formula": "+5"
+   },
+   "computed": 5,
+   "text": "5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-7": {
+   "cell": {
+    "formula": "-(1+2)"
+   },
+   "computed": -3,
+   "text": "-3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-8": {
+   "cell": {
+    "formula": "-C1*2"
+   },
+   "computed": -4,
+   "text": "-4",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-9": {
+   "cell": {
+    "formula": "+-C1"
+   },
+   "computed": -2,
+   "text": "-2",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-10": {
+   "cell": {
+    "formula": "-1 -2"
+   },
+   "computed": -3,
+   "text": "-3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-sign-11": {
+   "cell": {
+    "value": 1.5,
+    "format": 12
+   },
+   "text": "1 1/2",
+   "code": "# ?/?",
+   "local": "#\" \"?/?"
+  },
+  "keyh-no-1": {
+   "refused": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-2": {
+   "cell": {
+    "value": -1.5
+   },
+   "text": "-1,5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-3": {
+   "cell": {
+    "formula": "- hello world"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-4": {
+   "refused": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-5": {
+   "refused": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=1‬\n\nВы хотите принять это исправление? | Неполная формула. После оператора \"+\" или \"-\" пропущен операнд. Выполните одно из следующих действий: \n• добавьте операнд или удалите оператор;\n• старайтесь не использовать вне формул знак равенства (=) и минус (-) в начале текста или ставьте перед ними одиночную кавычку ('). | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-6": {
+   "cell": {
+    "value": "="
+   },
+   "text": "=",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-7": {
+   "cell": {
+    "value": "-"
+   },
+   "text": "-",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-8": {
+   "cell": {
+    "value": "+"
+   },
+   "text": "+",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-9": {
+   "refused": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭=1‬\n\nВы хотите принять это исправление? | В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-10": {
+   "refused": "dialog: В формуле обнаружена опечатка. Мы предлагаем следующее исправление: \n‭+C1‬\n\nВы хотите принять это исправление? | Неполная формула. После оператора \"+\" или \"-\" пропущен операнд. Выполните одно из следующих действий: \n• добавьте операнд или удалите оператор;\n• старайтесь не использовать вне формул знак равенства (=) и минус (-) в начале текста или ставьте перед ними одиночную кавычку ('). | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  },
+  "keyh-no-11": {
+   "refused": "dialog: В этой формуле обнаружена ошибка. \nЭто не формула?\nЕсли первые символы в ячейке — это знак равенства (=) или минус (-), Excel распознает данные как формулу:\n\n• если ввести: =1+1, в ячейке будет показано: 2\n\nЧтобы этого избежать, введите в начале апостроф ('):\n\n• если ввести: '=1+1, в ячейке будет показано: =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "Основной"
+  }
+ }
+}
