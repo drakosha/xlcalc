@@ -9,6 +9,7 @@ The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 - `compute(book, { display })` and `openSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `format` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `restructure`.
 - `display: false` returns values only and spends nothing on formatting.
 - `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`.
+- `fitColumns(book, result, sheet, columns)`, the layout edit `{ sheet, columns, fit: true }` and `entryWidth(value, opts)` give the widths Excel gives columns by AutoFit and as numbers are typed ([Fitting columns](#fitting-columns)).
 
 The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
 
@@ -127,11 +128,46 @@ Format colours are the eight names `[Black]`, `[White]`, `[Red]`, `[Green]`, `[B
 | colour | none | the section's |
 | `/` in a date | `/` | the locale's date separator |
 
+## Fitting columns
+
+Excel widens columns by itself in two places, and a host that shows a book as Excel does needs the same widths: AutoFit, a double click on a column's border, and a number typed into a column too narrow for it. The rules below were measured in Excel 16.113 for Mac.
+
+```js
+import { compute, entryWidth, fitColumns } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 'abc' }, B1: { value: 46096, format: 'd mmmm yyyy' }, C1: { value: 'Итого' } } }] }
+console.log(fitColumns(book, compute(book), 'S', 'A:C')) // → { A: 3.83203125, B: 12.6640625, C: 5.6640625 }
+console.log(entryWidth(1234567890), entryWidth(46096, { format: 'd mmmm yyyy', width: 20 })) // → 11.1640625 undefined
+```
+
+### AutoFit
+
+`fitColumns(book, result, sheet, columns)` gives the widths for a computed book, and the layout edit `{ sheet, columns: 'B:D', fit: true }` sets them in a session (`setLayout` returns the cells that show otherwise, `layout()` the widths). A column gets the width of its widest cell, each value by its format in the book's locale, laid out as Excel lays it out for AutoFit, which is not quite how it shows it:
+
+- Text of ASCII characters alone is measured by the widths of the table above. Of `w` points of text, the column gets `w + 7` points, two more than the padding needs; from about 90 points of text Excel counts a thirtieth more of it, and the column gets `floor(w · 31/30) + 5`. `abc` (16 points) gets 23, a text of 300 points 315.
+- Text with any other character (Cyrillic, `₽`, `é`) is measured, all its characters, by Calibri's advance widths (`src/numfmt/advances.ts`, in 1/2048 of 11 points): of `r` points, the column gets the larger of `round(r) + 7` and `floor(r · 31/30) + 5`. `Итого` is 26.7 points and gets 34.
+- A padding `_)` is as wide as `)` and a `?` without a digit as a digit, though the shown text has spaces there; a fill takes no room. `$#,##0.00_)` gives 1234.5 58 points, accounting's `"-"??` 28.
+- A number in General counts each character as a digit and a leading minus as 3 points, two points past the padding, or none in scientific form: 1234567890 gets 67 points, 123456789012 (`1.23457E+11`) 71.
+- Booleans and errors are text: `TRUE` gets 30 points, `ИСТИНА` 46.
+
+The xlsx width of a column of `p` points is `p/6` in 256ths: 67 points are 11.1640625. A column fitted to the default 53 points gets no width of its own (null), as Excel saves it; the widest is 255 (Excel's widest, 255.83, reads as 255).
+
+Every cell of the column counts, spilled ones and those of hidden rows too; a cell merged with the columns beside it does not, one merged down does. A column with nothing to show (blanks, empty text, `;;;`, a negative date) keeps its width. AutoFit marks the width as Excel's own (`bestFit: true`) and shows a hidden column.
+
+### Typing a number
+
+`entryWidth(value, { format, locale, dateSystem, width, bestFit })` gives the width Excel gives a column as `value` is typed into one of its cells, or undefined when it keeps its width; a host sets it with `bestFit: true`.
+
+- A number, a date or a formula's number widens a column of the default width or one Excel fitted (`bestFit`) to the width AutoFit gives it, when that is more: `15.03.2026` in ru-RU needs 54 points of the default 48 and widens the column to 61. A number that shows already widens it too when AutoFit gives it more: `15-Mar-26` fills 48 points exactly and gets 55.
+- A number in General widens the column when it would show in scientific form or whole (`1234567890` to 67 points, `12345678` to 55), but not when it shows with fewer decimals: `3.14159265358979` shows `3.141593` and the column stays.
+- Text, booleans and errors widen nothing (text runs over the next cells), nor does a width set by hand, and a column never narrows. A fitted width equal to the default stays a width (8.83203125 with `bestFit`).
+- Only typing widens a column: text set through the object model (`Value`, `Formula2Local`) widens nothing, in Excel for Mac and Excel for Windows. So a host calls `entryWidth` for text a user typed, with the value it computed (from `setCells`) and the cell's format after the entry.
+
 ## How the engine does it
 
 `src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (with the letters of the locale files), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
 
-`src/shown.ts` finds a cell's format and width. Sessions compare what cells show before and after an edit that recomputes nothing (`src/session/looks.ts`) and after a structure operation (`src/session/moved.ts`).
+`src/shown.ts` finds a cell's format and width. `src/layout/fit.ts` fits columns and widens them on entry, by `fitPoints` and `typedPoints` of `src/numfmt.ts`, which lay a value out with `Style.layout` (paddings and blanks marked) and measure it by `fitText` (`glyphs.ts`, `advances.ts`). Sessions compare what cells show before and after an edit that recomputes nothing (`src/session/looks.ts`) and after a structure operation (`src/session/moved.ts`).
 
 Most cells are text or General numbers in a default column, and their text is the value's shortest decimal form, so they cost almost nothing. On the synthetic book (54,778 cells) a cold computation takes 310 ms with display and 279 ms without, in the closures mode.
 
@@ -160,8 +196,22 @@ Excel for Windows showed the same sets (`bench/windows`, `test/display-win.test.
 
 AppleScript returns no colour for an exact 0 in a format of fewer than three sections (`[Red]0`) and for text under a coloured text section (`[Red]@`), though Excel draws the colour on screen there. The engine gives the section's colour in these places, and the comparison accepts any colour.
 
+Fitting columns was measured by `npx tsx bench/coverage/run.ts fit <set> [ru]`: a book of one column per case, which Excel fits (`autofit` of the entire column) or types the case's texts into in turn, through `value`, `formula2 local` or the keyboard; then it reads each column's width and what its cells show and saves the book, whose `<col>` elements give the width Excel stores. Answers are in `test/excel/fit/`, and `test/fit-excel.test.ts` compares `fitColumns`, `parseEntry` and `entryWidth` with them, width and shown text.
+
+| set | columns, en-US and ru-RU | what | predicted before the run |
+|---|---|---|---|
+| `autofit` | 161 and 161 | text of every width from 3 to 60 points and wider, numbers in General and by formats, booleans, errors, several cells, empty columns, merged areas, a hidden row and column, fonts, formulas and a spill | 11 and 11 |
+| `typed` | 87 and 82 | numbers, dates, money, percents and formulas typed through the object model and on the keyboard, into columns of the default width, set by hand and fitted, and in turn | 21 and 19 |
+| `glyphs` | 332, en-US | each character of the table alone and in a run of about 600 points, Russian words | 253 |
+| `held` | 86 and 85 | held out from the others: text near 90 points and outside ASCII, General near its own text, paddings and blanks, typing that fits exactly or drops decimals | 76 and 74 |
+
+The first sets showed the rules: the predictions of `autofit` and `typed` came from a guess (text width plus the padding, no widening of a General number); `glyphs` showed that Excel measures text outside ASCII by the font's advances. Of the misses in `held`, five were typed through the object model, which the prediction widened though `typed` had shown it does not; the others became rules: a General number that fits exactly widens its column, a whole number's blank fraction keeps the room of its digits and slash, characters of Latin-1 have their own widths, a fitted width equal to the default stays. The engine now gives Excel's width and text on all 994 columns but the 67 in `test/fit-known.ts`, for the reasons below.
+
+Excel 16.0.20430 for Windows fitted the same books and typed the same texts through `Value2` and `Formula2Local` (`bench/windows/run.ts fit <set>`, `test/excel/win/fit/`, `test/fit-win.test.ts`; 770 columns, the keyboard's cases being the Mac's alone). It does what the Mac does: it fits a column with something to show and marks it `bestFit`, shows a hidden column, leaves a column with nothing to show, and widens nothing for text set through the object model. Its widths are its own: it lays text out in pixels, a digit 7 at 96 dpi, and saves the width in sevenths of a digit, so of the columns it fitted only 16 of 161 (`autofit`, either locale) and 34 of 332 (`glyphs`) have the Mac's width. 1234567890 gets 11 on Windows and 11.1640625 on the Mac, a long date 21.7109375 and 19.6640625, 300 points of `b` 59.85546875 and 52.5.
+
 ## Known differences
 
 - **Fonts.** Widths are those of Calibri 11 in Excel for Mac. A cell's own font (another font or size, bold), indent, wrapping, shrinking and rotation are ignored, and characters outside the measured table count as a digit. Excel for Windows lays out text in pixels, with a digit 7 pixels wide at 96 dpi, so near the edge of a column it can show `#` where the engine shows the number, or the other way round.
 - **Locale tags.** Only `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]` change names or formats. Other locale codes, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are read and ignored.
+- **Fitting columns.** Widths are Excel for Mac's; Excel for Windows fits to its pixels (above). A cell's own font is not taken into account (bold text that the engine fits to 115 points gets 117 in Excel), nor characters outside the tables (`中文字符` counts as four digits). Text outside ASCII is measured by Calibri's advance widths, which give Excel's width on short text but a point off on some long runs (19 of 70 runs of one Cyrillic letter 600 points wide, `Итого по разделу 1`, ru-RU's long date). Where Excel for Mac shows its own short date (`3/15/26`) or ru-RU month names (`март`), the engine fits the text Excel for Windows shows (`3/15/2026`, `Март`). The widest column is 255 here and 255.83 in Excel.
 - **A second decimal separator** among the decimals of a format (`#,##0,00` in ru-RU's `TEXT`) is a literal between digits; Excel shows one digit fewer before it for some numbers.

@@ -375,6 +375,7 @@ The answers to the filter files and to nine books of the round trip were predict
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.
+- A cell without a format of its own in a column with one is written in General: the model shows it by the column's format, Excel by the cell's own, so `{ value: 46096 }` in a column of `dddd, mmmm d, yyyy` shows `46096` in Excel (the fit set `autofit`, cases `colformat`).
 - Excel takes the part of a hyperlink's address after `#` as its place, so `https://example.com/page#top` comes back as the address `https://example.com/page` and the place `top`. It is the same link.
 - Excel saves a space in a hyperlink's address as `%20` and shows it as a space. The reader gives the address as the file holds it.
 - Excel for Windows saves a relative address of a hyperlink (`other.xlsx`) relative to the folder it saves the file to.
