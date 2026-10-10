@@ -1,5 +1,5 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
-import type { BookInput, BookLayout, CellEdit, CellInput, LayoutEdit, SheetInput } from '../contract.js'
+import type { BookInput, BookLayout, CellEdit, CellInput, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
 import { setInput, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
@@ -48,7 +48,7 @@ export function checkStylesUsed(book: BookInput, count: number) {
 }
 
 /** Layout edits (checked) applied to the book: each changed sheet is a new object with the same cells. */
-export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (name: string) => number) {
+export function applyLayout(book: BookInput, edits: Exclude<LayoutEdit, ColumnsFit>[], sheetIndex: (name: string) => number) {
   const changed = new Map<number, SheetInput>()
   for (const e of edits) {
     const i = sheetIndex(e.sheet)
