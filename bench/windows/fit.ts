@@ -5,12 +5,12 @@
  * and what its cells show are read, and the book is saved, its `<col>` elements read back. The answers go to
  * `test/excel/win/fit/[<tag>/]<set>.json`.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
-import { fitFile, partAnswers, type StoredFit } from '../coverage/fit.js'
-import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSet } from '../coverage/fit/cases.js'
+import { fitFile, keptAnswers, partAnswers } from '../coverage/fit.js'
+import { caseColumn, caseRows, fitBook, type FitCase, type FitSet } from '../coverage/fit/cases.js'
 import { inCaseOrder } from '../coverage/stored.js'
 import { inJobs, metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -19,10 +19,7 @@ const PART = 60
 export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const cases = ((await import(`../coverage/fit/${set}.js`)) as FitSet).buildFitCases(tag).filter((c) => c.via !== 'keys')
   const file = fitFile(set, tag, true)
-  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredFit) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
-  const answers: Record<string, FitAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
+  const { answers } = keptAnswers(file, cases)
   const t0 = Date.now()
   const save = () => {
     mkdirSync(dirname(file), { recursive: true })

@@ -22,6 +22,7 @@ import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSe
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-fit.applescript')
+const KEYS = join(HERE, 'excel-keys.applescript')
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const PART = 60
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -34,6 +35,15 @@ export interface StoredFit {
 
 /** The stored answers of a set: `test/excel/fit/<set>.json`, in a directory of its tag for a locale other than en-US. */
 export const fitFile = (set: string, tag = 'en-US', win = false) => join(ROOT, 'test/excel', win ? 'win' : '', 'fit', localeDir(tag), `${set}.json`)
+
+/** The stored answers of a set that its current cases keep (a case changed runs again; FCOV_FRESH=1 runs all), with the stored file's metadata. */
+export function keptAnswers(file: string, cases: FitCase[]): { answers: Record<string, FitAnswer>; meta?: StoredFit['meta'] } {
+  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredFit) : null
+  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
+  const answers: Record<string, FitAnswer> = {}
+  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
+  return { answers, meta: prev?.meta }
+}
 
 /** The columns of the first sheet of a saved book as its `<col>` elements give them, by letter. */
 export async function savedColumns(saved: Uint8Array): Promise<Map<string, FitAnswer['saved']>> {
@@ -87,7 +97,7 @@ async function runPart(part: FitCase[], label: string): Promise<Record<string, F
     const { data, issues } = await writeXlsx(fitBook(part))
     if (issues.length) throw new Error(`fit ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
-    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(partSpec(part))])
+    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(partSpec(part)), KEYS])
     let out = ''
     let err = ''
     child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
@@ -130,16 +140,13 @@ export async function stepFit(set: string, tag: string): Promise<void> {
   const mod = (await import(`./fit/${set}.js`)) as FitSet
   const cases = mod.buildFitCases(tag)
   const target = fitFile(set, tag)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredFit) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
-  const answers: Record<string, FitAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
+  const { answers, meta: prev } = keptAnswers(target, cases)
   const only = process.env.FFIT_ONLY?.split(',')
   const todo = cases.filter((c) => !answers[c.id] && (!only || only.includes(c.id)))
   const t0 = Date.now()
   mkdirSync(join(target, '..'), { recursive: true })
   const save = () => {
-    const meta = { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Number(prev?.meta.seconds ?? 0) * 1000 + Date.now() - t0) / 100) / 10 }
+    const meta = { version: excelVersion(), locale: localeMeta(tag), date: new Date().toISOString().slice(0, 10), seconds: Math.round((Number(prev?.seconds ?? 0) * 1000 + Date.now() - t0) / 100) / 10 }
     writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
   }
   await ensureExcel(tag)

@@ -7,7 +7,7 @@
 import type { CellDisplay, CellValue, NumberFormat } from './contract.js'
 import { formatDate } from './numfmt/date.js'
 import { generalFit } from './numfmt/general.js'
-import { DIGIT, fitText, glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
+import { DIGIT, fitText, glyph, hashes, MAX_SHOWN, room, textWidth } from './numfmt/glyphs.js'
 import { formatNumber } from './numfmt/number.js'
 import { EN_CODES, parseFormat, type Codes, type Section } from './numfmt/parse.js'
 import { choose, kind, textSection } from './numfmt/select.js'
@@ -65,6 +65,9 @@ function byChoice(v: number, secs: Section[], style: Style): { text?: string; ge
   return { text: formatNumber(v, sec.toks, signed, style) ?? undefined, sec }
 }
 
+/** A number by its format's sections (`byChoice`), General without them. */
+const byFormat = (v: number, secs: Section[] | null, style: Style): ReturnType<typeof byChoice> => (secs ? byChoice(v, secs, style) : { general: v, sec: null })
+
 /** TEXT(value, format) in a dialect; null for a format it does not read or a value the format cannot show (#VALUE!). */
 export function formatWith(value: number | string | boolean, fmt: string, d: Dialect): string | null {
   const secs = parseFormat(fmt, d.codes)
@@ -106,6 +109,12 @@ function filled(text: string, space: number): string | null {
 /** A word (a boolean, an error) shown whole when it fits, else `#` across the cell; text overflows instead. */
 const fitted = (text: string, space: number, overflow: boolean) => filled(text, space) ?? (overflow ? unfilled(text) : hashes(space))
 
+/** A cell's format as sections: an xlsx file's code, or a built-in format by its number in the style's locale; null for none (General) and for a code that does not parse. */
+const sectionsOf = (format: NumberFormat | undefined, style: Style) => {
+  const fmt = typeof format === 'number' ? style.builtin(format) : format
+  return fmt === undefined ? null : parseFormat(fmt, EN_CODES)
+}
+
 /**
  * What a cell shows: a value by its format (an xlsx file's code, a built-in format by its number, General without one)
  * in `space` points of room, written in the style of the book's locale. Text is never cut (it overflows); a number
@@ -114,8 +123,7 @@ const fitted = (text: string, space: number, overflow: boolean) => filled(text, 
 export function displayWith(value: CellValue, format: NumberFormat | undefined, style: Style, space: number): CellDisplay {
   if (value === null) return { text: '' }
   if (typeof value === 'object') return { text: fitted(style.error(value.error), space, false) }
-  const fmt = typeof format === 'number' ? style.builtin(format) : format
-  const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
+  const secs = sectionsOf(format, style)
   if (typeof value !== 'number') {
     const sec = secs && textSection(secs)
     // text without a text section shows as it is, whatever the width
@@ -124,7 +132,7 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
     const text = fitted(sec ? asText(sec, word, style) : word, space, typeof value === 'string')
     return sec?.color ? { text, color: sec.color } : { text }
   }
-  const { text, general, sec } = secs ? byChoice(value, secs, style) : { general: value, sec: null }
+  const { text, general, sec } = byFormat(value, secs, style)
   // a value its section cannot show (a date out of range) fills the cell with `#` in the automatic colour
   if (text === undefined && general === undefined) return { text: hashes(space) }
   const shown = general !== undefined ? generalFit(general, space).replace('.', style.decimal) : (filled(text!, space) ?? hashes(space))
@@ -144,8 +152,7 @@ export function fitPoints(value: CellValue, format: NumberFormat | undefined, st
   if (value === null) return null
   let laid = LAID.get(style)
   if (!laid) LAID.set(style, (laid = { ...style, layout: true }))
-  const fmt = typeof format === 'number' ? style.builtin(format) : format
-  const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
+  const secs = sectionsOf(format, style)
   let text: string | undefined
   if (typeof value === 'object') text = style.error(value.error)
   else if (typeof value !== 'number') {
@@ -153,7 +160,7 @@ export function fitPoints(value: CellValue, format: NumberFormat | undefined, st
     const word = typeof value === 'boolean' ? style.bool(value) : value
     text = sec ? asText(sec, word, laid) : word
   } else {
-    const chosen: { text?: string; general?: number } = secs ? byChoice(value, secs, laid) : { general: value }
+    const chosen = byFormat(value, secs, laid)
     if (chosen.general !== undefined) {
       const g = style.general(Math.abs(chosen.general))
       const w = (chosen.general < 0 ? glyph('-') : 0) + DIGIT * g.length
@@ -173,10 +180,8 @@ export function typedPoints(value: CellValue, format: NumberFormat | undefined, 
   if (typeof value !== 'number') return null
   const points = fitPoints(value, format, style)
   if (points === null || points <= now) return null
-  const fmt = typeof format === 'number' ? style.builtin(format) : format
-  const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
-  const { general } = secs ? byChoice(value, secs, style) : { general: value }
+  const { general } = byFormat(value, sectionsOf(format, style), style)
   if (general === undefined) return points
-  const shown = generalFit(general, now - 5)
+  const shown = generalFit(general, room(now))
   return shown !== generalFit(general, Infinity) && !/[E#]/.test(shown) ? null : points
 }

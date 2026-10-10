@@ -5,8 +5,8 @@
 -- column: `column width`, `width` (points), `use standard width`, and what its rows show (`string value`); save the
 -- book as xlsx under another name and close it.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the cases as
--- a JSON array of [column letter, fit first (0 or 1), [[row, text, via], ...], [rows to read]]; a case without texts
--- is fitted.
+-- a JSON array of [column letter, fit first (0 or 1), [[row, text, via], ...], [rows to read]] (a case without texts
+-- is fitted), the path of excel-keys.applescript.
 -- Output: JSON {"refused": [[Excel's error for each text, "" when it took it], ...], "cases": [[column width, points,
 -- standard, [texts]], ...]}.
 use AppleScript version "2.4"
@@ -23,6 +23,7 @@ on run argv
 	set out to (POSIX file q) as text
 	set refusedOut to {}
 	set casesOut to {}
+	set kb to my keysLib(item 5 of argv)
 	tell application "Microsoft Excel"
 		with timeout of 280 seconds
 			set wb to open workbook workbook file name hfs
@@ -41,7 +42,7 @@ on run argv
 						activate
 						delay 0.5
 						select rg
-						set er to my typeKeys(t)
+						set er to kb's typeKeys(t)
 					else
 						set display alerts to false
 						try
@@ -81,70 +82,8 @@ on run argv
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
 
--- a text typed into the selected cell, then Return; Excel must be the application in front (it is brought forward for up
--- to 3 seconds). A window Excel shows for it (a formula it does not take) is answered, and Escape leaves the cell as it
--- was: its text is returned.
-on typeKeys(t)
-	repeat 10 times
-		tell application "System Events" to set fp to name of first application process whose frontmost is true
-		if fp is "Microsoft Excel" then exit repeat
-		tell application "Microsoft Excel" to activate
-		delay 0.3
-	end repeat
-	tell application "System Events"
-		set fp to name of first application process whose frontmost is true
-		if fp is not "Microsoft Excel" then error "Excel is not in front: " & fp
-		keystroke t
-		delay 0.2
-		keystroke return
-	end tell
-	delay 1
-	return my answerDialog()
-end typeKeys
-
--- Excel's windows that are not books, answered in turn: No to a correction it offers, OK to the window that says why a
--- formula is not taken; then Escape leaves the cell as it was. Their texts.
-on answerDialog()
-	set said to ""
-	repeat 5 times
-		set found to false
-		tell application "System Events" to tell process "Microsoft Excel"
-			repeat with w in windows
-				set sr to ""
-				try
-					set sr to subrole of w
-				end try
-				if sr is not "AXStandardWindow" then
-					set tx to ""
-					repeat with x in (static texts of w)
-						try
-							set v to value of x
-							if v is not missing value then set tx to tx & (v as text) & " "
-						end try
-					end repeat
-					set said to said & tx & "| "
-					set names to name of every button of w
-					if names contains "No" then
-						click button "No" of w
-					else if names contains "Нет" then
-						click button "Нет" of w
-					else if names contains "OK" then
-						click button "OK" of w
-					else if names contains "ОК" then
-						click button "ОК" of w
-					else
-						error "an Excel window without No or OK: " & tx
-					end if
-					set found to true
-					exit repeat
-				end if
-			end repeat
-		end tell
-		if not found then exit repeat
-		delay 1
-	end repeat
-	if said is "" then return ""
-	tell application "System Events" to key code 53
-	delay 0.5
-	return "dialog: " & said
-end answerDialog
+-- the handlers of excel-keys.applescript (its path `p`) as a script object
+on keysLib(p)
+	set src to (current application's NSString's stringWithContentsOfFile:p encoding:4 |error|:(missing value)) as text
+	return run script ("script K" & linefeed & src & linefeed & "end script" & linefeed & "return K")
+end keysLib

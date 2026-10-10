@@ -4,36 +4,25 @@
  * with the room Excel gives it (`fitPoints`); cells of hidden rows count, cells merged across columns do not, and a
  * column with nothing to show keeps its width. A number typed into a column whose width nobody set widens the column.
  */
-import type { BookInput, CellValue, ColumnInput, ColumnsFit, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, NumberFormat, SheetInput } from '../contract.js'
+import type { BookInput, CellValue, ColumnInput, ColumnsFit, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, SheetInput } from '../contract.js'
 import { epochOf } from '../dates.js'
 import { toCellValue, type EngineState } from '../engine.js'
 import { checkBook, checkCellValue, checkEntryWidthOptions, checkSheet, InputError } from '../input.js'
 import { displayRules, type Rules } from '../locale/rules.js'
-import { formatAddress, parseAddress } from '../model.js'
+import { parseAddress } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { outValue } from '../result.js'
 import { applyLayout } from '../session/book.js'
+import { sheetLines } from '../shown.js'
 import { sheetKey } from '../syntax.js'
 import { parseMerge } from './merges.js'
-import { lines, parseSpan, spanKey, type Line } from './spans.js'
+import { parseSpan, spanKey } from './spans.js'
 
 /** A cell of a sheet and its value: zero-based row and column. */
 export type Placed = readonly [r: number, c: number, v: CellValue]
 
 /** The widest column of the model (`ColumnInput.width`); Excel's widest is 255.83, 255 digits and the padding. */
 const MAX_WIDTH = 255
-
-/** The entry of line `i` among sorted, disjoint lines, by bisection. */
-function lineOf<T>(ls: Line<T>[], i: number): T | undefined {
-  let [a, b] = [0, ls.length - 1]
-  while (a <= b) {
-    const m = (a + b) >> 1
-    if (ls[m][1] < i) a = m + 1
-    else if (ls[m][0] > i) b = m - 1
-    else return ls[m][2]
-  }
-  return undefined
-}
 
 /** The width of a column of `points`: null for the default width, which Excel writes as no width at all. */
 const widthAt = (points: number): number | null => (points === columnPoints(undefined) ? null : Math.min(MAX_WIDTH, widthOf(points)))
@@ -43,14 +32,12 @@ const widthAt = (points: number): number | null => (points === columnPoints(unde
  * `ColumnInput.width`, null for the default width; a column with nothing to show is left out, as it keeps its width.
  */
 export function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
-  const rows = lines(sheet.rows, 'r')
-  const cols = lines(sheet.columns, 'c')
+  const formats = sheetLines(sheet)
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
   for (const [r, c, v] of cells) {
     if (c < lo || c > hi || v === null || across.some((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)) continue
-    const format: NumberFormat | undefined = sheet.cells[formatAddress(r, c)]?.format ?? (rows.length ? lineOf(rows, r)?.format : undefined) ?? (cols.length ? lineOf(cols, c)?.format : undefined)
-    const points = rules.fitPoints(v, format)
+    const points = rules.fitPoints(v, formats.format(r, c))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
   return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points)]))

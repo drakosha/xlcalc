@@ -102,8 +102,9 @@ describe.each([
 describe('entryWidth', () => {
   const typed = (text: string, opts: { width?: number; bestFit?: boolean } = {}) => {
     const r = parseEntry(text, { locale: 'ru-RU', now: clock.now })
-    if (!r.ok || !r.input) throw new Error(text)
-    return entryWidth(r.input.value ?? null, { locale: 'ru-RU', ...(r.input.format !== undefined ? { format: r.input.format } : {}), ...opts })
+    const v = r.ok ? r.input?.value : undefined
+    if (!r.ok || !r.input || v === undefined || (v !== null && typeof v === 'object')) throw new Error(text)
+    return entryWidth(v, { locale: 'ru-RU', ...(r.input.format !== undefined ? { format: r.input.format } : {}), ...opts })
   }
   it('widens a column of the default width or one Excel fitted for a number AutoFit gives more room', () => {
     expect(typed('15.03.2026')).toBe(10.1640625)
