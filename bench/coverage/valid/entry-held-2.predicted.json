@@ -1,0 +1,406 @@
+{
+ "values": [
+  {
+   "name": "S",
+   "rules": {
+    "A2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A7": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A8": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A9": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "A10": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"1000,50%,2025-01-02, Two ,3\"",
+     "dropdown": true
+    },
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2+$Z$1>5"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3+$Z$1>5"
+    },
+    "C2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "SUM($Z$1:$Z$3)>5"
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "$Z$1+1",
+     "formula2": "10"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "$Z$1+1",
+     "formula2": "10"
+    },
+    "E2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Middle",
+     "dropdown": true
+    },
+    "E3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Middle",
+     "dropdown": true
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Column",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Column",
+     "dropdown": true
+    },
+    "G2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Full",
+     "dropdown": true
+    },
+    "G3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Full",
+     "dropdown": true
+    },
+    "H2": {
+     "type": "list",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Middle",
+     "dropdown": true
+    },
+    "H3": {
+     "type": "list",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Middle",
+     "dropdown": true
+    },
+    "I2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "5"
+    },
+    "I3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "5"
+    },
+    "J2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "5"
+    },
+    "J3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "5"
+    },
+    "K2": {
+     "type": "date",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThanOrEqual",
+     "formula1": "1"
+    },
+    "K3": {
+     "type": "date",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThanOrEqual",
+     "formula1": "1"
+    },
+    "L2": {
+     "type": "textLength",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "L3": {
+     "type": "textLength",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "M2": {
+     "type": "whole",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "-1",
+     "formula2": "1"
+    },
+    "M3": {
+     "type": "whole",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "-1",
+     "formula2": "1"
+    },
+    "N2": {
+     "type": "custom",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "TRUE"
+    },
+    "N3": {
+     "type": "custom",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "TRUE"
+    },
+    "O2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "equal",
+     "formula1": "1/3"
+    },
+    "O3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "equal",
+     "formula1": "1/3"
+    },
+    "O4": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "equal",
+     "formula1": "1/3"
+    },
+    "P2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "notEqual",
+     "formula1": "0.3"
+    },
+    "P3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "notEqual",
+     "formula1": "0.3"
+    }
+   },
+   "meets": {
+    "A2": true,
+    "A3": false,
+    "A4": true,
+    "A5": false,
+    "A6": false,
+    "A7": false,
+    "A8": false,
+    "A9": true,
+    "A10": true,
+    "B2": true,
+    "B3": true,
+    "C2": false,
+    "D2": true,
+    "D3": true,
+    "E2": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "G2": false,
+    "G3": true,
+    "H2": false,
+    "H3": true,
+    "I2": true,
+    "I3": true,
+    "J2": false,
+    "J3": false,
+    "K2": true,
+    "K3": false,
+    "L2": false,
+    "L3": true,
+    "M2": false,
+    "M3": true,
+    "N2": false,
+    "N3": true,
+    "O2": true,
+    "O3": true,
+    "O4": false,
+    "P2": false,
+    "P3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ]
+}
