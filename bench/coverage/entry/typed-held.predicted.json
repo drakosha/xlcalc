@@ -1,0 +1,3515 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "euro-1": {
+    "ok": true,
+    "input": {
+     "value": 1234.5
+    }
+   },
+   "euro-2": {
+    "ok": true,
+    "input": {
+     "value": "€1 234,5"
+    }
+   },
+   "euro-3": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "euro-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro-5": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro-6": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "euro-7": {
+    "ok": true,
+    "input": {
+     "value": 0.05
+    }
+   },
+   "euro-8": {
+    "ok": true,
+    "input": {
+     "value": "€5,5"
+    }
+   },
+   "euro-9": {
+    "ok": true,
+    "input": {
+     "value": 5.5
+    }
+   },
+   "euro-10": {
+    "ok": true,
+    "input": {
+     "value": "(€5)"
+    }
+   },
+   "euro-11": {
+    "ok": true,
+    "input": {
+     "value": "€"
+    }
+   },
+   "range-1": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+400"
+    }
+   },
+   "range-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+400",
+     "format": 11
+    }
+   },
+   "range-3": {
+    "ok": true,
+    "input": {
+     "formula": "-Infinity"
+    }
+   },
+   "range-4": {
+    "ok": true,
+    "input": {
+     "value": "1E-330",
+     "format": 11
+    }
+   },
+   "range-5": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 11
+    }
+   },
+   "range-6": {
+    "ok": true,
+    "input": {
+     "value": 1e+308,
+     "format": 11
+    }
+   },
+   "year-1": {
+    "ok": true,
+    "input": {
+     "value": 37623,
+     "format": 14
+    }
+   },
+   "year-2": {
+    "ok": true,
+    "input": {
+     "value": "1.2.3"
+    }
+   },
+   "year-3": {
+    "ok": true,
+    "input": {
+     "value": "15.3.6"
+    }
+   },
+   "year-4": {
+    "ok": true,
+    "input": {
+     "value": 38791,
+     "format": 14
+    }
+   },
+   "year-5": {
+    "ok": true,
+    "input": {
+     "value": "1/2/345"
+    }
+   },
+   "year-6": {
+    "ok": true,
+    "input": {
+     "value": 46086,
+     "format": 14
+    }
+   },
+   "year-7": {
+    "ok": true,
+    "input": {
+     "value": 46145,
+     "format": 14
+    }
+   },
+   "year-8": {
+    "ok": true,
+    "input": {
+     "formula": "VALUE(\"1-2-3\")"
+    }
+   },
+   "year-9": {
+    "ok": true,
+    "input": {
+     "formula": "VALUE(\"1/2/3\")"
+    }
+   },
+   "year-10": {
+    "ok": true,
+    "input": {
+     "formula": "ЗНАЧЕН(\"1-2-3\")"
+    }
+   },
+   "year-11": {
+    "ok": true,
+    "input": {
+     "formula": "ЗНАЧЕН(\"1.2.3\")"
+    }
+   },
+   "ffx-1": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()+1",
+     "format": 14
+    }
+   },
+   "ffx-2": {
+    "ok": true,
+    "input": {
+     "formula": "1+TODAY()",
+     "format": 14
+    }
+   },
+   "ffx-3": {
+    "ok": true,
+    "input": {
+     "formula": "YEAR(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-4": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-C2",
+     "format": 14
+    }
+   },
+   "ffx-5": {
+    "ok": true,
+    "input": {
+     "formula": "EDATE(C2,1)",
+     "format": 14
+    }
+   },
+   "ffx-6": {
+    "ok": true,
+    "input": {
+     "formula": "EOMONTH(C2,0)",
+     "format": 14
+    }
+   },
+   "ffx-7": {
+    "ok": true,
+    "input": {
+     "formula": "DATEVALUE(\"3/15/2026\")",
+     "format": 14
+    }
+   },
+   "ffx-8": {
+    "ok": true,
+    "input": {
+     "formula": "TIMEVALUE(\"18:30\")",
+     "format": 18
+    }
+   },
+   "ffx-9": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()-TODAY()",
+     "format": 22
+    }
+   },
+   "ffx-10": {
+    "ok": true,
+    "input": {
+     "formula": "PV(0.1,12,100)",
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "ffx-11": {
+    "ok": true,
+    "input": {
+     "formula": "FV(0.1,12,100)",
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "ffx-12": {
+    "ok": true,
+    "input": {
+     "formula": "IPMT(0.1,1,12,1000)",
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "ffx-13": {
+    "ok": true,
+    "input": {
+     "formula": "NPV(0.1,100,200)",
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "ffx-14": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C2,1)"
+    }
+   },
+   "ffx-15": {
+    "ok": true,
+    "input": {
+     "formula": "MAX(C2,C1)"
+    }
+   },
+   "ffx-16": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C2"
+    }
+   },
+   "ffx-17": {
+    "ok": true,
+    "input": {
+     "formula": "IF(TRUE,TODAY(),0)",
+     "format": 14
+    }
+   },
+   "ffx-18": {
+    "ok": true,
+    "input": {
+     "formula": "WORKDAY(C2,1)",
+     "format": 14
+    }
+   },
+   "ffx-19": {
+    "ok": true,
+    "input": {
+     "formula": "C2*1"
+    }
+   },
+   "ffx-20": {
+    "ok": true,
+    "input": {
+     "formula": "5%*2"
+    }
+   },
+   "ffx-21": {
+    "ok": true,
+    "input": {
+     "formula": "DOLLAR(5)"
+    }
+   },
+   "ffx-22": {
+    "ok": true,
+    "input": {
+     "formula": "-TODAY()",
+     "format": 14
+    }
+   },
+   "ffx-23": {
+    "ok": true,
+    "input": {
+     "formula": "(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-24": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-25": {
+    "ok": true,
+    "input": {
+     "formula": "TIME(1,0,0)+TODAY()",
+     "format": 18
+    }
+   },
+   "ffx-26": {
+    "ok": true,
+    "input": {
+     "formula": "HOUR(NOW())",
+     "format": 22
+    }
+   },
+   "ffx-27": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()+1"
+    }
+   },
+   "ffx-28": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 11
+   },
+   "ffx-29": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 7
+   },
+   "ffx-30": {
+    "ok": true,
+    "input": {
+     "formula": "ГОД(СЕГОДНЯ())"
+    }
+   },
+   "ffx-31": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 12
+   },
+   "ffx-32": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 8
+   },
+   "space-1": {
+    "ok": true,
+    "input": {
+     "value": " 15.03.2026"
+    }
+   },
+   "space-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026 "
+    }
+   },
+   "space-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "space-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "space-5": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "space-6": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "space-7": {
+    "ok": true,
+    "input": {
+     "value": "  1 234,5"
+    }
+   },
+   "space-8": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "space-9": {
+    "ok": true,
+    "input": {
+     "value": " #N/A"
+    }
+   },
+   "space-10": {
+    "ok": true,
+    "input": {
+     "value": " #Н/Д"
+    }
+   },
+   "space-11": {
+    "ok": true,
+    "input": {
+     "value": "#знач!"
+    }
+   },
+   "more-1": {
+    "ok": true,
+    "input": {
+     "value": 12345678,
+     "format": 3
+    }
+   },
+   "more-2": {
+    "ok": true,
+    "input": {
+     "value": "1 234 567"
+    }
+   },
+   "more-3": {
+    "ok": true,
+    "input": {
+     "value": 1234,
+     "format": 3
+    }
+   },
+   "more-4": {
+    "ok": true,
+    "input": {
+     "value": "1 234,"
+    }
+   },
+   "more-5": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "more-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"₽\"",
+    "at": 3
+   },
+   "more-7": {
+    "ok": true,
+    "input": {
+     "value": 46056,
+     "format": 16
+    }
+   },
+   "more-8": {
+    "ok": true,
+    "input": {
+     "value": 0.01,
+     "format": 13
+    }
+   },
+   "more-9": {
+    "ok": true,
+    "input": {
+     "value": 1.3333333333333333,
+     "format": 12
+    }
+   },
+   "more-10": {
+    "ok": true,
+    "input": {
+     "value": 0.055,
+     "format": 9
+    }
+   },
+   "more-11": {
+    "ok": true,
+    "input": {
+     "value": "15 марта"
+    }
+   },
+   "more-12": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "more-13": {
+    "ok": true,
+    "input": {
+     "value": "сен 2026"
+    }
+   },
+   "more-14": {
+    "ok": true,
+    "input": {
+     "value": "15 сент 2026"
+    }
+   },
+   "more-15": {
+    "ok": true,
+    "input": {
+     "value": "1.1.2026 0:00"
+    }
+   },
+   "more-16": {
+    "ok": true,
+    "input": {
+     "value": 2958465,
+     "format": 14
+    }
+   },
+   "more-17": {
+    "ok": true,
+    "input": {
+     "value": "1899-12-31"
+    }
+   },
+   "more-18": {
+    "ok": true,
+    "input": {
+     "value": 60,
+     "format": 14
+    }
+   },
+   "in-code-dmy-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-mdy-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-code-mdy-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-mdy-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-mdy-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-mdy-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-code-mdy-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-grp-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "#,##0"
+    }
+   },
+   "in-code-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "in-code-pct-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "18:30%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-5": {
+    "ok": true,
+    "input": {
+     "value": "5%%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.015,
+     "format": "0%"
+    }
+   },
+   "in-code-pct-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 15,
+     "format": "0%"
+    }
+   },
+   "in-code-pct-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-code-pct-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "0%"
+    }
+   },
+   "in-b37-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 37
+    }
+   },
+   "in-b37-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 37
+    }
+   },
+   "in-b37-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 37
+    }
+   },
+   "in-b37-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 37
+    }
+   },
+   "in-b37-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 37
+    }
+   },
+   "in-b37-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 37
+    }
+   },
+   "in-b37-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 37
+    }
+   },
+   "in-b37-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 37
+    }
+   },
+   "in-b37-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 37
+    }
+   },
+   "in-b37-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 37
+    }
+   },
+   "in-b37-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 37
+    }
+   },
+   "in-b37-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 37
+    }
+   },
+   "in-b41-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 41
+    }
+   },
+   "in-b41-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 41
+    }
+   },
+   "in-b41-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b41-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b41-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b41-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b41-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 41
+    }
+   },
+   "in-b41-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b41-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 41
+    }
+   },
+   "in-b41-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 41
+    }
+   },
+   "in-b41-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 41
+    }
+   },
+   "in-b41-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 41
+    }
+   },
+   "in-b45-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 45
+    }
+   },
+   "in-b45-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 45
+    }
+   },
+   "in-b45-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b45-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 45
+    }
+   },
+   "in-b45-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b45-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b45-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 45
+    }
+   },
+   "in-b45-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b45-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 45
+    }
+   },
+   "in-b45-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-b45-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 45
+    }
+   },
+   "in-b45-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 45
+    }
+   },
+   "in-b46-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 46
+    }
+   },
+   "in-b46-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 46
+    }
+   },
+   "in-b46-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b46-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 46
+    }
+   },
+   "in-b46-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b46-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b46-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 46
+    }
+   },
+   "in-b46-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b46-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 46
+    }
+   },
+   "in-b46-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-b46-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 46
+    }
+   },
+   "in-b46-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 46
+    }
+   },
+   "in-b48-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 48
+    }
+   },
+   "in-b48-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 48
+    }
+   },
+   "in-b48-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b48-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b48-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b48-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b48-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 48
+    }
+   },
+   "in-b48-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 48
+    }
+   },
+   "in-b48-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 48
+    }
+   },
+   "in-b48-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-b48-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 48
+    }
+   },
+   "in-b48-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 48
+    }
+   },
+   "in-b13-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 13
+    }
+   },
+   "in-b13-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 13
+    }
+   },
+   "in-b13-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b13-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b13-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b13-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 13
+    }
+   },
+   "in-b13-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 13
+    }
+   },
+   "in-b13-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b13-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 13
+    }
+   },
+   "in-b13-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-b13-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 13
+    }
+   },
+   "in-b13-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 13
+    }
+   },
+   "in-b15-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 15
+    }
+   },
+   "in-b15-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 15
+    }
+   },
+   "in-b15-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "in-b15-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b15-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b15-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b15-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 15
+    }
+   },
+   "in-b15-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b15-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 15
+    }
+   },
+   "in-b15-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-b15-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 15
+    }
+   },
+   "in-b15-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 15
+    }
+   },
+   "in-b18-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 18
+    }
+   },
+   "in-b18-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 18
+    }
+   },
+   "in-b18-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b18-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "in-b18-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b18-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b18-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 18
+    }
+   },
+   "in-b18-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b18-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 18
+    }
+   },
+   "in-b18-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "in-b18-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 18
+    }
+   },
+   "in-b18-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 18
+    }
+   },
+   "in-b7-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 7
+    }
+   },
+   "in-b7-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 7
+    }
+   },
+   "in-b7-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b7-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b7-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b7-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b7-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 7
+    }
+   },
+   "in-b7-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b7-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 7
+    }
+   },
+   "in-b7-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 7
+    }
+   },
+   "in-b7-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 7
+    }
+   },
+   "in-b7-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 7
+    }
+   },
+   "in-b5-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-b5-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 5
+    }
+   },
+   "in-b5-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b5-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b5-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b5-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b5-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 5
+    }
+   },
+   "in-b5-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b5-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 5
+    }
+   },
+   "in-b5-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-b5-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 5
+    }
+   },
+   "in-b5-12": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": 5
+    }
+   }
+  },
+  "ru-RU": {
+   "euro-1": {
+    "ok": true,
+    "input": {
+     "value": "€1,234.5"
+    }
+   },
+   "euro-2": {
+    "ok": true,
+    "input": {
+     "value": 1234.5
+    }
+   },
+   "euro-3": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "euro-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro-5": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro-6": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "euro-7": {
+    "ok": true,
+    "input": {
+     "value": 0.05
+    }
+   },
+   "euro-8": {
+    "ok": true,
+    "input": {
+     "value": 5.5
+    }
+   },
+   "euro-9": {
+    "ok": true,
+    "input": {
+     "value": "€5.5"
+    }
+   },
+   "euro-10": {
+    "ok": true,
+    "input": {
+     "value": "(€5)"
+    }
+   },
+   "euro-11": {
+    "ok": true,
+    "input": {
+     "value": "€"
+    }
+   },
+   "range-1": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+400",
+     "format": 11
+    }
+   },
+   "range-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+400"
+    }
+   },
+   "range-3": {
+    "ok": true,
+    "input": {
+     "formula": "-Infinity"
+    }
+   },
+   "range-4": {
+    "ok": true,
+    "input": {
+     "value": "1E-330",
+     "format": 11
+    }
+   },
+   "range-5": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 11
+    }
+   },
+   "range-6": {
+    "ok": true,
+    "input": {
+     "value": 1e+308,
+     "format": 11
+    }
+   },
+   "year-1": {
+    "ok": true,
+    "input": {
+     "value": 37653,
+     "format": 14
+    }
+   },
+   "year-2": {
+    "ok": true,
+    "input": {
+     "value": 37653,
+     "format": 14
+    }
+   },
+   "year-3": {
+    "ok": true,
+    "input": {
+     "value": 38791,
+     "format": 14
+    }
+   },
+   "year-4": {
+    "ok": true,
+    "input": {
+     "value": "3/15/6"
+    }
+   },
+   "year-5": {
+    "ok": true,
+    "input": {
+     "value": "1/2/345"
+    }
+   },
+   "year-6": {
+    "ok": true,
+    "input": {
+     "value": 46086,
+     "format": 14
+    }
+   },
+   "year-7": {
+    "ok": true,
+    "input": {
+     "value": 46086,
+     "format": 14
+    }
+   },
+   "year-8": {
+    "ok": true,
+    "input": {
+     "formula": "VALUE(\"1-2-3\")"
+    }
+   },
+   "year-9": {
+    "ok": true,
+    "input": {
+     "formula": "VALUE(\"1/2/3\")"
+    }
+   },
+   "year-10": {
+    "ok": true,
+    "input": {
+     "formula": "VALUE(\"1-2-3\")"
+    }
+   },
+   "year-11": {
+    "ok": true,
+    "input": {
+     "formula": "VALUE(\"1.2.3\")"
+    }
+   },
+   "ffx-1": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()+1",
+     "format": 14
+    }
+   },
+   "ffx-2": {
+    "ok": true,
+    "input": {
+     "formula": "1+TODAY()",
+     "format": 14
+    }
+   },
+   "ffx-3": {
+    "ok": true,
+    "input": {
+     "formula": "YEAR(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-4": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-C2",
+     "format": 14
+    }
+   },
+   "ffx-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "\"C2\" cannot be written in the invariant syntax",
+    "at": 7
+   },
+   "ffx-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "\"C2\" cannot be written in the invariant syntax",
+    "at": 9
+   },
+   "ffx-7": {
+    "ok": true,
+    "input": {
+     "formula": "DATEVALUE(\"3/15/2026\")",
+     "format": 14
+    }
+   },
+   "ffx-8": {
+    "ok": true,
+    "input": {
+     "formula": "TIMEVALUE(\"18:30\")",
+     "format": 18
+    }
+   },
+   "ffx-9": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()-TODAY()",
+     "format": 22
+    }
+   },
+   "ffx-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 5
+   },
+   "ffx-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 5
+   },
+   "ffx-12": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 7
+   },
+   "ffx-13": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 6
+   },
+   "ffx-14": {
+    "ok": false,
+    "code": "syntax",
+    "message": "\"C2\" cannot be written in the invariant syntax",
+    "at": 5
+   },
+   "ffx-15": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \",\"",
+    "at": 7
+   },
+   "ffx-16": {
+    "ok": true,
+    "input": {
+     "formula": "C1+C2"
+    }
+   },
+   "ffx-17": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \",\"",
+    "at": 8
+   },
+   "ffx-18": {
+    "ok": false,
+    "code": "syntax",
+    "message": "\"C2\" cannot be written in the invariant syntax",
+    "at": 9
+   },
+   "ffx-19": {
+    "ok": true,
+    "input": {
+     "formula": "C2*1"
+    }
+   },
+   "ffx-20": {
+    "ok": true,
+    "input": {
+     "formula": "5%*2"
+    }
+   },
+   "ffx-21": {
+    "ok": true,
+    "input": {
+     "formula": "DOLLAR(5)"
+    }
+   },
+   "ffx-22": {
+    "ok": true,
+    "input": {
+     "formula": "-TODAY()",
+     "format": 14
+    }
+   },
+   "ffx-23": {
+    "ok": true,
+    "input": {
+     "formula": "(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-24": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-25": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 9
+   },
+   "ffx-26": {
+    "ok": true,
+    "input": {
+     "formula": "HOUR(NOW())",
+     "format": 22
+    }
+   },
+   "ffx-27": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()+1",
+     "format": 14
+    }
+   },
+   "ffx-28": {
+    "ok": true,
+    "input": {
+     "formula": "EDATE(C2,1)",
+     "format": 14
+    }
+   },
+   "ffx-29": {
+    "ok": true,
+    "input": {
+     "formula": "PV(0.1,12,100)",
+     "format": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+    }
+   },
+   "ffx-30": {
+    "ok": true,
+    "input": {
+     "formula": "YEAR(TODAY())",
+     "format": 14
+    }
+   },
+   "ffx-31": {
+    "ok": true,
+    "input": {
+     "formula": "IF(TRUE,TODAY(),0)",
+     "format": 14
+    }
+   },
+   "ffx-32": {
+    "ok": true,
+    "input": {
+     "formula": "MAX(C2,C1)"
+    }
+   },
+   "space-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "space-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "space-3": {
+    "ok": true,
+    "input": {
+     "value": " 3/15/2026"
+    }
+   },
+   "space-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "space-5": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "space-6": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "space-7": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "space-8": {
+    "ok": true,
+    "input": {
+     "value": " 1,234.5"
+    }
+   },
+   "space-9": {
+    "ok": true,
+    "input": {
+     "value": " #N/A"
+    }
+   },
+   "space-10": {
+    "ok": true,
+    "input": {
+     "value": " #Н/Д"
+    }
+   },
+   "space-11": {
+    "ok": true,
+    "input": {
+     "formula": "#VALUE!"
+    }
+   },
+   "more-1": {
+    "ok": true,
+    "input": {
+     "value": "12,345,678"
+    }
+   },
+   "more-2": {
+    "ok": true,
+    "input": {
+     "value": 1234567,
+     "format": 3
+    }
+   },
+   "more-3": {
+    "ok": true,
+    "input": {
+     "value": "1,234."
+    }
+   },
+   "more-4": {
+    "ok": true,
+    "input": {
+     "value": 1234,
+     "format": 3
+    }
+   },
+   "more-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"$\"",
+    "at": 1
+   },
+   "more-6": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "more-7": {
+    "ok": true,
+    "input": {
+     "value": 46083,
+     "format": 16
+    }
+   },
+   "more-8": {
+    "ok": true,
+    "input": {
+     "value": 0.01,
+     "format": 13
+    }
+   },
+   "more-9": {
+    "ok": true,
+    "input": {
+     "value": 1.3333333333333333,
+     "format": 12
+    }
+   },
+   "more-10": {
+    "ok": true,
+    "input": {
+     "value": 0.055,
+     "format": 9
+    }
+   },
+   "more-11": {
+    "ok": true,
+    "input": {
+     "value": "15 марта"
+    }
+   },
+   "more-12": {
+    "ok": true,
+    "input": {
+     "value": "15 March 2026"
+    }
+   },
+   "more-13": {
+    "ok": true,
+    "input": {
+     "value": 46266,
+     "format": 17
+    }
+   },
+   "more-14": {
+    "ok": true,
+    "input": {
+     "value": 46280,
+     "format": 15
+    }
+   },
+   "more-15": {
+    "ok": true,
+    "input": {
+     "value": 46023,
+     "format": 22
+    }
+   },
+   "more-16": {
+    "ok": true,
+    "input": {
+     "value": 2958465,
+     "format": 14
+    }
+   },
+   "more-17": {
+    "ok": true,
+    "input": {
+     "value": "1899-12-31"
+    }
+   },
+   "more-18": {
+    "ok": true,
+    "input": {
+     "value": 60,
+     "format": 14
+    }
+   },
+   "in-code-dmy-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-code-dmy-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-dmy-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-dmy-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-dmy-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-code-dmy-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-dmy-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "dd.mm.yyyy"
+    }
+   },
+   "in-code-mdy-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-mdy-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "m/d/yyyy"
+    }
+   },
+   "in-code-grp-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "#,##0"
+    }
+   },
+   "in-code-grp-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "#,##0"
+    }
+   },
+   "in-code-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "in-code-pct-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "18:30%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-5": {
+    "ok": true,
+    "input": {
+     "value": "5%%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.015,
+     "format": "0%"
+    }
+   },
+   "in-code-pct-7": {
+    "ok": true,
+    "input": {
+     "value": 15,
+     "format": "0%"
+    }
+   },
+   "in-code-pct-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-9": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽%",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "0%"
+    }
+   },
+   "in-code-pct-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "0%"
+    }
+   },
+   "in-b37-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 37
+    }
+   },
+   "in-b37-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 37
+    }
+   },
+   "in-b37-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 37
+    }
+   },
+   "in-b37-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 37
+    }
+   },
+   "in-b37-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 37
+    }
+   },
+   "in-b37-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 37
+    }
+   },
+   "in-b37-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 37
+    }
+   },
+   "in-b37-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 37
+    }
+   },
+   "in-b37-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 37
+    }
+   },
+   "in-b37-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 37
+    }
+   },
+   "in-b37-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 37
+    }
+   },
+   "in-b37-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 37
+    }
+   },
+   "in-b41-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 41
+    }
+   },
+   "in-b41-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b41-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 41
+    }
+   },
+   "in-b41-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b41-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b41-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b41-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b41-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 41
+    }
+   },
+   "in-b41-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 41
+    }
+   },
+   "in-b41-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 41
+    }
+   },
+   "in-b41-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 41
+    }
+   },
+   "in-b41-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 41
+    }
+   },
+   "in-b45-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 45
+    }
+   },
+   "in-b45-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b45-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 45
+    }
+   },
+   "in-b45-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 45
+    }
+   },
+   "in-b45-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b45-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b45-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b45-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 45
+    }
+   },
+   "in-b45-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-b45-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 45
+    }
+   },
+   "in-b45-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 45
+    }
+   },
+   "in-b45-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 45
+    }
+   },
+   "in-b46-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 46
+    }
+   },
+   "in-b46-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b46-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 46
+    }
+   },
+   "in-b46-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 46
+    }
+   },
+   "in-b46-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b46-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b46-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b46-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 46
+    }
+   },
+   "in-b46-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-b46-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 46
+    }
+   },
+   "in-b46-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 46
+    }
+   },
+   "in-b46-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 46
+    }
+   },
+   "in-b48-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 48
+    }
+   },
+   "in-b48-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b48-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 48
+    }
+   },
+   "in-b48-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b48-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b48-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b48-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 48
+    }
+   },
+   "in-b48-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 48
+    }
+   },
+   "in-b48-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-b48-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 48
+    }
+   },
+   "in-b48-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 48
+    }
+   },
+   "in-b48-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 48
+    }
+   },
+   "in-b13-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 13
+    }
+   },
+   "in-b13-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b13-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 13
+    }
+   },
+   "in-b13-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b13-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b13-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 13
+    }
+   },
+   "in-b13-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b13-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 13
+    }
+   },
+   "in-b13-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-b13-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 13
+    }
+   },
+   "in-b13-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 13
+    }
+   },
+   "in-b13-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 13
+    }
+   },
+   "in-b15-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 15
+    }
+   },
+   "in-b15-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "in-b15-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 15
+    }
+   },
+   "in-b15-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b15-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b15-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b15-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b15-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 15
+    }
+   },
+   "in-b15-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-b15-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 15
+    }
+   },
+   "in-b15-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 15
+    }
+   },
+   "in-b15-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 15
+    }
+   },
+   "in-b18-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 18
+    }
+   },
+   "in-b18-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b18-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 18
+    }
+   },
+   "in-b18-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "in-b18-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b18-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b18-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b18-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 18
+    }
+   },
+   "in-b18-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "in-b18-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 18
+    }
+   },
+   "in-b18-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 18
+    }
+   },
+   "in-b18-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 18
+    }
+   },
+   "in-b7-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 7
+    }
+   },
+   "in-b7-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b7-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 7
+    }
+   },
+   "in-b7-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b7-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b7-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b7-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b7-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 7
+    }
+   },
+   "in-b7-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 7
+    }
+   },
+   "in-b7-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 7
+    }
+   },
+   "in-b7-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 7
+    }
+   },
+   "in-b7-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 7
+    }
+   },
+   "in-b5-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-b5-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-b5-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 5
+    }
+   },
+   "in-b5-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-b5-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-b5-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-b5-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-b5-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 5
+    }
+   },
+   "in-b5-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-b5-10": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 5
+    }
+   },
+   "in-b5-11": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 5
+    }
+   },
+   "in-b5-12": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 5
+    }
+   }
+  }
+ }
+}

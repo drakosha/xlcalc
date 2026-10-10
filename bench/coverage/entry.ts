@@ -96,7 +96,8 @@ async function runPart(part: EntryCase[], label: string, keys: boolean): Promise
         await settleRejected()
         throw new Error(`entry ${label}: Excel would repair the book`)
       }
-      if (excelDialogs().length) {
+      // typed on the keyboard, the script answers the window a refused formula brings itself
+      if (!keys && excelDialogs().length) {
         child.kill()
         throw new Error(`entry ${label}: Excel shows a window, stopped without clicking: ${dialogText()}`)
       }

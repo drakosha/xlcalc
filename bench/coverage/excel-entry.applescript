@@ -3,7 +3,8 @@
 -- value`), its format codes (`number format`, `number format local`) and its prefix character; save the book as xlsx
 -- under another name and close it.
 -- With a fifth argument "keys" the texts are typed on the keyboard instead (System Events, Excel in front, checked
--- before each text; an empty text is not typed), each followed by Return.
+-- before each text; an empty text is not typed), each followed by Return; the window Excel shows for a formula it does
+-- not take is answered (`answerDialog`) and its text is the text's refusal.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the texts as
 -- a JSON array of strings, "keys" or nothing.
 -- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix], ...]}.
@@ -33,8 +34,9 @@ on run argv
 				repeat with i from 1 to n
 					select range ("A" & i) of ws
 					set t to item i of texts
-					if t is not "" then my typeKeys(t)
-					set end of refusedOut to ""
+					set er to ""
+					if t is not "" then set er to my typeKeys(t)
+					set end of refusedOut to er
 				end repeat
 			else
 				set display alerts to false
@@ -68,7 +70,8 @@ on run argv
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
 
--- a text typed into the selected cell, then Return; Excel must be the application in front
+-- a text typed into the selected cell, then Return; Excel must be the application in front. A window Excel shows for it
+-- (a formula it does not take) is answered with OK, and Escape leaves the cell as it was: its text is returned.
 on typeKeys(t)
 	tell application "System Events"
 		set fp to name of first application process whose frontmost is true
@@ -77,5 +80,45 @@ on typeKeys(t)
 		delay 0.2
 		keystroke return
 	end tell
-	delay 0.3
+	delay 1
+	return my answerDialog()
 end typeKeys
+
+-- Excel's windows that are not books, and the sheets of its windows: the first is answered with OK and Escape
+on answerDialog()
+	tell application "System Events" to tell process "Microsoft Excel"
+		repeat with w in windows
+			set sr to ""
+			try
+				set sr to subrole of w
+			end try
+			set targets to {}
+			if sr is not "AXStandardWindow" then set end of targets to w
+			try
+				repeat with sh in (sheets of w)
+					set end of targets to sh
+				end repeat
+			end try
+			repeat with d in targets
+				set tx to ""
+				repeat with x in (static texts of d)
+					try
+						set v to value of x
+						if v is not missing value then set tx to tx & (v as text) & " "
+					end try
+				end repeat
+				repeat with b in (buttons of d)
+					if name of b is in {"OK", "ОК"} then
+						click b
+						delay 0.5
+						key code 53
+						delay 0.5
+						return "dialog: " & tx
+					end if
+				end repeat
+				error "an Excel window without OK: " & tx
+			end repeat
+		end repeat
+	end tell
+	return ""
+end answerDialog
