@@ -22,6 +22,7 @@ import { prepareNames } from './names.js'
 import { sheetKey, validate, validateName as checkName } from './syntax.js'
 import { parseEntry } from './entry/index.js'
 import { entryWidth, fitColumns } from './layout/fit.js'
+import { fromLegacy as legacyFormula, type LegacyContext as LegacyFormulaContext } from './legacy/convert.js'
 
 export * from './contract.js'
 export { FUNCTION_NAMES } from './functions.js'
@@ -35,7 +36,6 @@ export { registerLocale } from './locale/load.js'
 export { LOCALES } from './locale/registry.js'
 export { restructure } from './structure/index.js'
 export { copyFormula, type CopyContext } from './structure/copy.js'
-export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export { parseEntry } from './entry/index.js'
 export { entryWidth, fitColumns } from './layout/fit.js'
 
@@ -85,6 +85,11 @@ export function displayValue(value: CellValue, opts?: DisplayOptions): CellDispl
   const o = checkDisplayOptions(opts)
   return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, room(columnPoints(o.width)))
 }
+
+/** @deprecated `fromLegacy` reads formulas of files: `import { fromLegacy } from 'xlcalc/xlsx'`. */
+export const fromLegacy: typeof legacyFormula = legacyFormula
+/** @deprecated `import type { LegacyContext } from 'xlcalc/xlsx'`. */
+export type LegacyContext = LegacyFormulaContext
 
 /** The contract implementation as one object. */
 export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, openSession, restructure, displayValue, parseEntry, fitColumns, entryWidth }
