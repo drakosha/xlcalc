@@ -1,0 +1,2240 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "day": "2026-10-10",
+  "seconds": 24.3
+ },
+ "books": {
+  "plain": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 5
+      },
+      "A3": {
+       "value": 10
+      },
+      "A4": {
+       "value": "abc"
+      },
+      "A6": {
+       "value": true
+      },
+      "A7": {
+       "formula": "NA()"
+      },
+      "A8": {
+       "value": 0
+      },
+      "A9": {
+       "value": -3
+      },
+      "A10": {
+       "value": 7
+      },
+      "A11": {
+       "value": 5
+      },
+      "A12": {
+       "value": "xa"
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 5
+      },
+      "B3": {
+       "value": 10
+      },
+      "B4": {
+       "value": "abc"
+      },
+      "B6": {
+       "value": true
+      },
+      "B7": {
+       "formula": "NA()"
+      },
+      "B8": {
+       "value": 0
+      },
+      "B9": {
+       "value": -3
+      },
+      "B10": {
+       "value": 7
+      },
+      "B11": {
+       "value": 5
+      },
+      "B12": {
+       "value": "xa"
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 5
+      },
+      "C3": {
+       "value": 10
+      },
+      "C4": {
+       "value": "abc"
+      },
+      "C6": {
+       "value": true
+      },
+      "C7": {
+       "formula": "NA()"
+      },
+      "C8": {
+       "value": 0
+      },
+      "C9": {
+       "value": -3
+      },
+      "C10": {
+       "value": 7
+      },
+      "C11": {
+       "value": 5
+      },
+      "C12": {
+       "value": "xa"
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 5
+      },
+      "D3": {
+       "value": 10
+      },
+      "D4": {
+       "value": "abc"
+      },
+      "D6": {
+       "value": true
+      },
+      "D7": {
+       "formula": "NA()"
+      },
+      "D8": {
+       "value": 0
+      },
+      "D9": {
+       "value": -3
+      },
+      "D10": {
+       "value": 7
+      },
+      "D11": {
+       "value": 5
+      },
+      "D12": {
+       "value": "xa"
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 5
+      },
+      "E3": {
+       "value": 10
+      },
+      "E4": {
+       "value": "abc"
+      },
+      "E6": {
+       "value": true
+      },
+      "E7": {
+       "formula": "NA()"
+      },
+      "E8": {
+       "value": 0
+      },
+      "E9": {
+       "value": -3
+      },
+      "E10": {
+       "value": 7
+      },
+      "E11": {
+       "value": 5
+      },
+      "E12": {
+       "value": "xa"
+      },
+      "F1": {
+       "value": 1
+      },
+      "F2": {
+       "value": 5
+      },
+      "F3": {
+       "value": 10
+      },
+      "F4": {
+       "value": "abc"
+      },
+      "F6": {
+       "value": true
+      },
+      "F7": {
+       "formula": "NA()"
+      },
+      "F8": {
+       "value": 0
+      },
+      "F9": {
+       "value": -3
+      },
+      "F10": {
+       "value": 7
+      },
+      "F11": {
+       "value": 5
+      },
+      "F12": {
+       "value": "xa"
+      },
+      "G1": {
+       "value": 1
+      },
+      "G2": {
+       "value": 5
+      },
+      "G3": {
+       "value": 10
+      },
+      "G4": {
+       "value": "abc"
+      },
+      "G6": {
+       "value": true
+      },
+      "G7": {
+       "formula": "NA()"
+      },
+      "G8": {
+       "value": 0
+      },
+      "G9": {
+       "value": -3
+      },
+      "G10": {
+       "value": 7
+      },
+      "G11": {
+       "value": 5
+      },
+      "G12": {
+       "value": "xa"
+      },
+      "I1": {
+       "value": 1
+      },
+      "I2": {
+       "value": 5
+      },
+      "I3": {
+       "value": 10
+      },
+      "I4": {
+       "value": "abc"
+      },
+      "I6": {
+       "value": true
+      },
+      "I7": {
+       "formula": "NA()"
+      },
+      "I8": {
+       "value": 0
+      },
+      "I9": {
+       "value": -3
+      },
+      "I10": {
+       "value": 7
+      },
+      "I11": {
+       "value": 5
+      },
+      "I12": {
+       "value": "xa"
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 5
+      },
+      "J3": {
+       "value": 10
+      },
+      "J4": {
+       "value": "abc"
+      },
+      "J6": {
+       "value": true
+      },
+      "J7": {
+       "formula": "NA()"
+      },
+      "J8": {
+       "value": 0
+      },
+      "J9": {
+       "value": -3
+      },
+      "J10": {
+       "value": 7
+      },
+      "J11": {
+       "value": 5
+      },
+      "J12": {
+       "value": "xa"
+      },
+      "K1": {
+       "value": 1
+      },
+      "K2": {
+       "value": 5
+      },
+      "K3": {
+       "value": 10
+      },
+      "K4": {
+       "value": "abc"
+      },
+      "K6": {
+       "value": true
+      },
+      "K7": {
+       "formula": "NA()"
+      },
+      "K8": {
+       "value": 0
+      },
+      "K9": {
+       "value": -3
+      },
+      "K10": {
+       "value": 7
+      },
+      "K11": {
+       "value": 5
+      },
+      "K12": {
+       "value": "xa"
+      },
+      "L1": {
+       "value": 1
+      },
+      "L2": {
+       "value": 5
+      },
+      "L3": {
+       "value": 10
+      },
+      "L4": {
+       "value": "abc"
+      },
+      "L6": {
+       "value": true
+      },
+      "L7": {
+       "formula": "NA()"
+      },
+      "L8": {
+       "value": 0
+      },
+      "L9": {
+       "value": -3
+      },
+      "L10": {
+       "value": 7
+      },
+      "L11": {
+       "value": 5
+      },
+      "L12": {
+       "value": "xa"
+      },
+      "M1": {
+       "value": 1
+      },
+      "M2": {
+       "value": 5
+      },
+      "M3": {
+       "value": 10
+      },
+      "M4": {
+       "value": "abc"
+      },
+      "M6": {
+       "value": true
+      },
+      "M7": {
+       "formula": "NA()"
+      },
+      "M8": {
+       "value": 0
+      },
+      "M9": {
+       "value": -3
+      },
+      "M10": {
+       "value": 7
+      },
+      "M11": {
+       "value": 5
+      },
+      "M12": {
+       "value": "xa"
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 5
+      },
+      "N3": {
+       "value": 10
+      },
+      "N4": {
+       "value": "abc"
+      },
+      "N6": {
+       "value": true
+      },
+      "N7": {
+       "formula": "NA()"
+      },
+      "N8": {
+       "value": 0
+      },
+      "N9": {
+       "value": -3
+      },
+      "N10": {
+       "value": 7
+      },
+      "N11": {
+       "value": 5
+      },
+      "N12": {
+       "value": "xa"
+      },
+      "O1": {
+       "value": 1
+      },
+      "O2": {
+       "value": 5
+      },
+      "O3": {
+       "value": 10
+      },
+      "O4": {
+       "value": "abc"
+      },
+      "O6": {
+       "value": true
+      },
+      "O7": {
+       "formula": "NA()"
+      },
+      "O8": {
+       "value": 0
+      },
+      "O9": {
+       "value": -3
+      },
+      "O10": {
+       "value": 7
+      },
+      "O11": {
+       "value": 5
+      },
+      "O12": {
+       "value": "xa"
+      },
+      "P1": {
+       "value": 1
+      },
+      "P2": {
+       "value": 5
+      },
+      "P3": {
+       "value": 10
+      },
+      "P4": {
+       "value": "abc"
+      },
+      "P6": {
+       "value": true
+      },
+      "P7": {
+       "formula": "NA()"
+      },
+      "P8": {
+       "value": 0
+      },
+      "P9": {
+       "value": -3
+      },
+      "P10": {
+       "value": 7
+      },
+      "P11": {
+       "value": 5
+      },
+      "P12": {
+       "value": "xa"
+      },
+      "R1": {
+       "value": 1
+      },
+      "R2": {
+       "value": 5
+      },
+      "R3": {
+       "value": 10
+      },
+      "R4": {
+       "value": "abc"
+      },
+      "R6": {
+       "value": true
+      },
+      "R7": {
+       "formula": "NA()"
+      },
+      "R8": {
+       "value": 0
+      },
+      "R9": {
+       "value": -3
+      },
+      "R10": {
+       "value": 7
+      },
+      "R11": {
+       "value": 5
+      },
+      "R12": {
+       "value": "xa"
+      },
+      "H1": {
+       "formula": "TODAY()--2"
+      },
+      "H2": {
+       "formula": "TODAY()--1"
+      },
+      "H3": {
+       "formula": "TODAY()-0"
+      },
+      "H4": {
+       "formula": "TODAY()-1"
+      },
+      "H5": {
+       "formula": "TODAY()-2"
+      },
+      "H6": {
+       "formula": "TODAY()-3"
+      },
+      "H7": {
+       "formula": "TODAY()-4"
+      },
+      "H8": {
+       "formula": "TODAY()-5"
+      },
+      "H9": {
+       "formula": "TODAY()-6"
+      },
+      "H10": {
+       "formula": "TODAY()-7"
+      },
+      "H11": {
+       "formula": "TODAY()-8"
+      },
+      "H12": {
+       "formula": "TODAY()-9"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "made",
+   "book": "plain",
+   "make": [
+    {
+     "sheet": "S",
+     "range": "B1:B12",
+     "add": "cellIs",
+     "operator": 5,
+     "f1": "=5"
+    },
+    {
+     "sheet": "S",
+     "range": "C1:C12",
+     "add": "cellIs",
+     "operator": 1,
+     "f1": "=2",
+     "f2": "=8"
+    },
+    {
+     "sheet": "S",
+     "range": "D1:D12",
+     "add": "expression",
+     "f1": "=$A1>4"
+    },
+    {
+     "sheet": "S",
+     "range": "E1:E12",
+     "add": "text",
+     "operator": 0,
+     "text": "a"
+    },
+    {
+     "sheet": "S",
+     "range": "F1:F12",
+     "add": "blanks"
+    },
+    {
+     "sheet": "S",
+     "range": "G1:G12",
+     "add": "errors"
+    },
+    {
+     "sheet": "S",
+     "range": "H1:H12",
+     "add": "period",
+     "n": 1
+    },
+    {
+     "sheet": "S",
+     "range": "I1:I12",
+     "add": "top10",
+     "n": 3
+    },
+    {
+     "sheet": "S",
+     "range": "J1:J12",
+     "add": "aboveAverage",
+     "n": 0
+    },
+    {
+     "sheet": "S",
+     "range": "K1:K12",
+     "add": "unique"
+    },
+    {
+     "sheet": "S",
+     "range": "L1:L12",
+     "add": "colorScale",
+     "n": 3
+    },
+    {
+     "sheet": "S",
+     "range": "M1:M12",
+     "add": "colorScale",
+     "n": 2
+    },
+    {
+     "sheet": "S",
+     "range": "N1:N12",
+     "add": "dataBar"
+    },
+    {
+     "sheet": "S",
+     "range": "O1:O12",
+     "add": "iconSet",
+     "n": 1
+    },
+    {
+     "sheet": "S",
+     "range": "P1:P5,R1:R5",
+     "add": "expression",
+     "f1": "=P1>2"
+    }
+   ],
+   "read": [
+    [
+     "S",
+     "B1:R12"
+    ]
+   ]
+  }
+ ],
+ "sent": {
+  "made": "fa2bc7dea1cab2ac9a443ec366007ad8874f21df1e39b952069dde29736de6cb"
+ },
+ "answers": {
+  "made": {
+   "looks": {
+    "S": {
+     "B1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H1": {
+      "text": "46307",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L1": {
+      "text": "1",
+      "fill": "#FBAA77",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M1": {
+      "text": "1",
+      "fill": "#FF974B",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q1": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "D2": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H2": {
+      "text": "46306",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I2": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "J2": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "K2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "L2": {
+      "text": "5",
+      "fill": "#FFEB84",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M2": {
+      "text": "5",
+      "fill": "#FFBE6F",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O2": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P2": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "Q2": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R2": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "B3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "C3": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E3": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F3": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G3": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H3": {
+      "text": "46305",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "J3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "K3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L3": {
+      "text": "10",
+      "fill": "#63BE7B",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M3": {
+      "text": "10",
+      "fill": "#FFEF9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N3": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O3": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "Q3": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R3": {
+      "text": "10",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "B4": {
+      "text": "abc",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "C4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "abc",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E4": {
+      "text": "abc",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "F4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H4": {
+      "text": "46304",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "I4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K4": {
+      "text": "abc",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O4": {
+      "text": "abc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P4": {
+      "text": "abc",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "Q4": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R4": {
+      "text": "abc",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "B5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F5": {
+      "text": "",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "G5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H5": {
+      "text": "46303",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "L5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R5": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "TRUE",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "C6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "TRUE",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H6": {
+      "text": "46302",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K6": {
+      "text": "TRUE",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q6": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R6": {
+      "text": "TRUE",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G7": {
+      "text": "#N/A",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "H7": {
+      "text": "46301",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K7": {
+      "text": "#N/A",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q7": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R7": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H8": {
+      "text": "46300",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K8": {
+      "text": "0",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L8": {
+      "text": "0",
+      "fill": "#FA9974",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M8": {
+      "text": "0",
+      "fill": "#FF8E42",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q8": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R8": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H9": {
+      "text": "46299",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K9": {
+      "text": "-3",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L9": {
+      "text": "-3",
+      "fill": "#F8696B",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M9": {
+      "text": "-3",
+      "fill": "#FF7128",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q9": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R9": {
+      "text": "-3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B10": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "C10": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "D10": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H10": {
+      "text": "46298",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I10": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "J10": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "K10": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L10": {
+      "text": "7",
+      "fill": "#C1DA81",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M10": {
+      "text": "7",
+      "fill": "#FFD181",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q10": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R10": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C11": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "D11": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H11": {
+      "text": "46297",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I11": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "J11": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "K11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "L11": {
+      "text": "5",
+      "fill": "#FFEB84",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M11": {
+      "text": "5",
+      "fill": "#FFBE6F",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q11": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R11": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B12": {
+      "text": "xa",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "C12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D12": {
+      "text": "xa",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "E12": {
+      "text": "xa",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "F12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "H12": {
+      "text": "46296",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "I12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "K12": {
+      "text": "xa",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": true,
+      "italic": false
+     },
+     "L12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "M12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "P12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q12": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R12": {
+      "text": "xa",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   },
+   "rules": {
+    "S": [
+     [
+      1,
+      "B1:B12",
+      "=5",
+      1,
+      true
+     ],
+     [
+      1,
+      "C1:C12",
+      "=2",
+      2,
+      true
+     ],
+     [
+      2,
+      "D1:D12",
+      "=$A1>4",
+      3,
+      true
+     ],
+     [
+      9,
+      "E1:E12",
+      "=NOT(ISERROR(SEARCH(\"a\",E1)))",
+      4,
+      true
+     ],
+     [
+      10,
+      "F1:F12",
+      "=LEN(TRIM(F1))=0",
+      5,
+      true
+     ],
+     [
+      16,
+      "G1:G12",
+      "=ISERROR(G1)",
+      6,
+      true
+     ],
+     [
+      11,
+      "H1:H12",
+      "=FLOOR(H1,1)=TODAY()-1",
+      7,
+      true
+     ],
+     [
+      5,
+      "I1:I12",
+      "",
+      8,
+      false
+     ],
+     [
+      12,
+      "J1:J12",
+      "",
+      9,
+      true
+     ],
+     [
+      8,
+      "K1:K12",
+      "",
+      10,
+      false
+     ],
+     [
+      3,
+      "L1:L12",
+      "",
+      11,
+      false
+     ],
+     [
+      3,
+      "M1:M12",
+      "",
+      12,
+      false
+     ],
+     [
+      4,
+      "N1:N12",
+      "",
+      13,
+      false
+     ],
+     [
+      6,
+      "O1:O12",
+      "",
+      14,
+      false
+     ],
+     [
+      2,
+      "P1:P5,R1:R5",
+      "=P1>2",
+      15,
+      true
+     ]
+    ]
+   }
+  }
+ }
+}
