@@ -21,6 +21,7 @@ import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
+import { conditionalXml } from './conditional.js'
 import type { StyleWriter } from './styles.js'
 
 /** Excel's limit on a cell's text. */
@@ -237,6 +238,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const urls = new Map<string, string>()
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
   const pane = paneXml(sheet.frozen)
+  const cond = conditionalXml(sheet, index, { styles, issues, sheets: ctx.sheets, tables: ctx.tables })
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
     (filter ? '<sheetPr filterMode="1"/>' : '') +
@@ -247,9 +249,11 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     `<sheetData>${data.join('')}</sheetData>` +
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
+    cond.main +
     hyperlinks +
     (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
+    (cond.ext ? `<extLst>${cond.ext}</extLst>` : '') +
     '</worksheet>'
   return { xml, formulas, rels, ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}) }
 }

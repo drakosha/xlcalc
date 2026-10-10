@@ -4,8 +4,8 @@
  * General). Number formats Excel shows by the regional settings are written as codes of their own, so the file
  * shows what `format` says in every locale.
  */
-import type { BorderLine, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
-import { BUILTIN_ID } from '../styles/numfmt.js'
+import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
+import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
 import { escapeAttr } from '../xml/text.js'
 
 /** The book's default font, as the model assumes it. */
@@ -53,6 +53,7 @@ export class StyleWriter {
   private readonly formats = new Map<string, number>()
   private readonly xfs = new Table('<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>')
   private readonly byKey = new Map<string, number>([['\n', 0]])
+  private readonly dxfs = new Table()
 
   constructor(private readonly styles: CellStyle[] = []) {}
 
@@ -88,6 +89,26 @@ export class StyleWriter {
     return i
   }
 
+  /** The differential format of a conditional format's style: its index in `<dxfs>`. */
+  dxf(s: ConditionalStyle): number {
+    const f = s.font
+    const flag = (tag: string, v: boolean | undefined) => (v === undefined ? '' : v ? `<${tag}/>` : `<${tag} val="0"/>`)
+    const font = f
+      ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${f.underline ? (f.underline === 'double' ? '<u val="double"/>' : '<u/>') : ''}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
+      : ''
+    const code = typeof s.format === 'number' ? (s.format === 0 ? 'General' : BUILTIN[s.format]) : s.format
+    const numFmt = s.format === undefined ? '' : `<numFmt numFmtId="${this.numFmt(s.format)}" formatCode="${escapeAttr(code!)}"/>`
+    // a dxf's solid fill is its background colour
+    const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
+    const border = s.border ? borderXml(s.border) : ''
+    return this.dxfs.of(`<dxf>${font}${numFmt}${fill}${border}</dxf>`)
+  }
+
+  /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
+  dxfBody(i: number): string {
+    return this.dxfs.items[i].slice(5, -6)
+  }
+
   xml(): string {
     const list = (tag: string, items: string[]) => `<${tag} count="${items.length}">${items.join('')}</${tag}>`
     const numFmts = [...this.formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code)}"/>`)
@@ -99,7 +120,9 @@ export class StyleWriter {
       list('borders', this.borders.items) +
       '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
       list('cellXfs', this.xfs.items) +
-      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      (this.dxfs.items.length ? list('dxfs', this.dxfs.items) : '') +
+      '</styleSheet>'
     )
   }
 }

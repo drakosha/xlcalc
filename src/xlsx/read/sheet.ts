@@ -21,6 +21,9 @@ import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
+import { readConditional } from './conditional.js'
+import type { Dxf } from '../styles/dxf.js'
+import type { Palette } from '../styles/color.js'
 
 export interface SheetSource {
   name: string
@@ -34,6 +37,8 @@ export interface SheetSource {
   tables: string[]
   /** The sheet's comments, its VML drawing and threaded comments, and the book's persons, when there are any. */
   parts: Pick<PartsSource, 'comments' | 'vml' | 'threads' | 'persons'>
+  /** The book's differential formats and colours, which conditional formats use. */
+  cond: { dxfs: Dxf[]; palette: Palette }
 }
 
 export interface SheetRead {
@@ -43,8 +48,6 @@ export interface SheetRead {
 
 /** Elements of a worksheet the model has no place for, outside `<sheetData>`. */
 const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
-  ['conditionalFormatting', 'conditionalFormat', 'conditional formatting is not in the model'],
-  ['conditionalFormattings', 'conditionalFormat', 'conditional formatting is not in the model'],
   ['dataValidations', 'dataValidation', 'data validation is not in the model'],
   ['sheetProtection', 'protection', 'sheet protection is not in the model'],
   ['protectedRanges', 'protection', 'sheet protection is not in the model'],
@@ -264,5 +267,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts }, read.cells, ctx.issues)
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
+  const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues)
+  if (cf) sheet.conditionalFormats = cf
   return { sheet, cached: read.cached }
 }

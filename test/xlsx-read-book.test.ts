@@ -168,7 +168,8 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     const f = parts({ sheets: [{ name: 'S', body }] })
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
-    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes'])
+    // conditional formats are read: a rule without its formula is left out
+    expect(r.issues.map((i) => i.code)).toEqual(['dataValidation', 'protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes', 'conditionalFormat'])
     expect(r.book.sheets[0].filtered).toBeUndefined()
   })
 

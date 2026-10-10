@@ -13,6 +13,7 @@ import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
 import { readStyles } from '../styles/read.js'
+import { readDxfs } from '../styles/dxf.js'
 import type { XlsxRead } from '../types.js'
 import { attr, attributes, element, elements, flag, has } from '../xml/scan.js'
 import { decodeXml, readText } from '../xml/text.js'
@@ -115,7 +116,9 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const [stringsXml, stylesXml, themeXml, metaXml, richValues, richStructures, persons] = await Promise.all(
     ['sharedStrings', 'styles', 'theme', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure', 'person'].map(part),
   )
-  const table = readStyles(stylesXml, palette(themeXml, stylesXml))
+  const colors = palette(themeXml, stylesXml)
+  const table = readStyles(stylesXml, colors)
+  const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
   if (table.font && (table.font.name !== 'Calibri' || table.font.size !== 11))
     issues.add('defaultFont', `the default font ${table.font.name ?? '(no name)'} ${table.font.size ?? '(no size)'} is read as Calibri 11, the model's default`)
   const iteration = calculation(wb, issues)
@@ -155,7 +158,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     }
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons } },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues },
     )
     sheets.push(read.sheet)
