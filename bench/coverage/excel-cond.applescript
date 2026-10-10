@@ -72,16 +72,16 @@ on run argv
 			calculate full
 			set stage to "looks"
 			try
-				repeat with rd in reads
-					set ws to worksheet (item 1 of rd) of wb
-					set rg to range (item 2 of rd) of ws
+				repeat with readItem in reads
+					set ws to worksheet (item 1 of readItem) of wb
+					set rng to range (item 2 of readItem) of ws
 					set cellsOut to {}
-					repeat with j from 1 to (count of cells of rg)
-						set c to cell j of rg
-						set df to display format of c
-						set io to interior object of df
-						set fo to font object of df
-						set end of cellsOut to {(get address c), my txt(string value of c), (color of io), ((color index of io) as text), (color of fo), (bold of fo), (italic of fo)}
+					repeat with j from 1 to (count of cells of rng)
+						set oneCell to cell j of rng
+						set dispFmt to display format of oneCell
+						set intObj to interior object of dispFmt
+						set fontObj to font object of dispFmt
+						set end of cellsOut to {(get address oneCell), my txt(string value of oneCell), (color of intObj), ((color index of intObj) as text), (color of fontObj), (bold of fontObj), (italic of fontObj)}
 					end repeat
 					set end of looksOut to {name of ws, cellsOut}
 				end repeat
