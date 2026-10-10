@@ -23,6 +23,7 @@ function writtenBook(): BookInput {
     D10: { value: 'doc part', link: { url: 'https://example.com/doc', location: 'part2', tooltip: 'Part two' } },
     D11: { value: 'both', link: { location: 'S!A1' }, note: { author: 'Ann', text: 'a link and a note' } },
     D12: { value: 'file', link: { url: 'other.xlsx' } },
+    D13: { value: 'anchor', link: { url: 'https://example.com/page#top' } },
     E1: { link: { url: 'https://example.com/empty' } },
     E2: { note: { author: 'Ann', text: 'a note on an empty cell' } },
   }
