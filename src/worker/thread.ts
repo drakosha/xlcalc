@@ -14,9 +14,11 @@ import { CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
 import { isHiddenRow } from '../layout/hidden.js'
 import { heapCaches } from '../range-cache.js'
+import { GEOMETRY } from '../session/rebook.js'
+import type { HistoryData } from '../session/undo.js'
 import { CHANGING, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
 import { workerThreads } from './platform.js'
-import { pack, unpack } from './pack.js'
+import { pack, packData, unpack, unpackData } from './pack.js'
 
 interface Port {
   postMessage(m: unknown): void
@@ -99,10 +101,18 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'validateEntry':
       value = await s.validateEntry(args[0] as string, args[1] as string, args[2] as never, o)
       break
+    case 'undo':
+    case 'redo': {
+      // a structure operation's mapCell goes as its geometry
+      const r = await s[op](o)
+      const { mapCell, ...rest } = r ?? {}
+      value = r && { ...rest, ...(mapCell ? { geometry: GEOMETRY.get(mapCell) } : {}) }
+      break
+    }
     default:
       value = await (s[op] as (a: unknown, o: CalcOptions) => Promise<unknown>)(args[0], o)
   }
-  return { value, clock: s.clock, ...(outline ? { outline } : {}) }
+  return { value, clock: s.clock, history: s.history, ...(outline ? { outline } : {}) }
 }
 
 function heldOf(sid: number): Held {
@@ -111,12 +121,15 @@ function heldOf(sid: number): Held {
   return h
 }
 
-async function open(sid: number, book: BookInput, opts: object, planned: Clock | null): Promise<Held> {
+async function open(sid: number, book: BookInput, opts: object, planned: Clock | null, history?: HistoryData): Promise<Held> {
   const h = { planned, seq: 0 } as Held
-  h.s = await openInlineSession(book, opts, d, { clock: () => h.planned ?? currentClock() })
+  h.s = await openInlineSession(book, opts, d, { clock: () => h.planned ?? currentClock(), history })
   held.set(sid, h)
   return h
 }
+
+/** A session as a snapshot takes it: its book and history as text, its clock and its last changing call. */
+const taken = async (h: Held) => ({ book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) })
 
 async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promise<unknown> {
   switch (m.t) {
@@ -126,7 +139,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     }
     case 'open': {
       const h = await open(m.sid, unpack(m.book), { ...m.opts, signal, timeoutMs: m.timeoutMs }, null)
-      return { value: null, clock: h.s.clock } satisfies Answer
+      return { value: null, clock: h.s.clock, history: h.s.history } satisfies Answer
     }
     case 'call': {
       const h = heldOf(m.sid)
@@ -144,7 +157,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     case 'restore': {
       const { snapshot, journal } = m
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
-      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock)
+      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock, snapshot.history && unpackData(snapshot.history))
       h.seq = snapshot.seq
       try {
         for (const e of journal as Entry[]) {
@@ -165,11 +178,11 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     }
     case 'snapshot': {
       const h = heldOf(m.sid)
-      return { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq }
+      return taken(h)
     }
     case 'drop': {
       const h = held.get(m.sid)
-      const kept = m.keep && h ? { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq } : null
+      const kept = m.keep && h ? await taken(h) : null
       h?.s.kill(new CalcError('closed', 'the session left the thread'))
       held.delete(m.sid)
       return kept

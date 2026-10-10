@@ -18,9 +18,24 @@ export interface SheetLines {
   format(r: number, c: number, own?: CellInput): NumberFormat | undefined
 }
 
-export function sheetLines(sh: Pick<SheetInput, 'cells' | 'rows' | 'columns'>): SheetLines {
-  const rows = lines(sh.rows, 'r')
-  const cols = lines(sh.columns, 'c')
+/**
+ * The lines of a sheet's rows or columns, read once for a state (a session's): a change of the layout, a structure
+ * operation and an undo give the sheet new maps, never change one, so a map read once stays as it was read.
+ */
+const read = new WeakMap<EngineState, WeakMap<object, Line<unknown>[]>>()
+function linesOf<T>(state: EngineState, map: Record<string, T> | undefined, axis: 'r' | 'c'): Line<T>[] {
+  if (!map) return []
+  let maps = read.get(state)
+  if (!maps) read.set(state, (maps = new WeakMap()))
+  let ls = maps.get(map) as Line<T>[] | undefined
+  if (!ls) maps.set(map, (ls = lines(map, axis)))
+  return ls
+}
+
+/** A sheet's lines; with the session's `state`, read once for it. */
+export function sheetLines(sh: Pick<SheetInput, 'cells' | 'rows' | 'columns'>, state?: EngineState): SheetLines {
+  const rows = state ? linesOf(state, sh.rows, 'r') : lines(sh.rows, 'r')
+  const cols = state ? linesOf(state, sh.columns, 'c') : lines(sh.columns, 'c')
   const lineOf = <T>(cache: Map<number, T | undefined>, ls: Line<T>[], i: number): T | undefined => {
     if (!ls.length) return undefined
     if (!cache.has(i)) cache.set(i, entryAt(ls, i))
@@ -44,7 +59,7 @@ export function cellLooks(state: EngineState): Looks {
     if (!x) {
       const sh = state.input.sheets[s]
       const merges = new Map((sh.merges ?? []).map((m) => parseMerge(m)!).map((m): [string, number] => [`${m.r1}:${m.c1}`, m.c2]))
-      sheets.set(s, (x = { lines: sheetLines(sh), merges }))
+      sheets.set(s, (x = { lines: sheetLines(sh, state), merges }))
     }
     return x
   }

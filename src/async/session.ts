@@ -2,9 +2,10 @@
  * The asynchronous session in the same thread (`docs/async.md`): the steps of `session.ts` run in portions, its calls
  * one after another. A thread of the pool holds its sessions the same way.
  */
-import type { AsyncRestructureResult, AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, SessionOptions } from '../contract.js'
+import type { AsyncRestructureResult, AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
+import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
@@ -21,6 +22,8 @@ export interface InlineDefaults {
 export interface InlineSession extends AsyncSession {
   /** Stops the session at once: its running call and the waiting ones reject with `why`. */
   kill(why: CalcError): void
+  /** What its history holds now, for a pool's snapshot. */
+  historyData(): HistoryData
 }
 
 /** The calls of `steps` with a budget each, from the calculator's defaults and the call's options. */
@@ -43,6 +46,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
   const core = await go(openSteps(book, o, hooks), { signal, timeoutMs })
   const queue = new Serial()
   let clock: Clock = core.clock
+  let history: SessionHistory = core.history
   // close() called: new calls are refused; kill(): the waiting ones too, and the running one stops
   let ended: CalcError | null = null
   let killed: CalcError | null = null
@@ -68,6 +72,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       try {
         const r = await drive(steps(), b, c.timeoutMs ?? d.timeoutMs)
         clock = core.clock
+        history = core.history
         return r
       } finally {
         running = null
@@ -75,10 +80,18 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       }
     }, c.signal)
   }
-  const plain = <T>(f: () => T): Promise<T> => turn(async () => f())
+  const plain = <T>(f: () => T): Promise<T> =>
+    turn(async () => {
+      const r = f()
+      history = core.history
+      return r
+    })
   return {
     get clock() {
       return { ...clock }
+    },
+    get history() {
+      return { ...history }
     },
     setCells: (edits, co) => call(() => core.setCells(edits), co),
     patchCells: (patches, co) => call(() => core.patchCells(patches), co),
@@ -100,6 +113,9 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     validateEntry: (sheet, cell, input, co) => call(() => core.validateEntry(sheet, cell, input), co),
     result: (co) => call(() => core.result(), co),
     hash: (co) => call(() => core.hash(), co),
+    undo: (co) => call(() => core.undo(), co),
+    redo: (co) => call(() => core.redo(), co),
+    historyData: () => core.historyData(),
     close() {
       if (ended) return Promise.resolve()
       // closing waits for the calls made before it, and closes the session whatever stops them

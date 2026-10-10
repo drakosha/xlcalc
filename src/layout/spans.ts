@@ -41,7 +41,16 @@ export function toMap<T>(ls: Line<T>[], axis: Axis): Record<string, T> {
 }
 
 /** The entry of line `i` among entries. */
-export const entryAt = <T>(ls: Line<T>[], i: number): T | undefined => ls.find(([lo, hi]) => i >= lo && i <= hi)?.[2]
+export function entryAt<T>(ls: Line<T>[], i: number): T | undefined {
+  // the entries are in order and do not overlap: the last one starting at or before `i`
+  let [a, b] = [0, ls.length - 1]
+  while (a < b) {
+    const m = (a + b + 1) >> 1
+    if (ls[m][0] <= i) a = m
+    else b = m - 1
+  }
+  return ls[a] && ls[a][0] <= i && i <= ls[a][1] ? ls[a][2] : undefined
+}
 
 /** The entry of line `i` of a map. */
 export const lineAt = <T>(map: Record<string, T> | undefined, axis: Axis, i: number): T | undefined => entryAt(lines(map, axis), i)

@@ -30,6 +30,16 @@ export function contentEdits(s: EngineState, edits: CellEdit[]): CellEdit[] {
   return out
 }
 
+/** The inputs of cells now (null: none), once per cell: the edits that put them back. */
+export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]): CellEdit[] {
+  const out = new Map<string, CellEdit>()
+  for (const { sheet, cell } of refs) {
+    const k = `${sheetKey(sheet)}!${cell}`
+    if (!out.has(k)) out.set(k, { sheet, cell, input: s.input.sheets[s.sheetIdx.get(sheetKey(sheet))!].cells[cell] ?? null })
+  }
+  return [...out.values()]
+}
+
 /** The session's book without its cells (`Session.layout`): new objects for the book and its sheets, the rest the book's own. */
 export function bookLayout(book: BookInput): BookLayout {
   return { ...book, sheets: book.sheets.map(({ cells: _cells, ...rest }) => rest) }
@@ -47,8 +57,8 @@ export function checkStylesUsed(book: BookInput, count: number) {
   }
 }
 
-/** Layout edits (checked) applied to the book: each changed sheet is a new object with the same cells. */
-export function applyLayout(book: BookInput, edits: Exclude<LayoutEdit, ColumnsFit>[], sheetIndex: (name: string) => number) {
+/** Layout edits (checked) applied to the book: each changed sheet is a new object with the same cells; the changed sheets by index. */
+export function applyLayout(book: BookInput, edits: Exclude<LayoutEdit, ColumnsFit>[], sheetIndex: (name: string) => number): Map<number, SheetInput> {
   const changed = new Map<number, SheetInput>()
   for (const e of edits) {
     const i = sheetIndex(e.sheet)
@@ -69,4 +79,5 @@ export function applyLayout(book: BookInput, edits: Exclude<LayoutEdit, ColumnsF
     for (const k of ['frozen', 'outline', 'conditionalFormats'] as const) if (sheet[k] === undefined) delete sheet[k]
     book.sheets[i] = sheet
   }
+  return changed
 }
