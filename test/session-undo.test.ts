@@ -159,6 +159,19 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(text()).toEqual(['1', '2', '3.0'])
   })
 
+  it("AutoFit undone: the columns' widths, bestFit and hidden as they were", () => {
+    const s = openSession(book(), o)
+    s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 30 } }, { sheet: 'S', columns: 'B', set: { hidden: true } }])
+    const before = structuredClone(s.book())
+    s.setLayout([{ sheet: 'S', columns: 'A:B', fit: true }])
+    expect(s.book().sheets[0].columns).toMatchObject({ A: { bestFit: true }, B: { bestFit: true } })
+    expect(s.book().sheets[0].columns!.B.hidden).toBeUndefined()
+    expect(s.undo()!.call).toBe('setLayout')
+    same(s, before, o)
+    s.redo()
+    expect(s.book().sheets[0].columns).toMatchObject({ A: { bestFit: true }, B: { bestFit: true } })
+  })
+
   it('rows inserted and deleted: the book before, mapCell from the book before the undo to the one after it', () => {
     const s = openSession(book(), o)
     const before = structuredClone(s.book())

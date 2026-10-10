@@ -1,8 +1,8 @@
 /**
  * Seeded random changes of every kind a session can undo, for the undo tests (`session-undo.test.ts`): the edits and
  * row operations of `session-fuzz.ts` over its book, with a table, names, styles and a SUBTOTAL added, and from a
- * stream of their own patches, new names and styles, layout edits (heights, widths, formats, hidden rows, merged areas
- * over spills, conditional formats, frozen panes, validation) and every structure operation, sheets renamed, inserted,
+ * stream of their own patches, new names and styles, layout edits (heights, widths, AutoFit, formats, hidden rows, merged
+ * areas over spills, conditional formats, frozen panes, validation) and every structure operation, sheets renamed, inserted,
  * deleted, moved, hidden and shown among them; some are refused.
  */
 import type { BookInput, CellPatch, CellStyle, LayoutEdit, NameInput, StructureOp } from '../src/contract.js'
@@ -55,7 +55,7 @@ export function undoMoves(seed: number): () => Move {
   }
   const layout = (): LayoutEdit => {
     const s = sheet()
-    switch (int(8)) {
+    switch (int(9)) {
       case 0:
         return { sheet: s, rows: span('r'), set: pick([{ height: 10 + int(30) }, { hidden: true }, { hidden: null }, { style: int(3) }, { format: '0.0' }, { height: null, format: null }]) }
       case 1:
@@ -71,6 +71,9 @@ export function undoMoves(seed: number): () => Move {
         return { sheet: s, validations: rnd() < 0.4 ? [] : [{ range: 'B1:B20', type: 'whole', operator: 'between', formula1: '0', formula2: '50' }] }
       case 6:
         return { sheet: s, filtered: rnd() < 0.5 }
+      case 7:
+        // AutoFit: the widths of the widest cells, bestFit, a hidden column shown
+        return { sheet: s, columns: span('c'), fit: true }
       default:
         return { sheet: s, outline: rnd() < 0.5 ? null : { summaryBelow: false } }
     }
