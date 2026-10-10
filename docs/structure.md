@@ -1,6 +1,6 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, conditional formats, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting, moving, hiding and showing sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, conditional formats, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
 The rules below were measured in Excel 16 for Mac (en-US).
 
@@ -19,11 +19,13 @@ type StructureOp =
   | { op: 'deleteSheet'; sheet: string }
   | { op: 'insertSheet'; name: string; before?: string }  // an empty sheet, at the end without `before`
   | { op: 'moveSheet'; sheet: string; before?: string }   // to the end without `before`
+  | { op: 'hideSheet'; sheet: string; very?: boolean }   // very hidden with `very`
+  | { op: 'unhideSheet'; sheet: string }
 
 type RangeRef = { sheet: string; range: string }       // B2, B2:D9, B:D, 2:9
 type RestructureResult =
   | { ok: true; book: BookInput; mapCell(ref: CellRef): CellRef | null }
-  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'merged' | 'filtered' | 'array'; message: string }
+  | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'very_hidden' | 'merged' | 'filtered' | 'array'; message: string }
 ```
 
 The types are in `xlcalc/contract`, and `FormulaEngine` has `restructure`.
@@ -40,7 +42,8 @@ Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fi
 |---|---|
 | `off_sheet` | an insert would push a cell or a merged area past row 1,048,576 or column XFD, or a move or copy does not fit on the sheet |
 | `sheet_name` | the new name breaks Excel's rules or another sheet has it |
-| `last_sheet` | deleting the only sheet |
+| `last_sheet` | deleting or hiding the last visible sheet (the only sheet too) |
+| `very_hidden` | deleting or moving a very hidden sheet |
 | `merged` | a move whose source cuts a merged area, or a copy that lands on part of one |
 | `filtered` | a copy that left out rows a filter hid, pasted over hidden rows of a filtered sheet |
 | `array` | lines inserted inside the area of an array formula of the old kind, part of one deleted or moved, a paste over part of one |
@@ -123,7 +126,25 @@ Deleting a sheet removes it with its cells. References to it become `#REF!` foll
 
 ## Inserting and moving sheets
 
-`insertSheet` adds an empty sheet before another one or at the end. `moveSheet` moves a sheet. Neither changes a formula, except a reference across sheets whose end moves. Such a reference covers the sheets between its ends in the book's order, so a sheet inserted or moved between them is read and one moved out is not. [References](references.md) has the rules for its ends.
+`insertSheet` adds an empty sheet before another one or at the end. `moveSheet` moves a sheet. Neither changes a formula, except a reference across sheets whose end moves. Such a reference covers the sheets between its ends in the book's order, so a sheet inserted or moved between them is read and one moved out is not. An end that moves stays the end while it does not pass the other end: with Jan, Feb, Mar and Apr, Jan moved before Apr leaves `'Jan:Apr'` as it is, now over Jan and Apr, while `'Jan:Mar'` becomes `'Feb:Mar'`. [References](references.md) has the rules for its ends.
+
+## Hidden sheets
+
+A sheet is hidden by `hidden: true`, or very hidden by `hidden: 'very'`, as Excel's Hide and its object model's `xlSheetVeryHidden` hide it (an xlsx file's `state`). `hideSheet` hides a sheet (`very: true` for very hidden) and `unhideSheet` shows it. Formulas read hidden sheets as any other: `SUM('Jan:Mar'!B2)` with Feb hidden takes in Feb, and `SUBTOTAL` leaves out hidden rows alone, never a hidden sheet.
+
+A book keeps one visible sheet at least, as Excel does: hiding or deleting the last visible sheet is refused with `last_sheet`, and a book whose every sheet is hidden is an `InputError`. A hidden sheet is renamed, deleted and moved as any other and keeps its state; a very hidden one is renamed alone, and deleting or moving it is refused with `very_hidden`, as Excel's object model refuses both.
+
+Excel moves a sheet by the visible sheets. Moved before a hidden sheet, it goes before the next visible sheet; with none after it, and moved to the end past hidden sheets, it goes after the last visible sheet. With Jan, Feb (hidden) and Mar, Mar moved before Feb stays where it is, and with Mar hidden at the end, Jan moved to the end goes between Feb and Mar. An inserted sheet goes where it is asked, before a hidden sheet too.
+
+```js
+import { restructure } from 'xlcalc'
+
+const book = { sheets: [{ name: 'Data', cells: {} }, { name: 'Keys', cells: {}, hidden: 'very' }, { name: 'Report', cells: {} }] }
+const r = restructure(book, { op: 'hideSheet', sheet: 'Data' })
+console.log(r.ok && r.book.sheets.map((s) => s.hidden)) // → [ true, 'very', undefined ]
+console.log(r.ok && restructure(r.book, { op: 'hideSheet', sheet: 'Report' }).code) // → last_sheet
+console.log(restructure(book, { op: 'deleteSheet', sheet: 'Keys' }).code) // → very_hidden
+```
 
 ## Tables
 
@@ -233,6 +254,7 @@ Styles and layout change through the session so that its book stays the host's b
 - the style table through `setStyles(styles)`; every style in use must stay in it;
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;
+- hidden sheets through `restructure`: `hideSheet` and `unhideSheet` recompute nothing and do not build the state again;
 - frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
 - conditional formats through `setLayout`: `{ sheet, conditionalFormats: [...] }` replaces the sheet's rules;
 - rules of data validation through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;
@@ -271,6 +293,8 @@ All cases match except the two known differences below. Of the predicted cases, 
 Not checked against Excel: a move that does not fit (it is refused like a copy), most moves to another sheet, fonts other than bold, borders and alignment (they move with the style number).
 
 Copies were applied through AppleScript's `copy range` with a destination, Excel's `Range.Copy`. On a filtered sheet it pasted values. Copying and pasting in Excel's window was not measured.
+
+Hidden sheets were measured by the step `hidden` in Excel for Mac and for Windows (`npx tsx bench/coverage/run.ts hidden <set>`, `bench/windows/run.ts hidden <set>`, `test/hidden-sheets-excel.test.ts`): sheets hidden and shown through the object model (`Visible`), renamed, deleted, inserted and moved beside hidden ones, with references across sheets over them. Each set's answers were predicted before Excel ran it: `sheets-held` held in 25 of 29 cases, the misses being the very hidden sheet that neither Excel deletes or moves and a sheet moved before a hidden one, which went after it; `sheets-held-2` in 6 of 11, the misses being moves past hidden sheets with none visible after them and ends of references across sheets that moved without passing the other end; `sheets-held-3` in 10 of 10. Both Excels answered alike ([docs/xlsx.md](xlsx.md#hidden-sheets-2)).
 
 ## Known differences and limits
 

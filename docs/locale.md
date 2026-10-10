@@ -26,6 +26,8 @@ A book carries its locale in `BookInput.locale`, a tag of `LOCALES`: `'en-US'` (
 
 An unknown tag is an `InputError`. A host may build its own `Locale` objects for formula text, but computation uses only the package's locales.
 
+In every locale a percent in text keeps the digits written: `VALUE("1,1%")` in ru-RU, as `VALUE("1.1%")` in en-US, is 0.011, the number the text reads as once the decimal point moves two places, as Excel reads it in VALUE, operators and numeric arguments, not 1.1 divided by 100 (0.011000000000000001; the difference shows when it is magnified, `(VALUE("1.1%")-0.011)*1E+20` is 0). `NUMBERVALUE` divides by 100 for each `%` in turn and the operator `%` divides its operand, as Excel does (`NUMBERVALUE("1.1%%")` is 1.1/100/100). Money with percent is no number (`"$1.1%"`, `"1,1 ₽%"`). The set `pct-text` measured these in both Excels and both locales.
+
 The locale enters the hashes only when it is set and is not en-US: `inputHash` gets a line `L "<tag>"`, and the values hash gets `;locale=<tag>` after the configuration version. Books without a locale and en-US books hash as they did before.
 
 ### What changes in ru-RU

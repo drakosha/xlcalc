@@ -74,6 +74,8 @@ Numbers are read as `VALUE` reads them in the locale ([Localization](../README.m
 | scientific | `1,5E+3`, `1e5` | `1.5E+3` | 11 (`0.00E+00`) |
 | a fraction | `1 1/2`, `0 1/2`, `1 1/12` | the same | 12 (`# ?/?`), 13 (`# ??/??`) for a denominator of two digits |
 
+A percent keeps the digits typed: `1,1%` in ru-RU (`1.1%` in en-US) is stored as 0.011, the number its decimal text reads as once the point moves two places, as Excel stores it, not 1.1 divided by 100 (0.011000000000000001). A fraction with percent is divided: `1 2/3%` is (1 + 2/3)/100. Money with percent is text in both locales (`$1.1%`, `1,1 ₽%`).
+
 The money format is built from the locale's currency (`RegionalData.currency`): its symbol before or after the amount, the space between and the sign of a negative amount. A euro sign before or after a number is dropped in every locale, with no format (`€5`, `5 €`, `(€5)`). A number in scientific form that Excel cannot hold stays text, in the scientific format: `1E+308` and above, an exponent past 308 or below -324, a mantissa that comes to 0 (`1E-330`); `1E-309` is 0.
 
 ### Dates and times
@@ -126,8 +128,11 @@ The rules were measured in Excel 16.113 for Mac and Excel 16.0.20430 for Windows
 | `typed-keys-held` | 44 | keyboard, Mac | 36 and 36 |
 | `typed-held-2` | 102 | object model, Mac and Windows | 85 and 84 on both |
 | `typed-keys-held-2` | 29 | keyboard, Mac | 25 and 26 |
+| `typed-pct-held` | 47 | object model, Mac and Windows | 45 and 46 on both |
 
-Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,655 of the 1,822 cases of the object model's sets, and the Mac's keyboard answer on 220 of 224; the other cases are the known differences below, pinned in `test/entry-known.ts`.
+Each set's predictions (`bench/coverage/entry/<set>.predicted.json`) were committed before Excel ran it, and the misses became rules. The engine now gives Excel for Windows's answer on 1,747 of the 1,916 cases of the object model's sets, and the Mac's keyboard answer on 220 of 224; the other cases are the known differences below, pinned in `test/entry-known.ts`.
+
+Values are compared exactly, as the saved file holds every digit. `typed-pct-held` types percents with decimals where moving the point and dividing by 100 give different numbers (`1.1%`, `0.7%`, `1.255%`, `99.9%`, with a sign, parentheses, a leading `%`, groups and an exponent), fractions and plain decimals; each cell's value is also read through the object model (`value` on the Mac, `Value2` on Windows), which equals the number the file holds in every case. Both Excels stored every decimal percent as its decimal text reads; the miss was `$1.1%`, which Excel en-US keeps as text, the other the sign difference of the object model.
 
 Excel for Windows and Excel for Mac answer alike, but where their own built-in codes part: the Mac's en-US short date is `m/d/yy` and its ru-RU short time `hh:mm`, so it keeps the codes `m/d/yyyy` (en-US) and `h:mm` (ru-RU) as formats of the book's own, where Windows takes them as the formats 14 and 20. The engine follows Windows.
 
