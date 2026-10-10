@@ -2,8 +2,8 @@
  * A sheet's data validation: `<dataValidations>`, and `<x14:dataValidations>` in the sheet's extensions, where Excel
  * writes a rule whose formulas refer to another sheet. Each rule is read as `DataValidation`, xlsx's defaults (false)
  * spelled out where they differ from the model's (true, as Excel makes a rule); a rule the model cannot hold (no range,
- * no formula its type needs) is left out, cells a rule shares with an earlier one go to the earlier one, an IME mode is
- * not kept, and each is reported.
+ * no formula its type needs) is left out, cells a rule shares with an earlier one go to the earlier one (which Excel shows:
+ * the valid set `struct-held-2`), an IME mode is not kept, a list's items holding commas are split, and each is reported.
  */
 import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
 import type { Rect } from '../../structure/area.js'
@@ -28,11 +28,15 @@ interface RawRule {
 
 const text = (e: Element | undefined) => (e?.body == null ? undefined : readText(e.body))
 
-/** The rules of `<dataValidations>`, before the sheet's extensions. */
-function plain(xml: string): RawRule[] {
+/**
+ * The rules of `<dataValidations>`, before the sheet's extensions. A list whose item holds a comma (typed where the comma
+ * is no separator) is the fallback of an `x12ac:list`, which splits it at the comma: reported.
+ */
+function plain(xml: string, sheet: string, issues: Issues): RawRule[] {
   return elements(element(xml, 'dataValidations')?.body ?? '', 'dataValidation').map((e) => {
     const a = attributes(e.attrs)
     const body = e.body ?? ''
+    if (element(body, 'list')) issues.add('dataValidation', "a list's items holding a comma are read split at it", { sheet, cell: a.sqref ?? '' })
     return { a, formula1: text(element(body, 'formula1')), formula2: text(element(body, 'formula2')), sqref: a.sqref ?? '' }
   })
 }
@@ -84,7 +88,7 @@ function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | str
 export function readValidations(tail: string, sheet: string, sheets: string[], issues: Issues): DataValidation[] | undefined {
   const names = new Map(sheets.map((s) => [sheetKey(s), s]))
   const ext = tail.search(/<(?:[\w.-]+:)?extLst[\s>]/)
-  const raws = [...plain(ext < 0 ? tail : tail.slice(0, ext)), ...(ext < 0 ? [] : extended(tail.slice(ext)))]
+  const raws = [...plain(ext < 0 ? tail : tail.slice(0, ext), sheet, issues), ...(ext < 0 ? [] : extended(tail.slice(ext)))]
   const out: DataValidation[] = []
   const taken: Rect[] = []
   for (const raw of raws) {
