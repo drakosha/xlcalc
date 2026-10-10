@@ -3455,29 +3455,29 @@
    }
   },
   "colformat-1": {
-   "columnWidth": 11.29,
-   "points": 63,
+   "columnWidth": 10.71,
+   "points": 60,
    "standard": false,
    "saved": {
-    "width": 12,
+    "width": 11.42578125,
     "customWidth": true,
     "bestFit": true
    },
    "texts": {
-    "1": "1234567,891"
+    "1": "1 234 567,89"
    }
   },
   "colformat-2": {
-   "columnWidth": 5.29,
-   "points": 31.5,
+   "columnWidth": 25.57,
+   "points": 138,
    "standard": false,
    "saved": {
-    "width": 6,
+    "width": 26.28515625,
     "customWidth": true,
     "bestFit": true
    },
    "texts": {
-    "1": "46096"
+    "1": "воскресенье, Март 15, 2026"
    }
   }
  }
