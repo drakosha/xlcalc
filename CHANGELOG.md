@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.12.0 (2026-10-10)
+
+Internal release; not published to npm. What a window over a sheet needs, without the whole book.
+
+Added:
+
+- Contract: `Session.extent(sheet)`, where a sheet's cells end: the last row and column that an input cell (a value, a formula, or a style, a format, meta, a note or a link alone), a spill range, a merged area or a table reaches. It reads the engine's columns, spills and cells without a value instead of every cell: under 0.1 ms on the synthetic book of 34,000 rows from a thread, where finding the formulas in `book()` and reading their spills took about 700 ms.
+- Contract: `Session.layout()`, the book without its cells: styles, names, settings and every field of each sheet but `cells`. It costs what the layout holds: 0.1 ms on the same book from a thread, where `book()` takes 460 ms.
+- Contract: `Session.cells(sheet, ranges)` takes several rectangles in one call, one round trip in a pool; a cell in two of them is listed once.
+- Contract: `Session.patchCells(patches)` changes cells' `style`, `format`, `meta`, `note` and `link` (null removes one) without their values or formulas: an empty cell, a spilled cell and a cell of an old-kind array formula's area alike, atomically and without recomputing; with the display on it returns the cells whose shown text or colour changed. A pool journals it with the other edits. Styling 2,000 cells from a thread takes 9 ms, against 15 ms by reading a window and writing it back through `setCells`.
+- Contract: `CellView.array`, an old-kind array formula's area on its top-left cell.
+
 ## 0.11.0 (2026-10-10)
 
 Internal release; not published to npm. Conditional formats, kept and computed.
