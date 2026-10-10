@@ -109,14 +109,17 @@ const COMPARE: Record<string, (v: number, a: number, b: number) => boolean> = {
   lessThanOrEqual: (v, a) => v <= a,
 }
 
-/** Whether a list's item is the value: text in any case, a number a literal item reads as, a boolean by its word. */
+/**
+ * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item as written, text
+ * in its case (the set `files`), a number the item reads as, a boolean by its word.
+ */
 function listed(state: EngineState, value: V, item: Item, isLiteral: boolean): boolean {
   const rules = state.ctx.rules
   if (!isLiteral) return typeof item.value === typeof value && !isErr(item.value) && rules.compare(item.value, value) === 0
   const t = item.text
   if (typeof value === 'number') return rules.valueText(t) === value
-  if (typeof value === 'boolean') return rules.compare(String(rules.toText(value)), t) === 0
-  return typeof value === 'string' && rules.compare(value, t) === 0
+  if (typeof value === 'boolean') return rules.toText(value) === t
+  return value === t
 }
 
 /** Whether the cell's value meets its rule (`v`), in the book as it is now. */
