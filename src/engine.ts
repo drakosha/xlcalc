@@ -78,6 +78,7 @@ export interface EngineState {
   /** `s:r:c` → formula id. */
   at: Map<string, number>
   invalid: Map<string, Invalid>
+  /** Dependency vertices: formula ids first, shared range helpers after the formula slots. */
   succ: number[][]
   /** The formulas reading a spilled array's range, by the array's formula (successors besides `succ`). */
   spillSucc: Map<number, number[]>
@@ -198,7 +199,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     cache,
     flat: new RangeCache(cache),
     index: new RangeCache(cache),
-    aggregates: new RangeAggregates(),
+    aggregates: new RangeAggregates(cache),
     nested: new Map(),
     hidden: new Map(),
     spillRef: (s, r, c) => spillRef(state, s, r, c),

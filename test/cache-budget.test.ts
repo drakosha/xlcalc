@@ -24,11 +24,11 @@ function tight<T>(f: () => T): T {
 }
 
 /** Running means read twice by each formula, criteria and lookups over the column, whole columns, a rectangle wider than its data. */
-function book(n: number, own = 0): BookInput {
+function book(n: number, own = 0, materialized = false): BookInput {
   const cells: Record<string, CellInput> = {}
   for (let r = 1; r <= n; r++) {
     cells[`A${r}`] = { value: r % 7 === 0 ? `t${(r + own) % 5}` : (r + own) % 11 }
-    cells[`B${r}`] = { formula: `AVERAGE($A$1:A${r})+COUNTA($A$1:A${r})` }
+    cells[`B${r}`] = { formula: `AVERAGE($A$1:A${r}${materialized ? `,$A$1:A${r}` : ''})+COUNTA($A$1:A${r})` }
   }
   for (let k = 1; k <= 12; k++) {
     cells[`D${k}`] = { formula: `COUNTIF(A:A,${k % 11})+SUMIFS($A$1:$A$${n},$A$1:$A$${n},${k % 11})+COUNTIFS($A$1:$A$${n},"t${k % 5}")` }
@@ -67,8 +67,8 @@ it('a range read once fills no cache, a range read twice is kept', () => {
   const twice: Record<string, CellInput> = {}
   for (let r = 1; r <= 600; r++) {
     once[`A${r}`] = twice[`A${r}`] = { value: r }
-    once[`B${r}`] = { formula: `AVERAGE($A$1:A${r})` }
-    twice[`B${r}`] = { formula: `AVERAGE($A$1:A${r})+COUNTA($A$1:A${r})` }
+    once[`B${r}`] = { formula: `SUMPRODUCT($A$1:A${r})` }
+    twice[`B${r}`] = { formula: `SUMPRODUCT($A$1:A${r})+MEDIAN($A$1:A${r})` }
   }
   const cache = new CacheBudget(Infinity)
   expect(createState({ sheets: [{ name: 'S', cells: once }] }, { now: 0, seed: 1, cache }).ctx.flat.size).toBe(0)
@@ -80,7 +80,7 @@ describe.each(['closures', 'eval'] as const)('cache budget, %s', (execution) => 
   const same = (s: Session) => expect(s.hash()).toBe(compute(s.book(), opts).hash)
 
   it('a book whose caches hold many times the cap computes as without it', () => {
-    const b = book(600)
+    const b = book(600, 0, true)
     const free = createState(b, { now: 46000, seed: 7, execution, cache: new CacheBudget(Infinity) })
     const held = createState(b, { now: 46000, seed: 7, execution, cache: new CacheBudget(SMALL) })
     expect(free.ctx.cache.held).toBeGreaterThan(20 * SMALL)

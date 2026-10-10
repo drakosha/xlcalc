@@ -115,6 +115,9 @@ export function allot(n: number): void {
   if (active !== null && n > active.cells) throw new CalcError('limit', `${n} values in one range or array, over the limit of ${active.cells}`, { limit: 'cells', max: active.cells, size: n })
 }
 
+/** Whether an optional materialization fits the current range/array limit. */
+export const canAllot = (n: number): boolean => active === null || n <= active.cells
+
 /** A spill is about to write `n` stored cells: over `limits.spill` stops the computation, before they are written. */
 export function allotSpill(n: number): void {
   if (active !== null && n > active.spill) throw new CalcError('limit', `${n} values in one spill, over the limit of ${active.spill}`, { limit: 'spill', max: active.spill, size: n })
