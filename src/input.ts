@@ -389,9 +389,15 @@ export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
   if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
+  if (o.undo !== undefined) {
+    const u = object(o.undo, `${path}.undo`, 'undo options such as { depth: 100, maxMb: 64 }')
+    onlyKeys(u, `${path}.undo`, ['depth', 'maxMb'])
+    if (u.depth !== undefined) checkNumber(u.depth, `${path}.undo.depth`, 0, 1_000_000, true)
+    if (u.maxMb !== undefined) checkNumber(u.maxMb, `${path}.undo.maxMb`, 0, 1_000_000)
+  }
   if (o.display !== undefined) checkBoolean(o.display, `${path}.display`)
   if (o.live === true && o.clock !== undefined) throw new InputError(path, 'a live session takes its clock from the system: pass either live or clock')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)

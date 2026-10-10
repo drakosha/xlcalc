@@ -47,8 +47,8 @@ export function checkStylesUsed(book: BookInput, count: number) {
   }
 }
 
-/** Layout edits (checked) applied to the book: each changed sheet is a new object with the same cells. */
-export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (name: string) => number) {
+/** Layout edits (checked) applied to the book's sheets: each changed sheet a new object with the same cells, by index; the book stays as it is. */
+export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (name: string) => number): Map<number, SheetInput> {
   const changed = new Map<number, SheetInput>()
   for (const e of edits) {
     const i = sheetIndex(e.sheet)
@@ -63,10 +63,10 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
     else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set)
     else sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, e.set)
   }
-  for (const [i, sheet] of changed) {
+  for (const sheet of changed.values()) {
     for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
     if (sheet.filtered === false) delete sheet.filtered
     for (const k of ['frozen', 'outline', 'conditionalFormats'] as const) if (sheet[k] === undefined) delete sheet[k]
-    book.sheets[i] = sheet
   }
+  return changed
 }
