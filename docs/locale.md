@@ -2,9 +2,30 @@
 
 Excel depends on its language and regional settings in two ways. It shows and reads formulas in the user's language, and it computes some values by regional rules: text read as a number or a date, numbers and booleans turned into text, format codes, currency. A book here stores formulas in the invariant form of xlsx files (English function names, `,` between arguments, `.` as the decimal separator) whatever its locale. en-US and ru-RU are supported for both formula text and computation.
 
+## Loading a locale
+
+en-US is built in. ru-RU is a module of its own, `xlcalc/locales/ru-RU`, so a bundle that has no ru-RU book does not carry its 51 KB of formula text, rules and messages. A host imports it and loads it once, before a book in it computes:
+
+```js
+import { compute, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+compute({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { formula: 'VALUE("1,5")' } } }] }) // A1 is 1.5
+```
+
+- `LOCALES` lists the loaded locales by tag: `en-US`, then each locale registered.
+- A book's `locale` is a tag of a loaded locale. A book in a locale that is not loaded is an `InputError` that says what to do: `book.locale: the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)`. So is the tag given to a function that takes a locale. Another tag lists the loaded ones, and names the tag meant when only its case differs (`ru-ru`): tags are compared as written.
+- Every function that takes a locale takes the tag of a loaded one or the locale object: `toLocal`, `toInvariant`, `validateLocalFormula`, `parseEntry`, `displayValue`, `entryWidth`, `validateName` and `validateNames`. An object needs no loading there, since no book is computed: `toLocal(formula, ruRU)` works in a bundle that never calls `registerLocale`.
+- Importing the module does nothing by itself, so a bundler keeps it out of a bundle that does not use it. Loading the same object again does nothing; another object with a loaded tag is an `InputError`, as is a locale without the rules a book computes by.
+- `readXlsx` keeps a file's locale (`ru-RU`) as it reads it, loaded or not; computing or writing the book needs the locale loaded.
+- A pool's threads load the locales loaded where the pool runs, those loaded after it started too ([docs/async.md](async.md#locales)).
+
+What counts in books of every locale stays in the core, so an en-US book shows the same whatever is loaded: the widths of Cyrillic letters (`src/numfmt/glyphs.ts`) and ru-RU's month and day names, which the format code `[$-419]` gives in a book of any locale (`src/locale/lcid.ts`).
+
 ## Formula text
 
-A locale is a plain object (`Locale`, `src/locale/types.ts`). The package lists its locales by tag in `LOCALES` (`LOCALES.get('ru-RU')`), and exports en-US's and ru-RU's by name too, `enUS` and `ruRU`. `toLocal`, `toInvariant` and `validateLocalFormula` translate a formula piece by piece: function names, TRUE and FALSE, error literals, the decimal separator, and the separators of arguments and array constants. Strings, sheet names, defined names, references and whitespace are copied as they are.
+A locale is a plain object (`Locale`, `src/locale/types.ts`): its formula text, and for a locale a book computes in, its rules of computation (`regional`) and messages. en-US's is `enUS` of the root, ru-RU's `ruRU` of its module, and `LOCALES` has the loaded ones by tag (`LOCALES.get('ru-RU')`). `toLocal`, `toInvariant` and `validateLocalFormula` take a loaded locale's tag or a locale object, and translate a formula piece by piece: function names, TRUE and FALSE, error literals, the decimal separator, and the separators of arguments and array constants. Strings, sheet names, defined names, references and whitespace are copied as they are.
 
 The output is read again in the target locale, so text that would change its meaning in translation is a syntax error at its place: `1.5` typed in ru-RU, where `.` is not a decimal separator.
 
@@ -22,9 +43,9 @@ The Russian names were read from Excel 16.113 for Mac with the Russian interface
 
 ## Computing in a book's locale
 
-A book carries its locale in `BookInput.locale`, a tag of `LOCALES`: `'en-US'` (the default) or `'ru-RU'`. An xlsx file stores no calculation locale, so the same file gives different values in Excel on a Russian and on an English machine: `VALUE("1.5")` is 1.5 in one and 46143 in the other. A book that carries its locale gives the same values to everyone, while each viewer still sees formulas in their own language through `toLocal`.
+A book carries its locale in `BookInput.locale`, the tag of a loaded locale: `'en-US'` (the default) or `'ru-RU'` once loaded. An xlsx file stores no calculation locale, so the same file gives different values in Excel on a Russian and on an English machine: `VALUE("1.5")` is 1.5 in one and 46143 in the other. A book that carries its locale gives the same values to everyone, while each viewer still sees formulas in their own language through `toLocal`.
 
-An unknown tag is an `InputError`. A host may build its own `Locale` objects for formula text, but computation uses only the package's locales.
+A tag that is not loaded is an `InputError` ([Loading a locale](#loading-a-locale)). A host may build its own `Locale` objects for formula text; one without rules of computation reads and shows values as en-US does, and `registerLocale` refuses it, so a book computes only in a locale with its own rules.
 
 In every locale a percent in text keeps the digits written: `VALUE("1,1%")` in ru-RU, as `VALUE("1.1%")` in en-US, is 0.011, the number the text reads as once the decimal point moves two places, as Excel reads it in VALUE, operators and numeric arguments, not 1.1 divided by 100 (0.011000000000000001; the difference shows when it is magnified, `(VALUE("1.1%")-0.011)*1E+20` is 0). `NUMBERVALUE` divides by 100 for each `%` in turn and the operator `%` divides its operand, as Excel does (`NUMBERVALUE("1.1%%")` is 1.1/100/100). Money with percent is no number (`"$1.1%"`, `"1,1 ₽%"`). The set `pct-text` measured these in both Excels and both locales.
 
@@ -82,7 +103,7 @@ A person working in a book's locale reads the engine's messages in its language:
 
 ### Which locale
 
-- `parseEntry` writes in `opts.locale`, and `toLocal`, `toInvariant` and `validateLocalFormula` in the locale they are given. A locale object of one's own speaks the language of the package's locale with its tag, and English for another tag.
+- `parseEntry` writes in `opts.locale`, and `toLocal`, `toInvariant` and `validateLocalFormula` in the locale they are given. A locale object speaks by its own `messages`; without them, as the loaded locale of its tag, and in English for another tag.
 - `restructure`, and a session's `restructure` alike in the same thread, in a thread of the pool or synchronously, write in the book's `locale`.
 - `explain`'s `text` is written in the book's locale: its words (`(2 ячейки)`, `перенос из`), numbers with the locale's decimal separator, formulas as `toLocal` shows them, booleans and errors in the locale's words (`ИСТИНА`, `#Н/Д`), and an empty cell as `пусто`. The tree's `ref`, `value` and `formula` stay as the book stores them, for programs.
 
@@ -100,30 +121,32 @@ As an interface writes to a person: short sentences, a capital letter first and 
 
 ### The catalog
 
-Each message is a key with parameters (`MessageParams` in `src/locale/messages.ts`): the parser, the checks and the structure operations name the message where they refuse, and its text is written only then, so messages cost nothing while a book computes. A locale file's `messages` write the text of each key from its parameters and the locale's words (`Words`: function names, specifiers, numbers, values and formulas as the locale writes them). en-US's file has every message, the engine's English text; a locale without the text of a message gives the English one.
+Each message is a key with parameters (`MessageParams` in `src/locale/messages.ts`): the parser, the checks and the structure operations name the message where they refuse, and its text is written only then, so messages cost nothing while a book computes. A locale's `messages` write the text of each key from its parameters and the locale's words (`Words`: function names, specifiers, numbers, values and formulas as the locale writes them). en-US's file has every message, the engine's English text; a locale without the text of a message gives the English one.
 
 `test/messages-catalog.test.ts` checks that ru-RU writes every message of en-US and shows every parameter the English text shows, and `test/messages-paths.test.ts` that each way a message reaches a person (a typed formula, each refusal of a structure operation in every kind of session, `explain`) gives it in Russian in ru-RU and in English elsewhere.
 
 ## How the engine does it
 
-`src/locale/rules.ts` defines `Rules`, one object per book. en-US is the engine's own code. Another locale is built by `regionalRules` (`src/locale/rules/regional.ts`) from the data in its locale file: separators, the order of dates, the currency and where its symbol stands, month and day names, TEXT codes, the collation tag, the code page of CHAR and CODE, the word of new table columns' names, and the words for TRUE, FALSE and errors.
+`src/locale/rules.ts` defines `Rules`, one object per book. en-US is the engine's own code. Another locale is built by `regionalRules` (`src/locale/rules/regional.ts`) from its data (`Locale.regional`): separators, the order of dates, the currency and where its symbol stands, month and day names, TEXT codes, the collation tag, the code page of CHAR and CODE, the word of new table columns' names, and the words for TRUE, FALSE and errors.
 
 The engine builds the rules when it creates a book's state and passes them to operators and criteria through the runtime, and to every function through `Cx.rules`. The argument kinds of `src/args.ts` convert values with the rules, and functions that read or write text themselves (TEXT, DOLLAR, FIXED, VALUE, the complex functions, the lookups and others) use them directly. Code outside a book, such as the parser, works in en-US.
 
 ## Adding a locale
 
-A locale added to the package lets books in it compute as Excel in that language and region does, and lets hosts show formulas in its language. It takes one file and one line:
+A locale added to the package lets books in it compute as Excel in that language and region does, and lets hosts show formulas in its language. It takes one module and three lines:
 
-- the file `src/locales/xx-YY.ts`, which holds everything the engine knows of the locale;
-- the line `export { XX_YY } from './xx-YY.js'` in `src/locales/index.ts`, the list of locale files.
+- the module `src/locales/xx-YY.ts`, which holds everything the engine knows of the locale and exports it as `xxYY`, the tag without its hyphen;
+- its tag in `PACKAGE_LOCALES` (`src/locale/registry.ts`), which names the module in the message of a book in it that is not loaded, and lets `readXlsx` keep it;
+- its import in `LOCALE_MODULES` (`src/worker/locales.ts`), through which a pool's thread takes its messages, and the tests and harnesses load every locale of the package;
+- its subpath in `package.json`, `"./locales/xx-YY"`, as ru-RU's.
 
-The tags a book takes, `LOCALES`, the rules of computation and the widths of letters all come from that list, and the message for an unknown tag names its tags. No code of the engine changes, as long as the locale's rules are ones the engine reads from data ([What the data cannot say](#what-the-data-cannot-say)), and none of the tests and harnesses that compare it with Excel ([Tests and harnesses](#tests-and-harnesses)).
+`test/locale-modules.test.ts` checks that the four agree. No code of the engine changes, as long as the locale's rules are ones the engine reads from data ([What the data cannot say](#what-the-data-cannot-say)), and none of the tests and harnesses that compare it with Excel ([Tests and harnesses](#tests-and-harnesses)).
 
-### The locale file
+### The locale module
 
-A locale file exports one `LocaleFile` (`src/locale/file.ts`). ru-RU's, `src/locales/ru-RU.ts`, is the one to copy. It has four parts.
+A locale module exports one `Locale` (`src/locale/types.ts`) and has no effect of its own. ru-RU's, `src/locales/ru-RU.ts`, is the one to copy. It has three parts.
 
-`text` is the formula text, a `Locale`: the tag, the separators, the words for TRUE and FALSE, error literals, function names and the specifiers of structured references. The file holds most of it as the constant `FORMULA_TEXT` between two marks:
+The formula text: the tag, the separators, the words for TRUE and FALSE, error literals, function names and the specifiers of structured references. The file holds most of it as the constant `FORMULA_TEXT` between two marks:
 
 ```
 // ---- formula text, generated by bench/locale/generate.ts: do not edit ----
@@ -149,11 +172,11 @@ A locale file exports one `LocaleFile` (`src/locale/file.ts`). ru-RU's, `src/loc
 | `codePage` | CHAR's and CODE's Windows code page: the name of its published table and its characters | `windows-1251` |
 | `columnWord` | the word of a new table column's name | `Столбец`, which makes `Столбец1` |
 
-`glyphWidths` gives the widths of the letters of the locale's script in Calibri 11, for what a cell shows by its column's width. They count in books of every locale, since text of any script may stand in any book: ru-RU's Cyrillic letters count in en-US books too. Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and a character that no table has counts as a digit.
+Two kinds of data count in books of every locale, so they live in the core rather than in the module, and an en-US book shows the same whether the locale is loaded or not. The widths of the letters of the locale's script in Calibri 11, for what a cell shows by its column's width, go into `src/numfmt/glyphs.ts`, beside the Latin letters and ru-RU's Cyrillic ones: text of any script may stand in any book, and a character that no table has counts as a digit. The month and day names that the locale's code gives in a format (`[$-419]mmmm`) go into `src/locale/lcid.ts`, which `rules.ts` reads for the code, and the module takes them from there (`...RU_NAMES` in ru-RU's `regional`).
 
 `messages` are the engine's messages for people in the locale's language ([Messages](#messages)): a function for each key of `MessageParams` that writes the text from its parameters and the locale's `Words`. A locale may leave out any of them, and those show in English; `test/messages-catalog.test.ts` checks ru-RU's against en-US's keys, and a new locale's full set would join it there.
 
-en-US's file holds its formula text and its messages, the English ones every locale falls back to: its rules are the engine's code in `src/locale/rules.ts`, where its code page (`windows-1252`) and the word `Column` are.
+en-US's module holds its formula text and its messages, the English ones every locale falls back to, and is built into the root: its rules are the engine's code in `src/locale/rules.ts`, where its code page (`windows-1252`) and the word `Column` are.
 
 ### Where the data come from
 
@@ -199,7 +222,7 @@ Some locales need code as well as data:
 
 ### Tests and harnesses
 
-A new locale needs no change to the tests or the harnesses. The tests compare the engine with Excel in every locale of `LOCALES` whose answers are stored, and name a locale without them as skipped: `acceptance against Excel xx-YY: no answers of Excel xx-YY to the coverage measurement (test/excel/coverage/excel-xx-YY.json)`. The harnesses take the locale's tag and store its answers in files of their own.
+A new locale needs no change to the tests or the harnesses. They load every module of `LOCALE_MODULES` (`test/locales.ts`, `bench/coverage/locales.ts`), and the tests compare the engine with Excel in every loaded locale whose answers are stored, and name a locale without them as skipped: `acceptance against Excel xx-YY: no answers of Excel xx-YY to the coverage measurement (test/excel/coverage/excel-xx-YY.json)`. The harnesses take the locale's tag and store its answers in files of their own.
 
 #### Where a locale's answers are
 
@@ -210,7 +233,7 @@ Answers are found by tag (`bench/coverage/locales.ts`). en-US's are at the top o
 - the formula text: `locale/xx-YY.json`;
 - Excel for Windows's answers: the same layout under `win/`, and the built-in formats in `win/xlsx/xx-YY/formats.json`.
 
-A directory of stored answers named by a tag that `LOCALES` lacks fails a test (`bench/coverage/locales.test.ts`), so answers are never left unchecked.
+A directory of stored answers named by a tag that the package lacks fails a test (`bench/coverage/locales.test.ts`), so answers are never left unchecked.
 
 #### Taking the answers on the Mac
 
@@ -260,5 +283,7 @@ A new locale needs the same: the measurement and the sets computed in its Excel,
 `test/excel-win.test.ts` checks the same books against Excel for Windows (`test/excel/win/`, `bench/windows`), with the set `collation-more` (62 cases of the order inside Cyrillic and Latin) measured in Windows alone.
 
 `test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas in ru-RU, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from every locale.
+
+`test/locale-modules.test.ts` loads nothing until its last part: a ru-RU book is the `InputError` that names the module in `compute`, a session, `restructure`, `fitColumns`, the same thread and `writeXlsx`, and so is the tag in every function that takes a locale; `ruRU` as an object gives these functions their answers without loading; an en-US book gives Excel's `Январь` for `[$-419]mmmm` and Excel for Mac's widths of Cyrillic letters; `readXlsx` keeps a file's ru-RU; once loaded, a ru-RU book computes as before in a session and in the same thread, with closures and eval; `registerLocale` refuses another object with a loaded tag, en-US, and a locale without rules or with wrong messages; the files of `src/locales/`, `PACKAGE_LOCALES`, `LOCALE_MODULES` and the subpaths agree. `test/locale-args.test.ts` gives every function with a locale the tag and the object and gets the same answer, and `test/locale-pool.test.ts` checks the threads of a pool. `test/bundle-size.test.ts` bundles `compute` alone with esbuild: 252 KB minified, with en-US alone of the locales, under its budget of 300 KB.
 
 Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.
