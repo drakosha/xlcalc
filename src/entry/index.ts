@@ -16,8 +16,7 @@ import type { RulesClock } from '../locale/rules/data.js'
 import { rulesOf, type Rules } from '../locale/rules.js'
 import { epochOf, ymd } from '../dates.js'
 import { msToSerial } from '../model.js'
-import { literal } from '../criteria.js'
-import { builtinOf, formatAfter, shows } from './forms.js'
+import { formatAfter, shows } from './forms.js'
 import { formulaFormat } from './formula.js'
 import { moneyFormat, readTyped } from './read.js'
 
@@ -75,22 +74,22 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   const epoch = epochOf(o.dateSystem)
   const year = ymd(Math.floor(msToSerial(o.now === undefined ? Date.now() : Date.parse(o.now)))).y
   const { rules, clock } = rulesFor(tag, epoch, year)
-  // a formula in a cell in General takes the format of what it computes
+  // a formula takes the format of what it computes as a typed constant of that kind would (`forms.ts`)
   const formula = (src: string, shift: number): EntryResult => {
     const f = formulaOf(src, shift, tag)
     if (!('formula' in f)) return f
-    const general = cell.format === undefined || builtinOf(cell.format, tag) === 0
-    return input({ formula: f.formula }, general && f.sets !== undefined ? (f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets) : cell.format)
+    if (f.sets === undefined) return input({ formula: f.formula })
+    const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
+    return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.format, tag))
   }
   if (text === '') return cell.format !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
   if (text.startsWith("'")) return input({ value: text.slice(1) })
   if (shows(cell.format, 'text') || text === '=') return input({ value: text })
   if (text.startsWith('=')) return formula(text, 0)
-  // the editor of a percent cell adds `%` after a number as it is typed
-  const percent = shows(cell.format, 'pct') && new RegExp(`^[-+]?(\\d|${literal(rules.decimal)})`).test(text)
-  const typed = readTyped(percent ? `${text}%` : text, rules, clock)
-  // `+` or `-` before what is no number begins a formula; `+` before a digit gives its place to `=`
-  if ((text.startsWith('+') || text.startsWith('-')) && typed.t !== 'number') return /^\+\d/.test(text) ? formula(text.slice(1), 1) : formula(text, 0)
+  // the editor of a percent cell adds `%` after a number begun by a digit as it is typed
+  const typed = readTyped(shows(cell.format, 'pct') && /^[-+]?\d/.test(text) ? `${text}%` : text, rules, clock)
+  // `+` or `-` before what is no constant begins a formula (alone they are text); `+` before a digit or `+` gives its place to `=`
+  if (/^[-+]./s.test(text) && typed.t === 'text' && typed.format === undefined) return /^\+[\d+]/.test(text) ? formula(text.slice(1), 1) : formula(text, 0)
   switch (typed.t) {
     case 'number':
       return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.format, tag))

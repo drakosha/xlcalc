@@ -2,9 +2,10 @@
  * A constant typed into a cell, as Excel reads it in a book's locale (`Rules`), measured in the entry set `typed`: a
  * number with the format its form asks for (`1,234.5` → `#,##0.00`, `5%` → `0%`, `$5` → the locale's money with red
  * negatives, `1.5E+3` → scientific, `1 1/2` → a fraction), a date or a time with the built-in date and time formats, a
- * boolean by the locale's words in any case, an error by the locale's text in any case, else text as typed. Numbers,
- * dates and times are read as VALUE reads them; a euro sign before or after a number is dropped in every locale, and a
- * number in scientific form past the range of numbers is text with the scientific format.
+ * boolean by the locale's words in any case, an error by the locale's text in any case, else text as typed. Numbers are
+ * read as VALUE reads them, dates and times as a date argument does (no space before them); a euro sign before or after
+ * a number is dropped in every locale, and a number in scientific form past the range of numbers is text with the
+ * scientific format.
  */
 import type { NumberFormat } from '../contract.js'
 import { literal } from '../criteria.js'
@@ -36,14 +37,14 @@ export function moneyFormat(c: Rules['currency'], decimals: boolean): string {
   return c.negative === '()' ? `${pos}_);[Red]\\(${pos}\\)` : `${pos};[Red]\\-${pos}`
 }
 
-/** The format of a number's form: grouping, percent, money, scientific, fractions by their decimals and denominators. */
+/** The format of a number's form: money, scientific, percent, a fraction, grouping; two decimals where a decimal separator or a fraction was typed. */
 function numberForm(text: string, r: Rules): { form: Form; format?: NumberFormat } {
   const s = trimSpaces(text)
-  const decimals = new RegExp(`\\d*${literal(r.decimal)}(\\d+)`).exec(s.replace(/[eE][+-]?\d+$/, ''))?.[1].length ?? 0
-  if (s.includes(r.currency.symbol)) return { form: 'currency', format: moneyFormat(r.currency, decimals > 0) }
-  if (s.includes('%')) return { form: 'percent', format: decimals ? 10 : 9 }
-  if (/\d[eE][+-]?\d/.test(s)) return { form: 'scientific', format: 11 }
   const frac = /\d \d+\/(\d+)/.exec(s)
+  const decimals = frac !== null || new RegExp(`\\d*${literal(r.decimal)}`).test(s.replace(/[eE][+-]?\d+$/, ''))
+  if (s.includes(r.currency.symbol)) return { form: 'currency', format: moneyFormat(r.currency, decimals) }
+  if (/\d[eE][+-]?\d/.test(s)) return { form: 'scientific', format: 11 }
+  if (s.includes('%')) return { form: 'percent', format: decimals ? 10 : 9 }
   if (frac) return { form: 'fraction', format: frac[1].length > 1 ? 13 : 12 }
   if (new RegExp(`\\d${literal(r.group)}\\d`).test(s)) return { form: 'grouped', format: decimals ? 4 : 3 }
   return { form: 'plain' }
@@ -70,26 +71,40 @@ function dateFormat(p: DateTimeParts, yearless: boolean, decimal: string): Numbe
   return numbers >= 3 ? 14 : 17
 }
 
-/** A number of the locale with a euro sign before or after it (`€5`, `5 €`, `-€5`): the number, the sign dropped. */
+/** A number of the locale with a euro sign before or after it, inside parentheses too (`€5`, `5 €`, `-€5`, `(€5)`): the number, the sign dropped; not with percent. */
 function euro(text: string, r: Rules): number | null {
-  const m = /^ *([+-]?) *€ *(.*?) *$/s.exec(text) ?? /^ *(.*?) *€ *$/s.exec(text)
-  if (!m || r.currency.symbol === '€') return null
-  const n = r.numberOnly(m.length === 3 ? m[1] + m[2] : m[1])
-  return n
+  if (r.currency.symbol === '€' || text.includes('%') || text.split('€').length !== 2) return null
+  return r.numberOnly(text.replace(/ *€ */, ''))
 }
 
-/** A mantissa and an exponent the numbers do not reach (`1E+309`, `1E-400`): Excel keeps the text, in the scientific format. */
-const outOfRange = (text: string, r: Rules) => new RegExp(`^ *[+-]?\\d*(${literal(r.decimal)}\\d*)?[eE][+-]?\\d+ *$`).test(text) && /[1-9]/.test(text.replace(/[eE].*$/, ''))
+/** A fraction without a whole part, with percent (`1/2%`, as Excel's editor of a percent cell makes `1/2`): its value. */
+function fractionPercent(text: string): number | null {
+  const m = /^ *([+-]?)(\d+)\/(\d+) *% *$/.exec(text)
+  return m && Number(m[3]) > 0 ? ((m[1] === '-' ? -1 : 1) * Number(m[2])) / Number(m[3]) / 100 : null
+}
+
+/**
+ * Number text in scientific form that Excel keeps as text, in the scientific format: an exponent past 308, a magnitude
+ * of 1E+308 or more (Excel's largest typed number is below it), a mantissa that is not 0 and comes to 0 (`1E-400`).
+ */
+function outOfRange(text: string, n: number | null, r: Rules): boolean {
+  const m = new RegExp(`^ *[+-]?(\\d*(?:${literal(r.decimal)}\\d*)?)[eE]([+-]?\\d+) *$`).exec(text)
+  if (!m || !/\d/.test(m[1])) return false
+  return Number(m[2]) > 308 || n === null || Math.abs(n) >= 1e308 || (n === 0 && /[1-9]/.test(m[1]))
+}
 
 /** Typed text read as a constant by the book's rules; `clock` is the rules' clock, to know a date without a year. */
 export function readTyped(text: string, r: Rules, clock: RulesClock): Typed {
   const n = r.numberOnly(text)
-  if (n !== null && (n !== 0 || !outOfRange(text, r))) return { t: 'number', v: n, ...numberForm(text, r) }
-  if (outOfRange(text, r)) return { t: 'text', v: text, format: 11 }
-  const [p, yearless] = readsClock(clock, () => dateTimeParts(trimSpaces(text), r.dates))
+  if (outOfRange(text, n, r)) return { t: 'text', v: text, format: 11 }
+  if (n !== null) return { t: 'number', v: n, ...numberForm(text, r) }
+  // date and time text is read with no space before it, as an argument reads it
+  const [p, yearless] = readsClock(clock, () => dateTimeParts(text, r.dates))
   if (p) return { t: 'number', v: p.value, form: p.date === null ? 'time' : 'date', format: dateFormat(p, yearless, r.dates.decimal) }
   const e = euro(text, r)
   if (e !== null) return { t: 'number', v: e, form: 'plain' }
+  const fp = fractionPercent(text)
+  if (fp !== null) return { t: 'number', v: fp, form: 'percent', format: 10 }
   const u = text.toUpperCase()
   const { TRUE, FALSE } = r.locale.booleans
   if (u === TRUE.toUpperCase() || u === FALSE.toUpperCase()) return { t: 'boolean', v: u === TRUE.toUpperCase() }
