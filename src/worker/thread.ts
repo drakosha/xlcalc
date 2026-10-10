@@ -128,6 +128,9 @@ async function open(sid: number, book: BookInput, opts: object, planned: Clock |
   return h
 }
 
+/** A session as a snapshot takes it: its book and history as text, its clock and its last changing call. */
+const taken = async (h: Held) => ({ book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) })
+
 async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promise<unknown> {
   switch (m.t) {
     case 'compute': {
@@ -175,11 +178,11 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     }
     case 'snapshot': {
       const h = heldOf(m.sid)
-      return { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) }
+      return taken(h)
     }
     case 'drop': {
       const h = held.get(m.sid)
-      const kept = m.keep && h ? { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) } : null
+      const kept = m.keep && h ? await taken(h) : null
       h?.s.kill(new CalcError('closed', 'the session left the thread'))
       held.delete(m.sid)
       return kept
