@@ -1,7 +1,7 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
-import type { CellResult, CellValue, CellView, Clock, ComputeResult } from './contract.js'
+import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalLook } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
@@ -77,40 +77,50 @@ function cellResult(state: EngineState, s: number, addr: string, look: Looks | n
 const BY_CELL = 65_536
 
 /**
- * The cells of rectangle `x` of sheet `s` as the result gives them (`Session.cells`), with each cell's own style: the
- * rectangle's cells looked up one by one, or a larger one's found among the sheet's. The steps yield between cells.
+ * The cells of rectangles `xs` of sheet `s` as the result gives them (`Session.cells`), with each cell's own style, once
+ * each: a rectangle's cells looked up one by one, or a larger one's found among the sheet's. The steps yield between cells.
  */
-export function* cellsIn(state: EngineState, s: number, x: Rect, display: boolean): Steps<Record<string, CellView>> {
+export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boolean): Steps<Record<string, CellView>> {
   const cells = state.input.sheets[s].cells
   const look = display ? cellLooks(state) : null
-  const spill = yield* spilled(state, s, x)
-  const inputs: string[] = []
-  if ((x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL) {
-    for (let r = x.r1; r <= x.r2; r++)
-      for (let c = x.c1; c <= x.c2; c++) {
-        if (paced(1)) yield
-        const a = formatAddress(r, c)
-        if (a in cells) inputs.push(a)
-      }
-  } else
-    for (const a of Object.keys(cells)) {
-      if (paced(1)) yield
-      const { row, col } = parseAddress(a)
-      if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2) inputs.push(a)
+  const spill = new Map<string, string>()
+  const listed = new Set<string>()
+  const cond = new Map<number, ConditionalLook>()
+  for (const x of xs) {
+    const small = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL
+    const mine: string[] = []
+    for (const [a, from] of yield* spilled(state, s, x)) {
+      spill.set(a, from)
+      mine.push(a)
     }
-  const listed = [...inputs, ...spill.keys()]
-  // what the sheet's conditional formats give the cells: every cell of a window, the listed ones of a larger rectangle
-  const cond = yield* windowLooks(state, s, x, (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL ? undefined : new Set(listed.map((a) => cellIndex(a))))
-  const blanks = [...cond.keys()].map((k) => formatAddress(Math.floor(k / MAX_COLS), k % MAX_COLS)).filter((a) => !(a in cells) && !spill.has(a))
+    if (small) {
+      for (let r = x.r1; r <= x.r2; r++)
+        for (let c = x.c1; c <= x.c2; c++) {
+          if (paced(1)) yield
+          const a = formatAddress(r, c)
+          if (a in cells) mine.push(a)
+        }
+    } else
+      for (const a of Object.keys(cells)) {
+        if (paced(1)) yield
+        const { row, col } = parseAddress(a)
+        if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2) mine.push(a)
+      }
+    for (const a of mine) listed.add(a)
+    // what the sheet's conditional formats give the cells: every cell of a window, the listed ones of a larger rectangle
+    for (const [k, v] of yield* windowLooks(state, s, x, small ? undefined : new Set(mine.map((a) => cellIndex(a))))) cond.set(k, v)
+  }
+  for (const k of cond.keys()) listed.add(formatAddress(Math.floor(k / MAX_COLS), k % MAX_COLS))
   const out: Record<string, CellView> = {}
-  for (const addr of yield* sortedSteps([...listed, ...blanks])) {
+  for (const addr of yield* sortedSteps([...listed])) {
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const input = cells[addr]
-    // what the cell shows beside its value: its own style, note and link, and its conditional formats' look
+    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, and its conditional formats' look
     if (input?.style !== undefined) view.style = input.style
     if (input?.note !== undefined) view.note = input.note
     if (input?.link !== undefined) view.link = input.link
+    if (input?.array !== undefined) view.array = input.array
     const cf = cond.get(cellIndex(addr))
     if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, format })))
     out[addr] = view

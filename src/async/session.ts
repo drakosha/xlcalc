@@ -81,6 +81,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       return { ...clock }
     },
     setCells: (edits, co) => call(() => core.setCells(edits), co),
+    patchCells: (patches, co) => call(() => core.patchCells(patches), co),
     setNames: (names, co) => call(() => core.setNames(names), co),
     setClock: (next, co) => call(() => core.setClock(next), co),
     restructure: (op, co) =>
@@ -91,6 +92,8 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     setStyles: (styles) => plain(() => core.setStyles(styles)),
     setLayout: (edits, co) => call(() => core.setLayout(edits), co),
     book: () => plain(() => core.book()),
+    layout: () => plain(() => core.layout()),
+    extent: (sheet) => call(() => core.extent(sheet)),
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
     cells: (sheet, range) => call(() => core.cells(sheet, range)),
     validation: (sheet, cell) => call(() => core.validation(sheet, cell)),
