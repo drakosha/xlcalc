@@ -66,6 +66,8 @@ export interface SheetContext {
   filterTable?: string
   /** The first block of the VML shape ids of the sheet's notes (`vmlXml`). */
   noteBlock: number
+  /** The sheet is the book's active one (`workbookView activeTab`), its tab selected: the first visible sheet. */
+  active: boolean
 }
 
 /** A relationship of the sheet after its tables': its id is `rId` and its number among all the sheet's relationships. */
@@ -251,7 +253,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
     (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
-    `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
+    `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${ctx.active ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
     `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(lines(sheet.columns, 'c'), 'outlineLevelCol')}/>` +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +

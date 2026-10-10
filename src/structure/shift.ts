@@ -8,6 +8,7 @@
 import type { BookInput, CellInput, CellRef, RestructureResult } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
+import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { copyTransform } from './copy.js'
@@ -67,7 +68,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   const emptied = axis === 'r' && n < 0 ? emptiedTable(input, sheet, at, -n) : null
   if (emptied) return keepFirstRow(input, sheet, at, -n, emptied)
   const tables = tableShift(input, sheet, axis, at, n)
-  if (tables.refuse) return { ok: false, code: 'table', message: tables.refuse }
+  if (tables.refuse) return { ok: false, code: 'table', message: say(input.locale, tables.refuse) }
   const book = tables.before(input)
   const count = Math.abs(n)
   const max = LIMIT[axis]
@@ -81,17 +82,18 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
   }
   const target = book.sheets.find((s) => sheetKey(s.name) === sheetKey(sheet))!
   const lines = axis === 'r' ? 'rows' : 'columns'
+  const refuse = (code: 'off_sheet' | 'array', m: Message): RestructureResult => ({ ok: false, code, message: say(input.locale, m) })
   if (n > 0) {
     const off = Object.keys(target.cells).find((a) => {
       spend(1)
       return pos(a) >= max - count
     })
-    if (off) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push ${target.name}!${off} off the sheet` }
+    if (off) return refuse('off_sheet', { key: 'insertOffSheet', count, lines, sheet: target.name, cell: off })
   }
   const cut = shiftRefusal(target, axis, at, n)
-  if (cut) return { ok: false, code: 'array', message: cut }
+  if (cut) return refuse('array', cut)
   const merges = shiftMerges(target.merges, axis, at, n)
-  if (merges === null) return { ok: false, code: 'off_sheet', message: `inserting ${count} ${lines} would push a merged area of ${target.name} off the sheet` }
+  if (merges === null) return refuse('off_sheet', { key: 'insertMergeOffSheet', count, lines, sheet: target.name })
   const t = shiftTransform(target.name, axis, at, count, n > 0 ? insertSpan : deleteSpan, tables.edge)
   const names = sheetNames(book)
   const sheets = book.sheets.map((s) => {

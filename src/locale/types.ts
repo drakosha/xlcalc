@@ -5,7 +5,7 @@
  * new object of this shape, no engine code.
  */
 export interface Locale {
-  /** BCP 47 tag: `en-US`, `ru-RU`. */
+  /** BCP 47 tag: `en-US`, `ru-RU`. A package locale's tag also gives the language of messages (English for another tag). */
   readonly tag: string
   /** Decimal separator of number literals: `.` in en-US, `,` in ru-RU. */
   readonly decimalSeparator: string
@@ -31,5 +31,5 @@ export interface Locale {
 /** The specifiers of structured references, invariant text. */
 export type TableItem = '#All' | '#Data' | '#Headers' | '#Totals' | '#This Row'
 
-/** The result of translating formula text: the text, or a check code with the position in the given text. */
+/** The result of translating formula text: the text, or a check code with a message in the locale's language and the position in the given text. */
 export type Translation = { ok: true; formula: string } | { ok: false; code: 'syntax'; message: string; at: number }

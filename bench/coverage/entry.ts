@@ -1,8 +1,8 @@
 /**
  * Typed text against Excel for Mac: the cases of `entry/<set>.ts` are written by `writeXlsx` into books of up to PART
  * cells (`entryBook`), Excel types each text into its cell in the user's language (`excel-entry.applescript`, `formula2
- * local`), reads what each cell shows and its format codes, and saves the book; the saved file is read back by
- * `readXlsx` for what each cell holds. `npx tsx bench/coverage/run.ts entry <set> [ru|<tag>]` stores the answers in
+ * local`), reads what each cell shows, its format codes and the number it holds, and saves the book; the saved file is
+ * read back by `readXlsx` for what each cell holds. `npx tsx bench/coverage/run.ts entry <set> [ru|<tag>]` stores the answers in
  * `test/excel/entry/[<tag>/]<set>.json` with the date of the run (a date typed without a year takes its year);
  * `test/entry-excel.test.ts` compares `parseEntry` with them without Excel. `FENTRY_ONLY=id,id` runs only those cases,
  * `FCOV_FRESH=1` every case again.
@@ -44,18 +44,18 @@ export const heldOf = (c: CellInput | undefined): CellInput | null => {
 }
 
 /** The answers of a part from Excel's reading of its cells and the file it saved. */
-export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
+export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?, unknown?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
   const read = await readXlsx(saved)
   const cells = read.book.sheets.find((s) => s.name === 'S')!.cells
   const cached = read.cached.find((s) => s.name === 'S')!.cells
   const out: Record<string, EntryAnswer> = {}
   part.forEach((c, i) => {
     const at = `A${i + 1}`
-    const [text, code, local, prefix] = shown[i]
+    const [text, code, local, prefix, value2] = shown[i]
     const cell = heldOf(cells[at])
     // a formula Excel does not take leaves the cell as it was, blank, with no error from AppleScript
     const why = refused[i] || (c.text !== '' && cell?.value === undefined && cell?.formula === undefined && !prefix ? 'not taken: the cell stayed blank' : '')
-    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}) }
+    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}) }
   })
   return out
 }
@@ -87,7 +87,7 @@ async function runPart(part: EntryCase[], label: string, keys: boolean): Promise
         const after = dialogText()
         if (after) throw new Error(`entry ${label}: Excel window after the part: ${after}`)
         if (code !== 0) throw new Error(`entry ${label}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?][] }
+        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?][] }
         return await partAnswers(part, raw.refused, raw.cells, new Uint8Array(readFileSync(savedFile)))
       }
       if (declineRepair()) {

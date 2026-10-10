@@ -50,15 +50,16 @@ export const NUMBER_TEXT = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/
 
 /**
  * Decimal number text (matching `NUMBER_TEXT`) as Excel reads it, in a formula or in text: digits past the
- * 15th significant one are dropped, not rounded (123456789012345678 is 123456789012345000).
+ * 15th significant one are dropped, not rounded (123456789012345678 is 123456789012345000). `shift` moves the decimal
+ * point as percent does, in the text: `1.1` with -2 is 0.011, as Excel reads `1.1%`, where 1.1/100 is 0.011000000000000001.
  */
-export function readNumber(text: string): number {
+export function readNumber(text: string, shift = 0): number {
   const m = /^([+-]?)(\d*)\.?(\d*)(?:[eE]([+-]?\d+))?$/.exec(text)!
   const digits = m[2] + m[3]
   const first = digits.search(/[1-9]/)
-  if (first < 0 || digits.length - first <= 15) return Number(text)
-  const kept = digits.slice(0, first + 15).padEnd(digits.length, '0')
-  return Number(`${m[1]}${kept.slice(0, m[2].length)}.${kept.slice(m[2].length)}e${m[4] ?? 0}`)
+  if ((first < 0 || digits.length - first <= 15) && !shift) return Number(text)
+  const kept = first < 0 ? digits : digits.slice(0, first + 15).padEnd(digits.length, '0')
+  return Number(`${m[1]}${kept.slice(0, m[2].length)}.${kept.slice(m[2].length)}e${Number(m[4] ?? 0) + shift}`)
 }
 
 // ---------- dates ----------

@@ -312,6 +312,10 @@ function Step($xl, $wb, $s) {
       [void]$wb.Worksheets.Item(1).Range('A1').Select()
       $all
     }
+    # a sheet's visibility through the object model: -1 visible, 0 hidden, 2 very hidden
+    'visible' { try { $wb.Worksheets.Item($s.sheet).Visible = [int]$s.visible; 'null' } catch { Err $_ } }
+    # the active sheet, and each sheet's name and visibility
+    'book' { List @((Str $wb.ActiveSheet.Name), (List ($wb.Worksheets | ForEach-Object { List @((Str $_.Name), (Cell ([double]$_.Visible))) }))) }
     'parts' {
       $all = List ($wb.Worksheets | ForEach-Object { Parts $xl $_ })
       [void]$wb.Worksheets.Item(1).Activate()

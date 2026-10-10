@@ -6,6 +6,7 @@
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
+import type { Message } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { contains, meets, parseRange, type Axis, type Rect } from './area.js'
@@ -34,20 +35,20 @@ export function relocated(cell: CellInput, from: string, to: string): CellInput 
 }
 
 /** Why Excel refuses to insert (`n` > 0) or delete lines of `sheet` at `at`, or null: lines inside an area, part of an area deleted. */
-export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: number): string | null {
+export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: number): Message | null {
   const [lo, hi] = axis === 'r' ? (['r1', 'r2'] as const) : (['c1', 'c2'] as const)
   for (const [addr, x] of areasOf(sheet)) {
     const cut = n > 0 ? at > x[lo] && at <= x[hi] : at <= x[hi] && at - n - 1 >= x[lo] && !(at <= x[lo] && at - n - 1 >= x[hi])
-    if (cut) return `the operation changes part of the array formula ${sheet.name}!${addr} (${text(x)})`
+    if (cut) return refuse(sheet.name, addr, x)
   }
   return null
 }
 
 const sheetOf = (book: BookInput, name: string) => book.sheets.find((s) => sheetKey(s.name) === sheetKey(name))!
+const refuse = (sheet: string, cell: string, x: Rect): Message => ({ key: 'arrayPart', sheet, cell, area: text(x) })
 
 /** Why Excel refuses a move or a paste, or null: a move taking part of an area, cells landing on part of one that stays. */
-export function arrayRefusal(book: BookInput, p: Paste): string | null {
-  const refuse = (sheet: string, addr: string, x: Rect) => `the operation changes part of the array formula ${sheet}!${addr} (${text(x)})`
+export function arrayRefusal(book: BookInput, p: Paste): Message | null {
   if (p.move) for (const [addr, x] of areasOf(sheetOf(book, p.from))) if (meets(x, p.src) && !contains(p.src, x)) return refuse(p.from, addr, x)
   const moving = (x: Rect) => p.move && sheetKey(p.from) === sheetKey(p.to) && contains(p.src, x)
   for (const [addr, x] of areasOf(sheetOf(book, p.to))) if (meets(x, p.area) && !contains(p.area, x) && !moving(x)) return refuse(p.to, addr, x)

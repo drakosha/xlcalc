@@ -10,7 +10,7 @@ The output is read again in the target locale, so text that would change its mea
 
 In ru-RU on the Mac the list separator is `;`, the decimal separator `,`, and array constants are written `{1;2:3;4}`, with `;` between columns and `:` between rows.
 
-`toInvariant` also accepts English function names, TRUE, FALSE and error texts inside Russian text. Messages of `validateLocalFormula` are in English, with positions in the typed text.
+`toInvariant` also accepts English function names, TRUE, FALSE and error texts inside Russian text. Messages of `toLocal`, `toInvariant` and `validateLocalFormula` are in the locale's language ([Messages](#messages)), with positions in the typed text.
 
 Structured references translate too: the specifiers by the locale's `tableItems` (in ru-RU `#Все`, `#Данные`, `#Заголовки`, `#Итоги` and `#Эта строка`, which Excel shows as `@`) and the separator between their items (`Sales[[#Заголовки];[Qty]]`). `toLocal` shows them as Excel does, and given the table of the formula's cell drops its name where Excel drops it ([Tables](tables.md)).
 
@@ -25,6 +25,8 @@ The Russian names were read from Excel 16.113 for Mac with the Russian interface
 A book carries its locale in `BookInput.locale`, a tag of `LOCALES`: `'en-US'` (the default) or `'ru-RU'`. An xlsx file stores no calculation locale, so the same file gives different values in Excel on a Russian and on an English machine: `VALUE("1.5")` is 1.5 in one and 46143 in the other. A book that carries its locale gives the same values to everyone, while each viewer still sees formulas in their own language through `toLocal`.
 
 An unknown tag is an `InputError`. A host may build its own `Locale` objects for formula text, but computation uses only the package's locales.
+
+In every locale a percent in text keeps the digits written: `VALUE("1,1%")` in ru-RU, as `VALUE("1.1%")` in en-US, is 0.011, the number the text reads as once the decimal point moves two places, as Excel reads it in VALUE, operators and numeric arguments, not 1.1 divided by 100 (0.011000000000000001; the difference shows when it is magnified, `(VALUE("1.1%")-0.011)*1E+20` is 0). `NUMBERVALUE` divides by 100 for each `%` in turn and the operator `%` divides its operand, as Excel does (`NUMBERVALUE("1.1%%")` is 1.1/100/100). Money with percent is no number (`"$1.1%"`, `"1,1 ₽%"`). The set `pct-text` measured these in both Excels and both locales.
 
 The locale enters the hashes only when it is set and is not en-US: `inputHash` gets a line `L "<tag>"`, and the values hash gets `;locale=<tag>` after the configuration version. Books without a locale and en-US books hash as they did before.
 
@@ -65,6 +67,43 @@ Text sorts Latin before Cyrillic in both locales, as Excel for Windows sorts in 
 
 `Intl.Collator` with the en-US order (`collation: 'en-US'` in both locales) and `sensitivity: 'accent'` gives Excel for Windows's order on all 236 measured cases of ru-RU and 174 of en-US. Operators, criteria, lookups and sorting all use it.
 
+## Messages
+
+A person working in a book's locale reads the engine's messages in its language: why a typed formula does not read, why a structure operation is refused, where a value comes from. In ru-RU they are Russian:
+
+| where | the message in ru-RU |
+|---|---|
+| `parseEntry('=СУММ(1', { locale: 'ru-RU' })` | `Ожидалась ), а формула закончилась` |
+| `parseEntry('=ОКРУГЛ(1;2;3)', { locale: 'ru-RU' })` | `Функция ОКРУГЛ принимает 2 аргумента, а указано 3` |
+| `validateLocalFormula('=СУММ(1.5)', ruRU)` | `Здесь не может стоять «.»` |
+| `restructure` deleting rows through an old-kind array | `Нельзя изменить часть массива S!C1 (C1:C3)` |
+| `restructure` renaming a sheet to a name taken | `Лист «Итоги» уже есть (имена листов не различают регистр)` |
+| `explain` | `'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)` |
+
+### Which locale
+
+- `parseEntry` writes in `opts.locale`, and `toLocal`, `toInvariant` and `validateLocalFormula` in the locale they are given. A locale object of one's own speaks the language of the package's locale with its tag, and English for another tag.
+- `restructure`, and a session's `restructure` alike in the same thread, in a thread of the pool or synchronously, write in the book's `locale`.
+- `explain`'s `text` is written in the book's locale: its words (`(2 ячейки)`, `перенос из`), numbers with the locale's decimal separator, formulas as `toLocal` shows them, booleans and errors in the locale's words (`ИСТИНА`, `#Н/Д`), and an empty cell as `пусто`. The tree's `ref`, `value` and `formula` stay as the book stores them, for programs.
+
+Codes (`code`) and positions (`at`) are the same in every language, so a host that chose its own words by the code may go on doing so, or show `message` as it is.
+
+### What stays in English
+
+- `validateFormula`, which has no locale, and every message of an en-US book or call.
+- The reasons of cell errors (`issues[].reason`), the issues of names and `validateName`'s message.
+- `InputError`, a program's mistake rather than a person's.
+
+### How the Russian is written
+
+As an interface writes to a person: short sentences, a capital letter first and no full stop, no long dash. Where Excel ru-RU has a message of its own for the same refusal, the text stays close to it (`Нельзя изменить часть массива`). What comes from the typed formula is written in the locale: function names (`ОКРУГЛ`), separators (`Разделитель «;» вне скобок функции`), specifiers of structured references (`#Данные`). Names of sheets, tables and defined names stand in «» (`Лист «Итоги» уже есть`), references as they are (`S!C1`). A number takes its noun in the right form: `1 строку`, `2 строки`, `5 строк`.
+
+### The catalog
+
+Each message is a key with parameters (`MessageParams` in `src/locale/messages.ts`): the parser, the checks and the structure operations name the message where they refuse, and its text is written only then, so messages cost nothing while a book computes. A locale file's `messages` write the text of each key from its parameters and the locale's words (`Words`: function names, specifiers, numbers, values and formulas as the locale writes them). en-US's file has every message, the engine's English text; a locale without the text of a message gives the English one.
+
+`test/messages-catalog.test.ts` checks that ru-RU writes every message of en-US and shows every parameter the English text shows, and `test/messages-paths.test.ts` that each way a message reaches a person (a typed formula, each refusal of a structure operation in every kind of session, `explain`) gives it in Russian in ru-RU and in English elsewhere.
+
 ## How the engine does it
 
 `src/locale/rules.ts` defines `Rules`, one object per book. en-US is the engine's own code. Another locale is built by `regionalRules` (`src/locale/rules/regional.ts`) from the data in its locale file: separators, the order of dates, the currency and where its symbol stands, month and day names, TEXT codes, the collation tag, the code page of CHAR and CODE, the word of new table columns' names, and the words for TRUE, FALSE and errors.
@@ -82,7 +121,7 @@ The tags a book takes, `LOCALES`, the rules of computation and the widths of let
 
 ### The locale file
 
-A locale file exports one `LocaleFile` (`src/locale/file.ts`). ru-RU's, `src/locales/ru-RU.ts`, is the one to copy. It has three parts.
+A locale file exports one `LocaleFile` (`src/locale/file.ts`). ru-RU's, `src/locales/ru-RU.ts`, is the one to copy. It has four parts.
 
 `text` is the formula text, a `Locale`: the tag, the separators, the words for TRUE and FALSE, error literals, function names and the specifiers of structured references. The file holds most of it as the constant `FORMULA_TEXT` between two marks:
 
@@ -112,7 +151,9 @@ A locale file exports one `LocaleFile` (`src/locale/file.ts`). ru-RU's, `src/loc
 
 `glyphWidths` gives the widths of the letters of the locale's script in Calibri 11, for what a cell shows by its column's width. They count in books of every locale, since text of any script may stand in any book: ru-RU's Cyrillic letters count in en-US books too. Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and a character that no table has counts as a digit.
 
-en-US's file holds its formula text alone: its rules are the engine's code in `src/locale/rules.ts`, where its code page (`windows-1252`) and the word `Column` are.
+`messages` are the engine's messages for people in the locale's language ([Messages](#messages)): a function for each key of `MessageParams` that writes the text from its parameters and the locale's `Words`. A locale may leave out any of them, and those show in English; `test/messages-catalog.test.ts` checks ru-RU's against en-US's keys, and a new locale's full set would join it there.
+
+en-US's file holds its formula text and its messages, the English ones every locale falls back to: its rules are the engine's code in `src/locale/rules.ts`, where its code page (`windows-1252`) and the word `Column` are.
 
 ### Where the data come from
 

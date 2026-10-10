@@ -6,6 +6,8 @@
 import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
+import { english } from './locale/english.js'
+import type { Message } from './locale/messages.js'
 import { LOCALE_FILES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
@@ -151,14 +153,14 @@ function plainCell(c: unknown, styles: number): boolean {
 }
 
 /** Why Excel would not take a sheet name, or null: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History` (reserved, in any case). */
-export function sheetNameProblem(name: string): string | null {
-  if (name === '') return 'a sheet name must not be empty'
-  if (name.length > 31) return `a sheet name has at most 31 characters, ${JSON.stringify(name)} has ${name.length}`
+export function sheetNameProblem(name: string): Message | null {
+  if (name === '') return { key: 'sheetNameEmpty' }
+  if (name.length > 31) return { key: 'sheetNameLong', name, length: name.length }
   const bad = /[:\\/?*[\]]/.exec(name)
-  if (bad) return `a sheet name must not contain ${JSON.stringify(bad[0])} (Excel forbids : \\ / ? * [ ])`
-  if (name.startsWith("'") || name.endsWith("'")) return 'a sheet name must not begin or end with an apostrophe'
+  if (bad) return { key: 'sheetNameChar', char: bad[0] }
+  if (name.startsWith("'") || name.endsWith("'")) return { key: 'sheetNameApostrophe' }
   // Excel refuses to rename a sheet so (the struct set `history`)
-  if (name.toLowerCase() === 'history') return 'Excel reserves the sheet name "History" (in any case)'
+  if (name.toLowerCase() === 'history') return { key: 'sheetNameHistory' }
   return null
 }
 
@@ -284,8 +286,8 @@ function checkFrozen(v: unknown, path: string) {
 }
 
 /**
- * The book: sheets with unique names by Excel's rules (compared case-insensitively), cells by A1 address,
- * columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles.
+ * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
+ * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles.
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
@@ -303,10 +305,10 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
-    if (problem) throw new InputError(`${p}.name`, problem)
+    if (problem) throw new InputError(`${p}.name`, english(problem))
     const dup = seen.get(sheetKey(name))
     if (dup) throw new InputError(`${p}.name`, `duplicate sheet name ${JSON.stringify(name)}: ${path}.sheets[${dup.i}] is ${JSON.stringify(dup.name)} (sheet names are case-insensitive)`)
     seen.set(sheetKey(name), { name, i })
@@ -329,7 +331,11 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
     if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
     if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
+    if (sheet.hidden !== undefined && sheet.hidden !== true && sheet.hidden !== false && sheet.hidden !== 'very') throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
   })
+  // Excel keeps one visible sheet at least
+  const sheets = book.sheets as { hidden?: unknown }[]
+  if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
   return book as unknown as BookInput

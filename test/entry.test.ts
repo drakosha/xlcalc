@@ -61,7 +61,7 @@ describe('parseEntry', () => {
       { value: '-' },
       { value: '=' },
     ])
-    expect(ru('=SUM(A1,1.5)')).toEqual({ ok: false, code: 'syntax', message: 'unexpected "."', at: 9 })
+    expect(ru('=SUM(A1,1.5)')).toEqual({ ok: false, code: 'syntax', message: 'Здесь не может стоять «.»', at: 9 })
     expect(en('=1+')).toEqual({ ok: false, code: 'syntax', message: 'unexpected end of formula', at: 3 })
     expect(en('-1,5')).toMatchObject({ ok: false, code: 'syntax', at: 2 })
     expect(en('+1,5')).toMatchObject({ ok: false, code: 'syntax', at: 2 })

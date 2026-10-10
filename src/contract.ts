@@ -186,6 +186,12 @@ export interface SheetInput {
   validations?: DataValidation[]
   /** Where the summary rows and columns of the sheet's groups are (`RowInput.outlineLevel`); below and right by default. */
   outline?: OutlineSettings
+  /**
+   * The sheet is hidden (Excel's Hide, xlsx `state="hidden"`), or very hidden (`'very'`, xlsx `state="veryHidden"`, a
+   * sheet Excel's window does not offer to show again, only its object model). Not part of computation: formulas read a
+   * hidden sheet as any other. A book keeps one visible sheet at least.
+   */
+  hidden?: boolean | 'very'
 }
 
 /**
@@ -553,7 +559,7 @@ export interface NameInput {
 }
 
 export interface BookInput {
-  /** Excel's rules for sheet names: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end. */
+  /** Excel's rules for sheet names: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end; one visible sheet at least. */
   sheets: SheetInput[]
   names?: NameInput[]
   /** The cell styles that cells, rows and columns refer to by index. */
@@ -690,8 +696,8 @@ export interface EntryOptions {
 
 /**
  * Text typed into a cell as Excel takes it (`parseEntry`): the cell's new input, `null` when nothing is left of the
- * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message and the
- * position in the typed text.
+ * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
+ * language of `opts.locale` (English for en-US) and the position in the typed text.
  */
 export type EntryResult = { ok: true; input: CellInput | null } | { ok: false; code: CheckCode; message: string; at: number }
 
@@ -886,7 +892,10 @@ export interface Explanation {
   root: ExplainNode
   nodes: number
   truncated: boolean
-  /** The tree as indented text (for logs or an LLM agent). */
+  /**
+   * The tree as indented text (for logs, an LLM agent or a person) in the book's locale: in ru-RU its words, numbers,
+   * formulas, booleans and errors are Russian (`'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)`); the nodes keep the stored text.
+   */
   text: string
 }
 
@@ -937,10 +946,15 @@ export type StructureOp =
    */
   | { op: 'insertSheet'; name: string; before?: string }
   /**
-   * The sheet moved before the sheet `before`, else after the last one. A reference across sheets covers the sheets
-   * between its ends in the new order; an end that moves leaves it, the next sheet inward taking its place.
+   * The sheet moved before the sheet `before`, else after the last one; before a hidden sheet it goes before the next
+   * visible one, as Excel moves it. A reference across sheets covers the sheets between its ends in the new order; an end
+   * that moves stays its end until it passes the other end, then the next sheet inward takes its place.
    */
   | { op: 'moveSheet'; sheet: string; before?: string }
+  /** The sheet hidden (Excel's Hide Sheet), very hidden with `very` (see `SheetInput.hidden`); a book keeps one visible sheet. */
+  | { op: 'hideSheet'; sheet: string; very?: boolean }
+  /** The sheet shown again (Excel's Unhide Sheet). */
+  | { op: 'unhideSheet'; sheet: string }
   /** A table over cells of `sheet` (Excel's Format as Table): with a header row its header cells take the columns' names. */
   | { op: 'addTable'; sheet: string; table: TableInput }
   /** A new name for the table, by the rules of `TableInput.name`; every structured reference to it follows. */
@@ -959,8 +973,10 @@ export type StructureRefusal =
   | 'off_sheet'
   /** A new sheet name that breaks Excel's rules or is taken (sheet names compare case-insensitively). */
   | 'sheet_name'
-  /** The only sheet of a book cannot be deleted. */
+  /** A book keeps one visible sheet at least: its last visible sheet cannot be deleted or hidden. */
   | 'last_sheet'
+  /** A very hidden sheet (`SheetInput.hidden` 'very') cannot be deleted or moved, as Excel refuses: it is shown again first. */
+  | 'very_hidden'
   /** A move or copy would cut through a merged area, at its source or where it lands. */
   | 'merged'
   /** A copy that leaves out rows a filter hid, pasted over hidden rows of a filtered sheet (several areas onto several areas). */
@@ -983,6 +999,7 @@ export type RestructureResult =
       /** Where a cell of the old book is now; null if it was deleted or overwritten. */
       mapCell(ref: CellRef): CellRef | null
     }
+  /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
   | { ok: false; code: StructureRefusal; message: string }
 
 /** `Session.restructure`: the operation's result and the values it changed. */
@@ -1104,7 +1121,7 @@ export interface Session {
   setNames(names: NameInput[]): CellChange[]
   /** Non-live sessions only. */
   setClock(clock: Clock): CellChange[]
-  /** A structure operation on the session's book, recomputed; refused as `restructure` refuses it. */
+  /** A structure operation on the session's book, recomputed; refused as `restructure` refuses it. A sheet hidden or shown recomputes nothing. */
   restructure(op: StructureOp): SessionRestructureResult
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
   setStyles(styles: CellStyle[]): void

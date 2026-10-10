@@ -9,6 +9,7 @@
  * keeps some of its lines, and a table's header row deleted without the rest.
  */
 import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
+import type { Message } from '../locale/messages.js'
 import { REGIONAL } from '../locale/rules.js'
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
@@ -31,7 +32,7 @@ const bounds = (t: { r1: number; r2: number; c1: number; c2: number }, axis: Axi
 
 /** The effect of a shift on the tables of `sheet`: a refusal, or the book prepared before the shift and finished after it. */
 export interface TableShift {
-  refuse?: string
+  refuse?: Message
   /** References to deleted tables and columns made #REF!, before the cells move. */
   before(book: BookInput): BookInput
   /** The tables' new ranges and columns, the cells of inserted rows and columns, after the cells moved. */
@@ -54,7 +55,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
   const lines = axis === 'r' ? 'rows' : 'columns'
   if (n > 0) {
     const inside = tables.filter((t) => bounds(t, axis)[0] <= at && at <= bounds(t, axis)[1])
-    if (inside.length > 1) return { ...none, refuse: `inserting ${lines} there would shift cells of the tables ${inside.map((t) => t.name).join(' and ')} at once` }
+    if (inside.length > 1) return { ...none, refuse: { key: 'tableInsertTwo', lines, tables: inside.map((t) => t.name) } }
   } else {
     const met = tables.filter((t) => {
       const [lo, hi] = bounds(t, axis)
@@ -65,9 +66,9 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
       return !(at <= lo && last >= hi)
     })
     // lines that meet two tables go only with both whole (the sets ops and delete-held)
-    if (cut.length && met.length > 1) return { ...none, refuse: `deleting these ${lines} would shift cells of the tables ${met.map((t) => t.name).join(' and ')} at once` }
+    if (cut.length && met.length > 1) return { ...none, refuse: { key: 'tableDeleteTwo', lines, tables: met.map((t) => t.name) } }
     const head = cut.find((t) => axis === 'r' && t.headers && t.r1 >= at && t.r1 <= last)
-    if (head) return { ...none, refuse: `the header row of the table ${head.name} cannot be deleted without the rest of the table` }
+    if (head) return { ...none, refuse: { key: 'tableHeader', table: head.name } }
   }
   // what each table becomes: its new range along the axis and its columns, or null when it is deleted
   const plan = new Map<string, { lo: number; hi: number; columns: TableInput['columns']; totals: boolean; grown: number[] } | null>()

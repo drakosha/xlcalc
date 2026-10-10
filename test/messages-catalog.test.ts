@@ -1,0 +1,166 @@
+/**
+ * The catalog of messages: every message of en-US has its ru-RU text, which takes the same parameters and shows each
+ * one the English shows, in Russian words and the locale's notation, written as an interface writes: no long dash, no
+ * straight double quotes of its own (`«»`), no full stop at the end, no lower-case start.
+ */
+import { describe, expect, it } from 'vitest'
+import { EN_MESSAGES } from '../src/locales/en-US.js'
+import { RU_RU } from '../src/locales/ru-RU.js'
+import { ruRU, toLocal } from '../src/locale/index.js'
+import { say, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
+
+/** Parameters of each message: a key without samples does not compile. */
+const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
+  rowOutOfRange: [{ row: '0' }],
+  columnOutOfRange: [{ column: 'XFE' }],
+  spillAfterRange: [{}],
+  spillAcrossSheets: [{}],
+  unterminatedString: [{}],
+  unknownErrorLiteral: [{}],
+  externalReference: [{}],
+  referenceAfterSheet: [{}],
+  quotedSheetAlone: [{}],
+  unexpectedCharacter: [{ char: '~' }],
+  emptyFormula: [{}],
+  tooLong: [{ max: 8192 }],
+  tooDeep: [{ max: 64 }, { max: 21 }],
+  unexpectedEnd: [{}],
+  unexpected: [{ found: { t: 'fn', v: 'ROUND' } }, { found: { t: 'ident', v: 'TRUE' } }, { found: { t: 'op', v: '+' } }, { found: { t: 'num' } }, { found: { t: ',' } }, { found: { t: ')' } }],
+  expected: [{ char: ')', found: { t: 'eof' } }, { char: ')', found: { t: 'str' } }],
+  commaOutside: [{}],
+  arraySeparator: [{ found: { t: 'num' } }, { found: { t: 'eof' } }],
+  arrayRows: [{}],
+  arrayValue: [{ found: { t: 'op', v: '+' } }, { found: { t: ',' } }],
+  letTwice: [{ name: 'x' }],
+  letName: [{ position: 3 }],
+  letEmpty: [{}],
+  letTooMany: [{ max: 254 }],
+  specUnterminated: [{}],
+  specBracketInColumn: [{}],
+  specUnknown: [{ word: '#Data' }, { word: '#Foo' }],
+  specSpan: [{}],
+  specOpen: [{}],
+  specTwoColumns: [{}],
+  specTwice: [{ word: '#Headers' }],
+  specClose: [{}],
+  specTogether: [{ words: ['#All', '#Data'] }],
+  externalLiterals: [{ fn: 'BALANCE' }],
+  argumentCount: [
+    { fn: 'ROUND', counts: { min: 2, max: 2 }, got: 3 },
+    { fn: 'IF', counts: { min: 1, max: 3 }, got: 4 },
+    { fn: 'SUMIFS', counts: { min: 3, max: 255, parity: 'odd' }, got: 4 },
+    { fn: 'SORTBY', counts: { min: 2, max: 253, parity: 'odd', or: true }, got: 4 },
+    { fn: 'PI', counts: { min: 0, max: 0 }, got: 1 },
+  ],
+  argumentLeftOut: [{ fn: 'SUMIF', position: 3 }],
+  tableRefOutside: [{}],
+  unknownTable: [{ table: 'Sales' }],
+  unknownColumn: [{ table: 'Sales', column: 'Qty' }],
+  unknownFunction: [{ fn: 'FOO' }, { fn: 'STOCKHISTORY' }],
+  unknownSheet: [{ sheet: 'Data' }],
+  unknownName: [{ name: 'rate' }],
+  unterminatedSheet: [{}],
+  unexpectedText: [{ text: '.' }],
+  unexpectedInArray: [{ text: 'x' }],
+  notWritable: [{ text: 'A1' }, { text: 'x', tag: 'ru-RU' }],
+  nameRule: [{ name: 'q', rule: 'chars' }, { name: 'A1', rule: 'cell' }, { name: 'TRUE', rule: 'true' }, { name: 'ЛОЖЬ', rule: 'boolean' }],
+  sheetNameEmpty: [{}],
+  sheetNameLong: [{ name: 'x'.repeat(32), length: 32 }, { name: 'y'.repeat(41), length: 41 }],
+  sheetNameChar: [{ char: ':' }],
+  sheetNameApostrophe: [{}],
+  sheetNameHistory: [{}],
+  sheetNameTaken: [{ name: 'Plan' }],
+  lastSheet: [{}],
+  lastVisibleSheet: [{ sheet: 'Feb' }],
+  veryHidden: [{ sheet: 'Keys' }],
+  insertOffSheet: [{ count: 1, lines: 'rows', sheet: 'S', cell: 'A1048576' }, { count: 3, lines: 'columns', sheet: 'S', cell: 'XFD1' }, { count: 5, lines: 'rows', sheet: 'S', cell: 'A1048576' }],
+  insertMergeOffSheet: [{ count: 2, lines: 'rows', sheet: 'S' }],
+  arrayPart: [{ sheet: 'S', cell: 'C1', area: 'C1:C3' }],
+  moveOffSheet: [{ sheet: 'S', cell: 'A1048575' }],
+  copyOffSheet: [{ sheet: 'S', cell: 'XFD1' }],
+  moveCutsMerge: [{ sheet: 'S', area: 'A1:B1' }],
+  pasteOnMerge: [{ sheet: 'S', area: 'D1:E1' }],
+  filteredPaste: [{ sheet: 'S', area: 'D1:E6' }],
+  tableLands: [{ table: 'Sales' }],
+  tableInsertTwo: [{ lines: 'rows', tables: ['Sales', 'Costs'] }],
+  tableDeleteTwo: [{ lines: 'columns', tables: ['Sales', 'Costs', 'Taxes'] }],
+  tableHeader: [{ table: 'Sales' }],
+  tableName: [{ name: 'A1', rule: 'cell' }, { name: 'ИСТИНА', rule: 'boolean' }],
+  tableNameTaken: [{ table: 'Sales' }],
+  tableNameDefined: [{ name: 'rate' }],
+  tableOverTable: [{ range: 'A1:C9', table: 'Sales' }],
+  tableOverMerge: [{ range: 'A1:C9', area: 'B2:C3' }],
+  explainCells: [{ count: 1 }, { count: 2 }, { count: 11 }, { count: 25 }],
+  explainSpill: [{ ref: "'S'!B2" }],
+  explainValue: [{ value: 1.5 }, { value: true }, { value: null }, { value: { error: 'NA' } }],
+  explainFormula: [{ formula: 'ROUND(B1*1.2,0)' }],
+}
+
+const messages = (): Message[] => Object.entries(SAMPLES).flatMap(([key, ps]) => (ps as object[]).map((p) => ({ key, ...p }) as Message))
+const ru = (m: Message) => say('ru-RU', m, (f) => (toLocal(f, ruRU) as { formula: string }).formula)
+
+/** The ways ru-RU writes a parameter's value: as it is, a function's or a specifier's name, a number, a formula. */
+function forms(v: string | number): string[] {
+  const s = String(v)
+  const local = toLocal(s, ruRU)
+  return [s, ruRU.functions[s], ruRU.tableItems?.[s as '#Data'], s.replace('.', ','), local.ok ? local.formula : undefined].filter((x): x is string => x !== undefined)
+}
+
+/** The parameters whose value picks the message's words rather than standing in it: rows or columns, a rule of names. */
+const WORDS = new Set(['key', 'lines', 'rule'])
+
+/** The parameters' values that a message's text may show: strings, numbers and the strings of lists. */
+const values = (m: Message): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))
+
+/** The pieces of the explanation's lines, which stand inside a line rather than alone. */
+const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula'])
+
+describe('the catalog of messages', () => {
+  it('ru-RU writes every message of en-US', () => {
+    const keys = Object.keys(EN_MESSAGES)
+    expect(keys.filter((k) => RU_RU.messages?.[k as MessageKey] === undefined)).toEqual([])
+    expect(Object.keys(SAMPLES).sort()).toEqual([...keys].sort())
+  })
+
+  it('the Russian text shows every parameter the English one shows, in the locale', () => {
+    const missing: string[] = []
+    for (const m of messages()) {
+      const [en, text] = [say('en-US', m), ru(m)]
+      for (const v of values(m)) if (en.includes(String(v)) && !forms(v).some((f) => text.includes(f))) missing.push(`${m.key}: ${v} in ${text}`)
+    }
+    expect(missing).toEqual([])
+  })
+
+  it('the Russian text is Russian, written as an interface writes', () => {
+    const bad: string[] = []
+    for (const m of messages()) {
+      const text = ru(m)
+      if (text === say('en-US', m)) bad.push(`${m.key}: the English text`)
+      if (/[—–]|\p{Extended_Pictographic}/u.test(text)) bad.push(`${m.key}: a dash or a pictograph in ${text}`)
+      if (PIECES.has(m.key)) continue
+      if (!/\p{Script=Cyrillic}/u.test(text)) bad.push(`${m.key}: no Russian word in ${text}`)
+      if (text.includes('"')) bad.push(`${m.key}: straight quotes in ${text}`)
+      if (/^\p{Ll}/u.test(text) || /\.$/.test(text)) bad.push(`${m.key}: a lower-case start or a full stop in ${text}`)
+    }
+    expect(bad).toEqual([])
+  })
+
+  it('numbers take the noun in its form: 1 ячейка, 2 ячейки, 11 ячеек, 25 ячеек', () => {
+    expect(SAMPLES.explainCells.map((p) => ru({ key: 'explainCells', ...p }))).toEqual(['1 ячейка', '2 ячейки', '11 ячеек', '25 ячеек'])
+    expect(SAMPLES.insertOffSheet.map((p) => ru({ key: 'insertOffSheet', ...p }).split(':')[0])).toEqual(['Нельзя вставить 1 строку', 'Нельзя вставить 3 столбца', 'Нельзя вставить 5 строк'])
+    expect(SAMPLES.argumentCount.map((p) => ru({ key: 'argumentCount', ...p }))).toEqual([
+      'Функция ОКРУГЛ принимает 2 аргумента, а указано 3',
+      'Функция ЕСЛИ принимает от 1 до 3 аргументов, а указано 4',
+      'Функция СУММЕСЛИМН принимает нечётное число аргументов от 3 до 255, а указано 4',
+      'Функция СОРТПО принимает 2 аргумента или нечётное число от 3 до 253, а указано 4',
+      'Функция ПИ принимает 0 аргументов, а указано 1',
+    ])
+    expect(ru({ key: 'tooDeep', max: 21 })).toBe('Вложенность формулы больше 21 уровня')
+  })
+
+  it('a locale without its own text of a message takes the English one', () => {
+    const own = { ...ruRU, tag: 'xx-YY' }
+    expect(say(own, { key: 'lastSheet' })).toBe('a book keeps at least one sheet')
+    expect(say('xx-YY', { key: 'lastSheet' })).toBe('a book keeps at least one sheet')
+  })
+})

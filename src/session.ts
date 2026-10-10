@@ -218,6 +218,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const old = yield* ready()
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
+      // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
+      if (op.op === 'hideSheet' || op.op === 'unhideSheet') {
+        old.input.sheets.splice(0, old.input.sheets.length, ...r.book.sheets)
+        return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: [] }
+      }
       const at = clock
       if (live) tick(old)
       try {
@@ -279,7 +284,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const { row, col } = parseAddress(checkAddress(cell, 'cell'))
       const e = explainCell(s, i, row, col, o.depth ?? 3, o.maxNodes ?? 200, o.expand ?? false)
-      return { ...e, text: explainText(e.root) }
+      return { ...e, text: explainText(e.root, s.input.locale) }
     },
     *cells(sheet: string, range: string | string[]) {
       const s = yield* ready()

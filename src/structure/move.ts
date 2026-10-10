@@ -5,6 +5,7 @@
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
 import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'
+import { say } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
 import { contains, hi, isFull, lo, meets, parseRange, rectOf, withSpan, type Area, type Axis, type Rect } from './area.js'
@@ -139,12 +140,12 @@ export const within = (x: Rect, addr: string) => {
 export function moveRange(book: BookInput, from: string, src: Rect, to: string, row: number, col: number): RestructureResult {
   const [dr, dc] = [row - src.r1, col - src.c1]
   const dst = shiftRect(src, dr, dc)
-  if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: `the range does not fit on ${to} at ${formatAddress(row, col)}` }
+  if (dst.r2 >= MAX_ROWS || dst.c2 >= MAX_COLS) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'moveOffSheet', sheet: to, cell: formatAddress(row, col) }) }
   const paste: Paste = { from, src, to, area: dst, offsets: [[dr, dc]], move: true }
   const refused = mergeRefusal(book, paste)
-  if (refused) return { ok: false, code: 'merged', message: refused }
+  if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
   const part = arrayRefusal(book, paste)
-  if (part) return { ok: false, code: 'array', message: part }
+  if (part) return { ok: false, code: 'array', message: say(book.locale, part) }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const t = moveTransform(from, src, to, dr, dc)
   const names = sheetNames(book)

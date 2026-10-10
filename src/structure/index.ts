@@ -5,6 +5,7 @@
 import type { BookInput, CellRef, RestructureResult, StructureOp } from '../contract.js'
 import { checkAddress, checkBook, checkString, InputError } from '../input.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
+import { say } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
@@ -13,7 +14,7 @@ import { parseRange } from './area.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
-import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
+import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { tableOp } from '../tables/ops.js'
 import { copyTables, moveTables } from '../tables/moves.js'
@@ -36,6 +37,8 @@ const FIELDS: Record<string, string[]> = {
   deleteSheet: ['sheet'],
   insertSheet: ['name', 'before'],
   moveSheet: ['sheet', 'before'],
+  hideSheet: ['sheet', 'very'],
+  unhideSheet: ['sheet'],
   addTable: ['sheet', 'table'],
   renameTable: ['table', 'name'],
   deleteTable: ['table'],
@@ -141,7 +144,7 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
-        if (tables.refuse) r = { ok: false, code: 'table', message: tables.refuse }
+        if (tables.refuse) r = { ok: false, code: 'table', message: say(book.locale, tables.refuse) }
         else {
           const m = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
           r = m.ok ? { ...m, book: tables.after(m.book) } : m
@@ -165,6 +168,13 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
     case 'moveSheet':
       r = moveSheet(book, named(o.sheet, 'op.sheet'), o.before === undefined ? undefined : named(o.before, 'op.before'))
       break
+    case 'hideSheet':
+    case 'unhideSheet': {
+      const sheet = named(o.sheet, 'op.sheet')
+      if (o.very !== undefined && typeof o.very !== 'boolean') throw new InputError('op.very', `expected a boolean, got ${JSON.stringify(o.very)}`)
+      r = hideSheet(book, sheet, o.op === 'unhideSheet' ? false : o.very ? 'very' : true)
+      break
+    }
     case 'addTable':
     case 'renameTable':
     case 'deleteTable':

@@ -40,13 +40,13 @@ export function numberReader(data: RegionalData): (text: string) => number | nul
     const exp = /^(.*?)([eE][+-]?\d+)$/.exec(body)
     const mant = exp ? exp[1] : body
     let n: number | null = null
-    if (grouped.test(mant) && /\d/.test(mant)) n = readNumber(mant.split(group).join('').replace(decimal, '.') + (exp ? exp[2] : ''))
+    // percent moves the decimal point of the text (`1,1%` is 0.011); a fraction is divided
+    if (grouped.test(mant) && /\d/.test(mant)) n = readNumber(mant.split(group).join('').replace(decimal, '.') + (exp ? exp[2] : ''), percent ? -2 : 0)
     else if (!paren && !(before && currency)) {
       const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
-      if (frac && Number(frac[3]) > 0) n = Number(frac[1]) + Number(frac[2]) / Number(frac[3])
+      if (frac && Number(frac[3]) > 0) n = (Number(frac[1]) + Number(frac[2]) / Number(frac[3])) / (percent ? 100 : 1)
     }
     if (n === null || !Number.isFinite(n)) return null
-    if (percent) n /= 100
     return negative || paren ? -n : n
   }
 }

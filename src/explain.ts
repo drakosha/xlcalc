@@ -1,6 +1,9 @@
-/** `explain`: where a cell's value comes from, as a tree of its precedents and as indented text. */
+/** `explain`: where a cell's value comes from, as a tree of its precedents and as indented text in the book's locale. */
 import type { CellValue } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
+import { toLocal } from './locale/index.js'
+import { say, type Message } from './locale/messages.js'
+import { DEFAULT_LOCALE, LOCALE_FILES } from './locale/registry.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
@@ -78,12 +81,19 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
   return { root, nodes, truncated }
 }
 
-export function explainText(root: ExplainTree): string {
-  const fmt = (v: CellValue | undefined) => (v === undefined ? '' : v !== null && typeof v === 'object' ? `#${v.error}` : JSON.stringify(v))
+/** The tree as indented text in the locale `tag` (en-US without one): its words, values and formulas. */
+export function explainText(root: ExplainTree, tag?: string): string {
+  const loc = (LOCALE_FILES.get(tag ?? DEFAULT_LOCALE) ?? LOCALE_FILES.get(DEFAULT_LOCALE)!).text
+  const local = (f: string) => {
+    const t = toLocal(f, loc)
+    return t.ok ? t.formula : f
+  }
+  const text = (m: Message) => say(loc, m, local)
   const lines: string[] = []
   const go = (n: ExplainTree, indent: string) => {
-    const head = n.cells !== undefined ? `${n.ref} (${n.cells} cells)` : `${n.ref} = ${fmt(n.value)}`
-    lines.push(`${indent}${head}${n.formula ? `  ← ${n.formula}` : n.spillOf ? `  ← spilled from ${n.spillOf}` : ''}`)
+    const head = n.cells !== undefined ? `${n.ref} (${text({ key: 'explainCells', count: n.cells })})` : `${n.ref} = ${text({ key: 'explainValue', value: n.value })}`
+    const from = n.formula ? text({ key: 'explainFormula', formula: n.formula }) : n.spillOf ? text({ key: 'explainSpill', ref: n.spillOf }) : ''
+    lines.push(`${indent}${head}${from ? `  ← ${from}` : ''}`)
     for (const ch of n.children) go(ch, indent + '  ')
   }
   go(root, '')

@@ -38,6 +38,8 @@ export const ENTRY_KNOWN: ReadonlyMap<string, EntryReason> = new Map([
     'ru-RU:typed-held': ['more-5'],
     'en-US:typed-held-2': ['pct2-2'],
     'ru-RU:typed-held-2': ['pct2-2'],
+    'en-US:typed-pct-held': ['pru-12'],
+    'ru-RU:typed-pct-held': ['pen-12'],
   }),
   ...cases('percent', {
     'en-US:typed': PERCENT_TYPED,
