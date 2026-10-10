@@ -11,7 +11,7 @@ import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'
 import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
-import { formatAddress, NUMBER_TEXT } from '../model.js'
+import { formatAddress } from '../model.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
 import { tableAt } from '../tables/model.js'
@@ -116,20 +116,15 @@ const COMPARE: Record<string, (a: number, b: number) => boolean> = {
 }
 
 /**
- * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item text in its case
- * against the value without spaces at either end, a plain number in the locale's spelling (not a percent or a date), a
- * boolean by its word (the sets `files`, `entry-held`, `lists`, `entry-held-2`).
+ * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item, text in its
+ * case, against the value as text (a number as `&` writes it: `1e3` and `+2` are no 1000 and 2), without spaces at
+ * either end (the sets `files`, `entry-held`, `lists`, `entry-held-2`, `held-3`).
  */
 function listed(state: EngineState, value: V, item: Item, isLiteral: boolean): boolean {
   const rules = state.ctx.rules
   if (!isLiteral) return typeof item.value === typeof value && !isErr(item.value) && rules.compare(item.value, value) === 0
-  const t = item.text
-  if (typeof value === 'number') {
-    const plain = rules.decimal === '.' ? t : t.replace(rules.decimal, '.')
-    return !plain.includes(rules.decimal === '.' ? ',' : '.') && NUMBER_TEXT.test(plain) && Number(plain) === value
-  }
-  if (typeof value === 'boolean') return rules.toText(value) === t
-  return typeof value === 'string' && value.trim() === t
+  const text = rules.toText(value)
+  return typeof text === 'string' && text.trim() === item.text
 }
 
 /** Whether a formula as at the cell refers to a blank cell by a reference to one cell, which with blanks ignored lets any value in. */
