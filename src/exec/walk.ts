@@ -27,6 +27,8 @@ export interface CodegenContext {
   name(name: string, scope: number): NameDef | undefined
   /** The area of an array formula of the old kind: `ROW()` and `COLUMN()` give its rows and columns. */
   area?: Rect
+  /** The cell a conditional format's formula is written for: its references without `$` move from there to the formula's cell, wrapping round the sheet's edges. */
+  origin?: { r: number; c: number }
   /** A structured reference in the formula's row `r`: its sheet and rectangle, or the error it gives (`tables/model.ts`). */
   table?(n: Extract<Ast, { k: 'table' }>, r: number): (Rect & { s: number }) | ErrorCode
 }
@@ -177,10 +179,11 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const inside = new Set<NameDef>()
   // a reference's rectangle: in a name's formula, its relative bounds moved by the formula's cell
   const rect = (n: Extract<Ast, { k: 'ref' | 'ref3d' }>) => {
-    const a = inside.size ? relative(n.ref) : null
+    const a = inside.size || ctx.origin ? relative(n.ref) : null
     if (!a) return n.ref
-    const [r1, r2] = [moved(a.r.lo, r, MAX_ROWS), moved(a.r.hi, r, MAX_ROWS)]
-    const [c1, c2] = [moved(a.c.lo, c, MAX_COLS), moved(a.c.hi, c, MAX_COLS)]
+    const [dr, dc] = inside.size || !ctx.origin ? [r, c] : [r - ctx.origin.r + MAX_ROWS, c - ctx.origin.c + MAX_COLS]
+    const [r1, r2] = [moved(a.r.lo, dr, MAX_ROWS), moved(a.r.hi, dr, MAX_ROWS)]
+    const [c1, c2] = [moved(a.c.lo, dc, MAX_COLS), moved(a.c.hi, dc, MAX_COLS)]
     return { r1: Math.min(r1, r2), r2: Math.max(r1, r2), c1: Math.min(c1, c2), c2: Math.max(c1, c2) }
   }
   /**
