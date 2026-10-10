@@ -910,7 +910,8 @@ export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) 
 
 /**
  * The steps a session keeps for `undo`: `depth` of them, 100 by default as in Excel (0 keeps none), holding `maxMb`
- * megabytes at most by the engine's estimate, 64 by default. Past either the oldest steps go; a step larger than
+ * megabytes at most by the engine's estimate, 64 by default, in a pool with `maxHeapMb` its share of a thread's heap
+ * (`maxHeapMb / (8 × maxSessionsPerThread)`, `docs/async.md`). Past either the oldest steps go; a step larger than
  * `maxMb` alone is not kept, and the steps before it go too, as Excel forgets what it cannot undo.
  */
 export interface UndoOptions {
