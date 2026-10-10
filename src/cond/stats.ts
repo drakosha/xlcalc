@@ -58,7 +58,7 @@ export function* eachValue(state: EngineState, s: number, rects: Rect[], f: (v: 
 }
 
 /** The statistics of a rule on sheet `s`, from the current values. */
-export function* ruleStats(state: EngineState, s: number, rule: ConditionalFormat): Steps<Stats> {
+function* ruleStats(state: EngineState, s: number, rule: ConditionalFormat): Steps<Stats> {
   const nums: number[] = []
   const counts = new Map<string, number>()
   const key = valueKey(state.ctx.rules)

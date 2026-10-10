@@ -7,13 +7,13 @@
  */
 import type { BookInput, ConditionalFormat, ConditionalValue, SheetInput } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
-import { sheetKey } from '../syntax.js'
+import { sheetKey, tokenize } from '../syntax.js'
 import { meets, type Axis, type Rect } from '../structure/area.js'
 import { copyTransform } from '../structure/copy.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, type Transform } from '../structure/rewrite.js'
 import { deleteSpan } from '../structure/shift.js'
-import { tokenize } from '../syntax.js'
+import { minus } from '../validation/structure.js'
 import { originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }
@@ -153,21 +153,7 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
 }
 
 /** Rectangles without the cells of `cut`. */
-export function subtract(rects: Rect[], cut: Rect): Rect[] {
-  const out: Rect[] = []
-  for (const x of rects) {
-    if (!meets(x, cut)) {
-      out.push(x)
-      continue
-    }
-    if (x.r1 < cut.r1) out.push({ ...x, r2: cut.r1 - 1 })
-    if (x.r2 > cut.r2) out.push({ ...x, r1: cut.r2 + 1 })
-    const [r1, r2] = [Math.max(x.r1, cut.r1), Math.min(x.r2, cut.r2)]
-    if (x.c1 < cut.c1) out.push({ r1, r2, c1: x.c1, c2: cut.c1 - 1 })
-    if (x.c2 > cut.c2) out.push({ r1, r2, c1: cut.c2 + 1, c2: x.c2 })
-  }
-  return out
-}
+const subtract = (rects: Rect[], cut: Rect): Rect[] => rects.flatMap((x) => minus(x, cut))
 
 const inside = (x: Rect, y: Rect): Rect | null => {
   const z = { r1: Math.max(x.r1, y.r1), r2: Math.min(x.r2, y.r2), c1: Math.max(x.c1, y.c1), c2: Math.min(x.c2, y.c2) }

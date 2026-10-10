@@ -32,8 +32,6 @@ export const ICON_SETS: Record<IconSetName, number> = {
 }
 
 export const CELL_IS = ['equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual', 'between', 'notBetween'] as const
-export const TEXT_TYPES = ['containsText', 'notContainsText', 'beginsWith', 'endsWith'] as const
-export const BLANK_TYPES = ['containsBlanks', 'notContainsBlanks', 'containsErrors', 'notContainsErrors'] as const
 export const PERIODS = ['today', 'yesterday', 'tomorrow', 'last7Days', 'thisWeek', 'lastWeek', 'nextWeek', 'thisMonth', 'lastMonth', 'nextMonth'] as const
 const VALUE_TYPES = ['min', 'max', 'num', 'percent', 'percentile', 'formula', 'autoMin', 'autoMax']
 const WITH_VALUE = new Set(['num', 'percent', 'percentile', 'formula'])

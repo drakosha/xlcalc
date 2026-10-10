@@ -4,25 +4,18 @@
  * errors, time periods). No computation: the xlsx subpath reads and writes rules with these.
  */
 import type { ConditionalFormat } from '../contract.js'
-import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from '../model.js'
+import { formatAddress } from '../model.js'
+import { areaText } from '../validation/rules.js'
 import { parseRange, type Rect } from '../structure/area.js'
 
 /** The rectangles of a rule's ranges. */
 export const rectsOf = (f: ConditionalFormat): Rect[] => f.ranges.map((x) => parseRange(x)!)
 
-/** A rectangle as a rule's range: a cell (`B5`), a rectangle (`B2:D9`), whole columns (`B:D`) or whole rows (`2:9`). */
-export function rangeText(x: Rect): string {
-  if (x.r1 === 0 && x.r2 === MAX_ROWS - 1) return `${indexToCol(x.c1)}:${indexToCol(x.c2)}`
-  if (x.c1 === 0 && x.c2 === MAX_COLS - 1) return `${x.r1 + 1}:${x.r2 + 1}`
-  const a = formatAddress(x.r1, x.c1)
-  return x.r1 === x.r2 && x.c1 === x.c2 ? a : `${a}:${formatAddress(x.r2, x.c2)}`
-}
-
 /** The ranges of rectangles, `was` (the rule's own spelling) when they are its rectangles. */
 export function rangesOf(rects: Rect[], was: string[]): string[] {
   const old = was.map((x) => parseRange(x)!)
   const same = old.length === rects.length && rects.every((x, i) => x.r1 === old[i].r1 && x.r2 === old[i].r2 && x.c1 === old[i].c1 && x.c2 === old[i].c2)
-  return same ? was : rects.map(rangeText)
+  return same ? was : rects.map(areaText)
 }
 
 /**

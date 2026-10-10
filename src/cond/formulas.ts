@@ -23,12 +23,12 @@ export function prepare(state: EngineState, s: number, text: string): Ast | null
 }
 
 /** A formula's code at cell (r, c) of sheet `s`, written for `origin`: closures, whatever the book's execution mode. */
-export function compileAt(state: EngineState, s: number, ast: Ast, origin: { r: number; c: number }, r: number, c: number): () => Arg {
+function compileAt(state: EngineState, s: number, ast: Ast, origin: { r: number; c: number }, r: number, c: number): () => Arg {
   return walk({ ...codegenContext(state, s), origin }, ast, s, r, c, closureBackend(state.rt)).code
 }
 
 /** The axes along which a formula's code differs from cell to cell: relative references, names, `@`, ROW() and the other functions of their cell. */
-export function movesAlong(ast: Ast): { rows: boolean; cols: boolean } {
+function movesAlong(ast: Ast): { rows: boolean; cols: boolean } {
   const out = { rows: false, cols: false }
   walkTree(ast, (n) => {
     if (n.k === 'ref' || n.k === 'ref3d') {

@@ -7,7 +7,8 @@
  */
 import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName } from '../../contract.js'
 import { CELL_IS, ICON_SETS, PERIODS } from '../../cond/check.js'
-import { defaultFormula, originOf, rangeText } from '../../cond/rules.js'
+import { defaultFormula, originOf } from '../../cond/rules.js'
+import { areaText } from '../../validation/rules.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
@@ -55,7 +56,7 @@ function ranges(sqref: string, ctx: Context): string[] {
   const out: string[] = []
   for (const r of sqref.replaceAll('$', '').trim().split(/\s+/)) {
     const x = r ? parseRange(r) : null
-    if (x) out.push(rangeText(x))
+    if (x) out.push(areaText(x))
     else if (r) ctx.issues.add('conditionalFormat', 'a range of a conditional format outside the sheet is left out', { sheet: ctx.sheet, cell: r })
   }
   return out
