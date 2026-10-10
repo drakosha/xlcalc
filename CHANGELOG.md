@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.16.1 (2026-10-10)
+
+Internal release; not published to npm. The cells of formatted rows and columns in xlsx as Excel shows them.
+
+Fixed:
+
+- `writeXlsx` wrote a cell without a format or style of its own in a formatted row or column with none, and Excel showed it in General (46096 for a date in a column of dates): Excel shows a stored cell by its own cell format alone. Every cell is now written with the look the engine shows for it (its own over its row's, else its column's), and where a row with a look crosses a column with another one, the empty cells of the crossing are written too, as Excel writes them. A sheet without formatted lines is written as before. `readXlsx` keeps of a cell what its row or column does not give it, so a written book reads back as it was, and spells out a default a formatted row would not give (General, a plain style). Measured with the engine's answers committed before each run: the set `lines` (`files`, `held`) in Excel for Mac and Windows, 500 of 501 cells held out as Excel shows them; the one left is below.
+- The look rows and columns give a cell is worked out in one place for showing cells, AutoFit, copy and paste, the lists of data validation and xlsx.
+
+Known difference: when Excel formats a line across a line with a style, it gives the cells of the crossing both styles merged field by field; `setLayout` sets a line's style whole, so the engine shows the crossing by the row's style alone. A host formatting a line across a formatted one gives the crossing cells their merged style, as Excel does.
+
 ## 0.16.0 (2026-10-10)
 
 Internal release; not published to npm. Undo and redo in sessions.
