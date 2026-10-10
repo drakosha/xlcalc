@@ -22,7 +22,7 @@ import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
-import { readConditional } from './conditional.js'
+import { outsideConditional, readConditional } from './conditional.js'
 import type { Dxf } from '../styles/dxf.js'
 import type { Palette } from '../styles/color.js'
 import { readValidations } from './validation.js'
@@ -282,7 +282,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (frozen) sheet.frozen = frozen
   const cf = readConditional(tail, name, src.cond.dxfs, src.cond.palette, ctx.issues)
   if (cf) sheet.conditionalFormats = cf
-  const validations = readValidations(tail, name, src.sheets, ctx.issues)
+  const validations = readValidations(outsideConditional(tail), name, src.sheets, ctx.issues)
   if (validations) sheet.validations = validations
   const settings = outline(head, name, ctx.issues)
   if (settings) sheet.outline = settings

@@ -47,6 +47,9 @@ function split(tail: string): { blocks: Element[]; rest: string } {
   return { blocks, rest }
 }
 
+/** The worksheet's tail without its `<conditionalFormatting>` blocks, whose 2007 data bars hold an extension list of their own: the sheet's extension list is then the one left. */
+export const outsideConditional = (tail: string): string => split(tail).rest
+
 /** The ranges of a `sqref`, those the model takes, as the model writes them (`A1:A1048576`, Excel's whole column, is `A:A`). */
 function ranges(sqref: string, ctx: Context): string[] {
   const out: string[] = []

@@ -64,6 +64,28 @@ describe('conditional formats in xlsx', () => {
     expect((await readXlsx((await writeXlsx(pct)).data)).book.sheets[0].conditionalFormats![0]).toMatchObject({ style: { format: 10 } })
   })
 
+  it("a sheet with conditional formats and data validation keeps both: the extension list of a data bar is not the sheet's", async () => {
+    const book: BookInput = {
+      sheets: [
+        {
+          name: 'S',
+          cells: { A1: { value: 1 } },
+          conditionalFormats: [RULES[10], RULES[14]],
+          validations: [{ range: 'D1:D10', type: 'list', formula1: "'T T'!$A$1:$A$3" }, { range: 'A1:A10', type: 'whole', formula1: '1', formula2: '100' }],
+        },
+        { name: 'T T', cells: {} },
+      ],
+    }
+    const { data, issues } = await writeXlsx(book)
+    expect(issues).toEqual([])
+    const xml = await partOf(data, 'xl/worksheets/sheet1.xml')
+    expect(xml.indexOf('<conditionalFormatting')).toBeLessThan(xml.indexOf('<dataValidations'))
+    const back = await readXlsx(data)
+    expect(back.issues).toEqual([])
+    expect(back.book.sheets[0].conditionalFormats).toEqual(book.sheets[0].conditionalFormats)
+    expect(back.book.sheets[0].validations).toEqual(book.sheets[0].validations)
+  })
+
   it('a rule whose formula the file cannot hold is left out and reported', async () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: {}, conditionalFormats: [{ type: 'expression', ranges: ['A1'], formula: 'SUM(', style: RED }, { type: 'expression', ranges: ['A2'], formula: "'Nope'!A1>1" }] }] }
     const { data, issues } = await writeXlsx(book)
