@@ -1,0 +1,772 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 4.052,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "VALUE#1",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1.1%\")-(0.011))*1E+20"
+  },
+  {
+   "id": "operators#1",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1.1%\"*1-(0.011))*1E+20"
+  },
+  {
+   "id": "ABS#1",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1.1%\")-ABS(0.011))*1E+20"
+  },
+  {
+   "id": "VALUE#2",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"0.7%\")-(0.007))*1E+20"
+  },
+  {
+   "id": "operators#2",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"0.7%\"*1-(0.007))*1E+20"
+  },
+  {
+   "id": "ABS#2",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"0.7%\")-ABS(0.007))*1E+20"
+  },
+  {
+   "id": "VALUE#3",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1.255%\")-(0.01255))*1E+20"
+  },
+  {
+   "id": "operators#3",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1.255%\"*1-(0.01255))*1E+20"
+  },
+  {
+   "id": "ABS#3",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1.255%\")-ABS(0.01255))*1E+20"
+  },
+  {
+   "id": "VALUE#4",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"99.9%\")-(0.999))*1E+20"
+  },
+  {
+   "id": "operators#4",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"99.9%\"*1-(0.999))*1E+20"
+  },
+  {
+   "id": "ABS#4",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"99.9%\")-ABS(0.999))*1E+20"
+  },
+  {
+   "id": "VALUE#5",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"0.035%\")-(0.00035))*1E+20"
+  },
+  {
+   "id": "operators#5",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"0.035%\"*1-(0.00035))*1E+20"
+  },
+  {
+   "id": "ABS#5",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"0.035%\")-ABS(0.00035))*1E+20"
+  },
+  {
+   "id": "VALUE#6",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1.005%\")-(0.01005))*1E+20"
+  },
+  {
+   "id": "operators#6",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1.005%\"*1-(0.01005))*1E+20"
+  },
+  {
+   "id": "ABS#6",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1.005%\")-ABS(0.01005))*1E+20"
+  },
+  {
+   "id": "VALUE#7",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"123.45%\")-(1.2345))*1E+20"
+  },
+  {
+   "id": "operators#7",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"123.45%\"*1-(1.2345))*1E+20"
+  },
+  {
+   "id": "ABS#7",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"123.45%\")-ABS(1.2345))*1E+20"
+  },
+  {
+   "id": "VALUE#8",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"(1.1%)\")-(-0.011))*1E+20"
+  },
+  {
+   "id": "operators#8",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"(1.1%)\"*1-(-0.011))*1E+20"
+  },
+  {
+   "id": "ABS#8",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"(1.1%)\")-ABS(-0.011))*1E+20"
+  },
+  {
+   "id": "VALUE#9",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"%0.7\")-(0.007))*1E+20"
+  },
+  {
+   "id": "operators#9",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"%0.7\"*1-(0.007))*1E+20"
+  },
+  {
+   "id": "ABS#9",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"%0.7\")-ABS(0.007))*1E+20"
+  },
+  {
+   "id": "VALUE#10",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"$1.1%\")-(0.011))*1E+20"
+  },
+  {
+   "id": "operators#10",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"$1.1%\"*1-(0.011))*1E+20"
+  },
+  {
+   "id": "ABS#10",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"$1.1%\")-ABS(0.011))*1E+20"
+  },
+  {
+   "id": "VALUE#11",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1,1%\")-(0.011))*1E+20"
+  },
+  {
+   "id": "operators#11",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1,1%\"*1-(0.011))*1E+20"
+  },
+  {
+   "id": "ABS#11",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1,1%\")-ABS(0.011))*1E+20"
+  },
+  {
+   "id": "VALUE#12",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"0,7%\")-(0.007))*1E+20"
+  },
+  {
+   "id": "operators#12",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"0,7%\"*1-(0.007))*1E+20"
+  },
+  {
+   "id": "ABS#12",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"0,7%\")-ABS(0.007))*1E+20"
+  },
+  {
+   "id": "VALUE#13",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1,255%\")-(0.01255))*1E+20"
+  },
+  {
+   "id": "operators#13",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1,255%\"*1-(0.01255))*1E+20"
+  },
+  {
+   "id": "ABS#13",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1,255%\")-ABS(0.01255))*1E+20"
+  },
+  {
+   "id": "VALUE#14",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"99,9%\")-(0.999))*1E+20"
+  },
+  {
+   "id": "operators#14",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"99,9%\"*1-(0.999))*1E+20"
+  },
+  {
+   "id": "ABS#14",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"99,9%\")-ABS(0.999))*1E+20"
+  },
+  {
+   "id": "VALUE#15",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"123,45%\")-(1.2345))*1E+20"
+  },
+  {
+   "id": "operators#15",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"123,45%\"*1-(1.2345))*1E+20"
+  },
+  {
+   "id": "ABS#15",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"123,45%\")-ABS(1.2345))*1E+20"
+  },
+  {
+   "id": "VALUE#16",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"(1,1%)\")-(-0.011))*1E+20"
+  },
+  {
+   "id": "operators#16",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"(1,1%)\"*1-(-0.011))*1E+20"
+  },
+  {
+   "id": "ABS#16",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"(1,1%)\")-ABS(-0.011))*1E+20"
+  },
+  {
+   "id": "VALUE#17",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"%0,7\")-(0.007))*1E+20"
+  },
+  {
+   "id": "operators#17",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"%0,7\"*1-(0.007))*1E+20"
+  },
+  {
+   "id": "ABS#17",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"%0,7\")-ABS(0.007))*1E+20"
+  },
+  {
+   "id": "VALUE#18",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"11E-1%\")-(0.011))*1E+20"
+  },
+  {
+   "id": "operators#18",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"11E-1%\"*1-(0.011))*1E+20"
+  },
+  {
+   "id": "ABS#18",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"11E-1%\")-ABS(0.011))*1E+20"
+  },
+  {
+   "id": "VALUE#19",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"7E-1%\")-(0.007))*1E+20"
+  },
+  {
+   "id": "operators#19",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"7E-1%\"*1-(0.007))*1E+20"
+  },
+  {
+   "id": "ABS#19",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"7E-1%\")-ABS(0.007))*1E+20"
+  },
+  {
+   "id": "VALUE#20",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1 2/3\")-(1+2/3))*1E+20"
+  },
+  {
+   "id": "operators#20",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1 2/3\"*1-(1+2/3))*1E+20"
+  },
+  {
+   "id": "ABS#20",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1 2/3\")-ABS(1+2/3))*1E+20"
+  },
+  {
+   "id": "VALUE#21",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"2 4/7\")-(2+4/7))*1E+20"
+  },
+  {
+   "id": "operators#21",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"2 4/7\"*1-(2+4/7))*1E+20"
+  },
+  {
+   "id": "ABS#21",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"2 4/7\")-ABS(2+4/7))*1E+20"
+  },
+  {
+   "id": "VALUE#22",
+   "group": "VALUE",
+   "fn": "VALUE",
+   "formula": "(VALUE(\"1 2/3%\")-((1+2/3)/100))*1E+20"
+  },
+  {
+   "id": "operators#22",
+   "group": "operators",
+   "fn": "operators",
+   "formula": "(\"1 2/3%\"*1-((1+2/3)/100))*1E+20"
+  },
+  {
+   "id": "ABS#22",
+   "group": "ABS",
+   "fn": "ABS",
+   "formula": "(ABS(\"1 2/3%\")-ABS((1+2/3)/100))*1E+20"
+  },
+  {
+   "id": "percent#1",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "(1.1%-0.011)*1E+20"
+  },
+  {
+   "id": "percent#2",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "(0.7%-0.007)*1E+20"
+  },
+  {
+   "id": "percent#3",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "(99.9%-0.999)*1E+20"
+  },
+  {
+   "id": "percent#4",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "((11/10)%-0.011)*1E+20"
+  },
+  {
+   "id": "percent#5",
+   "group": "percent",
+   "fn": "operators",
+   "formula": "(9%%-0.0009)*1E+20"
+  },
+  {
+   "id": "NUMBERVALUE#1",
+   "group": "NUMBERVALUE",
+   "fn": "NUMBERVALUE",
+   "formula": "(_xlfn.NUMBERVALUE(\"1.1%\",\".\",\",\")-0.011)*1E+20"
+  },
+  {
+   "id": "NUMBERVALUE#2",
+   "group": "NUMBERVALUE",
+   "fn": "NUMBERVALUE",
+   "formula": "(_xlfn.NUMBERVALUE(\"1,1%\",\",\",\".\")-0.011)*1E+20"
+  },
+  {
+   "id": "NUMBERVALUE#3",
+   "group": "NUMBERVALUE",
+   "fn": "NUMBERVALUE",
+   "formula": "(_xlfn.NUMBERVALUE(\"0.7%\",\".\")-0.007)*1E+20"
+  },
+  {
+   "id": "NUMBERVALUE#4",
+   "group": "NUMBERVALUE",
+   "fn": "NUMBERVALUE",
+   "formula": "(_xlfn.NUMBERVALUE(\"9%%\",\".\")-0.0009)*1E+20"
+  },
+  {
+   "id": "NUMBERVALUE#5",
+   "group": "NUMBERVALUE",
+   "fn": "NUMBERVALUE",
+   "formula": "(_xlfn.NUMBERVALUE(\"1.1%%\",\".\")-0.00011)*1E+20"
+  }
+ ],
+ "values": {
+  "VALUE#1": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#1": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#1": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#2": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#2": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#2": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#3": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#3": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#3": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#4": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#4": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#4": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#5": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#5": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#5": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#6": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#6": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#6": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#7": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#7": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#7": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#8": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#8": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#8": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#9": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#9": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#9": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#11": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#13": {
+   "t": "n",
+   "v": 1.253745e+21
+  },
+  "operators#13": {
+   "t": "n",
+   "v": 1.253745e+21
+  },
+  "ABS#13": {
+   "t": "n",
+   "v": 1.253745e+21
+  },
+  "VALUE#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#14": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#16": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "operators#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "ABS#17": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "VALUE#18": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#18": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#18": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#19": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#19": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#19": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#20": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#20": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#20": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#21": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#21": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#21": {
+   "t": "n",
+   "v": 0
+  },
+  "VALUE#22": {
+   "t": "n",
+   "v": 0
+  },
+  "operators#22": {
+   "t": "n",
+   "v": 0
+  },
+  "ABS#22": {
+   "t": "n",
+   "v": 0
+  },
+  "percent#1": {
+   "t": "n",
+   "v": 173.4723475976807
+  },
+  "percent#2": {
+   "t": "n",
+   "v": -86.73617379884035
+  },
+  "percent#3": {
+   "t": "n",
+   "v": 11102.230246251565
+  },
+  "percent#4": {
+   "t": "n",
+   "v": 173.4723475976807
+  },
+  "percent#5": {
+   "t": "n",
+   "v": 0
+  },
+  "NUMBERVALUE#1": {
+   "t": "n",
+   "v": 173.4723475976807
+  },
+  "NUMBERVALUE#2": {
+   "t": "n",
+   "v": 173.4723475976807
+  },
+  "NUMBERVALUE#3": {
+   "t": "n",
+   "v": -86.73617379884035
+  },
+  "NUMBERVALUE#4": {
+   "t": "n",
+   "v": 0
+  },
+  "NUMBERVALUE#5": {
+   "t": "n",
+   "v": 1.3552527156068805
+  }
+ }
+}
