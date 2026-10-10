@@ -57,55 +57,6 @@ export function gammafn(x: number): number {
   return res
 }
 
-const factorial = (n: number) => (n < 0 ? NaN : gammafn(n + 1))
-const factorialln = (n: number) => (n < 0 ? NaN : gammaln(n + 1))
-
-export function combination(n: number, m: number): number {
-  // past 170 the factorials overflow
-  return n > 170 || m > 170 ? Math.exp(factorialln(n) - factorialln(m) - factorialln(n - m)) : factorial(n) / factorial(m) / factorial(n - m)
-}
-
-/** The continued fraction of the incomplete beta function (modified Lentz's method). */
-function betacf(x: number, a: number, b: number): number {
-  const fpmin = 1e-30
-  const qab = a + b
-  const qap = a + 1
-  const qam = a - 1
-  let c = 1
-  let d = 1 - (qab * x) / qap
-  if (Math.abs(d) < fpmin) d = fpmin
-  d = 1 / d
-  let h = d
-  for (let m = 1; m <= 100; m++) {
-    const m2 = 2 * m
-    let aa = (m * (b - m) * x) / ((qam + m2) * (a + m2))
-    d = 1 + aa * d
-    if (Math.abs(d) < fpmin) d = fpmin
-    c = 1 + aa / c
-    if (Math.abs(c) < fpmin) c = fpmin
-    d = 1 / d
-    h *= d * c
-    aa = (-(a + m) * (qab + m) * x) / ((a + m2) * (qap + m2))
-    d = 1 + aa * d
-    if (Math.abs(d) < fpmin) d = fpmin
-    c = 1 + aa / c
-    if (Math.abs(c) < fpmin) c = fpmin
-    d = 1 / d
-    const del = d * c
-    h *= del
-    if (Math.abs(del - 1.0) < 3e-7) break
-  }
-  return h
-}
-
-/** The regularized incomplete beta function I_x(a, b); NaN outside 0 ≤ x ≤ 1. */
-export function ibeta(x: number, a: number, b: number): number {
-  const bt = x === 0 || x === 1 ? 0 : Math.exp(gammaln(a + b) - gammaln(a) - gammaln(b) + a * Math.log(x) + b * Math.log(1 - x))
-  if (x < 0 || x > 1) return NaN
-  if (x < (a + 1) / (a + b + 2)) return (bt * betacf(x, a, b)) / a
-  return 1 - (bt * betacf(1 - x, b, a)) / b
-}
-
 /** erfc(|x|) by the Chebyshev fit of jStat's erf, accurate in relative terms far into the tail. */
 function erfcAbs(x: number): number {
   const cof = [
@@ -135,55 +86,6 @@ export function erf(x: number): number {
 export function erfc(x: number): number {
   const res = erfcAbs(x)
   return x < 0 ? 2 - res : res
-}
-
-export const normalPdf = (x: number, mean: number, std: number) => Math.exp(-0.5 * Math.log(2 * Math.PI) - Math.log(std) - Math.pow(x - mean, 2) / (2 * std * std))
-
-export const normalCdf = (x: number, mean: number, std: number) => 0.5 * (1 + erf((x - mean) / Math.sqrt(2 * std * std)))
-
-export const centralFCdf = (x: number, df1: number, df2: number) => (x < 0 ? 0 : ibeta((df1 * x) / (df1 * x + df2), df1 / 2, df2 / 2))
-
-export function binomialPdf(k: number, n: number, p: number): number {
-  return p === 0 || p === 1 ? (n * p === k ? 1 : 0) : combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k)
-}
-
-/** Continued fraction of the incomplete beta function, for the binomial distribution. */
-function betinc(x: number, a: number, b: number, eps: number): number {
-  let a0 = 0
-  let b0 = 1
-  let a1 = 1
-  let b1 = 1
-  let m9 = 0
-  let a2 = 0
-  while (Math.abs((a1 - a2) / a1) > eps) {
-    a2 = a1
-    let c9 = (-(a + m9) * (a + b + m9) * x) / (a + 2 * m9) / (a + 2 * m9 + 1)
-    a0 = a1 + c9 * a0
-    b0 = b1 + c9 * b0
-    m9 = m9 + 1
-    c9 = (m9 * (b - m9) * x) / (a + 2 * m9 - 1) / (a + 2 * m9)
-    a1 = a0 + c9 * a1
-    b1 = b0 + c9 * b1
-    a0 = a0 / b1
-    b0 = b0 / b1
-    a1 = a1 / b1
-    b1 = 1
-  }
-  return a1 / a
-}
-
-export function binomialCdf(x: number, n: number, p: number): number {
-  const eps = 1e-10
-  if (x < 0) return 0
-  if (x >= n) return 1
-  if (p < 0 || p > 1 || n <= 0) return NaN
-  x = Math.floor(x)
-  const a = x + 1
-  const b = n - x
-  const s = a + b
-  const bt = Math.exp(gammaln(s) - gammaln(b) - gammaln(a) + a * Math.log(p) + b * Math.log(1 - p))
-  const betacdf = p < (a + 1) / (s + 2) ? bt * betinc(p, a, b, eps) : 1 - bt * betinc(1 - p, b, a, eps)
-  return Math.round((1 - betacdf) * (1 / eps)) / (1 / eps)
 }
 
 /** A&S 26.2.22: the normal deviate with upper tail pp, the first step of jStat's inverses. */
