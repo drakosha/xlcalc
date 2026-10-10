@@ -73,8 +73,10 @@ on run argv
 			set stage to "looks"
 			try
 				repeat with readItem in reads
-					set ws to worksheet (item 1 of readItem) of wb
-					set rng to range (item 2 of readItem) of ws
+					set ws to worksheet ((item 1 of readItem) as text) of wb
+					-- `cell j of` a range of a sheet that is not active gives the active sheet's cell
+					activate object ws
+					set rng to range ((item 2 of readItem) as text) of ws
 					set cellsOut to {}
 					repeat with j from 1 to (count of cells of rng)
 						set oneCell to cell j of rng
