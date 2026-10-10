@@ -97,7 +97,8 @@ function withRules(s: SheetInput, list: ConditionalFormat[]): SheetInput {
 /** Rules in their order, those Excel takes out and puts back after the others last (`late`), in their order. */
 const lastLate = (xs: { rule: ConditionalFormat; late: boolean }[]) => [...xs.filter((x) => !x.late), ...xs.filter((x) => x.late)].map((x) => x.rule)
 
-const GRADED = new Set(['colorScale', 'dataBar', 'iconSet'])
+/** Rules over the statistics of their cells. */
+const GRADED = new Set(['colorScale', 'dataBar', 'iconSet', 'top10', 'aboveAverage', 'duplicateValues', 'uniqueValues'])
 
 /**
  * One axis of a rule's range after `n` lines are inserted before `at`: the lines take the format of the line before them,
@@ -114,8 +115,8 @@ function grown(lo: number, hi: number, at: number, n: number, max: number): [num
  * The rules of the book's sheets after `n` lines are inserted (`n` > 0) or deleted at `at` of `target` (`t`, the
  * references' transform): the target's ranges grow over inserted lines that follow a line of theirs and move with the
  * lines after, shrink with deleted ones, and a rule with none left is gone; every rule's formulas are rewritten. Lines
- * deleted from a colour scale or a data bar (an icon set too, as far as known) put the rule after the others, as Excel
- * puts it back (the set `cond/struct-held`).
+ * deleted from a rule over the statistics of its cells (a colour scale, a data bar, an icon set, a top rule; average and
+ * duplicate rules taken as these) put the rule after the others, as Excel puts it back (the sets `cond/struct-held`, `held`).
  */
 export function shiftConditional(sheets: SheetInput[], target: string, axis: Axis, at: number, n: number, t: Transform, names: Map<string, string>): SheetInput[] {
   const max = axis === 'r' ? MAX_ROWS : MAX_COLS
@@ -207,19 +208,23 @@ export function moveConditional(old: BookInput, out: BookInput, p: Paste, t: Tra
   if (carried.length) out.sheets = out.sheets.map((s) => (sheetKey(s.name) === tk ? withRules(s, [...carried, ...(s.conditionalFormats ?? [])]) : s))
 }
 
-/** Whether rectangles together make one rectangle. */
-function oneRect(xs: Rect[]): Rect | null {
-  const box = { r1: Math.min(...xs.map((x) => x.r1)), r2: Math.max(...xs.map((x) => x.r2)), c1: Math.min(...xs.map((x) => x.c1)), c2: Math.max(...xs.map((x) => x.c2)) }
-  const area = (x: Rect) => (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
-  const overlap = xs.some((x, i) => xs.some((y, j) => j > i && meets(x, y)))
-  return !overlap && xs.reduce((a, x) => a + area(x), 0) === area(box) ? box : null
+/**
+ * The one rectangle rectangles of the same columns make, stacked without gaps or overlaps: a rule grows over a paste
+ * that goes on down or up its columns (the sets `cond/struct-held`, `held`: a fill down grows it, a copy right next to
+ * it is a new rule).
+ */
+function column(xs: Rect[]): Rect | null {
+  if (xs.some((x) => x.c1 !== xs[0].c1 || x.c2 !== xs[0].c2)) return null
+  const ys = [...xs].sort((a, b) => a.r1 - b.r1)
+  for (let i = 1; i < ys.length; i++) if (ys[i].r1 !== ys[i - 1].r2 + 1) return null
+  return { r1: ys[0].r1, r2: ys[ys.length - 1].r2, c1: ys[0].c1, c2: ys[0].c2 }
 }
 
 /**
  * The rules after a copy (`p`, copy and paste or fill; `source`, the book copied from): the cells pasted on lose their
  * rules; the copied cells' rules come as new rules over the pasted cells, first in the target's order, their formulas
- * copied as the cells' are; a rule of the same sheet whose cells and the pasted ones make one rectangle (a fill) grows
- * over them instead (the set `cond/struct-held`).
+ * copied as the cells' are; a rule of the same sheet whose cells and the pasted ones make one rectangle down its columns
+ * (a fill down) grows over them instead (the sets `cond/struct-held`, `held`).
  */
 export function copyConditional(source: BookInput, out: BookInput, p: Paste, names: Map<string, string>) {
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
@@ -233,10 +238,11 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
   for (const rule of from) {
     const next = pasted(rule)
     if (!next.length) continue
-    // a fill on the rule's own sheet: one rectangle with the rule's other cells
+    // a fill down or up on the rule's own sheet: one column of rectangles with the rule's other cells
     const same = fk === tk ? kept.find((x) => x.rule === rule) : undefined
-    if (same && oneRect([...same.stay, ...next])) {
-      same.stay = [oneRect([...same.stay, ...next])!]
+    const grownTo = same && column([...same.stay, ...next])
+    if (same && grownTo) {
+      same.stay = [grownTo]
       continue
     }
     const [o, to] = [originOf(rule), corner(next)]
