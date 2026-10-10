@@ -204,8 +204,8 @@ export type ConditionalFormat =
 export interface ConditionalBase {
   /**
    * The cells it applies to: rectangles of the sheet (`B2:B20`, `D2`, whole columns `F:F`, whole rows `3:5`), as Excel's
-   * "Applies to" and xlsx `sqref`. Its formulas are written for the first one's top-left cell: a reference without `$`
-   * moves from there to each cell, as a copied formula does.
+   * "Applies to" and xlsx `sqref`. Its formulas are written for the top-left cell of the rectangle around them: a
+   * reference without `$` moves from there to each cell, as a copied formula does.
    */
   ranges: string[]
   /** Excel's Stop If True: the rules after this one do not apply to a cell this one holds for. */
@@ -222,7 +222,10 @@ export interface ConditionalStyle {
   format?: NumberFormat
 }
 
-/** The cell's value compared with one formula's value, or two for `between` and `notBetween` (both ends included), as `=`, `<` and the like compare. */
+/**
+ * The cell's value compared with one formula's value, or two for `between` and `notBetween` (both ends included, either
+ * way round), as `=`, `<` and the like compare; a blank cell a formula refers to is 0 there.
+ */
 export interface CellIsFormat extends ConditionalBase {
   type: 'cellIs'
   operator: 'equal' | 'notEqual' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual' | 'between' | 'notBetween'
@@ -231,7 +234,7 @@ export interface CellIsFormat extends ConditionalBase {
   style?: ConditionalStyle
 }
 
-/** A formula that holds: TRUE, or a number other than 0. */
+/** A formula that holds, as IF reads its condition: TRUE, a number other than 0, the text TRUE. */
 export interface ExpressionFormat extends ConditionalBase {
   type: 'expression'
   formula: string
@@ -249,7 +252,10 @@ export interface TextFormat extends ConditionalBase {
   style?: ConditionalStyle
 }
 
-/** The cell is blank (or holds spaces alone), is not, holds an error, or does not; computed by `formula`, Excel's (`LEN(TRIM(A1))=0`) without it. */
+/**
+ * The cell is blank (or holds spaces alone), is not, holds an error, or does not. Blanks go by the value, as Excel shows
+ * them (an error is not blank); errors by `formula`, Excel's (`ISERROR(A1)`) without it, which Excel writes beside both.
+ */
 export interface BlanksFormat extends ConditionalBase {
   type: 'containsBlanks' | 'notContainsBlanks' | 'containsErrors' | 'notContainsErrors'
   formula?: string
