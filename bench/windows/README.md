@@ -16,6 +16,7 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `valid/<set>.json`, `valid/ru-RU/<set>.json` and the folders beside them: data validation and outlines over each sheet's window as Excel read them in the Mac step's books (`bench/coverage/valid/`), in the Mac's shape, and the files it saved.
 - `entry/<set>.json`, `entry/ru-RU/<set>.json`: text typed into cells through `Formula2Local` in the Mac step's books (`bench/coverage/entry/`), what each cell shows, its format codes and prefix character, its `Value2` (sets run since `typed-pct-held`), and what the book Excel saved holds; `meta` names Excel's `AutoPercentEntry`.
 - `fit/<set>.json`, `fit/ru-RU/<set>.json`: column widths in the Mac step's books (`bench/coverage/fit/`), each case's column fitted (`EntireColumn.AutoFit`) or its texts set through `Value2` or `Formula2Local` (the keyboard's cases are the Mac's alone), its `ColumnWidth`, `Width` and `UseStandardWidth`, what its cells show and the `<col>` of the saved file.
+- `lines/<set>.json` and `lines/<set>/`: formats of rows and columns in the Mac step's books (`bench/coverage/lines/`), each case's steps through COM (a range's `NumberFormat`, `Font.Bold`, `Font.Italic`, `Interior.Color`, a cell's `Value2`), what the read cells show (`Range.Text`, `NumberFormat`, `DisplayFormat`'s fill and font) and the files Excel saved.
 - `hidden/<set>.json` and `hidden/<set>/`: hidden sheets in the Mac step's books (`bench/coverage/hidden/`), each sheet's `Visible` set through COM, the sheet operation, each sheet's visibility, the active sheet and the read cells' `Value2`, and the files Excel saved.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
 
@@ -46,6 +47,7 @@ npx tsx bench/windows/run.ts xlsx filters
 npx tsx bench/windows/run.ts xlsx formats ru
 npx tsx bench/windows/run.ts entry typed ru
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts hidden sheets-held
+XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts lines files
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts valid files
 ```
 
@@ -114,10 +116,11 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | data validation and outlines, 8 sets and 1 | en-US, ru-RU | 64 and 2 | all (but a list typed through the object model in ru-RU, which COM splits at `;` and AppleScript does not) | all but the pinned differences the Mac has |
 | text typed into cells, 4 sets | en-US, ru-RU | 958 and 958 | all but 34: the formats `m/d/yyyy` (en-US, 12) and `h:mm` (ru-RU, 22), which Windows takes as the built-in formats 14 and 20 | all but 169, pinned in `test/entry-known.ts` (the object model, English names in ru-RU, a reference's format) |
 | hidden sheets, 3 sets | en-US | 50 | all, but for the error Excel for Mac does not give when it deletes no sheet | all |
+| formats of rows and columns, 2 sets | en-US | 15 books, 1,087 cells | all | all but 3 cells where Excel merges the styles of lines it formats across each other, pinned as on the Mac |
 | column widths, 4 sets and 3 | en-US, ru-RU | 622 and 290 | the same columns fitted, kept and shown, none widened through the object model; the width of 117 and 83, as Windows fits to its pixels | as the Mac: what becomes of each column, not its width (`test/fit-win.test.ts`) |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
-The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets and the fit sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
+The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets, the lines sets and the fit sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
 
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 

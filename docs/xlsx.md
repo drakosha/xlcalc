@@ -82,6 +82,8 @@ rows: { 5: { height: 30, hidden: true } }, columns: { E: { width: 12, hidden: tr
 
 A grouped row or column gets its `outlineLevel`, 1 to 7, and the summary line of a collapsed group `collapsed: true`; the group's lines are hidden lines ([Data validation and outlines](#data-validation-and-outlines)).
 
+A cell keeps of its look only what its row or column does not give it ([The cells of formatted rows and columns](#the-cells-of-formatted-rows-and-columns)): a date typed into a column of dates comes back as a value alone, and shows the column's format.
+
 A merged area that overlaps another is left out and reported.
 
 ### Hidden sheets
@@ -204,7 +206,7 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 
 ### Styles, columns and rows
 
-Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits.
+Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits. Every cell is written with the look it shows, its row's or column's where it has none of its own, as Excel writes it ([The cells of formatted rows and columns](#the-cells-of-formatted-rows-and-columns)).
 
 A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
 
@@ -232,6 +234,47 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
 | `conditionalFormat` | a rule with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is left out |
+
+## The cells of formatted rows and columns
+
+A book gives a cell without a style or a format of its own its row's, else its column's, the style and the format each separately: `{ value: 46096 }` in a column of `dddd, mmmm d, yyyy` shows `Sunday, March 15, 2026`. Excel reads a file otherwise. The writer and the reader turn one into the other, so a book written and opened in Excel shows what the engine shows, and a file Excel saved reads into a book that shows what Excel showed.
+
+### Cells the file stores
+
+Excel shows a cell the file stores (a `<c>` element) by the cell's own cell format alone, whatever its row and column have. So the writer writes each cell with the whole look it shows. A value in that column of dates is written with the column's cell format, the one Excel gives a value typed there, and a cell with a bold style of its own in a filled column of dates is written bold, a date and without the fill, as the book shows it.
+
+```js
+// columns: { B: { format: 'dddd, mmmm d, yyyy', style: 1 } }, cells: { B2: { value: 46096 } }
+// <col min="2" max="2" … style="1"/> and <c r="B2" s="1"><v>46096</v></c>
+```
+
+The reader keeps of a stored cell only what its row or column does not give it. The cell above comes back as `{ value: 46096 }`, without a format of its own. Where a cell stores less than its line gives, the reader spells the default out: a cell stored in General in a column of dates gets `format: 'General'`, and one without a fill in a filled column the book's plain style, a style with nothing set.
+
+### Where a row crosses a column
+
+An empty cell the file does not store shows its row's whole cell format when the row has one (`customFormat`), else its column's. So where a row with only a style crosses a column with only a format, Excel shows the empty cell, and a value typed there, without the column's format: `46096` typed where a bold row crosses a column of percents shows `46096`, bold, where the book shows `4609600.00%`.
+
+Excel never leaves such a crossing empty itself: formatting a column across a formatted row, or a row across a column, it writes the cells where they cross, empty, with both lines' formats. The writer does the same: where a row with a look crosses a column with one and Excel would show the empty cell otherwise than the book, it writes that cell with the look the book shows. The reader reads a file without these cells as Excel shows it: a row with a cell format of its own that leaves out a crossing column's style or format, where a cell of that column is missing, gets the plain style or General.
+
+```js
+// <row r="6" s="1" customFormat="1"> (bold), <col min="7" max="7" style="3"/> (0.00%), no <c r="G6">
+rows: { 6: { style: 0, format: 'General' } }
+```
+
+### Lines Excel formats
+
+Excel, formatting a line across a formatted one, merges their formats field by field: a row made bold across a filled column of dates gives the cells where they cross bold, filled and dates. A book's style is one whole, and `setLayout` sets a line's style alone: where a row with a style crosses a column with one, the book shows the row's. A host that formats lines as Excel does gives those cells a style of their own.
+
+### How it was checked
+
+`npx tsx bench/coverage/run.ts lines <set>` writes each book of `bench/coverage/lines/<set>.ts` with `writeXlsx`; Excel for Mac opens it, takes the case's steps through its object model (a number format, bold, italic or a fill set on a column, a row or a cell, a value typed into a cell), reads each listed cell's text, number format and the fill, font colour, bold and italic of its display format, and saves the book. `npx tsx bench/windows/run.ts lines <set>` does the same in Excel for Windows through COM (`NumberFormat`, `Font`, `Interior`, `Value2`, `Range.Text`, `DisplayFormat`). A bare case sends the file without the cells the writer writes where lines cross, as other writers leave it. `test/lines-excel.test.ts` checks, without Excel, that the engine shows what Excel showed after each case, on the book written or on the one the reader reads from a bare file, that it shows the same on the book read from the file Excel saved, and that a book written and saved by Excel reads back as written.
+
+| set | cases | cells | what |
+|---|---|---|---|
+| `files` | 9 | 586 | formatted columns and rows over numbers, dates, text, booleans, errors, formulas and a spill without a format of their own, cells with their own style or General, empty cells with a style; rows with only a style or a format crossing columns with the other, written and bare, values typed there; Excel formatting a column, a row and lines across each other, values typed into them |
+| `held` | 6 | 501 | spans of rows and columns, a row with only a style crossing columns with a format and a style, dates, a spill across formatted columns, cells with their own General, plain style or italic, written and bare, values typed where lines cross; Excel formatting a row and then columns across it |
+
+The engine's answers were committed before each run. The first run of `files`, on the writer that did not write the cells where lines cross, held in 314 of 320 cells: four were empty or typed cells where a row with only a style or a format crosses a column with the other, which both Excels showed by the row's whole cell format, and two were the cells where Excel formatted a filled column across a bold row, which it gave both. The writer and the reader then took the rules above, and the second run of `files` held in 584 of 586 cells, the two being those Excel formatted; `held`, made after it, in 500 of 501, the other being the same merge. Excel for Windows showed what Excel for Mac showed in every cell of both runs, opened every file without the repair window, and the engine shows what Excel showed on every book read from a file Excel saved. The fit set `autofit`, whose cases `colformat` hold a number in a formatted column, now shows the column's format in both Excels and fits the column for it, as the engine does.
 
 ## Conditional formats
 
@@ -400,7 +443,6 @@ Both Excels opened every file the writer wrote without the repair window, read e
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.
-- A cell without a format of its own in a column with one is written in General: the model shows it by the column's format, Excel by the cell's own, so `{ value: 46096 }` in a column of `dddd, mmmm d, yyyy` shows `46096` in Excel (the fit set `autofit`, cases `colformat`).
 - Excel takes the part of a hyperlink's address after `#` as its place, so `https://example.com/page#top` comes back as the address `https://example.com/page` and the place `top`. It is the same link.
 - Excel saves a space in a hyperlink's address as `%20` and shows it as a space. The reader gives the address as the file holds it.
 - Excel for Windows saves a relative address of a hyperlink (`other.xlsx`) relative to the folder it saves the file to.
