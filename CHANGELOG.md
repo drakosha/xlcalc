@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.16.0 (2026-10-10)
+
+Internal release; not published to npm. Undo and redo in sessions.
+
+Added:
+
+- Contract: `Session.undo()` and `Session.redo()` undo and redo the last change of the book as a whole, as Excel does: a call of `setCells`, `patchCells`, `setNames`, `setStyles`, `setLayout` (AutoFit too) or `restructure` (hiding and showing a sheet too) is one step, and a new change after an undo drops what could be redone. They give an `UndoResult`, `null` when there is nothing to undo or redo: the `call` undone, its `changes` as `setCells` gives them, the `cells` whose inputs came back (for a step of `setCells` or `patchCells`) and a structure operation's `mapCell`. `history` tells how many steps each way, for a toolbar. The same in same-thread and pool sessions, with `timeoutMs` and `signal`.
+- Contract: `SessionOptions.undo` (`depth`, 100 by default, 0 turns the history off; `maxMb`, 64 by default): older steps are dropped past either. In a pool thread with `maxHeapMb` a session without its own `maxMb` takes `maxHeapMb / (8 × maxSessionsPerThread)` (8 MB for 384 MB and six sessions), so histories cannot fill a thread's heap.
+- A step keeps what its call replaced: the inputs of the cells it changed, the layout fields and lines of a sheet, the style table, and for a structure operation or new names the part of the book its geometry does not carry back (deleted cells, rewritten formulas). A deleted sheet's cells are kept as they are; when they are larger than the budget, the history is cleared, as Excel cannot undo deleting a sheet. A pool journals undos and redos and carries the history in its snapshots, so a session restored after its thread was lost or after it left a full thread keeps it.
+- On the synthetic book of 34,000 rows a cell edit's step holds 0.08 MB, `insertRows` 0.43 MB (about 10 % slower with the history), deleting 1,000 rows 1.86 MB (17 to 22 % slower); undoing a structure operation builds the state again, as a cold computation does.
+
+Changed:
+
+- `Session.cells()` reads a sheet's rows and columns once for a session's state and finds a row by halving: a window over 34,000 row heights takes 0.9 ms instead of 9 ms, 15 ms instead of 42 ms from a thread.
+
+Known: after an undo of a structure operation the session's book holds the same content, but the keys of its objects may come in another order.
+
 ## 0.15.0 (2026-10-10)
 
 Internal release; not published to npm. Columns as wide as Excel makes them.
