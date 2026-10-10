@@ -102,8 +102,8 @@ export function engineAnswer(set: HiddenCases, c: HiddenCase): { refused?: strin
 }
 
 /**
- * Whether Excel refused a case's steps: its error, or the sheets as they were (Excel for Mac deletes no very hidden sheet
- * and not the last visible one, and answers nothing). Every step of a case changes the sheets when taken.
+ * Whether Excel refused a case's steps: its error, or a sheet deleted that is still there (Excel for Mac deletes no very
+ * hidden sheet and not the last visible one, and answers nothing).
  */
 export const excelRefused = (set: HiddenCases, c: HiddenCase, a: HiddenAnswer) =>
-  !!a.error || (!!(c.make?.length || c.op) && JSON.stringify(a.sheets) === JSON.stringify(sheetsOf(set.books[c.book])))
+  !!a.error || (c.op?.op === 'deleteSheet' && JSON.stringify(a.sheets) === JSON.stringify(sheetsOf(set.books[c.book])))

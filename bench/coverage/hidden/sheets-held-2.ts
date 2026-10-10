@@ -50,3 +50,11 @@ const CASES: HiddenCase[] = [
 export function buildHiddenCases(): HiddenCases {
   return { books: BOOKS, cases: CASES, read: { sheet: 'Sum', cells: ['A1', 'A2', 'A3'] } }
 }
+
+/**
+ * The predictions Excel for Mac and for Windows did not confirm: before a hidden sheet with no visible one after it, and
+ * to the end past a hidden last sheet, a sheet goes after the last visible sheet; an end of a reference across sheets
+ * that moves without passing the other end stays its end (`'Jan:Apr'` keeps Jan moved before Apr), where the engine gave
+ * way to the next sheet inward as it does when an end passes the other one.
+ */
+export const MISSED: readonly string[] = ['move-before-second', 'move-hidden-before-hidden', 'move-hidden-first', 'move-before-hidden-last', 'move-end-after-very']

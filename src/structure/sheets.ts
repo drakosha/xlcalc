@@ -62,21 +62,32 @@ export function insertSheet(book: BookInput, name: string, before: string | unde
 
 /**
  * A sheet moved before `before`, else to the end; references across sheets cover what lies between their ends then.
- * Before a hidden sheet it goes before the next visible one (or to the end), as Excel moves it (`hidden/sheets-held`).
+ * Excel places it by the visible sheets (`hidden/sheets-held`, `sheets-held-2`): before a hidden sheet it goes before the
+ * next visible one, or after the last visible one when none follows, and the end is after the last visible sheet. An
+ * end of a reference across sheets that moves stays its end while it does not pass the other end; one that passes it
+ * gives way to the next sheet inward.
  */
 export function moveSheet(book: BookInput, sheet: string, before: string | undefined): RestructureResult {
   const key = sheetKey(sheet)
   const moving = book.sheets.find((s) => sheetKey(s.name) === key)!
   if (moving.hidden === 'very') return VERY_HIDDEN
-  const from = before === undefined ? -1 : book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
-  const target = from < 0 ? undefined : book.sheets.slice(from).find((s) => !s.hidden)
-  if (target === moving) return { ok: true, book, mapCell: (ref) => ref }
+  if (before !== undefined && sheetKey(before) === key) return { ok: true, book, mapCell: (ref) => ref }
   const sheets = book.sheets.filter((s) => s !== moving)
-  sheets.splice(target === undefined ? sheets.length : sheets.indexOf(target), 0, moving)
-  // an end that moves leaves its references' span, as if deleted from there; one sheet alone stays
+  sheets.splice(movedTo(sheets, before), 0, moving)
+  const [was, now] = [book.sheets, sheets].map((list) => list.map((s) => sheetKey(s.name)))
+  const side = (order: string[], a: string, b: string) => Math.sign(order.indexOf(sheetKey(a)) - order.indexOf(sheetKey(b)))
   const without = endsWithout(book, key)!
-  const t: Transform = { ref: () => undefined, ends: (a, b) => (sheetKey(a) === sheetKey(b) ? undefined : without(a, b)) }
+  const t: Transform = { ref: () => undefined, ends: (a, b) => (sheetKey(a) === sheetKey(b) || side(was, a, b) === side(now, a, b) ? undefined : without(a, b)) }
   return { ok: true, book: rewriteBook({ ...book, sheets }, t, sheetNames(book)), mapCell: (ref) => ref }
+}
+
+/** Where a sheet moved before `before` (else to the end) goes among the other sheets: by the visible ones, as Excel places it. */
+function movedTo(sheets: BookInput['sheets'], before: string | undefined): number {
+  const at = before === undefined ? sheets.length : sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
+  const next = sheets.findIndex((s, i) => i >= at && !s.hidden)
+  if (next >= 0) return next
+  const last = sheets.findLastIndex((s) => !s.hidden)
+  return last >= 0 ? last + 1 : at
 }
 
 export function deleteSheet(book: BookInput, sheet: string): RestructureResult {

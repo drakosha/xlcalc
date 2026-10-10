@@ -75,15 +75,29 @@ describe('hideSheet and unhideSheet', () => {
     expect(r.ok && r.book.sheets[3].cells.A4.formula).toBe("'February'!B2*2")
   })
 
-  it('a sheet moved before a hidden one goes before the next visible sheet, or to the end', () => {
+  it('a sheet moves among the visible sheets: before a hidden one it goes before the next visible one, or after the last', () => {
     expect(op(book(true), { op: 'moveSheet', sheet: 'Sum', before: 'Feb' })).toBe('Jan Feb! Sum Mar')
+    expect(op(book(true), { op: 'moveSheet', sheet: 'Mar', before: 'Feb' })).toBe('Jan Feb! Mar Sum')
     const two: BookInput = { sheets: ['A', 'B', 'C', 'D', 'E'].map((name) => ({ name, cells: {}, ...('BC'.includes(name) ? { hidden: true } : {}) })) }
     expect(op(two, { op: 'moveSheet', sheet: 'E', before: 'B' })).toBe('A B! C! E D')
     expect(op(two, { op: 'moveSheet', sheet: 'D', before: 'B' })).toBe('A B! C! D E')
-    expect(op({ sheets: [...two.sheets.slice(0, 3), { name: 'D', cells: {}, hidden: true }] }, { op: 'moveSheet', sheet: 'A', before: 'B' })).toBe('B! C! D! A')
-    // a 3D reference covers the sheets between its ends where the move put them
-    const r = restructure(book(true), { op: 'moveSheet', sheet: 'Mar', before: 'Feb' })
-    expect(r.ok && r.book.sheets.map((s) => s.name)).toEqual(['Jan', 'Feb', 'Mar', 'Sum'])
+    // with no visible sheet after the hidden one, and to the end past hidden sheets: after the last visible sheet
+    const last: BookInput = { sheets: ['A', 'B', 'C', 'D'].map((name) => ({ name, cells: {}, ...(name === 'D' ? { hidden: true } : {}) })) }
+    expect(op(last, { op: 'moveSheet', sheet: 'A', before: 'D' })).toBe('B C A D!')
+    expect(op(last, { op: 'moveSheet', sheet: 'A' })).toBe('B C A D!')
+    // no visible sheet left beside the moving one: where it was asked
+    expect(op({ sheets: [...two.sheets.slice(0, 3), { name: 'D', cells: {}, hidden: true }] }, { op: 'moveSheet', sheet: 'A', before: 'C' })).toBe('B! A C! D!')
+  })
+
+  it('an end of a reference across sheets that moves stays its end until it passes the other end', () => {
+    const b: BookInput = { sheets: [...['Jan', 'Feb', 'Mar', 'Apr'].map((name, i) => ({ name, cells: { B2: { value: 10 ** i } } })), { name: 'Sum', cells: { A1: { formula: "SUM('Jan:Mar'!B2)" }, A2: { formula: "SUM('Jan:Apr'!B2)" } } }] }
+    const after = (o: StructureOp) => {
+      const r = restructure(b, o)
+      return r.ok ? [r.book.sheets.at(-1)!.cells.A1.formula, r.book.sheets.at(-1)!.cells.A2.formula, ...Object.values(compute(r.book).sheets.at(-1)!.cells).map((c) => c.value)] : r.code
+    }
+    // Jan moved after Mar passes the end of Jan:Mar, not of Jan:Apr
+    expect(after({ op: 'moveSheet', sheet: 'Jan', before: 'Apr' })).toEqual(["SUM('Feb:Mar'!B2)", "SUM('Jan:Apr'!B2)", 110, 1001])
+    expect(after({ op: 'moveSheet', sheet: 'Mar', before: 'Feb' })).toEqual(["SUM('Jan:Mar'!B2)", "SUM('Jan:Apr'!B2)", 101, 1111])
   })
 })
 

@@ -48,7 +48,7 @@ function missed(set: HiddenCases, c: HiddenCase, predicted: Record<string, unkno
 }
 
 describe.each(PLATFORMS)('hidden sheets against %s', (_, root) => {
-  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['sheets-held', 'sheets-held-2']))
+  it('every set is answered', () => expect(stored(root).map((s) => s.name)).toEqual(['sheets-held-2', 'sheets-held']))
   for (const set of stored(root)) {
     describe(set.name, async () => {
       const mod = (await import(`../bench/coverage/hidden/${set.name}.ts`)) as HiddenModule
