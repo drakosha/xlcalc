@@ -2,7 +2,7 @@
  "meta": {
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
-  "seconds": 46.8
+  "seconds": 59.3
  },
  "books": {
   "formatted": {
@@ -178,7 +178,56 @@
    ]
   },
   {
+   "id": "bare",
+   "book": "formatted",
+   "bare": true,
+   "read": [
+    [
+     "S",
+     "A1:G19"
+    ]
+   ]
+  },
+  {
    "id": "typed-crossing",
+   "book": "formatted",
+   "bare": true,
+   "steps": [
+    {
+     "sheet": "S",
+     "range": "E4",
+     "value": 46096
+    },
+    {
+     "sheet": "S",
+     "range": "G6",
+     "value": 46096
+    },
+    {
+     "sheet": "S",
+     "range": "E6",
+     "value": 5
+    },
+    {
+     "sheet": "S",
+     "range": "G8",
+     "value": 0.5
+    },
+    {
+     "sheet": "S",
+     "range": "B5",
+     "value": 46096
+    }
+   ],
+   "read": [
+    [
+     "S",
+     "A1:G19"
+    ]
+   ]
+  },
+  {
+   "id": "typed-written",
    "book": "formatted",
    "steps": [
     {
@@ -374,8 +423,10 @@
   }
  ],
  "sent": {
-  "written": "58aa115e9da288ea0ef2e64c1a83ee4ba43276c2b364e3ab3b1c30a0be4b6cff",
-  "typed-crossing": "58aa115e9da288ea0ef2e64c1a83ee4ba43276c2b364e3ab3b1c30a0be4b6cff",
+  "written": "8b31c4eb8e175ac208b2fcdfd48bf4b10005c9e2daf5a44af883e0b163a0ad81",
+  "bare": "dec3347ce7492b3f3b599ad971ebd5827333b5bbfb000edad909f327ecd39709",
+  "typed-crossing": "dec3347ce7492b3f3b599ad971ebd5827333b5bbfb000edad909f327ecd39709",
+  "typed-written": "8b31c4eb8e175ac208b2fcdfd48bf4b10005c9e2daf5a44af883e0b163a0ad81",
   "excel-column": "0e83438836b62bb678f6106d8b48eda9d8cc94d0cdca4be6ac0edb8c131d2667",
   "excel-row": "0e83438836b62bb678f6106d8b48eda9d8cc94d0cdca4be6ac0edb8c131d2667",
   "excel-column-row": "0e83438836b62bb678f6106d8b48eda9d8cc94d0cdca4be6ac0edb8c131d2667",
@@ -384,6 +435,1076 @@
  },
  "answers": {
   "written": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "plain",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E1": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F1": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G1": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "25.60%",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "5",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E2": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F2": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G2": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "Monday, March 16, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "51.20%",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "text",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E3": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F3": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G3": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "46,096.00",
+      "format": "#,##0.00",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "1,234.50",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F4": {
+      "text": "1,234.50",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E5": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F5": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G5": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "B6": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C6": {
+      "text": "50.00%",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "D6": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "E6": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "F6": {
+      "text": "7",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "G6": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "A7": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C7": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D7": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E7": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F7": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G7": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "B8": {
+      "text": "46096.000",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "D8": {
+      "text": "2.000",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "E8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "F8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "G8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "A9": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B9": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C9": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D9": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E9": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F9": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G9": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A10": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B10": {
+      "text": "abc",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C10": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D10": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E10": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F10": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G10": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A11": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B11": {
+      "text": "TRUE",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C11": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D11": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E11": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F11": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G11": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A12": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B12": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C12": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D12": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E12": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F12": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G12": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A13": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B13": {
+      "text": "Monday, March 16, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C13": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D13": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E13": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F13": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G13": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A14": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B14": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C14": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D14": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E14": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F14": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G14": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A15": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B15": {
+      "text": "46096",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C15": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D15": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E15": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F15": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G15": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A16": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B16": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C16": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D16": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E16": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F16": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G16": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A17": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B17": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "C17": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D17": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E17": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F17": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G17": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A18": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B18": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C18": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D18": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E18": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F18": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G18": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A19": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B19": {
+      "text": "#N/A",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C19": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D19": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E19": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F19": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G19": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "bare": {
    "looks": {
     "S": {
      "A1": {
@@ -1787,6 +2908,1076 @@
      "G6": {
       "text": "46096",
       "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "A7": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C7": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D7": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E7": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F7": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G7": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "B8": {
+      "text": "46096.000",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "D8": {
+      "text": "2.000",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "E8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "F8": {
+      "text": "",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "G8": {
+      "text": "0.500",
+      "format": "0.000",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "A9": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B9": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C9": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D9": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E9": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F9": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G9": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A10": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B10": {
+      "text": "abc",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C10": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D10": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E10": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F10": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G10": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A11": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B11": {
+      "text": "TRUE",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C11": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D11": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E11": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F11": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G11": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A12": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B12": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C12": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D12": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E12": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F12": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G12": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A13": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B13": {
+      "text": "Monday, March 16, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C13": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D13": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E13": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F13": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G13": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A14": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B14": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C14": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D14": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E14": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F14": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G14": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A15": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B15": {
+      "text": "46096",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C15": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D15": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E15": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F15": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G15": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A16": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B16": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C16": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D16": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E16": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F16": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G16": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A17": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B17": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "C17": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D17": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E17": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F17": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G17": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A18": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B18": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C18": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D18": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E18": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F18": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G18": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A19": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B19": {
+      "text": "#N/A",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C19": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D19": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E19": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F19": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G19": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "typed-written": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "plain",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E1": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F1": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G1": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "25.60%",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "5",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E2": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F2": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G2": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "Monday, March 16, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "51.20%",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "text",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E3": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F3": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G3": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "46,096.00",
+      "format": "#,##0.00",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "1,234.50",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E4": {
+      "text": "46,096.00",
+      "format": "#,##0.00",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F4": {
+      "text": "1,234.50",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G4": {
+      "text": "",
+      "format": "#,##0.00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": true
+     },
+     "E5": {
+      "text": "",
+      "format": "General",
+      "fill": "#FFFF00",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F5": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G5": {
+      "text": "",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "B6": {
+      "text": "Sunday, March 15, 2026",
+      "format": "dddd, mmmm d, yyyy",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C6": {
+      "text": "50.00%",
+      "format": "0.00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "D6": {
+      "text": "",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "E6": {
+      "text": "5",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "F6": {
+      "text": "7",
+      "format": "General",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "G6": {
+      "text": "4609600.00%",
+      "format": "0.00%",
       "fill": null,
       "font": "#000000",
       "bold": true,

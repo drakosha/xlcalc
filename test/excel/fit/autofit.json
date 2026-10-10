@@ -3,7 +3,7 @@
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "date": "2026-10-10",
-  "seconds": 16.9
+  "seconds": 18.8
  },
  "cases": [
   {
@@ -3454,29 +3454,29 @@
    }
   },
   "colformat-1": {
-   "columnWidth": 11.33,
-   "points": 73,
+   "columnWidth": 10.83,
+   "points": 70,
    "standard": false,
    "saved": {
-    "width": 12.1640625,
+    "width": 11.6640625,
     "customWidth": true,
     "bestFit": true
    },
    "texts": {
-    "1": "1234567.891"
+    "1": "1,234,567.89"
    }
   },
   "colformat-2": {
-   "columnWidth": 5.33,
-   "points": 37,
+   "columnWidth": 18.83,
+   "points": 118,
    "standard": false,
    "saved": {
-    "width": 6.1640625,
+    "width": 19.6640625,
     "customWidth": true,
     "bestFit": true
    },
    "texts": {
-    "1": "46096"
+    "1": "Sunday, March 15, 2026"
    }
   }
  }
