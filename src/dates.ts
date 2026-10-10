@@ -108,10 +108,10 @@ function patterns(decimal: string): TimePatterns {
   return p
 }
 
-/** Full dates; spaces may stand around `/` and `-` (`1 / 31 / 2025`, `1-31-2025`). */
+/** Full dates; spaces may stand around `/` and `-` (`1 / 31 / 2025`, `1-31-2025`); a year of one digit is of the 2000s (`1-2-3`, the entry set `typed`). */
 const DATE_FORMS: [RegExp, (m: RegExpExecArray) => [string, string, string]][] = [
   [/^(\d{4}) *[-/] *(\d{1,2}) *[-/] *(\d{1,2})$/, (m) => [m[1], m[2], m[3]]],
-  [/^(\d{1,2}) *[-/] *(\d{1,2}) *[-/] *(\d{4}|\d{2})$/, (m) => [m[3], m[1], m[2]]],
+  [/^(\d{1,2}) *[-/] *(\d{1,2}) *[-/] *(\d{4}|\d{1,2})$/, (m) => [m[3], m[1], m[2]]],
   [new RegExp(`^(\\d{1,2})(?: *- *| )${MONTH_RE}(?: *- *| )(\\d{4}|\\d{2})$`), (m) => [m[3], m[2], m[1]]],
   [new RegExp(`^${MONTH_RE} (\\d{1,2}), (\\d{4})$`), (m) => [m[3], m[1], m[2]]],
 ]
@@ -124,7 +124,7 @@ const NUMBER_NAME = new RegExp(`^(\\d{1,2}) *[-/]? *${MONTH_RE}$`)
 /** The month a word names (1–12), or 0. */
 const monthOf = (word: string) => MONTHS.findIndex((m) => m.startsWith(word)) + 1
 
-/** A year as typed: two digits are 1930–2029, as in Excel. */
+/** A year as typed: one or two digits are 1930–2029, as in Excel. */
 export const fullYear = (s: string) => (s.length > 2 ? Number(s) : Number(s) + (Number(s) < 30 ? 2000 : 1900))
 
 /** The serial number of a calendar date from 1900 to 9999, the phantom 1900-02-29 too; null if there is no such date. */
@@ -212,17 +212,27 @@ export const parseDateText = (text: string): number | null => parseDateWith(text
  * pass 24 hours). Spaces after it are dropped and runs of spaces inside are one; text that begins with a space is
  * no date or time (`DAY(" 1/31/2025")` is #VALUE!), and a tab is no space, as in Excel (the `lead-spaces` set).
  */
-export function parseDateWith(text: string, syn: DateSyntax): number | null {
+export const parseDateWith = (text: string, syn: DateSyntax): number | null => dateTimeParts(text, syn)?.value ?? null
+
+/** Date or time text read by `parseDateWith`: its value, and its date part and time part as read (lower case, single spaces), null where it has none. */
+export interface DateTimeParts {
+  value: number
+  date: string | null
+  time: string | null
+}
+
+/** `parseDateWith`'s reading with the parts of the text it read, for a cell's format by what was typed (`entry/`). */
+export function dateTimeParts(text: string, syn: DateSyntax): DateTimeParts | null {
   const s = text.replace(/ +$/, '').toLowerCase().replace(/  +/g, ' ')
   if (s === '' || s.startsWith(' ')) return null
   const time = timeText(s, syn.decimal)
-  if (time !== null) return time
+  if (time !== null) return { value: time, date: null, time: s }
   const date = syn.date(s)
-  if (date !== null) return date
+  if (date !== null) return { value: date, date: s, time: null }
   const p = patterns(syn.decimal)
-  const both = (d: string, t: string) => {
+  const both = (d: string, t: string): DateTimeParts | null => {
     const [dd, tt] = [syn.date(d), timeText(t, syn.decimal)]
-    return dd === null || tt === null ? null : dd + tt
+    return dd === null || tt === null ? null : { value: dd + tt, date: d, time: t }
   }
   let m = p.dateTime.exec(s)
   const after = m ? both(m[1], m[2]) : null

@@ -1,0 +1,595 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "keyh-pct-1": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-2": {
+    "ok": true,
+    "input": {
+     "value": "abc5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-3": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-5": {
+    "ok": true,
+    "input": {
+     "value": 0.005,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-6": {
+    "ok": true,
+    "input": {
+     "value": ",5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-7": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "keyh-pct-9": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-11": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-12": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-13": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-14": {
+    "ok": true,
+    "input": {
+     "value": "18:30%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-15": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-16": {
+    "ok": true,
+    "input": {
+     "value": 12.345,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-17": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-18": {
+    "ok": true,
+    "input": {
+     "value": 15,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-19": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-20": {
+    "ok": true,
+    "input": {
+     "value": -0.005,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-21": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "keyh-pct-22": {
+    "ok": true,
+    "input": {
+     "value": "1/2%",
+     "format": "0%"
+    }
+   },
+   "keyh-sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "1*2"
+    }
+   },
+   "keyh-sign-2": {
+    "ok": true,
+    "input": {
+     "formula": "+(1+2)"
+    }
+   },
+   "keyh-sign-3": {
+    "ok": true,
+    "input": {
+     "formula": "+C1+1"
+    }
+   },
+   "keyh-sign-4": {
+    "ok": true,
+    "input": {
+     "formula": "10-1"
+    }
+   },
+   "keyh-sign-5": {
+    "ok": true,
+    "input": {
+     "formula": "2^3"
+    }
+   },
+   "keyh-sign-6": {
+    "ok": true,
+    "input": {
+     "formula": "++5"
+    }
+   },
+   "keyh-sign-7": {
+    "ok": true,
+    "input": {
+     "formula": "-(1+2)"
+    }
+   },
+   "keyh-sign-8": {
+    "ok": true,
+    "input": {
+     "formula": "-C1*2"
+    }
+   },
+   "keyh-sign-9": {
+    "ok": true,
+    "input": {
+     "formula": "+-C1"
+    }
+   },
+   "keyh-sign-10": {
+    "ok": true,
+    "input": {
+     "formula": "-1-2"
+    }
+   },
+   "keyh-sign-11": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "keyh-no-1": {
+    "ok": true,
+    "input": {
+     "value": -1.5
+    }
+   },
+   "keyh-no-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "keyh-no-3": {
+    "ok": true,
+    "input": {
+     "formula": "-hello world"
+    }
+   },
+   "keyh-no-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected num",
+    "at": 6
+   },
+   "keyh-no-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 3
+   },
+   "keyh-no-6": {
+    "ok": true,
+    "input": {
+     "value": "="
+    }
+   },
+   "keyh-no-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "keyh-no-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "keyh-no-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \"=\"",
+    "at": 1
+   },
+   "keyh-no-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 4
+   },
+   "keyh-no-11": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "keyh-no-12": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"₽\"",
+    "at": 3
+   }
+  },
+  "ru-RU": {
+   "keyh-pct-1": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-2": {
+    "ok": true,
+    "input": {
+     "value": "abc5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-3": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-5": {
+    "ok": true,
+    "input": {
+     "value": ".5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.005,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-7": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-8": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-9": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-10": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-11": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-12": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-13": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-14": {
+    "ok": true,
+    "input": {
+     "value": "18:30%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-15": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-16": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-17": {
+    "ok": true,
+    "input": {
+     "value": 12.345,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-18": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3%",
+     "format": "0%"
+    }
+   },
+   "keyh-pct-19": {
+    "ok": true,
+    "input": {
+     "value": 15,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-20": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "keyh-pct-21": {
+    "ok": true,
+    "input": {
+     "value": -0.005,
+     "format": "0%"
+    }
+   },
+   "keyh-pct-22": {
+    "ok": true,
+    "input": {
+     "value": "1/2%",
+     "format": "0%"
+    }
+   },
+   "keyh-sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "1*2"
+    }
+   },
+   "keyh-sign-2": {
+    "ok": true,
+    "input": {
+     "formula": "+(1+2)"
+    }
+   },
+   "keyh-sign-3": {
+    "ok": true,
+    "input": {
+     "formula": "+C1+1"
+    }
+   },
+   "keyh-sign-4": {
+    "ok": true,
+    "input": {
+     "formula": "10-1"
+    }
+   },
+   "keyh-sign-5": {
+    "ok": true,
+    "input": {
+     "formula": "2^3"
+    }
+   },
+   "keyh-sign-6": {
+    "ok": true,
+    "input": {
+     "formula": "++5"
+    }
+   },
+   "keyh-sign-7": {
+    "ok": true,
+    "input": {
+     "formula": "-(1+2)"
+    }
+   },
+   "keyh-sign-8": {
+    "ok": true,
+    "input": {
+     "formula": "-C1*2"
+    }
+   },
+   "keyh-sign-9": {
+    "ok": true,
+    "input": {
+     "formula": "+-C1"
+    }
+   },
+   "keyh-sign-10": {
+    "ok": true,
+    "input": {
+     "formula": "-1-2"
+    }
+   },
+   "keyh-sign-11": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "keyh-no-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "keyh-no-2": {
+    "ok": true,
+    "input": {
+     "value": -1.5
+    }
+   },
+   "keyh-no-3": {
+    "ok": true,
+    "input": {
+     "formula": "-hello world"
+    }
+   },
+   "keyh-no-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 3
+   },
+   "keyh-no-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 3
+   },
+   "keyh-no-6": {
+    "ok": true,
+    "input": {
+     "value": "="
+    }
+   },
+   "keyh-no-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "keyh-no-8": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "keyh-no-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \"=\"",
+    "at": 1
+   },
+   "keyh-no-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 4
+   },
+   "keyh-no-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"$\"",
+    "at": 1
+   },
+   "keyh-no-12": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,385 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "key2-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.0025,
+     "format": "0%"
+    }
+   },
+   "key2-pct-2": {
+    "ok": true,
+    "input": {
+     "value": -0.005,
+     "format": "0%"
+    }
+   },
+   "key2-pct-3": {
+    "ok": true,
+    "input": {
+     "value": 0.025,
+     "format": "0%"
+    }
+   },
+   "key2-pct-4": {
+    "ok": true,
+    "input": {
+     "value": 0.055,
+     "format": "0%"
+    }
+   },
+   "key2-pct-5": {
+    "ok": true,
+    "input": {
+     "value": "5,5%",
+     "format": "0%"
+    }
+   },
+   "key2-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "key2-pct-7": {
+    "ok": true,
+    "input": {
+     "value": -0.5,
+     "format": "0%"
+    }
+   },
+   "key2-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 1,
+     "format": 11
+    }
+   },
+   "key2-pct-9": {
+    "ok": true,
+    "input": {
+     "value": 0.07,
+     "format": "0%"
+    }
+   },
+   "key2-pct-10": {
+    "ok": true,
+    "input": {
+     "value": "5 5%",
+     "format": "0%"
+    }
+   },
+   "key2-pct-11": {
+    "ok": true,
+    "input": {
+     "value": 12.34,
+     "format": "0%"
+    }
+   },
+   "key2-pct-12": {
+    "ok": true,
+    "input": {
+     "value": "1 234%",
+     "format": "0%"
+    }
+   },
+   "key2-pct-13": {
+    "ok": true,
+    "input": {
+     "formula": "-(5)",
+     "format": "0%"
+    }
+   },
+   "key2-pct-14": {
+    "ok": true,
+    "input": {
+     "value": "5-%",
+     "format": "0%"
+    }
+   },
+   "key2-sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "+0.5+1"
+    }
+   },
+   "key2-sign-2": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "key2-sign-3": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "key2-sign-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "key2-sign-5": {
+    "ok": true,
+    "input": {
+     "formula": "+C1"
+    }
+   },
+   "key2-sign-6": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "key2-sign-7": {
+    "ok": true,
+    "input": {
+     "formula": "+(5)"
+    }
+   },
+   "key2-sign-8": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "key2-sign-9": {
+    "ok": true,
+    "input": {
+     "value": -1
+    }
+   },
+   "key2-sign-10": {
+    "ok": true,
+    "input": {
+     "value": -100,
+     "format": 11
+    }
+   },
+   "key2-sign-11": {
+    "ok": true,
+    "input": {
+     "formula": "100+1"
+    }
+   },
+   "key2-sign-12": {
+    "ok": true,
+    "input": {
+     "formula": "-C1%"
+    }
+   },
+   "key2-sign-13": {
+    "ok": true,
+    "input": {
+     "formula": "5%+1"
+    }
+   },
+   "key2-sign-14": {
+    "ok": true,
+    "input": {
+     "formula": "--C1"
+    }
+   },
+   "key2-sign-15": {
+    "ok": true,
+    "input": {
+     "formula": "+-+5"
+    }
+   }
+  },
+  "ru-RU": {
+   "key2-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.0025,
+     "format": "0%"
+    }
+   },
+   "key2-pct-2": {
+    "ok": true,
+    "input": {
+     "value": -0.005,
+     "format": "0%"
+    }
+   },
+   "key2-pct-3": {
+    "ok": true,
+    "input": {
+     "value": 0.025,
+     "format": "0%"
+    }
+   },
+   "key2-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "5.5%",
+     "format": "0%"
+    }
+   },
+   "key2-pct-5": {
+    "ok": true,
+    "input": {
+     "value": 0.055,
+     "format": "0%"
+    }
+   },
+   "key2-pct-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 1
+   },
+   "key2-pct-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 1
+   },
+   "key2-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 1,
+     "format": 11
+    }
+   },
+   "key2-pct-9": {
+    "ok": true,
+    "input": {
+     "value": 0.07,
+     "format": "0%"
+    }
+   },
+   "key2-pct-10": {
+    "ok": true,
+    "input": {
+     "value": "5 5%",
+     "format": "0%"
+    }
+   },
+   "key2-pct-11": {
+    "ok": true,
+    "input": {
+     "value": 0.01234,
+     "format": "0%"
+    }
+   },
+   "key2-pct-12": {
+    "ok": true,
+    "input": {
+     "value": 12.34,
+     "format": "0%"
+    }
+   },
+   "key2-pct-13": {
+    "ok": true,
+    "input": {
+     "formula": "-(5)",
+     "format": "0%"
+    }
+   },
+   "key2-pct-14": {
+    "ok": true,
+    "input": {
+     "value": "5-%",
+     "format": "0%"
+    }
+   },
+   "key2-sign-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 1
+   },
+   "key2-sign-2": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "key2-sign-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "key2-sign-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "key2-sign-5": {
+    "ok": true,
+    "input": {
+     "formula": "+C1"
+    }
+   },
+   "key2-sign-6": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "key2-sign-7": {
+    "ok": true,
+    "input": {
+     "formula": "+(5)"
+    }
+   },
+   "key2-sign-8": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "key2-sign-9": {
+    "ok": true,
+    "input": {
+     "value": -1
+    }
+   },
+   "key2-sign-10": {
+    "ok": true,
+    "input": {
+     "value": -100,
+     "format": 11
+    }
+   },
+   "key2-sign-11": {
+    "ok": true,
+    "input": {
+     "formula": "100+1"
+    }
+   },
+   "key2-sign-12": {
+    "ok": true,
+    "input": {
+     "formula": "-C1%"
+    }
+   },
+   "key2-sign-13": {
+    "ok": true,
+    "input": {
+     "formula": "5%+1"
+    }
+   },
+   "key2-sign-14": {
+    "ok": true,
+    "input": {
+     "formula": "--C1"
+    }
+   },
+   "key2-sign-15": {
+    "ok": true,
+    "input": {
+     "formula": "+-+5"
+    }
+   }
+  }
+ }
+}

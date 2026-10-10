@@ -180,6 +180,12 @@ function Step($xl, $wb, $s) {
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
     'settings' { List @((Cell $xl.Iteration), (Cell ([double]$xl.MaxIterations)), (Cell $xl.MaxChange)) }
+    # cells typed into: what each shows, its format codes and its prefix character; and Excel's automatic percent entry
+    'entry' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Str ([string]$c.Text)), (Str $c.NumberFormat), (Str $c.NumberFormatLocal), (Str ([string]$c.PrefixCharacter))) })
+    }
+    'autoPercent' { Cell $xl.AutoPercentEntry }
     'set' {
       $rg = Rg $wb $s.sheet $s.cell
       try {
@@ -188,6 +194,8 @@ function Step($xl, $wb, $s) {
           's' { $rg.Value2 = [string]$s.value }
           'f' { $rg.Formula = [string]$s.value }
           'f2' { $rg.Formula2 = [string]$s.value }
+          # typed text, as Excel 365 takes it in the user's language
+          'l2' { $rg.Formula2Local = [string]$s.value }
           'x' { [void]$rg.ClearContents() }
         }
         'null'

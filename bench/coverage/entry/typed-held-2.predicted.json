@@ -1,0 +1,1384 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "ffx2-1": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-1",
+     "format": 14
+    }
+   },
+   "ffx2-2": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-1.5",
+     "format": 14
+    }
+   },
+   "ffx2-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,TODAY())",
+     "format": 14
+    }
+   },
+   "ffx2-4": {
+    "ok": true,
+    "input": {
+     "formula": "MAX(1,TODAY())",
+     "format": 14
+    }
+   },
+   "ffx2-5": {
+    "ok": true,
+    "input": {
+     "formula": "MIN(TODAY(),1)",
+     "format": 14
+    }
+   },
+   "ffx2-6": {
+    "ok": true,
+    "input": {
+     "formula": "DATE(2026,1,1)+TIME(1,0,0)",
+     "format": 14
+    }
+   },
+   "ffx2-7": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()+TIME(1,0,0)",
+     "format": 14
+    }
+   },
+   "ffx2-8": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()+1",
+     "format": 22
+    }
+   },
+   "ffx2-9": {
+    "ok": true,
+    "input": {
+     "formula": "-NOW()",
+     "format": 22
+    }
+   },
+   "ffx2-10": {
+    "ok": true,
+    "input": {
+     "formula": "(TIME(1,0,0))",
+     "format": 18
+    }
+   },
+   "ffx2-11": {
+    "ok": true,
+    "input": {
+     "formula": "PMT(0.1,12,1000)*2"
+    }
+   },
+   "ffx2-12": {
+    "ok": true,
+    "input": {
+     "formula": "-PMT(0.1,12,1000)",
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "ffx2-13": {
+    "ok": true,
+    "input": {
+     "formula": "ROUND(TODAY(),0)"
+    }
+   },
+   "ffx2-14": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()*1"
+    }
+   },
+   "ffx2-15": {
+    "ok": true,
+    "input": {
+     "formula": "PPMT(0.1,1,12,1000)",
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "ffx2-16": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()&\"\""
+    }
+   },
+   "ffx2-17": {
+    "ok": true,
+    "input": {
+     "formula": "AVERAGE(TODAY(),1)"
+    }
+   },
+   "ffx2-18": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 10
+   },
+   "ffx2-19": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 7
+   },
+   "ffx2-20": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 8
+   },
+   "euro2-1": {
+    "ok": true,
+    "input": {
+     "value": "€1,5"
+    }
+   },
+   "euro2-2": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "euro2-3": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro2-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro2-5": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro2-6": {
+    "ok": true,
+    "input": {
+     "value": "€€5"
+    }
+   },
+   "euro2-7": {
+    "ok": true,
+    "input": {
+     "value": "€5 €"
+    }
+   },
+   "pct2-1": {
+    "ok": true,
+    "input": {
+     "value": 0.005,
+     "format": 10
+    }
+   },
+   "pct2-2": {
+    "ok": true,
+    "input": {
+     "value": -0.0025,
+     "format": 10
+    }
+   },
+   "pct2-3": {
+    "ok": true,
+    "input": {
+     "value": 0.025,
+     "format": 10
+    }
+   },
+   "pct2-4": {
+    "ok": true,
+    "input": {
+     "value": "1/0%"
+    }
+   },
+   "pct2-5": {
+    "ok": true,
+    "input": {
+     "value": "%1/2"
+    }
+   },
+   "sci2-1": {
+    "ok": true,
+    "input": {
+     "value": 1e+307,
+     "format": 11
+    }
+   },
+   "sci2-2": {
+    "ok": true,
+    "input": {
+     "value": 9.99e+307,
+     "format": 11
+    }
+   },
+   "sci2-3": {
+    "ok": true,
+    "input": {
+     "value": "9,99E+307"
+    }
+   },
+   "sci2-4": {
+    "ok": true,
+    "input": {
+     "value": "-1E+308",
+     "format": 11
+    }
+   },
+   "sci2-5": {
+    "ok": true,
+    "input": {
+     "value": 1e-309,
+     "format": 11
+    }
+   },
+   "sci2-6": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 11
+    }
+   },
+   "sci2-7": {
+    "ok": true,
+    "input": {
+     "value": 10,
+     "format": 11
+    }
+   },
+   "space2-1": {
+    "ok": true,
+    "input": {
+     "value": "  15.03.2026"
+    }
+   },
+   "space2-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026  "
+    }
+   },
+   "space2-3": {
+    "ok": true,
+    "input": {
+     "value": "  3/15/2026"
+    }
+   },
+   "space2-4": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "space2-5": {
+    "ok": true,
+    "input": {
+     "value": " 1/2"
+    }
+   },
+   "space2-6": {
+    "ok": true,
+    "input": {
+     "value": " 6 PM"
+    }
+   },
+   "space2-7": {
+    "ok": true,
+    "input": {
+     "value": 0.75,
+     "format": 18
+    }
+   },
+   "in-code-sci-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-sci-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-sci-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-sci-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-sci-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-sci-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-sci-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-sci-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-frac-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "# ?/?"
+    }
+   },
+   "in-code-frac-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-frac-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-frac-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-code-frac-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-frac-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "# ?/?"
+    }
+   },
+   "in-code-frac-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "# ?/?"
+    }
+   },
+   "in-code-frac-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-mmss-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "mm:ss"
+    }
+   },
+   "in-code-mmss-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-mmss-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-mmss-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-mmss-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-mmss-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "mm:ss"
+    }
+   },
+   "in-code-mmss-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "mm:ss"
+    }
+   },
+   "in-code-mmss-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-pct2-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-3": {
+    "ok": true,
+    "input": {
+     "value": "5%%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-4": {
+    "ok": true,
+    "input": {
+     "value": 0.015,
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-pct2-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-8": {
+    "ok": true,
+    "input": {
+     "value": 15,
+     "format": 11
+    }
+   },
+   "in-code-usd-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-usd-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-usd-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-usd-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-usd-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-37-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-elapsed-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "[h]:mm:ss"
+    }
+   },
+   "in-code-elapsed-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-elapsed-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-elapsed-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-elapsed-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-elapsed-6": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()",
+     "format": "[h]:mm:ss"
+    }
+   },
+   "in-code-elapsed-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "[h]:mm:ss"
+    }
+   },
+   "in-code-elapsed-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   }
+  },
+  "ru-RU": {
+   "ffx2-1": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()-1",
+     "format": 14
+    }
+   },
+   "ffx2-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 10
+   },
+   "ffx2-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found \"TODAY\"",
+    "at": 7
+   },
+   "ffx2-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found \"TODAY\"",
+    "at": 7
+   },
+   "ffx2-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 12
+   },
+   "ffx2-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 12
+   },
+   "ffx2-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 17
+   },
+   "ffx2-8": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()+1",
+     "format": 22
+    }
+   },
+   "ffx2-9": {
+    "ok": true,
+    "input": {
+     "formula": "-NOW()",
+     "format": 22
+    }
+   },
+   "ffx2-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 10
+   },
+   "ffx2-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 6
+   },
+   "ffx2-12": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 7
+   },
+   "ffx2-13": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 14
+   },
+   "ffx2-14": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()*1"
+    }
+   },
+   "ffx2-15": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 7
+   },
+   "ffx2-16": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()&\"\""
+    }
+   },
+   "ffx2-17": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 16
+   },
+   "ffx2-18": {
+    "ok": true,
+    "input": {
+     "formula": "DATE(2026,1,1)+TIME(1,0,0)",
+     "format": 14
+    }
+   },
+   "ffx2-19": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,TODAY())",
+     "format": 14
+    }
+   },
+   "ffx2-20": {
+    "ok": true,
+    "input": {
+     "formula": "PMT(0.1,12,1000)*2"
+    }
+   },
+   "euro2-1": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "euro2-2": {
+    "ok": true,
+    "input": {
+     "value": "€1.5"
+    }
+   },
+   "euro2-3": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro2-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro2-5": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "euro2-6": {
+    "ok": true,
+    "input": {
+     "value": "€€5"
+    }
+   },
+   "euro2-7": {
+    "ok": true,
+    "input": {
+     "value": "€5 €"
+    }
+   },
+   "pct2-1": {
+    "ok": true,
+    "input": {
+     "value": 0.005,
+     "format": 10
+    }
+   },
+   "pct2-2": {
+    "ok": true,
+    "input": {
+     "value": -0.0025,
+     "format": 10
+    }
+   },
+   "pct2-3": {
+    "ok": true,
+    "input": {
+     "value": 0.025,
+     "format": 10
+    }
+   },
+   "pct2-4": {
+    "ok": true,
+    "input": {
+     "value": "1/0%"
+    }
+   },
+   "pct2-5": {
+    "ok": true,
+    "input": {
+     "value": "%1/2"
+    }
+   },
+   "sci2-1": {
+    "ok": true,
+    "input": {
+     "value": 1e+307,
+     "format": 11
+    }
+   },
+   "sci2-2": {
+    "ok": true,
+    "input": {
+     "value": "9.99E+307"
+    }
+   },
+   "sci2-3": {
+    "ok": true,
+    "input": {
+     "value": 9.99e+307,
+     "format": 11
+    }
+   },
+   "sci2-4": {
+    "ok": true,
+    "input": {
+     "value": "-1E+308",
+     "format": 11
+    }
+   },
+   "sci2-5": {
+    "ok": true,
+    "input": {
+     "value": 1e-309,
+     "format": 11
+    }
+   },
+   "sci2-6": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 11
+    }
+   },
+   "sci2-7": {
+    "ok": true,
+    "input": {
+     "value": 10,
+     "format": 11
+    }
+   },
+   "space2-1": {
+    "ok": true,
+    "input": {
+     "value": "  15.03.2026"
+    }
+   },
+   "space2-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "space2-3": {
+    "ok": true,
+    "input": {
+     "value": "  3/15/2026"
+    }
+   },
+   "space2-4": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026  "
+    }
+   },
+   "space2-5": {
+    "ok": true,
+    "input": {
+     "value": " 1/2"
+    }
+   },
+   "space2-6": {
+    "ok": true,
+    "input": {
+     "value": " 6 PM"
+    }
+   },
+   "space2-7": {
+    "ok": true,
+    "input": {
+     "value": 0.75,
+     "format": 18
+    }
+   },
+   "in-code-sci-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-sci-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-sci-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-sci-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-sci-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-sci-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-sci-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-sci-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "0.00E+00"
+    }
+   },
+   "in-code-frac-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-frac-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "# ?/?"
+    }
+   },
+   "in-code-frac-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-frac-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-code-frac-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-frac-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-frac-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-frac-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "# ?/?"
+    }
+   },
+   "in-code-mmss-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-mmss-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "mm:ss"
+    }
+   },
+   "in-code-mmss-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-mmss-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-mmss-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-mmss-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-mmss-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-mmss-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "mm:ss"
+    }
+   },
+   "in-code-pct2-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-3": {
+    "ok": true,
+    "input": {
+     "value": "5%%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-4": {
+    "ok": true,
+    "input": {
+     "value": 0.015,
+     "format": "0.00%"
+    }
+   },
+   "in-code-pct2-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-pct2-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-pct2-7": {
+    "ok": true,
+    "input": {
+     "value": 15,
+     "format": 11
+    }
+   },
+   "in-code-pct2-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3%",
+     "format": "0.00%"
+    }
+   },
+   "in-code-usd-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-usd-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "$#,##0_);($#,##0)"
+    }
+   },
+   "in-code-37-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-37-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "#,##0_);(#,##0)"
+    }
+   },
+   "in-code-elapsed-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-code-elapsed-2": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "[h]:mm:ss"
+    }
+   },
+   "in-code-elapsed-3": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-code-elapsed-4": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-code-elapsed-5": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-elapsed-6": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()",
+     "format": 14
+    }
+   },
+   "in-code-elapsed-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-code-elapsed-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "[h]:mm:ss"
+    }
+   }
+  }
+ }
+}

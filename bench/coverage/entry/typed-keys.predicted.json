@@ -1,0 +1,517 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "key-1": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "key-2": {
+    "ok": true,
+    "input": {
+     "formula": "+5"
+    }
+   },
+   "key-3": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "key-4": {
+    "ok": true,
+    "input": {
+     "formula": "+1+2"
+    }
+   },
+   "key-5": {
+    "ok": true,
+    "input": {
+     "formula": "-1-2"
+    }
+   },
+   "key-6": {
+    "ok": true,
+    "input": {
+     "formula": "-5+1"
+    }
+   },
+   "key-7": {
+    "ok": true,
+    "input": {
+     "formula": "--5"
+    }
+   },
+   "key-8": {
+    "ok": true,
+    "input": {
+     "formula": "+-5"
+    }
+   },
+   "key-9": {
+    "ok": true,
+    "input": {
+     "formula": "+5%"
+    }
+   },
+   "key-10": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "key-11": {
+    "ok": true,
+    "input": {
+     "formula": "-C1"
+    }
+   },
+   "key-12": {
+    "ok": true,
+    "input": {
+     "formula": "+C1"
+    }
+   },
+   "key-13": {
+    "ok": true,
+    "input": {
+     "formula": "-qq"
+    }
+   },
+   "key-14": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "key-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "key-16": {
+    "ok": true,
+    "input": {
+     "value": 46024,
+     "format": 16
+    }
+   },
+   "key-17": {
+    "ok": true,
+    "input": {
+     "value": "007"
+    }
+   },
+   "key-18": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "key-19": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "key-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2"
+    }
+   },
+   "key-21": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "key-22": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3"
+    }
+   },
+   "key-23": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "key-24": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026"
+    }
+   },
+   "key-25": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "key-26": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5"
+    }
+   },
+   "key-27": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "key-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "key-pct-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "key-pct-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "key-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "0%"
+    }
+   },
+   "key-pct-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": "0%"
+    }
+   },
+   "key-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.01,
+     "format": "0%"
+    }
+   },
+   "key-pct-7": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": "0%"
+    }
+   },
+   "key-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "key-pct-9": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0%"
+    }
+   },
+   "key-pct2-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0.00%"
+    }
+   },
+   "key-pct2-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00%"
+    }
+   },
+   "key-pct2-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "0.00%"
+    }
+   }
+  },
+  "ru-RU": {
+   "key-1": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "key-2": {
+    "ok": true,
+    "input": {
+     "formula": "+5"
+    }
+   },
+   "key-3": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "key-4": {
+    "ok": true,
+    "input": {
+     "formula": "+1+2"
+    }
+   },
+   "key-5": {
+    "ok": true,
+    "input": {
+     "formula": "-1-2"
+    }
+   },
+   "key-6": {
+    "ok": true,
+    "input": {
+     "formula": "-5+1"
+    }
+   },
+   "key-7": {
+    "ok": true,
+    "input": {
+     "formula": "--5"
+    }
+   },
+   "key-8": {
+    "ok": true,
+    "input": {
+     "formula": "+-5"
+    }
+   },
+   "key-9": {
+    "ok": true,
+    "input": {
+     "formula": "+5%"
+    }
+   },
+   "key-10": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "key-11": {
+    "ok": true,
+    "input": {
+     "formula": "-C1"
+    }
+   },
+   "key-12": {
+    "ok": true,
+    "input": {
+     "formula": "+C1"
+    }
+   },
+   "key-13": {
+    "ok": true,
+    "input": {
+     "formula": "-qq"
+    }
+   },
+   "key-14": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "key-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "key-16": {
+    "ok": true,
+    "input": {
+     "value": 46054,
+     "format": 16
+    }
+   },
+   "key-17": {
+    "ok": true,
+    "input": {
+     "value": "007"
+    }
+   },
+   "key-18": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "key-19": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "key-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2"
+    }
+   },
+   "key-21": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3"
+    }
+   },
+   "key-22": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "key-23": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026"
+    }
+   },
+   "key-24": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "key-25": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5"
+    }
+   },
+   "key-26": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "key-27": {
+    "ok": true,
+    "input": {
+     "value": "TRUE"
+    }
+   },
+   "key-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "key-pct-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "key-pct-3": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "0%"
+    }
+   },
+   "key-pct-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "key-pct-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": "0%"
+    }
+   },
+   "key-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.01,
+     "format": "0%"
+    }
+   },
+   "key-pct-7": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": "0%"
+    }
+   },
+   "key-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "key-pct-9": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0%"
+    }
+   },
+   "key-pct2-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0.00%"
+    }
+   },
+   "key-pct2-2": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "0.00%"
+    }
+   },
+   "key-pct2-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00%"
+    }
+   }
+  }
+ }
+}

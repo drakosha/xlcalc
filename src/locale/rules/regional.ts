@@ -20,7 +20,8 @@ import { numberReader } from './numbers.js'
 export function regionalRules(locale: Locale, data: RegionalData, clock: RulesClock, names: (lcid: string) => Names | undefined, epoch = 0): Rules {
   const { decimal, group, currency } = data
   const dates = inSystem({ date: regionalDates(data, clock), decimal }, epoch)
-  const { value: valueText, argument } = textReaders(numberReader(data), dates)
+  const numberOnly = numberReader(data)
+  const { value: valueText, argument } = textReaders(numberOnly, dates)
   const numberText = (n: number) => generalText(n).replace('.', decimal)
   const { toNum, toText, toBool } = coercions(argument, locale.booleans, numberText)
   const word = (t: string): boolean | null => {
@@ -43,6 +44,8 @@ export function regionalRules(locale: Locale, data: RegionalData, clock: RulesCl
     toBool,
     valueText,
     dateText: (text) => parseDateWith(text, dates),
+    numberOnly,
+    dates,
     numberText,
     formatText: (value, format) => formatWith(value, format, text),
     display: (value, format, space) => displayWith(value, format, cell, space),

@@ -1,0 +1,7374 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "num-1": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "num-2": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "num-3": {
+    "ok": true,
+    "input": {
+     "value": 7
+    }
+   },
+   "num-4": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "num-5": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "num-6": {
+    "ok": true,
+    "input": {
+     "value": "1,5"
+    }
+   },
+   "num-7": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "num-8": {
+    "ok": true,
+    "input": {
+     "value": ",5"
+    }
+   },
+   "num-9": {
+    "ok": true,
+    "input": {
+     "value": 0.5
+    }
+   },
+   "num-10": {
+    "ok": true,
+    "input": {
+     "value": "5,"
+    }
+   },
+   "num-11": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "num-12": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "num-13": {
+    "ok": true,
+    "input": {
+     "value": -1.5
+    }
+   },
+   "num-14": {
+    "ok": true,
+    "input": {
+     "formula": "+5"
+    }
+   },
+   "long-1": {
+    "ok": true,
+    "input": {
+     "value": 1234567890123450000
+    }
+   },
+   "long-2": {
+    "ok": true,
+    "input": {
+     "value": 1.23456789012345e+29
+    }
+   },
+   "long-3": {
+    "ok": true,
+    "input": {
+     "value": "0,1234567890123456789"
+    }
+   },
+   "long-4": {
+    "ok": true,
+    "input": {
+     "value": 0.123456789012345
+    }
+   },
+   "long-5": {
+    "ok": true,
+    "input": {
+     "value": 1e+307,
+     "format": 11
+    }
+   },
+   "long-6": {
+    "ok": true,
+    "input": {
+     "value": "1E+309"
+    }
+   },
+   "long-7": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 11
+    }
+   },
+   "long-8": {
+    "ok": true,
+    "input": {
+     "value": 99999999999999900
+    }
+   },
+   "grp-1": {
+    "ok": true,
+    "input": {
+     "value": "1 234"
+    }
+   },
+   "grp-2": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5"
+    }
+   },
+   "grp-3": {
+    "ok": true,
+    "input": {
+     "value": "1 234 567,89"
+    }
+   },
+   "grp-4": {
+    "ok": true,
+    "input": {
+     "value": "1 2345"
+    }
+   },
+   "grp-5": {
+    "ok": true,
+    "input": {
+     "value": "12 34"
+    }
+   },
+   "grp-6": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5"
+    }
+   },
+   "grp-7": {
+    "ok": true,
+    "input": {
+     "value": "1 234.5"
+    }
+   },
+   "grp-8": {
+    "ok": true,
+    "input": {
+     "value": 1234,
+     "format": 3
+    }
+   },
+   "grp-9": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "grp-10": {
+    "ok": true,
+    "input": {
+     "value": 1234567.89,
+     "format": 4
+    }
+   },
+   "grp-11": {
+    "ok": true,
+    "input": {
+     "value": 12345,
+     "format": 3
+    }
+   },
+   "grp-12": {
+    "ok": true,
+    "input": {
+     "value": "1,23"
+    }
+   },
+   "grp-13": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected num",
+    "at": 3
+   },
+   "grp-14": {
+    "ok": true,
+    "input": {
+     "value": -1234.5,
+     "format": 4
+    }
+   },
+   "pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "pct-2": {
+    "ok": true,
+    "input": {
+     "value": "1,5%"
+    }
+   },
+   "pct-3": {
+    "ok": true,
+    "input": {
+     "value": 0.015,
+     "format": 10
+    }
+   },
+   "pct-4": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "pct-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "pct-7": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "pct-8": {
+    "ok": true,
+    "input": {
+     "value": "1 234%"
+    }
+   },
+   "pct-9": {
+    "ok": true,
+    "input": {
+     "value": 12.34,
+     "format": 9
+    }
+   },
+   "pct-10": {
+    "ok": true,
+    "input": {
+     "value": "0,25%"
+    }
+   },
+   "pct-11": {
+    "ok": true,
+    "input": {
+     "value": 0.0025,
+     "format": 10
+    }
+   },
+   "pct-12": {
+    "ok": true,
+    "input": {
+     "value": 12.55,
+     "format": 9
+    }
+   },
+   "pct-13": {
+    "ok": true,
+    "input": {
+     "value": 0.012549999999999999,
+     "format": 10
+    }
+   },
+   "cur-1": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽"
+    }
+   },
+   "cur-2": {
+    "ok": true,
+    "input": {
+     "value": "5₽"
+    }
+   },
+   "cur-3": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5 ₽"
+    }
+   },
+   "cur-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"₽\"",
+    "at": 3
+   },
+   "cur-5": {
+    "ok": true,
+    "input": {
+     "value": "₽5"
+    }
+   },
+   "cur-6": {
+    "ok": true,
+    "input": {
+     "value": "5 р."
+    }
+   },
+   "cur-7": {
+    "ok": true,
+    "input": {
+     "value": "(5 ₽)"
+    }
+   },
+   "cur-8": {
+    "ok": true,
+    "input": {
+     "value": "1 234,56 ₽"
+    }
+   },
+   "cur-9": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "cur-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 7
+    }
+   },
+   "cur-11": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "cur-12": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "cur-13": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "cur-14": {
+    "ok": true,
+    "input": {
+     "value": 5.5,
+     "format": 7
+    }
+   },
+   "cur-15": {
+    "ok": true,
+    "input": {
+     "value": "5$"
+    }
+   },
+   "cur-16": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "cur-17": {
+    "ok": true,
+    "input": {
+     "value": 1234,
+     "format": 5
+    }
+   },
+   "cur-18": {
+    "ok": true,
+    "input": {
+     "value": "€5"
+    }
+   },
+   "cur-19": {
+    "ok": true,
+    "input": {
+     "value": "5 €"
+    }
+   },
+   "par-1": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "par-2": {
+    "ok": true,
+    "input": {
+     "value": "(1 234,5)"
+    }
+   },
+   "par-3": {
+    "ok": true,
+    "input": {
+     "value": -1234.5,
+     "format": 4
+    }
+   },
+   "par-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "par-5": {
+    "ok": true,
+    "input": {
+     "value": "(1,5)"
+    }
+   },
+   "par-6": {
+    "ok": true,
+    "input": {
+     "value": -1.5
+    }
+   },
+   "sci-1": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3"
+    }
+   },
+   "sci-2": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "sci-3": {
+    "ok": true,
+    "input": {
+     "value": 100000,
+     "format": 11
+    }
+   },
+   "sci-4": {
+    "ok": true,
+    "input": {
+     "value": 100000,
+     "format": 11
+    }
+   },
+   "sci-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "sci-6": {
+    "ok": true,
+    "input": {
+     "value": -0.0015,
+     "format": 11
+    }
+   },
+   "sci-7": {
+    "ok": true,
+    "input": {
+     "value": "1,5e3"
+    }
+   },
+   "sci-8": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "frac-1": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "frac-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": 12
+    }
+   },
+   "frac-3": {
+    "ok": true,
+    "input": {
+     "value": 46024,
+     "format": 16
+    }
+   },
+   "frac-4": {
+    "ok": true,
+    "input": {
+     "value": 46085,
+     "format": 16
+    }
+   },
+   "frac-5": {
+    "ok": true,
+    "input": {
+     "value": 46034,
+     "format": 16
+    }
+   },
+   "frac-6": {
+    "ok": true,
+    "input": {
+     "value": "13/2"
+    }
+   },
+   "frac-7": {
+    "ok": true,
+    "input": {
+     "value": -1.5,
+     "format": 12
+    }
+   },
+   "frac-8": {
+    "ok": true,
+    "input": {
+     "value": 10.25,
+     "format": 12
+    }
+   },
+   "frac-9": {
+    "ok": true,
+    "input": {
+     "value": 1.0833333333333333,
+     "format": 13
+    }
+   },
+   "frac-10": {
+    "ok": true,
+    "input": {
+     "value": 1.03,
+     "format": 13
+    }
+   },
+   "frac-11": {
+    "ok": true,
+    "input": {
+     "value": "1 1/0"
+    }
+   },
+   "frac-12": {
+    "ok": true,
+    "input": {
+     "value": 46387,
+     "format": 16
+    }
+   },
+   "frac-13": {
+    "ok": true,
+    "input": {
+     "value": 46053,
+     "format": 16
+    }
+   },
+   "frac-14": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "format": 17
+    }
+   },
+   "date-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026"
+    }
+   },
+   "date-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.26"
+    }
+   },
+   "date-3": {
+    "ok": true,
+    "input": {
+     "value": "15.3.2026"
+    }
+   },
+   "date-4": {
+    "ok": true,
+    "input": {
+     "value": 15.3
+    }
+   },
+   "date-5": {
+    "ok": true,
+    "input": {
+     "value": 15.03
+    }
+   },
+   "date-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "date-7": {
+    "ok": true,
+    "input": {
+     "value": 1.13
+    }
+   },
+   "date-8": {
+    "ok": true,
+    "input": {
+     "value": 1.2026
+    }
+   },
+   "date-9": {
+    "ok": true,
+    "input": {
+     "value": "15 мар"
+    }
+   },
+   "date-10": {
+    "ok": true,
+    "input": {
+     "value": "15 мар 2026"
+    }
+   },
+   "date-11": {
+    "ok": true,
+    "input": {
+     "value": "15 марта 2026"
+    }
+   },
+   "date-12": {
+    "ok": true,
+    "input": {
+     "value": "мар 2026"
+    }
+   },
+   "date-13": {
+    "ok": true,
+    "input": {
+     "value": "мар-26"
+    }
+   },
+   "date-14": {
+    "ok": true,
+    "input": {
+     "value": "15-мар-2026"
+    }
+   },
+   "date-15": {
+    "ok": true,
+    "input": {
+     "value": "15/03/2026"
+    }
+   },
+   "date-16": {
+    "ok": true,
+    "input": {
+     "value": "15-03-2026"
+    }
+   },
+   "date-17": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-18": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-19": {
+    "ok": true,
+    "input": {
+     "value": "2026.03.15"
+    }
+   },
+   "date-20": {
+    "ok": true,
+    "input": {
+     "value": "31.02.2026"
+    }
+   },
+   "date-21": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-22": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-23": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 16
+    }
+   },
+   "date-24": {
+    "ok": true,
+    "input": {
+     "value": 46024,
+     "format": 14
+    }
+   },
+   "date-25": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 16
+    }
+   },
+   "date-26": {
+    "ok": true,
+    "input": {
+     "value": 46107,
+     "format": 16
+    }
+   },
+   "date-27": {
+    "ok": true,
+    "input": {
+     "value": 46082,
+     "format": 17
+    }
+   },
+   "date-28": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "date-29": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "date-30": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "date-31": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "time-1": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "time-2": {
+    "ok": true,
+    "input": {
+     "value": 0.7710069444444444,
+     "format": 21
+    }
+   },
+   "time-3": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "time-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "time-5": {
+    "ok": true,
+    "input": {
+     "value": 0.75,
+     "format": 18
+    }
+   },
+   "time-6": {
+    "ok": true,
+    "input": {
+     "value": "6PM"
+    }
+   },
+   "time-7": {
+    "ok": true,
+    "input": {
+     "value": 1.0416666666666667,
+     "format": 46
+    }
+   },
+   "time-8": {
+    "ok": true,
+    "input": {
+     "value": "18:30:15,5"
+    }
+   },
+   "time-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7710127314814815,
+     "format": 47
+    }
+   },
+   "time-10": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 20
+    }
+   },
+   "time-11": {
+    "ok": true,
+    "input": {
+     "value": 1,
+     "format": 46
+    }
+   },
+   "time-12": {
+    "ok": true,
+    "input": {
+     "value": "30:15,5"
+    }
+   },
+   "time-13": {
+    "ok": true,
+    "input": {
+     "value": 0.021012731481481483,
+     "format": 47
+    }
+   },
+   "time-14": {
+    "ok": true,
+    "input": {
+     "value": 0.27100694444444445,
+     "format": 19
+    }
+   },
+   "time-15": {
+    "ok": true,
+    "input": {
+     "value": 0.043090277777777776,
+     "format": 21
+    }
+   },
+   "time-16": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "dt-1": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026 18:30"
+    }
+   },
+   "dt-2": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026 18:30:15"
+    }
+   },
+   "dt-3": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-4": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-5": {
+    "ok": true,
+    "input": {
+     "value": "18:30 15.03.2026"
+    }
+   },
+   "dt-6": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-7": {
+    "ok": true,
+    "input": {
+     "value": "15.3 18:30"
+    }
+   },
+   "dt-8": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "bool-1": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА"
+    }
+   },
+   "bool-2": {
+    "ok": true,
+    "input": {
+     "value": "истина"
+    }
+   },
+   "bool-3": {
+    "ok": true,
+    "input": {
+     "value": "Ложь"
+    }
+   },
+   "bool-4": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "bool-5": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "bool-6": {
+    "ok": true,
+    "input": {
+     "value": false
+    }
+   },
+   "bool-7": {
+    "ok": true,
+    "input": {
+     "value": " TRUE"
+    }
+   },
+   "bool-8": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА "
+    }
+   },
+   "err-1": {
+    "ok": true,
+    "input": {
+     "value": "#Н/Д"
+    }
+   },
+   "err-2": {
+    "ok": true,
+    "input": {
+     "value": "#н/д"
+    }
+   },
+   "err-3": {
+    "ok": true,
+    "input": {
+     "formula": "#N/A"
+    }
+   },
+   "err-4": {
+    "ok": true,
+    "input": {
+     "formula": "#N/A"
+    }
+   },
+   "err-5": {
+    "ok": true,
+    "input": {
+     "value": "#ДЕЛ/0!"
+    }
+   },
+   "err-6": {
+    "ok": true,
+    "input": {
+     "formula": "#DIV/0!"
+    }
+   },
+   "err-7": {
+    "ok": true,
+    "input": {
+     "value": "#ИМЯ?"
+    }
+   },
+   "err-8": {
+    "ok": true,
+    "input": {
+     "formula": "#NAME?"
+    }
+   },
+   "err-9": {
+    "ok": true,
+    "input": {
+     "value": "#ЗНАЧ!"
+    }
+   },
+   "err-10": {
+    "ok": true,
+    "input": {
+     "formula": "#VALUE!"
+    }
+   },
+   "err-11": {
+    "ok": true,
+    "input": {
+     "value": "#ССЫЛКА!"
+    }
+   },
+   "err-12": {
+    "ok": true,
+    "input": {
+     "formula": "#REF!"
+    }
+   },
+   "err-13": {
+    "ok": true,
+    "input": {
+     "value": "#ЧИСЛО!"
+    }
+   },
+   "err-14": {
+    "ok": true,
+    "input": {
+     "formula": "#NUM!"
+    }
+   },
+   "err-15": {
+    "ok": true,
+    "input": {
+     "value": "#ПУСТО!"
+    }
+   },
+   "err-16": {
+    "ok": true,
+    "input": {
+     "formula": "#NULL!"
+    }
+   },
+   "err-17": {
+    "ok": true,
+    "input": {
+     "value": "#SPILL!"
+    }
+   },
+   "err-18": {
+    "ok": true,
+    "input": {
+     "value": "#CALC!"
+    }
+   },
+   "err-19": {
+    "ok": true,
+    "input": {
+     "value": "#GETTING_DATA"
+    }
+   },
+   "err-20": {
+    "ok": true,
+    "input": {
+     "value": "#ОЖИДАНИЕ_ДАННЫХ"
+    }
+   },
+   "text-1": {
+    "ok": true,
+    "input": {
+     "value": "abc"
+    }
+   },
+   "text-2": {
+    "ok": true,
+    "input": {
+     "value": " abc "
+    }
+   },
+   "text-3": {
+    "ok": true,
+    "input": {
+     "value": "007"
+    }
+   },
+   "text-4": {
+    "ok": true,
+    "input": {
+     "value": "'abc"
+    }
+   },
+   "text-5": {
+    "ok": true,
+    "input": {
+     "value": ""
+    }
+   },
+   "text-6": {
+    "ok": true,
+    "input": {
+     "value": "   "
+    }
+   },
+   "text-7": {
+    "ok": true,
+    "input": {
+     "value": "=1+2"
+    }
+   },
+   "text-8": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026"
+    }
+   },
+   "text-9": {
+    "ok": true,
+    "input": {
+     "value": "1-2-3"
+    }
+   },
+   "text-10": {
+    "ok": true,
+    "input": {
+     "value": "abc 5"
+    }
+   },
+   "text-11": {
+    "ok": true,
+    "input": {
+     "value": "5 abc"
+    }
+   },
+   "text-12": {
+    "ok": true,
+    "input": {
+     "value": "N/A"
+    }
+   },
+   "text-13": {
+    "ok": true,
+    "input": {
+     "value": "Да"
+    }
+   },
+   "text-14": {
+    "ok": true,
+    "input": null
+   },
+   "fx-1": {
+    "ok": true,
+    "input": {
+     "formula": "1+2"
+    }
+   },
+   "fx-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 8
+   },
+   "fx-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 8
+   },
+   "fx-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,1.5)"
+    }
+   },
+   "fx-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 7
+   },
+   "fx-6": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,1)"
+    }
+   },
+   "fx-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 3
+   },
+   "fx-8": {
+    "ok": true,
+    "input": {
+     "formula": "FOO(1)"
+    }
+   },
+   "fx-9": {
+    "ok": false,
+    "code": "empty",
+    "message": "empty formula",
+    "at": 1
+   },
+   "fx-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \"=\"",
+    "at": 1
+   },
+   "fx-11": {
+    "ok": true,
+    "input": {
+     "formula": "C1*2"
+    }
+   },
+   "fx-12": {
+    "ok": true,
+    "input": {
+     "formula": "ИСТИНА"
+    }
+   },
+   "fx-13": {
+    "ok": true,
+    "input": {
+     "formula": "TRUE"
+    }
+   },
+   "fx-14": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "fx-15": {
+    "ok": true,
+    "input": {
+     "formula": "1.5+1"
+    }
+   },
+   "fx-16": {
+    "ok": true,
+    "input": {
+     "formula": "СЕГОДНЯ()"
+    }
+   },
+   "fx-17": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()"
+    }
+   },
+   "fx-18": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 10
+   },
+   "fx-19": {
+    "ok": true,
+    "input": {
+     "formula": "DATE(2026,3,15)"
+    }
+   },
+   "fx-20": {
+    "ok": true,
+    "input": {
+     "formula": "ТДАТА()"
+    }
+   },
+   "fx-21": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()"
+    }
+   },
+   "fx-22": {
+    "ok": true,
+    "input": {
+     "formula": "5%"
+    }
+   },
+   "fx-23": {
+    "ok": true,
+    "input": {
+     "formula": "C2"
+    }
+   },
+   "fx-24": {
+    "ok": true,
+    "input": {
+     "formula": "C2+1"
+    }
+   },
+   "fx-25": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 8
+   },
+   "fx-26": {
+    "ok": true,
+    "input": {
+     "formula": "PMT(0.1,12,1000)"
+    }
+   },
+   "fx-27": {
+    "ok": true,
+    "input": {
+     "formula": "\"15.03.2026\""
+    }
+   },
+   "fx-28": {
+    "ok": true,
+    "input": {
+     "formula": "--\"15.03.2026\""
+    }
+   },
+   "fx-29": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found ;",
+    "at": 9
+   },
+   "fx-30": {
+    "ok": true,
+    "input": {
+     "formula": "TIME(18,30,0)"
+    }
+   },
+   "sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "+C1"
+    }
+   },
+   "sign-2": {
+    "ok": true,
+    "input": {
+     "formula": "-C1"
+    }
+   },
+   "sign-3": {
+    "ok": true,
+    "input": {
+     "formula": "+1+2"
+    }
+   },
+   "sign-4": {
+    "ok": true,
+    "input": {
+     "formula": "-1-2"
+    }
+   },
+   "sign-5": {
+    "ok": true,
+    "input": {
+     "formula": "-5+1"
+    }
+   },
+   "sign-6": {
+    "ok": true,
+    "input": {
+     "formula": "+5%"
+    }
+   },
+   "sign-7": {
+    "ok": true,
+    "input": {
+     "formula": "-abc"
+    }
+   },
+   "sign-8": {
+    "ok": true,
+    "input": {
+     "formula": "-hello world"
+    }
+   },
+   "sign-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "sign-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "sign-11": {
+    "ok": true,
+    "input": {
+     "value": "@SUM(1,2)"
+    }
+   },
+   "sign-12": {
+    "ok": true,
+    "input": {
+     "value": "@СУММ(1;2)"
+    }
+   },
+   "sign-13": {
+    "ok": true,
+    "input": {
+     "value": "@abc"
+    }
+   },
+   "sign-14": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected num",
+    "at": 6
+   },
+   "sign-15": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected num",
+    "at": 6
+   },
+   "sign-16": {
+    "ok": true,
+    "input": {
+     "formula": "-18:30"
+    }
+   },
+   "sign-17": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "sign-18": {
+    "ok": true,
+    "input": {
+     "formula": "--5"
+    }
+   },
+   "sign-19": {
+    "ok": true,
+    "input": {
+     "formula": "+-5"
+    }
+   },
+   "sign-20": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"₽\"",
+    "at": 3
+   },
+   "sign-21": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "in-num-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "0.00"
+    }
+   },
+   "in-num-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "0.00"
+    }
+   },
+   "in-num-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "0.00"
+    }
+   },
+   "in-num-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00"
+    }
+   },
+   "in-num-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "0.00"
+    }
+   },
+   "in-num-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "0.00"
+    }
+   },
+   "in-num-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-num-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-num-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-num-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "0.00"
+    }
+   },
+   "in-num-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "0.00"
+    }
+   },
+   "in-num-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "0.00"
+    }
+   },
+   "in-num-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0.00"
+    }
+   },
+   "in-num-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0.00"
+    }
+   },
+   "in-num-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0.00"
+    }
+   },
+   "in-num-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "0.00"
+    }
+   },
+   "in-num-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00"
+    }
+   },
+   "in-num-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "0.00"
+    }
+   },
+   "in-num-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-num-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0.00"
+    }
+   },
+   "in-num-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0.00"
+    }
+   },
+   "in-num-22": {
+    "ok": true,
+    "input": {
+     "format": "0.00"
+    }
+   },
+   "in-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "in-pct-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "in-pct-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "0%"
+    }
+   },
+   "in-pct-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "in-pct-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": "0%"
+    }
+   },
+   "in-pct-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "0%"
+    }
+   },
+   "in-pct-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "in-pct-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-pct-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "0%"
+    }
+   },
+   "in-pct-11": {
+    "ok": true,
+    "input": {
+     "value": 12.345,
+     "format": "0%"
+    }
+   },
+   "in-pct-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "0%"
+    }
+   },
+   "in-pct-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0%"
+    }
+   },
+   "in-pct-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0%"
+    }
+   },
+   "in-pct-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0%"
+    }
+   },
+   "in-pct-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "0%"
+    }
+   },
+   "in-pct-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0%"
+    }
+   },
+   "in-pct-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "0%"
+    }
+   },
+   "in-pct-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-pct-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0%"
+    }
+   },
+   "in-pct-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0%"
+    }
+   },
+   "in-pct-22": {
+    "ok": true,
+    "input": {
+     "format": "0%"
+    }
+   },
+   "in-pct2-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-pct2-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-pct2-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-11": {
+    "ok": true,
+    "input": {
+     "value": 12.345,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-pct2-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-22": {
+    "ok": true,
+    "input": {
+     "format": "0.00%"
+    }
+   },
+   "in-text-1": {
+    "ok": true,
+    "input": {
+     "value": "5",
+     "format": "@"
+    }
+   },
+   "in-text-2": {
+    "ok": true,
+    "input": {
+     "value": "50",
+     "format": "@"
+    }
+   },
+   "in-text-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "@"
+    }
+   },
+   "in-text-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "@"
+    }
+   },
+   "in-text-5": {
+    "ok": true,
+    "input": {
+     "value": "-5",
+     "format": "@"
+    }
+   },
+   "in-text-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "@"
+    }
+   },
+   "in-text-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "@"
+    }
+   },
+   "in-text-8": {
+    "ok": true,
+    "input": {
+     "value": "5%",
+     "format": "@"
+    }
+   },
+   "in-text-9": {
+    "ok": true,
+    "input": {
+     "value": "18:30",
+     "format": "@"
+    }
+   },
+   "in-text-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "@"
+    }
+   },
+   "in-text-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "@"
+    }
+   },
+   "in-text-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "@"
+    }
+   },
+   "in-text-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "@"
+    }
+   },
+   "in-text-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "@"
+    }
+   },
+   "in-text-15": {
+    "ok": true,
+    "input": {
+     "value": "1 1/2",
+     "format": "@"
+    }
+   },
+   "in-text-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "@"
+    }
+   },
+   "in-text-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "@"
+    }
+   },
+   "in-text-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "@"
+    }
+   },
+   "in-text-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "@"
+    }
+   },
+   "in-text-20": {
+    "ok": true,
+    "input": {
+     "value": "=1+2",
+     "format": "@"
+    }
+   },
+   "in-text-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "@"
+    }
+   },
+   "in-text-22": {
+    "ok": true,
+    "input": {
+     "format": "@"
+    }
+   },
+   "in-date-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 14
+    }
+   },
+   "in-date-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": 14
+    }
+   },
+   "in-date-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": 14
+    }
+   },
+   "in-date-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": 14
+    }
+   },
+   "in-date-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 14
+    }
+   },
+   "in-date-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 14
+    }
+   },
+   "in-date-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-date-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-date-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 14
+    }
+   },
+   "in-date-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": 14
+    }
+   },
+   "in-date-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 14
+    }
+   },
+   "in-date-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": 14
+    }
+   },
+   "in-date-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": 14
+    }
+   },
+   "in-date-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": 14
+    }
+   },
+   "in-date-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 14
+    }
+   },
+   "in-date-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 14
+    }
+   },
+   "in-date-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 14
+    }
+   },
+   "in-date-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 14
+    }
+   },
+   "in-date-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-date-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": 14
+    }
+   },
+   "in-date-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": 14
+    }
+   },
+   "in-date-22": {
+    "ok": true,
+    "input": {
+     "format": 14
+    }
+   },
+   "in-dmy-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-dmy-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-dmy-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-22": {
+    "ok": true,
+    "input": {
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-time-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "h:mm"
+    }
+   },
+   "in-time-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "h:mm"
+    }
+   },
+   "in-time-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "h:mm"
+    }
+   },
+   "in-time-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "h:mm"
+    }
+   },
+   "in-time-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-time-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "h:mm"
+    }
+   },
+   "in-time-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "h:mm"
+    }
+   },
+   "in-time-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "h:mm"
+    }
+   },
+   "in-time-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "h:mm"
+    }
+   },
+   "in-time-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "h:mm"
+    }
+   },
+   "in-time-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "h:mm"
+    }
+   },
+   "in-time-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "h:mm"
+    }
+   },
+   "in-time-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "h:mm"
+    }
+   },
+   "in-time-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-time-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "h:mm"
+    }
+   },
+   "in-time-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "h:mm"
+    }
+   },
+   "in-time-22": {
+    "ok": true,
+    "input": {
+     "format": "h:mm"
+    }
+   },
+   "in-grp-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-grp-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-grp-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-grp-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-grp-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-22": {
+    "ok": true,
+    "input": {
+     "format": "#,##0.00"
+    }
+   },
+   "in-usd-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-usd-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-usd-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-usd-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-22": {
+    "ok": true,
+    "input": {
+     "format": "$#,##0.00"
+    }
+   },
+   "in-rub-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-rub-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-rub-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-rub-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-22": {
+    "ok": true,
+    "input": {
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-sci-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-sci-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-sci-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-sci-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-sci-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-22": {
+    "ok": true,
+    "input": {
+     "format": "0.00E+00"
+    }
+   },
+   "in-frac-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-frac-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-frac-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-frac-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-frac-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-22": {
+    "ok": true,
+    "input": {
+     "format": "# ?/?"
+    }
+   },
+   "in-dt-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 22
+    }
+   },
+   "in-dt-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": 22
+    }
+   },
+   "in-dt-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": 22
+    }
+   },
+   "in-dt-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": 22
+    }
+   },
+   "in-dt-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 22
+    }
+   },
+   "in-dt-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": 22
+    }
+   },
+   "in-dt-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 22
+    }
+   },
+   "in-dt-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-dt-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 22
+    }
+   },
+   "in-dt-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": 22
+    }
+   },
+   "in-dt-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 22
+    }
+   },
+   "in-dt-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": 22
+    }
+   },
+   "in-dt-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": 22
+    }
+   },
+   "in-dt-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": 22
+    }
+   },
+   "in-dt-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 22
+    }
+   },
+   "in-dt-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": 22
+    }
+   },
+   "in-dt-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 22
+    }
+   },
+   "in-dt-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": 22
+    }
+   },
+   "in-dt-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-dt-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": 22
+    }
+   },
+   "in-dt-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": 22
+    }
+   },
+   "in-dt-22": {
+    "ok": true,
+    "input": {
+     "format": 22
+    }
+   },
+   "in-gen-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "General"
+    }
+   },
+   "in-gen-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "General"
+    }
+   },
+   "in-gen-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "General"
+    }
+   },
+   "in-gen-4": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "General"
+    }
+   },
+   "in-gen-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "General"
+    }
+   },
+   "in-gen-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "General"
+    }
+   },
+   "in-gen-7": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-gen-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-gen-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-gen-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "General"
+    }
+   },
+   "in-gen-11": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "in-gen-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "General"
+    }
+   },
+   "in-gen-13": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "General"
+    }
+   },
+   "in-gen-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "General"
+    }
+   },
+   "in-gen-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-gen-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "General"
+    }
+   },
+   "in-gen-17": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-gen-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "General"
+    }
+   },
+   "in-gen-19": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-gen-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "General"
+    }
+   },
+   "in-gen-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "General"
+    }
+   },
+   "in-gen-22": {
+    "ok": true,
+    "input": {
+     "format": "General"
+    }
+   }
+  },
+  "ru-RU": {
+   "num-1": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "num-2": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "num-3": {
+    "ok": true,
+    "input": {
+     "value": 7
+    }
+   },
+   "num-4": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "num-5": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "num-6": {
+    "ok": true,
+    "input": {
+     "value": 1.5
+    }
+   },
+   "num-7": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "format": 16
+    }
+   },
+   "num-8": {
+    "ok": true,
+    "input": {
+     "value": 0.5
+    }
+   },
+   "num-9": {
+    "ok": true,
+    "input": {
+     "value": ".5"
+    }
+   },
+   "num-10": {
+    "ok": true,
+    "input": {
+     "value": 5
+    }
+   },
+   "num-11": {
+    "ok": true,
+    "input": {
+     "value": "5."
+    }
+   },
+   "num-12": {
+    "ok": true,
+    "input": {
+     "value": -1.5
+    }
+   },
+   "num-13": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "num-14": {
+    "ok": true,
+    "input": {
+     "formula": "+5"
+    }
+   },
+   "long-1": {
+    "ok": true,
+    "input": {
+     "value": 1234567890123450000
+    }
+   },
+   "long-2": {
+    "ok": true,
+    "input": {
+     "value": 1.23456789012345e+29
+    }
+   },
+   "long-3": {
+    "ok": true,
+    "input": {
+     "value": 0.123456789012345
+    }
+   },
+   "long-4": {
+    "ok": true,
+    "input": {
+     "value": "0.1234567890123456789"
+    }
+   },
+   "long-5": {
+    "ok": true,
+    "input": {
+     "value": 1e+307,
+     "format": 11
+    }
+   },
+   "long-6": {
+    "ok": true,
+    "input": {
+     "value": "1E+309"
+    }
+   },
+   "long-7": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 11
+    }
+   },
+   "long-8": {
+    "ok": true,
+    "input": {
+     "value": 99999999999999900
+    }
+   },
+   "grp-1": {
+    "ok": true,
+    "input": {
+     "value": 1234,
+     "format": 3
+    }
+   },
+   "grp-2": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "grp-3": {
+    "ok": true,
+    "input": {
+     "value": 1234567.89,
+     "format": 4
+    }
+   },
+   "grp-4": {
+    "ok": true,
+    "input": {
+     "value": 12345,
+     "format": 3
+    }
+   },
+   "grp-5": {
+    "ok": true,
+    "input": {
+     "value": "12 34"
+    }
+   },
+   "grp-6": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5"
+    }
+   },
+   "grp-7": {
+    "ok": true,
+    "input": {
+     "value": "1 234.5"
+    }
+   },
+   "grp-8": {
+    "ok": true,
+    "input": {
+     "value": 1.234
+    }
+   },
+   "grp-9": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5"
+    }
+   },
+   "grp-10": {
+    "ok": true,
+    "input": {
+     "value": "1,234,567.89"
+    }
+   },
+   "grp-11": {
+    "ok": true,
+    "input": {
+     "value": 1.2345
+    }
+   },
+   "grp-12": {
+    "ok": true,
+    "input": {
+     "value": 1.23
+    }
+   },
+   "grp-13": {
+    "ok": true,
+    "input": {
+     "value": -1234.5,
+     "format": 4
+    }
+   },
+   "grp-14": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 6
+   },
+   "pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "pct-2": {
+    "ok": true,
+    "input": {
+     "value": 0.015,
+     "format": 10
+    }
+   },
+   "pct-3": {
+    "ok": true,
+    "input": {
+     "value": "1.5%"
+    }
+   },
+   "pct-4": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "pct-5": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "pct-7": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "pct-8": {
+    "ok": true,
+    "input": {
+     "value": 12.34,
+     "format": 9
+    }
+   },
+   "pct-9": {
+    "ok": true,
+    "input": {
+     "value": 0.01234,
+     "format": 10
+    }
+   },
+   "pct-10": {
+    "ok": true,
+    "input": {
+     "value": 0.0025,
+     "format": 10
+    }
+   },
+   "pct-11": {
+    "ok": true,
+    "input": {
+     "value": "0.25%"
+    }
+   },
+   "pct-12": {
+    "ok": true,
+    "input": {
+     "value": 0.012549999999999999,
+     "format": 10
+    }
+   },
+   "pct-13": {
+    "ok": true,
+    "input": {
+     "value": "1.255%"
+    }
+   },
+   "cur-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "cur-2": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "cur-3": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 7
+    }
+   },
+   "cur-4": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "cur-5": {
+    "ok": true,
+    "input": {
+     "value": "₽5"
+    }
+   },
+   "cur-6": {
+    "ok": true,
+    "input": {
+     "value": "5 р."
+    }
+   },
+   "cur-7": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "cur-8": {
+    "ok": true,
+    "input": {
+     "value": 1234.56,
+     "format": 7
+    }
+   },
+   "cur-9": {
+    "ok": true,
+    "input": {
+     "value": "$5"
+    }
+   },
+   "cur-10": {
+    "ok": true,
+    "input": {
+     "value": "$1,234.50"
+    }
+   },
+   "cur-11": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"$\"",
+    "at": 1
+   },
+   "cur-12": {
+    "ok": true,
+    "input": {
+     "value": "$-5"
+    }
+   },
+   "cur-13": {
+    "ok": true,
+    "input": {
+     "value": "($5)"
+    }
+   },
+   "cur-14": {
+    "ok": true,
+    "input": {
+     "value": "$5.5"
+    }
+   },
+   "cur-15": {
+    "ok": true,
+    "input": {
+     "value": "5$"
+    }
+   },
+   "cur-16": {
+    "ok": true,
+    "input": {
+     "value": "$ 5"
+    }
+   },
+   "cur-17": {
+    "ok": true,
+    "input": {
+     "value": "$1,234"
+    }
+   },
+   "cur-18": {
+    "ok": true,
+    "input": {
+     "value": "€5"
+    }
+   },
+   "cur-19": {
+    "ok": true,
+    "input": {
+     "value": "5 €"
+    }
+   },
+   "par-1": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "par-2": {
+    "ok": true,
+    "input": {
+     "value": -1234.5,
+     "format": 4
+    }
+   },
+   "par-3": {
+    "ok": true,
+    "input": {
+     "value": "(1,234.5)"
+    }
+   },
+   "par-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "par-5": {
+    "ok": true,
+    "input": {
+     "value": -1.5
+    }
+   },
+   "par-6": {
+    "ok": true,
+    "input": {
+     "value": "(1.5)"
+    }
+   },
+   "sci-1": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "sci-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3"
+    }
+   },
+   "sci-3": {
+    "ok": true,
+    "input": {
+     "value": 100000,
+     "format": 11
+    }
+   },
+   "sci-4": {
+    "ok": true,
+    "input": {
+     "value": 100000,
+     "format": 11
+    }
+   },
+   "sci-5": {
+    "ok": true,
+    "input": {
+     "value": -0.0015,
+     "format": 11
+    }
+   },
+   "sci-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "sci-7": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "sci-8": {
+    "ok": true,
+    "input": {
+     "value": "1.5e3"
+    }
+   },
+   "frac-1": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "frac-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": 12
+    }
+   },
+   "frac-3": {
+    "ok": true,
+    "input": {
+     "value": 46054,
+     "format": 16
+    }
+   },
+   "frac-4": {
+    "ok": true,
+    "input": {
+     "value": 46115,
+     "format": 16
+    }
+   },
+   "frac-5": {
+    "ok": true,
+    "input": {
+     "value": 46357,
+     "format": 16
+    }
+   },
+   "frac-6": {
+    "ok": true,
+    "input": {
+     "value": 46066,
+     "format": 16
+    }
+   },
+   "frac-7": {
+    "ok": true,
+    "input": {
+     "value": -1.5,
+     "format": 12
+    }
+   },
+   "frac-8": {
+    "ok": true,
+    "input": {
+     "value": 10.25,
+     "format": 12
+    }
+   },
+   "frac-9": {
+    "ok": true,
+    "input": {
+     "value": 1.0833333333333333,
+     "format": 13
+    }
+   },
+   "frac-10": {
+    "ok": true,
+    "input": {
+     "value": 1.03,
+     "format": 13
+    }
+   },
+   "frac-11": {
+    "ok": true,
+    "input": {
+     "value": "1 1/0"
+    }
+   },
+   "frac-12": {
+    "ok": true,
+    "input": {
+     "value": 11658,
+     "format": 17
+    }
+   },
+   "frac-13": {
+    "ok": true,
+    "input": {
+     "value": 11324,
+     "format": 17
+    }
+   },
+   "frac-14": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "format": 17
+    }
+   },
+   "date-1": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-2": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-3": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-4": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 16
+    }
+   },
+   "date-5": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 16
+    }
+   },
+   "date-6": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "format": 16
+    }
+   },
+   "date-7": {
+    "ok": true,
+    "input": {
+     "value": 41275,
+     "format": 17
+    }
+   },
+   "date-8": {
+    "ok": true,
+    "input": {
+     "value": 46023,
+     "format": 17
+    }
+   },
+   "date-9": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 16
+    }
+   },
+   "date-10": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "date-11": {
+    "ok": true,
+    "input": {
+     "value": "15 марта 2026"
+    }
+   },
+   "date-12": {
+    "ok": true,
+    "input": {
+     "value": 46082,
+     "format": 17
+    }
+   },
+   "date-13": {
+    "ok": true,
+    "input": {
+     "value": 46082,
+     "format": 17
+    }
+   },
+   "date-14": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 15
+    }
+   },
+   "date-15": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-16": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-17": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-18": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-19": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "date-20": {
+    "ok": true,
+    "input": {
+     "value": "31.02.2026"
+    }
+   },
+   "date-21": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026"
+    }
+   },
+   "date-22": {
+    "ok": true,
+    "input": {
+     "value": "3/15/26"
+    }
+   },
+   "date-23": {
+    "ok": true,
+    "input": {
+     "value": 42064,
+     "format": 17
+    }
+   },
+   "date-24": {
+    "ok": true,
+    "input": {
+     "value": 46054,
+     "format": 14
+    }
+   },
+   "date-25": {
+    "ok": true,
+    "input": {
+     "value": "15-Mar"
+    }
+   },
+   "date-26": {
+    "ok": true,
+    "input": {
+     "value": "Mar-26"
+    }
+   },
+   "date-27": {
+    "ok": true,
+    "input": {
+     "value": "Mar 2026"
+    }
+   },
+   "date-28": {
+    "ok": true,
+    "input": {
+     "value": "15-Mar-2026"
+    }
+   },
+   "date-29": {
+    "ok": true,
+    "input": {
+     "value": "15 Mar 2026"
+    }
+   },
+   "date-30": {
+    "ok": true,
+    "input": {
+     "value": "Mar 15, 2026"
+    }
+   },
+   "date-31": {
+    "ok": true,
+    "input": {
+     "value": "March 15, 2026"
+    }
+   },
+   "time-1": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "time-2": {
+    "ok": true,
+    "input": {
+     "value": 0.7710069444444444,
+     "format": 21
+    }
+   },
+   "time-3": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "time-4": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "time-5": {
+    "ok": true,
+    "input": {
+     "value": 0.75,
+     "format": 18
+    }
+   },
+   "time-6": {
+    "ok": true,
+    "input": {
+     "value": "6PM"
+    }
+   },
+   "time-7": {
+    "ok": true,
+    "input": {
+     "value": 1.0416666666666667,
+     "format": 46
+    }
+   },
+   "time-8": {
+    "ok": true,
+    "input": {
+     "value": 0.7710127314814815,
+     "format": 47
+    }
+   },
+   "time-9": {
+    "ok": true,
+    "input": {
+     "value": "18:30:15.5"
+    }
+   },
+   "time-10": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 20
+    }
+   },
+   "time-11": {
+    "ok": true,
+    "input": {
+     "value": 1,
+     "format": 46
+    }
+   },
+   "time-12": {
+    "ok": true,
+    "input": {
+     "value": 0.021012731481481483,
+     "format": 47
+    }
+   },
+   "time-13": {
+    "ok": true,
+    "input": {
+     "value": "30:15.5"
+    }
+   },
+   "time-14": {
+    "ok": true,
+    "input": {
+     "value": 0.27100694444444445,
+     "format": 19
+    }
+   },
+   "time-15": {
+    "ok": true,
+    "input": {
+     "value": 0.043090277777777776,
+     "format": 21
+    }
+   },
+   "time-16": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "dt-1": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-2": {
+    "ok": true,
+    "input": {
+     "value": 46096.771006944444,
+     "format": 22
+    }
+   },
+   "dt-3": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026 18:30"
+    }
+   },
+   "dt-4": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026 6:30 PM"
+    }
+   },
+   "dt-5": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-6": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-7": {
+    "ok": true,
+    "input": {
+     "value": 46096.770833333336,
+     "format": 22
+    }
+   },
+   "dt-8": {
+    "ok": true,
+    "input": {
+     "value": 42064.770833333336,
+     "format": 22
+    }
+   },
+   "bool-1": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "bool-2": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "bool-3": {
+    "ok": true,
+    "input": {
+     "value": false
+    }
+   },
+   "bool-4": {
+    "ok": true,
+    "input": {
+     "value": "TRUE"
+    }
+   },
+   "bool-5": {
+    "ok": true,
+    "input": {
+     "value": "true"
+    }
+   },
+   "bool-6": {
+    "ok": true,
+    "input": {
+     "value": "False"
+    }
+   },
+   "bool-7": {
+    "ok": true,
+    "input": {
+     "value": " TRUE"
+    }
+   },
+   "bool-8": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА "
+    }
+   },
+   "err-1": {
+    "ok": true,
+    "input": {
+     "formula": "#N/A"
+    }
+   },
+   "err-2": {
+    "ok": true,
+    "input": {
+     "formula": "#N/A"
+    }
+   },
+   "err-3": {
+    "ok": true,
+    "input": {
+     "formula": "#N/A"
+    }
+   },
+   "err-4": {
+    "ok": true,
+    "input": {
+     "formula": "#N/A"
+    }
+   },
+   "err-5": {
+    "ok": true,
+    "input": {
+     "formula": "#DIV/0!"
+    }
+   },
+   "err-6": {
+    "ok": true,
+    "input": {
+     "formula": "#DIV/0!"
+    }
+   },
+   "err-7": {
+    "ok": true,
+    "input": {
+     "formula": "#NAME?"
+    }
+   },
+   "err-8": {
+    "ok": true,
+    "input": {
+     "formula": "#NAME?"
+    }
+   },
+   "err-9": {
+    "ok": true,
+    "input": {
+     "formula": "#VALUE!"
+    }
+   },
+   "err-10": {
+    "ok": true,
+    "input": {
+     "formula": "#VALUE!"
+    }
+   },
+   "err-11": {
+    "ok": true,
+    "input": {
+     "formula": "#REF!"
+    }
+   },
+   "err-12": {
+    "ok": true,
+    "input": {
+     "formula": "#REF!"
+    }
+   },
+   "err-13": {
+    "ok": true,
+    "input": {
+     "formula": "#NUM!"
+    }
+   },
+   "err-14": {
+    "ok": true,
+    "input": {
+     "formula": "#NUM!"
+    }
+   },
+   "err-15": {
+    "ok": true,
+    "input": {
+     "formula": "#NULL!"
+    }
+   },
+   "err-16": {
+    "ok": true,
+    "input": {
+     "formula": "#NULL!"
+    }
+   },
+   "err-17": {
+    "ok": true,
+    "input": {
+     "value": "#SPILL!"
+    }
+   },
+   "err-18": {
+    "ok": true,
+    "input": {
+     "value": "#CALC!"
+    }
+   },
+   "err-19": {
+    "ok": true,
+    "input": {
+     "value": "#GETTING_DATA"
+    }
+   },
+   "err-20": {
+    "ok": true,
+    "input": {
+     "value": "#ОЖИДАНИЕ_ДАННЫХ"
+    }
+   },
+   "text-1": {
+    "ok": true,
+    "input": {
+     "value": "abc"
+    }
+   },
+   "text-2": {
+    "ok": true,
+    "input": {
+     "value": " abc "
+    }
+   },
+   "text-3": {
+    "ok": true,
+    "input": {
+     "value": "007"
+    }
+   },
+   "text-4": {
+    "ok": true,
+    "input": {
+     "value": "'abc"
+    }
+   },
+   "text-5": {
+    "ok": true,
+    "input": {
+     "value": ""
+    }
+   },
+   "text-6": {
+    "ok": true,
+    "input": {
+     "value": "   "
+    }
+   },
+   "text-7": {
+    "ok": true,
+    "input": {
+     "value": "=1+2"
+    }
+   },
+   "text-8": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026"
+    }
+   },
+   "text-9": {
+    "ok": true,
+    "input": {
+     "value": "1-2-3"
+    }
+   },
+   "text-10": {
+    "ok": true,
+    "input": {
+     "value": "abc 5"
+    }
+   },
+   "text-11": {
+    "ok": true,
+    "input": {
+     "value": "5 abc"
+    }
+   },
+   "text-12": {
+    "ok": true,
+    "input": {
+     "value": "N/A"
+    }
+   },
+   "text-13": {
+    "ok": true,
+    "input": {
+     "value": "Да"
+    }
+   },
+   "text-14": {
+    "ok": true,
+    "input": null
+   },
+   "fx-1": {
+    "ok": true,
+    "input": {
+     "formula": "1+2"
+    }
+   },
+   "fx-2": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,1.5)"
+    }
+   },
+   "fx-3": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,1.5)"
+    }
+   },
+   "fx-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 9
+   },
+   "fx-5": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(C1,1.5)"
+    }
+   },
+   "fx-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "\"C1\" cannot be written in the invariant syntax",
+    "at": 5
+   },
+   "fx-7": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 3
+   },
+   "fx-8": {
+    "ok": true,
+    "input": {
+     "formula": "FOO(1)"
+    }
+   },
+   "fx-9": {
+    "ok": false,
+    "code": "empty",
+    "message": "empty formula",
+    "at": 1
+   },
+   "fx-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \"=\"",
+    "at": 1
+   },
+   "fx-11": {
+    "ok": true,
+    "input": {
+     "formula": "C1*2"
+    }
+   },
+   "fx-12": {
+    "ok": true,
+    "input": {
+     "formula": "TRUE"
+    }
+   },
+   "fx-13": {
+    "ok": true,
+    "input": {
+     "formula": "TRUE"
+    }
+   },
+   "fx-14": {
+    "ok": true,
+    "input": {
+     "formula": "1.5+1"
+    }
+   },
+   "fx-15": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "fx-16": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()"
+    }
+   },
+   "fx-17": {
+    "ok": true,
+    "input": {
+     "formula": "TODAY()"
+    }
+   },
+   "fx-18": {
+    "ok": true,
+    "input": {
+     "formula": "DATE(2026,3,15)"
+    }
+   },
+   "fx-19": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 12
+   },
+   "fx-20": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()"
+    }
+   },
+   "fx-21": {
+    "ok": true,
+    "input": {
+     "formula": "NOW()"
+    }
+   },
+   "fx-22": {
+    "ok": true,
+    "input": {
+     "formula": "5%"
+    }
+   },
+   "fx-23": {
+    "ok": true,
+    "input": {
+     "formula": "C2"
+    }
+   },
+   "fx-24": {
+    "ok": true,
+    "input": {
+     "formula": "C2+1"
+    }
+   },
+   "fx-25": {
+    "ok": true,
+    "input": {
+     "formula": "PMT(0.1,12,1000)"
+    }
+   },
+   "fx-26": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 6
+   },
+   "fx-27": {
+    "ok": true,
+    "input": {
+     "formula": "\"15.03.2026\""
+    }
+   },
+   "fx-28": {
+    "ok": true,
+    "input": {
+     "formula": "--\"15.03.2026\""
+    }
+   },
+   "fx-29": {
+    "ok": true,
+    "input": {
+     "formula": "TIME(18,30,0)"
+    }
+   },
+   "fx-30": {
+    "ok": false,
+    "code": "syntax",
+    "message": "expected ), found num",
+    "at": 11
+   },
+   "sign-1": {
+    "ok": true,
+    "input": {
+     "formula": "+C1"
+    }
+   },
+   "sign-2": {
+    "ok": true,
+    "input": {
+     "formula": "-C1"
+    }
+   },
+   "sign-3": {
+    "ok": true,
+    "input": {
+     "formula": "+1+2"
+    }
+   },
+   "sign-4": {
+    "ok": true,
+    "input": {
+     "formula": "-1-2"
+    }
+   },
+   "sign-5": {
+    "ok": true,
+    "input": {
+     "formula": "-5+1"
+    }
+   },
+   "sign-6": {
+    "ok": true,
+    "input": {
+     "formula": "+5%"
+    }
+   },
+   "sign-7": {
+    "ok": true,
+    "input": {
+     "formula": "-abc"
+    }
+   },
+   "sign-8": {
+    "ok": true,
+    "input": {
+     "formula": "-hello world"
+    }
+   },
+   "sign-9": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "sign-10": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected end of formula",
+    "at": 1
+   },
+   "sign-11": {
+    "ok": true,
+    "input": {
+     "value": "@SUM(1,2)"
+    }
+   },
+   "sign-12": {
+    "ok": true,
+    "input": {
+     "value": "@СУММ(1;2)"
+    }
+   },
+   "sign-13": {
+    "ok": true,
+    "input": {
+     "value": "@abc"
+    }
+   },
+   "sign-14": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 3
+   },
+   "sign-15": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 3
+   },
+   "sign-16": {
+    "ok": true,
+    "input": {
+     "formula": "-18:30"
+    }
+   },
+   "sign-17": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "sign-18": {
+    "ok": true,
+    "input": {
+     "formula": "--5"
+    }
+   },
+   "sign-19": {
+    "ok": true,
+    "input": {
+     "formula": "+-5"
+    }
+   },
+   "sign-20": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 5
+    }
+   },
+   "sign-21": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected character \"$\"",
+    "at": 1
+   },
+   "in-num-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "0.00"
+    }
+   },
+   "in-num-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "0.00"
+    }
+   },
+   "in-num-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00"
+    }
+   },
+   "in-num-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "0.00"
+    }
+   },
+   "in-num-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "0.00"
+    }
+   },
+   "in-num-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-num-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "0.00"
+    }
+   },
+   "in-num-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-num-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-num-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "0.00"
+    }
+   },
+   "in-num-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "0.00"
+    }
+   },
+   "in-num-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0.00"
+    }
+   },
+   "in-num-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "0.00"
+    }
+   },
+   "in-num-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0.00"
+    }
+   },
+   "in-num-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0.00"
+    }
+   },
+   "in-num-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00"
+    }
+   },
+   "in-num-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "0.00"
+    }
+   },
+   "in-num-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-num-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "0.00"
+    }
+   },
+   "in-num-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0.00"
+    }
+   },
+   "in-num-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0.00"
+    }
+   },
+   "in-num-22": {
+    "ok": true,
+    "input": {
+     "format": "0.00"
+    }
+   },
+   "in-pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "in-pct-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "in-pct-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0%"
+    }
+   },
+   "in-pct-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "0%"
+    }
+   },
+   "in-pct-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": "0%"
+    }
+   },
+   "in-pct-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-pct-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "0%"
+    }
+   },
+   "in-pct-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0%"
+    }
+   },
+   "in-pct-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-pct-10": {
+    "ok": true,
+    "input": {
+     "value": 12.345,
+     "format": "0%"
+    }
+   },
+   "in-pct-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "0%"
+    }
+   },
+   "in-pct-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0%"
+    }
+   },
+   "in-pct-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "0%"
+    }
+   },
+   "in-pct-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0%"
+    }
+   },
+   "in-pct-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0%"
+    }
+   },
+   "in-pct-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0%"
+    }
+   },
+   "in-pct-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "0%"
+    }
+   },
+   "in-pct-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-pct-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "0%"
+    }
+   },
+   "in-pct-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0%"
+    }
+   },
+   "in-pct-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0%"
+    }
+   },
+   "in-pct-22": {
+    "ok": true,
+    "input": {
+     "format": "0%"
+    }
+   },
+   "in-pct2-1": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-2": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-5": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-pct2-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-pct2-10": {
+    "ok": true,
+    "input": {
+     "value": 12.345,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-pct2-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0.00%"
+    }
+   },
+   "in-pct2-22": {
+    "ok": true,
+    "input": {
+     "format": "0.00%"
+    }
+   },
+   "in-text-1": {
+    "ok": true,
+    "input": {
+     "value": "5",
+     "format": "@"
+    }
+   },
+   "in-text-2": {
+    "ok": true,
+    "input": {
+     "value": "50",
+     "format": "@"
+    }
+   },
+   "in-text-3": {
+    "ok": true,
+    "input": {
+     "value": "0,5",
+     "format": "@"
+    }
+   },
+   "in-text-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "@"
+    }
+   },
+   "in-text-5": {
+    "ok": true,
+    "input": {
+     "value": "-5",
+     "format": "@"
+    }
+   },
+   "in-text-6": {
+    "ok": true,
+    "input": {
+     "value": "15.03.2026",
+     "format": "@"
+    }
+   },
+   "in-text-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "@"
+    }
+   },
+   "in-text-8": {
+    "ok": true,
+    "input": {
+     "value": "5%",
+     "format": "@"
+    }
+   },
+   "in-text-9": {
+    "ok": true,
+    "input": {
+     "value": "18:30",
+     "format": "@"
+    }
+   },
+   "in-text-10": {
+    "ok": true,
+    "input": {
+     "value": "1 234,5",
+     "format": "@"
+    }
+   },
+   "in-text-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "@"
+    }
+   },
+   "in-text-12": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА",
+     "format": "@"
+    }
+   },
+   "in-text-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "@"
+    }
+   },
+   "in-text-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "@"
+    }
+   },
+   "in-text-15": {
+    "ok": true,
+    "input": {
+     "value": "1 1/2",
+     "format": "@"
+    }
+   },
+   "in-text-16": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3",
+     "format": "@"
+    }
+   },
+   "in-text-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "@"
+    }
+   },
+   "in-text-18": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽",
+     "format": "@"
+    }
+   },
+   "in-text-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "@"
+    }
+   },
+   "in-text-20": {
+    "ok": true,
+    "input": {
+     "value": "=1+2",
+     "format": "@"
+    }
+   },
+   "in-text-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "@"
+    }
+   },
+   "in-text-22": {
+    "ok": true,
+    "input": {
+     "format": "@"
+    }
+   },
+   "in-date-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 14
+    }
+   },
+   "in-date-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": 14
+    }
+   },
+   "in-date-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": 14
+    }
+   },
+   "in-date-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": 14
+    }
+   },
+   "in-date-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 14
+    }
+   },
+   "in-date-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-date-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 14
+    }
+   },
+   "in-date-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-date-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 14
+    }
+   },
+   "in-date-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 14
+    }
+   },
+   "in-date-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": 14
+    }
+   },
+   "in-date-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": 14
+    }
+   },
+   "in-date-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": 14
+    }
+   },
+   "in-date-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": 14
+    }
+   },
+   "in-date-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 14
+    }
+   },
+   "in-date-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 14
+    }
+   },
+   "in-date-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 14
+    }
+   },
+   "in-date-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-date-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 14
+    }
+   },
+   "in-date-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": 14
+    }
+   },
+   "in-date-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": 14
+    }
+   },
+   "in-date-22": {
+    "ok": true,
+    "input": {
+     "format": 14
+    }
+   },
+   "in-dmy-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-dmy-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-dmy-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-dmy-22": {
+    "ok": true,
+    "input": {
+     "format": "d mmmm yyyy"
+    }
+   },
+   "in-time-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "h:mm"
+    }
+   },
+   "in-time-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "h:mm"
+    }
+   },
+   "in-time-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": "h:mm"
+    }
+   },
+   "in-time-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "h:mm"
+    }
+   },
+   "in-time-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-time-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": "h:mm"
+    }
+   },
+   "in-time-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "h:mm"
+    }
+   },
+   "in-time-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "h:mm"
+    }
+   },
+   "in-time-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "h:mm"
+    }
+   },
+   "in-time-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "h:mm"
+    }
+   },
+   "in-time-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "h:mm"
+    }
+   },
+   "in-time-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "h:mm"
+    }
+   },
+   "in-time-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "h:mm"
+    }
+   },
+   "in-time-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-time-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "h:mm"
+    }
+   },
+   "in-time-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "h:mm"
+    }
+   },
+   "in-time-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "h:mm"
+    }
+   },
+   "in-time-22": {
+    "ok": true,
+    "input": {
+     "format": "h:mm"
+    }
+   },
+   "in-grp-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-grp-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-grp-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-grp-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-grp-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "#,##0.00"
+    }
+   },
+   "in-grp-22": {
+    "ok": true,
+    "input": {
+     "format": "#,##0.00"
+    }
+   },
+   "in-usd-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-usd-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-usd-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-usd-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "$#,##0.00"
+    }
+   },
+   "in-usd-22": {
+    "ok": true,
+    "input": {
+     "format": "$#,##0.00"
+    }
+   },
+   "in-rub-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-rub-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-rub-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-rub-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-rub-22": {
+    "ok": true,
+    "input": {
+     "format": "#,##0.00 \"₽\""
+    }
+   },
+   "in-sci-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-sci-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-sci-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-sci-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-sci-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "0.00E+00"
+    }
+   },
+   "in-sci-22": {
+    "ok": true,
+    "input": {
+     "format": "0.00E+00"
+    }
+   },
+   "in-frac-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-frac-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-frac-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-frac-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-frac-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "# ?/?"
+    }
+   },
+   "in-frac-22": {
+    "ok": true,
+    "input": {
+     "format": "# ?/?"
+    }
+   },
+   "in-dt-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 22
+    }
+   },
+   "in-dt-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": 22
+    }
+   },
+   "in-dt-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": 22
+    }
+   },
+   "in-dt-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": 22
+    }
+   },
+   "in-dt-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": 22
+    }
+   },
+   "in-dt-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 22
+    }
+   },
+   "in-dt-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": 22
+    }
+   },
+   "in-dt-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-dt-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 22
+    }
+   },
+   "in-dt-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 22
+    }
+   },
+   "in-dt-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": 22
+    }
+   },
+   "in-dt-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": 22
+    }
+   },
+   "in-dt-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": 22
+    }
+   },
+   "in-dt-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": 22
+    }
+   },
+   "in-dt-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 22
+    }
+   },
+   "in-dt-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 22
+    }
+   },
+   "in-dt-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": 22
+    }
+   },
+   "in-dt-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-dt-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": 22
+    }
+   },
+   "in-dt-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": 22
+    }
+   },
+   "in-dt-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": 22
+    }
+   },
+   "in-dt-22": {
+    "ok": true,
+    "input": {
+     "format": 22
+    }
+   },
+   "in-gen-1": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "General"
+    }
+   },
+   "in-gen-2": {
+    "ok": true,
+    "input": {
+     "value": 50,
+     "format": "General"
+    }
+   },
+   "in-gen-3": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "General"
+    }
+   },
+   "in-gen-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "General"
+    }
+   },
+   "in-gen-5": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "General"
+    }
+   },
+   "in-gen-6": {
+    "ok": true,
+    "input": {
+     "value": 46096,
+     "format": 14
+    }
+   },
+   "in-gen-7": {
+    "ok": true,
+    "input": {
+     "value": "3/15/2026",
+     "format": "General"
+    }
+   },
+   "in-gen-8": {
+    "ok": true,
+    "input": {
+     "value": 0.05,
+     "format": 9
+    }
+   },
+   "in-gen-9": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "in-gen-10": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": 4
+    }
+   },
+   "in-gen-11": {
+    "ok": true,
+    "input": {
+     "value": "1,234.5",
+     "format": "General"
+    }
+   },
+   "in-gen-12": {
+    "ok": true,
+    "input": {
+     "value": true,
+     "format": "General"
+    }
+   },
+   "in-gen-13": {
+    "ok": true,
+    "input": {
+     "value": "TRUE",
+     "format": "General"
+    }
+   },
+   "in-gen-14": {
+    "ok": true,
+    "input": {
+     "value": "abc",
+     "format": "General"
+    }
+   },
+   "in-gen-15": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "in-gen-16": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "in-gen-17": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3",
+     "format": "General"
+    }
+   },
+   "in-gen-18": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": 5
+    }
+   },
+   "in-gen-19": {
+    "ok": true,
+    "input": {
+     "value": "$5",
+     "format": "General"
+    }
+   },
+   "in-gen-20": {
+    "ok": true,
+    "input": {
+     "formula": "1+2",
+     "format": "General"
+    }
+   },
+   "in-gen-21": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "General"
+    }
+   },
+   "in-gen-22": {
+    "ok": true,
+    "input": {
+     "format": "General"
+    }
+   }
+  }
+ }
+}
