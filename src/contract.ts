@@ -835,6 +835,8 @@ export interface FormulaEngine {
   restructure(book: BookInput, op: StructureOp): RestructureResult
   /** A value as a cell shows it, without a book: by a format, in a locale and a column's width. */
   displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay
+  /** Text typed into a cell as Excel takes it, without a book: by the book's locale and the cell's format, style and meta. */
+  parseEntry(text: string, opts?: EntryOptions): EntryResult
 }
 
 export const MAX_FORMULA_LENGTH = 8_192
