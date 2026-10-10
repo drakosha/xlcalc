@@ -20,6 +20,11 @@ interface Entry<T> extends Area {
 /** Bytes of an entry besides its value, a mark's too: its key, its bounds and its places in the maps, as measured on Node. */
 const ENTRY_BYTES = 256
 
+/** Retained storage estimates shared by materialized range/index caches and optional-index selection. */
+export const VALUE_BYTES = 8
+export const POSITION_BYTES = 16
+export const KEY_BYTES = 80
+
 /** Bytes the range caches of the books in one heap may hold together where the host gives no heap: a quarter of 2 GiB. */
 export const DEFAULT_CACHE_BYTES = 512 * 2 ** 20
 

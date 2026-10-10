@@ -5,13 +5,13 @@
  * each locale (`xlsx/formats.json` in en-US, `xlsx/<tag>/formats.json` in another): 1 to 49 as the display set `builtin`
  * read them, 50 to 58 pinned.
  */
-import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { XLSX_CLOCK } from '../bench/coverage/xlsx/books.js'
 import { compareCached } from '../bench/coverage/xlsx/compare.js'
 import { FILTER_FILES, filterFile } from '../bench/coverage/xlsx/filters.js'
+import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import type { StoredRun } from '../bench/coverage/xlsx.js'
 import { compute } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
@@ -30,7 +30,7 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
   for (const c of FILTER_FILES)
     it(`${c.id}: ${c.about}`, async () => {
       const data = await filterFile(c)
-      expect(run.books[c.id].sent, 'the file changed since Excel saw it: run the xlsx filters step').toBe(createHash('sha256').update(data).digest('hex'))
+      expect(run.books[c.id].sent, 'the file changed since Excel saw it: run the xlsx filters step').toBe(await partsHash(data))
       expect(run.books[c.id].rejected).toBeUndefined()
       const read = await readXlsx(readFileSync(new URL(`filters/${c.id}.xlsx`, dir)))
       const onMac = await readXlsx(readFileSync(new URL(`filters/${c.id}.xlsx`, mac)))
