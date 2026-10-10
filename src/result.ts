@@ -101,8 +101,11 @@ export function* cellsIn(state: EngineState, s: number, x: Rect, display: boolea
   for (const addr of yield* sortedSteps([...inputs, ...spill.keys()])) {
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
-    const style = cells[addr]?.style
-    if (style !== undefined) view.style = style
+    const input = cells[addr]
+    // what the cell shows beside its value: its own style, note and link
+    if (input?.style !== undefined) view.style = input.style
+    if (input?.note !== undefined) view.note = input.note
+    if (input?.link !== undefined) view.link = input.link
     out[addr] = view
   }
   return out
