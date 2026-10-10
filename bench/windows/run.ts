@@ -13,6 +13,7 @@
  *   npx tsx bench/windows/run.ts xlsx filters        the filter files computed and saved by Excel into xlsx/filters/
  *   npx tsx bench/windows/run.ts xlsx formats [L]    the codes of the built-in number formats into xlsx/[<tag>/]formats.json
  *   npx tsx bench/windows/run.ts entry <name> [L]      text typed into cells into entry/[<tag>/]<name>.json
+ *   npx tsx bench/windows/run.ts fit <name> [L]        columns fitted and texts typed into them, into fit/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts cond <name>           conditional formats (in the set's locale) into cond/[<tag>/]<name>.json and cond/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts valid <name> [L]      data validation and outlines into valid/[<tag>/]<name>.json and valid/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
@@ -33,6 +34,7 @@ import { stepFunctions } from './functions.js'
 import { stepXlsxFilters, stepXlsxFormats } from './xlsx.js'
 import { stepParts } from './parts.js'
 import { stepEntry } from './entry.js'
+import { stepFit } from './fit.js'
 import { stepCond } from './cond.js'
 import type { CondSet } from '../coverage/cond/cases.js'
 import { stepValid } from './valid.js'
@@ -81,6 +83,7 @@ else if (step in BOOK_STEPS && a) await withWindowsExcel('en-US', (e) => BOOK_ST
 else if (step === 'xlsx' && a === 'filters') await withWindowsExcel('en-US', (e) => stepXlsxFilters('en-US', e))
 else if (step === 'xlsx' && a === 'formats') await withWindowsExcel(parseTag(b), (e) => stepXlsxFormats(parseTag(b), e))
 else if (step === 'entry' && a) await withWindowsExcel(parseTag(b), (e) => stepEntry(a, parseTag(b), e))
+else if (step === 'fit' && a) await withWindowsExcel(parseTag(b), (e) => stepFit(a, parseTag(b), e))
 else if (step === 'cond' && a) {
   const tag = ((await import(`../coverage/cond/${a}.js`)) as CondSet).buildCondCases().locale ?? 'en-US'
   await withWindowsExcel(tag, (e) => stepCond(a, tag, e))
@@ -90,7 +93,7 @@ else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functi
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | cond <name> | valid <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | fit <name> [locale] | cond <name> | valid <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

@@ -73,7 +73,7 @@ Excel for Mac saves some built-in formats otherwise than by their number: the mo
 
 ### Columns, rows and merged areas
 
-A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out. A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, whether the file marks it hidden or not, and so do the reader and the engine. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
+A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out, but a column's width that AutoFit or typing set, which Excel saves with `bestFit`, is read with `bestFit: true` and written so ([Fitting columns](formats.md#fitting-columns)). A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, whether the file marks it hidden or not, and so do the reader and the engine. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
 
 ```js
 // <row r="5" ht="30" hidden="1" customHeight="1">, <col min="5" max="5" width="12" hidden="1" customWidth="1"/>
