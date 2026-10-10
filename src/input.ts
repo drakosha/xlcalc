@@ -106,19 +106,25 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   if (c.array !== undefined) checkString(c.array, `${path}.array`)
-  if (c.note !== undefined) {
-    const n = object(c.note, `${path}.note`, 'a note such as { author: "Ann", text: "Checked" }')
-    onlyKeys(n, `${path}.note`, ['author', 'text'])
-    checkString(n.text, `${path}.note.text`)
-    if (n.author !== undefined) checkString(n.author, `${path}.note.author`)
-  }
-  if (c.link !== undefined) {
-    const l = object(c.link, `${path}.link`, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
-    onlyKeys(l, `${path}.link`, ['url', 'location', 'tooltip'])
-    for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.link.${k}`)
-    if (!l.url && !l.location) throw new InputError(`${path}.link`, 'a hyperlink has a url, a location or both')
-  }
+  if (c.note !== undefined) checkNote(c.note, `${path}.note`)
+  if (c.link !== undefined) checkLink(c.link, `${path}.link`)
   return c as CellInput
+}
+
+/** A cell's note: its text and author. */
+function checkNote(v: unknown, path: string) {
+  const n = object(v, path, 'a note such as { author: "Ann", text: "Checked" }')
+  onlyKeys(n, path, ['author', 'text'])
+  checkString(n.text, `${path}.text`)
+  if (n.author !== undefined) checkString(n.author, `${path}.author`)
+}
+
+/** A cell's hyperlink: a url, a location or both, and a tooltip. */
+function checkLink(v: unknown, path: string) {
+  const l = object(v, path, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
+  onlyKeys(l, path, ['url', 'location', 'tooltip'])
+  for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.${k}`)
+  if (!l.url && !l.location) throw new InputError(path, 'a hyperlink has a url, a location or both')
 }
 
 export function checkNames(v: unknown, path: string): NameInput[] {
@@ -543,7 +549,7 @@ export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOpt
   return { ...checkDisplayOptions(rest, path), ...(bestFit !== undefined ? { bestFit: bestFit as boolean } : {}) }
 }
 
-/** `parseEntry`'s options; of the cell only its format, style and meta are read (it may be a `CellView`). */
+/** `parseEntry`'s options; of the cell only its format, style, meta, note and link are read (it may be a `CellView`). */
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { format: '0.00' } }")
@@ -555,6 +561,8 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
     const c = object(o.cell, `${path}.cell`, 'a cell such as { format: "0.00", style: 1 }')
     if (c.format !== undefined) checkFormat(c.format, `${path}.cell.format`)
     if (c.style !== undefined && !(Number.isInteger(c.style) && (c.style as number) >= 0)) throw new InputError(`${path}.cell.style`, `expected the index of a style, got ${what(c.style)}`)
+    if (c.note !== undefined) checkNote(c.note, `${path}.cell.note`)
+    if (c.link !== undefined) checkLink(c.link, `${path}.cell.link`)
   }
   return o as EntryOptions
 }
