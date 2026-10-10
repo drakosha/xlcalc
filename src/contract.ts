@@ -676,8 +676,8 @@ export interface EntryOptions {
 
 /**
  * Text typed into a cell as Excel takes it (`parseEntry`): the cell's new input, `null` when nothing is left of the
- * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message and the
- * position in the typed text.
+ * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
+ * language of `opts.locale` (English for en-US) and the position in the typed text.
  */
 export type EntryResult = { ok: true; input: CellInput | null } | { ok: false; code: CheckCode; message: string; at: number }
 
@@ -870,7 +870,10 @@ export interface Explanation {
   root: ExplainNode
   nodes: number
   truncated: boolean
-  /** The tree as indented text (for logs or an LLM agent). */
+  /**
+   * The tree as indented text (for logs, an LLM agent or a person) in the book's locale: in ru-RU its words, numbers,
+   * formulas, booleans and errors are Russian (`'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)`); the nodes keep the stored text.
+   */
   text: string
 }
 
@@ -967,6 +970,7 @@ export type RestructureResult =
       /** Where a cell of the old book is now; null if it was deleted or overwritten. */
       mapCell(ref: CellRef): CellRef | null
     }
+  /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
   | { ok: false; code: StructureRefusal; message: string }
 
 /** `Session.restructure`: the operation's result and the values it changed. */
