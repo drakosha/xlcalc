@@ -39,20 +39,20 @@ on run argv
 	tell application "Microsoft Excel"
 		with timeout of 120 seconds
 			set wb to open workbook workbook file name hfs
-			repeat with st in steps
+			repeat with stepItem in steps
 				try
-					set ws to worksheet ((item 1 of st) as text) of wb
-					set rg to range ((item 2 of st) as text) of ws
-					if (item 3 of st) as text is not "" then set number format of rg to ((item 3 of st) as text)
-					if (item 4 of st) is true then set bold of font object of rg to true
-					if (count of (item 5 of st)) is 3 then set color of interior object of rg to (item 5 of st)
-					if (item 6 of st) as text is "n" then
-						set value of rg to (my num((item 7 of st) as text))
-					else if (item 6 of st) as text is "s" then
-						set value of rg to ((item 7 of st) as text)
+					set ws to worksheet ((item 1 of stepItem) as text) of wb
+					set rg to range ((item 2 of stepItem) as text) of ws
+					if (item 3 of stepItem) as text is not "" then set number format of rg to ((item 3 of stepItem) as text)
+					if (item 4 of stepItem) is true then set bold of font object of rg to true
+					if (count of (item 5 of stepItem)) is 3 then set color of interior object of rg to (item 5 of stepItem)
+					if (item 6 of stepItem) as text is "n" then
+						set value of rg to (my num((item 7 of stepItem) as text))
+					else if (item 6 of stepItem) as text is "s" then
+						set value of rg to ((item 7 of stepItem) as text)
 					end if
 				on error msg number k
-					set stepError to stepError & (item 2 of st) & ": " & (k as text) & " " & msg & "; "
+					set stepError to stepError & (item 2 of stepItem) & ": " & (k as text) & " " & msg & "; "
 				end try
 			end repeat
 			calculate full
