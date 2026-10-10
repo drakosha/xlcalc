@@ -4,6 +4,7 @@
  * one written. Excel's answers are checked in `test/xlsx-excel.test.ts`.
  */
 import { describe, expect, it } from 'vitest'
+import { storedValues } from './xlsx-fixtures.js'
 import { compute, type BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
@@ -25,7 +26,7 @@ describe('xlsx settings: the 1904 date system', () => {
     const r = await readXlsx(data)
     expect(r.book.dateSystem).toBe(1904)
     expect(r.book.sheets[0].cells.A1).toEqual({ value: 44226.75, format: 'yyyy-mm-dd h:mm' })
-    expect(r.cached[0].cells).toEqual({ B1: 2025, B2: '-1904-01-02', B3: 0 })
+    expect(storedValues(r)).toEqual({ B1: 2025, B2: '-1904-01-02', B3: 0 })
     expect(values(r.book)).toEqual(values(book))
     expect(r.issues).toEqual([])
   })
@@ -45,7 +46,7 @@ describe('xlsx settings: iterative calculation', () => {
       const book: BookInput = { iteration, sheets: [{ name: 'S', cells }] }
       const r = await readXlsx((await writeXlsx(book, { result: compute(book, { clock }) })).data)
       expect(r.book).toEqual(book)
-      expect(r.cached[0].cells).toEqual({ A1: 5, B1: 5 })
+      expect(storedValues(r)).toEqual({ A1: 5, B1: 5 })
     }
     const { data } = await writeXlsx({ iteration: { maxIterations: 7, maxChange: 0.5 }, sheets: [{ name: 'S', cells }] })
     expect(await text(data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1" iterate="1" iterateCount="7" iterateDelta="0.5"/>')

@@ -98,7 +98,7 @@ async function runPart(part: FitCase[], label: string): Promise<Record<string, F
     const file = join(dir, 'book.xlsx')
     const savedName = 'saved.xlsx'
     const savedFile = join(dir, savedName)
-    const { data, issues } = await writeXlsx(fitBook(part))
+    const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`fit ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
     const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(partSpec(part)), KEYS])

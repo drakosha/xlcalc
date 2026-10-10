@@ -29,7 +29,7 @@ export class InputError extends TypeError {
   }
 }
 
-function what(v: unknown): string {
+export function what(v: unknown): string {
   if (v === undefined || v === null) return String(v)
   if (Array.isArray(v)) return 'an array'
   if (typeof v === 'object') return 'an object'

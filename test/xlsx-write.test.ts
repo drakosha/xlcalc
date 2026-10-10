@@ -5,11 +5,11 @@
  * is reported. The same book gives the same bytes.
  */
 import { describe, expect, it } from 'vitest'
-import type { BookInput, ComputeResult } from '../src/contract.js'
+import type { BookInput } from '../src/contract.js'
 import { compute, InputError } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
-import { codes } from './xlsx-fixtures.js'
+import { codes, storedOf, storedValues } from './xlsx-fixtures.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 7 }
 
@@ -67,8 +67,7 @@ describe('xlsx writer', () => {
       sheets: [{ ...book.sheets[0], cells: { ...book.sheets[0].cells, A5: { value: 45688 }, H1: { formula: "SUM('It''s'!A1:A2)" } } }, book.sheets[1]],
     })
     expect(r.issues).toEqual([])
-    const values = (s: ComputeResult['sheets'][number]) => Object.fromEntries(Object.entries(s.cells).flatMap(([a, c]) => (c.formula !== undefined || c.spillOf !== undefined ? [[a, c.value]] : [])))
-    expect(r.cached).toEqual(result.sheets.map((s) => ({ name: s.name, cells: values(s) })))
+    expect(r.cached).toEqual(storedOf(result))
   })
 
   it('values only: formulas give way to their values, spills too; errors are stored as errors', async () => {
@@ -121,7 +120,7 @@ describe('xlsx writer', () => {
     ])
     const r = await readXlsx(data)
     expect(r.book.sheets[0].cells).toMatchObject({ A2: { formula: 'A2+1' }, A3: { value: 'x'.repeat(32_767) }, A4: { formula: '#REF!' }, A5: { formula: '#NULL!' } })
-    expect(r.cached[0].cells.A2).toBe(0)
+    expect(storedValues(r).A2).toBe(0)
   })
 
   it('checks its input: the book, the mode, a result of another book', async () => {

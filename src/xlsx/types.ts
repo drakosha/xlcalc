@@ -1,5 +1,5 @@
 /** The types of the `./xlsx` subpath: reading an xlsx file into a book and writing a book with its values. */
-import type { BookInput, CellValue, ComputeResult } from '../contract.js'
+import type { BookInput, CellResult, ComputeResult } from '../contract.js'
 
 /**
  * What the book cannot hold of a file, or what writing changed. The codes:
@@ -42,6 +42,8 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  * - `locale`: a locale the package does not have, left out of the book.
  * - `meta`: written: cell `meta` has no place in a file.
  * - `textLength`: written: text over Excel's 32,767 characters, cut, and a rule's texts over Excel's limits.
+ * - `noCachedValues`: written: formulas without their values, which Excel computes when it opens the file: no result was
+ *   given (`values: 'omit'` by default), or the result has no value for them (`values: 'preserve'`).
  * - `part`: a part of the file that is missing or cannot be read.
  */
 export type XlsxIssueCode =
@@ -79,6 +81,7 @@ export type XlsxIssueCode =
   | 'locale'
   | 'meta'
   | 'textLength'
+  | 'noCachedValues'
   | 'part'
 
 /** One thing lost or changed, and where: the sheet, and the cells (addresses or ranges) or the name it is about. */
@@ -91,24 +94,51 @@ export interface XlsxIssue {
   name?: string
 }
 
+/**
+ * The values a file stores for formulas and for the cells their arrays spilled into (`XlsxRead.cached`): what Excel
+ * computed when it saved the file, by sheet in the book's order, in the shape of a result. `cached.sheets[0].cells.B1.value`
+ * reads as `compute(book).sheets[0].cells.B1.value` does, so the two compare cell by cell, and `{ book, result: cached }`
+ * writes the file again with Excel's values (`writeXlsx`).
+ */
+export interface XlsxCached {
+  sheets: { name: string; cells: Record<string, XlsxCachedCell> }[]
+}
+
+/**
+ * A stored value: a formula's, with `spill`, the range its array fills (an array formula of the old kind: its area), or
+ * a cell of an array's range, with `spillOf`, the address of its formula; as in `CellResult`.
+ */
+export type XlsxCachedCell = Pick<CellResult, 'value' | 'spill' | 'spillOf'>
+
 /** A file read into a book. */
 export interface XlsxRead {
   /** The book, as the engine takes it. */
   book: BookInput
-  /**
-   * The values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's
-   * order: what Excel computed when it saved the file, to compare with the engine's result.
-   */
-  cached: { name: string; cells: Record<string, CellValue> }[]
+  /** The values the file stores for formulas and the cells their arrays spilled into, to compare with the engine's result. */
+  cached: XlsxCached
   issues: XlsxIssue[]
 }
 
+/**
+ * What `writeXlsx` writes: a book and the values of its formulas, a session's `getSnapshot()`, `{ book, result:
+ * compute(book) }`, or a file read with the values it stored, `{ book: read.book, result: read.cached }`.
+ */
+export interface XlsxSnapshot {
+  book: BookInput
+  result?: ComputeResult | XlsxCached
+}
+
 export interface WriteXlsxOptions {
-  /** The book's computed result (`compute`, `Session.result()`): the values of formulas and their spilled arrays. */
-  result?: ComputeResult
   /**
-   * `formulas` (the default): formulas with their values from `result` (without it, the file asks Excel to compute
-   * them on opening). `values`: values only, a formula's cell gets its value from `result` (required then).
+   * The values of formulas the file stores. `require`: each formula's and each value of its array, from the result (an
+   * `InputError` when one is missing: the result is not the book's). `omit`: none, and Excel computes them when it opens
+   * the file. `preserve`: those the result has; a formula without one is reported as `noCachedValues`. By default
+   * `require` with a result and `omit` without one, reported as `noCachedValues` when the book has formulas.
+   */
+  values?: 'require' | 'omit' | 'preserve'
+  /**
+   * `formulas` (the default): formulas, with their values by `values`. `values`: values only, a formula's cell gets its
+   * value from the result (required then).
    */
   mode?: 'formulas' | 'values'
 }
