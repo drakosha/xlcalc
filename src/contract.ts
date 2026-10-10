@@ -999,6 +999,7 @@ export interface Explanation {
   /**
    * The tree as indented text (for logs, an LLM agent or a person) in the book's locale: in ru-RU its words, numbers,
    * formulas, booleans and errors are Russian (`'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)`); the nodes keep the stored text.
+   * An error is written as the book's cells show it (`#DIV/0!`), with the cell it began in (`(error from 'S'!A2)`).
    */
   text: string
 }
