@@ -78,7 +78,7 @@ describe.each(['closures', 'eval'] as const)('looks (%s)', (execution) => {
 
   it('top, bottom, average and duplicates over the numbers, errors and text left out', () => {
     const nums = [10, 20, 20, 30, 40, 50, 60, 70, 80, 90, 100, 30].map(v)
-    const r = (rule: Partial<ConditionalFormat>, vals = nums) => held(looks(vals, [{ ranges: col(vals.length), style: RED, ...rule } as ConditionalFormat], execution))
+    const r = (rule: Partial<ConditionalFormat>, vals: (CellInput | undefined)[] = nums) => held(looks(vals, [{ ranges: col(vals.length), style: RED, ...rule } as ConditionalFormat], execution))
     expect(r({ type: 'top10', rank: 3 })).toEqual(['A9', 'A10', 'A11'])
     expect(r({ type: 'top10', rank: 2, bottom: true })).toEqual(['A1', 'A2', 'A3'])
     // 10 percent of 12 numbers is one of them, 25 percent three
