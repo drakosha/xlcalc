@@ -77,34 +77,44 @@ function euro(text: string, r: Rules): number | null {
   return r.numberOnly(text.replace(/ *€ */, ''))
 }
 
-/** A fraction without a whole part, with percent (`1/2%`, as Excel's editor of a percent cell makes `1/2`): its value. */
+/** A fraction without a whole part typed into a percent cell (`1/2`, which its editor makes `1/2%`): that part of a hundred. */
 function fractionPercent(text: string): number | null {
-  const m = /^ *([+-]?)(\d+)\/(\d+) *% *$/.exec(text)
+  const m = /^ *([+-]?)(\d+)\/(\d+) *$/.exec(text)
   return m && Number(m[3]) > 0 ? ((m[1] === '-' ? -1 : 1) * Number(m[2])) / Number(m[3]) / 100 : null
 }
 
 /**
- * Number text in scientific form that Excel keeps as text, in the scientific format: an exponent past 308, a magnitude
- * of 1E+308 or more (Excel's largest typed number is below it), a mantissa that is not 0 and comes to 0 (`1E-400`).
+ * Number text in scientific form that Excel keeps as text, in the scientific format: an exponent past 308 or below
+ * -324, a magnitude of 1E+308 or more (Excel's largest typed number is below it), a mantissa that is not 0 and comes to
+ * 0 (`1E-330`).
  */
 function outOfRange(text: string, n: number | null, r: Rules): boolean {
   const m = new RegExp(`^ *[+-]?(\\d*(?:${literal(r.decimal)}\\d*)?)[eE]([+-]?\\d+) *$`).exec(text)
   if (!m || !/\d/.test(m[1])) return false
-  return Number(m[2]) > 308 || n === null || Math.abs(n) >= 1e308 || (n === 0 && /[1-9]/.test(m[1]))
+  const e = Number(m[2])
+  return e > 308 || e < -324 || n === null || Math.abs(n) >= 1e308 || (n === 0 && /[1-9]/.test(m[1]))
 }
 
-/** Typed text read as a constant by the book's rules; `clock` is the rules' clock, to know a date without a year. */
-export function readTyped(text: string, r: Rules, clock: RulesClock): Typed {
+/** The smallest normal number: Excel takes a smaller one typed as 0 (`1E-309`). */
+const MIN_NORMAL = 2.2250738585072014e-308
+
+/**
+ * Typed text read as a constant by the book's rules; `clock` is the rules' clock, to know a date without a year. In a
+ * percent cell (`percent`) a number begun by a digit gets the `%` Excel's editor adds as it is typed.
+ */
+export function readTyped(typed: string, r: Rules, clock: RulesClock, percent = false): Typed {
+  const editor = percent && /^[-+]?\d/.test(typed)
+  const fp = editor ? fractionPercent(typed) : null
+  if (fp !== null) return { t: 'number', v: fp, form: 'percent', format: 10 }
+  const text = editor ? `${typed}%` : typed
   const n = r.numberOnly(text)
   if (outOfRange(text, n, r)) return { t: 'text', v: text, format: 11 }
-  if (n !== null) return { t: 'number', v: n, ...numberForm(text, r) }
+  if (n !== null) return { t: 'number', v: Math.abs(n) < MIN_NORMAL ? 0 : n, ...numberForm(text, r) }
   // date and time text is read with no space before it, as an argument reads it
   const [p, yearless] = readsClock(clock, () => dateTimeParts(text, r.dates))
   if (p) return { t: 'number', v: p.value, form: p.date === null ? 'time' : 'date', format: dateFormat(p, yearless, r.dates.decimal) }
   const e = euro(text, r)
   if (e !== null) return { t: 'number', v: e, form: 'plain' }
-  const fp = fractionPercent(text)
-  if (fp !== null) return { t: 'number', v: fp, form: 'percent', format: 10 }
   const u = text.toUpperCase()
   const { TRUE, FALSE } = r.locale.booleans
   if (u === TRUE.toUpperCase() || u === FALSE.toUpperCase()) return { t: 'boolean', v: u === TRUE.toUpperCase() }

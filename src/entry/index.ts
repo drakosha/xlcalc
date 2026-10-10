@@ -60,6 +60,9 @@ function formulaOf(text: string, shift: number, tag: string): { formula: string;
   return t.ok ? { formula: t.formula } : { ...t, at: t.at + shift }
 }
 
+/** Whether typed text begins with a `+` before a number (`+1*2`, `+.5+1`, `++5`): Excel drops it, the formula is `1*2`. */
+const plusNumber = (text: string, decimal: string) => text.startsWith('+') && /^\+?[\d.]/.test(text.slice(1).replace(decimal, '.'))
+
 /**
  * Text typed into a cell as Excel takes it in the book's locale: the cell's new input, with the cell's style and meta
  * and the format Excel leaves it, or a formula Excel does not take. Empty text clears the value and keeps the rest.
@@ -86,10 +89,9 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   if (text.startsWith("'")) return input({ value: text.slice(1) })
   if (shows(cell.format, 'text') || text === '=') return input({ value: text })
   if (text.startsWith('=')) return formula(text, 0)
-  // the editor of a percent cell adds `%` after a number begun by a digit as it is typed
-  const typed = readTyped(shows(cell.format, 'pct') && /^[-+]?\d/.test(text) ? `${text}%` : text, rules, clock)
-  // `+` or `-` before what is no constant begins a formula (alone they are text); `+` before a digit or `+` gives its place to `=`
-  if (/^[-+]./s.test(text) && typed.t === 'text' && typed.format === undefined) return /^\+[\d+]/.test(text) ? formula(text.slice(1), 1) : formula(text, 0)
+  const typed = readTyped(text, rules, clock, shows(cell.format, 'pct'))
+  // `+` or `-` before what is no constant begins a formula (alone they are text); Excel drops a `+` before a number
+  if (/^[-+]./s.test(text) && typed.t === 'text' && typed.format === undefined) return plusNumber(text, rules.decimal) ? formula(text.slice(1), 1) : formula(text, 0)
   switch (typed.t) {
     case 'number':
       return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.format, tag))

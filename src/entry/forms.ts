@@ -37,6 +37,9 @@ const FAMILY: ReadonlyMap<number, Family> = new Map([
 /** The kind of each typed form that sets a format. */
 const FORM: Partial<Record<Form, Family>> = { date: 'date', time: 'time', percent: 'percent', currency: 'currency', scientific: 'scientific', fraction: 'fraction' }
 
+/** The money and accounting formats, whose codes Excel keeps otherwise than they show (`"$"#,##0_);\("$"#,##0\)`): no code is one of them. */
+const MONEY: ReadonlySet<number> = new Set([5, 6, 7, 8, 41, 42, 43, 44])
+
 /**
  * The number of the built-in format a cell's format is in the locale `tag`: its number, or the first whose code it is
  * in en-US and in the locale alike (`h:mm` is 20 in both, `m/d/yyyy` is 14 in en-US only, as Excel ru-RU keeps
@@ -47,7 +50,7 @@ export function builtinOf(format: NumberFormat, tag: string): number | undefined
   if (format.toLowerCase() === 'general') return 0
   const own = REGIONAL.get(tag)?.builtin
   const code = own ? builtinCodes(own) : (id: number) => EN_BUILTIN[id]
-  for (let id = 0; isBuiltin(id); id++) if (EN_BUILTIN[id] === format && code(id) === format) return id
+  for (let id = 0; isBuiltin(id); id++) if (!MONEY.has(id) && EN_BUILTIN[id] === format && code(id) === format) return id
   return undefined
 }
 
