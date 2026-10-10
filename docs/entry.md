@@ -19,13 +19,13 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax unexpecte
 
 `parseEntry(text, opts?)` returns `{ ok: true, input }` or `{ ok: false, code, message, at }`.
 
-- `input` is a `CellInput`: `value` or `formula`, `format` where the cell has one after the entry, and the `style` and `meta` of the cell typed into. It is `null` when nothing is left of the cell: empty text typed into a cell with no format, style or meta.
+- `input` is a `CellInput`: `value` or `formula`, `format` where the cell has one after the entry, and the `style`, `meta`, `note` and `link` of the cell typed into, which Excel keeps whatever is typed. It is `null` when nothing is left of the cell: empty text typed into a cell with none of these.
 - `ok: false` is a formula Excel does not take as typed (its window says "There's a problem with this formula"): the check code `syntax`, `empty`, `too_long` or `too_deep`, a message and the position in `text`. Nothing else stops an entry.
 
 The options:
 
 - `locale`: the book's locale, a tag of `LOCALES`; en-US without it.
-- `cell`: the cell typed into, as the book holds it: its `format`, `style` and `meta` (a `CellInput`, or a `CellView` from `Session.cells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
+- `cell`: the cell typed into, as the book holds it: its `format`, `style`, `meta`, `note` and `link` (a `CellInput`, or a `CellView` from `Session.cells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
 - `now`: the moment whose year completes a date typed without one, ISO as `Clock.now`; the current moment without it.
 - `dateSystem`: the book's date system, 1900 or 1904, for the serial numbers of dates.
 
@@ -116,7 +116,7 @@ As a number is typed into a cell whose format shows percent, Excel's editor adds
 
 ### Empty text
 
-Empty text clears the value or formula and keeps the format, style and meta: `{ format: '0.00', meta: 1 }`, or `null` when nothing is left.
+Empty text clears the value or formula and keeps the format, style, meta, note and link: `{ format: '0.00', meta: 1 }`, or `null` when nothing is left.
 
 ## How it was checked
 
