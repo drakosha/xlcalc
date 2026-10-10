@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { LOCALE_FILES } from './locale/registry.js'
@@ -468,4 +468,20 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions
+}
+
+/** `parseEntry`'s options; of the cell only its format, style and meta are read (it may be a `CellView`). */
+export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
+  if (v === undefined) return {}
+  const o = object(v, path, "options such as { locale: 'ru-RU', cell: { format: '0.00' } }")
+  onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now'])
+  if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
+  if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
+  if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
+  if (o.cell !== undefined && o.cell !== null) {
+    const c = object(o.cell, `${path}.cell`, 'a cell such as { format: "0.00", style: 1 }')
+    if (c.format !== undefined) checkFormat(c.format, `${path}.cell.format`)
+    if (c.style !== undefined && !(Number.isInteger(c.style) && (c.style as number) >= 0)) throw new InputError(`${path}.cell.style`, `expected the index of a style, got ${what(c.style)}`)
+  }
+  return o as EntryOptions
 }

@@ -7,7 +7,7 @@
  */
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
-import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders } from '../dates.js'
+import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
 import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
@@ -40,6 +40,10 @@ export interface Rules extends CritRules {
   valueText(text: string): number | null
   /** Date or time text as a date or time argument reads it (DAY, EDATE…; DATEVALUE after dropping spaces before it), or null. */
   dateText(text: string): number | null
+  /** Number text alone as VALUE reads it before dates (a sign, groups, percent, currency, an exponent, `1 1/2`), or null. */
+  numberOnly(text: string): number | null
+  /** How the locale reads the date and time text of `valueText` (`dateTimeParts`): a typed entry's format follows its form. */
+  readonly dates: DateSyntax
   /** A number as text, as `&` writes it. */
   numberText(n: number): string
   /** TEXT(value, format); null for a format the locale does not read. */
@@ -104,6 +108,8 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     currency: { symbol: '$', before: true, space: '', negative: '()' },
     valueText,
     dateText: (text) => parseDateWith(text, dates),
+    numberOnly: enNumber,
+    dates,
     numberText: generalText,
     formatText: (value, format) => formatWith(value, format, dialect),
     display: (value, format, space) => displayWith(value, format, style, space),
