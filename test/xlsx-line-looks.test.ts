@@ -105,3 +105,33 @@ describe('reading a stored cell over its row and column', () => {
     expect(r.book.sheets[0].cells).toEqual({ B1: { value: 5, style: plain }, C1: { value: 5 }, D1: { value: 5, style: 0, format: 'd mmmm yyyy' } })
   })
 })
+
+describe('where a row crosses a column', () => {
+  // row 6 bold alone, row 8 a format alone; columns E a fill alone, G a percent alone (as the set lines/files measures)
+  const crossing = (): BookInput => ({
+    styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }],
+    sheets: [{ name: 'S', cells: { A1: { value: 1 } }, columns: { E: { style: 1 }, G: { format: '0.00%' } }, rows: { 6: { style: 0 }, 8: { format: '0.000' } } }],
+  })
+
+  it("the writer writes the empty cells Excel would show by the row's whole format, with the model's", async () => {
+    const { data } = await writeXlsx(crossing())
+    const xml = (await openArchive(data).text('xl/worksheets/sheet1.xml'))!
+    expect([...xml.matchAll(/<c r="([A-Z]+\d+)" s="\d+"\/>/g)].map((m) => m[1])).toEqual(['G6', 'E8'])
+    const back = await readXlsx(data)
+    expect(back.book.sheets[0].cells).toEqual({ A1: { value: 1 } })
+    expect(back.book.sheets[0].rows).toEqual({ 6: { style: 0 }, 8: { format: '0.000' } })
+  })
+
+  it("a file without those cells reads with the row's look spelled out, as Excel shows them", async () => {
+    const STYLES = '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFFF00"/></patternFill></fill></fills><cellXfs count="5"><xf/><xf fontId="1"/><xf fillId="2"/><xf numFmtId="10"/><xf numFmtId="2"/></cellXfs>'
+    const cols = '<cols><col min="5" max="5" width="9" style="2"/><col min="7" max="7" width="9" style="3"/></cols>'
+    const r = await read({ sheets: [{ name: 'S', body: `${cols}<sheetData><row r="6" s="1" customFormat="1"><c r="E6" s="1"><v>5</v></c></row><row r="8" s="4" customFormat="1"/><row r="9" s="4" customFormat="1"><c r="E9" s="4"/></row></sheetData>` }], styles: STYLES })
+    const plain = r.book.styles!.findIndex((x) => Object.keys(x).length === 0)
+    // row 6: column G has a format and no cell in it, the row none: General; E6 holds its row's look
+    // row 8: no cell under the filled column E: the plain style; row 9 has its cell there, with the row's look
+    expect(r.book.sheets[0].rows).toEqual({ 6: { style: 0, format: 'General' }, 8: { format: 2, style: plain }, 9: { format: 2 } })
+    expect(r.book.sheets[0].cells).toEqual({ E6: { value: 5 }, E9: { style: plain } })
+    const shown = compute({ ...r.book, sheets: [{ ...r.book.sheets[0], cells: { ...r.book.sheets[0].cells, G6: { value: 46096 } } }] }).sheets[0].cells
+    expect(shown.G6.text).toBe('46096')
+  })
+})

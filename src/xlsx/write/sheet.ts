@@ -8,12 +8,13 @@
  * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
  * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
  * its own over its cells, with Excel's filter mark. Every cell is written with the whole look it shows (its own style
- * and format over its row's or column's, `layout/lines.ts`), as Excel shows a stored cell by its own cell format alone.
+ * and format over its row's or column's, `layout/lines.ts`), as Excel shows a stored cell by its own cell format alone,
+ * and so are the empty cells where a row crosses a column that Excel would otherwise show by the row's whole format.
  * Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows and columns
  * carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
-import { sheetLines } from '../../layout/lines.js'
+import type { CellInput, CellLink, CellNote, CellResult, CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
+import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
@@ -210,6 +211,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
+  crossings(rowLines, lines(sheet.columns, 'c'), styles, (r, c, xf) => {
+    if (!out.has(r * MAX_COLS + c)) put(formatAddress(r, c), `<c r="${formatAddress(r, c)}" s="${xf}"/>`)
+  })
   const keys = [...out.keys()].sort((a, b) => a - b)
   const data: string[] = []
   let k = 0
@@ -274,6 +278,27 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     (cond.ext ? `<extLst>${cond.ext}</extLst>` : '') +
     '</worksheet>'
   return { xml, formulas, rels, ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}) }
+}
+
+/**
+ * The cells where a row with a look crosses a column with one and Excel would show another cell format than the model:
+ * Excel shows such a cell without one of its own by the row's whole cell format (by the column's when the row's is the
+ * default and so not written), the model each of its style and format from the row, else the column. Excel writes these
+ * cells itself where lines it formats cross; `put` gets each with the model's cell format.
+ */
+function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: StyleWriter, put: (r: number, c: number, xf: number) => void) {
+  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => e.style !== undefined || e.format !== undefined)
+  const withCols = looked(cols)
+  if (!withCols.length) return
+  for (const [rlo, rhi, row] of looked(rows)) {
+    const rowXf = styles.xf(row.style, row.format)
+    for (const [clo, chi, col] of withCols) {
+      const look = lookOf(undefined, row, col)
+      const xf = styles.xf(look.style, look.format)
+      if (xf === (rowXf || styles.xf(col.style, col.format))) continue
+      for (let r = rlo; r <= rhi; r++) for (let c = clo; c <= chi; c++) put(r, c, xf)
+    }
+  }
 }
 
 const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2

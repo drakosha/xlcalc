@@ -7,9 +7,8 @@
  * and what the sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
-import { sheetLines } from '../../layout/lines.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
-import { spanKey } from '../../layout/spans.js'
+import { lines, spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
@@ -252,7 +251,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const data = open < 0 ? '' : xml.slice(open, dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
   const cols = columns(head, ctx)
-  const read = readCells(data, ctx, sheetLines({ cells: {}, columns: cols }).column)
+  const read = readCells(data, ctx, lines(cols, 'c'))
   for (const s of read.shared.values()) if (s.master !== undefined) read.cells[s.master] = { ...read.cells[s.master], formula: s.text }
   const converted = convert(src, read, ctx.issues)
   // copies are pasted from the converted master and take what it reports
