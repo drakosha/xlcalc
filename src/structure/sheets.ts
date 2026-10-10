@@ -7,13 +7,14 @@
  */
 import type { BookInput, CellRef, RestructureResult } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
+import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { rewriteBook, sheetNames, type Transform } from './rewrite.js'
 
 export function renameSheet(book: BookInput, sheet: string, name: string): RestructureResult {
   const key = sheetKey(sheet)
   const problem = nameProblem(book, name, sheet)
-  if (problem) return { ok: false, code: 'sheet_name', message: problem }
+  if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
   const renamed = (s: string) => (sheetKey(s) === key ? name : s)
   const t: Transform = {
     ref: ({ sheet: s, area }) => (sheetKey(s) === key ? { sheet: name, area } : undefined),
@@ -43,15 +44,15 @@ function endsWithout(book: BookInput, key: string): Transform['ends'] {
 }
 
 /** Excel's rules for a new sheet name, which no sheet but `own` has; null when it is fine. */
-function nameProblem(book: BookInput, name: string, own?: string): string | null {
+function nameProblem(book: BookInput, name: string, own?: string): Message | null {
   const taken = book.sheets.some((s) => sheetKey(s.name) === sheetKey(name) && (own === undefined || sheetKey(s.name) !== sheetKey(own)))
-  return sheetNameProblem(name) ?? (taken ? `there is a sheet named ${JSON.stringify(name)} already (sheet names are case-insensitive)` : null)
+  return sheetNameProblem(name) ?? (taken ? { key: 'sheetNameTaken', name } : null)
 }
 
 /** A new empty sheet before `before`, else at the end; references across sheets take it in between their ends. */
 export function insertSheet(book: BookInput, name: string, before: string | undefined): RestructureResult {
   const problem = nameProblem(book, name)
-  if (problem) return { ok: false, code: 'sheet_name', message: problem }
+  if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
   const at = before === undefined ? book.sheets.length : book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
   const sheets = [...book.sheets]
   sheets.splice(at, 0, { name, cells: {} })
@@ -72,7 +73,7 @@ export function moveSheet(book: BookInput, sheet: string, before: string | undef
 }
 
 export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
-  if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one sheet' }
+  if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastSheet' }) }
   const key = sheetKey(sheet)
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
   const rest: BookInput = { ...book, sheets: book.sheets.filter((s) => sheetKey(s.name) !== key) }

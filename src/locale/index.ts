@@ -1,7 +1,7 @@
 /**
  * Locales of formula text: typing and showing formulas the way Excel does in another language, while books
  * keep the invariant text. `toLocal` shows a stored formula, `toInvariant` reads typed text back, and
- * `validateLocalFormula` checks typed text with positions in it.
+ * `validateLocalFormula` checks typed text with positions in it; their messages are in the locale's language.
  */
 import type { ValidateContext, ValidateResult } from '../contract.js'
 import { checkString, checkValidateContext, InputError } from '../input.js'
@@ -10,7 +10,8 @@ import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
 import { RU_RU } from '../locales/ru-RU.js'
 import { ERROR_LITERALS } from './lex.js'
-import { sides, translate, type Sides } from './translate.js'
+import { say } from './messages.js'
+import { sides, translate, type Fail, type Sides, type Translated } from './translate.js'
 import type { Locale, Translation } from './types.js'
 
 export type { Locale, Translation } from './types.js'
@@ -69,7 +70,9 @@ function sidesOf(locale: Locale): Sides {
   return s
 }
 
-const result = (r: ReturnType<typeof translate>): Translation => (r.ok ? { ok: true, formula: r.formula } : r)
+/** A translation's result, its message in the locale's language. */
+const result = (r: Translated | Fail, locale: Locale): Translation => (r.ok ? { ok: true, formula: r.formula } : refusal(r, locale))
+const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'syntax' as const, message: say(locale, r.msg), at: r.at })
 
 /**
  * A stored formula as `locale` shows it: `SUM(A1:A3,1.5)` is `СУММ(A1:A3;1,5)` in ru-RU. Structured references are shown
@@ -80,7 +83,7 @@ const result = (r: ReturnType<typeof translate>): Translation => (r.ok ? { ok: t
 export function toLocal(formula: string, locale: Locale, opts: { table?: string } = {}): Translation {
   const s = sidesOf(locale)
   if (opts.table !== undefined) checkString(opts.table, 'opts.table')
-  return result(translate(shownTables(checkString(formula, 'formula'), opts.table, s.local.syn.list), s.invariant, s.local))
+  return result(translate(shownTables(checkString(formula, 'formula'), opts.table, s.local.syn.list), s.invariant, s.local), locale)
 }
 
 const SPACE = new Set([' ', '\t', '\n', '\r'])
@@ -115,25 +118,25 @@ function shownTables(formula: string, table: string | undefined, list: string): 
 /**
  * Text typed in `locale` as a stored formula: `=СУММ(A1:A3;1,5)` is `SUM(A1:A3,1.5)`. A leading `=` is
  * dropped, as stored formulas have none; English function names, TRUE/FALSE and error texts are read too.
- * Positions of errors are in `text`.
+ * Positions of errors are in `text`, their messages in the locale's language.
  */
 export function toInvariant(text: string, locale: Locale): Translation {
   const s = sidesOf(locale)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
-  return result(translate(text.slice(eq), s.local, s.invariant, eq))
+  return result(translate(text.slice(eq), s.local, s.invariant, eq), locale)
 }
 
 /**
- * `validateFormula` for text typed in `locale`: the same result, with the canonical stored text, and
- * positions of errors in `text` (a leading `=` is allowed).
+ * `validateFormula` for text typed in `locale`: the same result, with the canonical stored text, positions of errors
+ * in `text` (a leading `=` is allowed) and messages in the locale's language.
  */
 export function validateLocalFormula(text: string, locale: Locale, ctx?: ValidateContext): ValidateResult {
   const s = sidesOf(locale)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
   const c = checkValidateContext(ctx)
   const t = translate(text.slice(eq), s.local, s.invariant, eq)
-  if (!t.ok) return t
-  const r = validate(t.formula, c)
+  if (!t.ok) return refusal(t, locale)
+  const r = validate(t.formula, { ...c, say: (m) => say(locale, m) })
   if (!r.ok) return { ...r, at: t.back(r.at) }
   const { ast: _ast, ...rest } = r
   return rest

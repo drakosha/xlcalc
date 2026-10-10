@@ -7,6 +7,7 @@
 import type { BookInput, CellInput, CellRef, RestructureResult, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { checkAddress, checkString, InputError } from '../input.js'
+import { say } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, sheetKey, tokenize } from '../syntax.js'
 import { tableAt, tablesOf } from '../tables/model.js'
@@ -61,14 +62,14 @@ const withoutMeta = (cell: CellInput): CellInput => {
 export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): RestructureResult {
   const offsets = tiles(src, target)
   const [dr, dc] = offsets[0]
-  if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: `the copy does not fit on ${to} at ${formatAddress(target.r1, target.c1)}` }
+  if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
   // the tiles cover the target, or one copy its top-left part
   const pasted = offsets.length > 1 ? target : shiftRect(src, dr, dc)
   const paste: Paste = { from, src, to, area: pasted, offsets, move: false }
   const refused = mergeRefusal(book, paste)
-  if (refused) return { ok: false, code: 'merged', message: refused }
+  if (refused) return { ok: false, code: 'merged', message: say(book.locale, refused) }
   const part = arrayRefusal(book, paste)
-  if (part) return { ok: false, code: 'array', message: part }
+  if (part) return { ok: false, code: 'array', message: say(book.locale, part) }
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
   const names = sheetNames(book)
   const sheet = source.sheets.find((s) => sheetKey(s.name) === fk)!

@@ -258,7 +258,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const { row, col } = parseAddress(checkAddress(cell, 'cell'))
       const e = explainCell(s, i, row, col, o.depth ?? 3, o.maxNodes ?? 200, o.expand ?? false)
-      return { ...e, text: explainText(e.root) }
+      return { ...e, text: explainText(e.root, s.input.locale) }
     },
     *cells(sheet: string, range: string) {
       const s = yield* ready()

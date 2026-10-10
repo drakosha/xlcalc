@@ -5,6 +5,7 @@
 import type { BookInput, CellRef, RestructureResult, StructureOp } from '../contract.js'
 import { checkAddress, checkBook, checkString, InputError } from '../input.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
+import { say } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
@@ -141,7 +142,7 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
       } else {
         const at = parseAddress(checkAddress(to.cell, 'op.to.cell'))
         const tables = moveTables(book, fromSheet, src, toSheet, at.row - src.r1, at.col - src.c1)
-        if (tables.refuse) r = { ok: false, code: 'table', message: tables.refuse }
+        if (tables.refuse) r = { ok: false, code: 'table', message: say(book.locale, tables.refuse) }
         else {
           const m = moveRange(tables.before(book), fromSheet, src, toSheet, at.row, at.col)
           r = m.ok ? { ...m, book: tables.after(m.book) } : m

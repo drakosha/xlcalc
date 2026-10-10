@@ -2,6 +2,7 @@
  * What a locale file of `src/locales/` holds: everything the engine knows of the locale, as data. The package's locales
  * are the files listed in `src/locales/index.ts`, one line each (`registry.ts` reads the list).
  */
+import type { Messages } from './messages.js'
 import type { RegionalData } from './rules/data.js'
 import type { Locale } from './types.js'
 
@@ -16,4 +17,9 @@ export interface LocaleFile {
    * count in books of every locale.
    */
   readonly glyphWidths?: readonly (readonly [number, string])[]
+  /**
+   * Messages for people in the locale's language (`messages.ts`): why a formula does not read, why a structure operation
+   * is refused, the words of `explain`. en-US has every one; a message the locale lacks is en-US's.
+   */
+  readonly messages?: Partial<Messages>
 }

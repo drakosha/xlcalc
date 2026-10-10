@@ -50,6 +50,7 @@
 import type { ErrorCode } from './contract.js'
 import { Arr } from './arrays/value.js'
 import { MAX_SERIAL } from './dates.js'
+import type { Counts } from './locale/messages.js'
 import type { Rules } from './locale/rules.js'
 import { Areas, E, fitNumber, isErr, Rng, whole, type CErr, type V } from './values.js'
 import { CalcError } from './exec/budget.js'
@@ -225,8 +226,8 @@ export interface FunctionSpec {
   omitted: (i: number) => V | undefined
   /** Whether Excel loads a formula that leaves out the argument at `i`. */
   omits: (i: number) => boolean
-  /** The counts it takes, for a message ("3 to 255 (odd)"). */
-  counts: string
+  /** The counts it takes, for a message (SUMIFS 3 to 255, odd). */
+  counts: Counts
   volatile?: boolean
   lazy?: boolean
   cell?: boolean
@@ -263,9 +264,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
   // past the declared kinds, repeated groups come whole (an optional one inside the first group may be left out)
   const whole = (k: number) => k <= kinds.length || (k - fixed) % rep === 0
   if (rep && !whole(max)) max--
-  const parity = rep === 2 ? (fixed % 2 ? 'odd' : 'even') : ''
-  const range = min === max ? `${min}` : `${min} to ${max}`
-  const counts = !parity ? range : min < kinds.length ? `${min}, or ${parity} ${min + 1} to ${max}` : `${range} (${parity})`
+  const counts: Counts = rep === 2 ? { min, max, parity: fixed % 2 ? 'odd' : 'even', or: min < kinds.length } : { min, max }
   const mode = (i: number): ArgMode => {
     const k = kindAt(i)
     return k === 'r' ? 'array' : k === 'p' || k === 'P' ? 'pass' : WHOLE_KINDS.includes(k) ? 'whole' : 'lift'

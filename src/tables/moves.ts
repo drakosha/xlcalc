@@ -8,6 +8,7 @@ import type { BookInput, CellInput, RestructureResult, SheetInput, TableInput } 
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { spend } from '../exec/budget.js'
+import type { Message } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { clockSerial } from '../result.js'
 import { ERROR_TEXT, sheetKey } from '../syntax.js'
@@ -51,7 +52,7 @@ function renamedByPaste(tables: Tables, after: BookInput, areas: [number, Rect][
 const qualified = (formula: string, tables: Tables, t: Table) => rewriteTableRefs(formula, tables, t, null, () => undefined, true)
 
 /** Cut `src` of sheet `from` and paste it at `to`, `dr` rows and `dc` columns away: the tables it carries, refusals. */
-export function moveTables(book: BookInput, from: string, src: Rect, to: string, dr: number, dc: number): { refuse?: string; before(b: BookInput): BookInput; after(b: BookInput): BookInput } {
+export function moveTables(book: BookInput, from: string, src: Rect, to: string, dr: number, dc: number): { refuse?: Message; before(b: BookInput): BookInput; after(b: BookInput): BookInput } {
   const tables = tablesOf(book)
   const [fs, ts] = [book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(from)), book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(to))]
   const dst: Rect = { r1: src.r1 + dr, r2: src.r2 + dr, c1: src.c1 + dc, c2: src.c2 + dc }
@@ -59,7 +60,7 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
   const keep = { before: (b: BookInput) => b, after: (b: BookInput) => b }
   const land = [...moving].map((t) => ({ t, x: { r1: t.r1 + dr, r2: t.r2 + dr, c1: t.c1 + dc, c2: t.c2 + dc } }))
   const onto = land.find(({ x }) => tables.list.some((o) => o.s === ts && !moving.has(o) && meets(o, x)))
-  if (onto) return { ...keep, refuse: `the table ${onto.t.name} would land on another table` }
+  if (onto) return { ...keep, refuse: { key: 'tableLands', table: onto.t.name } }
   if (!moving.size && !tables.list.some((t) => (t.s === fs && meets(t, src)) || (t.s === ts && meets(t, dst)))) return keep
   // the table a moved cell is in after the move: one that moved along, or one that stays
   const after = (r: number, c: number): string | undefined => {

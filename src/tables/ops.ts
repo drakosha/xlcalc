@@ -6,8 +6,9 @@ import type { BookInput, RestructureResult, StructureOp, TableInput } from '../c
 import { checkTables } from './check.js'
 import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
+import { say, type Message } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
-import { nameProblem, sheetKey } from '../syntax.js'
+import { nameRule, sheetKey } from '../syntax.js'
 import { meets, parseRange } from '../structure/area.js'
 import { parseMerge } from '../layout/merges.js'
 import { convertedText, rewriteBookTables } from './rewrite.js'
@@ -32,14 +33,14 @@ function withTable(book: BookInput, key: string, next: TableInput | null): BookI
 }
 
 /** A name a table can take in the book: Excel's rules, not another table's or a defined name (but `own`). */
-function nameRefusal(book: BookInput, name: string, own?: string): string | null {
+function nameRefusal(book: BookInput, name: string, own?: string): Message | null {
   // not ИСТИНА in ru-RU, as Excel for Windows (Excel for Mac keeps such a table's name)
-  const problem = nameProblem(name, localeBooleans(book.locale))
-  if (problem) return `${JSON.stringify(name)}: ${problem}`
+  const rule = nameRule(name, localeBooleans(book.locale))
+  if (rule) return { key: 'tableName', name, rule }
   const k = tableKey(name)
   const table = tablesOf(book).list.find((t) => tableKey(t.name) === k && (own === undefined || tableKey(own) !== k))
-  if (table) return `there is a table named ${table.name} already (table names are case-insensitive)`
-  if ((book.names ?? []).some((n) => tableKey(n.name) === k)) return `${JSON.stringify(name)} is a defined name (tables and names share one namespace)`
+  if (table) return { key: 'tableNameTaken', table: table.name }
+  if ((book.names ?? []).some((n) => tableKey(n.name) === k)) return { key: 'tableNameDefined', name }
   return null
 }
 
@@ -51,7 +52,7 @@ export function tableOp(book: BookInput, op: TableOp): RestructureResult {
   if (op.op === 'renameTable') {
     if (typeof op.name !== 'string') throw new InputError('op.name', 'expected a table name')
     const why = nameRefusal(book, op.name, t.name)
-    if (why) return { ok: false, code: 'table_name', message: why }
+    if (why) return { ok: false, code: 'table_name', message: say(book.locale, why) }
     // Excel keeps the name when only its case changes (the set `tables/ops`, rename-case)
     if (tableKey(op.name) === key) return { ok: true, book, mapCell: same }
     const renamed = rewriteBookTables(book, (x) => (tableKey(x.name) === key ? { table: op.name } : undefined))
@@ -85,12 +86,12 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Restructur
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
   if (typeof table !== 'object' || table === null || typeof table.name !== 'string') throw new InputError('op.table', 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   const why = nameRefusal(book, table.name)
-  if (why) return { ok: false, code: 'table_name', message: why }
+  if (why) return { ok: false, code: 'table_name', message: say(book.locale, why) }
   const x = typeof table.range === 'string' ? parseRange(table.range) : null
   const over = x && tablesOf(book).list.find((t) => t.s === s && meets(t, x))
-  if (over) return { ok: false, code: 'table', message: `${table.range} meets the table ${over.name}` }
+  if (over) return { ok: false, code: 'table', message: say(book.locale, { key: 'tableOverTable', range: table.range, table: over.name }) }
   const merge = x && (book.sheets[s].merges ?? []).find((m) => meets(parseMerge(m)!, x))
-  if (merge) return { ok: false, code: 'merged', message: `${table.range} meets the merged area ${merge}` }
+  if (merge) return { ok: false, code: 'merged', message: say(book.locale, { key: 'tableOverMerge', range: table.range, area: merge }) }
   const cells = { ...book.sheets[s].cells }
   if (x && table.headers !== false && Array.isArray(table.columns))
     table.columns.forEach((c, i) => {
