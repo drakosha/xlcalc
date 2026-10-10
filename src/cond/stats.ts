@@ -8,6 +8,7 @@ import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { caseKey } from '../collate.js'
 import { meets, type Rect } from '../structure/area.js'
+import type { Rules } from '../locale/rules.js'
 import { isErr, Rng, type V } from '../values.js'
 import { rectsOf } from './rules.js'
 
@@ -17,14 +18,24 @@ export interface Stats {
   mean: number
   /** The population standard deviation of the numbers. */
   sd: number
-  /** How many cells hold each value (`valueKey`), blanks left out. */
+  /** How many cells hold each value (`valueKey`), blank ones too. */
   counts: Map<string, number>
-  /** Whether a cell holds an error. */
-  error: boolean
 }
 
-/** A value as duplicate rules compare it: numbers by value, text in any case. */
-export const valueKey = (v: V): string => (typeof v === 'number' ? `n${v}` : typeof v === 'string' ? `s${caseKey(v)}` : typeof v === 'boolean' ? `b${v}` : isErr(v) ? `e${v.code}` : '')
+/**
+ * A value as duplicate rules compare it (the set `cond/looks`): text in any case, text that reads as a number as that
+ * number (`"1"` is a duplicate of 1), empty text as a blank cell (blank cells themselves are never formatted).
+ */
+export const valueKey =
+  (rules: Rules) =>
+  (v: V): string => {
+    if (v === null || v === '') return ''
+    if (typeof v === 'number') return `n${v}`
+    if (typeof v === 'boolean') return `b${v}`
+    if (isErr(v)) return `e${v.code}`
+    const n = rules.toNum(v)
+    return typeof n === 'number' ? `n${n}` : `s${caseKey(v)}`
+  }
 
 /** The values of each cell of a rule's ranges, once each where ranges overlap, row by row; the steps yield between cells. */
 export function* eachValue(state: EngineState, s: number, rects: Rect[], f: (v: V) => void): Steps<void> {
@@ -50,12 +61,10 @@ export function* eachValue(state: EngineState, s: number, rects: Rect[], f: (v: 
 export function* ruleStats(state: EngineState, s: number, rule: ConditionalFormat): Steps<Stats> {
   const nums: number[] = []
   const counts = new Map<string, number>()
-  let error = false
+  const key = valueKey(state.ctx.rules)
   yield* eachValue(state, s, rectsOf(rule), (v) => {
-    if (v === null) return
     if (typeof v === 'number') nums.push(v)
-    else if (isErr(v)) error = true
-    const k = valueKey(v)
+    const k = key(v)
     counts.set(k, (counts.get(k) ?? 0) + 1)
   })
   nums.sort((a, b) => a - b)
@@ -64,7 +73,7 @@ export function* ruleStats(state: EngineState, s: number, rule: ConditionalForma
   const mean = nums.length ? sum / nums.length : 0
   let sq = 0
   for (const x of nums) sq += (x - mean) ** 2
-  return { nums, mean, sd: nums.length ? Math.sqrt(sq / nums.length) : 0, counts, error }
+  return { nums, mean, sd: nums.length ? Math.sqrt(sq / nums.length) : 0, counts }
 }
 
 /** PERCENTILE.INC of sorted numbers, `k` from 0 to 1. */

@@ -1,8 +1,9 @@
 /**
  * Conditional formats under structure operations. A rule's ranges change as merged areas do: they grow and shrink with
  * inserted and deleted lines, go with moved cells and are copied with copied ones, and the cells a move or a copy
- * lands on lose the rules they had. Its formulas change as the formula of a cell at the rule's first cell would, and
- * when that cell is gone or no longer first they are made for the new first cell as a copy would make them.
+ * lands on lose the rules they had. Its formulas change as the formula of a cell at the rule's first cell (the top-left
+ * of the rectangle around its ranges) would, and when that cell is no longer first they are made for the new first cell
+ * as a copy would make them.
  */
 import type { BookInput, ConditionalFormat, ConditionalValue, SheetInput } from '../contract.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
@@ -12,9 +13,12 @@ import { copyTransform } from '../structure/copy.js'
 import type { Paste } from '../structure/paste.js'
 import { rewriteFormula, type Transform } from '../structure/rewrite.js'
 import { deleteSpan, insertSpan } from '../structure/shift.js'
-import { rangesOf, rectsOf } from './rules.js'
+import { originOf, rangesOf, rectsOf } from './rules.js'
 
 type Cell = { r: number; c: number }
+
+/** The top-left of the rectangle around rectangles: the cell a rule over them has its formulas written for (`originOf`). */
+const corner = (xs: Rect[]): Cell => ({ r: Math.min(...xs.map((x) => x.r1)), c: Math.min(...xs.map((x) => x.c1)) })
 
 const valueWith = (v: ConditionalValue, f: (text: string) => string): ConditionalValue => (v.value === undefined ? v : { ...v, value: f(v.value) })
 
@@ -34,10 +38,13 @@ function mapFormulas(rule: ConditionalFormat, f: (text: string) => string): Cond
   }
 }
 
-/** A rule over `next` (rectangles of the sheet after the operation), its formulas made for the new first cell: copied there from the old one by `from` (that cell's place before the operation), then rewritten by `t`. */
+/**
+ * A rule over `next` (rectangles of the sheet after the operation), its formulas made for its new first cell (`corner`):
+ * copied from the old one to `from`, that cell's place before the operation, then rewritten by `t`.
+ */
 function placed(rule: ConditionalFormat, next: Rect[], from: Cell, host: string, moved: string, t: Transform, names: Map<string, string>): ConditionalFormat {
-  const o = rectsOf(rule)[0]
-  const [dr, dc] = [from.r - o.r1, from.c - o.c1]
+  const o = originOf(rule)
+  const [dr, dc] = [from.r - o.r, from.c - o.c]
   const copy = dr || dc ? copyTransform(dr, dc) : null
   const out = mapFormulas(rule, (text) => rewriteFormula(copy ? rewriteFormula(text, host, host, copy, names) : text, host, moved, t, names))
   const ranges = rangesOf(next, rule.ranges)
@@ -95,7 +102,8 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
         changed = true
         continue
       }
-      const from = axis === 'r' ? { r: back(next[0].r1), c: next[0].c1 } : { r: next[0].r1, c: back(next[0].c1) }
+      const top = corner(next)
+      const from = axis === 'r' ? { r: back(top.r), c: top.c } : { r: top.r, c: back(top.c) }
       const r = placed(rule, next, from, s.name, s.name, t, names)
       changed ||= r !== rule
       out.push(r)
@@ -153,11 +161,11 @@ export function moveConditional(old: BookInput, out: BookInput, p: Paste, t: Tra
       const back = (c: Cell) => (moved.some((x) => c.r >= x.r1 && c.r <= x.r2 && c.c >= x.c1 && c.c <= x.c2) ? { r: c.r - dr, c: c.c - dc } : c)
       if (fk === tk) {
         const next = [...stay, ...moved]
-        if (next.length) rules.push(placed(rule, next, back({ r: next[0].r1, c: next[0].c1 }), s.name, s.name, t, names))
+        if (next.length) rules.push(placed(rule, next, back(corner(next)), s.name, s.name, t, names))
         continue
       }
-      if (stay.length) rules.push(placed(rule, stay, { r: stay[0].r1, c: stay[0].c1 }, s.name, s.name, t, names))
-      if (moved.length) carried.push(placed(rule, moved, { r: moved[0].r1 - dr, c: moved[0].c1 - dc }, p.from, p.to, t, names))
+      if (stay.length) rules.push(placed(rule, stay, corner(stay), s.name, s.name, t, names))
+      if (moved.length) carried.push(placed(rule, moved, { r: corner(moved).r - dr, c: corner(moved).c - dc }, p.from, p.to, t, names))
     }
     return withRules(s, rules)
   })
@@ -189,8 +197,8 @@ export function copyConditional(source: BookInput, out: BookInput, p: Paste, nam
     for (const rule of from) {
       const next = pasted(rule)
       if (!next.length) continue
-      const o = rectsOf(rule)[0]
-      const copy = copyTransform(next[0].r1 - o.r1, next[0].c1 - o.c1)
+      const [o, to] = [originOf(rule), corner(next)]
+      const copy = copyTransform(to.r - o.r, to.c - o.c)
       added.push({ ...mapFormulas(rule, (text) => rewriteFormula(text, p.to, p.to, copy, names)), ranges: rangesOf(next, []) })
     }
   const list = [...added, ...kept]

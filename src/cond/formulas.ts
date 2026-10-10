@@ -11,7 +11,7 @@ import { MAX_COLS } from '../model.js'
 import { decode } from '../structure/area.js'
 import { FUNCTIONS } from '../functions.js'
 import { sheetKey, validate, walk as walkTree, type Ast } from '../syntax.js'
-import { Areas, isErr, Rng, type V } from '../values.js'
+import { Areas, Rng, type V } from '../values.js'
 import { Arr } from '../arrays/value.js'
 import type { Arg } from '../args.js'
 
@@ -82,5 +82,8 @@ export function first(state: EngineState, a: Arg): V {
   return a as V
 }
 
-/** Whether a formula's answer holds: TRUE or a number other than 0; text, a blank and an error do not. */
-export const holds = (v: V): boolean => !isErr(v) && (v === true || (typeof v === 'number' && v !== 0))
+/**
+ * Whether a formula's answer holds, read as IF reads its condition: TRUE, a number other than 0, the text of TRUE in the
+ * book's locale (the set `cond/looks`: `IF($A1>3,"TRUE","")` holds); other text, a blank and an error do not.
+ */
+export const holds = (state: EngineState, v: V): boolean => v !== null && state.ctx.rules.toBool(v) === true

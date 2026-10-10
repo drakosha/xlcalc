@@ -41,8 +41,8 @@ function threshold(state: EngineState, s: number, rule: ConditionalFormat, t: Co
   const lo = nums[0]
   const hi = nums[nums.length - 1]
   const own = () => (t.value === undefined ? null : num(formulaAt(state, s, rule, t.value)(originOf(rule).r, originOf(rule).c)))
-  // the lowest and highest numbers are Excel's MIN and MAX of the cells, which an error among them makes an error
-  const stat = (f: () => number) => (st.error || !nums.length ? null : f())
+  // errors among the cells are left out, as text and blanks are (the set `cond/looks`)
+  const stat = (f: () => number) => (nums.length ? f() : null)
   switch (t.type) {
     case 'min':
       return stat(() => lo)
@@ -67,12 +67,12 @@ function threshold(state: EngineState, s: number, rule: ConditionalFormat, t: Co
 }
 
 const channels = (c: Color) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16))
-const hex = (xs: number[]) => `#${xs.map((x) => Math.round(x).toString(16).padStart(2, '0')).join('').toUpperCase()}`
+const hex = (xs: number[]) => `#${xs.map((x) => x.toString(16).padStart(2, '0')).join('').toUpperCase()}`
 
-/** The colour a fraction `t` of the way from `a` to `b`. */
+/** The colour a fraction `t` of the way from `a` to `b`: each channel moves by its share cut toward `a` (the set `cond/looks`). */
 export const between = (a: Color, b: Color, t: number): Color => {
   const [x, y] = [channels(a), channels(b)]
-  return hex(x.map((v, i) => v + (y[i] - v) * t))
+  return hex(x.map((v, i) => v + Math.trunc((y[i] - v) * t)))
 }
 
 /** A colour scale's colour for `v` over its points' numbers `at` (ascending as the rule gives them). */
@@ -137,7 +137,8 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
   switch (rule.type) {
     case 'cellIs': {
       const [fa, fb] = rule.formulas.map(at)
-      const cmp = (v: V, x: V) => (isErr(x) ? NaN : compareOp(v, x))
+      // a formula's answer as a cell shows it: a blank cell it refers to is 0 (the set `cond/looks`)
+      const cmp = (v: V, x: V) => (isErr(x) ? NaN : compareOp(v, x ?? 0))
       return (v, r, c) => {
         if (isErr(v)) return false
         const a = cmp(v, fa(r, c))
@@ -162,17 +163,23 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
         return rule.operator === 'between' ? inside : !inside
       }
     }
+    case 'containsBlanks':
+    case 'notContainsBlanks': {
+      // by the value, not the formula Excel writes (`LEN(TRIM(A1))>0`): an error is not blank (the set `cond/looks`)
+      const blank = rule.type === 'containsBlanks'
+      return (v) => (v === null || (typeof v === 'string' && /^ *$/.test(v))) === blank
+    }
     case 'top10': {
       const st = yield* statsOf(state, s, rule)
       const n = st.nums.length
-      if (st.error || !n) return null
+      if (!n) return null
       const k = Math.min(n, rule.percent ? Math.max(1, Math.floor((n * rule.rank) / 100)) : rule.rank)
       const edge = rule.bottom ? st.nums[k - 1] : st.nums[n - k]
       return (v) => typeof v === 'number' && (rule.bottom ? v <= edge : v >= edge)
     }
     case 'aboveAverage': {
       const st = yield* statsOf(state, s, rule)
-      if (st.error || !st.nums.length) return null
+      if (!st.nums.length) return null
       const d = (rule.stdDev ?? 0) * st.sd
       const below = rule.below === true
       const edge = below ? st.mean - d : st.mean + d
@@ -182,7 +189,8 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
     case 'uniqueValues': {
       const st = yield* statsOf(state, s, rule)
       const dup = rule.type === 'duplicateValues'
-      return (v) => v !== null && (st.counts.get(valueKey(v)) ?? 0) > 1 === dup
+      const key = valueKey(state.ctx.rules)
+      return (v) => v !== null && (st.counts.get(key(v)) ?? 0) > 1 === dup
     }
     case 'colorScale':
     case 'dataBar':
@@ -190,7 +198,7 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
       return null
     default: {
       const f = formulaAt(state, s, rule, ruleFormula(rule)!)
-      return (_, r, c) => holds(f(r, c))
+      return (_, r, c) => holds(state, f(r, c))
     }
   }
 }

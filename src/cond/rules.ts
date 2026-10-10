@@ -25,10 +25,14 @@ export function rangesOf(rects: Rect[], was: string[]): string[] {
   return same ? was : rects.map(rangeText)
 }
 
-/** The cell a rule's formulas are written for: its first range's top-left. */
+/**
+ * The cell a rule's formulas are written for: the top-left of the rectangle around its ranges, whatever their order
+ * (the set `cond/looks`: Excel computes `$A3>2` over `H3:H6 J1:J3` for H1, and saves the ranges as `J1:J3 H3:H6` with
+ * the same formula).
+ */
 export function originOf(f: ConditionalFormat): { r: number; c: number } {
-  const x = parseRange(f.ranges[0])!
-  return { r: x.r1, c: x.c1 }
+  const xs = rectsOf(f)
+  return { r: Math.min(...xs.map((x) => x.r1)), c: Math.min(...xs.map((x) => x.c1)) }
 }
 
 const quoted = (text: string) => `"${text.replaceAll('"', '""')}"`
