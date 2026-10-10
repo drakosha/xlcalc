@@ -1153,6 +1153,12 @@ export type SheetLayout = Omit<SheetInput, 'cells'>
 /** A book without the cells of its sheets (`Session.layout`): its styles, names and settings, and each sheet's layout. */
 export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
 
+/** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
+export interface BookSnapshot {
+  book: BookInput
+  result: ComputeResult
+}
+
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
  * session (`clock`) is what a saved result should record: a full computation with it gives the same hash.
@@ -1233,6 +1239,8 @@ export interface Session {
    */
   validateEntry(sheet: string, cell: string, input: CellInput | null): EntryCheck
   result(): ComputeResult
+  /** The book (as `book()`, the session's own objects) and its result (as `result()`) in one call. */
+  getSnapshot(): BookSnapshot
   /** The values hash `result()` gives, without building the result. */
   hash(): string
   /**
@@ -1320,6 +1328,8 @@ export interface AsyncSession {
   validation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
   result(opts?: CalcOptions): Promise<ComputeResult>
+  /** As `Session.getSnapshot`, in one call, so no edit comes between the book and its result; from a thread, a copy. */
+  getSnapshot(opts?: CalcOptions): Promise<BookSnapshot>
   /** As `Session.hash`: from a thread only the hash comes back. */
   hash(opts?: CalcOptions): Promise<string>
   undo(opts?: CalcOptions): Promise<UndoResult | null>
