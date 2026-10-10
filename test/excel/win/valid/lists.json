@@ -1,0 +1,783 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 23.7
+ },
+ "books": {
+  "lists": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "U1": {
+       "value": "apple"
+      },
+      "U2": {
+       "value": "Pear"
+      },
+      "U3": {
+       "value": 3
+      },
+      "U5": {
+       "value": "plum"
+      },
+      "W1": {
+       "formula": "SEQUENCE(3,1,10)"
+      },
+      "A1": {
+       "value": "Fruits"
+      },
+      "A2": {
+       "value": "apple"
+      },
+      "A3": {
+       "value": "PEAR"
+      },
+      "A4": {
+       "value": 3
+      },
+      "A5": {
+       "value": "kiwi"
+      },
+      "A6": {
+       "formula": "\"3\""
+      },
+      "B1": {
+       "value": "Local"
+      },
+      "B2": {
+       "value": "pear"
+      },
+      "B3": {
+       "value": "apple"
+      },
+      "B4": {
+       "value": 3
+      },
+      "C1": {
+       "value": "'L'!$A$1:$A$3"
+      },
+      "C2": {
+       "value": "Y"
+      },
+      "C3": {
+       "value": "w"
+      },
+      "C4": {
+       "value": "x "
+      },
+      "D1": {
+       "value": "$W$1#"
+      },
+      "D2": {
+       "value": 11
+      },
+      "D3": {
+       "value": 13
+      },
+      "D4": {
+       "formula": "\"11\""
+      },
+      "E1": {
+       "value": "INDEX($U$1:$U$4,0,1)"
+      },
+      "E2": {
+       "value": "apple"
+      },
+      "E3": {
+       "value": "kiwi"
+      },
+      "F1": {
+       "value": "$U:$U"
+      },
+      "F2": {
+       "value": "apple"
+      },
+      "F3": {
+       "value": 3
+      },
+      "F4": {
+       "value": "kiwi"
+      },
+      "G1": {
+       "value": "$U$1:$U$5"
+      },
+      "G2": {
+       "formula": "\"\""
+      },
+      "G3": {
+       "value": "Pear"
+      },
+      "H1": {
+       "value": "$U$1:$U$5"
+      },
+      "H2": {
+       "formula": "\"\""
+      },
+      "H3": {
+       "value": "apple"
+      },
+      "I1": {
+       "value": "\"a;b;c\""
+      },
+      "I2": {
+       "value": "b"
+      },
+      "I3": {
+       "value": "a;b;c"
+      },
+      "I4": {
+       "value": "a"
+      },
+      "J1": {
+       "value": "\"a, b,c \""
+      },
+      "J2": {
+       "value": "b"
+      },
+      "J3": {
+       "value": " b"
+      },
+      "J4": {
+       "value": "c "
+      },
+      "J5": {
+       "value": "c"
+      }
+     },
+     "validations": [
+      {
+       "range": "A2:A6",
+       "type": "list",
+       "formula1": "Fruits"
+      },
+      {
+       "range": "B2:B4",
+       "type": "list",
+       "formula1": "Local"
+      },
+      {
+       "range": "C2:C4",
+       "type": "list",
+       "formula1": "'L'!$A$1:$A$3"
+      },
+      {
+       "range": "D2:D4",
+       "type": "list",
+       "formula1": "$W$1#"
+      },
+      {
+       "range": "E2:E3",
+       "type": "list",
+       "formula1": "INDEX($U$1:$U$4,0,1)"
+      },
+      {
+       "range": "F2:F4",
+       "type": "list",
+       "formula1": "$U:$U"
+      },
+      {
+       "range": "G2:G3",
+       "type": "list",
+       "formula1": "$U$1:$U$5"
+      },
+      {
+       "range": "H2:H3",
+       "type": "list",
+       "formula1": "$U$1:$U$5",
+       "allowBlank": false
+      },
+      {
+       "range": "I2:I4",
+       "type": "list",
+       "formula1": "\"a;b;c\""
+      },
+      {
+       "range": "J2:J5",
+       "type": "list",
+       "formula1": "\"a, b,c \""
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": "x"
+      },
+      "A2": {
+       "value": "y"
+      },
+      "A3": {
+       "value": "z"
+      }
+     }
+    }
+   ],
+   "names": [
+    {
+     "name": "Fruits",
+     "ref": "'S'!$U$1:$U$4"
+    },
+    {
+     "name": "Local",
+     "ref": "'S'!$U$2:$U$3",
+     "scope": "S"
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "lists",
+   "book": "lists"
+  }
+ ],
+ "window": "A1:J7",
+ "sent": {
+  "lists": "538e6f7f98f076e4f81e9a5751ae6e47091ab360b759a390bcfc24754c45bc08"
+ },
+ "answers": {
+  "lists": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "A2",
+       "validate list",
+       "operator between",
+       "=Fruits",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A3",
+       "validate list",
+       "operator between",
+       "=Fruits",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A4",
+       "validate list",
+       "operator between",
+       "=Fruits",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A5",
+       "validate list",
+       "operator between",
+       "=Fruits",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A6",
+       "validate list",
+       "operator between",
+       "=Fruits",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate list",
+       "operator between",
+       "=Local",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C2",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate list",
+       "operator between",
+       "=$W$1#",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate list",
+       "operator between",
+       "=Local",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D3",
+       "validate list",
+       "operator between",
+       "=$W$1#",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B4",
+       "validate list",
+       "operator between",
+       "=Local",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C4",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D4",
+       "validate list",
+       "operator between",
+       "=$W$1#",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "E2",
+       "validate list",
+       "operator between",
+       "=INDEX($U$1:$U$4,0,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate list",
+       "operator between",
+       "=INDEX($U$1:$U$4,0,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "=$U:$U",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "=$U:$U",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "=$U:$U",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "G2",
+       "validate list",
+       "operator between",
+       "=$U$1:$U$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "H2",
+       "validate list",
+       "operator between",
+       "=$U$1:$U$5",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "G3",
+       "validate list",
+       "operator between",
+       "=$U$1:$U$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H3",
+       "validate list",
+       "operator between",
+       "=$U$1:$U$5",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "I2",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "I3",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "I4",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "J2",
+       "validate list",
+       "operator between",
+       "a, b,c ",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "J3",
+       "validate list",
+       "operator between",
+       "a, b,c ",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "J4",
+       "validate list",
+       "operator between",
+       "a, b,c ",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "J5",
+       "validate list",
+       "operator between",
+       "a, b,c ",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "L",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

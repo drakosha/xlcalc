@@ -1,0 +1,2158 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 24.8
+ },
+ "books": {
+  "values": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "Y1": {
+       "value": 1
+      },
+      "Y2": {
+       "formula": "\"2\""
+      },
+      "Y3": {
+       "value": true
+      },
+      "Y4": {
+       "value": "Yes"
+      },
+      "Y5": {
+       "value": 3
+      },
+      "A1": {
+       "value": "list 1"
+      },
+      "A2": {
+       "value": "Yes"
+      },
+      "A3": {
+       "value": "No"
+      },
+      "A4": {
+       "value": 1
+      },
+      "A5": {
+       "formula": "\"1\""
+      },
+      "A6": {
+       "value": 2.5
+      },
+      "A7": {
+       "value": true
+      },
+      "A8": {
+       "formula": "\"TRUE\""
+      },
+      "A9": {
+       "value": " spaced"
+      },
+      "A10": {
+       "value": "spaced"
+      },
+      "A11": {
+       "value": 45659
+      },
+      "A12": {
+       "value": "1/2/2025"
+      },
+      "B1": {
+       "value": "whole 2"
+      },
+      "B2": {
+       "value": 1
+      },
+      "B3": {
+       "value": 10
+      },
+      "B4": {
+       "value": 0
+      },
+      "B5": {
+       "value": 11
+      },
+      "B6": {
+       "formula": "5*1"
+      },
+      "B7": {
+       "value": 5.5
+      },
+      "B8": {
+       "formula": "\"5\""
+      },
+      "B9": {
+       "value": true
+      },
+      "B10": {
+       "formula": "NA()"
+      },
+      "B12": {
+       "value": 1e-20
+      },
+      "C1": {
+       "value": "whole 3"
+      },
+      "C2": {
+       "value": 5
+      },
+      "C3": {
+       "value": 1
+      },
+      "C4": {
+       "value": 10
+      },
+      "C5": {
+       "value": 0
+      },
+      "D1": {
+       "value": "decimal 4"
+      },
+      "D2": {
+       "value": 0.5
+      },
+      "D3": {
+       "value": 1
+      },
+      "D4": {
+       "value": 1.5
+      },
+      "D5": {
+       "value": 2
+      },
+      "D6": {
+       "value": 3
+      },
+      "D7": {
+       "value": "abc"
+      },
+      "D8": {
+       "value": false
+      },
+      "E1": {
+       "value": "decimal 5"
+      },
+      "E2": {
+       "formula": "0.1+0.2"
+      },
+      "E3": {
+       "value": 0.3
+      },
+      "E4": {
+       "value": 0.30000000000000004
+      },
+      "F1": {
+       "value": "date 6"
+      },
+      "F2": {
+       "value": 45658
+      },
+      "F3": {
+       "value": 45688
+      },
+      "F4": {
+       "value": 45688.5
+      },
+      "F5": {
+       "value": 45689
+      },
+      "F6": {
+       "value": 45670.25
+      },
+      "F7": {
+       "formula": "\"2025-01-15\""
+      },
+      "F8": {
+       "value": 45657.99
+      },
+      "G1": {
+       "value": "time 7"
+      },
+      "G2": {
+       "value": 0.25
+      },
+      "G3": {
+       "value": 0.5
+      },
+      "G4": {
+       "value": 1.25
+      },
+      "G5": {
+       "value": 45658.25
+      },
+      "G6": {
+       "value": -0.1
+      },
+      "H1": {
+       "value": "textLength 8"
+      },
+      "H2": {
+       "value": "abc"
+      },
+      "H3": {
+       "value": "ab"
+      },
+      "H4": {
+       "value": 123
+      },
+      "H5": {
+       "value": 1.5
+      },
+      "H6": {
+       "value": true
+      },
+      "H7": {
+       "value": false
+      },
+      "H8": {
+       "formula": "0.1+0.2"
+      },
+      "H9": {
+       "value": 12.25
+      },
+      "H10": {
+       "formula": "NA()"
+      },
+      "I1": {
+       "value": "custom 9"
+      },
+      "I2": {
+       "value": 5
+      },
+      "I3": {
+       "value": "x"
+      },
+      "I4": {
+       "formula": "1/0"
+      },
+      "J1": {
+       "value": "custom 10"
+      },
+      "J2": {
+       "value": 5
+      },
+      "J3": {
+       "value": 0
+      },
+      "J4": {
+       "value": "x"
+      },
+      "J5": {
+       "value": -1
+      },
+      "K1": {
+       "value": "custom 11"
+      },
+      "K2": {
+       "value": 5
+      },
+      "K3": {
+       "value": "x"
+      },
+      "L1": {
+       "value": "custom 12"
+      },
+      "L2": {
+       "value": 5
+      },
+      "L3": {
+       "value": "x"
+      },
+      "M1": {
+       "value": "custom 13"
+      },
+      "M2": {
+       "value": 5
+      },
+      "N1": {
+       "value": "whole 14"
+      },
+      "N2": {
+       "value": 50
+      },
+      "N3": {
+       "value": 5
+      },
+      "N4": {
+       "value": -1
+      },
+      "O1": {
+       "value": "whole 15"
+      },
+      "O2": {
+       "value": 50
+      },
+      "O3": {
+       "value": 5
+      },
+      "O4": {
+       "value": -1
+      },
+      "P1": {
+       "value": "list 16"
+      },
+      "P2": {
+       "value": "anything"
+      },
+      "P3": {
+       "value": 1
+      },
+      "Q1": {
+       "value": "list 17"
+      },
+      "Q2": {
+       "value": "anything"
+      },
+      "Q3": {
+       "formula": "\"\""
+      },
+      "R1": {
+       "value": "list 18"
+      },
+      "R2": {
+       "value": 1
+      },
+      "R3": {
+       "formula": "\"1\""
+      },
+      "R4": {
+       "value": 2
+      },
+      "R5": {
+       "formula": "\"2\""
+      },
+      "R6": {
+       "value": true
+      },
+      "R7": {
+       "formula": "\"true\""
+      },
+      "R8": {
+       "value": "YES"
+      },
+      "R9": {
+       "value": 3
+      },
+      "S1": {
+       "value": "whole 19"
+      },
+      "S3": {
+       "formula": "\"\""
+      },
+      "S4": {
+       "value": 1
+      },
+      "T1": {
+       "value": "list 20"
+      },
+      "T3": {
+       "value": "a"
+      },
+      "U1": {
+       "value": "textLength 21"
+      },
+      "U3": {
+       "formula": "\"\""
+      },
+      "U4": {
+       "value": "a"
+      }
+     },
+     "validations": [
+      {
+       "range": "A2:A13",
+       "type": "list",
+       "formula1": "\"Yes,No,1,2.5,TRUE, spaced,1/2/2025\""
+      },
+      {
+       "range": "B2:B12",
+       "type": "whole",
+       "formula1": "1",
+       "formula2": "10"
+      },
+      {
+       "range": "C2:C5",
+       "type": "whole",
+       "formula1": "10",
+       "formula2": "1"
+      },
+      {
+       "range": "D2:D8",
+       "type": "decimal",
+       "operator": "notBetween",
+       "formula1": "1",
+       "formula2": "2"
+      },
+      {
+       "range": "E2:E4",
+       "type": "decimal",
+       "operator": "equal",
+       "formula1": "0.3"
+      },
+      {
+       "range": "F2:F8",
+       "type": "date",
+       "formula1": "DATE(2025,1,1)",
+       "formula2": "DATE(2025,1,31)"
+      },
+      {
+       "range": "G2:G6",
+       "type": "time",
+       "operator": "lessThan",
+       "formula1": "0.5"
+      },
+      {
+       "range": "H2:H10",
+       "type": "textLength",
+       "operator": "equal",
+       "formula1": "3"
+      },
+      {
+       "range": "I2:I4",
+       "type": "custom",
+       "formula1": "ISNUMBER(I2)"
+      },
+      {
+       "range": "J2:J5",
+       "type": "custom",
+       "formula1": "J2*1"
+      },
+      {
+       "range": "K2:K3",
+       "type": "custom",
+       "formula1": "$Z$1"
+      },
+      {
+       "range": "L2:L3",
+       "type": "custom",
+       "formula1": "$Z$1",
+       "allowBlank": false
+      },
+      {
+       "range": "M2:M2",
+       "type": "custom",
+       "formula1": "\"TRUE\""
+      },
+      {
+       "range": "N2:N4",
+       "type": "whole",
+       "formula1": "$Z$1",
+       "formula2": "10"
+      },
+      {
+       "range": "O2:O4",
+       "type": "whole",
+       "formula1": "$Z$1",
+       "formula2": "10",
+       "allowBlank": false
+      },
+      {
+       "range": "P2:P3",
+       "type": "list",
+       "formula1": "$Z$1:$Z$3"
+      },
+      {
+       "range": "Q2:Q3",
+       "type": "list",
+       "formula1": "$Z$1:$Z$3",
+       "allowBlank": false
+      },
+      {
+       "range": "R2:R9",
+       "type": "list",
+       "formula1": "$Y$1:$Y$5"
+      },
+      {
+       "range": "S2:S4",
+       "type": "whole",
+       "operator": "greaterThan",
+       "formula1": "0",
+       "allowBlank": false
+      },
+      {
+       "range": "T2:T3",
+       "type": "list",
+       "formula1": "\"a,b\"",
+       "allowBlank": false
+      },
+      {
+       "range": "U2:U4",
+       "type": "textLength",
+       "operator": "lessThan",
+       "formula1": "2",
+       "allowBlank": false
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "values",
+   "book": "values"
+  }
+ ],
+ "window": "A1:U13",
+ "sent": {
+  "values": "047aac2941041f8b8b392f7bc4d38a404613bab4f6208f81cfa3483a54f851bc"
+ },
+ "answers": {
+  "values": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "A2",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A3",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A4",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A5",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A6",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A7",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A8",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A9",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A10",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A11",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "A12",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "A13",
+       "validate list",
+       "operator between",
+       "Yes,No,1,2.5,TRUE, spaced,1/2/2025",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B5",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B6",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B7",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B8",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B9",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B10",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "B11",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B12",
+       "validate whole number",
+       "operator between",
+       "1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "C2",
+       "validate whole number",
+       "operator between",
+       "10",
+       "1",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "C3",
+       "validate whole number",
+       "operator between",
+       "10",
+       "1",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "C4",
+       "validate whole number",
+       "operator between",
+       "10",
+       "1",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "C5",
+       "validate whole number",
+       "operator between",
+       "10",
+       "1",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D2",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D4",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D5",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D6",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D7",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "D8",
+       "validate decimal",
+       "operator not between",
+       "1",
+       "2",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate decimal",
+       "operator equal",
+       "0.3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate decimal",
+       "operator equal",
+       "0.3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E4",
+       "validate decimal",
+       "operator equal",
+       "0.3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "F5",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "F6",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F7",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "F8",
+       "validated date",
+       "operator between",
+       "=DATE(2025,1,1)",
+       "=DATE(2025,1,31)",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "G2",
+       "validate time",
+       "operator less",
+       "12:00:00 PM",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G3",
+       "validate time",
+       "operator less",
+       "12:00:00 PM",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "G4",
+       "validate time",
+       "operator less",
+       "12:00:00 PM",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "G5",
+       "validate time",
+       "operator less",
+       "12:00:00 PM",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "G6",
+       "validate time",
+       "operator less",
+       "12:00:00 PM",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H2",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H3",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "H4",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H5",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H6",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "H7",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "H8",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H9",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "H10",
+       "validate text length",
+       "operator equal",
+       "3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "I2",
+       "validate custom",
+       "operator between",
+       "=ISNUMBER(I2)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "I3",
+       "validate custom",
+       "operator between",
+       "=ISNUMBER(I3)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "I4",
+       "validate custom",
+       "operator between",
+       "=ISNUMBER(I4)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "J2",
+       "validate custom",
+       "operator between",
+       "=J2*1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "J3",
+       "validate custom",
+       "operator between",
+       "=J3*1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "J4",
+       "validate custom",
+       "operator between",
+       "=J4*1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "J5",
+       "validate custom",
+       "operator between",
+       "=J5*1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "K2",
+       "validate custom",
+       "operator between",
+       "=$Z$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "L2",
+       "validate custom",
+       "operator between",
+       "=$Z$1",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "K3",
+       "validate custom",
+       "operator between",
+       "=$Z$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "L3",
+       "validate custom",
+       "operator between",
+       "=$Z$1",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "M2",
+       "validate custom",
+       "operator between",
+       "TRUE",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "N2",
+       "validate whole number",
+       "operator between",
+       "=$Z$1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "O2",
+       "validate whole number",
+       "operator between",
+       "=$Z$1",
+       "10",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "N3",
+       "validate whole number",
+       "operator between",
+       "=$Z$1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "O3",
+       "validate whole number",
+       "operator between",
+       "=$Z$1",
+       "10",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "N4",
+       "validate whole number",
+       "operator between",
+       "=$Z$1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "O4",
+       "validate whole number",
+       "operator between",
+       "=$Z$1",
+       "10",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "P2",
+       "validate list",
+       "operator between",
+       "=$Z$1:$Z$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "Q2",
+       "validate list",
+       "operator between",
+       "=$Z$1:$Z$3",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "P3",
+       "validate list",
+       "operator between",
+       "=$Z$1:$Z$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "Q3",
+       "validate list",
+       "operator between",
+       "=$Z$1:$Z$3",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "R2",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "R3",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "R4",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "R5",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "R6",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "R7",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "R8",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "R9",
+       "validate list",
+       "operator between",
+       "=$Y$1:$Y$5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "S2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "S3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "S4",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "T2",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "T3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "U2",
+       "validate text length",
+       "operator less",
+       "2",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "U3",
+       "validate text length",
+       "operator less",
+       "2",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "U4",
+       "validate text length",
+       "operator less",
+       "2",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}
