@@ -1,5 +1,6 @@
 # Conditional formats for xl.ps1 (bench/windows/cond.ts): rules made through the object model, what cells show by their
-# display format, and the rules each sheet lists. Dot-sourced by xl.ps1, whose Str, Cell and List it uses.
+# display format (with their number format for bench/windows/lines.ts), and the rules each sheet lists. Dot-sourced by
+# xl.ps1, whose Str, Cell and List it uses.
 
 # a rule as bench/coverage/cond/cases.ts describes it (CondMake); one with a style gets a red fill and a dark red bold font
 function CondMake($wb, $s) {
@@ -41,13 +42,16 @@ function CondMake($wb, $s) {
   }
 }
 
-# the read cells: [sheet, [[address, Range.Text, the display format's fill (BGR), its colour index, font colour, bold, italic]]]
-function CondLooks($wb, $reads) {
+# the read cells: [sheet, [[address, Range.Text, the display format's fill (BGR), its colour index, font colour, bold, italic]]],
+# with codes the cell's NumberFormat last
+function CondLooks($wb, $reads, $codes) {
   List ($reads | ForEach-Object {
       $ws = $wb.Worksheets.Item([string]$_[0])
       $cells = foreach ($c in $ws.Range([string]$_[1]).Cells) {
         $d = $c.DisplayFormat
-        List @((Str $c.Address($false, $false)), (Str ([string]$c.Text)), (Cell ([double]$d.Interior.Color)), (Cell ([double]$d.Interior.ColorIndex)), (Cell ([double]$d.Font.Color)), (Cell ([bool]$d.Font.Bold)), (Cell ([bool]$d.Font.Italic)))
+        $look = @((Str $c.Address($false, $false)), (Str ([string]$c.Text)), (Cell ([double]$d.Interior.Color)), (Cell ([double]$d.Interior.ColorIndex)), (Cell ([double]$d.Font.Color)), (Cell ([bool]$d.Font.Bold)), (Cell ([bool]$d.Font.Italic)))
+        if ($codes) { $look += @(Str ([string]$c.NumberFormat)) }
+        List $look
       }
       List @((Str $ws.Name), (List $cells))
     })
@@ -69,7 +73,7 @@ function CondRules($wb) {
 function Cond($wb, $s) {
   switch ($s.kind) {
     'make' { try { CondMake $wb $s; 'null' } catch { Err $_ } }
-    'looks' { CondLooks $wb $s.read }
+    'looks' { CondLooks $wb $s.read $s.codes }
     'rules' { CondRules $wb }
     default { throw "unknown cond step $($s.kind)" }
   }

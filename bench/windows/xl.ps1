@@ -276,6 +276,16 @@ function Step($xl, $wb, $s) {
         'null'
       } catch { Err $_ }
     }
+    # a number format, bold or a fill (BGR) set on a range: a column, a row or cells (bench/windows/lines.ts)
+    'format' {
+      try {
+        $rg = Rg $wb $s.sheet $s.range
+        if ($s.numberFormat) { $rg.NumberFormat = [string]$s.numberFormat }
+        if ($s.bold) { $rg.Font.Bold = $true }
+        if ($null -ne $s.fill) { $rg.Interior.Color = [double]$s.fill }
+        'null'
+      } catch { Err $_ }
+    }
     'hide' { (Rg $wb $s.sheet $s.range).EntireRow.Hidden = [bool]$s.hidden; 'null' }
     'hideColumns' { (Rg $wb $s.sheet $s.range).EntireColumn.Hidden = [bool]$s.hidden; 'null' }
     'filter' { [void](Rg $wb $s.sheet $s.range).AutoFilter([int]$s.field, [string]$s.criterion); 'null' }
