@@ -80,7 +80,7 @@ console.log(session.result().hash === session.result().hash) // → true
 session.close()
 ```
 
-`setNames` replaces the named ranges, `result()` returns the same shape as `compute`, `hash()` its values hash alone, `cells(sheet, range)` the cells of one rectangle in that shape (with each cell's own `style`), for a window over a sheet, and `close()` releases the book. A full `compute` of the edited book with `session.clock` gives the same hash as `session.result()`; the test suite checks this after each of 200 random edits.
+`setNames` replaces the named ranges, `result()` returns the same shape as `compute`, `hash()` its values hash alone, `cells(sheet, range)` the cells of one rectangle in that shape (with each cell's own `style`, `note` and `link`), for a window over a sheet, and `close()` releases the book. A full `compute` of the edited book with `session.clock` gives the same hash as `session.result()`; the test suite checks this after each of 200 random edits.
 
 A session also restructures its book and keeps its styles, so a host can hold the book in the session alone and save `book()` as a version (the session's own objects: do not modify them).
 
@@ -103,7 +103,7 @@ console.log(session.book().sheets[0])
 //   }
 ```
 
-`restructure(op)` takes the operations of [Structure operations](#structure-operations) and recomputes; besides `restructure`'s result it returns `changes`, the cells whose value differs from the one `mapCell` carried there, so an interface that moves its shown values by `mapCell` and applies `changes` is up to date. It builds the state again, at the cost of a cold computation (190 ms for the 3,400-row synthetic book). Styles change through the session and recompute nothing: a cell's `style` (or `format`, `meta`) through `setCells`, the style table through `setStyles`, column widths, row heights, row and column styles and formats and merged areas through `setLayout`; only a merged area added or removed over an array's spill range recomputes that array, and `setLayout` returns the changes.
+`restructure(op)` takes the operations of [Structure operations](#structure-operations) and recomputes; besides `restructure`'s result it returns `changes`, the cells whose value differs from the one `mapCell` carried there, so an interface that moves its shown values by `mapCell` and applies `changes` is up to date. It builds the state again, at the cost of a cold computation (190 ms for the 3,400-row synthetic book). Styles change through the session and recompute nothing: a cell's `style` (or `format`, `meta`, `note`, `link`) through `setCells`, the style table through `setStyles`, column widths, row heights, row and column styles and formats, merged areas and frozen panes through `setLayout`; only a merged area added or removed over an array's spill range recomputes that array, and `setLayout` returns the changes.
 
 ### The clock and volatile functions
 
@@ -406,7 +406,7 @@ console.log(last.ok, last.code) // → false last_sheet
 
 The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`) and `moveSheet` (`sheet`, `before`), and over tables `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](docs/tables.md)). Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }` with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, `History` among them, or one another sheet has), `last_sheet`, `merged` (a move cutting a merged area, a copy landing on part of one) `filtered` (a copy without the rows a filter hid, pasted over hidden rows of a filtered sheet) `array` (part of an old-kind array formula's area would change), `table` (rows or columns into two tables at once, or deleted from two tables unless both go whole, a header row deleted alone) or `table_name`. A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
 
-A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. The rules, and how they were checked against Excel on 317 books, are in [docs/structure.md](docs/structure.md).
+A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. A cell's note and hyperlink go with the cell as its style does, and frozen panes keep the rows and columns before their split. The rules, and how they were checked against Excel on 317 books, are in [docs/structure.md](docs/structure.md).
 
 ### Reading and writing xlsx
 
@@ -428,7 +428,26 @@ const values = await readXlsx((await writeXlsx(book, { result: compute(book), mo
 console.log(values.book.sheets[0].cells.C2) // → { value: 2 }
 ```
 
-Both functions return promises: the archive is inflated and deflated by the platform's streams. Styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, merged areas, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
+Both functions return promises: the archive is inflated and deflated by the platform's streams. Styles, number formats (built-in ones by their number), widths, heights, hidden rows and columns, merged areas, notes, hyperlinks, frozen panes, names, tables, a sheet's filter mode, the date system, iterative calculation and the book's locale go both ways.
+
+```js
+import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
+
+const book = {
+  sheets: [{
+    name: 'Sales',
+    cells: {
+      A1: { value: 'Region', note: { author: 'Ann', text: 'From the CRM' } },
+      B1: { value: 'Report', link: { url: 'https://example.com/report', tooltip: 'Open the report' } },
+    },
+    frozen: { rows: 1 },
+  }],
+}
+const back = (await readXlsx((await writeXlsx(book)).data)).book.sheets[0]
+console.log(back.cells.A1.note, back.frozen) // → { author: 'Ann', text: 'From the CRM' } { rows: 1 }
+```
+
+A thread of comments, as Excel 365 makes them, is read as a note: its first author, and every comment's text with the replies' authors. [docs/xlsx.md](docs/xlsx.md) lists what is read, written and reported, and how it was checked against Excel.
 
 ### Computing without blocking
 
@@ -469,7 +488,7 @@ From `xlcalc`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range)`, `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range)` (with each cell's `style`, `note` and `link`), `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, message }` by the rules of a book of `opts.locale` |
@@ -589,9 +608,9 @@ Notes on semantics:
   - `WEEKNUM` with an invalid return type is `#NUM!`, as Excel answers it alone; inside one generated book of the random check Excel 16.113 gave a number for `DAY(WEEKNUM(40977,1E+3)<>2.5)` (1, on two runs).
 - **Shown text.** Widths are those of Excel for Mac with the default font, Calibri 11; a cell's own font, its indent, wrapping and rotation are not taken into account, characters outside Latin, Cyrillic, digits and common signs count as a digit, and Excel for Windows lays text out at other widths, so near the edge of a column it can show `#` where the engine shows the number or the other way round. Locale tags other than `[$-409]`, `[$-419]`, `[$-F800]` and `[$-F400]`, calendars and numeral systems (`[$-x-sysdate]`, `[DBNum1]`, `B2`) are not read. [docs/formats.md](docs/formats.md) has the details.
 - **Syntax.** Stored formulas use English function names and separators (no `;` or decimal commas; text typed in another language goes through `toInvariant`), no R1C1 references, no references to other workbooks. Functions outside the whitelist (`INDIRECT`, `OFFSET`, `LAMBDA`, …) give `#NAME?`.
-- **Structure operations and styles.** Whole rows or columns copied onto part of a merged area are refused, where Excel pastes them. Excel's fill handle fills the hidden rows of a filtered sheet, while `copyRange` fills only the visible ones, as Fill Down does. A book has no outlines, conditional formats, validation or comments. Styles are kept and moved, not computed: `compute` does not return them.
+- **Structure operations and styles.** Whole rows or columns copied onto part of a merged area are refused, where Excel pastes them. Excel's fill handle fills the hidden rows of a filtered sheet, while `copyRange` fills only the visible ones, as Fill Down does. A book has no outlines, conditional formats or validation. Styles, notes, hyperlinks and frozen panes are kept and moved, not computed: `compute` does not return them, `Session.cells` does. A hyperlink's place is not rewritten when its sheet is renamed or rows move, as Excel leaves it.
 - **Output precision.** Values in the result and in the hash are rounded to 15 significant digits, as Excel shows them; inside, computation keeps full double precision.
-- **xlsx.** A file's conditional formats, validation, comments, pictures, charts and pivot tables are not read, and each is reported in `issues`. Of a filter the book keeps the filter mode alone: an autofilter's range and criteria are reported, and a filtered sheet is written with criteria that every row meets. Formulas of the old kind are read as the dynamic formulas Excel 365 shows for them, with `@` where it takes one value of a range; the intersection operator is not read. Every formula is written as a dynamic array formula, which Excel 2019 and older show as an array formula. The East Asian date formats 50 to 58 are read as the code Excel for Mac en-US shows for them, `m/d/yy`, where Excel for Windows shows its short date in each locale. [docs/xlsx.md](docs/xlsx.md) has the full list.
+- **xlsx.** A file's conditional formats, validation, pictures, charts and pivot tables are not read, and each is reported in `issues`. A thread of comments is read and written as a note, without its dates and state; split panes that are not frozen are not read. Of a filter the book keeps the filter mode alone: an autofilter's range and criteria are reported, and a filtered sheet is written with criteria that every row meets. Formulas of the old kind are read as the dynamic formulas Excel 365 shows for them, with `@` where it takes one value of a range; the intersection operator is not read. Every formula is written as a dynamic array formula, which Excel 2019 and older show as an array formula. The East Asian date formats 50 to 58 are read as the code Excel for Mac en-US shows for them, `m/d/yy`, where Excel for Windows shows its short date in each locale. [docs/xlsx.md](docs/xlsx.md) has the full list.
 
 ## Development
 
