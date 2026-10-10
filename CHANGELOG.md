@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.1 (2026-10-10)
+
+Internal release; not published to npm. Running aggregates without rereading, a smaller graph of range dependencies, and tests that pass on every supported Node under Linux.
+
+Changed:
+
+- `AVERAGE`, `COUNTA` and `COUNTIF` of one range share prefixes as `SUM`, `COUNT`, `MIN` and `MAX` do, read cell by cell without making the range whole: a running `AVERAGE` over 34,000 rows opens in a thread of 384 MB in 0.28 s instead of 6.0 s, a running `COUNTA` in 0.28 s instead of 1.7 s. `AVERAGE` keeps its compensated sum and its exact fallback, so values and hashes are the same; one such range larger than `limits.cells` is computed rather than refused.
+- Formulas over overlapping ranges share interval vertices in the dependency graph instead of an edge from every formula they read: 1,024 running ranges keep under 32,768 edges where they had 524,800. The order of evaluation and every value are the same.
+- A large batch of formulas drops the running aggregates over them once, not once per formula.
+
+Fixed:
+
+- The tests passed only on the Mac: on Linux, and on Node 20 and 22, the round trip and filter files of the xlsx subpath failed their check against the files Excel saw (the platform's deflate writes other bytes, so a file is now identified by its parts), two known differences of `RATE` failed their pins by their last digits (a pin is now compared within Excel's tolerance), and Node 20's `TextDecoder` read windows-1252 otherwise than the standard. They pass on Node 20.19, 22, 24 and 26 under Linux. A tag's CI pipeline only packs the package, its commit having been tested when it was pushed.
+
 ## 0.8.0 (2026-10-10)
 
 Internal release; not published to npm. A locale is one file, and lookups and statistics measured at their edges in Excel.
