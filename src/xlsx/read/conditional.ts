@@ -7,7 +7,7 @@
  */
 import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, IconSetName } from '../../contract.js'
 import { CELL_IS, ICON_SETS, PERIODS } from '../../cond/check.js'
-import { defaultFormula, originOf } from '../../cond/rules.js'
+import { defaultFormula, originOf, rangeText } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
@@ -47,11 +47,12 @@ function split(tail: string): { blocks: Element[]; rest: string } {
   return { blocks, rest }
 }
 
-/** The ranges of a `sqref`, those the model takes (`$` dropped). */
+/** The ranges of a `sqref`, those the model takes, as the model writes them (`A1:A1048576`, Excel's whole column, is `A:A`). */
 function ranges(sqref: string, ctx: Context): string[] {
   const out: string[] = []
   for (const r of sqref.replaceAll('$', '').trim().split(/\s+/)) {
-    if (r && parseRange(r)) out.push(r)
+    const x = r ? parseRange(r) : null
+    if (x) out.push(rangeText(x))
     else if (r) ctx.issues.add('conditionalFormat', 'a range of a conditional format outside the sheet is left out', { sheet: ctx.sheet, cell: r })
   }
   return out
@@ -129,7 +130,10 @@ function rule(e: Element, sqref: string[], x14: boolean, ctx: Context): Read | n
       }
       case 'aboveAverage': {
         const sd = Number(a.stdDev ?? 0)
-        return read(withStyle({ ...base, type, ...(!flag(a.aboveAverage, true) ? { below: true } : {}), ...(flag(a.equalAverage) ? { equal: true } : {}), ...(sd >= 1 && sd <= 3 ? { stdDev: Math.trunc(sd) } : {}) }))
+        const equal = flag(a.equalAverage)
+        // Excel keeps equal and drops the deviations of a rule with both (the set `cond/files`)
+        if (equal && sd) ctx.issues.add('conditionalFormat', 'an average rule with both equal and standard deviations is read with equal alone, as Excel keeps it', { sheet: ctx.sheet, cell: where })
+        return read(withStyle({ ...base, type, ...(!flag(a.aboveAverage, true) ? { below: true } : {}), ...(equal ? { equal: true } : sd >= 1 && sd <= 3 ? { stdDev: Math.trunc(sd) } : {}) }))
       }
       default:
         return read(withStyle({ ...base, type, ...own } as ConditionalFormat))

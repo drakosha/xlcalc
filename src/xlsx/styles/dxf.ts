@@ -9,6 +9,7 @@ import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
+import { BUILTIN } from './numfmt.js'
 import { border } from './read.js'
 
 export interface Dxf {
@@ -67,10 +68,14 @@ export function readDxf(e: Element, p: Palette): Dxf {
   }
   const nf = element(b, 'numFmt')
   if (nf) {
+    // a dxf's code is what it shows: Excel saves `0.00%` with the id 14 (the set `cond/files`); the id counts only
+    // where the code is that built-in format's own
     const a = attributes(nf.attrs)
     const id = Number(a.numFmtId)
-    if (a.formatCode !== undefined && !(id < 164 && isBuiltin(id))) style.format = decodeXml(a.formatCode)
-    else if (isBuiltin(id)) style.format = id
+    const code = a.formatCode === undefined ? undefined : decodeXml(a.formatCode)
+    if (code === undefined) {
+      if (isBuiltin(id)) style.format = id
+    } else style.format = isBuiltin(id) && id !== 0 && BUILTIN[id] === code ? id : code
   }
   if (element(b, 'alignment')) lost.push('alignment')
   if (element(b, 'protection')) lost.push('protection')

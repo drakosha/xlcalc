@@ -148,6 +148,7 @@ function checkRule(v: unknown, p: string): ConditionalFormat {
     case 'aboveAverage':
       for (const k of ['below', 'equal']) if (o[k] !== undefined) checkBoolean(o[k], `${p}.${k}`)
       if (o.stdDev !== undefined) checkNumber(o.stdDev, `${p}.stdDev`, 1, 3, true)
+      if (o.stdDev !== undefined && o.equal === true) throw new InputError(`${p}.equal`, 'a rule over standard deviations has no equal (Excel keeps one or the other)')
       break
     case 'colorScale': {
       const pts = array(o.points, `${p}.points`, 'an array of two or three points such as [{ value: { type: "min" }, color: "#F8696B" }, { value: { type: "max" }, color: "#63BE7B" }]')
