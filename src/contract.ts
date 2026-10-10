@@ -879,6 +879,91 @@ export interface CellChange extends CellRef, Partial<CellDisplay> {
   spillOf?: string
 }
 
+/** `Session.getViewport`'s options. */
+export interface ViewportOptions {
+  /** Each formula also as the book's locale shows it (`ViewportCell.formulaLocal`); false by default. */
+  formulaLocal?: boolean
+  /** Each cell with an error also with its reason and the cell it began in (`ViewportCell.issue`); false by default. */
+  diagnostics?: boolean
+  /** The most cells a window gives, 20,000 by default: of a larger one, its first rows that fit (`Viewport.truncated`). */
+  maxCells?: number
+}
+
+/**
+ * A cell of a window (`Session.getViewport`): its value as `result()` gives it, with the cell's whole look resolved, its
+ * style and number format as rows and columns give them, what its conditional formats show, its note and link.
+ */
+export interface ViewportCell extends Partial<CellDisplay> {
+  value: CellValue
+  /** The canonical formula text, as `CellResult.formula`. */
+  formula?: string
+  /** With `formulaLocal`: the formula as Excel shows it in the book's locale (`Range.FormulaLocal` without `=`), inside its table as Excel shows it there (`[@Qty]`). */
+  formulaLocal?: string
+  spill?: string
+  spillFill?: CellValue
+  spillOf?: string
+  /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`). */
+  array?: string
+  meta?: JsonValue
+  /** The cell's own style. */
+  style?: CellStyle
+  /** The style the cell shows: its own, else its row's, else its column's. Equal styles of one window are one object. */
+  effectiveStyle?: CellStyle
+  /** The number format the cell shows by, as a code: its own, else its row's, else its column's, a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU). */
+  numberFormat?: string
+  /** Where `numberFormat` comes from. */
+  numberFormatSource?: 'cell' | 'row' | 'column'
+  /** What the sheet's conditional formats give the cell by the current values; with a number format of theirs, `text` and `color` show the value by it. */
+  appearance?: ConditionalLook
+  note?: CellNote
+  link?: CellLink
+  /** With `diagnostics`, on a cell with an error: as `Session.getCellIssue`. */
+  issue?: CellIssueDetail
+}
+
+/** A column of a window: its width as `ColumnInput.width`, Excel's default where it has none. */
+export interface ViewportColumn {
+  width: number
+  hidden?: true
+}
+
+/** A row of a window: its height in points, Excel's default (15) where it has none. */
+export interface ViewportRow {
+  height: number
+  hidden?: true
+}
+
+/** What a grid needs to draw a window of a sheet (`Session.getViewport`). */
+export interface Viewport {
+  /** The rectangle given (`B2:D9`): the one asked for, or its first rows when it holds more than `maxCells` cells. */
+  range: string
+  /** The window asked for held more than `maxCells` cells: `range` is the part given. */
+  truncated: boolean
+  /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, a look of a conditional format, a note or a link too. */
+  cells: Record<string, ViewportCell>
+  /** The columns of `range`, left to right. */
+  columns: ViewportColumn[]
+  /** The rows of `range`, top to bottom. */
+  rows: ViewportRow[]
+  /** The merged areas that meet `range`, whole. */
+  merges: string[]
+  /** Where the sheet's cells end, as `Session.extent`. */
+  extent: SheetExtent
+}
+
+/**
+ * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as `result().issues`
+ * gives them, and `origin`, the cell where the error began, following the cells its reason names (`from 'S'!A2`) to one
+ * whose error is its own; in a cycle, the first cell of the cycle the way reaches.
+ */
+export interface CellIssueDetail {
+  error: ErrorCode
+  reason: string
+  check?: CheckCode
+  at?: number
+  origin: CellRef
+}
+
 export interface ExplainOptions {
   /** Depth over precedents, 3 by default. */
   depth?: number
@@ -886,6 +971,8 @@ export interface ExplainOptions {
   maxNodes?: number
   /** Expand ranges into their non-empty cells (by default a range is a single node). */
   expand?: boolean
+  /** How many cells past `depth` the way from an error to the cell it began in goes on, 64 by default. */
+  errorDepth?: number
 }
 
 export interface ExplainNode {
@@ -897,6 +984,11 @@ export interface ExplainNode {
   spillOf?: string
   /** For a range: the number of non-empty cells. */
   cells?: number
+  /**
+   * A cell with an error: the cell the error began in (`'Sheet'!A2`, the node's own `ref` when it began there), as
+   * `CellIssueDetail.origin`. The way there is in the tree past `depth` too, and through a range by the cell it came from.
+   */
+  origin?: string
   children: ExplainNode[]
 }
 
@@ -1210,6 +1302,14 @@ export interface Session {
    * look changed: a host reads its window again after an edit to a sheet with rules.
    */
   cells(sheet: string, range: string | string[]): Record<string, CellView>
+  /**
+   * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
+   * empty ones with a style of their row or column too, the widths and heights of its lines and the merged areas that meet
+   * it (`Viewport`). It costs what the window holds, as `cells`, not the book.
+   */
+  getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
+  /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
+  getCellIssue(sheet: string, cell: string): CellIssueDetail | null
   /** The data validation of a cell (`CellValidation`), its list computed now; null when no rule is over the cell. */
   validation(sheet: string, cell: string): CellValidation | null
   /**
@@ -1303,6 +1403,9 @@ export interface AsyncSession {
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
   /** As `Session.cells`; from a thread only the rectangles come back, in one call. */
   cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.getViewport`; from a thread the window comes back in one call, its equal styles still one object each. */
+  getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
+  getCellIssue(sheet: string, cell: string): Promise<CellIssueDetail | null>
   validation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
   result(opts?: CalcOptions): Promise<ComputeResult>
