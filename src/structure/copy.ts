@@ -16,6 +16,7 @@ import { carryNames, shiftRect, within } from './move.js'
 import { arrayRefusal, copiedCells, relocated } from './arrays.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { pasteValidations } from '../validation/structure.js'
 
 /** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
 export function copyTransform(dr: number, dc: number): Transform {
@@ -104,6 +105,7 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
     const carried = fk === tk ? [] : carryNames(book.names, formulas, from, to, (ref) => rewriteFormula(ref, null, null, repoint, names))
     out.names = carried.length ? [...book.names, ...carried] : book.names
   }
+  pasteValidations(source, out, paste, null, names)
   pasteLayout(source, out, paste)
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
   return { ok: true, book: out, mapCell }
