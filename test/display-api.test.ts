@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
-import { compute, displayValue, engine, InputError, LOCALES } from '../src/index.js'
+import { compute, displayValue, engine, entryWidth, fitColumns, InputError, LOCALES } from '../src/index.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
 
@@ -70,8 +70,24 @@ describe('displayValue', () => {
     expect(engine.displayValue('abc', { format: '"<"@">"' })).toEqual({ text: '<abc>' })
   })
 
-  it('a column of the default width', () => {
-    expect([displayValue(12345678).text, displayValue(123456789).text]).toEqual(['12345678', '1.23E+08'])
+  it('without a width the width is not limited: General keeps its digits, no number turns into #', () => {
+    expect(displayValue(46096, { format: 'dd.mm.yyyy' })).toEqual({ text: '15.03.2026' })
+    expect([displayValue(123456789).text, displayValue(1 / 3).text, displayValue(1234567890123456).text]).toEqual(['123456789', '0.333333333', '1.23457E+15'])
+  })
+
+  it("a column of the default width, given as xlsx stores it, narrows as before", () => {
+    const width = 8.83203125
+    expect([displayValue(12345678, { width }).text, displayValue(123456789, { width }).text]).toEqual(['12345678', '1.23E+08'])
+    expect(displayValue(46096, { format: 'dd.mm.yyyy', width }).text).toBe('#########')
+  })
+
+  it('entryWidth, fitColumns and the results keep their own widths: the default one without a width', () => {
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 46096, format: 'dd.mm.yyyy' }, B1: { value: 123456789 } } }] }
+    const r = compute(book, { clock })
+    expect([r.sheets[0].cells.A1.text, r.sheets[0].cells.B1.text]).toEqual(['#########', '1.23E+08'])
+    expect(fitColumns(book, r, 'S', 'A:B')).toEqual({ A: 10.1640625, B: 10.1640625 })
+    expect(entryWidth(1234567890)).toBe(11.1640625)
+    expect(entryWidth(1234567890, { width: 9 })).toBeUndefined()
   })
 
   it('checks its input', () => {

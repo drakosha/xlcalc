@@ -77,12 +77,12 @@ export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): stri
 
 /**
  * A value as a cell shows it without a book (a cell being edited, say): by `format` (General without one), in
- * `locale` and `dateSystem`, in a column of `width` (the default width without one), as `CellResult.text` and
- * `color` show it.
+ * `locale` and `dateSystem`, in a column of `width` (no limit without one: a value is not narrowed to a column it was
+ * not given), as `CellResult.text` and `color` show it.
  */
 export function displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay {
   const o = checkDisplayOptions(opts)
-  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, room(columnPoints(o.width)))
+  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, o.width === undefined ? Infinity : room(columnPoints(o.width)))
 }
 
 /** The contract implementation as one object. */

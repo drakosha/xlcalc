@@ -19,13 +19,15 @@ interface Shown {
 
 const SHORT_MONTHS: [RegExp, string][] = [[/фев(?!р)/g, 'февр'], [/мар(?!т)/g, 'март'], [/июн(?!ь)/g, 'июнь'], [/июл(?!ь)/g, 'июль'], [/сен(?!т)/g, 'сент'], [/ноя(?!б)/g, 'нояб']]
 const lower = (t: string) => t.toLowerCase()
+/** Excel's default width as xlsx stores it (8 digits and the padding): `displayValue` without a width has no limit. */
+const DEFAULT_WIDTH = 8.83203125
 
 /**
  * Why a case shows otherwise in Excel for Mac: where its regional data part from Windows's, the engine follows Windows
  * (decision 22). Each reason with the test of the cases it covers; a rule that covers no case fails.
  */
 const MAC_SHOWN: readonly [string, (s: Shown) => boolean][] = [
-  ['Excel for Mac shows the built-in short date by number as `m/d/yy` in en-US (`1/31/25`); the engine as Windows, `m/d/yyyy` (`1/31/2025`)', (s) => s.locale === 'en-US' && s.c.numFmtId !== undefined && s.mac.code !== undefined && typeof s.c.cell.value === 'number' && displayValue(s.c.cell.value, { format: s.mac.code, locale: s.locale, width: s.c.width }).text === s.mac.text],
+  ['Excel for Mac shows the built-in short date by number as `m/d/yy` in en-US (`1/31/25`); the engine as Windows, `m/d/yyyy` (`1/31/2025`)', (s) => s.locale === 'en-US' && s.c.numFmtId !== undefined && s.mac.code !== undefined && typeof s.c.cell.value === 'number' && displayValue(s.c.cell.value, { format: s.mac.code, locale: s.locale, width: s.c.width ?? DEFAULT_WIDTH }).text === s.mac.text],
   ['Excel for Mac writes ru-RU month names in lower case (`январь`); the engine with a capital, as Windows (`Январь`)', (s) => s.mac.text !== s.engine.text && lower(s.mac.text) === lower(s.engine.text)],
   ['a ru-RU month name with a capital takes more room: where Excel for Mac\'s lower-case name just fits, the engine\'s does not', (s) => /^#+$/.test(s.engine.text) && typeof s.c.cell.value === 'number' && lower(displayValue(s.c.cell.value, { format: formatted(s.c).format, locale: s.locale, width: 100 }).text) === lower(s.mac.text)],
   ['Excel for Mac writes ru-RU short month names `февр`, `март`, `июнь`, `июль`, `сент`, `нояб`; the engine three letters, as Windows', (s) => SHORT_MONTHS.reduce((t, [re, x]) => t.replace(re, x), lower(s.engine.text)) === lower(s.mac.text)],
@@ -70,7 +72,7 @@ for (const set of DISPLAY_SETS) {
       const off = set.cases.flatMap((c) => {
         if (c.cell.formula !== undefined || (c.span ?? 1) > 1) return []
         const value = c.cell.value === undefined || (typeof c.cell.value === 'object' && c.cell.value !== null) ? null : c.cell.value
-        const shown = displayValue(value, { format: formatted(c).format, locale: set.locale, width: c.width })
+        const shown = displayValue(value, { format: formatted(c).format, locale: set.locale, width: c.width ?? DEFAULT_WIDTH })
         if (sameShown(set.answers[c.id], shown, value) || macRule({ c, locale: set.locale, mac: set.answers[c.id], engine: shown })) return []
         return [`${c.id}: Excel ${JSON.stringify(set.answers[c.id])}, displayValue ${JSON.stringify(shown)}`]
       })
