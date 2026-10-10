@@ -86,6 +86,20 @@ const HEAP_PER_SPILLED = 1024
 /** The part of a thread's heap the range caches of its books may hold together (`docs/cache.md`). */
 const CACHE_SHARE = 1 / 4
 
+/** The part of a thread's heap the histories of its sessions (`Session.undo`) hold together by default. */
+const UNDO_SHARE = 1 / 8
+
+/**
+ * The budget of a session's history in a thread of `maxHeapMb` where the session gives none: its share of an eighth of
+ * the heap among the sessions a thread holds (`maxSessionsPerThread`, else the pool's sessions over its threads, else
+ * one), in whole megabytes, one at least. Without `maxHeapMb`, the session's own default.
+ */
+function undoMb(o: CalcPoolOptions): number | undefined {
+  if (!o.maxHeapMb) return undefined
+  const sessions = o.maxSessionsPerThread ?? (o.maxSessions ? Math.ceil(o.maxSessions / (o.threads ?? 2)) : 1)
+  return Math.max(1, Math.floor((o.maxHeapMb * UNDO_SHARE) / sessions))
+}
+
 /** The limits of a pool's computations: with `maxHeapMb`, `cells` and `spill` by the heap where the host gives none. */
 function poolLimits(o: CalcPoolOptions): CalcLimits | undefined {
   if (!o.maxHeapMb) return o.limits
@@ -99,6 +113,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   const perThread = o.maxSessionsPerThread ?? Infinity
   const snapshotEvery = o.snapshotEvery ?? 64
   const limits = poolLimits(o)
+  const historyMb = undoMb(o)
   const jobs: Task[] = []
   const recs = new Set<Rec>()
   let ids = 0
@@ -404,6 +419,9 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool holds ${o.maxSessions} sessions already`)
       const { signal, timeoutMs, rest } = splitCall<SessionOptions>(sopts)
       const opts = { ...rest } as SessionOptions & { clock?: Clock }
+      // a session without a budget of its own for its history takes its share of the thread's heap; wrong input stays for the thread to refuse
+      const u = opts.undo as unknown
+      if (historyMb !== undefined && (u === undefined || (typeof u === 'object' && u !== null && (u as { maxMb?: unknown }).maxMb === undefined))) opts.undo = { ...(u as object), maxMb: historyMb }
       const slot = [...slots].sort((a, b) => a.sessions.size - b.sessions.size || a.queue.length - b.queue.length)[0]
       const given = opts.clock
       delete opts.clock

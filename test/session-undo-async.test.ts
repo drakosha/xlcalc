@@ -108,6 +108,42 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
     }
   }, 120_000)
 
+  it("a session in a pool with maxHeapMb keeps its share of the heap by default: 8 MB of 384 among 6 sessions; its own maxMb wins", async () => {
+    // 20,000 rows of 10 values: a step that deletes 1,000 of them keeps about 1.2 MB, one of 4,000 about 5 MB
+    const cells: BookInput['sheets'][number]['cells'] = {}
+    for (let r = 1; r <= 20_000; r++) for (let c = 0; c < 10; c++) cells[`${'ABCDEFGHIJ'[c]}${r}`] = { value: r * 10 + c }
+    const big = (): BookInput => ({ sheets: [{ name: 'S', cells: { ...cells } }] })
+    const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 384, maxSessionsPerThread: 6, snapshotEvery: 1 })
+    calcs.push(calc)
+    const [s, own] = [await calc.openSession(big(), o), await calc.openSession(big(), { ...o, undo: { maxMb: 64 } })]
+    const y = openSession(big(), { ...o, undo: { maxMb: 8 } })
+    const counts: number[] = []
+    for (const count of [1000, 1000, 1000, 1000, 4000]) {
+      const op = { op: 'deleteRows', sheet: 'S', row: 1, count } as const
+      await s.restructure(op)
+      await own.restructure(op)
+      y.restructure(op)
+      expect(s.history).toEqual(y.history)
+      counts.push(s.history.undo)
+      // what the snapshot taken after the call holds: within 8 MB by the estimate
+      const r = [...x.recs].find((rec) => rec.sid === Math.min(...[...x.recs].map((z) => z.sid)))!
+      const kept = JSON.parse((r.snapshot.history as { json: string }).json) as { undo: { size: number }[] }
+      expect(kept.undo.reduce((n, step) => n + step.size, 0)).toBeLessThanOrEqual(8 * 2 ** 20)
+    }
+    // the oldest steps went when a large one came
+    expect(counts).toEqual([1, 2, 3, 4, 3])
+    expect(own.history).toEqual({ undo: 5, redo: 0 })
+    for (let k = 0; k < 3; k++) {
+      expect((await s.undo())!.call).toBe('restructure')
+      y.undo()
+      expect(await s.hash()).toBe(y.hash())
+    }
+    expect(await s.undo()).toBeNull()
+    expect(await s.book()).toEqual(y.book())
+    // the book after the first two deletes, of 1,000 rows each
+    expect(Object.keys((await s.book()).sheets[0].cells)).toHaveLength(180_000)
+  }, 120_000)
+
   it('sessions that take turns on a full thread keep their histories', async () => {
     const calc = await pool({ threads: 1, maxSessionsPerThread: 1 })
     calcs.push(calc)
