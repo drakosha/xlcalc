@@ -12,6 +12,7 @@ import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { compute, displayValue, type CellValue } from '../src/index.js'
 import { CLOCK, displayBook, formatted, sameShown } from './display-cases.js'
 import { winFiles } from './excel-win-cases.js'
+import './locales.js'
 
 /** The reasons that covered a case, filled as the sets run. */
 const used = new Set<string>()

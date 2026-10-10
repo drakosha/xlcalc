@@ -3,7 +3,8 @@
  * order, large arrays kept as fills (results, hash, cost).
  */
 import { describe, expect, it } from 'vitest'
-import { compute, ruRU, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { compute, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { canonical, parse } from '../src/syntax.js'
 import { spillBook } from './session-spill-edits.js'
 

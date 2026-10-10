@@ -14,6 +14,7 @@ import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { spillBook } from './session-spill-edits.js'
 import { extentOf } from './sheet-extent.js'
+import './locales.js'
 
 /** A synchronous session behind the asynchronous API, so that one test covers the three ways. */
 function wrapped(s: Session): AsyncSession {

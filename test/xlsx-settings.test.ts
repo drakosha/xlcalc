@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { compute, type BookInput } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
+import './locales.js'
 
 const text = async (data: Uint8Array, name: string) => (await openArchive(data).text(name))!
 const clock = { now: '2026-10-07T12:00:00Z', seed: 7 }

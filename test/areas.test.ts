@@ -4,7 +4,8 @@
  * reads the sheets between its ends in the book's order.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, restructure, ruRU, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { compute, restructure, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 
 const canon = (f: string) => {
   const r = validateFormula(f)

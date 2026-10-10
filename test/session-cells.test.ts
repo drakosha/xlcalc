@@ -13,6 +13,7 @@ import { synthBook } from '../src/synth.js'
 import { BOOKS, CLOCK } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
+import './locales.js'
 
 /** The slice of a result over a rectangle, with the cells' own styles, notes, links and old-kind array areas from the book. */
 function slice(r: ComputeResult, book: BookInput, sheet: string, range: string): Record<string, CellView> {

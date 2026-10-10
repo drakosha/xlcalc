@@ -6,7 +6,8 @@
 import { describe, expect, it } from 'vitest'
 import { REFUSED as HELD_REFUSED } from '../bench/coverage/sets/let-held.js'
 import { REFUSED } from '../bench/coverage/sets/let.js'
-import { compute, openSession, restructure, ruRU, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { compute, openSession, restructure, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { canonical, parse, type Ast } from '../src/syntax.js'
 import { engineFormula } from './excel-cases.js'
 

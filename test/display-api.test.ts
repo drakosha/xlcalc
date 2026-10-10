@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
 import { compute, displayValue, engine, InputError, LOCALES } from '../src/index.js'
+import './locales.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
 

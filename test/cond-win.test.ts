@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import type { CondSet } from '../bench/coverage/cond/cases.js'
 import { checkCondSets, condSets, PIXEL_HASHES, pinnedCases, type Known } from './cond-excel.js'
 import { COND_KNOWN } from './cond-excel.test.js'
+import './locales.js'
 
 export const WIN_KNOWN: Known = {
   // the same as on the Mac: the bar lengths Excel drops, the order after a row deletion, a colour at an exact fraction

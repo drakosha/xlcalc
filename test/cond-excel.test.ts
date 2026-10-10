@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CondSet } from '../bench/coverage/cond/cases.js'
 import { checkCondSets, condSets, pinnedCases, type Known } from './cond-excel.js'
+import './locales.js'
 
 /** Excel drops the lengths of an Excel 2010 bar of 5 and 95 percent, which then read as the format's defaults, 10 and 90. */
 const LENGTHS = 'Excel saves the Excel 2010 bar of lengths 5 and 95 without them: they read as 10 and 90'

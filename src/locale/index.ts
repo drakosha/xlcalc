@@ -1,73 +1,32 @@
 /**
  * Locales of formula text: typing and showing formulas the way Excel does in another language, while books
  * keep the invariant text. `toLocal` shows a stored formula, `toInvariant` reads typed text back, and
- * `validateLocalFormula` checks typed text with positions in it; their messages are in the locale's language.
+ * `validateLocalFormula` checks typed text with positions in it; their messages are in the locale's language. Each
+ * takes the tag of a loaded locale or a locale object, which needs no loading.
  */
 import type { ValidateContext, ValidateResult } from '../contract.js'
-import { checkString, checkValidateContext, InputError } from '../input.js'
+import { checkString, checkValidateContext } from '../input.js'
 import { FormulaError, parse, sheetKey, tokenize, validate, type Tok } from '../syntax.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
-import { RU_RU } from '../locales/ru-RU.js'
-import { ERROR_LITERALS } from './lex.js'
+import { checkLocaleArg } from './load.js'
 import { say } from './messages.js'
 import { sides, translate, type Fail, type Sides, type Translated } from './translate.js'
 import type { Locale, Translation } from './types.js'
 
 export type { Locale, Translation } from './types.js'
 
-/** en-US's and ru-RU's formula text by name; every locale's is in `LOCALES` by tag. */
-export const enUS: Locale = EN_US.text
-export const ruRU: Locale = RU_RU.text
-
-const WORD = /^[\p{L}_][\p{L}\p{N}_.]*$/u
-// characters that start or end other pieces of a formula, or that a name holds (`?`); `:` and `\` only inside array
-// constants (ru-RU: `{1;2:3;4}`)
-const RESERVED = /[\p{L}\p{N}\s"'#(){}[\]!$+\-*/^&=<>%_@?]/u
-
-function separator(loc: Record<string, unknown>, key: string, inArrays: boolean): string {
-  const v = checkString(loc[key], `locale.${key}`)
-  if (v.length !== 1 || RESERVED.test(v) || (!inArrays && (v === ':' || v === '\\'))) throw new InputError(`locale.${key}`, `expected one character that has no other meaning in a formula, got ${JSON.stringify(v)}`)
-  return v
-}
-
-function words(v: unknown, path: string, keys: readonly string[] | null, rule: RegExp, expected: string): void {
-  if (typeof v !== 'object' || v === null || Array.isArray(v)) throw new InputError(path, 'expected an object')
-  const seen = new Map<string, string>()
-  for (const [k, w] of Object.entries(v)) {
-    if (keys && !keys.includes(k)) throw new InputError(path, `unknown key ${JSON.stringify(k)} (expected ${keys.join(', ')})`)
-    if (typeof w !== 'string' || !rule.test(w)) throw new InputError(`${path}[${JSON.stringify(k)}]`, `expected ${expected}, got ${JSON.stringify(w)}`)
-    const other = seen.get(w.toUpperCase())
-    if (other !== undefined) throw new InputError(`${path}[${JSON.stringify(k)}]`, `${JSON.stringify(w)} is also the word for ${other}`)
-    seen.set(w.toUpperCase(), k)
-  }
-}
-
-/** The shape of a locale: separators that cannot be confused, words that read as words. */
-function checkLocale(locale: unknown): Locale {
-  if (typeof locale !== 'object' || locale === null || Array.isArray(locale)) throw new InputError('locale', 'expected a locale object such as ruRU')
-  const loc = locale as Record<string, unknown>
-  checkString(loc.tag, 'locale.tag')
-  const decimal = separator(loc, 'decimalSeparator', false)
-  const list = separator(loc, 'listSeparator', false)
-  const col = separator(loc, 'arrayColumnSeparator', true)
-  const row = separator(loc, 'arrayRowSeparator', true)
-  if (decimal === list || decimal === col || decimal === row || col === row) throw new InputError('locale', 'the decimal separator, the list separator and the array separators must differ (the list separator may equal an array separator)')
-  words(loc.booleans, 'locale.booleans', ['TRUE', 'FALSE'], WORD, 'a word')
-  if (Object.keys(loc.booleans as object).length !== 2) throw new InputError('locale.booleans', 'expected both TRUE and FALSE')
-  words(loc.errors, 'locale.errors', ERROR_LITERALS, /^#\S+$/u, 'an error literal starting with #')
-  words(loc.functions, 'locale.functions', null, WORD, 'a function name')
-  if (loc.tableItems !== undefined) words(loc.tableItems, 'locale.tableItems', ['#All', '#Data', '#Headers', '#Totals', '#This Row'], /^#[^[\]'@]+$/u, 'a specifier starting with #')
-  return locale as Locale
-}
+/** en-US's formula text, the invariant syntax; the package's other locales are modules (`xlcalc/locales/ru-RU`). */
+export const enUS: Locale = EN_US
 
 const cache = new WeakMap<object, Sides>()
 
-/** A locale's translation tables, built once per locale object (a locale must not change after its first use). */
-function sidesOf(locale: Locale): Sides {
+/** The translation tables of a locale given by its tag or as an object, built once per locale object. */
+function sidesOf(where: string | Locale): [Locale, Sides] {
+  const locale = checkLocaleArg(where, 'locale')
   let s = cache.get(locale)
-  if (!s) cache.set(locale, (s = sides(checkLocale(locale))))
-  return s
+  if (!s) cache.set(locale, (s = sides(locale)))
+  return [locale, s]
 }
 
 /** A translation's result, its message in the locale's language. */
@@ -75,13 +34,14 @@ const result = (r: Translated | Fail, locale: Locale): Translation => (r.ok ? { 
 const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'syntax' as const, message: say(locale, r.msg), at: r.at })
 
 /**
- * A stored formula as `locale` shows it: `SUM(A1:A3,1.5)` is `СУММ(A1:A3;1,5)` in ru-RU. Structured references are shown
- * as Excel shows them, the formula's row as `@` (`Sales[[#This Row],[Qty]]` is `Sales[@Qty]`) and a table alone by its
- * name (`Sales[]` is `Sales`); `opts.table`, the table of the formula's cell, drops its name before a column of its own
- * (`[@Qty]`, `SUM([Qty])`), as Excel shows a formula inside a table.
+ * A stored formula as a locale shows it (a loaded locale's tag, or a locale object): `SUM(A1:A3,1.5)` is
+ * `СУММ(A1:A3;1,5)` in ru-RU. Structured references are shown as Excel shows them, the formula's row as `@`
+ * (`Sales[[#This Row],[Qty]]` is `Sales[@Qty]`) and a table alone by its name (`Sales[]` is `Sales`); `opts.table`, the
+ * table of the formula's cell, drops its name before a column of its own (`[@Qty]`, `SUM([Qty])`), as Excel shows a
+ * formula inside a table.
  */
-export function toLocal(formula: string, locale: Locale, opts: { table?: string } = {}): Translation {
-  const s = sidesOf(locale)
+export function toLocal(formula: string, where: string | Locale, opts: { table?: string } = {}): Translation {
+  const [locale, s] = sidesOf(where)
   if (opts.table !== undefined) checkString(opts.table, 'opts.table')
   return result(translate(shownTables(checkString(formula, 'formula'), opts.table, s.local.syn.list), s.invariant, s.local), locale)
 }
@@ -116,22 +76,22 @@ function shownTables(formula: string, table: string | undefined, list: string): 
 }
 
 /**
- * Text typed in `locale` as a stored formula: `=СУММ(A1:A3;1,5)` is `SUM(A1:A3,1.5)`. A leading `=` is
- * dropped, as stored formulas have none; English function names, TRUE/FALSE and error texts are read too.
- * Positions of errors are in `text`, their messages in the locale's language.
+ * Text typed in a locale (a loaded locale's tag, or a locale object) as a stored formula: `=СУММ(A1:A3;1,5)` is
+ * `SUM(A1:A3,1.5)`. A leading `=` is dropped, as stored formulas have none; English function names, TRUE/FALSE and
+ * error texts are read too. Positions of errors are in `text`, their messages in the locale's language.
  */
-export function toInvariant(text: string, locale: Locale): Translation {
-  const s = sidesOf(locale)
+export function toInvariant(text: string, where: string | Locale): Translation {
+  const [locale, s] = sidesOf(where)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
   return result(translate(text.slice(eq), s.local, s.invariant, eq), locale)
 }
 
 /**
- * `validateFormula` for text typed in `locale`: the same result, with the canonical stored text, positions of errors
- * in `text` (a leading `=` is allowed) and messages in the locale's language.
+ * `validateFormula` for text typed in a locale (a loaded locale's tag, or a locale object): the same result, with the
+ * canonical stored text, positions of errors in `text` (a leading `=` is allowed) and messages in the locale's language.
  */
-export function validateLocalFormula(text: string, locale: Locale, ctx?: ValidateContext): ValidateResult {
-  const s = sidesOf(locale)
+export function validateLocalFormula(text: string, where: string | Locale, ctx?: ValidateContext): ValidateResult {
+  const [locale, s] = sidesOf(where)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
   const c = checkValidateContext(ctx)
   const t = translate(text.slice(eq), s.local, s.invariant, eq)

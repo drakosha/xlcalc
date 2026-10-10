@@ -5,7 +5,8 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { LOCALES, ruRU, toInvariant, toLocal } from '../src/index.js'
+import { LOCALES, toInvariant, toLocal } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { canonical, parse } from '../src/syntax.js'
 import { CASES, engineFormula } from './excel-cases.js'
 import { SETS } from './excel-sets.js'

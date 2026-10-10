@@ -7,6 +7,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ComputeResult } from '../src/contract.js'
 import { compute, openSession } from '../src/index.js'
+import './locales.js'
 
 const at = (year: number, seed = 1) => ({ now: `${year}-10-05T12:00:00Z`, seed })
 

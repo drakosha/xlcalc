@@ -7,7 +7,8 @@
  * every message of the catalog but the rules of names, which only `validateName` gives, in English.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { createInlineCalc, openSession, parseEntry, restructure, ruRU, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { createInlineCalc, openSession, parseEntry, restructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { say, type Message, type MessageKey } from '../src/locale/messages.js'
 import { pool } from './fixtures/pool.js'
@@ -16,7 +17,7 @@ const reached = new Set<MessageKey>()
 const ru = (m: Message) => say('ru-RU', m)
 const en = (m: Message) => say('en-US', m)
 /** ru-RU's formula text without messages of its own: English messages, the same places. */
-const english: Locale = { ...ruRU, tag: 'xx-YY' }
+const english: Locale = { ...ruRU, tag: 'xx-YY', messages: undefined }
 
 const TABLES = { tables: [{ name: 'Т', columns: ['Кол'] }] }
 

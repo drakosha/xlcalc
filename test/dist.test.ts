@@ -24,7 +24,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth', './xlsx', './worker'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth', './xlsx', './worker', './locales/ru-RU'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {

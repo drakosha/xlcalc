@@ -16,6 +16,7 @@ import type { StoredRun } from '../bench/coverage/xlsx.js'
 import { compute } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
+import './locales.js'
 
 const dir = new URL('./excel/win/xlsx/', import.meta.url)
 const mac = new URL('./excel/xlsx/', import.meta.url)

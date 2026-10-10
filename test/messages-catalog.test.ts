@@ -5,8 +5,8 @@
  */
 import { describe, expect, it } from 'vitest'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
-import { RU_RU } from '../src/locales/ru-RU.js'
-import { ruRU, toLocal } from '../src/locale/index.js'
+import { toLocal } from '../src/locale/index.js'
+import { ruRU } from './locales.js'
 import { say, type Message, type MessageKey, type MessageParams } from '../src/locale/messages.js'
 
 /** Parameters of each message: a key without samples does not compile. */
@@ -118,7 +118,7 @@ const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValu
 describe('the catalog of messages', () => {
   it('ru-RU writes every message of en-US', () => {
     const keys = Object.keys(EN_MESSAGES)
-    expect(keys.filter((k) => RU_RU.messages?.[k as MessageKey] === undefined)).toEqual([])
+    expect(keys.filter((k) => ruRU.messages?.[k as MessageKey] === undefined)).toEqual([])
     expect(Object.keys(SAMPLES).sort()).toEqual([...keys].sort())
   })
 
@@ -158,9 +158,11 @@ describe('the catalog of messages', () => {
     expect(ru({ key: 'tooDeep', max: 21 })).toBe('Вложенность формулы больше 21 уровня')
   })
 
-  it('a locale without its own text of a message takes the English one', () => {
-    const own = { ...ruRU, tag: 'xx-YY' }
+  it('a locale without its own text of a message takes the loaded locale\'s of its tag, else the English one', () => {
+    const own = { ...ruRU, tag: 'xx-YY', messages: undefined }
     expect(say(own, { key: 'lastSheet' })).toBe('a book keeps at least one sheet')
     expect(say('xx-YY', { key: 'lastSheet' })).toBe('a book keeps at least one sheet')
+    expect(say({ ...ruRU, messages: undefined }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
+    expect(say({ ...ruRU, tag: 'xx-YY' }, { key: 'lastSheet' })).toBe('В книге должен остаться хотя бы один лист')
   })
 })

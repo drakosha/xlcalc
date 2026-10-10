@@ -4,7 +4,8 @@
  * is the reference in `locale-excel.test.ts`, the round trip over all case formulas in `locale-roundtrip.test.ts`.
  */
 import { describe, expect, it } from 'vitest'
-import { enUS, InputError, ruRU, toInvariant, toLocal, validateFormula, validateLocalFormula, type Locale } from '../src/index.js'
+import { enUS, InputError, toInvariant, toLocal, validateFormula, validateLocalFormula, type Locale } from '../src/index.js'
+import { ruRU } from './locales.js'
 
 const local = (f: string, loc: Locale = ruRU) => {
   const r = toLocal(f, loc)
@@ -80,7 +81,7 @@ describe('errors with positions in the given text, in the language of the locale
   })
 
   it('in English for a locale without messages of its own', () => {
-    const own: Locale = { ...ruRU, tag: 'xx-YY' }
+    const own: Locale = { ...ruRU, tag: 'xx-YY', messages: undefined }
     expect(invariant('=СУММ(1.5)', own)).toBe('syntax at 7: unexpected "."')
     expect(invariant('СУММ(A1,5)', own)).toBe('syntax at 5: "A1" cannot be written in the invariant syntax')
     expect(local('SUM(1;2)', own)).toBe('syntax at 5: unexpected ";"')
@@ -141,6 +142,6 @@ describe('locales as data', () => {
     expect(bad({ functions: { SUM: 'СУММ', SUMSQ: 'сумм' } })).toThrow('locale.functions["SUMSQ"]: "сумм" is also the word for SUM')
     expect(bad({ functions: { SUM: 'С(' } })).toThrow('expected a function name')
     expect(() => toLocal(1 as never, ruRU)).toThrow('formula: expected a string, got number 1')
-    expect(() => toInvariant('1', null as never)).toThrow('locale: expected a locale object')
+    expect(() => toInvariant('1', null as never)).toThrow("locale: expected a locale's tag or a locale object")
   })
 })

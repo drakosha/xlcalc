@@ -3,8 +3,8 @@
  * computation are the engine's own code (`src/locale/rules.ts`), so the file has no regional data. Its messages are
  * every message the engine gives, the text a locale without its own falls back to.
  */
-import type { LocaleFile } from '../locale/file.js'
 import type { Counts, EnglishMessages, Found, NameRule } from '../locale/messages.js'
+import type { Locale } from '../locale/types.js'
 
 const found = (f: Found) => (f.t === 'op' || f.t === 'ident' || f.t === 'fn' ? JSON.stringify(f.v) : f.t === 'eof' ? 'end of formula' : f.t)
 
@@ -101,16 +101,14 @@ export const EN_MESSAGES: EnglishMessages = {
   explainFormula: (p) => p.formula,
 }
 
-export const EN_US: LocaleFile = {
-  text: {
-    tag: 'en-US',
-    decimalSeparator: '.',
-    listSeparator: ',',
-    arrayColumnSeparator: ',',
-    arrayRowSeparator: ';',
-    booleans: { TRUE: 'TRUE', FALSE: 'FALSE' },
-    errors: {},
-    functions: {},
-  },
-  messages: EN_MESSAGES,
+/** en-US's formula text, the invariant syntax; its messages are `EN_MESSAGES`, which every locale falls back to. */
+export const EN_US: Locale = {
+  tag: 'en-US',
+  decimalSeparator: '.',
+  listSeparator: ',',
+  arrayColumnSeparator: ',',
+  arrayRowSeparator: ';',
+  booleans: { TRUE: 'TRUE', FALSE: 'FALSE' },
+  errors: {},
+  functions: {},
 }

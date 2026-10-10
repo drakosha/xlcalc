@@ -11,6 +11,7 @@ import type { StoredTables } from '../bench/coverage/tables.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { differences } from './tables-cases.js'
+import './locales.js'
 
 const dir = new URL('./excel/tables/', import.meta.url)
 const sets = (sub: string) => {

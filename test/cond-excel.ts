@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredCond } from '../bench/coverage/cond.js'
 import { engineCase, rulesOf, type CondCase, type CondSet, type Look } from '../bench/coverage/cond/cases.js'
 import { readXlsx } from '../src/xlsx.js'
+import './locales.js'
 
 export type CondSetFile = StoredCond & { name: string; dir: URL }
 

@@ -3,7 +3,7 @@ import type { CellValue } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { toLocal } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'
-import { DEFAULT_LOCALE, LOCALE_FILES } from './locale/registry.js'
+import { localeOf } from './locale/registry.js'
 import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
@@ -81,9 +81,9 @@ export function explainCell(state: EngineState, s: number, r: number, c: number,
   return { root, nodes, truncated }
 }
 
-/** The tree as indented text in the locale `tag` (en-US without one): its words, values and formulas. */
+/** The tree as indented text in the loaded locale `tag` (en-US without one): its words, values and formulas. */
 export function explainText(root: ExplainTree, tag?: string): string {
-  const loc = (LOCALE_FILES.get(tag ?? DEFAULT_LOCALE) ?? LOCALE_FILES.get(DEFAULT_LOCALE)!).text
+  const loc = localeOf(tag)
   const local = (f: string) => {
     const t = toLocal(f, loc)
     return t.ok ? t.formula : f

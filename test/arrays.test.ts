@@ -4,7 +4,8 @@
  * that are arrays in a session, array constants in the canonical form.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, openSession, restructure, ruRU, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
+import { compute, debugGeneratedCode, openSession, restructure, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
+import { ruRU } from './locales.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
 

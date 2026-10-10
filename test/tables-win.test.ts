@@ -9,6 +9,7 @@ import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { winFiles } from './excel-win-cases.js'
 import { differences } from './tables-cases.js'
+import './locales.js'
 
 const SETS = TAGS.flatMap((tag) => winFiles<StoredTables>(`tables/${localeDir(tag)}`).map((s) => ({ ...s, sub: localeDir(tag) })))
 
