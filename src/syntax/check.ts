@@ -1,6 +1,8 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
 import type { CheckCode, NameCheck, ValidateContext, ValidateResult } from '../contract.js'
 import { FUNCTIONS, isFunction } from '../functions.js'
+import { english } from '../locale/english.js'
+import type { Message, NameRule } from '../locale/messages.js'
 import { FormulaError, type Ast } from './ast.js'
 import { parse } from './parse.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
@@ -33,16 +35,16 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
         if (external(n.name)) {
           for (const a of n.args) {
             const lit = a.k === 'num' || a.k === 'str' || a.k === 'bool' || (a.k === 'un' && a.a.k === 'num')
-            if (!lit) return new FormulaError('unsupported', `arguments of ${n.name} must be literals`, at(n.name))
+            if (!lit) return new FormulaError('unsupported', { key: 'externalLiterals', fn: n.name }, at(n.name))
           }
           return null
         }
         const spec = FUNCTIONS[n.name]
         if (!spec) return null
         const k = n.args.length
-        if (!spec.takes(k)) return new FormulaError('syntax', `${n.name} takes ${spec.counts} arguments, got ${k}`, at(n.name))
+        if (!spec.takes(k)) return new FormulaError('syntax', { key: 'argumentCount', fn: n.name, counts: spec.counts, got: k }, at(n.name))
         const left = n.args.findIndex((a, i) => a.k === 'missing' && !spec.omits(i))
-        if (left >= 0) return new FormulaError('syntax', `${n.name} takes a reference as its argument ${left + 1}, which cannot be left out`, at(n.name))
+        if (left >= 0) return new FormulaError('syntax', { key: 'argumentLeftOut', fn: n.name, position: left + 1 }, at(n.name))
         for (const a of n.args) {
           const e = visit(a)
           if (e) return e
@@ -56,11 +58,15 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
   return visit(ast)
 }
 
-/** What the engine adds to a check: a name's formula (`union`), which names a book has as a sheet sees them (`known`), the table of the formula's cell (`enclosing`). */
+/**
+ * What the engine adds to a check: a name's formula (`union`), which names a book has as a sheet sees them (`known`), the
+ * table of the formula's cell (`enclosing`), the language of messages (`say`, English without it).
+ */
 interface BookCheck {
   union?: boolean
   known?: (name: string, sheet: string | undefined) => boolean
   enclosing?: string
+  say?: (m: Message) => string
 }
 
 type Fail = Extract<ValidateResult, { ok: false }>
@@ -75,6 +81,7 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
   const used = new Set<string>()
   let fail: Fail | null = null
   const at = (needle: string) => Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase()))
+  const unknown = (m: Message, needle: string): Fail => ({ ok: false, code: 'unknown_name', message: (ctx.say ?? english)(m), at: at(needle) })
   const out = mapAst(ast, (n) => {
     if (fail) return undefined
     if (n.k === 'name' && n.sheet === undefined && known?.has(sheetKey(n.name))) {
@@ -85,12 +92,12 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
     if (n.k !== 'table') return undefined
     const name = n.table ?? ctx.enclosing
     if (name === undefined) {
-      if (ctx.tables) fail = { ok: false, code: 'unknown_name', message: 'a structured reference without a table name outside a table', at: at('[') }
+      if (ctx.tables) fail = unknown({ key: 'tableRefOutside' }, '[')
       return undefined
     }
     const t = known?.get(sheetKey(name))
     if (!t) {
-      if (known) fail = { ok: false, code: 'unknown_name', message: `unknown table ${name}`, at: at(name) }
+      if (known) fail = unknown({ key: 'unknownTable', table: name }, name)
       else used.add(name)
       return undefined
     }
@@ -98,7 +105,7 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
     const cols = n.spec.cols?.map((c) => t.columns.find((x) => sheetKey(x) === sheetKey(c)))
     const missing = n.spec.cols?.find((c, i) => cols![i] === undefined)
     if (missing !== undefined) {
-      fail = { ok: false, code: 'unknown_name', message: `the table ${t.name} has no column ${missing}`, at: at(missing) }
+      fail = unknown({ key: 'unknownColumn', table: t.name, column: missing }, missing)
       return undefined
     }
     return { k: 'table', table: t.name, spec: cols ? { ...n.spec, cols: cols as [string] | [string, string] } : n.spec }
@@ -108,11 +115,12 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
 
 /** Formula check: parsing, whitelisted or external functions, sheets, names, argument counts. */
 export function validate(text: string, ctx: ValidateContext & BookCheck = {}): ({ ok: true; ast: Ast } & Extract<ValidateResult, { ok: true }>) | Extract<ValidateResult, { ok: false }> {
+  const say = ctx.say ?? english
   let ast: Ast
   try {
     ast = parse(text, { union: ctx.union })
   } catch (e) {
-    if (e instanceof FormulaError) return { ok: false, code: e.code, message: e.message, at: e.at }
+    if (e instanceof FormulaError) return { ok: false, code: e.code, message: say(e.msg), at: e.at }
     throw e
   }
   // nothing to bind without tables, but a reference without a table name, which fails
@@ -139,20 +147,20 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
       if (n.sheet !== undefined) sheets.add(n.sheet)
     }
   })
-  const fail = (code: CheckCode, message: string, needle: string) => ({ ok: false as const, code, message, at: Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase())) })
-  for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', `unknown function ${f}`, f)
+  const fail = (code: CheckCode, m: Message, needle: string) => ({ ok: false as const, code, message: say(m), at: Math.max(0, text.toUpperCase().indexOf(needle.toUpperCase())) })
+  for (const f of functions) if (!isFunction(f) && !externalSet.has(f)) return fail('unknown_function', { key: 'unknownFunction', fn: f }, f)
   if (ctx.sheets) {
     const known = new Set(ctx.sheets.map(sheetKey))
-    for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', `unknown sheet ${s}`, s)
+    for (const s of sheets) if (!known.has(sheetKey(s))) return fail('unknown_sheet', { key: 'unknownSheet', sheet: s }, s)
   }
   if (ctx.known) {
-    for (const [n, sheet] of uses) if (!ctx.known(n, sheet)) return fail('unknown_name', `unknown name ${n}`, n)
+    for (const [n, sheet] of uses) if (!ctx.known(n, sheet)) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   } else if (ctx.names) {
     const known = new Set(ctx.names.map((n) => n.toUpperCase()))
-    for (const n of names) if (!known.has(n.toUpperCase())) return fail('unknown_name', `unknown name ${n}`, n)
+    for (const n of names) if (!known.has(n.toUpperCase())) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }
   const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !FUNCTIONS[f])
-  if (calls) return { ok: false, code: calls.code, message: calls.message, at: calls.at }
+  if (calls) return { ok: false, code: calls.code, message: say(calls.msg), at: calls.at }
   return { ok: true, ast, canonical: canonical(ast), functions: [...functions].sort(), sheets: [...sheets], names: [...names], externals: [...new Set(externals)], tables: bound.tables }
 }
 
@@ -162,19 +170,24 @@ const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]{0,254}$/u
  * Why Excel would not take a word that reads as a reference or a boolean as a name (null when it would); `booleans`
  * are the book's locale's words for TRUE and FALSE (ИСТИНА and ЛОЖЬ in ru-RU, which Excel ru-RU refuses).
  */
-export function reservedName(name: string, booleans: readonly string[] = []): string | null {
+export function reservedName(name: string, booleans: readonly string[] = []): NameRule | null {
   // a cell address in Latin letters only (`АБ12` is a name), R1C1 with `R` and `C` alone too
-  if (/^[A-Za-z]{1,3}[0-9]+$/.test(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'a name must not look like a cell address or an R1C1 reference'
-  if (/^(TRUE|FALSE)$/i.test(name)) return 'TRUE and FALSE are reserved'
+  if (/^[A-Za-z]{1,3}[0-9]+$/.test(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'cell'
+  if (/^(TRUE|FALSE)$/i.test(name)) return 'true'
   const up = name.toUpperCase()
-  if (booleans.some((b) => b.toUpperCase() === up)) return `${name} is a boolean in the book's locale`
+  if (booleans.some((b) => b.toUpperCase() === up)) return 'boolean'
   return null
 }
 
-/** Why Excel would not take a name, a defined name's or a table's (null when it would): its rules for names, the namespace aside. */
+/** The rule of names a name breaks (null when Excel would take it), a defined name's or a table's, the namespace aside. */
+export function nameRule(name: string, booleans: readonly string[] = []): NameRule | null {
+  return NAME.test(name) ? reservedName(name, booleans) : 'chars'
+}
+
+/** Why Excel would not take a name, in English (null when it would): `nameRule`'s message. */
 export function nameProblem(name: string, booleans: readonly string[] = []): string | null {
-  if (!NAME.test(name)) return 'a name starts with a letter of any script, _ or \\, and has only letters, digits, _, ., \\ and ? (255 characters at most)'
-  return reservedName(name, booleans)
+  const rule = nameRule(name, booleans)
+  return rule && english({ key: 'nameRule', name, rule })
 }
 
 /** A valid defined name by Excel's rules (`nameProblem`) in a book whose locale's booleans are `booleans`. */

@@ -50,7 +50,7 @@ A formula is stored without the leading `=` in `formula`, separately from `value
 
 ### Sessions
 
-A session holds a computed book. `setCells` applies edits atomically, recomputes only what depends on them and returns the cells whose values changed; `explain` shows where a value comes from.
+A session holds a computed book. `setCells` applies edits atomically, recomputes only what depends on them and returns the cells whose values changed; `explain` shows where a value comes from, as a tree and as text in the book's locale ([Localization](#localization)).
 
 ```js
 import { openSession } from 'xlcalc'
@@ -190,7 +190,7 @@ The array fills its area and never spills. A session refuses to change part of t
 
 ### Checking formulas
 
-`validateFormula` checks a formula without a book: it returns the canonical text (sheet names quoted, function names upper-case) and what the formula uses, or a check code with a message and a position.
+`validateFormula` checks a formula without a book: it returns the canonical text (sheet names quoted, function names upper-case) and what the formula uses, or a check code with a message in English and a position.
 
 ```js
 import { validateFormula, validateName, validateNames } from 'xlcalc'
@@ -220,12 +220,13 @@ const ru = (text, cell) => parseEntry(text, { locale: 'ru-RU', cell, now: '2026-
 console.log(ru('1 234,5').input, ru('15.03.2026').input, ru('5%').input) // → { value: 1234.5, format: 4 } { value: 46096, format: 14 } { value: 0.05, format: 9 }
 console.log(ru('ИСТИНА').input, ru('#Н/Д').input, ru("'007").input, ru('15.3').input) // → { value: true } { formula: '#N/A' } { value: '007' } { value: 46096, format: 16 }
 console.log(ru('=СУММ(A1;1,5)').input, ru('=FOO(1)').input, ru('-C1').input) // → { formula: 'SUM(A1,1.5)' } { formula: 'FOO(1)' } { formula: '-C1' }
-console.log(ru('=SUM(A1,1.5)')) // → { ok: false, code: 'syntax', message: 'unexpected "."', at: 9 }
+const stop = ru('=SUM(A1,1.5)')
+console.log(stop.ok, stop.code, stop.message, stop.at) // → false syntax Здесь не может стоять «.» 9
 console.log(ru('18:30', { format: 14, style: 2, meta: { id: 7 } }).input) // → { value: 0.7708333333333334, format: 20, style: 2, meta: { id: 7 } }
 console.log(parseEntry('3/15/2026').input, parseEntry('$1,234.50').input.value, parseEntry('5', { cell: { format: '0%' } }).input) // → { value: 46096, format: 14 } 1234.5 { value: 0.05, format: '0%' }
 ```
 
-`opts.locale` is the book's locale, `opts.cell` the cell as the book holds it (its `format`, `style` and `meta`; a `CellView` of `Session.cells` will do), `opts.now` the moment whose year completes a date typed without one (`15.3`), `opts.dateSystem` the book's date system. Only a formula that does not parse stops the entry, with the check code and its position in the text, as Excel's window does; an unknown function is taken and computes `#NAME?`. Empty text clears the value and keeps the rest of the cell (`null` when nothing is left). The rules, measured case by case in Excel for Mac and Excel for Windows, typed through the object model and on the keyboard, are in [docs/entry.md](docs/entry.md).
+`opts.locale` is the book's locale, `opts.cell` the cell as the book holds it (its `format`, `style` and `meta`; a `CellView` of `Session.cells` will do), `opts.now` the moment whose year completes a date typed without one (`15.3`), `opts.dateSystem` the book's date system. Only a formula that does not parse stops the entry, with the check code, its position in the text and a message in the book's locale, as Excel's window does; an unknown function is taken and computes `#NAME?`. Empty text clears the value and keeps the rest of the cell (`null` when nothing is left). The rules, measured case by case in Excel for Mac and Excel for Windows, typed through the object model and on the keyboard, are in [docs/entry.md](docs/entry.md).
 
 ### Errors
 
@@ -304,11 +305,11 @@ console.log(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU).formula) // → ЕС
 console.log(LOCALES.get('ru-RU') === ruRU, LOCALES.has('en-US')) // → true true
 console.log(toInvariant('=СУММ(A1:A3;1,5)', ruRU).formula) // → SUM(A1:A3,1.5)
 const bad = validateLocalFormula('=СУММ(A1;1.5)', ruRU)
-console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax unexpected "." 10
+console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Здесь не может стоять «.» 10
 console.log(validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', ruRU, { sheets: ['Данные'] }).canonical) // → ROUND('Данные'!B2*1.2,0)
 ```
 
-`toLocal` and `toInvariant` return `{ ok: true, formula }` or `{ ok: false, code, message, at }` with the position in the given text. They translate function names, TRUE and FALSE, error literals, the decimal separator and the separators of arguments and of array constants (`{1;2:3;4}` in ru-RU); strings, sheet names, defined names, references and whitespace stay as they are. `toInvariant` drops a leading `=` and also reads English function names, TRUE/FALSE and error texts; a function the locale does not name (an external one, say) passes through. Text that would read differently once translated (`1.5` typed in ru-RU, where `.` is not a decimal separator) is a `syntax` error at its place. `validateLocalFormula(text, locale, ctx?)` is `validateFormula` for typed text: the same result with the canonical stored text, and positions in `text`.
+`toLocal` and `toInvariant` return `{ ok: true, formula }` or `{ ok: false, code, message, at }` with the position in the given text. They translate function names, TRUE and FALSE, error literals, the decimal separator and the separators of arguments and of array constants (`{1;2:3;4}` in ru-RU); strings, sheet names, defined names, references and whitespace stay as they are. `toInvariant` drops a leading `=` and also reads English function names, TRUE/FALSE and error texts; a function the locale does not name (an external one, say) passes through. Text that would read differently once translated (`1.5` typed in ru-RU, where `.` is not a decimal separator) is a `syntax` error at its place. `validateLocalFormula(text, locale, ctx?)` is `validateFormula` for typed text: the same result with the canonical stored text, and positions in `text`. The messages of all three are in the locale's language.
 
 The ru-RU data come from Excel itself. `bench/locale/snapshot.ts` opens books with 6,381 formulas (the coverage measurement's cases, the probes, a call of every function on Microsoft's list that the measurement lacks, literals) in Excel 16.113 for Mac with the Russian interface and reads each formula back in English and in Russian; `bench/locale/generate.ts ru-RU` writes the formula text of ru-RU's locale file, `src/locales/ru-RU.ts`, from that text (`test/excel/locale/ru-RU.json`). `test/locale-excel.test.ts` checks that both translations reproduce Excel's text of all 6,381 formulas, and `test/locale-roundtrip.test.ts` that the 15,266 formulas of the measurement, the case sets and the probes come back unchanged from ru-RU. Excel 16.113 for Mac does not know `ENCODEURL`, `FILTERXML`, `WEBSERVICE`, `REGEXEXTRACT`, `REGEXREPLACE` and `REGEXTEST`, and deletes `CALL` and `REGISTER.ID` from the books it loads, so these keep their English names; so do the error literals newer than `#GETTING_DATA` (`#SPILL!`, `#CALC!` and the rest), which it does not take as literals in a formula.
 
@@ -325,6 +326,21 @@ console.log(r.volatile.map((c) => c.cell).join(',')) // → A5
 ```
 
 In ru-RU, as Excel 16.113 for Mac with the Russian interface and locale computes, and as Excel for Windows where the two part: numbers in text take a decimal comma and a space between groups (`1 234,5`) and the ruble after the amount (`1 234,5 ₽`); dates are day-month-year (`31.01.2025`, `31/1/25`, `2025-01-31`, `31 янв 2025` with a month named by three letters or more of its nominative name; English month names are not read); `ИСТИНА` and `ЛОЖЬ` are the booleans in text (`"TRUE"` is no boolean there); numbers become text with a decimal comma (`a1,5`), complex numbers too; `TEXT` reads the Russian codes (`ДД.ММ.ГГГГ`, `ч:мм:сс`, `# ##0,00`, `Основной`, `[Красный]`, `[Цвет10]`) and treats English letters as literals, while cells read their formats as xlsx files store them (`dd/mm/yyyy` shows `31.01.2025`); `DOLLAR` is `1 234,57 ₽`; month names have a capital (`Январь`) and short ones three letters (`фев`); text sorts Latin before Cyrillic, as Excel for Windows sorts (Excel for Mac puts Cyrillic first). Date text without a year (`1.5` is 1 May, `15 янв`) takes the year of the book's clock, as Excel takes the current year, so a cell that reads one depends on the clock as `TODAY` does: it is in `volatile` and a session recomputes it on `setClock`. The rules were measured case by case in Excel ([docs/locale.md](docs/locale.md)).
+
+Messages for people come in the book's locale too: why a typed formula does not read (`parseEntry`, and `toLocal`, `toInvariant` and `validateLocalFormula` in their locale), why a structure operation is refused, and the text of `explain`, whose numbers, formulas, booleans and errors are written as the locale writes them. Codes, positions and the fields of `explain`'s tree stay as they are, so a program reads them the same in every locale.
+
+```js
+import { openSession, parseEntry, restructure } from 'xlcalc'
+
+const book = { locale: 'ru-RU', sheets: [{ name: 'План', cells: { A1: { value: 400 }, B1: { formula: 'ROUND(A1*1.2,0)' } } }] }
+console.log(openSession(book).explain('План', 'B1').text)
+// → 'План'!B1 = 480  ← ОКРУГЛ(A1*1,2;0)
+//     'План'!A1 = 400
+console.log(parseEntry('=ОКРУГЛ(A1;2;3)', { locale: 'ru-RU' }).message) // → Функция ОКРУГЛ принимает 2 аргумента, а указано 3
+console.log(restructure(book, { op: 'deleteSheet', sheet: 'План' }).message) // → В книге должен остаться хотя бы один лист
+```
+
+`validateFormula`, which has no locale, answers in English, as do the reasons of cell errors and the checks of names. A locale's messages are part of its file ([docs/locale.md](docs/locale.md#messages)).
 
 ### Showing values
 
@@ -497,7 +513,7 @@ const last = restructure(book, { op: 'deleteSheet', sheet: 'Sales' })
 console.log(last.ok, last.code) // → false last_sheet
 ```
 
-The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`) and `moveSheet` (`sheet`, `before`), and over tables `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](docs/tables.md)). Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }` with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, `History` among them, or one another sheet has), `last_sheet`, `merged` (a move cutting a merged area, a copy landing on part of one) `filtered` (a copy without the rows a filter hid, pasted over hidden rows of a filtered sheet) `array` (part of an old-kind array formula's area would change), `table` (rows or columns into two tables at once, or deleted from two tables unless both go whole, a header row deleted alone) or `table_name`. A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
+The operations are `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`), `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`), `copyRange` (`from` and `to` as `{ sheet, range }`; a target that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`), `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`) and `moveSheet` (`sheet`, `before`), and over tables `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](docs/tables.md)). Only the references that change are rewritten, in place; a formula that does not parse moves with its cell as written. An operation Excel refuses returns `{ ok: false, code, message }`, the message in the book's locale (`Нельзя изменить часть массива S!C1 (C1:C3)` in a ru-RU book), with `off_sheet` (cells would leave the sheet), `sheet_name` (a name Excel would not take, `History` among them, or one another sheet has), `last_sheet`, `merged` (a move cutting a merged area, a copy landing on part of one) `filtered` (a copy without the rows a filter hid, pasted over hidden rows of a filtered sheet) `array` (part of an old-kind array formula's area would change), `table` (rows or columns into two tables at once, or deleted from two tables unless both go whole, a header row deleted alone) or `table_name`. A name whose reference is lost gives `#REF!` where it is used, as in Excel; the parser reads the lost references Excel writes (`'S'!#REF!`, `#REF!A1`) as `#REF!`.
 
 A book keeps styles as xlsx does: `styles`, a table of cell styles (font, solid fill, borders, alignment), `style` in a cell, an index into it, and per sheet `columns` and `rows` (by line `C`, `5` or span `B:D`, `5:9`: a width or height, a style, a number format) and `merges` (`B2:D3`). A cell without its own style or format shows its row's, else its column's. Computation ignores them, but a merged area stops an array spilling over it, as in Excel; the operations change them as Excel does: inserted rows take the format of the row above (its height, style and format, its cells' styles and formats) and columns of the column on the left, merged areas grow, shrink and move like ranges, moved and copied cells keep their look, whole rows and columns take their sizes and styles along. A cell's note and hyperlink go with the cell as its style does, frozen panes keep the rows and columns before their split, rules of data validation move as references do and lines inserted right after a rule take it, and inserted lines take the outline level of the line before them. The rules, and how they were checked against Excel on 317 books and the valid sets, are in [docs/structure.md](docs/structure.md).
 

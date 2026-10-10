@@ -67,13 +67,13 @@ function bracketEnd(src: string, i: number): number {
 
 function rowNo(s: string, at: number): number {
   const n = Number(s)
-  if (n < 1 || n > MAX_ROWS) bad(at, `row ${s} out of range`)
+  if (n < 1 || n > MAX_ROWS) bad(at, { key: 'rowOutOfRange', row: s })
   return n - 1
 }
 
 function colNo(s: string, at: number): number {
   const n = colToIndex(s)
-  if (n >= MAX_COLS) bad(at, `column ${s} out of range`)
+  if (n >= MAX_COLS) bad(at, { key: 'columnOutOfRange', column: s })
   return n
 }
 
@@ -112,7 +112,7 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
 /** The length of a reference read at `at`, marking it a spill reference when `#` follows a cell (`E2#`). */
 function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at: number): number {
   if (next !== '#') return r.len
-  if (r.ref.kind !== 'cell') bad(at, 'a spill reference (#) follows a single cell')
+  if (r.ref.kind !== 'cell') bad(at, { key: 'spillAfterRange' })
   r.ref.spill = true
   return r.len + 1
 }
@@ -152,7 +152,7 @@ export function tokenize(src: string): Tok[] {
       let j = i + 1
       let v = ''
       for (;;) {
-        if (j >= src.length) bad(i, 'unterminated string')
+        if (j >= src.length) bad(i, { key: 'unterminatedString' })
         if (src[j] === '"') {
           if (src[j + 1] === '"') {
             v += '"'
@@ -169,7 +169,7 @@ export function tokenize(src: string): Tok[] {
     }
     if (ch === '#') {
       const lit = Object.keys(ERROR_LITERALS).find((e) => rest.toUpperCase().startsWith(e))
-      if (!lit) bad(i, 'unknown error literal')
+      if (!lit) bad(i, { key: 'unknownErrorLiteral' })
       // a reference whose sheet was deleted: `#REF!A1`, `#REF!#REF!`; a lost spill reference ends in `#`
       let tail = lit === '#REF!' ? (readRef(src.slice(i + 5), i)?.ref.text ?? (rest.slice(5).toUpperCase().startsWith('#REF!') ? '#REF!' : '')) : ''
       if (lit === '#REF!' && src[i + 5 + tail.length] === '#') tail += '#'
@@ -178,7 +178,7 @@ export function tokenize(src: string): Tok[] {
       continue
     }
     if (ch === '[') {
-      if (BOOK_SHEET.test(src.slice(bracketEnd(src, i)))) bad(i, 'external workbook reference', 'external_ref')
+      if (BOOK_SHEET.test(src.slice(bracketEnd(src, i)))) bad(i, { key: 'externalReference' }, 'external_ref')
       const { spec, end } = readSpec(src, i, i)
       push({ t: 'table', table: null, spec, at: i })
       i = end
@@ -211,13 +211,13 @@ export function tokenize(src: string): Tok[] {
       const r = readRef(after, i)
       if (r) {
         push({ t: 'ref', sheet, ...(last !== undefined ? { last } : {}), ref: r.ref, at: i })
-        if (last !== undefined && after[r.len] === '#') bad(i, 'a spill reference (#) follows a single cell of one sheet')
+        if (last !== undefined && after[r.len] === '#') bad(i, { key: 'spillAcrossSheets' })
         i += sm[0].length + spilled(r, after[r.len], i)
         continue
       }
       // a name as one sheet sees it, not a function
       const nm = last === undefined ? IDENT.exec(after) : null
-      if (!nm || after[nm[0].length] === '(') bad(i + sm[0].length, 'reference expected after sheet name')
+      if (!nm || after[nm[0].length] === '(') bad(i + sm[0].length, { key: 'referenceAfterSheet' })
       // a table needs no sheet: Excel drops one written before it
       if (after[nm[0].length] === '[') {
         const start = i + sm[0].length + nm[0].length
@@ -230,7 +230,7 @@ export function tokenize(src: string): Tok[] {
       i += sm[0].length + nm[0].length
       continue
     }
-    if (ch === "'") bad(i, 'quoted sheet name without reference')
+    if (ch === "'") bad(i, { key: 'quotedSheetAlone' })
     if (/[0-9$A-Za-z]/.test(ch)) {
       const r = readRef(rest, i)
       if (r) {
@@ -265,7 +265,7 @@ export function tokenize(src: string): Tok[] {
       i += op.length
       continue
     }
-    bad(i, `unexpected character ${JSON.stringify(ch)}`)
+    bad(i, { key: 'unexpectedCharacter', char: ch })
   }
   out.push({ t: 'eof', at: src.length })
   return out

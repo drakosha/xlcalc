@@ -7,6 +7,7 @@
  */
 import type { BookInput, CellRef, RestructureResult } from '../contract.js'
 import { hiddenRows } from '../layout/hidden.js'
+import { say } from '../locale/messages.js'
 import { formatAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import type { Rect } from './area.js'
@@ -76,6 +77,6 @@ export function copyRows(book: BookInput, from: string, src: Rect, to: string, t
   if (!visible?.length) return copyRange(book, at, rect, to, target, withMeta, source)
   const parts = runs(visible)
   if (clip && parts.length > 1)
-    return { ok: false, code: 'filtered', message: `the copy leaves out rows a filter hid and cannot be pasted over the hidden rows of ${to}!${formatAddress(target.r1, target.c1)}:${formatAddress(target.r2, target.c2)}` }
+    return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: `${formatAddress(target.r1, target.c1)}:${formatAddress(target.r2, target.c2)}` }) }
   return chain(book, parts.map(([lo, hi]) => (b: BookInput) => copyRange(b, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
 }

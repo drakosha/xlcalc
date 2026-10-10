@@ -4,6 +4,7 @@
  * `'`, and `@` before a column name); `@` before a column is the formula's row, `[#This Row]` in stored text.
  */
 import { caseKey } from '../collate.js'
+import type { Message } from '../locale/messages.js'
 import { bad } from './ast.js'
 
 /** A table's rows a reference takes: all of them, the data, the header row, the totals row, the formula's row. */
@@ -63,7 +64,7 @@ export function specText(spec: TableSpec, style: SpecStyle = {}): string {
  */
 export function readSpec(src: string, i: number, at: number, words?: Record<TableArea, string>, list = ','): { spec: TableSpec; end: number } {
   let j = i + 1
-  const fail = (message: string): never => bad(at, message)
+  const fail = (msg: Message): never => bad(at, msg)
   const skip = () => {
     while (src[j] === ' ') j++
   }
@@ -72,22 +73,22 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
     let out = ''
     for (;;) {
       const ch = src[j]
-      if (ch === undefined) fail('unterminated structured reference')
+      if (ch === undefined) fail({ key: 'specUnterminated' })
       if (ch === "'") {
-        if (src[j + 1] === undefined) fail('unterminated structured reference')
+        if (src[j + 1] === undefined) fail({ key: 'specUnterminated' })
         out += src[j + 1]
         j += 2
         continue
       }
       if (ch === ']') return out
-      if (ch === '[') fail('unexpected [ in a column name (write it as \'[)')
+      if (ch === '[') fail({ key: 'specBracketInColumn' })
       out += ch
       j++
     }
   }
   const area = (): TableArea => {
     const w = `#${name()}`
-    return areaOf(w, words) ?? fail(`unknown table specifier ${w}`)
+    return areaOf(w, words) ?? fail({ key: 'specUnknown', word: w })
   }
   // `[Col]` or `[Col]:[Col2]` at j (on its `[`)
   const column = (): [string] | [string, string] => {
@@ -95,7 +96,7 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
     const a = name()
     j++
     if (src[j] !== ':') return [a]
-    if (src[j + 1] !== '[') fail('expected [ after : in a structured reference')
+    if (src[j + 1] !== '[') fail({ key: 'specSpan' })
     j += 2
     const b = name()
     j++
@@ -104,7 +105,7 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
   const areas = new Set<TableArea>()
   let cols: [string] | [string, string] | undefined
   const add = (a: TableArea) => {
-    if (areas.has(a)) fail(`${AREA_WORDS[a]} twice in a structured reference`)
+    if (areas.has(a)) fail({ key: 'specTwice', word: AREA_WORDS[a] })
     areas.add(a)
   }
   let k = j
@@ -113,13 +114,13 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
   else if (src[k] === '[') {
     j = k
     for (;;) {
-      if (src[j] !== '[') fail('expected [ in a structured reference')
+      if (src[j] !== '[') fail({ key: 'specOpen' })
       if (src[j + 1] === '#') {
         j += 2
         add(area())
         j++
       } else {
-        if (cols) fail('two columns in a structured reference (write a span as [A]:[B])')
+        if (cols) fail({ key: 'specTwoColumns' })
         cols = column()
       }
       skip()
@@ -137,9 +138,9 @@ export function readSpec(src: string, i: number, at: number, words?: Record<Tabl
     if (src[j] === '[') cols = column()
     else if (src[j] !== ']') cols = [name()]
   } else cols = [name()]
-  if (src[j] !== ']') fail('expected ] to close a structured reference')
+  if (src[j] !== ']') fail({ key: 'specClose' })
   const sorted = ORDER.filter((a) => areas.has(a))
-  if (!ALLOWED.has(sorted.join(','))) fail(`a structured reference cannot take ${sorted.map((a) => AREA_WORDS[a]).join(' and ')} together`)
+  if (!ALLOWED.has(sorted.join(','))) fail({ key: 'specTogether', words: sorted.map((a) => AREA_WORDS[a]) })
   return { spec: cols ? { areas: sorted, cols } : { areas: sorted }, end: j + 1 }
 }
 

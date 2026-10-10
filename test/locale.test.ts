@@ -61,22 +61,29 @@ describe('translation between the invariant syntax and ru-RU', () => {
   })
 })
 
-describe('errors with positions in the given text', () => {
+describe('errors with positions in the given text, in the language of the locale', () => {
   it('a character that means something else on the other side', () => {
-    expect(invariant('СУММ(A1,B1)')).toBe('syntax at 7: unexpected ","')
-    expect(invariant('=СУММ(1.5)')).toBe('syntax at 7: unexpected "."')
-    expect(local('SUM(1;2)')).toBe('syntax at 5: unexpected ";"')
+    expect(invariant('СУММ(A1,B1)')).toBe('syntax at 7: Здесь не может стоять «,»')
+    expect(invariant('=СУММ(1.5)')).toBe('syntax at 7: Здесь не может стоять «.»')
+    expect(local('SUM(1;2)')).toBe('syntax at 5: Здесь не может стоять «;»')
   })
 
   it('an unterminated string or sheet name, a name inside an array constant', () => {
-    expect(invariant('=СУММ("abc;1)')).toBe('syntax at 6: unterminated string')
-    expect(invariant("'Лист!A1")).toBe('syntax at 0: unterminated quoted sheet name')
-    expect(invariant('{1;x}')).toBe('syntax at 3: unexpected "x" in an array constant')
+    expect(invariant('=СУММ("abc;1)')).toBe('syntax at 6: Текст не закрыт кавычкой')
+    expect(invariant("'Лист!A1")).toBe('syntax at 0: Имя листа не закрыто апострофом')
+    expect(invariant('{1;x}')).toBe('syntax at 3: В массиве констант не может стоять «x»')
   })
 
   it('text that would read differently once translated', () => {
     // `A1,5` is a reference and a number in ru-RU, but one name `A1.5` in the invariant syntax
-    expect(invariant('СУММ(A1,5)')).toBe('syntax at 5: "A1" cannot be written in the invariant syntax')
+    expect(invariant('СУММ(A1,5)')).toBe('syntax at 5: В хранимой формуле «A1» читается иначе')
+  })
+
+  it('in English for a locale without messages of its own', () => {
+    const own: Locale = { ...ruRU, tag: 'xx-YY' }
+    expect(invariant('=СУММ(1.5)', own)).toBe('syntax at 7: unexpected "."')
+    expect(invariant('СУММ(A1,5)', own)).toBe('syntax at 5: "A1" cannot be written in the invariant syntax')
+    expect(local('SUM(1;2)', own)).toBe('syntax at 5: unexpected ";"')
   })
 })
 

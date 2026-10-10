@@ -7,12 +7,13 @@
  */
 import { caseKey } from '../collate.js'
 import { ERROR_LITERALS, INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
-import type { Locale, TableItem, Translation } from './types.js'
+import type { Message } from './messages.js'
+import type { Locale, TableItem } from './types.js'
 
 /** Reading one syntax and translating out of it. */
 interface Side {
-  /** The name of the syntax this side reads, for messages. */
-  name: string
+  /** The locale's tag on its side, none on the invariant one, for messages. */
+  tag?: string
   syn: Syntax
   num: RegExp
   /** Error literals this side reads. */
@@ -31,7 +32,12 @@ export interface Sides {
   local: Side
 }
 
-type Fail = Extract<Translation, { ok: false }>
+/** Text that does not translate: why, at its place in the caller's text. */
+export interface Fail {
+  ok: false
+  msg: Message
+  at: number
+}
 
 const upperKeys = (entries: [string, string][]) => new Map(entries.map(([k, v]) => [caseKey(k), v]))
 const byLength = (xs: string[]) => [...new Set(xs)].sort((a, b) => b.length - a.length)
@@ -49,9 +55,9 @@ export function sides(loc: Locale): Sides {
   const fns = Object.entries(loc.functions)
   const items = TABLE_ITEMS.map((w): [string, string] => [w, loc.tableItems?.[w] ?? w])
   return {
-    invariant: { name: 'the invariant syntax', syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: upperKeys(items) },
+    invariant: { syn: INVARIANT, num: numberRule(INVARIANT), errors: byLength(ERROR_LITERALS), fn: upperKeys(fns), word: upperKeys(bools), err: upperKeys(errors), item: upperKeys(items) },
     local: {
-      name: loc.tag,
+      tag: loc.tag,
       syn: local,
       num: numberRule(local),
       errors: byLength([...errors.map((e) => e[1]), ...ERROR_LITERALS]),
@@ -66,7 +72,7 @@ export function sides(loc: Locale): Sides {
 
 const TABLE_ITEMS: TableItem[] = ['#All', '#Data', '#Headers', '#Totals', '#This Row']
 
-const fail = (at: number, message: string): Fail => ({ ok: false, code: 'syntax', message, at })
+const fail = (at: number, msg: Message): Fail => ({ ok: false, msg, at })
 
 /** A name in quotes because it reads as a boolean of the side (`'ИСТИНА'`), which stands for the name where it is no boolean. */
 const quotedWord = (text: string, side: Side) => text.length > 2 && text.startsWith("'") && text.endsWith("'") && side.word.has(caseKey(text.slice(1, -1)))
@@ -81,7 +87,7 @@ export interface Translated {
 /** Translates `src` out of the side `from` into `to`; `offset` is where `src` starts in the caller's text (after `=`). */
 export function translate(src: string, from: Side, to: Side, offset = 0): Translated | Fail {
   const pieces = lex(src, from.syn, from.errors, from.num)
-  if (!Array.isArray(pieces)) return fail(offset + pieces.at, pieces.message)
+  if (!Array.isArray(pieces)) return fail(offset + pieces.at, pieces.msg)
   // characters with a meaning on the other side: in an array constant its separators, elsewhere the list separator
   const special = [new Set([to.syn.decimal, to.syn.list]), new Set([to.syn.decimal, to.syn.arrayColumn, to.syn.arrayRow])]
   const out: Piece[] = []
@@ -96,7 +102,7 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
     else if (p.k === 'row') text = to.syn.arrayRow
     else if (p.k === 'word') {
       const w = from.word.get(caseKey(text))
-      if (w === undefined && p.arr) return fail(offset + p.at, `unexpected ${JSON.stringify(text)} in an array constant`)
+      if (w === undefined && p.arr) return fail(offset + p.at, { key: 'unexpectedInArray', text })
       // a name that reads as a boolean on the other side goes in quotes, as Excel ru-RU shows a name ИСТИНА ('ИСТИНА');
       // a table's name before its brackets does not (ИСТИНА[Qty])
       if (w === undefined && to.word.has(caseKey(text)) && pieces[i + 1]?.k !== 'tbl') {
@@ -107,7 +113,7 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
     } else if (p.k === 'raw' && quotedWord(text, from) && !to.word.has(caseKey(text.slice(1, -1)))) {
       out.push({ ...p, k: 'word', text: text.slice(1, -1) })
       continue
-    } else if (special[p.arr ? 1 : 0].has(text)) return fail(offset + p.at, `unexpected ${JSON.stringify(text)}`) // `,` outside a number in ru-RU
+    } else if (special[p.arr ? 1 : 0].has(text)) return fail(offset + p.at, { key: 'unexpectedText', text }) // `,` outside a number in ru-RU
     out.push({ ...p, text })
   }
   const formula = out.map((p) => p.text).join('')
@@ -117,7 +123,7 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
   const bad = out.findIndex((p, i) => read[i]?.k !== p.k || read[i].text !== p.text)
   if (bad >= 0 || read.length !== out.length) {
     const p = pieces[bad >= 0 ? bad : out.length - 1]
-    return fail(offset + p.at, `${JSON.stringify(p.text)} cannot be written in ${to.name}`)
+    return fail(offset + p.at, { key: 'notWritable', text: p.text, ...(to.tag !== undefined ? { tag: to.tag } : {}) })
   }
   const starts: number[] = []
   let pos = 0

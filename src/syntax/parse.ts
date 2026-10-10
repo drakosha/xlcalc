@@ -4,6 +4,7 @@
  * then `@`), unions of references in parentheses (and at the top of a name's formula).
  */
 import { MAX_FORMULA_DEPTH, MAX_FORMULA_LENGTH } from '../contract.js'
+import type { Found } from '../locale/messages.js'
 import { bad, type Ast, type BinOp, type Bind, type Lit } from './ast.js'
 import { tokenize, type Tok } from './tokens.js'
 
@@ -15,14 +16,14 @@ const MAX_LET_ARGS = 254
 
 /** `union`: a top-level comma joins references (a name's formula: `'S'!A1:A3,'S'!C1:C3`). */
 export function parse(src: string, opts: { union?: boolean } = {}): Ast {
-  if (src.trim() === '') bad(0, 'empty formula', 'empty')
-  if (src.length > MAX_FORMULA_LENGTH) bad(MAX_FORMULA_LENGTH, `formula longer than ${MAX_FORMULA_LENGTH}`, 'too_long')
+  if (src.trim() === '') bad(0, { key: 'emptyFormula' }, 'empty')
+  if (src.length > MAX_FORMULA_LENGTH) bad(MAX_FORMULA_LENGTH, { key: 'tooLong', max: MAX_FORMULA_LENGTH }, 'too_long')
   const toks = tokenize(src)
   let p = 0
   let depth = 0
   const peek = () => toks[p]
   const enter = (at: number) => {
-    if (++depth > MAX_FORMULA_DEPTH) bad(at, `nesting deeper than ${MAX_FORMULA_DEPTH}`, 'too_deep')
+    if (++depth > MAX_FORMULA_DEPTH) bad(at, { key: 'tooDeep', max: MAX_FORMULA_DEPTH }, 'too_deep')
   }
 
   const binary = (level: number): Ast => {
@@ -142,7 +143,7 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
         return { k: 'fn', name: t.v, args }
       }
       default:
-        return bad(t.at, t.t === 'eof' ? 'unexpected end of formula' : `unexpected ${describe(t)}`)
+        return bad(t.at, t.t === 'eof' ? { key: 'unexpectedEnd' } : { key: 'unexpected', found: found(t) })
     }
   }
   // an argument, or nothing before the next `,` or `)`: left out
@@ -159,7 +160,7 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
       const t = peek()
       if (t.t === 'ident' && toks[p + 1].t === ',' && !/^(TRUE|FALSE)$/i.test(t.v)) {
         const up = t.v.toUpperCase()
-        if (binds.some((b) => b.name.toUpperCase() === up)) bad(t.at, `LET names ${t.v} twice`)
+        if (binds.some((b) => b.name.toUpperCase() === up)) bad(t.at, { key: 'letTwice', name: t.v })
         p += 2
         const bind: Bind = { name: t.v, slot: slots++, value: arg() }
         binds.push(bind)
@@ -170,15 +171,15 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
         continue
       }
       body = arg()
-      if (peek().t === ',') bad(t.at, `LET takes a name as its argument ${binds.length * 2 + 1}`)
+      if (peek().t === ',') bad(t.at, { key: 'letName', position: binds.length * 2 + 1 })
       break
     }
     for (const [up, bind] of outer.reverse()) {
       if (bind) scope.set(up, bind)
       else scope.delete(up)
     }
-    if (!binds.length) bad(at, 'LET takes a name and its value at least')
-    if (binds.length * 2 + (body ? 1 : 0) > MAX_LET_ARGS) bad(at, `LET takes at most ${MAX_LET_ARGS} arguments`)
+    if (!binds.length) bad(at, { key: 'letEmpty' })
+    if (binds.length * 2 + (body ? 1 : 0) > MAX_LET_ARGS) bad(at, { key: 'letTooMany', max: MAX_LET_ARGS })
     return body ? { k: 'let', binds, body } : { k: 'let', binds }
   }
   // rows separated by `;`, values by `,`, all rows of one length, as Excel requires
@@ -192,10 +193,10 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
         rows.push([])
         continue
       }
-      if (t.t !== '}') bad(t.at, `expected , ; or } in an array constant, found ${describe(t)}`)
+      if (t.t !== '}') bad(t.at, { key: 'arraySeparator', found: found(t) })
       break
     }
-    if (rows.some((r) => r.length !== rows[0].length)) bad(at, 'the rows of an array constant must have the same number of values')
+    if (rows.some((r) => r.length !== rows[0].length)) bad(at, { key: 'arrayRows' })
     return { k: 'arr', rows }
   }
   const literal = (): Lit => {
@@ -208,29 +209,19 @@ export function parse(src: string, opts: { union?: boolean } = {}): Ast {
     if (t.t === 'str') return { k: 'str', v: t.v }
     if (t.t === 'err' && t.sheet === undefined && t.ref === undefined) return { k: 'err', code: t.code }
     if (t.t === 'ident' && /^(TRUE|FALSE)$/i.test(t.v)) return { k: 'bool', v: t.v.toUpperCase() === 'TRUE' }
-    return bad(t.at, `an array constant holds numbers, text, booleans and errors only, found ${describe(t)}`)
+    return bad(t.at, { key: 'arrayValue', found: found(t) })
   }
   const expect = (k: '(' | ')') => {
     const t = toks[p]
-    if (t.t !== k) bad(t.at, `expected ${k}, found ${describe(t)}`)
+    if (t.t !== k) bad(t.at, { key: 'expected', char: k, found: found(t) })
     p++
   }
 
   const ast = opts.union ? joined(binary(0)) : binary(0)
   const t = peek()
-  if (t.t !== 'eof') bad(t.at, t.t === ',' ? 'comma outside of a function call' : `unexpected ${describe(t)}`)
+  if (t.t !== 'eof') bad(t.at, t.t === ',' ? { key: 'commaOutside' } : { key: 'unexpected', found: found(t) })
   return ast
 }
 
-function describe(t: Tok): string {
-  switch (t.t) {
-    case 'op':
-    case 'ident':
-    case 'fn':
-      return JSON.stringify(t.v)
-    case 'eof':
-      return 'end of formula'
-    default:
-      return t.t
-  }
-}
+/** A token for a message: its kind, with its text for an operator, a name or a function. */
+const found = (t: Tok): Found => (t.t === 'op' || t.t === 'ident' || t.t === 'fn' ? { t: t.t, v: t.v } : { t: t.t })
