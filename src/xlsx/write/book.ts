@@ -13,6 +13,7 @@ import { parse } from '../../syntax/parse.js'
 import { bindTables, nameProblem } from '../../syntax/check.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
+import { caseKey } from '../../collate.js'
 import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
@@ -70,7 +71,7 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
   const out: string[] = []
   for (const n of book.names ?? []) {
     const scope = n.scope === undefined ? undefined : index.get(sheetKey(n.scope))
-    const key = `${scope ?? ''}\n${n.name.toUpperCase()}`
+    const key = `${scope ?? ''}\n${caseKey(n.name)}`
     let text: string | undefined
     try {
       // a table's name alone is its data, which a file writes `Sales[]`

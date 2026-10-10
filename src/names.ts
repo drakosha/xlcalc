@@ -5,6 +5,7 @@
  */
 import type { NameInput, NameIssue } from './contract.js'
 import { FormulaError, nameProblem, parse, sheetKey, validate, walk, type Ast } from './syntax.js'
+import { caseKey } from './collate.js'
 
 export interface PreparedName {
   name: string
@@ -32,7 +33,7 @@ export function prepareNames(sheetIdx: Map<string, number>, names: NameInput[], 
       issue(`unknown scope sheet ${n.scope}`)
       continue
     }
-    const dup = `${scope}:${n.name.toUpperCase()}`
+    const dup = `${scope}:${caseKey(n.name)}`
     if (seen.has(dup)) {
       issue('duplicate name')
       continue
@@ -70,6 +71,6 @@ function withoutSheet(ast: Ast): boolean {
 
 /** The name the names of sheet `here` show: its own local name, else the global one (`here` -1: the global one). */
 export function nameFor(names: PreparedName[], here: number, name: string): PreparedName | undefined {
-  const up = name.toUpperCase()
-  return names.find((n) => n.scope === here && n.name.toUpperCase() === up) ?? names.find((n) => n.scope === -1 && n.name.toUpperCase() === up)
+  const up = caseKey(name)
+  return names.find((n) => n.scope === here && caseKey(n.name) === up) ?? names.find((n) => n.scope === -1 && caseKey(n.name) === up)
 }

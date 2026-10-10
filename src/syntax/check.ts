@@ -1,5 +1,6 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
 import type { CheckCode, NameCheck, ValidateContext, ValidateResult } from '../contract.js'
+import { caseKey } from '../collate.js'
 import { FUNCTIONS, isFunction } from '../functions.js'
 import { english } from '../locale/english.js'
 import type { Message, NameRule } from '../locale/messages.js'
@@ -156,8 +157,8 @@ export function validate(text: string, ctx: ValidateContext & BookCheck = {}): (
   if (ctx.known) {
     for (const [n, sheet] of uses) if (!ctx.known(n, sheet)) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   } else if (ctx.names) {
-    const known = new Set(ctx.names.map((n) => n.toUpperCase()))
-    for (const n of names) if (!known.has(n.toUpperCase())) return fail('unknown_name', { key: 'unknownName', name: n }, n)
+    const known = new Set(ctx.names.map(caseKey))
+    for (const n of names) if (!known.has(caseKey(n))) return fail('unknown_name', { key: 'unknownName', name: n }, n)
   }
   const calls = checkCalls(ast, text, (f) => externalSet.has(f) && !FUNCTIONS[f])
   if (calls) return { ok: false, code: calls.code, message: say(calls.msg), at: calls.at }

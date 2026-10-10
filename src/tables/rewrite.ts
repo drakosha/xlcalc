@@ -7,6 +7,7 @@ import type { BookInput, CellInput, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { FormulaError, parse, quoteSheet, tokenize, type Tok } from '../syntax.js'
+import { caseKey } from '../collate.js'
 import { specText, type TableSpec } from '../syntax/table.js'
 import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
 
@@ -23,7 +24,7 @@ const SPACE = new Set([' ', '\t', '\n', '\r'])
  * (it gives the references written without a table name). `qualify` names the table in those too: the formula leaves it.
  */
 export function rewriteTableRefs(text: string, tables: Tables, enclosing: Table | undefined, at: { s: number; r: number } | null, edit: TableEdit, qualify = false): string {
-  if (!text.includes('[') && !tables.list.some((t) => text.toUpperCase().includes(t.name.toUpperCase()))) return text
+  if (!text.includes('[') && !tables.list.some((t) => caseKey(text).includes(caseKey(t.name)))) return text
   let toks: Tok[]
   try {
     parse(text, { union: at === null })
