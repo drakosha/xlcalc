@@ -7,7 +7,7 @@
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call.
  */
-import type { BookInput, BookLayout, CellChange, CellEdit, CellInput, CellPatch, CellRef, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellChange, CellEdit, CellInput, CellPatch, CellRef, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
@@ -67,6 +67,7 @@ export interface SessionSteps {
   validation(sheet: string, cell: string): Steps<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
   result(): Steps<ComputeResult>
+  getSnapshot(): Steps<BookSnapshot>
   hash(): Steps<string>
   close(): void
 }
@@ -354,6 +355,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const t0 = nowMs()
       return yield* buildResult(yield* ready(), clock, t0, display)
     },
+    *getSnapshot() {
+      const t0 = nowMs()
+      const s = yield* ready()
+      return { book: s.input, result: yield* buildResult(s, clock, t0, display) }
+    },
     *undo() {
       return yield* applyStep(core, history.undo.at(-1), (forth) => history.undone(forth))
     },
@@ -397,6 +403,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
     validateEntry: (sheet, cell, input) => now(() => core.validateEntry(sheet, cell, input)),
     result: () => now(() => core.result()),
+    getSnapshot: () => now(() => core.getSnapshot()),
     hash: () => now(() => core.hash()),
     undo: () => now(() => core.undo()),
     redo: () => now(() => core.redo()),

@@ -5,7 +5,7 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, SessionHistory, SessionOptions, StructureOp, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, StructureOp, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { splitCall, checkCall } from '../async/options.js'
@@ -67,7 +67,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', patchCells: 'patches', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', patchCells: 'patches', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -392,6 +392,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       validation: (sheet, cell) => value(call('validation', [sheet, cell])),
       validateEntry: (sheet, cell, input, co) => value(call('validateEntry', [sheet, cell, input], co)),
       result: (co) => value(call('result', [], co)),
+      // the book comes as text, read a chunk at a time as `book()` reads it
+      getSnapshot: (co) => value<{ book: Sent; result: ComputeResult }>(call('getSnapshot', [], co)).then(async (v) => ({ book: await unpackSlowly(v.book), result: v.result })),
       hash: (co) => value(call('hash', [], co)),
       undo: (co) => step('undo', co),
       redo: (co) => step('redo', co),
