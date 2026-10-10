@@ -816,6 +816,18 @@ export type ValidateResult =
   | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
   | { ok: false; code: CheckCode; message: string; at: number }
 
+/**
+ * A check or an edit that did not pass: a code a program reads, a message for people (in the book's locale where the
+ * call has one, English otherwise) and, for typed text, the position in it. Every check answers `{ ok: true, … }` or
+ * a `Refusal` with its own codes.
+ */
+export interface Refusal<Code extends string = string> {
+  ok: false
+  code: Code
+  message: string
+  at?: number
+}
+
 export type NameCheck = { ok: true } | { ok: false; message: string }
 
 /** The book whose rules `validateName` checks a name by. */
