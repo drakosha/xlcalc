@@ -127,9 +127,9 @@ function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis
 
 /**
  * Input hash: sheets by name, cells by address (their notes and links with them), names by (scope, name). Columns,
- * rows, merged areas (in order), the filter mode, tables (in order), frozen panes, rules of data validation, outline
- * settings, the style table, a locale other than en-US, the 1904 date system and iterative calculation come after their
- * sheet and the names when there are any, so a book without them hashes as before.
+ * rows, merged areas (in order), the filter mode, tables (in order), frozen panes, conditional formats (in order), rules
+ * of data validation, outline settings, the style table, a locale other than en-US, the 1904 date system and iterative
+ * calculation come after their sheet and the names when there are any, so a book without them hashes as before.
  */
 export const inputHash = (book: BookInput): string => run(inputHashSteps(book))
 
@@ -147,6 +147,7 @@ export function* inputHashSteps(book: BookInput): Steps<string> {
     if (s.filtered) h.update('F\n')
     for (const t of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
     if (s.frozen) h.update(`P ${stableJson(s.frozen)}\n`)
+    if (s.conditionalFormats?.length) h.update(`K ${stableJson(s.conditionalFormats)}\n`)
     // rules of data validation in any order: no two meet
     for (const v of (s.validations ?? []).map(stableJson).sort(byText)) h.update(`V ${v}\n`)
     if (s.outline) h.update(`O ${stableJson(s.outline)}\n`)

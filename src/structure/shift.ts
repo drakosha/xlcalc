@@ -15,6 +15,7 @@ import { relocated, shiftRefusal } from './arrays.js'
 import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteFormula, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
+import { shiftConditional } from '../cond/structure.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
 
 /** One axis of a reference after `n` rows (columns) are inserted before index `at`; null when it leaves the sheet. */
@@ -132,7 +133,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
     return layout
   })
-  const out: BookInput = { ...book, sheets }
+  const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }
   const nm = rewriteNames(book.names, offsetsStay(t), names)
   if (nm) out.names = nm
   const key = sheetKey(target.name)

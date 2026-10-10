@@ -22,6 +22,7 @@ import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
+import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
 
@@ -239,6 +240,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const urls = new Map<string, string>()
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
   const pane = paneXml(sheet.frozen)
+  const cond = conditionalXml(sheet, index, { styles, issues, sheets: ctx.sheets, tables: ctx.tables })
   // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
   const o = sheet.outline
   const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
@@ -256,10 +258,12 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     `<sheetData>${data.join('')}</sheetData>` +
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
+    cond.main +
     validationsXml(sheet.validations, { sheet: sheet.name, sheets: ctx.sheets, tables: ctx.tables, issues }) +
     hyperlinks +
     (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
+    (cond.ext ? `<extLst>${cond.ext}</extLst>` : '') +
     '</worksheet>'
   return { xml, formulas, rels, ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}) }
 }

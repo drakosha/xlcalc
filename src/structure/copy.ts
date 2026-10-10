@@ -16,6 +16,7 @@ import { carryNames, shiftRect, within } from './move.js'
 import { arrayRefusal, copiedCells, relocated } from './arrays.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteFormula, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { copyConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 
 /** Relative bounds moved by the copy's offset; a whole column keeps its rows, a whole row its columns. */
@@ -107,6 +108,7 @@ export function copyRange(book: BookInput, from: string, src: Rect, to: string, 
   }
   pasteValidations(source, out, paste, null, names)
   pasteLayout(source, out, paste)
+  copyConditional(source, out, paste, names)
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === tk && within(pasted, ref.cell) ? null : ref)
   return { ok: true, book: out, mapCell }
 }

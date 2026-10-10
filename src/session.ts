@@ -19,6 +19,7 @@ import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './s
 import { movedChanges } from './session/moved.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
+import { dropStats } from './cond/stats.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
@@ -96,6 +97,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const sheetIndex = (s: EngineState) => (name: string) => s.sheetIdx.get(sheetKey(name))
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
   const changes = (s: EngineState, keys: string[]): CellChange[] => {
+    // the statistics of conditional formats over changed cells are taken again
+    dropStats(s, keys)
     const look = display ? cellLooks(s) : null
     return keys.map((k) => {
       const [i, r, c] = k.split(':').map(Number)
@@ -229,6 +232,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // the sheets the layout replaces, to put back if the call stops
       const sheets = s.input.sheets.slice()
       applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
+      if (checked.some((e) => 'conditionalFormats' in e)) dropStats(s, [], true)
       try {
         // merged areas added or removed: the arrays whose range they meet spill or stop; hidden rows: SUBTOTAL and AGGREGATE count again
         const keys = new Set<string>()

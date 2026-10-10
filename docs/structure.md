@@ -1,6 +1,6 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, conditional formats, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
 The rules below were measured in Excel 16 for Mac (en-US).
 
@@ -167,6 +167,18 @@ Frozen panes (`frozen`) keep the lines before their split. Rows inserted before 
 
 The parts sets `struct-held` and `frozen-held` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([docs/xlsx.md](xlsx.md#notes-hyperlinks-and-frozen-panes)).
 
+## Conditional formats
+
+A rule's ranges and formulas change as Excel changes them ([docs/conditional-formats.md](conditional-formats.md#structure-operations)):
+
+- Inserted lines that follow a line of a rule join it, as they take the format of the line before them; a rule after them moves.
+- Deleted lines leave its ranges, and a rule with nothing left is gone. A colour scale, a data bar, an icon set, a top, average or duplicate rule that loses lines goes after the other rules.
+- A move takes its cells' rules along and the cells it lands on keep theirs; to another sheet the moved part is a rule there, first. A rule whose formula the move rewrote goes after the others.
+- A copy pastes its cells' rules as new rules, first, and the pasted cells lose theirs; a fill down a rule's own columns grows the rule.
+- Formulas change as the formula of the rule's first cell (the top-left of its cells) would; a reference to a deleted sheet is `#REF!`.
+
+The cond sets `struct-held`, `held` and `held-2` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them.
+
 ## Data validation and outlines
 
 A rule of data validation (`SheetInput.validations`, [docs/validation.md](validation.md)) is a range of cells and formulas written for its first cell. Its ranges change as references do, with one difference at their end:
@@ -222,6 +234,7 @@ Styles and layout change through the session so that its book stays the host's b
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;
 - frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
+- conditional formats through `setLayout`: `{ sheet, conditionalFormats: [...] }` replaces the sheet's rules;
 - rules of data validation through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;
 - outlines through `setLayout`: a group is the lines' `outlineLevel`, collapsing it hides its lines and marks its summary line `collapsed` (`{ sheet, rows: '3:5', set: { hidden: true } }`, `{ sheet, rows: '6', set: { collapsed: true } }`), and `{ sheet, outline: { summaryBelow: false } }` sets where the summaries are.
 
@@ -264,5 +277,5 @@ Copies were applied through AppleScript's `copy range` with a destination, Excel
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
 - Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does.
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
-- Conditional formats and charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
+- Charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
 - References to other workbooks are not read, so they never occur in a valid formula.

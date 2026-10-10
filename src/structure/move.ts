@@ -11,6 +11,7 @@ import { contains, hi, isFull, lo, meets, parseRange, rectOf, withSpan, type Are
 import { arrayRefusal, relocated } from './arrays.js'
 import { mergeRefusal, pasteLayout, type Paste } from './paste.js'
 import { rewriteCell, rewriteNames, rewriteTemplates, sheetNames, type Outcome, type Transform } from './rewrite.js'
+import { moveConditional } from '../cond/structure.js'
 import { pasteValidations } from '../validation/structure.js'
 
 type Pair = [number, number]
@@ -180,6 +181,7 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
   if (nm) out.names = nm
   pasteValidations(book, out, paste, t, names)
   pasteLayout(book, out, paste)
+  moveConditional(book, out, paste, t, names)
   const mapCell = (ref: CellRef): CellRef | null => {
     const k = sheetKey(ref.sheet)
     if (k === fk && within(src, ref.cell)) {

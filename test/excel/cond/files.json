@@ -1,0 +1,7121 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "day": "2026-10-10",
+  "seconds": 29
+ },
+ "books": {
+  "kinds": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "A7": {
+       "value": 7
+      },
+      "A8": {
+       "value": 8
+      },
+      "A9": {
+       "value": 9
+      },
+      "A10": {
+       "value": 10
+      },
+      "A11": {
+       "value": -2
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "B7": {
+       "value": 7
+      },
+      "B8": {
+       "value": 8
+      },
+      "B9": {
+       "value": 9
+      },
+      "B10": {
+       "value": 10
+      },
+      "B11": {
+       "value": -2
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 2
+      },
+      "E3": {
+       "value": 3
+      },
+      "E4": {
+       "value": 4
+      },
+      "E5": {
+       "value": 5
+      },
+      "E6": {
+       "value": 6
+      },
+      "E7": {
+       "value": 7
+      },
+      "E8": {
+       "value": 8
+      },
+      "E9": {
+       "value": 9
+      },
+      "E10": {
+       "value": 10
+      },
+      "E11": {
+       "value": -2
+      },
+      "F1": {
+       "value": 1
+      },
+      "F2": {
+       "value": 2
+      },
+      "F3": {
+       "value": 3
+      },
+      "F4": {
+       "value": 4
+      },
+      "F5": {
+       "value": 5
+      },
+      "F6": {
+       "value": 6
+      },
+      "F7": {
+       "value": 7
+      },
+      "F8": {
+       "value": 8
+      },
+      "F9": {
+       "value": 9
+      },
+      "F10": {
+       "value": 10
+      },
+      "F11": {
+       "value": -2
+      },
+      "G1": {
+       "value": 1
+      },
+      "G2": {
+       "value": 2
+      },
+      "G3": {
+       "value": 3
+      },
+      "G4": {
+       "value": 4
+      },
+      "G5": {
+       "value": 5
+      },
+      "G6": {
+       "value": 6
+      },
+      "G7": {
+       "value": 7
+      },
+      "G8": {
+       "value": 8
+      },
+      "G9": {
+       "value": 9
+      },
+      "G10": {
+       "value": 10
+      },
+      "G11": {
+       "value": -2
+      },
+      "H1": {
+       "value": 1
+      },
+      "H2": {
+       "value": 2
+      },
+      "H3": {
+       "value": 3
+      },
+      "H4": {
+       "value": 4
+      },
+      "H5": {
+       "value": 5
+      },
+      "H6": {
+       "value": 6
+      },
+      "H7": {
+       "value": 7
+      },
+      "H8": {
+       "value": 8
+      },
+      "H9": {
+       "value": 9
+      },
+      "H10": {
+       "value": 10
+      },
+      "H11": {
+       "value": -2
+      },
+      "I1": {
+       "value": 1
+      },
+      "I2": {
+       "value": 2
+      },
+      "I3": {
+       "value": 3
+      },
+      "I4": {
+       "value": 4
+      },
+      "I5": {
+       "value": 5
+      },
+      "I6": {
+       "value": 6
+      },
+      "I7": {
+       "value": 7
+      },
+      "I8": {
+       "value": 8
+      },
+      "I9": {
+       "value": 9
+      },
+      "I10": {
+       "value": 10
+      },
+      "I11": {
+       "value": -2
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 2
+      },
+      "J3": {
+       "value": 3
+      },
+      "J4": {
+       "value": 4
+      },
+      "J5": {
+       "value": 5
+      },
+      "J6": {
+       "value": 6
+      },
+      "J7": {
+       "value": 7
+      },
+      "J8": {
+       "value": 8
+      },
+      "J9": {
+       "value": 9
+      },
+      "J10": {
+       "value": 10
+      },
+      "J11": {
+       "value": -2
+      },
+      "K1": {
+       "value": 1
+      },
+      "K2": {
+       "value": 2
+      },
+      "K3": {
+       "value": 3
+      },
+      "K4": {
+       "value": 4
+      },
+      "K5": {
+       "value": 5
+      },
+      "K6": {
+       "value": 6
+      },
+      "K7": {
+       "value": 7
+      },
+      "K8": {
+       "value": 8
+      },
+      "K9": {
+       "value": 9
+      },
+      "K10": {
+       "value": 10
+      },
+      "K11": {
+       "value": -2
+      },
+      "L1": {
+       "value": 1
+      },
+      "L2": {
+       "value": 2
+      },
+      "L3": {
+       "value": 3
+      },
+      "L4": {
+       "value": 4
+      },
+      "L5": {
+       "value": 5
+      },
+      "L6": {
+       "value": 6
+      },
+      "L7": {
+       "value": 7
+      },
+      "L8": {
+       "value": 8
+      },
+      "L9": {
+       "value": 9
+      },
+      "L10": {
+       "value": 10
+      },
+      "L11": {
+       "value": -2
+      },
+      "M1": {
+       "value": 1
+      },
+      "M2": {
+       "value": 2
+      },
+      "M3": {
+       "value": 3
+      },
+      "M4": {
+       "value": 4
+      },
+      "M5": {
+       "value": 5
+      },
+      "M6": {
+       "value": 6
+      },
+      "M7": {
+       "value": 7
+      },
+      "M8": {
+       "value": 8
+      },
+      "M9": {
+       "value": 9
+      },
+      "M10": {
+       "value": 10
+      },
+      "M11": {
+       "value": -2
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 2
+      },
+      "N3": {
+       "value": 3
+      },
+      "N4": {
+       "value": 4
+      },
+      "N5": {
+       "value": 5
+      },
+      "N6": {
+       "value": 6
+      },
+      "N7": {
+       "value": 7
+      },
+      "N8": {
+       "value": 8
+      },
+      "N9": {
+       "value": 9
+      },
+      "N10": {
+       "value": 10
+      },
+      "N11": {
+       "value": -2
+      },
+      "O1": {
+       "value": 1
+      },
+      "O2": {
+       "value": 2
+      },
+      "O3": {
+       "value": 3
+      },
+      "O4": {
+       "value": 4
+      },
+      "O5": {
+       "value": 5
+      },
+      "O6": {
+       "value": 6
+      },
+      "O7": {
+       "value": 7
+      },
+      "O8": {
+       "value": 8
+      },
+      "O9": {
+       "value": 9
+      },
+      "O10": {
+       "value": 10
+      },
+      "O11": {
+       "value": -2
+      },
+      "Z1": {
+       "value": 8
+      },
+      "C1": {
+       "value": "a1"
+      },
+      "C2": {
+       "value": "a\"bc"
+      },
+      "C3": {
+       "value": "xyz"
+      },
+      "C4": {
+       "value": "q"
+      },
+      "C5": {
+       "value": "b12"
+      },
+      "C6": {
+       "value": ""
+      },
+      "C7": {
+       "value": "ab"
+      },
+      "C8": {
+       "value": "z"
+      },
+      "C9": {
+       "value": "Q1"
+      },
+      "C10": {
+       "value": "x"
+      },
+      "C11": {
+       "value": "a\"b"
+      },
+      "D1": {
+       "formula": "EDATE(TODAY(),-1)+-4"
+      },
+      "D2": {
+       "formula": "EDATE(TODAY(),-1)+-3"
+      },
+      "D3": {
+       "formula": "EDATE(TODAY(),-1)+-2"
+      },
+      "D4": {
+       "formula": "EDATE(TODAY(),-1)+-1"
+      },
+      "D5": {
+       "formula": "NA()"
+      },
+      "D6": {
+       "value": ""
+      },
+      "D7": {
+       "formula": "EDATE(TODAY(),-1)+2"
+      },
+      "D8": {
+       "formula": "EDATE(TODAY(),-1)+3"
+      },
+      "D9": {
+       "formula": "EDATE(TODAY(),-1)+4"
+      },
+      "D10": {
+       "formula": "EDATE(TODAY(),-1)+5"
+      },
+      "D11": {
+       "formula": "EDATE(TODAY(),-1)+6"
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:A11"
+       ],
+       "operator": "between",
+       "formulas": [
+        "3",
+        "$Z$1"
+       ],
+       "stopIfTrue": true,
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        },
+        "font": {
+         "color": "#9C0006",
+         "bold": false
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B1:B11"
+       ],
+       "formula": "AND($B1>2,ISODD($B1))",
+       "style": {
+        "font": {
+         "bold": true,
+         "underline": "double"
+        },
+        "border": {
+         "bottom": {
+          "style": "thin",
+          "color": "#FF0000"
+         },
+         "top": {
+          "style": "dashed"
+         }
+        }
+       }
+      },
+      {
+       "type": "containsText",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "1",
+       "style": {
+        "font": {
+         "strike": true,
+         "italic": true
+        }
+       }
+      },
+      {
+       "type": "beginsWith",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "a\"b"
+      },
+      {
+       "type": "endsWith",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "z",
+       "style": {
+        "fill": {
+         "color": "#00B050"
+        }
+       }
+      },
+      {
+       "type": "notContainsText",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "q",
+       "style": {
+        "format": "0.0"
+       }
+      },
+      {
+       "type": "timePeriod",
+       "ranges": [
+        "D1:D11"
+       ],
+       "period": "lastMonth",
+       "style": {
+        "fill": {
+         "color": "#FFEB9C"
+        }
+       }
+      },
+      {
+       "type": "containsBlanks",
+       "ranges": [
+        "D1:D11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#D9D9D9"
+        }
+       }
+      },
+      {
+       "type": "notContainsErrors",
+       "ranges": [
+        "D1:D11"
+       ],
+       "style": {
+        "format": 10
+       }
+      },
+      {
+       "type": "top10",
+       "ranges": [
+        "E1:E11"
+       ],
+       "rank": 30,
+       "percent": true,
+       "bottom": true,
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "aboveAverage",
+       "ranges": [
+        "E1:E11"
+       ],
+       "below": true,
+       "stdDev": 2,
+       "style": {
+        "font": {
+         "color": "#0070C0"
+        }
+       }
+      },
+      {
+       "type": "uniqueValues",
+       "ranges": [
+        "F1:F11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "duplicateValues",
+       "ranges": [
+        "F1:F11"
+       ],
+       "style": {
+        "format": "#,##0.00 \"kg\""
+       }
+      },
+      {
+       "type": "colorScale",
+       "ranges": [
+        "G1:G11"
+       ],
+       "points": [
+        {
+         "value": {
+          "type": "num",
+          "value": "0"
+         },
+         "color": "#5A8AC6"
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "40"
+         },
+         "color": "#FCFCFF"
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1*2"
+         },
+         "color": "#F8696B"
+        }
+       ]
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "H1:H11"
+       ],
+       "min": {
+        "type": "autoMin"
+       },
+       "max": {
+        "type": "autoMax"
+       },
+       "color": "#638EC6",
+       "border": "#638EC6",
+       "negativeColor": "#FF0000",
+       "negativeBorder": "#FF0000"
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "I1:I11"
+       ],
+       "min": {
+        "type": "num",
+        "value": "-5"
+       },
+       "max": {
+        "type": "percentile",
+        "value": "90"
+       },
+       "color": "#FFB628",
+       "gradient": false,
+       "axis": "middle",
+       "axisColor": "#7F7F7F",
+       "direction": "rightToLeft",
+       "minLength": 5,
+       "maxLength": 95,
+       "showValue": false
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "J1:J11"
+       ],
+       "min": {
+        "type": "min"
+       },
+       "max": {
+        "type": "max"
+       },
+       "color": "#63C384",
+       "excel2007": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "K1:K11"
+       ],
+       "icons": "5Quarters",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "20"
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "5"
+         },
+         "gte": false
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "60"
+         }
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1"
+         }
+        }
+       ],
+       "reverse": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "L1:L11"
+       ],
+       "icons": "3Stars",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "33"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "67"
+         }
+        }
+       ],
+       "showValue": false
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "M1:M11"
+       ],
+       "icons": "3TrafficLights1",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         },
+         "icon": {
+          "set": "3Flags",
+          "index": 0
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "4"
+         },
+         "icon": null
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "8"
+         },
+         "icon": {
+          "set": "5Boxes",
+          "index": 4
+         }
+        }
+       ]
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "N1:N11"
+       ],
+       "formula": "$N1>'Other sheet'!$A$1",
+       "style": {
+        "fill": {
+         "color": "#FFC000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "O1:O11"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "'Other sheet'!$A$2"
+       ],
+       "style": {
+        "font": {
+         "color": "#FF0000"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "Other sheet",
+     "cells": {
+      "A1": {
+       "value": 4
+      },
+      "A2": {
+       "value": 6
+      }
+     }
+    }
+   ]
+  },
+  "wide": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": "a"
+      },
+      "B3": {
+       "value": 2
+      },
+      "C2": {
+       "value": 1
+      },
+      "C3": {
+       "value": 2
+      },
+      "C4": {
+       "value": 3
+      },
+      "E6": {
+       "value": 5
+      },
+      "G1": {
+       "value": 1
+      },
+      "H2": {
+       "value": 2
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 2
+      },
+      "J3": {
+       "value": 3
+      },
+      "J4": {
+       "value": 4
+      },
+      "J5": {
+       "value": 5
+      },
+      "J6": {
+       "value": 6
+      },
+      "J7": {
+       "value": 0
+      },
+      "J8": {
+       "value": 8
+      },
+      "J9": {
+       "value": 9
+      },
+      "J10": {
+       "value": 10
+      },
+      "J11": {
+       "value": 11
+      },
+      "J12": {
+       "value": 12
+      },
+      "J13": {
+       "value": 13
+      },
+      "J14": {
+       "value": 0
+      },
+      "J15": {
+       "value": 15
+      },
+      "J16": {
+       "value": 16
+      },
+      "J17": {
+       "value": 17
+      },
+      "J18": {
+       "value": 18
+      },
+      "J19": {
+       "value": 19
+      },
+      "J20": {
+       "value": 20
+      },
+      "J21": {
+       "value": 0
+      },
+      "J22": {
+       "value": 22
+      },
+      "J23": {
+       "value": 23
+      },
+      "J24": {
+       "value": 24
+      },
+      "J25": {
+       "value": 25
+      },
+      "J26": {
+       "value": 26
+      },
+      "J27": {
+       "value": 27
+      },
+      "J28": {
+       "value": 0
+      },
+      "J29": {
+       "value": 29
+      },
+      "J30": {
+       "value": 30
+      },
+      "J31": {
+       "value": 31
+      },
+      "J32": {
+       "value": 32
+      },
+      "J33": {
+       "value": 33
+      },
+      "J34": {
+       "value": 34
+      },
+      "J35": {
+       "value": 0
+      },
+      "J36": {
+       "value": 36
+      },
+      "J37": {
+       "value": 37
+      },
+      "J38": {
+       "value": 38
+      },
+      "J39": {
+       "value": 39
+      },
+      "J40": {
+       "value": 40
+      },
+      "J41": {
+       "value": 41
+      },
+      "J42": {
+       "value": 0
+      },
+      "J43": {
+       "value": 43
+      },
+      "J44": {
+       "value": 44
+      },
+      "J45": {
+       "value": 45
+      },
+      "J46": {
+       "value": 46
+      },
+      "J47": {
+       "value": 47
+      },
+      "J48": {
+       "value": 48
+      },
+      "J49": {
+       "value": 0
+      },
+      "J50": {
+       "value": 50
+      },
+      "J51": {
+       "value": 51
+      },
+      "J52": {
+       "value": 52
+      },
+      "J53": {
+       "value": 53
+      },
+      "J54": {
+       "value": 54
+      },
+      "J55": {
+       "value": 55
+      },
+      "J56": {
+       "value": 0
+      },
+      "J57": {
+       "value": 57
+      },
+      "J58": {
+       "value": 58
+      },
+      "J59": {
+       "value": 59
+      },
+      "J60": {
+       "value": 60
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "A:A"
+       ],
+       "formula": "ISNUMBER(A1)",
+       "style": {
+        "fill": {
+         "color": "#DDEBF7"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "3:4"
+       ],
+       "formula": "MOD(COLUMN(),2)=0",
+       "style": {
+        "font": {
+         "bold": true
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "C2:C4",
+        "E6",
+        "G1:H2"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "C2"
+       ],
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J1"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "1"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J2"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "2"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J3"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "3"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J4"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "4"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J5"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "5"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J6"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "6"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J7"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "7"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J8"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "8"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J9"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "9"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J10"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "10"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J11"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "11"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J12"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "12"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J13"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "13"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J14"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "14"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J15"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "15"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J16"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "16"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J17"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "17"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J18"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "18"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J19"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "19"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J20"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "20"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J21"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "21"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J22"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "22"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J23"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "23"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J24"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "24"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J25"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "25"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J26"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "26"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J27"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "27"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J28"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "28"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J29"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "29"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J30"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "30"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J31"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "31"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J32"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "32"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J33"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "33"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J34"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "34"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J35"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "35"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J36"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "36"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J37"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "37"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J38"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "38"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J39"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "39"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J40"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "40"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J41"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "41"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J42"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "42"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J43"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "43"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J44"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "44"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J45"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "45"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J46"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "46"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J47"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "47"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J48"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "48"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J49"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "49"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J50"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "50"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J51"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "51"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J52"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "52"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J53"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "53"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J54"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "54"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J55"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "55"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J56"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "56"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J57"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "57"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J58"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "58"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J59"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "59"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "J60"
+       ],
+       "operator": "equal",
+       "formulas": [
+        "60"
+       ],
+       "style": {
+        "font": {
+         "color": "#C00000"
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "kinds-insert-row": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A5": {
+       "value": 3
+      },
+      "A6": {
+       "value": 4
+      },
+      "A7": {
+       "value": 5
+      },
+      "A8": {
+       "value": 6
+      },
+      "A9": {
+       "value": 7
+      },
+      "A10": {
+       "value": 8
+      },
+      "A11": {
+       "value": 9
+      },
+      "A12": {
+       "value": 10
+      },
+      "A13": {
+       "value": -2
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B5": {
+       "value": 3
+      },
+      "B6": {
+       "value": 4
+      },
+      "B7": {
+       "value": 5
+      },
+      "B8": {
+       "value": 6
+      },
+      "B9": {
+       "value": 7
+      },
+      "B10": {
+       "value": 8
+      },
+      "B11": {
+       "value": 9
+      },
+      "B12": {
+       "value": 10
+      },
+      "B13": {
+       "value": -2
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 2
+      },
+      "E5": {
+       "value": 3
+      },
+      "E6": {
+       "value": 4
+      },
+      "E7": {
+       "value": 5
+      },
+      "E8": {
+       "value": 6
+      },
+      "E9": {
+       "value": 7
+      },
+      "E10": {
+       "value": 8
+      },
+      "E11": {
+       "value": 9
+      },
+      "E12": {
+       "value": 10
+      },
+      "E13": {
+       "value": -2
+      },
+      "F1": {
+       "value": 1
+      },
+      "F2": {
+       "value": 2
+      },
+      "F5": {
+       "value": 3
+      },
+      "F6": {
+       "value": 4
+      },
+      "F7": {
+       "value": 5
+      },
+      "F8": {
+       "value": 6
+      },
+      "F9": {
+       "value": 7
+      },
+      "F10": {
+       "value": 8
+      },
+      "F11": {
+       "value": 9
+      },
+      "F12": {
+       "value": 10
+      },
+      "F13": {
+       "value": -2
+      },
+      "G1": {
+       "value": 1
+      },
+      "G2": {
+       "value": 2
+      },
+      "G5": {
+       "value": 3
+      },
+      "G6": {
+       "value": 4
+      },
+      "G7": {
+       "value": 5
+      },
+      "G8": {
+       "value": 6
+      },
+      "G9": {
+       "value": 7
+      },
+      "G10": {
+       "value": 8
+      },
+      "G11": {
+       "value": 9
+      },
+      "G12": {
+       "value": 10
+      },
+      "G13": {
+       "value": -2
+      },
+      "H1": {
+       "value": 1
+      },
+      "H2": {
+       "value": 2
+      },
+      "H5": {
+       "value": 3
+      },
+      "H6": {
+       "value": 4
+      },
+      "H7": {
+       "value": 5
+      },
+      "H8": {
+       "value": 6
+      },
+      "H9": {
+       "value": 7
+      },
+      "H10": {
+       "value": 8
+      },
+      "H11": {
+       "value": 9
+      },
+      "H12": {
+       "value": 10
+      },
+      "H13": {
+       "value": -2
+      },
+      "I1": {
+       "value": 1
+      },
+      "I2": {
+       "value": 2
+      },
+      "I5": {
+       "value": 3
+      },
+      "I6": {
+       "value": 4
+      },
+      "I7": {
+       "value": 5
+      },
+      "I8": {
+       "value": 6
+      },
+      "I9": {
+       "value": 7
+      },
+      "I10": {
+       "value": 8
+      },
+      "I11": {
+       "value": 9
+      },
+      "I12": {
+       "value": 10
+      },
+      "I13": {
+       "value": -2
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 2
+      },
+      "J5": {
+       "value": 3
+      },
+      "J6": {
+       "value": 4
+      },
+      "J7": {
+       "value": 5
+      },
+      "J8": {
+       "value": 6
+      },
+      "J9": {
+       "value": 7
+      },
+      "J10": {
+       "value": 8
+      },
+      "J11": {
+       "value": 9
+      },
+      "J12": {
+       "value": 10
+      },
+      "J13": {
+       "value": -2
+      },
+      "K1": {
+       "value": 1
+      },
+      "K2": {
+       "value": 2
+      },
+      "K5": {
+       "value": 3
+      },
+      "K6": {
+       "value": 4
+      },
+      "K7": {
+       "value": 5
+      },
+      "K8": {
+       "value": 6
+      },
+      "K9": {
+       "value": 7
+      },
+      "K10": {
+       "value": 8
+      },
+      "K11": {
+       "value": 9
+      },
+      "K12": {
+       "value": 10
+      },
+      "K13": {
+       "value": -2
+      },
+      "L1": {
+       "value": 1
+      },
+      "L2": {
+       "value": 2
+      },
+      "L5": {
+       "value": 3
+      },
+      "L6": {
+       "value": 4
+      },
+      "L7": {
+       "value": 5
+      },
+      "L8": {
+       "value": 6
+      },
+      "L9": {
+       "value": 7
+      },
+      "L10": {
+       "value": 8
+      },
+      "L11": {
+       "value": 9
+      },
+      "L12": {
+       "value": 10
+      },
+      "L13": {
+       "value": -2
+      },
+      "M1": {
+       "value": 1
+      },
+      "M2": {
+       "value": 2
+      },
+      "M5": {
+       "value": 3
+      },
+      "M6": {
+       "value": 4
+      },
+      "M7": {
+       "value": 5
+      },
+      "M8": {
+       "value": 6
+      },
+      "M9": {
+       "value": 7
+      },
+      "M10": {
+       "value": 8
+      },
+      "M11": {
+       "value": 9
+      },
+      "M12": {
+       "value": 10
+      },
+      "M13": {
+       "value": -2
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 2
+      },
+      "N5": {
+       "value": 3
+      },
+      "N6": {
+       "value": 4
+      },
+      "N7": {
+       "value": 5
+      },
+      "N8": {
+       "value": 6
+      },
+      "N9": {
+       "value": 7
+      },
+      "N10": {
+       "value": 8
+      },
+      "N11": {
+       "value": 9
+      },
+      "N12": {
+       "value": 10
+      },
+      "N13": {
+       "value": -2
+      },
+      "O1": {
+       "value": 1
+      },
+      "O2": {
+       "value": 2
+      },
+      "O5": {
+       "value": 3
+      },
+      "O6": {
+       "value": 4
+      },
+      "O7": {
+       "value": 5
+      },
+      "O8": {
+       "value": 6
+      },
+      "O9": {
+       "value": 7
+      },
+      "O10": {
+       "value": 8
+      },
+      "O11": {
+       "value": 9
+      },
+      "O12": {
+       "value": 10
+      },
+      "O13": {
+       "value": -2
+      },
+      "Z1": {
+       "value": 8
+      },
+      "C1": {
+       "value": "a1"
+      },
+      "C2": {
+       "value": "a\"bc"
+      },
+      "C5": {
+       "value": "xyz"
+      },
+      "C6": {
+       "value": "q"
+      },
+      "C7": {
+       "value": "b12"
+      },
+      "C8": {
+       "value": ""
+      },
+      "C9": {
+       "value": "ab"
+      },
+      "C10": {
+       "value": "z"
+      },
+      "C11": {
+       "value": "Q1"
+      },
+      "C12": {
+       "value": "x"
+      },
+      "C13": {
+       "value": "a\"b"
+      },
+      "D1": {
+       "formula": "EDATE(TODAY(),-1)+-4"
+      },
+      "D2": {
+       "formula": "EDATE(TODAY(),-1)+-3"
+      },
+      "D5": {
+       "formula": "EDATE(TODAY(),-1)+-2"
+      },
+      "D6": {
+       "formula": "EDATE(TODAY(),-1)+-1"
+      },
+      "D7": {
+       "formula": "NA()"
+      },
+      "D8": {
+       "value": ""
+      },
+      "D9": {
+       "formula": "EDATE(TODAY(),-1)+2"
+      },
+      "D10": {
+       "formula": "EDATE(TODAY(),-1)+3"
+      },
+      "D11": {
+       "formula": "EDATE(TODAY(),-1)+4"
+      },
+      "D12": {
+       "formula": "EDATE(TODAY(),-1)+5"
+      },
+      "D13": {
+       "formula": "EDATE(TODAY(),-1)+6"
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:A13"
+       ],
+       "operator": "between",
+       "formulas": [
+        "3",
+        "$Z$1"
+       ],
+       "stopIfTrue": true,
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        },
+        "font": {
+         "color": "#9C0006",
+         "bold": false
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B1:B13"
+       ],
+       "formula": "AND($B1>2,ISODD($B1))",
+       "style": {
+        "font": {
+         "bold": true,
+         "underline": "double"
+        },
+        "border": {
+         "bottom": {
+          "style": "thin",
+          "color": "#FF0000"
+         },
+         "top": {
+          "style": "dashed"
+         }
+        }
+       }
+      },
+      {
+       "type": "containsText",
+       "ranges": [
+        "C1:C13"
+       ],
+       "text": "1",
+       "style": {
+        "font": {
+         "strike": true,
+         "italic": true
+        }
+       }
+      },
+      {
+       "type": "beginsWith",
+       "ranges": [
+        "C1:C13"
+       ],
+       "text": "a\"b"
+      },
+      {
+       "type": "endsWith",
+       "ranges": [
+        "C1:C13"
+       ],
+       "text": "z",
+       "style": {
+        "fill": {
+         "color": "#00B050"
+        }
+       }
+      },
+      {
+       "type": "notContainsText",
+       "ranges": [
+        "C1:C13"
+       ],
+       "text": "q",
+       "style": {
+        "format": "0.0"
+       }
+      },
+      {
+       "type": "timePeriod",
+       "ranges": [
+        "D1:D13"
+       ],
+       "period": "lastMonth",
+       "style": {
+        "fill": {
+         "color": "#FFEB9C"
+        }
+       }
+      },
+      {
+       "type": "containsBlanks",
+       "ranges": [
+        "D1:D13"
+       ],
+       "style": {
+        "fill": {
+         "color": "#D9D9D9"
+        }
+       }
+      },
+      {
+       "type": "notContainsErrors",
+       "ranges": [
+        "D1:D13"
+       ],
+       "style": {
+        "format": 10
+       }
+      },
+      {
+       "type": "top10",
+       "ranges": [
+        "E1:E13"
+       ],
+       "rank": 30,
+       "percent": true,
+       "bottom": true,
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "aboveAverage",
+       "ranges": [
+        "E1:E13"
+       ],
+       "below": true,
+       "stdDev": 2,
+       "style": {
+        "font": {
+         "color": "#0070C0"
+        }
+       }
+      },
+      {
+       "type": "uniqueValues",
+       "ranges": [
+        "F1:F13"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "duplicateValues",
+       "ranges": [
+        "F1:F13"
+       ],
+       "style": {
+        "format": "#,##0.00 \"kg\""
+       }
+      },
+      {
+       "type": "colorScale",
+       "ranges": [
+        "G1:G13"
+       ],
+       "points": [
+        {
+         "value": {
+          "type": "num",
+          "value": "0"
+         },
+         "color": "#5A8AC6"
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "40"
+         },
+         "color": "#FCFCFF"
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1*2"
+         },
+         "color": "#F8696B"
+        }
+       ]
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "H1:H13"
+       ],
+       "min": {
+        "type": "autoMin"
+       },
+       "max": {
+        "type": "autoMax"
+       },
+       "color": "#638EC6",
+       "border": "#638EC6",
+       "negativeColor": "#FF0000",
+       "negativeBorder": "#FF0000"
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "I1:I13"
+       ],
+       "min": {
+        "type": "num",
+        "value": "-5"
+       },
+       "max": {
+        "type": "percentile",
+        "value": "90"
+       },
+       "color": "#FFB628",
+       "gradient": false,
+       "axis": "middle",
+       "axisColor": "#7F7F7F",
+       "direction": "rightToLeft",
+       "minLength": 5,
+       "maxLength": 95,
+       "showValue": false
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "J1:J13"
+       ],
+       "min": {
+        "type": "min"
+       },
+       "max": {
+        "type": "max"
+       },
+       "color": "#63C384",
+       "excel2007": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "K1:K13"
+       ],
+       "icons": "5Quarters",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "20"
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "5"
+         },
+         "gte": false
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "60"
+         }
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1"
+         }
+        }
+       ],
+       "reverse": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "L1:L13"
+       ],
+       "icons": "3Stars",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "33"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "67"
+         }
+        }
+       ],
+       "showValue": false
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "M1:M13"
+       ],
+       "icons": "3TrafficLights1",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         },
+         "icon": {
+          "set": "3Flags",
+          "index": 0
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "4"
+         },
+         "icon": null
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "8"
+         },
+         "icon": {
+          "set": "5Boxes",
+          "index": 4
+         }
+        }
+       ]
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "N1:N13"
+       ],
+       "formula": "$N1>'Other sheet'!$A$1",
+       "style": {
+        "fill": {
+         "color": "#FFC000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "O1:O13"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "'Other sheet'!$A$2"
+       ],
+       "style": {
+        "font": {
+         "color": "#FF0000"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "Other sheet",
+     "cells": {
+      "A1": {
+       "value": 4
+      },
+      "A2": {
+       "value": 6
+      }
+     }
+    }
+   ]
+  },
+  "kinds-delete-col": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "A7": {
+       "value": 7
+      },
+      "A8": {
+       "value": 8
+      },
+      "A9": {
+       "value": 9
+      },
+      "A10": {
+       "value": 10
+      },
+      "A11": {
+       "value": -2
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      },
+      "D7": {
+       "value": 7
+      },
+      "D8": {
+       "value": 8
+      },
+      "D9": {
+       "value": 9
+      },
+      "D10": {
+       "value": 10
+      },
+      "D11": {
+       "value": -2
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 2
+      },
+      "E3": {
+       "value": 3
+      },
+      "E4": {
+       "value": 4
+      },
+      "E5": {
+       "value": 5
+      },
+      "E6": {
+       "value": 6
+      },
+      "E7": {
+       "value": 7
+      },
+      "E8": {
+       "value": 8
+      },
+      "E9": {
+       "value": 9
+      },
+      "E10": {
+       "value": 10
+      },
+      "E11": {
+       "value": -2
+      },
+      "F1": {
+       "value": 1
+      },
+      "F2": {
+       "value": 2
+      },
+      "F3": {
+       "value": 3
+      },
+      "F4": {
+       "value": 4
+      },
+      "F5": {
+       "value": 5
+      },
+      "F6": {
+       "value": 6
+      },
+      "F7": {
+       "value": 7
+      },
+      "F8": {
+       "value": 8
+      },
+      "F9": {
+       "value": 9
+      },
+      "F10": {
+       "value": 10
+      },
+      "F11": {
+       "value": -2
+      },
+      "G1": {
+       "value": 1
+      },
+      "G2": {
+       "value": 2
+      },
+      "G3": {
+       "value": 3
+      },
+      "G4": {
+       "value": 4
+      },
+      "G5": {
+       "value": 5
+      },
+      "G6": {
+       "value": 6
+      },
+      "G7": {
+       "value": 7
+      },
+      "G8": {
+       "value": 8
+      },
+      "G9": {
+       "value": 9
+      },
+      "G10": {
+       "value": 10
+      },
+      "G11": {
+       "value": -2
+      },
+      "H1": {
+       "value": 1
+      },
+      "H2": {
+       "value": 2
+      },
+      "H3": {
+       "value": 3
+      },
+      "H4": {
+       "value": 4
+      },
+      "H5": {
+       "value": 5
+      },
+      "H6": {
+       "value": 6
+      },
+      "H7": {
+       "value": 7
+      },
+      "H8": {
+       "value": 8
+      },
+      "H9": {
+       "value": 9
+      },
+      "H10": {
+       "value": 10
+      },
+      "H11": {
+       "value": -2
+      },
+      "I1": {
+       "value": 1
+      },
+      "I2": {
+       "value": 2
+      },
+      "I3": {
+       "value": 3
+      },
+      "I4": {
+       "value": 4
+      },
+      "I5": {
+       "value": 5
+      },
+      "I6": {
+       "value": 6
+      },
+      "I7": {
+       "value": 7
+      },
+      "I8": {
+       "value": 8
+      },
+      "I9": {
+       "value": 9
+      },
+      "I10": {
+       "value": 10
+      },
+      "I11": {
+       "value": -2
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 2
+      },
+      "J3": {
+       "value": 3
+      },
+      "J4": {
+       "value": 4
+      },
+      "J5": {
+       "value": 5
+      },
+      "J6": {
+       "value": 6
+      },
+      "J7": {
+       "value": 7
+      },
+      "J8": {
+       "value": 8
+      },
+      "J9": {
+       "value": 9
+      },
+      "J10": {
+       "value": 10
+      },
+      "J11": {
+       "value": -2
+      },
+      "K1": {
+       "value": 1
+      },
+      "K2": {
+       "value": 2
+      },
+      "K3": {
+       "value": 3
+      },
+      "K4": {
+       "value": 4
+      },
+      "K5": {
+       "value": 5
+      },
+      "K6": {
+       "value": 6
+      },
+      "K7": {
+       "value": 7
+      },
+      "K8": {
+       "value": 8
+      },
+      "K9": {
+       "value": 9
+      },
+      "K10": {
+       "value": 10
+      },
+      "K11": {
+       "value": -2
+      },
+      "L1": {
+       "value": 1
+      },
+      "L2": {
+       "value": 2
+      },
+      "L3": {
+       "value": 3
+      },
+      "L4": {
+       "value": 4
+      },
+      "L5": {
+       "value": 5
+      },
+      "L6": {
+       "value": 6
+      },
+      "L7": {
+       "value": 7
+      },
+      "L8": {
+       "value": 8
+      },
+      "L9": {
+       "value": 9
+      },
+      "L10": {
+       "value": 10
+      },
+      "L11": {
+       "value": -2
+      },
+      "M1": {
+       "value": 1
+      },
+      "M2": {
+       "value": 2
+      },
+      "M3": {
+       "value": 3
+      },
+      "M4": {
+       "value": 4
+      },
+      "M5": {
+       "value": 5
+      },
+      "M6": {
+       "value": 6
+      },
+      "M7": {
+       "value": 7
+      },
+      "M8": {
+       "value": 8
+      },
+      "M9": {
+       "value": 9
+      },
+      "M10": {
+       "value": 10
+      },
+      "M11": {
+       "value": -2
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 2
+      },
+      "N3": {
+       "value": 3
+      },
+      "N4": {
+       "value": 4
+      },
+      "N5": {
+       "value": 5
+      },
+      "N6": {
+       "value": 6
+      },
+      "N7": {
+       "value": 7
+      },
+      "N8": {
+       "value": 8
+      },
+      "N9": {
+       "value": 9
+      },
+      "N10": {
+       "value": 10
+      },
+      "N11": {
+       "value": -2
+      },
+      "Y1": {
+       "value": 8
+      },
+      "B1": {
+       "value": "a1"
+      },
+      "B2": {
+       "value": "a\"bc"
+      },
+      "B3": {
+       "value": "xyz"
+      },
+      "B4": {
+       "value": "q"
+      },
+      "B5": {
+       "value": "b12"
+      },
+      "B6": {
+       "value": ""
+      },
+      "B7": {
+       "value": "ab"
+      },
+      "B8": {
+       "value": "z"
+      },
+      "B9": {
+       "value": "Q1"
+      },
+      "B10": {
+       "value": "x"
+      },
+      "B11": {
+       "value": "a\"b"
+      },
+      "C1": {
+       "formula": "EDATE(TODAY(),-1)+-4"
+      },
+      "C2": {
+       "formula": "EDATE(TODAY(),-1)+-3"
+      },
+      "C3": {
+       "formula": "EDATE(TODAY(),-1)+-2"
+      },
+      "C4": {
+       "formula": "EDATE(TODAY(),-1)+-1"
+      },
+      "C5": {
+       "formula": "NA()"
+      },
+      "C6": {
+       "value": ""
+      },
+      "C7": {
+       "formula": "EDATE(TODAY(),-1)+2"
+      },
+      "C8": {
+       "formula": "EDATE(TODAY(),-1)+3"
+      },
+      "C9": {
+       "formula": "EDATE(TODAY(),-1)+4"
+      },
+      "C10": {
+       "formula": "EDATE(TODAY(),-1)+5"
+      },
+      "C11": {
+       "formula": "EDATE(TODAY(),-1)+6"
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:A11"
+       ],
+       "operator": "between",
+       "formulas": [
+        "3",
+        "$Y$1"
+       ],
+       "stopIfTrue": true,
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        },
+        "font": {
+         "color": "#9C0006",
+         "bold": false
+        }
+       }
+      },
+      {
+       "type": "containsText",
+       "ranges": [
+        "B1:B11"
+       ],
+       "text": "1",
+       "style": {
+        "font": {
+         "strike": true,
+         "italic": true
+        }
+       }
+      },
+      {
+       "type": "beginsWith",
+       "ranges": [
+        "B1:B11"
+       ],
+       "text": "a\"b"
+      },
+      {
+       "type": "endsWith",
+       "ranges": [
+        "B1:B11"
+       ],
+       "text": "z",
+       "style": {
+        "fill": {
+         "color": "#00B050"
+        }
+       }
+      },
+      {
+       "type": "notContainsText",
+       "ranges": [
+        "B1:B11"
+       ],
+       "text": "q",
+       "style": {
+        "format": "0.0"
+       }
+      },
+      {
+       "type": "timePeriod",
+       "ranges": [
+        "C1:C11"
+       ],
+       "period": "lastMonth",
+       "style": {
+        "fill": {
+         "color": "#FFEB9C"
+        }
+       }
+      },
+      {
+       "type": "containsBlanks",
+       "ranges": [
+        "C1:C11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#D9D9D9"
+        }
+       }
+      },
+      {
+       "type": "notContainsErrors",
+       "ranges": [
+        "C1:C11"
+       ],
+       "style": {
+        "format": 10
+       }
+      },
+      {
+       "type": "top10",
+       "ranges": [
+        "D1:D11"
+       ],
+       "rank": 30,
+       "percent": true,
+       "bottom": true,
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "aboveAverage",
+       "ranges": [
+        "D1:D11"
+       ],
+       "below": true,
+       "stdDev": 2,
+       "style": {
+        "font": {
+         "color": "#0070C0"
+        }
+       }
+      },
+      {
+       "type": "uniqueValues",
+       "ranges": [
+        "E1:E11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "duplicateValues",
+       "ranges": [
+        "E1:E11"
+       ],
+       "style": {
+        "format": "#,##0.00 \"kg\""
+       }
+      },
+      {
+       "type": "colorScale",
+       "ranges": [
+        "F1:F11"
+       ],
+       "points": [
+        {
+         "value": {
+          "type": "num",
+          "value": "0"
+         },
+         "color": "#5A8AC6"
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "40"
+         },
+         "color": "#FCFCFF"
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Y$1*2"
+         },
+         "color": "#F8696B"
+        }
+       ]
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "G1:G11"
+       ],
+       "min": {
+        "type": "autoMin"
+       },
+       "max": {
+        "type": "autoMax"
+       },
+       "color": "#638EC6",
+       "border": "#638EC6",
+       "negativeColor": "#FF0000",
+       "negativeBorder": "#FF0000"
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "H1:H11"
+       ],
+       "min": {
+        "type": "num",
+        "value": "-5"
+       },
+       "max": {
+        "type": "percentile",
+        "value": "90"
+       },
+       "color": "#FFB628",
+       "gradient": false,
+       "axis": "middle",
+       "axisColor": "#7F7F7F",
+       "direction": "rightToLeft",
+       "minLength": 5,
+       "maxLength": 95,
+       "showValue": false
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "I1:I11"
+       ],
+       "min": {
+        "type": "min"
+       },
+       "max": {
+        "type": "max"
+       },
+       "color": "#63C384",
+       "excel2007": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "J1:J11"
+       ],
+       "icons": "5Quarters",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "20"
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "5"
+         },
+         "gte": false
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "60"
+         }
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Y$1"
+         }
+        }
+       ],
+       "reverse": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "K1:K11"
+       ],
+       "icons": "3Stars",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "33"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "67"
+         }
+        }
+       ],
+       "showValue": false
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "L1:L11"
+       ],
+       "icons": "3TrafficLights1",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         },
+         "icon": {
+          "set": "3Flags",
+          "index": 0
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "4"
+         },
+         "icon": null
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "8"
+         },
+         "icon": {
+          "set": "5Boxes",
+          "index": 4
+         }
+        }
+       ]
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "M1:M11"
+       ],
+       "formula": "$M1>'Other sheet'!$A$1",
+       "style": {
+        "fill": {
+         "color": "#FFC000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "N1:N11"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "'Other sheet'!$A$2"
+       ],
+       "style": {
+        "font": {
+         "color": "#FF0000"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "Other sheet",
+     "cells": {
+      "A1": {
+       "value": 4
+      },
+      "A2": {
+       "value": 6
+      }
+     }
+    }
+   ]
+  },
+  "kinds-move": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A6": {
+       "value": 6
+      },
+      "A7": {
+       "value": 7
+      },
+      "A8": {
+       "value": 8
+      },
+      "A9": {
+       "value": 9
+      },
+      "A10": {
+       "value": 10
+      },
+      "A11": {
+       "value": -2
+      },
+      "B6": {
+       "value": 6
+      },
+      "B7": {
+       "value": 7
+      },
+      "B8": {
+       "value": 8
+      },
+      "B9": {
+       "value": 9
+      },
+      "B10": {
+       "value": 10
+      },
+      "B11": {
+       "value": -2
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 2
+      },
+      "E3": {
+       "value": 3
+      },
+      "E4": {
+       "value": 4
+      },
+      "E5": {
+       "value": 5
+      },
+      "E6": {
+       "value": 6
+      },
+      "E7": {
+       "value": 7
+      },
+      "E8": {
+       "value": 8
+      },
+      "E9": {
+       "value": 9
+      },
+      "E10": {
+       "value": 10
+      },
+      "E11": {
+       "value": -2
+      },
+      "F1": {
+       "value": 1
+      },
+      "F2": {
+       "value": 2
+      },
+      "F3": {
+       "value": 3
+      },
+      "F4": {
+       "value": 4
+      },
+      "F5": {
+       "value": 5
+      },
+      "F6": {
+       "value": 6
+      },
+      "F7": {
+       "value": 7
+      },
+      "F8": {
+       "value": 8
+      },
+      "F9": {
+       "value": 9
+      },
+      "F10": {
+       "value": 10
+      },
+      "F11": {
+       "value": -2
+      },
+      "G1": {
+       "value": 1
+      },
+      "G2": {
+       "value": 2
+      },
+      "G3": {
+       "value": 3
+      },
+      "G4": {
+       "value": 4
+      },
+      "G5": {
+       "value": 5
+      },
+      "G6": {
+       "value": 6
+      },
+      "G7": {
+       "value": 7
+      },
+      "G8": {
+       "value": 8
+      },
+      "G9": {
+       "value": 9
+      },
+      "G10": {
+       "value": 10
+      },
+      "G11": {
+       "value": -2
+      },
+      "H1": {
+       "value": 1
+      },
+      "H2": {
+       "value": 2
+      },
+      "H3": {
+       "value": 3
+      },
+      "H4": {
+       "value": 4
+      },
+      "H5": {
+       "value": 5
+      },
+      "H6": {
+       "value": 6
+      },
+      "H7": {
+       "value": 7
+      },
+      "H8": {
+       "value": 8
+      },
+      "H9": {
+       "value": 9
+      },
+      "H10": {
+       "value": 10
+      },
+      "H11": {
+       "value": -2
+      },
+      "I1": {
+       "value": 1
+      },
+      "I2": {
+       "value": 2
+      },
+      "I3": {
+       "value": 3
+      },
+      "I4": {
+       "value": 4
+      },
+      "I5": {
+       "value": 5
+      },
+      "I6": {
+       "value": 6
+      },
+      "I7": {
+       "value": 7
+      },
+      "I8": {
+       "value": 8
+      },
+      "I9": {
+       "value": 9
+      },
+      "I10": {
+       "value": 10
+      },
+      "I11": {
+       "value": -2
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 2
+      },
+      "J3": {
+       "value": 3
+      },
+      "J4": {
+       "value": 4
+      },
+      "J5": {
+       "value": 5
+      },
+      "J6": {
+       "value": 6
+      },
+      "J7": {
+       "value": 7
+      },
+      "J8": {
+       "value": 8
+      },
+      "J9": {
+       "value": 9
+      },
+      "J10": {
+       "value": 10
+      },
+      "J11": {
+       "value": -2
+      },
+      "K1": {
+       "value": 1
+      },
+      "K2": {
+       "value": 2
+      },
+      "K3": {
+       "value": 3
+      },
+      "K4": {
+       "value": 4
+      },
+      "K5": {
+       "value": 5
+      },
+      "K6": {
+       "value": 6
+      },
+      "K7": {
+       "value": 7
+      },
+      "K8": {
+       "value": 8
+      },
+      "K9": {
+       "value": 9
+      },
+      "K10": {
+       "value": 10
+      },
+      "K11": {
+       "value": -2
+      },
+      "L1": {
+       "value": 1
+      },
+      "L2": {
+       "value": 2
+      },
+      "L3": {
+       "value": 3
+      },
+      "L4": {
+       "value": 4
+      },
+      "L5": {
+       "value": 5
+      },
+      "L6": {
+       "value": 6
+      },
+      "L7": {
+       "value": 7
+      },
+      "L8": {
+       "value": 8
+      },
+      "L9": {
+       "value": 9
+      },
+      "L10": {
+       "value": 10
+      },
+      "L11": {
+       "value": -2
+      },
+      "M1": {
+       "value": 1
+      },
+      "M2": {
+       "value": 2
+      },
+      "M3": {
+       "value": 3
+      },
+      "M4": {
+       "value": 4
+      },
+      "M5": {
+       "value": 5
+      },
+      "M6": {
+       "value": 6
+      },
+      "M7": {
+       "value": 7
+      },
+      "M8": {
+       "value": 8
+      },
+      "M9": {
+       "value": 9
+      },
+      "M10": {
+       "value": 10
+      },
+      "M11": {
+       "value": -2
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 2
+      },
+      "N3": {
+       "value": 3
+      },
+      "N4": {
+       "value": 4
+      },
+      "N5": {
+       "value": 5
+      },
+      "N6": {
+       "value": 6
+      },
+      "N7": {
+       "value": 7
+      },
+      "N8": {
+       "value": 8
+      },
+      "N9": {
+       "value": 9
+      },
+      "N10": {
+       "value": 10
+      },
+      "N11": {
+       "value": -2
+      },
+      "O1": {
+       "value": 1
+      },
+      "O2": {
+       "value": 2
+      },
+      "O3": {
+       "value": 3
+      },
+      "O4": {
+       "value": 4
+      },
+      "O5": {
+       "value": 5
+      },
+      "O6": {
+       "value": 6
+      },
+      "O7": {
+       "value": 7
+      },
+      "O8": {
+       "value": 8
+      },
+      "O9": {
+       "value": 9
+      },
+      "O10": {
+       "value": 10
+      },
+      "O11": {
+       "value": -2
+      },
+      "Z1": {
+       "value": 8
+      },
+      "C6": {
+       "value": ""
+      },
+      "C7": {
+       "value": "ab"
+      },
+      "C8": {
+       "value": "z"
+      },
+      "C9": {
+       "value": "Q1"
+      },
+      "C10": {
+       "value": "x"
+      },
+      "C11": {
+       "value": "a\"b"
+      },
+      "D1": {
+       "formula": "EDATE(TODAY(),-1)+-4"
+      },
+      "D2": {
+       "formula": "EDATE(TODAY(),-1)+-3"
+      },
+      "D3": {
+       "formula": "EDATE(TODAY(),-1)+-2"
+      },
+      "D4": {
+       "formula": "EDATE(TODAY(),-1)+-1"
+      },
+      "D5": {
+       "formula": "NA()"
+      },
+      "D6": {
+       "value": ""
+      },
+      "D7": {
+       "formula": "EDATE(TODAY(),-1)+2"
+      },
+      "D8": {
+       "formula": "EDATE(TODAY(),-1)+3"
+      },
+      "D9": {
+       "formula": "EDATE(TODAY(),-1)+4"
+      },
+      "D10": {
+       "formula": "EDATE(TODAY(),-1)+5"
+      },
+      "D11": {
+       "formula": "EDATE(TODAY(),-1)+6"
+      },
+      "Q1": {
+       "value": 1
+      },
+      "Q2": {
+       "value": 2
+      },
+      "Q3": {
+       "value": 3
+      },
+      "Q4": {
+       "value": 4
+      },
+      "Q5": {
+       "value": 5
+      },
+      "R1": {
+       "value": 1
+      },
+      "R2": {
+       "value": 2
+      },
+      "R3": {
+       "value": 3
+      },
+      "R4": {
+       "value": 4
+      },
+      "R5": {
+       "value": 5
+      },
+      "S1": {
+       "value": "a1"
+      },
+      "S2": {
+       "value": "a\"bc"
+      },
+      "S3": {
+       "value": "xyz"
+      },
+      "S4": {
+       "value": "q"
+      },
+      "S5": {
+       "value": "b12"
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A6:A11",
+        "Q1:Q5"
+       ],
+       "operator": "between",
+       "formulas": [
+        "3",
+        "$Z$1"
+       ],
+       "stopIfTrue": true,
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        },
+        "font": {
+         "color": "#9C0006",
+         "bold": false
+        }
+       }
+      },
+      {
+       "type": "containsText",
+       "ranges": [
+        "C6:C11",
+        "S1:S5"
+       ],
+       "text": "1",
+       "style": {
+        "font": {
+         "strike": true,
+         "italic": true
+        }
+       }
+      },
+      {
+       "type": "beginsWith",
+       "ranges": [
+        "C6:C11",
+        "S1:S5"
+       ],
+       "text": "a\"b"
+      },
+      {
+       "type": "endsWith",
+       "ranges": [
+        "C6:C11",
+        "S1:S5"
+       ],
+       "text": "z",
+       "style": {
+        "fill": {
+         "color": "#00B050"
+        }
+       }
+      },
+      {
+       "type": "notContainsText",
+       "ranges": [
+        "C6:C11",
+        "S1:S5"
+       ],
+       "text": "q",
+       "style": {
+        "format": "0.0"
+       }
+      },
+      {
+       "type": "timePeriod",
+       "ranges": [
+        "D1:D11"
+       ],
+       "period": "lastMonth",
+       "style": {
+        "fill": {
+         "color": "#FFEB9C"
+        }
+       }
+      },
+      {
+       "type": "containsBlanks",
+       "ranges": [
+        "D1:D11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#D9D9D9"
+        }
+       }
+      },
+      {
+       "type": "notContainsErrors",
+       "ranges": [
+        "D1:D11"
+       ],
+       "style": {
+        "format": 10
+       }
+      },
+      {
+       "type": "top10",
+       "ranges": [
+        "E1:E11"
+       ],
+       "rank": 30,
+       "percent": true,
+       "bottom": true,
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "aboveAverage",
+       "ranges": [
+        "E1:E11"
+       ],
+       "below": true,
+       "stdDev": 2,
+       "style": {
+        "font": {
+         "color": "#0070C0"
+        }
+       }
+      },
+      {
+       "type": "uniqueValues",
+       "ranges": [
+        "F1:F11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "duplicateValues",
+       "ranges": [
+        "F1:F11"
+       ],
+       "style": {
+        "format": "#,##0.00 \"kg\""
+       }
+      },
+      {
+       "type": "colorScale",
+       "ranges": [
+        "G1:G11"
+       ],
+       "points": [
+        {
+         "value": {
+          "type": "num",
+          "value": "0"
+         },
+         "color": "#5A8AC6"
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "40"
+         },
+         "color": "#FCFCFF"
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1*2"
+         },
+         "color": "#F8696B"
+        }
+       ]
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "H1:H11"
+       ],
+       "min": {
+        "type": "autoMin"
+       },
+       "max": {
+        "type": "autoMax"
+       },
+       "color": "#638EC6",
+       "border": "#638EC6",
+       "negativeColor": "#FF0000",
+       "negativeBorder": "#FF0000"
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "I1:I11"
+       ],
+       "min": {
+        "type": "num",
+        "value": "-5"
+       },
+       "max": {
+        "type": "percentile",
+        "value": "90"
+       },
+       "color": "#FFB628",
+       "gradient": false,
+       "axis": "middle",
+       "axisColor": "#7F7F7F",
+       "direction": "rightToLeft",
+       "minLength": 5,
+       "maxLength": 95,
+       "showValue": false
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "J1:J11"
+       ],
+       "min": {
+        "type": "min"
+       },
+       "max": {
+        "type": "max"
+       },
+       "color": "#63C384",
+       "excel2007": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "K1:K11"
+       ],
+       "icons": "5Quarters",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "20"
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "5"
+         },
+         "gte": false
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "60"
+         }
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1"
+         }
+        }
+       ],
+       "reverse": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "L1:L11"
+       ],
+       "icons": "3Stars",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "33"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "67"
+         }
+        }
+       ],
+       "showValue": false
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "M1:M11"
+       ],
+       "icons": "3TrafficLights1",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         },
+         "icon": {
+          "set": "3Flags",
+          "index": 0
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "4"
+         },
+         "icon": null
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "8"
+         },
+         "icon": {
+          "set": "5Boxes",
+          "index": 4
+         }
+        }
+       ]
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "N1:N11"
+       ],
+       "formula": "$N1>'Other sheet'!$A$1",
+       "style": {
+        "fill": {
+         "color": "#FFC000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "O1:O11"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "'Other sheet'!$A$2"
+       ],
+       "style": {
+        "font": {
+         "color": "#FF0000"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B6:B11",
+        "R1:R5"
+       ],
+       "formula": "AND($R1>2,ISODD($R1))",
+       "style": {
+        "font": {
+         "bold": true,
+         "underline": "double"
+        },
+        "border": {
+         "bottom": {
+          "style": "thin",
+          "color": "#FF0000"
+         },
+         "top": {
+          "style": "dashed"
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "Other sheet",
+     "cells": {
+      "A1": {
+       "value": 4
+      },
+      "A2": {
+       "value": 6
+      }
+     }
+    }
+   ]
+  },
+  "kinds-rename": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "A7": {
+       "value": 7
+      },
+      "A8": {
+       "value": 8
+      },
+      "A9": {
+       "value": 9
+      },
+      "A10": {
+       "value": 10
+      },
+      "A11": {
+       "value": -2
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "B7": {
+       "value": 7
+      },
+      "B8": {
+       "value": 8
+      },
+      "B9": {
+       "value": 9
+      },
+      "B10": {
+       "value": 10
+      },
+      "B11": {
+       "value": -2
+      },
+      "E1": {
+       "value": 1
+      },
+      "E2": {
+       "value": 2
+      },
+      "E3": {
+       "value": 3
+      },
+      "E4": {
+       "value": 4
+      },
+      "E5": {
+       "value": 5
+      },
+      "E6": {
+       "value": 6
+      },
+      "E7": {
+       "value": 7
+      },
+      "E8": {
+       "value": 8
+      },
+      "E9": {
+       "value": 9
+      },
+      "E10": {
+       "value": 10
+      },
+      "E11": {
+       "value": -2
+      },
+      "F1": {
+       "value": 1
+      },
+      "F2": {
+       "value": 2
+      },
+      "F3": {
+       "value": 3
+      },
+      "F4": {
+       "value": 4
+      },
+      "F5": {
+       "value": 5
+      },
+      "F6": {
+       "value": 6
+      },
+      "F7": {
+       "value": 7
+      },
+      "F8": {
+       "value": 8
+      },
+      "F9": {
+       "value": 9
+      },
+      "F10": {
+       "value": 10
+      },
+      "F11": {
+       "value": -2
+      },
+      "G1": {
+       "value": 1
+      },
+      "G2": {
+       "value": 2
+      },
+      "G3": {
+       "value": 3
+      },
+      "G4": {
+       "value": 4
+      },
+      "G5": {
+       "value": 5
+      },
+      "G6": {
+       "value": 6
+      },
+      "G7": {
+       "value": 7
+      },
+      "G8": {
+       "value": 8
+      },
+      "G9": {
+       "value": 9
+      },
+      "G10": {
+       "value": 10
+      },
+      "G11": {
+       "value": -2
+      },
+      "H1": {
+       "value": 1
+      },
+      "H2": {
+       "value": 2
+      },
+      "H3": {
+       "value": 3
+      },
+      "H4": {
+       "value": 4
+      },
+      "H5": {
+       "value": 5
+      },
+      "H6": {
+       "value": 6
+      },
+      "H7": {
+       "value": 7
+      },
+      "H8": {
+       "value": 8
+      },
+      "H9": {
+       "value": 9
+      },
+      "H10": {
+       "value": 10
+      },
+      "H11": {
+       "value": -2
+      },
+      "I1": {
+       "value": 1
+      },
+      "I2": {
+       "value": 2
+      },
+      "I3": {
+       "value": 3
+      },
+      "I4": {
+       "value": 4
+      },
+      "I5": {
+       "value": 5
+      },
+      "I6": {
+       "value": 6
+      },
+      "I7": {
+       "value": 7
+      },
+      "I8": {
+       "value": 8
+      },
+      "I9": {
+       "value": 9
+      },
+      "I10": {
+       "value": 10
+      },
+      "I11": {
+       "value": -2
+      },
+      "J1": {
+       "value": 1
+      },
+      "J2": {
+       "value": 2
+      },
+      "J3": {
+       "value": 3
+      },
+      "J4": {
+       "value": 4
+      },
+      "J5": {
+       "value": 5
+      },
+      "J6": {
+       "value": 6
+      },
+      "J7": {
+       "value": 7
+      },
+      "J8": {
+       "value": 8
+      },
+      "J9": {
+       "value": 9
+      },
+      "J10": {
+       "value": 10
+      },
+      "J11": {
+       "value": -2
+      },
+      "K1": {
+       "value": 1
+      },
+      "K2": {
+       "value": 2
+      },
+      "K3": {
+       "value": 3
+      },
+      "K4": {
+       "value": 4
+      },
+      "K5": {
+       "value": 5
+      },
+      "K6": {
+       "value": 6
+      },
+      "K7": {
+       "value": 7
+      },
+      "K8": {
+       "value": 8
+      },
+      "K9": {
+       "value": 9
+      },
+      "K10": {
+       "value": 10
+      },
+      "K11": {
+       "value": -2
+      },
+      "L1": {
+       "value": 1
+      },
+      "L2": {
+       "value": 2
+      },
+      "L3": {
+       "value": 3
+      },
+      "L4": {
+       "value": 4
+      },
+      "L5": {
+       "value": 5
+      },
+      "L6": {
+       "value": 6
+      },
+      "L7": {
+       "value": 7
+      },
+      "L8": {
+       "value": 8
+      },
+      "L9": {
+       "value": 9
+      },
+      "L10": {
+       "value": 10
+      },
+      "L11": {
+       "value": -2
+      },
+      "M1": {
+       "value": 1
+      },
+      "M2": {
+       "value": 2
+      },
+      "M3": {
+       "value": 3
+      },
+      "M4": {
+       "value": 4
+      },
+      "M5": {
+       "value": 5
+      },
+      "M6": {
+       "value": 6
+      },
+      "M7": {
+       "value": 7
+      },
+      "M8": {
+       "value": 8
+      },
+      "M9": {
+       "value": 9
+      },
+      "M10": {
+       "value": 10
+      },
+      "M11": {
+       "value": -2
+      },
+      "N1": {
+       "value": 1
+      },
+      "N2": {
+       "value": 2
+      },
+      "N3": {
+       "value": 3
+      },
+      "N4": {
+       "value": 4
+      },
+      "N5": {
+       "value": 5
+      },
+      "N6": {
+       "value": 6
+      },
+      "N7": {
+       "value": 7
+      },
+      "N8": {
+       "value": 8
+      },
+      "N9": {
+       "value": 9
+      },
+      "N10": {
+       "value": 10
+      },
+      "N11": {
+       "value": -2
+      },
+      "O1": {
+       "value": 1
+      },
+      "O2": {
+       "value": 2
+      },
+      "O3": {
+       "value": 3
+      },
+      "O4": {
+       "value": 4
+      },
+      "O5": {
+       "value": 5
+      },
+      "O6": {
+       "value": 6
+      },
+      "O7": {
+       "value": 7
+      },
+      "O8": {
+       "value": 8
+      },
+      "O9": {
+       "value": 9
+      },
+      "O10": {
+       "value": 10
+      },
+      "O11": {
+       "value": -2
+      },
+      "Z1": {
+       "value": 8
+      },
+      "C1": {
+       "value": "a1"
+      },
+      "C2": {
+       "value": "a\"bc"
+      },
+      "C3": {
+       "value": "xyz"
+      },
+      "C4": {
+       "value": "q"
+      },
+      "C5": {
+       "value": "b12"
+      },
+      "C6": {
+       "value": ""
+      },
+      "C7": {
+       "value": "ab"
+      },
+      "C8": {
+       "value": "z"
+      },
+      "C9": {
+       "value": "Q1"
+      },
+      "C10": {
+       "value": "x"
+      },
+      "C11": {
+       "value": "a\"b"
+      },
+      "D1": {
+       "formula": "EDATE(TODAY(),-1)+-4"
+      },
+      "D2": {
+       "formula": "EDATE(TODAY(),-1)+-3"
+      },
+      "D3": {
+       "formula": "EDATE(TODAY(),-1)+-2"
+      },
+      "D4": {
+       "formula": "EDATE(TODAY(),-1)+-1"
+      },
+      "D5": {
+       "formula": "NA()"
+      },
+      "D6": {
+       "value": ""
+      },
+      "D7": {
+       "formula": "EDATE(TODAY(),-1)+2"
+      },
+      "D8": {
+       "formula": "EDATE(TODAY(),-1)+3"
+      },
+      "D9": {
+       "formula": "EDATE(TODAY(),-1)+4"
+      },
+      "D10": {
+       "formula": "EDATE(TODAY(),-1)+5"
+      },
+      "D11": {
+       "formula": "EDATE(TODAY(),-1)+6"
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1:A11"
+       ],
+       "operator": "between",
+       "formulas": [
+        "3",
+        "$Z$1"
+       ],
+       "stopIfTrue": true,
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        },
+        "font": {
+         "color": "#9C0006",
+         "bold": false
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B1:B11"
+       ],
+       "formula": "AND($B1>2,ISODD($B1))",
+       "style": {
+        "font": {
+         "bold": true,
+         "underline": "double"
+        },
+        "border": {
+         "bottom": {
+          "style": "thin",
+          "color": "#FF0000"
+         },
+         "top": {
+          "style": "dashed"
+         }
+        }
+       }
+      },
+      {
+       "type": "containsText",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "1",
+       "style": {
+        "font": {
+         "strike": true,
+         "italic": true
+        }
+       }
+      },
+      {
+       "type": "beginsWith",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "a\"b"
+      },
+      {
+       "type": "endsWith",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "z",
+       "style": {
+        "fill": {
+         "color": "#00B050"
+        }
+       }
+      },
+      {
+       "type": "notContainsText",
+       "ranges": [
+        "C1:C11"
+       ],
+       "text": "q",
+       "style": {
+        "format": "0.0"
+       }
+      },
+      {
+       "type": "timePeriod",
+       "ranges": [
+        "D1:D11"
+       ],
+       "period": "lastMonth",
+       "style": {
+        "fill": {
+         "color": "#FFEB9C"
+        }
+       }
+      },
+      {
+       "type": "containsBlanks",
+       "ranges": [
+        "D1:D11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#D9D9D9"
+        }
+       }
+      },
+      {
+       "type": "notContainsErrors",
+       "ranges": [
+        "D1:D11"
+       ],
+       "style": {
+        "format": 10
+       }
+      },
+      {
+       "type": "top10",
+       "ranges": [
+        "E1:E11"
+       ],
+       "rank": 30,
+       "percent": true,
+       "bottom": true,
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "aboveAverage",
+       "ranges": [
+        "E1:E11"
+       ],
+       "below": true,
+       "stdDev": 2,
+       "style": {
+        "font": {
+         "color": "#0070C0"
+        }
+       }
+      },
+      {
+       "type": "uniqueValues",
+       "ranges": [
+        "F1:F11"
+       ],
+       "style": {
+        "fill": {
+         "color": "#C6EFCE"
+        }
+       }
+      },
+      {
+       "type": "duplicateValues",
+       "ranges": [
+        "F1:F11"
+       ],
+       "style": {
+        "format": "#,##0.00 \"kg\""
+       }
+      },
+      {
+       "type": "colorScale",
+       "ranges": [
+        "G1:G11"
+       ],
+       "points": [
+        {
+         "value": {
+          "type": "num",
+          "value": "0"
+         },
+         "color": "#5A8AC6"
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "40"
+         },
+         "color": "#FCFCFF"
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1*2"
+         },
+         "color": "#F8696B"
+        }
+       ]
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "H1:H11"
+       ],
+       "min": {
+        "type": "autoMin"
+       },
+       "max": {
+        "type": "autoMax"
+       },
+       "color": "#638EC6",
+       "border": "#638EC6",
+       "negativeColor": "#FF0000",
+       "negativeBorder": "#FF0000"
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "I1:I11"
+       ],
+       "min": {
+        "type": "num",
+        "value": "-5"
+       },
+       "max": {
+        "type": "percentile",
+        "value": "90"
+       },
+       "color": "#FFB628",
+       "gradient": false,
+       "axis": "middle",
+       "axisColor": "#7F7F7F",
+       "direction": "rightToLeft",
+       "minLength": 5,
+       "maxLength": 95,
+       "showValue": false
+      },
+      {
+       "type": "dataBar",
+       "ranges": [
+        "J1:J11"
+       ],
+       "min": {
+        "type": "min"
+       },
+       "max": {
+        "type": "max"
+       },
+       "color": "#63C384",
+       "excel2007": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "K1:K11"
+       ],
+       "icons": "5Quarters",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "20"
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "5"
+         },
+         "gte": false
+        },
+        {
+         "value": {
+          "type": "percentile",
+          "value": "60"
+         }
+        },
+        {
+         "value": {
+          "type": "formula",
+          "value": "$Z$1"
+         }
+        }
+       ],
+       "reverse": true
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "L1:L11"
+       ],
+       "icons": "3Stars",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "33"
+         }
+        },
+        {
+         "value": {
+          "type": "percent",
+          "value": "67"
+         }
+        }
+       ],
+       "showValue": false
+      },
+      {
+       "type": "iconSet",
+       "ranges": [
+        "M1:M11"
+       ],
+       "icons": "3TrafficLights1",
+       "points": [
+        {
+         "value": {
+          "type": "percent",
+          "value": "0"
+         },
+         "icon": {
+          "set": "3Flags",
+          "index": 0
+         }
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "4"
+         },
+         "icon": null
+        },
+        {
+         "value": {
+          "type": "num",
+          "value": "8"
+         },
+         "icon": {
+          "set": "5Boxes",
+          "index": 4
+         }
+        }
+       ]
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "N1:N11"
+       ],
+       "formula": "$N1>'Другой'!$A$1",
+       "style": {
+        "fill": {
+         "color": "#FFC000"
+        }
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "O1:O11"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "'Другой'!$A$2"
+       ],
+       "style": {
+        "font": {
+         "color": "#FF0000"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "Другой",
+     "cells": {
+      "A1": {
+       "value": 4
+      },
+      "A2": {
+       "value": 6
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "kinds",
+   "book": "kinds",
+   "read": [
+    [
+     "S",
+     "A1:G11"
+    ]
+   ]
+  },
+  {
+   "id": "wide",
+   "book": "wide",
+   "read": [
+    [
+     "S",
+     "A1:H6"
+    ],
+    [
+     "S",
+     "J1:J14"
+    ]
+   ]
+  },
+  {
+   "id": "kinds-insert-row",
+   "book": "kinds-insert-row",
+   "read": [
+    [
+     "S",
+     "A1:C13"
+    ]
+   ]
+  },
+  {
+   "id": "kinds-delete-col",
+   "book": "kinds-delete-col",
+   "read": [
+    [
+     "S",
+     "A1:C11"
+    ]
+   ]
+  },
+  {
+   "id": "kinds-move",
+   "book": "kinds-move",
+   "read": [
+    [
+     "S",
+     "A1:C11"
+    ],
+    [
+     "S",
+     "Q1:S5"
+    ]
+   ]
+  },
+  {
+   "id": "kinds-rename",
+   "book": "kinds-rename",
+   "read": [
+    [
+     "S",
+     "N1:O11"
+    ]
+   ]
+  }
+ ],
+ "sent": {
+  "kinds": "3d265957db33cbcac5ad6a5f27e38310767db7e0f845981a983a87803b74eca1",
+  "wide": "71a1e5b0d49d66680444d7afa99018bcacaa70587ae344fd1f1a0ad9ebcb17cf",
+  "kinds-insert-row": "5d174225dedbd002cf2f3c51150b398ea6ed5b544a73d705dbf9508c7974c918",
+  "kinds-delete-col": "76fa434c1d834a35623afd193108d6001b39729040d6f056cb799f491ce70024",
+  "kinds-move": "71d172cd813f5816a43d65d8818d65dd91b8073429dfb1b9ab567ee51efa5e50",
+  "kinds-rename": "c953b4435712321d7ec121c5055403d45c020592e19700e3c1ac434ad0bba62e"
+ },
+ "answers": {
+  "kinds": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "a1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "D1": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E1": {
+      "text": "1",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F1": {
+      "text": "1",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G1": {
+      "text": "1",
+      "fill": "#82A6D4",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "a\"bc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E2": {
+      "text": "2",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F2": {
+      "text": "2",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G2": {
+      "text": "2",
+      "fill": "#ABC3E2",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C3": {
+      "text": "xyz",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F3": {
+      "text": "3",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G3": {
+      "text": "3",
+      "fill": "#D3DFF0",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "q",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F4": {
+      "text": "4",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G4": {
+      "text": "4",
+      "fill": "#FCFCFF",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C5": {
+      "text": "b12",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "D5": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F5": {
+      "text": "5",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G5": {
+      "text": "5",
+      "fill": "#FCF0F3",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "",
+      "fill": "#D9D9D9",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F6": {
+      "text": "6",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G6": {
+      "text": "6",
+      "fill": "#FCE4E7",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A7": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C7": {
+      "text": "ab",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D7": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E7": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F7": {
+      "text": "7",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G7": {
+      "text": "7",
+      "fill": "#FBD8DA",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A8": {
+      "text": "8",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B8": {
+      "text": "8",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C8": {
+      "text": "z",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D8": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E8": {
+      "text": "8",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F8": {
+      "text": "8",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G8": {
+      "text": "8",
+      "fill": "#FBCCCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A9": {
+      "text": "9",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B9": {
+      "text": "9",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C9": {
+      "text": "Q1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "D9": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E9": {
+      "text": "9",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F9": {
+      "text": "9",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G9": {
+      "text": "9",
+      "fill": "#FBBFC2",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A10": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B10": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C10": {
+      "text": "x",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D10": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E10": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F10": {
+      "text": "10",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G10": {
+      "text": "10",
+      "fill": "#FAB3B5",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A11": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B11": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C11": {
+      "text": "a\"b",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D11": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "E11": {
+      "text": "-2",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "F11": {
+      "text": "-2",
+      "fill": "#C6EFCE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "G11": {
+      "text": "-2",
+      "fill": "#5A8AC6",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "wide": {
+   "looks": {
+    "S": {
+     "J1": {
+      "text": "1",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J2": {
+      "text": "2",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J3": {
+      "text": "3",
+      "fill": null,
+      "font": "#C00000",
+      "bold": true,
+      "italic": false
+     },
+     "J4": {
+      "text": "4",
+      "fill": null,
+      "font": "#C00000",
+      "bold": true,
+      "italic": false
+     },
+     "J5": {
+      "text": "5",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J6": {
+      "text": "6",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J7": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "J8": {
+      "text": "8",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J9": {
+      "text": "9",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J10": {
+      "text": "10",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J11": {
+      "text": "11",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J12": {
+      "text": "12",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J13": {
+      "text": "13",
+      "fill": null,
+      "font": "#C00000",
+      "bold": false,
+      "italic": false
+     },
+     "J14": {
+      "text": "0",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "kinds-insert-row": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "a1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "A2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "a\"bc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "3",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C5": {
+      "text": "xyz",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "q",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A7": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C7": {
+      "text": "b12",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "A8": {
+      "text": "6",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B8": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C8": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A9": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B9": {
+      "text": "7",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C9": {
+      "text": "ab",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A10": {
+      "text": "8",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B10": {
+      "text": "8",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C10": {
+      "text": "z",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A11": {
+      "text": "9",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B11": {
+      "text": "9",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "C11": {
+      "text": "Q1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "A12": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B12": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C12": {
+      "text": "x",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A13": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B13": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C13": {
+      "text": "a\"b",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "kinds-delete-col": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "a1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "C1": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "a\"bc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "xyz",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "q",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "b12",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "C5": {
+      "text": "#N/A",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "",
+      "fill": "#D9D9D9",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A7": {
+      "text": "7",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B7": {
+      "text": "ab",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C7": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A8": {
+      "text": "8",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "B8": {
+      "text": "z",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C8": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A9": {
+      "text": "9",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B9": {
+      "text": "Q1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "C9": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A10": {
+      "text": "10",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B10": {
+      "text": "x",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C10": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A11": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B11": {
+      "text": "a\"b",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C11": {
+      "text": "#########",
+      "fill": "#FFEB9C",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "kinds-move": {
+   "looks": {
+    "S": {
+     "Q1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "S1": {
+      "text": "a1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     },
+     "Q2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "R2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "S2": {
+      "text": "a\"bc",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q3": {
+      "text": "3",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "R3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "S3": {
+      "text": "xyz",
+      "fill": "#00B050",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q4": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "R4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "S4": {
+      "text": "q",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "Q5": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#9C0006",
+      "bold": false,
+      "italic": false
+     },
+     "R5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": true,
+      "italic": false
+     },
+     "S5": {
+      "text": "b12",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": true
+     }
+    }
+   }
+  },
+  "kinds-rename": {
+   "looks": {
+    "S": {
+     "N1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N5": {
+      "text": "5",
+      "fill": "#FFC000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N6": {
+      "text": "6",
+      "fill": "#FFC000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "N7": {
+      "text": "7",
+      "fill": "#FFC000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O7": {
+      "text": "7",
+      "fill": null,
+      "font": "#FF0000",
+      "bold": false,
+      "italic": false
+     },
+     "N8": {
+      "text": "8",
+      "fill": "#FFC000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O8": {
+      "text": "8",
+      "fill": null,
+      "font": "#FF0000",
+      "bold": false,
+      "italic": false
+     },
+     "N9": {
+      "text": "9",
+      "fill": "#FFC000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O9": {
+      "text": "9",
+      "fill": null,
+      "font": "#FF0000",
+      "bold": false,
+      "italic": false
+     },
+     "N10": {
+      "text": "10",
+      "fill": "#FFC000",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O10": {
+      "text": "10",
+      "fill": null,
+      "font": "#FF0000",
+      "bold": false,
+      "italic": false
+     },
+     "N11": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "O11": {
+      "text": "-2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  }
+ }
+}

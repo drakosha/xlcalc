@@ -50,6 +50,7 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
     if ('merges' in e) sheet.merges = [...e.merges]
     else if ('filtered' in e) sheet.filtered = e.filtered
     else if ('frozen' in e) sheet.frozen = e.frozen ? { ...e.frozen } : undefined
+    else if ('conditionalFormats' in e) sheet.conditionalFormats = e.conditionalFormats.length ? [...e.conditionalFormats] : undefined
     else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
     else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
     else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set)
@@ -58,7 +59,7 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
   for (const [i, sheet] of changed) {
     for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
     if (sheet.filtered === false) delete sheet.filtered
-    for (const k of ['frozen', 'outline'] as const) if (sheet[k] === undefined) delete sheet[k]
+    for (const k of ['frozen', 'outline', 'conditionalFormats'] as const) if (sheet[k] === undefined) delete sheet[k]
     book.sheets[i] = sheet
   }
 }

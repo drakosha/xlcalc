@@ -6,7 +6,8 @@ import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
 import { nowMs } from './env.js'
-import { formatAddress, msToSerial, parseAddress } from './model.js'
+import { formatAddress, MAX_COLS, msToSerial, parseAddress } from './model.js'
+import { windowLooks, withLook } from './cond/looks.js'
 import { cellLooks, type Looks } from './shown.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
@@ -97,18 +98,34 @@ export function* cellsIn(state: EngineState, s: number, x: Rect, display: boolea
       const { row, col } = parseAddress(a)
       if (row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2) inputs.push(a)
     }
+  const listed = [...inputs, ...spill.keys()]
+  // what the sheet's conditional formats give the cells: every cell of a window, the listed ones of a larger rectangle
+  const cond = yield* windowLooks(state, s, x, (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL ? undefined : new Set(listed.map((a) => cellIndex(a))))
+  const blanks = [...cond.keys()].map((k) => formatAddress(Math.floor(k / MAX_COLS), k % MAX_COLS)).filter((a) => !(a in cells) && !spill.has(a))
   const out: Record<string, CellView> = {}
-  for (const addr of yield* sortedSteps([...inputs, ...spill.keys()])) {
+  for (const addr of yield* sortedSteps([...listed, ...blanks])) {
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const input = cells[addr]
-    // what the cell shows beside its value: its own style, note and link
+    // what the cell shows beside its value: its own style, note and link, and its conditional formats' look
     if (input?.style !== undefined) view.style = input.style
     if (input?.note !== undefined) view.note = input.note
     if (input?.link !== undefined) view.link = input.link
+    const cf = cond.get(cellIndex(addr))
+    if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, format })))
     out[addr] = view
   }
   return out
+}
+
+const cellIndex = (addr: string) => {
+  const { row, col } = parseAddress(addr)
+  return row * MAX_COLS + col
+}
+
+const rowCol = (addr: string): [number, number] => {
+  const { row, col } = parseAddress(addr)
+  return [row, col]
 }
 
 /**

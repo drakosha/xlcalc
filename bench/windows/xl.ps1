@@ -39,6 +39,9 @@ function Err($e) { '{"error":' + (Str ("$($e.Exception.HResult) $($e.Exception.M
 # a COM range is enumerable: the comma keeps PowerShell from unrolling it into its cells
 function Rg($wb, $sheet, $addr) { , $wb.Worksheets.Item($sheet).Range($addr) }
 
+# conditional formats: CondMake, CondLooks, CondRules (bench/windows/cond.ts)
+. (Join-Path $PSScriptRoot 'cond.ps1')
+
 # what a cell shows (Range.Text), the colour of its display format's font (BGR) and, with codes, its format codes
 function Shown($c, $codes) {
   $t = $c.Text
@@ -295,6 +298,7 @@ function Step($xl, $wb, $s) {
         })
     }
     'make' { try { Make $xl $wb $s; 'null' } catch { Err $_ } }
+    'cond' { Cond $wb $s }
     'vmake' { try { VMake $wb $s; 'null' } catch { Err $_ } }
     'valid' {
       $all = List ($wb.Worksheets | ForEach-Object { VRead $_ $s.window })

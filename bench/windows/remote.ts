@@ -58,7 +58,7 @@ export const env = (): WinEnv => JSON.parse(host('env', '', 180_000)) as WinEnv
 /** The scripts the machine runs, copied from here at the start of a run. */
 function syncScripts() {
   ssh(`New-Item -ItemType Directory -Force ${BASE}\\bin, ${BASE}\\work | Out-Null`)
-  exec('scp', ['-q', ...OPTS, join(HERE, 'host.ps1'), join(HERE, 'xl.ps1'), `${HOST}:C:/xlcalc/bin/`], 120_000)
+  exec('scp', ['-q', ...OPTS, join(HERE, 'host.ps1'), join(HERE, 'xl.ps1'), join(HERE, 'cond.ps1'), `${HOST}:C:/xlcalc/bin/`], 120_000)
 }
 
 const bootTime = () => ssh('(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString(\'o\')', 30_000)

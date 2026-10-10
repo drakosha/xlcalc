@@ -47,7 +47,7 @@ interface Font {
   lost: string[]
 }
 
-function font(e: Element, p: Palette): Font {
+export function font(e: Element, p: Palette): Font {
   const b = e.body ?? ''
   const style: FontStyle = {}
   const lost: string[] = []
@@ -75,7 +75,7 @@ function font(e: Element, p: Palette): Font {
 
 const LINES = new Set(['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot'])
 
-function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: string[] } {
+export function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: string[] } {
   const b = e.body ?? ''
   const out: NonNullable<CellStyle['border']> = {}
   const lost: string[] = []
