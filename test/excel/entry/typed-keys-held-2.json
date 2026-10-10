@@ -1,0 +1,398 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-10",
+  "seconds": 44.9
+ },
+ "cases": [
+  {
+   "id": "key2-pct-1",
+   "text": "1/4",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-2",
+   "text": "-1/2",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-3",
+   "text": "2 1/2",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-4",
+   "text": "5.5",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-5",
+   "text": "5,5",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-6",
+   "text": "+.5",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-7",
+   "text": "-.5",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-8",
+   "text": "1e2",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-9",
+   "text": "007",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-10",
+   "text": "5 5",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-11",
+   "text": "1,234",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-12",
+   "text": "1 234",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-13",
+   "text": "-(5)",
+   "format": "0%"
+  },
+  {
+   "id": "key2-pct-14",
+   "text": "5-",
+   "format": "0%"
+  },
+  {
+   "id": "key2-sign-1",
+   "text": "+.5+1"
+  },
+  {
+   "id": "key2-sign-2",
+   "text": "+0"
+  },
+  {
+   "id": "key2-sign-3",
+   "text": "+1.5"
+  },
+  {
+   "id": "key2-sign-4",
+   "text": "+1,5"
+  },
+  {
+   "id": "key2-sign-5",
+   "text": "++C1"
+  },
+  {
+   "id": "key2-sign-6",
+   "text": "+ 5"
+  },
+  {
+   "id": "key2-sign-7",
+   "text": "+(5)"
+  },
+  {
+   "id": "key2-sign-8",
+   "text": "-0"
+  },
+  {
+   "id": "key2-sign-9",
+   "text": "- 1"
+  },
+  {
+   "id": "key2-sign-10",
+   "text": "-1e2"
+  },
+  {
+   "id": "key2-sign-11",
+   "text": "+1e2+1"
+  },
+  {
+   "id": "key2-sign-12",
+   "text": "-C1%"
+  },
+  {
+   "id": "key2-sign-13",
+   "text": "+5%+1"
+  },
+  {
+   "id": "key2-sign-14",
+   "text": "--C1"
+  },
+  {
+   "id": "key2-sign-15",
+   "text": "+-+5"
+  }
+ ],
+ "answers": {
+  "key2-pct-1": {
+   "cell": {
+    "value": 0.0025,
+    "format": 9
+   },
+   "text": "0%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-2": {
+   "cell": {
+    "value": -0.005,
+    "format": 9
+   },
+   "text": "-1%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-3": {
+   "cell": {
+    "value": 0.025,
+    "format": 9
+   },
+   "text": "3%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-4": {
+   "cell": {
+    "value": 0.055,
+    "format": 9
+   },
+   "text": "6%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-5": {
+   "cell": {
+    "value": "5,5%",
+    "format": 9
+   },
+   "text": "5,5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-6": {
+   "cell": {
+    "value": 0.5,
+    "format": 9
+   },
+   "text": "50%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-7": {
+   "cell": {
+    "value": -0.5,
+    "format": 9
+   },
+   "text": "-50%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-8": {
+   "cell": {
+    "value": 1,
+    "format": 11
+   },
+   "text": "1.00E+00",
+   "code": "0.00E+00",
+   "local": "0.00E+00"
+  },
+  "key2-pct-9": {
+   "cell": {
+    "value": 0.07,
+    "format": 9
+   },
+   "text": "7%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-10": {
+   "cell": {
+    "value": "5 5%",
+    "format": 9
+   },
+   "text": "5 5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-11": {
+   "cell": {
+    "value": 12.34,
+    "format": 9
+   },
+   "text": "1234%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-12": {
+   "cell": {
+    "value": "1 234%",
+    "format": 9
+   },
+   "text": "1 234%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-13": {
+   "cell": {
+    "formula": "-(5)",
+    "format": 9
+   },
+   "computed": -5,
+   "text": "-500%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-pct-14": {
+   "cell": {
+    "value": "5-%",
+    "format": 9
+   },
+   "text": "5-%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key2-sign-1": {
+   "cell": {
+    "formula": "0.5+1"
+   },
+   "computed": 1.5,
+   "text": "1.5",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-2": {
+   "cell": {
+    "value": 0
+   },
+   "text": "0",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-3": {
+   "cell": {
+    "value": 1.5
+   },
+   "text": "1.5",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-4": {
+   "refused": "dialog: We found a typo in your formula and tried to correct it to: \n‭+15‬\n\nDo you want to accept this correction? | There's a problem with this formula. \nNot trying to type a formula?\nWhen the first character is an equal (\"=\") or minus (\"-\") sign, Excel thinks it's a formula:\n\n• you type:   =1+1, cell shows:   2\n\nTo get around this, type an apostrophe ( ' ) first:\n\n• you type:   '=1+1, cell shows:   =1+1 | ",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-5": {
+   "cell": {
+    "formula": "++C1"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-6": {
+   "cell": {
+    "value": 5
+   },
+   "text": "5",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-7": {
+   "cell": {
+    "formula": "+(5)"
+   },
+   "computed": 5,
+   "text": "5",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-8": {
+   "cell": {
+    "value": 0
+   },
+   "text": "0",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-9": {
+   "cell": {
+    "value": -1
+   },
+   "text": "-1",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-10": {
+   "cell": {
+    "value": -100,
+    "format": 11
+   },
+   "text": "-1.00E+02",
+   "code": "0.00E+00",
+   "local": "0.00E+00"
+  },
+  "key2-sign-11": {
+   "cell": {
+    "formula": "100+1"
+   },
+   "computed": 101,
+   "text": "101",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-12": {
+   "cell": {
+    "formula": "-C1%"
+   },
+   "computed": -0.02,
+   "text": "-0.02",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-13": {
+   "cell": {
+    "formula": "5%+1",
+    "format": 10
+   },
+   "computed": 1.05,
+   "text": "105.00%",
+   "code": "0.00%",
+   "local": "0.00%"
+  },
+  "key2-sign-14": {
+   "cell": {
+    "formula": "--C1"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "General"
+  },
+  "key2-sign-15": {
+   "cell": {
+    "formula": "+-5"
+   },
+   "computed": -5,
+   "text": "-5",
+   "code": "General",
+   "local": "General"
+  }
+ }
+}
