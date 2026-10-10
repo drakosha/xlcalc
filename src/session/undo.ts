@@ -130,7 +130,7 @@ export class History {
 }
 
 /** The way from sheet `from` to sheet `to` (the same sheet before and after a change of its layout), but its cells. */
-export function sheetBack(i: number, from: SheetInput, to: SheetInput): SheetBack | null {
+function sheetBack(i: number, from: SheetInput, to: SheetInput): SheetBack | null {
   const set: Record<string, unknown> = {}
   const unset: string[] = []
   const lines: SheetBack['lines'] = []
@@ -163,8 +163,6 @@ export function sheetWith(sheet: SheetInput, back: SheetBack): SheetInput {
   return out as unknown as SheetInput
 }
 
-/** The size of a layout step. */
-export const layoutSize = (sheets: SheetBack[]): number => sheets.reduce((n, s) => n + weigh(s.set) + weigh(s.lines), 0)
 
 /** The fields of `a` that `b` does not share, as `weigh` counts them. */
 const own = (a: object, b: object | undefined): number => {
@@ -174,13 +172,24 @@ const own = (a: object, b: object | undefined): number => {
 }
 
 /** The size of a book's diff from `current`: the fields and cells it keeps that `current` does not share. */
-export function diffSize(d: BookDiff, current: BookInput): number {
+function diffSize(d: BookDiff, current: BookInput): number {
   const sheets = new Map(current.sheets.map((s) => [sheetKey(s.name), s]))
   return own(d.head, current) + weigh(d.op) + d.sheets.reduce((n, x) => n + ('rest' in x ? own(x.rest, sheets.get(sheetKey(x.rest.name))) + weigh(x.put) : 32), 0)
 }
 
-/** The size of a step of cells: the inputs it keeps. */
-export const cellsSize = (edits: CellEdit[]): number => edits.reduce((n, e) => n + 48 + weigh(e.input), 0)
+/** The steps of each kind with their sizes: cells' inputs to put back, as edits. */
+export const cellsStep = (call: 'setCells' | 'patchCells', edits: CellEdit[]): Step => ({ kind: 'cells', call, edits, size: edits.reduce((n, e) => n + 48 + weigh(e.input), 0) })
+
+/** The way back from sheets `after` (by index) to the sheets `before` of the book. */
+export function layoutStep(call: 'setLayout' | 'restructure', before: SheetInput[], after: Map<number, SheetInput>): Step {
+  const sheets = [...after].map(([i, x]) => sheetBack(i, x, before[i])).filter((x) => x !== null)
+  return { kind: 'layout', call, sheets, size: sheets.reduce((n, x) => n + weigh(x.set) + weigh(x.lines), 0) }
+}
+
+export const stylesStep = (styles: CellStyle[] | undefined): Step => ({ kind: 'styles', call: 'setStyles', styles, size: weigh(styles) })
+
+/** The way back from `book`, the book a rebuild was given, by its diff. */
+export const bookStep = (call: Extract<Step, { kind: 'book' }>['call'], diff: BookDiff, book: BookInput): Step => ({ kind: 'book', call, diff, size: diffSize(diff, book) })
 
 /** What a step needs of its session (`session.ts`): the ways it changes the book, which forward calls take too. */
 export interface SessionCore {
@@ -223,7 +232,7 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
     case 'cells': {
       const [changes, was] = yield* core.putCells(s, step.edits)
       result = { call: step.call, changes, cells: step.edits.map((e) => ({ sheet: s.sheetNames[core.sheetIndex(s)(e.sheet)!], cell: e.cell })) }
-      other = { kind: 'cells', call: step.call, edits: was, size: cellsSize(was) }
+      other = cellsStep(step.call, was)
       break
     }
     case 'layout': {
@@ -233,8 +242,7 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
       result = { call: step.call, changes: yield* core.relayout(s, next, shown) }
       // a sheet hidden or shown again: its cells stay where they are
       if (step.call === 'restructure') result.mapCell = registered(checkedMapCell(s.input, (ref) => ref), { op: null, way: 'back', before: s.sheetNames, after: s.sheetNames })
-      const backs = step.sheets.map((b) => sheetBack(b.i, next.get(b.i)!, before[b.i])).filter((x) => x !== null)
-      other = { kind: 'layout', call: step.call, sheets: backs, size: layoutSize(backs) }
+      other = layoutStep(step.call, before, next)
       break
     }
     case 'styles': {
@@ -242,7 +250,7 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
       if (step.styles) s.input.styles = step.styles
       else delete s.input.styles
       result = { call: 'setStyles', changes: [] }
-      other = { kind: 'styles', call: 'setStyles', styles: was, size: weigh(was) }
+      other = stylesStep(was)
       break
     }
     case 'book': {
@@ -253,7 +261,7 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
       const [, changes, diff] = yield* core.rebuild(s, book, map, step.call !== 'setNames', () => bookDiff(book, s.input, d.op, d.way === 'back' ? 'forth' : 'back'))
       result = { call: step.call, changes }
       if (step.call === 'restructure') result.mapCell = registered(checkedMapCell(s.input, map), { op: d.op, way: d.way, before: s.sheetNames, after: names })
-      other = { kind: 'book', call: step.call, diff: diff!, size: diffSize(diff!, book) }
+      other = bookStep(step.call, diff!, book)
       break
     }
   }

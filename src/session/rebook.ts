@@ -154,15 +154,39 @@ export interface Geometry {
 /** The geometry of each `mapCell` an undo or a redo gave, for a pool's thread to send instead of the function. */
 export const GEOMETRY = new WeakMap<object, Geometry>()
 
+/** Where the geometry takes a cell of a sheet: a sheet and an address, null when it is gone. */
+const place = (k: SheetCarry, addr: string): [string, string] | null => (k.at ? k.at(addr) : [k.to, addr])
+
 /** Where a cell of the current book is in the other one, by the geometry; sheets spelled as `other` spells them. */
 export function mapCellOf(op: StructureOp | null, way: Way, other: string[]): (ref: CellRef) => CellRef | null {
   const g = carry(op, way)
   const spelled = new Map(other.map((n) => [sheetKey(n), n]))
   return (ref) => {
-    const k = g(ref.sheet)
-    const x = k.at ? k.at(ref.cell) : [k.to, ref.cell]
+    const x = place(g(ref.sheet), ref.cell)
     const sheet = x && spelled.get(sheetKey(x[0]))
     return sheet ? { sheet, cell: x![1] } : null
+  }
+}
+
+/**
+ * Each cell of `sheet` where the geometry `k` takes it, in a sheet `target` gives by name: `visit` gets that sheet's own,
+ * the address there, the cell's input and its address here; `gone` the cells it takes nowhere or to no such sheet. A
+ * cell that stays on its sheet costs no lookup of the sheet.
+ */
+function* carried<T>(sheet: SheetInput, k: SheetCarry, target: (name: string) => T | undefined, visit: (t: T, at: string, input: CellInput, addr: string) => void, gone?: (input: CellInput, addr: string) => void): Steps<void> {
+  const home = target(k.to)
+  for (const addr in sheet.cells) {
+    if (paced(1)) yield
+    let [t, at] = [home, addr]
+    if (k.at) {
+      const x = k.at(addr)
+      if (x) {
+        at = x[1]
+        if (x[0] !== k.to) t = target(x[0])
+      } else t = undefined
+    }
+    if (t) visit(t, at, sheet.cells[addr], addr)
+    else gone?.(sheet.cells[addr], addr)
   }
 }
 
@@ -174,42 +198,30 @@ export function mapCellOf(op: StructureOp | null, way: Way, other: string[]): (r
  */
 export function* bookDiff(current: BookInput, other: BookInput, op: StructureOp | null, way: Way): Steps<BookDiff> {
   const [g, from] = [carry(op, way), carry(op, way === 'back' ? 'forth' : 'back')]
-  const mine = new Set(current.sheets)
-  const theirs = new Set(other.sheets)
-  const changed = new Map<string, { o: SheetInput; put: Record<string, CellInput | null>; kept: number; held: number }>()
+  const [mine, theirs] = [new Set(current.sheets), new Set(other.sheets)]
+  type Changed = { o: SheetInput; put: Record<string, CellInput | null>; kept: number; held: number }
+  const changed = new Map<string, Changed>()
   for (const o of other.sheets) if (!mine.has(o)) changed.set(sheetKey(o.name), { o, put: {}, kept: 0, held: 0 })
-  const movedSheets: string[] = []
-  for (const c of current.sheets) {
-    if (theirs.has(c)) continue
-    movedSheets.push(c.name)
-    const k = g(c.name)
-    const home = changed.get(sheetKey(k.to))
-    for (const addr in c.cells) {
-      if (paced(1)) yield
-      let [d, a] = [home, addr]
-      if (k.at) {
-        const x = k.at(addr)
-        if (!x) continue
-        a = x[1]
-        if (x[0] !== k.to) d = changed.get(sheetKey(x[0]))
-      }
-      if (!d) continue
-      const was = d.o.cells[a]
-      if (was === c.cells[addr]) d.kept++
+  const movers = current.sheets.filter((c) => !theirs.has(c))
+  const there = (name: string) => changed.get(sheetKey(name))
+  for (const c of movers)
+    yield* carried(c, g(c.name), there, (d, at, input) => {
+      const was = d.o.cells[at]
+      if (was === input) d.kept++
       else {
-        d.put[a] = was ?? null
+        d.put[at] = was ?? null
         if (was) d.held++
       }
-    }
-  }
+    })
+  const byKey = new Map(movers.map((c) => [sheetKey(c.name), c]))
+  const here = (name: string) => byKey.get(sheetKey(name))
   const sheets: BookDiff['sheets'] = []
-  const movers = new Map(current.sheets.filter((c) => !theirs.has(c)).map((c) => [sheetKey(c.name), c]))
   for (const o of other.sheets) {
     if (mine.has(o)) {
       sheets.push({ same: o.name })
       continue
     }
-    const d = changed.get(sheetKey(o.name))!
+    const d = there(o.name)!
     const { cells: _, ...rest } = o
     // a sheet no cell came to (a deleted one) keeps its cells as they are, shared
     if (!d.kept && !d.held && !Object.keys(d.put).length) {
@@ -220,28 +232,18 @@ export function* bookDiff(current: BookInput, other: BookInput, op: StructureOp 
     for (const _ in o.cells) size++
     // cells no cell of `current` came to as they are: found by the geometry the other way, and checked to come back here
     if (d.kept + d.held < size) {
-      const k = from(o.name)
-      const [home, key] = [movers.get(sheetKey(k.to)), sheetKey(o.name)]
-      const carried = new Map<SheetInput, SheetCarry>()
-      for (const addr in o.cells) {
-        if (paced(1)) yield
-        if (addr in d.put) continue
-        const x = k.at ? k.at(addr) : [k.to, addr]
-        const c = x && (x[0] === k.to ? home : movers.get(sheetKey(x[0])))
-        if (c && c.cells[x![1]] === o.cells[addr]) {
-          // the cell there comes back here by the geometry
-          if (!carried.has(c)) carried.set(c, g(c.name))
-          const h = carried.get(c)!
-          const y = h.at ? h.at(x![1]) : [h.to, x![1]]
-          if (y && y[1] === addr && sheetKey(y[0]) === key) continue
-        }
-        d.put[addr] = o.cells[addr]
+      const keep = (input: CellInput, addr: string) => {
+        if (!(addr in d.put)) d.put[addr] = input
       }
+      yield* carried(o, from(o.name), here, (c, at, input, addr) => {
+        const y = c.cells[at] === input && place(g(c.name), at)
+        if (!y || y[1] !== addr || sheetKey(y[0]) !== sheetKey(o.name)) keep(input, addr)
+      }, keep)
     }
     sheets.push({ rest, put: d.put })
   }
   const { sheets: _, ...head } = other
-  return { head, op, way, moved: movedSheets, sheets }
+  return { head, op, way, moved: movers.map((c) => c.name), sheets }
 }
 
 /** The other book, from the current one (as it was when the diff was taken) and the diff. */
@@ -252,18 +254,7 @@ export function* applyDiff(current: BookInput, d: BookDiff): Steps<BookInput> {
   for (const x of d.sheets) if ('rest' in x) got.set(sheetKey(x.rest.name), {})
   for (const name of d.moved) {
     const c = byKey.get(sheetKey(name))!
-    const k = g(c.name)
-    const home = got.get(sheetKey(k.to))
-    for (const addr in c.cells) {
-      if (paced(1)) yield
-      if (!k.at) {
-        if (home) home[addr] = c.cells[addr]
-        continue
-      }
-      const x = k.at(addr)
-      const cells = x && (x[0] === k.to ? home : got.get(sheetKey(x[0])))
-      if (cells) cells[x![1]] = c.cells[addr]
-    }
+    yield* carried(c, g(c.name), (n) => got.get(sheetKey(n)), (cells, at, input) => (cells[at] = input))
   }
   const sheets = d.sheets.map((x): SheetInput => {
     if ('same' in x) return byKey.get(sheetKey(x.same))!

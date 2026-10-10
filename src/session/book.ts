@@ -30,6 +30,16 @@ export function contentEdits(s: EngineState, edits: CellEdit[]): CellEdit[] {
   return out
 }
 
+/** The inputs of cells now (null: none), once per cell: the edits that put them back. */
+export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]): CellEdit[] {
+  const out = new Map<string, CellEdit>()
+  for (const { sheet, cell } of refs) {
+    const k = `${sheetKey(sheet)}!${cell}`
+    if (!out.has(k)) out.set(k, { sheet, cell, input: s.input.sheets[s.sheetIdx.get(sheetKey(sheet))!].cells[cell] ?? null })
+  }
+  return [...out.values()]
+}
+
 /** The session's book without its cells (`Session.layout`): new objects for the book and its sheets, the rest the book's own. */
 export function bookLayout(book: BookInput): BookLayout {
   return { ...book, sheets: book.sheets.map(({ cells: _cells, ...rest }) => rest) }
