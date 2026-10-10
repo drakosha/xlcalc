@@ -115,6 +115,8 @@ export interface MessageParams {
   explainSpill: { ref: string }
   explainValue: { value: CellValue | undefined }
   explainFormula: { formula: string }
+  explainErrorFrom: { ref: string }
+  explainErrorHere: object
 }
 
 export type MessageKey = keyof MessageParams
