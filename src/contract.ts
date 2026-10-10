@@ -1311,10 +1311,10 @@ export interface FormulaEngine {
   fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null>
   /**
    * The width a column takes as a value typed into one of its cells (the value it computes, after `setCells`) widens
-   * it, as Excel widens a column whose width is the default or one it fitted for a number that would not show whole;
-   * undefined when the column keeps its width, null for the default width.
+   * it, as Excel widens a column whose width is the default or one it fitted for a number AutoFit would give more room;
+   * undefined when the column keeps its width. A host sets it with `bestFit: true`.
    */
-  entryWidth(value: CellValue, opts?: EntryWidthOptions): number | null | undefined
+  entryWidth(value: CellValue, opts?: EntryWidthOptions): number | undefined
 }
 
 export const MAX_FORMULA_LENGTH = 8_192
