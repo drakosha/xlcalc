@@ -101,10 +101,20 @@ function engineAfter(set: PartsSetFile, id: string) {
 }
 
 /**
+ * The lines about the cells where Excel showed a thread's placeholder note (author `tc={id}`), which neither Excel's
+ * object model takes for a thread, set apart from the others: each such cell must differ, and only by its note.
+ */
+function apart(a: PartsAnswer, lines: string[]): { placeholders: string[]; rest: string[] } {
+  const cells = new Set(a.sheets.flatMap((s) => Object.entries(s.notes).flatMap(([cell, n]) => (n.author.startsWith('tc=') ? [`${s.name} note ${cell}:`] : []))))
+  const at = (l: string) => l.slice(0, l.indexOf(':') + 1)
+  return { placeholders: lines.filter((l) => cells.has(at(l))).map(at), rest: lines.filter((l) => !cells.has(at(l))) }
+}
+
+/**
  * The tests of stored sets: each case answered, Excel read what the engine holds, the reader reads Excel's file as Excel
  * read it and reports nothing of it, and reads the threads of comments in it as notes (where the set has threads, the
- * engine's book being the reference); `known`, `readKnown` and `threadsKnown` pin the differences by `<set>:<case id>`,
- * `issues` what the reader reports (`code sheet cells`).
+ * engine's book being the reference: Excel shows each thread's placeholder note, `apart`); `known`, `readKnown` and
+ * `threadsKnown` pin the differences by `<set>:<case id>`, `issues` what the reader reports (`code sheet cells`).
  */
 export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, string[]>>, readKnown: Readonly<Record<string, string[]>>, from: (name: string) => Promise<PartsSet>, issues: Readonly<Record<string, string[]>> = {}, threadsKnown: Readonly<Record<string, string[]>> = {}) {
   for (const set of sets) {
@@ -125,7 +135,10 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
           const a = set.answers[c.id]
           const r = engineAfter(set, c.id)
           if (a.error) return void expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
-          expect(r.ok ? partsDifferences(excelSheets(a), sheetsOf(r.book)) : [`engine refused (${r.code}): ${r.message}`]).toEqual(known[key] ?? [])
+          const lines = r.ok ? partsDifferences(excelSheets(a), sheetsOf(r.book)) : [`engine refused (${r.code}): ${r.message}`]
+          const { placeholders, rest } = apart(a, lines)
+          expect(rest).toEqual(known[key] ?? [])
+          expect(placeholders.length, "the threads' cells, where Excel shows their placeholder notes").toBe(set.threads?.[c.book]?.length ?? 0)
         })
         if (set.threads?.[c.book])
           it(`${c.id}: the reader reads the threads of Excel's file as notes`, async () => {
@@ -135,10 +148,42 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
           })
         it(`${c.id}: the reader reads Excel's file as Excel read it`, async () => {
           const read = await readXlsx(savedFile(set, c.id))
-          expect(partsDifferences(excelSheets(set.answers[c.id]), sheetsOf(read.book))).toEqual(readKnown[key] ?? [])
+          const { placeholders, rest } = apart(set.answers[c.id], partsDifferences(excelSheets(set.answers[c.id]), sheetsOf(read.book)))
+          expect(rest).toEqual(readKnown[key] ?? [])
+          expect(placeholders.length, "the threads' cells, where Excel shows their placeholder notes").toBe(set.threads?.[c.book]?.length ?? 0)
           expect(read.issues.map((i) => `${i.code} ${i.sheet ?? ''} ${(i.cells ?? []).join(' ')}`.trim())).toEqual(issues[key] ?? [])
         })
       }
     })
   }
 }
+
+/** Excel takes the part of an address after `#` as its place (Address and SubAddress); the book keeps the address as written. */
+const anchor = (cell: string) => `S link ${cell}: Excel {"url":"https://example.com/page","location":"top"}, book {"url":"https://example.com/page#top"}`
+
+/** `<set>:<case id>` → the difference lines pinned between Excel and the engine, each with its reason in a comment; both Excels give them. */
+export const PARTS_KNOWN: Readonly<Record<string, string[]>> = {
+  'files:written': [anchor('D13')],
+  'files:after-insert': [anchor('D14')],
+  'files:after-move': [anchor('D13')],
+  'files:after-copy': [anchor('D13')],
+  // the writer cuts a tooltip to Excel's 255 characters: Excel does not load a file with a longer one
+  'files:tip': [`S link A1: Excel ${JSON.stringify({ url: 'https://example.com/', tooltip: 't'.repeat(255) })}, book ${JSON.stringify({ url: 'https://example.com/', tooltip: 't'.repeat(300) })}`],
+}
+
+/** Excel saves a space of an address as `%20` and shows it as a space; the reader gives the address as the file holds it. */
+const space = (cell: string) => `S link ${cell}: Excel {"url":"https://example.com/a b/ж"}, book {"url":"https://example.com/a%20b/ж"}`
+
+/** `<set>:<case id>` → the difference lines pinned between Excel and the reader of the file Excel saved. */
+export const PARTS_READ_KNOWN: Readonly<Record<string, string[]>> = {
+  'files:written': [space('D6')],
+  'files:after-insert': [space('D7')],
+  'files:after-move': [space('D6')],
+  'files:after-copy': [space('D6')],
+}
+
+/** The reader reports each thread of comments it reads as a note. */
+const threadIssues = (cells: string) => [`comment S ${cells}`, 'comment T A1']
+
+/** What the reader reports of the files Excel saved, by `<set>:<case id>`. */
+export const THREAD_ISSUES: Readonly<Record<string, string[]>> = { 'threads:threads': threadIssues('B2 C3'), 'threads:threads-insert-row': threadIssues('B3 C4') }
