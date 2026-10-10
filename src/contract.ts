@@ -682,8 +682,8 @@ export interface EntryOptions {
 
 /**
  * Text typed into a cell as Excel takes it (`parseEntry`): the cell's new input, `null` when nothing is left of the
- * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message and the
- * position in the typed text.
+ * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
+ * language of `opts.locale` (English for en-US) and the position in the typed text.
  */
 export type EntryResult = { ok: true; input: CellInput | null } | { ok: false; code: CheckCode; message: string; at: number }
 
@@ -842,6 +842,8 @@ export interface CellView extends CellResult {
   note?: CellNote
   link?: CellLink
   look?: ConditionalLook
+  /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`); `spill` is that area too. */
+  array?: string
 }
 
 export interface CellChange extends CellRef, Partial<CellDisplay> {
@@ -876,7 +878,10 @@ export interface Explanation {
   root: ExplainNode
   nodes: number
   truncated: boolean
-  /** The tree as indented text (for logs or an LLM agent). */
+  /**
+   * The tree as indented text (for logs, an LLM agent or a person) in the book's locale: in ru-RU its words, numbers,
+   * formulas, booleans and errors are Russian (`'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)`); the nodes keep the stored text.
+   */
   text: string
 }
 
@@ -980,6 +985,7 @@ export type RestructureResult =
       /** Where a cell of the old book is now; null if it was deleted or overwritten. */
       mapCell(ref: CellRef): CellRef | null
     }
+  /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
   | { ok: false; code: StructureRefusal; message: string }
 
 /** `Session.restructure`: the operation's result and the values it changed. */
@@ -1040,6 +1046,26 @@ export interface CellValidation {
 export type EntryCheck = { ok: true } | { ok: false; rule: DataValidation }
 
 /**
+ * A change of a cell's look (`Session.patchCells`): each field given sets the cell's own, null removes it, a field left
+ * out stays. The cell's value and formula stay as they are.
+ */
+export interface CellPatch extends CellRef {
+  set: { style?: number | null; format?: NumberFormat | null; meta?: JsonValue | null; note?: CellNote | null; link?: CellLink | null }
+}
+
+/** Where a sheet's cells end (`Session.extent`): everything lies in its first `rows` rows and `columns` columns; 0 and 0 for an empty sheet. */
+export interface SheetExtent {
+  rows: number
+  columns: number
+}
+
+/** A sheet without its cells (`Session.layout`). */
+export type SheetLayout = Omit<SheetInput, 'cells'>
+
+/** A book without the cells of its sheets (`Session.layout`): its styles, names and settings, and each sheet's layout. */
+export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
+
+/**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
  * session (`clock`) is what a saved result should record: a full computation with it gives the same hash.
  */
@@ -1058,6 +1084,13 @@ export interface Session {
    * number (`Price2`). A formula in a header cell throws `InputError`.
    */
   setCells(edits: CellEdit[]): CellChange[]
+  /**
+   * The style, format, meta, note or link of cells changed, applied in order and atomically, without the cells' values
+   * and formulas, which stay: an empty cell gets a cell with these alone, a cell left with nothing is removed, a cell of
+   * an old-kind array formula's area or of a spill takes them and the array stays. Recomputes nothing; with `display`,
+   * returns the cells whose shown text or colour changed (a new format).
+   */
+  patchCells(patches: CellPatch[]): CellChange[]
   setNames(names: NameInput[]): CellChange[]
   /** Non-live sessions only. */
   setClock(clock: Clock): CellChange[]
@@ -1079,16 +1112,30 @@ export interface Session {
    * session's own and later calls change them, so do not modify it; serialize or copy what must stay.
    */
   book(): BookInput
+  /**
+   * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
+   * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
+   * what the layout holds, not the cells; its objects are the session's own, as `book()`'s are.
+   */
+  layout(): BookLayout
+  /**
+   * Where a sheet's cells end: the last row and column that a cell of its input (a value, a formula, or a style, a
+   * format, meta, a note or a link alone), a spilled value (the whole spill range), a merged area or a table reaches.
+   * Settings of whole rows and columns, conditional formats and data validation do not count. It costs the sheet's
+   * columns, spills and cells without a value, not a pass over all its cells.
+   */
+  extent(sheet: string): SheetExtent
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
-   * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`) as `result()` gives
-   * them, by address: the same cells (spilled ones too, empty ones left out) with the same fields, and each cell's own
-   * `style`, `note` and `link`, and the `look` the sheet's conditional formats give it by the current values (an empty
-   * cell with a look is listed with the value null). For a window over a sheet: it costs what the rectangle holds,
-   * not the book; the statistics of a rule's cells (lowest, highest, percentiles) are kept until an edit changes them.
-   * Edits do not list cells whose look changed: a host reads its window again after an edit to a sheet with rules.
+   * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`), or of several (a cell in
+   * two of them is listed once), as `result()` gives them, by address: the same cells (spilled ones too, empty ones
+   * left out) with the same fields, and each cell's own `style`, `note` and `link`, an old-kind array formula's `array`,
+   * and the `look` the sheet's conditional formats give it by the current values (an empty cell with a look is listed
+   * with the value null). For a window over a sheet: it costs what the rectangles hold, not the book; the statistics of
+   * a rule's cells (lowest, highest, percentiles) are kept until an edit changes them. Edits do not list cells whose
+   * look changed: a host reads its window again after an edit to a sheet with rules.
    */
-  cells(sheet: string, range: string): Record<string, CellView>
+  cells(sheet: string, range: string | string[]): Record<string, CellView>
   /** The data validation of a cell (`CellValidation`), its list computed now; null when no rule is over the cell. */
   validation(sheet: string, cell: string): CellValidation | null
   /**
@@ -1158,6 +1205,7 @@ export interface AsyncSession {
   /** The session's clock as of its last finished call. */
   readonly clock: Clock
   setCells(edits: CellEdit[], opts?: CalcOptions): Promise<CellChange[]>
+  patchCells(patches: CellPatch[], opts?: CalcOptions): Promise<CellChange[]>
   setNames(names: NameInput[], opts?: CalcOptions): Promise<CellChange[]>
   setClock(clock: Clock, opts?: CalcOptions): Promise<CellChange[]>
   restructure(op: StructureOp, opts?: CalcOptions): Promise<AsyncRestructureResult>
@@ -1165,9 +1213,12 @@ export interface AsyncSession {
   setLayout(edits: LayoutEdit[], opts?: CalcOptions): Promise<CellChange[]>
   /** The session's book; from a thread, a copy. */
   book(): Promise<BookInput>
+  /** As `Session.layout`; from a thread, a copy, without the cells. */
+  layout(): Promise<BookLayout>
+  extent(sheet: string): Promise<SheetExtent>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
-  /** As `Session.cells`; from a thread only the rectangle comes back. */
-  cells(sheet: string, range: string): Promise<Record<string, CellView>>
+  /** As `Session.cells`; from a thread only the rectangles come back, in one call. */
+  cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
   validation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
   result(opts?: CalcOptions): Promise<ComputeResult>

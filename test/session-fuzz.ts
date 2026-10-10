@@ -4,7 +4,7 @@
  * columns, by formulas that also count cells edited often, so that cached ranges are read again after a write past
  * the sheet's edge grew it; spills that grow, shrink and are blocked; formulas replaced; rows inserted and deleted.
  */
-import type { BookInput, CellEdit, CellInput, ComputeResult, Scalar, StructureOp } from '../src/contract.js'
+import type { BookInput, CellEdit, CellInput, CellPatch, ComputeResult, Scalar, StructureOp } from '../src/contract.js'
 import { indexToCol } from '../src/model.js'
 import { mulberry32 } from '../src/synth.js'
 
@@ -83,6 +83,40 @@ export function fuzz(seed: number): { book: BookInput; step: () => Step } {
     return { op: pick<StructureOp>([{ op: 'insertRows', sheet: 'S', row: r(), count: 1 + int(3) }, { op: 'deleteRows', sheet: 'S', row: 2 + int(N), count: 1 }, { op: 'insertRows', sheet: 'D', row: r(), count: 1 }]) }
   }
   return { book, step }
+}
+
+/**
+ * Seeded patches of cells' looks (`Session.patchCells`), from a stream of their own so that the steps of `fuzz` stay
+ * as they were: on spill ranges, values and empty cells of `S`, on cells of `D`, and far past the data, where they move
+ * a sheet's extent and are removed again; a patch now and then holds several of them.
+ */
+export function patches(seed: number): () => CellPatch[] {
+  const rnd = mulberry32(seed * 7919 + 1)
+  const int = (n: number) => Math.floor(rnd() * n)
+  const pick = <T>(xs: readonly T[]): T => xs[int(xs.length)]
+  const far: { sheet: string; cell: string }[] = []
+  const set = (): CellPatch['set'] => {
+    const out: CellPatch['set'] = {}
+    if (rnd() < 0.5) out.format = pick(['0.00', '0%', '@', null])
+    if (rnd() < 0.3) out.meta = pick([int(9), 'm', null])
+    if (rnd() < 0.3) out.note = rnd() < 0.7 ? { text: `n${int(9)}` } : null
+    if (rnd() < 0.2) out.link = rnd() < 0.7 ? { url: 'https://example.com/' } : null
+    return out
+  }
+  const one = (): CellPatch => {
+    const x = rnd()
+    if (x < 0.35) return { sheet: 'S', cell: `${pick(['E', 'F', 'G', 'I'])}${1 + int(N)}`, set: set() }
+    if (x < 0.6) return { sheet: 'S', cell: `${pick(['A', 'B', 'H'])}${1 + int(N + 100)}`, set: set() }
+    if (x < 0.7) return { sheet: 'D', cell: `${indexToCol(int(10))}${1 + int(2 * N)}`, set: set() }
+    // far past the data: the extent grows, and shrinks when the cell is left with nothing
+    if (x < 0.85 || !far.length) {
+      const at = { sheet: pick(['S', 'D', 'T']), cell: `${indexToCol(10 + int(20))}${N + 300 + int(3000)}` }
+      far.push(at)
+      return { ...at, set: { format: '0.0' } }
+    }
+    return { ...far.splice(int(far.length), 1)[0], set: { format: null, meta: null, note: null, link: null } }
+  }
+  return () => Array.from({ length: rnd() < 0.8 ? 1 : 2 + int(3) }, one)
 }
 
 /** The cells whose values differ between a session's result and a full computation's, with their formulas. */

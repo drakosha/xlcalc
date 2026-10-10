@@ -10,6 +10,7 @@ import type { BookInput, ColumnInput, NumberFormat, RowInput, SheetInput } from 
 import { spend } from '../exec/budget.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
+import type { Message } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { contains, hi, lo, meets, type Axis, type Rect } from './area.js'
@@ -30,11 +31,11 @@ const mergesOf = (s: SheetInput) => (s.merges ?? []).map((m) => parseMerge(m)!)
 const shifted = (x: Rect, dr: number, dc: number): Rect => ({ r1: x.r1 + dr, r2: x.r2 + dr, c1: x.c1 + dc, c2: x.c2 + dc })
 
 /** Why Excel refuses the paste, or null: a move cutting a merged area at its source, a copy landing on part of one. */
-export function mergeRefusal(book: BookInput, p: Paste): string | null {
+export function mergeRefusal(book: BookInput, p: Paste): Message | null {
   const [sheet, rect] = p.move ? [p.from, p.src] : [p.to, p.area]
   const m = mergesOf(sheetOf(book, sheet)).find((x) => meets(x, rect) && !contains(rect, x))
   if (!m) return null
-  return p.move ? `the moved cells cut the merged area ${sheet}!${mergeText(m)}` : `the pasted cells land on part of the merged area ${sheet}!${mergeText(m)}`
+  return { key: p.move ? 'moveCutsMerge' : 'pasteOnMerge', sheet, area: mergeText(m) }
 }
 
 /** A whole line's entries moved or copied: `taken` from the old source, pasted at each offset of `d`. */

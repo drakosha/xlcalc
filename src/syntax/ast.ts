@@ -1,5 +1,7 @@
 /** The formula AST, the parser's error with its check code, and the text of error values. */
 import type { CheckCode, ErrorCode } from '../contract.js'
+import { english } from '../locale/english.js'
+import type { Message } from '../locale/messages.js'
 import type { TableSpec } from './table.js'
 
 export interface RangeRef {
@@ -69,18 +71,19 @@ export type RefOp = ' ' | ':'
 
 export const isRefOp = (op: BinOp): op is RefOp => op === ' ' || op === ':'
 
+/** A formula that does not read: its check code, its message (`message` in English) and its position. */
 export class FormulaError extends Error {
   constructor(
     readonly code: CheckCode,
-    message: string,
+    readonly msg: Message,
     readonly at: number,
   ) {
-    super(message)
+    super(english(msg))
   }
 }
 
-export function bad(at: number, message: string, code: CheckCode = 'syntax'): never {
-  throw new FormulaError(code, message, at)
+export function bad(at: number, msg: Message, code: CheckCode = 'syntax'): never {
+  throw new FormulaError(code, msg, at)
 }
 
 export const ERROR_TEXT: Record<ErrorCode, string> = {

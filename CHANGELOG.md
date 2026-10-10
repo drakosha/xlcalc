@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.13.0 (2026-10-10)
+
+Internal release; not published to npm. Messages for people in the language of the book.
+
+Changed:
+
+- Messages for people come in the language of the book's locale: why a typed formula does not read (`parseEntry`, `toInvariant`, `toLocal` and `validateLocalFormula`, by the locale of the call), why a structure operation is refused (`restructure` and a session's `restructure` in every kind of session, by the book's `locale`), and the text of `explain`. In ru-RU they are Russian, with the formula's functions, separators, booleans and errors as ru-RU writes them: `Ожидалась ), а формула закончилась`, `Функция ОКРУГЛ принимает 2 аргумента, а указано 3`, `Нельзя изменить часть массива План!C1 (C1:C3)`, and `explain` shows `'План'!B1 = 420  ← ОКРУГЛ(СУММ(A1:A2)*1,2;0)` over `'План'!A1:A2 (2 ячейки)`; its nodes keep the stored text. Codes, positions and the English messages are as before.
+
+Added:
+
+- A locale file has `messages`, the catalog of the 75 messages for people, each a function of its parameters (plural forms and the locale's words need more than a template); a locale without its own text of a message takes en-US's (`docs/locale.md`). The ru-RU catalog adds 2.9 KB gzipped to a bundle.
+
+Still in English: `validateFormula`, which has no locale, the reasons of cell errors in `issues`, the checks of names and `InputError`. In `xlcalc/unstable/internal`, `FunctionSpec.counts` is an object (`{ min, max, parity, or }`) instead of text.
+
+## 0.12.0 (2026-10-10)
+
+Internal release; not published to npm. What a window over a sheet needs, without the whole book.
+
+Added:
+
+- Contract: `Session.extent(sheet)`, where a sheet's cells end: the last row and column that an input cell (a value, a formula, or a style, a format, meta, a note or a link alone), a spill range, a merged area or a table reaches. It reads the engine's columns, spills and cells without a value instead of every cell: under 0.1 ms on the synthetic book of 34,000 rows from a thread, where finding the formulas in `book()` and reading their spills took about 700 ms.
+- Contract: `Session.layout()`, the book without its cells: styles, names, settings and every field of each sheet but `cells`. It costs what the layout holds: 0.1 ms on the same book from a thread, where `book()` takes 460 ms.
+- Contract: `Session.cells(sheet, ranges)` takes several rectangles in one call, one round trip in a pool; a cell in two of them is listed once.
+- Contract: `Session.patchCells(patches)` changes cells' `style`, `format`, `meta`, `note` and `link` (null removes one) without their values or formulas: an empty cell, a spilled cell and a cell of an old-kind array formula's area alike, atomically and without recomputing; with the display on it returns the cells whose shown text or colour changed. A pool journals it with the other edits. Styling 2,000 cells from a thread takes 9 ms, against 15 ms by reading a window and writing it back through `setCells`.
+- Contract: `CellView.array`, an old-kind array formula's area on its top-left cell.
+
 ## 0.11.0 (2026-10-10)
 
 Internal release; not published to npm. Conditional formats, kept and computed.

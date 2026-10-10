@@ -6,6 +6,7 @@
  */
 import { caseKey } from '../collate.js'
 import { IDENT_RULE } from '../syntax.js'
+import type { Message } from './messages.js'
 
 /** Separators of formula text on one side of a translation. */
 export interface Syntax {
@@ -35,7 +36,7 @@ export interface Piece {
 
 export interface LexFail {
   at: number
-  message: string
+  msg: Message
 }
 
 // the identifier rule of the engine's tokenizer
@@ -119,7 +120,7 @@ export function lex(src: string, syn: Syntax, errors: readonly string[], num: Re
     const ch = src[i]
     if (ch === '"' || ch === "'") {
       const j = closing(src, i, ch)
-      if (j < 0) return { at: i, message: ch === '"' ? 'unterminated string' : 'unterminated quoted sheet name' }
+      if (j < 0) return { at: i, msg: { key: ch === '"' ? 'unterminatedString' : 'unterminatedSheet' } }
       // a quoted sheet name keeps its `!`
       push('raw', j + 1 - i + (ch === "'" && src[j + 1] === '!' ? 1 : 0))
       continue

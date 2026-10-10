@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { makeCaller, pairs, specOf, type Arg, type FnDef, type Grid } from '../src/args.js'
 import { Arr } from '../src/arrays/value.js'
 import { createState } from '../src/engine.js'
+import { english } from '../src/locale/english.js'
 import { E, isErr, Rng, type V } from '../src/values.js'
 
 // sheet S: A1:A8 a mix, B1:B3 dates with a time, C1 an error, D1 blank, E1:E3 numbers
@@ -135,14 +136,16 @@ describe('argument layer', () => {
 
   it('specs: argument counts, range positions and complete repeated pairs follow the kinds', () => {
     const counts = (spec: ReturnType<typeof specOf>) => [1, 2, 3, 4, 5, 6, 254, 255, 256].filter(spec.takes)
+    // the counts as the message of a call with others says them
+    const said = (spec: ReturnType<typeof specOf>) => english({ key: 'argumentCount', fn: 'F', counts: spec.counts, got: 1 }).replace(/^F takes (.*) arguments, got 1$/, '$1')
     const sumifs = specOf('SUMIFS', { args: 'R R a', rep: 2, fn: () => 0 })
-    expect([sumifs.min, sumifs.max, sumifs.counts, counts(sumifs)]).toEqual([3, 255, '3 to 255 (odd)', [3, 5, 255]])
+    expect([sumifs.min, sumifs.max, said(sumifs), counts(sumifs)]).toEqual([3, 255, '3 to 255 (odd)', [3, 5, 255]])
     expect([0, 1, 2, 3, 4].map(sumifs.range)).toEqual([true, true, false, true, false])
     const countifs = specOf('COUNTIFS', { args: 'R a', rep: 2, fn: () => 0 })
-    expect([countifs.min, countifs.max, countifs.counts, counts(countifs)]).toEqual([2, 254, '2 to 254 (even)', [2, 4, 6, 254]])
+    expect([countifs.min, countifs.max, said(countifs), counts(countifs)]).toEqual([2, 254, '2 to 254 (even)', [2, 4, 6, 254]])
     // an optional order inside the first pair: 2 arguments, then complete pairs
     const sortby = specOf('SORTBY', { args: 'G G G?', rep: 2, fn: () => 0 })
-    expect([sortby.counts, counts(sortby)]).toEqual(['2, or odd 3 to 255', [2, 3, 5, 255]])
+    expect([said(sortby), counts(sortby)]).toEqual(['2, or odd 3 to 255', [2, 3, 5, 255]])
     expect(specOf('SWITCH', { args: 'a P P', rep: 1, max: 254, fn: () => 0 }).max).toBe(254)
     expect(specOf('LOG', { args: 'n n?', fn: () => 0 })).toMatchObject({ min: 1, max: 2 })
     expect(() => specOf('BAD', { args: 'q', fn: () => 0 })).toThrow(/unknown argument kind q/)

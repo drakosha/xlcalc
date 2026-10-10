@@ -6,6 +6,8 @@
 import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
+import { english } from './locale/english.js'
+import type { Message } from './locale/messages.js'
 import { LOCALE_FILES } from './locale/registry.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
@@ -151,14 +153,14 @@ function plainCell(c: unknown, styles: number): boolean {
 }
 
 /** Why Excel would not take a sheet name, or null: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History` (reserved, in any case). */
-export function sheetNameProblem(name: string): string | null {
-  if (name === '') return 'a sheet name must not be empty'
-  if (name.length > 31) return `a sheet name has at most 31 characters, ${JSON.stringify(name)} has ${name.length}`
+export function sheetNameProblem(name: string): Message | null {
+  if (name === '') return { key: 'sheetNameEmpty' }
+  if (name.length > 31) return { key: 'sheetNameLong', name, length: name.length }
   const bad = /[:\\/?*[\]]/.exec(name)
-  if (bad) return `a sheet name must not contain ${JSON.stringify(bad[0])} (Excel forbids : \\ / ? * [ ])`
-  if (name.startsWith("'") || name.endsWith("'")) return 'a sheet name must not begin or end with an apostrophe'
+  if (bad) return { key: 'sheetNameChar', char: bad[0] }
+  if (name.startsWith("'") || name.endsWith("'")) return { key: 'sheetNameApostrophe' }
   // Excel refuses to rename a sheet so (the struct set `history`)
-  if (name.toLowerCase() === 'history') return 'Excel reserves the sheet name "History" (in any case)'
+  if (name.toLowerCase() === 'history') return { key: 'sheetNameHistory' }
   return null
 }
 
@@ -305,7 +307,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
-    if (problem) throw new InputError(`${p}.name`, problem)
+    if (problem) throw new InputError(`${p}.name`, english(problem))
     const dup = seen.get(sheetKey(name))
     if (dup) throw new InputError(`${p}.name`, `duplicate sheet name ${JSON.stringify(name)}: ${path}.sheets[${dup.i}] is ${JSON.stringify(dup.name)} (sheet names are case-insensitive)`)
     seen.set(sheetKey(name), { name, i })

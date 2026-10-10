@@ -7,16 +7,18 @@
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call.
  */
-import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
+import type { BookInput, BookLayout, CellChange, CellEdit, CellInput, CellPatch, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionOptions, SessionRestructureResult, SheetExtent, StructureOp } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
-import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
+import { applyLayout, bookLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { checkArrayEdits } from './spill/fixed.js'
+import { sheetExtent } from './session/extent.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
+import { applyPatches, checkPatches } from './session/patch.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
 import { dropStats } from './cond/stats.js'
@@ -41,14 +43,17 @@ export interface SessionHooks {
 export interface SessionSteps {
   readonly clock: Clock
   setCells(edits: CellEdit[]): Steps<CellChange[]>
+  patchCells(patches: CellPatch[]): Steps<CellChange[]>
   setNames(names: NameInput[]): Steps<CellChange[]>
   setClock(clock: Clock): Steps<CellChange[]>
   restructure(op: StructureOp): Steps<SessionRestructureResult>
   setStyles(styles: CellStyle[]): void
   setLayout(edits: LayoutEdit[]): Steps<CellChange[]>
   book(): BookInput
+  layout(): BookLayout
+  extent(sheet: string): Steps<SheetExtent>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
-  cells(sheet: string, range: string): Steps<Record<string, CellView>>
+  cells(sheet: string, range: string | string[]): Steps<Record<string, CellView>>
   validation(sheet: string, cell: string): Steps<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
   result(): Steps<ComputeResult>
@@ -170,6 +175,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         throw e
       }
     },
+    *patchCells(patches: CellPatch[]) {
+      const s = yield* ready()
+      const checked = checkPatches(patches, sheetIndex(s), styleCount(s))
+      const before = display ? snapshot(s, editedCells(s, checked)) : null
+      applyPatches(s, checked, (name) => sheetIndex(s)(name)!)
+      return before ? changes(s, merged([], shownChanges(s, before))) : []
+    },
     *setNames(names: NameInput[]) {
       const old = yield* ready()
       checkNames(names, 'names')
@@ -258,19 +270,31 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     book() {
       return st().input
     },
+    layout() {
+      return bookLayout(st().input)
+    },
+    *extent(sheet: string) {
+      const s = yield* ready()
+      return sheetExtent(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
+    },
     *explain(sheet: string, cell: string, o: ExplainOptions = {}) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const { row, col } = parseAddress(checkAddress(cell, 'cell'))
       const e = explainCell(s, i, row, col, o.depth ?? 3, o.maxNodes ?? 200, o.expand ?? false)
-      return { ...e, text: explainText(e.root) }
+      return { ...e, text: explainText(e.root, s.input.locale) }
     },
-    *cells(sheet: string, range: string) {
+    *cells(sheet: string, range: string | string[]) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      const x = parseRange(checkString(range, 'range'))
-      if (!x) throw new InputError('range', `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(range)}`)
-      return yield* cellsIn(s, i, x, display)
+      const many = Array.isArray(range)
+      const rects = (many ? range : [range]).map((text, k) => {
+        const path = many ? `range[${k}]` : 'range'
+        const x = parseRange(checkString(text, path))
+        if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(text)}`)
+        return x
+      })
+      return yield* cellsIn(s, i, rects, display)
     },
     *validation(sheet: string, cell: string) {
       const s = yield* ready()
@@ -318,12 +342,15 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
       return core.clock
     },
     setCells: (edits) => now(() => core.setCells(edits)),
+    patchCells: (patches) => now(() => core.patchCells(patches)),
     setNames: (names) => now(() => core.setNames(names)),
     setClock: (clock) => now(() => core.setClock(clock)),
     restructure: (op) => now(() => core.restructure(op)),
     setStyles: (styles) => core.setStyles(styles),
     setLayout: (edits) => now(() => core.setLayout(edits)),
     book: () => core.book(),
+    layout: () => core.layout(),
+    extent: (sheet) => now(() => core.extent(sheet)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     cells: (sheet, range) => now(() => core.cells(sheet, range)),
     validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
