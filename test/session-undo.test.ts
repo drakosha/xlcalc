@@ -64,6 +64,26 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(s.history).toEqual({ undo: 1, redo: 0 })
   })
 
+  it('an old-kind array formula made, changed and cleared: each undone and redone, the whole area with it', () => {
+    const s = openSession(book(), o)
+    const books = [structuredClone(s.book())]
+    const clear = ['E1', 'E2', 'E3'].map((cell) => ({ sheet: 'S', cell, input: null }))
+    for (const edits of [[{ sheet: 'S', cell: 'E1', input: { formula: 'A1:A2*10', array: 'E1:E3' } }], [{ sheet: 'S', cell: 'E1', input: { formula: 'A2:A3*100', array: 'E1:E3' } }], clear]) {
+      s.setCells(edits)
+      books.push(structuredClone(s.book()))
+    }
+    s.patchCells([{ sheet: 'S', cell: 'E2', set: { style: 0 } }])
+    expect(s.undo()!.cells).toEqual([{ sheet: 'S', cell: 'E2' }])
+    for (let k = 2; k >= 0; k--) {
+      s.undo()
+      same(s, books[k], o)
+    }
+    s.redo()
+    expect(s.cells('S', 'E1:E3')).toMatchObject({ E1: { value: 10, array: 'E1:E3' }, E2: { value: 20 }, E3: { value: { error: 'NA' } } })
+    expect(() => s.setCells([{ sheet: 'S', cell: 'E2', input: { value: 1 } }])).toThrow(InputError)
+    expect(s.history).toEqual({ undo: 1, redo: 3 })
+  })
+
   it("a table's header typed over renames its column: undo names it back, with the references", () => {
     const s = openSession(book(), o)
     const before = structuredClone(s.book())

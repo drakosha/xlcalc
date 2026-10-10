@@ -163,7 +163,6 @@ export function sheetWith(sheet: SheetInput, back: SheetBack): SheetInput {
   return out as unknown as SheetInput
 }
 
-
 /** The fields of `a` that `b` does not share, as `weigh` counts them. */
 const own = (a: object, b: object | undefined): number => {
   let n = 32
