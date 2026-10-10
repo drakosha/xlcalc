@@ -162,13 +162,13 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
 
   it('what a sheet has that the model does not: each reported once for the sheet', async () => {
     const body =
-      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" state="frozen"/></sheetView></sheetViews>' +
+      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="600" topLeftCell="A2"/></sheetView></sheetViews>' +
       one(1) +
-      '<sheetProtection sheet="1"/><autoFilter ref="A1:A9"/><conditionalFormatting sqref="A1"><cfRule type="cellIs"/></conditionalFormatting><conditionalFormatting sqref="B1"/><dataValidations count="1"><dataValidation sqref="A1"/></dataValidations><hyperlinks><hyperlink ref="A1" r:id="rId1"/></hyperlinks><pageSetup orientation="landscape"/><headerFooter><oddHeader>x</oddHeader></headerFooter><drawing r:id="rId2"/><tableParts count="1"><tablePart r:id="rId3"/></tableParts><extLst><ext><x14:sparklineGroups/></ext></extLst>'
+      '<sheetProtection sheet="1"/><autoFilter ref="A1:A9"/><conditionalFormatting sqref="A1"><cfRule type="cellIs"/></conditionalFormatting><conditionalFormatting sqref="B1"/><dataValidations count="1"><dataValidation sqref="A1"/></dataValidations><pageSetup orientation="landscape"/><headerFooter><oddHeader>x</oddHeader></headerFooter><drawing r:id="rId2"/><tableParts count="1"><tablePart r:id="rId3"/></tableParts><extLst><ext><x14:sparklineGroups/></ext></extLst>'
     const f = parts({ sheets: [{ name: 'S', body }] })
-    f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId4" Type="${REL}/comments" Target="../comments1.xml"/><Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
+    f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
-    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'hyperlink', 'protection', 'drawing', 'sparkline', 'print', 'frozenPanes', 'comment', 'pivotTable', 'autoFilter'])
+    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes'])
     expect(r.book.sheets[0].filtered).toBeUndefined()
   })
 

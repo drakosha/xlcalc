@@ -112,8 +112,8 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     const r = rels.find((x) => x.kind === kind && !x.external)
     return r ? archive.text(r.target) : undefined
   }
-  const [stringsXml, stylesXml, themeXml, metaXml, richValues, richStructures] = await Promise.all(
-    ['sharedStrings', 'styles', 'theme', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure'].map(part),
+  const [stringsXml, stylesXml, themeXml, metaXml, richValues, richStructures, persons] = await Promise.all(
+    ['sharedStrings', 'styles', 'theme', 'sheetMetadata', 'rdRichValue', 'rdRichValueStructure', 'person'].map(part),
   )
   const table = readStyles(stylesXml, palette(themeXml, stylesXml))
   if (table.font && (table.font.name !== 'Calibri' || table.font.size !== 11))
@@ -147,8 +147,15 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     if (d.hidden) issues.add('hidden', 'a hidden sheet is read as a visible one', { sheet: d.name })
     const sheetRels = await relsOf(archive, d.part!)
     const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
+    // the VML drawing that shows the notes is the sheet's legacy drawing
+    const drawing = attr(attributes(element(xml, 'legacyDrawing')?.attrs ?? ''), 'id')
+    const linked = async (kind: string, id?: string) => {
+      const r = sheetRels.find((x) => x.kind === kind && !x.external && (id === undefined || x.id === id))
+      return r ? archive.text(r.target) : undefined
+    }
+    const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined) },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons } },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues },
     )
     sheets.push(read.sheet)
