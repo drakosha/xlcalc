@@ -164,8 +164,9 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
       if (!pieces.length) continue
       const areas = pieces.map((x) => shifted(x, dr, dc))
       landed.push(...areas)
-      // a move's formulas as a moved cell's (`t`), a copy's as a copied cell's
-      const next = placed(v, areas, p.from, { r: pieces[0].r1, c: pieces[0].c1 }, p.move ? p.from : p.to, p.to, p.move ? t : copyTransform(dr, dc), sheets)
+      // a move's formulas as a moved cell's (`t`), a copy's and a move's to another sheet as a copied cell's (the set `struct-held-2`)
+      const moved = p.move && fk === tk
+      const next = placed(v, areas, p.from, { r: pieces[0].r1, c: pieces[0].c1 }, moved ? p.from : p.to, p.to, moved ? t : copyTransform(dr, dc), sheets)
       if (next) pasted.push(next)
     }
   const gone = (k: string) => [...(k === tk ? (p.move ? landed : [p.area]) : []), ...(p.move && k === fk ? [p.src] : [])]

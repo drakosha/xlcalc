@@ -11,7 +11,7 @@ import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'
 import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
-import { formatAddress } from '../model.js'
+import { formatAddress, NUMBER_TEXT } from '../model.js'
 import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
 import { decode } from '../structure/area.js'
 import { tableAt } from '../tables/model.js'
@@ -117,14 +117,17 @@ const COMPARE: Record<string, (a: number, b: number) => boolean> = {
 
 /**
  * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item text in its case
- * against the value without spaces at either end, a number the item reads as alone (not a date), a boolean by its word
- * (the sets `files`, `entry-held`, `lists`).
+ * against the value without spaces at either end, a plain number in the locale's spelling (not a percent or a date), a
+ * boolean by its word (the sets `files`, `entry-held`, `lists`, `entry-held-2`).
  */
 function listed(state: EngineState, value: V, item: Item, isLiteral: boolean): boolean {
   const rules = state.ctx.rules
   if (!isLiteral) return typeof item.value === typeof value && !isErr(item.value) && rules.compare(item.value, value) === 0
   const t = item.text
-  if (typeof value === 'number') return rules.numberOnly(t) === value
+  if (typeof value === 'number') {
+    const plain = rules.decimal === '.' ? t : t.replace(rules.decimal, '.')
+    return !plain.includes(rules.decimal === '.' ? ',' : '.') && NUMBER_TEXT.test(plain) && Number(plain) === value
+  }
   if (typeof value === 'boolean') return rules.toText(value) === t
   return typeof value === 'string' && value.trim() === t
 }
@@ -161,8 +164,8 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
   const value = valueAt(state, s, r, c)
   const blankOk = v.allowBlank !== false
   if (v.type === 'any') return true
-  // a blank cell where blanks are not ignored: its text's length is 0, it is no number and in no list
-  if (value === null && (blankOk || v.type !== 'textLength')) return blankOk
+  // a blank cell where blanks are not ignored is checked as a blank: 0, a text of length 0, in no list (the set `entry-held-2`)
+  if (value === null && blankOk) return true
   if (isErr(value)) return false
   const f = formulas(state, s, r, c, v)
   const texts = [f.formula1!, ...(twoBounds(v) ? [f.formula2!] : [])]
@@ -192,9 +195,9 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
     n = t.length
   } else {
     // a number, or a boolean, which compares above every number as Excel's operators compare (the set `entry-held`); text does not pass
-    if (typeof value !== 'number' && typeof value !== 'boolean') return false
+    if (value !== null && typeof value !== 'number' && typeof value !== 'boolean') return false
     if (v.type === 'whole' && typeof value === 'number' && !Number.isInteger(value)) return false
-    n = value
+    n = value ?? 0
   }
   const cmp = (x: number) => Math.sign(state.ctx.rules.compareOp(n, x))
   return COMPARE[v.operator ?? 'between'](cmp(a), b === undefined ? 0 : cmp(b))
