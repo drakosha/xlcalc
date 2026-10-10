@@ -81,7 +81,13 @@ on run argv
 				end if
 			end repeat
 			if withEdit then
-				set bars to my formulaBars(ws, n)
+				-- a bar not read (Excel's window on another desktop) leaves no book open
+				try
+					set bars to my formulaBars(ws, n, name of wb)
+				on error msg number k
+					close wb saving no
+					error msg number k
+				end try
 				repeat with i from 1 to n
 					set end of item i of cellsOut to item i of bars
 				end repeat
@@ -96,9 +102,9 @@ on run argv
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
 
--- what the formula bar shows for each of the cells A1 to An of the sheet `ws`, each selected in turn with Excel in front:
--- the description of the window's text area ("Formula Bar. A,1 <text>")
-on formulaBars(ws, n)
+-- what the formula bar shows for each of the cells A1 to An of the sheet `ws` of the book `bookName`, each selected in
+-- turn with Excel in front: the description of the text area of the book's window ("Formula Bar. A,1 <text>")
+on formulaBars(ws, n, bookName)
 	-- the window lists its formula bar only with Excel in front
 	repeat 10 times
 		tell application "System Events" to set fp to name of first application process whose frontmost is true
@@ -109,19 +115,27 @@ on formulaBars(ws, n)
 	end repeat
 	if fp is not "Microsoft Excel" then error "Excel is not in front: " & fp
 	delay 1
+	-- the book's window, whose name is the book's (another window may be in front of it)
 	set bar to missing value
+	set seen to ""
 	tell application "System Events" to tell process "Microsoft Excel"
-		set els to entire contents of front window
-		repeat with e in els
-			try
-				if role of e is "AXTextArea" then
-					set bar to contents of e
-					exit repeat
-				end if
-			end try
+		repeat with w in windows
+			set seen to seen & (name of w) & "; "
+			if name of w is bookName or name of w starts with (text 1 thru -6 of bookName) then
+				set els to entire contents of w
+				repeat with e in els
+					try
+						if role of e is "AXTextArea" then
+							set bar to contents of e
+							exit repeat
+						end if
+					end try
+				end repeat
+			end if
+			if bar is not missing value then exit repeat
 		end repeat
 	end tell
-	if bar is missing value then error "no formula bar in Excel's window"
+	if bar is missing value then error "no formula bar in the window of " & bookName & " among " & seen
 	set out to {}
 	repeat with i from 1 to n
 		tell application "Microsoft Excel" to select range ("A" & i) of ws
