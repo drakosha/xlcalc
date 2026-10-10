@@ -53,7 +53,8 @@ export function makeArgs(make: ValidMake[] = []): string[][] {
     if ('rule' in m) {
       const r = m.rule
       const first = areasOf(m.range)![0]
-      return ['rule', m.sheet, excelRange(m.range), formatAddress(first.r1, first.c1), r.type, r.errorStyle ?? '', r.operator ?? '', formulaForExcel(r.formula1), formulaForExcel(r.formula2), flag(r.allowBlank), flag(r.dropdown), flag(r.showPrompt), flag(r.showError), r.promptTitle ?? '', r.prompt ?? '', r.errorTitle ?? '', r.error ?? '']
+      const [f1, f2] = m.excel ?? [formulaForExcel(r.formula1), formulaForExcel(r.formula2)]
+      return ['rule', m.sheet, excelRange(m.range), formatAddress(first.r1, first.c1), r.type, r.errorStyle ?? '', r.operator ?? '', f1, f2 ?? '', flag(r.allowBlank), flag(r.dropdown), flag(r.showPrompt), flag(r.showError), r.promptTitle ?? '', r.prompt ?? '', r.errorTitle ?? '', r.error ?? '']
     }
     if ('summary' in m) return ['summary', m.sheet, flag(m.summary.summaryBelow), flag(m.summary.summaryRight)]
     const text = 'group' in m ? m.group : m.collapse

@@ -15,9 +15,12 @@ import { sheetKey } from '../../../src/syntax.js'
 import { anchorOf, areasOf } from '../../../src/validation/rules.js'
 import { formulaAt } from '../../../src/validation/structure.js'
 
-/** What Excel makes through its object model: a rule (with the range's first cell active), a group, a collapsed group, summary settings. */
+/**
+ * What Excel makes through its object model: a rule (with the range's first cell active; `excel`, its formulas as typed
+ * into the object model in the user's language, when not those of the rule), a group, a collapsed group, summary settings.
+ */
 export type ValidMake =
-  | { rule: Omit<DataValidation, 'range'>; range: string; sheet: string }
+  | { rule: Omit<DataValidation, 'range'>; range: string; sheet: string; excel?: [string, string?] }
   | { group: string; sheet: string }
   | { collapse: string; sheet: string }
   | { summary: OutlineSettings; sheet: string }
