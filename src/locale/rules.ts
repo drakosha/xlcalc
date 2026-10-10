@@ -8,7 +8,7 @@
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
-import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
+import { builtinCodes, displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
@@ -19,6 +19,12 @@ import type { Locale } from './types.js'
 
 /** The rules of computation of the locales whose file has them (all but en-US), by tag. */
 export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([...LOCALE_FILES].flatMap(([tag, f]) => (f.regional ? [[tag, f.regional] as const] : [])))
+
+/** The codes the locale `tag` shows the built-in formats by, by number: its own, en-US's for the rest (`numfmt/builtin.ts`). */
+export function builtinIn(tag: string | undefined): (id: number) => string {
+  const own = REGIONAL.get(tag ?? '')?.builtin
+  return own ? builtinCodes(own) : (id) => EN_BUILTIN[id]
+}
 
 export interface Rules extends CritRules {
   /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
