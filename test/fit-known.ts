@@ -11,7 +11,7 @@ export const FIT_REASONS = {
   writer:
     "a cell without a format of its own in a column with one: the model shows it by the column's format, writeXlsx writes the cell in General, and Excel shows a stored cell by its own format only",
   advances:
-    "text with a character outside ASCII, which Excel for Mac measures by fractional widths: the engine takes them from Calibri's advance widths, which give Excel's width on short text and are a point off on some runs of one Cyrillic letter 600 points wide (19 of 70), on 'Итого по разделу 1' and on ru-RU's long date",
+    "text with a character outside ASCII, which Excel for Mac measures by fractional widths: the engine takes them from the advance widths of Carlito, metrically compatible with Calibri, which give Excel's width on short text and are a point off on some runs of one Cyrillic letter 600 points wide (19 of 70), on 'Итого по разделу 1' and on ru-RU's long date",
 } as const
 
 export type FitReason = keyof typeof FIT_REASONS

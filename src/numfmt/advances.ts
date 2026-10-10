@@ -1,12 +1,13 @@
 /**
- * Calibri's advance widths in 1/2048 of its size, by characters of equal width: ASCII, Latin-1, the Russian alphabet,
- * currency signs and typographic punctuation. Excel for Mac measures text with a character outside ASCII by these for
- * AutoFit (`glyphs.ts`, `fitText`); the runs of one letter in `test/excel/fit/glyphs.json` agree with them to a point in
- * 600. A character not here counts as a digit.
+ * Advance widths of Carlito, a font metrically compatible with Calibri (SIL Open Font License 1.1, `THIRD_PARTY.md`), in
+ * 1/2048 of its size, by characters of equal width: ASCII, Latin-1, the Russian alphabet, currency signs and
+ * typographic punctuation. Excel for Mac measures text with a character outside ASCII by such widths for AutoFit
+ * (`glyphs.ts`, `fitText`); the runs of one letter in `test/excel/fit/glyphs.json` agree with them to a point in 600. A
+ * character not here counts as a digit.
  */
 const ADVANCES: [number, string][] = [
-  [452, '\'′'],
-  [463, ' \u00a0'],
+  [452, "'"],
+  [463, ' '],
   [470, 'ilìíîï'],
   [490, 'j'],
   [504, '¹'],
@@ -18,7 +19,7 @@ const ADVANCES: [number, string][] = [
   [598, '´'],
   [621, '()'],
   [625, 'f'],
-  [627, '-\u00ad'],
+  [627, '-'],
   [628, '[]'],
   [629, '¸'],
   [644, '{}'],
@@ -64,7 +65,7 @@ const ADVANCES: [number, string][] = [
   [1000, 'EÈÉÊËЕЁ'],
   [1019, 'eèéêëеё'],
   [1020, '#*+<=>^_~¢¤¦§¬±×÷–•'],
-  [1038, '$0123456789£¥®₽€'],
+  [1038, '$0123456789£¥®€'],
   [1045, 'л'],
   [1049, '«»'],
   [1058, 'PÞР'],
@@ -136,7 +137,17 @@ const ADVANCES: [number, string][] = [
   [2126, '‰'],
 ]
 
-const ADVANCE = new Map<string, number>(ADVANCES.flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
+/** Characters Carlito lacks. */
+const BESIDES: [number, string][] = [
+  // the ruble sign as Excel measured it: 100 of them fit to 581 points (`glyphs.json`), as the euro, pound and yen signs
+  [1038, '₽'],
+  // a no-break space as the space, a soft hyphen as the hyphen, a prime as the apostrophe
+  [463, '\u00a0'],
+  [627, '\u00ad'],
+  [452, '′'],
+]
+
+const ADVANCE = new Map<string, number>([...ADVANCES, ...BESIDES].flatMap(([w, cs]) => [...cs].map((c): [string, number] => [c, w])))
 
 /** A digit's advance, which a character not in the table takes too. */
 export const DIGIT_ADVANCE = 1038
