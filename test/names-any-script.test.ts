@@ -34,7 +34,7 @@ describe('defined names in letters of any script', () => {
   it('a session takes a name of any script through setNames', () => {
     const s = openSession(book({ B1: 'Ставка*2' }, []))
     expect(s.result().sheets[0].cells.B1.value).toEqual({ error: 'NAME' })
-    expect(s.setNames([{ name: 'Ставка', ref: '0.2' }]).map((c) => [c.cell, c.value])).toEqual([['B1', 0.4]])
+    expect(s.setNames([{ name: 'Ставка', ref: '0.2' }]).changes.map((c) => [c.cell, c.value])).toEqual([['B1', 0.4]])
     s.close()
   })
 

@@ -3,7 +3,7 @@
  * cells that become or stop being nested (a formula with SUBTOTAL or AGGREGATE) the same as a full computation.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput, type CellEdit, type CellInput } from '../src/index.js'
+import { compute, openSession, type BookInput, type CellReplace, type CellInput } from '../src/index.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
@@ -21,7 +21,7 @@ function book(): BookInput {
   return { sheets: [{ name: 'S', cells }] }
 }
 
-function apply(b: BookInput, e: CellEdit): BookInput {
+function apply(b: BookInput, e: CellReplace): BookInput {
   const cells = { ...b.sheets[0].cells }
   if (e.input === null) delete cells[e.cell]
   else cells[e.cell] = e.input
@@ -43,7 +43,7 @@ describe('SUBTOTAL and AGGREGATE beyond the Excel cases', () => {
     let b = book()
     const session = openSession(b, { clock })
     for (let i = 0; i < 150; i++) {
-      const edit: CellEdit = { sheet: 'S', cell: `A${5 + Math.floor(rnd() * 8)}`, input: inputs[Math.floor(rnd() * inputs.length)] }
+      const edit: CellReplace = { sheet: 'S', cell: `A${5 + Math.floor(rnd() * 8)}`, input: inputs[Math.floor(rnd() * inputs.length)] }
       session.setCells([edit])
       b = apply(b, edit)
       const full = compute(b, { clock })

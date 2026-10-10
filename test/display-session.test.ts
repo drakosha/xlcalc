@@ -15,7 +15,7 @@ const book = (): BookInput => ({
   styles: [{ font: { bold: true } }],
 })
 
-const looks = (changes: CellChange[]) => changes.map((c) => [c.cell, c.value, c.text, ...(c.color ? [c.color] : [])])
+const looks = (r: { changes: CellChange[] }) => r.changes.map((c) => [c.cell, c.value, c.text, ...(c.color ? [c.color] : [])])
 
 describe('a session shows its cells', () => {
   it('changes carry the text of the new values', () => {
@@ -26,10 +26,10 @@ describe('a session shows its cells', () => {
     ])
   })
 
-  it('a new format returns the cell with its text; a new style alone returns nothing', () => {
+  it('a new format returns the cell with its text; a new style alone returns the cell with it', () => {
     const s = openSession(book(), { clock })
     expect(looks(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, format: '#,##0.00' } }]))).toEqual([['A1', 1234.5, '1,234.50']])
-    expect(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 'note', style: 0 } }])).toEqual([])
+    expect(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 'note', style: 0 } }]).changes).toEqual([{ sheet: 'S', cell: 'B1', value: 'note', text: 'note', style: 0 }])
     expect(looks(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', format: '[Red]0' } }]))).toEqual([['A2', 2469, '2469', '#FF0000']])
   })
 
@@ -52,15 +52,17 @@ describe('a session shows its cells', () => {
   it('a structure operation returns the cells that look different where they land', () => {
     const s = openSession(book(), { clock })
     const r = s.restructure({ op: 'moveRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', cell: 'B3' } })
-    expect(r.ok && looks(r.changes)).toEqual([['B3', 1234.5, '##']])
+    // the formula over the moved cell is listed with its new text
+    expect(r.ok && looks(r)).toEqual([['A2', 2469, '2469'], ['B3', 1234.5, '##']])
+    expect(r.ok && r.changes[0].formula).toBe('B3*2')
     const back = s.restructure({ op: 'moveRange', from: { sheet: 'S', range: 'B3' }, to: { sheet: 'S', cell: 'A1' } })
-    expect(back.ok && looks(back.changes)).toEqual([['A1', 1234.5, '1234.5']])
+    expect(back.ok && looks(back)).toEqual([['A1', 1234.5, '1234.5'], ['A2', 2469, '2469']])
   })
 
-  it('display: false: changes and results without text, and no change for a format alone', () => {
+  it('display: false: changes and results without text; a format alone lists the cell with it', () => {
     const s = openSession(book(), { clock, display: false })
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, format: '0.0' } }])).toEqual([])
-    expect(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 1 } }])).toEqual([])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, format: '0.0' } }]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1234.5, numberFormat: '0.0' }])
+    expect(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 1 } }]).changes).toEqual([])
     expect(s.result().sheets[0].cells.A1).toEqual({ value: 1234.5, format: '0.0' })
   })
 })
@@ -79,7 +81,7 @@ describe('seeded edits: the looks a host keeps from the changes equal a full com
         { clock },
       )
       const kept = new Map<string, CellDisplay>()
-      const keep = (cs: CellChange[]) => cs.forEach((c) => kept.set(`${c.sheet}!${c.cell}`, { text: c.text!, ...(c.color ? { color: c.color } : {}) }))
+      const keep = (r: { changes: CellChange[] }) => r.changes.forEach((c) => kept.set(`${c.sheet}!${c.cell}`, { text: c.text!, ...(c.color ? { color: c.color } : {}) }))
       const shown = (cells: Record<string, { text?: string; color?: string }>, sheet: string) =>
         Object.entries(cells).map(([a, c]): [string, CellDisplay] => [`${sheet}!${a}`, { text: c.text!, ...(c.color ? { color: c.color } : {}) }])
       for (const sh of s.result().sheets) for (const [k, d] of shown(sh.cells, sh.name)) kept.set(k, d)
@@ -115,7 +117,7 @@ describe('seeded edits: the looks a host keeps from the changes equal a full com
             const to = r.mapCell({ sheet, cell: addr })
             if (to) kept.set(`${to.sheet}!${to.cell}`, d)
           }
-          keep(r.changes)
+          keep(r)
         }
         const full = compute(s.book(), { clock: s.clock }).sheets.flatMap((sh) => shown(sh.cells, sh.name))
         // a blank cell and a cell the result does not list both show nothing

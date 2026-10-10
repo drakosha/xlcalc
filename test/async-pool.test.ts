@@ -203,7 +203,7 @@ describe('in threads', () => {
     // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
     const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
     expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
-    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
     expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
   }, 60_000)
 

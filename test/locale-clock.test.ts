@@ -68,7 +68,7 @@ describe('date text without a year depends on the clock', () => {
 
   it('setClock reports the cells whose value the year changed', () => {
     const s = openSession(book, { clock: at(2026) })
-    expect(s.setClock(at(2027)).map((c) => c.cell).sort()).toEqual(['B1', 'B2', 'B3', 'B4', 'B7', 'B8'])
+    expect(s.setClock(at(2027)).changes.map((c) => c.cell).sort()).toEqual(['B1', 'B2', 'B3', 'B4', 'B7', 'B8'])
   })
 
   it('an edit that removes the text without a year leaves the clock', () => {

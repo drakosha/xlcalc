@@ -90,6 +90,8 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   tableNameDefined: [{ name: 'rate' }],
   tableOverTable: [{ range: 'A1:C9', table: 'Sales' }],
   tableOverMerge: [{ range: 'A1:C9', area: 'B2:C3' }],
+  headerFormula: [{ sheet: 'Лист', cell: 'B2', table: 'Т' }],
+  validationError: [{}],
   explainCells: [{ count: 1 }, { count: 2 }, { count: 11 }, { count: 25 }],
   explainSpill: [{ ref: "'S'!B2" }],
   explainValue: [{ value: 1.5 }, { value: true }, { value: null }, { value: { error: 'NA' } }],

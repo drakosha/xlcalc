@@ -113,7 +113,7 @@ describe.each(['closures', 'eval'] as const)('a session hides and shows sheets (
     expect(s.hash()).toBe(hash)
     expect(s.result().inputHash).toBe(compute(s.book(), { clock: CLOCK }).inputHash)
     // later edits reach the hidden sheet and the formulas over it
-    expect(s.setCells([{ sheet: 'Feb', cell: 'B2', input: { value: 1 } }]).map((c) => `${c.sheet}!${c.cell} ${c.value}`).sort()).toEqual(['Feb!B2 1', 'Sum!A1 203', 'Sum!A2 121', 'Sum!A3 91', 'Sum!A4 2'])
+    expect(s.setCells([{ sheet: 'Feb', cell: 'B2', input: { value: 1 } }]).changes.map((c) => `${c.sheet}!${c.cell} ${c.value}`).sort()).toEqual(['Feb!B2 1', 'Sum!A1 203', 'Sum!A2 121', 'Sum!A3 91', 'Sum!A4 2'])
     expect(s.restructure({ op: 'unhideSheet', sheet: 'Feb' }).ok).toBe(true)
     expect('hidden' in s.book().sheets[1]).toBe(false)
     for (const sheet of ['Jan', 'Mar', 'Sum']) expect(s.restructure({ op: 'hideSheet', sheet }).ok).toBe(true)

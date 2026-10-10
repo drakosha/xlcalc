@@ -71,7 +71,7 @@ describe('the reference operators computed', () => {
   it('a session recomputes an intersection when a cell inside it changes, and a structure operation moves its references', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { ...cells, E1: { formula: 'SUM(A1:C3 B2:D4)' } } }] }
     const session = openSession(book)
-    expect(session.setCells([{ sheet: 'S', cell: 'B2', input: { value: 10 } }]).find((c) => c.cell === 'E1')?.value).toBe(17)
+    expect(session.setCells([{ sheet: 'S', cell: 'B2', input: { value: 10 } }]).changes.find((c) => c.cell === 'E1')?.value).toBe(17)
     const moved = restructure(book, { op: 'insertRows', sheet: 'S', row: 2 })
     expect(moved.ok && moved.book.sheets[0].cells.E1.formula).toBe('SUM(A1:C4 B3:D5)')
   })
@@ -92,7 +92,7 @@ describe('what the range operator reads: every cell between its ends', () => {
 
   it('an edit that a formula between the ends depends on reaches the reader in a session, as a full computation gives', () => {
     const session = openSession(middle)
-    const changes = session.setCells([{ sheet: 'S', cell: 'E1', input: { value: 100 } }])
+    const { changes } = session.setCells([{ sheet: 'S', cell: 'E1', input: { value: 100 } }])
     expect(changes.find((x) => x.cell === 'D1')?.value).toBe(1002)
     expect(compute(session.book()).hash).toBe(session.result().hash)
   })
@@ -109,15 +109,15 @@ describe('what the range operator reads: every cell between its ends', () => {
     const c = both({ sheets: [{ name: 'S', cells }] }).sheets[0].cells
     expect([c.H5.value, c.M5.value]).toEqual([12, 1])
     const session = openSession({ sheets: [{ name: 'S', cells }] })
-    expect(session.setCells([{ sheet: 'S', cell: 'E9', input: { value: 10 } }]).find((x) => x.cell === 'H5')?.value).toBe(24)
+    expect(session.setCells([{ sheet: 'S', cell: 'E9', input: { value: 10 } }]).changes.find((x) => x.cell === 'H5')?.value).toBe(24)
   })
 
   it('a spill reference as an end reads as far as the array spills, and follows it when it grows', () => {
     const cells = { A1: { value: 1 }, K1: { value: 3 }, B5: { formula: 'SEQUENCE(1,K1)' }, C1: { formula: 'E9*2' }, E2: { formula: 'E9*100' }, E9: { value: 4 }, J9: { formula: 'SUM(A1:B5#)' } }
     expect(both({ sheets: [{ name: 'S', cells }] }).sheets[0].cells.J9.value).toBe(15)
     const session = openSession({ sheets: [{ name: 'S', cells }] })
-    expect(session.setCells([{ sheet: 'S', cell: 'K1', input: { value: 4 } }]).find((x) => x.cell === 'J9')?.value).toBe(419)
-    expect(session.setCells([{ sheet: 'S', cell: 'E9', input: { value: 1 } }]).find((x) => x.cell === 'J9')?.value).toBe(113)
+    expect(session.setCells([{ sheet: 'S', cell: 'K1', input: { value: 4 } }]).changes.find((x) => x.cell === 'J9')?.value).toBe(419)
+    expect(session.setCells([{ sheet: 'S', cell: 'E9', input: { value: 1 } }]).changes.find((x) => x.cell === 'J9')?.value).toBe(113)
     expect(compute(session.book()).hash).toBe(session.result().hash)
   })
 

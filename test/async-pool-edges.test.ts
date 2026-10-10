@@ -44,7 +44,7 @@ describe('the pool at its edges', () => {
     expect(await settled(worse)).toMatchObject(['rejected', expect.any(InputError)])
     const s = await p.openSession(chainBook(2))
     await expect(s.setCells([{ sheet: 'S', cell: 'B9', input: unsendable }])).rejects.toThrow(/^edits: cannot be sent to a thread/)
-    expect((await s.setCells(setA1(3))).map((c) => c.cell)).toEqual(['A1', 'B1', 'B2'])
+    expect((await s.setCells(setA1(3))).changes.map((c) => c.cell)).toEqual(['A1', 'B1', 'B2'])
   }, 30_000)
 
   it('a session closed while the pool closes is closed, not left waiting', async () => {

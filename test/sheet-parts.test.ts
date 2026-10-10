@@ -118,9 +118,10 @@ describe.each(['closures', 'eval'] as const)('notes, links and frozen panes in a
   it('setCells changes them without recomputing; cells() gives them; the hash stays a full computation of the book', () => {
     const s = openSession(book(), { clock, execution })
     const before = s.hash()
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1, link: { url: 'mailto:a@example.com' } } }, { sheet: 'S', cell: 'D9', input: { note: { text: 'new' } } }])).toEqual([])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1, link: { url: 'mailto:a@example.com' } } }, { sheet: 'S', cell: 'D9', input: { note: { text: 'new' } } }]).changes).toEqual([])
     expect(s.cells('S', 'A1:D9')).toMatchObject({ A1: { value: 1, link: { url: 'mailto:a@example.com' } }, C3: { value: null, note: { text: 'alone' }, link: { location: 'S!A1' } }, D9: { value: null, note: { text: 'new' } } })
-    expect(s.cells('S', 'A1').A1.note).toBeUndefined()
+    // the edit keeps the note it does not name
+    expect(s.cells('S', 'A1').A1.note).toEqual({ author: 'Ann', text: 'first' })
     expect(s.hash()).toBe(before)
     expect(compute(s.book(), { clock: s.clock, execution }).hash).toBe(before)
     s.close()
@@ -128,7 +129,7 @@ describe.each(['closures', 'eval'] as const)('notes, links and frozen panes in a
 
   it('setLayout freezes and unfreezes panes; a restructure moves them; nothing is recomputed', () => {
     const s = openSession(book(), { clock, execution })
-    expect(s.setLayout([{ sheet: 'T', frozen: { columns: 2 } }, { sheet: 'S', frozen: null }])).toEqual([])
+    expect(s.setLayout([{ sheet: 'T', frozen: { columns: 2 } }, { sheet: 'S', frozen: null }]).changes).toEqual([])
     expect(s.book().sheets.map((x) => x.frozen)).toEqual([undefined, { columns: 2 }])
     expect('frozen' in s.book().sheets[0]).toBe(false)
     const r = s.restructure({ op: 'insertColumns', sheet: 'T', column: 'A' })

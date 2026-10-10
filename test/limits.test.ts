@@ -77,7 +77,7 @@ describe('limits', () => {
     expect(stopped(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SEQUENCE(1000,3)' } }])).max).toBe(2_000)
     expect(stopped(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,3))' } }])).limit).toBe('cells')
     const t = openSession(book({ A1: { value: 1 } }), { clock, limits: { spill: 2_000 } })
-    expect(t.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,3))' } }])[0].value).toBe(4_501_500)
+    expect(t.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,3))' } }]).changes[0].value).toBe(4_501_500)
     expect(stopped(() => t.setCells([{ sheet: 'S', cell: 'B2', input: { formula: 'SEQUENCE(1000,3)' } }])).limit).toBe('spill')
   })
 
@@ -114,7 +114,7 @@ describe('limits', () => {
     const many = stopped(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'A1+1' } }, { sheet: 'S', cell: 'B2', input: { formula: 'A1+2' } }]))
     expect(many.limit).toBe('formulas')
     expect(s.result().hash).toBe(hash)
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }]).map((c) => [c.cell, c.value])).toEqual([
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }]).changes.map((c) => [c.cell, c.value])).toEqual([
       ['A1', 3],
       ['A2', 30],
       ['A3', 33],

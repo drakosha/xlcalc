@@ -116,7 +116,7 @@ describe('parseEntry', () => {
     const session = openSession(book, { clock: { now, seed: 1 } })
     const r = parseEntry('1 234,5', { locale: 'ru-RU', cell: session.cells('S', 'A1').A1 })
     expect(r).toEqual({ ok: true, input: { value: 1234.5, format: '0.00', style: 0, meta: { id: 7 } } })
-    if (r.ok) expect(session.setCells([{ sheet: 'S', cell: 'A1', input: r.input }])).toEqual([
+    if (r.ok) expect(session.setCells([{ sheet: 'S', cell: 'A1', input: r.input }]).changes).toEqual([
       { sheet: 'S', cell: 'A1', value: 1234.5, text: '1234,50' },
       { sheet: 'S', cell: 'A2', value: 2469, text: '2469' },
     ])

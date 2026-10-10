@@ -30,7 +30,7 @@ describe('array formulas of the old kind', () => {
     expect(() => s.setCells([{ sheet: 'S', cell: 'C2', input: { value: 9 } }])).toThrow(/C2 is part of the array formula at S!C1/)
     expect(() => s.setCells([{ sheet: 'S', cell: 'C1', input: null }])).toThrow(InputError)
     expect(s.result().sheets[0].cells.C2.value).toBe(4)
-    expect(s.setCells([{ sheet: 'S', cell: 'C1', input: arr('A1:A3*10', 'C1:C3') }]).map((x) => [x.cell, x.value])).toEqual(expect.arrayContaining([['C2', 20]]))
+    expect(s.setCells([{ sheet: 'S', cell: 'C1', input: arr('A1:A3*10', 'C1:C3') }]).changes.map((x) => [x.cell, x.value])).toEqual(expect.arrayContaining([['C2', 20]]))
     s.setCells(['C1', 'C2', 'C3'].map((cell) => ({ sheet: 'S', cell, input: null })))
     expect(s.result().sheets[0].cells.C2).toBeUndefined()
     // a new array formula over cells that hold input is refused

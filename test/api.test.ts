@@ -22,7 +22,7 @@ describe('default clock', () => {
     expect(s.clock).toEqual(clock)
     const edited: BookInput = { sheets: [{ name: 'S', cells: { ...book.sheets[0].cells, A3: { value: 5 } } }] }
     expect(s.result().hash).toBe(compute(edited, { clock }).hash)
-    expect(s.setClock({ now: '2026-01-01T00:00:00Z', seed: 1 }).length).toBeGreaterThan(0)
+    expect(s.setClock({ now: '2026-01-01T00:00:00Z', seed: 1 }).changes.length).toBeGreaterThan(0)
   })
 })
 
@@ -71,7 +71,7 @@ describe('input errors', () => {
     const s = openSession(sheet({ A1: { value: 1 } }), { display: false })
     fails(() => s.setCells([{ sheet: 'T', cell: 'A1', input: { value: 1 } }]), 'edits[0].sheet: unknown sheet "T"')
     fails(() => s.setCells([{ sheet: 's', cell: 'A1', input: { value: 1 } }, { sheet: 'S', cell: '1A', input: null }]), 'edits[1].cell: invalid cell address "1A"')
-    fails(() => s.setCells([{ sheet: 'S', cell: 'A1' } as never]), 'edits[0].input: expected a cell object, or null to clear the cell')
+    fails(() => s.setCells([{ sheet: 'S', cell: 'A1' } as never]), 'edits[0].input: expected the fields of a cell, or null to clear its content')
     fails(() => s.setClock({ now: '2026-01-01', seed: Number.NaN }), 'clock.seed: expected a finite number, got number NaN')
     fails(() => s.explain('S', 'a1'), 'cell: invalid cell address "a1"')
     fails(() => s.setNames([{ name: 'x' } as never]), 'names[0].ref: expected a string, got undefined')
@@ -79,6 +79,6 @@ describe('input errors', () => {
     fails(() => validateFormula('A1', { sheets: 'S' } as never), 'ctx.sheets: expected an array of strings, got the string "S"')
     fails(() => validateName(undefined as never), 'name: expected a string, got undefined')
     // a failed call leaves the session intact
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }])).toEqual([{ sheet: 'S', cell: 'A1', value: 2 }])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 2 }])
   })
 })

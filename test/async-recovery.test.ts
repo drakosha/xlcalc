@@ -117,7 +117,7 @@ describe('a thread lost', () => {
     expect(e.code).toBe('restore_failed')
     expect((e.cause as Error).message).toMatch(/unknown sheet "Gone"/)
     expect((await fails(sa.result())).code).toBe('restore_failed')
-    expect((await sb.setCells(setA1(9))).map((c) => c.cell)).toContain('B6')
+    expect((await sb.setCells(setA1(9))).changes.map((c) => c.cell)).toContain('B6')
   }, 60_000)
 
   it('a thread that exits by itself is reported as thread_failed; one that cannot start fails one task at a time', async () => {

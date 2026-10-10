@@ -57,7 +57,7 @@ describe('fitColumns', () => {
 describe.each(['closures', 'eval'] as const)('AutoFit in a session, execution %s', (execution) => {
   it('sets the widths as Excel fitted them, shows a hidden column, returns the cells shown otherwise', () => {
     const s = openSession(book(), { clock, execution })
-    expect(s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }])).toEqual([
+    expect(s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }]).changes).toEqual([
       { sheet: 'S', cell: 'B1', value: 46096, text: '3/15/2026' },
       { sheet: 'S', cell: 'C1', value: 123456789012, text: '1.23457E+11' },
       { sheet: 'S', cell: 'B2', value: 1234567.891, text: '1,234,567.89' },
@@ -94,7 +94,7 @@ describe.each([
     const calc = await make()
     calcs.push(calc)
     const s = await calc.openSession(book(), { clock })
-    expect((await s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }])).map((c) => c.cell)).toEqual(['B1', 'C1', 'B2'])
+    expect((await s.setLayout([{ sheet: 'S', columns: 'A:F', fit: true }])).changes.map((c) => c.cell)).toEqual(['B1', 'C1', 'B2'])
     expect((await s.layout()).sheets[0].columns?.C).toEqual({ width: 11.83203125, bestFit: true })
   })
 })
