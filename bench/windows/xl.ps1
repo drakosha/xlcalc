@@ -128,6 +128,48 @@ function Table($wb, [string]$line) {
   }
 }
 
+# a sheet's notes, threads of comments, hyperlinks and window: [name, [[address, author, text]], [[address, [[author,
+# text]]]], [[range, Address, SubAddress, ScreenTip, TextToDisplay]], [frozen, split row, split column, the first row and
+# column of the window and of its first pane]]
+function Parts($xl, $ws) {
+  $notes = foreach ($c in $ws.Comments) { List @((Str $c.Parent.Address()), (Str ([string]$c.Author)), (Str ([string]$c.Text()))) }
+  $threads = foreach ($t in $ws.CommentsThreaded) {
+    $all = @($t) + @($t.Replies | ForEach-Object { $_ })
+    List @((Str $t.Parent.Address()), (List ($all | ForEach-Object { List @((Str ([string]$_.Author.Name)), (Str ([string]$_.Text()))) })))
+  }
+  $links = foreach ($h in $ws.Hyperlinks) { List @((Str $h.Range.Address()), (Str ([string]$h.Address)), (Str ([string]$h.SubAddress)), (Str ([string]$h.ScreenTip)), (Str ([string]$h.TextToDisplay))) }
+  [void]$ws.Activate()
+  $w = $xl.ActiveWindow
+  $p = $w.Panes.Item(1)
+  $panes = List @((Cell $w.FreezePanes), (Cell ([double]$w.SplitRow)), (Cell ([double]$w.SplitColumn)), (Cell ([double]$w.ScrollRow)), (Cell ([double]$w.ScrollColumn)), (Cell ([double]$p.ScrollRow)), (Cell ([double]$p.ScrollColumn)))
+  List @((Str $ws.Name), (List $notes), (List $threads), (List $links), $panes)
+}
+
+# what a parts case makes through the object model: a note, a hyperlink, frozen panes, a thread of comments
+function Make($xl, $wb, $s) {
+  $ws = $wb.Worksheets.Item($s.sheet)
+  switch ($s.kind) {
+    'note' { [void]$ws.Range($s.cell).AddComment([string]$s.text) }
+    'link' {
+      $tip = if ($s.tip) { [string]$s.tip } else { [Type]::Missing }
+      [void]$ws.Hyperlinks.Add($ws.Range($s.cell), [string]$s.url, [string]$s.location, $tip)
+    }
+    'freeze' {
+      [void]$ws.Activate()
+      $w = $xl.ActiveWindow
+      $w.FreezePanes = $false
+      $w.SplitRow = [int]$s.rows
+      $w.SplitColumn = [int]$s.columns
+      $w.FreezePanes = $true
+    }
+    'thread' {
+      $t = $ws.Range($s.cell).AddCommentThreaded([string]$s.texts[0])
+      for ($k = 1; $k -lt $s.texts.Count; $k++) { [void]$t.AddReply([string]$s.texts[$k]) }
+    }
+    default { throw "unknown make $($s.kind)" }
+  }
+}
+
 function Step($xl, $wb, $s) {
   switch ($s.do) {
     'full' { $xl.CalculateFull(); 'null' }
@@ -181,6 +223,12 @@ function Step($xl, $wb, $s) {
           $ws = $_
           $ws.ListObjects | ForEach-Object { List @((Str $ws.Name), (Str $_.Name), (Str $_.Range.Address()), (Cell $_.ShowHeaders), (Cell $_.ShowTotals), (List ($_.ListColumns | ForEach-Object { Str $_.Name }))) }
         })
+    }
+    'make' { try { Make $xl $wb $s; 'null' } catch { Err $_ } }
+    'parts' {
+      $all = List ($wb.Worksheets | ForEach-Object { Parts $xl $_ })
+      [void]$wb.Worksheets.Item(1).Activate()
+      $all
     }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }

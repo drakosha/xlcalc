@@ -1,0 +1,1161 @@
+{
+ "insert-row-1": {
+  "S": {
+   "notes": {
+    "B3": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B6": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C9": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B4": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C6": {
+     "location": "S!A1"
+    },
+    "D7": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "columns": 1,
+    "rows": 3
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-row-2": {
+  "S": {
+   "notes": {
+    "B3": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B6": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C9": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B4": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C6": {
+     "location": "S!A1"
+    },
+    "D7": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "columns": 1,
+    "rows": 3
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-row-3": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B6": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C9": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B4": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C6": {
+     "location": "S!A1"
+    },
+    "D7": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-row-4": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B6": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C9": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C6": {
+     "location": "S!A1"
+    },
+    "D7": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-rows-5x2": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B7": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C10": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C7": {
+     "location": "S!A1"
+    },
+    "D8": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-row-1": {
+  "S": {
+   "notes": {
+    "B1": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B4": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C7": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B2": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C4": {
+     "location": "S!A1"
+    },
+    "D5": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "columns": 1,
+    "rows": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-rows-1-2": {
+  "S": {
+   "notes": {
+    "B3": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C6": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B1": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C3": {
+     "location": "S!A1"
+    },
+    "D4": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-rows-2-3": {
+  "S": {
+   "notes": {
+    "B3": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C6": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "C3": {
+     "location": "S!A1"
+    },
+    "D4": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "columns": 1,
+    "rows": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-row-5": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "C7": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "D5": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-col-a": {
+  "S": {
+   "notes": {
+    "C2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "C5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "D8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "C3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "D5": {
+     "location": "S!A1"
+    },
+    "E6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-col-b": {
+  "S": {
+   "notes": {
+    "C2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "C5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "D8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "C3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "D5": {
+     "location": "S!A1"
+    },
+    "E6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "insert-col-c": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "D8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "D5": {
+     "location": "S!A1"
+    },
+    "E6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-col-a": {
+  "S": {
+   "notes": {
+    "A2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "A5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "B8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "A3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "B5": {
+     "location": "S!A1"
+    },
+    "C6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-col-b": {
+  "S": {
+   "notes": {
+    "B8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B5": {
+     "location": "S!A1"
+    },
+    "C6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "move-b2-b5": {
+  "S": {
+   "notes": {
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    },
+    "F2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "F5": {
+     "author": "Ann",
+     "text": "note B5"
+    }
+   },
+   "links": {
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    },
+    "F3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "move-onto-note": {
+  "S": {
+   "notes": {
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note B2"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "move-plain-onto-note": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "move-to-t": {
+  "S": {
+   "notes": {
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {
+    "C1": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "C4": {
+     "author": "Ann",
+     "text": "note B5"
+    }
+   },
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    },
+    "C2": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "D4": {
+     "location": "S!A1"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "copy-b2-d6": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    },
+    "F10": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "F13": {
+     "author": "Ann",
+     "text": "note B5"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    },
+    "F11": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "G13": {
+     "location": "S!A1"
+    },
+    "H14": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "copy-plain-onto-note": {
+  "S": {
+   "notes": {
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "copy-plain-onto-link": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "copy-fill": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    },
+    "F1": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "F3": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "F5": {
+     "author": "Ann",
+     "text": "note B2"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    },
+    "F2": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "F4": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "F6": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "copy-to-t": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    },
+    "D4": {
+     "location": "S!A1"
+    },
+    "E5": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "rename-s": {
+  "Data": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "rename-t": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  },
+  "T 2": {
+   "notes": {},
+   "links": {
+    "A2": {
+     "location": "S!B5"
+    }
+   },
+   "frozen": {
+    "rows": 1
+   }
+  }
+ },
+ "delete-t": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "Ann",
+     "text": "note B2"
+    },
+    "B5": {
+     "author": "Ann",
+     "text": "note B5"
+    },
+    "C8": {
+     "author": "Ann",
+     "text": "note C8"
+    }
+   },
+   "links": {
+    "B3": {
+     "url": "https://example.com/",
+     "tooltip": "B3"
+    },
+    "C5": {
+     "location": "S!A1"
+    },
+    "D6": {
+     "location": "'T'!A1"
+    }
+   },
+   "frozen": {
+    "rows": 2,
+    "columns": 1
+   }
+  }
+ }
+}

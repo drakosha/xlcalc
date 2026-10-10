@@ -1,0 +1,58 @@
+{
+ "made-threads": {
+  "S": {
+   "notes": {
+    "B2": {
+     "author": "?",
+     "text": "First comment\n\n?: A reply\n\n?: Another reply\non two lines"
+    },
+    "B4": {
+     "author": "?",
+     "text": "A note beside the threads"
+    },
+    "C3": {
+     "author": "?",
+     "text": "Single"
+    }
+   },
+   "links": {}
+  },
+  "T": {
+   "notes": {
+    "A1": {
+     "author": "?",
+     "text": "On T\n\n?: Ответ"
+    }
+   },
+   "links": {}
+  }
+ },
+ "threads-insert-row": {
+  "S": {
+   "notes": {
+    "B3": {
+     "author": "?",
+     "text": "First comment\n\n?: A reply\n\n?: Another reply\non two lines"
+    },
+    "B5": {
+     "author": "?",
+     "text": "A note beside the threads"
+    },
+    "C4": {
+     "author": "?",
+     "text": "Single"
+    }
+   },
+   "links": {}
+  },
+  "T": {
+   "notes": {
+    "A1": {
+     "author": "?",
+     "text": "On T\n\n?: Ответ"
+    }
+   },
+   "links": {}
+  }
+ }
+}
