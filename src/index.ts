@@ -72,7 +72,7 @@ export function validateNames(names: NameInput[], ctx: NamesContext): NameIssue[
 /** The `eval` mode's generated code of the book in evaluation order, for reading while debugging; not part of the contract. */
 export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): string {
   const o = checkComputeOptions(opts)
-  checkBook(book)
+  book = checkBook(book)
   const clock = o.clock ?? currentClock()
   return debugSource(createState(book, { now: clockSerial(clock), seed: clock.seed, externals: o.externals, execution: 'eval' }))
 }

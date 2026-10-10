@@ -35,6 +35,7 @@ import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, checkEntry } from './validation/session.js'
+import { cellWithoutEquals, opWithoutEquals } from './equals.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -87,7 +88,7 @@ function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined)
 /** Opens a session in steps: the book checked, then computed. */
 export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: SessionHooks = {}): Steps<SessionSteps> {
   const o = checkSessionOptions(opts)
-  checkBook(book)
+  book = checkBook(book)
   const live = o.live === true
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
@@ -217,7 +218,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *setCells(edits: CellEdit[]) {
       const s = yield* ready()
-      checkEdits(edits, sheetIndex(s), styleCount(s))
+      edits = checkEdits(edits, sheetIndex(s), styleCount(s))
       checkArrayEdits(s, edits)
       // a table's header cell typed over renames its column and the references to it: the book is built again
       const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
@@ -241,7 +242,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *setNames(names: NameInput[]) {
       const old = yield* ready()
-      checkNames(names, 'names')
+      names = checkNames(names, 'names')
       // tables and names share one namespace
       checkTables({ ...old.input, names }, 'book')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
@@ -265,6 +266,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *restructure(op: StructureOp) {
       const old = yield* ready()
+      op = opWithoutEquals(op)
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
@@ -338,7 +340,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const { row, col } = parseAddress(checkAddress(cell, 'cell'))
-      if (input !== null) checkCell(input, 'input', styleCount(s))
+      if (input !== null) input = cellWithoutEquals(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
       try {
         return yield* checkEntry(s, i, row, col, input)
