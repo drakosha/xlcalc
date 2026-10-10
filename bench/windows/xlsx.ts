@@ -6,25 +6,28 @@
  * into `test/excel/win/xlsx/formats.json`, another locale's into `xlsx/<tag>/formats.json`. `test/xlsx-win.test.ts`
  * reads them.
  */
-import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import type { StoredRun } from '../coverage/xlsx.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
+import { partsHash } from '../coverage/xlsx/sent.js'
 import { localeDir } from '../coverage/locales.js'
 import { winFile } from './functions.js'
 import { inJobs, metaOf, OUT, runJob, type Tag, type WinEnv } from './remote.js'
-
-const sha = (x: Uint8Array) => createHash('sha256').update(x).digest('hex')
 
 export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
   const dir = winFile('xlsx/filters')
   const file = winFile('xlsx/filters.json')
   const run: StoredRun = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredRun) : { meta: {}, books: {} }
-  const books = await Promise.all(FILTER_FILES.map(async (c) => ({ id: c.id, data: await filterFile(c) })))
+  const books = await Promise.all(
+    FILTER_FILES.map(async (c) => {
+      const data = await filterFile(c)
+      return { id: c.id, data, hash: await partsHash(data) }
+    }),
+  )
   run.books = Object.fromEntries(Object.entries(run.books).filter(([id]) => books.some((b) => b.id === id)))
-  const todo = books.filter((b) => !(run.books[b.id]?.sent === sha(b.data) && (run.books[b.id].rejected || existsSync(join(dir, `${b.id}.xlsx`)))))
+  const todo = books.filter((b) => !(run.books[b.id]?.sent === b.hash && (run.books[b.id].rejected || existsSync(join(dir, `${b.id}.xlsx`)))))
   mkdirSync(dir, { recursive: true })
   const t0 = Date.now()
   const save = () => {
@@ -42,8 +45,8 @@ export async function stepXlsxFilters(tag: Tag, e: WinEnv): Promise<void> {
       if (!a && cutShort) return [b]
       if (a && 'saved' in a && a.saved) {
         writeFileSync(join(dir, `${b.id}.xlsx`), a.saved)
-        run.books[b.id] = { sent: sha(b.data) }
-      } else run.books[b.id] = { sent: sha(b.data), rejected: a ? ('rejected' in a ? a.rejected : 'not saved') : 'Excel hangs on the file' }
+        run.books[b.id] = { sent: b.hash }
+      } else run.books[b.id] = { sent: b.hash, rejected: a ? ('rejected' in a ? a.rejected : 'not saved') : 'Excel hangs on the file' }
       return []
     },
     save,
