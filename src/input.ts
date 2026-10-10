@@ -13,6 +13,7 @@ import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
+import { checkConditionalFormats } from './cond/check.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
 export class InputError extends TypeError {
@@ -36,12 +37,12 @@ function what(v: unknown): string {
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
-function object(v: unknown, path: string, expected: string): Record<string, unknown> {
+export function object(v: unknown, path: string, expected: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected ${expected}, got ${what(v)}`)
   return v
 }
 
-function array(v: unknown, path: string, expected: string): unknown[] {
+export function array(v: unknown, path: string, expected: string): unknown[] {
   if (!Array.isArray(v)) throw new InputError(path, `expected ${expected}, got ${what(v)}`)
   return v
 }
@@ -51,7 +52,7 @@ export function checkString(v: unknown, path: string): string {
   return v
 }
 
-function onlyKeys(o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') {
+export function onlyKeys(o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') {
   for (const k of Object.keys(o)) if (!allowed.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})${hint}`)
 }
 
@@ -74,7 +75,7 @@ export function checkAddress(addr: unknown, path: string): string {
 }
 
 /** A number format: a code, or the number of a built-in format (0 to 49). */
-function checkFormat(v: unknown, path: string) {
+export function checkFormat(v: unknown, path: string) {
   if (typeof v !== 'string' && !(typeof v === 'number' && isBuiltin(v))) throw new InputError(path, `expected a format code or the number of a built-in format, 0 to 49, got ${what(v)}`)
 }
 
@@ -162,26 +163,26 @@ export function sheetNameProblem(name: string): string | null {
 
 const COLOR = /^#[0-9A-Fa-f]{6}$/
 
-function checkColor(v: unknown, path: string) {
+export function checkColor(v: unknown, path: string) {
   if (typeof v !== 'string' || !COLOR.test(v)) throw new InputError(path, `expected a colour such as "#FF0000", got ${what(v)}`)
 }
 
-function checkOneOf(v: unknown, path: string, values: readonly (string | number)[]) {
+export function checkOneOf(v: unknown, path: string, values: readonly (string | number)[]) {
   if (!values.includes(v as string)) throw new InputError(path, `expected one of ${values.map((x) => JSON.stringify(x)).join(', ')}, got ${what(v)}`)
 }
 
 const DATE_SYSTEMS = [1900, 1904]
 
-function checkBoolean(v: unknown, path: string) {
+export function checkBoolean(v: unknown, path: string) {
   if (typeof v !== 'boolean') throw new InputError(path, `expected a boolean, got ${what(v)}`)
 }
 
-function checkNumber(v: unknown, path: string, min: number, max: number, integer = false) {
+export function checkNumber(v: unknown, path: string, min: number, max: number, integer = false) {
   if (typeof v !== 'number' || !Number.isFinite(v) || v < min || v > max || (integer && !Number.isInteger(v)))
     throw new InputError(path, `expected ${integer ? 'an integer' : 'a number'} from ${min} to ${max}, got ${what(v)}`)
 }
 
-const LINES = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
+export const LINES = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
 
 function checkStyle(v: unknown, p: string): CellStyle {
   const s = object(v, p, 'a style such as { font: { bold: true } }')
@@ -298,7 +299,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, problem)
@@ -321,6 +322,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
     if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
+    if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
@@ -426,9 +428,14 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       if (o.frozen !== null) checkFrozen(o.frozen, `${p}.frozen`)
       return o as unknown as LayoutEdit
     }
+    if ('conditionalFormats' in o) {
+      onlyKeys(o, p, ['sheet', 'conditionalFormats'])
+      checkConditionalFormats(o.conditionalFormats, `${p}.conditionalFormats`)
+      return o as unknown as LayoutEdit
+    }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = axis === 'r' ? 'rows' : 'columns'
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered or frozen)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen or conditionalFormats)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit

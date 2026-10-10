@@ -50,6 +50,7 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
     if ('merges' in e) sheet.merges = [...e.merges]
     else if ('filtered' in e) sheet.filtered = e.filtered
     else if ('frozen' in e) sheet.frozen = e.frozen ? { ...e.frozen } : undefined
+    else if ('conditionalFormats' in e) sheet.conditionalFormats = e.conditionalFormats.length ? [...e.conditionalFormats] : undefined
     else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set)
     else sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, e.set)
   }
@@ -57,6 +58,7 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
     for (const k of ['columns', 'rows', 'merges'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
     if (sheet.filtered === false) delete sheet.filtered
     if (sheet.frozen === undefined) delete sheet.frozen
+    if (sheet.conditionalFormats === undefined) delete sheet.conditionalFormats
     book.sheets[i] = sheet
   }
 }
