@@ -77,7 +77,7 @@ describe('displayValue', () => {
 
   it('checks its input', () => {
     const fails = (f: () => unknown, message: string) => expect(f).toThrow(new InputError(message.split(':')[0], message.slice(message.indexOf(':') + 2)))
-    fails(() => displayValue(1, { locale: 'de-DE' }), `opts.locale: unknown locale "de-DE" (expected ${[...LOCALES.keys()].join(', ')})`)
+    fails(() => displayValue(1, { locale: 'de-DE' }), `opts.locale: unknown locale "de-DE" (loaded: ${[...LOCALES.keys()].join(', ')}; the package's: en-US, ru-RU)`)
     fails(() => displayValue(1, { width: -1 }), 'opts.width: expected a number from 0 to 4177920, got number -1')
     fails(() => displayValue(1, { size: 3 } as never), 'opts: unknown field "size" (expected format, locale, width, dateSystem)')
     fails(() => displayValue(Number.NaN), 'value: expected a number, text, a boolean, null or { error: code }, got number NaN')
