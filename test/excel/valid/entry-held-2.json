@@ -1,0 +1,987 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US",
+  "seconds": 8.2
+ },
+ "books": {
+  "values": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "U1": {
+       "value": "apple"
+      },
+      "U3": {
+       "value": "pear"
+      },
+      "U5": {
+       "value": "plum"
+      },
+      "W1": {
+       "value": "pear"
+      },
+      "W2": {
+       "value": "fig"
+      },
+      "A1": {
+       "value": "list 1"
+      },
+      "A2": {
+       "value": 1000
+      },
+      "A3": {
+       "formula": "\"1,000\""
+      },
+      "A4": {
+       "value": 0.5
+      },
+      "A5": {
+       "value": 45659
+      },
+      "A6": {
+       "value": "Two"
+      },
+      "A7": {
+       "value": "two"
+      },
+      "A8": {
+       "value": " Two "
+      },
+      "A9": {
+       "value": 3
+      },
+      "A10": {
+       "formula": "\"3 \""
+      },
+      "B1": {
+       "value": "custom 2"
+      },
+      "B2": {
+       "value": 1
+      },
+      "B3": {
+       "value": 10
+      },
+      "C1": {
+       "value": "custom 3"
+      },
+      "C2": {
+       "value": 1
+      },
+      "D1": {
+       "value": "whole 4"
+      },
+      "D2": {
+       "value": 50
+      },
+      "D3": {
+       "value": 5
+      },
+      "E1": {
+       "value": "list 5"
+      },
+      "E2": {
+       "value": "x"
+      },
+      "E3": {
+       "value": "apple"
+      },
+      "F1": {
+       "value": "list 6"
+      },
+      "F2": {
+       "value": "x"
+      },
+      "F3": {
+       "value": "apple"
+      },
+      "G1": {
+       "value": "list 7"
+      },
+      "G2": {
+       "value": "x"
+      },
+      "G3": {
+       "value": "pear"
+      },
+      "H1": {
+       "value": "list 8"
+      },
+      "H2": {
+       "value": "x"
+      },
+      "H3": {
+       "value": "apple"
+      },
+      "I1": {
+       "value": "whole 9"
+      },
+      "I2": {
+       "value": true
+      },
+      "I3": {
+       "value": false
+      },
+      "J1": {
+       "value": "decimal 10"
+      },
+      "J2": {
+       "value": true
+      },
+      "J3": {
+       "value": false
+      },
+      "K1": {
+       "value": "date 11"
+      },
+      "K2": {
+       "value": true
+      },
+      "K3": {
+       "value": "x"
+      },
+      "L1": {
+       "value": "textLength 12"
+      },
+      "L3": {
+       "value": "a"
+      },
+      "M1": {
+       "value": "whole 13"
+      },
+      "M3": {
+       "value": 0
+      },
+      "N1": {
+       "value": "custom 14"
+      },
+      "N3": {
+       "value": 1
+      },
+      "O1": {
+       "value": "decimal 15"
+      },
+      "O2": {
+       "value": 0.333333333333333
+      },
+      "O3": {
+       "value": 0.3333333333333333
+      },
+      "O4": {
+       "value": 0.33333333333333
+      },
+      "P1": {
+       "value": "decimal 16"
+      },
+      "P2": {
+       "formula": "0.1+0.2"
+      },
+      "P3": {
+       "value": 0.31
+      }
+     },
+     "validations": [
+      {
+       "range": "A2:A10",
+       "type": "list",
+       "formula1": "\"1000,50%,2025-01-02, Two ,3\""
+      },
+      {
+       "range": "B2:B3",
+       "type": "custom",
+       "formula1": "B2+$Z$1>5"
+      },
+      {
+       "range": "C2:C2",
+       "type": "custom",
+       "formula1": "SUM($Z$1:$Z$3)>5"
+      },
+      {
+       "range": "D2:D3",
+       "type": "whole",
+       "formula1": "$Z$1+1",
+       "formula2": "10"
+      },
+      {
+       "range": "E2:E3",
+       "type": "list",
+       "formula1": "Middle"
+      },
+      {
+       "range": "F2:F3",
+       "type": "list",
+       "formula1": "Column"
+      },
+      {
+       "range": "G2:G3",
+       "type": "list",
+       "formula1": "Full"
+      },
+      {
+       "range": "H2:H3",
+       "type": "list",
+       "formula1": "Middle",
+       "allowBlank": false
+      },
+      {
+       "range": "I2:I3",
+       "type": "whole",
+       "operator": "greaterThan",
+       "formula1": "5"
+      },
+      {
+       "range": "J2:J3",
+       "type": "decimal",
+       "operator": "lessThan",
+       "formula1": "5"
+      },
+      {
+       "range": "K2:K3",
+       "type": "date",
+       "operator": "greaterThanOrEqual",
+       "formula1": "1"
+      },
+      {
+       "range": "L2:L3",
+       "type": "textLength",
+       "operator": "greaterThan",
+       "formula1": "0",
+       "allowBlank": false
+      },
+      {
+       "range": "M2:M3",
+       "type": "whole",
+       "formula1": "-1",
+       "formula2": "1",
+       "allowBlank": false
+      },
+      {
+       "range": "N2:N3",
+       "type": "custom",
+       "formula1": "TRUE",
+       "allowBlank": false
+      },
+      {
+       "range": "O2:O4",
+       "type": "decimal",
+       "operator": "equal",
+       "formula1": "1/3"
+      },
+      {
+       "range": "P2:P3",
+       "type": "decimal",
+       "operator": "notEqual",
+       "formula1": "0.3"
+      }
+     ]
+    }
+   ],
+   "names": [
+    {
+     "name": "Middle",
+     "ref": "'S'!$U$1:$U$3"
+    },
+    {
+     "name": "Column",
+     "ref": "'S'!$U:$U"
+    },
+    {
+     "name": "Full",
+     "ref": "'S'!$W$1:$W$2"
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "values",
+   "book": "values"
+  }
+ ],
+ "window": "A1:P10",
+ "sent": {
+  "values": "03b8ed71e455104e2ae364e89c2db6751dca440235db161694d427d072d65632"
+ },
+ "answers": {
+  "values": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$2",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$3",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$4",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$5",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$6",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$7",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$8",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$9",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$10",
+       "validate list",
+       "operator between",
+       "1000,50%,2025-01-02, Two ,3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$2",
+       "validate custom",
+       "operator between",
+       "=B2+$Z$1>5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$3",
+       "validate custom",
+       "operator between",
+       "=B3+$Z$1>5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$2",
+       "validate custom",
+       "operator between",
+       "=SUM($Z$1:$Z$3)>5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$2",
+       "validate whole number",
+       "operator between",
+       "=$Z$1+1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$2",
+       "validate list",
+       "operator between",
+       "=Middle",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$2",
+       "validate list",
+       "operator between",
+       "=Column",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$G$2",
+       "validate list",
+       "operator between",
+       "=Full",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$H$2",
+       "validate list",
+       "operator between",
+       "=Middle",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$I$2",
+       "validate whole number",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$2",
+       "validate decimal",
+       "operator less",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$K$2",
+       "validated date",
+       "operator greater equal",
+       "1/1/1900",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$L$2",
+       "validate text length",
+       "operator greater",
+       "0",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$M$2",
+       "validate whole number",
+       "operator between",
+       "-1",
+       "1",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$N$2",
+       "validate custom",
+       "operator between",
+       "TRUE",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$3",
+       "validate whole number",
+       "operator between",
+       "=$Z$1+1",
+       "10",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$3",
+       "validate list",
+       "operator between",
+       "=Middle",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$3",
+       "validate list",
+       "operator between",
+       "=Column",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$G$3",
+       "validate list",
+       "operator between",
+       "=Full",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$3",
+       "validate list",
+       "operator between",
+       "=Middle",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$I$3",
+       "validate whole number",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$J$3",
+       "validate decimal",
+       "operator less",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$K$3",
+       "validated date",
+       "operator greater equal",
+       "1/1/1900",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$L$3",
+       "validate text length",
+       "operator greater",
+       "0",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$M$3",
+       "validate whole number",
+       "operator between",
+       "-1",
+       "1",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$N$3",
+       "validate custom",
+       "operator between",
+       "TRUE",
+       "",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$O$2",
+       "validate decimal",
+       "operator equal",
+       "=1/3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$O$3",
+       "validate decimal",
+       "operator equal",
+       "=1/3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$O$4",
+       "validate decimal",
+       "operator equal",
+       "=1/3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$P$2",
+       "validate decimal",
+       "operator not equal",
+       "0.3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$P$3",
+       "validate decimal",
+       "operator not equal",
+       "0.3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

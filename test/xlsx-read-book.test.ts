@@ -140,7 +140,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     })
   })
 
-  it('columns, rows and merged areas; hidden lines with their sizes, a line of size 0 hidden; grouped lines reported; equal neighbours in one span', async () => {
+  it('columns, rows and merged areas; hidden lines with their sizes, a line of size 0 hidden; grouped lines with their levels; equal neighbours in one span', async () => {
     const r = await read({
       sheets: [
         {
@@ -154,10 +154,10 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
       styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="10"/></cellXfs>',
     })
     const s = r.book.sheets[0]
-    expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, format: 10 }, D: { format: 10 }, E: { width: 9, hidden: true }, G: { hidden: true }, H: { width: 0, hidden: true } })
-    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { hidden: true }, 6: { format: 10 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true } })
+    expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, format: 10 }, D: { format: 10 }, E: { width: 9, hidden: true }, F: { outlineLevel: 1 }, G: { hidden: true }, H: { width: 0, hidden: true } })
+    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { hidden: true }, 6: { format: 10, outlineLevel: 1 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true } })
     expect(s.merges).toEqual(['A1:B2'])
-    expect(codes(r.issues)).toEqual(['outline 6:6 F:F', 'part B2:C3'])
+    expect(codes(r.issues)).toEqual(['part B2:C3'])
   })
 
   it('what a sheet has that the model does not: each reported once for the sheet', async () => {
@@ -168,8 +168,10 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     const f = parts({ sheets: [{ name: 'S', body }] })
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
-    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'dataValidation', 'protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes'])
+    expect(r.issues.map((i) => i.code)).toEqual(['conditionalFormat', 'protection', 'drawing', 'sparkline', 'print', 'pivotTable', 'autoFilter', 'frozenPanes'])
     expect(r.book.sheets[0].filtered).toBeUndefined()
+    // a rule of any value with xlsx's defaults, read as the model's rule with them spelled out
+    expect(r.book.sheets[0].validations).toEqual([{ range: 'A1', type: 'any', allowBlank: false, showPrompt: false, showError: false }])
   })
 
   it('the locale from its custom property; an unknown one reported; the default font other than Calibri 11 reported', async () => {

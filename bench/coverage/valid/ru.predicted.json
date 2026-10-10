@@ -1,0 +1,256 @@
+{
+ "file": [
+  {
+   "name": "S",
+   "rules": {
+    "A2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b,c\"",
+     "dropdown": true
+    },
+    "A3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b,c\"",
+     "dropdown": true
+    },
+    "A4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b,c\"",
+     "dropdown": true
+    },
+    "B2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "B3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "E2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1.5",
+     "formula2": "2.5"
+    },
+    "E3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1.5",
+     "formula2": "2.5"
+    }
+   },
+   "meets": {
+    "A2": true,
+    "A3": false,
+    "A4": false,
+    "B2": false,
+    "B3": true,
+    "E2": true,
+    "E3": false
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ],
+ "typed": [
+  {
+   "name": "S",
+   "rules": {
+    "A2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b,c\"",
+     "dropdown": true
+    },
+    "A3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b,c\"",
+     "dropdown": true
+    },
+    "A4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b,c\"",
+     "dropdown": true
+    },
+    "B2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "B3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "E2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1.5",
+     "formula2": "2.5"
+    },
+    "E3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "1.5",
+     "formula2": "2.5"
+    },
+    "C2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"x,y,z\"",
+     "dropdown": true
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"x,y,z\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "D3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "ISNUMBER(F2)"
+    },
+    "F3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "ISNUMBER(F3)"
+    },
+    "G2": {
+     "type": "date",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "45658",
+     "formula2": "45688"
+    },
+    "G3": {
+     "type": "date",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "between",
+     "formula1": "45658",
+     "formula2": "45688"
+    }
+   },
+   "meets": {
+    "A2": true,
+    "A3": false,
+    "A4": false,
+    "B2": false,
+    "B3": true,
+    "E2": true,
+    "E3": false,
+    "C2": true,
+    "C3": false,
+    "D2": true,
+    "D3": false,
+    "F2": true,
+    "F3": false,
+    "G2": true,
+    "G3": false
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ]
+}

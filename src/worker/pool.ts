@@ -355,6 +355,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       book: () => value<Sent>(call('book', [])).then(unpackSlowly),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       cells: (sheet, range) => value(call('cells', [sheet, range])),
+      validation: (sheet, cell) => value(call('validation', [sheet, cell])),
+      validateEntry: (sheet, cell, input, co) => value(call('validateEntry', [sheet, cell, input], co)),
       result: (co) => value(call('result', [], co)),
       hash: (co) => value(call('hash', [], co)),
       async close() {

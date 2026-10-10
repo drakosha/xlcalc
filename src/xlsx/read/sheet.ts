@@ -2,10 +2,11 @@
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
  * cells as a copy and paste spreads them (`restructure`'s copyRange), array formulas of the old kind over their area,
- * the cells an array spilled into left to the stored values, columns, rows, merged areas, the filter mode, notes,
- * hyperlinks and frozen panes (`parts.ts`), and what the sheet has that the model does not, reported.
+ * the cells an array spilled into left to the stored values, columns and rows with their outline levels, merged areas,
+ * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
+ * and what the sheet has that the model does not, reported.
  */
-import type { CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
+import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
 import { spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
@@ -16,11 +17,12 @@ import { canonical } from '../../syntax/print.js'
 import type { Issues } from '../issues.js'
 import type { XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, type Element } from '../xml/scan.js'
-import { look, readCells, type CellsContext, type SheetCells } from './cells.js'
+import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
 import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
+import { readValidations } from './validation.js'
 
 export interface SheetSource {
   name: string
@@ -45,7 +47,6 @@ export interface SheetRead {
 const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
   ['conditionalFormatting', 'conditionalFormat', 'conditional formatting is not in the model'],
   ['conditionalFormattings', 'conditionalFormat', 'conditional formatting is not in the model'],
-  ['dataValidations', 'dataValidation', 'data validation is not in the model'],
   ['sheetProtection', 'protection', 'sheet protection is not in the model'],
   ['protectedRanges', 'protection', 'sheet protection is not in the model'],
   ['drawing', 'drawing', 'pictures, charts and shapes are not in the model'],
@@ -141,6 +142,18 @@ function arrays(read: SheetCells) {
   }
 }
 
+/** Where a sheet's summary rows and columns are (`<outlinePr>`), as the file says; automatic outline styles are reported. */
+function outline(head: string, sheet: string, issues: Issues): OutlineSettings | undefined {
+  const pr = element(element(head, 'sheetPr')?.body ?? '', 'outlinePr')
+  if (!pr) return undefined
+  const a = attributes(pr.attrs)
+  if (flag(a.applyStyles)) issues.add('outline', 'automatic styles of an outline are not kept', { sheet })
+  const out: OutlineSettings = {}
+  if (a.summaryBelow !== undefined) out.summaryBelow = flag(a.summaryBelow)
+  if (a.summaryRight !== undefined) out.summaryRight = flag(a.summaryRight)
+  return Object.keys(out).length ? out : undefined
+}
+
 /** Lines (rows or columns) with equal settings next to each other as one span. */
 function spans<T>(lines: [lo: number, hi: number, T][], axis: 'r' | 'c'): Record<string, T> | undefined {
   lines.sort((x, y) => x[0] - y[0])
@@ -166,7 +179,7 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     // Excel hides a column of width 0 whatever its flag
     if (flag(a.hidden) || col.width === 0) col.hidden = true
     if (a.style !== undefined) Object.assign(col, look(read.xfs[Number(a.style)], read.issues, where))
-    if (Number(a.outlineLevel ?? 0) > 0) read.issues.add('outline', 'grouped rows and columns are not in the model', where)
+    Object.assign(col, outlineOf(a))
     if (Object.keys(col).length) lines.push([lo, hi, col])
   }
   return spans(lines, 'c')
@@ -264,5 +277,9 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts }, read.cells, ctx.issues)
   const frozen = readFrozen(head, name, ctx.issues)
   if (frozen) sheet.frozen = frozen
+  const validations = readValidations(tail, name, src.sheets, ctx.issues)
+  if (validations) sheet.validations = validations
+  const settings = outline(head, name, ctx.issues)
+  if (settings) sheet.outline = settings
   return { sheet, cached: read.cached }
 }

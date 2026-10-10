@@ -1,0 +1,517 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU",
+  "seconds": 6.6
+ },
+ "books": {
+  "ru": {
+   "locale": "ru-RU",
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A2": {
+       "value": "b"
+      },
+      "A3": {
+       "value": "a,b"
+      },
+      "A4": {
+       "value": "a;b"
+      },
+      "B2": {
+       "value": "b"
+      },
+      "B3": {
+       "value": "a;b;c"
+      },
+      "C2": {
+       "value": "y"
+      },
+      "C3": {
+       "value": "x;y"
+      },
+      "D2": {
+       "value": "q"
+      },
+      "D3": {
+       "value": "p,q"
+      },
+      "E2": {
+       "value": 2
+      },
+      "E3": {
+       "value": 3
+      },
+      "F2": {
+       "value": 5
+      },
+      "F3": {
+       "value": "x"
+      },
+      "G2": {
+       "value": 45670
+      },
+      "G3": {
+       "value": 45700
+      }
+     },
+     "validations": [
+      {
+       "range": "A2:A4",
+       "type": "list",
+       "formula1": "\"a,b,c\""
+      },
+      {
+       "range": "B2:B3",
+       "type": "list",
+       "formula1": "\"a;b;c\""
+      },
+      {
+       "range": "E2:E3",
+       "type": "decimal",
+       "formula1": "1.5",
+       "formula2": "2.5"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "file",
+   "book": "ru"
+  },
+  {
+   "id": "typed",
+   "book": "ru",
+   "make": [
+    {
+     "sheet": "S",
+     "range": "C2:C3",
+     "rule": {
+      "type": "list",
+      "formula1": "\"x,y,z\""
+     },
+     "excel": [
+      "x;y;z"
+     ]
+    },
+    {
+     "sheet": "S",
+     "range": "D2:D3",
+     "rule": {
+      "type": "list",
+      "formula1": "\"p,q\""
+     },
+     "excel": [
+      "p,q"
+     ]
+    },
+    {
+     "sheet": "S",
+     "range": "F2:F3",
+     "rule": {
+      "type": "custom",
+      "formula1": "ISNUMBER(F2)"
+     },
+     "excel": [
+      "=ЕЧИСЛО(F2)"
+     ]
+    },
+    {
+     "sheet": "S",
+     "range": "G2:G3",
+     "rule": {
+      "type": "date",
+      "formula1": "45658",
+      "formula2": "45688"
+     },
+     "excel": [
+      "01.01.2025",
+      "31.01.2025"
+     ]
+    }
+   ]
+  }
+ ],
+ "window": "A1:H5",
+ "sent": {
+  "file": "c95b6a46ccf08f77b6a4768ec79b36f42006ac980a4eaedfafd4be1345bc77c2",
+  "typed": "c95b6a46ccf08f77b6a4768ec79b36f42006ac980a4eaedfafd4be1345bc77c2"
+ },
+ "answers": {
+  "file": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$2",
+       "validate list",
+       "operator between",
+       "a,b,c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$3",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$4",
+       "validate list",
+       "operator between",
+       "a,b,c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$2",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$3",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$2",
+       "validate decimal",
+       "operator between",
+       "1,5",
+       "2,5",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$3",
+       "validate decimal",
+       "operator between",
+       "1.5",
+       "2.5",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "typed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$2",
+       "validate list",
+       "operator between",
+       "a,b,c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$3",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$4",
+       "validate list",
+       "operator between",
+       "a,b,c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$2",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$C$2",
+       "validate list",
+       "operator between",
+       "x;y;z",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$E$2",
+       "validate decimal",
+       "operator between",
+       "1.5",
+       "2.5",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$3",
+       "validate list",
+       "operator between",
+       "a;b;c",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$3",
+       "validate list",
+       "operator between",
+       "x;y;z",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$3",
+       "validate decimal",
+       "operator between",
+       "1.5",
+       "2.5",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$G$2",
+       "validated date",
+       "operator between",
+       "01.01.2025",
+       "31.01.2025",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$G$3",
+       "validated date",
+       "operator between",
+       "1/1/2025",
+       "1/31/2025",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

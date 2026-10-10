@@ -115,8 +115,8 @@ export async function ensureExcel(tag: string): Promise<void> {
   const p = excelProcess()
   if (p && startedFor(p.args, tag)) return closeStartupBook()
   if (p) {
-    const n = countWorkbooks()
-    if (n !== 0) throw new Error(`Excel has ${n} books open; restart for the locale ${tag} cancelled`)
+    // the empty book an Excel started for another locale opened goes; any other open book cancels the restart
+    closeStartupBook()
     osa('tell application "Microsoft Excel" to quit')
     for (let i = 0; excelProcess(); i++) {
       if (i > 120) throw new Error('Excel did not quit in 60 s')

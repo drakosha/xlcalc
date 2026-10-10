@@ -30,14 +30,18 @@ import type { BookInput, CellValue, ComputeResult } from '../contract.js'
  * - `cellMetadata`: a cell's rich value (`vm`: a data type, a picture in the cell), read as the value the cell stores.
  * - `autoFilter`: an autofilter's range, criteria and sort, a table's criteria, an advanced filter (the sheet's filter
  *   mode is read: `SheetInput.filtered`); written: the filter mode of a sheet whose tables have no header row, left out.
- * - `conditionalFormat`, `dataValidation`, `comment`, `hyperlink`, `drawing` (pictures, charts, shapes),
- *   `pivotTable`, `protection`, `frozenPanes`, `outline` (grouped rows and columns), `print`
+ * - `dataValidation`: a rule the model cannot hold (no range of the sheet, no formula its type needs, an unknown type),
+ *   left out; cells two rules share, kept by the earlier; an IME mode; a list whose items hold commas, read split at
+ *   them; written: a rule whose formula the file cannot hold, left out.
+ * - `outline`: automatic styles of an outline.
+ * - `conditionalFormat`, `comment`, `hyperlink`, `drawing` (pictures, charts, shapes),
+ *   `pivotTable`, `protection`, `frozenPanes`, `print`
  *   (headers and footers, page breaks, a page setup made by hand), `macros`, `sparkline`, `connection` (data
  *   connections and queries): parts of the file the model does not have, left
  *   out. View settings (zoom, gridlines, the selection) and a page setup Excel writes by default are not reported.
  * - `locale`: a locale the package does not have, left out of the book.
  * - `meta`: written: cell `meta` has no place in a file.
- * - `textLength`: written: text over Excel's 32,767 characters, cut.
+ * - `textLength`: written: text over Excel's 32,767 characters, cut, and a rule's texts over Excel's limits.
  * - `part`: a part of the file that is missing or cannot be read.
  */
 export type XlsxIssueCode =

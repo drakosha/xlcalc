@@ -1,0 +1,6170 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 97
+ },
+ "books": {
+  "struct": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B2": {
+       "value": 5
+      },
+      "C3": {
+       "value": "a"
+      },
+      "D2": {
+       "value": 3
+      },
+      "F3": {
+       "value": "q"
+      },
+      "H1": {
+       "value": "h"
+      },
+      "J1": {
+       "value": "sum"
+      },
+      "A11": {
+       "value": 11
+      },
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "A7": {
+       "value": 7
+      },
+      "A8": {
+       "value": 8
+      },
+      "A9": {
+       "value": 9
+      },
+      "A10": {
+       "value": 10
+      },
+      "A12": {
+       "value": 12
+      }
+     },
+     "validations": [
+      {
+       "range": "B2:B4",
+       "type": "custom",
+       "formula1": "B2>A2"
+      },
+      {
+       "range": "C3",
+       "type": "list",
+       "formula1": "\"a,b\""
+      },
+      {
+       "range": "D2:E3",
+       "type": "whole",
+       "operator": "greaterThan",
+       "formula1": "0"
+      },
+      {
+       "range": "F2:F6",
+       "type": "list",
+       "formula1": "\"p,q\"",
+       "errorStyle": "warning"
+      }
+     ],
+     "rows": {
+      "11": {
+       "collapsed": true
+      },
+      "8:10": {
+       "outlineLevel": 1,
+       "hidden": true
+      }
+     },
+     "columns": {
+      "H:I": {
+       "outlineLevel": 1,
+       "hidden": true
+      },
+      "J": {
+       "collapsed": true
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     },
+     "validations": [
+      {
+       "range": "B1:B3",
+       "type": "decimal",
+       "operator": "lessThan",
+       "formula1": "$A$1"
+      }
+     ]
+    },
+    {
+     "name": "U",
+     "cells": {
+      "A1": {
+       "value": "u"
+      }
+     },
+     "rows": {
+      "2": {
+       "collapsed": true
+      },
+      "3:5": {
+       "outlineLevel": 1,
+       "hidden": true
+      }
+     },
+     "outline": {
+      "summaryBelow": false
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "insert-rows-5x2",
+   "book": "struct",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 5,
+    "count": 2
+   }
+  },
+  {
+   "id": "insert-row-4",
+   "book": "struct",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 4
+   }
+  },
+  {
+   "id": "insert-col-f",
+   "book": "struct",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "F"
+   }
+  },
+  {
+   "id": "insert-cols-d",
+   "book": "struct",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "D",
+    "count": 2
+   }
+  },
+  {
+   "id": "move-rule-onto-rule",
+   "book": "struct",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "C3"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "F4"
+    }
+   }
+  },
+  {
+   "id": "move-plain-onto-part",
+   "book": "struct",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "A1:A2"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "F3"
+    }
+   }
+  },
+  {
+   "id": "move-rules-onto-rules",
+   "book": "struct",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "B2:C4"
+    },
+    "to": {
+     "sheet": "S",
+     "cell": "E2"
+    }
+   }
+  },
+  {
+   "id": "move-to-t",
+   "book": "struct",
+   "op": {
+    "op": "moveRange",
+    "from": {
+     "sheet": "S",
+     "range": "B2:B3"
+    },
+    "to": {
+     "sheet": "T",
+     "cell": "D2"
+    }
+   }
+  },
+  {
+   "id": "insert-row-9-collapsed",
+   "book": "struct",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 9
+   }
+  },
+  {
+   "id": "insert-row-11-collapsed",
+   "book": "struct",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 11
+   }
+  },
+  {
+   "id": "insert-row-8-collapsed",
+   "book": "struct",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 8
+   }
+  },
+  {
+   "id": "insert-col-i-collapsed",
+   "book": "struct",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "I"
+   }
+  },
+  {
+   "id": "insert-row-4-above",
+   "book": "struct",
+   "op": {
+    "op": "insertRows",
+    "sheet": "U",
+    "row": 4
+   }
+  },
+  {
+   "id": "delete-row-9-collapsed",
+   "book": "struct",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 9
+   }
+  },
+  {
+   "id": "copy-rows-8-11",
+   "book": "struct",
+   "op": {
+    "op": "copyRange",
+    "from": {
+     "sheet": "S",
+     "range": "8:11"
+    },
+    "to": {
+     "sheet": "S",
+     "range": "20:23"
+    }
+   }
+  }
+ ],
+ "window": "A1:L24",
+ "sent": {
+  "insert-rows-5x2": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-row-4": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-col-f": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-cols-d": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "move-rule-onto-rule": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "move-plain-onto-part": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "move-rules-onto-rules": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "move-to-t": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-row-9-collapsed": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-row-11-collapsed": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-row-8-collapsed": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-col-i-collapsed": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "insert-row-4-above": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "delete-row-9-collapsed": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056",
+  "copy-rows-8-11": "7b4e8e6f8aab793bbec2575ffedf14cea413637e74765f8aa5955ac23991a056"
+ },
+ "answers": {
+  "insert-rows-5x2": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B5",
+       "validate custom",
+       "operator between",
+       "=B5>A5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B6",
+       "validate custom",
+       "operator between",
+       "=B6>A6",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F7",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F8",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       1,
+       true,
+       false
+      ],
+      [
+       12,
+       1,
+       true,
+       false
+      ],
+      [
+       13,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-row-4": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B5",
+       "validate custom",
+       "operator between",
+       "=B5>A5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C4",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D4",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E4",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F7",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       1,
+       true,
+       false
+      ],
+      [
+       12,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-col-f": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       1,
+       true,
+       false
+      ],
+      [
+       "K",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-cols-d": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "G3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "H6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "J",
+       1,
+       true,
+       false
+      ],
+      [
+       "K",
+       1,
+       true,
+       false
+      ],
+      [
+       "L",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "move-rule-onto-rule": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "move-plain-onto-part": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>F4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>F5",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>F6",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "move-rules-onto-rules": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "E2",
+       "validate custom",
+       "operator between",
+       "=E2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate custom",
+       "operator between",
+       "=E3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E4",
+       "validate custom",
+       "operator between",
+       "=E4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "move-to-t": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate custom",
+       "operator between",
+       "=D2>C2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate custom",
+       "operator between",
+       "=D3>C3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-row-9-collapsed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       false,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-row-11-collapsed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       1,
+       false,
+       false
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-row-8-collapsed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       1,
+       true,
+       false
+      ],
+      [
+       12,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-col-i-collapsed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       false,
+       false
+      ],
+      [
+       "J",
+       1,
+       true,
+       false
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "insert-row-4-above": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       false,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ],
+      [
+       6,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "delete-row-9-collapsed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "copy-rows-8-11": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "B2",
+       "validate custom",
+       "operator between",
+       "=B2>A2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate custom",
+       "operator between",
+       "=B3>A3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B4",
+       "validate custom",
+       "operator between",
+       "=B4>A4",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "C3",
+       "validate list",
+       "operator between",
+       "a,b",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E2",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "D3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "E3",
+       "validate whole number",
+       "operator greater",
+       "0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F2",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F3",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F4",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F5",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "F6",
+       "validate list",
+       "operator between",
+       "p,q",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [
+      [
+       8,
+       1,
+       true,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ],
+      [
+       20,
+       1,
+       true,
+       false
+      ],
+      [
+       21,
+       1,
+       true,
+       false
+      ],
+      [
+       22,
+       1,
+       true,
+       false
+      ],
+      [
+       23,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "H",
+       1,
+       true,
+       false
+      ],
+      [
+       "I",
+       1,
+       true,
+       false
+      ],
+      [
+       "J",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [
+      [
+       "B1",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B2",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "B3",
+       "validate decimal",
+       "operator less",
+       "=$A$1",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "U",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary above",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

@@ -1,6 +1,6 @@
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
- * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles and hidden rows. A cell
+ * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles, hidden rows and outline levels. A cell
  * is placed by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges
  * are collected for the sheet reader to resolve once every cell is known.
  */
@@ -93,7 +93,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) Object.assign(line, look(ctx.xfs[Number(a.s)], issues, { sheet, cell: `${row + 1}:${row + 1}` }))
-      if (Number(a.outlineLevel ?? 0) > 0) issues.add('outline', 'grouped rows and columns are not in the model', { sheet, cell: `${row + 1}:${row + 1}` })
+      Object.assign(line, outlineOf(a))
       if (Object.keys(line).length) out.rows.set(row + 1, line)
       continue
     }
@@ -181,6 +181,12 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     if (cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.format !== undefined) out.cells[addr] = cell
   }
   return out
+}
+
+/** A row's or a column's outline level (1 to 7) and its collapsed mark, as fields of its entry. */
+export function outlineOf(a: Record<string, string>): { outlineLevel?: number; collapsed?: boolean } {
+  const level = Math.trunc(Number(a.outlineLevel ?? 0))
+  return { ...(level > 0 ? { outlineLevel: Math.min(level, 7) } : {}), ...(flag(a.collapsed) ? { collapsed: true } : {}) }
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */

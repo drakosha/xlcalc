@@ -93,6 +93,8 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     book: () => plain(() => core.book()),
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
     cells: (sheet, range) => call(() => core.cells(sheet, range)),
+    validation: (sheet, cell) => call(() => core.validation(sheet, cell)),
+    validateEntry: (sheet, cell, input, co) => call(() => core.validateEntry(sheet, cell, input), co),
     result: (co) => call(() => core.result(), co),
     hash: (co) => call(() => core.hash(), co),
     close() {

@@ -1,6 +1,6 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks and frozen panes. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks, frozen panes, rules of data validation and outline levels. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
 The rules below were measured in Excel 16 for Mac (en-US).
 
@@ -167,6 +167,23 @@ Frozen panes (`frozen`) keep the lines before their split. Rows inserted before 
 
 The parts sets `struct-held` and `frozen-held` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([docs/xlsx.md](xlsx.md#notes-hyperlinks-and-frozen-panes)).
 
+## Data validation and outlines
+
+A rule of data validation (`SheetInput.validations`, [docs/validation.md](validation.md)) is a range of cells and formulas written for its first cell. Its ranges change as references do, with one difference at their end:
+
+- Lines inserted after a range's first line grow it, lines inserted at or before its first line move it, and lines inserted right after its last line join it: the inserted cells take the rule of the cells before them, as they take their format. With a rule over `B2:B6`, a row inserted at row 4 or at row 7 makes it `B2:B7`, one inserted at row 2 makes it `B3:B7`. Columns work the same way with the column on the left.
+- Deleted lines leave the ranges; a range that loses every line is gone, and a rule that loses every range.
+- A move takes the rules of the moved cells along. The cells it lands on keep their own rules where the moved cells have none, and take the moved ones where they have some. A move from `A1`, which has no rule, onto a cell of a whole-number rule leaves that cell's rule.
+- A copy pastes the rules of the copied cells on every tile, and a pasted cell without a rule clears the target's rule, as Excel's Paste All does.
+- References in a rule's formulas change as a cell's formulas do: a list `'L'!$A$1:$A$4` follows rows inserted on L, becomes `'Lists'!$A$1:$A$4` when L is renamed and `#REF!$A$1:$A$4` when it is deleted. A rule whose first cell moves or goes has its formulas written again for its new first cell: deleting row 2 of a rule `D2:D6` with `D2<A2` leaves `D2:D5` with `D2<A2`, the old D3's formula. A rule moved to another sheet moves its formulas as a copy moves them: `B2>A2` moved from B2 of S to D2 of T is `D2>C2` there, while a move on its own sheet keeps the references to the cells that did not move (`D2<A2` moved to D20 is `D20<A2`).
+
+An outline is the outline levels of rows and columns (`outlineLevel`, 1 to 7) with their collapsed marks (`collapsed`), and the sheet's summary settings (`SheetInput.outline`, below and right by default). A collapsed group's lines are hidden lines, which `SUBTOTAL` 101 to 111 leaves out.
+
+- Inserted lines take the outline level of the line before them, as they take its height, and are shown. Lines inserted into a collapsed group after one of its hidden lines open it: its summary line, past the group (before it with summaries above or left), loses its collapsed mark. Lines inserted at the summary line, or above the group, leave it collapsed.
+- Deleted lines take their levels and marks along; moved and copied whole rows and columns carry them, as they carry their other settings.
+
+The valid sets `struct-held` and `struct-held-2` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([docs/validation.md](validation.md#how-it-was-checked)).
+
 ## Hidden rows and filtered sheets
 
 A row or a column is hidden by `hidden: true` in `rows` or `columns`, or by a height or width of 0, as Excel takes it. A sheet is marked `filtered: true` when a filter of it has criteria, its autofilter or a table's. Excel then treats every hidden row of the sheet as one the filter hid, whatever hid it. In an xlsx file the criteria decide, not the attribute `filterMode`: Excel takes a sheet as filtered when its autofilter has criteria and the attribute is missing, does not when the attribute stands beside an autofilter without criteria, and writes no attribute for a table's filter ([docs/xlsx.md](xlsx.md)).
@@ -204,7 +221,9 @@ Styles and layout change through the session so that its book stays the host's b
 - the style table through `setStyles(styles)`; every style in use must stay in it;
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;
-- frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them.
+- frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
+- rules of data validation through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;
+- outlines through `setLayout`: a group is the lines' `outlineLevel`, collapsing it hides its lines and marks its summary line `collapsed` (`{ sheet, rows: '3:5', set: { hidden: true } }`, `{ sheet, rows: '6', set: { collapsed: true } }`), and `{ sheet, outline: { summaryBelow: false } }` sets where the summaries are.
 
 Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
@@ -245,5 +264,5 @@ Copies were applied through AppleScript's `copy range` with a destination, Excel
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
 - Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does.
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
-- Outline levels, conditional formats, data validation and charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
+- Conditional formats and charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
 - References to other workbooks are not read, so they never occur in a valid formula.
