@@ -65,11 +65,36 @@ function persons(xml: string | undefined): Map<string, string> {
   }))
 }
 
+/** A note of the comments part: its cell, author and text, and whether its runs have more than one look. */
+interface Comment {
+  cell: string
+  author: string
+  text: string
+  formatted: boolean
+}
+
+function comments(xml: string | undefined): Comment[] {
+  if (!xml) return []
+  const authors = elements(element(xml, 'authors')?.body ?? '', 'author').map((e) => readText(e.body ?? ''))
+  return elements(element(xml, 'commentList')?.body ?? '', 'comment').flatMap((e) => {
+    const a = attributes(e.attrs)
+    const cell = a.ref?.toUpperCase()
+    if (!cell || !refCells(cell, 1)?.length) return []
+    const body = element(e.body ?? '', 'text')?.body ?? ''
+    // runs of more than one look (the bold author's name of a note made in Excel's window); one look is the note's font
+    return [{ cell, author: authors[Number(a.authorId)] ?? '', text: stringItem(body).text, formatted: new Set(elements(body, 'rPr').map((r) => r.body ?? '')).size > 1 }]
+  })
+}
+
+/** The thread id of Excel's placeholder note for a thread, from its author `tc={id}`. */
+const placeholderOf = (c: Comment) => (c.author.startsWith('tc=') ? c.author.slice(3) : undefined)
+
 /**
  * Threads of comments by cell, each as a note: its first comment's author, its comments' text one after another, each
- * reply after an empty line with its author (`Ann: text`).
+ * reply after an empty line with its author (`Ann: text`). A thread is on the cell of its placeholder note where there is
+ * one: an Excel without threads moves the placeholder with its cell and leaves the thread's own cell as it was.
  */
-function threads(src: PartsSource, issues: Issues): Map<string, CellNote> {
+function threads(src: PartsSource, placed: Map<string, string>, issues: Issues): Map<string, CellNote> {
   const out = new Map<string, CellNote>()
   if (!src.threads) return out
   const who = persons(src.persons)
@@ -78,15 +103,13 @@ function threads(src: PartsSource, issues: Issues): Map<string, CellNote> {
     const a = attributes(e.attrs)
     const text = readText(element(e.body ?? '', 'text')?.body ?? '')
     const author = who.get(a.personId ?? '')
-    const parent = a.parentId === undefined ? undefined : byId.get(a.parentId)
-    const cell = parent ?? a.ref?.toUpperCase()
+    const cell = a.parentId !== undefined ? byId.get(a.parentId) : (placed.get(a.id ?? '') ?? a.ref?.toUpperCase())
     if (!cell || !refCells(cell, 1)?.length) continue
     if (a.id) byId.set(a.id, cell)
-    const where = { sheet: src.sheet, cell }
     const note = out.get(cell)
     if (!note) {
       out.set(cell, author === undefined ? { text } : { author, text })
-      issues.add('comment', "a thread of comments is read as a note: its first comment's author, every comment's text with the replies' authors; dates, mentions and the thread's state are not kept", where)
+      issues.add('comment', "a thread of comments is read as a note: its first comment's author, every comment's text with the replies' authors; dates, mentions and the thread's state are not kept", { sheet: src.sheet, cell })
     } else note.text += `\n\n${author ?? ''}: ${text}`
   }
   return out
@@ -94,22 +117,14 @@ function threads(src: PartsSource, issues: Issues): Map<string, CellNote> {
 
 /**
  * Notes by cell from the comments part; formatted text is read as its plain text, a note always shown as one shown on
- * hover. The cells of `threads` hold Excel's placeholder notes for older readers: they are left to their threads.
+ * hover. Excel's placeholder notes of the threads, which the threads take the place of, are left out.
  */
-function notes(src: PartsSource, threads: Map<string, CellNote>, issues: Issues): Map<string, CellNote> {
+function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>, issues: Issues): Map<string, CellNote> {
   const out = new Map<string, CellNote>()
-  if (!src.comments) return out
-  const authors = elements(element(src.comments, 'authors')?.body ?? '', 'author').map((e) => readText(e.body ?? ''))
-  for (const e of elements(element(src.comments, 'commentList')?.body ?? '', 'comment')) {
-    const a = attributes(e.attrs)
-    const cell = a.ref?.toUpperCase()
-    if (!cell || !refCells(cell, 1)?.length || threads.has(cell)) continue
-    const body = element(e.body ?? '', 'text')?.body ?? ''
-    const { text } = stringItem(body)
-    // runs of more than one look (the bold author's name of a note made in Excel's window); one look is the note's font
-    if (new Set(elements(body, 'rPr').map((r) => r.body ?? '')).size > 1) issues.add('comment', "a note's formatted text is read as its plain text", { sheet: src.sheet, cell })
-    const author = authors[Number(a.authorId)]
-    out.set(cell, author ? { author, text } : { text })
+  for (const c of list) {
+    if (threads.has(c.cell) || placeholderOf(c) !== undefined) continue
+    if (c.formatted) issues.add('comment', "a note's formatted text is read as its plain text", { sheet: src.sheet, cell: c.cell })
+    out.set(c.cell, c.author ? { author: c.author, text: c.text } : { text: c.text })
   }
   // the VML drawing shows the notes; one shown all the time is read as one shown on hover
   for (const shape of elements(src.vml ?? '', 'shape')) {
@@ -162,7 +177,9 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
 
 /** Notes, threads of comments and hyperlinks put on the sheet's cells (a cell holding only them is made). */
 export function readCellParts(src: PartsSource, cells: Record<string, CellInput>, issues: Issues): void {
-  const thread = threads(src, issues)
-  for (const [cell, note] of [...notes(src, thread, issues), ...thread]) cells[cell] = { ...cells[cell], note }
+  const list = comments(src.comments)
+  const placed = new Map(list.flatMap((c) => (placeholderOf(c) ? [[placeholderOf(c)!, c.cell] as const] : [])))
+  const thread = threads(src, placed, issues)
+  for (const [cell, note] of [...notes(src, list, thread, issues), ...thread]) cells[cell] = { ...cells[cell], note }
   for (const [cell, link] of links(src, cells, issues)) cells[cell] = { ...cells[cell], link }
 }
