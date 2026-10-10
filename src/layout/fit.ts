@@ -1,19 +1,21 @@
 /**
  * Column widths as Excel for Mac fits them (`docs/formats.md`, "Fitting columns"). AutoFit gives a column the width of
- * the widest text its cells show with all the room they need: each value by its format (its own, else its row's, else
- * its column's) in the book's locale; cells of hidden rows and of merged areas are left out. A number typed into a
- * column whose width nobody set widens the column until the number shows whole.
+ * its widest cell: each value by its format (its own, else its row's, else its column's) in the book's locale, laid out
+ * with the room Excel gives it (`fitPoints`); cells of hidden rows count, cells merged across columns do not, and a
+ * column with nothing to show keeps its width. A number typed into a column whose width nobody set widens the column.
  */
 import type { CellValue, NumberFormat, SheetInput } from '../contract.js'
 import type { Rules } from '../locale/rules.js'
 import { formatAddress } from '../model.js'
-import { columnPoints, room, widthFor } from '../numfmt.js'
-import { isHiddenRow } from './hidden.js'
+import { columnPoints, widthOf } from '../numfmt.js'
 import { parseMerge } from './merges.js'
 import { lines, spanKey, type Line } from './spans.js'
 
 /** A cell of a sheet and its value: zero-based row and column. */
 export type Placed = readonly [r: number, c: number, v: CellValue]
+
+/** The widest column of the model (`ColumnInput.width`); Excel's widest is 255.83, 255 digits and the padding. */
+const MAX_WIDTH = 255
 
 /** The entry of line `i` among sorted, disjoint lines, by bisection. */
 function lineOf<T>(ls: Line<T>[], i: number): T | undefined {
@@ -27,29 +29,25 @@ function lineOf<T>(ls: Line<T>[], i: number): T | undefined {
   return undefined
 }
 
+/** The width of a column of `points`: null for the default width, which Excel writes as no width at all. */
+export const widthAt = (points: number): number | null => (points === columnPoints(undefined) ? null : Math.min(MAX_WIDTH, widthOf(points)))
+
 /**
- * The widths AutoFit gives columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
- * `ColumnInput.width`: a column with something to show gets the width of its widest text, a column with nothing
- * that has a width of its own gets null (the default width), and a column with neither is left out.
+ * The widths AutoFit gives the columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
+ * `ColumnInput.width`, null for the default width; a column with nothing to show is left out, as it keeps its width.
  */
 export function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
   const rows = lines(sheet.rows, 'r')
   const cols = lines(sheet.columns, 'c')
-  const merges = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 >= lo && x.c1 <= hi)
+  const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
   for (const [r, c, v] of cells) {
-    if (c < lo || c > hi || v === null) continue
-    const row = rows.length ? lineOf(rows, r) : undefined
-    if ((row && isHiddenRow(row)) || merges.some((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)) continue
-    const format: NumberFormat | undefined = sheet.cells[formatAddress(r, c)]?.format ?? row?.format ?? (cols.length ? lineOf(cols, c)?.format : undefined)
-    const need = rules.need(v, format)
-    if (need !== null && need > (widest.get(c) ?? -1)) widest.set(c, need)
+    if (c < lo || c > hi || v === null || across.some((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)) continue
+    const format: NumberFormat | undefined = sheet.cells[formatAddress(r, c)]?.format ?? (rows.length ? lineOf(rows, r)?.format : undefined) ?? (cols.length ? lineOf(cols, c)?.format : undefined)
+    const points = rules.fitPoints(v, format)
+    if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
-  const out: Record<string, number | null> = {}
-  for (const [c, need] of [...widest].sort((a, b) => a[0] - b[0])) out[spanKey(c, c, 'c')] = widthFor(need)
-  for (const [a, b, e] of cols)
-    if (e.width !== undefined) for (let c = Math.max(a, lo); c <= Math.min(b, hi); c++) if (!widest.has(c)) out[spanKey(c, c, 'c')] = null
-  return out
+  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points)]))
 }
 
 /** A column as entry finds it: its width (the default without one) and whether Excel fitted it rather than a hand set it. */
@@ -60,11 +58,11 @@ export interface ColumnState {
 
 /**
  * The width Excel gives a column when `value`, shown by `format`, is typed into one of its cells: a number that does not
- * fit widens a column whose width is the default or one Excel fitted, to the width that shows it whole; undefined when
- * the column keeps its width (text overflows, a width set by hand stays, a column never narrows).
+ * fit widens a column whose width is the default or one Excel fitted, as AutoFit fits the number; undefined when the
+ * column keeps its width (text overflows, a width set by hand stays, a column never narrows).
  */
-export function typedWidth(rules: Rules, value: CellValue, format: NumberFormat | undefined, column: ColumnState = {}): number | undefined {
+export function typedWidth(rules: Rules, value: CellValue, format: NumberFormat | undefined, column: ColumnState = {}): number | null | undefined {
   if (typeof value !== 'number' || (column.width !== undefined && !column.fitted)) return undefined
-  const need = rules.need(value, format)
-  return need === null || need <= room(columnPoints(column.width)) ? undefined : widthFor(need)
+  const points = rules.fitPoints(value, format)
+  return points === null || points <= columnPoints(column.width) ? undefined : widthAt(points)
 }

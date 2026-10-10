@@ -5,7 +5,7 @@
  */
 import { positional, roundHalfUp } from './general.js'
 import type { Ph, Tok } from './parse.js'
-import { plain, type Style } from './style.js'
+import { blank, plain, type Style } from './style.js'
 
 /** Digits, decimals and literals of a section by its placeholders. */
 function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): string {
@@ -41,7 +41,7 @@ function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): st
   for (let i = intEnd - 1; i >= 0; i--) {
     const t = toks[i]
     if (t.t === 'ph') {
-      const d = rest.length ? rest[rest.length - 1] : t.c === '0' ? '0' : t.c === '?' ? ' ' : ''
+      const d = rest.length ? rest[rest.length - 1] : t.c === '0' ? '0' : t.c === '?' ? blank(style) : ''
       rest = rest.slice(0, -1)
       out = (i === firstPh ? rest : '') + d + out
       if (i === firstPh) rest = ''
@@ -51,7 +51,7 @@ function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): st
   // fractional part: trailing `#` drops zeros, `?` gives a space
   if (dot >= 0) {
     const digits = fp.split('')
-    for (let k = fracPh.length - 1; k >= 0 && digits[k] === '0' && fracPh[k].c !== '0'; k--) digits[k] = fracPh[k].c === '?' ? ' ' : ''
+    for (let k = fracPh.length - 1; k >= 0 && digits[k] === '0' && fracPh[k].c !== '0'; k--) digits[k] = fracPh[k].c === '?' ? blank(style) : ''
     let k = 0
     out += style.decimal
     for (const t of toks.slice(dot + 1)) {
@@ -109,7 +109,7 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
   const pad = (s: string, ph: Ph[], left: boolean) => {
     const free = ph.slice(0, Math.max(0, ph.length - s.length))
     const zeros = '0'.repeat(free.filter((t) => t.c === '0').length)
-    const spaces = ' '.repeat(free.filter((t) => t.c === '?').length)
+    const spaces = blank(style).repeat(free.filter((t) => t.c === '?').length)
     return left ? spaces + zeros + s : zeros + s + spaces
   }
   const last = intToks.findLastIndex((t) => t.t === 'ph')
@@ -122,7 +122,7 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
     .map((t) => plain(t, style))
     .join('')
   // a whole number: the fraction's place is blank
-  const body = hasInt && num === 0 ? intPart + ' '.repeat(fracText.length) : intPart + fracText
+  const body = hasInt && num === 0 ? intPart + blank(style).repeat(fracText.length) : intPart + fracText
   return (signed && v < 0 && (hasInt || num !== 0) ? '-' : '') + body + tail
 }
 

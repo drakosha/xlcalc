@@ -7,6 +7,7 @@
  * difference for other scripts).
  */
 import { LOCALE_FILES } from '../locale/registry.js'
+import { BLANK, FILL, PAD } from './style.js'
 
 /** Widths in points, by characters of equal width: Latin letters, digits and signs. */
 const WIDTHS: [number, string][] = [
@@ -47,8 +48,31 @@ export const columnPoints = (w: number | undefined): number => (w === undefined 
 /** The room for text in a cell of `points`: the column less its padding. */
 export const room = (points: number): number => points - 5
 
-/** The xlsx width of the narrowest column with `points` of room, in 256ths of a digit as Excel writes it; 255 at most. */
-export const widthFor = (points: number): number => Math.min(255, Math.floor(((points + 5) * 256) / DIGIT) / 256)
+/**
+ * The width of text laid out for AutoFit (`Style.layout`): a fill takes no room, a padding `_x` the room of `x`, a `?`
+ * with no digit a digit's room.
+ */
+export function layoutWidth(s: string): number {
+  let w = 0
+  let mark = ''
+  for (const ch of s) {
+    if (mark) w += mark === PAD ? glyph(ch) : 0
+    else if (ch === BLANK) w += DIGIT
+    else if (ch !== FILL && ch !== PAD) w += glyph(ch)
+    mark = !mark && (ch === FILL || ch === PAD) ? ch : ''
+  }
+  return w
+}
+
+/**
+ * The points of the column AutoFit gives text `w` points wide (`test/excel/fit/autofit.json`): two more than the
+ * padding, and from 90 points the padding alone with a thirtieth more of the text, as Excel for Mac measures text
+ * wider than it shows it.
+ */
+export const fitColumn = (w: number): number => Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
+
+/** The xlsx width of a column of `points`, in 256ths of a digit as Excel writes it. */
+export const widthOf = (points: number): number => Math.floor((points * 256) / DIGIT) / 256
 
 /** Excel shows at most 255 characters of a formatted number; `#` fills the cell instead. */
 export const MAX_SHOWN = 255
