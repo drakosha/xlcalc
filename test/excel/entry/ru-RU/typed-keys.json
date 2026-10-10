@@ -1,0 +1,525 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-10",
+  "seconds": 29.4
+ },
+ "cases": [
+  {
+   "id": "key-1",
+   "text": "5"
+  },
+  {
+   "id": "key-2",
+   "text": "+5"
+  },
+  {
+   "id": "key-3",
+   "text": "-5"
+  },
+  {
+   "id": "key-4",
+   "text": "+1+2"
+  },
+  {
+   "id": "key-5",
+   "text": "-1-2"
+  },
+  {
+   "id": "key-6",
+   "text": "-5+1"
+  },
+  {
+   "id": "key-7",
+   "text": "--5"
+  },
+  {
+   "id": "key-8",
+   "text": "+-5"
+  },
+  {
+   "id": "key-9",
+   "text": "+5%"
+  },
+  {
+   "id": "key-10",
+   "text": "-5%"
+  },
+  {
+   "id": "key-11",
+   "text": "-C1"
+  },
+  {
+   "id": "key-12",
+   "text": "+C1"
+  },
+  {
+   "id": "key-13",
+   "text": "-qq"
+  },
+  {
+   "id": "key-14",
+   "text": "- 5"
+  },
+  {
+   "id": "key-15",
+   "text": "1 1/2"
+  },
+  {
+   "id": "key-16",
+   "text": "1/2"
+  },
+  {
+   "id": "key-17",
+   "text": "'007"
+  },
+  {
+   "id": "key-18",
+   "text": "5%"
+  },
+  {
+   "id": "key-19",
+   "text": "18:30"
+  },
+  {
+   "id": "key-20",
+   "text": "=1+2"
+  },
+  {
+   "id": "key-21",
+   "text": "1.5E+3"
+  },
+  {
+   "id": "key-22",
+   "text": "1,5E+3"
+  },
+  {
+   "id": "key-23",
+   "text": "3/15/2026"
+  },
+  {
+   "id": "key-24",
+   "text": "15.03.2026"
+  },
+  {
+   "id": "key-25",
+   "text": "1,234.5"
+  },
+  {
+   "id": "key-26",
+   "text": "1 234,5"
+  },
+  {
+   "id": "key-27",
+   "text": "TRUE"
+  },
+  {
+   "id": "key-pct-1",
+   "text": "5",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-2",
+   "text": "50",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-3",
+   "text": "0.5",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-4",
+   "text": "0,5",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-5",
+   "text": "-5",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-6",
+   "text": "1",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-7",
+   "text": "0",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-8",
+   "text": "5%",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct-9",
+   "text": "1 1/2",
+   "format": "0%"
+  },
+  {
+   "id": "key-pct2-1",
+   "text": "5",
+   "format": "0.00%"
+  },
+  {
+   "id": "key-pct2-2",
+   "text": "0.5",
+   "format": "0.00%"
+  },
+  {
+   "id": "key-pct2-3",
+   "text": "0,5",
+   "format": "0.00%"
+  }
+ ],
+ "answers": {
+  "key-1": {
+   "cell": {
+    "value": 5
+   },
+   "text": "5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-2": {
+   "cell": {
+    "value": 5
+   },
+   "text": "5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-3": {
+   "cell": {
+    "value": -5
+   },
+   "text": "-5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-4": {
+   "cell": {
+    "formula": "1+2"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-5": {
+   "cell": {
+    "formula": "-1-2"
+   },
+   "computed": -3,
+   "text": "-3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-6": {
+   "cell": {
+    "formula": "-5+1"
+   },
+   "computed": -4,
+   "text": "-4",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-7": {
+   "cell": {
+    "formula": "--5"
+   },
+   "computed": 5,
+   "text": "5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-8": {
+   "cell": {
+    "formula": "+-5"
+   },
+   "computed": -5,
+   "text": "-5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-9": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-10": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-11": {
+   "cell": {
+    "formula": "-C1"
+   },
+   "computed": -2,
+   "text": "-2",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-12": {
+   "cell": {
+    "formula": "+C1"
+   },
+   "computed": 2,
+   "text": "2",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-13": {
+   "cell": {
+    "formula": "-qq"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#ИМЯ?",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-14": {
+   "cell": {
+    "value": -5
+   },
+   "text": "-5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-15": {
+   "cell": {
+    "value": 1.5,
+    "format": 12
+   },
+   "text": "1 1/2",
+   "code": "# ?/?",
+   "local": "#\" \"?/?"
+  },
+  "key-16": {
+   "cell": {
+    "value": 46054,
+    "format": 16
+   },
+   "text": "01.февр",
+   "code": "d-mmm",
+   "local": "ДД.МММ"
+  },
+  "key-17": {
+   "cell": {
+    "value": "007"
+   },
+   "text": "007",
+   "code": "General",
+   "local": "Основной",
+   "prefix": "'"
+  },
+  "key-18": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-19": {
+   "cell": {
+    "value": 0.7708333333333334,
+    "format": 20
+   },
+   "text": "18:30",
+   "code": "h:mm",
+   "local": "чч:мм"
+  },
+  "key-20": {
+   "cell": {
+    "formula": "1+2"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-21": {
+   "cell": {
+    "value": "1.5E+3"
+   },
+   "text": "1.5E+3",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-22": {
+   "cell": {
+    "value": 1500,
+    "format": 11
+   },
+   "text": "1,50E+03",
+   "code": "0.00E+00",
+   "local": "0,00E+00"
+  },
+  "key-23": {
+   "cell": {
+    "value": "3/15/2026"
+   },
+   "text": "3/15/2026",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-24": {
+   "cell": {
+    "value": 46096,
+    "format": 14
+   },
+   "text": "15.03.2026",
+   "code": "m/d/yy",
+   "local": "ДД.ММ.ГГГГ"
+  },
+  "key-25": {
+   "cell": {
+    "value": "1,234.5"
+   },
+   "text": "1,234.5",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-26": {
+   "cell": {
+    "value": 1234.5,
+    "format": 4
+   },
+   "text": "1 234,50",
+   "code": "#,##0.00",
+   "local": "# ##0,00"
+  },
+  "key-27": {
+   "cell": {
+    "value": "TRUE"
+   },
+   "text": "TRUE",
+   "code": "General",
+   "local": "Основной"
+  },
+  "key-pct-1": {
+   "cell": {
+    "value": 0.05,
+    "format": 9
+   },
+   "text": "5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-2": {
+   "cell": {
+    "value": 0.5,
+    "format": 9
+   },
+   "text": "50%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-3": {
+   "cell": {
+    "value": "0.5%",
+    "format": 9
+   },
+   "text": "0.5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-4": {
+   "cell": {
+    "value": 0.005,
+    "format": 9
+   },
+   "text": "1%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-5": {
+   "cell": {
+    "value": -0.05,
+    "format": 9
+   },
+   "text": "-5%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-6": {
+   "cell": {
+    "value": 0.01,
+    "format": 9
+   },
+   "text": "1%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-7": {
+   "cell": {
+    "value": 0,
+    "format": 9
+   },
+   "text": "0%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-8": {
+   "cell": {
+    "value": "5%%",
+    "format": 9
+   },
+   "text": "5%%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct-9": {
+   "cell": {
+    "value": 0.015,
+    "format": 9
+   },
+   "text": "2%",
+   "code": "0%",
+   "local": "0%"
+  },
+  "key-pct2-1": {
+   "cell": {
+    "value": 0.05,
+    "format": 10
+   },
+   "text": "5,00%",
+   "code": "0.00%",
+   "local": "0,00%"
+  },
+  "key-pct2-2": {
+   "cell": {
+    "value": "0.5%",
+    "format": 10
+   },
+   "text": "0.5%",
+   "code": "0.00%",
+   "local": "0,00%"
+  },
+  "key-pct2-3": {
+   "cell": {
+    "value": 0.005,
+    "format": 10
+   },
+   "text": "0,50%",
+   "code": "0.00%",
+   "local": "0,00%"
+  }
+ }
+}
