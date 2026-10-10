@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryTextOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -358,7 +358,7 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
 }
 
 /** A tag of the package's locales. */
-function checkLocale(v: unknown, path: string) {
+export function checkLocale(v: unknown, path: string) {
   if (!LOCALE_FILES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALE_FILES.keys()].join(', ')})`)
 }
 
@@ -527,6 +527,16 @@ export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOpt
 }
 
 /** `parseEntry`'s options; of the cell only its format, style and meta are read (it may be a `CellView`). */
+/** `entryText`'s and `needsApostrophe`'s options: the cell's number format, the book's locale and date system, the moment for a date without a year. */
+export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptions {
+  if (v === undefined) return {}
+  const o = object(v, path, "options such as { numberFormat: '0%', locale: 'ru-RU' }")
+  onlyKeys(o, path, ['numberFormat', 'locale', 'dateSystem', 'now'])
+  if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${path}.numberFormat`)
+  checkEntryOptions({ ...(o.locale !== undefined ? { locale: o.locale } : {}), ...(o.dateSystem !== undefined ? { dateSystem: o.dateSystem } : {}), ...(o.now !== undefined ? { now: o.now } : {}) }, path)
+  return o as EntryTextOptions
+}
+
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { locale: 'ru-RU', cell: { format: '0.00' } }")

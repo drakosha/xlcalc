@@ -4,11 +4,12 @@
 -- number only, not read from a cell that shows an error); save the book as xlsx under another name and close it.
 -- With a fifth argument "keys" the texts are typed on the keyboard instead (System Events, Excel in front, checked
 -- before each text; an empty text is not typed), each followed by Return; the window Excel shows for a formula it does
--- not take is answered (`answerDialog`) and its text is the text's refusal.
+-- not take is answered (`answerDialog`) and its text is the text's refusal. With a last argument "edit" each cell's
+-- `formula` and `formula local` are read too: the text the formula bar opens the cell with.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the texts as
--- a JSON array of strings, "keys" and the path of excel-keys.applescript, or nothing.
--- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix, value], ...]},
--- the value "" for a cell whose value is no number (or a date), or that shows an error.
+-- a JSON array of strings, "keys" and the path of excel-keys.applescript, or nothing; then "edit", or nothing.
+-- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix, value(,
+-- formula, formula local)], ...]}, the value "" for a cell whose value is no number (or a date), or that shows an error.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -25,6 +26,7 @@ on run argv
 	set cellsOut to {}
 	set n to count of texts
 	set byKeys to (count of argv) > 4 and item 5 of argv is "keys"
+	set withEdit to (count of argv) > 4 and item -1 of argv is "edit"
 	if byKeys then set kb to my keysLib(item 6 of argv)
 	tell application "Microsoft Excel"
 		with timeout of 150 seconds
@@ -69,7 +71,11 @@ on run argv
 					-- a number alone: a date comes as a date object, which JSON has no place for
 					if class of vv is not real and class of vv is not integer then set vv to ""
 				end if
-				set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv}
+				if withEdit then
+					set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv, formula of rg, formula local of rg}
+				else
+					set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv}
+				end if
 			end repeat
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no

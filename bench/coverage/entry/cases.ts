@@ -31,12 +31,17 @@ export interface EntryAnswer {
   prefix?: string
   /** The number the object model gives as the cell's value (`Value2` on Windows, `value` on the Mac); absent for anything else. */
   value2?: number
+  /** For a set of `edit`: the cell's `Formula` and `FormulaLocal`, the text the formula bar opens it with (with the prefix character before it). */
+  formula?: string
+  formulaLocal?: string
 }
 
 export interface EntrySet {
   buildEntryCases(): EntryCase[]
   /** The texts are typed on the keyboard (Excel for Mac only), to check that Excel takes `Formula2Local` as typing. */
   keys?: boolean
+  /** Each cell's `Formula` and `FormulaLocal` are read too, for `entryText` (Excel for Mac only). */
+  edit?: boolean
 }
 
 /** The data the typed formulas read: a number and a date with the short date format. */

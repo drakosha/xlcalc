@@ -1,0 +1,1294 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "num-1": {
+    "ok": true,
+    "input": {
+     "value": 1234.5
+    }
+   },
+   "num-2": {
+    "ok": true,
+    "input": {
+     "value": 1234567.891
+    }
+   },
+   "num-3": {
+    "ok": true,
+    "input": {
+     "value": -0.5
+    }
+   },
+   "num-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "num-5": {
+    "ok": true,
+    "input": {
+     "value": 1e-7
+    }
+   },
+   "num-6": {
+    "ok": true,
+    "input": {
+     "value": 1e-20,
+     "format": 11
+    }
+   },
+   "num-7": {
+    "ok": true,
+    "input": {
+     "value": 123456789012345000
+    }
+   },
+   "num-8": {
+    "ok": true,
+    "input": {
+     "value": 12345678901234.5
+    }
+   },
+   "num-9": {
+    "ok": true,
+    "input": {
+     "value": 100000000000000000000
+    }
+   },
+   "num-10": {
+    "ok": true,
+    "input": {
+     "value": 100000000000000000000,
+     "format": 11
+    }
+   },
+   "num-11": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "num-12": {
+    "ok": true,
+    "input": {
+     "value": 0.1
+    }
+   },
+   "num-13": {
+    "ok": true,
+    "input": {
+     "value": 3.14159265358979
+    }
+   },
+   "num-14": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "num-ru-1": {
+    "ok": true,
+    "input": {
+     "value": "1234,5"
+    }
+   },
+   "num-ru-2": {
+    "ok": true,
+    "input": {
+     "value": 1234567891,
+     "format": 3
+    }
+   },
+   "num-ru-3": {
+    "ok": true,
+    "input": {
+     "value": "(0,5)"
+    }
+   },
+   "num-ru-4": {
+    "ok": true,
+    "input": {
+     "value": "0,0000001"
+    }
+   },
+   "num-ru-5": {
+    "ok": true,
+    "input": {
+     "value": "1,5E+3"
+    }
+   },
+   "num-ru-6": {
+    "ok": true,
+    "input": {
+     "value": 314159265358979,
+     "format": 3
+    }
+   },
+   "pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.12,
+     "format": 9
+    }
+   },
+   "pct-2": {
+    "ok": true,
+    "input": {
+     "value": 0.125,
+     "format": 10
+    }
+   },
+   "pct-3": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "pct-4": {
+    "ok": true,
+    "input": {
+     "value": 0.005,
+     "format": 10
+    }
+   },
+   "pct-5": {
+    "ok": true,
+    "input": {
+     "value": 12.34,
+     "format": 9
+    }
+   },
+   "pct-6": {
+    "ok": true,
+    "input": {
+     "value": "12,5%"
+    }
+   },
+   "pct-7": {
+    "ok": true,
+    "input": {
+     "value": "0,5%"
+    }
+   },
+   "money-1": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "money-2": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "money-3": {
+    "ok": true,
+    "input": {
+     "value": -5,
+     "format": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+    }
+   },
+   "money-4": {
+    "ok": true,
+    "input": {
+     "value": "1 234,50 ₽"
+    }
+   },
+   "money-5": {
+    "ok": true,
+    "input": {
+     "value": "5 ₽"
+    }
+   },
+   "frac-1": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "frac-2": {
+    "ok": true,
+    "input": {
+     "value": 0.3333333333333333,
+     "format": 12
+    }
+   },
+   "frac-3": {
+    "ok": true,
+    "input": {
+     "value": 2.75,
+     "format": 12
+    }
+   },
+   "date-1": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 14
+    }
+   },
+   "date-2": {
+    "ok": true,
+    "input": {
+     "value": 45688.75,
+     "format": 22
+    }
+   },
+   "date-3": {
+    "ok": true,
+    "input": {
+     "value": 45688.770833333336,
+     "format": 22
+    }
+   },
+   "date-4": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 15
+    }
+   },
+   "date-5": {
+    "ok": true,
+    "input": {
+     "value": 45658,
+     "format": 17
+    }
+   },
+   "date-6": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 14
+    }
+   },
+   "date-7": {
+    "ok": true,
+    "input": {
+     "value": 2958465,
+     "format": 14
+    }
+   },
+   "date-ru-1": {
+    "ok": true,
+    "input": {
+     "value": "31.01.2025"
+    }
+   },
+   "date-ru-2": {
+    "ok": true,
+    "input": {
+     "value": "31.01.2025 18:00"
+    }
+   },
+   "date-ru-3": {
+    "ok": true,
+    "input": {
+     "value": "31 янв 2025"
+    }
+   },
+   "date-ru-4": {
+    "ok": true,
+    "input": {
+     "value": "31.12.9999"
+    }
+   },
+   "time-1": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "time-2": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "time-3": {
+    "ok": true,
+    "input": {
+     "value": 0.7710069444444444,
+     "format": 21
+    }
+   },
+   "time-4": {
+    "ok": true,
+    "input": {
+     "value": 1.0625,
+     "format": 46
+    }
+   },
+   "time-5": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 20
+    }
+   },
+   "time-6": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 18
+    }
+   },
+   "bool-1": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "bool-2": {
+    "ok": true,
+    "input": {
+     "value": false
+    }
+   },
+   "bool-3": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА"
+    }
+   },
+   "bool-4": {
+    "ok": true,
+    "input": {
+     "value": "ложь"
+    }
+   },
+   "text-1": {
+    "ok": true,
+    "input": {
+     "value": "007"
+    }
+   },
+   "text-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5"
+    }
+   },
+   "text-3": {
+    "ok": true,
+    "input": {
+     "value": "1,5"
+    }
+   },
+   "text-4": {
+    "ok": true,
+    "input": {
+     "value": "=1+2"
+    }
+   },
+   "text-5": {
+    "ok": true,
+    "input": {
+     "value": "TRUE"
+    }
+   },
+   "text-6": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА"
+    }
+   },
+   "text-7": {
+    "ok": true,
+    "input": {
+     "value": "abc"
+    }
+   },
+   "text-8": {
+    "ok": true,
+    "input": {
+     "value": "abc"
+    }
+   },
+   "text-9": {
+    "ok": true,
+    "input": {
+     "value": "12%"
+    }
+   },
+   "text-10": {
+    "ok": true,
+    "input": {
+     "value": "1/31/2025"
+    }
+   },
+   "text-11": {
+    "ok": true,
+    "input": {
+     "value": "31.01.2025"
+    }
+   },
+   "date-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 14
+    }
+   },
+   "date-cell-2": {
+    "ok": true,
+    "input": {
+     "value": 45688.75,
+     "format": 14
+    }
+   },
+   "date-cell-3": {
+    "ok": true,
+    "input": {
+     "value": "45688,75",
+     "format": 14
+    }
+   },
+   "date-cell-4": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 14
+    }
+   },
+   "date-cell-5": {
+    "ok": true,
+    "input": {
+     "value": -1,
+     "format": 14
+    }
+   },
+   "long-date-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "time-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 0.75,
+     "format": "h:mm"
+    }
+   },
+   "time-cell-2": {
+    "ok": true,
+    "input": {
+     "value": "0,75",
+     "format": "h:mm"
+    }
+   },
+   "time-cell-3": {
+    "ok": true,
+    "input": {
+     "value": 1.75,
+     "format": "h:mm"
+    }
+   },
+   "elapsed-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": "[h]:mm:ss"
+    }
+   },
+   "money-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "$#,##0.00"
+    }
+   },
+   "frac-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 0.5,
+     "format": "# ?/?"
+    }
+   },
+   "sci-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "0.00E+00"
+    }
+   },
+   "text-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "@"
+    }
+   },
+   "text-cell-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5",
+     "format": "@"
+    }
+   },
+   "grouped-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 1234567.891,
+     "format": "#,##0.00"
+    }
+   },
+   "month-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 45688.5,
+     "format": "mmm-yy"
+    }
+   },
+   "pct-text-1": {
+    "ok": true,
+    "input": {
+     "value": "5",
+     "format": "0%"
+    }
+   }
+  },
+  "ru-RU": {
+   "num-1": {
+    "ok": true,
+    "input": {
+     "value": "1234.5"
+    }
+   },
+   "num-2": {
+    "ok": true,
+    "input": {
+     "value": "1234567.891"
+    }
+   },
+   "num-3": {
+    "ok": true,
+    "input": {
+     "value": "(0.5)"
+    }
+   },
+   "num-4": {
+    "ok": true,
+    "input": {
+     "value": -5
+    }
+   },
+   "num-5": {
+    "ok": true,
+    "input": {
+     "value": "0.0000001"
+    }
+   },
+   "num-6": {
+    "ok": true,
+    "input": {
+     "value": 1e-20,
+     "format": 11
+    }
+   },
+   "num-7": {
+    "ok": true,
+    "input": {
+     "value": 123456789012345000
+    }
+   },
+   "num-8": {
+    "ok": true,
+    "input": {
+     "value": "12345678901234.5"
+    }
+   },
+   "num-9": {
+    "ok": true,
+    "input": {
+     "value": 100000000000000000000
+    }
+   },
+   "num-10": {
+    "ok": true,
+    "input": {
+     "value": 100000000000000000000,
+     "format": 11
+    }
+   },
+   "num-11": {
+    "ok": true,
+    "input": {
+     "value": "1.5E+3"
+    }
+   },
+   "num-12": {
+    "ok": true,
+    "input": {
+     "value": "0.1"
+    }
+   },
+   "num-13": {
+    "ok": true,
+    "input": {
+     "value": "3.14159265358979"
+    }
+   },
+   "num-14": {
+    "ok": true,
+    "input": {
+     "value": 0
+    }
+   },
+   "num-ru-1": {
+    "ok": true,
+    "input": {
+     "value": 1234.5
+    }
+   },
+   "num-ru-2": {
+    "ok": true,
+    "input": {
+     "value": 1234567.891
+    }
+   },
+   "num-ru-3": {
+    "ok": true,
+    "input": {
+     "value": -0.5
+    }
+   },
+   "num-ru-4": {
+    "ok": true,
+    "input": {
+     "value": 1e-7
+    }
+   },
+   "num-ru-5": {
+    "ok": true,
+    "input": {
+     "value": 1500,
+     "format": 11
+    }
+   },
+   "num-ru-6": {
+    "ok": true,
+    "input": {
+     "value": 3.14159265358979
+    }
+   },
+   "pct-1": {
+    "ok": true,
+    "input": {
+     "value": 0.12,
+     "format": 9
+    }
+   },
+   "pct-2": {
+    "ok": true,
+    "input": {
+     "value": "12.5%"
+    }
+   },
+   "pct-3": {
+    "ok": true,
+    "input": {
+     "value": -0.05,
+     "format": 9
+    }
+   },
+   "pct-4": {
+    "ok": true,
+    "input": {
+     "value": "0.5%"
+    }
+   },
+   "pct-5": {
+    "ok": true,
+    "input": {
+     "value": 12.34,
+     "format": 9
+    }
+   },
+   "pct-6": {
+    "ok": true,
+    "input": {
+     "value": 0.125,
+     "format": 10
+    }
+   },
+   "pct-7": {
+    "ok": true,
+    "input": {
+     "value": 0.005,
+     "format": 10
+    }
+   },
+   "money-1": {
+    "ok": true,
+    "input": {
+     "value": "$1,234.50"
+    }
+   },
+   "money-2": {
+    "ok": true,
+    "input": {
+     "value": "$5"
+    }
+   },
+   "money-3": {
+    "ok": true,
+    "input": {
+     "value": "($5)"
+    }
+   },
+   "money-4": {
+    "ok": true,
+    "input": {
+     "value": 1234.5,
+     "format": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+    }
+   },
+   "money-5": {
+    "ok": true,
+    "input": {
+     "value": 5,
+     "format": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+    }
+   },
+   "frac-1": {
+    "ok": true,
+    "input": {
+     "value": 1.5,
+     "format": 12
+    }
+   },
+   "frac-2": {
+    "ok": true,
+    "input": {
+     "value": 0.3333333333333333,
+     "format": 12
+    }
+   },
+   "frac-3": {
+    "ok": true,
+    "input": {
+     "value": 2.75,
+     "format": 12
+    }
+   },
+   "date-1": {
+    "ok": true,
+    "input": {
+     "value": "1/31/2025"
+    }
+   },
+   "date-2": {
+    "ok": true,
+    "input": {
+     "value": "1/31/2025 18:00"
+    }
+   },
+   "date-3": {
+    "ok": true,
+    "input": {
+     "value": "1/31/2025 6:30 PM"
+    }
+   },
+   "date-4": {
+    "ok": true,
+    "input": {
+     "value": "31-Jan-2025"
+    }
+   },
+   "date-5": {
+    "ok": true,
+    "input": {
+     "value": "Jan 2025"
+    }
+   },
+   "date-6": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 14
+    }
+   },
+   "date-7": {
+    "ok": true,
+    "input": {
+     "value": "12/31/9999"
+    }
+   },
+   "date-ru-1": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 14
+    }
+   },
+   "date-ru-2": {
+    "ok": true,
+    "input": {
+     "value": 45688.75,
+     "format": 22
+    }
+   },
+   "date-ru-3": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 15
+    }
+   },
+   "date-ru-4": {
+    "ok": true,
+    "input": {
+     "value": 2958465,
+     "format": 14
+    }
+   },
+   "time-1": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 20
+    }
+   },
+   "time-2": {
+    "ok": true,
+    "input": {
+     "value": 0.7708333333333334,
+     "format": 18
+    }
+   },
+   "time-3": {
+    "ok": true,
+    "input": {
+     "value": 0.7710069444444444,
+     "format": 21
+    }
+   },
+   "time-4": {
+    "ok": true,
+    "input": {
+     "value": 1.0625,
+     "format": 46
+    }
+   },
+   "time-5": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 20
+    }
+   },
+   "time-6": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 18
+    }
+   },
+   "bool-1": {
+    "ok": true,
+    "input": {
+     "value": "TRUE"
+    }
+   },
+   "bool-2": {
+    "ok": true,
+    "input": {
+     "value": "false"
+    }
+   },
+   "bool-3": {
+    "ok": true,
+    "input": {
+     "value": true
+    }
+   },
+   "bool-4": {
+    "ok": true,
+    "input": {
+     "value": false
+    }
+   },
+   "text-1": {
+    "ok": true,
+    "input": {
+     "value": "007"
+    }
+   },
+   "text-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5"
+    }
+   },
+   "text-3": {
+    "ok": true,
+    "input": {
+     "value": "1,5"
+    }
+   },
+   "text-4": {
+    "ok": true,
+    "input": {
+     "value": "=1+2"
+    }
+   },
+   "text-5": {
+    "ok": true,
+    "input": {
+     "value": "TRUE"
+    }
+   },
+   "text-6": {
+    "ok": true,
+    "input": {
+     "value": "ИСТИНА"
+    }
+   },
+   "text-7": {
+    "ok": true,
+    "input": {
+     "value": "abc"
+    }
+   },
+   "text-8": {
+    "ok": true,
+    "input": {
+     "value": "abc"
+    }
+   },
+   "text-9": {
+    "ok": true,
+    "input": {
+     "value": "12%"
+    }
+   },
+   "text-10": {
+    "ok": true,
+    "input": {
+     "value": "1/31/2025"
+    }
+   },
+   "text-11": {
+    "ok": true,
+    "input": {
+     "value": "31.01.2025"
+    }
+   },
+   "date-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": 14
+    }
+   },
+   "date-cell-2": {
+    "ok": true,
+    "input": {
+     "value": "45688.75",
+     "format": 14
+    }
+   },
+   "date-cell-3": {
+    "ok": true,
+    "input": {
+     "value": 45688.75,
+     "format": 14
+    }
+   },
+   "date-cell-4": {
+    "ok": true,
+    "input": {
+     "value": 0,
+     "format": 14
+    }
+   },
+   "date-cell-5": {
+    "ok": true,
+    "input": {
+     "value": -1,
+     "format": 14
+    }
+   },
+   "long-date-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 45688,
+     "format": "d mmmm yyyy"
+    }
+   },
+   "time-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "0.75",
+     "format": "h:mm"
+    }
+   },
+   "time-cell-2": {
+    "ok": true,
+    "input": {
+     "value": 0.75,
+     "format": "h:mm"
+    }
+   },
+   "time-cell-3": {
+    "ok": true,
+    "input": {
+     "value": 27395,
+     "format": 17
+    }
+   },
+   "elapsed-cell-1": {
+    "ok": true,
+    "input": {
+     "value": 46143,
+     "format": 16
+    }
+   },
+   "money-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "1234.5",
+     "format": "$#,##0.00"
+    }
+   },
+   "frac-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "0.5",
+     "format": "# ?/?"
+    }
+   },
+   "sci-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "1234.5",
+     "format": "0.00E+00"
+    }
+   },
+   "text-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "007",
+     "format": "@"
+    }
+   },
+   "text-cell-2": {
+    "ok": true,
+    "input": {
+     "value": "1.5",
+     "format": "@"
+    }
+   },
+   "grouped-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "1234567.891",
+     "format": "#,##0.00"
+    }
+   },
+   "month-cell-1": {
+    "ok": true,
+    "input": {
+     "value": "45688.5",
+     "format": "mmm-yy"
+    }
+   },
+   "pct-text-1": {
+    "ok": true,
+    "input": {
+     "value": "5",
+     "format": "0%"
+    }
+   }
+  }
+ },
+ "edit": {
+  "en-US": {
+   "num-1": "1234.5",
+   "num-2": "1234567.891",
+   "num-3": "-0.5",
+   "num-4": "-5",
+   "num-5": "0.0000001",
+   "num-6": "1E-20",
+   "num-7": "123456789012345000",
+   "num-8": "12345678901234.5",
+   "num-9": "1E+20",
+   "num-10": "1E+20",
+   "num-11": "1500",
+   "num-12": "0.1",
+   "num-13": "3.14159265358979",
+   "num-14": "0",
+   "num-ru-1": "1234,5",
+   "num-ru-2": "1234567891",
+   "num-ru-3": "(0,5)",
+   "num-ru-4": "0,0000001",
+   "num-ru-5": "1,5E+3",
+   "num-ru-6": "314159265358979",
+   "pct-1": "12%",
+   "pct-2": "12.5%",
+   "pct-3": "-5%",
+   "pct-4": "0.5%",
+   "pct-5": "1234%",
+   "pct-6": "12,5%",
+   "pct-7": "0,5%",
+   "money-1": "1234.5",
+   "money-2": "5",
+   "money-3": "-5",
+   "money-4": "1 234,50 ₽",
+   "money-5": "5 ₽",
+   "frac-1": "1.5",
+   "frac-2": "0.333333333333333",
+   "frac-3": "2.75",
+   "date-1": "1/31/2025",
+   "date-2": "1/31/2025 6:00:00 PM",
+   "date-3": "1/31/2025 6:30:00 PM",
+   "date-4": "1/31/2025",
+   "date-5": "1/1/2025",
+   "date-6": "1/31/2025",
+   "date-7": "12/31/9999",
+   "date-ru-1": "31.01.2025",
+   "date-ru-2": "31.01.2025 18:00",
+   "date-ru-3": "31 янв 2025",
+   "date-ru-4": "31.12.9999",
+   "time-1": "6:30:00 PM",
+   "time-2": "6:30:00 PM",
+   "time-3": "6:30:15 PM",
+   "time-4": "1/1/1900 1:30:00 AM",
+   "time-5": "12:00:00 AM",
+   "time-6": "12:00:00 AM",
+   "bool-1": "TRUE",
+   "bool-2": "FALSE",
+   "bool-3": "ИСТИНА",
+   "bool-4": "ложь",
+   "text-1": "'007",
+   "text-2": "'1.5",
+   "text-3": "1,5",
+   "text-4": "'=1+2",
+   "text-5": "'TRUE",
+   "text-6": "ИСТИНА",
+   "text-7": "abc",
+   "text-8": "abc",
+   "text-9": "'12%",
+   "text-10": "'1/31/2025",
+   "text-11": "31.01.2025",
+   "date-cell-1": "1/31/2025",
+   "date-cell-2": "1/31/2025 6:00:00 PM",
+   "date-cell-3": "45688,75",
+   "date-cell-4": "1/0/1900",
+   "date-cell-5": "-1",
+   "long-date-cell-1": "1/31/2025",
+   "time-cell-1": "6:00:00 PM",
+   "time-cell-2": "0,75",
+   "time-cell-3": "1/1/1900 6:00:00 PM",
+   "elapsed-cell-1": "1/1/1900 12:00:00 PM",
+   "money-cell-1": "1234.5",
+   "frac-cell-1": "0.5",
+   "sci-cell-1": "1234.5",
+   "text-cell-1": "007",
+   "text-cell-2": "1.5",
+   "grouped-cell-1": "1234567.891",
+   "month-cell-1": "1/31/2025 12:00:00 PM",
+   "pct-text-1": "'5"
+  },
+  "ru-RU": {
+   "num-1": "1234.5",
+   "num-2": "1234567.891",
+   "num-3": "(0.5)",
+   "num-4": "-5",
+   "num-5": "0.0000001",
+   "num-6": "1E-20",
+   "num-7": "123456789012345000",
+   "num-8": "12345678901234.5",
+   "num-9": "1E+20",
+   "num-10": "1E+20",
+   "num-11": "1.5E+3",
+   "num-12": "0.1",
+   "num-13": "3.14159265358979",
+   "num-14": "0",
+   "num-ru-1": "1234,5",
+   "num-ru-2": "1234567,891",
+   "num-ru-3": "-0,5",
+   "num-ru-4": "0,0000001",
+   "num-ru-5": "1500",
+   "num-ru-6": "3,14159265358979",
+   "pct-1": "12%",
+   "pct-2": "12.5%",
+   "pct-3": "-5%",
+   "pct-4": "0.5%",
+   "pct-5": "1234%",
+   "pct-6": "12,5%",
+   "pct-7": "0,5%",
+   "money-1": "$1,234.50",
+   "money-2": "$5",
+   "money-3": "($5)",
+   "money-4": "1234,5",
+   "money-5": "5",
+   "frac-1": "1,5",
+   "frac-2": "0,333333333333333",
+   "frac-3": "2,75",
+   "date-1": "1/31/2025",
+   "date-2": "1/31/2025 18:00",
+   "date-3": "1/31/2025 6:30 PM",
+   "date-4": "31-Jan-2025",
+   "date-5": "Jan 2025",
+   "date-6": "31.01.2025",
+   "date-7": "12/31/9999",
+   "date-ru-1": "31.01.2025",
+   "date-ru-2": "31.01.2025 18:00:00",
+   "date-ru-3": "31.01.2025",
+   "date-ru-4": "31.12.9999",
+   "time-1": "18:30:00",
+   "time-2": "18:30:00",
+   "time-3": "18:30:15",
+   "time-4": "01.01.1900 1:30:00",
+   "time-5": "0:00:00",
+   "time-6": "0:00:00",
+   "bool-1": "TRUE",
+   "bool-2": "false",
+   "bool-3": "ИСТИНА",
+   "bool-4": "ЛОЖЬ",
+   "text-1": "'007",
+   "text-2": "'1.5",
+   "text-3": "'1,5",
+   "text-4": "'=1+2",
+   "text-5": "TRUE",
+   "text-6": "'ИСТИНА",
+   "text-7": "abc",
+   "text-8": "abc",
+   "text-9": "'12%",
+   "text-10": "1/31/2025",
+   "text-11": "'31.01.2025",
+   "date-cell-1": "31.01.2025",
+   "date-cell-2": "45688.75",
+   "date-cell-3": "31.01.2025 18:00:00",
+   "date-cell-4": "00.01.1900",
+   "date-cell-5": "-1",
+   "long-date-cell-1": "31.01.2025",
+   "time-cell-1": "0.75",
+   "time-cell-2": "18:00:00",
+   "time-cell-3": "01.01.1975",
+   "elapsed-cell-1": "01.05.2026",
+   "money-cell-1": "1234.5",
+   "frac-cell-1": "0.5",
+   "sci-cell-1": "1234.5",
+   "text-cell-1": "007",
+   "text-cell-2": "1.5",
+   "grouped-cell-1": "1234567.891",
+   "month-cell-1": "45688.5",
+   "pct-text-1": "'5"
+  }
+ }
+}

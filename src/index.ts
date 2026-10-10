@@ -36,6 +36,7 @@ export { restructure } from './structure/index.js'
 export { copyFormula, type CopyContext } from './structure/copy.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export { parseEntry } from './entry/index.js'
+export { entryText, needsApostrophe } from './entry/text.js'
 export { entryWidth, fitColumns } from './layout/fit.js'
 export * from './a1.js'
 
