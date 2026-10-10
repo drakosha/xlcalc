@@ -39,23 +39,24 @@ const DEPTH = 100
 const MAX_MB = 64
 
 /**
- * A rough size in bytes of what a step keeps: V8's objects (a header and a slot per field), strings at two bytes a
- * character; shared objects are counted each time, so it errs high.
+ * A rough size in bytes of what a step keeps, as V8 holds it: an object a header and a slot of 24 bytes a field (its key
+ * too in a large one, kept as a dictionary), an array 8 bytes an item, a string 24 bytes and a byte a character, a
+ * number a heap number of 16. Measured on the cells of a sheet of 506,594 (126 bytes a cell, 118 in V8).
  */
 export function weigh(v: unknown): number {
-  if (v === null || v === undefined) return 8
-  switch (typeof v) {
-    case 'string':
-      return 16 + 2 * v.length
-    case 'object': {
-      let n = 32
-      if (Array.isArray(v)) for (const x of v) n += 8 + weigh(x)
-      else for (const k in v) n += 24 + 2 * k.length + weigh((v as Record<string, unknown>)[k])
-      return n
+  if (typeof v === 'string') return 24 + v.length
+  if (typeof v === 'number') return 16
+  if (v === null || typeof v !== 'object') return 8
+  let n = 32
+  if (Array.isArray(v)) for (const x of v) n += 8 + weigh(x)
+  else {
+    let keys = 0
+    for (const k in v) {
+      n += 24 + weigh((v as Record<string, unknown>)[k])
+      if (++keys > 64) n += 24 + k.length
     }
-    default:
-      return 16
   }
+  return n
 }
 
 export class History {

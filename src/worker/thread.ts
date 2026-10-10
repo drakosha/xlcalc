@@ -18,7 +18,7 @@ import { GEOMETRY } from '../session/rebook.js'
 import type { HistoryData } from '../session/undo.js'
 import { CHANGING, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
 import { workerThreads } from './platform.js'
-import { pack, unpack } from './pack.js'
+import { pack, packData, unpack, unpackData } from './pack.js'
 
 interface Port {
   postMessage(m: unknown): void
@@ -154,7 +154,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     case 'restore': {
       const { snapshot, journal } = m
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
-      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock, snapshot.history)
+      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock, snapshot.history && unpackData(snapshot.history))
       h.seq = snapshot.seq
       try {
         for (const e of journal as Entry[]) {
@@ -175,11 +175,11 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     }
     case 'snapshot': {
       const h = heldOf(m.sid)
-      return { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: h.s.historyData() }
+      return { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) }
     }
     case 'drop': {
       const h = held.get(m.sid)
-      const kept = m.keep && h ? { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: h.s.historyData() } : null
+      const kept = m.keep && h ? { book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) } : null
       h?.s.kill(new CalcError('closed', 'the session left the thread'))
       held.delete(m.sid)
       return kept

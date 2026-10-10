@@ -126,6 +126,11 @@ export function pack(book: BookInput): Sent | Promise<Sent> {
   })()
 }
 
+/** Data as JSON text when JSON holds it as it is (as a book's cells), else as it is: a quarter of the memory of its objects. */
+export const packData = <T>(v: T): T | { json: string } => (isJson(v, true) ? { json: JSON.stringify(v) } : v)
+
+export const unpackData = <T>(v: T | { json: string }): T => (v && typeof v === 'object' && 'json' in v && Object.keys(v).length === 1 ? (JSON.parse(v.json) as T) : (v as T))
+
 const isPacked = (b: Sent): b is Packed => (b as Packed).packed === 1
 
 /** The book from text at once (in a thread, where nothing waits on it): each sheet's chunks read as one text. */

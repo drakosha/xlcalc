@@ -101,7 +101,8 @@ describe.each(['closures', 'eval'] as const)('undo and redo without blocking, %s
       const y = await same(s, MOVES.slice(0, 13))
       const r = [...x.recs][0]
       if (snapshotEvery === 64) expect(r.journal.map((e) => e.op)).toContain('undo')
-      else expect(r.snapshot.history?.undo.length).toBeGreaterThan(0)
+      // the snapshot holds the history as text
+      else expect(JSON.parse((r.snapshot.history as { json: string }).json).undo.length).toBeGreaterThan(0)
       crash(0)
       await same(s, MOVES.slice(13), y)
     }

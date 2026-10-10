@@ -11,7 +11,6 @@ import { InputError } from '../input.js'
 import { splitCall, checkCall } from '../async/options.js'
 import { applyOp, checkedMapCell } from '../structure/index.js'
 import { mapCellOf, type Geometry } from '../session/rebook.js'
-import type { HistoryData } from '../session/undo.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
 import { CHANGING, fromData, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
@@ -233,7 +232,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         return task.resolve(value)
       case 'snapshot':
       case 'drop': {
-        const s = value as { book: Sent; clock: Clock; seq: number; history: HistoryData } | null
+        const s = value as { book: Sent; clock: Clock; seq: number; history: Snapshot['history'] } | null
         if (s) {
           r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq, history: s.history }
           r.journal = r.journal.filter((e) => e.seq > s.seq)

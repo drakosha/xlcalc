@@ -30,8 +30,8 @@ export interface Snapshot {
   opts: SessionOptions
   clock: Clock
   seq: number
-  /** The session's history then: the replayed `undo` and `redo` calls take its steps. */
-  history?: HistoryData
+  /** The session's history then (as text when JSON holds it): the replayed `undo` and `redo` calls take its steps. */
+  history?: HistoryData | { json: string }
 }
 
 /** The book's outline before a structure operation: enough for `applyOp` to give the same `mapCell`. */
