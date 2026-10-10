@@ -33,6 +33,8 @@ export interface EntryAnswer {
 
 export interface EntrySet {
   buildEntryCases(): EntryCase[]
+  /** The texts are typed on the keyboard (Excel for Mac only), to check that Excel takes `Formula2Local` as typing. */
+  keys?: boolean
 }
 
 /** The data the typed formulas read: a number and a date with the short date format. */

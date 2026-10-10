@@ -61,7 +61,7 @@ export async function partAnswers(part: EntryCase[], refused: string[], shown: [
 }
 
 /** One part in Excel. A window that is not a book stops the run (nothing is clicked); a book Excel repairs stops it too. */
-async function runPart(part: EntryCase[], label: string): Promise<Record<string, EntryAnswer>> {
+async function runPart(part: EntryCase[], label: string, keys: boolean): Promise<Record<string, EntryAnswer>> {
   if (declineRepair()) console.log('closed a leftover book repair window')
   const before = dialogText()
   if (before) throw new Error(`entry ${label}: Excel has a window that is not a book: ${before}`)
@@ -74,7 +74,7 @@ async function runPart(part: EntryCase[], label: string): Promise<Record<string,
     const { data, issues } = await writeXlsx(entryBook(part))
     if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
-    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text))])
+    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys'] : [])])
     let out = ''
     let err = ''
     child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
@@ -132,7 +132,7 @@ export async function stepEntry(set: string, tag: string): Promise<void> {
   try {
     for (let k = 0; k * PART < todo.length; k++) {
       const part = todo.slice(k * PART, (k + 1) * PART)
-      Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`))
+      Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`, mod.keys === true))
       save()
       console.log(`entry ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
     }
