@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.11.0 (2026-10-10)
+
+Internal release; not published to npm. Conditional formats, kept and computed.
+
+Added:
+
+- Contract: `SheetInput.conditionalFormats`, a sheet's conditional formats in priority order: cell value rules, formulas, text, blanks and errors, time periods, top and bottom, above and below average, duplicates and unique values, colour scales, data bars (Excel 2010's fields too) and icon sets (custom icons too), each over several ranges, with Stop If True and its style (font, fill, border, number format) in the rule. Layout edit `{ sheet, conditionalFormats }`.
+- Contract: `CellView.look`, what the sheet's rules give a cell by the values the book holds now: the merged style of the rules that hold, a colour scale's fill, a data bar's place and colour, an icon, and whether the value is hidden. `Session.cells` gives it, a blank cell with a look too; `compute` and `result()` do not, and a look is no part of the values hash. A host reads its window again after an edit: `changes` do not list cells whose look alone changed. Statistics of the rules are cached until an edit touches their cells; on 34,000 rows with a formula rule, a colour scale and a data bar a window of 20,000 cells takes 55 to 63 ms the first time, 24 to 28 after.
+- `readXlsx` and `writeXlsx` read and write conditional formats with their differential formats and Excel 2010's extensions without loss. Structure operations move them as Excel does (rows inserted right below a range join it, a move keeps the target's rules, a copy adds a rule first in order). Measured on the Mac and on Windows, predictions committed before each run: after the rules the misses taught, the engine gives Excel for Mac's look in 4,015 of 4,017 cells; Excel for Windows's in all but the cells where it shows `#` by its own text widths; rules Excel made through its object model read as Excel shows them (203 of 204 cells); `docs/conditional-formats.md`.
+
+Fixed:
+
+- A data validation reader took a 2007 data bar's extension for the sheet's and lost the sheet's rules of data validation.
+
+Known differences: a data bar's shortest and longest length of 5 and 95 percent is not kept by Excel; the length of a bar and the number of an icon follow Excel's documented rules but were not measured (Excel's object model does not give them); borders, underline and strike of a rule's style are kept and written, not measured.
+
 ## 0.10.0 (2026-10-10)
 
 Internal release; not published to npm. Data validation and outlines of rows and columns.
