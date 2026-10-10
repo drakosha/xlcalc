@@ -6,7 +6,7 @@
  */
 import type { CellInput, FrozenPanes, SheetInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
-import { lines, toMap, type Line } from '../layout/spans.js'
+import { entryAt, lines, patchLines, toMap, type Line } from '../layout/spans.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { LIMIT, type Axis, type Rect } from './area.js'
@@ -49,6 +49,24 @@ export function shiftLines<T extends object>(map: Record<string, T> | undefined,
     } else out.push([a, Math.min(b, last), v])
   }
   return toMap(out, axis)
+}
+
+type Outlined = { outlineLevel?: number; hidden?: boolean; collapsed?: boolean }
+
+/**
+ * Lines inserted before `at` into a collapsed group (after a hidden line of it, whose level they take) are shown, so the
+ * group is collapsed no more: its summary line, the first line past the group (`after`), else the line before it, loses its
+ * mark (the valid set `made`).
+ */
+export function openedGroup<T extends Outlined>(map: Record<string, T> | undefined, axis: Axis, at: number, n: number, after: boolean): Record<string, T> | undefined {
+  const ls = lines(map, axis)
+  const before = at > 0 ? entryAt(ls, at - 1) : undefined
+  const level = before?.outlineLevel ?? 0
+  if (n <= 0 || !level || !before?.hidden) return map
+  const deep = (i: number) => (entryAt(ls, i)?.outlineLevel ?? 0) >= level
+  let k = after ? at + n : at - 1
+  while (k >= 0 && k < LIMIT[axis] && deep(k)) k += after ? 1 : -1
+  return k >= 0 && entryAt(ls, k)?.collapsed ? (patchLines(map, axis, k, k, { collapsed: null } as never) as Record<string, T>) : map
 }
 
 /** The axis's bounds of a rectangle, and the rectangle with them replaced. */

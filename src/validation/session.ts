@@ -12,7 +12,8 @@ import type { Steps } from '../exec/budget.js'
 import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
 import { formatAddress } from '../model.js'
-import { sheetKey, validate } from '../syntax.js'
+import { parse, sheetKey, validate, walk as walkAst } from '../syntax.js'
+import { decode } from '../structure/area.js'
 import { tableAt } from '../tables/model.js'
 import { Arr } from '../arrays/value.js'
 import { E, isErr, Rng, type V } from '../values.js'
@@ -54,10 +55,14 @@ const literal = (text: string): string[] | null => (/^\s*"(?:[^"]|"")*"\s*$/.tes
 
 type Item = { value: V; text: string }
 
-/** A list's items: a literal's, or the cells of the reference (or the values of the array) its formula gives; an error. */
-function listItems(state: EngineState, s: number, r: number, c: number, text: string): Item[] | { error: V } {
+/**
+ * A list's items: a literal's (each without its leading spaces, as Excel takes them: the set `lists`), or the cells of the
+ * reference (or the values of the array) its formula gives, blank cells past the last value left out unless `blanks`; an
+ * error.
+ */
+function listItems(state: EngineState, s: number, r: number, c: number, text: string, blanks = false): Item[] | { error: V } {
   const items = literal(text)
-  if (items) return items.map((t) => ({ value: t, text: t }))
+  if (items) return items.map((t) => ({ value: t.trimStart(), text: t.trimStart() }))
   const x = computeAt(state, s, r, c, text)
   const shown = (v: V, at?: [number, number, number]) => String(state.ctx.rules.display(toCellValue(v), at && formatOf(state, ...at), Infinity).text)
   let out: Item[]
@@ -74,7 +79,7 @@ function listItems(state: EngineState, s: number, r: number, c: number, text: st
   else if (x instanceof Object) return { error: E.VALUE }
   else out = [{ value: x, text: x === null ? '' : shown(x) }]
   // blank cells past the last value are left out
-  while (out.length && out[out.length - 1].value === null) out.pop()
+  while (!blanks && out.length && out[out.length - 1].value === null) out.pop()
   return out
 }
 
@@ -98,28 +103,57 @@ function bound(state: EngineState, x: Arg): number | 'blank' | null {
   return null
 }
 
-const COMPARE: Record<string, (v: number, a: number, b: number) => boolean> = {
-  between: (v, a, b) => v >= a && v <= b,
-  notBetween: (v, a, b) => v < a || v > b,
-  equal: (v, a) => v === a,
-  notEqual: (v, a) => v !== a,
-  greaterThan: (v, a) => v > a,
-  lessThan: (v, a) => v < a,
-  greaterThanOrEqual: (v, a) => v >= a,
-  lessThanOrEqual: (v, a) => v <= a,
+/** How a value compares with the bounds, by the order of Excel's comparison operators (`a`, `b`: the value against each bound). */
+const COMPARE: Record<string, (a: number, b: number) => boolean> = {
+  between: (a, b) => a >= 0 && b <= 0,
+  notBetween: (a, b) => a < 0 || b > 0,
+  equal: (a) => a === 0,
+  notEqual: (a) => a !== 0,
+  greaterThan: (a) => a > 0,
+  lessThan: (a) => a < 0,
+  greaterThanOrEqual: (a) => a >= 0,
+  lessThanOrEqual: (a) => a <= 0,
 }
 
 /**
- * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item as written, text
- * in its case (the set `files`), a number the item reads as, a boolean by its word.
+ * Whether a list's item is the value: a cell's value of the same type, text in any case; a literal item text in its case
+ * against the value without spaces at either end, a number the item reads as alone (not a date), a boolean by its word
+ * (the sets `files`, `entry-held`, `lists`).
  */
 function listed(state: EngineState, value: V, item: Item, isLiteral: boolean): boolean {
   const rules = state.ctx.rules
   if (!isLiteral) return typeof item.value === typeof value && !isErr(item.value) && rules.compare(item.value, value) === 0
   const t = item.text
-  if (typeof value === 'number') return rules.valueText(t) === value
+  if (typeof value === 'number') return rules.numberOnly(t) === value
   if (typeof value === 'boolean') return rules.toText(value) === t
-  return value === t
+  return typeof value === 'string' && value.trim() === t
+}
+
+/** Whether a formula as at the cell refers to a blank cell by a reference to one cell, which with blanks ignored lets any value in. */
+function refersToBlank(state: EngineState, s: number, text: string): boolean {
+  let ast
+  try {
+    ast = parse(text)
+  } catch {
+    return false
+  }
+  let blank = false
+  walkAst(ast, (n) => {
+    if (blank || n.k !== 'ref' || n.ref.kind !== 'cell') return
+    const i = n.sheet === null ? s : state.sheetIdx.get(sheetKey(n.sheet))
+    const a = decode(n.ref)
+    if (i !== undefined && valueAt(state, i, a.r.lo.i, a.c.lo.i) === null) blank = true
+  })
+  return blank
+}
+
+/** Whether a list's formula is a defined name alone. */
+const isName = (text: string) => {
+  try {
+    return parse(text).k === 'name'
+  } catch {
+    return false
+  }
 }
 
 /** Whether the cell's value meets its rule (`v`), in the book as it is now. */
@@ -127,9 +161,13 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
   const value = valueAt(state, s, r, c)
   const blankOk = v.allowBlank !== false
   if (v.type === 'any') return true
-  if (value === null) return blankOk
+  // a blank cell where blanks are not ignored: its text's length is 0, it is no number and in no list
+  if (value === null && (blankOk || v.type !== 'textLength')) return blankOk
   if (isErr(value)) return false
   const f = formulas(state, s, r, c, v)
+  const texts = [f.formula1!, ...(twoBounds(v) ? [f.formula2!] : [])]
+  // a formula referring to a blank cell lets anything in when blanks are ignored (the sets `entry-held`, `struct-held`)
+  if (blankOk && v.type !== 'list' && texts.some((t) => refersToBlank(state, s, t))) return true
   if (v.type === 'custom') {
     const x = computeAt(state, s, r, c, f.formula1!)
     const y = x instanceof Rng || x instanceof Arr ? state.rt.scalar(x) : (x as V)
@@ -137,28 +175,29 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
   }
   if (v.type === 'list') {
     const isLiteral = literal(f.formula1!) !== null
-    const items = listItems(state, s, r, c, f.formula1!)
+    const items = listItems(state, s, r, c, f.formula1!, true)
     if ('error' in items) return false
-    // a list of blank cells only takes anything when blanks are ignored
-    if (blankOk && items.every((i) => i.value === null)) return true
+    // a list through a defined name with a blank among its cells takes anything when blanks are ignored (the set `lists`)
+    if (blankOk && isName(f.formula1!) && items.some((i) => i.value === null)) return true
     return items.some((i) => i.value !== null && listed(state, value, i, isLiteral))
   }
-  const bounds = [f.formula1!, ...(twoBounds(v) ? [f.formula2!] : [])].map((t) => bound(state, computeAt(state, s, r, c, t)))
-  // a bound on a blank cell lets anything in when blanks are ignored
+  const bounds = texts.map((t) => bound(state, computeAt(state, s, r, c, t)))
   if (bounds.includes('blank') && blankOk) return true
   if (bounds.includes(null)) return false
   const [a, b] = bounds.map((x) => (x === 'blank' ? 0 : x)) as number[]
-  let n: number
+  let n: V
   if (v.type === 'textLength') {
-    const t = state.ctx.rules.toText(value)
+    const t = value === null ? '' : state.ctx.rules.toText(value)
     if (typeof t !== 'string') return false
     n = t.length
   } else {
-    if (typeof value !== 'number') return false
-    if (v.type === 'whole' && !Number.isInteger(value)) return false
+    // a number, or a boolean, which compares above every number as Excel's operators compare (the set `entry-held`); text does not pass
+    if (typeof value !== 'number' && typeof value !== 'boolean') return false
+    if (v.type === 'whole' && typeof value === 'number' && !Number.isInteger(value)) return false
     n = value
   }
-  return COMPARE[v.operator ?? 'between'](n, a, b)
+  const cmp = (x: number) => Math.sign(state.ctx.rules.compareOp(n, x))
+  return COMPARE[v.operator ?? 'between'](cmp(a), b === undefined ? 0 : cmp(b))
 }
 
 /**

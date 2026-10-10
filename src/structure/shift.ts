@@ -12,7 +12,7 @@ import { sheetKey } from '../syntax.js'
 import { LIMIT, parseRange, withSpan, type Area, type Axis } from './area.js'
 import { copyTransform } from './copy.js'
 import { relocated, shiftRefusal } from './arrays.js'
-import { formatBefore, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
+import { formatBefore, openedGroup, shiftFrozen, shiftLines, shiftMerges } from './layout.js'
 import { offsetsStay, rewriteCell, rewriteFormula, rewriteNames, sheetNames, type Outcome, type Transform } from './rewrite.js'
 import { emptiedTable, tableShift } from '../tables/shift.js'
 import { rewriteValidations, shiftValidations } from '../validation/structure.js'
@@ -127,7 +127,8 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     if (!moving) return changed || validations !== s.validations ? { ...s, cells, ...tableFields, ...(validations ? { validations } : {}) } : s
     // the new lines take the format of the line before them
     if (n > 0) Object.assign(cells, formatBefore(s, axis, at, n))
-    const layout = { ...s, cells, ...tableFields, [lines]: shiftLines(s[lines], axis, at, n), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
+    const after = (axis === 'r' ? s.outline?.summaryBelow : s.outline?.summaryRight) !== false
+    const layout = { ...s, cells, ...tableFields, [lines]: openedGroup(shiftLines(s[lines], axis, at, n), axis, at, n, after), merges, frozen: shiftFrozen(s.frozen, axis, at, n), validations }
     for (const k of ['columns', 'rows', 'merges', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
     return layout
   })

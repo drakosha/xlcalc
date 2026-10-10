@@ -1,8 +1,9 @@
 /**
  * Data validation under structure operations. A rule's ranges move, grow and shrink with inserted and deleted lines as a
- * reference does, a range losing all its lines is gone, and so is a rule losing all its ranges. A move takes the rules of
- * its cells along, a copy pastes them on every tile, and the cells a paste lands on lose theirs (a pasted cell without a
- * rule clears the target's), as Excel's Paste All does. References in a rule's formulas change as a cell's do, the
+ * reference does, a range losing all its lines is gone, and so is a rule losing all its ranges; inserted lines take the
+ * rules of the line before them. A move takes the rules of its cells along, the cells it lands on keeping theirs where the
+ * moved cells have none; a copy pastes them on every tile, the cells it lands on losing theirs (a pasted cell without a
+ * rule clears the target's), as Excel's Paste All does (the set `struct-held`). References in a rule's formulas change as a cell's do, the
  * formulas staying written for the rule's first cell: a rule whose first cell moves or goes has its formulas written
  * again for its new first cell.
  */
@@ -57,7 +58,8 @@ export function rewriteValidations(rules: DataValidation[] | undefined, host: st
 /**
  * The rules of `sheet` after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0) along `axis`; `t` the
  * operation's transform. A range follows the references' rules (`insertSpan`, `deleteSpan`): it grows with lines inserted
- * after its first line, moves with lines inserted at or before it, and leaves the sheet's end in place.
+ * after its first line, moves with lines inserted at or before it, and leaves the sheet's end in place; and it takes in
+ * the lines inserted right after it, which take the rules of the line before them (the set `struct-held`).
  */
 export function shiftValidations(rules: DataValidation[] | undefined, sheet: string, axis: Axis, at: number, n: number, t: Transform, sheets: Map<string, string>): DataValidation[] | undefined {
   if (!rules) return rules
@@ -70,7 +72,8 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
       const lo = axis === 'r' ? x.r1 : x.c1
       const hi = axis === 'r' ? x.r2 : x.c2
       const one = lo === hi && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
-      const s = (n > 0 ? insertSpan : deleteSpan)(lo, hi, at, count, LIMIT[axis], one)
+      // a range whose last line is the one before the inserted lines takes them in, as their cells take that line's look
+      const s = n > 0 && hi === at - 1 ? [lo, Math.min(hi + count, LIMIT[axis] - 1)] : (n > 0 ? insertSpan : deleteSpan)(lo, hi, at, count, LIMIT[axis], one)
       return s ? [axis === 'r' ? { ...x, r1: s[0], r2: s[1] } : { ...x, c1: s[0], c2: s[1] }] : []
     })
     const first = areas[0]
@@ -151,17 +154,21 @@ function joined(rules: DataValidation[], sheet: string, sheets: Map<string, stri
  */
 export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t: Transform | null, sheets: Map<string, string>) {
   const [fk, tk] = [sheetKey(p.from), sheetKey(p.to)]
-  const gone = (k: string) => [...(k === tk ? [p.area] : []), ...(p.move && k === fk ? [p.src] : [])]
   const src = source.sheets.find((s) => sheetKey(s.name) === fk)?.validations ?? []
   const pasted: DataValidation[] = []
+  // where a move lands, the cells its rules land on
+  const landed: Rect[] = []
   for (const [dr, dc] of p.offsets)
     for (const v of src) {
       const pieces = areasOf(v.range)!.flatMap((x) => cut(x, p.src) ?? [])
       if (!pieces.length) continue
+      const areas = pieces.map((x) => shifted(x, dr, dc))
+      landed.push(...areas)
       // a move's formulas as a moved cell's (`t`), a copy's as a copied cell's
-      const next = placed(v, pieces.map((x) => shifted(x, dr, dc)), p.from, { r: pieces[0].r1, c: pieces[0].c1 }, p.move ? p.from : p.to, p.to, p.move ? t : copyTransform(dr, dc), sheets)
+      const next = placed(v, areas, p.from, { r: pieces[0].r1, c: pieces[0].c1 }, p.move ? p.from : p.to, p.to, p.move ? t : copyTransform(dr, dc), sheets)
       if (next) pasted.push(next)
     }
+  const gone = (k: string) => [...(k === tk ? (p.move ? landed : [p.area]) : []), ...(p.move && k === fk ? [p.src] : [])]
   out.sheets = out.sheets.map((s) => {
     const k = sheetKey(s.name)
     const holes = gone(k)
