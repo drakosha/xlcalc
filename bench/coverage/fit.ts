@@ -4,7 +4,7 @@
  * column's width and what its cells show, and saves the book, whose `<col>` elements give the width Excel stores and its
  * flags. `npx tsx bench/coverage/run.ts fit <set> [ru|<tag>]` stores the answers in `test/excel/fit/[<tag>/]<set>.json`
  * with the day of the run; `test/fit-excel.test.ts` compares the engine with them. `FFIT_ONLY=id,id` runs only those
- * cases, `FCOV_FRESH=1` every case again.
+ * cases, `FFIT_AGAIN=id,id` those again, `FCOV_FRESH=1` every case again.
  */
 import JSZip from 'jszip'
 import { spawn } from 'node:child_process'
@@ -36,12 +36,16 @@ export interface StoredFit {
 /** The stored answers of a set: `test/excel/fit/<set>.json`, in a directory of its tag for a locale other than en-US. */
 export const fitFile = (set: string, tag = 'en-US', win = false) => join(ROOT, 'test/excel', win ? 'win' : '', 'fit', localeDir(tag), `${set}.json`)
 
-/** The stored answers of a set that its current cases keep (a case changed runs again; FCOV_FRESH=1 runs all), with the stored file's metadata. */
+/**
+ * The stored answers of a set that its current cases keep (a case changed runs again, as do the cases `FFIT_AGAIN=id,id`
+ * names, whose book the writer writes otherwise now; FCOV_FRESH=1 runs all), with the stored file's metadata.
+ */
 export function keptAnswers(file: string, cases: FitCase[]): { answers: Record<string, FitAnswer>; meta?: StoredFit['meta'] } {
   const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredFit) : null
   const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
+  const again = new Set(process.env.FFIT_AGAIN?.split(','))
   const answers: Record<string, FitAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
+  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c) && !again.has(c.id)) answers[c.id] = prev.answers[c.id]
   return { answers, meta: prev?.meta }
 }
 

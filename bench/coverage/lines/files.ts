@@ -3,10 +3,13 @@
  * rows (numbers, dates, text, booleans, errors, formulas and a spill without a format of their own, cells with their own
  * style or General, empty cells with a style), and where a row with only a style or only a format crosses a column with
  * the other; how Excel stores a value typed into a formatted column and row, and into where a row crosses a column,
- * formatted by Excel in either order or written so. Predicted before Excel ran it (`files.predicted.json`).
+ * formatted by Excel in either order or written so. Predicted before Excel ran it (`files.predicted.json`); the first run
+ * showed the empty cells where lines cross by the row's whole format, the writer now writes them and the reader reads a
+ * file without them so, and the cases `bare` and `typed-written` were added, predicted before the second run
+ * (`files.2.predicted.json`).
  */
 import type { BookInput, CellStyle } from '../../../src/contract.js'
-import type { LinesCase, LinesCases } from './cases.js'
+import type { LineStep, LinesCase, LinesCases } from './cases.js'
 
 const DATE = 'dddd, mmmm d, yyyy'
 
@@ -65,22 +68,23 @@ const blank = (): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 'x
 
 const READ: [string, string][] = [['S', 'A1:G19']]
 
+const TYPED: LineStep[] = [
+  { sheet: 'S', range: 'E4', value: 46096 },
+  { sheet: 'S', range: 'G6', value: 46096 },
+  { sheet: 'S', range: 'E6', value: 5 },
+  { sheet: 'S', range: 'G8', value: 0.5 },
+  { sheet: 'S', range: 'B5', value: 46096 },
+]
+
 export function buildLinesCases(): LinesCases {
   const cases: LinesCase[] = [
     { id: 'written', book: 'formatted', read: READ },
-    // values typed where a row with only a format crosses a column with only a fill, and the other way round
-    {
-      id: 'typed-crossing',
-      book: 'formatted',
-      steps: [
-        { sheet: 'S', range: 'E4', value: 46096 },
-        { sheet: 'S', range: 'G6', value: 46096 },
-        { sheet: 'S', range: 'E6', value: 5 },
-        { sheet: 'S', range: 'G8', value: 0.5 },
-        { sheet: 'S', range: 'B5', value: 46096 },
-      ],
-      read: READ,
-    },
+    // the file without the cells the writer writes where lines cross: Excel shows them by the row's whole format
+    { id: 'bare', book: 'formatted', bare: true, read: READ },
+    // values typed where a row with only a format crosses a column with only a fill, and the other way round: in the
+    // file without those cells (the case's first run was on the writer that did not write them), and in the writer's
+    { id: 'typed-crossing', book: 'formatted', bare: true, steps: TYPED, read: READ },
+    { id: 'typed-written', book: 'formatted', steps: TYPED, read: READ },
     // Excel formats a column, then a value is typed into it
     {
       id: 'excel-column',

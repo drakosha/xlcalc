@@ -9,10 +9,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { writeXlsx } from '../../src/xlsx.js'
 import { fromRgb } from './cond/cases.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
-import type { LineLook, LinesAnswer, LinesCase, LinesCases, LinesSet } from './lines/cases.js'
+import { caseFile, type LineLook, type LinesAnswer, type LinesCase, type LinesCases, type LinesSet } from './lines/cases.js'
 import { inCaseOrder, keptAnswers } from './stored.js'
 import { partsHash } from './xlsx/sent.js'
 
@@ -33,18 +32,19 @@ export interface StoredLines extends LinesCases {
 export async function linesSet(set: string): Promise<{ built: LinesCases; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   const built = ((await import(`./lines/${set}.js`)) as LinesSet).buildLinesCases()
-  const files = new Map(await Promise.all(built.cases.map(async (c) => [c.id, (await writeXlsx(built.books[c.book])).data] as const)))
+  const files = new Map(await Promise.all(built.cases.map(async (c) => [c.id, await caseFile(built, c)] as const)))
   const sent = Object.fromEntries(await Promise.all(built.cases.map(async (c) => [c.id, await partsHash(files.get(c.id)!)] as const)))
   return { built, files, sent }
 }
 
-/** A step as the AppleScript takes it: sheet, range, number format, bold, the fill's [r, g, b], the value's kind and text. */
+/** A step as the AppleScript takes it: sheet, range, number format, bold, italic, the fill's [r, g, b], the value's kind and text. */
 export const stepArgs = (c: LinesCase) =>
   (c.steps ?? []).map((s) => [
     s.sheet,
     s.range,
     s.format ?? '',
     !!s.bold,
+    !!s.italic,
     s.fill ? [1, 3, 5].map((i) => parseInt(s.fill!.slice(i, i + 2), 16)) : [],
     s.value === undefined ? '' : typeof s.value === 'number' ? 'n' : 's',
     s.value === undefined ? '' : String(s.value),

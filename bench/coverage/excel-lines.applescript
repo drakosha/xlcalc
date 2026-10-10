@@ -1,8 +1,8 @@
--- Open a book, take the steps (a number format, bold or a fill set on a range, a value typed into a cell), compute the
+-- Open a book, take the steps (a number format, bold, italic or a fill set on a range, a value typed into a cell), compute the
 -- book, read what the listed cells show (Range.Text, the number format, the display format's fill and font colours, bold
 -- and italic), save the book as xlsx under another name and close it. A step Excel refuses comes back as `error`.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the steps as
--- JSON ([[sheet, range, number format or "", bold, [r, g, b] of a fill or [], value kind "n", "s" or "", value]]), the
+-- JSON ([[sheet, range, number format or "", bold, italic, [r, g, b] of a fill or [], value kind "n", "s" or "", value]]), the
 -- cells to read as JSON ([[sheet, range]]).
 -- Output: JSON {"error": text, "looks": [[sheet, [[address, text, number format, [r, g, b] of the fill, its colour index,
 -- [r, g, b] of the font, bold, italic]]]]}.
@@ -45,11 +45,12 @@ on run argv
 					set rg to range ((item 2 of stepItem) as text) of ws
 					if (item 3 of stepItem) as text is not "" then set number format of rg to ((item 3 of stepItem) as text)
 					if (item 4 of stepItem) is true then set bold of font object of rg to true
-					if (count of (item 5 of stepItem)) is 3 then set color of interior object of rg to (item 5 of stepItem)
-					if (item 6 of stepItem) as text is "n" then
-						set value of rg to (my num((item 7 of stepItem) as text))
-					else if (item 6 of stepItem) as text is "s" then
-						set value of rg to ((item 7 of stepItem) as text)
+					if (item 5 of stepItem) is true then set italic of font object of rg to true
+					if (count of (item 6 of stepItem)) is 3 then set color of interior object of rg to (item 6 of stepItem)
+					if (item 7 of stepItem) as text is "n" then
+						set value of rg to (my num((item 8 of stepItem) as text))
+					else if (item 7 of stepItem) as text is "s" then
+						set value of rg to ((item 8 of stepItem) as text)
 					end if
 				on error msg number k
 					set stepError to stepError & (item 2 of stepItem) & ": " & (k as text) & " " & msg & "; "

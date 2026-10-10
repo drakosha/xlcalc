@@ -3,15 +3,19 @@
  * A case's book is written by `writeXlsx`; Excel opens it, takes the case's steps through its object model (a number
  * format, bold or a fill set on a column, a row or a cell, a value typed into a cell), reads what the listed cells show
  * (`Range.Text`, the number format, the display format's fill and font) and saves the book. The answer is what Excel
- * showed; the file it saved shows how Excel stores the cells of formatted lines, and the reader reads it back.
+ * showed; the file it saved shows how Excel stores the cells of formatted lines, and the reader reads it back. A bare
+ * case's file is left without the cells the writer writes where a row with a look crosses a column with one, as other
+ * writers leave it: the engine's book of it is the one the reader reads.
  */
 import type { BookInput, CellStyle, ColumnInput, RowInput, SheetInput } from '../../../src/contract.js'
 import { openSession } from '../../../src/index.js'
+import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { sheetLines } from '../../../src/layout/lines.js'
 import { lineAt, patchLines, parseSpan } from '../../../src/layout/spans.js'
 import { parseAddress } from '../../../src/model.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 import { cellsOf, viewLook, type Look } from '../cond/cases.js'
+import { editParts } from '../xlsx/sent.js'
 
 /** A step Excel takes through its object model on a column (`B:B`), a row (`4:4`) or a cell: formats set, or a value typed. */
 export interface LineStep {
@@ -20,6 +24,7 @@ export interface LineStep {
   /** A number format code, en-US. */
   format?: string
   bold?: true
+  italic?: true
   /** A solid fill, `#RRGGBB`. */
   fill?: string
   /** A value typed into a cell. */
@@ -30,6 +35,8 @@ export interface LinesCase {
   id: string
   /** The key of the case's book in the set's `books`. */
   book: string
+  /** The file without the empty cells the writer writes where lines cross. */
+  bare?: true
   steps?: LineStep[]
   /** The cells read: a sheet and a range of it. */
   read: [sheet: string, range: string][]
@@ -58,12 +65,13 @@ export interface LinesAnswer {
 
 type LineInput = RowInput & ColumnInput
 
-/** A style with what a step sets added: the book's styles grow by it unless an equal one is there. */
+/** A style with what a step sets added (bold, italic, a fill): the book's styles grow by it unless an equal one is there. */
 function withStep(book: BookInput, style: number | undefined, step: LineStep): number | undefined {
-  if (!step.bold && !step.fill) return style
+  if (!step.bold && !step.italic && !step.fill) return style
   const styles = (book.styles ??= [])
   const base: CellStyle = style === undefined ? {} : styles[style]
-  const next: CellStyle = { ...base, ...(step.bold ? { font: { ...base.font, bold: true } } : {}), ...(step.fill ? { fill: { color: step.fill } } : {}) }
+  const font = { ...base.font, ...(step.bold ? { bold: true } : {}), ...(step.italic ? { italic: true } : {}) }
+  const next: CellStyle = { ...base, ...(step.bold || step.italic ? { font } : {}), ...(step.fill ? { fill: { color: step.fill } } : {}) }
   const key = JSON.stringify(next)
   const i = styles.findIndex((s) => JSON.stringify(s) === key)
   return i >= 0 ? i : styles.push(next) - 1
@@ -116,8 +124,23 @@ export function sheetLooks(book: BookInput, sheet: string, range: string): Recor
   )
 }
 
-/** The engine's answer to a case: what the read cells show after its steps. */
-export function engineCase(set: LinesCases, c: LinesCase, book: BookInput = set.books[c.book]): LinesAnswer['looks'] {
+/** The file of a case: its book as `writeXlsx` writes it; for a bare case without the empty cells no cell of the book is at. */
+export async function caseFile(set: LinesCases, c: LinesCase): Promise<Uint8Array> {
+  const book = set.books[c.book]
+  const data = (await writeXlsx(book)).data
+  if (!c.bare) return data
+  return editParts(data, (name, xml) => {
+    const sh = /^xl\/worksheets\/sheet(\d+)\.xml$/.exec(name)
+    const cells = sh && book.sheets[Number(sh[1]) - 1].cells
+    return cells ? xml.replace(/<c r="([A-Z]+\d+)" s="\d+"\/>/g, (all, addr: string) => (cells[addr] ? all : '')) : undefined
+  })
+}
+
+/** The book the engine computes for a case: the set's, or for a bare case the one the reader reads from its file. */
+export const caseBook = async (set: LinesCases, c: LinesCase): Promise<BookInput> => (c.bare ? (await readXlsx(await caseFile(set, c))).book : set.books[c.book])
+
+/** The engine's answer to a case on its book (`caseBook`): what the read cells show after its steps. */
+export function engineCase(c: LinesCase, book: BookInput): LinesAnswer['looks'] {
   const after = applySteps(book, c.steps)
   return Object.fromEntries(c.read.map(([sheet, range]) => [sheet, sheetLooks(after, sheet, range)]))
 }

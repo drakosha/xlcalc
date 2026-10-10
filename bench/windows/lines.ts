@@ -1,6 +1,6 @@
 /**
  * Formats of rows and columns in Excel for Windows: each case of `bench/coverage/lines/<set>.ts` in the file the Mac step
- * sends (`writeXlsx`), its steps through COM (`NumberFormat`, `Font.Bold`, `Interior.Color` of a range, `Value2` of a
+ * sends (`writeXlsx`), its steps through COM (`NumberFormat`, `Font.Bold`, `Font.Italic`, `Interior.Color` of a range, `Value2` of a
  * cell), the book computed, the read cells' `Range.Text`, number format and display format (`DisplayFormat`: fill and font
  * colours, bold, italic), and the book saved. Answers go to `test/excel/win/lines/<set>.json` in the Mac's shape, the
  * saved files beside them; `test/lines-excel.test.ts` reads them.
@@ -27,7 +27,7 @@ const bgr = (c: string) => parseInt(c.slice(5, 7) + c.slice(3, 5) + c.slice(1, 3
 const comStep = (s: LineStep): Step =>
   s.value !== undefined
     ? { do: 'set', sheet: s.sheet, cell: s.range, kind: typeof s.value === 'number' ? 'n' : 's', value: String(s.value) }
-    : { do: 'format', sheet: s.sheet, range: s.range, ...(s.format !== undefined ? { numberFormat: s.format } : {}), ...(s.bold ? { bold: true } : {}), ...(s.fill ? { fill: bgr(s.fill) } : {}) }
+    : { do: 'format', sheet: s.sheet, range: s.range, ...(s.format !== undefined ? { numberFormat: s.format } : {}), ...(s.bold ? { bold: true } : {}), ...(s.italic ? { italic: true } : {}), ...(s.fill ? { fill: bgr(s.fill) } : {}) }
 
 export async function stepLines(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const { built, files, sent } = await linesSet(set)
