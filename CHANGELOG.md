@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.13.0 (2026-10-10)
+
+Internal release; not published to npm. Messages for people in the language of the book.
+
+Changed:
+
+- Messages for people come in the language of the book's locale: why a typed formula does not read (`parseEntry`, `toInvariant`, `toLocal` and `validateLocalFormula`, by the locale of the call), why a structure operation is refused (`restructure` and a session's `restructure` in every kind of session, by the book's `locale`), and the text of `explain`. In ru-RU they are Russian, with the formula's functions, separators, booleans and errors as ru-RU writes them: `Ожидалась ), а формула закончилась`, `Функция ОКРУГЛ принимает 2 аргумента, а указано 3`, `Нельзя изменить часть массива План!C1 (C1:C3)`, and `explain` shows `'План'!B1 = 420  ← ОКРУГЛ(СУММ(A1:A2)*1,2;0)` over `'План'!A1:A2 (2 ячейки)`; its nodes keep the stored text. Codes, positions and the English messages are as before.
+
+Added:
+
+- A locale file has `messages`, the catalog of the 75 messages for people, each a function of its parameters (plural forms and the locale's words need more than a template); a locale without its own text of a message takes en-US's (`docs/locale.md`). The ru-RU catalog adds 2.9 KB gzipped to a bundle.
+
+Still in English: `validateFormula`, which has no locale, the reasons of cell errors in `issues`, the checks of names and `InputError`. In `xlcalc/unstable/internal`, `FunctionSpec.counts` is an object (`{ min, max, parity, or }`) instead of text.
+
 ## 0.12.0 (2026-10-10)
 
 Internal release; not published to npm. What a window over a sheet needs, without the whole book.
