@@ -65,7 +65,7 @@ export interface SheetContext {
   noteBlock: number
 }
 
-/** A relationship of the sheet after its tables': its id is `rId` and its place in `SheetWritten.rels` past the tables. */
+/** A relationship of the sheet after its tables': its id is `rId` and its number among all the sheet's relationships. */
 export interface SheetRel {
   type: 'hyperlink' | 'comments' | 'vmlDrawing'
   target: string
@@ -229,7 +229,11 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   // relationships past the tables': the notes' comments and drawing, then each address of a hyperlink once
   const rels: SheetRel[] = []
   const relId = (r: SheetRel) => `rId${ctx.tableParts.length + rels.push(r)}`
-  const drawing = notes.size ? (relId({ type: 'comments', target: `../comments${index + 1}.xml` }), relId({ type: 'vmlDrawing', target: `../drawings/vmlDrawing${index + 1}.vml` })) : undefined
+  let drawing: string | undefined
+  if (notes.size) {
+    relId({ type: 'comments', target: `../comments${index + 1}.xml` })
+    drawing = relId({ type: 'vmlDrawing', target: `../drawings/vmlDrawing${index + 1}.vml` })
+  }
   const urls = new Map<string, string>()
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
   const pane = paneXml(sheet.frozen)
