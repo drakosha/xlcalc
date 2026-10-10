@@ -165,7 +165,8 @@ function found(f: Found, w: Words, arr = false): string {
   }
 }
 
-const then = (f: Found, w: Words, arr = false) => (f.t === 'eof' ? 'а формула закончилась' : `а здесь ${found(f, w, arr)}`)
+/** What stands where something else was expected: `а здесь число`, or the end of the formula. */
+const instead = (f: Found, w: Words, arr = false) => (f.t === 'eof' ? 'а формула закончилась' : `а здесь ${found(f, w, arr)}`)
 
 function counts({ min, max, parity, or }: Counts): string {
   const args = (n: number) => `${n} ${plural(n, 'аргумент', 'аргумента', 'аргументов')}`
@@ -198,11 +199,11 @@ const MESSAGES: Messages = {
   tooDeep: (p) => `Вложенность формулы больше ${p.max} ${plural(p.max, 'уровня', 'уровней', 'уровней')}`,
   unexpectedEnd: () => 'Формула не закончена',
   unexpected: (p, w) => `Здесь не может стоять ${found(p.found, w)}`,
-  expected: (p, w) => `Ожидалась ${p.char}, ${then(p.found, w)}`,
+  expected: (p, w) => `Ожидалась ${p.char}, ${instead(p.found, w)}`,
   commaOutside: (_, w) => `Разделитель ${q(w.loc.listSeparator)} вне скобок функции`,
-  arraySeparator: (p, w) => `В массиве констант ожидалось ${q(w.loc.arrayColumnSeparator)}, ${q(w.loc.arrayRowSeparator)} или «}», ${then(p.found, w, true)}`,
+  arraySeparator: (p, w) => `В массиве констант ожидалось ${q(w.loc.arrayColumnSeparator)}, ${q(w.loc.arrayRowSeparator)} или «}», ${instead(p.found, w, true)}`,
   arrayRows: () => 'Строки массива констант должны быть одной длины',
-  arrayValue: (p, w) => `В массиве констант могут быть только числа, текст, логические значения и ошибки, ${then(p.found, w, true)}`,
+  arrayValue: (p, w) => `В массиве констант могут быть только числа, текст, логические значения и ошибки, ${instead(p.found, w, true)}`,
   letTwice: (p, w) => `Имя ${p.name} задано в ${w.fn('LET')} дважды`,
   letName: (p, w) => `Аргументом ${p.position} функции ${w.fn('LET')} должно быть имя`,
   letEmpty: (_, w) => `Функции ${w.fn('LET')} нужны хотя бы имя и его значение`,

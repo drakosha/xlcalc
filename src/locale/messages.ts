@@ -6,9 +6,9 @@
  */
 import type { CellValue } from '../contract.js'
 import { ERROR_TEXT } from '../syntax/ast.js'
-import { EN_MESSAGES } from '../locales/en-US.js'
+import { english } from './english.js'
 import { DEFAULT_LOCALE, LOCALE_FILES } from './registry.js'
-import type { Locale } from './types.js'
+import type { Locale, TableItem } from './types.js'
 
 /** What the parser found where it expected something else: a token's kind, with its text for an operator, a name or a function. */
 export type Found = { t: 'op' | 'ident' | 'fn'; v: string } | { t: 'num' | 'str' | 'err' | 'ref' | 'table' | 'eof' | '(' | ')' | ',' | ';' | '{' | '}' }
@@ -147,7 +147,7 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
   return {
     loc,
     fn: (name) => loc.functions[name] ?? name,
-    item: (word) => loc.tableItems?.[word as keyof Locale['tableItems']] ?? word,
+    item: (word) => loc.tableItems?.[word as TableItem] ?? word,
     num,
     value: (v) => {
       if (typeof v === 'number') return num(v)
@@ -166,5 +166,5 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
 export function say<K extends MessageKey>(where: string | Locale | undefined, m: { key: K } & MessageParams[K], formula: (text: string) => string = (f) => f): string {
   const loc = typeof where === 'object' ? where : (LOCALE_FILES.get(where ?? DEFAULT_LOCALE) ?? LOCALE_FILES.get(DEFAULT_LOCALE)!).text
   const own = LOCALE_FILES.get(loc.tag)?.messages?.[m.key]
-  return own ? own(m, wordsOf(loc, formula)) : EN_MESSAGES[m.key](m)
+  return own ? own(m, wordsOf(loc, formula)) : english(m)
 }
