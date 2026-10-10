@@ -121,6 +121,10 @@ export interface ColumnInput {
   format?: NumberFormat
   /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
   hidden?: boolean
+  /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a column without one is not grouped. */
+  outlineLevel?: number
+  /** The column's button collapses a group (xlsx `collapsed`): the summary column of a group whose columns are hidden. */
+  collapsed?: boolean
 }
 
 /** Rows of a sheet, as xlsx `<row>`: the height, and the style and format of their cells that have none. */
@@ -132,9 +136,13 @@ export interface RowInput {
   /**
    * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
    * and 7 skip the row's cells, and on a `filtered` sheet SUBTOTAL with codes 1–11 too, as Excel does. A row of
-   * `height` 0 is hidden too, as Excel takes it.
+   * `height` 0 is hidden too, as Excel takes it. A collapsed group's rows are hidden rows.
    */
   hidden?: boolean
+  /** The outline level (Excel's Group, xlsx `outlineLevel`), 1 to 7; a row without one is not grouped. */
+  outlineLevel?: number
+  /** The row's button collapses a group (xlsx `collapsed`): the summary row of a group whose rows are hidden. */
+  collapsed?: boolean
 }
 
 export interface SheetInput {
@@ -165,6 +173,14 @@ export interface SheetInput {
    * do not change values: a session gives what they show in `CellView.look` (`docs/conditional-formats.md`).
    */
   conditionalFormats?: ConditionalFormat[]
+  /**
+   * Data validation (Excel's Data Validation): the rules of the sheet's cells, at most one rule over a cell. Not part of
+   * computation: a session gives a cell's rule and its list (`Session.validation`) and checks a value against it
+   * (`Session.validateEntry`).
+   */
+  validations?: DataValidation[]
+  /** Where the summary rows and columns of the sheet's groups are (`RowInput.outlineLevel`); below and right by default. */
+  outline?: OutlineSettings
 }
 
 /**
@@ -404,6 +420,59 @@ export interface FrozenPanes {
   rows?: number
   /** 1 to 16,383. */
   columns?: number
+}
+
+/** The summary of a group of rows is the row below it (`summaryBelow`, true by default) or above; of columns, right of it or left. */
+export interface OutlineSettings {
+  summaryBelow?: boolean
+  summaryRight?: boolean
+}
+
+/**
+ * What a rule of data validation lets a cell hold: any value (`any`, a rule for its input message alone), a whole number,
+ * a number, a date or a time compared with the rule's formulas, a text whose length compares so, one of a list, or a value
+ * for which a formula (`custom`) is TRUE.
+ */
+export type ValidationType = 'any' | 'whole' | 'decimal' | 'date' | 'time' | 'textLength' | 'list' | 'custom'
+
+/** How a value compares with `formula1` (and `formula2`): between and not between them take both, inclusive. */
+export type ValidationOperator = 'between' | 'notBetween' | 'equal' | 'notEqual' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual'
+
+/**
+ * A rule of data validation, as xlsx `<dataValidation>`. Its formulas are stored formula text without `=` (en-US, as a
+ * cell's), relative to the rule's first cell, the top-left cell of the first range of `range`: a rule over `B2:B9` with
+ * `formula1: 'A2>0'` checks `A5>0` for B5. A literal list is a text constant of items separated by commas
+ * (`'"Yes,No,Maybe"'`), as a file stores it in every locale; a list from cells is a reference (`'$D$2:$D$9'`,
+ * `"'Lists'!$A$1:$A$20"`), a defined name or a formula giving one.
+ */
+export interface DataValidation {
+  /** The cells: ranges separated by spaces (`B2:B20 D2`, `C:C`), as xlsx `sqref`; no other rule of the sheet meets them. */
+  range: string
+  type: ValidationType
+  /** For whole, decimal, date, time and textLength: how the value compares; `between` by default. */
+  operator?: ValidationOperator
+  /** The value, the low bound, the list or the formula of a custom rule; every type but `any` has one. */
+  formula1?: string
+  /** The high bound of `between` and `notBetween`. */
+  formula2?: string
+  /**
+   * A blank cell passes, and so does any value while a bound or a list refers to a blank cell (Excel's Ignore blank,
+   * xlsx `allowBlank`); true by default, as Excel makes a rule.
+   */
+  allowBlank?: boolean
+  /** A list shows its dropdown in the cell; true by default (false is xlsx `showDropDown="1"`). */
+  dropdown?: boolean
+  /** The input message Excel shows while the cell is selected: its title (Excel takes 32 characters) and text (255). */
+  promptTitle?: string
+  prompt?: string
+  /** The input message is shown; true by default, as Excel makes a rule. */
+  showPrompt?: boolean
+  /** The alert for a value the rule does not take: stop (the default), warning or information, and its title (32) and text (225). */
+  errorStyle?: 'stop' | 'warning' | 'information'
+  errorTitle?: string
+  error?: string
+  /** The alert is shown; true by default, as Excel makes a rule. Without it Excel takes any value typed. */
+  showError?: boolean
 }
 
 /**
@@ -697,7 +766,7 @@ export interface ComputeResult {
   clock: Clock
   /** sha256 of the canonical text of the values (spilled cells too) together with the engine configuration version. */
   hash: string
-  /** sha256 of the input (sheets, cells, names, and styles, columns, rows, merged areas, frozen panes and conditional formats when there are any; order does not matter). */
+  /** sha256 of the input (sheets, cells, names, and styles, columns, rows, merged areas, frozen panes, conditional formats, data validation and outline settings when there are any; order does not matter). */
   inputHash: string
   configVersion: string
   ms: number
@@ -927,6 +996,29 @@ export type LayoutEdit =
   | { sheet: string; frozen: FrozenPanes | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
   | { sheet: string; conditionalFormats: ConditionalFormat[] }
+  /** All the rules of data validation of the sheet (`SheetInput.validations`). */
+  | { sheet: string; validations: DataValidation[] }
+  /** Where the sheet's summary rows and columns are (`SheetInput.outline`); null for Excel's default, below and right. */
+  | { sheet: string; outline: OutlineSettings | null }
+
+/**
+ * A cell's data validation (`Session.validation`): the rule over it, the rule's formulas as at the cell (relative
+ * references moved from the rule's first cell), and for a list the items its dropdown offers.
+ */
+export interface CellValidation {
+  rule: DataValidation
+  formula1?: string
+  formula2?: string
+  /**
+   * A list's items in order, computed in the book as it is now: a literal list's items as written (`text`, and `value` the
+   * same text), or the cells of the reference its formula gives, each with its value and the text it shows by its number
+   * format (blank cells past the last value left out). An error where the formula gives no reference or list.
+   */
+  list?: { value: CellValue; text: string }[] | { error: ErrorCode }
+}
+
+/** Whether a value meets a cell's rule (`Session.validateEntry`); when it does not, the rule, whose alert Excel shows. */
+export type EntryCheck = { ok: true } | { ok: false; rule: DataValidation }
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
@@ -955,8 +1047,8 @@ export interface Session {
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
   setStyles(styles: CellStyle[]): void
   /**
-   * Column widths, row heights, row and column styles and formats, hidden rows and columns, merged areas, the filter
-   * mode, frozen panes, conditional formats; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
+   * Column widths, row heights, row and column styles and formats, hidden rows and columns, outline levels, merged
+   * areas, the filter mode, frozen panes, conditional formats, rules of data validation and outline settings; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
    * or removed area meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count:
    * their formulas over the rows concerned are recomputed. Nothing else is recomputed; the changed values are
    * returned. With `display`, the cells whose shown text or colour a width, a format or a merged area changed are
@@ -978,6 +1070,14 @@ export interface Session {
    * Edits do not list cells whose look changed: a host reads its window again after an edit to a sheet with rules.
    */
   cells(sheet: string, range: string): Record<string, CellView>
+  /** The data validation of a cell (`CellValidation`), its list computed now; null when no rule is over the cell. */
+  validation(sheet: string, cell: string): CellValidation | null
+  /**
+   * Whether the cell holding `input` (null: cleared) would meet its rule, as Excel checks a cell's value
+   * (`Range.Validation.Value`): the value the input computes to, in the book with it. Changes nothing; a cell without a
+   * rule takes anything. Text typed into the cell is `parseEntry`'s input first.
+   */
+  validateEntry(sheet: string, cell: string, input: CellInput | null): EntryCheck
   result(): ComputeResult
   /** The values hash `result()` gives, without building the result. */
   hash(): string
@@ -1049,6 +1149,8 @@ export interface AsyncSession {
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
   /** As `Session.cells`; from a thread only the rectangle comes back. */
   cells(sheet: string, range: string): Promise<Record<string, CellView>>
+  validation(sheet: string, cell: string): Promise<CellValidation | null>
+  validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
   result(opts?: CalcOptions): Promise<ComputeResult>
   /** As `Session.hash`: from a thread only the hash comes back. */
   hash(opts?: CalcOptions): Promise<string>

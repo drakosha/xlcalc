@@ -86,6 +86,12 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'cells':
       value = await s.cells(args[0] as string, args[1] as string)
       break
+    case 'validation':
+      value = await s.validation(args[0] as string, args[1] as string)
+      break
+    case 'validateEntry':
+      value = await s.validateEntry(args[0] as string, args[1] as string, args[2] as never, o)
+      break
     default:
       value = await (s[op] as (a: unknown, o: CalcOptions) => Promise<unknown>)(args[0], o)
   }

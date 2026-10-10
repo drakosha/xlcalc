@@ -14,6 +14,7 @@ import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { checkConditionalFormats } from './cond/check.js'
+import { checkOutline, checkValidations } from './validation/check.js'
 
 /** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
 export class InputError extends TypeError {
@@ -233,12 +234,14 @@ const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, 'style', 'format', 'hidden'])
+  onlyKeys(o, p, [size, 'style', 'format', 'hidden', 'outlineLevel', 'collapsed'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
   field('format', checkFormat)
   field('hidden', checkBoolean)
+  field('outlineLevel', (x, path) => checkNumber(x, path, 1, 7, true))
+  field('collapsed', checkBoolean)
 }
 
 /** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
@@ -281,7 +284,7 @@ function checkFrozen(v: unknown, path: string) {
 
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), cells by A1 address,
- * columns, rows, merged areas and frozen panes, names, styles.
+ * columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles.
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
@@ -299,7 +302,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, problem)
@@ -323,6 +326,8 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
     if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
+    if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
+    if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
@@ -407,7 +412,7 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
   })
 }
 
-/** Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode or frozen panes. */
+/** Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, frozen panes, rules of data validation or outline settings. */
 export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
   return array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
     const p = `${path}[${i}]`
@@ -433,9 +438,16 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       checkConditionalFormats(o.conditionalFormats, `${p}.conditionalFormats`)
       return o as unknown as LayoutEdit
     }
+    if ('validations' in o || 'outline' in o) {
+      const k = 'validations' in o ? 'validations' : 'outline'
+      onlyKeys(o, p, ['sheet', k])
+      if (k === 'validations') checkValidations(o.validations, `${p}.validations`)
+      else if (o.outline !== null) checkOutline(o.outline, `${p}.outline`)
+      return o as unknown as LayoutEdit
+    }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = axis === 'r' ? 'rows' : 'columns'
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen or conditionalFormats)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit

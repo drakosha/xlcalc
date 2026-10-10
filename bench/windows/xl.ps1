@@ -169,6 +169,72 @@ function Make($xl, $wb, $s) {
   }
 }
 
+# what a valid case makes through COM: a rule (Validation.Add with the range's first cell active, then its properties; flags
+# "1", "0" or "" for Excel's own), a group of rows or columns, a collapsed group (ShowDetail), the summary settings
+function VMake($wb, $s) {
+  $ws = $wb.Worksheets.Item($s.sheet)
+  [void]$ws.Activate()
+  $m = [Type]::Missing
+  switch ($s.kind) {
+    'rule' {
+      [void]$ws.Range($s.first).Select()
+      $v = $ws.Range($s.range).Validation
+      $f2 = if ($s.f2) { [string]$s.f2 } else { $m }
+      if ($s.type -eq 0) { [void]$v.Add(0) } else { [void]$v.Add([int]$s.type, [int]$s.alert, [int]$s.operator, [string]$s.f1, $f2) }
+      if ($s.ignore) { $v.IgnoreBlank = ($s.ignore -eq '1') }
+      if ($s.dropdown) { $v.InCellDropdown = ($s.dropdown -eq '1') }
+      if ($s.showInput) { $v.ShowInput = ($s.showInput -eq '1') }
+      if ($s.showError) { $v.ShowError = ($s.showError -eq '1') }
+      if ($s.inputTitle) { $v.InputTitle = [string]$s.inputTitle }
+      if ($s.inputMessage) { $v.InputMessage = [string]$s.inputMessage }
+      if ($s.errorTitle) { $v.ErrorTitle = [string]$s.errorTitle }
+      if ($s.errorMessage) { $v.ErrorMessage = [string]$s.errorMessage }
+    }
+    'group' { if ($s.rows) { [void]$ws.Range($s.range).EntireRow.Group() } else { [void]$ws.Range($s.range).EntireColumn.Group() } }
+    'collapse' { if ($s.rows) { $ws.Range($s.range).EntireRow.ShowDetail = $false } else { $ws.Range($s.range).EntireColumn.ShowDetail = $false } }
+    'summary' {
+      if ($s.below) { $ws.Outline.SummaryRow = if ($s.below -eq '1') { 1 } else { 0 } }
+      if ($s.right) { $ws.Outline.SummaryColumn = if ($s.right -eq '1') { -4152 } else { -4131 } }
+    }
+    default { throw "unknown valid make $($s.kind)" }
+  }
+}
+
+# a property of a rule, or "" where COM has none for its type
+function Prop($v, $name) { try { $v.$name } catch { '' } }
+
+# a sheet's rules over the window, each cell selected (formulas are relative to the active cell), with Validation.Value;
+# the window's grouped, hidden and collapsed lines; the summary settings: [name, [[address, type, operator, formula1,
+# formula2, ignore blank, dropdown, show input, show error, alert, input title, input message, error title, error message,
+# value]], [[row, level, hidden, collapsed]], [[column, level, hidden, collapsed]], [summary row, summary column]]
+function VRead($ws, $win) {
+  [void]$ws.Activate()
+  $rules = @()
+  $found = try { $ws.Range($win).SpecialCells(-4174) } catch { $null }
+  if ($found) {
+    foreach ($c in $found.Cells) {
+      [void]$c.Select()
+      $v = $c.Validation
+      $rules += List @((Str $c.Address()), (Cell ([double]$v.Type)), (Cell ([double](Prop $v 'Operator'))), (Str ([string](Prop $v 'Formula1'))), (Str ([string](Prop $v 'Formula2'))), (Cell $v.IgnoreBlank), (Cell $v.InCellDropdown), (Cell $v.ShowInput), (Cell $v.ShowError), (Cell ([double]$v.AlertStyle)), (Str ([string]$v.InputTitle)), (Str ([string]$v.InputMessage)), (Str ([string]$v.ErrorTitle)), (Str ([string]$v.ErrorMessage)), (Cell $v.Value))
+    }
+  }
+  $w = $ws.Range($win)
+  $lines = foreach ($axis in 'rows', 'columns') {
+    $out = foreach ($k in 1..$(if ($axis -eq 'rows') { $w.Rows.Count } else { $w.Columns.Count })) {
+      $e = if ($axis -eq 'rows') { $ws.Rows.Item($w.Row + $k - 1) } else { $ws.Columns.Item($w.Column + $k - 1) }
+      $level = [int]$e.OutlineLevel
+      $collapsed = $false
+      if ($e.Summary) { $collapsed = -not $e.ShowDetail }
+      if ($level -gt 1 -or $e.Hidden -or $collapsed) {
+        $key = if ($axis -eq 'rows') { Cell ([double]$e.Row) } else { Str (($e.Address($false, $false) -split ':')[0]) }
+        List @($key, (Cell ([double]($level - 1))), (Cell $e.Hidden), (Cell $collapsed))
+      }
+    }
+    , (List $out)
+  }
+  List @((Str $ws.Name), (List $rules), $lines[0], $lines[1], (List @((Cell ([double]$ws.Outline.SummaryRow)), (Cell ([double]$ws.Outline.SummaryColumn)))))
+}
+
 function Step($xl, $wb, $s) {
   switch ($s.do) {
     'full' { $xl.CalculateFull(); 'null' }
@@ -233,6 +299,13 @@ function Step($xl, $wb, $s) {
     }
     'make' { try { Make $xl $wb $s; 'null' } catch { Err $_ } }
     'cond' { Cond $wb $s }
+    'vmake' { try { VMake $wb $s; 'null' } catch { Err $_ } }
+    'valid' {
+      $all = List ($wb.Worksheets | ForEach-Object { VRead $_ $s.window })
+      [void]$wb.Worksheets.Item(1).Activate()
+      [void]$wb.Worksheets.Item(1).Range('A1').Select()
+      $all
+    }
     'parts' {
       $all = List ($wb.Worksheets | ForEach-Object { Parts $xl $_ })
       [void]$wb.Worksheets.Item(1).Activate()

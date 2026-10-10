@@ -15,7 +15,7 @@ const { data } = await writeXlsx(book, { result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` or an `ArrayBuffer`, and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), columns, rows, merged areas, filter mode, frozen panes and conditional formats, names, the style table, the locale, the date system and iterative calculation.
+- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system and iterative calculation.
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order. These are what Excel computed when it saved the file, so you can compare them with the engine's result.
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
 
@@ -79,6 +79,8 @@ A column gets its width when the file sets it by hand, and a row its height like
 // <row r="5" ht="30" hidden="1" customHeight="1">, <col min="5" max="5" width="12" hidden="1" customWidth="1"/>
 rows: { 5: { height: 30, hidden: true } }, columns: { E: { width: 12, hidden: true } }
 ```
+
+A grouped row or column gets its `outlineLevel`, 1 to 7, and the summary line of a collapsed group `collapsed: true`; the group's lines are hidden lines ([Data validation and outlines](#data-validation-and-outlines)).
 
 A merged area that overlaps another is left out and reported.
 
@@ -153,7 +155,9 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `hyperlink` | a hyperlink whose address is no external relationship of the sheet; one over more than 4,096 cells, read on its cells that hold something |
 | `frozenPanes` | split panes that are not frozen; panes frozen over a sheet scrolled down or right, read from the first row and column |
 | `conditionalFormat` | a rule of a kind the model does not have, a pivot table's rules, a rule without its formulas or thresholds; what a rule's differential format holds beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and deviations, read with equal |
-| `dataValidation`, `drawing`, `pivotTable`, `protection`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
+| `dataValidation` | a rule without a range of the sheet or the formula its type needs, or of an unknown type, left out; cells a rule shares with an earlier one, which keep the earlier one; an IME mode; a list whose items hold commas (`x12ac:list`), read split at them |
+| `outline` | automatic styles of an outline |
+| `drawing`, `pivotTable`, `protection`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
 | `locale` | a locale the package does not have |
 | `part` | a missing sheet part, a cell outside the sheet |
 
@@ -191,7 +195,7 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 
 ### Styles, columns and rows
 
-Styles, number formats, widths, heights, hidden rows and columns and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits.
+Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits.
 
 A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
 
@@ -209,7 +213,8 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 |---|---|
 | `meta` | a cell's `meta` is left out |
 | `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference |
-| `textLength` | text over 32,767 characters is cut, a note's too, and a hyperlink's tooltip over 255 |
+| `textLength` | text over 32,767 characters is cut, a note's too, a hyperlink's tooltip over 255, a rule's titles over 32, its input message over 255 and its alert's text over 225 |
+| `dataValidation` | a rule whose formula does not parse, or names a sheet, a table or a column the book does not have, is left out |
 | `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
@@ -284,6 +289,36 @@ Both Excels opened every book without the repair window. Excel for Mac refused t
 
 Neither Excel takes threads of comments into its object model: Excel 2024 for Windows refuses to make one through COM, Excel for Mac's AppleScript has none, and both show the placeholder note of a thread they open. After inserting a row both moved the placeholder note and left the thread at its cell, which is why the reader follows the placeholder. A file Excel 365 made with threads was not available, so the threads were put into the file by hand (`bench/coverage/parts/threaded.ts`).
 
+## Data validation and outlines
+
+A sheet's rules of data validation and its outline go both ways, so a grid can offer a cell's list and check what is typed, and a file saved from it keeps them. They are a sheet's `validations`, the rows' and columns' `outlineLevel` and `collapsed`, and a sheet's `outline`.
+
+```js
+{
+  name: 'Budget',
+  cells: { A1: { value: 'Item' }, B1: { value: 'Amount' } },
+  validations: [{ range: 'B2:B50', type: 'decimal', operator: 'greaterThanOrEqual', formula1: '0', error: 'No negative amounts' }],
+  rows: { '3:6': { outlineLevel: 1, hidden: true }, 7: { collapsed: true } },
+  outline: { summaryBelow: true },
+}
+```
+
+### Data validation
+
+A file keeps a rule in `<dataValidations>` with xlsx's defaults false: a rule without `allowBlank`, `showInputMessage` or `showErrorMessage` is read with `allowBlank: false`, `showPrompt: false` or `showError: false`, as the model's defaults are those of a rule Excel makes. `showDropDown="1"` hides a list's dropdown and is read as `dropdown: false`. A rule whose formulas refer to another sheet Excel writes in the sheet's extension, `<x14:dataValidations>`, which the reader reads beside the others. Formulas come in the engine's spelling, as a cell's do. Excel saves a whole column as `F1:F1048576`, read as `F:F`.
+
+Two rules over one cell are not in the model. Excel writes them when a move puts a rule over a cell that keeps another one in its range, and shows the one written first, which is the one the reader keeps; the later rule loses the cell, and that is reported. A list typed where the comma is no list separator (in ru-RU) can hold an item with a comma: Excel keeps that list in an extension (`x12ac:list`), which the reader does not read, and gives the list split at its commas as a fallback, which it reads and reports.
+
+The writer writes every rule in `<dataValidations>`, references to other sheets too, which Excel opens. A rule's titles over 32 characters, its input message over 255 and its alert's text over 225 are cut, as Excel does not open longer ones.
+
+### Outlines
+
+A row or column's `outlineLevel` and `collapsed` are `<row>`'s and `<col>`'s attributes, the summary settings `<sheetPr><outlinePr summaryBelow summaryRight>`. The writer writes the deepest levels into `<sheetFormatPr outlineLevelRow outlineLevelCol>`, where Excel reserves room for the outline's buttons, and the reader takes them from the lines. Automatic outline styles (`applyStyles`) are reported.
+
+### How it was checked
+
+The valid sets of `bench/coverage/valid/` were written by `writeXlsx` and opened by Excel for Mac and for Windows: every book loaded, and Excel read the rules, each cell's check and the outlines the engine holds but for texts cut to Excel's limits. Rules and outlines Excel made itself, and the books Excel saved after structure operations, read back as Excel read them ([docs/validation.md](validation.md#how-it-was-checked)).
+
 ## Speed
 
 Measured on an Apple Silicon Mac with `test/fixtures/xlsx-bench-child.ts`, the median of three runs. The ranges are over several runs on a busy machine.
@@ -301,10 +336,10 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 
 - `zip/` reads and writes the archive. Inflating and deflating go through `DecompressionStream` and `CompressionStream`.
 - `xml/` holds the text layer: entities, Excel's escapes, and elements found by regular expressions.
-- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, the notes, threads, hyperlinks and frozen panes (`parts.ts`), and conditional formats (`conditional.ts`).
+- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, the notes, threads, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`) and data validation (`validation.ts`).
 - `styles/` turns styles.xml into the style table and the differential formats (`dxf.ts`), and holds the codes of the East Asian built-in formats, the codes the writer stores by number, and the colours.
 - `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
-- `write/` writes the workbook, the sheets, styles.xml with its differential formats, the notes, hyperlinks and frozen panes (`parts.ts`), and conditional formats (`conditional.ts`).
+- `write/` writes the workbook, the sheets, styles.xml with its differential formats, the notes, hyperlinks and frozen panes (`parts.ts`), conditional formats (`conditional.ts`) and data validation (`validation.ts`).
 
 Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 120 KB.
 
@@ -346,3 +381,4 @@ The answers to the filter files and to nine books of the round trip were predict
 - A thread of comments is read as a note, without its dates, mentions and state, and written as a note.
 - Excel keeps an Excel 2010 data bar's lengths only when they are 0 and 100: a bar of 5 and 95 comes back read as 10 and 90.
 - A dxf's number format that is a built-in one comes back from Excel as its code (`0.00%` for 10).
+- A list of data validation whose item holds a comma (typed in ru-RU) is read split at the comma. Excel saves a list's reference to a deleted sheet as `#REF!` alone, which the engine keeps as `#REF!$A$1:$A$4`.

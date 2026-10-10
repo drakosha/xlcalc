@@ -1,0 +1,328 @@
+{
+ "lists": [
+  {
+   "name": "S",
+   "rules": {
+    "A2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Fruits",
+     "dropdown": true
+    },
+    "A3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Fruits",
+     "dropdown": true
+    },
+    "A4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Fruits",
+     "dropdown": true
+    },
+    "A5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Fruits",
+     "dropdown": true
+    },
+    "A6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Fruits",
+     "dropdown": true
+    },
+    "B2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Local",
+     "dropdown": true
+    },
+    "B3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Local",
+     "dropdown": true
+    },
+    "B4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "Local",
+     "dropdown": true
+    },
+    "C2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "'L'!$A$1:$A$3",
+     "dropdown": true
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "'L'!$A$1:$A$3",
+     "dropdown": true
+    },
+    "C4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "'L'!$A$1:$A$3",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$W$1#",
+     "dropdown": true
+    },
+    "D3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$W$1#",
+     "dropdown": true
+    },
+    "D4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$W$1#",
+     "dropdown": true
+    },
+    "E2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "INDEX($U$1:$U$4,0,1)",
+     "dropdown": true
+    },
+    "E3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "INDEX($U$1:$U$4,0,1)",
+     "dropdown": true
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U:$U",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U:$U",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U:$U",
+     "dropdown": true
+    },
+    "G2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U$1:$U$5",
+     "dropdown": true
+    },
+    "G3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U$1:$U$5",
+     "dropdown": true
+    },
+    "H2": {
+     "type": "list",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U$1:$U$5",
+     "dropdown": true
+    },
+    "H3": {
+     "type": "list",
+     "allowBlank": false,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "$U$1:$U$5",
+     "dropdown": true
+    },
+    "I2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "I3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "I4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a;b;c\"",
+     "dropdown": true
+    },
+    "J2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a, b,c \"",
+     "dropdown": true
+    },
+    "J3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a, b,c \"",
+     "dropdown": true
+    },
+    "J4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a, b,c \"",
+     "dropdown": true
+    },
+    "J5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a, b,c \"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "A2": true,
+    "A3": true,
+    "A4": true,
+    "A5": false,
+    "A6": false,
+    "B2": true,
+    "B3": false,
+    "B4": true,
+    "C2": true,
+    "C3": false,
+    "C4": false,
+    "D2": true,
+    "D3": false,
+    "D4": false,
+    "E2": true,
+    "E3": false,
+    "F2": true,
+    "F3": true,
+    "F4": false,
+    "G2": false,
+    "G3": true,
+    "H2": false,
+    "H3": true,
+    "I2": false,
+    "I3": true,
+    "I4": false,
+    "J2": false,
+    "J3": true,
+    "J4": true,
+    "J5": false
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "L",
+   "rules": {},
+   "meets": {},
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  }
+ ]
+}

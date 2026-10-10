@@ -7,7 +7,8 @@
  * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
  * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
  * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
- * its own over its cells, with Excel's filter mark. Notes, hyperlinks and frozen panes are written by `parts.ts`.
+ * its own over its cells, with Excel's filter mark. Notes, hyperlinks and frozen panes are written by `parts.ts`, data
+ * validation by `validation.ts`; rows and columns carry their outline levels.
  */
 import type { CellInput, CellLink, CellNote, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
 import { lines, type Line } from '../../layout/spans.js'
@@ -22,6 +23,7 @@ import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import { conditionalXml } from './conditional.js'
+import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
 
 /** Excel's limit on a cell's text. */
@@ -197,7 +199,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
     const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
-    const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '')
+    const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
   const keys = [...out.keys()].sort((a, b) => a - b)
@@ -216,7 +218,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
     const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
     const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"` : ` width="${DEFAULT_WIDTH}"`
-    return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}/>`
+    return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
   const merges = sheet.merges ?? []
   const used = keys.length ? { r1: Math.floor(first / MAX_COLS), r2: Math.floor(last / MAX_COLS), c1: minCol, c2: maxCol } : undefined
@@ -239,17 +241,25 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
   const pane = paneXml(sheet.frozen)
   const cond = conditionalXml(sheet, index, { styles, issues, sheets: ctx.sheets, tables: ctx.tables })
+  // the outline: where its summaries are, and its deepest levels, which Excel reserves room for
+  const o = sheet.outline
+  const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
+  const deepest = (ls: Line<{ outlineLevel?: number }>[], attr: string) => {
+    const n = ls.reduce((m, [, , e]) => Math.max(m, e.outlineLevel ?? 0), 0)
+    return n ? ` ${attr}="${n}"` : ''
+  }
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
-    (filter ? '<sheetPr filterMode="1"/>' : '') +
+    (filter || outlinePr ? `<sheetPr${filter ? ' filterMode="1"' : ''}${outlinePr ? `>${outlinePr}</sheetPr>` : '/>'}` : '') +
     `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
-    '<sheetFormatPr defaultRowHeight="15"/>' +
+    `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(lines(sheet.columns, 'c'), 'outlineLevelCol')}/>` +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
     `<sheetData>${data.join('')}</sheetData>` +
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
     cond.main +
+    validationsXml(sheet.validations, { sheet: sheet.name, sheets: ctx.sheets, tables: ctx.tables, issues }) +
     hyperlinks +
     (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
@@ -259,6 +269,9 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
 }
 
 const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2
+
+/** A row's or a column's outline level and collapsed mark as attributes. */
+const outlineAttrs = (e: { outlineLevel?: number; collapsed?: boolean }) => (e.outlineLevel ? ` outlineLevel="${e.outlineLevel}"` : '') + (e.collapsed ? ' collapsed="1"' : '')
 
 /** The written cells' rectangle (`cells`: rows and columns, or none) stretched over the hidden rows and the row above the first. */
 function filterRange(cells: { r1: number; r2: number; c1: number; c2: number } | undefined, rowLines: Line<RowInput>[]): string {

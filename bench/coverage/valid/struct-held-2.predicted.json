@@ -1,0 +1,3914 @@
+{
+ "insert-rows-5x2": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "B5": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B5>A5"
+    },
+    "B6": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B6>A6"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F7": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F8": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "B5": true,
+    "B6": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true,
+    "F7": true,
+    "F8": true
+   },
+   "rows": {
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     1,
+     true,
+     false
+    ],
+    "12": [
+     1,
+     true,
+     false
+    ],
+    "13": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-row-4": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "B5": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B5>A5"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "C4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D4": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E4": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F7": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "B5": true,
+    "C3": true,
+    "C4": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "D4": true,
+    "E4": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true,
+    "F7": true
+   },
+   "rows": {
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     1,
+     true,
+     false
+    ],
+    "12": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-col-f": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "G2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "G3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "G4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "G5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "G6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "F2": true,
+    "D3": true,
+    "E3": true,
+    "F3": true,
+    "G2": true,
+    "G3": true,
+    "G4": true,
+    "G5": true,
+    "G6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     1,
+     true,
+     false
+    ],
+    "K": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-cols-d": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "E3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "F2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "G2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "G3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "H2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "H3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "H4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "H5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "H6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "G2": true,
+    "F3": true,
+    "G3": true,
+    "H2": true,
+    "H3": true,
+    "H4": true,
+    "H5": true,
+    "H6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "J": [
+     1,
+     true,
+     false
+    ],
+    "K": [
+     1,
+     true,
+     false
+    ],
+    "L": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "move-rule-onto-rule": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F5": true,
+    "F6": true,
+    "F4": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "move-plain-onto-part": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>F4"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>F5"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>F6"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": false,
+    "F4": false,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "move-rules-onto-rules": [
+  {
+   "name": "S",
+   "rules": {
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "E2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "E2>A2"
+    },
+    "E3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "E3>A3"
+    },
+    "E4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "E4>A4"
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "D2": true,
+    "D3": true,
+    "F2": true,
+    "F4": true,
+    "F5": true,
+    "F6": true,
+    "E2": true,
+    "E3": true,
+    "E4": true,
+    "F3": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "move-to-t": [
+  {
+   "name": "S",
+   "rules": {
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "D2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "D2>'S'!A2"
+    },
+    "D3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "D3>'S'!A3"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true,
+    "D2": true,
+    "D3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-row-9-collapsed": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     false,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-row-11-collapsed": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     1,
+     false,
+     false
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-row-8-collapsed": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     1,
+     true,
+     false
+    ],
+    "12": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-col-i-collapsed": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     false,
+     false
+    ],
+    "J": [
+     1,
+     true,
+     false
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "insert-row-4-above": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     false,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ],
+    "6": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "delete-row-9-collapsed": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ],
+ "copy-rows-8-11": [
+  {
+   "name": "S",
+   "rules": {
+    "B2": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B2>A2"
+    },
+    "B3": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B3>A3"
+    },
+    "B4": {
+     "type": "custom",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "B4>A4"
+    },
+    "C3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "formula1": "\"a,b\"",
+     "dropdown": true
+    },
+    "D2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E2": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "D3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "E3": {
+     "type": "whole",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "greaterThan",
+     "formula1": "0"
+    },
+    "F2": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F3": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F4": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F5": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    },
+    "F6": {
+     "type": "list",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "warning",
+     "formula1": "\"p,q\"",
+     "dropdown": true
+    }
+   },
+   "meets": {
+    "B2": true,
+    "B3": true,
+    "B4": true,
+    "C3": true,
+    "D2": true,
+    "E2": true,
+    "D3": true,
+    "E3": true,
+    "F2": true,
+    "F3": true,
+    "F4": true,
+    "F5": true,
+    "F6": true
+   },
+   "rows": {
+    "8": [
+     1,
+     true,
+     false
+    ],
+    "9": [
+     1,
+     true,
+     false
+    ],
+    "10": [
+     1,
+     true,
+     false
+    ],
+    "11": [
+     0,
+     false,
+     true
+    ],
+    "20": [
+     1,
+     true,
+     false
+    ],
+    "21": [
+     1,
+     true,
+     false
+    ],
+    "22": [
+     1,
+     true,
+     false
+    ],
+    "23": [
+     0,
+     false,
+     true
+    ]
+   },
+   "columns": {
+    "H": [
+     1,
+     true,
+     false
+    ],
+    "I": [
+     1,
+     true,
+     false
+    ],
+    "J": [
+     0,
+     false,
+     true
+    ]
+   },
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "T",
+   "rules": {
+    "B1": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B2": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    },
+    "B3": {
+     "type": "decimal",
+     "allowBlank": true,
+     "showPrompt": true,
+     "showError": true,
+     "errorStyle": "stop",
+     "operator": "lessThan",
+     "formula1": "$A$1"
+    }
+   },
+   "meets": {
+    "B1": true,
+    "B2": true,
+    "B3": true
+   },
+   "rows": {},
+   "columns": {},
+   "summary": {
+    "below": true,
+    "right": true
+   }
+  },
+  {
+   "name": "U",
+   "rules": {},
+   "meets": {},
+   "rows": {
+    "2": [
+     0,
+     false,
+     true
+    ],
+    "3": [
+     1,
+     true,
+     false
+    ],
+    "4": [
+     1,
+     true,
+     false
+    ],
+    "5": [
+     1,
+     true,
+     false
+    ]
+   },
+   "columns": {},
+   "summary": {
+    "below": false,
+    "right": true
+   }
+  }
+ ]
+}

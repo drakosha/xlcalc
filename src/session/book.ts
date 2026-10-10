@@ -1,4 +1,4 @@
-/** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets. */
+/** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
 import type { BookInput, CellEdit, CellInput, LayoutEdit, SheetInput } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { InputError } from '../input.js'
@@ -51,14 +51,15 @@ export function applyLayout(book: BookInput, edits: LayoutEdit[], sheetIndex: (n
     else if ('filtered' in e) sheet.filtered = e.filtered
     else if ('frozen' in e) sheet.frozen = e.frozen ? { ...e.frozen } : undefined
     else if ('conditionalFormats' in e) sheet.conditionalFormats = e.conditionalFormats.length ? [...e.conditionalFormats] : undefined
+    else if ('validations' in e) sheet.validations = e.validations.map((v) => ({ ...v }))
+    else if ('outline' in e) sheet.outline = e.outline ? { ...e.outline } : undefined
     else if ('columns' in e) sheet.columns = patchLines(sheet.columns, 'c', ...parseSpan(e.columns, 'c')!, e.set)
     else sheet.rows = patchLines(sheet.rows, 'r', ...parseSpan(e.rows, 'r')!, e.set)
   }
   for (const [i, sheet] of changed) {
-    for (const k of ['columns', 'rows', 'merges'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
+    for (const k of ['columns', 'rows', 'merges', 'validations'] as const) if (sheet[k] && !Object.keys(sheet[k]).length) delete sheet[k]
     if (sheet.filtered === false) delete sheet.filtered
-    if (sheet.frozen === undefined) delete sheet.frozen
-    if (sheet.conditionalFormats === undefined) delete sheet.conditionalFormats
+    for (const k of ['frozen', 'outline', 'conditionalFormats'] as const) if (sheet[k] === undefined) delete sheet[k]
     book.sheets[i] = sheet
   }
 }

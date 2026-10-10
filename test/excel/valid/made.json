@@ -1,0 +1,2531 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US",
+  "seconds": 30.4
+ },
+ "books": {
+  "plain": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "B1": {
+       "value": "Yes"
+      },
+      "C1": {
+       "value": 1.5
+      },
+      "D1": {
+       "value": 45653
+      },
+      "E1": {
+       "value": 0.041666666666666664
+      },
+      "F1": {
+       "value": "x"
+      },
+      "A2": {
+       "value": 2
+      },
+      "B2": {
+       "value": "Yes"
+      },
+      "C2": {
+       "value": 3
+      },
+      "D2": {
+       "value": 45656
+      },
+      "E2": {
+       "value": 0.08333333333333333
+      },
+      "F2": {
+       "value": "xx"
+      },
+      "A3": {
+       "value": 3
+      },
+      "B3": {
+       "value": "no"
+      },
+      "C3": {
+       "value": 4.5
+      },
+      "D3": {
+       "value": 45659
+      },
+      "E3": {
+       "value": 0.125
+      },
+      "F3": {
+       "value": "xxx"
+      },
+      "A4": {
+       "value": 4
+      },
+      "B4": {
+       "value": "Yes"
+      },
+      "C4": {
+       "value": 6
+      },
+      "D4": {
+       "value": 45662
+      },
+      "E4": {
+       "value": 0.16666666666666666
+      },
+      "F4": {
+       "value": "xxxx"
+      },
+      "A5": {
+       "value": 5
+      },
+      "B5": {
+       "value": "Yes"
+      },
+      "C5": {
+       "value": 7.5
+      },
+      "D5": {
+       "value": 45665
+      },
+      "E5": {
+       "value": 0.20833333333333334
+      },
+      "F5": {
+       "value": "xxxxx"
+      },
+      "A6": {
+       "value": 6
+      },
+      "B6": {
+       "value": "no"
+      },
+      "C6": {
+       "value": 9
+      },
+      "D6": {
+       "value": 45668
+      },
+      "E6": {
+       "value": 0.25
+      },
+      "F6": {
+       "value": "xxxxxx"
+      },
+      "A7": {
+       "value": 7
+      },
+      "B7": {
+       "value": "Yes"
+      },
+      "C7": {
+       "value": 10.5
+      },
+      "D7": {
+       "value": 45671
+      },
+      "E7": {
+       "value": 0.2916666666666667
+      },
+      "F7": {
+       "value": "xxxxxxx"
+      },
+      "A8": {
+       "value": 8
+      },
+      "B8": {
+       "value": "Yes"
+      },
+      "C8": {
+       "value": 12
+      },
+      "D8": {
+       "value": 45674
+      },
+      "E8": {
+       "value": 0.3333333333333333
+      },
+      "F8": {
+       "value": "xxxxxxxx"
+      },
+      "A9": {
+       "value": 9
+      },
+      "B9": {
+       "value": "no"
+      },
+      "C9": {
+       "value": 13.5
+      },
+      "D9": {
+       "value": 45677
+      },
+      "E9": {
+       "value": 0.375
+      },
+      "F9": {
+       "value": "xxxxxxxxx"
+      },
+      "A10": {
+       "value": 10
+      },
+      "B10": {
+       "value": "Yes"
+      },
+      "C10": {
+       "value": 15
+      },
+      "D10": {
+       "value": 45680
+      },
+      "E10": {
+       "value": 0.4166666666666667
+      },
+      "F10": {
+       "value": "xxxxxxxxxx"
+      },
+      "A11": {
+       "value": 11
+      },
+      "B11": {
+       "value": "Yes"
+      },
+      "C11": {
+       "value": 16.5
+      },
+      "D11": {
+       "value": 45683
+      },
+      "E11": {
+       "value": 0.4583333333333333
+      },
+      "F11": {
+       "value": "xxxxxxxxxxx"
+      },
+      "A12": {
+       "value": 12
+      },
+      "B12": {
+       "value": "no"
+      },
+      "C12": {
+       "value": 18
+      },
+      "D12": {
+       "value": 45686
+      },
+      "E12": {
+       "value": 0.5
+      },
+      "F12": {
+       "value": "xxxxxxxxxxxx"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": "Yes"
+      },
+      "A2": {
+       "value": "Maybe"
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "rules",
+   "book": "plain",
+   "make": [
+    {
+     "sheet": "S",
+     "range": "B1:B6",
+     "rule": {
+      "type": "list",
+      "formula1": "\"Yes,Maybe\"",
+      "promptTitle": "Pick",
+      "prompt": "Yes or Maybe"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "B7:B12",
+     "rule": {
+      "type": "list",
+      "formula1": "'T'!$A$1:$A$2",
+      "dropdown": false,
+      "errorStyle": "warning",
+      "errorTitle": "Not listed",
+      "error": "Pick from T"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "A1:A12",
+     "rule": {
+      "type": "whole",
+      "operator": "lessThanOrEqual",
+      "formula1": "10"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "C1:C12",
+     "rule": {
+      "type": "decimal",
+      "operator": "notBetween",
+      "formula1": "$A$3",
+      "formula2": "$A$9",
+      "allowBlank": false
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "D1:D12",
+     "rule": {
+      "type": "date",
+      "operator": "greaterThan",
+      "formula1": "DATE(2025,1,1)",
+      "errorStyle": "information"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "E1:E12",
+     "rule": {
+      "type": "time",
+      "formula1": "0.125",
+      "formula2": "0.375",
+      "showPrompt": false,
+      "prompt": "hidden prompt"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "F1:F12",
+     "rule": {
+      "type": "textLength",
+      "operator": "greaterThan",
+      "formula1": "5",
+      "showError": false
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "G1:G3 I5:I6",
+     "rule": {
+      "type": "custom",
+      "formula1": "COUNTIF($A$1:$A$12,A1)>0"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "H1:H12",
+     "rule": {
+      "type": "any",
+      "promptTitle": "Free",
+      "prompt": "Anything"
+     }
+    }
+   ]
+  },
+  {
+   "id": "groups",
+   "book": "plain",
+   "make": [
+    {
+     "sheet": "S",
+     "group": "3:6"
+    },
+    {
+     "sheet": "S",
+     "group": "4:5"
+    },
+    {
+     "sheet": "S",
+     "group": "9:10"
+    },
+    {
+     "sheet": "S",
+     "collapse": "11"
+    },
+    {
+     "sheet": "S",
+     "group": "B:C"
+    },
+    {
+     "sheet": "S",
+     "collapse": "D"
+    }
+   ]
+  },
+  {
+   "id": "groups-above",
+   "book": "plain",
+   "make": [
+    {
+     "sheet": "S",
+     "summary": {
+      "summaryBelow": false,
+      "summaryRight": false
+     }
+    },
+    {
+     "sheet": "S",
+     "group": "3:5"
+    },
+    {
+     "sheet": "S",
+     "collapse": "2"
+    },
+    {
+     "sheet": "S",
+     "group": "C:D"
+    },
+    {
+     "sheet": "S",
+     "collapse": "B"
+    }
+   ]
+  },
+  {
+   "id": "rules-and-groups",
+   "book": "plain",
+   "make": [
+    {
+     "sheet": "S",
+     "range": "B1:B6",
+     "rule": {
+      "type": "list",
+      "formula1": "\"Yes,Maybe\"",
+      "promptTitle": "Pick",
+      "prompt": "Yes or Maybe"
+     }
+    },
+    {
+     "sheet": "S",
+     "range": "A1:A12",
+     "rule": {
+      "type": "whole",
+      "operator": "lessThanOrEqual",
+      "formula1": "10"
+     }
+    },
+    {
+     "sheet": "S",
+     "group": "2:4"
+    },
+    {
+     "sheet": "S",
+     "collapse": "5"
+    }
+   ],
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 3
+   }
+  }
+ ],
+ "window": "A1:J14",
+ "sent": {
+  "rules": "f5e37d0afe05828138f6a51749380de497d4394b0b698cf532b96d913574cdfd",
+  "groups": "f5e37d0afe05828138f6a51749380de497d4394b0b698cf532b96d913574cdfd",
+  "groups-above": "f5e37d0afe05828138f6a51749380de497d4394b0b698cf532b96d913574cdfd",
+  "rules-and-groups": "f5e37d0afe05828138f6a51749380de497d4394b0b698cf532b96d913574cdfd"
+ },
+ "answers": {
+  "rules": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$1",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$1",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$1",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$1",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$E$1",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       false
+      ],
+      [
+       "$F$1",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$2",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$2",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$2",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$2",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$E$2",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       false
+      ],
+      [
+       "$F$2",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$3",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$3",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       false
+      ],
+      [
+       "$C$3",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$3",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$3",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$3",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$4",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$4",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$4",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$4",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$4",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$4",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$5",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$5",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$5",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$5",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$5",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$5",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$6",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$6",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       false
+      ],
+      [
+       "$C$6",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$D$6",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$6",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$6",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$7",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$7",
+       "validate list",
+       "operator between",
+       "=T!$A$1:$A$2",
+       "",
+       true,
+       false,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "Not listed",
+       "Pick from T",
+       true
+      ],
+      [
+       "$C$7",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$7",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$7",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$7",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$8",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$8",
+       "validate list",
+       "operator between",
+       "=T!$A$1:$A$2",
+       "",
+       true,
+       false,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "Not listed",
+       "Pick from T",
+       true
+      ],
+      [
+       "$C$8",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$8",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$8",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$8",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$9",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$9",
+       "validate list",
+       "operator between",
+       "=T!$A$1:$A$2",
+       "",
+       true,
+       false,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "Not listed",
+       "Pick from T",
+       false
+      ],
+      [
+       "$C$9",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$9",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$9",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       true
+      ],
+      [
+       "$F$9",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$10",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$10",
+       "validate list",
+       "operator between",
+       "=T!$A$1:$A$2",
+       "",
+       true,
+       false,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "Not listed",
+       "Pick from T",
+       true
+      ],
+      [
+       "$C$10",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$10",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$10",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       false
+      ],
+      [
+       "$F$10",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$11",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$11",
+       "validate list",
+       "operator between",
+       "=T!$A$1:$A$2",
+       "",
+       true,
+       false,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "Not listed",
+       "Pick from T",
+       true
+      ],
+      [
+       "$C$11",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$11",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$11",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       false
+      ],
+      [
+       "$F$11",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$12",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$12",
+       "validate list",
+       "operator between",
+       "=T!$A$1:$A$2",
+       "",
+       true,
+       false,
+       true,
+       true,
+       "valid alert warning",
+       "",
+       "",
+       "Not listed",
+       "Pick from T",
+       false
+      ],
+      [
+       "$C$12",
+       "validate decimal",
+       "operator not between",
+       "=$A$3",
+       "=$A$9",
+       false,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$12",
+       "validated date",
+       "operator greater",
+       "=DATE(2025,1,1)",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert information",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$E$12",
+       "validate time",
+       "operator between",
+       "3:00:00 AM",
+       "9:00:00 AM",
+       true,
+       true,
+       false,
+       true,
+       "valid alert stop",
+       "",
+       "hidden prompt",
+       "",
+       "",
+       false
+      ],
+      [
+       "$F$12",
+       "validate text length",
+       "operator greater",
+       "5",
+       "",
+       true,
+       true,
+       true,
+       false,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$G$1",
+       "validate custom",
+       "operator between",
+       "=COUNTIF($A$1:$A$12,A1)>0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$G$2",
+       "validate custom",
+       "operator between",
+       "=COUNTIF($A$1:$A$12,A2)>0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$G$3",
+       "validate custom",
+       "operator between",
+       "=COUNTIF($A$1:$A$12,A3)>0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$I$5",
+       "validate custom",
+       "operator between",
+       "=COUNTIF($A$1:$A$12,C5)>0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$I$6",
+       "validate custom",
+       "operator between",
+       "=COUNTIF($A$1:$A$12,C6)>0",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$1",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$2",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$3",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$4",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$5",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$6",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$7",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$8",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$9",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$10",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$11",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ],
+      [
+       "$H$12",
+       "validate input only",
+       "operator between",
+       "",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Free",
+       "Anything",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "groups": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [],
+     "rows": [
+      [
+       3,
+       1,
+       false,
+       false
+      ],
+      [
+       4,
+       2,
+       false,
+       false
+      ],
+      [
+       5,
+       2,
+       false,
+       false
+      ],
+      [
+       6,
+       1,
+       false,
+       false
+      ],
+      [
+       9,
+       1,
+       true,
+       false
+      ],
+      [
+       10,
+       1,
+       true,
+       false
+      ],
+      [
+       11,
+       0,
+       false,
+       true
+      ]
+     ],
+     "columns": [
+      [
+       "B",
+       1,
+       true,
+       false
+      ],
+      [
+       "C",
+       1,
+       true,
+       false
+      ],
+      [
+       "D",
+       0,
+       false,
+       true
+      ]
+     ],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "groups-above": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [],
+     "rows": [
+      [
+       2,
+       0,
+       false,
+       true
+      ],
+      [
+       3,
+       1,
+       true,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [
+      [
+       "B",
+       0,
+       false,
+       true
+      ],
+      [
+       "C",
+       1,
+       true,
+       false
+      ],
+      [
+       "D",
+       1,
+       true,
+       false
+      ]
+     ],
+     "summary": [
+      "summary above",
+      "summary on left"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "rules-and-groups": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$B$1",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$2",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$3",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$4",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$5",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$6",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$7",
+       "validate list",
+       "operator between",
+       "Yes,Maybe",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "Pick",
+       "Yes or Maybe",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$1",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$2",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$3",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$4",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$5",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$6",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$7",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$8",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$9",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$10",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$11",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$12",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$13",
+       "validate whole number",
+       "operator less equal",
+       "10",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [
+      [
+       2,
+       1,
+       true,
+       false
+      ],
+      [
+       3,
+       1,
+       false,
+       false
+      ],
+      [
+       4,
+       1,
+       true,
+       false
+      ],
+      [
+       5,
+       1,
+       true,
+       false
+      ]
+     ],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "T",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

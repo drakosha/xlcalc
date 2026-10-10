@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.10.0 (2026-10-10)
+
+Internal release; not published to npm. Data validation and outlines of rows and columns.
+
+Added:
+
+- Contract: `SheetInput.validations`, the sheet's rules of data validation as Excel keeps them (a range, the type: any value, whole number, decimal, date, time, text length, list or custom formula; its operator and formulas, blanks allowed, the in-cell dropdown, the input message and the error alert with its style). Its formulas are written as at the rule's first cell. Layout edit `{ sheet, validations }`.
+- Contract: `outlineLevel` (1 to 7) and `collapsed` on rows and columns, as Excel's groups, and `SheetInput.outline` (`summaryBelow`, `summaryRight`); a collapsed group is its hidden rows, which `SUBTOTAL` 101 to 111 already leave out. Layout edits for both.
+- Contract: `Session.validation(sheet, cell)` gives a cell's rule, its formulas as at that cell and, for a list, its items computed on the current book with their shown text (a literal list, a range, a name, a spill); `Session.validateEntry(sheet, cell, input)` tells whether a value meets the rule as Excel checks it (a literal list in its case, a list of cells in any case, numbers to 15 digits, custom formulas seeing the value). Both in synchronous, same-thread and pool sessions.
+- `readXlsx` and `writeXlsx` read and write data validation (Excel 2010's extension too, where a rule refers to another sheet) and outlines. Structure operations move rules as Excel does: inserted rows right after a rule's range take it, a moved range keeps the target's rule where it brings none, a copy is Paste All. Inserted rows take the outline level of the row above. Measured on the Mac and on Windows (`struct-held` 26 of 31 predictions, `struct-held-2` 14 of 15; the values checked against Excel's `Validation.Value`); `docs/validation.md`.
+
+Known differences: a list item holding a comma (Excel 365's `x12ac:list`) is read split at the comma, with an issue; texts longer than Excel's limits are cut when written.
+
 ## 0.9.0 (2026-10-10)
 
 Internal release; not published to npm. Notes, hyperlinks and frozen panes in the model, and text typed into a cell read as Excel reads it.

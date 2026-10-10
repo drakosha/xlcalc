@@ -7,12 +7,12 @@
  * portions. A call that stops (a limit, a deadline, an abort) changes nothing: what it changed in place is put back,
  * and the state is built again from the book on the next call.
  */
-import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, CellView, Clock, ComputeResult, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
+import type { BookInput, CellChange, CellEdit, CellInput, CellStyle, CellValidation, CellView, Clock, ComputeResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, Scalar, Session, SessionOptions, SessionRestructureResult, StructureOp } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
+import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
 import { applyLayout, checkStylesUsed, contentEdits } from './session/book.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
@@ -29,6 +29,7 @@ import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
+import { cellValidation, checkEntry } from './validation/session.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -48,6 +49,8 @@ export interface SessionSteps {
   book(): BookInput
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
   cells(sheet: string, range: string): Steps<Record<string, CellView>>
+  validation(sheet: string, cell: string): Steps<CellValidation | null>
+  validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
   result(): Steps<ComputeResult>
   hash(): Steps<string>
   close(): void
@@ -264,6 +267,26 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (!x) throw new InputError('range', `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(range)}`)
       return yield* cellsIn(s, i, x, display)
     },
+    *validation(sheet: string, cell: string) {
+      const s = yield* ready()
+      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
+      return cellValidation(s, i, row, col)
+    },
+    *validateEntry(sheet: string, cell: string, input: CellInput | null) {
+      const s = yield* ready()
+      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+      const { row, col } = parseAddress(checkAddress(cell, 'cell'))
+      if (input !== null) checkCell(input, 'input', styleCount(s))
+      checkArrayEdits(s, [{ sheet, cell, input }])
+      try {
+        return yield* checkEntry(s, i, row, col, input)
+      } catch (e) {
+        // the input put in for the check may still be there: the state is built again on the next call
+        stale = true
+        throw e
+      }
+    },
     *hash() {
       return yield* stateHash(yield* ready())
     },
@@ -298,6 +321,8 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     book: () => core.book(),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     cells: (sheet, range) => now(() => core.cells(sheet, range)),
+    validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
+    validateEntry: (sheet, cell, input) => now(() => core.validateEntry(sheet, cell, input)),
     result: () => now(() => core.result()),
     hash: () => now(() => core.hash()),
     close: () => core.close(),
