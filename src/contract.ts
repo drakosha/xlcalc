@@ -1105,7 +1105,7 @@ export interface Session {
    * Where a sheet's cells end: the last row and column that a cell of its input (a value, a formula, or a style, a
    * format, meta, a note or a link alone), a spilled value (the whole spill range), a merged area or a table reaches.
    * Settings of whole rows and columns, conditional formats and data validation do not count. It costs the sheet's
-   * columns and spills, not its cells.
+   * columns, spills and cells without a value, not a pass over all its cells.
    */
   extent(sheet: string): SheetExtent
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
