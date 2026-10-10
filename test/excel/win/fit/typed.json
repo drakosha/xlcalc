@@ -1,0 +1,1277 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-10-10",
+  "seconds": 21.1
+ },
+ "cases": [
+  {
+   "id": "value-date-1",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-date-2",
+   "typed": [
+    [
+     1,
+     "15-Mar-2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-date-3",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-date-4",
+   "typed": [
+    [
+     1,
+     "3/15/2026 18:30"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-money-1",
+   "typed": [
+    [
+     1,
+     "$1,234,567.50"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-money-2",
+   "typed": [
+    [
+     1,
+     "$5"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-pct-1",
+   "typed": [
+    [
+     1,
+     "12345678%"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-group-1",
+   "typed": [
+    [
+     1,
+     "1,234,567,890"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-1",
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-2",
+   "typed": [
+    [
+     1,
+     "12345678901"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-3",
+   "typed": [
+    [
+     1,
+     "123456789012"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-4",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-5",
+   "typed": [
+    [
+     1,
+     "-123456789"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-6",
+   "typed": [
+    [
+     1,
+     "3.14159265358979"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-7",
+   "typed": [
+    [
+     1,
+     "0.000001234"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-sci-1",
+   "typed": [
+    [
+     1,
+     "1.5E+300"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formatted-1",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-formatted-2",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "0.00%"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-formula-1",
+   "typed": [
+    [
+     1,
+     "=DATE(2026,3,15)"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-2",
+   "typed": [
+    [
+     1,
+     "=1234567890*10"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-3",
+   "typed": [
+    [
+     1,
+     "=1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-text-1",
+   "typed": [
+    [
+     1,
+     "abcdefghijklmnopqrstuvwxyz"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-text-2",
+   "typed": [
+    [
+     1,
+     "TRUE"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-hand-1",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "column": {
+    "width": 5
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-hand-2",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "column": {
+    "width": 8.83203125
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-fitted-1",
+   "cells": {
+    "2": {
+     "value": "ab"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-fitted-2",
+   "cells": {
+    "2": {
+     "value": "a long text in the column"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-turn-1",
+   "cells": {
+    "3": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ],
+    [
+     2,
+     "1"
+    ],
+    [
+     3,
+     "12/31/2026"
+    ],
+    [
+     4,
+     "5"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-turn-2",
+   "typed": [
+    [
+     1,
+     "123456789"
+    ],
+    [
+     2,
+     "3/15/2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "local-date-1",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-date-2",
+   "typed": [
+    [
+     1,
+     "15-Mar-2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-date-3",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-date-4",
+   "typed": [
+    [
+     1,
+     "3/15/2026 18:30"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-money-1",
+   "typed": [
+    [
+     1,
+     "$1,234,567.50"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-money-2",
+   "typed": [
+    [
+     1,
+     "$5"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-pct-1",
+   "typed": [
+    [
+     1,
+     "12345678%"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-group-1",
+   "typed": [
+    [
+     1,
+     "1,234,567,890"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-1",
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-2",
+   "typed": [
+    [
+     1,
+     "12345678901"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-3",
+   "typed": [
+    [
+     1,
+     "123456789012"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-4",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-5",
+   "typed": [
+    [
+     1,
+     "-123456789"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-6",
+   "typed": [
+    [
+     1,
+     "3.14159265358979"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-7",
+   "typed": [
+    [
+     1,
+     "0.000001234"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-sci-1",
+   "typed": [
+    [
+     1,
+     "1.5E+300"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-formatted-1",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-formatted-2",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "0.00%"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-formula-1",
+   "typed": [
+    [
+     1,
+     "=DATE(2026,3,15)"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-formula-2",
+   "typed": [
+    [
+     1,
+     "=1234567890*10"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-formula-3",
+   "typed": [
+    [
+     1,
+     "=1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-text-1",
+   "typed": [
+    [
+     1,
+     "abcdefghijklmnopqrstuvwxyz"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-text-2",
+   "typed": [
+    [
+     1,
+     "TRUE"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-hand-1",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "column": {
+    "width": 5
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-hand-2",
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "column": {
+    "width": 8.83203125
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-fitted-1",
+   "cells": {
+    "2": {
+     "value": "ab"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-fitted-2",
+   "cells": {
+    "2": {
+     "value": "a long text in the column"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-turn-1",
+   "cells": {
+    "3": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "typed": [
+    [
+     1,
+     "3/15/2026"
+    ],
+    [
+     2,
+     "1"
+    ],
+    [
+     3,
+     "12/31/2026"
+    ],
+    [
+     4,
+     "5"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-turn-2",
+   "typed": [
+    [
+     1,
+     "123456789"
+    ],
+    [
+     2,
+     "3/15/2026"
+    ]
+   ],
+   "via": "local"
+  }
+ ],
+ "answers": {
+  "value-date-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-date-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-date-3": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-date-4": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-money-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-money-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "$5 "
+   }
+  },
+  "value-pct-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-group-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-general-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+09"
+   }
+  },
+  "value-general-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+10"
+   }
+  },
+  "value-general-3": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+11"
+   }
+  },
+  "value-general-4": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567"
+   }
+  },
+  "value-general-5": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "-1.2E+08"
+   }
+  },
+  "value-general-6": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "3.141593"
+   }
+  },
+  "value-general-7": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E-06"
+   }
+  },
+  "value-sci-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-formatted-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-formatted-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-formula-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-formula-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+10"
+   }
+  },
+  "value-formula-3": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-text-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "abcdefghijklmnopqrstuvwxyz"
+   }
+  },
+  "value-text-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "TRUE"
+   }
+  },
+  "value-hand-1": {
+   "columnWidth": 4.29,
+   "points": 26.25,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "####"
+   }
+  },
+  "value-hand-2": {
+   "columnWidth": 8.14,
+   "points": 46.5,
+   "standard": false,
+   "saved": {
+    "width": 8.85546875,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "########"
+   }
+  },
+  "value-fitted-1": {
+   "columnWidth": 2.43,
+   "points": 16.5,
+   "standard": false,
+   "saved": {
+    "width": 3.140625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "##",
+    "2": "ab"
+   }
+  },
+  "value-fitted-2": {
+   "columnWidth": 22.57,
+   "points": 122.25,
+   "standard": false,
+   "saved": {
+    "width": 23.28515625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "3/15/2026",
+    "2": "a long text in the column"
+   }
+  },
+  "value-turn-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########",
+    "2": "1",
+    "3": "########",
+    "4": "5"
+   }
+  },
+  "value-turn-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+08",
+    "2": "########"
+   }
+  },
+  "local-date-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-date-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-date-3": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-date-4": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-money-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-money-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "$5 "
+   }
+  },
+  "local-pct-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-group-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-general-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+09"
+   }
+  },
+  "local-general-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+10"
+   }
+  },
+  "local-general-3": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+11"
+   }
+  },
+  "local-general-4": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567"
+   }
+  },
+  "local-general-5": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "-1.2E+08"
+   }
+  },
+  "local-general-6": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "3.141593"
+   }
+  },
+  "local-general-7": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E-06"
+   }
+  },
+  "local-sci-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-formatted-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-formatted-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-formula-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-formula-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+10"
+   }
+  },
+  "local-formula-3": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-text-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "abcdefghijklmnopqrstuvwxyz"
+   }
+  },
+  "local-text-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "TRUE"
+   }
+  },
+  "local-hand-1": {
+   "columnWidth": 4.29,
+   "points": 26.25,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "####"
+   }
+  },
+  "local-hand-2": {
+   "columnWidth": 8.14,
+   "points": 46.5,
+   "standard": false,
+   "saved": {
+    "width": 8.85546875,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "########"
+   }
+  },
+  "local-fitted-1": {
+   "columnWidth": 2.43,
+   "points": 16.5,
+   "standard": false,
+   "saved": {
+    "width": 3.140625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "##",
+    "2": "ab"
+   }
+  },
+  "local-fitted-2": {
+   "columnWidth": 22.57,
+   "points": 122.25,
+   "standard": false,
+   "saved": {
+    "width": 23.28515625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "3/15/2026",
+    "2": "a long text in the column"
+   }
+  },
+  "local-turn-1": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "########",
+    "2": "1",
+    "3": "########",
+    "4": "5"
+   }
+  },
+  "local-turn-2": {
+   "columnWidth": 8.43,
+   "points": 48,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1.23E+08",
+    "2": "########"
+   }
+  }
+ }
+}

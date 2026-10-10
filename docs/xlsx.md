@@ -73,7 +73,7 @@ Excel for Mac saves some built-in formats otherwise than by their number: the mo
 
 ### Columns, rows and merged areas
 
-A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out. A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, whether the file marks it hidden or not, and so do the reader and the engine. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
+A column gets its width when the file sets it by hand, and a row its height likewise. A width or height Excel fits by itself is left out, but a column's width that AutoFit or typing set, which Excel saves with `bestFit`, is read with `bestFit: true` and written so ([Fitting columns](formats.md#fitting-columns)). A hidden row or column gets `hidden: true` and keeps its size, the one it shows again when unhidden. Excel takes a row of height 0 or a column of width 0 as hidden, whether the file marks it hidden or not, and so do the reader and the engine. A row or column with its own look gets its style and number format. Neighbouring lines with equal settings become one span, such as `B:D` or `5:9`.
 
 ```js
 // <row r="5" ht="30" hidden="1" customHeight="1">, <col min="5" max="5" width="12" hidden="1" customWidth="1"/>
@@ -400,6 +400,7 @@ Both Excels opened every file the writer wrote without the repair window, read e
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.
+- A cell without a format of its own in a column with one is written in General: the model shows it by the column's format, Excel by the cell's own, so `{ value: 46096 }` in a column of `dddd, mmmm d, yyyy` shows `46096` in Excel (the fit set `autofit`, cases `colformat`).
 - Excel takes the part of a hyperlink's address after `#` as its place, so `https://example.com/page#top` comes back as the address `https://example.com/page` and the place `top`. It is the same link.
 - Excel saves a space in a hyperlink's address as `%20` and shows it as a space. The reader gives the address as the file holds it.
 - Excel for Windows saves a relative address of a hyperlink (`other.xlsx`) relative to the folder it saves the file to.

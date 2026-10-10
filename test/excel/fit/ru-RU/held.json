@@ -1,0 +1,1842 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-10",
+  "seconds": 37.5
+ },
+ "cases": [
+  {
+   "id": "wide-1",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbb"
+    }
+   }
+  },
+  {
+   "id": "wide-2",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbD"
+    }
+   }
+  },
+  {
+   "id": "wide-3",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbw"
+    }
+   }
+  },
+  {
+   "id": "wide-4",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbr"
+    }
+   }
+  },
+  {
+   "id": "wide-5",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbba"
+    }
+   }
+  },
+  {
+   "id": "wide-6",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbb"
+    }
+   }
+  },
+  {
+   "id": "wide-7",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbD"
+    }
+   }
+  },
+  {
+   "id": "wide-8",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbw"
+    }
+   }
+  },
+  {
+   "id": "wide-9",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbba"
+    }
+   }
+  },
+  {
+   "id": "wide-10",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbba"
+    }
+   }
+  },
+  {
+   "id": "wide-11",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbb"
+    }
+   }
+  },
+  {
+   "id": "wide-12",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbD"
+    }
+   }
+  },
+  {
+   "id": "wide-13",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbba"
+    }
+   }
+  },
+  {
+   "id": "wide-14",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+   }
+  },
+  {
+   "id": "wide-15",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbD"
+    }
+   }
+  },
+  {
+   "id": "text-1",
+   "cells": {
+    "1": {
+     "value": "Quarterly revenue by region"
+    }
+   }
+  },
+  {
+   "id": "text-2",
+   "cells": {
+    "1": {
+     "value": "Total (excl. VAT), USD"
+    }
+   }
+  },
+  {
+   "id": "text-3",
+   "cells": {
+    "1": {
+     "value": "café au lait"
+    }
+   }
+  },
+  {
+   "id": "text-4",
+   "cells": {
+    "1": {
+     "value": "naïve résumé"
+    }
+   }
+  },
+  {
+   "id": "text-5",
+   "cells": {
+    "1": {
+     "value": "€ 1,234.50"
+    }
+   }
+  },
+  {
+   "id": "text-6",
+   "cells": {
+    "1": {
+     "value": "Привет, мир!"
+    }
+   }
+  },
+  {
+   "id": "text-7",
+   "cells": {
+    "1": {
+     "value": "Итого по разделу 1"
+    }
+   }
+  },
+  {
+   "id": "text-8",
+   "cells": {
+    "1": {
+     "value": "Москва"
+    }
+   }
+  },
+  {
+   "id": "text-9",
+   "cells": {
+    "1": {
+     "value": "ёлка и ЁЛКА"
+    }
+   }
+  },
+  {
+   "id": "text-10",
+   "cells": {
+    "1": {
+     "value": "Сумма к оплате, ₽"
+    }
+   }
+  },
+  {
+   "id": "text-11",
+   "cells": {
+    "1": {
+     "value": "Mixed: Цена 100%"
+    }
+   }
+  },
+  {
+   "id": "text-12",
+   "cells": {
+    "1": {
+     "value": "x"
+    }
+   }
+  },
+  {
+   "id": "number-1",
+   "cells": {
+    "1": {
+     "value": -150000000000000000000
+    }
+   }
+  },
+  {
+   "id": "number-2",
+   "cells": {
+    "1": {
+     "value": 0.0000123456789
+    }
+   }
+  },
+  {
+   "id": "number-3",
+   "cells": {
+    "1": {
+     "value": 0.0001
+    }
+   }
+  },
+  {
+   "id": "number-4",
+   "cells": {
+    "1": {
+     "value": 1000000000000000
+    }
+   }
+  },
+  {
+   "id": "number-5",
+   "cells": {
+    "1": {
+     "value": 123456789.5
+    }
+   }
+  },
+  {
+   "id": "number-6",
+   "cells": {
+    "1": {
+     "value": -0.000012345
+    }
+   }
+  },
+  {
+   "id": "number-7",
+   "cells": {
+    "1": {
+     "value": 98765.4321
+    }
+   }
+  },
+  {
+   "id": "number-8",
+   "cells": {
+    "1": {
+     "value": 1234567.5,
+     "format": "#,##0.00 \"₽\""
+    }
+   }
+  },
+  {
+   "id": "number-9",
+   "cells": {
+    "1": {
+     "value": 0.1234,
+     "format": "0.0%"
+    }
+   }
+  },
+  {
+   "id": "number-10",
+   "cells": {
+    "1": {
+     "value": 46096,
+     "format": "dd.mm.yyyy"
+    }
+   }
+  },
+  {
+   "id": "number-11",
+   "cells": {
+    "1": {
+     "value": 46096.5208,
+     "format": "hh:mm:ss"
+    }
+   }
+  },
+  {
+   "id": "number-12",
+   "cells": {
+    "1": {
+     "value": 1.75,
+     "format": "[h]:mm:ss"
+    }
+   }
+  },
+  {
+   "id": "number-13",
+   "cells": {
+    "1": {
+     "value": -98765.4,
+     "format": "#,##0.0_);(#,##0.0)"
+    }
+   }
+  },
+  {
+   "id": "number-14",
+   "cells": {
+    "1": {
+     "value": -0.000123,
+     "format": "0.00E+00"
+    }
+   }
+  },
+  {
+   "id": "number-15",
+   "cells": {
+    "1": {
+     "value": 3.0625,
+     "format": "# ??/??"
+    }
+   }
+  },
+  {
+   "id": "number-16",
+   "cells": {
+    "1": {
+     "value": 3,
+     "format": "# ??/??"
+    }
+   }
+  },
+  {
+   "id": "number-17",
+   "cells": {
+    "1": {
+     "value": 1234.5,
+     "format": 41
+    }
+   }
+  },
+  {
+   "id": "number-18",
+   "cells": {
+    "1": {
+     "value": -1234.5,
+     "format": 42
+    }
+   }
+  },
+  {
+   "id": "number-19",
+   "cells": {
+    "1": {
+     "value": 0,
+     "format": 43
+    }
+   }
+  },
+  {
+   "id": "number-20",
+   "cells": {
+    "1": {
+     "value": 0,
+     "format": "0.00_);[Red](0.00);\"zero\"_)"
+    }
+   }
+  },
+  {
+   "id": "number-21",
+   "cells": {
+    "1": {
+     "value": 1234,
+     "format": "#,##0_W"
+    }
+   }
+  },
+  {
+   "id": "number-22",
+   "cells": {
+    "1": {
+     "value": 46096,
+     "format": "mmmm d, yyyy"
+    }
+   }
+  },
+  {
+   "id": "word-1",
+   "cells": {
+    "1": {
+     "formula": "FALSE"
+    }
+   }
+  },
+  {
+   "id": "word-2",
+   "cells": {
+    "1": {
+     "formula": "SQRT(-1)"
+    }
+   }
+  },
+  {
+   "id": "word-3",
+   "cells": {
+    "1": {
+     "formula": "INDEX(C1:C2,5)"
+    }
+   }
+  },
+  {
+   "id": "word-4",
+   "cells": {
+    "1": {
+     "formula": "C1:C2 E1:E2"
+    }
+   }
+  },
+  {
+   "id": "word-5",
+   "cells": {
+    "1": {
+     "formula": "1/0"
+    }
+   }
+  },
+  {
+   "id": "rows-1",
+   "cells": {
+    "1": {
+     "value": "ab"
+    },
+    "3": {
+     "value": 123456789012
+    },
+    "30": {
+     "value": 46096,
+     "format": "dddd, mmmm d, yyyy"
+    }
+   }
+  },
+  {
+   "id": "rows-2",
+   "cells": {
+    "1": {
+     "value": "a merged text, wider than the rest"
+    },
+    "2": {
+     "value": "short"
+    },
+    "4": {
+     "value": "down"
+    }
+   },
+   "merged": [
+    1
+   ],
+   "mergedDown": [
+    4,
+    6
+   ]
+  },
+  {
+   "id": "rows-3",
+   "cells": {
+    "2": {
+     "value": "x",
+     "format": "@"
+    },
+    "5": {
+     "formula": "REPT(\"ab\",30)"
+    }
+   },
+   "column": {
+    "width": 4
+   }
+  },
+  {
+   "id": "rows-4",
+   "cells": {
+    "1": {
+     "format": "#,##0"
+    },
+    "2": {
+     "formula": "\"\""
+    }
+   },
+   "column": {
+    "width": 30
+   }
+  },
+  {
+   "id": "rows-5",
+   "cells": {
+    "1": {
+     "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr"
+    }
+   }
+  },
+  {
+   "id": "value-exact-1",
+   "typed": [
+    [
+     1,
+     "12345678"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-decimals-1",
+   "typed": [
+    [
+     1,
+     "1234567,8"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-decimals-2",
+   "typed": [
+    [
+     1,
+     "123456789,5"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-exact-2",
+   "typed": [
+    [
+     1,
+     "1 234 567"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-fits-1",
+   "typed": [
+    [
+     1,
+     "-1234567"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-fits-2",
+   "typed": [
+    [
+     1,
+     "12:30:45"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-money-1",
+   "typed": [
+    [
+     1,
+     "12 345,67 ₽"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-datetime-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026 18:30:15"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-1",
+   "typed": [
+    [
+     1,
+     "=1/3"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-2",
+   "typed": [
+    [
+     1,
+     "=10^12"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-3",
+   "typed": [
+    [
+     1,
+     "=123456789*1000"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-pct-1",
+   "typed": [
+    [
+     1,
+     "0,5%"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "keys-exact-1",
+   "typed": [
+    [
+     1,
+     "12345678"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-decimals-1",
+   "typed": [
+    [
+     1,
+     "1234567,8"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-decimals-2",
+   "typed": [
+    [
+     1,
+     "123456789,5"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-exact-2",
+   "typed": [
+    [
+     1,
+     "1 234 567"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-fits-1",
+   "typed": [
+    [
+     1,
+     "-1234567"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-fits-2",
+   "typed": [
+    [
+     1,
+     "12:30:45"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-datetime-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026 18:30:15"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-formula-1",
+   "typed": [
+    [
+     1,
+     "=1/3"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-formula-2",
+   "typed": [
+    [
+     1,
+     "=10^12"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-formula-3",
+   "typed": [
+    [
+     1,
+     "=123456789*1000"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-pct-1",
+   "typed": [
+    [
+     1,
+     "0,5%"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-fitted-1",
+   "cells": {
+    "2": {
+     "value": "abc"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "1 234 567"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-fitted-2",
+   "cells": {
+    "2": {
+     "value": "a wide text of the column"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "123456789012345"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-hand-1",
+   "typed": [
+    [
+     1,
+     "123456789012"
+    ]
+   ],
+   "column": {
+    "width": 9
+   },
+   "via": "keys"
+  }
+ ],
+ "answers": {
+  "wide-1": {
+   "columnWidth": 14.33,
+   "points": 91,
+   "standard": false,
+   "saved": {
+    "width": 15.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbb"
+   }
+  },
+  "wide-2": {
+   "columnWidth": 14.5,
+   "points": 92,
+   "standard": false,
+   "saved": {
+    "width": 15.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbD"
+   }
+  },
+  "wide-3": {
+   "columnWidth": 14.67,
+   "points": 93,
+   "standard": false,
+   "saved": {
+    "width": 15.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbw"
+   }
+  },
+  "wide-4": {
+   "columnWidth": 15,
+   "points": 95,
+   "standard": false,
+   "saved": {
+    "width": 15.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbr"
+   }
+  },
+  "wide-5": {
+   "columnWidth": 15.17,
+   "points": 96,
+   "standard": false,
+   "saved": {
+    "width": 16,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbba"
+   }
+  },
+  "wide-6": {
+   "columnWidth": 15.5,
+   "points": 98,
+   "standard": false,
+   "saved": {
+    "width": 16.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbb"
+   }
+  },
+  "wide-7": {
+   "columnWidth": 15.67,
+   "points": 99,
+   "standard": false,
+   "saved": {
+    "width": 16.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbD"
+   }
+  },
+  "wide-8": {
+   "columnWidth": 15.83,
+   "points": 100,
+   "standard": false,
+   "saved": {
+    "width": 16.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbw"
+   }
+  },
+  "wide-9": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbba"
+   }
+  },
+  "wide-10": {
+   "columnWidth": 20.33,
+   "points": 127,
+   "standard": false,
+   "saved": {
+    "width": 21.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbba"
+   }
+  },
+  "wide-11": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "wide-12": {
+   "columnWidth": 20.83,
+   "points": 130,
+   "standard": false,
+   "saved": {
+    "width": 21.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbD"
+   }
+  },
+  "wide-13": {
+   "columnWidth": 30.67,
+   "points": 189,
+   "standard": false,
+   "saved": {
+    "width": 31.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbba"
+   }
+  },
+  "wide-14": {
+   "columnWidth": 31,
+   "points": 191,
+   "standard": false,
+   "saved": {
+    "width": 31.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   }
+  },
+  "wide-15": {
+   "columnWidth": 31.17,
+   "points": 192,
+   "standard": false,
+   "saved": {
+    "width": 32,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbD"
+   }
+  },
+  "text-1": {
+   "columnWidth": 21.5,
+   "points": 134,
+   "standard": false,
+   "saved": {
+    "width": 22.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Quarterly revenue by region"
+   }
+  },
+  "text-2": {
+   "columnWidth": 16.33,
+   "points": 103,
+   "standard": false,
+   "saved": {
+    "width": 17.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Total (excl. VAT), USD"
+   }
+  },
+  "text-3": {
+   "columnWidth": 8.5,
+   "points": 56,
+   "standard": false,
+   "saved": {
+    "width": 9.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "café au lait"
+   }
+  },
+  "text-4": {
+   "columnWidth": 10.33,
+   "points": 67,
+   "standard": false,
+   "saved": {
+    "width": 11.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "naïve résumé"
+   }
+  },
+  "text-5": {
+   "columnWidth": 8.17,
+   "points": 54,
+   "standard": false,
+   "saved": {
+    "width": 9,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "€ 1,234.50"
+   }
+  },
+  "text-6": {
+   "columnWidth": 10.67,
+   "points": 69,
+   "standard": false,
+   "saved": {
+    "width": 11.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Привет, мир!"
+   }
+  },
+  "text-7": {
+   "columnWidth": 15.17,
+   "points": 96,
+   "standard": false,
+   "saved": {
+    "width": 16,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итого по разделу 1"
+   }
+  },
+  "text-8": {
+   "columnWidth": 6.17,
+   "points": 42,
+   "standard": false,
+   "saved": {
+    "width": 7,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Москва"
+   }
+  },
+  "text-9": {
+   "columnWidth": 9.83,
+   "points": 64,
+   "standard": false,
+   "saved": {
+    "width": 10.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "ёлка и ЁЛКА"
+   }
+  },
+  "text-10": {
+   "columnWidth": 14.33,
+   "points": 91,
+   "standard": false,
+   "saved": {
+    "width": 15.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Сумма к оплате, ₽"
+   }
+  },
+  "text-11": {
+   "columnWidth": 14.33,
+   "points": 91,
+   "standard": false,
+   "saved": {
+    "width": 15.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Mixed: Цена 100%"
+   }
+  },
+  "text-12": {
+   "columnWidth": 1.17,
+   "points": 12,
+   "standard": false,
+   "saved": {
+    "width": 2,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "x"
+   }
+  },
+  "number-1": {
+   "columnWidth": 7.5,
+   "points": 50,
+   "standard": false,
+   "saved": {
+    "width": 8.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "-1,5E+20"
+   }
+  },
+  "number-2": {
+   "columnWidth": 11,
+   "points": 71,
+   "standard": false,
+   "saved": {
+    "width": 11.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1,23457E-05"
+   }
+  },
+  "number-3": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "0,0001"
+   }
+  },
+  "number-4": {
+   "columnWidth": 5,
+   "points": 35,
+   "standard": false,
+   "saved": {
+    "width": 5.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1E+15"
+   }
+  },
+  "number-5": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "123456789,5"
+   }
+  },
+  "number-6": {
+   "columnWidth": 11.83,
+   "points": 76,
+   "standard": false,
+   "saved": {
+    "width": 12.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "-0,000012345"
+   }
+  },
+  "number-7": {
+   "columnWidth": 10.33,
+   "points": 67,
+   "standard": false,
+   "saved": {
+    "width": 11.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "98765,4321"
+   }
+  },
+  "number-8": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "#############"
+   }
+  },
+  "number-9": {
+   "columnWidth": 5.17,
+   "points": 36,
+   "standard": false,
+   "saved": {
+    "width": 6,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12,3%"
+   }
+  },
+  "number-10": {
+   "columnWidth": 9.33,
+   "points": 61,
+   "standard": false,
+   "saved": {
+    "width": 10.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026"
+   }
+  },
+  "number-11": {
+   "columnWidth": 7.33,
+   "points": 49,
+   "standard": false,
+   "saved": {
+    "width": 8.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12:29:57"
+   }
+  },
+  "number-12": {
+   "columnWidth": 7.33,
+   "points": 49,
+   "standard": false,
+   "saved": {
+    "width": 8.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "42:00:00"
+   }
+  },
+  "number-13": {
+   "columnWidth": 8.17,
+   "points": 54,
+   "standard": false,
+   "saved": {
+    "width": 9,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "(98 765,4)"
+   }
+  },
+  "number-14": {
+   "columnWidth": 7.67,
+   "points": 51,
+   "standard": false,
+   "saved": {
+    "width": 8.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "-1,23E-04"
+   }
+  },
+  "number-15": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "3  1/16"
+   }
+  },
+  "number-16": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "3      "
+   }
+  },
+  "number-17": {
+   "columnWidth": 5.67,
+   "points": 39,
+   "standard": false,
+   "saved": {
+    "width": 6.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "   1 235 "
+   }
+  },
+  "number-18": {
+   "columnWidth": 7,
+   "points": 47,
+   "standard": false,
+   "saved": {
+    "width": 7.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "- 1 235 ₽ "
+   }
+  },
+  "number-19": {
+   "columnWidth": 3.83,
+   "points": 28,
+   "standard": false,
+   "saved": {
+    "width": 4.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "       -   "
+   }
+  },
+  "number-20": {
+   "columnWidth": 4,
+   "points": 29,
+   "standard": false,
+   "saved": {
+    "width": 4.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "zero "
+   }
+  },
+  "number-21": {
+   "columnWidth": 6.33,
+   "points": 43,
+   "standard": false,
+   "saved": {
+    "width": 7.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1 234 "
+   }
+  },
+  "number-22": {
+   "columnWidth": 11,
+   "points": 71,
+   "standard": false,
+   "saved": {
+    "width": 11.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "март 15, 2026"
+   }
+  },
+  "word-1": {
+   "columnWidth": 5.17,
+   "points": 36,
+   "standard": false,
+   "saved": {
+    "width": 6,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "ЛОЖЬ"
+   }
+  },
+  "word-2": {
+   "columnWidth": 7.33,
+   "points": 49,
+   "standard": false,
+   "saved": {
+    "width": 8.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "#ЧИСЛО!"
+   }
+  },
+  "word-3": {
+   "columnWidth": 8.33,
+   "points": 55,
+   "standard": false,
+   "saved": {
+    "width": 9.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "#ССЫЛКА!"
+   }
+  },
+  "word-4": {
+   "columnWidth": 7,
+   "points": 47,
+   "standard": false,
+   "saved": {
+    "width": 7.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "#ПУСТО!"
+   }
+  },
+  "word-5": {
+   "columnWidth": 6.67,
+   "points": 45,
+   "standard": false,
+   "saved": {
+    "width": 7.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "#ДЕЛ/0!"
+   }
+  },
+  "rows-1": {
+   "columnWidth": 22,
+   "points": 137,
+   "standard": false,
+   "saved": {
+    "width": 22.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "ab",
+    "3": "1,23457E+11",
+    "30": "воскресенье, март 15, 2026"
+   }
+  },
+  "rows-2": {
+   "columnWidth": 4.67,
+   "points": 33,
+   "standard": false,
+   "saved": {
+    "width": 5.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "a merged text, wider than the rest",
+    "2": "short",
+    "4": "down"
+   }
+  },
+  "rows-3": {
+   "columnWidth": 56.83,
+   "points": 346,
+   "standard": false,
+   "saved": {
+    "width": 57.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "2": "x",
+    "5": "abababababababababababababababababababababababababababababab"
+   }
+  },
+  "rows-4": {
+   "columnWidth": 29.17,
+   "points": 180,
+   "standard": false,
+   "saved": {
+    "width": 30,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "",
+    "2": ""
+   }
+  },
+  "rows-5": {
+   "columnWidth": 255,
+   "points": 1535,
+   "standard": false,
+   "saved": {
+    "width": 255.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr"
+   }
+  },
+  "value-exact-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "value-decimals-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234568"
+   }
+  },
+  "value-decimals-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+08"
+   }
+  },
+  "value-exact-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1 234 567"
+   }
+  },
+  "value-fits-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "-1234567"
+   }
+  },
+  "value-fits-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12:30:45"
+   }
+  },
+  "value-money-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-datetime-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-formula-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "0,333333"
+   }
+  },
+  "value-formula-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1E+12"
+   }
+  },
+  "value-formula-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+11"
+   }
+  },
+  "value-pct-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "0,50%"
+   }
+  },
+  "keys-exact-1": {
+   "columnWidth": 8.33,
+   "points": 55,
+   "standard": false,
+   "saved": {
+    "width": 9.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "keys-decimals-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234568"
+   }
+  },
+  "keys-decimals-2": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "123456789,5"
+   }
+  },
+  "keys-exact-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1 234 567"
+   }
+  },
+  "keys-fits-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "-1234567"
+   }
+  },
+  "keys-fits-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12:30:45"
+   }
+  },
+  "keys-datetime-1": {
+   "columnWidth": 14.17,
+   "points": 90,
+   "standard": false,
+   "saved": {
+    "width": 15,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026 18:30"
+   }
+  },
+  "keys-formula-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "0,333333"
+   }
+  },
+  "keys-formula-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1E+12"
+   }
+  },
+  "keys-formula-3": {
+   "columnWidth": 11,
+   "points": 71,
+   "standard": false,
+   "saved": {
+    "width": 11.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1,23457E+11"
+   }
+  },
+  "keys-pct-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "0,50%"
+   }
+  },
+  "keys-fitted-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": false,
+   "saved": {
+    "width": 8.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1 234 567",
+    "2": "abc"
+   }
+  },
+  "keys-fitted-2": {
+   "columnWidth": 19.5,
+   "points": 122,
+   "standard": false,
+   "saved": {
+    "width": 20.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1,23457E+14",
+    "2": "a wide text of the column"
+   }
+  },
+  "keys-hand-1": {
+   "columnWidth": 8.17,
+   "points": 54,
+   "standard": false,
+   "saved": {
+    "width": 9,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "1,23E+11"
+   }
+  }
+ }
+}

@@ -117,6 +117,11 @@ export interface ColumnInput {
    * column has Excel's default width (8 digits and the padding; Excel for Windows shows it as 8.43).
    */
   width?: number
+  /**
+   * The width is one Excel fitted, by AutoFit or as a number typed into the column widened it, not one set by hand (xlsx
+   * `bestFit`): a number typed into the column widens it again (`entryWidth`), as into a column of the default width.
+   */
+  bestFit?: boolean
   style?: number
   format?: NumberFormat
   /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
@@ -664,6 +669,15 @@ export interface DisplayOptions {
   dateSystem?: 1900 | 1904
 }
 
+/**
+ * `entryWidth`'s options: the format the value shows by (the cell's after the entry), the book's locale and date system,
+ * and the column typed into, its `width` (the default without one) and `bestFit`.
+ */
+export interface EntryWidthOptions extends DisplayOptions {
+  /** The column's width is one Excel fitted (`ColumnInput.bestFit`), which typing widens as it widens the default width. */
+  bestFit?: boolean
+}
+
 /** `parseEntry`'s options: the book text is typed into and the cell it goes to. */
 export interface EntryOptions {
   /** The book's locale, a tag of `LOCALES` (`'en-US'` by default): numbers, dates, booleans, errors and formulas are read as Excel reads them there. */
@@ -1045,6 +1059,7 @@ export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
 export type LayoutEdit =
   /** Columns `C` or `B:D`; the patch applies to each of them. */
   | { sheet: string; columns: string; set: LinePatch<ColumnInput> }
+  | ColumnsFit
   /** Rows `5` or `5:9`; the patch applies to each of them. */
   | { sheet: string; rows: string; set: LinePatch<RowInput> }
   /** All the merged areas of the sheet. */
@@ -1059,6 +1074,18 @@ export type LayoutEdit =
   | { sheet: string; validations: DataValidation[] }
   /** Where the sheet's summary rows and columns are (`SheetInput.outline`); null for Excel's default, below and right. */
   | { sheet: string; outline: OutlineSettings | null }
+
+/**
+ * Excel's AutoFit of columns `C` or `B:D` (a double click on a column's border): each column with something to show gets
+ * the width of its widest cell as Excel for Mac fits it (`fitColumns`), marked `bestFit` and shown if it was hidden; a
+ * column with nothing to show keeps its width. The widths are computed from the values and layout the edits before it
+ * leave (`docs/formats.md`, "Fitting columns").
+ */
+export interface ColumnsFit {
+  sheet: string
+  columns: string
+  fit: true
+}
 
 /**
  * A cell's data validation (`Session.validation`): the rule over it, the rule's formulas as at the cell (relative
@@ -1342,6 +1369,17 @@ export interface FormulaEngine {
   displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay
   /** Text typed into a cell as Excel takes it, without a book: by the book's locale and the cell's format, style and meta. */
   parseEntry(text: string, opts?: EntryOptions): EntryResult
+  /**
+   * The widths AutoFit gives columns `C` or `B:D` of a computed book's sheet, from the values of `result`, by column
+   * letter: null for the default width; a column with nothing to show is left out, as it keeps its width.
+   */
+  fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null>
+  /**
+   * The width a column takes as a value typed into one of its cells (the value it computes, after `setCells`) widens
+   * it, as Excel widens a column whose width is the default or one it fitted for a number AutoFit would give more room;
+   * undefined when the column keeps its width. A host sets it with `bestFit: true`.
+   */
+  entryWidth(value: CellValue, opts?: EntryWidthOptions): number | undefined
 }
 
 export const MAX_FORMULA_LENGTH = 8_192

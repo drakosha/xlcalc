@@ -255,6 +255,12 @@ function Step($xl, $wb, $s) {
       List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Str ([string]$c.Text)), (Str $c.NumberFormat), (Str $c.NumberFormatLocal), (Str ([string]$c.PrefixCharacter))) })
     }
     'autoPercent' { Cell $xl.AutoPercentEntry }
+    # AutoFit of a range's whole columns; each column's ColumnWidth, Width (points) and UseStandardWidth (bench/windows/fit.ts)
+    'autofit' { [void](Rg $wb $s.sheet $s.range).EntireColumn.AutoFit(); 'null' }
+    'widths' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      List ($s.columns | ForEach-Object { $c = $ws.Range("$($_)1"); List @((Cell ([double]$c.ColumnWidth)), (Cell ([double]$c.Width)), (Cell $c.UseStandardWidth)) })
+    }
     'set' {
       $rg = Rg $wb $s.sheet $s.cell
       try {

@@ -2,7 +2,7 @@
  * Number format codes read into sections of tokens, by a dialect's letters and separators (`Codes`): an xlsx
  * file's codes and TEXT in en-US by `EN_CODES`, TEXT in another locale by its own (`locale/rules/format.ts`).
  * Brackets give a section its colour, its condition, a currency symbol and locale (`[$₽-419]`) or elapsed time
- * (`[h]`); `"…"` and `\x` are literals, `_x` a space, `*x` a fill, `@` the text.
+ * (`[h]`); `"…"` and `\x` are literals, `_x` a space as wide as `x`, `*x` a fill, `@` the text.
  */
 import { EN_COLORS, PALETTE } from './palette.js'
 
@@ -24,7 +24,7 @@ export type Tok =
   | { t: 'ampm'; s: string }
   | { t: 'general' }
   | { t: 'text' }
-  | { t: 'pad' }
+  | { t: 'pad'; s: string }
   | { t: 'fill'; s: string }
 
 export type Ph = Extract<Tok, { t: 'ph' }>
@@ -143,7 +143,7 @@ function parseSection(text: string, codes: Codes): Section | null {
     }
     if (ch === '\\' || ch === '_' || ch === '*') {
       const next = text[i + 1] ?? ''
-      toks.push(ch === '\\' ? { t: 'lit', s: next } : ch === '_' ? { t: 'pad' } : { t: 'fill', s: next })
+      toks.push(ch === '\\' ? { t: 'lit', s: next } : ch === '_' ? { t: 'pad', s: next } : { t: 'fill', s: next })
       i += 2
       continue
     }

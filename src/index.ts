@@ -21,6 +21,7 @@ import { FUNCTIONS } from './functions.js'
 import { prepareNames } from './names.js'
 import { sheetKey, validate, validateName as checkName } from './syntax.js'
 import { parseEntry } from './entry/index.js'
+import { entryWidth, fitColumns } from './layout/fit.js'
 
 export * from './contract.js'
 export { FUNCTION_NAMES } from './functions.js'
@@ -35,6 +36,7 @@ export { restructure } from './structure/index.js'
 export { copyFormula, type CopyContext } from './structure/copy.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export { parseEntry } from './entry/index.js'
+export { entryWidth, fitColumns } from './layout/fit.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
@@ -84,4 +86,4 @@ export function displayValue(value: CellValue, opts?: DisplayOptions): CellDispl
 }
 
 /** The contract implementation as one object. */
-export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, openSession, restructure, displayValue, parseEntry }
+export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, openSession, restructure, displayValue, parseEntry, fitColumns, entryWidth }

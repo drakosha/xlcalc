@@ -179,6 +179,8 @@ function columns(head: string, read: CellsContext): Record<string, ColumnInput> 
     const col: ColumnInput = {}
     const where = { sheet: read.sheet, cell: `${spanKey(lo, hi, 'c').replace(/^([A-Z]+)$/, '$1:$1')}` }
     if (a.width !== undefined && flag(a.customWidth)) col.width = Math.min(255, Number(a.width))
+    // a width Excel fitted, which typing widens again
+    if (col.width !== undefined && flag(a.bestFit)) col.bestFit = true
     // Excel hides a column of width 0 whatever its flag
     if (flag(a.hidden) || col.width === 0) col.hidden = true
     if (a.style !== undefined) Object.assign(col, look(read.xfs[Number(a.style)], read.issues, where))

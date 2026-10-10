@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.15.0 (2026-10-10)
+
+Internal release; not published to npm. Columns as wide as Excel makes them.
+
+Added:
+
+- Contract: AutoFit. The layout edit `{ sheet, columns, fit: true }` gives the columns the widths Excel for Mac's AutoFit gives them (a double click on a column's border) by what their cells show: text, numbers by their formats, dates, booleans, errors, spills, hidden rows, cells merged down; cells merged across columns are left out, a column with nothing to show keeps its width and a hidden one is shown. `fitColumns(book, result, sheet, columns)` gives the same widths for a computed book without a session (`null`: the default width).
+- Contract: `entryWidth(value, opts)`, the width Excel gives a column whose width nobody set when a number, a date or a formula's number is typed into it and would not show whole (`15.03.2026` in ru-RU): AutoFit's width when it is more, never narrower; General that only drops decimals keeps the column. Excel widens a column only for what is typed on the keyboard, not for values set through its object model.
+- Contract: `ColumnInput.bestFit`, a width Excel fitted, which typing widens again; read and written in xlsx (`bestFit`).
+- Text outside ASCII is measured by the advance widths of Carlito, a font metrically compatible with Calibri (SIL OFL 1.1, `THIRD_PARTY.md`), as Excel for Mac measures it for AutoFit.
+- Measured with the engine's answers committed before each run: on the Mac 994 columns in four sets (`fit/autofit`, `typed`, `glyphs`, `held` in en-US and ru-RU), the widths and shown text as Excel's but for 67 known differences (`test/fit-known.ts`: Excel for Mac's own short date and month names where the engine follows Windows, Cyrillic within a point, a cell's own font, scripts outside the tables); on Windows 912 columns, the same columns fitted and kept, at Windows's own widths (below).
+
+Known differences: Excel for Windows lays text out in pixels, so its widths differ from the Mac's the engine follows (a long date 21.71 there, 19.66 here); a cell's own font, size and boldness are not taken into account. Found on the way and not yet fixed: `writeXlsx` writes a cell without a format of its own in a formatted row or column without that format, and Excel shows it as General (46096 for a date).
+
 ## 0.14.0 (2026-10-10)
 
 Internal release; not published to npm. Hidden sheets, and percent text read to the last bit.

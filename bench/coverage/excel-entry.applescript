@@ -6,7 +6,7 @@
 -- before each text; an empty text is not typed), each followed by Return; the window Excel shows for a formula it does
 -- not take is answered (`answerDialog`) and its text is the text's refusal.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the texts as
--- a JSON array of strings, "keys" or nothing.
+-- a JSON array of strings, "keys" and the path of excel-keys.applescript, or nothing.
 -- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix, value], ...]},
 -- the value "" for a cell whose value is no number (or a date), or that shows an error.
 use AppleScript version "2.4"
@@ -25,6 +25,7 @@ on run argv
 	set cellsOut to {}
 	set n to count of texts
 	set byKeys to (count of argv) > 4 and item 5 of argv is "keys"
+	if byKeys then set kb to my keysLib(item 6 of argv)
 	tell application "Microsoft Excel"
 		with timeout of 150 seconds
 			set wb to open workbook workbook file name hfs
@@ -36,7 +37,7 @@ on run argv
 					select range ("A" & i) of ws
 					set t to item i of texts
 					set er to ""
-					if t is not "" then set er to my typeKeys(t)
+					if t is not "" then set er to kb's typeKeys(t)
 					set end of refusedOut to er
 				end repeat
 			else
@@ -80,63 +81,8 @@ on run argv
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
 
--- a text typed into the selected cell, then Return; Excel must be the application in front. A window Excel shows for it
--- (a formula it does not take) is answered with OK, and Escape leaves the cell as it was: its text is returned.
-on typeKeys(t)
-	tell application "System Events"
-		set fp to name of first application process whose frontmost is true
-		if fp is not "Microsoft Excel" then error "Excel is not in front: " & fp
-		keystroke t
-		delay 0.2
-		keystroke return
-	end tell
-	delay 1
-	return my answerDialog()
-end typeKeys
-
--- Excel's windows that are not books, answered in turn: No to a correction it offers ("We found a typo in your
--- formula"), OK to the window that says why the formula is not taken; then Escape leaves the cell as it was. Their texts.
-on answerDialog()
-	set said to ""
-	repeat 5 times
-		set found to false
-		tell application "System Events" to tell process "Microsoft Excel"
-			repeat with w in windows
-				set sr to ""
-				try
-					set sr to subrole of w
-				end try
-				if sr is not "AXStandardWindow" then
-					set tx to ""
-					repeat with x in (static texts of w)
-						try
-							set v to value of x
-							if v is not missing value then set tx to tx & (v as text) & " "
-						end try
-					end repeat
-					set said to said & tx & "| "
-					set names to name of every button of w
-					if names contains "No" then
-						click button "No" of w
-					else if names contains "Нет" then
-						click button "Нет" of w
-					else if names contains "OK" then
-						click button "OK" of w
-					else if names contains "ОК" then
-						click button "ОК" of w
-					else
-						error "an Excel window without No or OK: " & tx
-					end if
-					set found to true
-					exit repeat
-				end if
-			end repeat
-		end tell
-		if not found then exit repeat
-		delay 1
-	end repeat
-	if said is "" then return ""
-	tell application "System Events" to key code 53
-	delay 0.5
-	return "dialog: " & said
-end answerDialog
+-- the handlers of excel-keys.applescript (its path `p`) as a script object
+on keysLib(p)
+	set src to (current application's NSString's stringWithContentsOfFile:p encoding:4 |error|:(missing value)) as text
+	return run script ("script K" & linefeed & src & linefeed & "end script" & linefeed & "return K")
+end keysLib

@@ -74,7 +74,7 @@ async function runPart(part: EntryCase[], label: string, keys: boolean): Promise
     const { data, issues } = await writeXlsx(entryBook(part))
     if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
-    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys'] : [])])
+    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys', join(HERE, 'excel-keys.applescript')] : [])])
     let out = ''
     let err = ''
     child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))

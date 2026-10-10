@@ -24,6 +24,7 @@ import { applyStep, bookStep, cellsStep, History, layoutStep, stylesStep, type H
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
 import { dropStats } from './cond/stats.js'
+import { fitEdits } from './layout/fit.js'
 import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
@@ -288,11 +289,12 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     },
     *setLayout(edits: LayoutEdit[]) {
       const s = yield* ready()
-      const checked = checkLayoutEdits(edits, sheetIndex(s), styleCount(s))
+      // AutoFit becomes the widths it sets
+      const checked = fitEdits(s, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)))
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
       const next = applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
       const [out, before] = yield* relayout(s, next, shown)
-      if (checked.length) keep(() => layoutStep('setLayout', before, next))
+      if (edits.length) keep(() => layoutStep('setLayout', before, next))
       return out
     },
     book() {

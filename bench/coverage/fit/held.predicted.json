@@ -1,0 +1,1051 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "wide-1": {
+    "width": 15.1640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbb"
+    }
+   },
+   "wide-2": {
+    "width": 15.33203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbD"
+    }
+   },
+   "wide-3": {
+    "width": 15.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbw"
+    }
+   },
+   "wide-4": {
+    "width": 15.83203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbr"
+    }
+   },
+   "wide-5": {
+    "width": 16,
+    "texts": {
+     "1": "bbbbbbbbbbbbbba"
+    }
+   },
+   "wide-6": {
+    "width": 16.33203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbb"
+    }
+   },
+   "wide-7": {
+    "width": 16.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbD"
+    }
+   },
+   "wide-8": {
+    "width": 16.6640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbw"
+    }
+   },
+   "wide-9": {
+    "width": 17.1640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbba"
+    }
+   },
+   "wide-10": {
+    "width": 21.1640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbba"
+    }
+   },
+   "wide-11": {
+    "width": 21.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbb"
+    }
+   },
+   "wide-12": {
+    "width": 21.6640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbD"
+    }
+   },
+   "wide-13": {
+    "width": 31.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbba"
+    }
+   },
+   "wide-14": {
+    "width": 31.83203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+   },
+   "wide-15": {
+    "width": 32,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbD"
+    }
+   },
+   "text-1": {
+    "width": 22.33203125,
+    "texts": {
+     "1": "Quarterly revenue by region"
+    }
+   },
+   "text-2": {
+    "width": 17.1640625,
+    "texts": {
+     "1": "Total (excl. VAT), USD"
+    }
+   },
+   "text-3": {
+    "width": 9.33203125,
+    "texts": {
+     "1": "café au lait"
+    }
+   },
+   "text-4": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "naïve résumé"
+    }
+   },
+   "text-5": {
+    "width": 9,
+    "texts": {
+     "1": "€ 1,234.50"
+    }
+   },
+   "text-6": {
+    "width": 11.5,
+    "texts": {
+     "1": "Привет, мир!"
+    }
+   },
+   "text-7": {
+    "width": 16.1640625,
+    "texts": {
+     "1": "Итого по разделу 1"
+    }
+   },
+   "text-8": {
+    "width": 7,
+    "texts": {
+     "1": "Москва"
+    }
+   },
+   "text-9": {
+    "width": 10.6640625,
+    "texts": {
+     "1": "ёлка и ЁЛКА"
+    }
+   },
+   "text-10": {
+    "width": 15.1640625,
+    "texts": {
+     "1": "Сумма к оплате, ₽"
+    }
+   },
+   "text-11": {
+    "width": 15.1640625,
+    "texts": {
+     "1": "Mixed: Цена 100%"
+    }
+   },
+   "text-12": {
+    "width": 2,
+    "texts": {
+     "1": "x"
+    }
+   },
+   "number-1": {
+    "width": 8.33203125,
+    "texts": {
+     "1": "-1.5E+20"
+    }
+   },
+   "number-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1.23457E-05"
+    }
+   },
+   "number-3": {
+    "width": 7.1640625,
+    "texts": {
+     "1": "0.0001"
+    }
+   },
+   "number-4": {
+    "width": 5.83203125,
+    "texts": {
+     "1": "1E+15"
+    }
+   },
+   "number-5": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "123456789.5"
+    }
+   },
+   "number-6": {
+    "width": 12.6640625,
+    "texts": {
+     "1": "-0.000012345"
+    }
+   },
+   "number-7": {
+    "width": 11.1640625,
+    "texts": {
+     "1": "98765.4321"
+    }
+   },
+   "number-8": {
+    "width": 12.33203125,
+    "texts": {
+     "1": "#############"
+    }
+   },
+   "number-9": {
+    "width": 6,
+    "texts": {
+     "1": "12.3%"
+    }
+   },
+   "number-10": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "number-11": {
+    "width": 8.1640625,
+    "texts": {
+     "1": "12:29:57"
+    }
+   },
+   "number-12": {
+    "width": 8.1640625,
+    "texts": {
+     "1": "42:00:00"
+    }
+   },
+   "number-13": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "(98,765.4)"
+    }
+   },
+   "number-14": {
+    "width": 8.5,
+    "texts": {
+     "1": "-1.23E-04"
+    }
+   },
+   "number-15": {
+    "width": 7.1640625,
+    "texts": {
+     "1": "3  1/16"
+    }
+   },
+   "number-16": {
+    "width": 7.5,
+    "texts": {
+     "1": "3      "
+    }
+   },
+   "number-17": {
+    "width": 6.6640625,
+    "texts": {
+     "1": "   1,235 "
+    }
+   },
+   "number-18": {
+    "width": 8.1640625,
+    "texts": {
+     "1": " $ (1,235)"
+    }
+   },
+   "number-19": {
+    "width": 4.6640625,
+    "texts": {
+     "1": "       -   "
+    }
+   },
+   "number-20": {
+    "width": 4.83203125,
+    "texts": {
+     "1": "zero "
+    }
+   },
+   "number-21": {
+    "width": 7.33203125,
+    "texts": {
+     "1": "1,234 "
+    }
+   },
+   "number-22": {
+    "width": 13.1640625,
+    "texts": {
+     "1": "March 15, 2026"
+    }
+   },
+   "word-1": {
+    "width": 5.5,
+    "texts": {
+     "1": "FALSE"
+    }
+   },
+   "word-2": {
+    "width": 6.5,
+    "texts": {
+     "1": "#NUM!"
+    }
+   },
+   "word-3": {
+    "width": 5.33203125,
+    "texts": {
+     "1": "#REF!"
+    }
+   },
+   "word-4": {
+    "width": 6.6640625,
+    "texts": {
+     "1": "#NULL!"
+    }
+   },
+   "word-5": {
+    "width": 7,
+    "texts": {
+     "1": "#DIV/0!"
+    }
+   },
+   "rows-1": {
+    "width": 19.6640625,
+    "texts": {
+     "1": "ab",
+     "3": "1.23457E+11",
+     "30": "Sunday, March 15, 2026"
+    }
+   },
+   "rows-2": {
+    "width": 5.5,
+    "texts": {
+     "1": "a merged text, wider than the rest",
+     "2": "short",
+     "4": "down"
+    }
+   },
+   "rows-3": {
+    "width": 57.6640625,
+    "texts": {
+     "2": "x",
+     "5": "abababababababababababababababababababababababababababababab"
+    }
+   },
+   "rows-4": {
+    "width": 30,
+    "texts": {
+     "1": "",
+     "2": ""
+    }
+   },
+   "rows-5": {
+    "width": 255,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr"
+    }
+   },
+   "value-exact-1": {
+    "width": null,
+    "texts": {
+     "1": "12345678"
+    }
+   },
+   "value-decimals-1": {
+    "width": null,
+    "texts": {
+     "1": "1234568"
+    }
+   },
+   "value-decimals-2": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "123456789.5"
+    }
+   },
+   "value-exact-2": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "1,234,567"
+    }
+   },
+   "value-fits-1": {
+    "width": null,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "value-fits-2": {
+    "width": null,
+    "texts": {
+     "1": "12:30:45"
+    }
+   },
+   "value-money-1": {
+    "width": 10.6640625,
+    "texts": {
+     "1": "$12,345.67 "
+    }
+   },
+   "value-datetime-1": {
+    "width": 14.33203125,
+    "texts": {
+     "1": "3/15/2026 18:30"
+    }
+   },
+   "value-formula-1": {
+    "width": null,
+    "texts": {
+     "1": "0.333333"
+    }
+   },
+   "value-formula-2": {
+    "width": null,
+    "texts": {
+     "1": "1E+12"
+    }
+   },
+   "value-formula-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   },
+   "value-pct-1": {
+    "width": null,
+    "texts": {
+     "1": "0.50%"
+    }
+   },
+   "keys-exact-1": {
+    "width": null,
+    "texts": {
+     "1": "12345678"
+    }
+   },
+   "keys-decimals-1": {
+    "width": null,
+    "texts": {
+     "1": "1234568"
+    }
+   },
+   "keys-decimals-2": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "123456789.5"
+    }
+   },
+   "keys-exact-2": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "1,234,567"
+    }
+   },
+   "keys-fits-1": {
+    "width": null,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "keys-fits-2": {
+    "width": null,
+    "texts": {
+     "1": "12:30:45"
+    }
+   },
+   "keys-money-1": {
+    "width": 10.6640625,
+    "texts": {
+     "1": "$12,345.67 "
+    }
+   },
+   "keys-datetime-1": {
+    "width": 14.33203125,
+    "texts": {
+     "1": "3/15/2026 18:30"
+    }
+   },
+   "keys-formula-1": {
+    "width": null,
+    "texts": {
+     "1": "0.333333"
+    }
+   },
+   "keys-formula-2": {
+    "width": null,
+    "texts": {
+     "1": "1E+12"
+    }
+   },
+   "keys-formula-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   },
+   "keys-pct-1": {
+    "width": null,
+    "texts": {
+     "1": "0.50%"
+    }
+   },
+   "keys-fitted-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "1,234,567",
+     "2": "abc"
+    }
+   },
+   "keys-fitted-2": {
+    "width": 20.33203125,
+    "texts": {
+     "1": "1.23457E+14",
+     "2": "a wide text of the column"
+    }
+   },
+   "keys-hand-1": {
+    "width": 9,
+    "texts": {
+     "1": "1.23E+11"
+    }
+   }
+  },
+  "ru-RU": {
+   "wide-1": {
+    "width": 15.1640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbb"
+    }
+   },
+   "wide-2": {
+    "width": 15.33203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbD"
+    }
+   },
+   "wide-3": {
+    "width": 15.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbw"
+    }
+   },
+   "wide-4": {
+    "width": 15.83203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbr"
+    }
+   },
+   "wide-5": {
+    "width": 16,
+    "texts": {
+     "1": "bbbbbbbbbbbbbba"
+    }
+   },
+   "wide-6": {
+    "width": 16.33203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbb"
+    }
+   },
+   "wide-7": {
+    "width": 16.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbD"
+    }
+   },
+   "wide-8": {
+    "width": 16.6640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbw"
+    }
+   },
+   "wide-9": {
+    "width": 17.1640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbba"
+    }
+   },
+   "wide-10": {
+    "width": 21.1640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbba"
+    }
+   },
+   "wide-11": {
+    "width": 21.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbb"
+    }
+   },
+   "wide-12": {
+    "width": 21.6640625,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbD"
+    }
+   },
+   "wide-13": {
+    "width": 31.5,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbba"
+    }
+   },
+   "wide-14": {
+    "width": 31.83203125,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+   },
+   "wide-15": {
+    "width": 32,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbD"
+    }
+   },
+   "text-1": {
+    "width": 22.33203125,
+    "texts": {
+     "1": "Quarterly revenue by region"
+    }
+   },
+   "text-2": {
+    "width": 17.1640625,
+    "texts": {
+     "1": "Total (excl. VAT), USD"
+    }
+   },
+   "text-3": {
+    "width": 9.33203125,
+    "texts": {
+     "1": "café au lait"
+    }
+   },
+   "text-4": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "naïve résumé"
+    }
+   },
+   "text-5": {
+    "width": 9,
+    "texts": {
+     "1": "€ 1,234.50"
+    }
+   },
+   "text-6": {
+    "width": 11.5,
+    "texts": {
+     "1": "Привет, мир!"
+    }
+   },
+   "text-7": {
+    "width": 16.1640625,
+    "texts": {
+     "1": "Итого по разделу 1"
+    }
+   },
+   "text-8": {
+    "width": 7,
+    "texts": {
+     "1": "Москва"
+    }
+   },
+   "text-9": {
+    "width": 10.6640625,
+    "texts": {
+     "1": "ёлка и ЁЛКА"
+    }
+   },
+   "text-10": {
+    "width": 15.1640625,
+    "texts": {
+     "1": "Сумма к оплате, ₽"
+    }
+   },
+   "text-11": {
+    "width": 15.1640625,
+    "texts": {
+     "1": "Mixed: Цена 100%"
+    }
+   },
+   "text-12": {
+    "width": 2,
+    "texts": {
+     "1": "x"
+    }
+   },
+   "number-1": {
+    "width": 8.33203125,
+    "texts": {
+     "1": "-1,5E+20"
+    }
+   },
+   "number-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1,23457E-05"
+    }
+   },
+   "number-3": {
+    "width": 7.1640625,
+    "texts": {
+     "1": "0,0001"
+    }
+   },
+   "number-4": {
+    "width": 5.83203125,
+    "texts": {
+     "1": "1E+15"
+    }
+   },
+   "number-5": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "123456789,5"
+    }
+   },
+   "number-6": {
+    "width": 12.6640625,
+    "texts": {
+     "1": "-0,000012345"
+    }
+   },
+   "number-7": {
+    "width": 11.1640625,
+    "texts": {
+     "1": "98765,4321"
+    }
+   },
+   "number-8": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "#############"
+    }
+   },
+   "number-9": {
+    "width": 6,
+    "texts": {
+     "1": "12,3%"
+    }
+   },
+   "number-10": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "number-11": {
+    "width": 8.1640625,
+    "texts": {
+     "1": "12:29:57"
+    }
+   },
+   "number-12": {
+    "width": 8.1640625,
+    "texts": {
+     "1": "42:00:00"
+    }
+   },
+   "number-13": {
+    "width": 9,
+    "texts": {
+     "1": "(98 765,4)"
+    }
+   },
+   "number-14": {
+    "width": 8.5,
+    "texts": {
+     "1": "-1,23E-04"
+    }
+   },
+   "number-15": {
+    "width": 7.1640625,
+    "texts": {
+     "1": "3  1/16"
+    }
+   },
+   "number-16": {
+    "width": 7.5,
+    "texts": {
+     "1": "3      "
+    }
+   },
+   "number-17": {
+    "width": 6.5,
+    "texts": {
+     "1": "   1 235 "
+    }
+   },
+   "number-18": {
+    "width": 7.83203125,
+    "texts": {
+     "1": "- 1 235 ₽ "
+    }
+   },
+   "number-19": {
+    "width": 4.6640625,
+    "texts": {
+     "1": "       -   "
+    }
+   },
+   "number-20": {
+    "width": 4.83203125,
+    "texts": {
+     "1": "zero "
+    }
+   },
+   "number-21": {
+    "width": 7.1640625,
+    "texts": {
+     "1": "1 234 "
+    }
+   },
+   "number-22": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "Март 15, 2026"
+    }
+   },
+   "word-1": {
+    "width": 6,
+    "texts": {
+     "1": "ЛОЖЬ"
+    }
+   },
+   "word-2": {
+    "width": 8.1640625,
+    "texts": {
+     "1": "#ЧИСЛО!"
+    }
+   },
+   "word-3": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "#ССЫЛКА!"
+    }
+   },
+   "word-4": {
+    "width": 7.83203125,
+    "texts": {
+     "1": "#ПУСТО!"
+    }
+   },
+   "word-5": {
+    "width": 7.5,
+    "texts": {
+     "1": "#ДЕЛ/0!"
+    }
+   },
+   "rows-1": {
+    "width": 23.1640625,
+    "texts": {
+     "1": "ab",
+     "3": "1,23457E+11",
+     "30": "воскресенье, Март 15, 2026"
+    }
+   },
+   "rows-2": {
+    "width": 5.5,
+    "texts": {
+     "1": "a merged text, wider than the rest",
+     "2": "short",
+     "4": "down"
+    }
+   },
+   "rows-3": {
+    "width": 57.6640625,
+    "texts": {
+     "2": "x",
+     "5": "abababababababababababababababababababababababababababababab"
+    }
+   },
+   "rows-4": {
+    "width": 30,
+    "texts": {
+     "1": "",
+     "2": ""
+    }
+   },
+   "rows-5": {
+    "width": 255,
+    "texts": {
+     "1": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbr"
+    }
+   },
+   "value-exact-1": {
+    "width": null,
+    "texts": {
+     "1": "12345678"
+    }
+   },
+   "value-decimals-1": {
+    "width": null,
+    "texts": {
+     "1": "1234568"
+    }
+   },
+   "value-decimals-2": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "123456789,5"
+    }
+   },
+   "value-exact-2": {
+    "width": null,
+    "texts": {
+     "1": "1 234 567"
+    }
+   },
+   "value-fits-1": {
+    "width": null,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "value-fits-2": {
+    "width": null,
+    "texts": {
+     "1": "12:30:45"
+    }
+   },
+   "value-money-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "##########"
+    }
+   },
+   "value-datetime-1": {
+    "width": 15,
+    "texts": {
+     "1": "15.03.2026 18:30"
+    }
+   },
+   "value-formula-1": {
+    "width": null,
+    "texts": {
+     "1": "0,333333"
+    }
+   },
+   "value-formula-2": {
+    "width": null,
+    "texts": {
+     "1": "1E+12"
+    }
+   },
+   "value-formula-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   },
+   "value-pct-1": {
+    "width": null,
+    "texts": {
+     "1": "0,50%"
+    }
+   },
+   "keys-exact-1": {
+    "width": null,
+    "texts": {
+     "1": "12345678"
+    }
+   },
+   "keys-decimals-1": {
+    "width": null,
+    "texts": {
+     "1": "1234568"
+    }
+   },
+   "keys-decimals-2": {
+    "width": 12.1640625,
+    "texts": {
+     "1": "123456789,5"
+    }
+   },
+   "keys-exact-2": {
+    "width": null,
+    "texts": {
+     "1": "1 234 567"
+    }
+   },
+   "keys-fits-1": {
+    "width": null,
+    "texts": {
+     "1": "-1234567"
+    }
+   },
+   "keys-fits-2": {
+    "width": null,
+    "texts": {
+     "1": "12:30:45"
+    }
+   },
+   "keys-datetime-1": {
+    "width": 15,
+    "texts": {
+     "1": "15.03.2026 18:30"
+    }
+   },
+   "keys-formula-1": {
+    "width": null,
+    "texts": {
+     "1": "0,333333"
+    }
+   },
+   "keys-formula-2": {
+    "width": null,
+    "texts": {
+     "1": "1E+12"
+    }
+   },
+   "keys-formula-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   },
+   "keys-pct-1": {
+    "width": null,
+    "texts": {
+     "1": "0,50%"
+    }
+   },
+   "keys-fitted-1": {
+    "width": null,
+    "texts": {
+     "1": "1 234 567",
+     "2": "abc"
+    }
+   },
+   "keys-fitted-2": {
+    "width": 20.33203125,
+    "texts": {
+     "1": "1,23457E+14",
+     "2": "a wide text of the column"
+    }
+   },
+   "keys-hand-1": {
+    "width": 9,
+    "texts": {
+     "1": "1,23E+11"
+    }
+   }
+  }
+ }
+}
