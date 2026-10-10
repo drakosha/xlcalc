@@ -19,7 +19,7 @@ export const WIN_KNOWN: Known = {
 const SETS = [...condSets('win/cond/'), ...condSets('win/cond/ru-RU/')]
 
 describe('conditional formats against Excel for Windows', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['files', 'held', 'held-2', 'looks', 'looks-ru', 'made', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'files', 'held', 'held-2', 'looks', 'looks-ru', 'made', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, WIN_KNOWN)).toEqual([]))
 })
 

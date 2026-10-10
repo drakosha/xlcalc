@@ -5,7 +5,9 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import type { BookInput, ConditionalFormat } from '../src/contract.js'
+import type { BookInput, ConditionalFormat, DataValidation } from '../src/contract.js'
+import { restructure, validateFormula } from '../src/index.js'
+import { buildCondCases as buildBoth } from '../bench/coverage/cond/both.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, read } from './xlsx-fixtures.js'
@@ -113,6 +115,21 @@ describe('conditional formats in xlsx', () => {
       'a conditional format of type unknownKind is not in the model',
       "a pivot table's conditional formatting is not in the model",
     ])
+  })
+
+  it('the files both Excels saved of a sheet with conditional formats, data validation and grouped rows hold what the engine holds', async () => {
+    const built = buildBoth()
+    const canon = (f: string | undefined) => (f === undefined ? f : (validateFormula(f) as { canonical: string }).canonical)
+    const norm = (vs: DataValidation[] = []) => vs.map((x) => ({ ...x, operator: x.operator ?? 'between', formula1: canon(x.formula1), formula2: canon(x.formula2) })).sort((a, b) => (a.range < b.range ? -1 : 1))
+    for (const dir of ['./excel/cond/both/', './excel/win/cond/both/'])
+      for (const c of built.cases) {
+        const r = await readXlsx(new Uint8Array(readFileSync(new URL(`${dir}${c.id}.xlsx`, import.meta.url))))
+        const r2 = c.op ? restructure(built.books.both, c.op) : { ok: true as const, book: built.books.both }
+        if (!r2.ok) throw new Error(r2.code)
+        expect(r.issues, `${dir}${c.id}`).toEqual([])
+        expect(norm(r.book.sheets[0].validations), `${dir}${c.id}`).toEqual(norm(r2.book.sheets[0].validations))
+        expect(r.book.sheets[0].rows, `${dir}${c.id}`).toEqual(r2.book.sheets[0].rows)
+      }
   })
 
   it("the rules Excel for Windows made through COM read from the file it saved, with Excel's defaults", async () => {
