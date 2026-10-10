@@ -1,0 +1,5830 @@
+{
+ "day": "2026-10-10",
+ "cell-is": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 B10 B11 B12 B2 B3 B4 B5 B6 B7 B8 B9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "C1 C10 C11 C12 C2 C3 C4 C5 C6 C7 C8 C9",
+     "type": "cellIs",
+     "operator": "lessThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "D1 D10 D11 D12 D2 D3 D4 D5 D6 D7 D8 D9",
+     "type": "cellIs",
+     "operator": "equal",
+     "formulas": [
+      "\"ABC\""
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "E1 E10 E11 E12 E2 E3 E4 E5 E6 E7 E8 E9",
+     "type": "cellIs",
+     "operator": "between",
+     "formulas": [
+      "10",
+      "1"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "F1 F10 F11 F12 F2 F3 F4 F5 F6 F7 F8 F9",
+     "type": "cellIs",
+     "operator": "notBetween",
+     "formulas": [
+      "1",
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "G1 G10 G11 G12 G2 G3 G4 G5 G6 G7 G8 G9",
+     "type": "cellIs",
+     "operator": "notEqual",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "H1 H10 H11 H12 H2 H3 H4 H5 H6 H7 H8 H9",
+     "type": "cellIs",
+     "operator": "greaterThanOrEqual",
+     "formulas": [
+      "\"abc\""
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "I1 I10 I11 I12 I2 I3 I4 I5 I6 I7 I8 I9",
+     "type": "cellIs",
+     "operator": "lessThanOrEqual",
+     "formulas": [
+      "$Z1"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I2": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H3": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I3": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "abc",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "abc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "abc",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "abc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "abc",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "abc",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H4": {
+     "text": "abc",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I4": {
+     "text": "abc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H5": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I5": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H6": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I6": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "0",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "0",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G8": {
+     "text": "0",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H8": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I8": {
+     "text": "0",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "-3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C9": {
+     "text": "-3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D9": {
+     "text": "-3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "-3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "-3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G9": {
+     "text": "-3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H9": {
+     "text": "-3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I9": {
+     "text": "-3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G10": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B11": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C11": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D11": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E11": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F11": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G11": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H11": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I11": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B12": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C12": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D12": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E12": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F12": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G12": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H12": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I12": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "expression": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 B2 B3 B4 B5 B6",
+     "type": "expression",
+     "formula": "$A1>3",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "C1 C2 C3 C4 C5 C6",
+     "type": "expression",
+     "formula": "$A$1:$A$6>3",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "D1 D2 D3 D4 D5 D6",
+     "type": "expression",
+     "formula": "IF($A1>3,\"TRUE\",\"\")",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "E1 E2 E3 E4 E5 E6",
+     "type": "expression",
+     "formula": "$A1",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "F1 F2 F3 F4 F5 F6",
+     "type": "expression",
+     "formula": "1/($A1-3)",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "G1 G2 G3 G4 G5 G6",
+     "type": "expression",
+     "formula": "MOD(ROW(),2)=0",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "H3 H4 H5 H6 J1 J2 J3",
+     "type": "expression",
+     "formula": "$A1>2",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "K1 K2 K3 K4 K5 K6",
+     "type": "expression",
+     "formula": "$A1>lim",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "L1 L2 L3 L4 L5 L6",
+     "type": "expression",
+     "formula": "$A1>'T'!$A$1",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    }
+   ],
+   "T": []
+  },
+  "looks": {
+   "S": {
+    "B1": {
+     "text": "B1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "C1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "D1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "E1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "F1",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "G1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H1": {
+     "text": "H1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I1": {
+     "text": "I1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J1": {
+     "text": "J1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K1": {
+     "text": "K1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L1": {
+     "text": "L1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "B2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "C2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "D2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "E2",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "F2",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "G2",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H2": {
+     "text": "H2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I2": {
+     "text": "I2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J2": {
+     "text": "J2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K2": {
+     "text": "K2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L2": {
+     "text": "L2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "B3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "C3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "D3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "E3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "F3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "G3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H3": {
+     "text": "H3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I3": {
+     "text": "I3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J3": {
+     "text": "J3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K3": {
+     "text": "K3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L3": {
+     "text": "L3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "B4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "C4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "D4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "E4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "F4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "G4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H4": {
+     "text": "H4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I4": {
+     "text": "I4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J4": {
+     "text": "J4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K4": {
+     "text": "K4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L4": {
+     "text": "L4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "B5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "C5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "D5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "E5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "F5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "G5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H5": {
+     "text": "H5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I5": {
+     "text": "I5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J5": {
+     "text": "J5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K5": {
+     "text": "K5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "L5": {
+     "text": "L5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "B6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "C6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "D6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "E6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "F6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "G6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H6": {
+     "text": "H6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I6": {
+     "text": "I6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J6": {
+     "text": "J6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K6": {
+     "text": "K6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "L6": {
+     "text": "L6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "text": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 B10 B2 B3 B4 B5 B6 B7 B8 B9",
+     "type": "containsText",
+     "text": "apple",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "C1 C10 C2 C3 C4 C5 C6 C7 C8 C9",
+     "type": "notContainsText",
+     "text": "apple",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "D1 D10 D2 D3 D4 D5 D6 D7 D8 D9",
+     "type": "beginsWith",
+     "text": "ap",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "E1 E10 E2 E3 E4 E5 E6 E7 E8 E9",
+     "type": "endsWith",
+     "text": "LE",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "F1 F10 F2 F3 F4 F5 F6 F7 F8 F9",
+     "type": "containsText",
+     "text": "a*b",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "G1 G10 G2 G3 G4 G5 G6 G7 G8 G9",
+     "type": "containsText",
+     "text": "2",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "H1 H10 H2 H3 H4 H5 H6 H7 H8 H9",
+     "type": "containsText",
+     "text": "zzz",
+     "formula": "NOT(ISERROR(SEARCH(\"apple\",H1)))",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "I1 I10 I2 I3 I4 I5 I6 I7 I8 I9",
+     "type": "containsBlanks",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "J1 J10 J2 J3 J4 J5 J6 J7 J8 J9",
+     "type": "notContainsBlanks",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "K1 K10 K2 K3 K4 K5 K6 K7 K8 K9",
+     "type": "containsErrors",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "L1 L10 L2 L3 L4 L5 L6 L7 L8 L9",
+     "type": "notContainsErrors",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "B1": {
+     "text": "Apple",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "Apple",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "Apple",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "Apple",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "Apple",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "Apple",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H1": {
+     "text": "Apple",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I1": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J1": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K1": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L1": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "apple pie",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "apple pie",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "apple pie",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "apple pie",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "apple pie",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "apple pie",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H2": {
+     "text": "apple pie",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I2": {
+     "text": " ",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J2": {
+     "text": " ",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K2": {
+     "text": " ",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L2": {
+     "text": " ",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "PINEAPPLE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "PINEAPPLE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "PINEAPPLE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "PINEAPPLE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "PINEAPPLE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "PINEAPPLE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H3": {
+     "text": "PINEAPPLE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I3": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J3": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K3": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L3": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "banana",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "banana",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "banana",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "banana",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "banana",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "banana",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H4": {
+     "text": "banana",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I4": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J4": {
+     "text": "x",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K4": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L4": {
+     "text": "x",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "123",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "123",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "123",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "123",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "123",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "123",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H5": {
+     "text": "123",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I5": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J5": {
+     "text": "0",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K5": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L5": {
+     "text": "0",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "a*b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "a*b",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "a*b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "a*b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "a*b",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "a*b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H6": {
+     "text": "a*b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I6": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J6": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K6": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L6": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "axb",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "axb",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "axb",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "axb",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "axb",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G7": {
+     "text": "axb",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H7": {
+     "text": "axb",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K7": {
+     "text": "#N/A",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "L7": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I8": {
+     "text": "#DIV/0!",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J8": {
+     "text": "#DIV/0!",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K8": {
+     "text": "#DIV/0!",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "L8": {
+     "text": "#DIV/0!",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C9": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I9": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J9": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K9": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L9": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "ap",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "ap",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "ap",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "ap",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "ap",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G10": {
+     "text": "ap",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H10": {
+     "text": "ap",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I10": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J10": {
+     "text": "#N/A",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K10": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L10": {
+     "text": "#N/A",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "period": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 B10 B2 B3 B4 B5 B6 B7 B8 B9",
+     "type": "timePeriod",
+     "period": "today",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "C1 C10 C2 C3 C4 C5 C6 C7 C8 C9",
+     "type": "timePeriod",
+     "period": "yesterday",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "D1 D10 D2 D3 D4 D5 D6 D7 D8 D9",
+     "type": "timePeriod",
+     "period": "tomorrow",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "E1 E10 E2 E3 E4 E5 E6 E7 E8 E9",
+     "type": "timePeriod",
+     "period": "last7Days",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "F1 F10 F2 F3 F4 F5 F6 F7 F8 F9",
+     "type": "timePeriod",
+     "period": "thisWeek",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "G1 G10 G2 G3 G4 G5 G6 G7 G8 G9",
+     "type": "timePeriod",
+     "period": "lastWeek",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "H1 H10 H2 H3 H4 H5 H6 H7 H8 H9",
+     "type": "timePeriod",
+     "period": "nextWeek",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "I1 I10 I2 I3 I4 I5 I6 I7 I8 I9",
+     "type": "timePeriod",
+     "period": "thisMonth",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "J1 J10 J2 J3 J4 J5 J6 J7 J8 J9",
+     "type": "timePeriod",
+     "period": "lastMonth",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    },
+    {
+     "cells": "K1 K10 K2 K3 K4 K5 K6 K7 K8 K9",
+     "type": "timePeriod",
+     "period": "nextMonth",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     }
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "B1": {
+     "text": "46305",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "46305",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "46305",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "46305",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "46305",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "46305",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H1": {
+     "text": "46305",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I1": {
+     "text": "46305",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J1": {
+     "text": "46305",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K1": {
+     "text": "46305",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "46304",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "46304",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "46304",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "46304",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "46304",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "46304",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H2": {
+     "text": "46304",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I2": {
+     "text": "46304",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J2": {
+     "text": "46304",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K2": {
+     "text": "46304",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "46306",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H3": {
+     "text": "46306",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I3": {
+     "text": "46306",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K3": {
+     "text": "46306",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "46299",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "46299",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I4": {
+     "text": "46299",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K4": {
+     "text": "46299",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "46298",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I5": {
+     "text": "46298",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K5": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "46298",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I6": {
+     "text": "46298",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K6": {
+     "text": "46298",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J7": {
+     "text": "46275",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K7": {
+     "text": "46275",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J8": {
+     "text": "46336",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K8": {
+     "text": "46336",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "46305.5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C9": {
+     "text": "46305.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D9": {
+     "text": "46305.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "46305.5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "46305.5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "G9": {
+     "text": "46305.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H9": {
+     "text": "46305.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I9": {
+     "text": "46305.5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J9": {
+     "text": "46305.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K9": {
+     "text": "46305.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "top": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 B10 B11 B12 B2 B3 B4 B5 B6 B7 B8 B9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "top10",
+     "rank": 3
+    },
+    {
+     "cells": "C1 C10 C11 C12 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "top10",
+     "rank": 2,
+     "bottom": true
+    },
+    {
+     "cells": "D1 D10 D11 D12 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "top10",
+     "rank": 10,
+     "percent": true
+    },
+    {
+     "cells": "E1 E10 E11 E12 E2 E3 E4 E5 E6 E7 E8 E9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "top10",
+     "rank": 25,
+     "percent": true
+    },
+    {
+     "cells": "F1 F10 F11 F12 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "top10",
+     "rank": 3
+    },
+    {
+     "cells": "G1 G10 G11 G12 G2 G3 G4 G5 G6 G7 G8 G9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "aboveAverage"
+    },
+    {
+     "cells": "H1 H10 H11 H12 H2 H3 H4 H5 H6 H7 H8 H9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "aboveAverage",
+     "below": true
+    },
+    {
+     "cells": "I1 I10 I11 I12 I2 I3 I4 I5 I6 I7 I8 I9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "aboveAverage",
+     "equal": true
+    },
+    {
+     "cells": "J1 J10 J11 J12 J2 J3 J4 J5 J6 J7 J8 J9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "aboveAverage",
+     "stdDev": 1
+    },
+    {
+     "cells": "K1 K10 K11 K12 K2 K3 K4 K5 K6 K7 K8 K9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "aboveAverage",
+     "below": true,
+     "stdDev": 1
+    },
+    {
+     "cells": "L1 L10 L11 L12 L2 L3 L4 L5 L6 L7 L8 L9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "duplicateValues"
+    },
+    {
+     "cells": "M1 M10 M11 M12 M2 M3 M4 M5 M6 M7 M8 M9",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "color": "#9C0006"
+      }
+     },
+     "type": "uniqueValues"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "B1": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H1": {
+     "text": "10",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I1": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "M1": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "20",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H2": {
+     "text": "20",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I2": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L2": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "M2": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "20",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H3": {
+     "text": "20",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I3": {
+     "text": "20",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L3": {
+     "text": "a",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M3": {
+     "text": "a",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H4": {
+     "text": "30",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I4": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L4": {
+     "text": "A",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M4": {
+     "text": "A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H5": {
+     "text": "40",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I5": {
+     "text": "40",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L5": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M5": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H6": {
+     "text": "50",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I6": {
+     "text": "50",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L6": {
+     "text": "TRUE",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M6": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "60",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "60",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "60",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "60",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "60",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G7": {
+     "text": "60",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H7": {
+     "text": "60",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I7": {
+     "text": "60",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L7": {
+     "text": "2",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M7": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "70",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "70",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "70",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "70",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "70",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G8": {
+     "text": "70",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H8": {
+     "text": "70",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I8": {
+     "text": "70",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J8": {
+     "text": "8",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K8": {
+     "text": "8",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L8": {
+     "text": "2",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M8": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "80",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C9": {
+     "text": "80",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D9": {
+     "text": "80",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "80",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "80",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G9": {
+     "text": "80",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H9": {
+     "text": "80",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I9": {
+     "text": "80",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L9": {
+     "text": "#N/A",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M9": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "90",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "90",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "90",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "90",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "90",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G10": {
+     "text": "90",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H10": {
+     "text": "90",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I10": {
+     "text": "90",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J10": {
+     "text": "30",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K10": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L10": {
+     "text": "#N/A",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "M10": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B11": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C11": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D11": {
+     "text": "100",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "E11": {
+     "text": "100",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "F11": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G11": {
+     "text": "100",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "H11": {
+     "text": "100",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I11": {
+     "text": "100",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "J11": {
+     "text": "16.4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "K11": {
+     "text": "-1.3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "L11": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "M11": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B12": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C12": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D12": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E12": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F12": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G12": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H12": {
+     "text": "30",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "I12": {
+     "text": "30",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J12": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K12": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "L12": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "M12": {
+     "text": "",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "scale": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 B10 B2 B3 B4 B5 B6 B7 B8 B9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "C1 C10 C2 C3 C4 C5 C6 C7 C8 C9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "percentile",
+        "value": "50"
+       },
+       "color": "#FFEB84"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "D1 D10 D2 D3 D4 D5 D6 D7 D8 D9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "num",
+        "value": "0"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "num",
+        "value": "100"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "E1 E10 E2 E3 E4 E5 E6 E7 E8 E9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "20"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "80"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "F1 F10 F2 F3 F4 F5 F6 F7 F8 F9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Z$1"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Z$2"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "G1 G10 G2 G3 G4 G5 G6 G7 G8 G9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "H1 H10 H2 H3 H4 H5 H6 H7 H8 H9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "I1 I10 I2 I3 I4 I5 I6 I7 I8 I9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "J1 J10 J2 J3 J4 J5 J6 J7 J8 J9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "K1 K10 K2 K3 K4 K5 K6 K7 K8 K9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "num",
+        "value": "3"
+       },
+       "color": "#FFEB84"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "B1": {
+     "text": "1",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "-5",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "-5",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "-5",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "5",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H1": {
+     "text": "1",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J1": {
+     "text": "45658",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K1": {
+     "text": "1",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": "#E7726D",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": "#FA8671",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "0",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "0",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "0",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "5",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H2": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J2": {
+     "text": "45689",
+     "fill": "#E7736D",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K2": {
+     "text": "2",
+     "fill": "#FCAA78",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": "#D77C6F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": "#FBA376",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "10",
+     "fill": "#E9726D",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "10",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "10",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "5",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H3": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I3": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J3": {
+     "text": "45717",
+     "fill": "#D87B6E",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K3": {
+     "text": "3",
+     "fill": "#FFEB84",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": "#C68570",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": "#FDC07C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "50",
+     "fill": "#AE9473",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "50",
+     "fill": "#D27F6F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "50",
+     "fill": "#AE9473",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H4": {
+     "text": "TRUE",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J4": {
+     "text": "45748",
+     "fill": "#C78570",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K4": {
+     "text": "4",
+     "fill": "#E9E583",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": "#B68F72",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": "#FEDD81",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "90",
+     "fill": "#72B679",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "90",
+     "fill": "#91A376",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "90",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H5": {
+     "text": "5",
+     "fill": "#B68F72",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J5": {
+     "text": "45778",
+     "fill": "#B78E72",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K5": {
+     "text": "5",
+     "fill": "#D2DE81",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": "#A59874",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": "#FFEB84",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "100",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "100",
+     "fill": "#81AD78",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "100",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H6": {
+     "text": "10",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J6": {
+     "text": "45809",
+     "fill": "#A69874",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K6": {
+     "text": "6",
+     "fill": "#BCD880",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "7",
+     "fill": "#95A276",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "7",
+     "fill": "#FEEB84",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "150",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "150",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "150",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G7": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H7": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J7": {
+     "text": "45839",
+     "fill": "#95A176",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K7": {
+     "text": "7",
+     "fill": "#A6D17F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "8",
+     "fill": "#84AB77",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "8",
+     "fill": "#FDEA84",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "25",
+     "fill": "#D37E6F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "25",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "25",
+     "fill": "#EC706C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H8": {
+     "text": "3",
+     "fill": "#D77C6F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I8": {
+     "text": "8",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J8": {
+     "text": "45870",
+     "fill": "#84AB77",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K8": {
+     "text": "8",
+     "fill": "#90CB7E",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "9",
+     "fill": "#74B579",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C9": {
+     "text": "100",
+     "fill": "#B3D580",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D9": {
+     "text": "75",
+     "fill": "#88A977",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "75",
+     "fill": "#A99673",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "75",
+     "fill": "#6FB77A",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G9": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H9": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J9": {
+     "text": "45901",
+     "fill": "#73B579",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K9": {
+     "text": "9",
+     "fill": "#79C47C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "10",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "200",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "60",
+     "fill": "#9F9C75",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "60",
+     "fill": "#C28871",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "60",
+     "fill": "#95A276",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G10": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "H10": {
+     "text": "9",
+     "fill": "#74B579",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "I10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J10": {
+     "text": "45931",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "K10": {
+     "text": "10",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "priority": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A1 A10 A2 A3 A4 A5 A6 A7 A8 A9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      },
+      "font": {
+       "bold": true
+      }
+     }
+    },
+    {
+     "cells": "A1 A10 A2 A3 A4 A5 A6 A7 A8 A9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "3"
+     ],
+     "style": {
+      "fill": {
+       "color": "#00FF00"
+      },
+      "font": {
+       "color": "#0000FF",
+       "italic": true
+      }
+     }
+    },
+    {
+     "cells": "B1 B10 B2 B3 B4 B5 B6 B7 B8 B9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      }
+     },
+     "stopIfTrue": true
+    },
+    {
+     "cells": "B1 B10 B2 B3 B4 B5 B6 B7 B8 B9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "3"
+     ],
+     "style": {
+      "font": {
+       "italic": true
+      }
+     }
+    },
+    {
+     "cells": "C1 C10 C2 C3 C4 C5 C6 C7 C8 C9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      }
+     }
+    },
+    {
+     "cells": "C1 C10 C2 C3 C4 C5 C6 C7 C8 C9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "D1 D10 D2 D3 D4 D5 D6 D7 D8 D9",
+     "type": "colorScale",
+     "points": [
+      {
+       "value": {
+        "type": "min"
+       },
+       "color": "#F8696B"
+      },
+      {
+       "value": {
+        "type": "max"
+       },
+       "color": "#63BE7B"
+      }
+     ]
+    },
+    {
+     "cells": "D1 D10 D2 D3 D4 D5 D6 D7 D8 D9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      }
+     }
+    },
+    {
+     "cells": "E1 E10 E2 E3 E4 E5 E6 E7 E8 E9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "font": {
+       "color": "#FF0000",
+       "italic": false
+      }
+     }
+    },
+    {
+     "cells": "F1 F10 F2 F3 F4 F5 F6 F7 F8 F9",
+     "type": "cellIs",
+     "operator": "greaterThan",
+     "formulas": [
+      "5"
+     ],
+     "style": {
+      "format": "0.00%",
+      "font": {
+       "bold": true
+      }
+     }
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": "#F8696B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "1",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "F1": {
+     "text": "1.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": "#E7726D",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": "#E7726D",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "2",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "F2": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": "#D77C6F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": "#D77C6F",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "3",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "F3": {
+     "text": "4.5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": "#00FF00",
+     "font": "#0000FF",
+     "bold": false,
+     "italic": true
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "C4": {
+     "text": "4",
+     "fill": "#C68570",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": "#C68570",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "4",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "F4": {
+     "text": "600.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": "#00FF00",
+     "font": "#0000FF",
+     "bold": false,
+     "italic": true
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "C5": {
+     "text": "5",
+     "fill": "#B68F72",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": "#B68F72",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "5",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "F5": {
+     "text": "750.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": "#FF0000",
+     "font": "#0000FF",
+     "bold": true,
+     "italic": true
+    },
+    "B6": {
+     "text": "6",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": "#A59874",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "6",
+     "fill": "#FFFF00",
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "900.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "A7": {
+     "text": "7",
+     "fill": "#FF0000",
+     "font": "#0000FF",
+     "bold": true,
+     "italic": true
+    },
+    "B7": {
+     "text": "7",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "7",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "7",
+     "fill": "#95A276",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "7",
+     "fill": "#FFFF00",
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "1050.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "A8": {
+     "text": "8",
+     "fill": "#FF0000",
+     "font": "#0000FF",
+     "bold": true,
+     "italic": true
+    },
+    "B8": {
+     "text": "8",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "8",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "8",
+     "fill": "#84AB77",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "8",
+     "fill": "#FFFF00",
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "1200.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "A9": {
+     "text": "9",
+     "fill": "#FF0000",
+     "font": "#0000FF",
+     "bold": true,
+     "italic": true
+    },
+    "B9": {
+     "text": "9",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C9": {
+     "text": "9",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D9": {
+     "text": "9",
+     "fill": "#74B579",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "9",
+     "fill": "#FFFF00",
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "1350.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "A10": {
+     "text": "10",
+     "fill": "#FF0000",
+     "font": "#0000FF",
+     "bold": true,
+     "italic": true
+    },
+    "B10": {
+     "text": "10",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "10",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "10",
+     "fill": "#63BE7B",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "10",
+     "fill": "#FFFF00",
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "1500.00%",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    }
+   }
+  }
+ }
+}

@@ -22,6 +22,7 @@
  *   npx tsx bench/coverage/run.ts tables X [ru|T]   tables and structured references of tables/X.ts into test/excel/tables/[ru-RU/ or T/]X.json (test: test/tables-excel.test.ts)
  *   npx tsx bench/coverage/run.ts parts X    notes, hyperlinks and frozen panes of parts/X.ts into test/excel/parts/X.json and X/ (test: test/sheet-parts-excel.test.ts)
  *   npx tsx bench/coverage/run.ts entry X [ru|T]    text typed into cells, entry/X.ts, into test/excel/entry/[ru-RU/ or T/]X.json (test: test/entry-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts cond X     conditional formats of cond/X.ts (in the set's locale) into test/excel/cond/[T/]X.json and X/ (test: test/cond-excel.test.ts)
  *
  * A locale is `en`, `ru` or a tag (`locales.ts`); en-US's answers are at the top of their directory, another locale's
  * in a directory of its tag.
@@ -49,6 +50,7 @@ import { stepWorkbook } from './workbook.js'
 import { stepTables } from './tables.js'
 import { stepParts } from './parts.js'
 import { stepEntry } from './entry.js'
+import { stepCond } from './cond.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -314,6 +316,7 @@ else if (step === 'workbook') await withExcelLock(() => stepWorkbook(process.arg
 else if (step === 'tables') await withExcelLock(() => stepTables(process.argv[3], locale))
 else if (step === 'parts') await withExcelLock(() => stepParts(process.argv[3]))
 else if (step === 'entry') await withExcelLock(() => stepEntry(process.argv[3], locale))
+else if (step === 'cond') await withExcelLock(() => stepCond(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -324,7 +327,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | xlsx roundtrip|saved|colors|formats|intersect')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | cond set | xlsx roundtrip|saved|colors|formats|intersect')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
