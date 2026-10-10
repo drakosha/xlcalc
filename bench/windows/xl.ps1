@@ -145,7 +145,7 @@ function Parts($xl, $ws) {
   List @((Str $ws.Name), (List $notes), (List $threads), (List $links), $panes)
 }
 
-# what a parts case makes through the object model: a note, a hyperlink, frozen panes, a thread of comments
+# what a parts case makes through the object model: a note, a hyperlink, frozen panes
 function Make($xl, $wb, $s) {
   $ws = $wb.Worksheets.Item($s.sheet)
   switch ($s.kind) {
@@ -161,10 +161,6 @@ function Make($xl, $wb, $s) {
       $w.SplitRow = [int]$s.rows
       $w.SplitColumn = [int]$s.columns
       $w.FreezePanes = $true
-    }
-    'thread' {
-      $t = $ws.Range($s.cell).AddCommentThreaded([string]$s.texts[0])
-      for ($k = 1; $k -lt $s.texts.Count; $k++) { [void]$t.AddReply([string]$s.texts[$k]) }
     }
     default { throw "unknown make $($s.kind)" }
   }

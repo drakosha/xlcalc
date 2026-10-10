@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { partsFile, type StoredParts } from '../bench/coverage/parts.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { bookParts, type PartsAnswer, type PartsMake, type PartsSheetAnswer, type SheetParts } from '../bench/coverage/parts/cases.js'
-import type { PartsSet } from '../bench/coverage/parts/cases.js'
+import type { PartsCase, PartsCases, PartsSet } from '../bench/coverage/parts/cases.js'
 import { made } from '../bench/coverage/parts/predict.js'
 import { restructure } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
@@ -55,20 +55,14 @@ export function excelParts(s: PartsSheetAnswer): SheetParts {
   return out
 }
 
-/** The author Excel gives what it makes itself: the author of the first note or thread it made, or `?`. */
+/** The author Excel gives the notes it makes itself: the author of the first one it made, or `?`. */
 export function madeAuthor(make: PartsMake[] | undefined, a: PartsAnswer): string {
-  for (const m of make ?? []) {
-    if (!('note' in m) && !('thread' in m)) continue
-    const s = a.sheets.find((x) => x.name === m.sheet)
-    const cell = 'note' in m ? m.note : m.thread
-    const author = 'note' in m ? s?.notes[cell]?.author : s?.threads?.[cell]?.[0]?.author
-    if (author !== undefined) return author
-  }
+  for (const m of make ?? []) if ('note' in m) return a.sheets.find((x) => x.name === m.sheet)?.notes[m.note]?.author ?? '?'
   return '?'
 }
 
-/** The book of a case with what Excel made, as the engine holds it, the author being Excel's. */
-export const madeBook = (book: BookInput, make: PartsMake[] | undefined, a: PartsAnswer): BookInput => made(book, make, madeAuthor(make, a))
+/** The book of a case with what Excel made (the author Excel's) and the threads of its file, as the engine holds them. */
+export const madeBook = (set: PartsCases, c: PartsCase, a: PartsAnswer): BookInput => made(set.books[c.book], c.make, madeAuthor(c.make, a), set.threads?.[c.book])
 
 const show = (v: unknown) => (v === undefined ? 'none' : JSON.stringify(v))
 
@@ -102,24 +96,26 @@ export const excelSheets = (a: PartsAnswer) => a.sheets.map((s) => ({ name: s.na
 /** The engine's book after a case, or its refusal. */
 function engineAfter(set: PartsSetFile, id: string) {
   const c = set.cases.find((x) => x.id === id)!
-  const book = madeBook(set.books[c.book], c.make, set.answers[id])
+  const book = madeBook(set, c, set.answers[id])
   return c.op ? restructure(book, c.op) : { ok: true as const, book }
 }
 
 /**
  * The tests of stored sets: each case answered, Excel read what the engine holds, the reader reads Excel's file as Excel
- * read it and reports nothing of it; `known` and `readKnown` pin the differences by `<set>:<case id>`, `issues` what the
- * reader reports (`code sheet cells`).
+ * read it and reports nothing of it, and reads the threads of comments in it as notes (where the set has threads, the
+ * engine's book being the reference); `known`, `readKnown` and `threadsKnown` pin the differences by `<set>:<case id>`,
+ * `issues` what the reader reports (`code sheet cells`).
  */
-export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, string[]>>, readKnown: Readonly<Record<string, string[]>>, from: (name: string) => Promise<PartsSet>, issues: Readonly<Record<string, string[]>> = {}) {
+export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, string[]>>, readKnown: Readonly<Record<string, string[]>>, from: (name: string) => Promise<PartsSet>, issues: Readonly<Record<string, string[]>> = {}, threadsKnown: Readonly<Record<string, string[]>> = {}) {
   for (const set of sets) {
     describe(`parts set ${set.name}`, () => {
       it('the stored answers are for the current cases and books', async () => {
         const built = (await from(set.name)).buildPartsCases()
         expect(set.cases).toEqual(built.cases)
         expect(set.books).toEqual(built.books)
+        expect(set.threads).toEqual(built.threads)
         expect(built.cases.filter((c) => !set.answers[c.id] && !set.rejected?.[c.id])).toEqual([])
-        for (const c of built.cases) expect(set.sent[c.id], `${c.id}: the writer changed since Excel saw the file`).toBe(await partsHash(await partsFile(c, built.books)))
+        for (const c of built.cases) expect(set.sent[c.id], `${c.id}: the writer changed since Excel saw the file`).toBe(await partsHash(await partsFile(c, built)))
       })
       for (const c of set.cases) {
         const key = `${set.name}:${c.id}`
@@ -131,6 +127,12 @@ export function checkSets(sets: PartsSetFile[], known: Readonly<Record<string, s
           if (a.error) return void expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           expect(r.ok ? partsDifferences(excelSheets(a), sheetsOf(r.book)) : [`engine refused (${r.code}): ${r.message}`]).toEqual(known[key] ?? [])
         })
+        if (set.threads?.[c.book])
+          it(`${c.id}: the reader reads the threads of Excel's file as notes`, async () => {
+            const r = engineAfter(set, c.id)
+            expect(r.ok).toBe(true)
+            expect(partsDifferences(sheetsOf((await readXlsx(savedFile(set, c.id))).book), r.ok ? sheetsOf(r.book) : [])).toEqual(threadsKnown[key] ?? [])
+          })
         it(`${c.id}: the reader reads Excel's file as Excel read it`, async () => {
           const read = await readXlsx(savedFile(set, c.id))
           expect(partsDifferences(excelSheets(set.answers[c.id]), sheetsOf(read.book))).toEqual(readKnown[key] ?? [])

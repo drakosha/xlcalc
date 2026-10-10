@@ -1,17 +1,17 @@
 {
- "made-threads": {
+ "threads": {
   "S": {
    "notes": {
-    "B2": {
-     "author": "?",
-     "text": "First comment\n\n?: A reply\n\n?: Another reply\non two lines"
-    },
     "B4": {
-     "author": "?",
+     "author": "Ann",
      "text": "A note beside the threads"
     },
+    "B2": {
+     "author": "Ann",
+     "text": "First comment\n\nБорис: A reply\n\nAnn: Another reply\non two lines"
+    },
     "C3": {
-     "author": "?",
+     "author": "Борис",
      "text": "Single"
     }
    },
@@ -20,8 +20,8 @@
   "T": {
    "notes": {
     "A1": {
-     "author": "?",
-     "text": "On T\n\n?: Ответ"
+     "author": "Ann",
+     "text": "On T\n\nБорис: Ответ"
     }
    },
    "links": {}
@@ -30,16 +30,16 @@
  "threads-insert-row": {
   "S": {
    "notes": {
-    "B3": {
-     "author": "?",
-     "text": "First comment\n\n?: A reply\n\n?: Another reply\non two lines"
-    },
     "B5": {
-     "author": "?",
+     "author": "Ann",
      "text": "A note beside the threads"
     },
+    "B3": {
+     "author": "Ann",
+     "text": "First comment\n\nБорис: A reply\n\nAnn: Another reply\non two lines"
+    },
     "C4": {
-     "author": "?",
+     "author": "Борис",
      "text": "Single"
     }
    },
@@ -48,8 +48,8 @@
   "T": {
    "notes": {
     "A1": {
-     "author": "?",
-     "text": "On T\n\n?: Ответ"
+     "author": "Ann",
+     "text": "On T\n\nБорис: Ответ"
     }
    },
    "links": {}

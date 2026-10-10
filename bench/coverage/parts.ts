@@ -14,6 +14,7 @@ import { writeXlsx } from '../../src/xlsx.js'
 import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
 import type { PartsAnswer, PartsCase, PartsCases, PartsMake, PartsSet } from './parts/cases.js'
 import { inCaseOrder } from './stored.js'
+import { threadedFile } from './parts/threaded.js'
 import { opArgs } from './struct.js'
 import { partsHash } from './xlsx/sent.js'
 
@@ -36,14 +37,14 @@ export function makeArgs(make: PartsMake[] = []): (string | number)[][] {
   return make.map((m) => {
     if ('note' in m) return ['note', m.sheet, m.note, m.text]
     if ('link' in m) return ['link', m.sheet, m.link, m.url ?? '', m.location ?? '', m.tooltip ?? '']
-    if ('freeze' in m) return ['freeze', m.freeze, m.rows, m.columns]
-    throw new Error('threads of comments are made on Windows only')
+    return ['freeze', m.freeze, m.rows, m.columns]
   })
 }
 
-/** The file a case's book is written to, the same on both platforms. */
-export async function partsFile(c: PartsCase, books: Record<string, ReturnType<PartsSet['buildPartsCases']>['books'][string]>): Promise<Uint8Array> {
-  return (await writeXlsx(books[c.book])).data
+/** The file a case's book is written to, the same on both platforms: by `writeXlsx`, with the book's threads put in. */
+export async function partsFile(c: PartsCase, set: PartsCases): Promise<Uint8Array> {
+  const threads = set.threads?.[c.book]
+  return threads ? threadedFile(set.books[c.book], threads) : (await writeXlsx(set.books[c.book])).data
 }
 
 type RawSheet = [string, [string, string, string][], [string, string, string, string, string][], [boolean, number, number, number, number, number, number]]
@@ -111,12 +112,12 @@ async function runCase(c: PartsCase, data: Uint8Array): Promise<{ answer: PartsA
 /** Runs the set's cases that have no stored answer for the same case and book (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepParts(set: string): Promise<void> {
   if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const { books, cases, windows } = ((await import(`./parts/${set}.js`)) as PartsSet).buildPartsCases()
-  if (windows) throw new Error(`parts ${set}: the set runs on Windows only (bench/windows/run.ts parts ${set})`)
+  const built = ((await import(`./parts/${set}.js`)) as PartsSet).buildPartsCases()
+  const { books, cases, threads } = built
   const target = join(ROOT, `test/excel/parts/${set}.json`)
   const dir = join(ROOT, `test/excel/parts/${set}`)
   const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredParts) : null
-  const files = new Map(await Promise.all(cases.map(async (c) => [c.id, await partsFile(c, books)] as const)))
+  const files = new Map(await Promise.all(cases.map(async (c) => [c.id, await partsFile(c, built)] as const)))
   const sent = Object.fromEntries(await Promise.all(cases.map(async (c) => [c.id, await partsHash(files.get(c.id)!)] as const)))
   // an answer is kept while its case and the file the writer writes for it are the same
   const key = (c: PartsCase, hash: string | undefined) => JSON.stringify([c, hash])
@@ -133,7 +134,7 @@ export async function stepParts(set: string): Promise<void> {
   const save = () => {
     const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
     const refused = inCaseOrder(cases, rejected)
-    writeFileSync(target, JSON.stringify({ meta, books, cases, sent: inCaseOrder(cases, sent), answers: inCaseOrder(cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
+    writeFileSync(target, JSON.stringify({ meta, books, cases, ...(threads ? { threads } : {}), sent: inCaseOrder(cases, sent), answers: inCaseOrder(cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
   }
   await ensureExcel('en-US')
   let done = 0

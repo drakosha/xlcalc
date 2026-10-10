@@ -1,8 +1,8 @@
 /**
  * Notes, hyperlinks and frozen panes in Excel for Windows: each case of `bench/coverage/parts/<set>.ts` in the file the
- * Mac step sends (`writeXlsx`), what it makes through COM (`AddComment`, `Hyperlinks.Add`, `FreezePanes`, and threads of
- * comments, `AddCommentThreaded` with `AddReply`, which only Windows has), its operation, every sheet's parts read and the
- * book saved. Answers go to `test/excel/win/parts/<set>.json` in the Mac's shape, the saved files beside them;
+ * Mac step sends (`writeXlsx`, threads of comments put in by hand), what it makes through COM (`AddComment`,
+ * `Hyperlinks.Add`, `FreezePanes`), its operation, every sheet's parts read (threads of comments too, `CommentsThreaded`,
+ * which Excel 2024 does not list) and the book saved. Answers go to `test/excel/win/parts/<set>.json` in the Mac's shape, the saved files beside them;
  * `test/sheet-parts-win.test.ts` reads them.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -20,8 +20,7 @@ import { metaOf, type Step, type Tag, type WinEnv } from './remote.js'
 function makeStep(m: PartsMake): Step {
   if ('note' in m) return { do: 'make', kind: 'note', sheet: m.sheet, cell: m.note, text: m.text }
   if ('link' in m) return { do: 'make', kind: 'link', sheet: m.sheet, cell: m.link, url: m.url ?? '', location: m.location ?? '', tip: m.tooltip ?? '' }
-  if ('freeze' in m) return { do: 'make', kind: 'freeze', sheet: m.freeze, rows: m.rows, columns: m.columns }
-  return { do: 'make', kind: 'thread', sheet: m.sheet, cell: m.thread, texts: m.texts }
+  return { do: 'make', kind: 'freeze', sheet: m.freeze, rows: m.rows, columns: m.columns }
 }
 
 type RawSheet = [string, [string, string, string][], [string, [string, string][]][], [string, string, string, string, string][], [boolean, number, number, number, number, number, number]]
@@ -29,11 +28,12 @@ type RawSheet = [string, [string, string, string][], [string, [string, string][]
 const plain = (a: string) => a.replaceAll('$', '')
 
 export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const { books, cases } = ((await import(`../coverage/parts/${set}.js`)) as PartsSet).buildPartsCases()
+  const built = ((await import(`../coverage/parts/${set}.js`)) as PartsSet).buildPartsCases()
+  const { books, cases, threads } = built
   const file = winFile(`parts/${set}.json`)
   const dir = winFile(`parts/${set}`)
   const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredParts) : null
-  const files = new Map(await Promise.all(cases.map(async (c) => [c.id, await partsFile(c, books)] as const)))
+  const files = new Map(await Promise.all(cases.map(async (c) => [c.id, await partsFile(c, built)] as const)))
   const sent = Object.fromEntries(await Promise.all(cases.map(async (c) => [c.id, await partsHash(files.get(c.id)!)] as const)))
   const key = (c: PartsCase, hash: string | undefined) => JSON.stringify([c, hash])
   const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.sent[c.id])]) ?? [])
@@ -49,7 +49,7 @@ export async function stepParts(set: string, tag: Tag, e: WinEnv): Promise<void>
   const save = () => {
     const refused = inCaseOrder(cases, rejected)
     mkdirSync(dirname(file), { recursive: true })
-    writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, books, cases, sent: inCaseOrder(cases, sent), answers: inCaseOrder(cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
+    writeFileSync(file, JSON.stringify({ meta: { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }, books, cases, ...(threads ? { threads } : {}), sent: inCaseOrder(cases, sent), answers: inCaseOrder(cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
   }
   const todo = cases.filter((c) => !answers[c.id] && !rejected[c.id])
   await caseJobs(

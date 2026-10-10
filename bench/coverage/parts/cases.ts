@@ -1,17 +1,23 @@
 /**
  * Sheet parts cases for Excel (`run.ts parts <set>`): notes, hyperlinks and frozen panes. A case's book is written by
- * `writeXlsx`; Excel opens it, adds what the case makes through its object model (Excel's own notes, hyperlinks and
- * frozen panes, and on Windows threads of comments), applies the case's structure operation, reads every sheet's
- * parts and saves the book. The answer is what Excel read, and the file it saved goes beside it.
+ * `writeXlsx` (with threads of comments put in by hand, `threaded.ts`); Excel opens it, adds what the case makes through
+ * its object model (Excel's own notes, hyperlinks and frozen panes), applies the case's structure operation, reads every
+ * sheet's parts and saves the book. The answer is what Excel read, and the file it saved goes beside it.
  */
 import type { BookInput, CellLink, CellNote, FrozenPanes, StructureOp } from '../../../src/contract.js'
 
-/** What Excel adds through its object model: `AddComment`, `Hyperlinks.Add`, `FreezePanes`, on Windows `AddCommentThreaded` with replies. */
+/** What Excel adds through its object model: `AddComment`, `Hyperlinks.Add`, `FreezePanes`. */
 export type PartsMake =
   | { note: string; sheet: string; text: string }
   | { link: string; sheet: string; url?: string; location?: string; tooltip?: string }
   | { freeze: string; rows: number; columns: number }
-  | { thread: string; sheet: string; texts: string[] }
+
+/** A thread of comments in a book's file, as Excel 365 writes one: its sheet and cell, each comment's author and text. */
+export interface ThreadSpec {
+  sheet: string
+  cell: string
+  comments: { author: string; text: string }[]
+}
 
 export interface PartsCase {
   id: string
@@ -24,8 +30,8 @@ export interface PartsCase {
 export interface PartsCases {
   books: Record<string, BookInput>
   cases: PartsCase[]
-  /** The set runs on Windows only (threads of comments have no object model in Excel for Mac). */
-  windows?: true
+  /** Threads of comments put into the files of books, by book. */
+  threads?: Record<string, ThreadSpec[]>
 }
 
 export interface PartsSet {
