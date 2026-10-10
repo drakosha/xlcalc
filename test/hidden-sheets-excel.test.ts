@@ -9,7 +9,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredHidden } from '../bench/coverage/hidden.js'
-import { engineAnswer, hiddenFile, visibleOf, type HiddenAnswer, type HiddenCases } from '../bench/coverage/hidden/cases.js'
+import { engineAnswer, excelRefused, hiddenFile, visibleOf, type HiddenAnswer, type HiddenCase, type HiddenCases } from '../bench/coverage/hidden/cases.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { readXlsx } from '../src/xlsx.js'
 
@@ -34,13 +34,13 @@ function stored(root: string): (StoredHidden & { name: string })[] {
 }
 
 /** What a prediction said that Excel's answer does not hold, as text; none when it held. */
-function missed(predicted: Record<string, unknown>, guess: HiddenModule['RAW_GUESS'], id: string, answer: HiddenAnswer | undefined, rejected: boolean): string[] {
-  const g = guess?.[id]
+function missed(set: HiddenCases, c: HiddenCase, predicted: Record<string, unknown>, guess: HiddenModule['RAW_GUESS'], answer: HiddenAnswer | undefined, rejected: boolean): string[] {
+  const g = guess?.[c.id]
   if (g) return g.repaired !== rejected ? [`repaired ${g.repaired}, Excel ${rejected}`] : g.opened !== undefined && g.opened !== answer?.opened ? [`opened ${g.opened}, Excel ${answer?.opened}`] : []
   if (!answer) return ['Excel did not load the book']
   const p = predicted as { refused?: string; opened?: string; sheets?: unknown; values?: unknown }
   const out: string[] = []
-  if (!!p.refused !== !!answer.error) out.push(`refused ${p.refused ?? 'no'}, Excel ${answer.error ?? 'took it'}`)
+  if (!!p.refused !== excelRefused(set, c, answer)) out.push(`refused ${p.refused ?? 'no'}, Excel ${answer.error ?? 'took it'}`)
   if (p.opened !== undefined && p.opened !== answer.opened) out.push(`opened ${p.opened}, Excel ${answer.opened}`)
   if (p.sheets && JSON.stringify(p.sheets) !== JSON.stringify(answer.sheets)) out.push(`sheets ${JSON.stringify(p.sheets)}, Excel ${JSON.stringify(answer.sheets)}`)
   if (p.values && JSON.stringify(p.values) !== JSON.stringify(answer.values)) out.push(`values ${JSON.stringify(p.values)}, Excel ${JSON.stringify(answer.values)}`)
@@ -68,22 +68,22 @@ describe.each(PLATFORMS)('hidden sheets against %s', (_, root) => {
 
       it.each(built.cases.filter((c) => set.answers[c.id]).map((c) => [c.id, c] as const))('%s: Excel holds what the engine holds', async (_, c) => {
         const a = set.answers[c.id]
-        const e = engineAnswer(built, c)
-        expect(a.sheets).toEqual(e.sheets)
-        if ('refused' in e) expect(a.error, `the engine refuses with ${e.refused}`).toBeTruthy()
-        else {
-          expect(a.error).toBeUndefined()
+        // a file changed by hand is no book the writer writes: Excel shows the hidden sheet its active tab names
+        if (!c.raw) {
+          const e = engineAnswer(built, c)
+          expect(excelRefused(built, c, a), `refused: the engine ${e.refused ?? 'no'}, Excel ${a.error ?? 'answered nothing'}`).toBe(!!e.refused)
+          expect(a.sheets).toEqual(e.sheets)
           expect(a.values).toEqual(e.values)
+          // the writer makes the first visible sheet active, which Excel shows on opening
+          expect(a.opened).toBe(built.books[c.book].sheets.find((s) => !s.hidden)!.name)
         }
-        // the writer makes the first visible sheet active, which Excel shows on opening
-        if (!c.raw) expect(a.opened).toBe(built.books[c.book].sheets.find((s) => !s.hidden)!.name)
         const saved = await readXlsx(new Uint8Array(readFileSync(new URL(`./excel/${root}hidden/${set.name}/${c.id}.xlsx`, import.meta.url))))
         expect(saved.book.sheets.map((s): [string, number] => [s.name, visibleOf(s)])).toEqual(a.sheets)
         expect(saved.issues.filter((i) => i.code === 'hidden')).toEqual([])
       })
 
       it('the predictions Excel did not confirm are the set\'s MISSED', () => {
-        const misses = built.cases.filter((c) => missed(predicted[c.id], mod.RAW_GUESS, c.id, set.answers[c.id], !!set.rejected?.[c.id]).length).map((c) => c.id)
+        const misses = built.cases.filter((c) => missed(built, c, predicted[c.id], mod.RAW_GUESS, set.answers[c.id], !!set.rejected?.[c.id]).length).map((c) => c.id)
         expect(misses).toEqual([...(mod.MISSED ?? [])])
       })
     })

@@ -4,7 +4,8 @@
  * (`#REF!A1`, as Excel writes it), drops the names local to it and keeps the global ones with their reference lost. A
  * reference across sheets names its ends and covers the sheets between them: a new sheet changes no formula, a
  * deleted end and an end moved away give way to the next sheet inward (`struct/cube`). A hidden sheet is renamed, deleted
- * and moved as any other; the book's last visible sheet is neither deleted nor hidden, as Excel refuses both.
+ * and moved as any other, a very hidden one renamed alone; the book's last visible sheet is neither deleted nor hidden, as
+ * Excel refuses all these (`hidden/sheets-held`).
  */
 import type { BookInput, CellRef, RestructureResult } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
@@ -59,13 +60,19 @@ export function insertSheet(book: BookInput, name: string, before: string | unde
   return { ok: true, book: { ...book, sheets }, mapCell: (ref) => ref }
 }
 
-/** A sheet moved before `before`, else to the end; references across sheets cover what lies between their ends then. */
+/**
+ * A sheet moved before `before`, else to the end; references across sheets cover what lies between their ends then.
+ * Before a hidden sheet it goes before the next visible one (or to the end), as Excel moves it (`hidden/sheets-held`).
+ */
 export function moveSheet(book: BookInput, sheet: string, before: string | undefined): RestructureResult {
   const key = sheetKey(sheet)
-  if (before !== undefined && sheetKey(before) === key) return { ok: true, book, mapCell: (ref) => ref }
   const moving = book.sheets.find((s) => sheetKey(s.name) === key)!
+  if (moving.hidden === 'very') return VERY_HIDDEN
+  const from = before === undefined ? -1 : book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
+  const target = from < 0 ? undefined : book.sheets.slice(from).find((s) => !s.hidden)
+  if (target === moving) return { ok: true, book, mapCell: (ref) => ref }
   const sheets = book.sheets.filter((s) => s !== moving)
-  sheets.splice(before === undefined ? sheets.length : sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before)), 0, moving)
+  sheets.splice(target === undefined ? sheets.length : sheets.indexOf(target), 0, moving)
   // an end that moves leaves its references' span, as if deleted from there; one sheet alone stays
   const without = endsWithout(book, key)!
   const t: Transform = { ref: () => undefined, ends: (a, b) => (sheetKey(a) === sheetKey(b) ? undefined : without(a, b)) }
@@ -75,6 +82,7 @@ export function moveSheet(book: BookInput, sheet: string, before: string | undef
 export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
   if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one sheet' }
   const key = sheetKey(sheet)
+  if (book.sheets.find((s) => sheetKey(s.name) === key)!.hidden === 'very') return VERY_HIDDEN
   if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet' }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
   const rest: BookInput = { ...book, sheets: book.sheets.filter((s) => sheetKey(s.name) !== key) }
@@ -82,6 +90,9 @@ export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === key ? null : ref)
   return { ok: true, book: rewriteBook(rest, t, sheetNames(book)), mapCell }
 }
+
+/** Excel deletes and moves no very hidden sheet: its object model answers an error, Excel for Mac at times nothing. */
+const VERY_HIDDEN: RestructureResult = { ok: false, code: 'very_hidden', message: 'a very hidden sheet is neither deleted nor moved: show it first' }
 
 /** Whether the sheet `key` is the book's only visible sheet. */
 const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (sheetKey(s.name) === key) === !s.hidden)

@@ -85,3 +85,10 @@ export function buildHiddenCases(): HiddenCases {
  * is a hidden sheet without repairing it, showing its first visible sheet, and repair the one whose every sheet is hidden.
  */
 export const RAW_GUESS = { 'raw-active-hidden': { repaired: false, opened: 'Feb' }, 'raw-all-hidden': { repaired: true } } as const
+
+/**
+ * The predictions Excel for Mac and for Windows did not confirm: Excel deletes and moves no very hidden sheet (the object
+ * model's error; Excel for Mac deletes nothing and answers nothing); a sheet moved before a hidden one goes after it,
+ * before the next visible sheet; a file whose active tab is a hidden sheet opens with that sheet shown.
+ */
+export const MISSED: readonly string[] = ['raw-active-hidden', 'o-delete-very', 'o-move-very', 'o-move-before-hidden']

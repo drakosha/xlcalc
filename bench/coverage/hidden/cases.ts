@@ -82,15 +82,28 @@ export async function hiddenFile(c: HiddenCase, set: HiddenCases): Promise<Uint8
   return zip([...files].map(([name, bytes]) => ({ name, data: bytes })))
 }
 
-/** What the engine gives for a case: each sheet's visibility, and its refusal (the book as it was then) or the read cells' values. */
-export function engineAnswer(set: HiddenCases, c: HiddenCase): { sheets: [string, Visible][] } & ({ refused: string } | { values: CellValue[] }) {
+/** Each sheet's name and visibility. */
+const sheetsOf = (book: BookInput): [string, Visible][] => book.sheets.map((s) => [s.name, visibleOf(s)])
+
+/** What the engine gives for a case: its refusal if it refuses a step, each sheet's visibility and the read cells' values then. */
+export function engineAnswer(set: HiddenCases, c: HiddenCase): { refused?: string; sheets: [string, Visible][]; values: CellValue[] } {
   let book = set.books[c.book]
-  const sheets = () => book.sheets.map((s): [string, Visible] => [s.name, visibleOf(s)])
+  let refused: string | undefined
   for (const op of [...(c.make ?? []).map(makeOp), ...(c.op ? [c.op] : [])]) {
     const r = restructure(book, op)
-    if (!r.ok) return { refused: r.code, sheets: sheets() }
+    if (!r.ok) {
+      refused = r.code
+      break
+    }
     book = r.book
   }
   const cells = compute(book, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } }).sheets.find((s) => s.name === set.read.sheet)!.cells
-  return { sheets: sheets(), values: set.read.cells.map((a) => cells[a]?.value ?? null) }
+  return { ...(refused ? { refused } : {}), sheets: sheetsOf(book), values: set.read.cells.map((a) => cells[a]?.value ?? null) }
 }
+
+/**
+ * Whether Excel refused a case's steps: its error, or the sheets as they were (Excel for Mac deletes no very hidden sheet
+ * and not the last visible one, and answers nothing). Every step of a case changes the sheets when taken.
+ */
+export const excelRefused = (set: HiddenCases, c: HiddenCase, a: HiddenAnswer) =>
+  !!a.error || (!!(c.make?.length || c.op) && JSON.stringify(a.sheets) === JSON.stringify(sheetsOf(set.books[c.book])))

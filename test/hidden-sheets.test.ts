@@ -63,13 +63,27 @@ describe('hideSheet and unhideSheet', () => {
     expect(() => restructure(book(), { op: 'hideSheet', sheet: 'Feb', very: 1 } as never)).toThrow(new InputError('op.very', 'expected a boolean, got 1'))
   })
 
-  it('a hidden sheet is renamed, moved and deleted as any other and keeps its state', () => {
+  it('a hidden sheet is renamed, moved and deleted as any other and keeps its state; a very hidden one is renamed alone', () => {
     expect(op(book(true), { op: 'renameSheet', sheet: 'Feb', name: 'February' })).toBe('Jan February! Mar Sum')
-    expect(op(book('very'), { op: 'moveSheet', sheet: 'Feb' })).toBe('Jan Mar Sum Feb!!')
+    expect(op(book(true), { op: 'moveSheet', sheet: 'Feb' })).toBe('Jan Mar Sum Feb!')
     expect(op(book(true), { op: 'insertSheet', name: 'New', before: 'Feb' })).toBe('Jan New Feb! Mar Sum')
     expect(op(book(true), { op: 'deleteSheet', sheet: 'Feb' })).toBe('Jan Mar Sum')
+    expect(op(book('very'), { op: 'renameSheet', sheet: 'Feb', name: 'February' })).toBe('Jan February!! Mar Sum')
+    expect(restructure(book('very'), { op: 'moveSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'very_hidden' })
+    expect(restructure(book('very'), { op: 'deleteSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'very_hidden' })
     const r = restructure(book(true), { op: 'renameSheet', sheet: 'Feb', name: 'February' })
     expect(r.ok && r.book.sheets[3].cells.A4.formula).toBe("'February'!B2*2")
+  })
+
+  it('a sheet moved before a hidden one goes before the next visible sheet, or to the end', () => {
+    expect(op(book(true), { op: 'moveSheet', sheet: 'Sum', before: 'Feb' })).toBe('Jan Feb! Sum Mar')
+    const two: BookInput = { sheets: ['A', 'B', 'C', 'D', 'E'].map((name) => ({ name, cells: {}, ...('BC'.includes(name) ? { hidden: true } : {}) })) }
+    expect(op(two, { op: 'moveSheet', sheet: 'E', before: 'B' })).toBe('A B! C! E D')
+    expect(op(two, { op: 'moveSheet', sheet: 'D', before: 'B' })).toBe('A B! C! D E')
+    expect(op({ sheets: [...two.sheets.slice(0, 3), { name: 'D', cells: {}, hidden: true }] }, { op: 'moveSheet', sheet: 'A', before: 'B' })).toBe('B! C! D! A')
+    // a 3D reference covers the sheets between its ends where the move put them
+    const r = restructure(book(true), { op: 'moveSheet', sheet: 'Mar', before: 'Feb' })
+    expect(r.ok && r.book.sheets.map((s) => s.name)).toEqual(['Jan', 'Feb', 'Mar', 'Sum'])
   })
 })
 
