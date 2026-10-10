@@ -548,13 +548,13 @@ export interface NameInput {
   name: string
   /**
    * What the name refers to: a formula without `=` (a leading one is dropped), as Excel's "Refers to" and xlsx
-   * `<definedName>` hold it. A reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`, `"text"`, `{1,2,3}`), a
-   * formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a reference), a union of
-   * references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet. A reference
-   * without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from A1,
-   * wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
-   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula
-   * is computed where the name is used, as part of that formula.
+   * `<definedName>` hold it. A reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`,
+   * `"text"`, `{1,2,3}`), a formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a
+   * reference), a union of references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet.
+   * A reference without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from
+   * A1, wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
+   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula is
+   * computed where the name is used, as part of that formula.
    */
   ref: string
   /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
@@ -834,7 +834,15 @@ export interface Refusal<Code extends string = string> {
   at?: number
 }
 
-export type NameCheck = { ok: true } | { ok: false; message: string }
+/**
+ * Why Excel would not take a name (`validateName`). `chars`: it does not start with a letter of any script, `_` or `\`,
+ * holds a character other than letters, digits, `_`, `.`, `\` and `?`, or is empty or longer than 255 characters.
+ * `reference`: it reads as a cell address or an R1C1 reference (`Q1`, `R`, `R2C3`). `boolean`: TRUE or FALSE, or the
+ * book's locale's word for one, in any case (`ИСТИНА` in ru-RU).
+ */
+export type NameRefusal = 'chars' | 'reference' | 'boolean'
+
+export type NameCheck = { ok: true } | Refusal<NameRefusal>
 
 /** The book whose rules `validateName` checks a name by. */
 export interface NameOptions {
