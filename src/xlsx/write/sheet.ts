@@ -231,7 +231,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const relId = (r: SheetRel) => `rId${ctx.tableParts.length + rels.push(r)}`
   const drawing = notes.size ? (relId({ type: 'comments', target: `../comments${index + 1}.xml` }), relId({ type: 'vmlDrawing', target: `../drawings/vmlDrawing${index + 1}.vml` })) : undefined
   const urls = new Map<string, string>()
-  const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!)
+  const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
   const pane = paneXml(sheet.frozen)
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +

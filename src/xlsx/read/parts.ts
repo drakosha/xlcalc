@@ -106,9 +106,8 @@ function notes(src: PartsSource, threads: Map<string, CellNote>, issues: Issues)
     if (!cell || !refCells(cell, 1)?.length || threads.has(cell)) continue
     const body = element(e.body ?? '', 'text')?.body ?? ''
     const { text } = stringItem(body)
-    // runs of more than one look, or bold, italic, underlined or struck ones (the bold author's name of a note made in Excel's window)
-    const looks = new Set(elements(body, 'rPr').map((r) => r.body ?? ''))
-    if (looks.size > 1 || [...looks].some((l) => /<(?:[\w.-]+:)?(?:b|i|u|strike)[\s/>]/.test(l))) issues.add('comment', "a note's formatted text is read as its plain text", { sheet: src.sheet, cell })
+    // runs of more than one look (the bold author's name of a note made in Excel's window); one look is the note's font
+    if (new Set(elements(body, 'rPr').map((r) => r.body ?? '')).size > 1) issues.add('comment', "a note's formatted text is read as its plain text", { sheet: src.sheet, cell })
     const author = authors[Number(a.authorId)]
     out.set(cell, author ? { author, text } : { text })
   }

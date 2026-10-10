@@ -28,11 +28,19 @@ const inOrder = <T>(m: Map<string, T>): [string, T][] => [...m].sort((a, b) => {
   return p.row - q.row || p.col - q.col
 })
 
+/** Excel's limit on a hyperlink's tooltip (ScreenTip): it does not load a file with a longer one (the parts set `files`). */
+const MAX_TIP = 255
+
 /** `<hyperlinks>` of the cells' links; `rel` gives the relationship id of an address outside the book. */
-export function hyperlinksXml(links: Map<string, CellLink>, rel: (url: string) => string): string {
+export function hyperlinksXml(links: Map<string, CellLink>, rel: (url: string) => string, sheet: string, issues: Issues): string {
   if (!links.size) return ''
   const items = inOrder(links).map(([cell, l]) => {
-    const attrs = (l.url !== undefined ? ` r:id="${rel(l.url)}"` : '') + (l.location !== undefined ? ` location="${escapeAttr(l.location)}"` : '') + (l.tooltip !== undefined ? ` tooltip="${escapeAttr(l.tooltip)}"` : '')
+    let tip = l.tooltip
+    if (tip !== undefined && tip.length > MAX_TIP) {
+      tip = tip.slice(0, MAX_TIP)
+      issues.add('textLength', "a hyperlink's tooltip over Excel's 255 characters is cut", { sheet, cell })
+    }
+    const attrs = (l.url !== undefined ? ` r:id="${rel(l.url)}"` : '') + (l.location !== undefined ? ` location="${escapeAttr(l.location)}"` : '') + (tip !== undefined ? ` tooltip="${escapeAttr(tip)}"` : '')
     return `<hyperlink ref="${cell}"${attrs}/>`
   })
   return `<hyperlinks>${items.join('')}</hyperlinks>`
