@@ -1,7 +1,7 @@
 /**
  * `Session.cells(sheet, range)`: the cells of a rectangle are the slice of `result()` over it, with each cell's own
- * style, note and link, in a synchronous session, in the same thread and in a thread, with closures and eval: the case books, the
- * tables of the table sets, a book with styles, rectangles small (read cell by cell) and large (whole columns, whole
+ * style, note and link and an old-kind array formula's area, in a synchronous session, in the same thread and in a thread, with
+ * closures and eval: the case books, the tables of the table sets, a book with styles, rectangles small (read cell by cell) and large (whole columns, whole
  * rows, the whole sheet), before and after edits.
  */
 import { afterAll, describe, expect, it } from 'vitest'
@@ -14,7 +14,7 @@ import { BOOKS, CLOCK } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 
-/** The slice of a result over a rectangle, with the cells' own styles, notes and links from the book. */
+/** The slice of a result over a rectangle, with the cells' own styles, notes, links and old-kind array areas from the book. */
 function slice(r: ComputeResult, book: BookInput, sheet: string, range: string): Record<string, CellView> {
   const x = parseRange(range)!
   const input = book.sheets.find((s) => s.name === sheet)!.cells
@@ -22,8 +22,8 @@ function slice(r: ComputeResult, book: BookInput, sheet: string, range: string):
   for (const [a, c] of Object.entries(r.sheets.find((s) => s.name === sheet)!.cells)) {
     const { row, col } = parseAddress(a)
     if (row < x.r1 || row > x.r2 || col < x.c1 || col > x.c2) continue
-    const { style, note, link } = input[a] ?? {}
-    out[a] = { ...c, ...(style !== undefined ? { style } : {}), ...(note ? { note } : {}), ...(link ? { link } : {}) }
+    const { style, note, link, array } = input[a] ?? {}
+    out[a] = { ...c, ...(style !== undefined ? { style } : {}), ...(note ? { note } : {}), ...(link ? { link } : {}), ...(array ? { array } : {}) }
   }
   return out
 }
@@ -33,9 +33,9 @@ const RANGES = ['A1', 'A1:D12', 'B3:H40', 'C1:C1048576', 'A5:XFD5', 'B:D', '2:30
 
 const styled: BookInput = {
   styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }],
-  sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0, note: { author: 'Ann', text: 'checked' } }, A2: { formula: 'A1*2', style: 1, format: '0.00' }, B1: { formula: 'SEQUENCE(3,2)' }, C5: { style: 1 }, D9: { value: 'x', meta: { id: 7 }, link: { url: 'https://example.com/' } }, E2: { note: { text: 'a note alone' } } }, frozen: { rows: 1 } }],
+  sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0, note: { author: 'Ann', text: 'checked' } }, A2: { formula: 'A1*2', style: 1, format: '0.00' }, B1: { formula: 'SEQUENCE(3,2)' }, C5: { style: 1 }, D9: { value: 'x', meta: { id: 7 }, link: { url: 'https://example.com/' } }, E2: { note: { text: 'a note alone' } }, F1: { formula: 'A1:A2*10', array: 'F1:G3' }, G2: { style: 0 } }, frozen: { rows: 1 } }],
 }
-const BOOKS_HERE: [string, BookInput][] = [...BOOKS, ['a book with styles and a spill', styled], ...buildTableCases().slice(0, 6).map((c): [string, BookInput] => [`the table case ${c.id}`, c.book])]
+const BOOKS_HERE: [string, BookInput][] = [...BOOKS, ['a book with styles, a spill and an old-kind array formula', styled], ...buildTableCases().slice(0, 6).map((c): [string, BookInput] => [`the table case ${c.id}`, c.book])]
 
 type Cells = (sheet: string, range: string) => Promise<Record<string, CellView>>
 

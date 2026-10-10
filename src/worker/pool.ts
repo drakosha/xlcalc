@@ -65,7 +65,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', patchCells: 'patches', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -339,6 +339,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         return { ...r.clock }
       },
       setCells: (edits, co) => value(call('setCells', [edits], co)),
+      patchCells: (patches, co) => value(call('patchCells', [patches], co)),
       setNames: (names, co) => value(call('setNames', [names], co)),
       setClock: (next, co) => value(call('setClock', [next], co)),
       async restructure(op, co): Promise<AsyncRestructureResult> {
@@ -353,6 +354,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       setStyles: (styles) => value(call('setStyles', [styles])),
       setLayout: (edits, co) => value(call('setLayout', [edits], co)),
       book: () => value<Sent>(call('book', [])).then(unpackSlowly),
+      layout: () => value(call('layout', [])),
+      extent: (sheet) => value(call('extent', [sheet])),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
       cells: (sheet, range) => value(call('cells', [sheet, range])),
       validation: (sheet, cell) => value(call('validation', [sheet, cell])),

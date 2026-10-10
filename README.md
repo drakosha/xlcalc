@@ -103,7 +103,33 @@ console.log(session.book().sheets[0])
 //   }
 ```
 
-`restructure(op)` takes the operations of [Structure operations](#structure-operations) and recomputes; besides `restructure`'s result it returns `changes`, the cells whose value differs from the one `mapCell` carried there, so an interface that moves its shown values by `mapCell` and applies `changes` is up to date. It builds the state again, at the cost of a cold computation (190 ms for the 3,400-row synthetic book). Styles change through the session and recompute nothing: a cell's `style` (or `format`, `meta`, `note`, `link`) through `setCells`, the style table through `setStyles`, column widths, row heights, row and column styles and formats, outline levels, merged areas, frozen panes, conditional formats and rules of data validation through `setLayout`; only a merged area added or removed over an array's spill range recomputes that array, and hidden rows the `SUBTOTAL` and `AGGREGATE` formulas over them, and `setLayout` returns the changes.
+`restructure(op)` takes the operations of [Structure operations](#structure-operations) and recomputes; besides `restructure`'s result it returns `changes`, the cells whose value differs from the one `mapCell` carried there, so an interface that moves its shown values by `mapCell` and applies `changes` is up to date. It builds the state again, at the cost of a cold computation (190 ms for the 3,400-row synthetic book). Styles change through the session and recompute nothing: a cell's `style` (or `format`, `meta`, `note`, `link`) through `setCells` or `patchCells`, the style table through `setStyles`, column widths, row heights, row and column styles and formats, outline levels, merged areas, frozen panes, conditional formats and rules of data validation through `setLayout`; only a merged area added or removed over an array's spill range recomputes that array, and hidden rows the `SUBTOTAL` and `AGGREGATE` formulas over them, and `setLayout` returns the changes.
+
+A grid over a sheet needs a few things beside the cells of its window, and the session gives them without the whole book:
+
+```js
+import { openSession } from 'xlcalc'
+
+const session = openSession({
+  sheets: [{
+    name: 'Plan',
+    cells: { A1: { value: 3 }, B1: { formula: 'SEQUENCE(A1)' }, D1: { formula: 'A1*10', array: 'D1:D2' } },
+    merges: ['F1:G2'],
+  }],
+  styles: [{ font: { bold: true } }],
+})
+console.log(session.extent('Plan')) // → { rows: 3, columns: 7 }
+console.log(session.patchCells([{ sheet: 'Plan', cell: 'B3', set: { format: '0.0' } }, { sheet: 'Plan', cell: 'D2', set: { style: 0 } }]))
+// → [ { sheet: 'Plan', cell: 'B3', value: 3, text: '3.0', spillOf: 'B1' } ]
+console.log(session.cells('Plan', ['B3', 'D2']))
+// → {
+//     D2: { value: 30, text: '30', spillOf: 'D1', style: 0 },
+//     B3: { value: 3, text: '3.0', format: '0.0', spillOf: 'B1' }
+//   }
+console.log(session.cells('Plan', 'D1').D1.array, session.layout().sheets) // → D1:D2 [ { name: 'Plan', merges: [ 'F1:G2' ] } ]
+```
+
+`extent(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `layout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings), at a cost that does not depend on the cells. `cells(sheet, ranges)` reads several rectangles at once, each cell once. `patchCells(patches)` sets a cell's `style`, `format`, `meta`, `note` or `link` (null removes the field) and keeps its value or formula without being given it: on an empty cell it makes a cell with these alone, on a cell of an old-kind array formula's area or of a spill it leaves the array as it is, and a cell left with nothing is removed. It computes nothing and returns the cells whose shown text or colour changed. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`.
 
 ### The clock and volatile functions
 
@@ -571,7 +597,7 @@ From `xlcalc`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings), `book()`, `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range)` (with each cell's `style`, `note`, `link` and conditional formats' `look`), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `patchCells(patches)` (a cell's `style`, `format`, `meta`, `note`, `link` without its value), `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings), `book()`, `layout()` (the book without its cells), `extent(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `look`), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, message }` by the rules of a book of `opts.locale` |

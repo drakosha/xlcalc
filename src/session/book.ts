@@ -1,9 +1,9 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
-import type { BookInput, CellEdit, CellInput, LayoutEdit, SheetInput } from '../contract.js'
-import type { EngineState } from '../engine.js'
+import type { BookInput, BookLayout, CellEdit, CellInput, LayoutEdit, SheetInput } from '../contract.js'
+import { setInput, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
-import { bookScalar } from '../model.js'
+import { bookScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
 /** What a cell computes from: its formula, or its value (a date as its serial number). */
@@ -14,18 +14,25 @@ const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula 
  * meta) are applied to the book's input here.
  */
 export function contentEdits(s: EngineState, edits: CellEdit[]): CellEdit[] {
-  const last = new Map<string, [CellEdit, Record<string, CellInput>]>()
+  const last = new Map<string, [CellEdit, number]>()
   for (const e of edits) {
     const i = s.sheetIdx.get(sheetKey(e.sheet))!
-    last.set(`${i}:${e.cell}`, [e, s.input.sheets[i].cells])
+    last.set(`${i}:${e.cell}`, [e, i])
   }
   const out: CellEdit[] = []
-  for (const [e, cells] of last.values()) {
-    if (content(cells[e.cell], s.ctx.rules.epoch) !== content(e.input, s.ctx.rules.epoch)) out.push(e)
-    else if (e.input) cells[e.cell] = e.input
-    else delete cells[e.cell]
+  for (const [e, i] of last.values()) {
+    if (content(s.input.sheets[i].cells[e.cell], s.ctx.rules.epoch) !== content(e.input, s.ctx.rules.epoch)) out.push(e)
+    else {
+      const { row, col } = parseAddress(e.cell)
+      setInput(s, i, e.cell, row, col, e.input)
+    }
   }
   return out
+}
+
+/** The session's book without its cells (`Session.layout`): new objects for the book and its sheets, the rest the book's own. */
+export function bookLayout(book: BookInput): BookLayout {
+  return { ...book, sheets: book.sheets.map(({ cells: _cells, ...rest }) => rest) }
 }
 
 /** Every style that cells, rows and columns use must be in a table of `count` styles. */
