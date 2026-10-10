@@ -3,7 +3,7 @@
   "version": "16.113.4",
   "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
   "day": "2026-10-10",
-  "seconds": 36.4
+  "seconds": 29
  },
  "books": {
   "kinds": {
@@ -648,7 +648,6 @@
         "E1:E11"
        ],
        "below": true,
-       "equal": true,
        "stdDev": 2,
        "style": {
         "font": {
@@ -2705,7 +2704,6 @@
         "E1:E13"
        ],
        "below": true,
-       "equal": true,
        "stdDev": 2,
        "style": {
         "font": {
@@ -3548,7 +3546,6 @@
         "D1:D11"
        ],
        "below": true,
-       "equal": true,
        "stdDev": 2,
        "style": {
         "font": {
@@ -4332,29 +4329,6 @@
        }
       },
       {
-       "type": "expression",
-       "ranges": [
-        "B6:B11",
-        "R1:R5"
-       ],
-       "formula": "AND($R1>2,ISODD($R1))",
-       "style": {
-        "font": {
-         "bold": true,
-         "underline": "double"
-        },
-        "border": {
-         "bottom": {
-          "style": "thin",
-          "color": "#FF0000"
-         },
-         "top": {
-          "style": "dashed"
-         }
-        }
-       }
-      },
-      {
        "type": "containsText",
        "ranges": [
         "C6:C11",
@@ -4452,7 +4426,6 @@
         "E1:E11"
        ],
        "below": true,
-       "equal": true,
        "stdDev": 2,
        "style": {
         "font": {
@@ -4690,6 +4663,29 @@
        "style": {
         "font": {
          "color": "#FF0000"
+        }
+       }
+      },
+      {
+       "type": "expression",
+       "ranges": [
+        "B6:B11",
+        "R1:R5"
+       ],
+       "formula": "AND($R1>2,ISODD($R1))",
+       "style": {
+        "font": {
+         "bold": true,
+         "underline": "double"
+        },
+        "border": {
+         "bottom": {
+          "style": "thin",
+          "color": "#FF0000"
+         },
+         "top": {
+          "style": "dashed"
+         }
         }
        }
       }
@@ -5350,7 +5346,6 @@
         "E1:E11"
        ],
        "below": true,
-       "equal": true,
        "stdDev": 2,
        "style": {
         "font": {
@@ -5678,12 +5673,12 @@
   }
  ],
  "sent": {
-  "kinds": "1ad1087b360ddf3ebe428471ee84bc48bba9a9981c1d2297655aeb56305764ed",
+  "kinds": "3d265957db33cbcac5ad6a5f27e38310767db7e0f845981a983a87803b74eca1",
   "wide": "71a1e5b0d49d66680444d7afa99018bcacaa70587ae344fd1f1a0ad9ebcb17cf",
-  "kinds-insert-row": "db5d537254857a6e38bd2d022dc5fc9ba08c5bbfea0e3b0103d7637088d6458d",
-  "kinds-delete-col": "1415a8d1866e95e214d6595f661f279052444b426f72e45ef77d84855184e260",
-  "kinds-move": "d7f75567458b2bb72ad5e687eaa1608f6c4b5a3d1f5fddaba8243d72a0d8b56a",
-  "kinds-rename": "fe26da7341988cf2a068a86099a14aa0b077f169186912191896e5db9d55e24d"
+  "kinds-insert-row": "5d174225dedbd002cf2f3c51150b398ea6ed5b544a73d705dbf9508c7974c918",
+  "kinds-delete-col": "76fa434c1d834a35623afd193108d6001b39729040d6f056cb799f491ce70024",
+  "kinds-move": "71d172cd813f5816a43d65d8818d65dd91b8073429dfb1b9ab567ee51efa5e50",
+  "kinds-rename": "c953b4435712321d7ec121c5055403d45c020592e19700e3c1ac434ad0bba62e"
  },
  "answers": {
   "kinds": {

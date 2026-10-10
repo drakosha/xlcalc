@@ -6,9 +6,10 @@
  * the reader to read the rules Excel kept.
  */
 import type { BookInput, CellStyle, CellView, Clock, ConditionalFormat, StructureOp } from '../../../src/contract.js'
-import { copyFormula, openSession, restructure } from '../../../src/index.js'
+import { openSession, restructure, validateFormula } from '../../../src/index.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../../../src/model.js'
-import { parseRange, type Rect } from '../../../src/structure/area.js'
+import { parseRange } from '../../../src/structure/area.js'
+import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
 
 /**
  * A rule Excel makes through its object model (Windows: `FormatConditions.Add` and its kin): `cellIs` with an operator
@@ -115,20 +116,27 @@ function cellSet(ranges: string[]): string[] {
   return [...out].sort()
 }
 
-const origin = (ranges: string[]): Rect => parseRange(ranges[0])!
+/** JSON with sorted object keys. */
+const sorted = (v: unknown): unknown => (Array.isArray(v) ? v.map(sorted) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => (a < b ? -1 : 1)).map(([k, x]) => [k, sorted(x)])) : v)
+
+/** A formula in its canonical spelling (sheets quoted), as written when it does not parse. */
+function canonicalText(f: string): string {
+  const r = validateFormula(f)
+  return r.ok ? r.canonical : f
+}
 
 /**
- * A rule in a form that compares by meaning: its cells as a set, its formulas as they read at the top-left cell of the
- * rule's cells (a formula is written for the first range's top-left, which a file may name otherwise).
+ * A rule in a form that compares by meaning: its cells as a set (a file may order and split its ranges otherwise; its
+ * formulas are written for the top-left of the rectangle around them either way), formulas in their canonical spelling,
+ * a number format as its code without Excel's escapes of spaces (a dxf's built-in format comes back as its code), keys
+ * sorted.
  */
-export function ruleKey(rule: ConditionalFormat, sheet: string): unknown {
-  const rects = rule.ranges.map((r) => parseRange(r)!)
-  const top = { r: Math.min(...rects.map((x) => x.r1)), c: Math.min(...rects.map((x) => x.c1)) }
-  const o = origin(rule.ranges)
-  const at = (f: string) => copyFormula(f, { sheet, cell: formatAddress(o.r1, o.c1) }, { sheet, cell: formatAddress(top.r, top.c) })
+export function ruleKey(rule: ConditionalFormat): unknown {
   const { ranges: _, ...rest } = rule
-  const moved = JSON.parse(JSON.stringify(rest), (k, v) => ((k === 'formula' || k === 'value') && typeof v === 'string' ? at(v) : k === 'formulas' ? (v as string[]).map(at) : v))
-  return { cells: cellSet(rule.ranges).join(' '), ...moved }
+  const canon = JSON.parse(JSON.stringify(rest), (k, v) =>
+    (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
+  )
+  return sorted({ cells: cellSet(rule.ranges).join(' '), ...canon })
 }
 
 /** What the engine gives a case: its refusal, or each sheet's rules (`ruleKey`) and the looks of the read cells. */
@@ -153,4 +161,4 @@ export function engineCase(set: CondCases, c: CondCase, clock: Clock, book: Book
 }
 
 /** Each sheet's rules as `ruleKey` gives them. */
-export const rulesOf = (book: BookInput): Record<string, unknown[]> => Object.fromEntries(book.sheets.map((s) => [s.name, (s.conditionalFormats ?? []).map((x) => ruleKey(x, s.name))]))
+export const rulesOf = (book: BookInput): Record<string, unknown[]> => Object.fromEntries(book.sheets.map((s) => [s.name, (s.conditionalFormats ?? []).map(ruleKey)]))

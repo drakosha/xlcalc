@@ -33,7 +33,7 @@ function kindsBook(): BookInput {
     { type: 'containsBlanks', ranges: ['D1:D11'], style: { fill: { color: '#D9D9D9' } } },
     { type: 'notContainsErrors', ranges: ['D1:D11'], style: { format: 10 } },
     { type: 'top10', ranges: ['E1:E11'], rank: 30, percent: true, bottom: true, style: { fill: { color: '#C6EFCE' } } },
-    { type: 'aboveAverage', ranges: ['E1:E11'], below: true, equal: true, stdDev: 2, style: { font: { color: '#0070C0' } } },
+    { type: 'aboveAverage', ranges: ['E1:E11'], below: true, stdDev: 2, style: { font: { color: '#0070C0' } } },
     { type: 'uniqueValues', ranges: ['F1:F11'], style: { fill: { color: '#C6EFCE' } } },
     { type: 'duplicateValues', ranges: ['F1:F11'], style: { format: '#,##0.00 "kg"' } },
     { type: 'colorScale', ranges: ['G1:G11'], points: [{ value: { type: 'num', value: '0' }, color: '#5A8AC6' }, { value: { type: 'percentile', value: '40' }, color: '#FCFCFF' }, { value: { type: 'formula', value: '$Z$1*2' }, color: '#F8696B' }] },
