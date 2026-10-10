@@ -147,6 +147,25 @@ function joined(rules: DataValidation[], sheet: string, sheets: Map<string, stri
   return out
 }
 
+/** Rules without the cells of `holes`: a rule whose first cell goes has its formulas written for its new first cell, one left without cells goes. */
+function withoutAreas(rules: DataValidation[], holes: Rect[], sheet: string, sheets: Map<string, string>): DataValidation[] {
+  const kept: DataValidation[] = []
+  for (const v of rules) {
+    const areas = areasOf(v.range)!.flatMap((x) => holes.reduce<Rect[]>((xs, h) => xs.flatMap((y) => minus(y, h)), [x]))
+    const first = areas[0]
+    const next = first ? placed(v, areas, sheet, { r: first.r1, c: first.c1 }, sheet, sheet, null, sheets) : null
+    if (next) kept.push(next)
+  }
+  return kept
+}
+
+/** A sheet's rules without the cells of `holes` (Excel's Clear over them), their ranges joined where they touch; the same array when no rule meets them. */
+export function clearValidations(rules: DataValidation[] | undefined, holes: Rect[], sheet: string, sheets: Map<string, string>): DataValidation[] | undefined {
+  if (!rules?.some((v) => areasOf(v.range)!.some((x) => holes.some((h) => meets(x, h))))) return rules
+  const kept = withoutAreas(rules, holes, sheet, sheets).map((v) => tidy(v, sheet, sheets))
+  return kept.length ? kept : undefined
+}
+
 /**
  * The rules after a move or a copy (`p`), in `out` (its sheets replaced where their rules change): the cells the paste
  * lands on and, for a move, the cells it takes lose their rules; the source's rules (of `source`, the book as it was
@@ -174,16 +193,7 @@ export function pasteValidations(source: BookInput, out: BookInput, p: Paste, t:
     const k = sheetKey(s.name)
     const holes = gone(k)
     let rules = s.validations
-    if (rules && holes.length) {
-      const kept: DataValidation[] = []
-      for (const v of rules) {
-        const areas = areasOf(v.range)!.flatMap((x) => holes.reduce<Rect[]>((xs, h) => xs.flatMap((y) => minus(y, h)), [x]))
-        const first = areas[0]
-        const next = first ? placed(v, areas, s.name, { r: first.r1, c: first.c1 }, s.name, s.name, null, sheets) : null
-        if (next) kept.push(next)
-      }
-      rules = kept
-    }
+    if (rules && holes.length) rules = withoutAreas(rules, holes, s.name, sheets)
     if (t && rules) rules = rewriteValidations(rules, s.name, s.name, t, sheets)
     if (k === tk && pasted.length) rules = joined([...(rules ?? []), ...pasted], s.name, sheets)
     if (rules === s.validations) return s

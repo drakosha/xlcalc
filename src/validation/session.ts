@@ -3,7 +3,7 @@
  * its formulas as at the cell, a list's items, and whether a value meets the rule as Excel's `Validation.Value` checks
  * it. A rule's formulas are computed at the cell as a formula of the cell would be, a reference staying a reference.
  */
-import type { CellInput, CellValidation, DataValidation, EntryCheck, NumberFormat } from '../contract.js'
+import type { CellInput, CellValidation, DataValidation, NumberFormat } from '../contract.js'
 import type { Arg } from '../args.js'
 import { applyEdits, codegenContext, invalidError, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { closureBackend } from '../exec/closures.js'
@@ -199,13 +199,20 @@ function meets(state: EngineState, s: number, r: number, c: number, v: DataValid
   return COMPARE[v.operator ?? 'between'](cmp(a), b === undefined ? 0 : cmp(b))
 }
 
-/**
- * Whether the cell holding `input` meets its rule: the input put into the book, the rule checked, the input taken back
- * (both recompute what depends on the cell). A cell without a rule takes anything.
- */
-export function* checkEntry(state: EngineState, s: number, r: number, c: number, input: CellInput | null): Steps<EntryCheck> {
+/** The rule over a cell that its value, in the book as it is now, does not meet; null when it meets it or there is none. */
+export function brokenRule(state: EngineState, s: number, r: number, c: number): DataValidation | null {
   const rule = ruleOf(state, s, r, c)
-  if (!rule) return { ok: true }
+  return rule && !meets(state, s, r, c, rule) ? rule : null
+}
+
+/** Whether a cell has a rule. */
+export const hasRule = (state: EngineState, s: number, r: number, c: number): boolean => ruleOf(state, s, r, c) !== null
+
+/**
+ * What `read` gives with the cell holding `input`: the input put into the book, read, and taken back (both recompute
+ * what depends on the cell).
+ */
+export function* withInput<T>(state: EngineState, s: number, r: number, c: number, input: CellInput | null, read: () => T): Steps<T> {
   const cells = state.input.sheets[s].cells
   const addr = formatAddress(r, c)
   const old = cells[addr]
@@ -213,7 +220,7 @@ export function* checkEntry(state: EngineState, s: number, r: number, c: number,
   const sheet = state.sheetNames[s]
   if (!same) yield* applyEdits(state, [{ sheet, cell: addr, input }])
   try {
-    return meets(state, s, r, c, rule) ? { ok: true } : { ok: false, rule }
+    return read()
   } finally {
     if (!same) yield* applyEdits(state, [{ sheet, cell: addr, input: old ?? null }])
   }

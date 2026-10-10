@@ -7,7 +7,7 @@
  *
  * No platform imports, so the engine runs outside Node as well.
  */
-import type { BookInput, CellEdit, CellInput, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
+import type { BookInput, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput } from './contract.js'
 import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
 import { changed, concerned, evaluateAll, put, recompute, tracker, write } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
@@ -288,7 +288,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
  * Edits applied atomically, one recomputation of dependents; returns the changed cells (`s:r:c`).
  * `withVolatile`: the clock has changed (live session), volatile cells are recomputed in the same pass.
  */
-export function* applyEdits(state: EngineState, edits: CellEdit[], withVolatile = false): Steps<string[]> {
+export function* applyEdits(state: EngineState, edits: CellReplace[], withVolatile = false): Steps<string[]> {
   const track = tracker()
   const dirty = new Set<number>()
   const fresh: Formula[] = []

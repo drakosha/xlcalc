@@ -257,6 +257,8 @@ const MESSAGES: Messages = {
   tableNameDefined: (p) => `Имя ${q(p.name)} уже занято именованным диапазоном (у таблиц и имён одно пространство имён)`,
   tableOverTable: (p) => `Диапазон ${p.range} пересекается с таблицей ${q(p.table)}`,
   tableOverMerge: (p) => `Диапазон ${p.range} пересекается с объединёнными ячейками ${p.area}`,
+  headerFormula: (p) => `Ячейка ${p.sheet}!${p.cell} в строке заголовков таблицы ${q(p.table)}: в ней имя столбца, а не формула`,
+  validationError: () => 'Значение не соответствует правилу проверки данных этой ячейки',
   explainCells: (p) => `${p.count} ${plural(p.count, 'ячейка', 'ячейки', 'ячеек')}`,
   explainSpill: (p) => `перенос из ${p.ref}`,
   explainValue: ({ value: v }, w) => (v === undefined ? '' : v === null ? 'пусто' : w.value(v)),

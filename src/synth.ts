@@ -5,7 +5,7 @@
  * Cyrillic on purpose. The `./unstable/synth` subpath, for tests and benchmark harnesses: unstable and
  * outside semver (a change of the generator changes the books it produces).
  */
-import type { BookInput, CellEdit, CellInput } from './contract.js'
+import type { BookInput, CellReplace, CellInput } from './contract.js'
 import { formatAddress, indexToCol } from './model.js'
 
 export function mulberry32(seed: number): () => number {
@@ -242,9 +242,9 @@ export function synthBook(opts: SynthOptions): SynthBook {
 }
 
 /** 100 seeded class A edits: another item name, another period start, another direction. */
-export function classAEdits(s: SynthBook, seed: number, count = 100): CellEdit[] {
+export function classAEdits(s: SynthBook, seed: number, count = 100): CellReplace[] {
   const rnd = mulberry32(seed)
-  const out: CellEdit[] = []
+  const out: CellReplace[] = []
   for (let i = 0; i < count; i++) {
     const t = s.classA[Math.floor(rnd() * s.classA.length)]
     let input: CellInput
@@ -257,7 +257,7 @@ export function classAEdits(s: SynthBook, seed: number, count = 100): CellEdit[]
 }
 
 /** A class B edit: an amount in a random row of the data sheet. */
-export function classBEdit(s: SynthBook, seed: number): CellEdit {
+export function classBEdit(s: SynthBook, seed: number): CellReplace {
   const rnd = mulberry32(seed)
   const row = 2 + Math.floor(rnd() * s.dataRows)
   return { sheet: S.data, cell: `D${row}`, input: { value: Math.round(rnd() * 1e8) / 100 } }

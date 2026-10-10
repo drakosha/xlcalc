@@ -94,6 +94,8 @@ export const EN_MESSAGES: EnglishMessages = {
   tableNameDefined: (p) => `${JSON.stringify(p.name)} is a defined name (tables and names share one namespace)`,
   tableOverTable: (p) => `${p.range} meets the table ${p.table}`,
   tableOverMerge: (p) => `${p.range} meets the merged area ${p.area}`,
+  headerFormula: (p) => `${p.sheet}!${p.cell} is a header cell of the table ${p.table}: it holds its column's name, not a formula`,
+  validationError: () => 'The value does not meet the data validation rule of this cell',
   explainCells: (p) => `${p.count} cells`,
   explainSpill: (p) => `spilled from ${p.ref}`,
   // the value as JSON, an error by its code (`#DIV0`)

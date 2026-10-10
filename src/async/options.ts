@@ -39,6 +39,18 @@ export function checkCall(v: unknown, path = 'opts'): CalcOptions {
   return splitCall(o, path)
 }
 
+/**
+ * The options of a session call that changes the book: `signal` and `timeoutMs` for the call, checked here, and the
+ * edit's (`baseRevision`, and `extra`), which the session checks when the call runs; undefined when there are none.
+ */
+export function checkEditCall(v: unknown, extra: readonly string[] = [], path = 'opts'): [CalcOptions, Record<string, unknown> | undefined] {
+  if (v === undefined) return [{}, undefined]
+  const o = options(v, path, ['signal', 'timeoutMs', 'baseRevision', ...extra])
+  const { signal: _, timeoutMs: __, ...edit } = o
+  const { rest: ___, ...call } = splitCall(o, path)
+  return [call, Object.keys(edit).length ? edit : undefined]
+}
+
 export function checkInlineOptions(v: unknown, path = 'opts'): InlineCalcOptions {
   if (v === undefined) return {}
   const o = options(v, path, ['sliceMs', 'timeoutMs', 'limits'])
