@@ -13,7 +13,7 @@ export interface FitEngine {
   /** AutoFit of column `col` of the book's sheet `S`: its width, null for the default, undefined when it keeps its own. */
   fit(book: BookInput, result: ComputeResult, col: string): number | null | undefined
   /** The width a column of `width` (`fitted` by Excel) gets as `value` shown by `format` is typed into it; undefined when it keeps it. */
-  widen(value: ComputeResult['sheets'][0]['cells'][string]['value'], format: NumberFormat | undefined, tag: string, column: { width?: number; fitted?: boolean }): number | undefined
+  widen(value: ComputeResult["sheets"][0]["cells"][string]["value"], format: NumberFormat | undefined, tag: string, column: { width?: number; fitted?: boolean }): number | null | undefined
 }
 
 /** The engine's answer: the column's width (null for the default) and what each of the case's rows shows. */

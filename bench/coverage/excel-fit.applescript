@@ -81,9 +81,16 @@ on run argv
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
 
--- a text typed into the selected cell, then Return; Excel must be the application in front. A window Excel shows for it
--- (a formula it does not take) is answered, and Escape leaves the cell as it was: its text is returned.
+-- a text typed into the selected cell, then Return; Excel must be the application in front (it is brought forward for up
+-- to 3 seconds). A window Excel shows for it (a formula it does not take) is answered, and Escape leaves the cell as it
+-- was: its text is returned.
 on typeKeys(t)
+	repeat 10 times
+		tell application "System Events" to set fp to name of first application process whose frontmost is true
+		if fp is "Microsoft Excel" then exit repeat
+		tell application "Microsoft Excel" to activate
+		delay 0.3
+	end repeat
 	tell application "System Events"
 		set fp to name of first application process whose frontmost is true
 		if fp is not "Microsoft Excel" then error "Excel is not in front: " & fp
