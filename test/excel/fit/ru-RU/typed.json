@@ -1,0 +1,1875 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-10-10",
+  "seconds": 71.9
+ },
+ "cases": [
+  {
+   "id": "value-date-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-date-2",
+   "typed": [
+    [
+     1,
+     "15-мар-2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-date-3",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-date-4",
+   "typed": [
+    [
+     1,
+     "15.03.2026 18:30"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-money-1",
+   "typed": [
+    [
+     1,
+     "1 234 567,50 ₽"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-money-2",
+   "typed": [
+    [
+     1,
+     "5 ₽"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-pct-1",
+   "typed": [
+    [
+     1,
+     "12345678%"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-group-1",
+   "typed": [
+    [
+     1,
+     "1 234 567 890"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-1",
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-2",
+   "typed": [
+    [
+     1,
+     "12345678901"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-3",
+   "typed": [
+    [
+     1,
+     "123456789012"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-4",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-5",
+   "typed": [
+    [
+     1,
+     "-123456789"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-6",
+   "typed": [
+    [
+     1,
+     "3,14159265358979"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-general-7",
+   "typed": [
+    [
+     1,
+     "0,000001234"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-sci-1",
+   "typed": [
+    [
+     1,
+     "1,5E+300"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formatted-1",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-formatted-2",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "0.00%"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-formula-1",
+   "typed": [
+    [
+     1,
+     "=ДАТА(2026;3;15)"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-2",
+   "typed": [
+    [
+     1,
+     "=1234567890*10"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-formula-3",
+   "typed": [
+    [
+     1,
+     "=1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-text-1",
+   "typed": [
+    [
+     1,
+     "abcdefghijklmnopqrstuvwxyz"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-text-2",
+   "typed": [
+    [
+     1,
+     "ИСТИНА"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-hand-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "column": {
+    "width": 5
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-hand-2",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "column": {
+    "width": 8.83203125
+   },
+   "via": "value"
+  },
+  {
+   "id": "value-fitted-1",
+   "cells": {
+    "2": {
+     "value": "ab"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-fitted-2",
+   "cells": {
+    "2": {
+     "value": "a long text in the column"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-turn-1",
+   "cells": {
+    "3": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ],
+    [
+     2,
+     "1"
+    ],
+    [
+     3,
+     "31.12.2026"
+    ],
+    [
+     4,
+     "5"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "value-turn-2",
+   "typed": [
+    [
+     1,
+     "123456789"
+    ],
+    [
+     2,
+     "15.03.2026"
+    ]
+   ],
+   "via": "value"
+  },
+  {
+   "id": "local-date-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-date-2",
+   "typed": [
+    [
+     1,
+     "15-мар-2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-date-3",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-date-4",
+   "typed": [
+    [
+     1,
+     "15.03.2026 18:30"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-money-1",
+   "typed": [
+    [
+     1,
+     "1 234 567,50 ₽"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-money-2",
+   "typed": [
+    [
+     1,
+     "5 ₽"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-pct-1",
+   "typed": [
+    [
+     1,
+     "12345678%"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-group-1",
+   "typed": [
+    [
+     1,
+     "1 234 567 890"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-1",
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-2",
+   "typed": [
+    [
+     1,
+     "12345678901"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-3",
+   "typed": [
+    [
+     1,
+     "123456789012"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-4",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-5",
+   "typed": [
+    [
+     1,
+     "-123456789"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-6",
+   "typed": [
+    [
+     1,
+     "3,14159265358979"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-general-7",
+   "typed": [
+    [
+     1,
+     "0,000001234"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-sci-1",
+   "typed": [
+    [
+     1,
+     "1,5E+300"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-formatted-1",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-formatted-2",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "0.00%"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-formula-1",
+   "typed": [
+    [
+     1,
+     "=ДАТА(2026;3;15)"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-formula-2",
+   "typed": [
+    [
+     1,
+     "=1234567890*10"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-formula-3",
+   "typed": [
+    [
+     1,
+     "=1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-text-1",
+   "typed": [
+    [
+     1,
+     "abcdefghijklmnopqrstuvwxyz"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-text-2",
+   "typed": [
+    [
+     1,
+     "ИСТИНА"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-hand-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "column": {
+    "width": 5
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-hand-2",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "column": {
+    "width": 8.83203125
+   },
+   "via": "local"
+  },
+  {
+   "id": "local-fitted-1",
+   "cells": {
+    "2": {
+     "value": "ab"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-fitted-2",
+   "cells": {
+    "2": {
+     "value": "a long text in the column"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-turn-1",
+   "cells": {
+    "3": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ],
+    [
+     2,
+     "1"
+    ],
+    [
+     3,
+     "31.12.2026"
+    ],
+    [
+     4,
+     "5"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "local-turn-2",
+   "typed": [
+    [
+     1,
+     "123456789"
+    ],
+    [
+     2,
+     "15.03.2026"
+    ]
+   ],
+   "via": "local"
+  },
+  {
+   "id": "keys-date-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-date-2",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "via": "keys"
+  },
+  {
+   "id": "keys-date-3",
+   "typed": [
+    [
+     1,
+     "15.03.2026 18:30"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-pct-1",
+   "typed": [
+    [
+     1,
+     "12345678%"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-group-1",
+   "typed": [
+    [
+     1,
+     "1 234 567 890"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-1",
+   "typed": [
+    [
+     1,
+     "1234567890"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-2",
+   "typed": [
+    [
+     1,
+     "12345678901"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-3",
+   "typed": [
+    [
+     1,
+     "123456789012"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-4",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-5",
+   "typed": [
+    [
+     1,
+     "-123456789"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-6",
+   "typed": [
+    [
+     1,
+     "3,14159265358979"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-general-7",
+   "typed": [
+    [
+     1,
+     "0,000001234"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-sci-1",
+   "typed": [
+    [
+     1,
+     "1,5E+300"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-formatted-1",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "keys"
+  },
+  {
+   "id": "keys-formatted-2",
+   "typed": [
+    [
+     1,
+     "1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "0.00%"
+    }
+   },
+   "via": "keys"
+  },
+  {
+   "id": "keys-formula-1",
+   "typed": [
+    [
+     1,
+     "=1234567890*10"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-formula-2",
+   "typed": [
+    [
+     1,
+     "=1234567"
+    ]
+   ],
+   "cells": {
+    "1": {
+     "format": "#,##0.00"
+    }
+   },
+   "via": "keys"
+  },
+  {
+   "id": "keys-text-1",
+   "typed": [
+    [
+     1,
+     "abcdefghijklmnopqrstuvwxyz"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-hand-1",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "column": {
+    "width": 5
+   },
+   "via": "keys"
+  },
+  {
+   "id": "keys-hand-2",
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "column": {
+    "width": 8.83203125
+   },
+   "via": "keys"
+  },
+  {
+   "id": "keys-fitted-1",
+   "cells": {
+    "2": {
+     "value": "ab"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-fitted-2",
+   "cells": {
+    "2": {
+     "value": "a long text in the column"
+    }
+   },
+   "fitFirst": true,
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-turn-1",
+   "cells": {
+    "3": {
+     "format": "dddd, mmmm d, yyyy"
+    }
+   },
+   "typed": [
+    [
+     1,
+     "15.03.2026"
+    ],
+    [
+     2,
+     "1"
+    ],
+    [
+     3,
+     "31.12.2026"
+    ],
+    [
+     4,
+     "5"
+    ]
+   ],
+   "via": "keys"
+  },
+  {
+   "id": "keys-turn-2",
+   "typed": [
+    [
+     1,
+     "123456789"
+    ],
+    [
+     2,
+     "15.03.2026"
+    ]
+   ],
+   "via": "keys"
+  }
+ ],
+ "answers": {
+  "value-date-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-date-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-date-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-date-4": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-money-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-money-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "5 ₽"
+   }
+  },
+  "value-pct-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-group-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-general-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+09"
+   }
+  },
+  "value-general-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+10"
+   }
+  },
+  "value-general-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+11"
+   }
+  },
+  "value-general-4": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567"
+   }
+  },
+  "value-general-5": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "-1,2E+08"
+   }
+  },
+  "value-general-6": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "3,141593"
+   }
+  },
+  "value-general-7": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E-06"
+   }
+  },
+  "value-sci-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-formatted-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-formatted-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-formula-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-formula-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+10"
+   }
+  },
+  "value-formula-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-text-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "abcdefghijklmnopqrstuvwxyz"
+   }
+  },
+  "value-text-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "ИСТИНА"
+   }
+  },
+  "value-hand-1": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "#####"
+   }
+  },
+  "value-hand-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": false,
+   "saved": {
+    "width": 8.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "value-fitted-1": {
+   "columnWidth": 2.17,
+   "points": 18,
+   "standard": false,
+   "saved": {
+    "width": 3,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "##",
+    "2": "ab"
+   }
+  },
+  "value-fitted-2": {
+   "columnWidth": 19.17,
+   "points": 120,
+   "standard": false,
+   "saved": {
+    "width": 20,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026",
+    "2": "a long text in the column"
+   }
+  },
+  "value-turn-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########",
+    "2": "1",
+    "3": "#########",
+    "4": "5"
+   }
+  },
+  "value-turn-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+08",
+    "2": "#########"
+   }
+  },
+  "local-date-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-date-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-date-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-date-4": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-money-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-money-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "5 ₽"
+   }
+  },
+  "local-pct-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-group-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-general-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+09"
+   }
+  },
+  "local-general-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+10"
+   }
+  },
+  "local-general-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+11"
+   }
+  },
+  "local-general-4": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567"
+   }
+  },
+  "local-general-5": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "-1,2E+08"
+   }
+  },
+  "local-general-6": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "3,141593"
+   }
+  },
+  "local-general-7": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E-06"
+   }
+  },
+  "local-sci-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-formatted-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-formatted-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-formula-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-formula-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+10"
+   }
+  },
+  "local-formula-3": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-text-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "abcdefghijklmnopqrstuvwxyz"
+   }
+  },
+  "local-text-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "ИСТИНА"
+   }
+  },
+  "local-hand-1": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "#####"
+   }
+  },
+  "local-hand-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": false,
+   "saved": {
+    "width": 8.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "local-fitted-1": {
+   "columnWidth": 2.17,
+   "points": 18,
+   "standard": false,
+   "saved": {
+    "width": 3,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "##",
+    "2": "ab"
+   }
+  },
+  "local-fitted-2": {
+   "columnWidth": 19.17,
+   "points": 120,
+   "standard": false,
+   "saved": {
+    "width": 20,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026",
+    "2": "a long text in the column"
+   }
+  },
+  "local-turn-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "#########",
+    "2": "1",
+    "3": "#########",
+    "4": "5"
+   }
+  },
+  "local-turn-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1,23E+08",
+    "2": "#########"
+   }
+  },
+  "keys-date-1": {
+   "columnWidth": 9.33,
+   "points": 61,
+   "standard": false,
+   "saved": {
+    "width": 10.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026"
+   }
+  },
+  "keys-date-2": {
+   "columnWidth": 22,
+   "points": 137,
+   "standard": false,
+   "saved": {
+    "width": 22.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "воскресенье, март 15, 2026"
+   }
+  },
+  "keys-date-3": {
+   "columnWidth": 14.17,
+   "points": 90,
+   "standard": false,
+   "saved": {
+    "width": 15,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026 18:30"
+   }
+  },
+  "keys-pct-1": {
+   "columnWidth": 9.67,
+   "points": 63,
+   "standard": false,
+   "saved": {
+    "width": 10.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12345678%"
+   }
+  },
+  "keys-group-1": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1 234 567 890"
+   }
+  },
+  "keys-general-1": {
+   "columnWidth": 10.33,
+   "points": 67,
+   "standard": false,
+   "saved": {
+    "width": 11.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1234567890"
+   }
+  },
+  "keys-general-2": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12345678901"
+   }
+  },
+  "keys-general-3": {
+   "columnWidth": 11,
+   "points": 71,
+   "standard": false,
+   "saved": {
+    "width": 11.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1,23457E+11"
+   }
+  },
+  "keys-general-4": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "1234567"
+   }
+  },
+  "keys-general-5": {
+   "columnWidth": 9.83,
+   "points": 64,
+   "standard": false,
+   "saved": {
+    "width": 10.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "-123456789"
+   }
+  },
+  "keys-general-6": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "3,141593"
+   }
+  },
+  "keys-general-7": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "0,000001234"
+   }
+  },
+  "keys-sci-1": {
+   "columnWidth": 8.5,
+   "points": 56,
+   "standard": false,
+   "saved": {
+    "width": 9.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1,50E+300"
+   }
+  },
+  "keys-formatted-1": {
+   "columnWidth": 10.5,
+   "points": 68,
+   "standard": false,
+   "saved": {
+    "width": 11.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1 234 567,00"
+   }
+  },
+  "keys-formatted-2": {
+   "columnWidth": 11.17,
+   "points": 72,
+   "standard": false,
+   "saved": {
+    "width": 12,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1234567,00%"
+   }
+  },
+  "keys-formula-1": {
+   "columnWidth": 11.33,
+   "points": 73,
+   "standard": false,
+   "saved": {
+    "width": 12.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "12345678900"
+   }
+  },
+  "keys-formula-2": {
+   "columnWidth": 10.5,
+   "points": 68,
+   "standard": false,
+   "saved": {
+    "width": 11.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "1 234 567,00"
+   }
+  },
+  "keys-text-1": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "abcdefghijklmnopqrstuvwxyz"
+   }
+  },
+  "keys-hand-1": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "#####"
+   }
+  },
+  "keys-hand-2": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": false,
+   "saved": {
+    "width": 8.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "#########"
+   }
+  },
+  "keys-fitted-1": {
+   "columnWidth": 9.33,
+   "points": 61,
+   "standard": false,
+   "saved": {
+    "width": 10.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026",
+    "2": "ab"
+   }
+  },
+  "keys-fitted-2": {
+   "columnWidth": 19.17,
+   "points": 120,
+   "standard": false,
+   "saved": {
+    "width": 20,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026",
+    "2": "a long text in the column"
+   }
+  },
+  "keys-turn-1": {
+   "columnWidth": 20.67,
+   "points": 129,
+   "standard": false,
+   "saved": {
+    "width": 21.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "15.03.2026",
+    "2": "1",
+    "3": "четверг, декабрь 31, 2026",
+    "4": "5"
+   }
+  },
+  "keys-turn-2": {
+   "columnWidth": 9.33,
+   "points": 61,
+   "standard": false,
+   "saved": {
+    "width": 10.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "123456789",
+    "2": "15.03.2026"
+   }
+  }
+ }
+}

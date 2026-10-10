@@ -219,7 +219,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const dim = keys.length ? `${indexToCol(minCol)}${Math.floor(first / MAX_COLS) + 1}:${indexToCol(maxCol)}${Math.floor(last / MAX_COLS) + 1}` : 'A1'
   const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
     const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
-    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"` : ` width="${DEFAULT_WIDTH}"`
+    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
   const merges = sheet.merges ?? []

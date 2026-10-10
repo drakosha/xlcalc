@@ -35,6 +35,8 @@ export interface Style extends Names {
   epoch?: number
   /** The code a built-in format shows by in the locale, by its number (`numfmt/builtin.ts`). */
   builtin(id: number): string
+  /** Text laid out for AutoFit: a padding `_x` marked with its `x` (`PAD`), a `?` with no digit a digit's room (`BLANK`). */
+  layout?: boolean
 }
 
 /** A style in a date system whose day 0 is `epoch` of the 1900 one. */
@@ -42,6 +44,13 @@ export const styleIn = (style: Style, epoch: number): Style => (epoch ? { ...sty
 
 /** Where a fill `*x` goes in formatted text, followed by `x`: TEXT drops both, a cell repeats `x` across its room. */
 export const FILL = '\uFFFF'
+
+/** In laid-out text, a padding `_x` followed by its `x`, and the room of a digit a `?` keeps blank (a figure space). */
+export const PAD = '\uFFFE'
+export const BLANK = '\u2007'
+
+/** What a `?` with no digit writes: a space, a digit's room in laid-out text. */
+export const blank = (style: Style): string => (style.layout ? BLANK : ' ')
 
 /** A token outside a number's digits as text: a literal, `%`, a padding space, a fill's mark; a separator as the locale writes it. */
 export function plain(t: Tok, style: Style): string {
@@ -53,7 +62,7 @@ export function plain(t: Tok, style: Style): string {
     case 'slash':
       return '/'
     case 'pad':
-      return ' '
+      return style.layout ? PAD + t.s : ' '
     case 'fill':
       return FILL + t.s
     case 'ph':

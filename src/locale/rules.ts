@@ -8,7 +8,7 @@
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
-import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, formatWith, generalFormat, generalText, styleIn, type Dialect, type Names, type Style } from '../numfmt.js'
+import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
@@ -50,6 +50,10 @@ export interface Rules extends CritRules {
   formatText(value: number | string | boolean, format: string): string | null
   /** What a cell shows: a value by its format (an xlsx code or a built-in format's number) in `space` points of room. */
   display(value: CellValue, format: NumberFormat | undefined, space: number): CellDisplay
+  /** The points of the column AutoFit gives a cell holding a value by its format (`fitPoints`); null when it shows nothing. */
+  fitPoints(value: CellValue, format: NumberFormat | undefined): number | null
+  /** The points Excel widens a column of `now` points to as a value is typed into it (`typedPoints`); null when it keeps them. */
+  typedPoints(value: CellValue, format: NumberFormat | undefined, now: number): number | null
   /** Excel's order of two values that are not errors (lookups, sorting), text by the locale's order. */
   compare(a: V, b: V): number
   /** The order of the comparison operators: `compare` with numbers equal to 15 significant digits. */
@@ -113,6 +117,8 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
     numberText: generalText,
     formatText: (value, format) => formatWith(value, format, dialect),
     display: (value, format, space) => displayWith(value, format, style, space),
+    fitPoints: (value, format) => fitPoints(value, format, style),
+    typedPoints: (value, format, now) => typedPoints(value, format, style, now),
     compare: compareValues,
     compareOp,
     errorText: (code) => ERROR_TEXT[code],

@@ -3,7 +3,7 @@
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
  * problem. Formula problems are not input errors: an invalid formula gives an error value in its cell.
  */
-import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
+import type { BookInput, CalcLimits, CellEdit, CellInput, CellStyle, CellValue, Clock, ComputeOptions, DisplayOptions, EntryOptions, EntryWidthOptions, Execution, Externals, LayoutEdit, NameInput, NameOptions, NamesContext, SessionOptions, ValidateContext } from './contract.js'
 import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
@@ -236,7 +236,7 @@ const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, 'style', 'format', 'hidden', 'outlineLevel', 'collapsed'])
+  onlyKeys(o, p, [size, ...(axis === 'c' ? ['bestFit'] : []), 'style', 'format', 'hidden', 'outlineLevel', 'collapsed'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
@@ -244,6 +244,7 @@ function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boo
   field('hidden', checkBoolean)
   field('outlineLevel', (x, path) => checkNumber(x, path, 1, 7, true))
   field('collapsed', checkBoolean)
+  field('bestFit', checkBoolean)
 }
 
 /** The lines of a key (`C`, `B:D`; `5`, `5:9`). */
@@ -451,6 +452,12 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       else if (o.outline !== null) checkOutline(o.outline, `${p}.outline`)
       return o as unknown as LayoutEdit
     }
+    if (o.fit !== undefined) {
+      onlyKeys(o, p, ['sheet', 'columns', 'fit'])
+      if (o.fit !== true) throw new InputError(`${p}.fit`, `expected true, got ${what(o.fit)}`)
+      checkSpan(o.columns, `${p}.columns`, 'c')
+      return o as unknown as LayoutEdit
+    }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = axis === 'r' ? 'rows' : 'columns'
     onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered, frozen, conditionalFormats, validations or outline)' : '')
@@ -520,6 +527,14 @@ export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (o.locale !== undefined) checkLocale(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
   return o as DisplayOptions
+}
+
+/** `entryWidth`'s options: `displayValue`'s and the column's `bestFit`. */
+export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOptions {
+  if (v === undefined) return {}
+  const { bestFit, ...rest } = object(v, path, "options such as { format: 14, locale: 'ru-RU', width: 9.5, bestFit: true }")
+  if (bestFit !== undefined) checkBoolean(bestFit, `${path}.bestFit`)
+  return { ...checkDisplayOptions(rest, path), ...(bestFit !== undefined ? { bestFit: bestFit as boolean } : {}) }
 }
 
 /** `parseEntry`'s options; of the cell only its format, style and meta are read (it may be a `CellView`). */

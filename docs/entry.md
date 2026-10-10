@@ -46,6 +46,8 @@ session.close()
 
 With `createCalcPool` or `createInlineCalc` the session's methods are asynchronous and `parseEntry` stays synchronous: the host reads the cell (its own copy, or `await session.cells(...)`), calls `parseEntry` and sends the input with `setCells`.
 
+A number typed into a column too narrow for it widens the column in Excel when nobody set its width by hand. `entryWidth(value, { format, locale, width, bestFit })` gives that width for the value the entry computes (the cell's change from `setCells`) and the column as it was, and the host sets it with `setLayout([{ sheet, columns: 'B', set: { width, bestFit: true } }])`. Only typing widens a column, the object model does not; the rules are in [Fitting columns](formats.md#fitting-columns).
+
 ## The rules
 
 ### Formulas
