@@ -13,6 +13,7 @@
  *   npx tsx bench/windows/run.ts xlsx filters        the filter files computed and saved by Excel into xlsx/filters/
  *   npx tsx bench/windows/run.ts xlsx formats [L]    the codes of the built-in number formats into xlsx/[<tag>/]formats.json
  *   npx tsx bench/windows/run.ts entry <name> [L]      text typed into cells into entry/[<tag>/]<name>.json
+ *   npx tsx bench/windows/run.ts valid <name> [L]      data validation and outlines into valid/[<tag>/]<name>.json and valid/[<tag>/]<name>/
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
  *   npx tsx bench/windows/run.ts books L               the books the Mac has answers for in that locale (display, spill, ...)
  *   npx tsx bench/windows/run.ts all L                 both
@@ -31,6 +32,7 @@ import { stepFunctions } from './functions.js'
 import { stepXlsxFilters, stepXlsxFormats } from './xlsx.js'
 import { stepParts } from './parts.js'
 import { stepEntry } from './entry.js'
+import { stepValid } from './valid.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
@@ -48,11 +50,12 @@ async function functions(tag: Tag, e: WinEnv) {
   await stepFunctions(['measurement', ...(en ? ['probes', ...legacy] : []), ...macSets(`cases/${localeDir(tag)}`)], tag, e)
 }
 
-/** The books with Mac answers in a locale: what cells show, tables, and in en-US the spill, workbook, struct and parts sets and the xlsx filters. */
+/** The books with Mac answers in a locale: what cells show, tables, data validation, and in en-US the spill, workbook, struct and parts sets and the xlsx filters. */
 async function books(tag: Tag, e: WinEnv) {
   const en = tag === 'en-US'
   for (const s of macSets(`display/${localeDir(tag)}`)) await stepDisplay(s, tag, e)
   for (const s of macSets(`tables/${localeDir(tag)}`)) await stepTables(s, tag, e)
+  for (const s of macSets(`valid/${localeDir(tag)}`)) await stepValid(s, tag, e)
   if (!en) return
   // the order runs file keeps every order Excel gave: it is no set
   for (const s of macSets('spill').filter((s) => s !== 'order-runs')) await stepSpill(s, tag, e)
@@ -75,11 +78,12 @@ else if (step in BOOK_STEPS && a) await withWindowsExcel('en-US', (e) => BOOK_ST
 else if (step === 'xlsx' && a === 'filters') await withWindowsExcel('en-US', (e) => stepXlsxFilters('en-US', e))
 else if (step === 'xlsx' && a === 'formats') await withWindowsExcel(parseTag(b), (e) => stepXlsxFormats(parseTag(b), e))
 else if (step === 'entry' && a) await withWindowsExcel(parseTag(b), (e) => stepEntry(a, parseTag(b), e))
+else if (step === 'valid' && a) await withWindowsExcel(parseTag(b), (e) => stepValid(a, parseTag(b), e))
 else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functions(parseTag(a), e))
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts <name> | xlsx filters | xlsx formats [locale] | entry <name> [locale] | valid <name> [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
