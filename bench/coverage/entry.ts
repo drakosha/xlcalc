@@ -52,7 +52,10 @@ export async function partAnswers(part: EntryCase[], refused: string[], shown: [
   part.forEach((c, i) => {
     const at = `A${i + 1}`
     const [text, code, local, prefix] = shown[i]
-    out[c.id] = { ...(refused[i] ? { refused: refused[i] } : {}), cell: heldOf(cells[at]), ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}) }
+    const cell = heldOf(cells[at])
+    // a formula Excel does not take leaves the cell as it was, blank, with no error from AppleScript
+    const why = refused[i] || (c.text !== '' && cell?.value === undefined && cell?.formula === undefined && !prefix ? 'not taken: the cell stayed blank' : '')
+    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}) }
   })
   return out
 }
