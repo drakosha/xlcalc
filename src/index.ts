@@ -40,6 +40,7 @@ export { entryText, needsApostrophe } from './entry/text.js'
 export { entryWidth, fitColumns } from './layout/fit.js'
 export * from './a1.js'
 export { canonValue, errorText, sameValue, validateSheetName } from './helpers.js'
+export { scanReferences } from './scan.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
