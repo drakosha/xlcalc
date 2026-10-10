@@ -1,0 +1,111 @@
+/**
+ * A sheet's data validation: `<dataValidations>`, and `<x14:dataValidations>` in the sheet's extensions, where Excel
+ * writes a rule whose formulas refer to another sheet. Each rule is read as `DataValidation`, xlsx's defaults (false)
+ * spelled out where they differ from the model's (true, as Excel makes a rule); a rule the model cannot hold (no range,
+ * no formula its type needs) is left out, cells a rule shares with an earlier one go to the earlier one, an IME mode is
+ * not kept, and each is reported.
+ */
+import type { DataValidation, ValidationOperator, ValidationType } from '../../contract.js'
+import type { Rect } from '../../structure/area.js'
+import { areasOf, COMPARED, rangeText, twoBounds } from '../../validation/rules.js'
+import { formulaAt, minus } from '../../validation/structure.js'
+import { sheetKey } from '../../syntax.js'
+import type { Issues } from '../issues.js'
+import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { readText } from '../xml/text.js'
+import { readFormula } from './formulas.js'
+
+const TYPES: Record<string, ValidationType> = { none: 'any', whole: 'whole', decimal: 'decimal', date: 'date', time: 'time', textLength: 'textLength', list: 'list', custom: 'custom' }
+const OPERATORS = new Set(['notBetween', 'equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual'])
+
+/** A rule as the file holds it: its attributes, its formulas' text and its range. */
+interface RawRule {
+  a: Record<string, string>
+  formula1?: string
+  formula2?: string
+  sqref: string
+}
+
+const text = (e: Element | undefined) => (e?.body == null ? undefined : readText(e.body))
+
+/** The rules of `<dataValidations>`, before the sheet's extensions. */
+function plain(xml: string): RawRule[] {
+  return elements(element(xml, 'dataValidations')?.body ?? '', 'dataValidation').map((e) => {
+    const a = attributes(e.attrs)
+    const body = e.body ?? ''
+    return { a, formula1: text(element(body, 'formula1')), formula2: text(element(body, 'formula2')), sqref: a.sqref ?? '' }
+  })
+}
+
+/** The rules of Excel 2010's extension: formulas in `<xm:f>`, the range in `<xm:sqref>`. */
+function extended(xml: string): RawRule[] {
+  return elements(element(xml, 'dataValidations')?.body ?? '', 'dataValidation').map((e) => {
+    const body = e.body ?? ''
+    const f = (k: string) => text(element(element(body, k)?.body ?? '', 'f'))
+    return { a: attributes(e.attrs), formula1: f('formula1'), formula2: f('formula2'), sqref: text(element(body, 'sqref')) ?? '' }
+  })
+}
+
+/** The model's rule of a rule of the file, or why it cannot be one. */
+function rule(raw: RawRule, sheet: string, issues: Issues): DataValidation | string {
+  const { a } = raw
+  const type = TYPES[a.type ?? 'none']
+  if (!type) return `a rule of an unknown type ${JSON.stringify(a.type)} is left out`
+  const out: DataValidation = { range: raw.sqref, type }
+  const where = { sheet, cell: raw.sqref }
+  if (COMPARED.has(type) && a.operator && OPERATORS.has(a.operator)) out.operator = a.operator as ValidationOperator
+  const formula = (t: string | undefined) => (t === undefined || t === '' ? undefined : readFormula(t, issues, where).formula)
+  if (type !== 'any') {
+    const f1 = formula(raw.formula1)
+    if (f1 === undefined) return 'a rule without the formula its type needs is left out'
+    out.formula1 = f1
+    if (twoBounds(out)) {
+      const f2 = formula(raw.formula2)
+      if (f2 === undefined) return 'a rule between two bounds without its second formula is left out'
+      out.formula2 = f2
+    }
+  }
+  // xlsx's defaults are false, the model's those of a rule Excel makes
+  if (!flag(a.allowBlank)) out.allowBlank = false
+  if (type === 'list' && flag(a.showDropDown)) out.dropdown = false
+  for (const [k, file] of [['promptTitle', 'promptTitle'], ['prompt', 'prompt']] as const) if (a[file] !== undefined) out[k] = readText(a[file])
+  if (!flag(a.showInputMessage)) out.showPrompt = false
+  if (a.errorStyle === 'warning' || a.errorStyle === 'information') out.errorStyle = a.errorStyle
+  for (const k of ['errorTitle', 'error'] as const) if (a[k] !== undefined) out[k] = readText(a[k])
+  if (!flag(a.showErrorMessage)) out.showError = false
+  if (a.imeMode !== undefined && a.imeMode !== 'noControl') issues.add('dataValidation', "a rule's IME mode is not kept", where)
+  return out
+}
+
+/**
+ * The sheet's rules (`tail`: the worksheet after its cells), none meeting an earlier one; a rule that loses its first cell
+ * so has its formulas written for its new first cell (`sheets`: the book's sheets).
+ */
+export function readValidations(tail: string, sheet: string, sheets: string[], issues: Issues): DataValidation[] | undefined {
+  const names = new Map(sheets.map((s) => [sheetKey(s), s]))
+  const ext = tail.search(/<(?:[\w.-]+:)?extLst[\s>]/)
+  const raws = [...plain(ext < 0 ? tail : tail.slice(0, ext)), ...(ext < 0 ? [] : extended(tail.slice(ext)))]
+  const out: DataValidation[] = []
+  const taken: Rect[] = []
+  for (const raw of raws) {
+    const where = { sheet, cell: raw.sqref }
+    const r = rule(raw, sheet, issues)
+    if (typeof r === 'string') {
+      issues.add('dataValidation', r, where)
+      continue
+    }
+    const areas = areasOf(raw.sqref.toUpperCase())
+    if (!areas) {
+      issues.add('dataValidation', 'a rule without a range of the sheet is left out', where)
+      continue
+    }
+    const own = areas.flatMap((x) => taken.reduce<Rect[]>((xs, t) => xs.flatMap((y) => minus(y, t)), [x]))
+    if (own.length !== areas.length || own.some((x, i) => x !== areas[i])) issues.add('dataValidation', 'cells of a rule that an earlier rule has keep the earlier one', where)
+    if (!own.length) continue
+    taken.push(...own)
+    const [from, to] = [{ r: areas[0].r1, c: areas[0].c1 }, { r: own[0].r1, c: own[0].c1 }]
+    for (const k of ['formula1', 'formula2'] as const) if (r[k] !== undefined) r[k] = formulaAt(r[k], sheet, from, to, names)
+    out.push({ ...r, range: rangeText(own) })
+  }
+  return out.length ? out : undefined
+}
