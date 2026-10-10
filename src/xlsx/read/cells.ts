@@ -1,10 +1,12 @@
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
  * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles, hidden rows and outline levels. A cell
- * is placed by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges
+ * keeps of its look what its row or column does not give it (`ownLook`). A cell is placed by its `r`, or after the
+ * previous one when it has none (rows likewise). Shared formulas and array ranges
  * are collected for the sheet reader to resolve once every cell is known.
  */
 import type { CellInput, CellValue, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
+import { lookOf, type Look } from '../../layout/lines.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Issues, Where } from '../issues.js'
 import type { Xf } from '../styles/read.js'
@@ -21,6 +23,8 @@ export interface CellsContext {
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): an ISO date's serial counts from it. */
   epoch: number
   issues: Issues
+  /** The book's style with nothing set, added to its styles when first asked for. */
+  plain(): number
 }
 
 /** A shared formula: its master cell and text, and the cells that take it. */
@@ -76,11 +80,13 @@ const colOf = (letters: string) => {
   return n - 1
 }
 
-export function readCells(data: string, ctx: CellsContext): SheetCells {
+/** The cells of `<sheetData>`; `column`, the look of a column of the sheet (zero-based). */
+export function readCells(data: string, ctx: CellsContext, column: (c: number) => Look | undefined = () => undefined): SheetCells {
   const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
   const { issues, sheet } = ctx
   let row = -1
   let col = -1
+  let rowLine: RowInput | undefined
   TAG.lastIndex = 0
   let m: RegExpExecArray | null
   while ((m = TAG.exec(data))) {
@@ -94,6 +100,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
       if (flag(a.hidden) || line.height === 0) line.hidden = true
       if (a.s !== undefined && flag(a.customFormat)) Object.assign(line, look(ctx.xfs[Number(a.s)], issues, { sheet, cell: `${row + 1}:${row + 1}` }))
       Object.assign(line, outlineOf(a))
+      rowLine = line
       if (Object.keys(line).length) out.rows.set(row + 1, line)
       continue
     }
@@ -116,7 +123,7 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     // the address as written when it is already the model's spelling (upper case), else spelled out
     const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     const xf = a.s === undefined ? undefined : ctx.xfs[Number(a.s)]
-    const cell: CellInput = look(xf, issues, { sheet, cell: addr })
+    const cell: CellInput = ownLook(look(xf, issues, { sheet, cell: addr }), lookOf(undefined, rowLine, column(col)), ctx.plain)
     // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
     if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
@@ -187,6 +194,18 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
 export function outlineOf(a: Record<string, string>): { outlineLevel?: number; collapsed?: boolean } {
   const level = Math.trunc(Number(a.outlineLevel ?? 0))
   return { ...(level > 0 ? { outlineLevel: Math.min(level, 7) } : {}), ...(flag(a.collapsed) ? { collapsed: true } : {}) }
+}
+
+/**
+ * A stored cell's style and format over the look its row or column gives it (`line`): what they give is left out, so
+ * a book written and read back gives no cell a look it did not have, and a default they would not give is spelled out
+ * (the plain style, `General`), as a stored cell shows its own look alone.
+ */
+function ownLook(own: Look, line: Look, plain: () => number): CellInput {
+  const out: CellInput = {}
+  if (own.style !== line.style) out.style = own.style ?? plain()
+  if (own.format !== line.format) out.format = own.format ?? 'General'
+  return out
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */

@@ -121,6 +121,9 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   )
   const colors = palette(themeXml, stylesXml)
   const table = readStyles(stylesXml, colors)
+  // a cell whose row or column has a look it does not share is read with a style with nothing set
+  let plainStyle: number | undefined
+  const plain = () => (plainStyle ??= table.styles.push({}) - 1)
   const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
   if (table.font && (table.font.name !== 'Calibri' || table.font.size !== 11))
     issues.add('defaultFont', `the default font ${table.font.name ?? '(no name)'} ${table.font.size ?? '(no size)'} is read as Calibri 11, the model's default`)
@@ -161,7 +164,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
     const [comments, vml, threads] = await Promise.all([linked('comments'), drawing === undefined ? undefined : linked('vmlDrawing', drawing), linked('threadedComment')])
     const read = readSheet(
       { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond },
-      { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues },
+      { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain },
     )
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
     cached.push({ name: d.name, cells: read.cached })

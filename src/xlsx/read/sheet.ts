@@ -7,6 +7,7 @@
  * and what the sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
+import { sheetLines } from '../../layout/lines.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
 import { spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
@@ -250,7 +251,8 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const dataEnd = closeAt < 0 ? open : closeAt + 10
   const data = open < 0 ? '' : xml.slice(open, dataEnd)
   const tail = open < 0 ? '' : xml.slice(dataEnd)
-  const read = readCells(data, ctx)
+  const cols = columns(head, ctx)
+  const read = readCells(data, ctx, sheetLines({ cells: {}, columns: cols }).column)
   for (const s of read.shared.values()) if (s.master !== undefined) read.cells[s.master] = { ...read.cells[s.master], formula: s.text }
   const converted = convert(src, read, ctx.issues)
   // copies are pasted from the converted master and take what it reports
@@ -271,7 +273,6 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
   if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true
-  const cols = columns(head, ctx)
   if (cols) sheet.columns = cols
   const rows = spans<RowInput>([...read.rows].map(([r, v]) => [r - 1, r - 1, v]), 'r')
   if (rows) sheet.rows = rows

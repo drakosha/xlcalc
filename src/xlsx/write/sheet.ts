@@ -7,10 +7,13 @@
  * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
  * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
  * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
- * its own over its cells, with Excel's filter mark. Notes, hyperlinks and frozen panes are written by `parts.ts`, data
- * validation by `validation.ts`; rows and columns carry their outline levels.
+ * its own over its cells, with Excel's filter mark. Every cell is written with the whole look it shows (its own style
+ * and format over its row's or column's, `layout/lines.ts`), as Excel shows a stored cell by its own cell format alone.
+ * Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows and columns
+ * carry their outline levels.
  */
 import type { CellInput, CellLink, CellNote, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
+import { sheetLines } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
@@ -150,16 +153,19 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     rowsUsed.add(row)
   }
   const where = (cell: string) => ({ sheet: sheet.name, cell })
-  const sAttr = (c: CellInput | undefined) => {
-    const xf = c ? styles.xf(c.style, c.format) : 0
+  const sheetLook = sheetLines(sheet)
+  const sAttr = (addr: string, c: CellInput | undefined) => {
+    const { row, col } = parseAddress(addr)
+    const look = sheetLook.look(row, col, c)
+    const xf = styles.xf(look.style, look.format)
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
   const cellXml = (addr: string, c: CellInput | undefined, v: CellValue | undefined, f = '', dynamic = f !== '') => {
     const cm = dynamic ? ' cm="1"' : ''
-    if (v === undefined) return `<c r="${addr}"${sAttr(c)}${cm}${f ? `>${f}</c>` : '/>'}`
+    if (v === undefined) return `<c r="${addr}"${sAttr(addr, c)}${cm}${f ? `>${f}</c>` : '/>'}`
     const x = valueXml(v, ctx, where(addr), !f)
-    return `<c r="${addr}"${sAttr(c)}${x.t}${cm}>${f}<v>${x.v}</v></c>`
+    return `<c r="${addr}"${sAttr(addr, c)}${x.t}${cm}>${f}<v>${x.v}</v></c>`
   }
   const notes = new Map<string, CellNote>()
   const links = new Map<string, CellLink>()
