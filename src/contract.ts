@@ -927,8 +927,9 @@ export type StructureOp =
    */
   | { op: 'insertSheet'; name: string; before?: string }
   /**
-   * The sheet moved before the sheet `before`, else after the last one. A reference across sheets covers the sheets
-   * between its ends in the new order; an end that moves leaves it, the next sheet inward taking its place.
+   * The sheet moved before the sheet `before`, else after the last one; before a hidden sheet it goes before the next
+   * visible one, as Excel moves it. A reference across sheets covers the sheets between its ends in the new order; an end
+   * that moves leaves it, the next sheet inward taking its place.
    */
   | { op: 'moveSheet'; sheet: string; before?: string }
   /** The sheet hidden (Excel's Hide Sheet), very hidden with `very` (see `SheetInput.hidden`); a book keeps one visible sheet. */
@@ -955,6 +956,8 @@ export type StructureRefusal =
   | 'sheet_name'
   /** A book keeps one visible sheet at least: its last visible sheet cannot be deleted or hidden. */
   | 'last_sheet'
+  /** A very hidden sheet (`SheetInput.hidden` 'very') cannot be deleted or moved, as Excel refuses: it is shown again first. */
+  | 'very_hidden'
   /** A move or copy would cut through a merged area, at its source or where it lands. */
   | 'merged'
   /** A copy that leaves out rows a filter hid, pasted over hidden rows of a filtered sheet (several areas onto several areas). */
