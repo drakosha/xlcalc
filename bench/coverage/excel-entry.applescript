@@ -105,36 +105,36 @@ end run
 -- what the formula bar shows for each of the cells A1 to An of the sheet `ws` of the book `bookName`, each selected in
 -- turn with Excel in front: the description of the text area of the book's window ("Formula Bar. A,1 <text>")
 on formulaBars(ws, n, bookName)
-	-- the window lists its formula bar only with Excel in front
-	repeat 10 times
-		tell application "System Events" to set fp to name of first application process whose frontmost is true
-		if fp is "Microsoft Excel" then exit repeat
-		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
-		tell application "Microsoft Excel" to activate
-		delay 0.5
-	end repeat
-	if fp is not "Microsoft Excel" then error "Excel is not in front: " & fp
-	delay 1
-	-- the book's window, whose name is the book's (another window may be in front of it)
+	-- the window lists its formula bar only with Excel in front, its desktop shown: tried again until it does
 	set bar to missing value
 	set seen to ""
-	tell application "System Events" to tell process "Microsoft Excel"
-		repeat with w in windows
-			set seen to seen & (name of w) & "; "
-			if name of w is bookName or name of w starts with (text 1 thru -6 of bookName) then
-				set els to entire contents of w
-				repeat with e in els
-					try
-						if role of e is "AXTextArea" then
-							set bar to contents of e
-							exit repeat
-						end if
-					end try
+	repeat 10 times
+		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
+		tell application "Microsoft Excel" to activate
+		delay 1.5
+		try
+			tell application "System Events" to tell process "Microsoft Excel"
+				set seen to ""
+				repeat with w in windows
+					set wn to name of w
+					set seen to seen & wn & "; "
+					if wn is bookName or bookName starts with wn then
+						set els to entire contents of w
+						repeat with e in els
+							try
+								if role of e is "AXTextArea" then
+									set bar to contents of e
+									exit repeat
+								end if
+							end try
+						end repeat
+					end if
+					if bar is not missing value then exit repeat
 				end repeat
-			end if
-			if bar is not missing value then exit repeat
-		end repeat
-	end tell
+			end tell
+		end try
+		if bar is not missing value then exit repeat
+	end repeat
 	if bar is missing value then error "no formula bar in the window of " & bookName & " among " & seen
 	set out to {}
 	repeat with i from 1 to n
