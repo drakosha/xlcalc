@@ -12,6 +12,7 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `probes.json`, `cases/<set>.json`, `cases/ru-RU/<set>.json`, `legacy/<set>.json`: the probes, the case sets, the formulas of the old kind (each at the row it had in the Mac's run, as implicit intersection takes the row).
 - `display/`, `display/ru-RU/`, `tables/`, `tables/ru-RU/`, `spill/`, `workbook/`, `struct/`: the book sets.
 - `parts/<set>.json` and `parts/<set>/`: notes, hyperlinks and frozen panes as Excel read them in each case's book, and the files it saved, as the Mac's.
+- `valid/<set>.json`, `valid/ru-RU/<set>.json` and the folders beside them: data validation and outlines over each sheet's window as Excel read them in the Mac step's books (`bench/coverage/valid/`), in the Mac's shape, and the files it saved.
 - `entry/<set>.json`, `entry/ru-RU/<set>.json`: text typed into cells through `Formula2Local` in the Mac step's books (`bench/coverage/entry/`), what each cell shows, its format codes and prefix character, and what the book Excel saved holds; `meta` names Excel's `AutoPercentEntry`.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
 
@@ -40,6 +41,7 @@ XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts parts files
 npx tsx bench/windows/run.ts xlsx filters
 npx tsx bench/windows/run.ts xlsx formats ru
 npx tsx bench/windows/run.ts entry typed ru
+XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts valid files
 ```
 
 A command takes the machine's lock, puts the machine in the locale it needs, and keeps the stored answers of the cases that did not change (`FCOV_FRESH=1` runs everything again). `XLWIN_HOST` names another machine than `user@windows-host`; `XLWIN_KEEP=1` keeps a job's local files in `bench/windows/out/`. `XLWIN_CODEPAGE=any` sets only the interface language and the regional format and leaves the system locale as it is, with no restart, for a set that reads no code page (no `CHAR`, `CODE`); the answers' `meta` names the code page they were computed with.
@@ -73,6 +75,7 @@ What a run depends on, and how the harness sets it (`host.ps1 -do locale`):
 - Excel started over SSH runs in session 0. It opens no file ("cannot access the file") unless the system profile has a desktop folder, `C:\Windows\System32\config\systemprofile\Desktop` and its `SysWOW64` twin; `host.ps1 -do clean` makes sure of them, stops Excel processes left in session 0 and removes the jobs' files. An interactive user's Excel is left alone.
 - A number is typed into a table through `Formula` (its text with a decimal point): `Value2` with a number into a table's header failed now and then with an invalid cast.
 - A defined name is added with `Names.Add` and the formula `=0`, then given its formula through `RefersTo`: `Names.Add` reads its formula in the user's language (`=0.2` is an error in ru-RU), `RefersTo` in English.
+- Rules of data validation are made with `Validation.Add` with the range's first cell selected, and read with each cell selected, as a rule's formulas are relative to the active cell; `SpecialCells(xlCellTypeAllValidation)` finds the cells. Groups are made with `Group`, collapsed with `ShowDetail`, and read through each line's `OutlineLevel`, `Hidden`, `Summary` and `ShowDetail`. In ru-RU COM gives a rule's formulas in Russian, a literal list with the locale's separator (`a;b;c`), and takes a list typed so.
 - Notes, hyperlinks and frozen panes are made with `AddComment`, `Hyperlinks.Add` and the active window's `FreezePanes`, which works in session 0. Excel 2024 has no object model for threads of comments: `AddCommentThreaded` answers "Excel VBA Object Model for Threaded Comments is not supported in your version of Excel", and `CommentsThreaded` lists none of a file's threads. A saved book goes to the job's `out\`, a folder below the book's, so a relative hyperlink address comes back one folder up (`../other.xlsx`).
 
 ## What is not run here
@@ -102,10 +105,11 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | structure operations, 18 sets | en-US | 317 | 235 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
 | notes, hyperlinks and frozen panes, 4 sets | en-US | 47 | 47 (the notes Excel made have its own user as author) | all but the pinned differences the Mac has, and a relative address saved one folder down |
+| data validation and outlines, 8 sets and 1 | en-US, ru-RU | 64 and 2 | all (but a list typed through the object model in ru-RU, which COM splits at `;` and AppleScript does not) | all but the pinned differences the Mac has |
 | text typed into cells, 3 sets | en-US, ru-RU | 911 and 911 | all but 34: the formats `m/d/yyyy` (en-US, 12) and `h:mm` (ru-RU, 22), which Windows takes as the built-in formats 14 and 20 | all but 167, pinned in `test/entry-known.ts` (the object model, English names in ru-RU, a reference's format) |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
-The entry sets (`typed`, `typed-held`, `typed-held-2`) ran with `XLWIN_CODEPAGE=any` in both locales. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) ran the same way.
+The entry sets (`typed`, `typed-held`, `typed-held-2`) ran with `XLWIN_CODEPAGE=any` in both locales. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
 
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 
