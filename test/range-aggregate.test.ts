@@ -65,7 +65,7 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
       s.setCells([{ sheet: 'S', cell: 'A1500', input: { value: 100 } }])
       expect(s.hash()).toBe(compute(s.book(), { clock, execution, display: false }).hash)
     } finally { s.close() }
-    for (const formula of ['AVERAGE(A1:A3000)', 'SUM(A1:A3000,1)', 'SUM(A1:A3000*1)']) {
+    for (const formula of ['AVERAGE(A1:A3000,1)', 'SUM(A1:A3000,1)', 'SUM(A1:A3000*1)']) {
       const e = (() => { try { compute({ sheets: [{ name: 'S', cells: { ...cells, D1: { formula } } }] }, { clock, execution, limits }) } catch (x) { return x } })()
       expect(e instanceof CalcError && e.limit, formula).toBe('cells')
     }

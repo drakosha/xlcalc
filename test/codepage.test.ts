@@ -30,7 +30,17 @@ function published(name: string): string {
   return String.fromCharCode(...Array.from({ length: 128 }, (_, i) => map.get(128 + i) ?? 128 + i))
 }
 
+/** The platform's decoders of Windows pages follow the WHATWG Encoding Standard: Node 20's reads 0x80 of windows-1252 as U+0080, not `€`. */
+const WHATWG = (() => {
+  try {
+    return new TextDecoder('windows-1252').decode(Uint8Array.of(0x80)) === '\u20ac'
+  } catch {
+    return false
+  }
+})()
+
 const decoder = (name: string) => {
+  if (!WHATWG) return null
   try {
     return new TextDecoder(name)
   } catch {

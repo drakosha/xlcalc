@@ -29,6 +29,7 @@ import { fillColors, numberFormats, saveThroughExcel } from './xlsx/excel.js'
 import { FILTER_FILES, filterFile } from './xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from './xlsx/formats.js'
 import { OLD_FORMULAS, oldFormulaBook } from './xlsx/intersect.js'
+import { partsHash } from './xlsx/sent.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -100,7 +101,7 @@ async function roundTrip() {
     cases.map(async (c) => {
       const result = compute(c.book, { clock: XLSX_CLOCK })
       const { data } = await writeXlsx(c.book, { result, mode: c.mode })
-      return { id: c.id, locale: c.book.locale ?? 'en-US', bytes: async () => data, hash: sha(data), c, result }
+      return { id: c.id, locale: c.book.locale ?? 'en-US', bytes: async () => data, hash: await partsHash(data), c, result }
     }),
   )
   await send('roundtrip', books, async (id, saved) => {
@@ -162,14 +163,14 @@ async function formats() {
 
 async function intersect() {
   const data = await oldFormulaBook(OLD_FORMULAS)
-  await send('intersect', [{ id: 'old-formulas', locale: 'en-US', bytes: async () => data, hash: sha(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
+  await send('intersect', [{ id: 'old-formulas', locale: 'en-US', bytes: async () => data, hash: await partsHash(data) }], async (_, saved) => `${(await readXlsx(saved)).issues.length} issues`)
 }
 
 async function filters() {
   const books = await Promise.all(FILTER_FILES.map(async (c) => ({ id: c.id, locale: 'en-US', data: await filterFile(c) })))
   await send(
     'filters',
-    books.map((b) => ({ ...b, bytes: async () => b.data, hash: sha(b.data) })),
+    await Promise.all(books.map(async (b) => ({ ...b, bytes: async () => b.data, hash: await partsHash(b.data) }))),
     async (_, saved) => {
       const read = await readXlsx(saved)
       const values = compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)

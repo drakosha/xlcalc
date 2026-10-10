@@ -1,5 +1,6 @@
 # CI of the main repository: tests on the lowest supported Node and on current releases, then the
-# package checks (publint, attw, tarball). Having this file also turns Auto DevOps off for the project.
+# package checks (publint, attw, tarball). A tag's pipeline only packs: the tagged commit was tested when it was pushed.
+# Having this file also turns Auto DevOps off for the project.
 
 stages: [test, package]
 
@@ -15,6 +16,12 @@ default:
 test:
   stage: test
   image: node:$NODE
+  # a newer push of the branch makes the running tests redundant
+  interruptible: true
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
   parallel:
     matrix:
       - NODE: ['20.19.0', '22', '24', '26']

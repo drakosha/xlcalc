@@ -17,7 +17,7 @@ import { power } from './functions/math.js'
 import { MAX_TEXT } from './functions/text/common.js'
 import type { HiddenRows } from './layout/hidden.js'
 import type { Rules } from './locale/rules.js'
-import type { CacheBudget, RangeCache } from './range-cache.js'
+import { KEY_BYTES, POSITION_BYTES, VALUE_BYTES, type CacheBudget, type RangeCache } from './range-cache.js'
 import type { AggregateName, RangeAggregates } from './range-aggregate.js'
 import { readsClock } from './locale/rules/data.js'
 import { MAX_COLS, MAX_ROWS } from './model.js'
@@ -58,12 +58,6 @@ export interface RuntimeContext {
 }
 
 export const BIG_RANGE = 256
-
-// the bytes a cache budget counts, as measured on Node (`docs/cache.md`): a value's slot in a range's array; a
-// position in a criteria index, and a distinct value's key with its list
-const VALUE_BYTES = 8
-const POSITION_BYTES = 16
-const KEY_BYTES = 80
 
 /** Pseudo-random [0, 1) from the seed, the cell address and an array element (RANDARRAY): the same for the same clock. */
 export function randAt(seed: number, sheet: string, row: number, col: number, k?: number): number {
@@ -286,11 +280,15 @@ export function makeRuntime(ctx: RuntimeContext) {
   for (const [name, def] of Object.entries(DEFS)) {
     const caller = makeCaller(def, cx)
     // one range is read cell by cell, never made whole, so `limits.cells` does not bound it
-    F[name] = ['SUM', 'COUNT', 'MIN', 'MAX'].includes(name)
+    F[name] = ['SUM', 'COUNT', 'COUNTA', 'MIN', 'MAX', 'AVERAGE'].includes(name)
       ? (...args: Arg[]) => args.length === 1 && args[0] instanceof Rng
-        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell)
+        ? ctx.aggregates.read(name as AggregateName, args[0], () => bounds(args[0] as Rng), cell) ?? caller(...args)
         : caller(...args)
-      : caller
+      : name === 'COUNTIF' || name === 'COUNTIFS'
+        ? (...args: Arg[]) => args.length === 2 && args[0] instanceof Rng
+          ? ctx.aggregates.countIf(args[0], scalar(args[1]), rules, () => bounds(args[0] as Rng), cell) ?? caller(...args)
+          : caller(...args)
+        : caller
     if (!def.lazy) FL[name] = liftCaller(FUNCTIONS[name], def.cell === true, F[name], cx)
   }
   /** A lazy function whose lifting arguments at `check` can be arrays. */

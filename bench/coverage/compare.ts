@@ -33,6 +33,22 @@ export interface Verdict {
 
 const close = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(a))
 
+/** Numbers inside text, for `samePin`. */
+const NUMBER = /[-+]?(?:\d+\.?\d*|\.\d+)(?:E[-+]?\d+)?/gi
+
+/**
+ * The engine's answer against the one a known difference pins: a number within the tolerance Excel's answers have, text
+ * with its numbers so, the rest exactly; the last digits Math gives on another Node or platform do not fail a pin.
+ */
+export function samePin(pinned: Val, got: Val): boolean {
+  if (pinned.t !== got.t) return false
+  if (pinned.t === 'n') return close(pinned.v, got.v as number, TOL)
+  if (pinned.t !== 's' || pinned.v === got.v) return pinned.v === got.v
+  const [a, b] = [pinned.v, got.v as string]
+  const [na, nb] = [a.match(NUMBER) ?? [], b.match(NUMBER) ?? []]
+  return na.length === nb.length && a.split(NUMBER).join('\0') === b.split(NUMBER).join('\0') && na.every((x, i) => close(Number(x), Number(nb[i]), TOL))
+}
+
 /** `got` against the reference `ref`; `threw`: the #VALUE! answer came from a formulajs exception. */
 export function compare(ref: Val, got: Val, threw?: boolean): Verdict {
   if (got.t === 'other' && (got.v === 'hang' || got.v === 'crash')) return { ok: false, kind: 'hangs' }
