@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.0 (2026-10-10)
+
+Internal release; not published to npm. Notes, hyperlinks and frozen panes in the model, and text typed into a cell read as Excel reads it.
+
+Added:
+
+- Contract: `CellInput.note` (author and text) and `CellInput.link` (`url`, `location`, `tooltip`), which go with their cell as a style does; `SheetInput.frozen` (`rows`, `columns`) and its layout edit `{ sheet, frozen }`; `Session.cells` gives a cell's `note` and `link`. None of them takes part in computation or in the values hash; `inputHash` takes them when a book has them, and a book without them hashes as before.
+- `readXlsx` and `writeXlsx` read and write notes (the comments of the old kind, shown on hover), hyperlinks and frozen panes. Excel's threaded comments are read as notes: the first comment's author, the replies in the text, each as `Author: text`; their dates and mentions are reported as lost. A split without frozen panes is reported.
+- Structure operations move notes and hyperlinks with their cells, copies copy them, and frozen panes move with rows and columns inserted or deleted before their edge, as Excel does (measured: `struct-held` 24 of 26 predictions, `frozen-held` 9 of 9, on the Mac and on Windows); deleting every frozen row leaves one frozen.
+- Contract: `parseEntry(text, { locale, cell, now, dateSystem })` reads text typed into a cell as Excel reads it in the book's locale: numbers with the locale's separators, percents, currency, dates and times, booleans, errors, `'` for text, formulas through `toInvariant` (only a formula that does not parse stops the entry, at its position). It gives the `CellInput` with the format Excel gives the cell (`15.03.2026` is format 14, `5%` format 9, `1 234,5` format 4), keeping the cell's style and `meta`, and a cell's own format where Excel keeps it. Measured on 1,822 cases through Excel's object model on the Mac and on Windows, en-US and ru-RU, and on 224 typed on the Mac's keyboard; `docs/entry.md`.
+
+Changed:
+
+- Date text of three numbers takes a year of one digit, as Excel reads it: `VALUE("1-2-3")` is 2 January 2003 (37623). It was `#VALUE!`.
+
 ## 0.8.1 (2026-10-10)
 
 Internal release; not published to npm. Running aggregates without rereading, a smaller graph of range dependencies, and tests that pass on every supported Node under Linux.
