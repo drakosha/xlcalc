@@ -38,6 +38,7 @@ export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export { parseEntry } from './entry/index.js'
 export { entryWidth, fitColumns } from './layout/fit.js'
 export { builtinFormatCode } from './builtin-format.js'
+export { dateToSerial, serialToDate, type DateSystemOptions } from './date-serial.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
