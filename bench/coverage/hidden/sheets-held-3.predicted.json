@@ -1,0 +1,302 @@
+{
+ "end-high-inward": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Sum",
+    -1
+   ]
+  ],
+  "values": [
+   101,
+   1010,
+   1111
+  ]
+ },
+ "end-low-outward": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Sum",
+    -1
+   ]
+  ],
+  "values": [
+   101,
+   1111,
+   1101
+  ]
+ },
+ "end-high-past-low": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Sum",
+    -1
+   ]
+  ],
+  "values": [
+   111,
+   110,
+   111
+  ]
+ },
+ "end-low-to-end": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Sum",
+    -1
+   ],
+   [
+    "Jan",
+    -1
+   ]
+  ],
+  "values": [
+   110,
+   1110,
+   1110
+  ]
+ },
+ "end-high-between": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Sum",
+    -1
+   ]
+  ],
+  "values": [
+   1111,
+   110,
+   1001
+  ]
+ },
+ "end-past-hidden-tail": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Apr",
+    0
+   ],
+   [
+    "Sum",
+    0
+   ]
+  ],
+  "values": [
+   110,
+   1111,
+   1001
+  ]
+ },
+ "before-hidden-first": {
+  "opened": "Feb",
+  "sheets": [
+   [
+    "Jan",
+    0
+   ],
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Sum",
+    -1
+   ]
+  ],
+  "values": [
+   1111,
+   110,
+   1001
+  ]
+ },
+ "hidden-to-end": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Apr",
+    0
+   ],
+   [
+    "Sum",
+    -1
+   ],
+   [
+    "Mar",
+    0
+   ]
+  ],
+  "values": [
+   1111,
+   1010,
+   1011
+  ]
+ },
+ "hidden-to-end-hidden-tail": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Mar",
+    0
+   ],
+   [
+    "Apr",
+    0
+   ],
+   [
+    "Sum",
+    0
+   ]
+  ],
+  "values": [
+   111,
+   1110,
+   1111
+  ]
+ },
+ "before-very-last": {
+  "opened": "Jan",
+  "sheets": [
+   [
+    "Jan",
+    -1
+   ],
+   [
+    "Mar",
+    -1
+   ],
+   [
+    "Apr",
+    -1
+   ],
+   [
+    "Feb",
+    -1
+   ],
+   [
+    "Sum",
+    2
+   ]
+  ],
+  "values": [
+   101,
+   1100,
+   1101
+  ]
+ }
+}
