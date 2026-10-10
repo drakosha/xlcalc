@@ -78,12 +78,15 @@ export const PREDICTED: Readonly<Record<string, string>> = {
   A: '=A!A1',
 }
 
-/** The cell of `F` that refers to the sheet `name`: one per name, down column A. */
-export const cellOf = (name: string) => `A${NAMES.indexOf(name) + 1}`
+/** The cell of `F` that refers to the sheet `name` of `names`: one per name, down column A. */
+export const cellOf = (name: string, names = NAMES) => `A${names.indexOf(name) + 1}`
 
-export function buildTableCases(): TableCase[] {
+/** The case of a list of sheet names: `F` refers to each sheet's A1, which holds the sheet's number. */
+export function quoteCases(names: string[]): TableCase[] {
   const quoted = (name: string) => `'${name.replaceAll("'", "''")}'`
-  const refs = Object.fromEntries(NAMES.map((name) => [cellOf(name), { formula: `${quoted(name)}!A1` }]))
-  const sheets = [{ name: 'F', cells: refs }, ...NAMES.map((name, i) => ({ name, cells: { A1: { value: i + 1 } } }))]
-  return [{ id: 'names', about: 'a reference to a sheet of each name, read back as Excel writes it', book: { sheets }, read: on('F', `A1:A${NAMES.length}`) }]
+  const refs = Object.fromEntries(names.map((name) => [cellOf(name, names), { formula: `${quoted(name)}!A1` }]))
+  const sheets = [{ name: 'F', cells: refs }, ...names.map((name, i) => ({ name, cells: { A1: { value: i + 1 } } }))]
+  return [{ id: 'names', about: 'a reference to a sheet of each name, read back as Excel writes it', book: { sheets }, read: on('F', `A1:A${names.length}`) }]
 }
+
+export const buildTableCases = (): TableCase[] => quoteCases(NAMES)
