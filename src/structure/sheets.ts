@@ -71,7 +71,7 @@ export function insertSheet(book: BookInput, name: string, before: string | unde
 export function moveSheet(book: BookInput, sheet: string, before: string | undefined): RestructureResult {
   const key = sheetKey(sheet)
   const moving = book.sheets.find((s) => sheetKey(s.name) === key)!
-  if (moving.hidden === 'very') return VERY_HIDDEN
+  if (moving.hidden === 'very') return veryHidden(book, moving.name)
   if (before !== undefined && sheetKey(before) === key) return { ok: true, book, mapCell: (ref) => ref }
   const sheets = book.sheets.filter((s) => s !== moving)
   sheets.splice(movedTo(sheets, before), 0, moving)
@@ -94,8 +94,8 @@ function movedTo(sheets: BookInput['sheets'], before: string | undefined): numbe
 export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
   if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastSheet' }) }
   const key = sheetKey(sheet)
-  if (book.sheets.find((s) => sheetKey(s.name) === key)!.hidden === 'very') return VERY_HIDDEN
-  if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet' }
+  if (book.sheets.find((s) => sheetKey(s.name) === key)!.hidden === 'very') return veryHidden(book, sheet)
+  if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
   const rest: BookInput = { ...book, sheets: book.sheets.filter((s) => sheetKey(s.name) !== key) }
   if (book.names) rest.names = book.names.filter((n) => n.scope === undefined || sheetKey(n.scope) !== key)
@@ -104,7 +104,7 @@ export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
 }
 
 /** Excel deletes and moves no very hidden sheet: its object model answers an error, Excel for Mac at times nothing. */
-const VERY_HIDDEN: RestructureResult = { ok: false, code: 'very_hidden', message: 'a very hidden sheet is neither deleted nor moved: show it first' }
+const veryHidden = (book: BookInput, sheet: string): RestructureResult => ({ ok: false, code: 'very_hidden', message: say(book.locale, { key: 'veryHidden', sheet }) })
 
 /** Whether the sheet `key` is the book's only visible sheet. */
 const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (sheetKey(s.name) === key) === !s.hidden)
@@ -115,7 +115,7 @@ const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (
  */
 export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): RestructureResult {
   const key = sheetKey(sheet)
-  if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet' }
+  if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const sheets = book.sheets.map((s) => {
     if (sheetKey(s.name) !== key) return s
     const { hidden: _, ...rest } = s

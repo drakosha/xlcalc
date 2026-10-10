@@ -71,6 +71,8 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   sheetNameHistory: [{}],
   sheetNameTaken: [{ name: 'Plan' }],
   lastSheet: [{}],
+  lastVisibleSheet: [{ sheet: 'Feb' }],
+  veryHidden: [{ sheet: 'Keys' }],
   insertOffSheet: [{ count: 1, lines: 'rows', sheet: 'S', cell: 'A1048576' }, { count: 3, lines: 'columns', sheet: 'S', cell: 'XFD1' }, { count: 5, lines: 'rows', sheet: 'S', cell: 'A1048576' }],
   insertMergeOffSheet: [{ count: 2, lines: 'rows', sheet: 'S' }],
   arrayPart: [{ sheet: 'S', cell: 'C1', area: 'C1:C3' }],

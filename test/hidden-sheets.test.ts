@@ -57,7 +57,7 @@ describe('hideSheet and unhideSheet', () => {
     expect(op(book(), { op: 'unhideSheet', sheet: 'Feb' })).toBe('Jan Feb Mar Sum')
     const one: BookInput = { sheets: [{ name: 'A', cells: {}, hidden: true }, { name: 'B', cells: {} }, { name: 'C', cells: {}, hidden: 'very' }] }
     expect(restructure(one, { op: 'hideSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet' })
-    expect(restructure(one, { op: 'deleteSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet' })
+    expect(restructure(one, { op: 'deleteSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet, and "B" is its last' })
     expect(op(one, { op: 'hideSheet', sheet: 'A', very: true })).toBe('A!! B C!!')
     expect(op(one, { op: 'deleteSheet', sheet: 'A' })).toBe('B C!!')
     expect(() => restructure(book(), { op: 'hideSheet', sheet: 'Feb', very: 1 } as never)).toThrow(new InputError('op.very', 'expected a boolean, got 1'))
@@ -109,6 +109,7 @@ describe.each(['closures', 'eval'] as const)('a session hides and shows sheets (
     expect(r.ok && r.changes).toEqual([])
     expect(r.ok && r.mapCell({ sheet: 'Feb', cell: 'B2' })).toEqual({ sheet: 'Feb', cell: 'B2' })
     expect(s.book().sheets[1].hidden).toBe('very')
+    expect(s.layout().sheets.map((x) => x.hidden)).toEqual([undefined, 'very', undefined, undefined])
     expect(s.hash()).toBe(hash)
     expect(s.result().inputHash).toBe(compute(s.book(), { clock: CLOCK }).inputHash)
     // later edits reach the hidden sheet and the formulas over it
@@ -148,6 +149,7 @@ describe('in the same thread and in the pool', () => {
       if (r.ok) expect(r.mapCell({ sheet: 'Sum', cell: 'A1' })).toEqual({ sheet: 'Sum', cell: 'A1' })
     }
     expect(await a.book()).toEqual(y.book())
+    expect((await a.layout()).sheets.map((x) => x.hidden)).toEqual([undefined, 'very', true])
     expect(y.book().sheets.map((s) => [s.name, s.hidden])).toEqual([['Jan', undefined], ['March', 'very'], ['Sum', true]])
     expect(await a.hash()).toBe(y.hash())
   }, 60_000)
