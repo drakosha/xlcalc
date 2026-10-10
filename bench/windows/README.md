@@ -12,6 +12,7 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `probes.json`, `cases/<set>.json`, `cases/ru-RU/<set>.json`, `legacy/<set>.json`: the probes, the case sets, the formulas of the old kind (each at the row it had in the Mac's run, as implicit intersection takes the row).
 - `display/`, `display/ru-RU/`, `tables/`, `tables/ru-RU/`, `spill/`, `workbook/`, `struct/`: the book sets.
 - `parts/<set>.json` and `parts/<set>/`: notes, hyperlinks and frozen panes as Excel read them in each case's book, and the files it saved, as the Mac's.
+- `cond/<set>.json`, `cond/ru-RU/<set>.json` and their folders: conditional formats in the Mac step's books (`bench/coverage/cond/`), the rules the set `made` makes through COM (`FormatConditions.Add`, `AddTop10`, `AddAboveAverage`, `AddUniqueValues`, `AddColorScale`, `AddDatabar`, `AddIconSetCondition`), what the read cells show by their `DisplayFormat`, the rules each sheet lists, and the files Excel saved.
 - `entry/<set>.json`, `entry/ru-RU/<set>.json`: text typed into cells through `Formula2Local` in the Mac step's books (`bench/coverage/entry/`), what each cell shows, its format codes and prefix character, and what the book Excel saved holds; `meta` names Excel's `AutoPercentEntry`.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
 
@@ -37,6 +38,7 @@ npx tsx bench/windows/run.ts display general
 npx tsx bench/windows/run.ts tables ops
 npx tsx bench/windows/run.ts struct rows
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts parts files
+XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts cond looks
 npx tsx bench/windows/run.ts xlsx filters
 npx tsx bench/windows/run.ts xlsx formats ru
 npx tsx bench/windows/run.ts entry typed ru
@@ -101,6 +103,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | workbook, 7 sets | en-US | 98 | 95 | all but 5 pinned |
 | structure operations, 18 sets | en-US | 317 | 235 (sizes in other units) | all but 16 pinned |
 | xlsx filters | en-US | 8 files | | all |
+| conditional formats, 7 sets | en-US, ru-RU | 52 books, 4,089 cells | 3,856 of the 3,885 cells the Mac read (28 `#` counted in pixels, and `"b">"в"`, which the Mac takes otherwise) | every cell, but `#` counted in pixels and a colour channel one apart at an exact fraction past a percentile; the rules of every case but the bar lengths and the order the Mac pins too; of the 15 rules Excel made itself (`made`), 203 of 204 cells on the book read from its file |
 | notes, hyperlinks and frozen panes, 4 sets | en-US | 47 | 47 (the notes Excel made have its own user as author) | all but the pinned differences the Mac has, and a relative address saved one folder down |
 | text typed into cells, 3 sets | en-US, ru-RU | 911 and 911 | all but 34: the formats `m/d/yyyy` (en-US, 12) and `h:mm` (ru-RU, 22), which Windows takes as the built-in formats 14 and 20 | all but 167, pinned in `test/entry-known.ts` (the object model, English names in ru-RU, a reference's format) |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |

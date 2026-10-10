@@ -29,7 +29,7 @@ export const COND_KNOWN: Known = {
 const SETS = [...condSets('cond/'), ...condSets('cond/ru-RU/').map((s) => ({ ...s, name: s.name }))]
 
 describe('conditional formats against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['files', 'looks', 'looks-ru', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['files', 'held', 'held-2', 'looks', 'looks-ru', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN)).toEqual([]))
 })
 

@@ -15,7 +15,7 @@ const { data } = await writeXlsx(book, { result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` or an `ArrayBuffer`, and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), columns, rows, merged areas, filter mode and frozen panes, names, the style table, the locale, the date system and iterative calculation.
+- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), columns, rows, merged areas, filter mode, frozen panes and conditional formats, names, the style table, the locale, the date system and iterative calculation.
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order. These are what Excel computed when it saved the file, so you can compare them with the engine's result.
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
 
@@ -152,7 +152,8 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `comment` | a thread of comments, read as a note; a note of runs with different looks, read as its plain text; a note shown all the time, read as one shown on hover |
 | `hyperlink` | a hyperlink whose address is no external relationship of the sheet; one over more than 4,096 cells, read on its cells that hold something |
 | `frozenPanes` | split panes that are not frozen; panes frozen over a sheet scrolled down or right, read from the first row and column |
-| `conditionalFormat`, `dataValidation`, `drawing`, `pivotTable`, `protection`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
+| `conditionalFormat` | a rule of a kind the model does not have, a pivot table's rules, a rule without its formulas or thresholds; what a rule's differential format holds beyond the model's style (alignment, protection, a font's name and size, pattern and gradient fills); an average rule with both equal and deviations, read with equal |
+| `dataValidation`, `drawing`, `pivotTable`, `protection`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
 | `locale` | a locale the package does not have |
 | `part` | a missing sheet part, a cell outside the sheet |
 
@@ -212,6 +213,11 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 | `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
+| `conditionalFormat` | a rule with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is left out |
+
+## Conditional formats
+
+A sheet's conditional formats (`conditionalFormats`) go both ways. The reader reads the rules of `<conditionalFormatting>` with their differential formats (`<dxfs>` of styles.xml) and Excel 2010's rules of the sheet's extension list (`x14:conditionalFormatting`), and gives them in priority order; the writer writes them so, each rule's priority by its place in the list. Excel 2010's part of a data bar (its fill, border, direction, negative bars and axis) is joined to its 2007 rule by their id; the icon sets `3Stars`, `3Triangles` and `5Boxes`, custom icons and formulas over other sheets are Excel 2010's rules alone, with their style inline. A text, blank or period rule always has its formula in a file; the reader leaves out the one Excel writes for it, which the model makes itself. Ranges come as the model writes them: Excel's `A1:A1048576` is `A:A`. A dxf's number format is read by its code, as Excel saves `0.00%` under another id. [docs/conditional-formats.md](conditional-formats.md) has the rules, what a cell shows by them and how it was checked.
 
 ## Notes, hyperlinks and frozen panes
 
@@ -295,10 +301,10 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 
 - `zip/` reads and writes the archive. Inflating and deflating go through `DecompressionStream` and `CompressionStream`.
 - `xml/` holds the text layer: entities, Excel's escapes, and elements found by regular expressions.
-- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, and the notes, threads, hyperlinks and frozen panes (`parts.ts`).
-- `styles/` turns styles.xml into the style table and holds the codes of the East Asian built-in formats, the codes the writer stores by number, and the colours.
+- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, the notes, threads, hyperlinks and frozen panes (`parts.ts`), and conditional formats (`conditional.ts`).
+- `styles/` turns styles.xml into the style table and the differential formats (`dxf.ts`), and holds the codes of the East Asian built-in formats, the codes the writer stores by number, and the colours.
 - `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
-- `write/` writes the workbook, the sheets, styles.xml, and the notes, hyperlinks and frozen panes (`parts.ts`).
+- `write/` writes the workbook, the sheets, styles.xml with its differential formats, the notes, hyperlinks and frozen panes (`parts.ts`), and conditional formats (`conditional.ts`).
 
 Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 120 KB.
 
@@ -338,3 +344,5 @@ The answers to the filter files and to nine books of the round trip were predict
 - Excel saves a space in a hyperlink's address as `%20` and shows it as a space. The reader gives the address as the file holds it.
 - Excel for Windows saves a relative address of a hyperlink (`other.xlsx`) relative to the folder it saves the file to.
 - A thread of comments is read as a note, without its dates, mentions and state, and written as a note.
+- Excel keeps an Excel 2010 data bar's lengths only when they are 0 and 100: a bar of 5 and 95 comes back read as 10 and 90.
+- A dxf's number format that is a built-in one comes back from Excel as its code (`0.00%` for 10).
