@@ -1,13 +1,14 @@
 -- Open an entry part's book, type each case's text into its cell (column A of the sheet "S", row by row) as Excel 365
 -- takes typed text in the user's language (`formula2 local`), alerts off, then read each cell: what it shows (`string
--- value`), its format codes (`number format`, `number format local`) and its prefix character; save the book as xlsx
--- under another name and close it.
+-- value`), its format codes (`number format`, `number format local`), its prefix character and its value (`value`, a
+-- number only, not read from a cell that shows an error); save the book as xlsx under another name and close it.
 -- With a fifth argument "keys" the texts are typed on the keyboard instead (System Events, Excel in front, checked
 -- before each text; an empty text is not typed), each followed by Return; the window Excel shows for a formula it does
 -- not take is answered (`answerDialog`) and its text is the text's refusal.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the texts as
 -- a JSON array of strings, "keys" or nothing.
--- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix], ...]}.
+-- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix, value], ...]},
+-- the value "" for a cell whose value is no number (or a date), or that shows an error.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -58,7 +59,16 @@ on run argv
 				if tx is missing value then set tx to ""
 				set pc to prefix character of rg
 				if pc is missing value then set pc to ""
-				set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text}
+				-- an error's value is not read (a range's errors crashed Excel); a number too wide for the column shows ## and is read
+				set vv to ""
+				if tx does not start with "#" or tx starts with "##" then
+					try
+						set vv to value of rg
+					end try
+					-- a number alone: a date comes as a date object, which JSON has no place for
+					if class of vv is not real and class of vv is not integer then set vv to ""
+				end if
+				set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv}
 			end repeat
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no

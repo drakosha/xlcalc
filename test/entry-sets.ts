@@ -2,7 +2,8 @@
  * The stored answers of the entry sets in each locale of `LOCALES` (`test/excel/entry/`, `test/excel/win/entry/`, from
  * `run.ts entry <set> [locale]` on the Mac and `bench/windows/run.ts entry <set> [locale]`), and the check of one case:
  * the stored case is its generator's current one, and `parseEntry` in the locale, on the day of the run (a date typed
- * without a year takes its year), into a cell of the case's format, gives Excel's answer, or differs where it is known to.
+ * without a year takes its year), into a cell of the case's format, gives Excel's answer, or differs where it is known to;
+ * the number Excel's object model gives as the cell's value, where the run read it, is the one its file holds.
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { expect } from 'vitest'
@@ -42,7 +43,9 @@ const current = (name: string) => {
 export async function checkCase(set: EntrySetFile, c: EntryCase, known: (key: string) => EntryReason | undefined): Promise<void> {
   expect((await current(set.name)).find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
   const got = parseEntry(c.text, { locale: set.tag, now: String(set.meta.date), ...(c.format !== undefined ? { cell: { format: c.format } } : {}) })
-  const diff = entryDifferences(got, set.answers[c.id], set.tag)
+  const want = set.answers[c.id]
+  if (want.value2 !== undefined && typeof want.cell?.value === 'number') expect(want.value2, "the object model's value is the number the file holds").toBe(want.cell.value)
+  const diff = entryDifferences(got, want, set.tag)
   const reason = known(`${set.tag}:${set.name}:${c.id}`)
   if (reason) expect(diff.length, `${c.id} is known to differ: ${ENTRY_REASONS[reason]}`).toBeGreaterThan(0)
   else expect(diff).toEqual([])

@@ -11,9 +11,9 @@ import { matches, show } from './excel-cases.js'
 import { LOCALE_SETS } from './excel-locale-cases.js'
 import { SETS } from './excel-sets.js'
 
-const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'known-held', 'lookup-held', 'lookup-own-held', 'ref-deps', 'sheet-cells', 'single-values', 'stat-edges-held']
+const PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'known-held', 'lookup-held', 'lookup-own-held', 'pct-text', 'ref-deps', 'sheet-cells', 'single-values', 'stat-edges-held']
 const LEGACY_PREDICTING = ['ifs-text']
-const RU_PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'ref-deps', 'sheet-cells', 'single-values']
+const RU_PREDICTING = ['areas-each', 'findate-edges', 'intersect', 'pct-text', 'ref-deps', 'sheet-cells', 'single-values']
 const RU_SETS = LOCALE_SETS.get('ru-RU') ?? []
 
 /** A legacy set's stored answers (the converted formula's value is predicted), if Excel ran it. */
