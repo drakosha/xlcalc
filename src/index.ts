@@ -37,6 +37,7 @@ export { copyFormula, type CopyContext } from './structure/copy.js'
 export { fromLegacy, type LegacyContext } from './legacy/convert.js'
 export { parseEntry } from './entry/index.js'
 export { entryWidth, fitColumns } from './layout/fit.js'
+export * from './a1.js'
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the

@@ -3,6 +3,7 @@
  * tables, numbers, strings, error literals, identifiers (names with a sheet too), operators. Whitespace between two
  * references (or names, calls, parentheses) is the intersection operator, `' '`; elsewhere it is skipped.
  */
+import { PLAIN_SHEET } from '../a1.js'
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
@@ -41,9 +42,9 @@ export type Tok =
 export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.\\\\?]*'
 const IDENT = new RegExp(`^${IDENT_RULE}`, 'u')
 const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
-const UNQUOTED_SHEET = /^([\p{L}_][\p{L}\p{N}_.]*)!/u
+const UNQUOTED_SHEET = new RegExp(`^(${PLAIN_SHEET})!`, 'u')
 /** Two sheets, the last quoted or not: Excel saves `Jan:'Mar'!A1` too. */
-const UNQUOTED_SHEETS = /^([\p{L}_][\p{L}\p{N}_.]*):(?:([\p{L}_][\p{L}\p{N}_.]*)|'((?:[^']|'')+)')!/u
+const UNQUOTED_SHEETS = new RegExp(`^(${PLAIN_SHEET}):(?:(${PLAIN_SHEET})|'((?:[^']|'')+)')!`, 'u')
 /** A name that reads as a cell (`S1`, `Q4`): Excel does not take it for the first of two sheets, `S1:S3!A1` is `S1:'S3'!A1`. */
 const CELL_NAME = /^([A-Za-z]{1,3})([0-9]+)$/
 const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\$?)([0-9]+))?/

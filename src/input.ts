@@ -15,28 +15,11 @@ import type { Axis } from './structure/area.js'
 import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
+import { InputError, what } from './input-error.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 
-/** Input of the wrong shape. `path` points at the offending part, for example `book.sheets[1].cells["B0"]`. */
-export class InputError extends TypeError {
-  override readonly name = 'InputError'
-  constructor(
-    readonly path: string,
-    problem: string,
-  ) {
-    super(`${path}: ${problem}`)
-  }
-}
-
-function what(v: unknown): string {
-  if (v === undefined || v === null) return String(v)
-  if (Array.isArray(v)) return 'an array'
-  if (typeof v === 'object') return 'an object'
-  if (typeof v === 'function') return 'a function'
-  if (typeof v === 'string') return `the string ${JSON.stringify(v)}`
-  return `${typeof v} ${String(v)}`
-}
+export { InputError } from './input-error.js'
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
