@@ -92,7 +92,9 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     const xml = await text(data, 'xl/worksheets/sheet1.xml')
     expect(xml).toContain('<row r="5" ht="30" customHeight="1" hidden="1" s="1" customFormat="1">')
     expect(xml).toContain('<row r="9" hidden="1"/>')
-    expect(xml).toContain('<col min="3" max="3" width="12" customWidth="1" hidden="1"/><col min="5" max="6" width="8.83203125" hidden="1" style="2"/>')
+    expect(xml).toContain('<col min="3" max="3" width="12" customWidth="1" hidden="1"/><col min="5" max="6" width="8.83203125" hidden="1" style="3"/>')
+    // where row 5's format crosses the columns' fill, the cells with both, as Excel writes them
+    expect(xml).toContain('<c r="E5" s="2"/><c r="F5" s="2"/>')
     expect(xml).not.toContain('filterMode')
     const r = await readXlsx(data)
     expect(r.book).toEqual(book)

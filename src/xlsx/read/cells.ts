@@ -1,10 +1,13 @@
 /**
  * The cells of a worksheet's `<sheetData>`: values by type (shared, inline and formula strings, numbers, booleans,
  * errors, ISO dates of Strict files), formulas with their stored values, rows' heights, styles, hidden rows and outline levels. A cell
- * is placed by its `r`, or after the previous one when it has none (rows likewise). Shared formulas and array ranges
+ * keeps of its look what its row or column does not give it (`ownLook`). A cell is placed by its `r`, or after the
+ * previous one when it has none (rows likewise). Shared formulas and array ranges
  * are collected for the sheet reader to resolve once every cell is known.
  */
-import type { CellInput, CellValue, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
+import type { CellInput, CellValue, ColumnInput, ErrorCode, NumberFormat, RowInput, Scalar } from '../../contract.js'
+import { lookOf, type Look } from '../../layout/lines.js'
+import { entryAt, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Issues, Where } from '../issues.js'
 import type { Xf } from '../styles/read.js'
@@ -21,6 +24,9 @@ export interface CellsContext {
   /** The day 0 of the book's date system in the 1900 system (`epochOf`): an ISO date's serial counts from it. */
   epoch: number
   issues: Issues
+  /** The book's style with nothing set, added to its styles when first asked for; whether a style is it. */
+  plain(): number
+  isPlain(style: number): boolean
 }
 
 /** A shared formula: its master cell and text, and the cells that take it. */
@@ -76,25 +82,55 @@ const colOf = (letters: string) => {
   return n - 1
 }
 
-export function readCells(data: string, ctx: CellsContext): SheetCells {
+/**
+ * The cells of `<sheetData>`; `cols`, the sheet's columns. A row with a cell format of its own is read with its cells:
+ * Excel shows a cell of it without a `<c>` by the row's whole format, so where such a cell lies under a column with a
+ * style or a format the row has not, the row gets the plain style or General (Excel and the writer write those cells).
+ */
+export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInput>[] = []): SheetCells {
   const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
   const { issues, sheet } = ctx
+  const looked = cols.filter(([, , e]) => e.style !== undefined || e.format !== undefined)
+  const column = (c: number) => (looked.length ? entryAt(looked, c) : undefined)
   let row = -1
   let col = -1
+  // the current row, and when it has a cell format of its own its cells with their own looks, until it ends
+  let line: RowInput | undefined
+  let lineRow = -1
+  let formatted: { addr: string; col: number; own: Look }[] | undefined
+  const endRow = () => {
+    if (!formatted || !line) return
+    const at = new Set(formatted.map((x) => x.col))
+    const missing = (lo: number, hi: number) => [...at].filter((c) => c >= lo && c <= hi).length < hi - lo + 1
+    if (line.style === undefined && looked.some(([lo, hi, e]) => e.style !== undefined && missing(lo, hi))) line.style = ctx.plain()
+    if (line.format === undefined && looked.some(([lo, hi, e]) => e.format !== undefined && missing(lo, hi))) line.format = 'General'
+    if (Object.keys(line).length) out.rows.set(lineRow + 1, line)
+    for (const x of formatted) {
+      const cell = { ...ownLook(x.own, lookOf(undefined, line, column(x.col)), ctx), ...out.cells[x.addr] }
+      if (Object.keys(cell).length) out.cells[x.addr] = cell
+      else delete out.cells[x.addr]
+    }
+    formatted = undefined
+  }
   TAG.lastIndex = 0
   let m: RegExpExecArray | null
   while ((m = TAG.exec(data))) {
     const a = attributes(m[3])
     if (m[2] === 'row') {
+      endRow()
       row = a.r ? Number(a.r) - 1 : row + 1
       col = -1
-      const line: RowInput = {}
+      line = {}
+      lineRow = row
       if (a.ht !== undefined && flag(a.customHeight)) line.height = Number(a.ht)
       // Excel hides a row of height 0 whatever its flag
       if (flag(a.hidden) || line.height === 0) line.hidden = true
-      if (a.s !== undefined && flag(a.customFormat)) Object.assign(line, look(ctx.xfs[Number(a.s)], issues, { sheet, cell: `${row + 1}:${row + 1}` }))
+      if (a.s !== undefined && flag(a.customFormat)) {
+        Object.assign(line, look(ctx.xfs[Number(a.s)], issues, { sheet, cell: `${row + 1}:${row + 1}` }))
+        formatted = []
+      }
       Object.assign(line, outlineOf(a))
-      if (Object.keys(line).length) out.rows.set(row + 1, line)
+      if (!formatted && Object.keys(line).length) out.rows.set(row + 1, line)
       continue
     }
     const ref = a.r && ADDR.exec(a.r)
@@ -116,7 +152,10 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
     // the address as written when it is already the model's spelling (upper case), else spelled out
     const addr = ref && ref[1] === ref[1].toUpperCase() ? a.r! : formatAddress(row, col)
     const xf = a.s === undefined ? undefined : ctx.xfs[Number(a.s)]
-    const cell: CellInput = look(xf, issues, { sheet, cell: addr })
+    const own = look(xf, issues, { sheet, cell: addr })
+    // a cell of a formatted row takes its look when the row ends
+    formatted?.push({ addr, col, own })
+    const cell: CellInput = formatted ? {} : ownLook(own, lookOf(undefined, line, column(col)), ctx)
     // value metadata: the type of an error Excel stores as #VALUE! (#SPILL!, #CALC!), or a rich value the model does not have
     const rich = a.vm === undefined ? undefined : ctx.meta.error(Number(a.vm))
     if (a.vm !== undefined && rich === undefined) issues.add('cellMetadata', "a cell's value metadata (a data type, a picture in the cell) is not in the model", { sheet, cell: addr })
@@ -178,8 +217,9 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
         } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
-    if (cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.format !== undefined) out.cells[addr] = cell
+    if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.format !== undefined) out.cells[addr] = cell
   }
+  endRow()
   return out
 }
 
@@ -187,6 +227,20 @@ export function readCells(data: string, ctx: CellsContext): SheetCells {
 export function outlineOf(a: Record<string, string>): { outlineLevel?: number; collapsed?: boolean } {
   const level = Math.trunc(Number(a.outlineLevel ?? 0))
   return { ...(level > 0 ? { outlineLevel: Math.min(level, 7) } : {}), ...(flag(a.collapsed) ? { collapsed: true } : {}) }
+}
+
+/**
+ * A stored cell's style and format over the look its row or column gives it (`line`): what they give is left out, so
+ * a book written and read back gives no cell a look it did not have, and a default they would not give is spelled out
+ * (the plain style, `General`), as a stored cell shows its own look alone.
+ */
+function ownLook(own: Look, line: Look, ctx: Pick<CellsContext, 'plain' | 'isPlain'>): CellInput {
+  const style = line.style !== undefined && ctx.isPlain(line.style) ? undefined : line.style
+  const format = line.format === 'General' || line.format === 0 ? undefined : line.format
+  const out: CellInput = {}
+  if (own.style !== style) out.style = own.style ?? ctx.plain()
+  if (own.format !== format) out.format = own.format ?? 'General'
+  return out
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */

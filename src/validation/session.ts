@@ -9,6 +9,7 @@ import { applyEdits, codegenContext, invalidError, toCellValue, valueAt, type En
 import { closureBackend } from '../exec/closures.js'
 import { walk } from '../exec/walk.js'
 import type { Steps } from '../exec/budget.js'
+import { formatOf as lineFormat } from '../layout/lines.js'
 import { lineAt } from '../layout/spans.js'
 import { nameFor } from '../names.js'
 import { formatAddress } from '../model.js'
@@ -44,10 +45,10 @@ function formulas(state: EngineState, s: number, r: number, c: number, v: DataVa
   return { ...(v.formula1 !== undefined ? { formula1: at(v.formula1) } : {}), ...(v.formula2 !== undefined ? { formula2: at(v.formula2) } : {}) }
 }
 
-/** The number format a cell shows by: its own, else its row's, else its column's. */
+/** The number format a cell shows by (`layout/lines.ts`). */
 function formatOf(state: EngineState, s: number, r: number, c: number): NumberFormat | undefined {
   const sh = state.input.sheets[s]
-  return sh.cells[formatAddress(r, c)]?.format ?? lineAt(sh.rows, 'r', r)?.format ?? lineAt(sh.columns, 'c', c)?.format
+  return lineFormat(sh.cells[formatAddress(r, c)], lineAt(sh.rows, 'r', r), lineAt(sh.columns, 'c', c))
 }
 
 /** A literal list (a text constant): its items, split at commas as a file holds them in every locale. */

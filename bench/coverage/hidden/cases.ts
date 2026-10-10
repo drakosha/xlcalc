@@ -8,8 +8,7 @@
 import type { BookInput, CellValue, StructureOp } from '../../../src/contract.js'
 import { compute, restructure } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
-import { openArchive } from '../../../src/xlsx/zip/read.js'
-import { zip } from '../../../src/xlsx/zip/write.js'
+import { editParts } from '../xlsx/sent.js'
 
 /** A sheet's visibility as Excel's object model gives it (`XlSheetVisibility`): visible, hidden, very hidden. */
 export type Visible = -1 | 0 | 2
@@ -68,18 +67,12 @@ export const makeOp = (m: HiddenMake): StructureOp => (m.visible === -1 ? { op: 
 export async function hiddenFile(c: HiddenCase, set: HiddenCases): Promise<Uint8Array> {
   const data = (await writeXlsx(set.books[c.book])).data
   if (!c.raw) return data
-  const archive = openArchive(data)
-  const files = new Map<string, Uint8Array>()
-  for (const name of archive.names) files.set(name, (await archive.bytes(name))!)
-  const enc = new TextEncoder()
-  const edit = async (name: string, f: (xml: string) => string) => files.set(name, enc.encode(f((await archive.text(name))!)))
-  if (c.raw === 'allHidden') await edit('xl/workbook.xml', (x) => x.replace(/<sheet name="([^"]*)" sheetId="(\d+)"(?: state="\w+")?/g, '<sheet name="$1" sheetId="$2" state="hidden"'))
-  else {
-    await edit('xl/workbook.xml', (x) => x.replace(/<workbookView activeTab="\d+"\/>/, '<workbookView/>'))
-    for (const name of archive.names.filter((n) => /^xl\/worksheets\/sheet\d+\.xml$/.test(n))) await edit(name, (x) => x.replace(' tabSelected="1"', ''))
-    await edit('xl/worksheets/sheet1.xml', (x) => x.replace('<sheetView workbookViewId="0"', '<sheetView workbookViewId="0" tabSelected="1"'))
-  }
-  return zip([...files].map(([name, bytes]) => ({ name, data: bytes })))
+  if (c.raw === 'allHidden') return editParts(data, (name, x) => (name === 'xl/workbook.xml' ? x.replace(/<sheet name="([^"]*)" sheetId="(\d+)"(?: state="\w+")?/g, '<sheet name="$1" sheetId="$2" state="hidden"') : undefined))
+  return editParts(data, (name, x) => {
+    if (name === 'xl/workbook.xml') return x.replace(/<workbookView activeTab="\d+"\/>/, '<workbookView/>')
+    if (name === 'xl/worksheets/sheet1.xml') return x.replace(' tabSelected="1"', '').replace('<sheetView workbookViewId="0"', '<sheetView workbookViewId="0" tabSelected="1"')
+    return /^xl\/worksheets\/sheet\d+\.xml$/.test(name) ? x.replace(' tabSelected="1"', '') : undefined
+  })
 }
 
 /** Each sheet's name and visibility. */

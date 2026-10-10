@@ -106,6 +106,10 @@
   }
  },
  "roundtrip": {
+  "styles": {
+   "differences": [],
+   "values": {}
+  },
   "hidden": {
    "differences": [],
    "values": {
@@ -202,6 +206,18 @@
   "builtin-ru": {
    "differences": [],
    "values": {}
+  },
+  "struct-styles-styled": {
+   "differences": [],
+   "values": {
+    "S!F1": 78,
+    "S!G1": {
+     "error": "VALUE"
+    },
+    "S!F2": 73.75,
+    "S!G2": 1.25,
+    "T!A1": 78
+   }
   }
  }
 }

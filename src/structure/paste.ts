@@ -6,8 +6,9 @@
  * land on are gone. A move that cuts a merged area at its source, and a copy that lands on part of one, are
  * refused, as Excel refuses them.
  */
-import type { BookInput, ColumnInput, NumberFormat, RowInput, SheetInput } from '../contract.js'
+import type { BookInput, ColumnInput, RowInput, SheetInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
+import { lookOf, type Look } from '../layout/lines.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
 import type { Message } from '../locale/messages.js'
@@ -47,16 +48,8 @@ function pasteLines<T>(from: SheetInput, to: SheetInput, taken: Line<T>[], key: 
   Object.assign(to, { [key]: toMap(dest, axis) })
 }
 
-interface Look {
-  style?: number
-  format?: NumberFormat
-}
-
-/** The style and format the rows and columns give at a position: the row's, else the column's, each separately. */
-function lineLook(rows: Line<RowInput>[], cols: Line<ColumnInput>[], r: number, c: number): Look {
-  const [row, col] = [entryAt(rows, r), entryAt(cols, c)]
-  return { style: row?.style ?? col?.style, format: row?.format ?? col?.format }
-}
+/** The style and format the rows and columns give at a position (`lookOf`). */
+const lineLook = (rows: Line<RowInput>[], cols: Line<ColumnInput>[], r: number, c: number): Look => lookOf(undefined, entryAt(rows, r), entryAt(cols, c))
 
 /** The bounds of segments of [a, b] where the source's lines and the destination's (shifted by `d`) do not change. */
 function segments(src: Line<unknown>[], dst: Line<unknown>[], a: number, b: number, d: number): [number, number][] {

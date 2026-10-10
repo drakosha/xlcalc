@@ -5,13 +5,11 @@
  * saved files to `test/excel/parts/<set>/<id>.xlsx`; `test/sheet-parts-excel.test.ts` compares them with the writer,
  * the reader and `restructure` without Excel. `FPARTS_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
  */
-import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeXlsx } from '../../src/xlsx.js'
-import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
+import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import type { PartsAnswer, PartsCase, PartsCases, PartsMake, PartsSet } from './parts/cases.js'
 import { inCaseOrder } from './stored.js'
 import { threadedFile } from './parts/threaded.js'
@@ -21,7 +19,6 @@ import { partsHash } from './xlsx/sent.js'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-parts.applescript')
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 
 export interface StoredParts extends PartsCases {
   meta: Record<string, string | number>
@@ -49,64 +46,24 @@ export async function partsFile(c: PartsCase, set: PartsCases): Promise<Uint8Arr
 
 type RawSheet = [string, [string, string, string][], [string, string, string, string, string][], [boolean, number, number, number, number, number, number]]
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const plain = (a: string) => a.replaceAll('$', '')
 
 /** One case in Excel: its answer and the saved file, or the repair window's text. A window that is not a book stops the run. */
 async function runCase(c: PartsCase, data: Uint8Array): Promise<{ answer: PartsAnswer; saved: Uint8Array } | { rejected: string }> {
-  const before = dialogText()
-  if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `fparts-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    writeFileSync(file, data)
-    const op = c.op ? opArgs({ id: c.id, book: c.book, op: c.op }) : []
-    const child = spawn('osascript', [SCRIPT, file, join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify(makeArgs(c.make)), JSON.stringify(c.op ? [c.op.op, ...op] : [])])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
-    child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 120_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
-        if (code !== 0) throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { error: string; sheets: RawSheet[] }
-        const answer: PartsAnswer = {
-          ...(raw.error ? { error: raw.error } : {}),
-          sheets: raw.sheets.map(([name, notes, links, [freeze, splitRow, splitColumn, , , scrollRow, scrollColumn]]) => ({
-            name,
-            notes: Object.fromEntries(notes.map(([a, author, text]) => [plain(a), { author, text }])),
-            links: links.map(([range, address, subAddress, tip, display]) => ({ range: plain(range), address, subAddress, tip, display })),
-            panes: { freeze, splitRow, splitColumn, scrollRow, scrollColumn },
-          })),
-        }
-        return { answer, saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }
-      }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        await sleep(1500)
-        declineRepair()
-        return { rejected: 'Excel did not accept the book (repair window declined)' }
-      }
-      const open = dialogText()
-      if (open) {
-        child.kill()
-        throw new Error(`${c.id}: Excel shows a window, stopped without clicking: ${open}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`${c.id}: Excel did not answer in 120 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
+  const op = c.op ? opArgs({ id: c.id, book: c.book, op: c.op }) : []
+  const r = await runSavingScript(c.id, SCRIPT, data, [JSON.stringify(makeArgs(c.make)), JSON.stringify(c.op ? [c.op.op, ...op] : [])], 120_000)
+  if ('rejected' in r) return r
+  const raw = JSON.parse(r.out) as { error: string; sheets: RawSheet[] }
+  const answer: PartsAnswer = {
+    ...(raw.error ? { error: raw.error } : {}),
+    sheets: raw.sheets.map(([name, notes, links, [freeze, splitRow, splitColumn, , , scrollRow, scrollColumn]]) => ({
+      name,
+      notes: Object.fromEntries(notes.map(([a, author, text]) => [plain(a), { author, text }])),
+      links: links.map(([range, address, subAddress, tip, display]) => ({ range: plain(range), address, subAddress, tip, display })),
+      panes: { freeze, splitRow, splitColumn, scrollRow, scrollColumn },
+    })),
   }
+  return { answer, saved: r.saved }
 }
 
 /** Runs the set's cases that have no stored answer for the same case and book (FCOV_FRESH=1 runs all) and stores the answers. */

@@ -14,7 +14,7 @@ import { buildRoundTrips, XLSX_CLOCK } from './books.js'
 import { FILTER_FILES, filterFile } from './filters.js'
 
 /** The round trip's books predicted. */
-export const PREDICTED = ['hidden', 'zero-sizes', 'filtered', 'filtered-table', 'date1904', 'iteration', 'iteration-default', 'builtin', 'builtin-ru']
+export const PREDICTED = ['hidden', 'zero-sizes', 'filtered', 'filtered-table', 'date1904', 'iteration', 'iteration-default', 'builtin', 'builtin-ru', 'styles', 'struct-styles-styled']
 
 export interface Predicted {
   filters: Record<string, { filtered: boolean; values: Record<string, CellValue> }>

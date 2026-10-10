@@ -6,6 +6,7 @@
  * columns line by line (a line of size 0 hidden), iterative calculation with Excel's defaults filled in.
  */
 import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat, TableInput } from '../../../src/contract.js'
+import { lookOf as lineLook } from '../../../src/layout/lines.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
 import { epochOf } from '../../../src/dates.js'
 import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
@@ -105,13 +106,12 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     // #CALC! has no formula spelling: the reader leaves it out
     const fromValue = (v: CellValue): Record<string, unknown> =>
       v === null ? { value: 0 } : typeof v === 'object' ? (v.error === 'CYCLE' ? { value: 0 } : ERROR_FORMULA[v.error] ? { formula: ERROR_FORMULA[v.error] } : {}) : { value: v }
-    // a cell shows its own look, else its row's, else its column's: a look a cell repeats from them is not its own
+    // a look a cell repeats from its row or column (`lineLook`) is not its own
     const rowLines = lines(s.rows, 'r')
     const colLines = lines(s.columns, 'c')
     const inherited = (addr: string): Look => {
       const { row, col } = parseAddress(addr)
-      const [r, c] = [entryAt(rowLines, row), entryAt(colLines, col)]
-      return lookOf(book, { style: r?.style ?? c?.style, format: r?.format ?? c?.format })
+      return lookOf(book, lineLook(undefined, entryAt(rowLines, row), entryAt(colLines, col)))
     }
     for (const [addr, c] of Object.entries(s.cells) as [string, CellInput][]) {
       const own = lookOf(book, c)
