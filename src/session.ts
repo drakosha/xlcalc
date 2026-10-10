@@ -275,7 +275,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         const before = old.input.sheets.slice()
         old.input.sheets.splice(0, old.input.sheets.length, ...r.book.sheets)
         const backs = r.book.sheets.map((x, i) => sheetBack(i, x, before[i])).filter((x) => x !== null)
-        if (backs.length) keep(() => ({ kind: 'layout', call: 'restructure', sheets: backs, size: layoutSize(backs) }))
+        keep(() => ({ kind: 'layout', call: 'restructure', sheets: backs, size: layoutSize(backs) }))
         return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: [] }
       }
       // the operation as it was given, kept for its geometry: the caller's object may change
@@ -300,7 +300,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const next = applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
       const out = yield* relayout(s, next, shown)
       const backs = [...next].map(([i, x]) => sheetBack(i, x, before[i])).filter((x) => x !== null)
-      if (backs.length) keep(() => ({ kind: 'layout', call: 'setLayout', sheets: backs, size: layoutSize(backs) }))
+      if (checked.length) keep(() => ({ kind: 'layout', call: 'setLayout', sheets: backs, size: layoutSize(backs) }))
       return out
     },
     book() {
