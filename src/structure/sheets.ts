@@ -3,7 +3,7 @@
  * to the sheet and the scope of its names; a delete turns references to it into `#REF!` followed by the reference
  * (`#REF!A1`, as Excel writes it), drops the names local to it and keeps the global ones with their reference lost. A
  * reference across sheets names its ends and covers the sheets between them: a new sheet changes no formula, a
- * deleted end and an end moved away give way to the next sheet inward (`struct/cube`). A hidden sheet is renamed, deleted
+ * deleted end and an end moved past the other end give way to the next sheet inward (`struct/cube`). A hidden sheet is renamed, deleted
  * and moved as any other, a very hidden one renamed alone; the book's last visible sheet is neither deleted nor hidden, as
  * Excel refuses all these (`hidden/sheets-held`).
  */

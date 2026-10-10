@@ -934,7 +934,7 @@ export type StructureOp =
   /**
    * The sheet moved before the sheet `before`, else after the last one; before a hidden sheet it goes before the next
    * visible one, as Excel moves it. A reference across sheets covers the sheets between its ends in the new order; an end
-   * that moves leaves it, the next sheet inward taking its place.
+   * that moves stays its end until it passes the other end, then the next sheet inward takes its place.
    */
   | { op: 'moveSheet'; sheet: string; before?: string }
   /** The sheet hidden (Excel's Hide Sheet), very hidden with `very` (see `SheetInput.hidden`); a book keeps one visible sheet. */
