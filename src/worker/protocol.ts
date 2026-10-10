@@ -2,15 +2,16 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { BookInput, CalcLimits, CellRef, Clock, SessionOptions } from '../contract.js'
+import type { BookInput, CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
+import type { HistoryData } from '../session/undo.js'
 import type { Sent } from './pack.js'
 
 export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
-export const CHANGING = ['setCells', 'patchCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout'] as const
+export const CHANGING = ['setCells', 'patchCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
 export type Op = (typeof CHANGING)[number] | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'validation' | 'validateEntry' | 'result' | 'hash'
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
@@ -29,6 +30,8 @@ export interface Snapshot {
   opts: SessionOptions
   clock: Clock
   seq: number
+  /** The session's history then (as text when JSON holds it): the replayed `undo` and `redo` calls take its steps. */
+  history?: HistoryData | { json: string }
 }
 
 /** The book's outline before a structure operation: enough for `applyOp` to give the same `mapCell`. */
@@ -62,10 +65,11 @@ export interface ErrorData {
 /** From a thread: a task's answer. */
 export type FromThread = { task: number; ok: true; value: unknown } | { task: number; ok: false; error: ErrorData }
 
-/** A call's value and the session's clock after it. */
+/** A call's value and the session's clock and history after it. */
 export interface Answer {
   value: unknown
   clock: Clock
+  history: SessionHistory
   /** `restructure`: the book's outline before it. */
   outline?: Outline
 }

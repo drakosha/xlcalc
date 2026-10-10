@@ -22,7 +22,7 @@ export function cellLooks(state: EngineState): Looks {
     if (!x) {
       const sh = state.input.sheets[s]
       const merges = new Map((sh.merges ?? []).map((m) => parseMerge(m)!).map((m): [string, number] => [`${m.r1}:${m.c1}`, m.c2]))
-      sheets.set(s, (x = { lines: sheetLines(sh), merges }))
+      sheets.set(s, (x = { lines: sheetLines(sh, state), merges }))
     }
     return x
   }

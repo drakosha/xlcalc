@@ -5,11 +5,12 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, SessionOptions, StructureOp } from '../contract.js'
+import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, SessionHistory, SessionOptions, StructureOp, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { splitCall, checkCall } from '../async/options.js'
 import { applyOp, checkedMapCell } from '../structure/index.js'
+import { mapCellOf, type Geometry } from '../session/rebook.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
 import { CHANGING, fromData, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
@@ -57,6 +58,7 @@ interface Rec {
   /** The last changing call answered. */
   seq: number
   clock: Clock
+  history: SessionHistory
   /** When it was last called, for leaving a full thread. */
   used: number
   /** Closed, or its restore failed: every call is refused with it. */
@@ -84,6 +86,20 @@ const HEAP_PER_SPILLED = 1024
 /** The part of a thread's heap the range caches of its books may hold together (`docs/cache.md`). */
 const CACHE_SHARE = 1 / 4
 
+/** The part of a thread's heap the histories of its sessions (`Session.undo`) hold together by default. */
+const UNDO_SHARE = 1 / 8
+
+/**
+ * The budget of a session's history in a thread of `maxHeapMb` where the session gives none: its share of an eighth of
+ * the heap among the sessions a thread holds (`maxSessionsPerThread`, else the pool's sessions over its threads, else
+ * one), in whole megabytes, one at least. Without `maxHeapMb`, the session's own default.
+ */
+function undoMb(o: CalcPoolOptions): number | undefined {
+  if (!o.maxHeapMb) return undefined
+  const sessions = o.maxSessionsPerThread ?? (o.maxSessions ? Math.ceil(o.maxSessions / (o.threads ?? 2)) : 1)
+  return Math.max(1, Math.floor((o.maxHeapMb * UNDO_SHARE) / sessions))
+}
+
 /** The limits of a pool's computations: with `maxHeapMb`, `cells` and `spill` by the heap where the host gives none. */
 function poolLimits(o: CalcPoolOptions): CalcLimits | undefined {
   if (!o.maxHeapMb) return o.limits
@@ -97,6 +113,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   const perThread = o.maxSessionsPerThread ?? Infinity
   const snapshotEvery = o.snapshotEvery ?? 64
   const limits = poolLimits(o)
+  const historyMb = undoMb(o)
   const jobs: Task[] = []
   const recs = new Set<Rec>()
   let ids = 0
@@ -223,13 +240,16 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       case 'open':
       case 'restore':
         slot.resident.add(r)
-        if (msg.t === 'open') r.snapshot.clock = r.clock = (value as Answer).clock
+        if (msg.t === 'open') {
+          r.snapshot.clock = r.clock = (value as Answer).clock
+          r.history = (value as Answer).history
+        }
         return task.resolve(value)
       case 'snapshot':
       case 'drop': {
-        const s = value as { book: Sent; clock: Clock; seq: number } | null
+        const s = value as { book: Sent; clock: Clock; seq: number; history: Snapshot['history'] } | null
         if (s) {
-          r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq }
+          r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq, history: s.history }
           r.journal = r.journal.filter((e) => e.seq > s.seq)
         }
         if (msg.t === 'snapshot') r.snapshotting = false
@@ -238,6 +258,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       case 'call': {
         const a = value as Answer
         r.clock = a.clock
+        r.history = a.history
         if (msg.seq !== undefined && msg.seq > r.seq) {
           r.seq = msg.seq
           r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock })
@@ -334,9 +355,19 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       }
     }
     const value = <T>(p: Promise<Answer>) => p.then((a) => a.value as T)
+    // a structure operation undone or redone: its mapCell made here from the geometry the thread sent
+    const step = (op: 'undo' | 'redo', co: unknown) =>
+      value<(Omit<UndoResult, 'mapCell'> & { geometry?: Geometry }) | null>(call(op, [], co)).then((v): UndoResult | null => {
+        if (!v?.geometry) return v
+        const { geometry: g, ...rest } = v
+        return { ...rest, mapCell: checkedMapCell({ sheets: g.before.map((name) => ({ name, cells: {} })) }, mapCellOf(g.op, g.way, g.after)) }
+      })
     return {
       get clock() {
         return { ...r.clock }
+      },
+      get history() {
+        return { ...r.history }
       },
       setCells: (edits, co) => value(call('setCells', [edits], co)),
       patchCells: (patches, co) => value(call('patchCells', [patches], co)),
@@ -362,6 +393,8 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       validateEntry: (sheet, cell, input, co) => value(call('validateEntry', [sheet, cell, input], co)),
       result: (co) => value(call('result', [], co)),
       hash: (co) => value(call('hash', [], co)),
+      undo: (co) => step('undo', co),
+      redo: (co) => step('redo', co),
       async close() {
         if (r.gone) return
         const done = submit({ t: 'drop', sid: r.sid }, { slot: r.slot, session: r }, undefined, true)
@@ -386,13 +419,16 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool holds ${o.maxSessions} sessions already`)
       const { signal, timeoutMs, rest } = splitCall<SessionOptions>(sopts)
       const opts = { ...rest } as SessionOptions & { clock?: Clock }
+      // a session without a budget of its own for its history takes its share of the thread's heap; wrong input stays for the thread to refuse
+      const u = opts.undo as unknown
+      if (historyMb !== undefined && (u === undefined || (typeof u === 'object' && u !== null && (u as { maxMb?: unknown }).maxMb === undefined))) opts.undo = { ...(u as object), maxMb: historyMb }
       const slot = [...slots].sort((a, b) => a.sessions.size - b.sessions.size || a.queue.length - b.queue.length)[0]
       const given = opts.clock
       delete opts.clock
       // the book is taken now and written as text, between turns of the event loop when it is large; the text is the first snapshot
       const sent = pack(book)
       const later = sent instanceof Promise ? sent.then((x) => (r.snapshot.book = x)) : undefined
-      const r: Rec = { sid: ++ids, slot, snapshot: { book: later ? book : (sent as Sent), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, used: ++clock, gone: null, snapshotting: false }
+      const r: Rec = { sid: ++ids, slot, snapshot: { book: later ? book : (sent as Sent), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, used: ++clock, gone: null, snapshotting: false }
       recs.add(r)
       slot.sessions.add(r)
       await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal, false, later).catch((e) => {
