@@ -1,0 +1,568 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 16.5
+ },
+ "books": {
+  "frozen": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": "A1"
+      },
+      "B1": {
+       "value": "B1"
+      },
+      "C1": {
+       "value": "C1"
+      },
+      "D1": {
+       "value": "D1"
+      },
+      "E1": {
+       "value": "E1"
+      },
+      "A2": {
+       "value": "A2"
+      },
+      "B2": {
+       "value": "B2"
+      },
+      "C2": {
+       "value": "C2"
+      },
+      "D2": {
+       "value": "D2"
+      },
+      "E2": {
+       "value": "E2"
+      },
+      "A3": {
+       "value": "A3"
+      },
+      "B3": {
+       "value": "B3"
+      },
+      "C3": {
+       "value": "C3"
+      },
+      "D3": {
+       "value": "D3"
+      },
+      "E3": {
+       "value": "E3"
+      },
+      "A4": {
+       "value": "A4"
+      },
+      "B4": {
+       "value": "B4"
+      },
+      "C4": {
+       "value": "C4"
+      },
+      "D4": {
+       "value": "D4"
+      },
+      "E4": {
+       "value": "E4"
+      },
+      "A5": {
+       "value": "A5"
+      },
+      "B5": {
+       "value": "B5"
+      },
+      "C5": {
+       "value": "C5"
+      },
+      "D5": {
+       "value": "D5"
+      },
+      "E5": {
+       "value": "E5"
+      },
+      "A6": {
+       "value": "A6"
+      },
+      "B6": {
+       "value": "B6"
+      },
+      "C6": {
+       "value": "C6"
+      },
+      "D6": {
+       "value": "D6"
+      },
+      "E6": {
+       "value": "E6"
+      },
+      "A7": {
+       "value": "A7"
+      },
+      "B7": {
+       "value": "B7"
+      },
+      "C7": {
+       "value": "C7"
+      },
+      "D7": {
+       "value": "D7"
+      },
+      "E7": {
+       "value": "E7"
+      },
+      "A8": {
+       "value": "A8"
+      },
+      "B8": {
+       "value": "B8"
+      },
+      "C8": {
+       "value": "C8"
+      },
+      "D8": {
+       "value": "D8"
+      },
+      "E8": {
+       "value": "E8"
+      },
+      "A9": {
+       "value": "A9"
+      },
+      "B9": {
+       "value": "B9"
+      },
+      "C9": {
+       "value": "C9"
+      },
+      "D9": {
+       "value": "D9"
+      },
+      "E9": {
+       "value": "E9"
+      },
+      "A10": {
+       "value": "A10"
+      },
+      "B10": {
+       "value": "B10"
+      },
+      "C10": {
+       "value": "C10"
+      },
+      "D10": {
+       "value": "D10"
+      },
+      "E10": {
+       "value": "E10"
+      },
+      "A11": {
+       "value": "A11"
+      },
+      "B11": {
+       "value": "B11"
+      },
+      "C11": {
+       "value": "C11"
+      },
+      "D11": {
+       "value": "D11"
+      },
+      "E11": {
+       "value": "E11"
+      },
+      "A12": {
+       "value": "A12"
+      },
+      "B12": {
+       "value": "B12"
+      },
+      "C12": {
+       "value": "C12"
+      },
+      "D12": {
+       "value": "D12"
+      },
+      "E12": {
+       "value": "E12"
+      }
+     },
+     "frozen": {
+      "rows": 3,
+      "columns": 2
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     },
+     "frozen": {
+      "rows": 1,
+      "columns": 1
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "delete-rows-1-6",
+   "book": "frozen",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 1,
+    "count": 6
+   }
+  },
+  {
+   "id": "delete-rows-2-10",
+   "book": "frozen",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 2,
+    "count": 9
+   }
+  },
+  {
+   "id": "delete-rows-3-4",
+   "book": "frozen",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "S",
+    "row": 3,
+    "count": 2
+   }
+  },
+  {
+   "id": "delete-cols-a-d",
+   "book": "frozen",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "A",
+    "count": 4
+   }
+  },
+  {
+   "id": "delete-col-b",
+   "book": "frozen",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "S",
+    "column": "B"
+   }
+  },
+  {
+   "id": "insert-rows-1x3",
+   "book": "frozen",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 1,
+    "count": 3
+   }
+  },
+  {
+   "id": "insert-cols-b-x2",
+   "book": "frozen",
+   "op": {
+    "op": "insertColumns",
+    "sheet": "S",
+    "column": "B",
+    "count": 2
+   }
+  },
+  {
+   "id": "t-delete-row-1",
+   "book": "frozen",
+   "op": {
+    "op": "deleteRows",
+    "sheet": "T",
+    "row": 1
+   }
+  },
+  {
+   "id": "t-delete-col-a",
+   "book": "frozen",
+   "op": {
+    "op": "deleteColumns",
+    "sheet": "T",
+    "column": "A"
+   }
+  }
+ ],
+ "sent": {
+  "delete-rows-1-6": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "delete-rows-2-10": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "delete-rows-3-4": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "delete-cols-a-d": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "delete-col-b": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "insert-rows-1x3": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "insert-cols-b-x2": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "t-delete-row-1": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd",
+  "t-delete-col-a": "e29cb9b17e76086d27c9cef162f0c76483dbe23e1234338ed1fd1d35f6e794bd"
+ },
+ "answers": {
+  "delete-rows-1-6": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 2,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "delete-rows-2-10": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 2,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "delete-rows-3-4": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 2,
+      "splitColumn": 2,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "delete-cols-a-d": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 3,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "delete-col-b": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 3,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "insert-rows-1x3": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 6,
+      "splitColumn": 2,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "insert-cols-b-x2": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 3,
+      "splitColumn": 4,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "t-delete-row-1": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 3,
+      "splitColumn": 2,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "t-delete-col-a": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 3,
+      "splitColumn": 2,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {},
+     "links": [],
+     "panes": {
+      "freeze": true,
+      "splitRow": 1,
+      "splitColumn": 1,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  }
+ }
+}
