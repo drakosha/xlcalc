@@ -74,6 +74,12 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'book':
       value = await pack(await s.book())
       break
+    case 'layout':
+      value = await s.layout()
+      break
+    case 'extent':
+      value = await s.extent(args[0] as string)
+      break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, args[2] as never)
       break
@@ -84,7 +90,7 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
       value = await s.hash(o)
       break
     case 'cells':
-      value = await s.cells(args[0] as string, args[1] as string)
+      value = await s.cells(args[0] as string, args[1] as string | string[])
       break
     case 'validation':
       value = await s.validation(args[0] as string, args[1] as string)

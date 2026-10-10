@@ -94,6 +94,8 @@ export interface EngineState {
   /** The formulas in cycles the last iterative calculation computed (`BookInput.iteration`). */
   iterated: number[]
   spills: Spills
+  /** Input cells that hold no value or formula (a style, a format, a note alone), by sheet (row · MAX_COLS + column): a sheet's extent counts them. */
+  bare: Map<number, Set<number>>
 }
 
 export const key = (s: number, r: number, c: number) => `${s}:${r}:${c}`
@@ -111,6 +113,23 @@ export function setHidden(ctx: RuntimeContext, s: number, sheet: SheetInput) {
   const h = hiddenRows(sheet)
   if (h) ctx.hidden.set(s, h)
   else ctx.hidden.delete(s)
+}
+
+/** Marks whether a cell's input is one without a value or formula (`EngineState.bare`). */
+function markBare(state: EngineState, s: number, r: number, c: number, input: CellInput | null) {
+  let bare = state.bare.get(s)
+  if (input && !blocks(input)) {
+    if (!bare) state.bare.set(s, (bare = new Set()))
+    bare.add(r * MAX_COLS + c)
+  } else bare?.delete(r * MAX_COLS + c)
+}
+
+/** Sets a cell's input (null removes it), and whether it is one without a value or formula. */
+export function setInput(state: EngineState, s: number, addr: string, r: number, c: number, input: CellInput | null) {
+  const cells = state.input.sheets[s].cells
+  if (input === null) delete cells[addr]
+  else cells[addr] = input
+  markBare(state, s, r, c, input)
 }
 
 function emptySheet(name: string): SheetData {
@@ -229,6 +248,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
     clocked: new Set(),
     iterated: [],
     spills: newSpills(),
+    bare: new Map(),
   }
   const pending: Formula[] = []
   for (let s = 0; s < input.sheets.length; s++) {
@@ -239,6 +259,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
       if (cellIn.formula === undefined) {
         const v = bookScalar(cellIn.value, epoch)
         if (v !== null) put(ctx.sheets[s], row, col, v)
+        else markBare(state, s, row, col, cellIn)
         continue
       }
       if (due()) yield
@@ -279,9 +300,7 @@ export function* applyEdits(state: EngineState, edits: CellEdit[], withVolatile 
     if (s === undefined) throw new Error(`unknown sheet ${e.sheet}`)
     const { row, col } = parseAddress(e.cell)
     const k = key(s, row, col)
-    const cells = state.input.sheets[s].cells
-    if (e.input === null) delete cells[e.cell]
-    else cells[e.cell] = e.input
+    setInput(state, s, e.cell, row, col, e.input)
     state.spills.occupied.set(s, row, col, blocks(e.input ?? undefined))
     const old = state.at.get(k)
     if (old !== undefined) {
