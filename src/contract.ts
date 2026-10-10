@@ -884,9 +884,43 @@ export interface Explanation {
  * seed, until `setClock`. A live session (`live: true`) takes a fresh clock and a new seed on every
  * recomputation instead. Edits are compiled in the `execution` the session was opened with (`closures` by
  * default). With `display` (the default) results and changes carry what the cells show. `limits` bound every call;
- * a call over them throws `CalcError` and leaves the session as it was.
+ * a call over them throws `CalcError` and leaves the session as it was. `undo` bounds the steps `Session.undo` keeps.
  */
-export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits }
+export type SessionOptions = ({ clock?: Clock; live?: false } | { live: true }) & { externals?: Externals; execution?: Execution; display?: boolean; limits?: CalcLimits; undo?: UndoOptions }
+
+/**
+ * The steps a session keeps for `undo`: `depth` of them, 100 by default as in Excel (0 keeps none), holding `maxMb`
+ * megabytes at most by the engine's estimate, 64 by default. Past either the oldest steps go; a step larger than
+ * `maxMb` alone is not kept, and the steps before it go too, as Excel forgets what it cannot undo.
+ */
+export interface UndoOptions {
+  depth?: number
+  maxMb?: number
+}
+
+/** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
+export type UndoCall = 'setCells' | 'patchCells' | 'setNames' | 'setStyles' | 'setLayout' | 'restructure'
+
+/** A step of a session undone or done again (`Session.undo`, `Session.redo`). */
+export interface UndoResult {
+  /** The call whose change it was. */
+  call: UndoCall
+  /** Cells whose value or shown text changed, as `setCells` lists them. */
+  changes: CellChange[]
+  /** `setCells` and `patchCells`: the cells whose input changed back, so a host can read their style, note and link again. */
+  cells?: CellRef[]
+  /**
+   * `restructure`: where a cell of the book before this call is now, null when no cell of the book has it; an interface
+   * that moves its shown values by it and applies `changes` has the new values, as after `restructure`.
+   */
+  mapCell?(ref: CellRef): CellRef | null
+}
+
+/** What a session can undo and redo now: the steps kept each way. */
+export interface SessionHistory {
+  undo: number
+  redo: number
+}
 
 /** A rectangle on a sheet: `B2`, `B2:D9`, whole columns `B:D` or whole rows `2:9` (no `$`, no sheet). */
 export interface RangeRef {
@@ -1134,6 +1168,16 @@ export interface Session {
   result(): ComputeResult
   /** The values hash `result()` gives, without building the result. */
   hash(): string
+  /**
+   * Takes back the last change of the book, as Excel's Undo: the whole of one call of `setCells`, `patchCells`,
+   * `setNames`, `setStyles`, `setLayout` or `restructure`, recomputed; null when there is nothing to undo. A change
+   * after an undo forgets what `redo` could do again.
+   */
+  undo(): UndoResult | null
+  /** Does again the last change `undo` took back; null when there is none. */
+  redo(): UndoResult | null
+  /** The steps `undo` and `redo` can take now. */
+  readonly history: SessionHistory
   close(): void
 }
 
@@ -1211,6 +1255,10 @@ export interface AsyncSession {
   result(opts?: CalcOptions): Promise<ComputeResult>
   /** As `Session.hash`: from a thread only the hash comes back. */
   hash(opts?: CalcOptions): Promise<string>
+  undo(opts?: CalcOptions): Promise<UndoResult | null>
+  redo(opts?: CalcOptions): Promise<UndoResult | null>
+  /** The session's history as of its last finished call. */
+  readonly history: SessionHistory
   close(): Promise<void>
 }
 
