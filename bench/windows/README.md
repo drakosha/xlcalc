@@ -14,7 +14,8 @@ The books are the Mac harness's own: the measurement, the probes, the case sets,
 - `parts/<set>.json` and `parts/<set>/`: notes, hyperlinks and frozen panes as Excel read them in each case's book, and the files it saved, as the Mac's.
 - `cond/<set>.json`, `cond/ru-RU/<set>.json` and their folders: conditional formats in the Mac step's books (`bench/coverage/cond/`), the rules the set `made` makes through COM (`FormatConditions.Add`, `AddTop10`, `AddAboveAverage`, `AddUniqueValues`, `AddColorScale`, `AddDatabar`, `AddIconSetCondition`), what the read cells show by their `DisplayFormat`, the rules each sheet lists, and the files Excel saved.
 - `valid/<set>.json`, `valid/ru-RU/<set>.json` and the folders beside them: data validation and outlines over each sheet's window as Excel read them in the Mac step's books (`bench/coverage/valid/`), in the Mac's shape, and the files it saved.
-- `entry/<set>.json`, `entry/ru-RU/<set>.json`: text typed into cells through `Formula2Local` in the Mac step's books (`bench/coverage/entry/`), what each cell shows, its format codes and prefix character, and what the book Excel saved holds; `meta` names Excel's `AutoPercentEntry`.
+- `entry/<set>.json`, `entry/ru-RU/<set>.json`: text typed into cells through `Formula2Local` in the Mac step's books (`bench/coverage/entry/`), what each cell shows, its format codes and prefix character, its `Value2` (sets run since `typed-pct-held`), and what the book Excel saved holds; `meta` names Excel's `AutoPercentEntry`.
+- `hidden/<set>.json` and `hidden/<set>/`: hidden sheets in the Mac step's books (`bench/coverage/hidden/`), each sheet's `Visible` set through COM, the sheet operation, each sheet's visibility, the active sheet and the read cells' `Value2`, and the files Excel saved.
 - `xlsx/filters/` and `xlsx/filters.json`: the filter files as Excel computed and saved them; `xlsx/formats.json` and `xlsx/ru-RU/formats.json` the codes Excel shows for the built-in number formats 1 to 58 (`NumberFormat` and `NumberFormatLocal`, both in the user's language as COM reads them over SSH).
 
 Each file's `meta` names Excel's version and the settings it computed with: the interface language, the regional format with its decimal, thousands and list separators, the system locale with its code page, and the screen's dpi. A formula Excel for Windows does not take when it opens a book would be listed in `rejected` of its set; none is.
@@ -43,6 +44,7 @@ XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts cond looks
 npx tsx bench/windows/run.ts xlsx filters
 npx tsx bench/windows/run.ts xlsx formats ru
 npx tsx bench/windows/run.ts entry typed ru
+XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts hidden sheets-held
 XLWIN_CODEPAGE=any npx tsx bench/windows/run.ts valid files
 ```
 
@@ -95,8 +97,8 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 
 | what | locale | cases | as Excel for Mac | the engine as Windows, or for a pinned reason |
 |---|---|---:|---:|---|
-| formulas: measurement, probes, 40 case sets | en-US | 34,502 | 34,469 | 34,391, the 111 others in `WIN_KNOWN` |
-| formulas: measurement, 8 case sets | ru-RU | 7,297 | 7,136 | 7,291, the 6 others in `WIN_KNOWN` |
+| formulas: measurement, probes, 41 case sets | en-US | 34,578 | 34,545 | 34,467, the 111 others in `WIN_KNOWN` |
+| formulas: measurement, 9 case sets | ru-RU | 7,373 | 7,212 | 7,367, the 6 others in `WIN_KNOWN` |
 | the order of text, the set `collation-more` (Windows alone) | ru-RU | 62 | | 62 |
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
 | cells shown, 8 sets | en-US | 9,819 | 7,929 | 7,979, the others by the rules of `WIN_SHOWN` |
@@ -109,10 +111,11 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | conditional formats, 8 sets | en-US, ru-RU | 55 books, 4,221 cells | 3,988 of the 4,017 cells the Mac read (28 `#` counted in pixels, and `"b">"в"`, which the Mac takes otherwise) | every cell, but `#` counted in pixels and a colour channel one apart at an exact fraction past a percentile; the rules of every case but the bar lengths and the order the Mac pins too; of the 15 rules Excel made itself (`made`), 203 of 204 cells on the book read from its file |
 | notes, hyperlinks and frozen panes, 4 sets | en-US | 47 | 47 (the notes Excel made have its own user as author) | all but the pinned differences the Mac has, and a relative address saved one folder down |
 | data validation and outlines, 8 sets and 1 | en-US, ru-RU | 64 and 2 | all (but a list typed through the object model in ru-RU, which COM splits at `;` and AppleScript does not) | all but the pinned differences the Mac has |
-| text typed into cells, 3 sets | en-US, ru-RU | 911 and 911 | all but 34: the formats `m/d/yyyy` (en-US, 12) and `h:mm` (ru-RU, 22), which Windows takes as the built-in formats 14 and 20 | all but 167, pinned in `test/entry-known.ts` (the object model, English names in ru-RU, a reference's format) |
+| text typed into cells, 4 sets | en-US, ru-RU | 958 and 958 | all but 34: the formats `m/d/yyyy` (en-US, 12) and `h:mm` (ru-RU, 22), which Windows takes as the built-in formats 14 and 20 | all but 169, pinned in `test/entry-known.ts` (the object model, English names in ru-RU, a reference's format) |
+| hidden sheets, 3 sets | en-US | 50 | all, but for the error Excel for Mac does not give when it deletes no sheet | all |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
-The entry sets (`typed`, `typed-held`, `typed-held-2`) ran with `XLWIN_CODEPAGE=any` in both locales. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
+The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
 
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 

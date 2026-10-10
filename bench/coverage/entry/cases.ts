@@ -29,6 +29,8 @@ export interface EntryAnswer {
   local: string
   /** The cell's prefix character (`PrefixCharacter`): `'` after a typed apostrophe; absent when empty. */
   prefix?: string
+  /** The number the object model gives as the cell's value (`Value2` on Windows, `value` on the Mac); absent for anything else. */
+  value2?: number
 }
 
 export interface EntrySet {

@@ -50,8 +50,11 @@ interface SheetDecl {
   name: string
   kind?: string
   part?: string
-  hidden: boolean
+  /** xlsx `state`: hidden, or very hidden. */
+  hidden?: true | 'very'
 }
+
+const STATES = new Map<string | undefined, true | 'very'>([['hidden', true], ['veryHidden', 'very']])
 
 function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues): NameInput[] {
   const out: NameInput[] = []
@@ -128,7 +131,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const decls: SheetDecl[] = elements(element(wb, 'sheets')?.body ?? '', 'sheet').map((e) => {
     const a = attributes(e.attrs)
     const r = byId.get(attr(a, 'id') ?? '')
-    return { name: readText(a.name ?? ''), kind: r?.kind, part: r?.external ? undefined : r?.target, hidden: a.state === 'hidden' || a.state === 'veryHidden' }
+    return { name: readText(a.name ?? ''), kind: r?.kind, part: r?.external ? undefined : r?.target, ...(STATES.has(a.state) ? { hidden: STATES.get(a.state) } : {}) }
   })
   const strings = readStrings(stringsXml)
   const meta = cellMetadata(metaXml, richValues, richStructures)
@@ -147,7 +150,6 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
       issues.add('part', "a sheet whose part is missing is left out", { sheet: d.name })
       continue
     }
-    if (d.hidden) issues.add('hidden', 'a hidden sheet is read as a visible one', { sheet: d.name })
     const sheetRels = await relsOf(archive, d.part!)
     const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
     // the VML drawing that shows the notes is the sheet's legacy drawing
@@ -161,8 +163,13 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
       { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond },
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues },
     )
-    sheets.push(read.sheet)
+    sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
     cached.push({ name: d.name, cells: read.cached })
+  }
+  // a book keeps one visible sheet: a file whose visible sheets are all charts shows its first worksheet
+  if (sheets.length && sheets.every((s) => s.hidden)) {
+    issues.add('hidden', 'every worksheet of the file is hidden: the first is read as a visible one', { sheet: sheets[0].name })
+    delete sheets[0].hidden
   }
   // table names are unique through the book and apart from the defined names
   const taken = new Set(names.map((n) => n.name.toUpperCase()))

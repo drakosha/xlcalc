@@ -10,7 +10,7 @@ import type { Steps } from '../exec/budget.js'
 import { checkedMapCell } from '../structure/index.js'
 import { sheetKey } from '../syntax.js'
 import { layoutCells, snapshot } from './looks.js'
-import { applyDiff, bookDiff, GEOMETRY, mapCellOf, type BookDiff } from './rebook.js'
+import { applyDiff, bookDiff, GEOMETRY, mapCellOf, type BookDiff, type Geometry } from './rebook.js'
 
 /** The fields of a sheet but its cells, and how its lines (`rows`, `columns`) changed entry by entry. */
 export interface SheetBack {
@@ -25,7 +25,7 @@ export interface SheetBack {
 
 export type Step =
   | { kind: 'cells'; call: 'setCells' | 'patchCells'; edits: CellEdit[]; size: number }
-  | { kind: 'layout'; call: 'setLayout'; sheets: SheetBack[]; size: number }
+  | { kind: 'layout'; call: 'setLayout' | 'restructure'; sheets: SheetBack[]; size: number }
   | { kind: 'styles'; call: 'setStyles'; styles: CellStyle[] | undefined; size: number }
   | { kind: 'book'; call: Exclude<UndoCall, 'patchCells' | 'setStyles' | 'setLayout'>; diff: BookDiff; size: number }
 
@@ -203,6 +203,12 @@ function touched(s: EngineState, b: SheetBack): LayoutEdit[] {
   return out
 }
 
+/** A mapCell with its geometry: a pool's thread sends the geometry, the calling side makes the same mapCell. */
+function registered(mapCell: (ref: CellRef) => CellRef | null, g: Geometry) {
+  GEOMETRY.set(mapCell, g)
+  return mapCell
+}
+
 /**
  * Takes a step of the history (undo or redo, the same way): the book changed back by it and recomputed; `done` gets the
  * way to the book before it, the step of the other stack (null when it is too large to make). Nothing changes if it stops.
@@ -223,9 +229,11 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
       const before = s.input.sheets.slice()
       const next = new Map(step.sheets.map((b) => [b.i, sheetWith(before[b.i], b)]))
       const shown = core.display ? snapshot(s, layoutCells(s, step.sheets.flatMap((b) => touched(s, b)))) : null
-      result = { call: 'setLayout', changes: yield* core.relayout(s, next, shown) }
+      result = { call: step.call, changes: yield* core.relayout(s, next, shown) }
+      // a sheet hidden or shown again: its cells stay where they are
+      if (step.call === 'restructure') result.mapCell = registered(checkedMapCell(s.input, (ref) => ref), { op: null, way: 'back', before: s.sheetNames, after: s.sheetNames })
       const backs = step.sheets.map((b) => sheetBack(b.i, next.get(b.i)!, before[b.i])).filter((x) => x !== null)
-      other = { kind: 'layout', call: 'setLayout', sheets: backs, size: layoutSize(backs) }
+      other = { kind: 'layout', call: step.call, sheets: backs, size: layoutSize(backs) }
       break
     }
     case 'styles': {
@@ -243,11 +251,7 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
       const map = mapCellOf(d.op, d.way, names)
       const [, changes, diff] = yield* core.rebuild(s, book, map, step.call !== 'setNames', () => bookDiff(book, s.input, d.op, d.way === 'back' ? 'forth' : 'back'))
       result = { call: step.call, changes }
-      if (step.call === 'restructure') {
-        result.mapCell = checkedMapCell(s.input, map)
-        // a pool's thread sends the geometry, the calling side makes the same mapCell
-        GEOMETRY.set(result.mapCell, { op: d.op, way: d.way, before: s.sheetNames, after: names })
-      }
+      if (step.call === 'restructure') result.mapCell = registered(checkedMapCell(s.input, map), { op: d.op, way: d.way, before: s.sheetNames, after: names })
       other = { kind: 'book', call: step.call, diff: diff!, size: diffSize(diff!, book) }
       break
     }

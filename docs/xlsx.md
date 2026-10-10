@@ -15,7 +15,7 @@ const { data } = await writeXlsx(book, { result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` or an `ArrayBuffer`, and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system and iterative calculation.
+- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system and iterative calculation.
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order. These are what Excel computed when it saved the file, so you can compare them with the engine's result.
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
 
@@ -84,6 +84,15 @@ A grouped row or column gets its `outlineLevel`, 1 to 7, and the summary line of
 
 A merged area that overlaps another is left out and reported.
 
+### Hidden sheets
+
+A sheet a file marks `state="hidden"` gets `hidden: true`, one marked `state="veryHidden"` gets `hidden: 'very'`: a very hidden sheet is one Excel's window does not offer to show again, only its object model. Formulas read hidden sheets as any other. A book keeps one visible sheet, so a file whose worksheets are all hidden beside a visible chart sheet, which the book leaves out, shows its first worksheet, reported.
+
+```js
+// <sheet name="Rates" sheetId="2" state="hidden" r:id="rId2"/>, <sheet name="Keys" sheetId="3" state="veryHidden" r:id="rId3"/>
+{ name: 'Rates', cells: { … }, hidden: true }, { name: 'Keys', cells: { … }, hidden: 'very' }
+```
+
 ### Filters
 
 A sheet whose rows a filter hid gets `filtered: true`. Then `SUBTOTAL` with codes 1 to 11 leaves out its hidden rows too, as Excel does, and so do structure operations ([docs/structure.md](structure.md)). Excel takes a sheet as filtered by what its filters hold, not by the mark `filterMode` alone:
@@ -147,7 +156,7 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `defaultFont` | a default font other than Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
-| `hidden` | hidden sheets, read as visible ones |
+| `hidden` | a file whose every worksheet is hidden (beside chart sheets): its first worksheet is read as visible |
 | `autoFilter` | an autofilter's range, criteria and sort, a table's criteria, an advanced filter |
 | `sheetKind` | chart, dialog and macro sheets, left out |
 | `cellMetadata` | a rich value in a cell, such as a data type or a picture |
@@ -198,6 +207,10 @@ Each table is written as a table part, as Excel writes one: its name, range, hea
 Styles, number formats, widths, heights, hidden rows and columns, outline levels and merged areas are written as the book has them. The default font is Calibri 11, and a column without a width gets Excel's standard width of 8 digits.
 
 A built-in format given by its number is written as that number, and Excel shows it by its own locale. A code that a locale shows otherwise than the built-in format it equals, such as `m/d/yyyy` (format 14), is written as a code of the file's own, so every locale shows what `format` says. A code that every locale shows alike, such as `0.00`, is written by its built-in number, as Excel writes it, and comes back as that number, `2`.
+
+### Hidden sheets
+
+A hidden sheet is written with its state, `hidden` or `veryHidden`. The book's active sheet, the one Excel shows on opening, is its first visible sheet: Excel shows a hidden sheet that a file names as active, so a file whose first sheet is hidden names the next visible one (`<workbookView activeTab="1"/>` and that sheet's tab selected).
 
 ### Filters
 
@@ -361,6 +374,18 @@ The round trip compares books by what they mean: a style by its fields, a formul
 The 98 files of the workbook sets (`bench/coverage/workbook/`: hidden rows and columns, autofilters with and without criteria and the filter mark, the 1904 date system, iterative calculation), which Excel opened and computed step by step, read into the books the engine was checked with against Excel's answers, and compute the same values (`test/xlsx-workbook.test.ts`).
 
 The answers to the filter files and to nine books of the round trip were predicted and committed before Excel ran them (`bench/coverage/xlsx/predicted.json`): the filter mode of 8 files and 118 values, all as Excel gave them. The books were predicted to come back without differences, and three did not: Excel saved the built-in formats of two by codes and escaped the literal characters of the date formats of the third.
+
+### Hidden sheets
+
+`npx tsx bench/coverage/run.ts hidden <set>` writes each book of `bench/coverage/hidden/<set>.ts` with `writeXlsx`; Excel for Mac opens it, notes the active sheet, hides and shows sheets through its object model (`visible`), applies a sheet operation (rename, delete, insert, move), reads each sheet's visibility, the active sheet and the values of formulas over the sheets, and saves the book. `npx tsx bench/windows/run.ts hidden <set>` does the same in Excel for Windows (`Worksheet.Visible`). `test/hidden-sheets-excel.test.ts` checks, without Excel, that Excel read what the engine holds after each case and that the reader reads every file Excel saved with the visibility Excel read.
+
+| set | cases | what |
+|---|---|---|
+| `sheets-held` | 29 | books written with hidden and very hidden sheets, the first ones too; sheets hidden, very hidden and shown by Excel; the last visible sheet hidden and deleted; hidden sheets renamed, deleted and moved, sheets inserted and moved beside them; two files changed by hand, one whose active tab is a hidden sheet and one whose every sheet is hidden |
+| `sheets-held-2` | 11 | sheets moved before two hidden sheets in a row, a very hidden one and a hidden last one, a hidden sheet moved, sheets inserted before hidden ones |
+| `sheets-held-3` | 10 | ends of references across sheets moved inward, outward and past each other, sheets moved past hidden ones at the start and the end |
+
+Both Excels opened every file the writer wrote without the repair window, read each sheet's state as written, showed the first visible sheet, and computed a reference across sheets through a hidden one and `SUBTOTAL` and `AGGREGATE` over a hidden sheet's hidden row as over visible ones. A file whose active tab names a hidden sheet opened with that sheet shown, and one whose every sheet is hidden was repaired. The engine's answers were committed before Excel ran each set (`bench/coverage/hidden/<set>.predicted.json`): `sheets-held` held in 25 of 29 cases on both Excels, `sheets-held-2`, made after it, in 6 of 11, and `sheets-held-3`, made after that, in 10 of 10. The misses became the rules of [docs/structure.md](structure.md#hidden-sheets): a very hidden sheet is neither deleted nor moved, a moved sheet is placed by the visible sheets, and an end of a reference across sheets that moves stays its end until it passes the other. Both Excels answered alike in every case; Excel for Mac refused some deletes without an error, leaving the sheet.
 
 ## Known differences
 

@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.14.0 (2026-10-10)
+
+Internal release; not published to npm. Hidden sheets, and percent text read to the last bit.
+
+Added:
+
+- Contract: `SheetInput.hidden`, `true` for a hidden sheet (xlsx `state="hidden"`) and `'very'` for a very hidden one (`state="veryHidden"`), which Excel's window does not offer to show. Formulas read a hidden sheet as any other: `SUM('Jan:Mar'!B2)` over a hidden `Feb`, `SUBTOTAL` and `AGGREGATE` give what they gave. A book keeps one visible sheet at least (`InputError` otherwise); `inputHash` takes the state of a hidden sheet, and a book without one hashes as before.
+- Contract: the structure operations `hideSheet` (`very` for very hidden) and `unhideSheet`. A session applies them without building its state again (`changes` is empty). Refused as Excel refuses: the last visible sheet is neither hidden nor deleted (`last_sheet`), a very hidden sheet is neither deleted nor moved (`very_hidden`, new), with messages in the book's locale.
+- `readXlsx` and `writeXlsx` read and write the sheets' state; the writer makes the first visible sheet the active one, since Excel shows a hidden sheet that a file makes active. A file whose worksheets are all hidden is read with its first one visible, with an issue.
+- Case sets measured in Excel for Mac and Windows with the engine's answers committed before each run: `hidden/sheets-held` (29 cases, 25 held), `sheets-held-2` (11, 6 held) and `sheets-held-3` (10, all held), both Excels alike; `entry/typed-pct-held` (47 per locale) and `pct-text` (76 per locale).
+
+Changed:
+
+- `moveSheet` before a hidden sheet puts the sheet before the next visible one, and after the last visible one when none follows, as both Excels move it. An end of a reference across sheets that moves stays its end until it passes the other end (`'Jan:Apr'` keeps Jan moved before Apr); it gave way to the next sheet inward.
+
+Fixed:
+
+- Percent text is read by its decimal text, as Excel reads it: `1,1%` typed in ru-RU is 0.011, where it was 0.011000000000000001, and so are `VALUE`, operators and numeric arguments of percent text (`1.255%` is 0.01255). A fraction with a percent (`1 1/2%`) is still divided. Results rounded to 15 digits did not show it; the stored input and the xlsx file did.
+- `$1.1%` is text in en-US, not a number (`VALUE("$1.1%")` is `#VALUE!`), as Excel reads it, and `NUMBERVALUE` divides by 100 for each `%` in turn (`"1.1%%"` is 1.1/100/100).
+
+## 0.13.0 (2026-10-10)
+
+Internal release; not published to npm. Messages for people in the language of the book.
+
+Changed:
+
+- Messages for people come in the language of the book's locale: why a typed formula does not read (`parseEntry`, `toInvariant`, `toLocal` and `validateLocalFormula`, by the locale of the call), why a structure operation is refused (`restructure` and a session's `restructure` in every kind of session, by the book's `locale`), and the text of `explain`. In ru-RU they are Russian, with the formula's functions, separators, booleans and errors as ru-RU writes them: `Ожидалась ), а формула закончилась`, `Функция ОКРУГЛ принимает 2 аргумента, а указано 3`, `Нельзя изменить часть массива План!C1 (C1:C3)`, and `explain` shows `'План'!B1 = 420  ← ОКРУГЛ(СУММ(A1:A2)*1,2;0)` over `'План'!A1:A2 (2 ячейки)`; its nodes keep the stored text. Codes, positions and the English messages are as before.
+
+Added:
+
+- A locale file has `messages`, the catalog of the 75 messages for people, each a function of its parameters (plural forms and the locale's words need more than a template); a locale without its own text of a message takes en-US's (`docs/locale.md`). The ru-RU catalog adds 2.9 KB gzipped to a bundle.
+
+Still in English: `validateFormula`, which has no locale, the reasons of cell errors in `issues`, the checks of names and `InputError`. In `xlcalc/unstable/internal`, `FunctionSpec.counts` is an object (`{ min, max, parity, or }`) instead of text.
+
 ## 0.12.0 (2026-10-10)
 
 Internal release; not published to npm. What a window over a sheet needs, without the whole book.

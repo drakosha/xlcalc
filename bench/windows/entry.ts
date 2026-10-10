@@ -1,8 +1,9 @@
 /**
  * Typed text in Excel for Windows: the Mac step's books (`entryBook`, `bench/coverage/entry.ts`), each case's text typed
  * into its cell through `Formula2Local`, as Excel 365 takes typed text in the user's language; then what each cell shows,
- * its format codes and its prefix character are read, and the book is saved, its file read back for what each cell
- * holds. The answers go to `test/excel/win/entry/[<tag>/]<set>.json`, with Excel's automatic percent entry in `meta`.
+ * its format codes, its prefix character and its value (`Value2`) are read, and the book is saved, its file read back
+ * for what each cell holds. The answers go to `test/excel/win/entry/[<tag>/]<set>.json`, with Excel's automatic percent
+ * entry in `meta`.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
@@ -36,15 +37,16 @@ export async function stepEntry(set: string, tag: Tag, e: WinEnv): Promise<void>
     writeFileSync(f, data)
     const cells = part.map((_, i) => `A${i + 1}`)
     const typed = part.map((c, i) => ({ do: 'set', sheet: 'S', cell: cells[i], kind: 'l2', value: c.text }))
-    return { file: f, steps: [...typed, { do: 'calc' }, { do: 'entry', sheet: 'S', cells }, { do: 'autoPercent' }, { do: 'saveAs' }] }
+    return { file: f, steps: [...typed, { do: 'calc' }, { do: 'entry', sheet: 'S', cells }, { do: 'autoPercent' }, { do: 'saveAs' }, { do: 'values', sheet: 'S', range: `A1:A${part.length}` }] }
   }
-  const results: [EntryCase[], string[], [string, string, string, string][], Uint8Array][] = []
+  const results: [EntryCase[], string[], [string, string, string, string, unknown][], Uint8Array][] = []
   await inJobs(`entry-${set}-${tag}`, parts, book, (part, a, cutShort) => {
     if (a && 'answers' in a && a.saved) {
       const n = part.length
       const refused = a.answers.slice(0, n).map((x) => (x && typeof x === 'object' && 'error' in x ? String((x as { error: string }).error) : ''))
       autoPercent = a.answers[n + 2]
-      results.push([part, refused, a.answers[n + 1] as [string, string, string, string][], a.saved])
+      const values = a.answers[n + 4] as unknown[][]
+      results.push([part, refused, (a.answers[n + 1] as [string, string, string, string][]).map((x, i) => [...x, values[i][0]]), a.saved])
       return []
     }
     if (!a && cutShort) return [part]

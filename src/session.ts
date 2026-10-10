@@ -270,6 +270,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const old = yield* ready()
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
+      // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
+      if (op.op === 'hideSheet' || op.op === 'unhideSheet') {
+        const before = old.input.sheets.slice()
+        old.input.sheets.splice(0, old.input.sheets.length, ...r.book.sheets)
+        const backs = r.book.sheets.map((x, i) => sheetBack(i, x, before[i])).filter((x) => x !== null)
+        if (backs.length) keep(() => ({ kind: 'layout', call: 'restructure', sheets: backs, size: layoutSize(backs) }))
+        return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: [] }
+      }
       // the operation as it was given, kept for its geometry: the caller's object may change
       const kept = JSON.parse(JSON.stringify(op)) as StructureOp
       // the simple way: the state is built again from the new book

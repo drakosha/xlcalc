@@ -1,9 +1,9 @@
 /**
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
- * workbook, its sheets with their tables, notes and hyperlinks, styles, shared strings, the dynamic array metadata when
- * there are formulas, the date system and iterative calculation, and the book's locale as a custom document property
- * (xlsx has no place for it). A formula file asks Excel to compute the book on opening, so Excel shows its own values
- * over the ones written.
+ * workbook, its sheets (hidden ones with their state, the first visible one active) with their tables, notes and
+ * hyperlinks, styles, shared strings, the dynamic array metadata when there are formulas, the date system and iterative
+ * calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula file asks Excel
+ * to compute the book on opening, so Excel shows its own values over the ones written.
  */
 import type { BookInput, ComputeResult } from '../../contract.js'
 import { epochOf } from '../../dates.js'
@@ -142,6 +142,8 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   const filterTables = book.sheets.map((s) => (s.filtered ? s.tables?.find((t) => t.headers !== false)?.name : undefined))
   // the notes' VML shape ids, in blocks of 1,024 through the book
   let noteBlock = 1
+  // Excel shows the active sheet, which is never a hidden one
+  const active = book.sheets.findIndex((s) => !s.hidden)
   const sheets = book.sheets.map((s, i) => {
     const w = writeSheet(s, i, {
       styles,
@@ -165,6 +167,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
       epoch: epochOf(book.dateSystem),
       ...(filterTables[i] ? { filterTable: filterTables[i] } : {}),
       noteBlock,
+      active: i === active,
     })
     if (w.notes) noteBlock = nextBlock(noteBlock, w.notes.count)
     return w
@@ -211,11 +214,11 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
-  const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')
+  const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${s.hidden === 'very' ? 'veryHidden' : 'hidden'}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {
