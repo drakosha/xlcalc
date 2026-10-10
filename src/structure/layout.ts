@@ -79,16 +79,15 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
 
 /**
  * Frozen panes after the lines move: their split is the edge between two lines, which lines inserted above it push
- * on and deleted ones above it draw back; a split with no frozen line left is gone (the struct set `parts-held`).
+ * on and deleted ones above it draw back, but not past the first line: with every frozen line deleted the first one is
+ * frozen (the parts sets `struct-held` and `frozen-held`).
  */
 export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: number, n: number): FrozenPanes | undefined {
   const key = axis === 'r' ? 'rows' : 'columns'
   const k = frozen?.[key]
   if (k === undefined || at >= k) return frozen
-  const next = n > 0 ? Math.min(k + n, LIMIT[axis] - 1) : k - (Math.min(at - n, k) - at)
-  const { [key]: _, ...rest } = frozen!
-  const out: FrozenPanes = next > 0 ? { ...rest, [key]: next } : rest
-  return Object.keys(out).length ? out : undefined
+  const next = n > 0 ? Math.min(k + n, LIMIT[axis] - 1) : Math.max(1, k - (Math.min(at - n, k) - at))
+  return { ...frozen, [key]: next }
 }
 
 /**

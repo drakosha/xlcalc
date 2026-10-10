@@ -1,0 +1,164 @@
+{
+ "delete-rows-1-6": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "delete-rows-2-10": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "delete-rows-3-4": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 2,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "delete-cols-a-d": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 3,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "delete-col-b": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 3,
+    "columns": 1
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "insert-rows-1x3": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 6,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "insert-cols-b-x2": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 3,
+    "columns": 4
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "t-delete-row-1": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 3,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ },
+ "t-delete-col-a": {
+  "S": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 3,
+    "columns": 2
+   }
+  },
+  "T": {
+   "notes": {},
+   "links": {},
+   "frozen": {
+    "rows": 1,
+    "columns": 1
+   }
+  }
+ }
+}
