@@ -136,3 +136,12 @@ export const PREDICTED: Readonly<Record<string, Val>> = {
   'NUMBERVALUE#4': n(0),
   'NUMBERVALUE#5': n(0),
 }
+
+/**
+ * The predictions Excel for Mac did not confirm: in en-US `$` with `%` is no number (`$1.1%` is text, as `1,1 ₽%` is in
+ * ru-RU), and NUMBERVALUE divides by 100 for each `%` in turn (`"1.1%%"` is 1.1/100/100, one bit above 1.1/10000).
+ */
+export const MISSED: readonly string[] = ['VALUE#10', 'operators#10', 'ABS#10', 'NUMBERVALUE#5']
+
+/** The ru-RU predictions Excel for Mac ru-RU did not confirm: NUMBERVALUE's `%%`, as in en-US. */
+export const RU_MISSED: readonly string[] = ['NUMBERVALUE#5']

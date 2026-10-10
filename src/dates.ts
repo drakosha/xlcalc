@@ -282,7 +282,8 @@ export function unwrap(text: string): { s: string; paren: boolean; percent: bool
 
 /**
  * Number text as Excel en-US reads it in VALUE, in arithmetic and in numeric arguments: sign, `$`, parentheses,
- * commas, exponent, one `%` at either end, `1 1/2`, spaces around it. Null if it is none (dates and times are read apart).
+ * commas, exponent, one `%` at either end (not with `$`: `$1.1%` is text, the set `pct-text`), `1 1/2`, spaces around
+ * it. Null if it is none (dates and times are read apart).
  */
 export function enNumber(text: string): number | null {
   const t = trimSpaces(text)
@@ -292,7 +293,7 @@ export function enNumber(text: string): number | null {
   const sign = /^([+-]?) *(\$?) *([+-]?) *(.*)$/s.exec(s)!
   if (sign[1] && sign[3]) return null
   const negative = (sign[1] || sign[3]) === '-'
-  if (paren && negative) return null
+  if ((paren && negative) || (sign[2] && percent)) return null
   const body = sign[4]
   const exp = /^(.*?)([eE][+-]?\d+)$/.exec(body)
   const mant = exp ? exp[1] : body
