@@ -2,7 +2,8 @@
  * Threads of comments put into a written file by hand, as Excel 365 writes them: neither Excel's AppleScript nor Excel
  * 2024's COM makes them (the latter answers that its object model has none). A sheet's threads go to a threaded comments
  * part, their authors to the book's persons part, and each thread's cell gets Excel's placeholder note for readers
- * without threads (author `tc={id}`), which the writer writes with its VML drawing.
+ * without threads (author `tc={id}`), which the writer writes with its VML drawing and which is tied to its thread by its
+ * uid.
  */
 import type { BookInput } from '../../../src/contract.js'
 import { writeXlsx } from '../../../src/xlsx.js'
@@ -46,6 +47,13 @@ export async function threadedFile(book: BookInput, threads: ThreadSpec[]): Prom
       t.comments.map((c, j) => `<threadedComment ref="${t.cell}" dT="2026-10-10T10:${String(j).padStart(2, '0')}:00.00" personId="${guid(1, people.indexOf(c.author) + 1)}" id="${j ? guid(3, (k + 1) * 100 + j) : guid(2, k + 1)}"${j ? ` parentId="${guid(2, k + 1)}"` : ''}><text>${escapeText(c.text)}</text></threadedComment>`),
     )
     files.set(`xl/threadedComments/${part}`, `${HEAD}<ThreadedComments xmlns="${NS}" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${items.join('')}</ThreadedComments>`)
+    // Excel ties a placeholder note to its thread by the note's uid, the thread's id
+    const comments = `xl/comments${i + 1}.xml`
+    const authors = [...(await text(comments)).matchAll(/<author>([^<]*)<\/author>|<author\/>/g)].map((m) => m[1] ?? '')
+    const tied = (await text(comments))
+      .replace('<comments xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"', '$& xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="xr" xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision"')
+      .replace(/<comment ref="([A-Z]+\d+)" authorId="(\d+)"/g, (m, _ref: string, id: string) => (authors[Number(id)].startsWith('tc=') ? `${m} xr:uid="${authors[Number(id)].slice(3)}"` : m))
+    files.set(comments, tied)
     const rels = `xl/worksheets/_rels/sheet${i + 1}.xml.rels`
     files.set(rels, (await text(rels)).replace('</Relationships>', `<Relationship Id="rIdT1" Type="${REL}/threadedComment" Target="../threadedComments/${part}"/></Relationships>`))
   }
