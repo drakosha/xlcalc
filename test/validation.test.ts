@@ -6,6 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, createInlineCalc, InputError, openSession, restructure, type BookInput, type DataValidation, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
+import { pool } from './fixtures/pool.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -161,7 +162,12 @@ describe.each(['closures', 'eval'] as Execution[])('data validation in a session
     expect(compute(s.book(), { clock, execution }).hash).toBe(s.hash())
   })
 
-  it('an inline session gives the same', async () => {
+  it('an inline session and a session in a thread give the same', async () => {
+    const threads = await pool({ threads: 1 })
+    const t = await threads.openSession(book(), { clock, execution })
+    expect((await t.validation('S', 'C2'))!.list).toEqual([{ value: 'Yes', text: 'Yes' }, { value: 'No', text: 'No' }])
+    expect(await t.validateEntry('S', 'D2', { value: 9 })).toEqual({ ok: true })
+    await threads.close()
     const calc = createInlineCalc()
     const s = await calc.openSession(book(), { clock, execution })
     expect((await s.validation('S', 'F3'))!.list).toEqual([{ value: 'apple', text: 'apple' }, { value: 1.5, text: '1.50' }, { value: 45658, text: '01.01.2025' }])
