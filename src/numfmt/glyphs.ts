@@ -47,6 +47,9 @@ export const columnPoints = (w: number | undefined): number => (w === undefined 
 /** The room for text in a cell of `points`: the column less its padding. */
 export const room = (points: number): number => points - 5
 
+/** The xlsx width of the narrowest column with `points` of room, in 256ths of a digit as Excel writes it; 255 at most. */
+export const widthFor = (points: number): number => Math.min(255, Math.floor(((points + 5) * 256) / DIGIT) / 256)
+
 /** Excel shows at most 255 characters of a formatted number; `#` fills the cell instead. */
 export const MAX_SHOWN = 255
 

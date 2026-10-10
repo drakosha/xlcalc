@@ -7,7 +7,7 @@ import type { ErrorCode } from '../../contract.js'
 import { textOrder } from '../../collate.js'
 import { errorWords } from '../../criteria.js'
 import { inSystem, parseDateWith, textReaders } from '../../dates.js'
-import { displayWith, formatWith, generalText, styleIn, type Names } from '../../numfmt.js'
+import { displayWith, formatWith, generalText, shownWidth, styleIn, type Names } from '../../numfmt.js'
 import { ERROR_TEXT } from '../../syntax.js'
 import { coercions, compareWith, operatorOrder } from '../../values.js'
 import type { Rules } from '../rules.js'
@@ -49,6 +49,7 @@ export function regionalRules(locale: Locale, data: RegionalData, clock: RulesCl
     numberText,
     formatText: (value, format) => formatWith(value, format, text),
     display: (value, format, space) => displayWith(value, format, cell, space),
+    need: (value, format) => shownWidth(value, format, cell),
     compare,
     compareOp: operatorOrder(compare),
     errorText: (code: ErrorCode) => locale.errors[ERROR_TEXT[code]] ?? ERROR_TEXT[code],

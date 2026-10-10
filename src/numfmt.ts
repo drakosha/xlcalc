@@ -7,7 +7,7 @@
 import type { CellDisplay, CellValue, NumberFormat } from './contract.js'
 import { formatDate } from './numfmt/date.js'
 import { generalFit } from './numfmt/general.js'
-import { glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
+import { DIGIT, glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
 import { formatNumber } from './numfmt/number.js'
 import { EN_CODES, parseFormat, type Codes, type Section } from './numfmt/parse.js'
 import { choose, kind, textSection } from './numfmt/select.js'
@@ -15,7 +15,7 @@ import { FILL, plain, type Style } from './numfmt/style.js'
 
 export { builtinCodes, EN_BUILTIN, isBuiltin } from './numfmt/builtin.js'
 export { generalFormat, generalText } from './numfmt/general.js'
-export { columnPoints, room } from './numfmt/glyphs.js'
+export { columnPoints, room, widthFor } from './numfmt/glyphs.js'
 export { EN_CODES, type Codes } from './numfmt/parse.js'
 export { EN_NAMES, styleIn, type Names, type Style } from './numfmt/style.js'
 
@@ -129,4 +129,24 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
   if (text === undefined && general === undefined) return { text: hashes(space) }
   const shown = general !== undefined ? generalFit(general, space).replace('.', style.decimal) : (filled(text!, space) ?? hashes(space))
   return sec?.color ? { text: shown, color: sec.color } : { text: shown }
+}
+
+/**
+ * The points of text a cell shows whole, as `displayWith` lays it out with all the room it needs (Excel's AutoFit):
+ * the text without its fills, General at its full length (a digit per character, a leading minus by its width); null
+ * for a blank and for a number its section cannot show, which shows `#` in any width.
+ */
+export function shownWidth(value: CellValue, format: NumberFormat | undefined, style: Style): number | null {
+  if (value === null) return null
+  if (typeof value === 'object') return textWidth(style.error(value.error))
+  const fmt = typeof format === 'number' ? style.builtin(format) : format
+  const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
+  if (typeof value !== 'number') {
+    const sec = secs && textSection(secs)
+    const word = typeof value === 'boolean' ? style.bool(value) : value
+    return textWidth(unfilled(sec ? asText(sec, word, style) : word))
+  }
+  const { text, general } = secs ? byChoice(value, secs, style) : { general: value }
+  if (general !== undefined) return (general < 0 ? glyph('-') : 0) + DIGIT * style.general(Math.abs(general)).length
+  return text === undefined ? null : textWidth(unfilled(text))
 }
