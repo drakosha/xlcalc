@@ -292,7 +292,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       // AutoFit becomes the widths it sets
       const checked = fitEdits(s, checkLayoutEdits(edits, sheetIndex(s), styleCount(s)))
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
-      const next = applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
+      // the new sheets, put into the book by `relayout`
+      const next = applyLayout({ ...s.input, sheets: s.input.sheets.slice() }, checked, (name) => sheetIndex(s)(name)!)
       const [out, before] = yield* relayout(s, next, shown)
       if (edits.length) keep(() => layoutStep('setLayout', before, next))
       return out
