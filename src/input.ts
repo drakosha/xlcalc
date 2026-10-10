@@ -381,7 +381,7 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
 }
 
 /** A tag of the package's locales. */
-function checkLocale(v: unknown, path: string) {
+export function checkLocale(v: unknown, path: string) {
   if (!LOCALE_FILES.has(checkString(v, path))) throw new InputError(path, `unknown locale ${JSON.stringify(v)} (expected ${[...LOCALE_FILES.keys()].join(', ')})`)
 }
 
