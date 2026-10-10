@@ -1,0 +1,3926 @@
+{
+ "day": "2026-10-10",
+ "kinds": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A1 A10 A11 A2 A3 A4 A5 A6 A7 A8 A9",
+     "formulas": [
+      "3",
+      "$Z$1"
+     ],
+     "operator": "between",
+     "stopIfTrue": true,
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "bold": false,
+       "color": "#9C0006"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "B1 B10 B11 B2 B3 B4 B5 B6 B7 B8 B9",
+     "formula": "AND($B1>2,ISODD($B1))",
+     "style": {
+      "border": {
+       "bottom": {
+        "color": "#FF0000",
+        "style": "thin"
+       },
+       "top": {
+        "style": "dashed"
+       }
+      },
+      "font": {
+       "bold": true,
+       "underline": "double"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "font": {
+       "italic": true,
+       "strike": true
+      }
+     },
+     "text": "1",
+     "type": "containsText"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "text": "a\"b",
+     "type": "beginsWith"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "text": "z",
+     "type": "endsWith"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "format": "0.0"
+     },
+     "text": "q",
+     "type": "notContainsText"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "period": "lastMonth",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "timePeriod"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "containsBlanks"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "format": "0.00%"
+     },
+     "type": "notContainsErrors"
+    },
+    {
+     "bottom": true,
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "percent": true,
+     "rank": 30,
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "top10"
+    },
+    {
+     "below": true,
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "stdDev": 2,
+     "style": {
+      "font": {
+       "color": "#0070C0"
+      }
+     },
+     "type": "aboveAverage"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "uniqueValues"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "format": "#,##0.00 \"kg\""
+     },
+     "type": "duplicateValues"
+    },
+    {
+     "cells": "G1 G10 G11 G2 G3 G4 G5 G6 G7 G8 G9",
+     "points": [
+      {
+       "color": "#5A8AC6",
+       "value": {
+        "type": "num",
+        "value": "0"
+       }
+      },
+      {
+       "color": "#FCFCFF",
+       "value": {
+        "type": "percentile",
+        "value": "40"
+       }
+      },
+      {
+       "color": "#F8696B",
+       "value": {
+        "type": "formula",
+        "value": "$Z$1*2"
+       }
+      }
+     ],
+     "type": "colorScale"
+    },
+    {
+     "border": "#638EC6",
+     "cells": "H1 H10 H11 H2 H3 H4 H5 H6 H7 H8 H9",
+     "color": "#638EC6",
+     "max": {
+      "type": "autoMax"
+     },
+     "min": {
+      "type": "autoMin"
+     },
+     "negativeBorder": "#FF0000",
+     "negativeColor": "#FF0000",
+     "type": "dataBar"
+    },
+    {
+     "axis": "middle",
+     "axisColor": "#7F7F7F",
+     "cells": "I1 I10 I11 I2 I3 I4 I5 I6 I7 I8 I9",
+     "color": "#FFB628",
+     "direction": "rightToLeft",
+     "gradient": false,
+     "max": {
+      "type": "percentile",
+      "value": "90"
+     },
+     "maxLength": 95,
+     "min": {
+      "type": "num",
+      "value": "-5"
+     },
+     "minLength": 5,
+     "showValue": false,
+     "type": "dataBar"
+    },
+    {
+     "cells": "J1 J10 J11 J2 J3 J4 J5 J6 J7 J8 J9",
+     "color": "#63C384",
+     "excel2007": true,
+     "max": {
+      "type": "max"
+     },
+     "min": {
+      "type": "min"
+     },
+     "type": "dataBar"
+    },
+    {
+     "cells": "K1 K10 K11 K2 K3 K4 K5 K6 K7 K8 K9",
+     "icons": "5Quarters",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "20"
+       }
+      },
+      {
+       "gte": false,
+       "value": {
+        "type": "num",
+        "value": "5"
+       }
+      },
+      {
+       "value": {
+        "type": "percentile",
+        "value": "60"
+       }
+      },
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Z$1"
+       }
+      }
+     ],
+     "reverse": true,
+     "type": "iconSet"
+    },
+    {
+     "cells": "L1 L10 L11 L2 L3 L4 L5 L6 L7 L8 L9",
+     "icons": "3Stars",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "33"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "67"
+       }
+      }
+     ],
+     "showValue": false,
+     "type": "iconSet"
+    },
+    {
+     "cells": "M1 M10 M11 M2 M3 M4 M5 M6 M7 M8 M9",
+     "icons": "3TrafficLights1",
+     "points": [
+      {
+       "icon": {
+        "index": 0,
+        "set": "3Flags"
+       },
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "icon": null,
+       "value": {
+        "type": "num",
+        "value": "4"
+       }
+      },
+      {
+       "icon": {
+        "index": 4,
+        "set": "5Boxes"
+       },
+       "value": {
+        "type": "num",
+        "value": "8"
+       }
+      }
+     ],
+     "type": "iconSet"
+    },
+    {
+     "cells": "N1 N10 N11 N2 N3 N4 N5 N6 N7 N8 N9",
+     "formula": "$N1>'Other sheet'!$A$1",
+     "style": {
+      "fill": {
+       "color": "#FFC000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "O1 O10 O11 O2 O3 O4 O5 O6 O7 O8 O9",
+     "formulas": [
+      "'Other sheet'!$A$2"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "font": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "cellIs"
+    }
+   ],
+   "Other sheet": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "a1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "D1": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E1": {
+     "text": "1",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F1": {
+     "text": "1",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G1": {
+     "text": "1",
+     "fill": "#82A6D4",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "a\"bc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E2": {
+     "text": "2",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F2": {
+     "text": "2",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G2": {
+     "text": "2",
+     "fill": "#ABC3E2",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C3": {
+     "text": "xyz",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F3": {
+     "text": "3",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G3": {
+     "text": "3",
+     "fill": "#D3DFF0",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "q",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F4": {
+     "text": "4",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G4": {
+     "text": "4",
+     "fill": "#FCFCFF",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C5": {
+     "text": "b12",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "D5": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F5": {
+     "text": "5",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G5": {
+     "text": "5",
+     "fill": "#FCF0F3",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F6": {
+     "text": "6",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G6": {
+     "text": "6",
+     "fill": "#FCE4E7",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A7": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C7": {
+     "text": "ab",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D7": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F7": {
+     "text": "7",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G7": {
+     "text": "7",
+     "fill": "#FBD8DA",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A8": {
+     "text": "8",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "8",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "z",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D8": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E8": {
+     "text": "8",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F8": {
+     "text": "8",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G8": {
+     "text": "8",
+     "fill": "#FBCBCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C9": {
+     "text": "Q1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "D9": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F9": {
+     "text": "9",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G9": {
+     "text": "9",
+     "fill": "#FBBFC2",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D10": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F10": {
+     "text": "10",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G10": {
+     "text": "10",
+     "fill": "#FAB3B5",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A11": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B11": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C11": {
+     "text": "a\"b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D11": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "E11": {
+     "text": "-2",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "F11": {
+     "text": "-2",
+     "fill": "#C6EFCE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "G11": {
+     "text": "-2",
+     "fill": "#5A8AC6",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "wide": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A:A",
+     "formula": "ISNUMBER(A1)",
+     "style": {
+      "fill": {
+       "color": "#DDEBF7"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "3:4",
+     "formula": "MOD(COLUMN(),2)=0",
+     "style": {
+      "font": {
+       "bold": true
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "C2 C3 C4 E6 G1 G2 H1 H2",
+     "formulas": [
+      "C2"
+     ],
+     "operator": "equal",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J1",
+     "formulas": [
+      "1"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J2",
+     "formulas": [
+      "2"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J3",
+     "formulas": [
+      "3"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J4",
+     "formulas": [
+      "4"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J5",
+     "formulas": [
+      "5"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J6",
+     "formulas": [
+      "6"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J7",
+     "formulas": [
+      "7"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J8",
+     "formulas": [
+      "8"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J9",
+     "formulas": [
+      "9"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J10",
+     "formulas": [
+      "10"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J11",
+     "formulas": [
+      "11"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J12",
+     "formulas": [
+      "12"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J13",
+     "formulas": [
+      "13"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J14",
+     "formulas": [
+      "14"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J15",
+     "formulas": [
+      "15"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J16",
+     "formulas": [
+      "16"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J17",
+     "formulas": [
+      "17"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J18",
+     "formulas": [
+      "18"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J19",
+     "formulas": [
+      "19"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J20",
+     "formulas": [
+      "20"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J21",
+     "formulas": [
+      "21"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J22",
+     "formulas": [
+      "22"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J23",
+     "formulas": [
+      "23"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J24",
+     "formulas": [
+      "24"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J25",
+     "formulas": [
+      "25"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J26",
+     "formulas": [
+      "26"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J27",
+     "formulas": [
+      "27"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J28",
+     "formulas": [
+      "28"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J29",
+     "formulas": [
+      "29"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J30",
+     "formulas": [
+      "30"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J31",
+     "formulas": [
+      "31"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J32",
+     "formulas": [
+      "32"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J33",
+     "formulas": [
+      "33"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J34",
+     "formulas": [
+      "34"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J35",
+     "formulas": [
+      "35"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J36",
+     "formulas": [
+      "36"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J37",
+     "formulas": [
+      "37"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J38",
+     "formulas": [
+      "38"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J39",
+     "formulas": [
+      "39"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J40",
+     "formulas": [
+      "40"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J41",
+     "formulas": [
+      "41"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J42",
+     "formulas": [
+      "42"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J43",
+     "formulas": [
+      "43"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J44",
+     "formulas": [
+      "44"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J45",
+     "formulas": [
+      "45"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J46",
+     "formulas": [
+      "46"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J47",
+     "formulas": [
+      "47"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J48",
+     "formulas": [
+      "48"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J49",
+     "formulas": [
+      "49"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J50",
+     "formulas": [
+      "50"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J51",
+     "formulas": [
+      "51"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J52",
+     "formulas": [
+      "52"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J53",
+     "formulas": [
+      "53"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J54",
+     "formulas": [
+      "54"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J55",
+     "formulas": [
+      "55"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J56",
+     "formulas": [
+      "56"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J57",
+     "formulas": [
+      "57"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J58",
+     "formulas": [
+      "58"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J59",
+     "formulas": [
+      "59"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "J60",
+     "formulas": [
+      "60"
+     ],
+     "operator": "equal",
+     "style": {
+      "font": {
+       "color": "#C00000"
+      }
+     },
+     "type": "cellIs"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "J1": {
+     "text": "1",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J2": {
+     "text": "2",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J3": {
+     "text": "3",
+     "fill": null,
+     "font": "#C00000",
+     "bold": true,
+     "italic": false
+    },
+    "J4": {
+     "text": "4",
+     "fill": null,
+     "font": "#C00000",
+     "bold": true,
+     "italic": false
+    },
+    "J5": {
+     "text": "5",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J6": {
+     "text": "6",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J7": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "J8": {
+     "text": "8",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J9": {
+     "text": "9",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J10": {
+     "text": "10",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J11": {
+     "text": "11",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J12": {
+     "text": "12",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J13": {
+     "text": "13",
+     "fill": null,
+     "font": "#C00000",
+     "bold": false,
+     "italic": false
+    },
+    "J14": {
+     "text": "0",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "kinds-insert-row": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A1 A10 A11 A12 A13 A2 A3 A4 A5 A6 A7 A8 A9",
+     "formulas": [
+      "3",
+      "$Z$1"
+     ],
+     "operator": "between",
+     "stopIfTrue": true,
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "bold": false,
+       "color": "#9C0006"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "B1 B10 B11 B12 B13 B2 B3 B4 B5 B6 B7 B8 B9",
+     "formula": "AND($B1>2,ISODD($B1))",
+     "style": {
+      "border": {
+       "bottom": {
+        "color": "#FF0000",
+        "style": "thin"
+       },
+       "top": {
+        "style": "dashed"
+       }
+      },
+      "font": {
+       "bold": true,
+       "underline": "double"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "C1 C10 C11 C12 C13 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "font": {
+       "italic": true,
+       "strike": true
+      }
+     },
+     "text": "1",
+     "type": "containsText"
+    },
+    {
+     "cells": "C1 C10 C11 C12 C13 C2 C3 C4 C5 C6 C7 C8 C9",
+     "text": "a\"b",
+     "type": "beginsWith"
+    },
+    {
+     "cells": "C1 C10 C11 C12 C13 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "text": "z",
+     "type": "endsWith"
+    },
+    {
+     "cells": "C1 C10 C11 C12 C13 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "format": "0.0"
+     },
+     "text": "q",
+     "type": "notContainsText"
+    },
+    {
+     "cells": "D1 D10 D11 D12 D13 D2 D3 D4 D5 D6 D7 D8 D9",
+     "period": "lastMonth",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "timePeriod"
+    },
+    {
+     "cells": "D1 D10 D11 D12 D13 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "containsBlanks"
+    },
+    {
+     "cells": "D1 D10 D11 D12 D13 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "format": "0.00%"
+     },
+     "type": "notContainsErrors"
+    },
+    {
+     "bottom": true,
+     "cells": "E1 E10 E11 E12 E13 E2 E3 E4 E5 E6 E7 E8 E9",
+     "percent": true,
+     "rank": 30,
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "top10"
+    },
+    {
+     "below": true,
+     "cells": "E1 E10 E11 E12 E13 E2 E3 E4 E5 E6 E7 E8 E9",
+     "stdDev": 2,
+     "style": {
+      "font": {
+       "color": "#0070C0"
+      }
+     },
+     "type": "aboveAverage"
+    },
+    {
+     "cells": "F1 F10 F11 F12 F13 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "uniqueValues"
+    },
+    {
+     "cells": "F1 F10 F11 F12 F13 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "format": "#,##0.00 \"kg\""
+     },
+     "type": "duplicateValues"
+    },
+    {
+     "cells": "G1 G10 G11 G12 G13 G2 G3 G4 G5 G6 G7 G8 G9",
+     "points": [
+      {
+       "color": "#5A8AC6",
+       "value": {
+        "type": "num",
+        "value": "0"
+       }
+      },
+      {
+       "color": "#FCFCFF",
+       "value": {
+        "type": "percentile",
+        "value": "40"
+       }
+      },
+      {
+       "color": "#F8696B",
+       "value": {
+        "type": "formula",
+        "value": "$Z$1*2"
+       }
+      }
+     ],
+     "type": "colorScale"
+    },
+    {
+     "border": "#638EC6",
+     "cells": "H1 H10 H11 H12 H13 H2 H3 H4 H5 H6 H7 H8 H9",
+     "color": "#638EC6",
+     "max": {
+      "type": "autoMax"
+     },
+     "min": {
+      "type": "autoMin"
+     },
+     "negativeBorder": "#FF0000",
+     "negativeColor": "#FF0000",
+     "type": "dataBar"
+    },
+    {
+     "axis": "middle",
+     "axisColor": "#7F7F7F",
+     "cells": "I1 I10 I11 I12 I13 I2 I3 I4 I5 I6 I7 I8 I9",
+     "color": "#FFB628",
+     "direction": "rightToLeft",
+     "gradient": false,
+     "max": {
+      "type": "percentile",
+      "value": "90"
+     },
+     "maxLength": 95,
+     "min": {
+      "type": "num",
+      "value": "-5"
+     },
+     "minLength": 5,
+     "showValue": false,
+     "type": "dataBar"
+    },
+    {
+     "cells": "J1 J10 J11 J12 J13 J2 J3 J4 J5 J6 J7 J8 J9",
+     "color": "#63C384",
+     "excel2007": true,
+     "max": {
+      "type": "max"
+     },
+     "min": {
+      "type": "min"
+     },
+     "type": "dataBar"
+    },
+    {
+     "cells": "K1 K10 K11 K12 K13 K2 K3 K4 K5 K6 K7 K8 K9",
+     "icons": "5Quarters",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "20"
+       }
+      },
+      {
+       "gte": false,
+       "value": {
+        "type": "num",
+        "value": "5"
+       }
+      },
+      {
+       "value": {
+        "type": "percentile",
+        "value": "60"
+       }
+      },
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Z$1"
+       }
+      }
+     ],
+     "reverse": true,
+     "type": "iconSet"
+    },
+    {
+     "cells": "L1 L10 L11 L12 L13 L2 L3 L4 L5 L6 L7 L8 L9",
+     "icons": "3Stars",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "33"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "67"
+       }
+      }
+     ],
+     "showValue": false,
+     "type": "iconSet"
+    },
+    {
+     "cells": "M1 M10 M11 M12 M13 M2 M3 M4 M5 M6 M7 M8 M9",
+     "icons": "3TrafficLights1",
+     "points": [
+      {
+       "icon": {
+        "index": 0,
+        "set": "3Flags"
+       },
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "icon": null,
+       "value": {
+        "type": "num",
+        "value": "4"
+       }
+      },
+      {
+       "icon": {
+        "index": 4,
+        "set": "5Boxes"
+       },
+       "value": {
+        "type": "num",
+        "value": "8"
+       }
+      }
+     ],
+     "type": "iconSet"
+    },
+    {
+     "cells": "N1 N10 N11 N12 N13 N2 N3 N4 N5 N6 N7 N8 N9",
+     "formula": "$N1>'Other sheet'!$A$1",
+     "style": {
+      "fill": {
+       "color": "#FFC000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "O1 O10 O11 O12 O13 O2 O3 O4 O5 O6 O7 O8 O9",
+     "formulas": [
+      "'Other sheet'!$A$2"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "font": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "cellIs"
+    }
+   ],
+   "Other sheet": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "a1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "a\"bc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C5": {
+     "text": "xyz",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "q",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A7": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C7": {
+     "text": "b12",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "A8": {
+     "text": "6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A9": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C9": {
+     "text": "ab",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A10": {
+     "text": "8",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "8",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "z",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A11": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B11": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "C11": {
+     "text": "Q1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "A12": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B12": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C12": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A13": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B13": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C13": {
+     "text": "a\"b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "kinds-delete-col": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A1 A10 A11 A2 A3 A4 A5 A6 A7 A8 A9",
+     "formulas": [
+      "3",
+      "$Y$1"
+     ],
+     "operator": "between",
+     "stopIfTrue": true,
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "bold": false,
+       "color": "#9C0006"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "B1 B10 B11 B2 B3 B4 B5 B6 B7 B8 B9",
+     "style": {
+      "font": {
+       "italic": true,
+       "strike": true
+      }
+     },
+     "text": "1",
+     "type": "containsText"
+    },
+    {
+     "cells": "B1 B10 B11 B2 B3 B4 B5 B6 B7 B8 B9",
+     "text": "a\"b",
+     "type": "beginsWith"
+    },
+    {
+     "cells": "B1 B10 B11 B2 B3 B4 B5 B6 B7 B8 B9",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "text": "z",
+     "type": "endsWith"
+    },
+    {
+     "cells": "B1 B10 B11 B2 B3 B4 B5 B6 B7 B8 B9",
+     "style": {
+      "format": "0.0"
+     },
+     "text": "q",
+     "type": "notContainsText"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "period": "lastMonth",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "timePeriod"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "containsBlanks"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "format": "0.00%"
+     },
+     "type": "notContainsErrors"
+    },
+    {
+     "bottom": true,
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "percent": true,
+     "rank": 30,
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "top10"
+    },
+    {
+     "below": true,
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "stdDev": 2,
+     "style": {
+      "font": {
+       "color": "#0070C0"
+      }
+     },
+     "type": "aboveAverage"
+    },
+    {
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "uniqueValues"
+    },
+    {
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "style": {
+      "format": "#,##0.00 \"kg\""
+     },
+     "type": "duplicateValues"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "points": [
+      {
+       "color": "#5A8AC6",
+       "value": {
+        "type": "num",
+        "value": "0"
+       }
+      },
+      {
+       "color": "#FCFCFF",
+       "value": {
+        "type": "percentile",
+        "value": "40"
+       }
+      },
+      {
+       "color": "#F8696B",
+       "value": {
+        "type": "formula",
+        "value": "$Y$1*2"
+       }
+      }
+     ],
+     "type": "colorScale"
+    },
+    {
+     "border": "#638EC6",
+     "cells": "G1 G10 G11 G2 G3 G4 G5 G6 G7 G8 G9",
+     "color": "#638EC6",
+     "max": {
+      "type": "autoMax"
+     },
+     "min": {
+      "type": "autoMin"
+     },
+     "negativeBorder": "#FF0000",
+     "negativeColor": "#FF0000",
+     "type": "dataBar"
+    },
+    {
+     "axis": "middle",
+     "axisColor": "#7F7F7F",
+     "cells": "H1 H10 H11 H2 H3 H4 H5 H6 H7 H8 H9",
+     "color": "#FFB628",
+     "direction": "rightToLeft",
+     "gradient": false,
+     "max": {
+      "type": "percentile",
+      "value": "90"
+     },
+     "maxLength": 95,
+     "min": {
+      "type": "num",
+      "value": "-5"
+     },
+     "minLength": 5,
+     "showValue": false,
+     "type": "dataBar"
+    },
+    {
+     "cells": "I1 I10 I11 I2 I3 I4 I5 I6 I7 I8 I9",
+     "color": "#63C384",
+     "excel2007": true,
+     "max": {
+      "type": "max"
+     },
+     "min": {
+      "type": "min"
+     },
+     "type": "dataBar"
+    },
+    {
+     "cells": "J1 J10 J11 J2 J3 J4 J5 J6 J7 J8 J9",
+     "icons": "5Quarters",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "20"
+       }
+      },
+      {
+       "gte": false,
+       "value": {
+        "type": "num",
+        "value": "5"
+       }
+      },
+      {
+       "value": {
+        "type": "percentile",
+        "value": "60"
+       }
+      },
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Y$1"
+       }
+      }
+     ],
+     "reverse": true,
+     "type": "iconSet"
+    },
+    {
+     "cells": "K1 K10 K11 K2 K3 K4 K5 K6 K7 K8 K9",
+     "icons": "3Stars",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "33"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "67"
+       }
+      }
+     ],
+     "showValue": false,
+     "type": "iconSet"
+    },
+    {
+     "cells": "L1 L10 L11 L2 L3 L4 L5 L6 L7 L8 L9",
+     "icons": "3TrafficLights1",
+     "points": [
+      {
+       "icon": {
+        "index": 0,
+        "set": "3Flags"
+       },
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "icon": null,
+       "value": {
+        "type": "num",
+        "value": "4"
+       }
+      },
+      {
+       "icon": {
+        "index": 4,
+        "set": "5Boxes"
+       },
+       "value": {
+        "type": "num",
+        "value": "8"
+       }
+      }
+     ],
+     "type": "iconSet"
+    },
+    {
+     "cells": "M1 M10 M11 M2 M3 M4 M5 M6 M7 M8 M9",
+     "formula": "$M1>'Other sheet'!$A$1",
+     "style": {
+      "fill": {
+       "color": "#FFC000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "N1 N10 N11 N2 N3 N4 N5 N6 N7 N8 N9",
+     "formulas": [
+      "'Other sheet'!$A$2"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "font": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "cellIs"
+    }
+   ],
+   "Other sheet": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "a1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "C1": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "a\"bc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "xyz",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "q",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "b12",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "C5": {
+     "text": "#N/A",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "",
+     "fill": "#D9D9D9",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A7": {
+     "text": "7",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "ab",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A8": {
+     "text": "8",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "B8": {
+     "text": "z",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C8": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A9": {
+     "text": "9",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B9": {
+     "text": "Q1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "C9": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A10": {
+     "text": "10",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B10": {
+     "text": "x",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C10": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A11": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B11": {
+     "text": "a\"b",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C11": {
+     "text": "#########",
+     "fill": "#FFEB9C",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ },
+ "kinds-move": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A10 A11 A6 A7 A8 A9 Q1 Q2 Q3 Q4 Q5",
+     "formulas": [
+      "3",
+      "$Z$1"
+     ],
+     "operator": "between",
+     "stopIfTrue": true,
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "bold": false,
+       "color": "#9C0006"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "C10 C11 C6 C7 C8 C9 S1 S2 S3 S4 S5",
+     "style": {
+      "font": {
+       "italic": true,
+       "strike": true
+      }
+     },
+     "text": "1",
+     "type": "containsText"
+    },
+    {
+     "cells": "C10 C11 C6 C7 C8 C9 S1 S2 S3 S4 S5",
+     "text": "a\"b",
+     "type": "beginsWith"
+    },
+    {
+     "cells": "C10 C11 C6 C7 C8 C9 S1 S2 S3 S4 S5",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "text": "z",
+     "type": "endsWith"
+    },
+    {
+     "cells": "C10 C11 C6 C7 C8 C9 S1 S2 S3 S4 S5",
+     "style": {
+      "format": "0.0"
+     },
+     "text": "q",
+     "type": "notContainsText"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "period": "lastMonth",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "timePeriod"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "containsBlanks"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "format": "0.00%"
+     },
+     "type": "notContainsErrors"
+    },
+    {
+     "bottom": true,
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "percent": true,
+     "rank": 30,
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "top10"
+    },
+    {
+     "below": true,
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "stdDev": 2,
+     "style": {
+      "font": {
+       "color": "#0070C0"
+      }
+     },
+     "type": "aboveAverage"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "uniqueValues"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "format": "#,##0.00 \"kg\""
+     },
+     "type": "duplicateValues"
+    },
+    {
+     "cells": "G1 G10 G11 G2 G3 G4 G5 G6 G7 G8 G9",
+     "points": [
+      {
+       "color": "#5A8AC6",
+       "value": {
+        "type": "num",
+        "value": "0"
+       }
+      },
+      {
+       "color": "#FCFCFF",
+       "value": {
+        "type": "percentile",
+        "value": "40"
+       }
+      },
+      {
+       "color": "#F8696B",
+       "value": {
+        "type": "formula",
+        "value": "$Z$1*2"
+       }
+      }
+     ],
+     "type": "colorScale"
+    },
+    {
+     "border": "#638EC6",
+     "cells": "H1 H10 H11 H2 H3 H4 H5 H6 H7 H8 H9",
+     "color": "#638EC6",
+     "max": {
+      "type": "autoMax"
+     },
+     "min": {
+      "type": "autoMin"
+     },
+     "negativeBorder": "#FF0000",
+     "negativeColor": "#FF0000",
+     "type": "dataBar"
+    },
+    {
+     "axis": "middle",
+     "axisColor": "#7F7F7F",
+     "cells": "I1 I10 I11 I2 I3 I4 I5 I6 I7 I8 I9",
+     "color": "#FFB628",
+     "direction": "rightToLeft",
+     "gradient": false,
+     "max": {
+      "type": "percentile",
+      "value": "90"
+     },
+     "maxLength": 95,
+     "min": {
+      "type": "num",
+      "value": "-5"
+     },
+     "minLength": 5,
+     "showValue": false,
+     "type": "dataBar"
+    },
+    {
+     "cells": "J1 J10 J11 J2 J3 J4 J5 J6 J7 J8 J9",
+     "color": "#63C384",
+     "excel2007": true,
+     "max": {
+      "type": "max"
+     },
+     "min": {
+      "type": "min"
+     },
+     "type": "dataBar"
+    },
+    {
+     "cells": "K1 K10 K11 K2 K3 K4 K5 K6 K7 K8 K9",
+     "icons": "5Quarters",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "20"
+       }
+      },
+      {
+       "gte": false,
+       "value": {
+        "type": "num",
+        "value": "5"
+       }
+      },
+      {
+       "value": {
+        "type": "percentile",
+        "value": "60"
+       }
+      },
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Z$1"
+       }
+      }
+     ],
+     "reverse": true,
+     "type": "iconSet"
+    },
+    {
+     "cells": "L1 L10 L11 L2 L3 L4 L5 L6 L7 L8 L9",
+     "icons": "3Stars",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "33"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "67"
+       }
+      }
+     ],
+     "showValue": false,
+     "type": "iconSet"
+    },
+    {
+     "cells": "M1 M10 M11 M2 M3 M4 M5 M6 M7 M8 M9",
+     "icons": "3TrafficLights1",
+     "points": [
+      {
+       "icon": {
+        "index": 0,
+        "set": "3Flags"
+       },
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "icon": null,
+       "value": {
+        "type": "num",
+        "value": "4"
+       }
+      },
+      {
+       "icon": {
+        "index": 4,
+        "set": "5Boxes"
+       },
+       "value": {
+        "type": "num",
+        "value": "8"
+       }
+      }
+     ],
+     "type": "iconSet"
+    },
+    {
+     "cells": "N1 N10 N11 N2 N3 N4 N5 N6 N7 N8 N9",
+     "formula": "$N1>'Other sheet'!$A$1",
+     "style": {
+      "fill": {
+       "color": "#FFC000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "O1 O10 O11 O2 O3 O4 O5 O6 O7 O8 O9",
+     "formulas": [
+      "'Other sheet'!$A$2"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "font": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "B10 B11 B6 B7 B8 B9 R1 R2 R3 R4 R5",
+     "formula": "AND($R1>2,ISODD($R1))",
+     "style": {
+      "border": {
+       "bottom": {
+        "color": "#FF0000",
+        "style": "thin"
+       },
+       "top": {
+        "style": "dashed"
+       }
+      },
+      "font": {
+       "bold": true,
+       "underline": "double"
+      }
+     },
+     "type": "expression"
+    }
+   ],
+   "Other sheet": []
+  },
+  "looks": {
+   "S": {
+    "Q1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "R1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "S1": {
+     "text": "a1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    },
+    "Q2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "R2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "S2": {
+     "text": "a\"bc",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "Q3": {
+     "text": "3",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "R3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "S3": {
+     "text": "xyz",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "Q4": {
+     "text": "4",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "R4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "S4": {
+     "text": "q",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "Q5": {
+     "text": "5",
+     "fill": "#FFC7CE",
+     "font": "#9C0006",
+     "bold": false,
+     "italic": false
+    },
+    "R5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": true,
+     "italic": false
+    },
+    "S5": {
+     "text": "b12",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": true
+    }
+   }
+  }
+ },
+ "kinds-rename": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A1 A10 A11 A2 A3 A4 A5 A6 A7 A8 A9",
+     "formulas": [
+      "3",
+      "$Z$1"
+     ],
+     "operator": "between",
+     "stopIfTrue": true,
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      },
+      "font": {
+       "bold": false,
+       "color": "#9C0006"
+      }
+     },
+     "type": "cellIs"
+    },
+    {
+     "cells": "B1 B10 B11 B2 B3 B4 B5 B6 B7 B8 B9",
+     "formula": "AND($B1>2,ISODD($B1))",
+     "style": {
+      "border": {
+       "bottom": {
+        "color": "#FF0000",
+        "style": "thin"
+       },
+       "top": {
+        "style": "dashed"
+       }
+      },
+      "font": {
+       "bold": true,
+       "underline": "double"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "font": {
+       "italic": true,
+       "strike": true
+      }
+     },
+     "text": "1",
+     "type": "containsText"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "text": "a\"b",
+     "type": "beginsWith"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "text": "z",
+     "type": "endsWith"
+    },
+    {
+     "cells": "C1 C10 C11 C2 C3 C4 C5 C6 C7 C8 C9",
+     "style": {
+      "format": "0.0"
+     },
+     "text": "q",
+     "type": "notContainsText"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "period": "lastMonth",
+     "style": {
+      "fill": {
+       "color": "#FFEB9C"
+      }
+     },
+     "type": "timePeriod"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "fill": {
+       "color": "#D9D9D9"
+      }
+     },
+     "type": "containsBlanks"
+    },
+    {
+     "cells": "D1 D10 D11 D2 D3 D4 D5 D6 D7 D8 D9",
+     "style": {
+      "format": "0.00%"
+     },
+     "type": "notContainsErrors"
+    },
+    {
+     "bottom": true,
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "percent": true,
+     "rank": 30,
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "top10"
+    },
+    {
+     "below": true,
+     "cells": "E1 E10 E11 E2 E3 E4 E5 E6 E7 E8 E9",
+     "stdDev": 2,
+     "style": {
+      "font": {
+       "color": "#0070C0"
+      }
+     },
+     "type": "aboveAverage"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "fill": {
+       "color": "#C6EFCE"
+      }
+     },
+     "type": "uniqueValues"
+    },
+    {
+     "cells": "F1 F10 F11 F2 F3 F4 F5 F6 F7 F8 F9",
+     "style": {
+      "format": "#,##0.00 \"kg\""
+     },
+     "type": "duplicateValues"
+    },
+    {
+     "cells": "G1 G10 G11 G2 G3 G4 G5 G6 G7 G8 G9",
+     "points": [
+      {
+       "color": "#5A8AC6",
+       "value": {
+        "type": "num",
+        "value": "0"
+       }
+      },
+      {
+       "color": "#FCFCFF",
+       "value": {
+        "type": "percentile",
+        "value": "40"
+       }
+      },
+      {
+       "color": "#F8696B",
+       "value": {
+        "type": "formula",
+        "value": "$Z$1*2"
+       }
+      }
+     ],
+     "type": "colorScale"
+    },
+    {
+     "border": "#638EC6",
+     "cells": "H1 H10 H11 H2 H3 H4 H5 H6 H7 H8 H9",
+     "color": "#638EC6",
+     "max": {
+      "type": "autoMax"
+     },
+     "min": {
+      "type": "autoMin"
+     },
+     "negativeBorder": "#FF0000",
+     "negativeColor": "#FF0000",
+     "type": "dataBar"
+    },
+    {
+     "axis": "middle",
+     "axisColor": "#7F7F7F",
+     "cells": "I1 I10 I11 I2 I3 I4 I5 I6 I7 I8 I9",
+     "color": "#FFB628",
+     "direction": "rightToLeft",
+     "gradient": false,
+     "max": {
+      "type": "percentile",
+      "value": "90"
+     },
+     "maxLength": 95,
+     "min": {
+      "type": "num",
+      "value": "-5"
+     },
+     "minLength": 5,
+     "showValue": false,
+     "type": "dataBar"
+    },
+    {
+     "cells": "J1 J10 J11 J2 J3 J4 J5 J6 J7 J8 J9",
+     "color": "#63C384",
+     "excel2007": true,
+     "max": {
+      "type": "max"
+     },
+     "min": {
+      "type": "min"
+     },
+     "type": "dataBar"
+    },
+    {
+     "cells": "K1 K10 K11 K2 K3 K4 K5 K6 K7 K8 K9",
+     "icons": "5Quarters",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "20"
+       }
+      },
+      {
+       "gte": false,
+       "value": {
+        "type": "num",
+        "value": "5"
+       }
+      },
+      {
+       "value": {
+        "type": "percentile",
+        "value": "60"
+       }
+      },
+      {
+       "value": {
+        "type": "formula",
+        "value": "$Z$1"
+       }
+      }
+     ],
+     "reverse": true,
+     "type": "iconSet"
+    },
+    {
+     "cells": "L1 L10 L11 L2 L3 L4 L5 L6 L7 L8 L9",
+     "icons": "3Stars",
+     "points": [
+      {
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "33"
+       }
+      },
+      {
+       "value": {
+        "type": "percent",
+        "value": "67"
+       }
+      }
+     ],
+     "showValue": false,
+     "type": "iconSet"
+    },
+    {
+     "cells": "M1 M10 M11 M2 M3 M4 M5 M6 M7 M8 M9",
+     "icons": "3TrafficLights1",
+     "points": [
+      {
+       "icon": {
+        "index": 0,
+        "set": "3Flags"
+       },
+       "value": {
+        "type": "percent",
+        "value": "0"
+       }
+      },
+      {
+       "icon": null,
+       "value": {
+        "type": "num",
+        "value": "4"
+       }
+      },
+      {
+       "icon": {
+        "index": 4,
+        "set": "5Boxes"
+       },
+       "value": {
+        "type": "num",
+        "value": "8"
+       }
+      }
+     ],
+     "type": "iconSet"
+    },
+    {
+     "cells": "N1 N10 N11 N2 N3 N4 N5 N6 N7 N8 N9",
+     "formula": "$N1>'Другой'!$A$1",
+     "style": {
+      "fill": {
+       "color": "#FFC000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "O1 O10 O11 O2 O3 O4 O5 O6 O7 O8 O9",
+     "formulas": [
+      "'Другой'!$A$2"
+     ],
+     "operator": "greaterThan",
+     "style": {
+      "font": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "cellIs"
+    }
+   ],
+   "Другой": []
+  },
+  "looks": {
+   "S": {
+    "N1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "N2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "N3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "N4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "N5": {
+     "text": "5",
+     "fill": "#FFC000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "N6": {
+     "text": "6",
+     "fill": "#FFC000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "N7": {
+     "text": "7",
+     "fill": "#FFC000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O7": {
+     "text": "7",
+     "fill": null,
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "N8": {
+     "text": "8",
+     "fill": "#FFC000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O8": {
+     "text": "8",
+     "fill": null,
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "N9": {
+     "text": "9",
+     "fill": "#FFC000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O9": {
+     "text": "9",
+     "fill": null,
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "N10": {
+     "text": "10",
+     "fill": "#FFC000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O10": {
+     "text": "10",
+     "fill": null,
+     "font": "#FF0000",
+     "bold": false,
+     "italic": false
+    },
+    "N11": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "O11": {
+     "text": "-2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  }
+ }
+}
