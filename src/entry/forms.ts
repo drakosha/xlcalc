@@ -1,53 +1,65 @@
 /**
- * The format a cell takes for what is typed into it, as Excel sets it: a cell in General takes the format of the typed
- * form (a date, a time, percent, money, grouping, scientific, a fraction); a cell with a format keeps it, unless a date
- * or a time comes into a cell that shows no date or time, or percent or money into one that shows none. A plain number
- * typed into a percent cell is taken as percent when it is 1 or more (Excel's automatic percent entry: 10 is 10%).
+ * The format a cell takes for what is typed into it, as Excel sets it (the entry sets `typed`, `test/excel/entry/`). A
+ * cell in General takes the format of the typed form. A cell whose format is one of Excel's built-in date, time, percent,
+ * money, scientific or fraction formats takes the typed form's format when that form is a date, a time, percent, money,
+ * scientific or a fraction of another kind (a time typed into a date cell shows `h:mm`); a plain or grouped number keeps
+ * it. The built-in number formats (`0.00`, `#,##0`) and a format of the book's own are kept whatever is typed. A code is
+ * the built-in format whose code it is in the book's locale, as Excel takes a file's format (`h:mm` is 20).
  */
 import type { NumberFormat } from '../contract.js'
-import { EN_BUILTIN, EN_CODES } from '../numfmt.js'
+import { REGIONAL } from '../locale/rules.js'
+import { builtinCodes, EN_BUILTIN, EN_CODES, isBuiltin } from '../numfmt.js'
 import { parseFormat, type Tok } from '../numfmt/parse.js'
-import type { Form, Typed } from './read.js'
+import type { Form } from './read.js'
 
-/** What a cell's format shows, by its first section: General, text, a date, a time, percent, money, scientific, a fraction, a number. */
-export type Category = 'general' | 'text' | Exclude<Form, 'plain' | 'grouped'> | 'number'
+/** The kinds of built-in formats a typed form replaces when it is of another kind. */
+type Family = 'date' | 'time' | 'percent' | 'currency' | 'scientific' | 'fraction'
 
-/** Whether a section's date parts show a date: a year, a day, or a month (`m` is minutes after hours or before seconds). */
-function showsDate(toks: Tok[]): boolean {
-  const parts = toks.flatMap((t) => (t.t === 'date' || t.t === 'elapsed' ? [t.s[0].toLowerCase()] : []))
-  return parts.some((c, i) => c === 'y' || c === 'd' || (c === 'm' && parts[i - 1] !== 'h' && parts[i + 1] !== 's'))
+const span = (lo: number, hi: number, f: Family): [number, Family][] => Array.from({ length: hi - lo + 1 }, (_, i) => [lo + i, f])
+
+/** The built-in formats by kind; the others (General, the numbers 1 to 4 and 37 to 40, text) are not replaced. */
+const FAMILY: ReadonlyMap<number, Family> = new Map([
+  ...span(5, 8, 'currency'),
+  ...span(41, 44, 'currency'),
+  ...span(9, 10, 'percent'),
+  [11, 'scientific'],
+  [48, 'scientific'],
+  ...span(12, 13, 'fraction'),
+  ...span(14, 17, 'date'),
+  [22, 'date'],
+  ...span(27, 31, 'date'),
+  [36, 'date'],
+  ...span(18, 21, 'time'),
+  ...span(32, 35, 'time'),
+  ...span(45, 47, 'time'),
+])
+
+/** The kind of each typed form that sets a format. */
+const FORM: Partial<Record<Form, Family>> = { date: 'date', time: 'time', percent: 'percent', currency: 'currency', scientific: 'scientific', fraction: 'fraction' }
+
+/** The number of the built-in format a cell's format is in the locale `tag`: its number, or the first whose code it is; undefined for a format of the book's own. */
+export function builtinOf(format: NumberFormat, tag: string): number | undefined {
+  if (typeof format === 'number') return format
+  if (format.toLowerCase() === 'general') return 0
+  const own = REGIONAL.get(tag)?.builtin
+  const code = own ? builtinCodes(own) : (id: number) => EN_BUILTIN[id]
+  for (let id = 0; isBuiltin(id); id++) if (code(id) === format) return id
+  return undefined
 }
 
-/** The category of a cell's format (an en-US code as xlsx stores it, or a built-in format's number). */
-export function category(format: NumberFormat | undefined): Category {
-  if (format === undefined) return 'general'
+/** The format of a cell with the format `cell` in the locale `tag` after a number of the form typed, with that form's format; undefined: General. */
+export function formatAfter(form: Form, typed: NumberFormat | undefined, cell: NumberFormat | undefined, tag: string): NumberFormat | undefined {
+  const id = cell === undefined ? 0 : builtinOf(cell, tag)
+  if (id === 0) return typed
+  const family = FORM[form]
+  const own = id === undefined ? undefined : FAMILY.get(id)
+  return family && own && family !== own ? typed : cell
+}
+
+/** Whether a format shows text (`@`) or percent, by its first section. */
+export function shows(format: NumberFormat | undefined, what: 'text' | 'pct'): boolean {
+  if (format === undefined) return false
   const code = typeof format === 'number' ? EN_BUILTIN[format] : format
   const toks: Tok[] = parseFormat(code, EN_CODES)?.[0]?.toks ?? []
-  if (toks.some((t) => t.t === 'text')) return 'text'
-  if (toks.some((t) => t.t === 'date' || t.t === 'elapsed' || t.t === 'ampm')) return showsDate(toks) ? 'date' : 'time'
-  if (toks.some((t) => t.t === 'general') || !toks.some((t) => t.t === 'ph')) return 'general'
-  if (toks.some((t) => t.t === 'pct')) return 'percent'
-  if (toks.some((t) => t.t === 'exp')) return 'scientific'
-  if (toks.some((t) => t.t === 'lit' && /[$€£¥₽]/.test(t.s)) || /\[\$[^-\]]/.test(code)) return 'currency'
-  if (toks.some((t) => t.t === 'slash')) return 'fraction'
-  return 'number'
-}
-
-/** The forms that replace a cell's format of another category. */
-const REPLACING: ReadonlySet<Form> = new Set(['date', 'time', 'percent', 'currency'])
-
-const dated = (c: Category) => c === 'date' || c === 'time'
-
-/** The format of a cell with the format `cell` after a number of the form typed; undefined: General. */
-export function formatAfter(typed: Extract<Typed, { t: 'number' }>, cell: NumberFormat | undefined): NumberFormat | undefined {
-  const c = category(cell)
-  if (c === 'general') return typed.format ?? cell
-  if (!REPLACING.has(typed.form)) return cell
-  const same = dated(c) ? typed.form === 'date' || typed.form === 'time' : c === typed.form
-  return same ? cell : typed.format
-}
-
-/** A plain number typed into a percent cell: from 1 up it is taken as percent (10 is 10%), below 1 as it is (0.1 is 10% too). */
-export function percentEntry(typed: Extract<Typed, { t: 'number' }>, cell: NumberFormat | undefined): number {
-  return category(cell) === 'percent' && (typed.form === 'plain' || typed.form === 'grouped') && Math.abs(typed.v) >= 1 ? typed.v / 100 : typed.v
+  return toks.some((t) => t.t === what)
 }

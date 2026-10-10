@@ -108,10 +108,10 @@ function patterns(decimal: string): TimePatterns {
   return p
 }
 
-/** Full dates; spaces may stand around `/` and `-` (`1 / 31 / 2025`, `1-31-2025`). */
+/** Full dates; spaces may stand around `/` and `-` (`1 / 31 / 2025`, `1-31-2025`); a year of one digit is of the 2000s (`1-2-3`, the entry set `typed`). */
 const DATE_FORMS: [RegExp, (m: RegExpExecArray) => [string, string, string]][] = [
   [/^(\d{4}) *[-/] *(\d{1,2}) *[-/] *(\d{1,2})$/, (m) => [m[1], m[2], m[3]]],
-  [/^(\d{1,2}) *[-/] *(\d{1,2}) *[-/] *(\d{4}|\d{2})$/, (m) => [m[3], m[1], m[2]]],
+  [/^(\d{1,2}) *[-/] *(\d{1,2}) *[-/] *(\d{4}|\d{1,2})$/, (m) => [m[3], m[1], m[2]]],
   [new RegExp(`^(\\d{1,2})(?: *- *| )${MONTH_RE}(?: *- *| )(\\d{4}|\\d{2})$`), (m) => [m[3], m[2], m[1]]],
   [new RegExp(`^${MONTH_RE} (\\d{1,2}), (\\d{4})$`), (m) => [m[3], m[1], m[2]]],
 ]
@@ -124,7 +124,7 @@ const NUMBER_NAME = new RegExp(`^(\\d{1,2}) *[-/]? *${MONTH_RE}$`)
 /** The month a word names (1–12), or 0. */
 const monthOf = (word: string) => MONTHS.findIndex((m) => m.startsWith(word)) + 1
 
-/** A year as typed: two digits are 1930–2029, as in Excel. */
+/** A year as typed: one or two digits are 1930–2029, as in Excel. */
 export const fullYear = (s: string) => (s.length > 2 ? Number(s) : Number(s) + (Number(s) < 30 ? 2000 : 1900))
 
 /** The serial number of a calendar date from 1900 to 9999, the phantom 1900-02-29 too; null if there is no such date. */
