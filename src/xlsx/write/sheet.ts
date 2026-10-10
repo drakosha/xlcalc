@@ -155,10 +155,15 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   }
   const where = (cell: string) => ({ sheet: sheet.name, cell })
   const sheetLook = sheetLines(sheet)
+  // a sheet whose rows and columns have no look writes each cell's own
+  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.format !== undefined))
   const sAttr = (addr: string, c: CellInput | undefined) => {
-    const { row, col } = parseAddress(addr)
-    const look = sheetLook.look(row, col, c)
-    const xf = styles.xf(look.style, look.format)
+    let look: Look | undefined = c
+    if (lined) {
+      const { row, col } = parseAddress(addr)
+      look = sheetLook.look(row, col, c)
+    }
+    const xf = look ? styles.xf(look.style, look.format) : 0
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
