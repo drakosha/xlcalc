@@ -196,7 +196,7 @@ export interface SessionCore {
   ready(): Steps<EngineState>
   putCells(s: EngineState, edits: CellEdit[]): Steps<[CellChange[], CellEdit[]]>
   rebuild(old: EngineState, book: BookInput, mapCell: (ref: CellRef) => CellRef | null, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, CellChange[], BookDiff | null]>
-  relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<CellChange[]>
+  relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[CellChange[], SheetInput[]]>
   display: boolean
   sheetIndex(s: EngineState): (name: string) => number | undefined
 }
@@ -236,10 +236,10 @@ export function* applyStep(core: SessionCore, step: Step | undefined, done: (oth
       break
     }
     case 'layout': {
-      const before = s.input.sheets.slice()
-      const next = new Map(step.sheets.map((b) => [b.i, sheetWith(before[b.i], b)]))
+      const next = new Map(step.sheets.map((b) => [b.i, sheetWith(s.input.sheets[b.i], b)]))
       const shown = core.display ? snapshot(s, layoutCells(s, step.sheets.flatMap((b) => touched(s, b)))) : null
-      result = { call: step.call, changes: yield* core.relayout(s, next, shown) }
+      const [changes, before] = yield* core.relayout(s, next, shown)
+      result = { call: step.call, changes }
       // a sheet hidden or shown again: its cells stay where they are
       if (step.call === 'restructure') result.mapCell = registered(checkedMapCell(s.input, (ref) => ref), { op: null, way: 'back', before: s.sheetNames, after: s.sheetNames })
       other = layoutStep(step.call, before, next)

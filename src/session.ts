@@ -184,8 +184,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     function* (): Steps<BookDiff | null> {
       return history.on ? yield* bookDiff(book, before, op, 'back') : null
     }
-  /** Sheets of the book replaced by new ones of another layout: the arrays and SUBTOTALs it concerns computed again. */
-  function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<CellChange[]> {
+  /**
+   * Sheets of the book replaced by new ones of another layout: the arrays and SUBTOTALs it concerns computed again; the
+   * changes and the sheets before, which are put back if the call stops.
+   */
+  function* relayout(s: EngineState, next: Map<number, SheetInput>, shown: Map<string, string> | null): Steps<[CellChange[], SheetInput[]]> {
     const sheets = s.input.sheets.slice()
     for (const [i, x] of next) s.input.sheets[i] = x
     if ([...next].some(([i, x]) => x.conditionalFormats !== sheets[i].conditionalFormats)) dropStats(s, [], true)
@@ -198,7 +201,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         if (moved.length) for (const k of yield* applyMerges(s, i, moved.map((m) => parseMerge(m)!))) keys.add(k)
         if (JSON.stringify(hiddenRows(x) ?? null) !== JSON.stringify(hiddenRows(sheets[i]) ?? null)) for (const k of yield* applyHidden(s, i)) keys.add(k)
       }
-      return changes(s, shown ? merged([...keys], shownChanges(s, shown)) : [...keys])
+      return [changes(s, shown ? merged([...keys], shownChanges(s, shown)) : [...keys]), sheets]
     } catch (e) {
       s.input.sheets.splice(0, sheets.length, ...sheets)
       stale = true
@@ -264,9 +267,9 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       if (!r.ok) return r
       // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
       if (op.op === 'hideSheet' || op.op === 'unhideSheet') {
-        const before = old.input.sheets.slice()
-        old.input.sheets.splice(0, old.input.sheets.length, ...r.book.sheets)
-        keep(() => layoutStep('restructure', before, new Map(r.book.sheets.map((x, i) => [i, x]))))
+        const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
+        const [, before] = yield* relayout(old, next, null)
+        keep(() => layoutStep('restructure', before, next))
         return { ok: true, book: old.input, mapCell: checkedMapCell(old.input, r.mapCell), changes: [] }
       }
       // the operation as it was given, kept for its geometry: the caller's object may change
@@ -287,9 +290,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const checked = checkLayoutEdits(edits, sheetIndex(s), styleCount(s))
       const shown = display ? snapshot(s, layoutCells(s, checked)) : null
-      const before = s.input.sheets.slice()
       const next = applyLayout(s.input, checked, (name) => sheetIndex(s)(name)!)
-      const out = yield* relayout(s, next, shown)
+      const [out, before] = yield* relayout(s, next, shown)
       if (checked.length) keep(() => layoutStep('setLayout', before, next))
       return out
     },
