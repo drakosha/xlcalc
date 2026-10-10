@@ -5,7 +5,7 @@
  * en-US's. Text is made only where a message is shown: a refusal, a formula that does not read, an explanation.
  */
 import type { CellValue } from '../contract.js'
-import { ERROR_TEXT } from '../syntax/ast.js'
+import { errorIn } from '../syntax/ast.js'
 import { english } from './english.js'
 import { DEFAULT_LOCALE, LOCALE_FILES } from './registry.js'
 import type { Locale, TableItem } from './types.js'
@@ -155,7 +155,7 @@ function wordsOf(loc: Locale, formula: (text: string) => string): Words {
       if (typeof v === 'number') return num(v)
       if (typeof v === 'string') return JSON.stringify(v)
       if (typeof v === 'boolean') return v ? loc.booleans.TRUE : loc.booleans.FALSE
-      return loc.errors[ERROR_TEXT[v.error]] ?? ERROR_TEXT[v.error]
+      return errorIn(v.error, loc.errors)
     },
     formula,
   }
