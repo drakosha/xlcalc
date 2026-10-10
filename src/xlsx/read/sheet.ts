@@ -2,8 +2,8 @@
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
  * cells as a copy and paste spreads them (`restructure`'s copyRange), array formulas of the old kind over their area,
- * the cells an array spilled into left to the stored values, columns, rows, merged areas, the filter mode, and what the
- * sheet has that the model does not, reported.
+ * the cells an array spilled into left to the stored values, columns, rows, merged areas, the filter mode, notes,
+ * hyperlinks and frozen panes (`parts.ts`), and what the sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
 import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
@@ -19,6 +19,7 @@ import { attributes, element, elements, flag, has, type Element } from '../xml/s
 import { look, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
+import { readCellParts, readFrozen, type PartsSource } from './parts.js'
 import { readTables } from './tables.js'
 
 export interface SheetSource {
@@ -31,6 +32,8 @@ export interface SheetSource {
   legacy(ast: Ast, sheet: string): Ast | undefined
   /** The sheet's table parts. */
   tables: string[]
+  /** The sheet's comments, its VML drawing and threaded comments, and the book's persons, when there are any. */
+  parts: Pick<PartsSource, 'comments' | 'vml' | 'threads' | 'persons'>
 }
 
 export interface SheetRead {
@@ -43,7 +46,6 @@ const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
   ['conditionalFormatting', 'conditionalFormat', 'conditional formatting is not in the model'],
   ['conditionalFormattings', 'conditionalFormat', 'conditional formatting is not in the model'],
   ['dataValidations', 'dataValidation', 'data validation is not in the model'],
-  ['hyperlinks', 'hyperlink', 'hyperlinks are not in the model'],
   ['sheetProtection', 'protection', 'sheet protection is not in the model'],
   ['protectedRanges', 'protection', 'sheet protection is not in the model'],
   ['drawing', 'drawing', 'pictures, charts and shapes are not in the model'],
@@ -58,8 +60,6 @@ const FEATURES: [local: string, code: XlsxIssueCode, message: string][] = [
 
 /** Parts a sheet links to that the model has no place for, by relationship kind. */
 const LINKED: Record<string, [XlsxIssueCode, string]> = {
-  comments: ['comment', 'notes and comments are not in the model'],
-  threadedComment: ['comment', 'notes and comments are not in the model'],
   pivotTable: ['pivotTable', 'pivot tables are not in the model: their cells are read as stored'],
 }
 
@@ -218,9 +218,6 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const fp = attributes(element(head, 'sheetFormatPr')?.attrs ?? '')
   const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84
   if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', `the sheet's default column width (${Math.round(width * 100) / 100} in xlsx units) is not in the model, which takes Excel's standard of 8 digits`, where)
-  const pane = element(head, 'pane')
-  const state = pane && attributes(pane.attrs).state
-  if (state === 'frozen' || state === 'frozenSplit' || state === 'split') issues.add('frozenPanes', 'frozen and split panes are not in the model', where)
   const setup = element(tail, 'pageSetup')
   const sa = setup ? attributes(setup.attrs) : {}
   if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', 'print settings (headers and footers, page breaks, page setup) are not in the model', where)
@@ -264,5 +261,8 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   if (m) sheet.merges = m
   const tables = readTables(src.tables, name, read.cells, m, ctx.issues)
   if (tables.length) sheet.tables = tables
+  readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts }, read.cells, ctx.issues)
+  const frozen = readFrozen(head, name, ctx.issues)
+  if (frozen) sheet.frozen = frozen
   return { sheet, cached: read.cached }
 }

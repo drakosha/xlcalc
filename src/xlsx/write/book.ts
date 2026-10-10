@@ -1,8 +1,9 @@
 /**
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
- * workbook, its sheets, styles, shared strings, the dynamic array metadata when there are formulas, the date system and
- * iterative calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula
- * file asks Excel to compute the book on opening, so Excel shows its own values over the ones written.
+ * workbook, its sheets with their tables, notes and hyperlinks, styles, shared strings, the dynamic array metadata when
+ * there are formulas, the date system and iterative calculation, and the book's locale as a custom document property
+ * (xlsx has no place for it). A formula file asks Excel to compute the book on opening, so Excel shows its own values
+ * over the ones written.
  */
 import type { BookInput, ComputeResult } from '../../contract.js'
 import { epochOf } from '../../dates.js'
@@ -19,6 +20,7 @@ import type { WriteXlsxOptions, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, needsPreserve } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
+import { nextBlock } from './parts.js'
 import { writeSheet } from './sheet.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
@@ -56,8 +58,9 @@ function metadata(dynamic: boolean, rich: (keyof typeof RICH_TYPE)[]): string {
   return `${HEAD}<metadata xmlns="${MAIN}" xmlns:xlrd="${RICH}" xmlns:xda="http://schemas.microsoft.com/office/spreadsheetml/2017/dynamicarray"><metadataTypes count="${types.length}">${typeXml}</metadataTypes>${dynamicXml}${richXml}${cells}${values}</metadata>`
 }
 
-const rels = (items: [type: string, target: string][]) =>
-  `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${target}"/>`).join('')}</Relationships>`
+/** A part's relationships, `rId1` on; an external one (a hyperlink's address) keeps its target as written. */
+const rels = (items: [type: string, target: string, external?: boolean][]) =>
+  `${HEAD}<Relationships xmlns="${PKG_REL}">${items.map(([type, target, external], i) => `<Relationship Id="rId${i + 1}" Type="${type}" Target="${external ? escapeAttr(target) : target}"${external ? ' TargetMode="External"' : ''}/>`).join('')}</Relationships>`
 
 function definedNames(book: BookInput, issues: Issues, tables: { name: string; columns: string[] }[]): string {
   const index = new Map(book.sheets.map((s, i) => [sheetKey(s.name), i]))
@@ -137,8 +140,10 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
   // a filtered sheet's criteria go on its first table with a header row, the one kind with a filter of its own
   const filterTables = book.sheets.map((s) => (s.filtered ? s.tables?.find((t) => t.headers !== false)?.name : undefined))
-  const sheets = book.sheets.map((s, i) =>
-    writeSheet(s, i, {
+  // the notes' VML shape ids, in blocks of 1,024 through the book
+  let noteBlock = 1
+  const sheets = book.sheets.map((s, i) => {
+    const w = writeSheet(s, i, {
       styles,
       string,
       issues,
@@ -159,22 +164,31 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
       tableParts: parts[i].map((_, k) => `rId${k + 1}`),
       epoch: epochOf(book.dateSystem),
       ...(filterTables[i] ? { filterTable: filterTables[i] } : {}),
-    }),
-  )
+      noteBlock,
+    })
+    if (w.notes) noteBlock = nextBlock(noteBlock, w.notes.count)
+    return w
+  })
   const dynamic = sheets.some((s) => s.formulas)
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
+  let vml = false
   sheets.forEach((s, i) => {
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: s.xml })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
-    if (!parts[i].length) return
     for (const { t, id } of parts[i]) {
       files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames, issues, t.name === filterTables[i]) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
-    files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(parts[i].map(({ id }) => [`${REL}/table`, `../tables/table${id}.xml`])) })
+    if (s.notes) {
+      files.push({ name: `xl/comments${i + 1}.xml`, text: s.notes.comments }, { name: `xl/drawings/vmlDrawing${i + 1}.vml`, text: s.notes.vml })
+      contentTypes.push([`/xl/comments${i + 1}.xml`, `${TYPE}.comments+xml`])
+      vml = true
+    }
+    const sheetRels: [string, string, boolean?][] = [...parts[i].map(({ id }): [string, string] => [`${REL}/table`, `../tables/table${id}.xml`]), ...s.rels.map((r): [string, string, boolean] => [`${REL}/${r.type}`, r.target, r.type === 'hyperlink'])]
+    if (sheetRels.length) files.push({ name: `xl/worksheets/_rels/sheet${i + 1}.xml.rels`, text: rels(sheetRels) })
   })
   files.push({ name: 'xl/styles.xml', text: styles.xml() })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
@@ -214,7 +228,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
   const overrides = contentTypes.map(([part, type]) => `<Override PartName="${part}" ContentType="${type}"/>`).join('')
   files.unshift({
     name: '[Content_Types].xml',
-    text: `${HEAD}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>${overrides}</Types>`,
+    text: `${HEAD}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>${vml ? '<Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>' : ''}${overrides}</Types>`,
   })
   const data = await zip(files.map((f) => ({ name: f.name, data: utf8(f.text) })))
   return { data, issues: issues.list() }

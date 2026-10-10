@@ -7,9 +7,9 @@
  * come from the result: a formula's value, and the cells its array spilled into. A formula the file cannot hold (it
  * does not parse, or names a sheet, a table or a column the book does not have) is written as its value. A filtered
  * sheet gets criteria that every row meets (`KEEP_ALL`): on its first table with a header row, else on an autofilter of
- * its own over its cells, with Excel's filter mark.
+ * its own over its cells, with Excel's filter mark. Notes, hyperlinks and frozen panes are written by `parts.ts`.
  */
-import type { CellInput, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellLink, CellNote, CellResult, CellValue, RowInput, SheetInput } from '../../contract.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
 import { parseRange, type Rect } from '../../structure/area.js'
@@ -20,6 +20,7 @@ import { bindTables } from '../../syntax/check.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
+import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import type { StyleWriter } from './styles.js'
 
 /** Excel's limit on a cell's text. */
@@ -60,12 +61,24 @@ export interface SheetContext {
   epoch: number
   /** A filtered sheet's table whose autofilter holds the criteria (`KEEP_ALL`), in place of an autofilter of the sheet's own, as Excel keeps a table's filter. */
   filterTable?: string
+  /** The first block of the VML shape ids of the sheet's notes (`vmlXml`). */
+  noteBlock: number
+}
+
+/** A relationship of the sheet after its tables': its id is `rId` and its number among all the sheet's relationships. */
+export interface SheetRel {
+  type: 'hyperlink' | 'comments' | 'vmlDrawing'
+  target: string
 }
 
 export interface SheetWritten {
   xml: string
   /** Whether a formula was written (the book then needs the dynamic array metadata). */
   formulas: boolean
+  /** The sheet's relationships after its tables' (hyperlinks' addresses are external). */
+  rels: SheetRel[]
+  /** The comments part and VML drawing of the sheet's notes, and their count. */
+  notes?: { comments: string; vml: string; count: number }
 }
 
 /**
@@ -143,9 +156,13 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     const x = valueXml(v, ctx, where(addr), !f)
     return `<c r="${addr}"${sAttr(c)}${x.t}${cm}>${f}<v>${x.v}</v></c>`
   }
+  const notes = new Map<string, CellNote>()
+  const links = new Map<string, CellLink>()
   for (const addr of Object.keys(sheet.cells)) {
     const c = sheet.cells[addr]
     if (c.meta !== undefined) issues.add('meta', 'cell meta has no place in a file', where(addr))
+    if (c.note) notes.set(addr, c.note)
+    if (c.link) links.set(addr, c.link)
     const res = result?.[addr]
     if (c.formula === undefined) {
       const v = c.value === undefined || c.value === null ? undefined : typeof c.value === 'object' ? dateToSerial(c.value.date) - ctx.epoch : c.value
@@ -209,19 +226,32 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
     issues.add('autoFilter', "the filter mode of a sheet whose tables have no header row is left out: an autofilter over the sheet's cells would meet them", { sheet: sheet.name })
     filter = undefined
   }
+  // relationships past the tables': the notes' comments and drawing, then each address of a hyperlink once
+  const rels: SheetRel[] = []
+  const relId = (r: SheetRel) => `rId${ctx.tableParts.length + rels.push(r)}`
+  let drawing: string | undefined
+  if (notes.size) {
+    relId({ type: 'comments', target: `../comments${index + 1}.xml` })
+    drawing = relId({ type: 'vmlDrawing', target: `../drawings/vmlDrawing${index + 1}.vml` })
+  }
+  const urls = new Map<string, string>()
+  const hyperlinks = hyperlinksXml(links, (url) => urls.get(url) ?? urls.set(url, relId({ type: 'hyperlink', target: url })).get(url)!, sheet.name, issues)
+  const pane = paneXml(sheet.frozen)
   const xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
     (filter ? '<sheetPr filterMode="1"/>' : '') +
-    `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}/></sheetViews>` +
+    `<dimension ref="${dim}"/><sheetViews><sheetView workbookViewId="0"${index === 0 ? ' tabSelected="1"' : ''}${pane ? `>${pane}</sheetView>` : '/>'}</sheetViews>` +
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
     '<sheetFormatPr defaultRowHeight="15"/>' +
     (cols.length ? `<cols>${cols.join('')}</cols>` : '') +
     `<sheetData>${data.join('')}</sheetData>` +
     (filter ? `<autoFilter ref="${filter}">${KEEP_ALL}</autoFilter>` : '') +
     (merges.length ? `<mergeCells count="${merges.length}">${merges.map((m) => `<mergeCell ref="${escapeAttr(m)}"/>`).join('')}</mergeCells>` : '') +
+    hyperlinks +
+    (drawing ? `<legacyDrawing r:id="${drawing}"/>` : '') +
     (ctx.tableParts.length ? `<tableParts count="${ctx.tableParts.length}">${ctx.tableParts.map((id) => `<tablePart r:id="${id}"/>`).join('')}</tableParts>` : '') +
     '</worksheet>'
-  return { xml, formulas }
+  return { xml, formulas, rels, ...(notes.size ? { notes: { comments: commentsXml(notes, sheet.name, issues), vml: vmlXml(notes, ctx.noteBlock), count: notes.size } } : {}) }
 }
 
 const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2

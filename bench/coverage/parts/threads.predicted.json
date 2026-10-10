@@ -1,0 +1,58 @@
+{
+ "threads": {
+  "S": {
+   "notes": {
+    "B4": {
+     "author": "Ann",
+     "text": "A note beside the threads"
+    },
+    "B2": {
+     "author": "Ann",
+     "text": "First comment\n\nБорис: A reply\n\nAnn: Another reply\non two lines"
+    },
+    "C3": {
+     "author": "Борис",
+     "text": "Single"
+    }
+   },
+   "links": {}
+  },
+  "T": {
+   "notes": {
+    "A1": {
+     "author": "Ann",
+     "text": "On T\n\nБорис: Ответ"
+    }
+   },
+   "links": {}
+  }
+ },
+ "threads-insert-row": {
+  "S": {
+   "notes": {
+    "B5": {
+     "author": "Ann",
+     "text": "A note beside the threads"
+    },
+    "B3": {
+     "author": "Ann",
+     "text": "First comment\n\nБорис: A reply\n\nAnn: Another reply\non two lines"
+    },
+    "C4": {
+     "author": "Борис",
+     "text": "Single"
+    }
+   },
+   "links": {}
+  },
+  "T": {
+   "notes": {
+    "A1": {
+     "author": "Ann",
+     "text": "On T\n\nБорис: Ответ"
+    }
+   },
+   "links": {}
+  }
+ }
+}

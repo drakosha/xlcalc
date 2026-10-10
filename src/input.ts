@@ -102,6 +102,18 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
   if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   if (c.array !== undefined) checkString(c.array, `${path}.array`)
+  if (c.note !== undefined) {
+    const n = object(c.note, `${path}.note`, 'a note such as { author: "Ann", text: "Checked" }')
+    onlyKeys(n, `${path}.note`, ['author', 'text'])
+    checkString(n.text, `${path}.note.text`)
+    if (n.author !== undefined) checkString(n.author, `${path}.note.author`)
+  }
+  if (c.link !== undefined) {
+    const l = object(c.link, `${path}.link`, 'a hyperlink such as { url: "https://example.com/" } or { location: "Sheet2!B12" }')
+    onlyKeys(l, `${path}.link`, ['url', 'location', 'tooltip'])
+    for (const k of ['url', 'location', 'tooltip']) if (l[k] !== undefined) checkString(l[k], `${path}.link.${k}`)
+    if (!l.url && !l.location) throw new InputError(`${path}.link`, 'a hyperlink has a url, a location or both')
+  }
   return c as CellInput
 }
 
@@ -120,7 +132,7 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
-const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta', 'array']
+const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta', 'array', 'note', 'link']
 
 /** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
@@ -257,9 +269,18 @@ function checkMerges(v: unknown, path: string) {
   if (o) throw new InputError(`${path}[${o[1]}]`, `${list[o[1]]} overlaps ${list[o[0]]}`)
 }
 
+/** Frozen panes: rows, columns or both, each from 1 to one less than the sheet has. */
+function checkFrozen(v: unknown, path: string) {
+  const f = object(v, path, 'frozen panes such as { rows: 1 } or { rows: 2, columns: 1 }')
+  onlyKeys(f, path, ['rows', 'columns'])
+  if (f.rows === undefined && f.columns === undefined) throw new InputError(path, 'expected rows, columns or both')
+  if (f.rows !== undefined) checkNumber(f.rows, `${path}.rows`, 1, MAX_ROWS - 1, true)
+  if (f.columns !== undefined) checkNumber(f.columns, `${path}.columns`, 1, MAX_COLS - 1, true)
+}
+
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), cells by A1 address,
- * columns, rows and merged areas, names, styles.
+ * columns, rows, merged areas and frozen panes, names, styles.
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
@@ -277,7 +298,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, problem)
@@ -299,6 +320,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.rows !== undefined) checkLines(sheet.rows, `${p}.rows`, 'r', styles)
     if (sheet.merges !== undefined) checkMerges(sheet.merges, `${p}.merges`)
     if (sheet.filtered !== undefined) checkBoolean(sheet.filtered, `${p}.filtered`)
+    if (sheet.frozen !== undefined) checkFrozen(sheet.frozen, `${p}.frozen`)
   })
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
@@ -383,7 +405,7 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
   })
 }
 
-/** Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows or merged areas. */
+/** Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode or frozen panes. */
 export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
   return array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
     const p = `${path}[${i}]`
@@ -399,9 +421,14 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
       checkBoolean(o.filtered, `${p}.filtered`)
       return o as unknown as LayoutEdit
     }
+    if ('frozen' in o) {
+      onlyKeys(o, p, ['sheet', 'frozen'])
+      if (o.frozen !== null) checkFrozen(o.frozen, `${p}.frozen`)
+      return o as unknown as LayoutEdit
+    }
     const axis: Axis = o.rows !== undefined ? 'r' : 'c'
     const lines = axis === 'r' ? 'rows' : 'columns'
-    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges or filtered)' : '')
+    onlyKeys(o, p, ['sheet', lines, 'set'], o.columns === undefined && o.rows === undefined ? ' (one of columns, rows, merges, filtered or frozen)' : '')
     checkSpan(o[lines], `${p}.${lines}`, axis)
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit

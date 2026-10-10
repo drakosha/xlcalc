@@ -15,7 +15,7 @@ const { data } = await writeXlsx(book, { result })
 
 `readXlsx(data)` takes the file's bytes, a `Uint8Array` or an `ArrayBuffer`, and resolves to three things.
 
-- `book` is a `BookInput`: sheets with their cells, columns, rows, merged areas and filter mode, names, the style table, the locale, the date system and iterative calculation.
+- `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them), columns, rows, merged areas, filter mode and frozen panes, names, the style table, the locale, the date system and iterative calculation.
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order. These are what Excel computed when it saved the file, so you can compare them with the engine's result.
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
 
@@ -149,7 +149,10 @@ xlsx has no place for the book's locale. The writer keeps it in a custom documen
 | `autoFilter` | an autofilter's range, criteria and sort, a table's criteria, an advanced filter |
 | `sheetKind` | chart, dialog and macro sheets, left out |
 | `cellMetadata` | a rich value in a cell, such as a data type or a picture |
-| `conditionalFormat`, `dataValidation`, `comment`, `hyperlink`, `drawing`, `pivotTable`, `protection`, `frozenPanes`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
+| `comment` | a thread of comments, read as a note; a note of runs with different looks, read as its plain text; a note shown all the time, read as one shown on hover |
+| `hyperlink` | a hyperlink whose address is no external relationship of the sheet; one over more than 4,096 cells, read on its cells that hold something |
+| `frozenPanes` | split panes that are not frozen; panes frozen over a sheet scrolled down or right, read from the first row and column |
+| `conditionalFormat`, `dataValidation`, `drawing`, `pivotTable`, `protection`, `outline`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not have |
 | `locale` | a locale the package does not have |
 | `part` | a missing sheet part, a cell outside the sheet |
 
@@ -205,10 +208,75 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 |---|---|
 | `meta` | a cell's `meta` is left out |
 | `errorValue` | `#CYCLE!` is written as 0, as Excel stores a circular reference |
-| `textLength` | text over 32,767 characters is cut |
+| `textLength` | text over 32,767 characters is cut, a note's too, and a hyperlink's tooltip over 255 |
 | `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
+
+## Notes, hyperlinks and frozen panes
+
+A cell's note and hyperlink and a sheet's frozen panes go both ways, so a grid can show them and a file saved from it keeps them. They are a cell's `note` and `link` and a sheet's `frozen`.
+
+```js
+{
+  name: 'Sales',
+  cells: {
+    A1: { value: 'Region', note: { author: 'Ann', text: 'From the CRM\nexport of Monday' } },
+    B2: { value: 'Report', link: { url: 'https://example.com/report', tooltip: 'Open the report' } },
+    B3: { value: 'Totals', link: { location: "'Totals'!A1" } },
+  },
+  frozen: { rows: 1, columns: 1 },
+}
+```
+
+### Notes
+
+A note has its author and its text, lines separated by `\n`. Excel keeps notes in a comments part with a VML drawing that shows them, and the reader takes the comments part. The text is read as plain text: a note made in Excel's window has its author's name in bold at the start, and such formatting is reported. A note shown all the time comes back as one shown when the pointer rests on its cell, also reported. The size and place of a note's box are not kept.
+
+The writer writes both parts, as Excel writes them: each note gets a hidden box beside its cell. A note without an author is written with an empty one, as Excel keeps it.
+
+### Threads of comments
+
+Excel 365's comments are threads: a first comment and its replies, each with its author. The model has notes alone, so the reader takes a thread as a note. The note's author is the first comment's author, and its text is every comment's text, each reply after an empty line with its author:
+
+```
+Is this the final figure?
+
+Boris: Yes, from the audit.
+```
+
+A thread's dates, its mentions and whether it is resolved are not kept, and each thread is reported. Excel writes, beside each thread, a note of its own for older versions of Excel (`[Threaded comment] Your version of Excel allows you to read...`). The reader leaves those notes out. An Excel that has no threads moves such a note with its cell when rows are inserted and leaves the thread where it was, so the reader puts the thread on the cell of its note.
+
+The writer writes a thread read so as a note. Excel shows it as a note, with the thread's text in it.
+
+### Hyperlinks
+
+A hyperlink has `url`, an address outside the book, or `location`, a place in it (`'Totals'!A1`, a defined name), or both: then the place is inside what the address points to. A `tooltip` is the text Excel shows when the pointer rests on the cell. The cell shows its value, not the link, so a link is set on a cell that already holds its text. A hyperlink over a range is read on each of its cells.
+
+Excel takes the part of an address after `#` as its place: a file holding `https://example.com/page#top` comes back from Excel as `https://example.com/page` with the place `top`. Excel also saves a space in an address as `%20`, and the reader gives the address as the file holds it. A tooltip over 255 characters is cut, as Excel does not open a file with a longer one.
+
+### Frozen panes
+
+`frozen: { rows: 2, columns: 1 }` keeps the first two rows and the first column in view, as Excel's Freeze Panes does with C3 selected. Split panes that are not frozen are not in the model and are reported.
+
+### Structure operations
+
+A note and a hyperlink go with their cell: a move takes them along, a copy copies them, a deleted cell and a cell a move or a copy lands on lose them. Inserted rows and columns get none. A hyperlink's place is kept as written when its sheet is renamed or deleted, as Excel keeps it. Rows inserted above the split of frozen panes push it down, and deleted ones draw it up, but one row stays frozen at least; the same goes for columns. [docs/structure.md](structure.md) has the rules.
+
+### How it was checked
+
+`npx tsx bench/coverage/run.ts parts <set>` writes each book of `bench/coverage/parts/<set>.ts` with `writeXlsx`. Excel for Mac opens it, makes what the case makes through its object model (`add comment`, `make new hyperlink`, `freeze panes`), applies the case's structure operation, reads every sheet's notes, hyperlinks and panes, and saves the book. `npx tsx bench/windows/run.ts parts <set>` does the same in Excel for Windows through COM (`AddComment`, `Hyperlinks.Add`, `FreezePanes`). `test/sheet-parts-excel.test.ts` and `test/sheet-parts-win.test.ts` check, without Excel, that Excel read what the engine holds after each case and that the reader reads every file Excel saved as Excel read it.
+
+| set | cases | what |
+|---|---|---|
+| `files` | 10 | books written with every kind of note, link and frozen pane, 1,100 notes on one sheet, a long tooltip and a long address, books written after a structure operation in the engine; notes, links and frozen panes Excel made itself |
+| `struct-held` | 26 | rows and columns inserted and deleted around frozen panes, notes and links; ranges moved and copied with them and onto them; sheets renamed and deleted under links to them |
+| `frozen-held` | 9 | frozen rows and columns deleted past the split and inserted several at once |
+| `threads` | 2 | threads of comments put into a file as Excel 365 writes them, with a row inserted above them |
+
+Both Excels opened every book without the repair window. Excel for Mac refused the first version of the book with a tooltip of 300 characters; since then the writer cuts tooltips to 255, and both open it. The engine's answers to `struct-held`, `frozen-held` and `threads` were committed before Excel ran them (`bench/coverage/parts/*.predicted.json`), and so were those to `files`, which held but for the address with `#` and the long tooltip: `struct-held` held in 24 of 26 cases, the two others showing that deleting every frozen row or column leaves one frozen; `frozen-held`, made after that, held in 9 of 9; `threads` in 1 of 2, the other being the inserted row below. Excel for Windows read what Excel for Mac read in every case, but for the author of the notes each made itself, its own user.
+
+Neither Excel takes threads of comments into its object model: Excel 2024 for Windows refuses to make one through COM, Excel for Mac's AppleScript has none, and both show the placeholder note of a thread they open. After inserting a row both moved the placeholder note and left the thread at its cell, which is why the reader follows the placeholder. A file Excel 365 made with threads was not available, so the threads were put into the file by hand (`bench/coverage/parts/threaded.ts`).
 
 ## Speed
 
@@ -227,10 +295,10 @@ A read book of 800,000 values holds about 100 MB of heap. `FORMULA_BENCH=1 npx v
 
 - `zip/` reads and writes the archive. Inflating and deflating go through `DecompressionStream` and `CompressionStream`.
 - `xml/` holds the text layer: entities, Excel's escapes, and elements found by regular expressions.
-- `read/` reads the package, the workbook, the sheets and their cells, and the cell metadata.
+- `read/` reads the package, the workbook, the sheets and their cells, the cell metadata, and the notes, threads, hyperlinks and frozen panes (`parts.ts`).
 - `styles/` turns styles.xml into the style table and holds the codes of the East Asian built-in formats, the codes the writer stores by number, and the colours.
 - `formulas/` changes formulas between the file's spelling and the engine's. `prefixes.ts` is generated by `bench/coverage/xlsx/generate.ts`, so the reader needs neither the harness nor the engine's function definitions. Formulas of the old kind go through `fromLegacy` (`src/legacy/`), whose table of argument classes needs no function definitions either.
-- `write/` writes the workbook, the sheets and styles.xml.
+- `write/` writes the workbook, the sheets, styles.xml, and the notes, hyperlinks and frozen panes (`parts.ts`).
 
 Reading uses the parser and copy and paste of the structure operations. It does not load the engine's functions or evaluator, and a minified browser bundle of the subpath is about 120 KB.
 
@@ -266,3 +334,7 @@ The answers to the filter files and to nine books of the round trip were predict
 - An autofilter's range and criteria are not kept. A filtered sheet comes back with the writer's criteria, which every row meets, and Excel's Reapply then shows every row.
 - A style, a height or `hidden` given to a span of rows is written row by row, so a span to the last row writes a million rows.
 - The model has no default font or default column width of its own. The reader reports a file with others, and the writer always writes Calibri 11 and 8 digits.
+- Excel takes the part of a hyperlink's address after `#` as its place, so `https://example.com/page#top` comes back as the address `https://example.com/page` and the place `top`. It is the same link.
+- Excel saves a space in a hyperlink's address as `%20` and shows it as a space. The reader gives the address as the file holds it.
+- Excel for Windows saves a relative address of a hyperlink (`other.xlsx`) relative to the folder it saves the file to.
+- A thread of comments is read as a note, without its dates, mentions and state, and written as a note.

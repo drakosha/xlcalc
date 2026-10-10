@@ -2,9 +2,9 @@
  * The layout of a sheet under inserted and deleted rows and columns, as Excel changes it (checked in
  * `test/excel/struct/styles.json`): columns and rows keep their entries as they move, new lines take the
  * entry and the cells' style and format of the line before them, merged areas grow, shrink and move as
- * ranges do and are gone when one cell or none is left.
+ * ranges do and are gone when one cell or none is left, frozen panes follow the lines above their split.
  */
-import type { CellInput, SheetInput } from '../contract.js'
+import type { CellInput, FrozenPanes, SheetInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { lines, toMap, type Line } from '../layout/spans.js'
 import { mergeText, parseMerge } from '../layout/merges.js'
@@ -75,6 +75,19 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
     if (a <= b && (y.r1 < y.r2 || y.c1 < y.c2)) out.push(mergeText(y))
   }
   return out
+}
+
+/**
+ * Frozen panes after the lines move: their split is the edge between two lines, which lines inserted above it push
+ * on and deleted ones above it draw back, but not past the first line: with every frozen line deleted the first one is
+ * frozen (the parts sets `struct-held` and `frozen-held`).
+ */
+export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: number, n: number): FrozenPanes | undefined {
+  const key = axis === 'r' ? 'rows' : 'columns'
+  const k = frozen?.[key]
+  if (k === undefined || at >= k) return frozen
+  const next = n > 0 ? Math.min(k + n, LIMIT[axis] - 1) : Math.max(1, k - (Math.min(at - n, k) - at))
+  return { ...frozen, [key]: next }
 }
 
 /**

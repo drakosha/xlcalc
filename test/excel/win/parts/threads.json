@@ -1,0 +1,230 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 21.3
+ },
+ "books": {
+  "plain": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "B4": {
+       "value": "b4",
+       "note": {
+        "author": "Ann",
+        "text": "A note beside the threads"
+       }
+      },
+      "A1": {
+       "value": 1
+      },
+      "B1": {
+       "value": "b1"
+      },
+      "A2": {
+       "value": 2
+      },
+      "B2": {
+       "value": "b2"
+      },
+      "A3": {
+       "value": 3
+      },
+      "B3": {
+       "value": "b3"
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "B5": {
+       "value": "b5"
+      },
+      "A6": {
+       "value": 6
+      },
+      "B6": {
+       "value": "b6"
+      }
+     }
+    },
+    {
+     "name": "T",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "threads",
+   "book": "plain"
+  },
+  {
+   "id": "threads-insert-row",
+   "book": "plain",
+   "op": {
+    "op": "insertRows",
+    "sheet": "S",
+    "row": 1
+   }
+  }
+ ],
+ "threads": {
+  "plain": [
+   {
+    "sheet": "S",
+    "cell": "B2",
+    "comments": [
+     {
+      "author": "Ann",
+      "text": "First comment"
+     },
+     {
+      "author": "Борис",
+      "text": "A reply"
+     },
+     {
+      "author": "Ann",
+      "text": "Another reply\non two lines"
+     }
+    ]
+   },
+   {
+    "sheet": "S",
+    "cell": "C3",
+    "comments": [
+     {
+      "author": "Борис",
+      "text": "Single"
+     }
+    ]
+   },
+   {
+    "sheet": "T",
+    "cell": "A1",
+    "comments": [
+     {
+      "author": "Ann",
+      "text": "On T"
+     },
+     {
+      "author": "Борис",
+      "text": "Ответ"
+     }
+    ]
+   }
+  ]
+ },
+ "sent": {
+  "threads": "f292c0e7a0bd08a6a2e1283c1b4945f465a470d52f0e3254eb2120939a560ebe",
+  "threads-insert-row": "f292c0e7a0bd08a6a2e1283c1b4945f465a470d52f0e3254eb2120939a560ebe"
+ },
+ "answers": {
+  "threads": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {
+      "B2": {
+       "author": "tc={00000002-0000-4000-8000-000000000001}",
+       "text": "[Threaded comment]\n\nYour version of Excel allows you to read this threaded comment; however, any edits to it will get removed if the file is opened in a newer version of Excel. Learn more: https://go.microsoft.com/fwlink/?linkid=870924\n\nComment:\n    First comment\nReply:\n    A reply\nReply:\n    Another reply\non two lines"
+      },
+      "C3": {
+       "author": "tc={00000002-0000-4000-8000-000000000002}",
+       "text": "[Threaded comment]\n\nYour version of Excel allows you to read this threaded comment; however, any edits to it will get removed if the file is opened in a newer version of Excel. Learn more: https://go.microsoft.com/fwlink/?linkid=870924\n\nComment:\n    Single"
+      },
+      "B4": {
+       "author": "Ann",
+       "text": "A note beside the threads"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {
+      "A1": {
+       "author": "tc={00000002-0000-4000-8000-000000000003}",
+       "text": "[Threaded comment]\n\nYour version of Excel allows you to read this threaded comment; however, any edits to it will get removed if the file is opened in a newer version of Excel. Learn more: https://go.microsoft.com/fwlink/?linkid=870924\n\nComment:\n    On T\nReply:\n    Ответ"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "threads-insert-row": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {
+      "B3": {
+       "author": "tc={00000002-0000-4000-8000-000000000001}",
+       "text": "[Threaded comment]\n\nYour version of Excel allows you to read this threaded comment; however, any edits to it will get removed if the file is opened in a newer version of Excel. Learn more: https://go.microsoft.com/fwlink/?linkid=870924\n\nComment:\n    First comment\nReply:\n    A reply\nReply:\n    Another reply\non two lines"
+      },
+      "C4": {
+       "author": "tc={00000002-0000-4000-8000-000000000002}",
+       "text": "[Threaded comment]\n\nYour version of Excel allows you to read this threaded comment; however, any edits to it will get removed if the file is opened in a newer version of Excel. Learn more: https://go.microsoft.com/fwlink/?linkid=870924\n\nComment:\n    Single"
+      },
+      "B5": {
+       "author": "Ann",
+       "text": "A note beside the threads"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    },
+    {
+     "name": "T",
+     "notes": {
+      "A1": {
+       "author": "tc={00000002-0000-4000-8000-000000000003}",
+       "text": "[Threaded comment]\n\nYour version of Excel allows you to read this threaded comment; however, any edits to it will get removed if the file is opened in a newer version of Excel. Learn more: https://go.microsoft.com/fwlink/?linkid=870924\n\nComment:\n    On T\nReply:\n    Ответ"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  }
+ }
+}

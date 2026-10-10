@@ -9,6 +9,7 @@
  *   npx tsx bench/windows/run.ts display <name> [L]    what cells show into display/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts tables <name> [L]     tables and their references into tables/[<tag>/]<name>.json
  *   npx tsx bench/windows/run.ts spill|workbook|struct <name>   a book set (en-US) into <kind>/<name>.json
+ *   npx tsx bench/windows/run.ts parts <name>          notes, hyperlinks and frozen panes (en-US) into parts/<name>.json and parts/<name>/
  *   npx tsx bench/windows/run.ts xlsx filters        the filter files computed and saved by Excel into xlsx/filters/
  *   npx tsx bench/windows/run.ts xlsx formats [L]    the codes of the built-in number formats into xlsx/[<tag>/]formats.json
  *   npx tsx bench/windows/run.ts functions L           the formula cases the Mac has answers for in that locale
@@ -27,13 +28,16 @@ import { stepDisplay, stepSpill, stepStruct, stepTables, stepWorkbook } from './
 import { localeDir, parseTag } from '../coverage/locales.js'
 import { stepFunctions } from './functions.js'
 import { stepXlsxFilters, stepXlsxFormats } from './xlsx.js'
+import { stepParts } from './parts.js'
 import { env, withWindowsExcel, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
 /** The sets with Mac answers, by their files in `test/excel/<dir>`; none where the directory is not there. */
 const macSets = (dir: string) => (existsSync(join(ROOT, 'test/excel', dir)) ? readdirSync(join(ROOT, 'test/excel', dir)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [])
 
-const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct } as const
+const BOOK_STEPS = { spill: stepSpill, workbook: stepWorkbook, struct: stepStruct, parts: stepParts } as const
+/** The parts sets: every set of `bench/coverage/parts/`, `threads` among them, which Windows alone runs. */
+const PARTS_SETS = readdirSync(join(ROOT, 'bench/coverage/parts')).filter((f) => f.endsWith('.ts') && f !== 'cases.ts' && f !== 'predict.ts').map((f) => f.slice(0, -3))
 
 /** The formula cases with Mac answers in a locale: the measurement, the case sets, in en-US the probes and the legacy sets. */
 async function functions(tag: Tag, e: WinEnv) {
@@ -42,7 +46,7 @@ async function functions(tag: Tag, e: WinEnv) {
   await stepFunctions(['measurement', ...(en ? ['probes', ...legacy] : []), ...macSets(`cases/${localeDir(tag)}`)], tag, e)
 }
 
-/** The books with Mac answers in a locale: what cells show, tables, and in en-US the spill, workbook and struct sets and the xlsx filters. */
+/** The books with Mac answers in a locale: what cells show, tables, and in en-US the spill, workbook, struct and parts sets and the xlsx filters. */
 async function books(tag: Tag, e: WinEnv) {
   const en = tag === 'en-US'
   for (const s of macSets(`display/${localeDir(tag)}`)) await stepDisplay(s, tag, e)
@@ -52,6 +56,7 @@ async function books(tag: Tag, e: WinEnv) {
   for (const s of macSets('spill').filter((s) => s !== 'order-runs')) await stepSpill(s, tag, e)
   for (const s of macSets('workbook')) await stepWorkbook(s, tag, e)
   for (const s of macSets('struct')) await stepStruct(s, tag, e)
+  for (const s of PARTS_SETS) await stepParts(s, tag, e)
   await stepXlsxFilters(tag, e)
 }
 
@@ -71,7 +76,7 @@ else if (step === 'functions') await withWindowsExcel(parseTag(a), (e) => functi
 else if (step === 'books') await withWindowsExcel(parseTag(a), (e) => books(parseTag(a), e))
 else if (step === 'all') await withWindowsExcel(parseTag(a), async (e) => (await functions(parseTag(a), e), await books(parseTag(a), e)))
 else {
-  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct <name> | xlsx filters | xlsx formats [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
+  console.error('step: env | measurement <locale> | probes | set <name> [locale] | legacy <name> | display <name> [locale] | tables <name> [locale] | spill|workbook|struct|parts <name> | xlsx filters | xlsx formats [locale] | functions|books|all <locale>; a locale is en, ru or a tag')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

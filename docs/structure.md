@@ -1,6 +1,6 @@
 # Structure operations
 
-Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings and merged areas. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
+Inserting and deleting rows and columns, moving and copying ranges, renaming, deleting, inserting and moving sheets. References in formulas and names change as Excel changes them, and so do cell styles, column and row settings, merged areas, notes, hyperlinks and frozen panes. It is the layer a grid interface needs: a pure function over `BookInput`, and the same operation as a session method.
 
 The rules below were measured in Excel 16 for Mac (en-US).
 
@@ -153,6 +153,20 @@ Merged areas inside the source go along. A copy also takes the part of a merged 
 
 A renamed sheet keeps its layout, and a deleted sheet takes it along.
 
+## Notes, hyperlinks and frozen panes
+
+A cell's `note` and `link` go with the cell, as its style does:
+
+- Inserted rows and columns get none, even where the line before them has some.
+- A deleted cell takes them with it.
+- A move takes them along. The cells it lands on lose theirs, even where the moved cell has none.
+- A copy copies them to every cell it pastes, and a pasted cell without them clears the target's.
+- A hyperlink's `location` stays as written when its sheet is renamed or deleted, or when the rows it points to move. Excel does not follow it either.
+
+Frozen panes (`frozen`) keep the lines before their split. Rows inserted before the split push it down: with two rows frozen, a row inserted at row 1 or 2 makes three, one inserted at row 3 leaves two. Deleted rows before the split draw it up, but one row stays frozen at least: deleting rows 1 and 2 of two frozen ones leaves row 1 frozen. Columns work the same way. A move or a copy does not change them, and a renamed sheet keeps them.
+
+The parts sets `struct-held` and `frozen-held` measured these rules in Excel for Mac and for Windows, with the engine's answers committed before Excel ran them ([docs/xlsx.md](xlsx.md#notes-hyperlinks-and-frozen-panes)).
+
 ## Hidden rows and filtered sheets
 
 A row or a column is hidden by `hidden: true` in `rows` or `columns`, or by a height or width of 0, as Excel takes it. A sheet is marked `filtered: true` when a filter of it has criteria, its autofilter or a table's. Excel then treats every hidden row of the sheet as one the filter hid, whatever hid it. In an xlsx file the criteria decide, not the attribute `filterMode`: Excel takes a sheet as filtered when its autofilter has criteria and the attribute is missing, does not when the attribute stands beside an autofilter without criteria, and writes no attribute for a table's filter ([docs/xlsx.md](xlsx.md)).
@@ -186,10 +200,11 @@ The session rebuilds its state from the new book. On the synthetic book (3,400 r
 
 Styles and layout change through the session so that its book stays the host's book:
 
-- a cell's style through `setCells`; an edit that keeps a cell's value and formula recomputes nothing and returns no changes;
+- a cell's style, note and hyperlink through `setCells`; an edit that keeps a cell's value and formula recomputes nothing and returns no changes;
 - the style table through `setStyles(styles)`; every style in use must stay in it;
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
-- the filter mode through `setLayout`: `{ sheet, filtered: true }`.
+- the filter mode through `setLayout`: `{ sheet, filtered: true }`;
+- frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them.
 
 Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
@@ -230,5 +245,5 @@ Copies were applied through AppleScript's `copy range` with a destination, Excel
 - Whole columns copied onto part of a merged area: Excel pastes them and keeps the area, the engine refuses with `merged` (two observations).
 - Excel's fill handle fills the hidden rows of a filtered sheet. `copyRange` fills the visible rows only, as Fill Down does.
 - One move rule rests on a single observation: a straddled end does not follow into the overwritten cells of a move that does not overlap itself.
-- Outline levels, conditional formats, data validation, comments and charts are not part of a book.
+- Outline levels, conditional formats, data validation and charts are not part of a book. Threads of comments are notes in a book ([docs/xlsx.md](xlsx.md#threads-of-comments)).
 - References to other workbooks are not read, so they never occur in a valid formula.

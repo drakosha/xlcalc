@@ -114,7 +114,7 @@ function rectsOf(read: RangeRef[], raw: unknown[], f2 = false): RectsAnswer & { 
 }
 
 /** Cases one book each, in jobs; a case whose book Excel did not open, or which hangs, gets `failed`. */
-async function caseJobs<C extends { id: string }>(label: string, cases: C[], book: (c: C, file: string) => Promise<{ file: string; steps: Step[] }>, take: (c: C, a: Extract<Answer, { answers: unknown[] }>) => void, failed: (c: C, why: string) => void, save: () => void) {
+export async function caseJobs<C extends { id: string }>(label: string, cases: C[], book: (c: C, file: string) => Promise<{ file: string; steps: Step[] }>, take: (c: C, a: Extract<Answer, { answers: unknown[] }>) => void, failed: (c: C, why: string) => void, save: () => void) {
   await inJobs(label, cases, book, (c, a, cutShort) => {
     if (a && 'answers' in a) take(c, a)
     else if (!a && cutShort) return [c]
