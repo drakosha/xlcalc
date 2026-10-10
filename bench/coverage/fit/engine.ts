@@ -14,9 +14,10 @@ export interface FitEngine {
   entryWidth(value: CellValue, opts: EntryWidthOptions): number | null | undefined
 }
 
-/** The engine's answer: the column's width (null for the default) and what each of the case's rows shows. */
+/** The engine's answer: the column's width (null for the default), whether AutoFit or typing set it, and what each of the case's rows shows. */
 export interface FitPrediction {
   width: number | null
+  fitted?: boolean
   texts: Record<number, string>
 }
 
@@ -28,8 +29,10 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
   const sheet = book.sheets[0]
   book.locale = tag
   const columns = sheet.columns!
+  let fitted = false
   const setWidth = (width: number | null | undefined, more: ColumnInput = {}) => {
     if (width === undefined) return
+    fitted = true
     const { width: _w, bestFit: _b, hidden: _h, ...rest } = columns[COL] ?? {}
     const col: ColumnInput = { ...rest, ...(width === null ? {} : { width, bestFit: true }), ...(more.hidden ? { hidden: true } : {}) }
     if (Object.keys(col).length) columns[COL] = col
@@ -50,5 +53,5 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
     setWidth(e.entryWidth(value, { locale: tag, ...(format !== undefined ? { format } : {}), ...(col.width !== undefined ? { width: col.width } : {}), ...(col.bestFit ? { bestFit: true } : {}) }), col)
   }
   const cells = e.compute(book).sheets[0].cells
-  return { width: columns[COL]?.width ?? null, texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }
+  return { width: columns[COL]?.width ?? null, ...(fitted ? { fitted } : {}), texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }
 }

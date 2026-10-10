@@ -165,9 +165,9 @@ export function fitPoints(value: CellValue, format: NumberFormat | undefined, st
 }
 
 /**
- * The points Excel gives a column of `now` points as a number is typed into one of its cells (`test/excel/fit/typed.json`):
- * the points AutoFit gives the cell when they are more, but for a number in General the column shows by dropping
- * decimals; null when the column keeps its width.
+ * The points Excel gives a column of `now` points as a number is typed into one of its cells (`test/excel/fit/typed.json`,
+ * `held.json`): the points AutoFit gives the cell when they are more, though the cell shows the number whole, but for a
+ * number in General the column shows with fewer decimals; null when the column keeps its width.
  */
 export function typedPoints(value: CellValue, format: NumberFormat | undefined, style: Style, now: number): number | null {
   if (typeof value !== 'number') return null
@@ -176,5 +176,7 @@ export function typedPoints(value: CellValue, format: NumberFormat | undefined, 
   const fmt = typeof format === 'number' ? style.builtin(format) : format
   const secs = fmt === undefined ? null : parseFormat(fmt, EN_CODES)
   const { general } = secs ? byChoice(value, secs, style) : { general: value }
-  return general !== undefined && !/[E#]/.test(generalFit(general, now - 5)) ? null : points
+  if (general === undefined) return points
+  const shown = generalFit(general, now - 5)
+  return shown !== generalFit(general, Infinity) && !/[E#]/.test(shown) ? null : points
 }

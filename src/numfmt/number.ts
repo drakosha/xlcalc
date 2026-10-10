@@ -5,7 +5,7 @@
  */
 import { positional, roundHalfUp } from './general.js'
 import type { Ph, Tok } from './parse.js'
-import { blank, plain, type Style } from './style.js'
+import { BLANK, blank, plain, type Style } from './style.js'
 
 /** Digits, decimals and literals of a section by its placeholders. */
 function formatDigits(v: number, toks: Tok[], signed: boolean, style: Style): string {
@@ -121,8 +121,8 @@ function formatFraction(v: number, toks: Tok[], slash: number, signed: boolean, 
     .slice(j)
     .map((t) => plain(t, style))
     .join('')
-  // a whole number: the fraction's place is blank
-  const body = hasInt && num === 0 ? intPart + blank(style).repeat(fracText.length) : intPart + fracText
+  // a whole number: the fraction's place is blank (laid out for AutoFit, its digits' room and its slash)
+  const body = hasInt && num === 0 ? intPart + (style.layout ? fracText.replace(/[^/]/g, BLANK) : ' '.repeat(fracText.length)) : intPart + fracText
   return (signed && v < 0 && (hasInt || num !== 0) ? '-' : '') + body + tail
 }
 
