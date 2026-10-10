@@ -17,7 +17,7 @@ const sets = (sub: string) => {
   const d = new URL(sub, dir)
   return existsSync(d) ? readdirSync(d).filter((f) => f.endsWith('.json')).map((f) => ({ name: f.slice(0, -5), sub, ...(JSON.parse(readFileSync(new URL(f, d), 'utf8')) as StoredTables) })) : []
 }
-const SETS = TAGS.flatMap((tag) => sets(localeDir(tag)))
+const SETS = TAGS.flatMap((tag) => sets(localeDir(tag)).map((s) => ({ ...s, tag })))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in the README's Known differences). */
 const KNOWN: Readonly<Record<string, string>> = {
@@ -41,7 +41,7 @@ describe.each(SETS)('tables $sub$name', (set) => {
   it.each(set.cases.map((c) => [c.id, c] as const))('%s', async (id, c) => {
     const now = (await mod).buildTableCases().find((x) => x.id === id)
     expect(now, 'the stored case is the generator\'s current one').toEqual(c)
-    const diff = differences(c, set.answers[id])
+    const diff = differences(c, set.answers[id], set.tag)
     const known = KNOWN[`${set.name}:${id}`]
     if (known) expect(diff.length, `${id} is known to differ: ${known}`).toBeGreaterThan(0)
     else expect(diff).toEqual([])
