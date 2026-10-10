@@ -11,7 +11,8 @@ function value(cx: Cx, v: Exclude<V, CErr>): V {
 
 /**
  * Group separators go first (after the decimal one they are #VALUE!), the decimal separator becomes the
- * locale's and the rest reads as in VALUE; whitespace anywhere is dropped and each trailing `%` divides by 100.
+ * locale's and the rest reads as in VALUE; whitespace anywhere is dropped and each trailing `%` divides by 100 in turn
+ * (`"1.1%%"` is 1.1/100/100, as Excel gives it, the set `pct-text`).
  * The separators default to the locale's.
  */
 function numbervalue(cx: Cx, text: string, decimal?: string, group?: string): V {
@@ -28,8 +29,10 @@ function numbervalue(cx: Cx, text: string, decimal?: string, group?: string): V 
   const at = s.indexOf(d)
   const frac = at < 0 ? '' : s.slice(at + 1)
   if (frac.includes(d) || frac.includes(g)) return E.VALUE
-  const n = rules.valueText((at < 0 ? s : s.slice(0, at)).split(g).join('') + (at < 0 ? '' : rules.decimal + frac))
-  return n === null ? E.VALUE : n / 100 ** pct
+  let n = rules.valueText((at < 0 ? s : s.slice(0, at)).split(g).join('') + (at < 0 ? '' : rules.decimal + frac))
+  if (n === null) return E.VALUE
+  for (let k = 0; k < pct; k++) n /= 100
+  return n
 }
 
 export const functions: Record<string, FnDef> = {

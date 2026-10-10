@@ -1,0 +1,624 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "pen-1": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 10
+    }
+   },
+   "pen-2": {
+    "ok": true,
+    "input": {
+     "value": 0.007,
+     "format": 10
+    }
+   },
+   "pen-3": {
+    "ok": true,
+    "input": {
+     "value": 0.01255,
+     "format": 10
+    }
+   },
+   "pen-4": {
+    "ok": true,
+    "input": {
+     "value": 0.999,
+     "format": 10
+    }
+   },
+   "pen-5": {
+    "ok": true,
+    "input": {
+     "value": 0.082,
+     "format": 10
+    }
+   },
+   "pen-6": {
+    "ok": true,
+    "input": {
+     "value": 0.333,
+     "format": 10
+    }
+   },
+   "pen-7": {
+    "ok": true,
+    "input": {
+     "value": 0.571,
+     "format": 10
+    }
+   },
+   "pen-8": {
+    "ok": true,
+    "input": {
+     "value": 0.00035,
+     "format": 10
+    }
+   },
+   "pen-9": {
+    "ok": true,
+    "input": {
+     "value": 0.01005,
+     "format": 10
+    }
+   },
+   "pen-10": {
+    "ok": true,
+    "input": {
+     "value": 0.0007,
+     "format": 10
+    }
+   },
+   "pen-11": {
+    "ok": true,
+    "input": {
+     "value": 1.2345,
+     "format": 10
+    }
+   },
+   "pen-12": {
+    "ok": true,
+    "input": {
+     "value": -0.007,
+     "format": 10
+    }
+   },
+   "pen-13": {
+    "ok": true,
+    "input": {
+     "value": -0.011,
+     "format": 10
+    }
+   },
+   "pen-14": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 10
+    }
+   },
+   "pen-15": {
+    "ok": true,
+    "input": {
+     "value": 10.007,
+     "format": 10
+    }
+   },
+   "pen-16": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 11
+    }
+   },
+   "pen-17": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+    }
+   },
+   "pru-1": {
+    "ok": true,
+    "input": {
+     "value": "1,1%"
+    }
+   },
+   "pru-2": {
+    "ok": true,
+    "input": {
+     "value": "0,7%"
+    }
+   },
+   "pru-3": {
+    "ok": true,
+    "input": {
+     "value": 12.55,
+     "format": 9
+    }
+   },
+   "pru-4": {
+    "ok": true,
+    "input": {
+     "value": "99,9%"
+    }
+   },
+   "pru-5": {
+    "ok": true,
+    "input": {
+     "value": "8,2%"
+    }
+   },
+   "pru-6": {
+    "ok": true,
+    "input": {
+     "value": "33,3%"
+    }
+   },
+   "pru-7": {
+    "ok": true,
+    "input": {
+     "value": "57,1%"
+    }
+   },
+   "pru-8": {
+    "ok": true,
+    "input": {
+     "value": "0,035%"
+    }
+   },
+   "pru-9": {
+    "ok": true,
+    "input": {
+     "value": 10.05,
+     "format": 9
+    }
+   },
+   "pru-10": {
+    "ok": true,
+    "input": {
+     "value": "0,07%"
+    }
+   },
+   "pru-11": {
+    "ok": true,
+    "input": {
+     "value": "123,45%"
+    }
+   },
+   "pru-12": {
+    "ok": false,
+    "code": "syntax",
+    "message": "comma outside of a function call",
+    "at": 2
+   },
+   "pru-13": {
+    "ok": true,
+    "input": {
+     "value": "(1,1%)"
+    }
+   },
+   "pru-14": {
+    "ok": true,
+    "input": {
+     "value": "%1,1"
+    }
+   },
+   "pru-15": {
+    "ok": true,
+    "input": {
+     "value": "1 000,7%"
+    }
+   },
+   "pru-16": {
+    "ok": true,
+    "input": {
+     "value": "1,1E+0%"
+    }
+   },
+   "pru-17": {
+    "ok": true,
+    "input": {
+     "value": "1,1 ₽%"
+    }
+   },
+   "frac-1": {
+    "ok": true,
+    "input": {
+     "value": 1.6666666666666665,
+     "format": 12
+    }
+   },
+   "frac-2": {
+    "ok": true,
+    "input": {
+     "value": 1.8333333333333335,
+     "format": 12
+    }
+   },
+   "frac-3": {
+    "ok": true,
+    "input": {
+     "value": 2.571428571428571,
+     "format": 12
+    }
+   },
+   "frac-4": {
+    "ok": true,
+    "input": {
+     "value": 1.3636363636363638,
+     "format": 13
+    }
+   },
+   "frac-5": {
+    "ok": true,
+    "input": {
+     "value": 0.016666666666666666,
+     "format": 10
+    }
+   },
+   "frac-6": {
+    "ok": true,
+    "input": {
+     "value": 0.013333333333333332,
+     "format": 10
+    }
+   },
+   "frac-7": {
+    "ok": true,
+    "input": {
+     "value": 0.003333333333333333,
+     "format": 10
+    }
+   },
+   "plain-1": {
+    "ok": true,
+    "input": {
+     "value": 0.011
+    }
+   },
+   "plain-2": {
+    "ok": true,
+    "input": {
+     "value": "0,011"
+    }
+   },
+   "plain-3": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 11
+    }
+   },
+   "plain-4": {
+    "ok": true,
+    "input": {
+     "value": "1,1E-2"
+    }
+   },
+   "plain-5": {
+    "ok": true,
+    "input": {
+     "value": 0.007
+    }
+   },
+   "plain-6": {
+    "ok": true,
+    "input": {
+     "value": "0,007"
+    }
+   }
+  },
+  "ru-RU": {
+   "pen-1": {
+    "ok": true,
+    "input": {
+     "value": "1.1%"
+    }
+   },
+   "pen-2": {
+    "ok": true,
+    "input": {
+     "value": "0.7%"
+    }
+   },
+   "pen-3": {
+    "ok": true,
+    "input": {
+     "value": "1.255%"
+    }
+   },
+   "pen-4": {
+    "ok": true,
+    "input": {
+     "value": "99.9%"
+    }
+   },
+   "pen-5": {
+    "ok": true,
+    "input": {
+     "value": "8.2%"
+    }
+   },
+   "pen-6": {
+    "ok": true,
+    "input": {
+     "value": "33.3%"
+    }
+   },
+   "pen-7": {
+    "ok": true,
+    "input": {
+     "value": "57.1%"
+    }
+   },
+   "pen-8": {
+    "ok": true,
+    "input": {
+     "value": "0.035%"
+    }
+   },
+   "pen-9": {
+    "ok": true,
+    "input": {
+     "value": "1.005%"
+    }
+   },
+   "pen-10": {
+    "ok": true,
+    "input": {
+     "value": "0.07%"
+    }
+   },
+   "pen-11": {
+    "ok": true,
+    "input": {
+     "value": "123.45%"
+    }
+   },
+   "pen-12": {
+    "ok": false,
+    "code": "syntax",
+    "message": "unexpected \".\"",
+    "at": 2
+   },
+   "pen-13": {
+    "ok": true,
+    "input": {
+     "value": "(1.1%)"
+    }
+   },
+   "pen-14": {
+    "ok": true,
+    "input": {
+     "value": "%1.1"
+    }
+   },
+   "pen-15": {
+    "ok": true,
+    "input": {
+     "value": "1,000.7%"
+    }
+   },
+   "pen-16": {
+    "ok": true,
+    "input": {
+     "value": "1.1E+0%"
+    }
+   },
+   "pen-17": {
+    "ok": true,
+    "input": {
+     "value": "$1.1%"
+    }
+   },
+   "pru-1": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 10
+    }
+   },
+   "pru-2": {
+    "ok": true,
+    "input": {
+     "value": 0.007,
+     "format": 10
+    }
+   },
+   "pru-3": {
+    "ok": true,
+    "input": {
+     "value": 0.01255,
+     "format": 10
+    }
+   },
+   "pru-4": {
+    "ok": true,
+    "input": {
+     "value": 0.999,
+     "format": 10
+    }
+   },
+   "pru-5": {
+    "ok": true,
+    "input": {
+     "value": 0.082,
+     "format": 10
+    }
+   },
+   "pru-6": {
+    "ok": true,
+    "input": {
+     "value": 0.333,
+     "format": 10
+    }
+   },
+   "pru-7": {
+    "ok": true,
+    "input": {
+     "value": 0.571,
+     "format": 10
+    }
+   },
+   "pru-8": {
+    "ok": true,
+    "input": {
+     "value": 0.00035,
+     "format": 10
+    }
+   },
+   "pru-9": {
+    "ok": true,
+    "input": {
+     "value": 0.01005,
+     "format": 10
+    }
+   },
+   "pru-10": {
+    "ok": true,
+    "input": {
+     "value": 0.0007,
+     "format": 10
+    }
+   },
+   "pru-11": {
+    "ok": true,
+    "input": {
+     "value": 1.2345,
+     "format": 10
+    }
+   },
+   "pru-12": {
+    "ok": true,
+    "input": {
+     "value": -0.007,
+     "format": 10
+    }
+   },
+   "pru-13": {
+    "ok": true,
+    "input": {
+     "value": -0.011,
+     "format": 10
+    }
+   },
+   "pru-14": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 10
+    }
+   },
+   "pru-15": {
+    "ok": true,
+    "input": {
+     "value": 10.007,
+     "format": 10
+    }
+   },
+   "pru-16": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 11
+    }
+   },
+   "pru-17": {
+    "ok": true,
+    "input": {
+     "value": "1,1 ₽%"
+    }
+   },
+   "frac-1": {
+    "ok": true,
+    "input": {
+     "value": 1.6666666666666665,
+     "format": 12
+    }
+   },
+   "frac-2": {
+    "ok": true,
+    "input": {
+     "value": 1.8333333333333335,
+     "format": 12
+    }
+   },
+   "frac-3": {
+    "ok": true,
+    "input": {
+     "value": 2.571428571428571,
+     "format": 12
+    }
+   },
+   "frac-4": {
+    "ok": true,
+    "input": {
+     "value": 1.3636363636363638,
+     "format": 13
+    }
+   },
+   "frac-5": {
+    "ok": true,
+    "input": {
+     "value": 0.016666666666666666,
+     "format": 10
+    }
+   },
+   "frac-6": {
+    "ok": true,
+    "input": {
+     "value": 0.013333333333333332,
+     "format": 10
+    }
+   },
+   "frac-7": {
+    "ok": true,
+    "input": {
+     "value": 0.003333333333333333,
+     "format": 10
+    }
+   },
+   "plain-1": {
+    "ok": true,
+    "input": {
+     "value": "0.011"
+    }
+   },
+   "plain-2": {
+    "ok": true,
+    "input": {
+     "value": 0.011
+    }
+   },
+   "plain-3": {
+    "ok": true,
+    "input": {
+     "value": "1.1E-2"
+    }
+   },
+   "plain-4": {
+    "ok": true,
+    "input": {
+     "value": 0.011,
+     "format": 11
+    }
+   },
+   "plain-5": {
+    "ok": true,
+    "input": {
+     "value": "0.007"
+    }
+   },
+   "plain-6": {
+    "ok": true,
+    "input": {
+     "value": 0.007
+    }
+   }
+  }
+ }
+}

@@ -12,13 +12,22 @@ const rels = (items: string) => `<Relationships xmlns="http://schemas.openxmlfor
 const one = (v: number) => `<sheetData><row r="1"><c r="A1"><v>${v}</v></c></row></sheetData>`
 
 describe('xlsx reader: sheets', () => {
-  it('sheets in the order the workbook lists them, not by their parts; hidden and very hidden sheets are read and reported', async () => {
-    const f = parts({ sheets: [{ name: 'First', body: one(1) }, { name: 'Second', body: one(2), attrs: 'state="hidden"' }, { name: 'Third', body: one(3), attrs: 'state="veryHidden"' }] })
+  it('sheets in the order the workbook lists them, not by their parts; hidden and very hidden sheets are read so', async () => {
+    const f = parts({ sheets: [{ name: 'First', body: one(1) }, { name: 'Second', body: one(2), attrs: 'state="hidden"' }, { name: 'Third', body: one(3), attrs: 'state="veryHidden"' }, { name: 'Fourth', body: one(4), attrs: 'state="visible"' }] })
     // the workbook lists the third part first
     f['xl/workbook.xml'] = f['xl/workbook.xml']!.replace('<sheet name="First" sheetId="1" r:id="rId1"/>', '').replace('</sheets>', '<sheet name="First" sheetId="1" r:id="rId1"/></sheets>')
     const r = await readXlsx(await pack(f))
-    expect(r.book.sheets.map((s) => [s.name, s.cells.A1.value])).toEqual([['Second', 2], ['Third', 3], ['First', 1]])
-    expect(r.issues.map((i) => `${i.code} ${i.sheet}`)).toEqual(['hidden Second', 'hidden Third'])
+    expect(r.book.sheets.map((s) => [s.name, s.cells.A1.value, s.hidden])).toEqual([['Second', 2, true], ['Third', 3, 'very'], ['Fourth', 4, undefined], ['First', 1, undefined]])
+    expect(r.issues).toEqual([])
+  })
+
+  it('a file whose every worksheet is hidden (beside a chart sheet) shows its first worksheet, reported', async () => {
+    const f = parts({ sheets: [{ name: 'Data', body: one(1), attrs: 'state="hidden"' }, { name: 'More', body: one(2), attrs: 'state="veryHidden"' }] })
+    f['xl/workbook.xml'] = f['xl/workbook.xml']!.replace('<sheets>', '<sheets><sheet name="Chart1" sheetId="9" r:id="rIdC"/>')
+    f['xl/_rels/workbook.xml.rels'] = f['xl/_rels/workbook.xml.rels']!.replace('</Relationships>', `<Relationship Id="rIdC" Type="${REL}/chartsheet" Target="chartsheets/sheet1.xml"/></Relationships>`)
+    const r = await readXlsx(await pack(f))
+    expect(r.book.sheets.map((s) => [s.name, s.hidden])).toEqual([['Data', undefined], ['More', 'very']])
+    expect(r.issues.map((i) => `${i.code} ${i.sheet}`)).toEqual(['sheetKind Chart1', 'hidden Data'])
   })
 
   it('chart, dialog and macro sheets among the sheets are left out; a name scoped to one too', async () => {

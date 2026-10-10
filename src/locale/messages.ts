@@ -91,6 +91,8 @@ export interface MessageParams {
   sheetNameHistory: object
   sheetNameTaken: { name: string }
   lastSheet: object
+  lastVisibleSheet: { sheet: string }
+  veryHidden: { sheet: string }
   insertOffSheet: { count: number; lines: Lines; sheet: string; cell: string }
   insertMergeOffSheet: { count: number; lines: Lines; sheet: string }
   arrayPart: { sheet: string; cell: string; area: string }

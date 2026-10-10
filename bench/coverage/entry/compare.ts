@@ -2,7 +2,8 @@
  * `parseEntry`'s answer against what Excel made of the same text: refused or taken alike, and a taken text's value or
  * formula and format equal to the cell Excel saved. Formulas compare by their canonical text (Excel keeps the spaces
  * typed). Formats compare by what they show in the locale: a few values shown by each (Excel saves a built-in money format
- * by its code, `d mmmm yyyy` as `d\ mmmm\ yyyy`). Numbers compare to 15 significant digits, as Excel writes them.
+ * by its code, `d mmmm yyyy` as `d\ mmmm\ yyyy`). Numbers compare exactly: the value is the one stored in the cell, which
+ * Excel writes to the file with every digit (`1.255%` is 0.01255, not 1.255/100).
  */
 import type { CellInput, EntryResult, NumberFormat } from '../../../src/contract.js'
 import { displayValue, validateFormula } from '../../../src/index.js'
@@ -20,7 +21,7 @@ const canonical = (f: string) => {
   return v.ok ? v.canonical : f
 }
 
-const same = (a: unknown, b: unknown) => (typeof a === 'number' && typeof b === 'number' ? a === b || Number(a.toPrecision(15)) === Number(b.toPrecision(15)) : a === b)
+const same = (a: unknown, b: unknown) => a === b
 
 /** The parts of a cell that are compared: its value or formula, and its format as the locale shows it. */
 const held = (c: CellInput | null, tag: string) => ({

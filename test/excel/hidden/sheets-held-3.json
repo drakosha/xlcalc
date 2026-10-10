@@ -1,0 +1,738 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 23.2
+ },
+ "books": {
+  "plain": {
+   "sheets": [
+    {
+     "name": "Jan",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "Feb",
+     "cells": {
+      "B2": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "Mar",
+     "cells": {
+      "B2": {
+       "value": 100
+      }
+     }
+    },
+    {
+     "name": "Apr",
+     "cells": {
+      "B2": {
+       "value": 1000
+      }
+     }
+    },
+    {
+     "name": "Sum",
+     "cells": {
+      "A1": {
+       "formula": "IFERROR(SUM('Jan:Mar'!B2),\"ref\")"
+      },
+      "A2": {
+       "formula": "IFERROR(SUM('Feb:Apr'!B2),\"ref\")"
+      },
+      "A3": {
+       "formula": "IFERROR(SUM('Jan:Apr'!B2),\"ref\")"
+      }
+     }
+    }
+   ]
+  },
+  "tail": {
+   "sheets": [
+    {
+     "name": "Jan",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "Feb",
+     "cells": {
+      "B2": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "Mar",
+     "cells": {
+      "B2": {
+       "value": 100
+      }
+     }
+    },
+    {
+     "name": "Apr",
+     "cells": {
+      "B2": {
+       "value": 1000
+      }
+     },
+     "hidden": true
+    },
+    {
+     "name": "Sum",
+     "cells": {
+      "A1": {
+       "formula": "IFERROR(SUM('Jan:Mar'!B2),\"ref\")"
+      },
+      "A2": {
+       "formula": "IFERROR(SUM('Feb:Apr'!B2),\"ref\")"
+      },
+      "A3": {
+       "formula": "IFERROR(SUM('Jan:Apr'!B2),\"ref\")"
+      }
+     },
+     "hidden": true
+    }
+   ]
+  },
+  "head": {
+   "sheets": [
+    {
+     "name": "Jan",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     },
+     "hidden": true
+    },
+    {
+     "name": "Feb",
+     "cells": {
+      "B2": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "Mar",
+     "cells": {
+      "B2": {
+       "value": 100
+      }
+     }
+    },
+    {
+     "name": "Apr",
+     "cells": {
+      "B2": {
+       "value": 1000
+      }
+     }
+    },
+    {
+     "name": "Sum",
+     "cells": {
+      "A1": {
+       "formula": "IFERROR(SUM('Jan:Mar'!B2),\"ref\")"
+      },
+      "A2": {
+       "formula": "IFERROR(SUM('Feb:Apr'!B2),\"ref\")"
+      },
+      "A3": {
+       "formula": "IFERROR(SUM('Jan:Apr'!B2),\"ref\")"
+      }
+     }
+    }
+   ]
+  },
+  "middle": {
+   "sheets": [
+    {
+     "name": "Jan",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "Feb",
+     "cells": {
+      "B2": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "Mar",
+     "cells": {
+      "B2": {
+       "value": 100
+      }
+     },
+     "hidden": true
+    },
+    {
+     "name": "Apr",
+     "cells": {
+      "B2": {
+       "value": 1000
+      }
+     },
+     "hidden": true
+    },
+    {
+     "name": "Sum",
+     "cells": {
+      "A1": {
+       "formula": "IFERROR(SUM('Jan:Mar'!B2),\"ref\")"
+      },
+      "A2": {
+       "formula": "IFERROR(SUM('Feb:Apr'!B2),\"ref\")"
+      },
+      "A3": {
+       "formula": "IFERROR(SUM('Jan:Apr'!B2),\"ref\")"
+      }
+     }
+    }
+   ]
+  },
+  "middleTail": {
+   "sheets": [
+    {
+     "name": "Jan",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "Feb",
+     "cells": {
+      "B2": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "Mar",
+     "cells": {
+      "B2": {
+       "value": 100
+      }
+     },
+     "hidden": true
+    },
+    {
+     "name": "Apr",
+     "cells": {
+      "B2": {
+       "value": 1000
+      }
+     },
+     "hidden": true
+    },
+    {
+     "name": "Sum",
+     "cells": {
+      "A1": {
+       "formula": "IFERROR(SUM('Jan:Mar'!B2),\"ref\")"
+      },
+      "A2": {
+       "formula": "IFERROR(SUM('Feb:Apr'!B2),\"ref\")"
+      },
+      "A3": {
+       "formula": "IFERROR(SUM('Jan:Apr'!B2),\"ref\")"
+      }
+     },
+     "hidden": true
+    }
+   ]
+  },
+  "sumVery": {
+   "sheets": [
+    {
+     "name": "Jan",
+     "cells": {
+      "B2": {
+       "value": 1
+      }
+     }
+    },
+    {
+     "name": "Feb",
+     "cells": {
+      "B2": {
+       "value": 10
+      }
+     }
+    },
+    {
+     "name": "Mar",
+     "cells": {
+      "B2": {
+       "value": 100
+      }
+     }
+    },
+    {
+     "name": "Apr",
+     "cells": {
+      "B2": {
+       "value": 1000
+      }
+     }
+    },
+    {
+     "name": "Sum",
+     "cells": {
+      "A1": {
+       "formula": "IFERROR(SUM('Jan:Mar'!B2),\"ref\")"
+      },
+      "A2": {
+       "formula": "IFERROR(SUM('Feb:Apr'!B2),\"ref\")"
+      },
+      "A3": {
+       "formula": "IFERROR(SUM('Jan:Apr'!B2),\"ref\")"
+      }
+     },
+     "hidden": "very"
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "end-high-inward",
+   "book": "plain",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Mar",
+    "before": "Feb"
+   }
+  },
+  {
+   "id": "end-low-outward",
+   "book": "plain",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Feb",
+    "before": "Jan"
+   }
+  },
+  {
+   "id": "end-high-past-low",
+   "book": "plain",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Apr",
+    "before": "Jan"
+   }
+  },
+  {
+   "id": "end-low-to-end",
+   "book": "plain",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Jan"
+   }
+  },
+  {
+   "id": "end-high-between",
+   "book": "plain",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Apr",
+    "before": "Feb"
+   }
+  },
+  {
+   "id": "end-past-hidden-tail",
+   "book": "tail",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Jan"
+   }
+  },
+  {
+   "id": "before-hidden-first",
+   "book": "head",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Apr",
+    "before": "Jan"
+   }
+  },
+  {
+   "id": "hidden-to-end",
+   "book": "middle",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Mar"
+   }
+  },
+  {
+   "id": "hidden-to-end-hidden-tail",
+   "book": "middleTail",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Mar"
+   }
+  },
+  {
+   "id": "before-very-last",
+   "book": "sumVery",
+   "op": {
+    "op": "moveSheet",
+    "sheet": "Feb",
+    "before": "Sum"
+   }
+  }
+ ],
+ "read": {
+  "sheet": "Sum",
+  "cells": [
+   "A1",
+   "A2",
+   "A3"
+  ]
+ },
+ "sent": {
+  "end-high-inward": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
+  "end-low-outward": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
+  "end-high-past-low": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
+  "end-low-to-end": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
+  "end-high-between": "8a1a4f3df3ebb7cc4773fdb7c8f522bf88972431e01361019d10939700cf270e",
+  "end-past-hidden-tail": "d1219500a6dd6f92a1b2e85980e1fbd4f936a25394b02e860ec60865553375b1",
+  "before-hidden-first": "1a4095e1a4effa432f5a2251a3f5023e5dda10aea47bc7faaefd564dd04e9a6a",
+  "hidden-to-end": "562b648811326eab8f1561032ccaa76d5ea96db099dfcd6a1ff51adb621f82c2",
+  "hidden-to-end-hidden-tail": "36ca7d5f99958523d31dcfabb7815ec28b24aac8444f509a9c29beb28dd9e0e4",
+  "before-very-last": "db992a1beac25af002d7f480dea7c67a70d150611cf6ddb606ae4ff172f1db34"
+ },
+ "answers": {
+  "end-high-inward": {
+   "opened": "Jan",
+   "active": "Mar",
+   "sheets": [
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Sum",
+     -1
+    ]
+   ],
+   "values": [
+    101,
+    1010,
+    1111
+   ]
+  },
+  "end-low-outward": {
+   "opened": "Jan",
+   "active": "Feb",
+   "sheets": [
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Sum",
+     -1
+    ]
+   ],
+   "values": [
+    101,
+    1111,
+    1101
+   ]
+  },
+  "end-high-past-low": {
+   "opened": "Jan",
+   "active": "Apr",
+   "sheets": [
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Sum",
+     -1
+    ]
+   ],
+   "values": [
+    111,
+    110,
+    111
+   ]
+  },
+  "end-low-to-end": {
+   "opened": "Jan",
+   "active": "Jan",
+   "sheets": [
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Sum",
+     -1
+    ],
+    [
+     "Jan",
+     -1
+    ]
+   ],
+   "values": [
+    110,
+    1110,
+    1110
+   ]
+  },
+  "end-high-between": {
+   "opened": "Jan",
+   "active": "Apr",
+   "sheets": [
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Sum",
+     -1
+    ]
+   ],
+   "values": [
+    1111,
+    110,
+    1001
+   ]
+  },
+  "end-past-hidden-tail": {
+   "opened": "Jan",
+   "active": "Jan",
+   "sheets": [
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Apr",
+     0
+    ],
+    [
+     "Sum",
+     0
+    ]
+   ],
+   "values": [
+    110,
+    1111,
+    1001
+   ]
+  },
+  "before-hidden-first": {
+   "opened": "Feb",
+   "active": "Apr",
+   "sheets": [
+    [
+     "Jan",
+     0
+    ],
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Sum",
+     -1
+    ]
+   ],
+   "values": [
+    1111,
+    110,
+    1001
+   ]
+  },
+  "hidden-to-end": {
+   "opened": "Jan",
+   "active": "Sum",
+   "sheets": [
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Apr",
+     0
+    ],
+    [
+     "Sum",
+     -1
+    ],
+    [
+     "Mar",
+     0
+    ]
+   ],
+   "values": [
+    1111,
+    1010,
+    1011
+   ]
+  },
+  "hidden-to-end-hidden-tail": {
+   "opened": "Jan",
+   "active": "Feb",
+   "sheets": [
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Mar",
+     0
+    ],
+    [
+     "Apr",
+     0
+    ],
+    [
+     "Sum",
+     0
+    ]
+   ],
+   "values": [
+    111,
+    1110,
+    1111
+   ]
+  },
+  "before-very-last": {
+   "opened": "Jan",
+   "active": "Feb",
+   "sheets": [
+    [
+     "Jan",
+     -1
+    ],
+    [
+     "Mar",
+     -1
+    ],
+    [
+     "Apr",
+     -1
+    ],
+    [
+     "Feb",
+     -1
+    ],
+    [
+     "Sum",
+     2
+    ]
+   ],
+   "values": [
+    101,
+    1100,
+    1101
+   ]
+  }
+ }
+}

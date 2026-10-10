@@ -285,8 +285,8 @@ function checkFrozen(v: unknown, path: string) {
 }
 
 /**
- * The book: sheets with unique names by Excel's rules (compared case-insensitively), cells by A1 address,
- * columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles.
+ * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
+ * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles.
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
@@ -304,7 +304,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline'])
+    onlyKeys(sheet, p, ['name', 'cells', 'columns', 'rows', 'merges', 'filtered', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -330,7 +330,11 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
     if (sheet.conditionalFormats !== undefined) checkConditionalFormats(sheet.conditionalFormats, `${p}.conditionalFormats`)
     if (sheet.validations !== undefined) checkValidations(sheet.validations, `${p}.validations`)
     if (sheet.outline !== undefined) checkOutline(sheet.outline, `${p}.outline`)
+    if (sheet.hidden !== undefined && sheet.hidden !== true && sheet.hidden !== false && sheet.hidden !== 'very') throw new InputError(`${p}.hidden`, `expected true, false or "very", got ${what(sheet.hidden)}`)
   })
+  // Excel keeps one visible sheet at least
+  const sheets = book.sheets as { hidden?: unknown }[]
+  if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
   return book as unknown as BookInput
