@@ -1,0 +1,1059 @@
+{
+ "now": "2026-10-10",
+ "locales": {
+  "en-US": {
+   "value-date-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026"
+    }
+   },
+   "value-date-2": {
+    "width": null,
+    "texts": {
+     "1": "15-Mar-26"
+    }
+   },
+   "value-date-3": {
+    "width": 19.1640625,
+    "texts": {
+     "1": "Sunday, March 15, 2026"
+    }
+   },
+   "value-date-4": {
+    "width": 14,
+    "texts": {
+     "1": "3/15/2026 18:30"
+    }
+   },
+   "value-money-1": {
+    "width": 12.6640625,
+    "texts": {
+     "1": "$1,234,567.50 "
+    }
+   },
+   "value-money-2": {
+    "width": null,
+    "texts": {
+     "1": "$5 "
+    }
+   },
+   "value-pct-1": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "12345678%"
+    }
+   },
+   "value-group-1": {
+    "width": 12.33203125,
+    "texts": {
+     "1": "1,234,567,890"
+    }
+   },
+   "value-general-1": {
+    "width": 10.83203125,
+    "texts": {
+     "1": "1234567890"
+    }
+   },
+   "value-general-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678901"
+    }
+   },
+   "value-general-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   },
+   "value-general-4": {
+    "width": null,
+    "texts": {
+     "1": "1234567"
+    }
+   },
+   "value-general-5": {
+    "width": 10.33203125,
+    "texts": {
+     "1": "-123456789"
+    }
+   },
+   "value-general-6": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "3.141592654"
+    }
+   },
+   "value-general-7": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "0.000001234"
+    }
+   },
+   "value-sci-1": {
+    "width": 9,
+    "texts": {
+     "1": "1.50E+300"
+    }
+   },
+   "value-formatted-1": {
+    "width": 11.33203125,
+    "texts": {
+     "1": "1,234,567.00"
+    }
+   },
+   "value-formatted-2": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "1234567.00%"
+    }
+   },
+   "value-formula-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026"
+    }
+   },
+   "value-formula-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678900"
+    }
+   },
+   "value-formula-3": {
+    "width": 11.33203125,
+    "texts": {
+     "1": "1,234,567.00"
+    }
+   },
+   "value-text-1": {
+    "width": null,
+    "texts": {
+     "1": "abcdefghijklmnopqrstuvwxyz"
+    }
+   },
+   "value-text-2": {
+    "width": null,
+    "texts": {
+     "1": "TRUE"
+    }
+   },
+   "value-hand-1": {
+    "width": 5,
+    "texts": {
+     "1": "#####"
+    }
+   },
+   "value-hand-2": {
+    "width": 8.83203125,
+    "texts": {
+     "1": "#########"
+    }
+   },
+   "value-fitted-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "ab"
+    }
+   },
+   "value-fitted-2": {
+    "width": 19.5,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "a long text in the column"
+    }
+   },
+   "value-turn-1": {
+    "width": 23.33203125,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "1",
+     "3": "Thursday, December 31, 2026",
+     "4": "5"
+    }
+   },
+   "value-turn-2": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "123456789",
+     "2": "3/15/2026"
+    }
+   },
+   "local-date-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026"
+    }
+   },
+   "local-date-2": {
+    "width": null,
+    "texts": {
+     "1": "15-Mar-26"
+    }
+   },
+   "local-date-3": {
+    "width": 19.1640625,
+    "texts": {
+     "1": "Sunday, March 15, 2026"
+    }
+   },
+   "local-date-4": {
+    "width": 14,
+    "texts": {
+     "1": "3/15/2026 18:30"
+    }
+   },
+   "local-money-1": {
+    "width": 12.6640625,
+    "texts": {
+     "1": "$1,234,567.50 "
+    }
+   },
+   "local-money-2": {
+    "width": null,
+    "texts": {
+     "1": "$5 "
+    }
+   },
+   "local-pct-1": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "12345678%"
+    }
+   },
+   "local-group-1": {
+    "width": 12.33203125,
+    "texts": {
+     "1": "1,234,567,890"
+    }
+   },
+   "local-general-1": {
+    "width": 10.83203125,
+    "texts": {
+     "1": "1234567890"
+    }
+   },
+   "local-general-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678901"
+    }
+   },
+   "local-general-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   },
+   "local-general-4": {
+    "width": null,
+    "texts": {
+     "1": "1234567"
+    }
+   },
+   "local-general-5": {
+    "width": 10.33203125,
+    "texts": {
+     "1": "-123456789"
+    }
+   },
+   "local-general-6": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "3.141592654"
+    }
+   },
+   "local-general-7": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "0.000001234"
+    }
+   },
+   "local-sci-1": {
+    "width": 9,
+    "texts": {
+     "1": "1.50E+300"
+    }
+   },
+   "local-formatted-1": {
+    "width": 11.33203125,
+    "texts": {
+     "1": "1,234,567.00"
+    }
+   },
+   "local-formatted-2": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "1234567.00%"
+    }
+   },
+   "local-formula-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026"
+    }
+   },
+   "local-formula-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678900"
+    }
+   },
+   "local-formula-3": {
+    "width": 11.33203125,
+    "texts": {
+     "1": "1,234,567.00"
+    }
+   },
+   "local-text-1": {
+    "width": null,
+    "texts": {
+     "1": "abcdefghijklmnopqrstuvwxyz"
+    }
+   },
+   "local-text-2": {
+    "width": null,
+    "texts": {
+     "1": "TRUE"
+    }
+   },
+   "local-hand-1": {
+    "width": 5,
+    "texts": {
+     "1": "#####"
+    }
+   },
+   "local-hand-2": {
+    "width": 8.83203125,
+    "texts": {
+     "1": "#########"
+    }
+   },
+   "local-fitted-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "ab"
+    }
+   },
+   "local-fitted-2": {
+    "width": 19.5,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "a long text in the column"
+    }
+   },
+   "local-turn-1": {
+    "width": 23.33203125,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "1",
+     "3": "Thursday, December 31, 2026",
+     "4": "5"
+    }
+   },
+   "local-turn-2": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "123456789",
+     "2": "3/15/2026"
+    }
+   },
+   "keys-date-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026"
+    }
+   },
+   "keys-date-2": {
+    "width": null,
+    "texts": {
+     "1": "15-Mar-26"
+    }
+   },
+   "keys-date-3": {
+    "width": 19.1640625,
+    "texts": {
+     "1": "Sunday, March 15, 2026"
+    }
+   },
+   "keys-date-4": {
+    "width": 14,
+    "texts": {
+     "1": "3/15/2026 18:30"
+    }
+   },
+   "keys-money-1": {
+    "width": 12.6640625,
+    "texts": {
+     "1": "$1,234,567.50 "
+    }
+   },
+   "keys-money-2": {
+    "width": null,
+    "texts": {
+     "1": "$5 "
+    }
+   },
+   "keys-pct-1": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "12345678%"
+    }
+   },
+   "keys-group-1": {
+    "width": 12.33203125,
+    "texts": {
+     "1": "1,234,567,890"
+    }
+   },
+   "keys-general-1": {
+    "width": 10.83203125,
+    "texts": {
+     "1": "1234567890"
+    }
+   },
+   "keys-general-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678901"
+    }
+   },
+   "keys-general-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1.23457E+11"
+    }
+   },
+   "keys-general-4": {
+    "width": null,
+    "texts": {
+     "1": "1234567"
+    }
+   },
+   "keys-general-5": {
+    "width": 10.33203125,
+    "texts": {
+     "1": "-123456789"
+    }
+   },
+   "keys-general-6": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "3.141592654"
+    }
+   },
+   "keys-general-7": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "0.000001234"
+    }
+   },
+   "keys-sci-1": {
+    "width": 9,
+    "texts": {
+     "1": "1.50E+300"
+    }
+   },
+   "keys-formatted-1": {
+    "width": 11.33203125,
+    "texts": {
+     "1": "1,234,567.00"
+    }
+   },
+   "keys-formatted-2": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "1234567.00%"
+    }
+   },
+   "keys-formula-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026"
+    }
+   },
+   "keys-formula-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678900"
+    }
+   },
+   "keys-formula-3": {
+    "width": 11.33203125,
+    "texts": {
+     "1": "1,234,567.00"
+    }
+   },
+   "keys-text-1": {
+    "width": null,
+    "texts": {
+     "1": "abcdefghijklmnopqrstuvwxyz"
+    }
+   },
+   "keys-text-2": {
+    "width": null,
+    "texts": {
+     "1": "TRUE"
+    }
+   },
+   "keys-hand-1": {
+    "width": 5,
+    "texts": {
+     "1": "#####"
+    }
+   },
+   "keys-hand-2": {
+    "width": 8.83203125,
+    "texts": {
+     "1": "#########"
+    }
+   },
+   "keys-fitted-1": {
+    "width": 9.1640625,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "ab"
+    }
+   },
+   "keys-fitted-2": {
+    "width": 19.5,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "a long text in the column"
+    }
+   },
+   "keys-turn-1": {
+    "width": 23.33203125,
+    "texts": {
+     "1": "3/15/2026",
+     "2": "1",
+     "3": "Thursday, December 31, 2026",
+     "4": "5"
+    }
+   },
+   "keys-turn-2": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "123456789",
+     "2": "3/15/2026"
+    }
+   }
+  },
+  "ru-RU": {
+   "value-date-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "value-date-2": {
+    "width": null,
+    "texts": {
+     "1": "15.мар.26"
+    }
+   },
+   "value-date-3": {
+    "width": 22.5,
+    "texts": {
+     "1": "воскресенье, Март 15, 2026"
+    }
+   },
+   "value-date-4": {
+    "width": 14.6640625,
+    "texts": {
+     "1": "15.03.2026 18:30"
+    }
+   },
+   "value-money-1": {
+    "width": 12.33203125,
+    "texts": {
+     "1": "1 234 567,50 ₽"
+    }
+   },
+   "value-money-2": {
+    "width": null,
+    "texts": {
+     "1": "5 ₽"
+    }
+   },
+   "value-pct-1": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "12345678%"
+    }
+   },
+   "value-group-1": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1 234 567 890"
+    }
+   },
+   "value-general-1": {
+    "width": 10.83203125,
+    "texts": {
+     "1": "1234567890"
+    }
+   },
+   "value-general-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678901"
+    }
+   },
+   "value-general-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   },
+   "value-general-4": {
+    "width": null,
+    "texts": {
+     "1": "1234567"
+    }
+   },
+   "value-general-5": {
+    "width": 10.33203125,
+    "texts": {
+     "1": "-123456789"
+    }
+   },
+   "value-general-6": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "3,141592654"
+    }
+   },
+   "value-general-7": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "0,000001234"
+    }
+   },
+   "value-sci-1": {
+    "width": 9,
+    "texts": {
+     "1": "1,50E+300"
+    }
+   },
+   "value-formatted-1": {
+    "width": 11,
+    "texts": {
+     "1": "1 234 567,00"
+    }
+   },
+   "value-formatted-2": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "1234567,00%"
+    }
+   },
+   "value-formula-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "value-formula-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678900"
+    }
+   },
+   "value-formula-3": {
+    "width": 11,
+    "texts": {
+     "1": "1 234 567,00"
+    }
+   },
+   "value-text-1": {
+    "width": null,
+    "texts": {
+     "1": "abcdefghijklmnopqrstuvwxyz"
+    }
+   },
+   "value-text-2": {
+    "width": null,
+    "texts": {
+     "1": "ИСТИНА"
+    }
+   },
+   "value-hand-1": {
+    "width": 5,
+    "texts": {
+     "1": "#####"
+    }
+   },
+   "value-hand-2": {
+    "width": 8.83203125,
+    "texts": {
+     "1": "#########"
+    }
+   },
+   "value-fitted-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "ab"
+    }
+   },
+   "value-fitted-2": {
+    "width": 19.5,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "a long text in the column"
+    }
+   },
+   "value-turn-1": {
+    "width": 21,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "1",
+     "3": "четверг, Декабрь 31, 2026",
+     "4": "5"
+    }
+   },
+   "value-turn-2": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "123456789",
+     "2": "15.03.2026"
+    }
+   },
+   "local-date-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "local-date-2": {
+    "width": null,
+    "texts": {
+     "1": "15.мар.26"
+    }
+   },
+   "local-date-3": {
+    "width": 22.5,
+    "texts": {
+     "1": "воскресенье, Март 15, 2026"
+    }
+   },
+   "local-date-4": {
+    "width": 14.6640625,
+    "texts": {
+     "1": "15.03.2026 18:30"
+    }
+   },
+   "local-money-1": {
+    "width": 12.33203125,
+    "texts": {
+     "1": "1 234 567,50 ₽"
+    }
+   },
+   "local-money-2": {
+    "width": null,
+    "texts": {
+     "1": "5 ₽"
+    }
+   },
+   "local-pct-1": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "12345678%"
+    }
+   },
+   "local-group-1": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1 234 567 890"
+    }
+   },
+   "local-general-1": {
+    "width": 10.83203125,
+    "texts": {
+     "1": "1234567890"
+    }
+   },
+   "local-general-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678901"
+    }
+   },
+   "local-general-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   },
+   "local-general-4": {
+    "width": null,
+    "texts": {
+     "1": "1234567"
+    }
+   },
+   "local-general-5": {
+    "width": 10.33203125,
+    "texts": {
+     "1": "-123456789"
+    }
+   },
+   "local-general-6": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "3,141592654"
+    }
+   },
+   "local-general-7": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "0,000001234"
+    }
+   },
+   "local-sci-1": {
+    "width": 9,
+    "texts": {
+     "1": "1,50E+300"
+    }
+   },
+   "local-formatted-1": {
+    "width": 11,
+    "texts": {
+     "1": "1 234 567,00"
+    }
+   },
+   "local-formatted-2": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "1234567,00%"
+    }
+   },
+   "local-formula-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "local-formula-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678900"
+    }
+   },
+   "local-formula-3": {
+    "width": 11,
+    "texts": {
+     "1": "1 234 567,00"
+    }
+   },
+   "local-text-1": {
+    "width": null,
+    "texts": {
+     "1": "abcdefghijklmnopqrstuvwxyz"
+    }
+   },
+   "local-text-2": {
+    "width": null,
+    "texts": {
+     "1": "ИСТИНА"
+    }
+   },
+   "local-hand-1": {
+    "width": 5,
+    "texts": {
+     "1": "#####"
+    }
+   },
+   "local-hand-2": {
+    "width": 8.83203125,
+    "texts": {
+     "1": "#########"
+    }
+   },
+   "local-fitted-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "ab"
+    }
+   },
+   "local-fitted-2": {
+    "width": 19.5,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "a long text in the column"
+    }
+   },
+   "local-turn-1": {
+    "width": 21,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "1",
+     "3": "четверг, Декабрь 31, 2026",
+     "4": "5"
+    }
+   },
+   "local-turn-2": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "123456789",
+     "2": "15.03.2026"
+    }
+   },
+   "keys-date-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026"
+    }
+   },
+   "keys-date-2": {
+    "width": 22.5,
+    "texts": {
+     "1": "воскресенье, Март 15, 2026"
+    }
+   },
+   "keys-date-3": {
+    "width": 14.6640625,
+    "texts": {
+     "1": "15.03.2026 18:30"
+    }
+   },
+   "keys-pct-1": {
+    "width": 10.1640625,
+    "texts": {
+     "1": "12345678%"
+    }
+   },
+   "keys-group-1": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1 234 567 890"
+    }
+   },
+   "keys-general-1": {
+    "width": 10.83203125,
+    "texts": {
+     "1": "1234567890"
+    }
+   },
+   "keys-general-2": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678901"
+    }
+   },
+   "keys-general-3": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "1,23457E+11"
+    }
+   },
+   "keys-general-4": {
+    "width": null,
+    "texts": {
+     "1": "1234567"
+    }
+   },
+   "keys-general-5": {
+    "width": 10.33203125,
+    "texts": {
+     "1": "-123456789"
+    }
+   },
+   "keys-general-6": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "3,141592654"
+    }
+   },
+   "keys-general-7": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "0,000001234"
+    }
+   },
+   "keys-sci-1": {
+    "width": 9,
+    "texts": {
+     "1": "1,50E+300"
+    }
+   },
+   "keys-formatted-1": {
+    "width": 11,
+    "texts": {
+     "1": "1 234 567,00"
+    }
+   },
+   "keys-formatted-2": {
+    "width": 11.6640625,
+    "texts": {
+     "1": "1234567,00%"
+    }
+   },
+   "keys-formula-1": {
+    "width": 11.83203125,
+    "texts": {
+     "1": "12345678900"
+    }
+   },
+   "keys-formula-2": {
+    "width": 11,
+    "texts": {
+     "1": "1 234 567,00"
+    }
+   },
+   "keys-text-1": {
+    "width": null,
+    "texts": {
+     "1": "abcdefghijklmnopqrstuvwxyz"
+    }
+   },
+   "keys-hand-1": {
+    "width": 5,
+    "texts": {
+     "1": "#####"
+    }
+   },
+   "keys-hand-2": {
+    "width": 8.83203125,
+    "texts": {
+     "1": "#########"
+    }
+   },
+   "keys-fitted-1": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "ab"
+    }
+   },
+   "keys-fitted-2": {
+    "width": 19.5,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "a long text in the column"
+    }
+   },
+   "keys-turn-1": {
+    "width": 21,
+    "texts": {
+     "1": "15.03.2026",
+     "2": "1",
+     "3": "четверг, Декабрь 31, 2026",
+     "4": "5"
+    }
+   },
+   "keys-turn-2": {
+    "width": 9.83203125,
+    "texts": {
+     "1": "123456789",
+     "2": "15.03.2026"
+    }
+   }
+  }
+ }
+}
