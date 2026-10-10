@@ -184,7 +184,7 @@ function eqKey(v: CritValue, rules: CritRules): string | null {
   return null
 }
 
-function critKey(c: Crit): string | null {
+export function critKey(c: Crit): string | null {
   if (c.op !== '=') return null
   if (c.kind === 'str') return 's' + c.s
   if (c.kind === 'num') return 'n' + to15(c.n)

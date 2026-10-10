@@ -43,6 +43,8 @@ Single-range SUM, COUNT, COUNTA, MIN, MAX and AVERAGE, plus COUNTIF and one-pair
 
 AVERAGE shares its compensation and constant-input rules with the statistical functions (`statistical/sum.ts`). An intermediate overflow falls back to the existing exact calculation. COUNTIF uses the same equality keys and scan rules as the criteria index. It retains at most 64 criteria per runtime, with prefix states counted against the heap's cache budget. If matching the criterion or a cell's text reads the clock's year, its states are discarded so every caller keeps that clock dependency. Blank cells beyond the stored part count by the referenced size.
 
+Different equality criteria over the same range keep using the ordinary shared index after the first distinct criterion is observed; an already cached exact count remains a direct hit. This optional materialization must fit both `limits.cells` and the cache budget's conservative storage estimate. Otherwise the count stays streaming. The range-query history is itself invalidated and budgeted. `test/prefix-statistics.test.ts` checks that changing criteria does not repeatedly read the whole range, and that a tight cache budget or allocation limit cannot trigger the optional large index.
+
 Addition stays in the original row-major order. Intermediate sums are not fitted to Excel's number range: premature rounding would lose subnormal contributions or change the error returned after overflow. Horizontal ranges extend by columns; taller ranges extend by whole rows of the same referenced width. Extending a multi-row range by columns would reorder additions and is not reused.
 
 An edit invalidates states through the same range index as the value cache. Spills use that invalidation path too. Before a batch of at least 64 formulas, scalar summaries intersecting its per-sheet bounding rectangles are dropped together, avoiding one prefix-cache scan per changed formula. This does not discard materialized range snapshots. Multi-argument numeric aggregates, arrays, unions and COUNTIFS with several criteria use the existing argument path. A streaming range is not made into an array, so `limits.cells` does not bound its referenced size, including in a pool. Materializing fallbacks, including AVERAGE after an overflowing compensated sum, retain the allocation check.
@@ -105,11 +107,16 @@ Three alternating measured pairs after warmup, and fifteen edits, against `08cdb
 | 10,000 running AVERAGE formulas | 505 / 72 | 466 / 19 |
 | 10,000 running COUNTA formulas | 179 / 69 | 104 / 16 |
 | 10,000 running COUNTIF formulas, criterion `">0"` | 549 / 81 | 385 / 22 |
+| 10,000 running COUNTIF formulas, criterion `1` | 1,580 / 80 | 1,154 / 22 |
 | 5,000 prefix SUMs over values | 46 / 40 | 9.4 / 9.3 |
 
 An independent comparison covered 360 session states with both execution modes, both locales, mixed types, errors, criterion changes, year-dependent text, sheet growth, clock changes, overlapping spills and structural edits. Values, issues, spill fields and both hashes matched. Another 1,320 statistical values matched the Fraction/Decimal reference. `test/prefix-statistics.test.ts` pins read work, compensation, overflow fallback, error order, clock dependencies and allocation limits. The cache-budget tests cover both materialized ranges and scalar prefix states.
 
+The complementary workload, 1,000 COUNTIF equality queries with different keys over the same 34,000-row range, retained its shared index. Opening took 30.5/34.0 ms and replacing all query keys in one batch 5.7/5.6 ms (before/after). The first streaming read adds a small startup cost; it does not turn the repeated indexed queries into full scans.
+
 All four larger books (SUM over formula-produced inputs, AVERAGE, COUNTA, COUNTIF) opened and edited at 34,000 rows in a pool thread of 384 MB, in both modes, with full-computation hashes. In one run with closures, opening took 365/271/266/304 ms respectively; the edits took 207/74/73/87 ms. Eval took 738/468/489/515 ms to open and 218/83/80/86 ms to edit. These pool numbers are individual runs, not medians.
+
+The numeric-equality COUNTIF variant at 34,000 rows also passed in the same 384 MB pool: 369/101 ms to open/edit with closures and 551/130 ms with eval, with the synchronous hash in both runs.
 
 Ordinary books are not affected: the synthetic book of 34,000 rows keeps 3.6 MiB by the estimate. Two rounds of alternating pairs with the engine without the budget at a load average of 3 to 5, cold full computation, median of five: 185/196 and 184/185 ms with closures, 194/197 and 183/183 ms with eval at 3,400 rows; 1,599/1,581 and 1,589/1,610 ms with closures, 1,591/1,659 and 1,600/1,601 ms with eval at 34,000 rows; hashes `101578a9c6b600b1` and `e64d5f4d0f0ac632` unchanged. A session of the synthetic book of 34,000 rows under the limits of a 384 MB pool opened in 644/674 and 654/662 ms, retained 52/52 MiB and edited at p95 in 3.47/3.62 and 3.56/3.57 ms; 5,000 running sums opened in 39/40 and 40/41 ms with 8.1/8.2 MiB retained.
 

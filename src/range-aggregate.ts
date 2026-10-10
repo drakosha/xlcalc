@@ -1,9 +1,10 @@
 /** Scalar aggregates over shared range prefixes, with unrounded sums and the original row-major order. */
 import type { Bounds } from './args.js'
-import { criterionMatcher, errorCrit, matches, parseCrit, type CritRules } from './criteria.js'
+import { criterionMatcher, critKey, errorCrit, matches, parseCrit, type CritRules } from './criteria.js'
+import { canAllot } from './exec/budget.js'
 import { CompensatedSum, meanOf } from './functions/statistical/sum.js'
 import { readsClock } from './locale/rules/data.js'
-import type { CacheBudget } from './range-cache.js'
+import { KEY_BYTES, POSITION_BYTES, RangeCache, VALUE_BYTES, type CacheBudget } from './range-cache.js'
 import { RangePrefixes } from './range-prefix.js'
 import type { Area } from './spill/state.js'
 import { E, fitNumber, isErr, type Rng, type CErr, type V } from './values.js'
@@ -50,8 +51,11 @@ export class RangeAggregates {
   private readonly numbers: RangePrefixes<Partial>
   private readonly means: RangePrefixes<Mean>
   private readonly criteria = new Map<string, RangePrefixes<Count>>()
+  /** One equality criterion seen for a range, or null when several can share its ordinary index. */
+  private readonly queried: RangeCache<string | null>
 
   constructor(private readonly budget: CacheBudget) {
+    this.queried = new RangeCache(budget)
     this.numbers = new RangePrefixes<Partial>({
       create: () => ({ sum: 0, count: 0, filled: 0, min: Infinity, max: -Infinity }),
       copy: (value: Partial) => ({ ...value }), bytes: 96,
@@ -65,6 +69,7 @@ export class RangeAggregates {
   invalidate(area: Area): void {
     this.numbers.invalidate(area)
     this.means.invalidate(area)
+    this.queried.invalidate(area)
     for (const prefix of this.criteria.values()) prefix.invalidate(area)
   }
 
@@ -98,28 +103,41 @@ export class RangeAggregates {
     return fitNumber(name === 'SUM' ? result.sum : result.count === 0 ? 0 : name === 'MIN' ? result.min : result.max)
   }
 
-  countIf(range: Rng, value: V, rules: CritRules, bounds: () => Bounds, cell: Cell): number {
+  countIf(range: Rng, value: V, rules: CritRules, bounds: () => Bounds, cell: Cell): number | undefined {
     const key = isErr(value) ? `error:${value.code}` : `${typeof value}:${String(value)}`
     let prefix = this.criteria.get(key)
-    if (prefix) this.criteria.delete(key)
-    else {
-      if (this.criteria.size === CRITERIA) {
-        const first = this.criteria.keys().next().value!
-        this.criteria.get(first)!.clear()
-        this.criteria.delete(first)
-      }
-      prefix = new RangePrefixes<Count>({ create: () => ({ count: 0, seen: 0 }), copy: (p: Count) => ({ ...p }), bytes: 64 }, this.budget)
-    }
-    this.criteria.set(key, prefix)
     const [answer, clocked] = readsClock(rules.clock, () => {
       const crit = isErr(value) ? errorCrit(value.code) : parseCrit(value, rules)
+      if (critKey(crit) !== null) {
+        const seen = this.queried.get(range.key)
+        if (seen === undefined) this.queried.set(range.key, key, key.length * 2)
+        else if (seen !== key) {
+          if (seen !== null) this.queried.set(range.key, null)
+          // Different equality queries over one range share its index, unless a ready count is cheaper
+          // or the optional materialization would violate the caller's allocation limit.
+          if (!prefix?.has(range.key)) {
+            const size = bounds().h * (range.c2 - range.c1 + 1)
+            if (canAllot(size) && size * (VALUE_BYTES + POSITION_BYTES + KEY_BYTES) <= this.budget.cap) return undefined
+          }
+        }
+      }
+      if (prefix) this.criteria.delete(key)
+      else {
+        if (this.criteria.size === CRITERIA) {
+          const first = this.criteria.keys().next().value!
+          this.criteria.get(first)!.clear()
+          this.criteria.delete(first)
+        }
+        prefix = new RangePrefixes<Count>({ create: () => ({ count: 0, seen: 0 }), copy: (p: Count) => ({ ...p }), bytes: 64 }, this.budget)
+      }
+      this.criteria.set(key, prefix)
       const test = criterionMatcher(crit, rules)
       const result = prefix.read(range, bounds, cell, (p, v) => { p.seen++; if (test(v)) p.count++ })
       const size = (range.r2 - range.r1 + 1) * (range.c2 - range.c1 + 1)
       return result.count + (matches(null, crit, rules) ? size - result.seen : 0)
     })
     // Both criterion text and matched cell text can read the current year; every caller must keep that dependency.
-    if (clocked) { prefix.clear(); this.criteria.delete(key) }
+    if (clocked) { prefix?.clear(); this.criteria.delete(key); this.queried.delete(range.key) }
     return answer
   }
 }

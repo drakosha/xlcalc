@@ -18,6 +18,7 @@ export class RangePrefixes<T> {
 
   invalidate(area: Area): void { this.cache.invalidate(area) }
   clear(): void { this.cache.clear() }
+  has(key: string): boolean { return this.cache.has(key) }
 
   read(range: Rng, bounds: () => Bounds, cell: (s: number, r: number, c: number) => V, add: (value: T, cell: V) => void): T {
     let result = this.cache.get(range.key)
