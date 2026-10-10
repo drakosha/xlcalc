@@ -39,15 +39,22 @@ on run argv
 			set stage to "make"
 			try
 				repeat with m in makes
-					set kind to item 1 of m
+					set mk to item 1 of m
 					set ws to worksheet (item 2 of m) of wb
-					if kind is "note" then
+					if mk is "note" then
 						add comment (range (item 3 of m) of ws) comment text (item 4 of m)
-					else if kind is "link" then
-						set props to {address:(item 4 of m), sub address:(item 5 of m)}
-						if (item 6 of m) is not "" then set props to props & {screen tip:(item 6 of m)}
-						make new hyperlink at (range (item 3 of m) of ws) with properties props
-					else if kind is "freeze" then
+					else if mk is "link" then
+						-- a sub address set after the address, or beside it in one record, clears the address: it goes first
+						if (item 5 of m) is not "" then
+							make new hyperlink at (range (item 3 of m) of ws) with properties {sub address:(item 5 of m)}
+							set h to hyperlink 1 of range (item 3 of m) of ws
+							if (item 4 of m) is not "" then set address of h to (item 4 of m)
+						else
+							make new hyperlink at (range (item 3 of m) of ws) with properties {address:(item 4 of m)}
+							set h to hyperlink 1 of range (item 3 of m) of ws
+						end if
+						if (item 6 of m) is not "" then set screen tip of h to (item 6 of m)
+					else if mk is "freeze" then
 						activate object ws
 						set w to active window
 						set freeze panes of w to false
@@ -94,12 +101,14 @@ on run argv
 			try
 				repeat with i from 1 to (count of worksheets of wb)
 					set w to worksheet i of wb
+					-- special cells finds nothing on a sheet that is not active
+					activate object w
 					set stage to "notes"
 					set notesOut to {}
 					set addrText to ""
-					-- no cell with a note: Excel answers a parameter error
+					-- over the whole sheet: a used range of one cell would stand for the sheet's used range; no note: a parameter error
 					try
-						set addrText to get address (special cells (used range of w) type cell type comments)
+						set addrText to get address (special cells (range "A1:XFD1048576" of w) type cell type comments)
 					end try
 					if addrText is not "" then
 						set AppleScript's text item delimiters to ","
@@ -122,7 +131,6 @@ on run argv
 						set end of linksOut to {(get address r), my txt(address of h), my txt(sub address of h), my txt(screen tip of h), my txt(text to display of h)}
 					end repeat
 					set stage to "panes"
-					activate object w
 					set aw to active window
 					set pn to pane 1 of aw
 					set panesOut to {freeze panes of aw, split row of aw, split column of aw, scroll row of aw, scroll column of aw, scroll row of pn, scroll column of pn}
