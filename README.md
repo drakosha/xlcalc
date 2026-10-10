@@ -131,6 +131,36 @@ console.log(session.cells('Plan', 'D1').D1.array, session.layout().sheets) // �
 
 `extent(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `layout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings, whether it is hidden), at a cost that does not depend on the cells. `cells(sheet, ranges)` reads several rectangles at once, each cell once. `patchCells(patches)` sets a cell's `style`, `format`, `meta`, `note` or `link` (null removes the field) and keeps its value or formula without being given it: on an empty cell it makes a cell with these alone, on a cell of an old-kind array formula's area or of a spill it leaves the array as it is, and a cell left with nothing is removed. It computes nothing and returns the cells whose shown text or colour changed. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`.
 
+A session undoes and redoes its changes, as Excel's Undo and Redo do:
+
+```js
+import { openSession } from 'xlcalc'
+
+const session = openSession({
+  sheets: [{ name: 'Plan', cells: { A1: { value: 100 }, A2: { value: 250 }, A3: { formula: 'SUM(A1:A2)' } } }],
+})
+session.setCells([{ sheet: 'Plan', cell: 'A1', input: { value: 120 } }])
+session.restructure({ op: 'insertRows', sheet: 'Plan', row: 2 })
+console.log(session.history) // → { undo: 2, redo: 0 }
+const back = session.undo()
+console.log(back.call, back.mapCell({ sheet: 'Plan', cell: 'A4' }), back.changes) // → restructure { sheet: 'Plan', cell: 'A3' } []
+console.log(session.undo())
+// → {
+//     call: 'setCells',
+//     changes: [
+//       { sheet: 'Plan', cell: 'A1', value: 100, text: '100' },
+//       { sheet: 'Plan', cell: 'A3', value: 350, text: '350' }
+//     ],
+//     cells: [ { sheet: 'Plan', cell: 'A1' } ]
+//   }
+console.log(session.undo(), session.history) // → null { undo: 0, redo: 2 }
+console.log(session.redo().changes.length, session.book().sheets[0].cells.A1) // → 2 { value: 120 }
+```
+
+`undo()` takes back the last call that changed the book, whole however many cells it changed: `setCells`, `patchCells`, `setNames`, `setStyles`, `setLayout` or `restructure`. Its answer says which call it was and carries the cells whose value or shown text changed, as `setCells` lists them. For `setCells` and `patchCells` it also lists the cells whose input came back (`cells`), whose style, note or link a host reads again. For a structure operation it has `mapCell`, where a cell of the book before the undo is now (`A4` above is `A3` again once the inserted row is gone): a host moves its values by it and applies the changes, as after `restructure`, and reads `layout()`, `extent(sheet)` and its window again, as it does after a change of the layout, the names or the styles. `redo()` does the last undone step again; a new change forgets what `redo` could do. With nothing to take back or do again they answer null, and `history` counts the steps each way, for a toolbar's buttons. `setClock` and a live session's new clock are no steps, and neither is a call that fails: an undo stopped by a deadline or an abort changes nothing.
+
+A session keeps 100 steps, as Excel does, in 64 MB at most by the engine's estimate: the option `undo: { depth, maxMb }` sets both, and `depth: 0` keeps none. A step keeps what its call replaced and no more: the inputs of the cells it changed, the layout of the sheets it changed, the style table or the names. A structure operation keeps the cells it does not carry back as they were (the rows it deleted, the formulas it rewrote) and the layout of the sheets it changed, not a copy of the book, and undoing it builds the book's state again, as the operation did. A deleted sheet comes back with its cells, which Excel cannot do; a step larger than `maxMb` alone is not kept and the steps before it go, as Excel forgets what it cannot undo. On the synthetic book of 34,000 rows, an edit and its undo cost what the edit costs (107 ms for an amount on the data sheet, which its 2,800 SUMIFS read), `insertRows` keeps 0.4 MB and takes 2.6 s where it took 2.4 s, its undo and its redo 2.3 s each; `deleteRows` takes 2.7 s where it took 2.3 s. Deleting the sheet of 506,594 cells would keep 59 MB, over the default, so the session forgets its history then; with `maxMb: 100` it is undone in 1.4 to 1.7 s.
+
 ### The clock and volatile functions
 
 ```js
@@ -588,7 +618,7 @@ console.log((await second).code, (await session.result()).sheets[0].cells.A2.val
 await pool.close()
 ```
 
-A task that runs past the pool's `hardTimeoutMs` terminates its thread, and in Node `maxHeapMb` bounds each thread's heap. The pool keeps a snapshot and a journal of each session's book, so a session whose thread was lost comes back on its next call as it was before the call that failed. [docs/async.md](docs/async.md) has the rules, the error codes and what this costs.
+A task that runs past the pool's `hardTimeoutMs` terminates its thread, and in Node `maxHeapMb` bounds each thread's heap. The pool keeps a snapshot and a journal of each session's book, so a session whose thread was lost comes back on its next call as it was before the call that failed, its history of undo and redo too. [docs/async.md](docs/async.md) has the rules, the error codes and what this costs.
 
 ## API
 
@@ -597,7 +627,7 @@ From `xlcalc`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `patchCells(patches)` (a cell's `style`, `format`, `meta`, `note`, `link` without its value), `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings), `book()`, `layout()` (the book without its cells), `extent(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `look`), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `hash()` (the values hash without the result), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display` and `limits`; edits are compiled in the session's execution mode |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `patchCells(patches)` (a cell's `style`, `format`, `meta`, `note`, `link` without its value), `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings), `book()`, `layout()` (the book without its cells), `extent(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `look`), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `hash()` (the values hash without the result), `undo()` and `redo()` (`{ call, changes, cells?, mapCell? }` or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, message }` by the rules of a book of `opts.locale` |
