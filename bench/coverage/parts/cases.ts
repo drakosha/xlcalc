@@ -92,3 +92,24 @@ export function bookParts(s: BookInput['sheets'][number]): SheetParts {
   if (s.frozen) out.frozen = s.frozen
   return out
 }
+
+/**
+ * The book with what Excel makes and the threads of its file, as the engine holds them: a thread as a note, its first
+ * author's, its comments' text with the replies after an empty line with their authors.
+ */
+export function made(book: BookInput, make: PartsMake[] = [], author = '?', threads: ThreadSpec[] = []): BookInput {
+  const sheets = book.sheets.map((s) => ({ ...s, cells: { ...s.cells } }))
+  const sheet = (name: string) => sheets.find((s) => s.name === name)!
+  for (const m of make) {
+    if ('note' in m) sheet(m.sheet).cells[m.note] = { ...sheet(m.sheet).cells[m.note], note: { author, text: m.text } }
+    else if ('link' in m) {
+      const { link: cell, sheet: _, ...link } = m
+      sheet(m.sheet).cells[cell] = { ...sheet(m.sheet).cells[cell], link }
+    } else sheet(m.freeze).frozen = { ...(m.rows ? { rows: m.rows } : {}), ...(m.columns ? { columns: m.columns } : {}) }
+  }
+  for (const t of threads) {
+    const text = t.comments.map((c, i) => (i ? `${c.author}: ${c.text}` : c.text)).join('\n\n')
+    sheet(t.sheet).cells[t.cell] = { ...sheet(t.sheet).cells[t.cell], note: { author: t.comments[0].author, text } }
+  }
+  return { ...book, sheets }
+}
