@@ -182,7 +182,8 @@ on run argv
 						set addrText to get address (special cells (range win of w) type cell type all validation)
 					end try
 					if addrText is not "" then
-						set AppleScript's text item delimiters to ","
+						-- areas are separated by the locale's list separator: a comma, a semicolon in ru-RU
+						set AppleScript's text item delimiters to {",", ";"}
 						set areaList to text items of addrText
 						set AppleScript's text item delimiters to ""
 						repeat with ad in areaList
