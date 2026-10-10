@@ -1,9 +1,10 @@
 /**
- * Renaming, deleting, inserting and moving a sheet. A rename takes a name by Excel's rules and rewrites every reference
+ * Renaming, deleting, inserting, moving, hiding and showing a sheet. A rename takes a name by Excel's rules and rewrites every reference
  * to the sheet and the scope of its names; a delete turns references to it into `#REF!` followed by the reference
  * (`#REF!A1`, as Excel writes it), drops the names local to it and keeps the global ones with their reference lost. A
  * reference across sheets names its ends and covers the sheets between them: a new sheet changes no formula, a
- * deleted end and an end moved away give way to the next sheet inward (`struct/cube`).
+ * deleted end and an end moved away give way to the next sheet inward (`struct/cube`). A hidden sheet is renamed, deleted
+ * and moved as any other; the book's last visible sheet is neither deleted nor hidden, as Excel refuses both.
  */
 import type { BookInput, CellRef, RestructureResult } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
@@ -74,9 +75,28 @@ export function moveSheet(book: BookInput, sheet: string, before: string | undef
 export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
   if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one sheet' }
   const key = sheetKey(sheet)
+  if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet' }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }
   const rest: BookInput = { ...book, sheets: book.sheets.filter((s) => sheetKey(s.name) !== key) }
   if (book.names) rest.names = book.names.filter((n) => n.scope === undefined || sheetKey(n.scope) !== key)
   const mapCell = (ref: CellRef): CellRef | null => (sheetKey(ref.sheet) === key ? null : ref)
   return { ok: true, book: rewriteBook(rest, t, sheetNames(book)), mapCell }
+}
+
+/** Whether the sheet `key` is the book's only visible sheet. */
+const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (sheetKey(s.name) === key) === !s.hidden)
+
+/**
+ * The sheet hidden (very hidden with `very`) or shown again (`hidden` false); no formula changes, as formulas read a
+ * hidden sheet as any other. The book's last visible sheet is not hidden, as Excel refuses.
+ */
+export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): RestructureResult {
+  const key = sheetKey(sheet)
+  if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet' }
+  const sheets = book.sheets.map((s) => {
+    if (sheetKey(s.name) !== key) return s
+    const { hidden: _, ...rest } = s
+    return hidden ? { ...rest, hidden } : rest
+  })
+  return { ok: true, book: { ...book, sheets }, mapCell: (ref) => ref }
 }

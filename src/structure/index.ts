@@ -13,7 +13,7 @@ import { parseRange } from './area.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
-import { deleteSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
+import { deleteSheet, hideSheet, insertSheet, moveSheet, renameSheet } from './sheets.js'
 import { stateValues, type ValuesIn } from './values.js'
 import { tableOp } from '../tables/ops.js'
 import { copyTables, moveTables } from '../tables/moves.js'
@@ -36,6 +36,8 @@ const FIELDS: Record<string, string[]> = {
   deleteSheet: ['sheet'],
   insertSheet: ['name', 'before'],
   moveSheet: ['sheet', 'before'],
+  hideSheet: ['sheet', 'very'],
+  unhideSheet: ['sheet'],
   addTable: ['sheet', 'table'],
   renameTable: ['table', 'name'],
   deleteTable: ['table'],
@@ -165,6 +167,13 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
     case 'moveSheet':
       r = moveSheet(book, named(o.sheet, 'op.sheet'), o.before === undefined ? undefined : named(o.before, 'op.before'))
       break
+    case 'hideSheet':
+    case 'unhideSheet': {
+      const sheet = named(o.sheet, 'op.sheet')
+      if (o.very !== undefined && typeof o.very !== 'boolean') throw new InputError('op.very', `expected a boolean, got ${JSON.stringify(o.very)}`)
+      r = hideSheet(book, sheet, o.op === 'unhideSheet' ? false : o.very ? 'very' : true)
+      break
+    }
     case 'addTable':
     case 'renameTable':
     case 'deleteTable':
