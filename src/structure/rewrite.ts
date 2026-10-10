@@ -6,6 +6,7 @@ import type { BookInput, CellInput, NameInput, TableColumn, TableInput } from '.
 import { spend } from '../exec/budget.js'
 import { FormulaError, parse, quoteSheet, sheetKey, tokenize, type Tok } from '../syntax.js'
 import { decode, encode, sameArea, type Area } from './area.js'
+import { rewriteConditional } from '../cond/structure.js'
 
 /** A reference as a transform sees it: the sheet it points to (as the book spells it) and its rectangle. */
 export interface Site {
@@ -169,7 +170,8 @@ export function rewriteBook(book: BookInput, t: Transform, sheets: Map<string, s
         if (next !== cell) (cells ??= { ...s.cells })[addr] = next
       }
       const tables = rewriteTemplates(s.tables, s.name, () => name, t, sheets)
-      return cells || name !== s.name || tables !== s.tables ? { ...s, name, cells: cells ?? s.cells, ...(tables ? { tables } : {}) } : s
+      const cf = rewriteConditional(s.conditionalFormats, s.name, name, t, sheets)
+      return cells || name !== s.name || tables !== s.tables || cf !== s.conditionalFormats ? { ...s, name, cells: cells ?? s.cells, ...(tables ? { tables } : {}), ...(cf ? { conditionalFormats: cf } : {}) } : s
     }),
   }
   const names = rewriteNames(book.names, t, sheets)
