@@ -39,7 +39,7 @@ export function colNumber(letters: string): number | null {
 export const cellAddress = (row: number, col: number): string => formatAddress(line(row, MAX_ROWS, 'row') - 1, line(col, MAX_COLS, 'col') - 1)
 
 /** `$` where a reference may hold it: at the start, after `:`, between a column's letters and a row's number. */
-const DOLLAR = /(^|:)\$|(?<=[A-Za-z])\$(?=\d)/g
+const DOLLAR = /(^|:)\$|([A-Za-z])\$(?=\d)/g
 const COLUMNS = /^[A-Z]+:[A-Z]+$/
 const ROWS = /^\d+:\d+$/
 
@@ -51,7 +51,7 @@ const ROWS = /^\d+:\d+$/
 export function parseRange(range: string): RangeRect | null {
   // letters of other scripts stay out: some come to Latin ones in upper case (`ß` is `SS`)
   if (!/^[A-Za-z0-9$:]+$/.test(text(range, 'range'))) return null
-  const t = range.replace(DOLLAR, '$1').toUpperCase()
+  const t = range.replace(DOLLAR, '$1$2').toUpperCase()
   const x = rangeArg(t)
   if (!x) return null
   const kind = COLUMNS.test(t) ? 'columns' : ROWS.test(t) ? 'rows' : 'cells'
