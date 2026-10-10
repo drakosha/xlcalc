@@ -8,9 +8,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { condSet, type StoredCond } from '../coverage/cond.js'
-import { fromBgr, type CondAnswer, type CondCase, type Look } from '../coverage/cond/cases.js'
+import { fromBgr, type CondAnswer, type Look } from '../coverage/cond/cases.js'
 import { localeDir } from '../coverage/locales.js'
-import { inCaseOrder } from '../coverage/stored.js'
+import { inCaseOrder, keptAnswers } from '../coverage/stored.js'
 import { opArgs } from '../coverage/struct.js'
 import { caseJobs } from './books.js'
 import { winFile } from './functions.js'
@@ -29,15 +29,7 @@ export async function stepCond(set: string, tag: Tag, e: WinEnv): Promise<void> 
   const file = winFile(`${base}${set}.json`)
   const dir = winFile(`${base}${set}`)
   const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredCond) : null
-  const key = (c: CondCase, hash: string | undefined) => JSON.stringify([c, hash])
-  const same = new Map(prev?.cases.map((c) => [c.id, key(c, prev.sent[c.id])]) ?? [])
-  const answers: Record<string, CondAnswer> = {}
-  const rejected: Record<string, string> = {}
-  for (const c of cases)
-    if (same.get(c.id) === key(c, sent[c.id])) {
-      if (prev!.answers[c.id] && existsSync(join(dir, `${c.id}.xlsx`))) answers[c.id] = prev!.answers[c.id]
-      else if (prev!.rejected?.[c.id]) rejected[c.id] = prev!.rejected[c.id]
-    }
+  const { answers, rejected } = keptAnswers(cases, sent, prev, (id) => existsSync(join(dir, `${id}.xlsx`)))
   mkdirSync(dir, { recursive: true })
   const t0 = Date.now()
   const day = new Date().toLocaleDateString('sv-SE')

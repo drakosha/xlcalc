@@ -310,3 +310,53 @@ export async function runScriptWatched(script: string, book: string, n: number, 
     rmSync(dir, { recursive: true, force: true })
   }
 }
+
+/**
+ * One case of a step that saves the book: `data` goes into the sandbox, the AppleScript `script` takes its path, the path
+ * to save to, the saved file's name and `args`, and answers its output and the saved file, or the repair window's text
+ * (declined). A window that is not a book stops the run, as does no answer in `timeoutMs`.
+ */
+export async function runSavingScript(id: string, script: string, data: Uint8Array, args: string[], timeoutMs = 180_000): Promise<{ out: string; saved: Uint8Array } | { rejected: string }> {
+  const before = dialogText()
+  if (before) throw new Error(`${id}: Excel has a window that is not a book: ${before}`)
+  const dir = join(SANDBOX, `fsave-${process.pid}`)
+  mkdirSync(dir, { recursive: true })
+  try {
+    const file = join(dir, 'book.xlsx')
+    writeFileSync(file, data)
+    const child = spawn('osascript', [script, file, join(dir, 'saved.xlsx'), 'saved.xlsx', ...args])
+    let out = ''
+    let err = ''
+    child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
+    child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
+    const exited = new Promise<number | null>((res) => child.on('close', res))
+    const until = Date.now() + timeoutMs
+    for (;;) {
+      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
+      if (code !== undefined) {
+        const after = dialogText()
+        if (after) throw new Error(`${id}: Excel window after the case: ${after}`)
+        if (code !== 0) throw new Error(`${id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
+        return { out, saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }
+      }
+      if (declineRepair()) {
+        child.kill()
+        await exited
+        await sleep(1500)
+        declineRepair()
+        return { rejected: 'Excel did not accept the book (repair window declined)' }
+      }
+      const open = dialogText()
+      if (open) {
+        child.kill()
+        throw new Error(`${id}: Excel shows a window, stopped without clicking: ${open}`)
+      }
+      if (Date.now() > until) {
+        child.kill()
+        throw new Error(`${id}: Excel did not answer in ${timeoutMs / 1000} s`)
+      }
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
