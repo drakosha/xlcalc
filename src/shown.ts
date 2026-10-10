@@ -20,6 +20,20 @@ interface SheetLook {
   col: Map<number, ColumnInput | undefined>
 }
 
+/**
+ * The lines of a sheet's rows or columns, read once for a state (a session's): a change of the layout, a structure
+ * operation and an undo give the sheet new maps, never change one, so a map read once stays as it was read.
+ */
+const read = new WeakMap<EngineState, WeakMap<object, Line<unknown>[]>>()
+function linesOf<T>(state: EngineState, map: Record<string, T> | undefined, axis: 'r' | 'c'): Line<T>[] {
+  if (!map) return []
+  let maps = read.get(state)
+  if (!maps) read.set(state, (maps = new WeakMap()))
+  let ls = maps.get(map) as Line<T>[] | undefined
+  if (!ls) maps.set(map, (ls = lines(map, axis)))
+  return ls
+}
+
 /** What the cell at sheet `s`, row `r`, column `c` (zero-based) shows when it holds `v`; `own`, its input when the caller has it. */
 export type Looks = (s: number, r: number, c: number, v: CellValue, own?: CellInput) => CellDisplay
 
@@ -31,7 +45,7 @@ export function cellLooks(state: EngineState): Looks {
     if (!x) {
       const sh = state.input.sheets[s]
       const merges = new Map((sh.merges ?? []).map((m) => parseMerge(m)!).map((m): [string, number] => [`${m.r1}:${m.c1}`, m.c2]))
-      sheets.set(s, (x = { rows: lines(sh.rows, 'r'), cols: lines(sh.columns, 'c'), merges, row: new Map(), col: new Map() }))
+      sheets.set(s, (x = { rows: linesOf(state, sh.rows, 'r'), cols: linesOf(state, sh.columns, 'c'), merges, row: new Map(), col: new Map() }))
     }
     return x
   }

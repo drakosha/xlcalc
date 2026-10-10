@@ -117,6 +117,23 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(s.book().sheets[0].rows).toEqual({ '1:3': { height: 30 } })
   })
 
+  it("cells() reads the rows' and columns' formats again after a change of the layout, a structure operation and an undo", () => {
+    const s = openSession(book(), o)
+    const text = () => Object.values(s.cells('S', 'A1:A4')).map((c) => c.text)
+    expect(text()).toEqual(['1', '2', '3.0'])
+    s.setLayout([{ sheet: 'S', rows: '1:2', set: { format: '0.00' } }])
+    expect(text()).toEqual(['1.00', '2.00', '3.0'])
+    s.setLayout([{ sheet: 'S', columns: 'A', set: { format: '0%' } }, { sheet: 'S', rows: '2', set: { format: null } }])
+    expect(text()).toEqual(['1.00', '200%', '3.0'])
+    s.restructure({ op: 'insertRows', sheet: 'S', row: 1 })
+    expect(Object.values(s.cells('S', 'A2:A4')).map((c) => c.text)).toEqual(['1.00', '200%', '3.0'])
+    s.undo()
+    s.undo()
+    expect(text()).toEqual(['1.00', '2.00', '3.0'])
+    s.undo()
+    expect(text()).toEqual(['1', '2', '3.0'])
+  })
+
   it('rows inserted and deleted: the book before, mapCell from the book before the undo to the one after it', () => {
     const s = openSession(book(), o)
     const before = structuredClone(s.book())
