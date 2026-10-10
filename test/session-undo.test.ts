@@ -135,6 +135,11 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(s.redo()!.changes).toEqual(narrow)
     expect(narrow.map((c) => c.cell)).toEqual(['A3'])
     expect(s.book().sheets[0].rows).toEqual({ '1:3': { height: 30 } })
+    // a span cut in three by a change of its middle line, and whole again
+    s.setLayout([{ sheet: 'S', rows: '2', set: { height: 40, format: '0' } }])
+    expect(s.book().sheets[0].rows).toEqual({ 1: { height: 30 }, 2: { height: 40, format: '0' }, 3: { height: 30 } })
+    expect(s.undo()!.changes.map((c) => `${c.cell} ${c.text}`)).toEqual(['A2 2'])
+    expect(s.book().sheets[0].rows).toEqual({ '1:3': { height: 30 } })
   })
 
   it("cells() reads the rows' and columns' formats again after a change of the layout, a structure operation and an undo", () => {

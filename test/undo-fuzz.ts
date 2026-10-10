@@ -34,6 +34,8 @@ export function undoBook(seed: number): BookInput {
     E2: { formula: 'Tab[@Qty]*Tab[@Price]' }, E3: { formula: 'Tab[@Qty]*Tab[@Price]' },
   })
   t.tables = [{ name: 'Tab', range: 'C1:D3', columns: [{ name: 'Qty' }, { name: 'Price' }] }]
+  // lines from the start: a change of them changes some of their entries
+  Object.assign(b.sheets[0], { rows: { '2:4': { height: 20 }, '10': { hidden: true }, '30:40': { format: '0.0' } }, columns: { 'A:B': { width: 12 }, H: { format: '0.00' } } })
   return { ...b, styles: STYLES.slice(), names: [{ name: 'n1', ref: 'S!$A$1:$A$10' }, { name: 'n2', ref: '7' }] }
 }
 
