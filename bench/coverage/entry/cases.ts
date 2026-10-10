@@ -31,18 +31,26 @@ export interface EntryAnswer {
   prefix?: string
   /** The number the object model gives as the cell's value (`Value2` on Windows, `value` on the Mac); absent for anything else. */
   value2?: number
-  /** For a set of `edit`: the cell's `Formula` and `FormulaLocal`, the text the formula bar opens it with (with the prefix character before it). */
+  /**
+   * For a set of `edit`: the cell's `Formula` and `FormulaLocal` (the number itself for a date, a time or a percent), and
+   * on the Mac what its formula bar shows, read through the window's accessibility (`Formula Bar. A,1 <text>`), whose text
+   * is `formulaBar`.
+   */
   formula?: string
   formulaLocal?: string
+  bar?: string
 }
 
 export interface EntrySet {
   buildEntryCases(): EntryCase[]
   /** The texts are typed on the keyboard (Excel for Mac only), to check that Excel takes `Formula2Local` as typing. */
   keys?: boolean
-  /** Each cell's `Formula` and `FormulaLocal` are read too, for `entryText` (Excel for Mac only). */
+  /** Each cell's `Formula` and `FormulaLocal` are read too, for `entryText`. */
   edit?: boolean
 }
+
+/** The text of the formula bar from its description (`Formula Bar. A,1 1/31/2025`, in the interface's language). */
+export const formulaBar = (bar: string): string => bar.replace(/^[^.]*\. [A-Z]{1,3},\d+ ?/, '')
 
 /** The data the typed formulas read: a number and a date with the short date format. */
 export const DATA: Readonly<Record<string, CellInput>> = { C1: { value: 2 }, C2: { value: 46096, format: 14 } }

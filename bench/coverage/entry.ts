@@ -44,18 +44,18 @@ export const heldOf = (c: CellInput | undefined): CellInput | null => {
 }
 
 /** The answers of a part from Excel's reading of its cells and the file it saved. */
-export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?, unknown?, string?, string?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
+export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?, unknown?, string?, string?, string?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
   const read = await readXlsx(saved)
   const cells = read.book.sheets.find((s) => s.name === 'S')!.cells
   const cached = read.cached.find((s) => s.name === 'S')!.cells
   const out: Record<string, EntryAnswer> = {}
   part.forEach((c, i) => {
     const at = `A${i + 1}`
-    const [text, code, local, prefix, value2, formula, formulaLocal] = shown[i]
+    const [text, code, local, prefix, value2, formula, formulaLocal, bar] = shown[i]
     const cell = heldOf(cells[at])
     // a formula Excel does not take leaves the cell as it was, blank, with no error from AppleScript
     const why = refused[i] || (c.text !== '' && cell?.value === undefined && cell?.formula === undefined && !prefix ? 'not taken: the cell stayed blank' : '')
-    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}), ...(formula === undefined ? {} : { formula, formulaLocal }) }
+    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}), ...(formula === undefined ? {} : { formula, formulaLocal }), ...(bar === undefined ? {} : { bar }) }
   })
   return out
 }
@@ -87,7 +87,7 @@ async function runPart(part: EntryCase[], label: string, keys: boolean, edit: bo
         const after = dialogText()
         if (after) throw new Error(`entry ${label}: Excel window after the part: ${after}`)
         if (code !== 0) throw new Error(`entry ${label}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?, string?, string?][] }
+        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?, string?, string?, string?][] }
         return await partAnswers(part, raw.refused, raw.cells, new Uint8Array(readFileSync(savedFile)))
       }
       if (declineRepair()) {
