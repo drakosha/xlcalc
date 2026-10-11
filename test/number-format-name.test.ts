@@ -115,13 +115,13 @@ describe.each(['closures', 'eval'] as const)('the number format by either name i
       const s = await (await opener(kind))(formatted('format'), { clock: CLOCK, execution })
       expect((await s.getBook()).sheets[0]).toMatchObject(formatted('numberFormat').sheets[0])
       const set = await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 0.5, format: '0.0%' } }])
-      expect(set.changes).toEqual([{ sheet: 'S', cell: 'C1', value: 0.5, text: '50.0%', numberFormat: '0.0%' }])
+      expect(set.changes).toEqual([{ sheet: 'S', cell: 'C1', value: 0.5, text: '50.0%', numberFormat: '0.0%', numberFormatCode: '0.0%' }])
       await s.replaceCells([{ sheet: 'S', cell: 'C2', input: { value: 3, format: '0.0' } }])
       await s.patchCells([{ sheet: 'S', cell: 'D1', set: { format: '0.000' } }])
       await s.setLayout([{ sheet: 'S', rows: '5', set: { format: '0.0000' } }, { sheet: 'S', conditionalFormats: [{ type: 'expression', ranges: ['E1'], formula: 'TRUE', style: { format: '0' } }] }])
       const sh = (await s.getBook()).sheets[0]
       expect([sh.cells.C1, sh.cells.C2, sh.cells.D1, sh.rows?.[5], (sh.conditionalFormats?.[0] as { style?: object }).style]).toEqual([{ value: 0.5, numberFormat: '0.0%' }, { value: 3, numberFormat: '0.0' }, { numberFormat: '0.000' }, { numberFormat: '0.0000' }, { numberFormat: '0' }])
-      expect((await s.getCells('S', 'C2')).C2).toEqual({ value: 3, text: '3.0', numberFormat: '0.0' })
+      expect((await s.getCells('S', 'C2')).C2).toEqual({ value: 3, text: '3.0', numberFormat: '0.0', numberFormatCode: '0.0' })
       // null by the old name removes the format, as by the new one
       await s.setCells([{ sheet: 'S', cell: 'C1', input: { format: null } }])
       expect((await s.getBook()).sheets[0].cells.C1).toEqual({ value: 0.5 })

@@ -25,6 +25,12 @@ export function builtinIn(where: string | Locale | undefined): (id: number) => s
   return own ? builtinCodes(own) : (id) => EN_BUILTIN[id]
 }
 
+/** A number format as a code in a locale (`ViewportCell.numberFormat`): a built-in format by the locale's code (`builtinIn`), a code as it is. */
+export function formatCodeIn(where: string | Locale | undefined): (format: NumberFormat) => string {
+  const builtin = builtinIn(where)
+  return (format) => (typeof format === 'number' ? builtin(format) : format)
+}
+
 export interface Rules extends CritRules {
   /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
   readonly locale: Locale

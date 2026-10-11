@@ -52,14 +52,14 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect(answers.map((a) => a.revision)).toEqual([1, 2, 3, 4, 5, 6, 7])
     expect(answers.map((a) => a.changes)).toEqual([
       [{ sheet: 'S', cell: 'B5', value: null, text: '', style: 1 }],
-      [{ sheet: 'S', cell: 'A1', value: 0.25, text: '25%', numberFormat: '0%' }],
-      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', color: '#FF0000', numberFormat: '[Red]0.0;[Blue]-0.0' }],
+      [{ sheet: 'S', cell: 'A1', value: 0.25, text: '25%', numberFormat: '0%', numberFormatCode: '0%' }],
+      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', color: '#FF0000', numberFormat: '[Red]0.0;[Blue]-0.0', numberFormatCode: '[Red]0.0;[Blue]-0.0' }],
       [
-        { sheet: 'S', cell: 'C1', value: 2.5, text: '2.500', spill: 'C1:C3', style: 0, numberFormat: '0.000' },
-        { sheet: 'S', cell: 'C2', value: 20, text: '20.00', spillOf: 'C1', numberFormat: '0.00' },
+        { sheet: 'S', cell: 'C1', value: 2.5, text: '2.500', spill: 'C1:C3', style: 0, numberFormat: '0.000', numberFormatCode: '0.000' },
+        { sheet: 'S', cell: 'C2', value: 20, text: '20.00', spillOf: 'C1', numberFormat: '0.00', numberFormatCode: '0.00' },
         { sheet: 'S', cell: 'C3', value: { error: 'NA' }, text: '#N/A', spillOf: 'C1', style: 1 },
       ],
-      [{ sheet: 'S', cell: 'E2', value: 2, text: '2.000', spillOf: 'E1', numberFormat: '0.000' }],
+      [{ sheet: 'S', cell: 'E2', value: 2, text: '2.000', spillOf: 'E1', numberFormat: '0.000', numberFormatCode: '0.000' }],
       [{ sheet: 'S', cell: 'G1', value: 'Qty', text: 'Qty', style: 0 }],
       [
         { sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', numberFormat: null },
@@ -88,7 +88,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }]).changes.map((c) => c.cell).sort()).toEqual(['A1', 'A3', 'C1'])
     expect(() => s.setCells([{ sheet: 'S', cell: 'C2', input: { value: 1 } }])).toThrow(InputError)
     s.setCells([{ sheet: 'S', cell: 'E3', input: { value: 'x' } }])
-    expect(s.getCells('S', 'E1:E2')).toEqual({ E1: { value: { error: 'SPILL' }, text: '#SPILL!', formula: 'SEQUENCE(3)', meta: [1, 2] }, E2: { value: null, text: '', numberFormat: '0.000', link: { url: 'https://example.com/' } } })
+    expect(s.getCells('S', 'E1:E2')).toEqual({ E1: { value: { error: 'SPILL' }, text: '#SPILL!', formula: 'SEQUENCE(3)', meta: [1, 2] }, E2: { value: null, text: '', numberFormat: '0.000', numberFormatCode: '0.000', link: { url: 'https://example.com/' } } })
     expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
   })
 
@@ -104,8 +104,8 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
 
   it('without the display a patch lists the cells whose look changed, without their text; patches of one cell apply in order; nothing left removes the cell', () => {
     const s = createSession(book(), { ...opts, display: false })
-    expect(s.patchCells(PATCHES[1]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 0.25, numberFormat: '0%' }])
-    expect(s.patchCells([{ sheet: 'S', cell: 'K9', set: { style: 0 } }, { sheet: 'S', cell: 'K9', set: { numberFormat: '0.0', style: null } }, { sheet: 'S', cell: 'K9', set: { meta: 'm' } }]).changes).toEqual([{ sheet: 'S', cell: 'K9', value: null, numberFormat: '0.0' }])
+    expect(s.patchCells(PATCHES[1]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 0.25, numberFormat: '0%', numberFormatCode: '0%' }])
+    expect(s.patchCells([{ sheet: 'S', cell: 'K9', set: { style: 0 } }, { sheet: 'S', cell: 'K9', set: { numberFormat: '0.0', style: null } }, { sheet: 'S', cell: 'K9', set: { meta: 'm' } }]).changes).toEqual([{ sheet: 'S', cell: 'K9', value: null, numberFormat: '0.0', numberFormatCode: '0.0' }])
     expect(s.getBook().sheets[0].cells.K9).toEqual({ numberFormat: '0.0', meta: 'm' })
     s.patchCells([{ sheet: 'S', cell: 'K9', set: { numberFormat: null, meta: null } }, { sheet: 'S', cell: 'K10', set: { style: null } }])
     expect('K9' in s.getBook().sheets[0].cells || 'K10' in s.getBook().sheets[0].cells).toBe(false)

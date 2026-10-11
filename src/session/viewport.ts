@@ -15,7 +15,7 @@ import { formatSource, lookOf, sheetLines } from '../layout/lines.js'
 import { parseMerge } from '../layout/merges.js'
 import { toLocal } from '../locale/index.js'
 import { DEFAULT_LOCALE, LOCALES } from '../locale/registry.js'
-import { builtinIn } from '../locale/rules.js'
+import { formatCodeIn } from '../locale/rules.js'
 import { formatAddress, MAX_COLS } from '../model.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { cellResult, spilled } from '../result.js'
@@ -63,7 +63,7 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
     styles[i] ??= JSON.parse(JSON.stringify(state.input.styles![i])) as CellStyle
     return i
   }
-  const builtin = builtinIn(state.input.locale)
+  const code = formatCodeIn(state.input.locale)
   // formulas in the book's locale, each text once per table it stands in (a table's column is one formula)
   const loc = o.formulaLocal ? LOCALES.get(state.input.locale ?? DEFAULT_LOCALE)! : null
   const locals = new Map<string, string>()
@@ -98,7 +98,7 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
       if (own?.style !== undefined) out.style = own.style
       if (shown.style !== undefined) out.effectiveStyle = shows(shown.style)
       if (shown.numberFormat !== undefined) {
-        out.numberFormat = typeof shown.numberFormat === 'number' ? builtin(shown.numberFormat) : shown.numberFormat
+        out.numberFormat = code(shown.numberFormat)
         out.numberFormatSource = formatSource(own, row, col)
       }
       if (cf) {

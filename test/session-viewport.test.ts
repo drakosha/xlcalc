@@ -61,11 +61,12 @@ const orders = (locale?: string): BookInput => ({
   ],
 })
 
-/** A window cell as `Session.getCells` gives it: the conditional formats' look, the cell's own format. */
+/** A window cell as `Session.getCells` gives it: the conditional formats' look, the cell's own format and its code. */
 function asView(w: ViewportCell, own: CellView['numberFormat']): CellView {
-  const { effectiveStyle: _e, numberFormat: _n, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
+  const { effectiveStyle: _e, numberFormat: code, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
   const out: CellView = { ...rest }
-  if (own !== undefined) out.numberFormat = own
+  // a cell's own format is the one it shows, by the same code
+  if (own !== undefined) Object.assign(out, { numberFormat: own, numberFormatCode: code })
   if (appearance) out.appearance = appearance
   return out
 }
