@@ -9,7 +9,7 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
-import { answerOf, BookRejected, editOf, refusedOf, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
+import { answerOf, BookRejected, editOf, MIRRORS, refusedOf, runOnBook, type FileParts, type RectsAnswer } from './case-book.js'
 import { ensureExcel, excelVersion } from './excel.js'
 import { localeMeta } from './locales.js'
 import type { SpillCase, SpillSet } from './spill/cases.js'
@@ -45,7 +45,7 @@ async function runCase(c: SpillCase): Promise<SpillAnswer> {
   const edits = (c.edits ?? []).map((e) => [e.sheet, e.cell, ...editOf(e.value)].join('\t')).join('\n')
   let out: string
   try {
-    out = await runOnBook(c.id, SCRIPT, c.book, c.read, [edits, c.legacy ? '1' : ''], partsOf(c))
+    out = await runOnBook(c.id, SCRIPT, c.book, c.read, [edits, c.legacy ? '1' : '', MIRRORS.join('\t')], partsOf(c))
   } catch (e) {
     if (!(e instanceof BookRejected)) throw e
     console.log(e.message)

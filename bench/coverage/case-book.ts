@@ -153,6 +153,12 @@ const MIRROR: Record<(typeof MIRRORS)[number], (x: string) => string> = {
   WX: READ_COLUMNS.text,
 }
 
+/** The mirror formulas over a rectangle's top-left cell, its sheet's name quoted: the tables step writes them after its steps, over the cells where they are then. */
+export function mirrorFormulas(g: RangeRef): string[] {
+  const at = `'${g.sheet.replaceAll("'", "''")}'!${g.range.split(':')[0]}`
+  return MIRRORS.map((m) => `=${MIRROR[m](at)}`)
+}
+
 /** A formula cell as ExcelJS writes it: an array formula over `ref` (a dynamic one where `markDynamic` marks it), else a plain one. */
 export const formulaValue = (formula: string, ref?: string): ExcelJS.CellFormulaValue =>
   ({ formula: fileFormula(formula), ...(ref ? { shareType: 'array', ref } : {}) }) as ExcelJS.CellFormulaValue

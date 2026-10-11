@@ -120,7 +120,6 @@ function Table($wb, [string]$line) {
     'rename' { $ws.ListObjects.Item($p[2]).Name = $p[3] }
     'deltable' { [void]$ws.ListObjects.Item($p[2]).Delete() }
     'convert' { [void]$ws.ListObjects.Item($p[2]).Unlist() }
-    'totals' { $ws.ListObjects.Item($p[2]).ShowTotals = ($p[3] -eq '1') }
     'copy' { [void]$ws.Range($p[2]).Copy((Rg $wb $p[3] $p[4])) }
     'cut' { [void]$ws.Range($p[2]).Cut((Rg $wb $p[3] $p[4])) }
     'renamesheet' { $ws.Name = $p[2] }

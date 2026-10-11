@@ -11,7 +11,7 @@ import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { answeredLine, inCaseOrder, keptSame, loadStored, runCases, secondsSince, setModule, took, writeAnswers } from './stored.js'
-import { answerOf, editOf, MIRRORS, mirrorRanges, refusedOf } from './case-book.js'
+import { answerOf, editOf, mirrorFormulas, MIRRORS, mirrorRanges, refusedOf } from './case-book.js'
 import { columnCells, rowCells } from './struct.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { sleep } from './proc.js'
@@ -113,7 +113,7 @@ async function rejectedBook(stop: () => Promise<void>, id: string, refused = fal
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
   const at = mirrorRanges(c.read)
-  const rects = c.read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n')
+  const rects = c.read.map((g, i) => [g.sheet, g.range, at[i], ...mirrorFormulas(g)].join('\t')).join('\n')
   return runWatched<TableAnswer>({
     script: SCRIPT,
     label: c.id,
@@ -123,7 +123,7 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
       if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
       writeFileSync(file, data)
     },
-    args: () => [stepLines(c).join('\n'), rects, local ? '1' : ''],
+    args: () => [stepLines(c).join('\n'), rects, local ? '1' : '', MIRRORS.join('\t')],
     timeout: 120_000,
     poll: 1000,
     after: 'case',

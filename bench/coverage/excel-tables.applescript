@@ -1,13 +1,15 @@
 -- Open a table case's book, compute it fully, take the case's steps (Excel recalculating after each), then read: the
--- rectangles' values through mirror formulas written now on the sheets WT, WN, WX (so they point at the cells where
--- the steps left them; they never give an error), the rectangles' formulas as Excel shows them (and in the user's
+-- rectangles' values through mirror formulas written now on the mirror sheets (so they point at the cells where the
+-- steps left them; they never give an error), the rectangles' formulas as Excel shows them (and in the user's
 -- language with `local`), and the tables of every sheet. Close without saving. Alerts are off during the steps.
 -- Arguments: book path (inside Excel's sandbox), steps as lines "kind<TAB>args..." (see below), rectangles as lines
--- "sheet<TAB>range<TAB>mirror range", "1" to read formulas in the user's language too (else empty).
+-- "sheet<TAB>range<TAB>mirror range<TAB>type formula<TAB>number formula<TAB>text formula" (the mirror formulas over the
+-- rectangle's top-left cell), "1" to read formulas in the user's language too (else empty), the names of the mirror
+-- sheets of the types, the numbers and the texts, separated by tabs.
 -- Steps: e sheet range n|s|f|l|x value (a number, a text, a formula as Excel 365 enters it, one in the user's language, cleared); insr, delr, insc,
 -- delc sheet range (the entire rows or columns of the range); rename sheet table name; deltable sheet table; convert
--- sheet table; totals sheet table 1|0; copy sheet range sheet range; cut sheet range sheet cell; renamesheet sheet
--- name; delsheet sheet; name scope name formula (a defined name added, global with an empty scope).
+-- sheet table; copy sheet range sheet range; cut sheet range sheet cell; renamesheet sheet name; delsheet sheet;
+-- name scope name formula (a defined name added, global with an empty scope).
 -- Output: JSON {"steps": [the error of each step, "" when Excel took it], "rects": [[types, numbers, texts,
 -- formulas, local formulas or ""], ...], "tables": [[sheet, name, range, headers shown, totals shown, [column names]], ...],
 -- "names": [the visible defined names, a sheet's own as Sheet!name]}.
@@ -27,11 +29,11 @@ on run argv
 	set steps to paragraphs of item 2 of argv
 	set rects to paragraphs of item 3 of argv
 	set withLocal to item 4 of argv is "1"
+	set mirrors to my splitTab(item 5 of argv)
 	set hfs to (POSIX file p) as text
 	set stepsOut to {}
 	set out to {}
 	set tablesOut to {}
-	set mirror to {"IF(ISBLANK(#),-5,IF(ISERROR(#),ERROR.TYPE(#),IF(ISNUMBER(#),0,IF(ISLOGICAL(#),IF(#,-1,-2),IF(ISTEXT(#),-3,-4)))))", "IF(ISNUMBER(#),#,0)", "IF(ISTEXT(#),#,\"\")"}
 	tell application "Microsoft Excel"
 		with timeout of 90 seconds
 			-- a book Excel refuses to open answers -50 here, with or without its repair window
@@ -75,8 +77,6 @@ on run argv
 							delete (list object (item 3 of parts) of worksheet (item 2 of parts) of wb)
 						else if k is "convert" then
 							convert to range (list object (item 3 of parts) of worksheet (item 2 of parts) of wb)
-						else if k is "totals" then
-							set total of list object (item 3 of parts) of worksheet (item 2 of parts) of wb to ((item 4 of parts) is "1")
 						else if k is "copy" then
 							copy range (range (item 3 of parts) of worksheet (item 2 of parts) of wb) destination (range (item 5 of parts) of worksheet (item 4 of parts) of wb)
 						else if k is "cut" then
@@ -106,17 +106,8 @@ on run argv
 			repeat with ln in rects
 				if (length of ln) > 0 then
 					set parts to my splitTab(ln)
-					set AppleScript's text item delimiters to ":"
-					set tl to text item 1 of (item 2 of parts)
-					set AppleScript's text item delimiters to ""
-					set src to "'" & my quoted(item 1 of parts) & "'!" & tl
 					repeat with i from 1 to 3
-						set AppleScript's text item delimiters to "#"
-						set bits to text items of (item i of mirror)
-						set AppleScript's text item delimiters to src
-						set f to "=" & (bits as text)
-						set AppleScript's text item delimiters to ""
-						set formula of range (item 3 of parts) of worksheet (item i of {"WT", "WN", "WX"}) of wb to f
+						set formula of range (item 3 of parts) of worksheet (item i of mirrors) of wb to (item (3 + i) of parts)
 					end repeat
 				end if
 			end repeat
@@ -125,9 +116,9 @@ on run argv
 				if (length of ln) > 0 then
 					set parts to my splitTab(ln)
 					set mr to item 3 of parts
-					set t to value of range mr of worksheet "WT" of wb
-					set nums to value of range mr of worksheet "WN" of wb
-					set strs to value of range mr of worksheet "WX" of wb
+					set t to value of range mr of worksheet (item 1 of mirrors) of wb
+					set nums to value of range mr of worksheet (item 2 of mirrors) of wb
+					set strs to value of range mr of worksheet (item 3 of mirrors) of wb
 					set rg to range (item 2 of parts) of worksheet (item 1 of parts) of wb
 					set f to formula of rg
 					set fl to ""
@@ -137,7 +128,7 @@ on run argv
 			end repeat
 			repeat with i from 1 to (count of worksheets of wb)
 				set ws to worksheet i of wb
-				if name of ws is not in {"WT", "WN", "WX"} then
+				if name of ws is not in mirrors then
 					repeat with j from 1 to (count of list objects of ws)
 						set lo to list object j of ws
 						set cols to {}
@@ -167,13 +158,3 @@ end run
 on num(s)
 	return ((current application's NSString's stringWithString:s)'s doubleValue()) as real
 end num
-
--- a sheet name with its apostrophes doubled, for a quoted reference
-on quoted(s)
-	set AppleScript's text item delimiters to "'"
-	set bits to text items of s
-	set AppleScript's text item delimiters to "''"
-	set r to bits as text
-	set AppleScript's text item delimiters to ""
-	return r
-end quoted
