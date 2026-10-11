@@ -5,7 +5,7 @@
  * takes the tag of a loaded locale or a locale object, which needs no loading.
  */
 import type { ValidateContext, ValidateResult } from '../contract.js'
-import { checkString, checkValidateContext } from '../input.js'
+import { checkString, checkValidateContext, object, onlyOptions } from '../input.js'
 import { FormulaError, parse, sheetKey, tokenize, validate, type Tok } from '../syntax.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
@@ -45,10 +45,17 @@ const refusal = (r: Fail, locale: Locale) => ({ ok: false as const, code: 'synta
  * table of the formula's cell, drops its name before a column of its own (`[@Qty]`, `SUM([Qty])`), as Excel shows a
  * formula inside a table.
  */
-export function toLocal(formula: string, where: string | Locale, opts: { table?: string } = {}): Translation {
+export function toLocal(formula: string, where: string | Locale, opts?: { table?: string }): Translation {
   const [locale, s] = localeSides(where)
-  if (opts.table !== undefined) checkString(opts.table, 'opts.table')
-  return result(translate(shownTables(checkString(formula, 'formula'), opts.table, s.local.syn.list), s.invariant, s.local), locale)
+  const table = opts === undefined ? undefined : checkTranslateOptions(opts)
+  return result(translate(shownTables(checkString(formula, 'formula'), table, s.local.syn.list), s.invariant, s.local), locale)
+}
+
+/** `toLocal`'s options: `table`, a table's name, alone; the table it gives. */
+function checkTranslateOptions(v: unknown): string | undefined {
+  const o = object(v, 'opts', "options such as { table: 'Sales' }")
+  onlyOptions(o, 'opts', ['table'])
+  return o.table === undefined ? undefined : checkString(o.table, 'opts.table')
 }
 
 const SPACE = new Set([' ', '\t', '\n', '\r'])

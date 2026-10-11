@@ -1,7 +1,7 @@
 /**
  * The `./a1` subpath takes none of the engine: bundled by esbuild for the browser from the build under test, it holds
- * only the address modules (no parser, locale, number format or computation), stays small, and runs in an empty
- * `node:vm` context.
+ * only the address modules and the check of its functions' arguments (no parser, locale, number format or computation),
+ * stays small, and runs in an empty `node:vm` context.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -18,7 +18,7 @@ async function bundle() {
 describe('a1 without the engine', () => {
   it('the bundle holds the address modules alone, in a few kilobytes', async () => {
     const { code, used } = await bundle()
-    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/spans', 'model', 'sheet-pattern', 'structure/area'])
+    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/spans', 'model', 'sheet-pattern', 'strict-args', 'structure/area'])
     expect(code.length).toBeLessThan(8_000)
   }, 60_000)
 

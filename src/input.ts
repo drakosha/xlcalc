@@ -16,6 +16,7 @@ import { checkArrays } from './array-areas.js'
 import { ERROR_TEXT, sheetKey } from './syntax.js'
 import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
+import { optionHint } from './strict-args.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
 import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken, numberFormatTaken } from './taken.js'
@@ -43,6 +44,9 @@ export function checkString(v: unknown, path: string): string {
 export function onlyKeys(o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') {
   for (const k of Object.keys(o)) if (!allowed.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})${hint}`)
 }
+
+/** An options object's fields, as `onlyKeys`: an unknown one that another call takes says which call (`optionHint`). */
+export const onlyOptions = (o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') => onlyKeys(o, path, allowed, hint + optionHint(o, allowed))
 
 const ADDRESS = /^([A-Z]{1,3})([1-9][0-9]*)$/
 const MAX_ADDRESS = 'XFD1048576'
@@ -76,10 +80,15 @@ export function checkFormatNames(o: Record<string, unknown>, path: string) {
     throw new InputError(`${path}.format`, `the number format is numberFormat, and format its old name: given both, they differ (${what(o.numberFormat)} and ${what(o.format)})`)
 }
 
+/** A style's fields where a cell takes its number: where such a style goes. */
+const STYLE_HINT = " (a cell names a style of the book's styles by its index; a session's patchCells takes one by its fields)"
+
 /** A style number of a book with `styles` styles. */
 export function checkStyleIndex(v: unknown, path: string, styles: number) {
-  if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles)
-    throw new InputError(path, styles ? `expected the index of a style of the book, 0 to ${styles - 1}, got ${what(v)}` : `the book has no styles, got ${what(v)}`)
+  if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles) {
+    const hint = isObject(v) ? STYLE_HINT : ''
+    throw new InputError(path, (styles ? `expected the index of a style of the book, 0 to ${styles - 1}, got ${what(v)}` : `the book has no styles, got ${what(v)}`) + hint)
+  }
 }
 
 /** A cell of a book with `styles` styles. */
@@ -394,7 +403,7 @@ export function checkLimits(v: unknown, path: string): CalcLimits {
 export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } }')
-  onlyKeys(o, path, ['clock', 'externals', 'execution', 'display', 'limits'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyOptions(o, path, ['clock', 'externals', 'execution', 'display', 'limits'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.clock !== undefined) checkClock(o.clock, `${path}.clock`)
   if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
   if (o.externals !== undefined) checkExternals(o.externals, `${path}.externals`)
@@ -406,7 +415,7 @@ export function checkComputeOptions(v: unknown, path = 'opts'): ComputeOptions {
 export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { clock: { now, seed } } or { live: true }')
-  onlyKeys(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
+  onlyOptions(o, path, ['clock', 'live', 'externals', 'execution', 'display', 'limits', 'undo'], 'now' in o || 'seed' in o ? CLOCK_HINT : '')
   if (o.live !== undefined) checkBoolean(o.live, `${path}.live`)
   if (o.limits !== undefined) checkLimits(o.limits, `${path}.limits`)
   if (o.undo !== undefined) {

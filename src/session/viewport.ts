@@ -8,7 +8,7 @@
 import type { CellStyle, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { checkBoolean, checkNumber, object, onlyKeys } from '../input.js'
+import { checkBoolean, checkNumber, object, onlyOptions } from '../input.js'
 import { issueDetail, type Place } from '../issues.js'
 import { isHiddenRow } from '../layout/hidden.js'
 import { formatSource, lookOf, sheetLines } from '../layout/lines.js'
@@ -35,7 +35,7 @@ const DEFAULT_HEIGHT = 15
 export function checkViewportOptions(v: unknown, path = 'opts'): ViewportOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { formulaLocal: true, maxCells: 20000 }')
-  onlyKeys(o, path, ['formulaLocal', 'diagnostics', 'maxCells'])
+  onlyOptions(o, path, ['formulaLocal', 'diagnostics', 'maxCells'])
   if (o.formulaLocal !== undefined) checkBoolean(o.formulaLocal, `${path}.formulaLocal`)
   if (o.diagnostics !== undefined) checkBoolean(o.diagnostics, `${path}.diagnostics`)
   if (o.maxCells !== undefined) checkNumber(o.maxCells, `${path}.maxCells`, 1, MAX_COLS * 1_048_576, true)

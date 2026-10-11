@@ -7,7 +7,7 @@
 import type { AddressMove, BookInput, CellChange, CellInput, CellRef, EditOptions, RangeRef, SheetInput } from '../contract.js'
 import { key, type EngineState } from '../engine.js'
 import { CalcError } from '../exec/budget.js'
-import { InputError, object, onlyKeys } from '../input.js'
+import { InputError, object, onlyOptions } from '../input.js'
 import { parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 
@@ -131,7 +131,7 @@ export const sortedKeys = (keys: Iterable<string>): string[] =>
 export function checkBase<T extends EditOptions>(v: unknown, revision: number, allowed: readonly string[] = [], path = 'opts'): T {
   if (v === undefined) return {} as T
   const o = object(v, path, 'options such as { baseRevision: 3 }')
-  onlyKeys(o, path, ['baseRevision', ...allowed])
+  onlyOptions(o, path, ['baseRevision', ...allowed])
   const b = o.baseRevision
   if (b !== undefined && !(typeof b === 'number' && Number.isInteger(b) && b >= 0)) throw new InputError(`${path}.baseRevision`, `expected a revision, a whole number of at least 0, got ${JSON.stringify(b)}`)
   if (b !== undefined && b !== revision) throw new CalcError('stale_revision', `the edit is made over revision ${b}, the session is at revision ${revision}: it changed nothing`)
