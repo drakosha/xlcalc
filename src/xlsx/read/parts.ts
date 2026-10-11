@@ -7,7 +7,7 @@ import type { CellInput, CellLink, CellNote, FrozenPanes } from '../../contract.
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
 import { cellCount, cellsWithin, parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
-import { attr, attributes, element, elements } from '../xml/scan.js'
+import { attr, attributes, element, elements, has } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import type { Rel } from './package.js'
 import { stringItem } from './strings.js'
@@ -131,7 +131,7 @@ function notes(src: PartsSource, list: Comment[], threads: Map<string, CellNote>
       issues.add('drawing', 'pictures, charts and shapes are not in the model', { sheet: src.sheet })
       continue
     }
-    if (!/<(?:[\w.-]+:)?Visible[\s/>]/.test(data.body ?? '')) continue
+    if (!has(data.body ?? '', 'Visible')) continue
     const [row, col] = ['Row', 'Column'].map((k) => Number(element(data.body ?? '', k)?.body))
     const cell = Number.isInteger(row) && Number.isInteger(col) && row >= 0 && col >= 0 ? formatAddress(row, col) : undefined
     if (cell && !threads.has(cell)) issues.add('comment', 'a note shown all the time is read as one shown when the pointer rests on its cell', { sheet: src.sheet, cell })

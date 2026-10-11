@@ -13,7 +13,7 @@ import { areaText, parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
-import { attributes, element, elements, flag, type Element } from '../xml/scan.js'
+import { ATTRS, attributes, element, elements, flag, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
 
@@ -35,11 +35,14 @@ interface Context {
   issues: Issues
 }
 
+/** The worksheet's own `<conditionalFormatting>` blocks: without a prefix, as 2010's (`x14:`) are not. */
+const OWN = new RegExp(`<conditionalFormatting(${ATTRS})(?:/>|>([\\s\\S]*?)</conditionalFormatting\\s*>)`, 'g')
+
 /** The worksheet's own `<conditionalFormatting>` blocks (not 2010's), and the rest of the tail. */
 function split(tail: string): { blocks: Element[]; rest: string } {
   const blocks: Element[] = []
-  const rest = tail.replace(/<conditionalFormatting(\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?(?:\/>|>([\s\S]*?)<\/conditionalFormatting\s*>)/g, (_, attrs: string | undefined, body: string | undefined) => {
-    blocks.push({ attrs: attrs ?? '', body: body ?? null })
+  const rest = tail.replace(OWN, (_, attrs: string, body: string | undefined) => {
+    blocks.push({ attrs, body: body ?? null })
     return ''
   })
   return { blocks, rest }

@@ -202,7 +202,7 @@ function merges(rest: string, sheet: string, issues: Issues): string[] | undefin
 }
 
 /** Whether an autofilter, a sheet's or a table's, has criteria: a column with a filter of any kind. */
-export function hasCriteria(filter: Element | undefined): boolean {
+function hasCriteria(filter: Element | undefined): boolean {
   return !!filter?.body && elements(filter.body, 'filterColumn').some((c) => !!c.body && /<[\w.:-]+[\s/>]/.test(c.body))
 }
 
