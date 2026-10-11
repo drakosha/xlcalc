@@ -1,0 +1,1581 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "day": "2026-10-11",
+  "seconds": 24.2
+ },
+ "books": {
+  "one": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "A1:B2"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     }
+    }
+   ]
+  },
+  "areas": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "A1:A2",
+        "C4:D5"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     }
+    }
+   ]
+  },
+  "column": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "C:C"
+       ],
+       "formula": "TRUE",
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     }
+    }
+   ]
+  },
+  "x14": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "expression",
+       "ranges": [
+        "A1:B2"
+       ],
+       "formula": "'L'!$A$1>0",
+       "style": {
+        "fill": {
+         "color": "#FFC7CE"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "lower",
+   "book": "one",
+   "read": [
+    [
+     "S",
+     "A1:D6"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:B2\"",
+     "to": "sqref=\"a1:b2\""
+    }
+   ]
+  },
+  {
+   "id": "dollar",
+   "book": "one",
+   "read": [
+    [
+     "S",
+     "A1:D6"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:B2\"",
+     "to": "sqref=\"$A$1:$B$2\""
+    }
+   ]
+  },
+  {
+   "id": "mixed",
+   "book": "one",
+   "read": [
+    [
+     "S",
+     "A1:D6"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:B2\"",
+     "to": "sqref=\"$a$1:B$2\""
+    }
+   ]
+  },
+  {
+   "id": "areas",
+   "book": "areas",
+   "read": [
+    [
+     "S",
+     "A1:D6"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:A2 C4:D5\"",
+     "to": "sqref=\"a1:A2 $C$4:d5\""
+    }
+   ]
+  },
+  {
+   "id": "column",
+   "book": "column",
+   "read": [
+    [
+     "S",
+     "A1:D6"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"C:C\"",
+     "to": "sqref=\"$c:$c\""
+    }
+   ]
+  },
+  {
+   "id": "x14",
+   "book": "x14",
+   "read": [
+    [
+     "S",
+     "A1:D6"
+    ]
+   ],
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "<xm:sqref>A1:B2</xm:sqref>",
+     "to": "<xm:sqref>$a$1:b2</xm:sqref>"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "lower": "61a474cda33b96d3846b84a241a10c8b7dafdfbfbb59705faefeb9995c57c767",
+  "dollar": "50f69e4fa2e628a4d2a736b6cee68681d246f068d66c5690b84bffaf5ae3db92",
+  "mixed": "a13f21e9d2d1dca01547b4fdb7785feb4d321c51bc43bb1b397765245efb15b4",
+  "areas": "a31057a3b96d449f8a68d3317645b0d40b38d6e66c551dfbe2fe469dfb845b8b",
+  "column": "25cb6b3a9e3a61871862ab10f152a9afbd35e6df89a607ef4b074676c9247bdb",
+  "x14": "e4f5db53dab9acd79e7ec648f275b9736c8dfa153e9fa5d49ac656cbbab6b7c1"
+ },
+ "answers": {
+  "lower": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "dollar": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "mixed": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "areas": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "column": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  },
+  "x14": {
+   "looks": {
+    "S": {
+     "A1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B1": {
+      "text": "1",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D1": {
+      "text": "1",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B2": {
+      "text": "2",
+      "fill": "#FFC7CE",
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D2": {
+      "text": "2",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D3": {
+      "text": "3",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D4": {
+      "text": "4",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D5": {
+      "text": "5",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "B6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "C6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "D6": {
+      "text": "6",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  }
+ }
+}
