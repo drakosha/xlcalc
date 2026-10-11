@@ -21,7 +21,7 @@ describe('xlsx settings: the 1904 date system', () => {
   }
 
   it('is written as the workbook says it, dates as serial numbers of 1904, and read back; the book computes as the one written', async () => {
-    const { data } = await writeXlsx(book, { result: compute(book, { clock }) })
+    const { data } = await writeXlsx({ book, result: compute(book, { clock }) })
     expect(await text(data, 'xl/workbook.xml')).toContain('<workbookPr date1904="1"/><bookViews>')
     expect(await text(data, 'xl/worksheets/sheet1.xml')).toContain('<c r="A1" s="1"><v>44226.75</v></c>')
     const r = await readXlsx(data)
@@ -33,7 +33,7 @@ describe('xlsx settings: the 1904 date system', () => {
   })
 
   it('a book of the 1900 system has no workbookPr', async () => {
-    const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { value: { date: '2025-01-31' } } } }] })
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: { date: '2025-01-31' } } } }] } })
     expect(await text(data, 'xl/workbook.xml')).not.toContain('workbookPr')
     expect((await readXlsx(data)).book).toEqual({ sheets: [{ name: 'S', cells: { A1: { value: 45688 } } }] })
   })
@@ -45,19 +45,19 @@ describe('xlsx settings: iterative calculation', () => {
   it('the count and the change come back as written; without them, Excel defaults', async () => {
     for (const iteration of [{ maxIterations: 7, maxChange: 0.5 }, { maxChange: 1e-7 }, {}]) {
       const book: BookInput = { iteration, sheets: [{ name: 'S', cells }] }
-      const r = await readXlsx((await writeXlsx(book, { result: compute(book, { clock }) })).data)
+      const r = await readXlsx((await writeXlsx({ book, result: compute(book, { clock }) })).data)
       expect(r.book).toEqual(book)
       expect(storedValues(r)).toEqual({ A1: 5, B1: 5 })
     }
-    const { data } = await writeXlsx({ iteration: { maxIterations: 7, maxChange: 0.5 }, sheets: [{ name: 'S', cells }] })
+    const { data } = await writeXlsx({ book: { iteration: { maxIterations: 7, maxChange: 0.5 }, sheets: [{ name: 'S', cells }] } })
     expect(await text(data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1" iterate="1" iterateCount="7" iterateDelta="0.5"/>')
   })
 
   it('a book without formulas keeps its setting; a book without the setting turns it off, as Excel keeps the one it has without calcPr', async () => {
-    const { data } = await writeXlsx({ iteration: {}, sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })
+    const { data } = await writeXlsx({ book: { iteration: {}, sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } })
     expect(await text(data, 'xl/workbook.xml')).toContain('<calcPr iterate="1"/>')
-    expect(await text((await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] })).data, 'xl/workbook.xml')).toContain('<calcPr/>')
-    const plain = await writeXlsx({ sheets: [{ name: 'S', cells }] })
+    expect(await text((await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } })).data, 'xl/workbook.xml')).toContain('<calcPr/>')
+    const plain = await writeXlsx({ book: { sheets: [{ name: 'S', cells }] } })
     expect(await text(plain.data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1"/>')
     expect((await readXlsx(plain.data)).book.iteration).toBeUndefined()
   })
@@ -71,7 +71,7 @@ describe('xlsx settings: built-in number formats by number', () => {
 
   it('are written by their number and read back as numbers; each locale shows them its own way', async () => {
     for (const locale of [undefined, 'ru-RU']) {
-      const { data } = await writeXlsx(book(locale))
+      const { data } = await writeXlsx({ book: book(locale) })
       const styles = await text(data, 'xl/styles.xml')
       expect(styles).not.toContain('<numFmts')
       for (const id of [14, 38, 9, 22, 44, 20]) expect(styles).toContain(`<xf numFmtId="${id}" `)
@@ -83,7 +83,7 @@ describe('xlsx settings: built-in number formats by number', () => {
   })
 
   it('a code that a locale shows otherwise than its built-in format is written as a code of its own', async () => {
-    const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { value: -5, numberFormat: '#,##0_);(#,##0)' }, A2: { value: 1, numberFormat: 'm/d/yy' }, A3: { value: 1, numberFormat: '0.00' } } }] })
+    const { data } = await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: -5, numberFormat: '#,##0_);(#,##0)' }, A2: { value: 1, numberFormat: 'm/d/yy' }, A3: { value: 1, numberFormat: '0.00' } } }] } })
     const styles = await text(data, 'xl/styles.xml')
     expect(styles).toContain('<numFmt numFmtId="164" formatCode="#,##0_);(#,##0)"/><numFmt numFmtId="165" formatCode="m/d/yy"/>')
     expect((await readXlsx(data)).book.sheets[0].cells).toEqual({ A1: { value: -5, numberFormat: '#,##0_);(#,##0)' }, A2: { value: 1, numberFormat: 'm/d/yy' }, A3: { value: 1, numberFormat: 2 } })

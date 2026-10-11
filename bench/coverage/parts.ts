@@ -41,7 +41,7 @@ export function makeArgs(make: PartsMake[] = []): (string | number)[][] {
 /** The file a case's book is written to, the same on both platforms: by `writeXlsx`, with the book's threads put in. */
 export async function partsFile(c: PartsCase, set: PartsCases): Promise<Uint8Array> {
   const threads = set.threads?.[c.book]
-  return threads ? threadedFile(set.books[c.book], threads) : (await writeXlsx(set.books[c.book])).data
+  return threads ? threadedFile(set.books[c.book], threads) : (await writeXlsx({ book: set.books[c.book] })).data
 }
 
 /** The set's cases, the file of each case and what identifies it. */

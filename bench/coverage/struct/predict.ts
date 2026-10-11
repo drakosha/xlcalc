@@ -5,7 +5,7 @@
  * compares it) and its cells as Excel shows them, in `READ`.
  */
 import { fileURLToPath } from 'node:url'
-import { setModule, writeAnswers } from '../stored.js'
+import { setModule, takenBook, writeAnswers } from '../stored.js'
 import type { StructSet } from './cases.js'
 import { LOOK } from '../struct.js'
 import { editStructure } from '../../../src/index.js'
@@ -16,7 +16,7 @@ const { books, cases, look = [] } = (await setModule<StructSet>('struct', set)).
 const rects = [LOOK, ...look].join(',')
 const out: Record<string, unknown> = {}
 for (const c of cases) {
-  const r = editStructure(books[c.book], c.op)
+  const r = editStructure(takenBook(books[c.book]), c.op)
   out[c.id] = r.ok ? { sheets: Object.fromEntries(r.book.sheets.map((s) => [s.name, { look: lookOf(r.book, s, rects), cells: Object.fromEntries(Object.entries(s.cells).map(([a, x]) => [a, x.formula !== undefined ? `=${x.formula}` : String(x.value)])) }])) } : { refused: r.code }
 }
 writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)

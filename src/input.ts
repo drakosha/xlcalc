@@ -19,7 +19,7 @@ import { InputError, what } from './input-error.js'
 import { optionHint } from './strict-args.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
-import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken, numberFormatTaken } from './taken.js'
+import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken } from './taken.js'
 
 export { InputError, what } from './input-error.js'
 
@@ -41,8 +41,16 @@ export function checkString(v: unknown, path: string): string {
   return v
 }
 
+/** Fields by their old names, refused since they were renamed, and the name of each now. */
+const RENAMED: Record<string, string> = { format: 'numberFormat' }
+
+/** The fields of `o` are of `allowed`: an unknown one is refused, with the name now of a field by its old name (`format`). */
 export function onlyKeys(o: Record<string, unknown>, path: string, allowed: readonly string[], hint = '') {
-  for (const k of Object.keys(o)) if (!allowed.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})${hint}`)
+  for (const k of Object.keys(o))
+    if (!allowed.includes(k)) {
+      const now = Object.hasOwn(RENAMED, k) && allowed.includes(RENAMED[k]) ? ` (${k} is the old name of ${RENAMED[k]})` : ''
+      throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})${hint}${now}`)
+    }
 }
 
 /** An options object's fields, as `onlyKeys`: an unknown one that another call takes says which call (`optionHint`). */
@@ -71,15 +79,6 @@ export function checkFormat(v: unknown, path: string) {
   if (typeof v !== 'string' && !(typeof v === 'number' && isBuiltin(v))) throw new InputError(path, `expected a format code or the number of a built-in format, 0 to 49, got ${what(v)}`)
 }
 
-/**
- * The number format by its name `numberFormat` and by its old name `format`, which a cell, a line, a conditional style
- * and an edit of one take: given both, they are one value.
- */
-export function checkFormatNames(o: Record<string, unknown>, path: string) {
-  if (o.format !== undefined && o.numberFormat !== undefined && o.format !== o.numberFormat)
-    throw new InputError(`${path}.format`, `the number format is numberFormat, and format its old name: given both, they differ (${what(o.numberFormat)} and ${what(o.format)})`)
-}
-
 /** A style's fields where a cell takes its number: where such a style goes. */
 const STYLE_HINT = " (a cell names a style of the book's styles by its index; a session's patchCells takes one by its fields)"
 
@@ -106,8 +105,7 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
     }
   }
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
-  for (const k of ['numberFormat', 'format']) if (c[k] !== undefined && typeof c[k] !== 'string') checkFormat(c[k], `${path}.${k}`)
-  checkFormatNames(c, path)
+  if (c.numberFormat !== undefined && typeof c.numberFormat !== 'string') checkFormat(c.numberFormat, `${path}.numberFormat`)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   if (c.array !== undefined) checkString(c.array, `${path}.array`)
   if (c.note !== undefined) checkNote(c.note, `${path}.note`)
@@ -148,9 +146,10 @@ export function checkNames(v: unknown, path: string): NameInput[] {
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
-const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'format', 'style', 'meta', 'array', 'note', 'link']
+/** The fields of a cell (`CellInput`). */
+export const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'style', 'meta', 'array', 'note', 'link']
 
-/** The common cell, checked without building paths (the cell loop is hot); anything else (`format`, the old name, too) takes the full check. */
+/** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
   if (!isObject(c)) return false
   for (const k in c) {
@@ -271,13 +270,11 @@ const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, ...(axis === 'c' ? ['bestFit'] : []), 'style', 'numberFormat', 'format', 'hidden', 'outlineLevel', 'collapsed'])
+  onlyKeys(o, p, [size, ...(axis === 'c' ? ['bestFit'] : []), 'style', 'numberFormat', 'hidden', 'outlineLevel', 'collapsed'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
   field('numberFormat', checkFormat)
-  field('format', checkFormat)
-  checkFormatNames(o, p)
   field('hidden', checkBoolean)
   field('outlineLevel', (x, path) => checkNumber(x, path, 1, 7, true))
   field('collapsed', checkBoolean)
@@ -350,7 +347,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
-  // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`, a number format by its old name
+  // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`
   const taken: string[][] = []
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
@@ -372,7 +369,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
       checkAddress(addr, cp)
       const c = checkCell(cell, cp, styles)
       if (c.array !== undefined) arrays.push(addr)
-      if (leadingEquals(c.formula) || c.format !== undefined) (taken[i] ??= []).push(addr)
+      if (leadingEquals(c.formula)) (taken[i] ??= []).push(addr)
     }
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
@@ -578,17 +575,16 @@ export function checkCellValue(v: unknown, path: string): CellValue {
   throw new InputError(path, `expected a number, text, a boolean, null or { error: code }, got ${what(v)}`)
 }
 
-/** `displayValue`'s options, the number format by its name `numberFormat` (its old name `format` taken too). */
+/** `displayValue`'s options. */
 export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (v === undefined) return {}
   const o = object(v, path, "options such as { numberFormat: '#,##0.00', locale: 'ru-RU', width: 12 }")
-  onlyKeys(o, path, ['numberFormat', 'format', 'locale', 'width', 'dateSystem'])
-  for (const k of ['numberFormat', 'format']) if (o[k] !== undefined) checkFormat(o[k], `${path}.${k}`)
-  checkFormatNames(o, path)
+  onlyKeys(o, path, ['numberFormat', 'locale', 'width', 'dateSystem'])
+  if (o.numberFormat !== undefined) checkFormat(o.numberFormat, `${path}.numberFormat`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
-  return numberFormatTaken(o) as DisplayOptions
+  return o as DisplayOptions
 }
 
 /** `entryWidth`'s options: `displayValue`'s and the column's `bestFit`. */
@@ -610,8 +606,8 @@ export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptio
 }
 
 /**
- * `parseEntry`'s options; of the cell only its number format (by its name `numberFormat` or its old name `format`), style,
- * meta, note and link are read (it may be a `CellView`).
+ * `parseEntry`'s options; of the cell only its number format, style, meta, note and link are read (it may be a
+ * `CellView`), and the old name of the number format is refused.
  */
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
@@ -622,12 +618,12 @@ export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
   if (o.cell !== undefined && o.cell !== null) {
     const c = object(o.cell, `${path}.cell`, 'a cell such as { numberFormat: "0.00", style: 1 }')
-    for (const k of ['numberFormat', 'format']) if (c[k] !== undefined) checkFormat(c[k], `${path}.cell.${k}`)
-    checkFormatNames(c, `${path}.cell`)
+    // a cell's other fields are not read (a `CellView` has more), but the old name of its number format is refused
+    if (Object.hasOwn(c, 'format')) onlyKeys({ format: c.format }, `${path}.cell`, ['numberFormat', 'style', 'meta', 'note', 'link'])
+    if (c.numberFormat !== undefined) checkFormat(c.numberFormat, `${path}.cell.numberFormat`)
     if (c.style !== undefined && !(Number.isInteger(c.style) && (c.style as number) >= 0)) throw new InputError(`${path}.cell.style`, `expected the index of a style, got ${what(c.style)}`)
     if (c.note !== undefined) checkNote(c.note, `${path}.cell.note`)
     if (c.link !== undefined) checkLink(c.link, `${path}.cell.link`)
-    if (c.format !== undefined) return { ...o, cell: numberFormatTaken(c) } as EntryOptions
   }
   return o as EntryOptions
 }

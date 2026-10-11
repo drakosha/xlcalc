@@ -81,7 +81,7 @@ const filterXml = (c: Criteria) => `<autoFilter ref="A1:B11">${c === 'none' ? ''
 
 /** The case's file: the book as `writeXlsx` writes it, with the filter put into its parts. */
 export async function filterFile(c: FilterFile): Promise<Uint8Array> {
-  const parts = await JSZip.loadAsync((await writeXlsx(filterBook({ rows: c.rows, ...(c.table ? { table: true } : {}) }))).data)
+  const parts = await JSZip.loadAsync((await writeXlsx({ book: filterBook({ rows: c.rows, ...(c.table ? { table: true } : {}) }) })).data)
   const files = new Map<string, string>()
   for (const [name, f] of Object.entries(parts.files)) if (!f.dir) files.set(name, await f.async('string'))
   const edit = (name: string, fn: (xml: string) => string) => files.set(name, fn(files.get(name)!))

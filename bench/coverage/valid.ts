@@ -83,7 +83,7 @@ export const validFile = (set: string, tag: string) => join(ROOT, 'test/excel/va
 /** The set's cases, the file of each case and what identifies it. */
 export async function validSet(set: string): Promise<{ built: ValidCases; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
   const built = (await setModule<ValidSet>('valid', set)).buildValidCases()
-  return { built, ...(await caseFiles(built.cases, async (c) => (await writeXlsx(built.books[c.book])).data)) }
+  return { built, ...(await caseFiles(built.cases, async (c) => (await writeXlsx({ book: built.books[c.book] })).data)) }
 }
 
 /** Runs the set's cases that have no stored answer for the same case and book (FCOV_FRESH=1 runs all) and stores the answers. */

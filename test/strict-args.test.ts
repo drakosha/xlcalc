@@ -20,19 +20,15 @@ afterAll(closeCalcs)
 
 const book = (): BookInput => ({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 2 }, A2: { formula: 'A1*21' } } }] })
 
-/** The arguments each method of a synchronous session takes (`Session`), by its new name and its old one. */
+/** The arguments each method of a synchronous session takes (`Session`). */
 const SESSION: Record<string, number> = {
   setCells: 2, replaceCells: 2, clearCells: 3, patchCells: 2, setCellText: 4, previewCellText: 4, setCellTexts: 2, previewCellTexts: 2, setNames: 2, setClock: 2, editStructure: 2, setStyles: 2, setLayout: 2,
   getBook: 0, getLayout: 0, getUsedRange: 1, explain: 3, getCells: 2, getCell: 2, getViewport: 3, getCellIssue: 2, getValidation: 2, validateEntry: 3,
   getResult: 0, getSnapshot: 0, getHash: 0, undo: 1, redo: 1, close: 0,
-  restructure: 2, book: 0, layout: 0, extent: 1, cells: 2, validation: 2, result: 0, hash: 0,
 }
 
-/** The new name of each old one, which a refusal names: the old name is the same function. */
-const NEW: Record<string, string> = { restructure: 'editStructure', book: 'getBook', layout: 'getLayout', extent: 'getUsedRange', cells: 'getCells', validation: 'getValidation', result: 'getResult', hash: 'getHash' }
-
 /** An asynchronous session's (`AsyncSession`): the calls that compute take a call's options too. */
-const ASYNC: Record<string, number> = { ...SESSION, validateEntry: 4, getResult: 1, getSnapshot: 1, getHash: 1, result: 1, hash: 1 }
+const ASYNC: Record<string, number> = { ...SESSION, validateEntry: 4, getResult: 1, getSnapshot: 1, getHash: 1 }
 
 const GETCELLS = new InputError('getCells', 'takes 2 arguments, got an object as argument 3 (formulaLocal is an option of getViewport)')
 
@@ -46,7 +42,7 @@ describe('a session takes no options a method does not', () => {
     for (const calc of [inline, pool]) {
       const a = await calc.createSession(book(), { clock: CLOCK })
       expect({ ...own(a), kill: undefined, historyData: undefined }).toEqual({ ...ASYNC, kill: undefined, historyData: undefined })
-      expect(own(calc)).toEqual({ compute: 2, createSession: 2, openSession: 2, close: 0 })
+      expect(own(calc)).toEqual({ compute: 2, createSession: 2, close: 0 })
       await a.close()
     }
     await inline.close()
@@ -77,7 +73,7 @@ describe.each(['closures', 'eval'] as const)('arguments a call does not take, ex
       for (const [name, max] of Object.entries(table)) {
         if (name === 'close') continue
         const call = (s as unknown as Record<string, (...a: unknown[]) => Promise<unknown>>)[name]
-        await expect(call(...Array(max).fill(undefined), { depth: 2 }), name).rejects.toThrow(`${NEW[name] ?? name}: takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (depth is an option of explain)`)
+        await expect(call(...Array(max).fill(undefined), { depth: 2 }), name).rejects.toThrow(`${name}: takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (depth is an option of explain)`)
         await expect(call(...Array(max).fill(undefined), () => 0), name).rejects.toThrow(InputError)
       }
       await expect((s.close as (...a: unknown[]) => Promise<void>)({ signal: null })).rejects.toThrow('close: takes 0 arguments, got an object as argument 1')
@@ -109,9 +105,9 @@ describe('the functions of the package take no options they do not', () => {
   /** Every function the package gives out, by entry point, and the arguments it takes. */
   const FUNCTIONS: [string, Record<string, unknown>, Record<string, number>][] = [
     ['xlcalc', root, {
-      compute: 2, createSession: 2, openSession: 2, createInlineCalc: 1, viewportOf: 4, editStructure: 2, restructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
+      compute: 2, createSession: 2, createInlineCalc: 1, viewportOf: 4, editStructure: 2, copyFormula: 4, validateFormula: 2, validateLocalFormula: 3, validateName: 2, validateNames: 2,
       toLocal: 3, toInvariant: 3, registerLocale: 1, parseEntry: 2, entryText: 2, needsApostrophe: 2, entryWidth: 2, fitColumns: 4, displayValue: 2, builtinFormatCode: 2, errorText: 2,
-      scanReferences: 2, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, fromLegacy: 2, internStyle: 2, escapeColumn: 1,
+      scanReferences: 2, validateSheetName: 2, sameValue: 2, canonValue: 1, dateToSerial: 2, serialToDate: 2, debugGeneratedCode: 2, internStyle: 2, escapeColumn: 1,
       parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2,
     }],
     ['xlcalc/a1', a1, { parseCell: 1, cellAddress: 2, colLetters: 1, colNumber: 1, parseRange: 1, rangeAddress: 1, parseLines: 2, linesKey: 3, patchLines: 3, rectsMeet: 2, rectContains: 2, quoteSheetIfNeeded: 2, nameKey: 1, sameName: 2 }],
@@ -127,9 +123,8 @@ describe('the functions of the package take no options they do not', () => {
       for (const [name, max] of Object.entries(table)) {
         const f = fns[name] as (...a: unknown[]) => unknown
         const refused = `takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (table is an option of toLocal and toInvariant)`
-        const as = name === 'openSession' ? 'createSession' : name === 'restructure' ? 'editStructure' : name
-        if (entry === 'xlcalc/xlsx' && name !== 'fromLegacy') await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(as, refused))
-        else expect(() => f(...Array(max).fill(undefined), { table: 'T' }), name).toThrow(new InputError(as, refused))
+        if (entry === 'xlcalc/xlsx' && name !== 'fromLegacy') await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
+        else expect(() => f(...Array(max).fill(undefined), { table: 'T' }), name).toThrow(new InputError(name, refused))
       }
     })
 
@@ -139,8 +134,8 @@ describe('the functions of the package take no options they do not', () => {
     expect(() => toLocal('SUM(A1)', ruRU, { tabel: 'T' } as never)).toThrow('opts: unknown field "tabel" (expected table)')
     expect(() => toLocal('SUM(A1)', ruRU, 'T' as never)).toThrow(InputError)
     expect(toLocal('T[[#This Row],[Qty]]*2', ruRU, { table: 'T' })).toEqual({ ok: true, formula: '[@Qty]*2' })
-    expect(() => root.fromLegacy('A1:A2*2', { sheets: 'S' } as never)).toThrow('ctx: unknown field "sheets" (expected names, sheet)')
-    expect(root.fromLegacy('A1:A2*2', { sheet: 'S' })).toBe('@A1:A2*2')
+    expect(() => xlsx.fromLegacy('A1:A2*2', { sheets: 'S' } as never)).toThrow('ctx: unknown field "sheets" (expected names, sheet)')
+    expect(xlsx.fromLegacy('A1:A2*2', { sheet: 'S' })).toBe('@A1:A2*2')
     expect(['A1', 'B2'].map(parseCell)).toEqual([{ row: 1, col: 1 }, { row: 2, col: 2 }])
     expect([1, 2].map(root.colLetters)).toEqual(['A', 'B'])
     expect(() => compute(book(), { clock: CLOCK, formulaLocal: true } as never)).toThrow('opts: unknown field "formulaLocal" (expected clock, externals, execution, display, limits) (formulaLocal is an option of getViewport)')

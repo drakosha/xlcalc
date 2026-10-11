@@ -6,6 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
+import { takenBook } from '../bench/coverage/stored.js'
 import { editStructure } from '../src/index.js'
 import { differences, STRUCT_SETS } from './structure-excel.js'
 
@@ -56,7 +57,7 @@ for (const set of STRUCT_SETS) {
     for (const c of set.cases) {
       it(`${c.id}: as Excel`, () => {
         const a = set.answers[c.id]
-        const r = editStructure(set.books[c.book], c.op)
+        const r = editStructure(takenBook(set.books[c.book]), c.op)
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           // Excel left the book as it was

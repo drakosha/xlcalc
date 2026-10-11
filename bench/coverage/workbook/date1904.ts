@@ -3,13 +3,13 @@
  * typed in and computed, DATE and the functions that read dates, date text, TODAY and NOW, TEXT and what cells show,
  * negative dates and times, the ends of the range, date differences, the former Analysis ToolPak's date functions.
  */
-import type { CellInput, SheetInput } from '../../../src/contract.js'
 import type { WorkbookCase } from './cases.js'
+import type { StoredCell, StoredSheet } from '../stored.js'
 
-const f = (formula: string): CellInput => ({ formula })
+const f = (formula: string): StoredCell => ({ formula })
 
 /** S: values shown by a format in a wide column. */
-const SHOWN: [CellInput['value'], string][] = [
+const SHOWN: [StoredCell['value'], string][] = [
   [0, 'm/d/yyyy'],
   [1, 'm/d/yyyy'],
   [45000, 'm/d/yyyy'],
@@ -32,8 +32,8 @@ const SHOWN: [CellInput['value'], string][] = [
   [-0.25, '[$-F400]h:mm:ss AM/PM'],
 ]
 
-function shownSheet(): SheetInput {
-  const cells: Record<string, CellInput> = {}
+function shownSheet(): StoredSheet {
+  const cells: Record<string, StoredCell> = {}
   SHOWN.forEach(([value, format], i) => (cells[`A${i + 1}`] = { value, format }))
   return { name: 'S', cells, columns: { A: { width: 40 } } }
 }

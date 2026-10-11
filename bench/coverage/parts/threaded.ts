@@ -33,7 +33,7 @@ export async function threadedFile(book: BookInput, threads: ThreadSpec[]): Prom
     const s = sheets.find((x) => x.name === t.sheet)!
     s.cells[t.cell] = { ...s.cells[t.cell], note: { author: `tc=${guid(2, k + 1)}`, text: placeholder(t.comments) } }
   })
-  const archive = openArchive((await writeXlsx({ ...book, sheets })).data)
+  const archive = openArchive((await writeXlsx({ book: { ...book, sheets } })).data)
   const files = new Map<string, string | Uint8Array>()
   for (const name of archive.names) files.set(name, (await archive.bytes(name))!)
   const text = async (name: string) => (await archive.text(name))!

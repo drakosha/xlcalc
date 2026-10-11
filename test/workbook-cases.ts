@@ -7,6 +7,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { FileParts } from '../bench/coverage/case-book.js'
 import type { Step, WorkbookAnswer, WorkbookCase } from '../bench/coverage/workbook/cases.js'
+import { takenBook } from '../bench/coverage/stored.js'
 import { createSession, type BookInput, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
 import { patchLines, parseSpan } from '../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../src/model.js'
@@ -28,7 +29,8 @@ function withParts(s: SheetInput, parts: NonNullable<FileParts['sheets']>[string
 export function bookOf(c: WorkbookCase): BookInput {
   const f = c.file ?? {}
   const iteration = f.iterate && { ...(f.iterate.count !== undefined ? { maxIterations: f.iterate.count } : {}), ...(f.iterate.delta !== undefined ? { maxChange: f.iterate.delta } : {}) }
-  return { ...c.book, sheets: c.book.sheets.map((s) => withParts(s, f.sheets?.[s.name])), ...(f.date1904 ? { dateSystem: 1904 as const } : {}), ...(iteration ? { iteration } : {}) }
+  const book = takenBook(c.book)
+  return { ...book, sheets: book.sheets.map((s) => withParts(s, f.sheets?.[s.name])), ...(f.date1904 ? { dateSystem: 1904 as const } : {}), ...(iteration ? { iteration } : {}) }
 }
 
 /** Excel's autofilter as a host applies it: the rows of `range` below its header shown where `field` is `criterion`, else hidden; the sheet filtered. */

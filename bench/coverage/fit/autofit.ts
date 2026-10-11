@@ -4,8 +4,9 @@
  * sections), booleans and errors, several cells, empty columns, a column narrowed, merged cells, a hidden row, fonts,
  * formula results and a spill, a hidden column, a column's own format.
  */
-import type { CellInput } from '../../../src/contract.js'
+import type { CellInput, NumberFormat } from '../../../src/contract.js'
 import { collector, HIDDEN, type FitCase } from './cases.js'
+import type { StoredCell } from '../stored.js'
 
 /** Text of `w` points of Calibri 11 on the Mac (`docs/formats.md`, Width): `b` is 6, the last letter makes up the rest. */
 export function textOf(w: number): string {
@@ -16,8 +17,8 @@ export function textOf(w: number): string {
   return rem === 1 || rem === 2 ? 'b'.repeat(q - 1) + tail[rem] : 'b'.repeat(q) + tail[rem]
 }
 
-const one = (v: CellInput['value'], format?: CellInput['format']): Record<number, CellInput> => ({ 1: { value: v, ...(format !== undefined ? { format } : {}) } })
-const formula = (f: string, format?: CellInput['format']): Record<number, CellInput> => ({ 1: { formula: f, ...(format !== undefined ? { format } : {}) } })
+const one = (v: CellInput['value'], format?: NumberFormat): Record<number, StoredCell> => ({ 1: { value: v, ...(format !== undefined ? { format } : {}) } })
+const formula = (f: string, format?: NumberFormat): Record<number, StoredCell> => ({ 1: { formula: f, ...(format !== undefined ? { format } : {}) } })
 
 const GENERAL = [1, 12, 123456, 12345678, 1234567890, 12345678901, 123456789012, -5, -123456789, 0.5, 3.14159265358979, 1e-10, 1e100, 0.000123456789, 123.456, -0.001, 99999999999]
 

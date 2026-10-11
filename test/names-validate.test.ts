@@ -3,7 +3,7 @@
  * same issues as `ComputeResult.diagnostics` of kind `name`, each telling a name left out of the book from one kept with an error.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, engine, InputError, createSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
+import { compute, InputError, createSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
 import './locales.js'
 import { nameIssues } from './diagnostics.js'
 
@@ -66,8 +66,6 @@ describe('validateName in a book\'s locale', () => {
     expect(() => validateName('x', { locale: 'de-DE' })).toThrow(InputError)
     expect(() => validateName('x', { lang: 'ru-RU' } as never)).toThrow(InputError)
   })
-
-  it('is the engine object\'s too', () => expect(engine.validateName('ложь', { locale: 'ru-RU' }).ok).toBe(false))
 })
 
 describe('validateNames', () => {
@@ -104,6 +102,4 @@ describe('validateNames', () => {
     expect(() => validateNames([{ name: 'x' }] as never, { sheets: [] })).toThrow(InputError)
     expect(validateNames([], { sheets: [] })).toEqual([])
   })
-
-  it('is the engine object\'s too', () => expect(engine.validateNames([{ name: 'R', ref: '1' }], { sheets: ['S'] })).toEqual([{ name: 'R', reason: expect.any(String), dropped: true }]))
 })

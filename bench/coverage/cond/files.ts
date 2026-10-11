@@ -8,6 +8,7 @@
 import type { BookInput, CellInput, ConditionalFormat } from '../../../src/contract.js'
 import { editStructure } from '../../../src/index.js'
 import type { CondCase, CondCases } from './cases.js'
+import { takenBook, type StoredBook, type StoredRule } from '../stored.js'
 
 const v = (value: CellInput['value']): CellInput => ({ value })
 
@@ -21,8 +22,8 @@ function numbers(cols: string[]): Record<string, CellInput> {
   return out
 }
 
-function kindsBook(): BookInput {
-  const rules: ConditionalFormat[] = [
+function kindsBook(): StoredBook {
+  const rules: StoredRule[] = [
     { type: 'cellIs', ranges: ['A1:A11'], operator: 'between', formulas: ['3', '$Z$1'], stopIfTrue: true, style: { fill: { color: '#FFC7CE' }, font: { color: '#9C0006', bold: false } } },
     { type: 'expression', ranges: ['B1:B11'], formula: 'AND($B1>2,ISODD($B1))', style: { font: { bold: true, underline: 'double' }, border: { bottom: { style: 'thin', color: '#FF0000' }, top: { style: 'dashed' } } } },
     { type: 'containsText', ranges: ['C1:C11'], text: '1', style: { font: { strike: true, italic: true } } },
@@ -68,13 +69,13 @@ function wideBook(): BookInput {
 
 /** The kinds book after a structure operation in the engine: the file is the engine's book. */
 function after(op: Parameters<typeof editStructure>[1]): BookInput {
-  const r = editStructure(kindsBook(), op)
+  const r = editStructure(takenBook(kindsBook()), op)
   if (!r.ok) throw new Error(`files: ${op.op} refused`)
   return r.book
 }
 
 export function buildCondCases(): CondCases {
-  const books: Record<string, BookInput> = {
+  const books: Record<string, StoredBook> = {
     kinds: kindsBook(),
     wide: wideBook(),
     'kinds-insert-row': after({ op: 'insertRows', sheet: 'S', row: 3, count: 2 }),

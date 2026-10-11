@@ -83,7 +83,7 @@ export function checkValidSets(sets: ValidSetFile[], pins: ValidPins, from: (nam
         expect(set.cases).toEqual(built.cases)
         expect(set.books).toEqual(built.books)
         expect(built.cases.filter((c) => !set.answers[c.id] && !set.rejected?.[c.id])).toEqual([])
-        for (const c of built.cases) expect(set.sent[c.id], `${c.id}: the writer changed since Excel saw the file`).toBe(await partsHash((await writeXlsx(built.books[c.book])).data))
+        for (const c of built.cases) expect(set.sent[c.id], `${c.id}: the writer changed since Excel saw the file`).toBe(await partsHash((await writeXlsx({ book: built.books[c.book] })).data))
       })
       for (const c of set.cases) {
         const key = keyOf(set, c.id)

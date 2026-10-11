@@ -5,8 +5,9 @@
  * typed over a header cell with a number format of its own (`0.00`, the short date), text that Excel ru-RU reads as a
  * number, a date or a boolean, and formulas typed in Russian over a column named `1,5`.
  */
-import type { BookInput, CellInput } from '../../../src/contract.js'
+import type { NumberFormat } from '../../../src/contract.js'
 import { on, sales, type CellSpec, type TableCase, type TableStep } from './cases.js'
+import type { StoredBook, StoredCell } from '../stored.js'
 
 export const local = true
 
@@ -14,10 +15,10 @@ const OVER: Record<string, CellSpec> = { J1: '=SUM(Sales[Qty])', J2: '=SUM(Sales
 const READ = on('S', 'A1:K6')
 
 /** Sales in a ru-RU book with the formulas over it; `head` gives the header cell C1 a number format of its own. */
-function ru(head?: CellInput['format']): BookInput {
+function ru(head?: NumberFormat): StoredBook {
   const t = sales()
   if (head !== undefined) t.cells.C1 = { ...t.cells.C1, format: head }
-  const cells: Record<string, CellInput> = { ...t.cells, ...Object.fromEntries(Object.entries(OVER).map(([a, f]) => [a, { formula: String(f).slice(1) }])) }
+  const cells: Record<string, StoredCell> = { ...t.cells, ...Object.fromEntries(Object.entries(OVER).map(([a, f]) => [a, { formula: String(f).slice(1) }])) }
   return { locale: 'ru-RU', sheets: [{ name: 'S', cells, tables: [t.table] }] }
 }
 

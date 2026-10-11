@@ -5,7 +5,8 @@
  */
 import type { FileParts } from '../case-book.js'
 import type { Val } from '../formulajs.js'
-import type { BookInput, RangeRef } from '../../../src/contract.js'
+import type { RangeRef } from '../../../src/contract.js'
+import type { StoredBook } from '../stored.js'
 
 /** One step after Excel opens the book (it computes the book on opening, as the file has no values). */
 export type Step =
@@ -26,7 +27,7 @@ export interface WorkbookCase {
   id: string
   /** What the case checks. */
   about: string
-  book: BookInput
+  book: StoredBook
   file?: FileParts
   read: RangeRef[]
   /** Rectangles whose cells' shown text (`Range.Text`) each read takes. */

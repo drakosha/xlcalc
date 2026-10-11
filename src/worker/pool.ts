@@ -12,7 +12,6 @@ import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
 import { splitCall, checkCall, checkEditCall } from '../async/options.js'
 import { checkedMapCell } from '../structure/index.js'
 import type { SentGeometry } from '../structure/geometry.js'
-import { calcWithOldNames, withOldNames } from '../old-names.js'
 import { strictMethods } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
@@ -385,7 +384,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         return { ...rest, mapCell: checkedMapCell(g) } as T
       })
     const step = (op: 'undo' | 'redo', co: unknown) => mapped<UndoResult>(edit(op, [], co))
-    return withOldNames<AsyncSession>(strictMethods({
+    return strictMethods<AsyncSession>({
       get clock() {
         return { ...r.clock }
       },
@@ -433,10 +432,10 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         await done
         r.slot.resident.delete(r)
       },
-    }, true))
+    }, true)
   }
 
-  return calcWithOldNames(strictMethods({
+  return strictMethods<Calc>({
     async compute(book, copts) {
       const { signal, timeoutMs, rest } = splitCall<object>(copts)
       const sent = pack(book)
@@ -482,5 +481,5 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       for (const r of recs) r.gone = closed
       recs.clear()
     },
-  }))
+  })
 }

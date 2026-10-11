@@ -4,7 +4,7 @@
  * Excel's own answers are checked in `entry-excel.test.ts` and `entry-win.test.ts`.
  */
 import { describe, expect, it } from 'vitest'
-import { displayValue, engine, InputError, createSession, parseEntry, type EntryResult } from '../src/index.js'
+import { displayValue, InputError, createSession, parseEntry, type EntryResult } from '../src/index.js'
 import './locales.js'
 
 const now = '2026-10-10T12:00:00Z'
@@ -119,7 +119,6 @@ describe('parseEntry', () => {
     expect(() => parseEntry('1', { cell: { numberFormat: 50 } })).toThrow(/opts\.cell\.numberFormat/)
     expect(() => parseEntry('1', { cell: { style: -1 } })).toThrow(/opts\.cell\.style/)
     expect(() => parseEntry('1', { width: 3 } as never)).toThrow(/unknown/)
-    expect(engine.parseEntry).toBe(parseEntry)
   })
 
   it("puts typed text into a session's cell, read from the session with its style and meta", () => {

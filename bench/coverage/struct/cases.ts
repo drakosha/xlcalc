@@ -7,6 +7,7 @@
  */
 import type { FileParts } from '../case-book.js'
 import type { BookInput, CellInput, CellRef, StructureOp } from '../../../src/contract.js'
+import type { StoredBook } from '../stored.js'
 
 export interface StructCase {
   id: string
@@ -24,7 +25,7 @@ export interface StructCase {
 }
 
 export interface StructCases {
-  books: Record<string, BookInput>
+  books: Record<string, StoredBook>
   cases: StructCase[]
   /** Formulas written as dynamic array formulas (Excel 365), as the spill cases need. */
   dynamic?: true

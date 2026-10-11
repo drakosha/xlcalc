@@ -151,7 +151,7 @@ describe('xlsx styles: writing and reading back', () => {
   }
 
   it('styles, formats of every kind, column and row looks come back as written; a code every locale shows as a built-in format comes back as its number', async () => {
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book })
     expect(issues).toEqual([])
     const r = await readXlsx(data)
     const cells = { ...book.sheets[0].cells, A1: { ...book.sheets[0].cells.A1, numberFormat: 2 }, A5: { value: 5, numberFormat: 9 } }

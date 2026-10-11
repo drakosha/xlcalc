@@ -4,7 +4,7 @@
  * parse never holds, as a cell's formula computes an error.
  */
 import type { ConditionalFormat, IconSetName } from '../contract.js'
-import { array, checkBoolean, checkBorder, checkColor, checkFill, checkFont, checkFormat, checkFormatNames, checkNumber, checkOneOf, checkString, InputError, object, onlyKeys, type Given } from '../input.js'
+import { array, checkBoolean, checkBorder, checkColor, checkFill, checkFont, checkFormat, checkNumber, checkOneOf, checkString, InputError, object, onlyKeys, type Given } from '../input.js'
 import { parseRange } from '../structure/area.js'
 
 /** The icon sets by name, with their number of icons. */
@@ -69,13 +69,12 @@ const given: Given = (o, k) => o[k] !== undefined
 /** A rule's style: a cell's style's font, fill and border, without a font's name and size (a dxf has none) and with a number format. */
 function checkStyle(v: unknown, p: string) {
   const s = object(v, p, 'a style such as { fill: { color: "#FFC7CE" }, font: { color: "#9C0006" } }')
-  onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat', 'format'])
+  onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat'])
   if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, false)
   if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC7CE')
   // every side the border names, one undefined too
   if (given(s, 'border')) checkBorder(s.border, `${p}.border`, () => true)
-  for (const k of ['numberFormat', 'format']) if (s[k] !== undefined) checkFormat(s[k], `${p}.${k}`)
-  checkFormatNames(s, p)
+  if (s.numberFormat !== undefined) checkFormat(s.numberFormat, `${p}.numberFormat`)
 }
 
 function checkValue(v: unknown, p: string) {

@@ -2,9 +2,9 @@
  * `writeXlsx` takes a snapshot `{ book, result? }` and which values of formulas to store (`values`): `require` (the
  * default with a result: every formula and spilled cell has its value, else the result is not the book's), `omit`
  * (the default without a result, reported when the book has formulas), `preserve` (the values the result has, the
- * rest reported); the old form `writeXlsx(book, { result })` writes the same bytes. `readXlsx` gives `cached` in the
- * shape of a result, which writes the file again as the result of its book. Wrong arguments are `InputError`s with
- * what to pass instead.
+ * rest reported); the old form `writeXlsx(book, { result })` is refused. `readXlsx` gives `cached` in the shape of a
+ * result, which writes the file again as the result of its book. Wrong arguments are `InputError`s with what to pass
+ * instead.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -40,19 +40,17 @@ function without(cells: string[]): XlsxCached {
 }
 
 describe('writeXlsx with a snapshot', () => {
-  it('writes what the old form wrote: the same bytes, the same issues', async () => {
+  it('the old form, a book with its result in the options, is refused: the book and its result go as one snapshot', async () => {
     const result = compute(book, { clock })
-    const now = await writeXlsx({ book, result })
-    expect(now.data).toEqual((await writeXlsx(book, { result })).data)
-    expect(now.issues).toEqual([])
-    expect((await writeXlsx({ book, result }, { mode: 'values' })).data).toEqual((await writeXlsx(book, { result, mode: 'values' })).data)
+    expect((await writeXlsx({ book, result })).issues).toEqual([])
+    await expect(writeXlsx(book as never, { result } as never)).rejects.toThrow(new InputError('snapshot', 'unknown field "sheets" (expected book, result) (a book is not a snapshot: pass { book, result })'))
+    await expect(writeXlsx(book as never)).rejects.toThrow(/a book is not a snapshot: pass \{ book, result \}/)
   })
 
   it("require, the default with a result: every formula and every cell of an array has its value, else it is not the book's result", async () => {
     await expect(writeXlsx({ book, result: without(['B1']) })).rejects.toThrow(new InputError('snapshot.result', `expected the book's result: the formula of 'S'!B1 has no value in the result (values: "preserve" writes the values it has)`))
     await expect(writeXlsx({ book, result: without(['C2']) })).rejects.toThrow(/'S'!C2 of the array of C1 has no value in the result/)
     await expect(writeXlsx({ book, result: without(['D2']) }, { values: 'require' })).rejects.toThrow(/'S'!D2 of the array of D1 has no value/)
-    await expect(writeXlsx(book, { result: without(['B1']) })).rejects.toThrow(new InputError('opts.result', `expected the book's result: the formula of 'S'!B1 has no value in the result (values: "preserve" writes the values it has)`))
   })
 
   it('preserve: the values the result has; a formula without one is written without it, and reported', async () => {
@@ -70,7 +68,6 @@ describe('writeXlsx with a snapshot', () => {
     const plain = await writeXlsx({ book })
     expect(plain.issues).toEqual([{ code: 'noCachedValues', message: 'no result was given: the file stores no values of formulas, and Excel computes them when it opens the file' }])
     expect(await part(plain.data, 'xl/workbook.xml')).toContain('<calcPr fullCalcOnLoad="1"/>')
-    expect((await writeXlsx(book)).issues).toEqual(plain.issues)
     expect((await writeXlsx({ book }, { values: 'omit' })).issues).toEqual([])
     expect((await writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] } })).issues).toEqual([])
     // with a result too: the file is the one written without it
@@ -86,8 +83,7 @@ describe('writeXlsx with a snapshot', () => {
   it('refuses what it cannot take, saying what to pass instead', async () => {
     const session = createSession(book, { clock })
     await expect(writeXlsx(session as never)).rejects.toThrow(new InputError('snapshot', 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'))
-    await expect(writeXlsx(book, { result: session as never })).rejects.toThrow(new InputError('opts.result', 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'))
-    await expect(writeXlsx({ book, result: session as never })).rejects.toThrow(InputError)
+    await expect(writeXlsx({ book, result: session as never })).rejects.toThrow(new InputError('snapshot.result', 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'))
     session.close()
     const result = "a result: compute's, a session's getSnapshot().result or readXlsx's cached, { sheets: [{ name, cells }] }"
     await expect(writeXlsx({ book, result: [{ name: 'S', cells: { B1: 200 } }] as never })).rejects.toThrow(new InputError('snapshot.result', `expected ${result}, got an array`))
