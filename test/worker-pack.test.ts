@@ -20,7 +20,7 @@ const isText = (s: Sent) => (s as { packed?: number }).packed === 1
 const withMeta: BookInput = {
   styles: [{ font: { bold: true } }],
   names: [{ name: 'rate', ref: '0.2' }],
-  sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { ids: [1, 2], note: 'x', nested: { ok: true } } }, A2: { formula: 'A1*rate', style: 0, format: undefined }, B1: { value: { date: '2025-01-31' } } }, rows: { '2': { hidden: true } }, columns: { B: { width: 12 } } }],
+  sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { ids: [1, 2], note: 'x', nested: { ok: true } } }, A2: { formula: 'A1*rate', style: 0, numberFormat: undefined }, B1: { value: { date: '2025-01-31' } } }, rows: { '2': { hidden: true } }, columns: { B: { width: 12 } } }],
 }
 
 describe('a book as text', () => {

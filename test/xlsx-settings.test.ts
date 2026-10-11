@@ -17,7 +17,7 @@ const values = (book: BookInput) => compute(book, { clock }).sheets.map((s) => O
 describe('xlsx settings: the 1904 date system', () => {
   const book: BookInput = {
     dateSystem: 1904,
-    sheets: [{ name: 'S', cells: { A1: { value: { date: '2025-01-31T18:00:00' }, format: 'yyyy-mm-dd h:mm' }, A2: { value: -1, format: 14 }, B1: { formula: 'YEAR(A1)' }, B2: { formula: 'TEXT(A2,"yyyy-mm-dd")' }, B3: { formula: 'DATE(1904,1,1)' } } }],
+    sheets: [{ name: 'S', cells: { A1: { value: { date: '2025-01-31T18:00:00' }, numberFormat: 'yyyy-mm-dd h:mm' }, A2: { value: -1, numberFormat: 14 }, B1: { formula: 'YEAR(A1)' }, B2: { formula: 'TEXT(A2,"yyyy-mm-dd")' }, B3: { formula: 'DATE(1904,1,1)' } } }],
   }
 
   it('is written as the workbook says it, dates as serial numbers of 1904, and read back; the book computes as the one written', async () => {
@@ -26,7 +26,7 @@ describe('xlsx settings: the 1904 date system', () => {
     expect(await text(data, 'xl/worksheets/sheet1.xml')).toContain('<c r="A1" s="1"><v>44226.75</v></c>')
     const r = await readXlsx(data)
     expect(r.book.dateSystem).toBe(1904)
-    expect(r.book.sheets[0].cells.A1).toEqual({ value: 44226.75, format: 'yyyy-mm-dd h:mm' })
+    expect(r.book.sheets[0].cells.A1).toEqual({ value: 44226.75, numberFormat: 'yyyy-mm-dd h:mm' })
     expect(storedValues(r)).toEqual({ B1: 2025, B2: '-1904-01-02', B3: 0 })
     expect(values(r.book)).toEqual(values(book))
     expect(r.issues).toEqual([])
@@ -66,7 +66,7 @@ describe('xlsx settings: iterative calculation', () => {
 describe('xlsx settings: built-in number formats by number', () => {
   const book = (locale?: string): BookInput => ({
     ...(locale ? { locale } : {}),
-    sheets: [{ name: 'S', cells: { A1: { value: 45688.75, format: 14 }, A2: { value: -1234.5, format: 38 }, A3: { value: 0.5, format: 9 }, A4: { value: 45688.75, format: 22 } }, rows: { 6: { format: 44 } }, columns: { A: { width: 12 }, C: { format: 20 } } }],
+    sheets: [{ name: 'S', cells: { A1: { value: 45688.75, numberFormat: 14 }, A2: { value: -1234.5, numberFormat: 38 }, A3: { value: 0.5, numberFormat: 9 }, A4: { value: 45688.75, numberFormat: 22 } }, rows: { 6: { numberFormat: 44 } }, columns: { A: { width: 12 }, C: { numberFormat: 20 } } }],
   })
 
   it('are written by their number and read back as numbers; each locale shows them its own way', async () => {
@@ -83,9 +83,9 @@ describe('xlsx settings: built-in number formats by number', () => {
   })
 
   it('a code that a locale shows otherwise than its built-in format is written as a code of its own', async () => {
-    const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { value: -5, format: '#,##0_);(#,##0)' }, A2: { value: 1, format: 'm/d/yy' }, A3: { value: 1, format: '0.00' } } }] })
+    const { data } = await writeXlsx({ sheets: [{ name: 'S', cells: { A1: { value: -5, numberFormat: '#,##0_);(#,##0)' }, A2: { value: 1, numberFormat: 'm/d/yy' }, A3: { value: 1, numberFormat: '0.00' } } }] })
     const styles = await text(data, 'xl/styles.xml')
     expect(styles).toContain('<numFmt numFmtId="164" formatCode="#,##0_);(#,##0)"/><numFmt numFmtId="165" formatCode="m/d/yy"/>')
-    expect((await readXlsx(data)).book.sheets[0].cells).toEqual({ A1: { value: -5, format: '#,##0_);(#,##0)' }, A2: { value: 1, format: 'm/d/yy' }, A3: { value: 1, format: 2 } })
+    expect((await readXlsx(data)).book.sheets[0].cells).toEqual({ A1: { value: -5, numberFormat: '#,##0_);(#,##0)' }, A2: { value: 1, numberFormat: 'm/d/yy' }, A3: { value: 1, numberFormat: 2 } })
   })
 })

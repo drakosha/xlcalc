@@ -17,7 +17,7 @@ const book = (): BookInput => ({
     {
       name: 'S',
       cells: {
-        A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3, format: '0.0' },
+        A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3, numberFormat: '0.0' },
         B1: { formula: 'SUM(A1:A3)*rate' },
         C1: { formula: 'SEQUENCE(A2)' },
         D1: { formula: 'SUBTOTAL(109,A1:A3)' },
@@ -104,7 +104,7 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
   it('patches: the style, format, note and link back, the shown text in the changes; a cell the patch made goes', () => {
     const s = createSession(book(), o)
     const before = structuredClone(s.getBook())
-    expect(s.patchCells([{ sheet: 'S', cell: 'A3', set: { format: null, style: 0, note: { text: 'n' } } }, { sheet: 'S', cell: 'H5', set: { link: { url: 'https://example.com/' } } }]).changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
+    expect(s.patchCells([{ sheet: 'S', cell: 'A3', set: { numberFormat: null, style: 0, note: { text: 'n' } } }, { sheet: 'S', cell: 'H5', set: { link: { url: 'https://example.com/' } } }]).changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
     expect(s.undo()).toEqual({ call: 'patchCells', revision: 2, changes: [{ sheet: 'S', cell: 'A3', value: 3, text: '3.0', style: null, numberFormat: '0.0' }], cells: [{ sheet: 'S', cell: 'A3' }, { sheet: 'S', cell: 'H5' }] })
     same(s, before, o)
     expect(s.redo()!.changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
@@ -142,8 +142,8 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(narrow.changes.map((c) => c.cell)).toEqual(['A3'])
     expect(s.getBook().sheets[0].rows).toEqual({ '1:3': { height: 30 } })
     // a span cut in three by a change of its middle line, and whole again
-    s.setLayout([{ sheet: 'S', rows: '2', set: { height: 40, format: '0' } }])
-    expect(s.getBook().sheets[0].rows).toEqual({ 1: { height: 30 }, 2: { height: 40, format: '0' }, 3: { height: 30 } })
+    s.setLayout([{ sheet: 'S', rows: '2', set: { height: 40, numberFormat: '0' } }])
+    expect(s.getBook().sheets[0].rows).toEqual({ 1: { height: 30 }, 2: { height: 40, numberFormat: '0' }, 3: { height: 30 } })
     expect(s.undo()!.changes.map((c) => `${c.cell} ${c.text}`)).toEqual(['A2 2'])
     expect(s.getBook().sheets[0].rows).toEqual({ '1:3': { height: 30 } })
   })
@@ -152,9 +152,9 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     const s = createSession(book(), o)
     const text = () => Object.values(s.getCells('S', 'A1:A4')).map((c) => c.text)
     expect(text()).toEqual(['1', '2', '3.0'])
-    s.setLayout([{ sheet: 'S', rows: '1:2', set: { format: '0.00' } }])
+    s.setLayout([{ sheet: 'S', rows: '1:2', set: { numberFormat: '0.00' } }])
     expect(text()).toEqual(['1.00', '2.00', '3.0'])
-    s.setLayout([{ sheet: 'S', columns: 'A', set: { format: '0%' } }, { sheet: 'S', rows: '2', set: { format: null } }])
+    s.setLayout([{ sheet: 'S', columns: 'A', set: { numberFormat: '0%' } }, { sheet: 'S', rows: '2', set: { numberFormat: null } }])
     expect(text()).toEqual(['1.00', '200%', '3.0'])
     s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 })
     expect(Object.values(s.getCells('S', 'A2:A4')).map((c) => c.text)).toEqual(['1.00', '200%', '3.0'])

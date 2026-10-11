@@ -15,11 +15,11 @@ import { codes, read } from './xlsx-fixtures.js'
 const RED = { fill: { color: '#FFC7CE' }, font: { color: '#9C0006', bold: false } }
 
 const RULES: ConditionalFormat[] = [
-  { type: 'cellIs', ranges: ['A1:A10', 'C1:C10'], operator: 'between', formulas: ['1', '$B$1'], style: { ...RED, format: '0.0%' }, stopIfTrue: true },
+  { type: 'cellIs', ranges: ['A1:A10', 'C1:C10'], operator: 'between', formulas: ['1', '$B$1'], style: { ...RED, numberFormat: '0.0%' }, stopIfTrue: true },
   { type: 'expression', ranges: ['B2:B10'], formula: 'XLOOKUP(1,A1:A3,A1:A3)>5', style: { font: { bold: true, underline: 'double', strike: true }, border: { bottom: { style: 'thin', color: '#FF0000' } } } },
   { type: 'containsText', ranges: ['D1:D10'], text: 'a"b', style: { fill: { color: '#00FF00' } } },
   { type: 'notContainsText', ranges: ['D1:D10'], text: 'q', formula: 'ISERROR(SEARCH("z",D1))' },
-  { type: 'timePeriod', ranges: ['E1:E10'], period: 'lastWeek', style: { format: 14 } },
+  { type: 'timePeriod', ranges: ['E1:E10'], period: 'lastWeek', style: { numberFormat: 14 } },
   { type: 'containsBlanks', ranges: ['E1:E10'], style: RED },
   { type: 'top10', ranges: ['F1:F10'], rank: 3, percent: true, bottom: true, style: RED },
   { type: 'aboveAverage', ranges: ['F1:F10'], below: true, stdDev: 2, style: RED },
@@ -62,8 +62,8 @@ describe('conditional formats in xlsx', () => {
     expect(xml.indexOf('<conditionalFormatting')).toBeLessThan(xml.indexOf('<extLst>'))
     expect(await partOf((await writeXlsx(BOOK)).data, 'xl/styles.xml')).toContain('<dxf><font><b val="0"/><color rgb="FF9C0006"/></font><numFmt numFmtId="164" formatCode="0.0%"/><fill><patternFill><bgColor rgb="FFFFC7CE"/></patternFill></fill></dxf>')
     // a code every locale shows as a built-in format is written by its number and comes back as that number, as a cell's
-    const pct: BookInput = { sheets: [{ name: 'S', cells: {}, conditionalFormats: [{ type: 'expression', ranges: ['A1'], formula: 'TRUE', style: { format: '0.00%' } }] }] }
-    expect((await readXlsx((await writeXlsx(pct)).data)).book.sheets[0].conditionalFormats![0]).toMatchObject({ style: { format: 10 } })
+    const pct: BookInput = { sheets: [{ name: 'S', cells: {}, conditionalFormats: [{ type: 'expression', ranges: ['A1'], formula: 'TRUE', style: { numberFormat: '0.00%' } }] }] }
+    expect((await readXlsx((await writeXlsx(pct)).data)).book.sheets[0].conditionalFormats![0]).toMatchObject({ style: { numberFormat: 10 } })
   })
 
   it("a sheet with conditional formats and data validation keeps both: the extension list of a data bar is not the sheet's", async () => {
@@ -105,7 +105,7 @@ describe('conditional formats in xlsx', () => {
     const r = await read({ sheets: [{ name: 'S', body }], styles })
     expect(r.book.sheets[0].conditionalFormats).toEqual([
       { ranges: ['A:A', 'B2'], type: 'expression', formula: 'TRUE' },
-      { ranges: ['A:A', 'B2'], type: 'cellIs', operator: 'equal', formulas: ['1'], style: { format: '0.00%', fill: { color: '#FF0000' } } },
+      { ranges: ['A:A', 'B2'], type: 'cellIs', operator: 'equal', formulas: ['1'], style: { numberFormat: '0.00%', fill: { color: '#FF0000' } } },
       { ranges: ['C1'], type: 'aboveAverage', below: true, equal: true, style: { border: { left: { style: 'thin' } } } },
     ])
     expect(r.issues.map((i) => i.message)).toEqual([

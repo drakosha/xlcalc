@@ -97,7 +97,7 @@ export function patches(seed: number): () => CellPatch[] {
   const far: { sheet: string; cell: string }[] = []
   const set = (): CellPatch['set'] => {
     const out: CellPatch['set'] = {}
-    if (rnd() < 0.5) out.format = pick(['0.00', '0%', '@', null])
+    if (rnd() < 0.5) out.numberFormat = pick(['0.00', '0%', '@', null])
     if (rnd() < 0.3) out.meta = pick([int(9), 'm', null])
     if (rnd() < 0.3) out.note = rnd() < 0.7 ? { text: `n${int(9)}` } : null
     if (rnd() < 0.2) out.link = rnd() < 0.7 ? { url: 'https://example.com/' } : null
@@ -112,9 +112,9 @@ export function patches(seed: number): () => CellPatch[] {
     if (x < 0.85 || !far.length) {
       const at = { sheet: pick(['S', 'D', 'T']), cell: `${indexToCol(10 + int(20))}${N + 300 + int(3000)}` }
       far.push(at)
-      return { ...at, set: { format: '0.0' } }
+      return { ...at, set: { numberFormat: '0.0' } }
     }
-    return { ...far.splice(int(far.length), 1)[0], set: { format: null, meta: null, note: null, link: null } }
+    return { ...far.splice(int(far.length), 1)[0], set: { numberFormat: null, meta: null, note: null, link: null } }
   }
   return () => Array.from({ length: rnd() < 0.8 ? 1 : 2 + int(3) }, one)
 }
@@ -144,7 +144,7 @@ export function lookEdits(seed: number): () => LookEdit {
   const style = () => pick([{ font: { bold: true } }, { font: { italic: pick([true, null]) } }, { fill: { color: '#FFEE99' } }, { fill: null, font: { bold: null } }, { border: { bottom: { style: 'thin' as const } } }])
   return () => {
     const x = rnd()
-    if (x < 0.2) return { replace: [{ sheet: pick(['S', 'D']), cell: cell(), input: rnd() < 0.3 ? null : { value: int(50), ...(rnd() < 0.5 ? { format: pick(['0.00', '0%']) } : {}) } }] }
+    if (x < 0.2) return { replace: [{ sheet: pick(['S', 'D']), cell: cell(), input: rnd() < 0.3 ? null : { value: int(50), ...(rnd() < 0.5 ? { numberFormat: pick(['0.00', '0%']) } : {}) } }] }
     if (x < 0.4) return { clear: [{ sheet: pick(['S', 'D']), range: rnd() < 0.7 ? rect() : lines() }], what: pick(['contents', 'formats', 'all'] as const) }
     if (x < 0.7) {
       const range = rnd() < 0.6 ? rect() : lines()

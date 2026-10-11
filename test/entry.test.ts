@@ -16,9 +16,9 @@ describe('parseEntry', () => {
   it('reads numbers, dates, percent, booleans, errors and text by the locale, with the formats Excel sets', () => {
     expect(['1,5', '1 234,5', '15.03.2026', '5%', 'ИСТИНА', 'истина', 'TRUE', '#Н/Д', '#N/A', "'007", 'abc'].map((t) => input(ru(t)))).toEqual([
       { value: 1.5 },
-      { value: 1234.5, format: 4 },
-      { value: 46096, format: 14 },
-      { value: 0.05, format: 9 },
+      { value: 1234.5, numberFormat: 4 },
+      { value: 46096, numberFormat: 14 },
+      { value: 0.05, numberFormat: 9 },
       { value: true },
       { value: true },
       { value: 'TRUE' },
@@ -28,26 +28,26 @@ describe('parseEntry', () => {
       { value: 'abc' },
     ])
     expect(['3/15/2026', '1,234.5', '1/2', '1 1/2', '1.5E+3', '6:30 PM', '25:00', '3/15/2026 18:30'].map((t) => input(en(t)))).toEqual([
-      { value: 46096, format: 14 },
-      { value: 1234.5, format: 4 },
-      { value: 46024, format: 16 },
-      { value: 1.5, format: 12 },
-      { value: 1500, format: 11 },
-      { value: 0.7708333333333334, format: 18 },
-      { value: 1.0416666666666667, format: 46 },
-      { value: 46096.770833333336, format: 22 },
+      { value: 46096, numberFormat: 14 },
+      { value: 1234.5, numberFormat: 4 },
+      { value: 46024, numberFormat: 16 },
+      { value: 1.5, numberFormat: 12 },
+      { value: 1500, numberFormat: 11 },
+      { value: 0.7708333333333334, numberFormat: 18 },
+      { value: 1.0416666666666667, numberFormat: 46 },
+      { value: 46096.770833333336, numberFormat: 22 },
     ])
   })
 
   it("gives typed money the locale's money format with red negatives", () => {
-    const usd = input(en('$1,234.50')) as { value: number; format: string }
-    const rub = input(ru('-1 234,5 ₽')) as { value: number; format: string }
-    expect([usd.value, displayValue(-usd.value, { format: usd.format, width: 20 })]).toEqual([1234.5, { text: '($1,234.50)', color: '#FF0000' }])
-    expect([rub.value, displayValue(rub.value, { format: rub.format, locale: 'ru-RU', width: 20 }).text]).toEqual([-1234.5, '-1 234,50 ₽'])
+    const usd = input(en('$1,234.50')) as { value: number; numberFormat: string }
+    const rub = input(ru('-1 234,5 ₽')) as { value: number; numberFormat: string }
+    expect([usd.value, displayValue(-usd.value, { numberFormat: usd.numberFormat, width: 20 })]).toEqual([1234.5, { text: '($1,234.50)', color: '#FF0000' }])
+    expect([rub.value, displayValue(rub.value, { numberFormat: rub.numberFormat, locale: 'ru-RU', width: 20 }).text]).toEqual([-1234.5, '-1 234,50 ₽'])
   })
 
   it('reads numbers with 15 significant digits and keeps out-of-range scientific text as text', () => {
-    expect(['1234567890123456789', '1E+307', '1E+308', '1E-309'].map((t) => input(en(t)))).toEqual([{ value: 1234567890123450000 }, { value: 1e307, format: 11 }, { value: '1E+308', format: 11 }, { value: 0, format: 11 }])
+    expect(['1234567890123456789', '1E+307', '1E+308', '1E-309'].map((t) => input(en(t)))).toEqual([{ value: 1234567890123450000 }, { value: 1e307, numberFormat: 11 }, { value: '1E+308', numberFormat: 11 }, { value: 0, numberFormat: 11 }])
   })
 
   it('takes a formula after =, and after + or - before what is no number; only a formula that does not parse stops the entry', () => {
@@ -69,7 +69,7 @@ describe('parseEntry', () => {
   })
 
   it('gives a formula in General the format of what it computes', () => {
-    expect(['=TODAY()', '=NOW()', '=TIME(18,30,0)', '=TODAY()+1', '=YEAR(TODAY())', '=PMT(0.1,12,1000)'].map((t) => (input(en(t)) as { format?: unknown }).format)).toEqual([
+    expect(['=TODAY()', '=NOW()', '=TIME(18,30,0)', '=TODAY()+1', '=YEAR(TODAY())', '=PMT(0.1,12,1000)'].map((t) => (input(en(t)) as { numberFormat?: unknown }).numberFormat)).toEqual([
       14,
       22,
       18,
@@ -80,14 +80,14 @@ describe('parseEntry', () => {
   })
 
   it("keeps the cell's style and meta, and its format but where Excel changes it", () => {
-    const cell = { format: '0.00', style: 2, meta: { id: 7 } }
-    expect(input(ru('15.03.2026', cell))).toEqual({ value: 46096, format: '0.00', style: 2, meta: { id: 7 } })
-    expect(input(ru('18:30', { format: 14, style: 1 }))).toEqual({ value: 0.7708333333333334, format: 20, style: 1 })
-    expect(input(ru('15.03.2026', { format: 'd mmmm yyyy' }))).toEqual({ value: 46096, format: 'd mmmm yyyy' })
-    expect(input(en('=1+2', { format: '@' }))).toEqual({ value: '=1+2', format: '@' })
-    expect(input(en('5', { format: '0%' }))).toEqual({ value: 0.05, format: '0%' })
-    expect(input(en('0.5', { format: '0%' }))).toEqual({ value: 0.005, format: '0%' })
-    expect(input(en('$5', { format: '0%' }))).toEqual({ value: 5, format: '"$"#,##0_);[Red]\\("$"#,##0\\)' })
+    const cell = { numberFormat: '0.00', style: 2, meta: { id: 7 } }
+    expect(input(ru('15.03.2026', cell))).toEqual({ value: 46096, numberFormat: '0.00', style: 2, meta: { id: 7 } })
+    expect(input(ru('18:30', { numberFormat: 14, style: 1 }))).toEqual({ value: 0.7708333333333334, numberFormat: 20, style: 1 })
+    expect(input(ru('15.03.2026', { numberFormat: 'd mmmm yyyy' }))).toEqual({ value: 46096, numberFormat: 'd mmmm yyyy' })
+    expect(input(en('=1+2', { numberFormat: '@' }))).toEqual({ value: '=1+2', numberFormat: '@' })
+    expect(input(en('5', { numberFormat: '0%' }))).toEqual({ value: 0.05, numberFormat: '0%' })
+    expect(input(en('0.5', { numberFormat: '0%' }))).toEqual({ value: 0.005, numberFormat: '0%' })
+    expect(input(en('$5', { numberFormat: '0%' }))).toEqual({ value: 5, numberFormat: '"$"#,##0_);[Red]\\("$"#,##0\\)' })
   })
 
   it("keeps the cell's note and link, as Excel keeps them whatever is typed", () => {
@@ -102,13 +102,13 @@ describe('parseEntry', () => {
 
   it('clears the value of empty text and keeps the rest of the cell, null when nothing is left', () => {
     expect(en('')).toEqual({ ok: true, input: null })
-    expect(en('', { format: '0.00', meta: 1 })).toEqual({ ok: true, input: { format: '0.00', meta: 1 } })
+    expect(en('', { numberFormat: '0.00', meta: 1 })).toEqual({ ok: true, input: { numberFormat: '0.00', meta: 1 } })
   })
 
   it("completes a date without a year by the year of `now`, and counts serials in the book's date system", () => {
-    expect(input(parseEntry('15.3', { locale: 'ru-RU', now: '2025-06-01' }))).toEqual({ value: 45731, format: 16 })
-    expect(input(parseEntry('3/15', { now: '2026-01-01T00:00:00Z' }))).toEqual({ value: 46096, format: 16 })
-    expect(input(parseEntry('15.03.2026', { locale: 'ru-RU', dateSystem: 1904 }))).toEqual({ value: 44634, format: 14 })
+    expect(input(parseEntry('15.3', { locale: 'ru-RU', now: '2025-06-01' }))).toEqual({ value: 45731, numberFormat: 16 })
+    expect(input(parseEntry('3/15', { now: '2026-01-01T00:00:00Z' }))).toEqual({ value: 46096, numberFormat: 16 })
+    expect(input(parseEntry('15.03.2026', { locale: 'ru-RU', dateSystem: 1904 }))).toEqual({ value: 44634, numberFormat: 14 })
     expect((input(parseEntry('1.5')) as { value: number }).value).toBe(1.5)
   })
 
@@ -116,17 +116,17 @@ describe('parseEntry', () => {
     expect(() => parseEntry(5 as unknown as string)).toThrow(InputError)
     expect(() => parseEntry('1', { locale: 'de-DE' })).toThrow(/opts\.locale/)
     expect(() => parseEntry('1', { now: 'yesterday' })).toThrow(/opts\.now: invalid moment/)
-    expect(() => parseEntry('1', { cell: { format: 50 } })).toThrow(/opts\.cell\.format/)
+    expect(() => parseEntry('1', { cell: { numberFormat: 50 } })).toThrow(/opts\.cell\.numberFormat/)
     expect(() => parseEntry('1', { cell: { style: -1 } })).toThrow(/opts\.cell\.style/)
     expect(() => parseEntry('1', { width: 3 } as never)).toThrow(/unknown/)
     expect(engine.parseEntry).toBe(parseEntry)
   })
 
   it("puts typed text into a session's cell, read from the session with its style and meta", () => {
-    const book = { locale: 'ru-RU', styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, format: '0.00', style: 0, meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] }
+    const book = { locale: 'ru-RU', styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 1, numberFormat: '0.00', style: 0, meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] }
     const session = createSession(book, { clock: { now, seed: 1 } })
     const r = parseEntry('1 234,5', { locale: 'ru-RU', cell: session.getCells('S', 'A1').A1 })
-    expect(r).toEqual({ ok: true, input: { value: 1234.5, format: '0.00', style: 0, meta: { id: 7 } } })
+    expect(r).toEqual({ ok: true, input: { value: 1234.5, numberFormat: '0.00', style: 0, meta: { id: 7 } } })
     if (r.ok) expect(session.setCells([{ sheet: 'S', cell: 'A1', input: r.input }]).changes).toEqual([
       { sheet: 'S', cell: 'A1', value: 1234.5, text: '1234,50' },
       { sheet: 'S', cell: 'A2', value: 2469, text: '2469' },

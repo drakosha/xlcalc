@@ -103,7 +103,7 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
       const S = book.sheets[0]
       Object.assign(S, {
         columns: { B: { width: 14, style: 1 }, 'D:F': { hidden: true, outlineLevel: 1 } },
-        rows: { '2': { height: 30 }, '7:9': { format: '0.00' } },
+        rows: { '2': { height: 30 }, '7:9': { numberFormat: '0.00' } },
         filtered: true,
         frozen: { rows: 1, columns: 2 },
         conditionalFormats: [{ type: 'cellIs', ranges: ['A1:A5'], operator: 'greaterThan', formulas: ['3'], style: { fill: { color: '#FFC7CE' } } }],
@@ -127,7 +127,7 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
     it('cells of several rectangles: each cell once, in the order of addresses, as the rectangles one by one', async () => {
       const open = await opener(kind)
       const book = crafted()
-      book.sheets[0].conditionalFormats = [{ type: 'expression', ranges: ['A1:F8'], formula: 'ISNUMBER(A1)', style: { font: { bold: true }, format: '0.0' } }]
+      book.sheets[0].conditionalFormats = [{ type: 'expression', ranges: ['A1:F8'], formula: 'ISNUMBER(A1)', style: { font: { bold: true }, numberFormat: '0.0' } }]
       const sets = [['A1:C2', 'B2:F4'], ['E:E', 'A3:E3', 'E2'], ['1:2', 'C1', 'C1'], ['A1:XFD1048576', 'M1:N3'], ['J4:K7', 'A10'], []]
       for (const [name, b] of [['a crafted book', book], ['the spill book', spillBook()]] as [string, BookInput][]) {
         const s = await open(b, { clock: CLOCK, execution })

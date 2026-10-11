@@ -4,7 +4,7 @@ import { compute, InputError, editStructure, type BookInput, type StructureOp } 
 
 const book = (): BookInput => ({
   sheets: [
-    { name: 'S', cells: { A1: { value: 1 }, A5: { value: 5, format: '0.00', meta: { id: 7 } }, B1: { formula: 'sum( a5 , $A$1 ) + Нет!A5' }, B2: { formula: 'SUM(A5' }, B3: { formula: 'A5*2' } } },
+    { name: 'S', cells: { A1: { value: 1 }, A5: { value: 5, numberFormat: '0.00', meta: { id: 7 } }, B1: { formula: 'sum( a5 , $A$1 ) + Нет!A5' }, B2: { formula: 'SUM(A5' }, B3: { formula: 'A5*2' } } },
     { name: 'Лист 2', cells: { A1: { formula: 'S!A5+A5' }, A5: { value: 50 } } },
   ],
   names: [
@@ -36,12 +36,12 @@ describe('editStructure', () => {
 
   it('cells keep their format and meta when they move; copies have no meta unless withMeta', () => {
     const r = ok(book(), { op: 'insertRows', sheet: 'S', row: 2 })
-    expect(cells(r.book).A6).toEqual({ value: 5, format: '0.00', meta: { id: 7 } })
+    expect(cells(r.book).A6).toEqual({ value: 5, numberFormat: '0.00', meta: { id: 7 } })
     expect(Object.keys(cells(r.book)).sort()).toEqual(['A1', 'A6', 'B1', 'B3', 'B4'])
     const m = ok(book(), { op: 'moveRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'Лист 2', cell: 'C1' } })
     expect(cells(m.book, 'Лист 2').C1).toEqual(cells(book()).A5)
     const c = ok(book(), { op: 'copyRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'Лист 2', range: 'C1:C2' } })
-    expect([cells(c.book, 'Лист 2').C1, cells(c.book, 'Лист 2').C2]).toEqual([{ value: 5, format: '0.00' }, { value: 5, format: '0.00' }])
+    expect([cells(c.book, 'Лист 2').C1, cells(c.book, 'Лист 2').C2]).toEqual([{ value: 5, numberFormat: '0.00' }, { value: 5, numberFormat: '0.00' }])
     const w = ok(book(), { op: 'copyRange', from: { sheet: 'S', range: 'A5' }, to: { sheet: 'Лист 2', range: 'C1' }, withMeta: true })
     expect(cells(w.book, 'Лист 2').C1).toEqual(cells(book()).A5)
   })
@@ -106,7 +106,7 @@ describe('editStructure', () => {
   })
 
   it('refuses what Excel refuses', () => {
-    const edge: BookInput = { sheets: [{ name: 'S', cells: { A1048576: { format: '0' }, XFD1: { meta: 1 } } }] }
+    const edge: BookInput = { sheets: [{ name: 'S', cells: { A1048576: { numberFormat: '0' }, XFD1: { meta: 1 } } }] }
     expect(editStructure(edge, { op: 'insertRows', sheet: 'S', row: 1 })).toMatchObject({ ok: false, code: 'off_sheet' })
     expect(editStructure(edge, { op: 'insertColumns', sheet: 'S', column: 'B' })).toMatchObject({ ok: false, code: 'off_sheet' })
     expect(editStructure(edge, { op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, code: 'last_sheet' })

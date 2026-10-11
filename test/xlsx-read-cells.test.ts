@@ -80,7 +80,7 @@ describe('xlsx reader: cells', () => {
 
   it('numbers stay numbers whatever their format; a built-in format is read by its number', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"><v>45000</v></c><c r="B1" s="2"><v>5</v></c><c r="C1" s="3"><v>45000.5</v></c></row>', { styles: DATE_STYLES })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, format: 14 }, B1: { value: 5, format: '0 m' }, C1: { value: 45000.5, format: 'dd.mm.yyyy' } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, numberFormat: 14 }, B1: { value: 5, numberFormat: '0 m' }, C1: { value: 45000.5, numberFormat: 'dd.mm.yyyy' } })
     expect(r.issues).toEqual([])
   })
 
@@ -91,7 +91,7 @@ describe('xlsx reader: cells', () => {
       workbook: { before: '<workbookPr date1904="1"/>' },
     })
     expect(r.book.dateSystem).toBe(1904)
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 0, format: 14 }, B1: { value: 45000, format: 'dd.mm.yyyy' }, C1: { value: 5, format: '0 m' }, D1: { value: 7 }, E1: { formula: 'A1+1', format: 14 }, F1: { value: 1.5 } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 0, numberFormat: 14 }, B1: { value: 45000, numberFormat: 'dd.mm.yyyy' }, C1: { value: 5, numberFormat: '0 m' }, D1: { value: 7 }, E1: { formula: 'A1+1', numberFormat: 14 }, F1: { value: 1.5 } })
     expect(storedValues(r)).toEqual({ E1: 1 })
     expect(r.issues).toEqual([])
     expect((await sheet('<row r="1"><c r="A1"><v>1</v></c></row>')).book.dateSystem).toBeUndefined()
@@ -110,6 +110,6 @@ describe('xlsx reader: cells', () => {
 
   it('an empty cell with a style keeps its look; one with the default look is no cell', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"/><c r="B1" s="0"/><c r="C1"/></row>', { styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="2"/></cellXfs>' })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { format: 2 } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { numberFormat: 2 } })
   })
 })

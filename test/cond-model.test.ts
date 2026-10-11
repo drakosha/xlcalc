@@ -24,7 +24,7 @@ describe('conditional formats as input', () => {
   it('a book with every kind of rule is taken', () => {
     const rules: ConditionalFormat[] = [
       GT2,
-      { type: 'expression', ranges: ['B:B', '3:4'], formula: 'ISODD(ROW())', stopIfTrue: true, style: { font: { bold: false, underline: 'double' }, border: { top: { style: 'thin' } }, format: 14 } },
+      { type: 'expression', ranges: ['B:B', '3:4'], formula: 'ISODD(ROW())', stopIfTrue: true, style: { font: { bold: false, underline: 'double' }, border: { top: { style: 'thin' } }, numberFormat: 14 } },
       { type: 'containsText', ranges: ['C1'], text: 'x' },
       { type: 'containsBlanks', ranges: ['C1'], formula: 'LEN(C1)=0' },
       { type: 'timePeriod', ranges: ['C1'], period: 'nextWeek' },

@@ -33,8 +33,8 @@ interface Shown {
 const WIDTHS = Array.from({ length: 256 * 12 + 1 }, (_, i) => i / 12)
 /** Windows's text is one the engine shows at another width (a merged area's too), with the cell's format or, for a built-in format by number, the code Windows reports. */
 const atSomeWidth = (s: Shown) => {
-  const formats = [formatted(s.c).format, ...(s.c.numFmtId !== undefined && s.win.code !== undefined ? [s.win.code] : [])]
-  return formats.some((format) => WIDTHS.some((w) => displayValue(s.value, { format, locale: s.locale, width: w }).text === s.win.text))
+  const formats = [formatted(s.c).numberFormat, ...(s.c.numFmtId !== undefined && s.win.code !== undefined ? [s.win.code] : [])]
+  return formats.some((format) => WIDTHS.some((w) => displayValue(s.value, { numberFormat: format, locale: s.locale, width: w }).text === s.win.text))
 }
 
 /**

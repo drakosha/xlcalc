@@ -28,12 +28,12 @@ const lines = (locale?: string): BookInput => ({
     {
       name: 'S',
       cells: {
-        A1: { value: 1 }, B1: { value: 2 }, E1: { value: 46096, format: 14 },
-        D3: { value: 5 }, D4: { value: 5 }, B4: { value: 0.5, format: '0%', style: 2 },
+        A1: { value: 1 }, B1: { value: 2 }, E1: { value: 46096, numberFormat: 14 },
+        D3: { value: 5 }, D4: { value: 5 }, B4: { value: 0.5, numberFormat: '0%', style: 2 },
         B6: { note: { text: 'see' } }, B7: { link: { url: 'https://example.com/' } },
       },
-      rows: { 3: { style: 0 }, 4: { style: 0, format: '0.0' }, 6: { height: 30 }, 7: { hidden: true }, 8: { height: 0 } },
-      columns: { C: { style: 1 }, D: { format: '0.000' }, E: { width: 20 }, F: { width: 5, hidden: true } },
+      rows: { 3: { style: 0 }, 4: { style: 0, numberFormat: '0.0' }, 6: { height: 30 }, 7: { hidden: true }, 8: { height: 0 } },
+      columns: { C: { style: 1 }, D: { numberFormat: '0.000' }, E: { width: 20 }, F: { width: 5, hidden: true } },
       merges: ['C5:D6', 'F1:G1', 'H10:I11'],
     },
   ],
@@ -62,10 +62,10 @@ const orders = (locale?: string): BookInput => ({
 })
 
 /** A window cell as `Session.getCells` gives it: the style by index, the conditional formats' look, the cell's own format. */
-function asView(w: ViewportCell, styles: object[], own: CellView['format']): CellView {
+function asView(w: ViewportCell, styles: object[], own: CellView['numberFormat']): CellView {
   const { style, effectiveStyle: _e, numberFormat: _n, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
   const out: CellView = { ...rest }
-  if (own !== undefined) out.format = own
+  if (own !== undefined) out.numberFormat = own
   if (style) out.style = styles.findIndex((x) => JSON.stringify(x) === JSON.stringify(style))
   if (appearance) out.look = appearance
   return out
@@ -169,7 +169,7 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       const open = await opener(kind)
       const cond = lines()
       cond.sheets[0].conditionalFormats = [
-        { type: 'cellIs', ranges: ['A1:D9'], operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true }, format: '0.0' } },
+        { type: 'cellIs', ranges: ['A1:D9'], operator: 'greaterThan', formulas: ['1'], style: { font: { bold: true }, numberFormat: '0.0' } },
         { type: 'containsBlanks', ranges: ['H1:H3'], style: { fill: { color: '#FFC7CE' } } },
         { type: 'dataBar', ranges: ['A1:B1'], min: { type: 'min' }, max: { type: 'max' }, color: '#638EC6' },
       ]
@@ -180,14 +180,14 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
         for (const sheet of b.sheets)
           for (const range of ['A1:J12', 'B2:D4', 'H1:H3', 'A5:Z40']) {
             const [cells, v] = [await s.getCells(sheet.name, range), await s.getViewport(sheet.name, range)]
-            for (const [a, c] of Object.entries(cells)) expect(asView(v.cells[a], b.styles ?? [], c.format), `${name}: ${sheet.name}!${a}`).toEqual(c)
+            for (const [a, c] of Object.entries(cells)) expect(asView(v.cells[a], b.styles ?? [], c.numberFormat), `${name}: ${sheet.name}!${a}`).toEqual(c)
             for (const [a, w] of Object.entries(v.cells)) if (!(a in cells)) expect(w.effectiveStyle !== undefined || w.spillOf !== undefined, `${name}: ${sheet.name}!${a}`).toBe(true)
           }
         await s.close()
       }
       const s = await open(cond, { clock: CLOCK, execution })
       const v = await s.getViewport('S', 'D3:H3')
-      expect(v.cells.D3).toEqual({ value: 5, text: '5.0', effectiveStyle: BOLD, numberFormat: '0.000', numberFormatSource: 'column', appearance: { style: { font: { bold: true }, format: '0.0' } } })
+      expect(v.cells.D3).toEqual({ value: 5, text: '5.0', effectiveStyle: BOLD, numberFormat: '0.000', numberFormatSource: 'column', appearance: { style: { font: { bold: true }, numberFormat: '0.0' } } })
       expect(v.cells.H3).toEqual({ value: null, text: '', effectiveStyle: BOLD, appearance: { style: { fill: { color: '#FFC7CE' } } } })
       await s.close()
     }, 60_000)

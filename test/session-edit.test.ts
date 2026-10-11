@@ -18,7 +18,7 @@ const book = (): BookInput => ({
     {
       name: 'S',
       cells: {
-        A1: { value: 2, style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } },
+        A1: { value: 2, style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } },
         A2: { formula: 'A1*2', style: 1 },
         A3: { formula: 'SUM(A1:A2)' },
         C1: { value: 'Qty' },
@@ -41,7 +41,7 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       const r = await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }])
       expect(r.revision).toBe(1)
       expect(r.changes.map((c) => `${c.sheet}!${c.cell}=${JSON.stringify(c.value)} ${c.text}`)).toEqual(['S!A1=5 5.00', 'S!A2=10 10', 'S!A3=15 15', 'R!A1=30 30'])
-      expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 5, style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } })
+      expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 5, style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } })
       // a value over a formula: the formula goes, the style stays; the change carries the formula's end
       const f = await s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 1, style: null } }])
       expect(f.changes[0]).toEqual({ sheet: 'S', cell: 'A2', value: 1, text: '1', formula: null, style: null })
@@ -50,7 +50,7 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       expect((await s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: '=a1*3' } }])).changes[0]).toMatchObject({ cell: 'A2', value: 15, formula: 'A1*3' })
       // Delete: the value and the hyperlink go, the style, format, meta and note stay
       await s.setCells([{ sheet: 'S', cell: 'A1', input: null }])
-      expect((await s.getBook()).sheets[0].cells.A1).toEqual({ style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' } })
+      expect((await s.getBook()).sheets[0].cells.A1).toEqual({ style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' } })
       expect(s.revision).toBe(4)
       expect((await s.getHash())).toBe(compute(await s.getBook(), opts).hash)
       await s.close()
@@ -72,7 +72,7 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       const contents = await open(book(), opts)
       const c = await contents.clearCells([{ sheet: 'S', range: 'A1:A2' }], 'contents')
       expect(c.changes.map((x) => `${x.sheet}!${x.cell}=${JSON.stringify(x.value)}${'formula' in x ? ` ${x.formula}` : ''}`)).toEqual(['S!A1=null', 'S!A2=null null', 'S!A3=0', 'R!A1=0'])
-      expect((await contents.getBook()).sheets[0].cells.A1).toEqual({ style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' } })
+      expect((await contents.getBook()).sheets[0].cells.A1).toEqual({ style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' } })
       const formats = await open(book(), opts)
       const f = await formats.clearCells([{ sheet: 'S', range: 'A1:A3' }], 'formats')
       expect(f.changes.map((x) => [x.cell, x.text, x.style, x.numberFormat])).toEqual([['A1', '2', null, null], ['A2', '4', null, undefined]])

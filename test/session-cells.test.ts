@@ -34,7 +34,7 @@ const RANGES = ['A1', 'A1:D12', 'B3:H40', 'C1:C1048576', 'A5:XFD5', 'B:D', '2:30
 
 const styled: BookInput = {
   styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }],
-  sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0, note: { author: 'Ann', text: 'checked' } }, A2: { formula: 'A1*2', style: 1, format: '0.00' }, B1: { formula: 'SEQUENCE(3,2)' }, C5: { style: 1 }, D9: { value: 'x', meta: { id: 7 }, link: { url: 'https://example.com/' } }, E2: { note: { text: 'a note alone' } }, F1: { formula: 'A1:A2*10', array: 'F1:G3' }, G2: { style: 0 } }, frozen: { rows: 1 } }],
+  sheets: [{ name: 'S', cells: { A1: { value: 1, style: 0, note: { author: 'Ann', text: 'checked' } }, A2: { formula: 'A1*2', style: 1, numberFormat: '0.00' }, B1: { formula: 'SEQUENCE(3,2)' }, C5: { style: 1 }, D9: { value: 'x', meta: { id: 7 }, link: { url: 'https://example.com/' } }, E2: { note: { text: 'a note alone' } }, F1: { formula: 'A1:A2*10', array: 'F1:G3' }, G2: { style: 0 } }, frozen: { rows: 1 } }],
 }
 const BOOKS_HERE: [string, BookInput][] = [...BOOKS, ['a book with styles, a spill and an old-kind array formula', styled], ...buildTableCases().slice(0, 6).map((c): [string, BookInput] => [`the table case ${c.id}`, c.book])]
 

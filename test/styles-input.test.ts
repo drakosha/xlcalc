@@ -8,8 +8,8 @@ const styled = (): BookInput => ({
   sheets: [
     {
       name: 'S',
-      cells: { A1: { value: 1, style: 0 }, A2: { formula: 'A1*2', style: 1, format: '0.00' }, B1: { style: 1 } },
-      columns: { B: { width: 20 }, 'D:F': { width: 12, style: 0, format: '0%' } },
+      cells: { A1: { value: 1, style: 0 }, A2: { formula: 'A1*2', style: 1, numberFormat: '0.00' }, B1: { style: 1 } },
+      columns: { B: { width: 20 }, 'D:F': { width: 12, style: 0, numberFormat: '0%' } },
       rows: { 1: { height: 30 }, '4:6': { style: 1 } },
       merges: ['C3:D4', 'A8:A9'],
     },
@@ -39,10 +39,10 @@ const withSheet = (patch: object): BookInput => {
 describe('styles and layout as input', () => {
   it('a styled book computes the same values and values hash as without its styles', () => {
     const b = styled()
-    const plain: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { formula: 'A1*2', format: '0.00' }, B1: {} } }] }
+    const plain: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { formula: 'A1*2', numberFormat: '0.00' }, B1: {} } }] }
     const [x, y] = [compute(b, { clock, display: false }), compute(plain, { clock, display: false })]
     expect(x.hash).toBe(y.hash)
-    expect(x.sheets[0].cells.A2).toEqual({ value: 2, formula: 'A1*2', format: '0.00' })
+    expect(x.sheets[0].cells.A2).toEqual({ value: 2, formula: 'A1*2', numberFormat: '0.00' })
   })
 
   it('inputHash: a book without styles hashes as before; styles, columns, rows and merged areas count, their order does not', () => {
@@ -72,7 +72,7 @@ describe('styles and layout as input', () => {
     fails(withSheet({ columns: { B: { width: 300 } } }), 'book.sheets[0].columns["B"].width: expected a number from 0 to 255, got number 300')
     fails(withSheet({ columns: { 'B:D': {}, C: {} } }), 'book.sheets[0].columns: "C" overlaps "B:D"')
     fails(withSheet({ rows: { 0: { height: 1 } } }), 'book.sheets[0].rows["0"]: expected a row number such as "5" or a span such as "5:9" within the sheet, got the string "0"')
-    fails(withSheet({ rows: { 5: { outline: 1 } } }), 'book.sheets[0].rows["5"]: unknown field "outline" (expected height, style, format, hidden, outlineLevel, collapsed)')
+    fails(withSheet({ rows: { 5: { outline: 1 } } }), 'book.sheets[0].rows["5"]: unknown field "outline" (expected height, style, numberFormat, format, hidden, outlineLevel, collapsed)')
     fails(withSheet({ rows: { 5: { hidden: 'yes' } } }), 'book.sheets[0].rows["5"].hidden: expected a boolean, got the string "yes"')
     fails(withSheet({ merges: ['C3'] }), 'book.sheets[0].merges[0]: expected a merged area such as "B2:D3" (top-left to bottom-right, two cells or more), got the string "C3"')
     fails(withSheet({ merges: ['D4:C3'] }), 'book.sheets[0].merges[0]: expected a merged area such as "B2:D3" (top-left to bottom-right, two cells or more), got the string "D4:C3"')

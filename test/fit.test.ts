@@ -19,8 +19,8 @@ const book = (): BookInput => ({
       cells: {
         A1: { value: 'Name' },
         A2: { value: 'Alexander the Great' },
-        B1: { value: 46096, format: 14 },
-        B2: { value: 1234567.891, format: '#,##0.00' },
+        B1: { value: 46096, numberFormat: 14 },
+        B2: { value: 1234567.891, numberFormat: '#,##0.00' },
         C1: { value: 123456789012 },
         D2: { value: 'merged across' },
         E1: { value: 'Итого' },
@@ -69,11 +69,11 @@ describe.each(['closures', 'eval'] as const)('AutoFit in a session, execution %s
   it('fits by the layout the edits before it leave', () => {
     const s = createSession(book(), { clock, execution })
     s.setLayout([
-      { sheet: 'S', columns: 'C', set: { format: '#,##0' } },
+      { sheet: 'S', columns: 'C', set: { numberFormat: '#,##0' } },
       { sheet: 'S', merges: [] },
       { sheet: 'S', columns: 'C:D', fit: true },
     ])
-    expect(s.getLayout().sheets[0].columns).toMatchObject({ C: { width: 14.6640625, bestFit: true, format: '#,##0' }, D: { width: 11.83203125, bestFit: true } })
+    expect(s.getLayout().sheets[0].columns).toMatchObject({ C: { width: 14.6640625, bestFit: true, numberFormat: '#,##0' }, D: { width: 11.83203125, bestFit: true } })
   })
   it('refuses AutoFit of rows and a fit that is not true, and checks bestFit', () => {
     const s = createSession(book(), { clock, execution })
@@ -105,14 +105,14 @@ describe('entryWidth', () => {
     const r = parseEntry(text, { locale: 'ru-RU', now: clock.now })
     const v = r.ok ? r.input?.value : undefined
     if (!r.ok || !r.input || v === undefined || (v !== null && typeof v === 'object')) throw new Error(text)
-    return entryWidth(v, { locale: 'ru-RU', ...(r.input.format !== undefined ? { format: r.input.format } : {}), ...opts })
+    return entryWidth(v, { locale: 'ru-RU', ...(r.input.numberFormat !== undefined ? { numberFormat: r.input.numberFormat } : {}), ...opts })
   }
   it('widens a column of the default width or one Excel fitted for a number AutoFit gives more room', () => {
     expect(typed('15.03.2026')).toBe(10.1640625)
     expect(typed('1234567890')).toBe(11.1640625)
     expect(typed('15.03.2026', { width: 5, bestFit: true })).toBe(10.1640625)
     expect(entryWidth(12345678)).toBe(9.1640625)
-    expect(entryWidth(46096, { format: 14, width: 3, bestFit: true })).toBe(9.5)
+    expect(entryWidth(46096, { numberFormat: 14, width: 3, bestFit: true })).toBe(9.5)
   })
   it('keeps a width set by hand, General that drops decimals, text and numbers that fit', () => {
     expect(typed('15.03.2026', { width: 5 })).toBeUndefined()
@@ -120,10 +120,10 @@ describe('entryWidth', () => {
     expect(typed('abc')).toBeUndefined()
     expect(typed('1 234')).toBeUndefined()
     expect(entryWidth(true)).toBeUndefined()
-    expect(entryWidth(46096, { format: 14, width: 30, bestFit: true })).toBeUndefined()
+    expect(entryWidth(46096, { numberFormat: 14, width: 30, bestFit: true })).toBeUndefined()
   })
   it('keeps a fitted width that equals the default one', () => {
-    expect(entryWidth(1234567, { format: 3, locale: 'ru-RU', width: 3, bestFit: true })).toBe(8.83203125)
+    expect(entryWidth(1234567, { numberFormat: 3, locale: 'ru-RU', width: 3, bestFit: true })).toBe(8.83203125)
   })
   it('checks its options', () => {
     expect(() => entryWidth(1, { bestFit: 'yes' } as never)).toThrow(InputError)

@@ -20,7 +20,7 @@ const book = (): BookInput => ({
 type Call = (s: Session | AsyncSession) => unknown
 const CALLS: Call[] = [
   (s) => s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }]),
-  (s) => s.patchCells([{ sheet: 'S', cell: 'A2', set: { format: '0.00', note: { text: 'n' } } }]),
+  (s) => s.patchCells([{ sheet: 'S', cell: 'A2', set: { numberFormat: '0.00', note: { text: 'n' } } }]),
   (s) => s.editStructure({ op: 'insertRows', sheet: 'S', row: 2, count: 2 }),
   (s) => s.setLayout([{ sheet: 'S', merges: ['C2:D3'] }]),
   (s) => s.setNames([{ name: 'k', ref: '3' }]),

@@ -51,9 +51,9 @@ describe('the 1904 date system', () => {
   })
 
   it('displayValue shows a value by it', () => {
-    expect(displayValue(0, { format: 'm/d/yyyy', dateSystem: 1904 })).toEqual({ text: '1/1/1904' })
-    expect(displayValue(-0.5, { format: 'h:mm', dateSystem: 1904 })).toEqual({ text: '-12:00' })
-    expect(displayValue(-0.5, { format: 'h:mm', width: 5 }).text).toBe('#####')
+    expect(displayValue(0, { numberFormat: 'm/d/yyyy', dateSystem: 1904 })).toEqual({ text: '1/1/1904' })
+    expect(displayValue(-0.5, { numberFormat: 'h:mm', dateSystem: 1904 })).toEqual({ text: '-12:00' })
+    expect(displayValue(-0.5, { numberFormat: 'h:mm', width: 5 }).text).toBe('#####')
   })
 
   it('is 1900 or 1904', () => {

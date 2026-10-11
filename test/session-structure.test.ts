@@ -108,12 +108,12 @@ describe('styles and layout in a session', () => {
   it('a cell edit that keeps the value and formula recomputes nothing and returns the cells with their new look', () => {
     const s = createSession(book(), { live: true, display: false })
     const c = s.clock
-    expect(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', format: '0.0', style: null } }, { sheet: 'S', cell: 'B9', input: { style: 0 } }]).changes).toEqual([
+    expect(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', numberFormat: '0.0', style: null } }, { sheet: 'S', cell: 'B9', input: { style: 0 } }]).changes).toEqual([
       { sheet: 'S', cell: 'A2', value: 4, style: null, numberFormat: '0.0' },
       { sheet: 'S', cell: 'B9', value: null, style: 0 },
     ])
     expect(s.clock).toEqual(c)
-    expect(s.getBook().sheets[0].cells).toEqual({ A1: { value: 2 }, A2: { formula: 'A1*2', format: '0.0' }, B9: { style: 0 } })
+    expect(s.getBook().sheets[0].cells).toEqual({ A1: { value: 2 }, A2: { formula: 'A1*2', numberFormat: '0.0' }, B9: { style: 0 } })
     // a cell cleared keeps its look; replaced by nothing, it is gone
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3, style: 0 } }, { sheet: 'S', cell: 'B9', input: null }]).changes.map((x) => x.cell)).toEqual(['A1', 'A2'])
     expect(s.getBook().sheets[0].cells.B9).toEqual({ style: 0 })

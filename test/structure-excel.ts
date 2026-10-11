@@ -14,6 +14,7 @@ import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
 import { meets } from '../src/structure/area.js'
 import { decode, encode } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
+import { numberFormatOf } from '../bench/coverage/stored.js'
 
 const dir = new URL('./excel/struct/', import.meta.url)
 
@@ -86,7 +87,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const [tr, tc] = m ? [m.r1, m.c1] : [r, c]
       const [cell, row, col] = [sheet.cells[formatAddress(tr, tc)], lineAt(sheet.rows, 'r', tr), lineAt(sheet.columns, 'c', tc)]
       const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
-      const format = cell?.format ?? row?.format ?? col?.format
+      const format = numberFormatOf(cell) ?? numberFormatOf(row) ?? numberFormatOf(col)
       const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }

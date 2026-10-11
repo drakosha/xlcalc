@@ -135,7 +135,7 @@ function canonicalText(f: string): string {
 export function ruleKey(rule: ConditionalFormat): unknown {
   const { ranges: _, ...rest } = rule
   const canon = JSON.parse(JSON.stringify(rest), (k, v) =>
-    (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
+    (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'numberFormat' || k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
   )
   return sorted({ cells: cellSet(rule.ranges).join(' '), ...canon })
 }
@@ -157,8 +157,10 @@ export function engineCase(set: CondCases, c: CondCase, clock: Clock, book: Book
     const views = s.getCells(sheet, range)
     looks[sheet] = Object.fromEntries(cellsOf(range).map((a) => [a, viewLook(views[a], r.book.styles)]))
   }
+  // the rules as the session holds them, by the new names of their fields
+  const rules = rulesOf(s.getBook())
   s.close()
-  return { rules: rulesOf(r.book), looks }
+  return { rules, looks }
 }
 
 /** Each sheet's rules as `ruleKey` gives them. */

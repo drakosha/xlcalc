@@ -111,7 +111,7 @@ const EDGE: [string, BookInput][] = [
           Q1: { value: Number.MAX_VALUE },
           X1: { formula: 'X2' },
           X2: { formula: 'X1' },
-          D1: { format: '0.00' },
+          D1: { numberFormat: '0.00' },
         }),
       ],
     },
@@ -121,7 +121,7 @@ const EDGE: [string, BookInput][] = [
     {
       styles: [{}],
       sheets: [
-        sheet('S', { A1: { formula: 'SEQUENCE(3)' }, A2: { format: '0.00' }, A3: { style: 0 }, B1: { formula: 'SEQUENCE(2,2)' }, C2: { style: 0, format: '0%' }, E1: { formula: 'SEQUENCE(3)' }, E2: { value: 1 }, G1: { formula: 'A1#*2' } }),
+        sheet('S', { A1: { formula: 'SEQUENCE(3)' }, A2: { numberFormat: '0.00' }, A3: { style: 0 }, B1: { formula: 'SEQUENCE(2,2)' }, C2: { style: 0, numberFormat: '0%' }, E1: { formula: 'SEQUENCE(3)' }, E2: { value: 1 }, G1: { formula: 'A1#*2' } }),
       ],
     },
   ],
@@ -130,13 +130,13 @@ const EDGE: [string, BookInput][] = [
     {
       styles: [{}],
       sheets: [
-        sheet('T', { B1: { value: 1 }, B2: { value: 2 }, B3: { value: 3 }, C1: { formula: 'B:B*2' }, C7: { format: '0.00' }, E1: { formula: 'SEQUENCE(100000,1,0,0)' }, E5: { style: 0 }, G1: { formula: 'IF(SEQUENCE(300,300)>0,0)' } }),
+        sheet('T', { B1: { value: 1 }, B2: { value: 2 }, B3: { value: 3 }, C1: { formula: 'B:B*2' }, C7: { numberFormat: '0.00' }, E1: { formula: 'SEQUENCE(100000,1,0,0)' }, E5: { style: 0 }, G1: { formula: 'IF(SEQUENCE(300,300)>0,0)' } }),
         sheet('Fill', { A1: { formula: 'SEQUENCE(100000,2,0,0)' }, D1: { formula: 'IF(SEQUENCE(100000)>0,"ы")' } }),
         sheet('a', { A1: { formula: 'IF(SEQUENCE(100000)>0,TRUE)' } }),
       ],
     },
   ],
-  ['empty sheets and empty cells', { sheets: [sheet('E', {}), sheet('D', { A1: { value: null }, B2: { format: '0' } })] }],
+  ['empty sheets and empty cells', { sheets: [sheet('E', {}), sheet('D', { A1: { value: null }, B2: { numberFormat: '0' } })] }],
 ]
 
 const withSettings = (book: BookInput, settings: Partial<BookInput>): BookInput => ({ ...book, ...settings })
@@ -153,7 +153,7 @@ function randomCell(rnd: () => number, names: readonly string[], styled: boolean
   const x = rnd()
   if (x < 0.4) return { value: pick(rnd, VALUES) }
   if (x < 0.5) return { value: Math.round((rnd() - 0.5) * 1e6) / 1e3 }
-  if (x < 0.6) return styled ? pick(rnd, [{ format: '0.00' }, { style: 0 }, { value: null, style: 0 }]) : { format: '0.00' }
+  if (x < 0.6) return styled ? pick(rnd, [{ numberFormat: '0.00' }, { style: 0 }, { value: null, style: 0 }]) : { numberFormat: '0.00' }
   if (x < 0.65) return { formula: pick(rnd, ['SEQUENCE(3,2)', 'SEQUENCE(100000,1,0,0)', 'B:B*2', 'IF(SEQUENCE(40,40)>0,"x")']) }
   // N() and not arithmetic over the reference: 0b33695 throws on arithmetic over text with a line break ("a\nb"*1)
   if (x < 0.85) {

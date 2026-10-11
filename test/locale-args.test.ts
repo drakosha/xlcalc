@@ -16,8 +16,8 @@ const CALLS: [string, (locale: string | Locale) => unknown][] = [
   ['toInvariant', (l) => [toInvariant('=СУММ(A1:A3;1,5)', l), toInvariant('=SUM(A1:A3,1.5)', l)]],
   ['validateLocalFormula', (l) => [validateLocalFormula('=ОКРУГЛ(Данные!B2*1,2;0)', l, { sheets: ['Данные'] }), validateLocalFormula('=СУММ(A1;1.5)', l)]],
   ['parseEntry', (l) => ['1 234,5', '15.03.2026', '3/15/2026', 'ИСТИНА', '=ОКРУГЛ(A1;2;3)'].map((t) => parseEntry(t, { locale: l, now }))],
-  ['displayValue', (l) => [displayValue(0.4567, { format: '0.0%', locale: l }), displayValue(46096, { format: 14, locale: l, width: 12 })]],
-  ['entryWidth', (l) => [entryWidth(1234567890, { locale: l }), entryWidth(46096, { format: 14, locale: l })]],
+  ['displayValue', (l) => [displayValue(0.4567, { numberFormat: '0.0%', locale: l }), displayValue(46096, { numberFormat: 14, locale: l, width: 12 })]],
+  ['entryWidth', (l) => [entryWidth(1234567890, { locale: l }), entryWidth(46096, { numberFormat: 14, locale: l })]],
   ['validateName', (l) => [validateName('ложь', { locale: l }), validateName('FALSE', { locale: l })]],
   ['builtinFormatCode', (l) => [builtinFormatCode(14, l), builtinFormatCode(7, l)]],
   ['errorText', (l) => [errorText('DIV0', l), errorText('NA', l)]],
@@ -58,7 +58,7 @@ describe('a locale of formula text alone', () => {
     expect(toLocal('IF(TRUE,SUM(1.5,2),#N/A)', deDE)).toEqual({ ok: true, formula: 'WENN(WAHR;SUMME(1,5;2);#NV)' })
     expect(parseEntry('=SUMME(1,5;2)', { locale: deDE })).toEqual({ ok: true, input: { formula: 'SUM(1.5,2)' } })
     expect(parseEntry('1,234.5', { locale: deDE })).toEqual(parseEntry('1,234.5'))
-    expect(displayValue(1234.5, { format: '#,##0.00', locale: deDE })).toEqual({ text: '1,234.50' })
+    expect(displayValue(1234.5, { numberFormat: '#,##0.00', locale: deDE })).toEqual({ text: '1,234.50' })
     expect(validateName('WAHR', { locale: deDE }).ok).toBe(false)
   })
 })

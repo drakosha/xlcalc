@@ -23,7 +23,7 @@ const book = (): BookInput => ({
         { range: 'F2:F9', type: 'list', formula1: 'Fruits' },
       ],
     },
-    { name: 'L', cells: { A1: { value: 'apple' }, A2: { value: 1.5, format: '0.00' }, A3: { value: 45658, format: 'dd.mm.yyyy' } } },
+    { name: 'L', cells: { A1: { value: 'apple' }, A2: { value: 1.5, numberFormat: '0.00' }, A3: { value: 45658, numberFormat: 'dd.mm.yyyy' } } },
   ],
   names: [{ name: 'Fruits', ref: "'L'!$A$1:$A$3" }],
 })

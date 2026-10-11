@@ -115,8 +115,8 @@ describe.each(['closures', 'eval'] as const)('looks (%s)', (execution) => {
     expect(looks(vals, [gt(5, { fill: { color: '#FF0000' } }, true), gt(3, { font: { italic: true } })], execution)).toEqual({ A2: { style: { font: { italic: true } } }, A3: { style: { fill: { color: '#FF0000' } } } })
     const scale: ConditionalFormat = { type: 'colorScale', ranges: col(3), points: [{ value: { type: 'min' }, color: '#000000' }, { value: { type: 'max' }, color: '#FFFFFF' }] }
     expect(looks(vals, [gt(5, { fill: { color: '#FF0000' } }), scale], execution).A3).toEqual({ style: { fill: { color: '#FF0000' } } })
-    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 6 } }, conditionalFormats: [gt(5, { format: '0.00%' })] }] }, { clock: CLOCK, execution })
-    expect(s.getCells('S', 'A1').A1).toEqual({ value: 6, text: '600.00%', look: { style: { format: '0.00%' } } })
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 6 } }, conditionalFormats: [gt(5, { numberFormat: '0.00%' })] }] }, { clock: CLOCK, execution })
+    expect(s.getCells('S', 'A1').A1).toEqual({ value: 6, text: '600.00%', look: { style: { numberFormat: '0.00%' } } })
   })
 
   it('data bars and icon sets', () => {

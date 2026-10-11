@@ -1,7 +1,9 @@
 /**
  * Stored answers in a stable order: a file of answers lists them in the order of its cases, so a run that adds or
- * reruns cases changes the lines of those cases only, however the run went.
+ * reruns cases changes the lines of those cases only, however the run went. And the number format of a stored case or
+ * answer by either of its names.
  */
+import type { NumberFormat } from '../../src/contract.js'
 
 /** The answers of `rec` in the order of `cases` (ids without an answer left out). */
 export const inCaseOrder = <T>(cases: readonly { id: string }[], rec: Record<string, T>): Record<string, T> =>
@@ -28,3 +30,10 @@ export function keptAnswers<C extends { id: string }, A>(cases: C[], sent: Recor
     }
   return { answers, rejected }
 }
+
+/**
+ * The number format of a stored case or answer: the books, cells and answers stored before the field was named
+ * `numberFormat` name it `format`, and so do the case generators, whose cases are compared with their stored copies. The
+ * engine takes both names and answers by the new one; the harness reads either.
+ */
+export const numberFormatOf = (x: { numberFormat?: NumberFormat; format?: NumberFormat } | null | undefined): NumberFormat | undefined => x?.numberFormat ?? x?.format

@@ -14,7 +14,7 @@ describe('array formulas of the old kind', () => {
     expect(() => compute(book({ C2: arr('A1', 'C1:C3') }))).toThrow(InputError)
     expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C2: { value: 5 } }))).toThrow(/cells\["C2"\]: the cell is in the area of the array formula at C1/)
     expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C3: arr('1', 'C3') }))).toThrow(InputError)
-    expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C2: { format: '0.0' } }))).not.toThrow()
+    expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C2: { numberFormat: '0.0' } }))).not.toThrow()
   })
 
   it('the result lists the area on its cell and the cells of the area as spilled from it', () => {

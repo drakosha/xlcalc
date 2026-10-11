@@ -11,7 +11,7 @@ import { mulberry32 } from '../src/synth.js'
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
 
 const book = (): BookInput => ({
-  sheets: [{ name: 'S', cells: { A1: { value: 1234.5 }, A2: { formula: 'A1*2' }, B1: { value: 'note' }, C1: { value: 0.25, format: '0%' } }, columns: { A: { width: 12 }, B: { width: 3 } } }],
+  sheets: [{ name: 'S', cells: { A1: { value: 1234.5 }, A2: { formula: 'A1*2' }, B1: { value: 'note' }, C1: { value: 0.25, numberFormat: '0%' } }, columns: { A: { width: 12 }, B: { width: 3 } } }],
   styles: [{ font: { bold: true } }],
 })
 
@@ -28,9 +28,9 @@ describe('a session shows its cells', () => {
 
   it('a new format returns the cell with its text; a new style alone returns the cell with it', () => {
     const s = createSession(book(), { clock })
-    expect(looks(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, format: '#,##0.00' } }]))).toEqual([['A1', 1234.5, '1,234.50']])
+    expect(looks(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, numberFormat: '#,##0.00' } }]))).toEqual([['A1', 1234.5, '1,234.50']])
     expect(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 'note', style: 0 } }]).changes).toEqual([{ sheet: 'S', cell: 'B1', value: 'note', text: 'note', style: 0 }])
-    expect(looks(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', format: '[Red]0' } }]))).toEqual([['A2', 2469, '2469', '#FF0000']])
+    expect(looks(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', numberFormat: '[Red]0' } }]))).toEqual([['A2', 2469, '2469', '#FF0000']])
   })
 
   it('setLayout: a narrower column, a row format, a merged area', () => {
@@ -39,8 +39,8 @@ describe('a session shows its cells', () => {
       ['A1', 1234.5, '##'],
       ['A2', 2469, '##'],
     ])
-    expect(looks(s.setLayout([{ sheet: 'S', rows: '2', set: { format: '0.0' } }]))).toEqual([])
-    expect(looks(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: null } }, { sheet: 'S', rows: '1:2', set: { format: '0.0' } }]))).toEqual([
+    expect(looks(s.setLayout([{ sheet: 'S', rows: '2', set: { numberFormat: '0.0' } }]))).toEqual([])
+    expect(looks(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: null } }, { sheet: 'S', rows: '1:2', set: { numberFormat: '0.0' } }]))).toEqual([
       ['A1', 1234.5, '1234.5'],
       ['A2', 2469, '2469.0'],
     ])
@@ -61,9 +61,9 @@ describe('a session shows its cells', () => {
 
   it('display: false: changes and results without text; a format alone lists the cell with it', () => {
     const s = createSession(book(), { clock, display: false })
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, format: '0.0' } }]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1234.5, numberFormat: '0.0' }])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1234.5, numberFormat: '0.0' } }]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 1234.5, numberFormat: '0.0' }])
     expect(s.setLayout([{ sheet: 'S', columns: 'A', set: { width: 1 } }]).changes).toEqual([])
-    expect(s.getResult().sheets[0].cells.A1).toEqual({ value: 1234.5, format: '0.0' })
+    expect(s.getResult().sheets[0].cells.A1).toEqual({ value: 1234.5, numberFormat: '0.0' })
   })
 })
 
@@ -88,18 +88,18 @@ describe('seeded edits: the looks a host keeps from the changes equal a full com
       for (let i = 0; i < 150; i++) {
         const op = rnd()
         if (op < 0.35) {
-          const e: CellEdit = { sheet: 'S', cell: cell(), input: rnd() < 0.2 ? null : { value: pick(values), ...(rnd() < 0.5 ? { format: pick(formats) } : {}) } }
+          const e: CellEdit = { sheet: 'S', cell: cell(), input: rnd() < 0.2 ? null : { value: pick(values), ...(rnd() < 0.5 ? { numberFormat: pick(formats) } : {}) } }
           keep(s.setCells([e]))
         } else if (op < 0.55) {
           const at = cell()
           const now = s.getBook().sheets[0].cells[at]
-          keep(s.setCells([{ sheet: 'S', cell: at, input: { ...(now ?? { value: pick(values) }), format: pick(formats) } }]))
+          keep(s.setCells([{ sheet: 'S', cell: at, input: { ...(now ?? { value: pick(values) }), numberFormat: pick(formats) } }]))
         } else if (op < 0.8) {
           const edit: LayoutEdit =
             rnd() < 0.5
               ? { sheet: 'S', columns: pick(['A', 'B', 'C', 'A:B']), set: { width: rnd() < 0.2 ? null : 1 + Math.floor(rnd() * 14) } }
               : rnd() < 0.5
-                ? { sheet: 'S', rows: pick(['1', '2:3', '5']), set: { format: rnd() < 0.3 ? null : pick(formats.filter((f) => f !== undefined)) } }
+                ? { sheet: 'S', rows: pick(['1', '2:3', '5']), set: { numberFormat: rnd() < 0.3 ? null : pick(formats.filter((f) => f !== undefined)) } }
                 : { sheet: 'S', merges: rnd() < 0.5 ? [] : [pick(['A1:B1', 'B2:C2', 'D1:D3'])] }
           keep(s.setLayout([edit]))
         } else {

@@ -28,8 +28,8 @@ const book = (locale?: string): BookInput => ({
         E1: { value: 'Qty' },
         E2: { value: 1 },
       },
-      columns: { D: { format: '0%' }, F: { width: 4 } },
-      rows: { 5: { format: 'dd.mm.yyyy' } },
+      columns: { D: { numberFormat: '0%' }, F: { width: 4 } },
+      rows: { 5: { numberFormat: 'dd.mm.yyyy' } },
       tables: [{ name: 'T', range: 'E1:E2', columns: [{ name: 'Qty' }] }],
       validations: [{ range: 'G1:G9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning', error: 'Positive only' }],
     },
@@ -52,7 +52,7 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
         ],
       })
       const cells = () => s.getBook().then((b) => b.sheets[0].cells)
-      expect((await cells()).A1).toEqual({ value: 1234.5, format: 4, style: 0, meta: 'm', note: { text: 'n' } })
+      expect((await cells()).A1).toEqual({ value: 1234.5, numberFormat: 4, style: 0, meta: 'm', note: { text: 'n' } })
       // a number into a percent column is percent, by the column's format, which the cell does not take
       await s.setCellText('S', 'D2', '5')
       expect((await cells()).D2).toEqual({ value: 0.05 })
@@ -64,7 +64,7 @@ describe.each(['closures', 'eval'] as const)('text typed into a cell, execution 
       expect((await cells()).A6).toEqual({ formula: 'SUM(A1,1.5)' })
       // empty text clears the value and keeps the rest
       await s.setCellText('S', 'A1', '')
-      expect((await cells()).A1).toEqual({ format: 4, style: 0, meta: 'm', note: { text: 'n' } })
+      expect((await cells()).A1).toEqual({ numberFormat: 4, style: 0, meta: 'm', note: { text: 'n' } })
       expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
       await s.close()
     })

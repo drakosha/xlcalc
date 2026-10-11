@@ -17,7 +17,7 @@ const book = (): BookInput => ({
       cells: {
         A1: { value: 0.25, style: 0, meta: { id: 1 } },
         A2: { value: 2 },
-        A3: { formula: 'A1*2', format: '0.00' },
+        A3: { formula: 'A1*2', numberFormat: '0.00' },
         C1: { formula: 'A1:A2*10', array: 'C1:C3' },
         E1: { formula: 'SEQUENCE(3)' },
         G1: { value: 'Qty' }, G2: { value: 5 },
@@ -30,12 +30,12 @@ const book = (): BookInput => ({
 /** Patches over every kind of cell: empty, a value, a formula, an old-kind array's top-left and its area, a spill's formula and its cells, a table's header. */
 const PATCHES: CellPatch[][] = [
   [{ sheet: 'S', cell: 'B5', set: { style: 1 } }],
-  [{ sheet: 'S', cell: 'A1', set: { format: '0%', meta: null } }],
-  [{ sheet: 'S', cell: 'A3', set: { format: '[Red]0.0;[Blue]-0.0', note: { author: 'Ann', text: 'checked' } } }],
-  [{ sheet: 'S', cell: 'C1', set: { style: 0, format: '0.000' } }, { sheet: 'S', cell: 'C2', set: { format: '0.00' } }, { sheet: 'S', cell: 'C3', set: { style: 1 } }],
-  [{ sheet: 'S', cell: 'E2', set: { format: '0.000', link: { url: 'https://example.com/' } } }, { sheet: 'S', cell: 'E1', set: { meta: [1, 2] } }],
+  [{ sheet: 'S', cell: 'A1', set: { numberFormat: '0%', meta: null } }],
+  [{ sheet: 'S', cell: 'A3', set: { numberFormat: '[Red]0.0;[Blue]-0.0', note: { author: 'Ann', text: 'checked' } } }],
+  [{ sheet: 'S', cell: 'C1', set: { style: 0, numberFormat: '0.000' } }, { sheet: 'S', cell: 'C2', set: { numberFormat: '0.00' } }, { sheet: 'S', cell: 'C3', set: { style: 1 } }],
+  [{ sheet: 'S', cell: 'E2', set: { numberFormat: '0.000', link: { url: 'https://example.com/' } } }, { sheet: 'S', cell: 'E1', set: { meta: [1, 2] } }],
   [{ sheet: 'S', cell: 'G1', set: { style: 0 } }],
-  [{ sheet: 'S', cell: 'B5', set: { style: null } }, { sheet: 'S', cell: 'A3', set: { note: null, format: null } }],
+  [{ sheet: 'S', cell: 'B5', set: { style: null } }, { sheet: 'S', cell: 'A3', set: { note: null, numberFormat: null } }],
 ]
 
 const calcs: Calc[] = []
@@ -68,14 +68,14 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     ])
     const cells = s.getBook().sheets[0].cells
     expect(cells).toEqual({
-      A1: { value: 0.25, style: 0, format: '0%' },
+      A1: { value: 0.25, style: 0, numberFormat: '0%' },
       A2: { value: 2 },
       A3: { formula: 'A1*2' },
-      C1: { formula: 'A1:A2*10', array: 'C1:C3', style: 0, format: '0.000' },
-      C2: { format: '0.00' },
+      C1: { formula: 'A1:A2*10', array: 'C1:C3', style: 0, numberFormat: '0.000' },
+      C2: { numberFormat: '0.00' },
       C3: { style: 1 },
       E1: { formula: 'SEQUENCE(3)', meta: [1, 2] },
-      E2: { format: '0.000', link: { url: 'https://example.com/' } },
+      E2: { numberFormat: '0.000', link: { url: 'https://example.com/' } },
       G1: { value: 'Qty', style: 0 },
       G2: { value: 5 },
     })
@@ -88,7 +88,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }]).changes.map((c) => c.cell).sort()).toEqual(['A1', 'A3', 'C1'])
     expect(() => s.setCells([{ sheet: 'S', cell: 'C2', input: { value: 1 } }])).toThrow(InputError)
     s.setCells([{ sheet: 'S', cell: 'E3', input: { value: 'x' } }])
-    expect(s.getCells('S', 'E1:E2')).toEqual({ E1: { value: { error: 'SPILL' }, text: '#SPILL!', formula: 'SEQUENCE(3)', meta: [1, 2] }, E2: { value: null, text: '', format: '0.000', link: { url: 'https://example.com/' } } })
+    expect(s.getCells('S', 'E1:E2')).toEqual({ E1: { value: { error: 'SPILL' }, text: '#SPILL!', formula: 'SEQUENCE(3)', meta: [1, 2] }, E2: { value: null, text: '', numberFormat: '0.000', link: { url: 'https://example.com/' } } })
     expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
   })
 
@@ -97,7 +97,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     const [clock, before] = [s.clock, s.getCells('S', 'A1:A2')]
     expect(s.patchCells([{ sheet: 'S', cell: 'B1', set: { note: { text: 'n' } } }]).changes).toEqual([])
     // a format whose text no General text has: the cell is listed, with the value it had
-    expect(s.patchCells([{ sheet: 'S', cell: 'A1', set: { format: '0.0000" u"' } }]).changes[0].value).toEqual(before.A1.value)
+    expect(s.patchCells([{ sheet: 'S', cell: 'A1', set: { numberFormat: '0.0000" u"' } }]).changes[0].value).toEqual(before.A1.value)
     expect(s.clock).toEqual(clock)
     expect(s.getCells('S', 'A2').A2.value).toEqual(before.A2.value)
   })
@@ -105,9 +105,9 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
   it('without the display a patch lists the cells whose look changed, without their text; patches of one cell apply in order; nothing left removes the cell', () => {
     const s = createSession(book(), { ...opts, display: false })
     expect(s.patchCells(PATCHES[1]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 0.25, numberFormat: '0%' }])
-    expect(s.patchCells([{ sheet: 'S', cell: 'K9', set: { style: 0 } }, { sheet: 'S', cell: 'K9', set: { format: '0.0', style: null } }, { sheet: 'S', cell: 'K9', set: { meta: 'm' } }]).changes).toEqual([{ sheet: 'S', cell: 'K9', value: null, numberFormat: '0.0' }])
-    expect(s.getBook().sheets[0].cells.K9).toEqual({ format: '0.0', meta: 'm' })
-    s.patchCells([{ sheet: 'S', cell: 'K9', set: { format: null, meta: null } }, { sheet: 'S', cell: 'K10', set: { style: null } }])
+    expect(s.patchCells([{ sheet: 'S', cell: 'K9', set: { style: 0 } }, { sheet: 'S', cell: 'K9', set: { numberFormat: '0.0', style: null } }, { sheet: 'S', cell: 'K9', set: { meta: 'm' } }]).changes).toEqual([{ sheet: 'S', cell: 'K9', value: null, numberFormat: '0.0' }])
+    expect(s.getBook().sheets[0].cells.K9).toEqual({ numberFormat: '0.0', meta: 'm' })
+    s.patchCells([{ sheet: 'S', cell: 'K9', set: { numberFormat: null, meta: null } }, { sheet: 'S', cell: 'K10', set: { style: null } }])
     expect('K9' in s.getBook().sheets[0].cells || 'K10' in s.getBook().sheets[0].cells).toBe(false)
   })
 
