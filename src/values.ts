@@ -57,7 +57,7 @@ export class Areas {
 export const isErr = (x: unknown): x is CErr => x instanceof CErr
 
 /** The smallest positive normal double: Excel has no smaller numbers (subnormal results are 0). */
-const MIN_NORMAL = 2.2250738585072014e-308
+export const MIN_NORMAL = 2.2250738585072014e-308
 
 /** A computed number as Excel keeps it: a non-finite one is #NUM!, one below the smallest normal number is 0. */
 export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)

@@ -8,6 +8,7 @@ import type { Rules } from '../../locale/rules.js'
 import { atp } from '../date/atp.js'
 import { trimSpaces } from '../../dates.js'
 import { E, fitNumber, isErr, type CErr, type V } from '../../values.js'
+import { MAX_TRIG } from '../common.js'
 
 type Unit = '' | 'i' | 'j'
 
@@ -20,8 +21,6 @@ interface Complex {
 
 /** Excel's largest number as text: larger numbers in complex text are #NUM!. */
 const MAX_TEXT = 9.99999999999999e307
-/** Excel's limit for the sine and cosine of a real argument. */
-const MAX_TRIG = 2 ** 27
 
 /** Where complex text splits into the real part and the imaginary one: the last sign past the first character that is no exponent's, or −1. */
 function splitAt(s: string): number {

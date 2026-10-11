@@ -11,6 +11,9 @@
 /** Excel's largest argument count of a function newer than Excel 2007 (`_xlfn.NAME` in a file): one fewer than its 255, measured by the `arity` set. */
 export const NEWER_MAX_ARGS = 254
 
+/** Excel: sine, cosine and their kin are #NUM! from 2^27 on, for a real argument (IMSIN …) and BESSELJ and BESSELY too. */
+export const MAX_TRIG = 2 ** 27
+
 /** Numeric aggregates in input order, with Excel's empty-list results. */
 export const sum = (xs: readonly number[]) => xs.reduce((s, x) => s + x, 0)
 export const sumSquares = (xs: readonly number[]) => xs.reduce((s, x) => s + x * x, 0)
