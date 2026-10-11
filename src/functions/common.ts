@@ -45,5 +45,16 @@ export function roundDigits(x: number, digits: number, f: (y: number) => number)
   return Math.sign(x) * shift(f(y), -digits)
 }
 
+/** Digits in radix `r` (letters of either case) as a number; null at a character that is no digit of it. */
+export function digitsValue(s: string, r: number): number | null {
+  let n = 0
+  for (const ch of s) {
+    const d = parseInt(ch, 36)
+    if (!(d < r)) return null
+    n = n * r + d
+  }
+  return n
+}
+
 /** n / s to 15 significant digits, as Excel sees the quotient before CEILING and FLOOR round it (1.5 / 0.1 is 15). */
 export const quotient = (n: number, s: number) => Number((n / s).toPrecision(15))
