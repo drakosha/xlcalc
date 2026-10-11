@@ -19,7 +19,7 @@ const READ_KNOWN: Readonly<Record<string, string[]>> = Object.fromEntries(
 )
 
 describe('notes, hyperlinks and frozen panes against Excel for Windows', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name)).toEqual(['files', 'frozen-held', 'struct-held', 'threads']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name)).toEqual(['files', 'frozen-held', 'refs-held', 'struct-held', 'threads']))
 })
 
 checkSets(SETS, PARTS_KNOWN, READ_KNOWN, (name) => import(`../bench/coverage/parts/${name}.ts`), THREAD_ISSUES)

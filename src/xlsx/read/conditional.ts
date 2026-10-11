@@ -9,13 +9,14 @@ import type { Color, ConditionalFormat, ConditionalStyle, ConditionalValue, Icon
 import { CELL_IS, ICON_SETS, PERIODS, STYLED } from '../../cond/check.js'
 import { defaultFormula, originOf } from '../../cond/rules.js'
 import { formatAddress } from '../../model.js'
-import { areaText, parseRange } from '../../structure/area.js'
+import { areaText } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { colorOf, type Palette } from '../styles/color.js'
 import { readDxf, type Dxf } from '../styles/dxf.js'
 import { ATTRS, attributes, element, elements, flag, ownEntry, type Element } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import { readFormula } from './formulas.js'
+import { sqrefRanges } from './refs.js'
 
 /** The extension of a sheet that holds Excel 2010's conditional formatting. */
 export const X14_CF = '{78C0D931-6437-407d-A8EE-F0AAD7539E65}'
@@ -54,10 +55,9 @@ export const outsideConditional = (tail: string): string => split(tail).rest
 /** The ranges of a `sqref`, those the model takes, as the model writes them (`A1:A1048576`, Excel's whole column, is `A:A`). */
 function ranges(sqref: string, ctx: Context): string[] {
   const out: string[] = []
-  for (const r of sqref.replaceAll('$', '').trim().split(/\s+/)) {
-    const x = r ? parseRange(r) : null
-    if (x) out.push(areaText(x))
-    else if (r) ctx.issues.add('conditionalFormat', 'a range of a conditional format outside the sheet is left out', { sheet: ctx.sheet, cell: r })
+  for (const { text, rect } of sqrefRanges(sqref)) {
+    if (rect) out.push(areaText(rect))
+    else ctx.issues.add('conditionalFormat', 'a range of a conditional format outside the sheet is left out', { sheet: ctx.sheet, cell: text })
   }
   return out
 }
