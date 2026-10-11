@@ -86,16 +86,4 @@ export function bad(at: number, msg: Message, code: CheckCode = 'syntax'): never
   throw new FormulaError(code, msg, at)
 }
 
-export const ERROR_TEXT: Record<ErrorCode, string> = {
-  DIV0: '#DIV/0!',
-  NA: '#N/A',
-  NAME: '#NAME?',
-  NUM: '#NUM!',
-  REF: '#REF!',
-  VALUE: '#VALUE!',
-  NULL: '#NULL!',
-  CYCLE: '#CYCLE!',
-  SPILL: '#SPILL!',
-  CALC: '#CALC!',
-  ERROR: '#ERROR!',
-}
+export { ERROR_TEXT } from './errors.js'
