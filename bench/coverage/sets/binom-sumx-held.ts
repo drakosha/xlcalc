@@ -75,3 +75,10 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): an array of one error is no cell, so the sizes come
+ * first (#N/A); a blank cell against a range is #VALUE!; SUMPRODUCT answers the cell's error before its sizes. The set
+ * `sumx-cell-held` measured the rules these showed.
+ */
+export const MISSED: readonly string[] = ['SUMX2MY2#4', 'SUMX2MY2#15', 'SUMPRODUCT#1']

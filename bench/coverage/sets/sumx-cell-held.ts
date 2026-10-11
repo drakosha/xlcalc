@@ -66,3 +66,10 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/**
+ * The predictions Excel did not confirm (the Mac and Windows alike): SUMPRODUCT answers an error inside an array, an
+ * array of one too, before it compares the sizes, and a blank cell with #VALUE! even against one number. The set
+ * `sumproduct-held` measured the order these left open.
+ */
+export const MISSED: readonly string[] = ['SUMPRODUCT#5', 'SUMPRODUCT#6', 'SUMPRODUCT#8']

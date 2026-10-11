@@ -30,10 +30,10 @@ export function gridNumbers(g: Grid): number[] | CErr {
   return out
 }
 
-/** A grid of one cell holding an error: Excel reads it as the argument's own error, before any check of the function. */
-export const cellError = (g: Grid): CErr | undefined => (g.rows * g.cols === 1 ? gridError(g) : undefined)
-
-/** Rule 4 with errors, in Excel's order: a one-cell error, different sizes (#N/A), an error in either grid, then pairs of numbers by position. */
+/**
+ * Rule 4 with errors, in Excel's order after a one-cell reference's own error (kind `C`): different sizes (#N/A), an
+ * error in either grid, then pairs of numbers by position.
+ */
 export function numberPairs(a: Grid, b: Grid): [number[], number[]] | CErr {
-  return cellError(a) ?? cellError(b) ?? (a.rows * a.cols !== b.rows * b.cols ? E.NA : (gridError(a) ?? gridError(b) ?? pairs(a, b)))
+  return a.rows * a.cols !== b.rows * b.cols ? E.NA : (gridError(a) ?? gridError(b) ?? pairs(a, b))
 }

@@ -24,7 +24,7 @@ export const SHEETS: SheetCells = {
 }
 
 /** Argument kinds that take a range (`args.ts`). */
-const RANGES = 'NAYZDVGMRrpP'
+const RANGES = 'NAYZDVGCMRrpP'
 
 const kindAt = (fn: string, i: number): string | undefined => {
   const def = DEFS[fn]

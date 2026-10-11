@@ -47,3 +47,6 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/** The prediction Excel did not confirm (the Mac and Windows alike): SUMPRODUCT takes its arrays in turn, a blank cell before a later array's error. */
+export const MISSED: readonly string[] = ['SUMPRODUCT#1']
