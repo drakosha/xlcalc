@@ -424,7 +424,7 @@ export interface IconSetFormat extends ConditionalBase {
  */
 export interface ConditionalAppearance {
   /** The styles of the rules that hold, merged in their order (the first rule's field wins); a colour scale's colour is `fill`. */
-  style?: ConditionalStyle
+  style?: Answered<ConditionalStyle>
   bar?: BarLook
   icon?: Icon
   /** A data bar or an icon set hides the value: the cell shows its bar or icon alone. */
@@ -606,6 +606,29 @@ export interface BookInput {
    */
   iteration?: { maxIterations?: number; maxChange?: number }
 }
+
+/**
+ * A part of a book as an answer gives it: the input's type without the deprecated field `format`, at any depth, since
+ * a book that answers names a number format `numberFormat` alone (`meta` is the host's own and stays as it is).
+ */
+type Answered<T> = T extends readonly (infer U)[]
+  ? Answered<U>[]
+  : T extends object
+    ? { [K in keyof T as K extends 'format' ? never : K]: K extends 'meta' ? T[K] : Answered<T[K]> }
+    : T
+
+/**
+ * A book as the calls that give one answer it (`Session.getBook`, `getSnapshot`, `getLayout`, `editStructure`,
+ * `readXlsx`): `BookInput` without the deprecated `format` of cells, rows, columns and conditional formats' styles, so
+ * that reading it does not compile where it would always be undefined. A `Book` is a `BookInput`: it goes back as one.
+ */
+export type Book = Answered<BookInput>
+
+/** A sheet of a `Book`: `SheetInput` without the deprecated `format`. */
+export type Sheet = Answered<SheetInput>
+
+/** A cell of a `Book`: `CellInput` without the deprecated `format`. */
+export type Cell = Answered<CellInput>
 
 /**
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
@@ -1382,7 +1405,7 @@ export type StructureResult =
   | {
       ok: true
       /** The new book; the input book is not changed, unchanged sheets and cells are shared. */
-      book: BookInput
+      book: Book
       /** Where a cell of the old book is now; null if it was deleted or overwritten, or its sheet is none of the old book's. */
       mapCell(ref: CellRef): CellRef | null
     }
@@ -1501,14 +1524,14 @@ export interface SheetExtent {
 }
 
 /** A sheet without its cells (`Session.getLayout`). */
-export type SheetLayout = Omit<SheetInput, 'cells'>
+export type SheetLayout = Omit<Sheet, 'cells'>
 
 /** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
-export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
+export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
 
 /** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
 export interface BookSnapshot {
-  book: BookInput
+  book: Book
   result: ComputeResult
 }
 
@@ -1580,7 +1603,7 @@ export interface Session {
    * The session's book with every change so far: what a host saves as a version. Its objects are the
    * session's own and later calls change them, so do not modify it; serialize or copy what must stay.
    */
-  getBook(): BookInput
+  getBook(): Book
   /**
    * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
    * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
@@ -1639,7 +1662,7 @@ export interface Session {
   /** @deprecated The name is `editStructure`. */
   restructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
   /** @deprecated The name is `getBook`. */
-  book(): BookInput
+  book(): Book
   /** @deprecated The name is `getLayout`. */
   layout(): BookLayout
   /** @deprecated The name is `getUsedRange`. */
@@ -1728,7 +1751,7 @@ export interface AsyncSession {
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
   /** The session's book; from a thread, a copy. */
-  getBook(): Promise<BookInput>
+  getBook(): Promise<Book>
   /** As `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
@@ -1753,7 +1776,7 @@ export interface AsyncSession {
   /** @deprecated The name is `editStructure`. */
   restructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   /** @deprecated The name is `getBook`. */
-  book(): Promise<BookInput>
+  book(): Promise<Book>
   /** @deprecated The name is `getLayout`. */
   layout(): Promise<BookLayout>
   /** @deprecated The name is `getUsedRange`. */
