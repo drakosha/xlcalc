@@ -12,7 +12,7 @@ export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
 export const CHANGING = ['setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'validation' | 'validateEntry' | 'result' | 'hash'
+export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'getViewport' | 'getCellIssue' | 'validation' | 'validateEntry' | 'result' | 'hash'
 
 /** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
 export const EDITS: Partial<Record<Op, number>> = { setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setNames: 1, setClock: 1, restructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }

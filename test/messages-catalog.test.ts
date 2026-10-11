@@ -96,6 +96,8 @@ const SAMPLES: { [K in MessageKey]: MessageParams[K][] } = {
   explainSpill: [{ ref: "'S'!B2" }],
   explainValue: [{ value: 1.5 }, { value: true }, { value: null }, { value: { error: 'NA' } }],
   explainFormula: [{ formula: 'ROUND(B1*1.2,0)' }],
+  explainErrorFrom: [{ ref: "'S'!A2" }],
+  explainErrorHere: [{}],
 }
 
 const messages = (): Message[] => Object.entries(SAMPLES).flatMap(([key, ps]) => (ps as object[]).map((p) => ({ key, ...p }) as Message))
@@ -115,7 +117,7 @@ const WORDS = new Set(['key', 'lines', 'rule'])
 const values = (m: Message): (string | number)[] => Object.entries(m).flatMap(([k, v]) => (WORDS.has(k) ? [] : Array.isArray(v) ? v : typeof v === 'string' || typeof v === 'number' ? [v] : []))
 
 /** The pieces of the explanation's lines, which stand inside a line rather than alone. */
-const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula'])
+const PIECES = new Set<MessageKey>(['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere'])
 
 describe('the catalog of messages', () => {
   it('ru-RU writes every message of en-US', () => {

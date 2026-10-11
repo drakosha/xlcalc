@@ -8,7 +8,7 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, CellEdit, CellInput, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult } from './contract.js'
+import type { BookInput, BookLayout, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
@@ -20,6 +20,7 @@ import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
+import { checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { movesOf } from './session/moves.js'
@@ -30,6 +31,7 @@ import { cellText, columnWidening, entryCheck, textRefusal, validationAlert } fr
 import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
+import { issueDetail } from './issues.js'
 import { dropStats } from './cond/stats.js'
 import { fitEdits } from './layout/fit.js'
 import { hiddenRows } from './layout/hidden.js'
@@ -78,6 +80,8 @@ export interface SessionSteps {
   historyData(): HistoryData
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
   cells(sheet: string, range: string | string[]): Steps<Record<string, CellView>>
+  getViewport(sheet: string, range: string, opts?: ViewportOptions): Steps<Viewport>
+  getCellIssue(sheet: string, cell: string): Steps<CellIssueDetail | null>
   validation(sheet: string, cell: string): Steps<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
   result(): Steps<ComputeResult>
@@ -95,6 +99,13 @@ function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined)
   if (format === undefined || typeof v !== 'number') return plain
   const shown = s.ctx.rules.display(v, format, Infinity).text
   return shown === s.ctx.rules.display(v, undefined, Infinity).text ? plain : shown
+}
+
+/** A rectangle of a sheet given as text (`B2`, `B2:D9`, `B:D`, `2:9`). */
+function rect(text: unknown, path: string) {
+  const x = parseRange(checkString(text, path))
+  if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(text)}`)
+  return x
 }
 
 /** Opens a session in steps: the book checked, then computed. */
@@ -457,20 +468,23 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *explain(sheet: string, cell: string, o: ExplainOptions = {}) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
-      const e = explainCell(s, i, row, col, o.depth ?? 3, o.maxNodes ?? 200, o.expand ?? false)
+      const e = explainCell(s, i, row, col, { depth: o.depth ?? 3, maxNodes: o.maxNodes ?? 200, expand: o.expand ?? false, errorDepth: o.errorDepth ?? 64 })
       return { ...e, text: explainText(e.root, s.input.locale) }
     },
     *cells(sheet: string, range: string | string[]) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const many = Array.isArray(range)
-      const rects = (many ? range : [range]).map((text, k) => {
-        const path = many ? `range[${k}]` : 'range'
-        const x = parseRange(checkString(text, path))
-        if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(text)}`)
-        return x
-      })
-      return yield* cellsIn(s, i, rects, display)
+      return yield* cellsIn(s, i, (many ? range : [range]).map((text, k) => rect(text, many ? `range[${k}]` : 'range')), display)
+    },
+    *getViewport(sheet: string, range: string, o?: ViewportOptions) {
+      const s = yield* ready()
+      const i = checkSheet(sheet, sheetIndex(s), 'sheet')
+      return yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)
+    },
+    *getCellIssue(sheet: string, cell: string) {
+      const s = yield* ready()
+      return issueDetail(s, ...at(s, sheet, cell))
     },
     *validation(sheet: string, cell: string) {
       const s = yield* ready()
@@ -546,6 +560,8 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     extent: (sheet) => now(() => core.extent(sheet)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     cells: (sheet, range) => now(() => core.cells(sheet, range)),
+    getViewport: (sheet, range, o) => now(() => core.getViewport(sheet, range, o)),
+    getCellIssue: (sheet, cell) => now(() => core.getCellIssue(sheet, cell)),
     validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
     validateEntry: (sheet, cell, input) => now(() => core.validateEntry(sheet, cell, input)),
     result: () => now(() => core.result()),

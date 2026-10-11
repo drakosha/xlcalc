@@ -263,6 +263,8 @@ const MESSAGES: Messages = {
   explainSpill: (p) => `перенос из ${p.ref}`,
   explainValue: ({ value: v }, w) => (v === undefined ? '' : v === null ? 'пусто' : w.value(v)),
   explainFormula: (p, w) => w.formula(p.formula),
+  explainErrorFrom: (p) => `(ошибка из ${p.ref})`,
+  explainErrorHere: () => '(ошибка возникает здесь)',
 }
 
 export const RU_RU: LocaleFile = {

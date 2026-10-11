@@ -131,6 +131,56 @@ console.log(session.cells('Plan', 'D1').D1.array, session.layout().sheets) // �
 
 `extent(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `layout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings, whether it is hidden), at a cost that does not depend on the cells. `cells(sheet, ranges)` reads several rectangles at once, each cell once. `patchCells(patches)` sets a cell's `style`, `format`, `meta`, `note` or `link` (null removes the field) and keeps its value or formula without being given it: on an empty cell it makes a cell with these alone, on a cell of an old-kind array formula's area or of a spill it leaves the array as it is, and a cell left with nothing is removed. It computes nothing and returns the cells whose shown text or colour changed. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`.
 
+A grid draws a window of a sheet with `getViewport(sheet, range, opts?)`: in one call it gives the cells with their look resolved, the sizes of the window's lines, the merged areas that meet it and where the sheet ends.
+
+```js
+import { openSession } from 'xlcalc'
+
+const session = openSession({
+  locale: 'ru-RU',
+  styles: [{ font: { bold: true } }],
+  sheets: [{
+    name: 'Plan',
+    cells: {
+      A1: { value: 'Qty' }, B1: { value: 'Total' }, D1: { formula: '1/A3' },
+      A2: { value: 2 }, B2: { formula: '[@Qty]*1.5' }, D2: { formula: 'SUM(B1:D1)' },
+      A3: { value: 0 }, B3: { formula: '[@Qty]*1.5' },
+    },
+    rows: { 1: { style: 0 } },
+    columns: { B: { format: '0.00', width: 12 } },
+    merges: ['E1:F2'],
+    tables: [{ name: 'T', range: 'A1:B3', columns: [{ name: 'Qty' }, { name: 'Total' }] }],
+  }],
+})
+const v = session.getViewport('Plan', 'A1:E2', { formulaLocal: true })
+console.log(v.cells.C1, v.cells.B2)
+// → { value: null, text: '', effectiveStyle: { font: { bold: true } } } {
+//     value: 3,
+//     text: '3,00',
+//     formula: 'T[[#This Row],[Qty]]*1.5',
+//     formulaLocal: '[@Qty]*1,5',
+//     numberFormat: '0.00',
+//     numberFormatSource: 'column'
+//   }
+console.log(v.columns.map((c) => c.width), v.rows, v.merges, v.extent)
+// → [ 8.83203125, 12, 8.83203125, 8.83203125, 8.83203125 ] [ { height: 15 }, { height: 15 } ] [ 'E1:F2' ] { rows: 3, columns: 6 }
+console.log(session.getCellIssue('Plan', 'D2'))
+// → {
+//     error: 'DIV0',
+//     reason: "division by zero, from 'Plan'!D1",
+//     origin: { sheet: 'Plan', cell: 'D1' }
+//   }
+console.log(session.explain('Plan', 'D2').text)
+// → 'Plan'!D2 = #ДЕЛ/0!  ← СУММ(B1:D1)  (ошибка из 'Plan'!D1)
+//     'Plan'!B1:D1 (2 ячейки)
+//       'Plan'!D1 = #ДЕЛ/0!  ← 1/A3  (ошибка возникает здесь)
+//         'Plan'!A3 = 0
+```
+
+A cell of the window carries what `cells` gives (the value, the shown `text` and `color`, the formula, the spill, `meta`, a note, a link, an old-kind array's area) and its look resolved: its own `style` and the `effectiveStyle` it shows, its own, else its row's, else its column's, as objects of the book's styles; the `numberFormat` it shows by as a code, with `numberFormatSource` saying whether it is the cell's, the row's or the column's (a built-in format by the code of the book's locale: 14 is `dd.mm.yyyy` in ru-RU); and `appearance`, what its conditional formats give it. The style and the format are taken each on its own, so a cell of a bold row in a column formatted `0.00` is bold and shows `0.00`. An empty cell is listed when it shows something: a style of its row or column (`C1` above), an appearance, a note or a link; so are the cells of a spill, a large array's cells past its data too. Cells of one style share one object, through a thread too. `columns` and `rows` give each line's width and height, Excel's default where it has none (8.83203125 and 15 points), with `hidden`; `merges` the merged areas that meet the window, whole; `extent` is `extent(sheet)`. `formulaLocal: true` adds each formula as Excel shows it in the book's locale, inside its table as Excel shows it there (`[@Qty]`), and `diagnostics: true` adds to each cell with an error its `issue`, as `getCellIssue` gives it. A window holds at most `maxCells` cells, 20,000 by default: of a larger one it gives its first rows that fit, with `truncated: true` and the `range` it gave. It costs what the window holds, not the book: on the synthetic book of 34,000 rows a window of 20,000 cells takes 15 ms, as on the book of 3,400 rows and a little less than `cells` and `layout()` together, and 26 ms from a thread.
+
+`getCellIssue(sheet, cell)` says why a cell holds an error without building the book's result: the error, the reason, the check code and position of a formula that does not read, as `result().issues` gives them, and `origin`, the cell the error began in, found by following the cells the reasons name (in a cycle, the first cell of the cycle the way comes back to). `explain` marks each cell with an error by that cell and leads to it: through a range by the cell the error came from, and past `depth` for `errorDepth` cells more (64 by default), never round a cycle. Its text writes an error as the book's cells show it and an empty cell as `empty`.
+
 A session undoes and redoes its changes, as Excel's Undo and Redo do:
 
 ```js
@@ -260,7 +310,7 @@ console.log(parseEntry('3/15/2026').input, parseEntry('$1,234.50').input.value, 
 
 ### Errors
 
-Cell errors come out as `{ error: code }` with codes `DIV0`, `NA`, `NAME`, `NUM`, `REF`, `VALUE`, `CYCLE`, `SPILL`, `CALC` and `ERROR`. Every cell with an error is listed in `issues` with a reason, which names the cell an error came from (`division by zero, from 'S'!A2`). A circular reference gives `#CYCLE!` to the cells in the cycle and to everything that depends on them; the rest of the book is computed. A book with [iterative calculation](#iterative-calculation) computes its cycles instead.
+Cell errors come out as `{ error: code }` with codes `DIV0`, `NA`, `NAME`, `NUM`, `REF`, `VALUE`, `CYCLE`, `SPILL`, `CALC` and `ERROR`. Every cell with an error is listed in `issues` with a reason, which names the cell an error came from (`division by zero, from 'S'!A2`); a session's `getCellIssue` gives one cell's, with the cell the error began in ([Sessions](#sessions)). A circular reference gives `#CYCLE!` to the cells in the cycle and to everything that depends on them; the rest of the book is computed. A book with [iterative calculation](#iterative-calculation) computes its cycles instead.
 
 Input of the wrong shape is a programming error and throws `InputError` (a `TypeError` with `path`), for example `book.sheets[0].cells["b2"]: invalid cell address "b2": expected A1 style such as "B12" (column letters must be upper-case: "B2")`. This covers wrong types, malformed or out-of-grid addresses, duplicate sheet names (compared case-insensitively, as in Excel), unknown fields, bad dates and clocks, and unknown sheets in session edits.
 
@@ -653,7 +703,7 @@ From `xlcalc`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `format`, `meta`), `issues`, `nameIssues`, `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `patchCells(patches)` (a cell's `style`, `format`, `meta`, `note`, `link` without its value), `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `book()`, `layout()` (the book without its cells), `extent(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand })`, `cells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `look`), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `hash()` (the values hash without the result), `undo()` and `redo()` (`{ call, changes, cells?, mapCell? }` or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode |
+| `openSession(book, opts?)` | a `Session`: `setCells(edits)`, `patchCells(patches)` (a cell's `style`, `format`, `meta`, `note`, `link` without its value), `setNames(names)`, `setClock(clock)`, `restructure(op)`, `setStyles(styles)`, `setLayout(edits)` (its changes; columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `book()`, `layout()` (the book without its cells), `extent(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand, errorDepth })` (an error's `origin` marked and the way to it), `cells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `look`), `getViewport(sheet, range, { formulaLocal, diagnostics, maxCells })` (a window for a grid: cells with their style and number format resolved, empty ones with a line's style, the lines' sizes, merged areas, the extent), `getCellIssue(sheet, cell)` (an error's reason and `origin`, or null), `validation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok }`, with the rule when not), `result()`, `hash()` (the values hash without the result), `undo()` and `redo()` (`{ call, changes, cells?, mapCell? }` or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `format`, `locale`, `width`, `dateSystem` ([Showing values](#showing-values)) |
 | `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
 | `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, message }` by the rules of a book of `opts.locale` |
