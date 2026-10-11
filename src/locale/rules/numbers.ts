@@ -6,9 +6,8 @@
  * A locale that writes its symbol before the amount (`currency.before`) has it read there, a sign before or after it
  * (`-€5`, `€-5`), as en-US reads `$`; no Excel of such a locale has been measured.
  */
-import { trimSpaces, unwrap } from '../../dates.js'
+import { bodyNumber, trimSpaces, unwrap } from '../../dates.js'
 import { literal } from '../../criteria.js'
-import { readNumber } from '../../model.js'
 import type { RegionalData } from './data.js'
 
 // `s`: text with a line break is matched whole and read as no number, not left unmatched
@@ -37,16 +36,6 @@ export function numberReader(data: RegionalData): (text: string) => number | nul
       ;[negative, body] = [sign[1] === '-', sign[2]]
     }
     if ((currency && percent) || (paren && negative)) return null
-    const exp = /^(.*?)([eE][+-]?\d+)$/.exec(body)
-    const mant = exp ? exp[1] : body
-    let n: number | null = null
-    // percent moves the decimal point of the text (`1,1%` is 0.011); a fraction is divided
-    if (grouped.test(mant) && /\d/.test(mant)) n = readNumber(mant.split(group).join('').replace(decimal, '.') + (exp ? exp[2] : ''), percent ? -2 : 0)
-    else if (!paren && !(before && currency)) {
-      const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
-      if (frac && Number(frac[3]) > 0) n = (Number(frac[1]) + Number(frac[2]) / Number(frac[3])) / (percent ? 100 : 1)
-    }
-    if (n === null || !Number.isFinite(n)) return null
-    return negative || paren ? -n : n
+    return bodyNumber(body, grouped, (mant) => mant.split(group).join('').replace(decimal, '.'), percent, !paren && !(before && currency), negative || paren)
   }
 }
