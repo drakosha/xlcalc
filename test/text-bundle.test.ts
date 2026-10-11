@@ -21,7 +21,7 @@ describe('text without the engine', () => {
   it('the bundle holds the modules of formula text alone, under 50 KB', async () => {
     const { code, used } = await bundle()
     // criteria, dates and numfmt/style: the lexer takes the escape of a regular expression's characters from criteria
-    expect(used).toEqual(['a1', 'collate', 'criteria', 'dates', 'input', 'input-error', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/style', 'scan', 'sheet-pattern', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
+    expect(used).toEqual(['a1', 'collate', 'criteria', 'dates', 'entry/clipboard', 'input', 'input-error', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/style', 'scan', 'sheet-pattern', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
     expect(code.length).toBeLessThan(50 * 1024)
   }, 60_000)
 
