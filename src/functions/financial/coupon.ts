@@ -3,7 +3,7 @@ import type { FnDef } from '../../args.js'
 import { addMonths, daysInMonth, serialOf, ymd } from '../../dates.js'
 import { E, type CErr } from '../../values.js'
 import { atp, need } from '../date/atp.js'
-import { days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
+import { d360, days30, validBasis, validFreq, type Ymd } from '../date/daycount.js'
 
 export type { Ymd }
 
@@ -15,7 +15,7 @@ export const serialOfYmd = (x: Ymd) => (x.y === 1900 && x.m === 2 && x.d === 29 
 /** Days from `a` to `b` by basis: 0 the ToolPak's 30/360, 4 European 30/360, else actual. */
 export function daysBetween(a: Ymd, b: Ymd, basis: number): number {
   if (basis === 0) return cmp(a, b) <= 0 ? days30(a, b) : -days30(b, a)
-  if (basis === 4) return (b.y - a.y) * 360 + (b.m - a.m) * 30 + Math.min(b.d, 30) - Math.min(a.d, 30)
+  if (basis === 4) return d360(a, b, Math.min(a.d, 30), Math.min(b.d, 30))
   return serialOfYmd(b) - serialOfYmd(a)
 }
 
@@ -65,7 +65,7 @@ export const badCoupon = (settlement: number, maturity: number, freq: number, ba
 const daysFrom = (c: Coupons, basis: number) => (basis === 0 || basis === 4 ? daysBetween(c.pcd, c.settle, basis) : c.settlement - serialOfYmd(c.pcd))
 
 /** 30/360 with no month-end rule: Excel's COUPDAYSNC on basis 0 when the previous coupon date is before 1900. */
-const plain360 = (a: Ymd, b: Ymd) => (b.y - a.y) * 360 + (b.m - a.m) * 30 + b.d - a.d
+const plain360 = (a: Ymd, b: Ymd) => d360(a, b, a.d, b.d)
 
 /** A and DSC as COUPDAYBS and COUPDAYSNC answer them; DSC on basis 0 is the normal period less A. */
 export function couponDays(c: Coupons, basis: number, freq: number) {

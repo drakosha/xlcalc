@@ -1,10 +1,12 @@
 /** Day-count conventions (DAYS360, YEARFRAC), shared with the financial functions. */
 import type { FnDef } from '../../args.js'
 import { daysInMonth, isLeap, serialOf, ymd } from '../../dates.js'
-import { E } from '../../values.js'
 import { atp, need, type AtpOrder } from './atp.js'
 
 export type Ymd = { y: number; m: number; d: number }
+
+/** Days from `a` to `b` on 30/360, their days taken as `d1` and `d2`: each convention moves them by its own rules. */
+export const d360 = (a: Ymd, b: Ymd, d1: number, d2: number) => (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
 
 /** Excel's calendar has 1900-02-29. */
 export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 29 : daysInMonth(y, m))
@@ -22,7 +24,7 @@ export function days360(start: number, end: number, european: boolean): number {
     if (d1 === 31 || (a.m === 2 && d1 === lastDayExcel(a.y, 2))) d1 = 30
     if (d2 === 31 && d1 >= 30) d2 = 30
   }
-  return (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
+  return d360(a, b, d1, d2)
 }
 
 /** By the real calendar: the ToolPak takes 1900 for a common year. */
@@ -37,7 +39,7 @@ export function days30(a: Ymd, b: Ymd): number {
   else if (d1 === 30 && d2 === 31) d2 = 30
   else if (lastOfFeb(a) && lastOfFeb(b)) [d1, d2] = [30, 30]
   else if (lastOfFeb(a)) d1 = 30
-  return (b.y - a.y) * 360 + (b.m - a.m) * 30 + (d2 - d1)
+  return d360(a, b, d1, d2)
 }
 
 /** Days since 1899-12-30 in the real calendar; an impossible day rolls over (1900-02-29 is 1900-03-01). */
