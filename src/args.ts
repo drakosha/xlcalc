@@ -32,11 +32,11 @@
  *      `if_empty`); `P` the same with a reference passed on as a reference, one cell too, for a function
  *      that answers it (CHOOSE, the values of IF, IFS and SWITCH, HSTACK: `SUM(IF(TRUE,A2))` skips text in
  *      A2, as Excel does); where the answer goes to a one-value position it is read as a value.
- * 2. Date and time text in a date argument (`d`, `t`, `D`, `h` a time of day) is read as Excel reads it in the
+ * 2. Date and time text in a date argument (`d`, `t`, `h` a time of day) is read as Excel reads it in the
  *    book's locale (`Cx.rules`; en-US: `2025-01-31`, `1/31/2025`, `18:30`, see `dates.ts`); a date before 0 or after
  *    9999-12-31 is #NUM!. A function gets dates in the 1900 date system, whatever the book's (`FnDef.date` moves
  *    its date answer back). Text, numbers and booleans in every kind are coerced by the locale's rules too.
- * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Z`, `D`) hold no
+ * 3. Empty input: `FnDef.empty` names the error of a function whose lists (`N`, `A`, `Y`, `Z`) hold no
  *    numbers at all (AVERAGE #DIV/0!, MEDIAN #NUM!, MODE #N/A); a blank cell as a whole answer is null,
  *    which a cell shows as 0.
  * 4. Paired arrays (`pairs`): pairs where either value is not a number are dropped; arrays with different
@@ -44,8 +44,7 @@
  * 5. The answer: a non-finite number is #NUM!, one below the smallest normal number is 0 (`fitNumber`);
  *    radix digits are upper-case and complex text is written as Excel writes it by the functions themselves
  *    (`functions/engineering/radix.ts`, `complex.ts`).
- * 6. Holidays and payment dates (`D`): a flat list of whole serial numbers.
- * 7. Arrays (`docs/arrays-incell.md`): the list and grid kinds take an array as they take a range (`A`
+ * 6. Arrays (`docs/arrays-incell.md`): the list and grid kinds take an array as they take a range (`A`
  *    takes only an array's numbers, `Y` counts its text as 0); a one-value kind given an array or a range
  *    of several cells is lifted element by element (`src/arrays/call.ts`), except where `FnDef.ranges` says.
  */
@@ -132,7 +131,7 @@ export interface FnDef {
   max?: number
   /** The implementation, given the coerced arguments (an omitted optional argument is undefined). */
   fn: (...a: any[]) => Arg
-  /** The error when all list arguments (`N`, `A`, `Z`, `D`) are empty (rule 3). */
+  /** The error when all list arguments (`N`, `A`, `Y`, `Z`) are empty (rule 3). */
   empty?: ErrorCode
   /** `fn` gets the function context (`Cx`) first. */
   cx?: boolean
@@ -237,9 +236,9 @@ export interface FunctionSpec {
 
 /** Excel's limit on the number of arguments. */
 const MAX_ARGS = 255
-const RANGE_KINDS = 'NAYZVGCMRDrP'
-const LIST_KINDS = 'NAYZD'
-const WHOLE_KINDS = 'NAYZVGCMRD'
+const RANGE_KINDS = 'NAYZVGCMRrP'
+const LIST_KINDS = 'NAYZ'
+const WHOLE_KINDS = 'NAYZVGCMR'
 /** Kinds of an array or a reference: an argument left out there is #VALUE!. */
 const ARRAY_KINDS = 'GCMR'
 
@@ -327,13 +326,12 @@ function timeOfDay(v: V, rules: Rules): number | CErr {
 export const noBool = (v: V, rules: Rules): number | CErr => (typeof v === 'boolean' ? E.VALUE : rules.toNum(v))
 
 type ListOther = (v: Exclude<V, number | null>) => number | CErr | undefined
-type ListNumber = (n: number, rules: Rules) => number | CErr
 
 /**
- * A list kind: a range gives its numbers (through `num`, if given) and its other non-blank cells by
- * `inRange` (a number, an error, or undefined to skip); a direct argument goes through `direct`.
+ * A list kind: a range gives its numbers and its other non-blank cells by `inRange` (a number, an error, or
+ * undefined to skip); a direct argument goes through `direct`.
  */
-function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther, num?: ListNumber, inArray = inRange) {
+function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther, inArray = inRange) {
   return (x: Arg, cx: Cx): number[] | CErr => {
     const out: number[] = []
     const { rules } = cx
@@ -342,7 +340,7 @@ function list(direct: (v: V, rules: Rules) => number | CErr, inRange: ListOther,
     const numbers = (values: readonly V[]): CErr | undefined => {
       for (const v of values) {
         if (v === null) continue
-        const n = typeof v === 'number' ? (num ? num(v, rules) : v) : other(v)
+        const n = typeof v === 'number' ? v : other(v)
         if (n === undefined) continue
         if (isErr(n)) return n
         out.push(n)
@@ -413,10 +411,9 @@ const COERCE: Record<string, (x: Arg, cx: Cx) => unknown> = {
   a: (x, cx) => cx.scalar(x),
   N: list(num, errOrSkip),
   // in an array MAXA, STDEVA and the like take the numbers only; AVERAGEA (`Y`) counts text there as 0 (Excel 365)
-  A: list(num, countOther, undefined, errOrSkip),
-  Y: list(num, countOther, undefined, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
+  A: list(num, countOther, errOrSkip),
+  Y: list(num, countOther, (v) => (isErr(v) ? v : typeof v === 'boolean' ? undefined : 0)),
   Z: list(noBool, (v) => (isErr(v) ? v : E.VALUE)),
-  D: list(toDate, (v) => (isErr(v) ? v : E.VALUE), toDate),
   // an empty element of an array counts for COUNTA (as Excel's empty value does): it is read as empty text
   V: (x, cx) => (x instanceof Rng ? cx.flat(x) : x instanceof Areas ? x.list.flatMap((g) => cx.flat(g)) : x instanceof Arr ? x.values().map((v) => (v === null ? '' : v)) : x),
   // several areas where one rectangle is wanted: #REF! of a union (ROWS), else #VALUE!
