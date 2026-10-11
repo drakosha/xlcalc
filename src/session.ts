@@ -13,14 +13,14 @@ import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, t
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
+import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
-import { checkViewportOptions, viewport } from './session/viewport.js'
+import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { checkPatches } from './session/patch.js'
@@ -38,7 +38,6 @@ import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
 import { cellLooks } from './shown.js'
-import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
@@ -103,13 +102,6 @@ function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined)
   if (format === undefined || typeof v !== 'number') return plain
   const shown = s.ctx.rules.display(v, format, Infinity).text
   return shown === s.ctx.rules.display(v, undefined, Infinity).text ? plain : shown
-}
-
-/** A rectangle of a sheet given as text (`B2`, `B2:D9`, `B:D`, `2:9`). */
-function rect(text: unknown, path: string) {
-  const x = parseRange(checkString(text, path))
-  if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(text)}`)
-  return x
 }
 
 /** Opens a session in steps: the book checked, then computed. */
@@ -480,13 +472,13 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const many = Array.isArray(range)
-      return yield* cellsIn(s, i, (many ? range : [range]).map((text, k) => rect(text, many ? `range[${k}]` : 'range')), display)
+      return yield* cellsIn(s, i, (many ? range : [range]).map((text, k) => checkRange(text, many ? `range[${k}]` : 'range')), display)
     },
     *getViewport(sheet: string, range: string, o?: ViewportOptions) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       // the window of the revision it was read at, for a host to take later edits' changes over
-      return { ...(yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)), revision }
+      return { ...(yield* viewport(s, i, checkRange(range, 'range'), checkViewportOptions(o), display, clock.now)), revision }
     },
     *getCellIssue(sheet: string, cell: string) {
       const s = yield* ready()

@@ -251,23 +251,24 @@ function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, 
   }
 }
 
-/** The part of a rule's ranges inside the window, each cell once. */
-function clipped(rule: ConditionalFormat, x: Rect): Rect[] {
-  return rectsOf(rule).flatMap((y) => intersect(x, y) ?? [])
+/** The part of a rule's ranges inside the window's rectangles. */
+function clipped(rule: ConditionalFormat, xs: Rect[]): Rect[] {
+  return rectsOf(rule).flatMap((y) => xs.flatMap((x) => intersect(x, y) ?? []))
 }
 
 /**
- * The looks of the cells of rectangle `x` of sheet `s`, by `r * MAX_COLS + c`; `only`, the cells to look at when the
- * window is too large to look at every one (the cells it lists). The steps yield between cells.
+ * The looks of the cells of rectangle `x` of sheet `s` (of each of several, apart), by `r * MAX_COLS + c`; `only`, the
+ * cells to look at when the window is too large to look at every one (the cells it lists). The steps yield between cells.
  */
-export function* windowLooks(state: EngineState, s: number, x: Rect, only?: Set<number>): Steps<Map<number, ConditionalAppearance>> {
+export function* windowLooks(state: EngineState, s: number, x: Rect | Rect[], only?: Set<number>): Steps<Map<number, ConditionalAppearance>> {
   const out = new Map<number, ConditionalAppearance>()
   const rules = state.input.sheets[s].conditionalFormats
   if (!rules?.length) return out
   const stopped = new Set<number>()
   const value = (r: number, c: number) => state.rt.cell(s, r, c)
+  const xs = Array.isArray(x) ? x : [x]
   for (const rule of rules) {
-    const parts = clipped(rule, x)
+    const parts = clipped(rule, xs)
     if (!parts.length) continue
     const graded = rule.type === 'colorScale' || rule.type === 'dataBar' || rule.type === 'iconSet'
     const test = graded ? null : yield* styleTest(state, s, rule)
