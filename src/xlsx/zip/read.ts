@@ -21,9 +21,10 @@ interface Entry {
   offset: number
 }
 
-const EOCD = 0x06054b50
-const CENTRAL = 0x02014b50
-const LOCAL = 0x04034b50
+/** The signatures of a zip's records, which the writer writes: the end of the central directory, an entry of it, a local header. */
+export const EOCD = 0x06054b50
+export const CENTRAL = 0x02014b50
+export const LOCAL = 0x04034b50
 
 function fail(why: string): never {
   throw new Error(`xlsx: not a readable zip archive: ${why}`)

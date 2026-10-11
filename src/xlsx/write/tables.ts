@@ -13,8 +13,7 @@ import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
 import { fileTree, KEEP_ALL } from './sheet.js'
-
-const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
+import { HEAD, MAIN } from './xml.js'
 
 /** The table's part; `id` is unique in the book; `filtered`: the table holds its sheet's filter mode. */
 export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: Set<string>, tables: { name: string; columns: string[] }[], issues: Issues, filtered = false): string {
@@ -48,7 +47,7 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: S
   const name = escapeAttr(t.name)
   const ref = cornersText(x)
   return (
-    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<table xmlns="${MAIN}" id="${id}" name="${name}" displayName="${name}" ref="${ref}"${counts}>` +
+    `${HEAD}<table xmlns="${MAIN}" id="${id}" name="${name}" displayName="${name}" ref="${ref}"${counts}>` +
     `${filter}<tableColumns count="${cols.length}">${cols.join('')}</tableColumns>` +
     '<tableStyleInfo name="TableStyleMedium2" showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/></table>'
   )

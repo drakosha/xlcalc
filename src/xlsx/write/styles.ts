@@ -7,18 +7,20 @@
 import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
 import { escapeAttr } from '../xml/text.js'
+import { HEAD, MAIN, rgb } from './xml.js'
 
 /** The book's default font, as the model assumes it. */
 export const DEFAULT_FONT = { name: 'Calibri', size: 11 }
 
-const rgb = (c: string) => `FF${c.slice(1).toUpperCase()}`
+/** A font's underline, as a cell's font and a dxf's write it. */
+const underlineXml = (u: FontStyle['underline']) => (u ? (u === 'double' ? '<u val="double"/>' : '<u/>') : '')
 
 function fontXml(f: FontStyle): string {
   const out = [
     f.bold ? '<b/>' : '',
     f.italic ? '<i/>' : '',
     f.strike ? '<strike/>' : '',
-    f.underline ? (f.underline === 'double' ? '<u val="double"/>' : '<u/>') : '',
+    underlineXml(f.underline),
     `<sz val="${f.size ?? DEFAULT_FONT.size}"/>`,
     f.color ? `<color rgb="${rgb(f.color)}"/>` : '',
     `<name val="${escapeAttr(f.name ?? DEFAULT_FONT.name)}"/>`,
@@ -94,7 +96,7 @@ export class StyleWriter {
     const f = s.font
     const flag = (tag: string, v: boolean | undefined) => (v === undefined ? '' : v ? `<${tag}/>` : `<${tag} val="0"/>`)
     const font = f
-      ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${f.underline ? (f.underline === 'double' ? '<u val="double"/>' : '<u/>') : ''}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
+      ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${underlineXml(f.underline)}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
       : ''
     const code = typeof s.numberFormat === 'number' ? (s.numberFormat === 0 ? 'General' : BUILTIN[s.numberFormat]) : s.numberFormat
     const numFmt = s.numberFormat === undefined ? '' : `<numFmt numFmtId="${this.numFmt(s.numberFormat)}" formatCode="${escapeAttr(code!)}"/>`
@@ -113,7 +115,7 @@ export class StyleWriter {
     const list = (tag: string, items: string[]) => `<${tag} count="${items.length}">${items.join('')}</${tag}>`
     const numFmts = [...this.formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code)}"/>`)
     return (
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      `${HEAD}<styleSheet xmlns="${MAIN}">` +
       (numFmts.length ? list('numFmts', numFmts) : '') +
       list('fonts', this.fonts.items) +
       list('fills', this.fills.items) +

@@ -3,6 +3,7 @@
  * bytes, ASCII names. No ZIP64: a package of 4 GB or more is refused.
  */
 import { concat, deflate } from './platform.js'
+import { CENTRAL, EOCD, LOCAL } from './read.js'
 
 let table: Uint32Array | undefined
 
@@ -45,12 +46,12 @@ export async function zip(files: { name: string; data: Uint8Array }[]): Promise<
     }
     const local = new Uint8Array(30 + name.length)
     const lv = new DataView(local.buffer)
-    lv.setUint32(0, 0x04034b50, true)
+    lv.setUint32(0, LOCAL, true)
     common(lv, 4)
     local.set(name, 30)
     const dir = new Uint8Array(46 + name.length)
     const dv = new DataView(dir.buffer)
-    dv.setUint32(0, 0x02014b50, true)
+    dv.setUint32(0, CENTRAL, true)
     dv.setUint16(4, 20, true)
     common(dv, 6)
     dv.setUint32(42, offset, true)
@@ -63,7 +64,7 @@ export async function zip(files: { name: string; data: Uint8Array }[]): Promise<
   if (offset + dirSize > 0xffffffff || files.length > 0xffff) throw new Error('xlsx: the package needs ZIP64, which is not supported')
   const end = new Uint8Array(22)
   const ev = new DataView(end.buffer)
-  ev.setUint32(0, 0x06054b50, true)
+  ev.setUint32(0, EOCD, true)
   ev.setUint16(8, files.length, true)
   ev.setUint16(10, files.length, true)
   ev.setUint32(12, dirSize, true)

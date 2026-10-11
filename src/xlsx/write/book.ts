@@ -7,6 +7,7 @@
  */
 import type { BookInput, ComputeResult } from '../../contract.js'
 import { epochOf } from '../../dates.js'
+import { SHEET_STATES } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { bindTables, nameProblem } from '../../syntax/check.js'
@@ -17,7 +18,7 @@ import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import type { WriteXlsxOptions, XlsxCached, XlsxSnapshot, XlsxWritten } from '../types.js'
-import { escapeAttr, escapeText, needsPreserve } from '../xml/text.js'
+import { escapeAttr, escapeText, textElement } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { nextBlock } from './parts.js'
@@ -25,11 +26,11 @@ import { writeSheet } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
-import { tableAt, tablesOf } from '../../tables/model.js'
+import { HEAD, MAIN } from './xml.js'
+import { RICH_ERRORS } from '../read/metadata.js'
+import { tableAt, tableNames, tablesOf } from '../../tables/model.js'
 import { parseAddress } from '../../model.js'
 
-const HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
-const MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 const PKG_REL = 'http://schemas.openxmlformats.org/package/2006/relationships'
 const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
@@ -37,7 +38,7 @@ const TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml'
 const RICH = 'http://schemas.microsoft.com/office/spreadsheetml/2017/richdata'
 const RICH_REL = 'http://schemas.microsoft.com/office/2017/06/relationships'
 /** The rich value `errorType` of the errors Excel keeps as rich values. */
-const RICH_TYPE = { SPILL: 8, CALC: 13 } as const
+const RICH_TYPE = { SPILL: RICH_ERRORS.indexOf('#SPILL!'), CALC: RICH_ERRORS.indexOf('#CALC!') }
 
 /**
  * The cell metadata: XLDAPR (dynamic array formulas, which `cm="1"` points at) as Excel 365 writes it, and the rich
@@ -129,7 +130,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
   const rich: (keyof typeof RICH_TYPE)[] = []
   const richError = (code: keyof typeof RICH_TYPE) => (rich.includes(code) ? rich.indexOf(code) : rich.push(code) - 1) + 1
   const tables = tablesOf(book)
-  const tableNames = tables.list.map((t) => ({ name: t.name, columns: t.cols }))
+  const tableCols = tableNames(tables)
   // table parts are numbered through the book, each sheet's from rId1 of its own relationships
   let tableId = 0
   const parts = book.sheets.map((s) => (s.tables ?? []).map((t) => ({ t, id: ++tableId })))
@@ -148,7 +149,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
       mode,
       result: cells?.[i],
       richError,
-      tables: tableNames,
+      tables: tableCols,
       tableAt: (addr) => {
         const { row, col } = parseAddress(addr)
         return tableAt(tables, i, row, col)?.name
@@ -178,7 +179,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
-      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableNames, issues, t.name === filterTables[i]) })
+      files.push({ name: `xl/tables/table${id}.xml`, text: tableXml(t, book.sheets[i], id, sheetKeys, tableCols, issues, t.name === filterTables[i]) })
       contentTypes.push([`/xl/tables/table${id}.xml`, `${TYPE}.table+xml`])
     }
     if (s.notes) {
@@ -193,7 +194,7 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
   if (strings.size) {
-    const items = [...strings.keys()].map((s) => `<si><t${needsPreserve(s) ? ' xml:space="preserve"' : ''}>${escapeText(s)}</t></si>`)
+    const items = [...strings.keys()].map((s) => `<si>${textElement(s)}</si>`)
     files.push({ name: 'xl/sharedStrings.xml', text: `${HEAD}<sst xmlns="${MAIN}" count="${refs}" uniqueCount="${strings.size}">${items.join('')}</sst>` })
     contentTypes.push(['/xl/sharedStrings.xml', `${TYPE}.sharedStrings+xml`])
     wbRels.push([`${REL}/sharedStrings`, 'sharedStrings.xml'])
@@ -210,11 +211,11 @@ export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXls
     contentTypes.push(['/xl/richData/rdrichvalue.xml', 'application/vnd.ms-excel.rdrichvalue+xml'], ['/xl/richData/rdrichvaluestructure.xml', 'application/vnd.ms-excel.rdrichvaluestructure+xml'])
     wbRels.push([`${RICH_REL}/rdRichValue`, 'richData/rdrichvalue.xml'], [`${RICH_REL}/rdRichValueStructure`, 'richData/rdrichvaluestructure.xml'])
   }
-  const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${s.hidden === 'very' ? 'veryHidden' : 'hidden'}"` : ''} r:id="rId${i + 1}"/>`).join('')
+  const sheetList = book.sheets.map((s, i) => `<sheet name="${escapeAttr(s.name)}" sheetId="${i + 1}"${s.hidden ? ` state="${SHEET_STATES.get(s.hidden)}"` : ''} r:id="rId${i + 1}"/>`).join('')
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${dynamic ? ' fullCalcOnLoad="1"' : ''}${iterationAttrs(book.iteration)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableNames)}${calc}</workbook>` })
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${definedNames(book, issues, tableCols)}${calc}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

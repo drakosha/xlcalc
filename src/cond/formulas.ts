@@ -11,6 +11,7 @@ import { MAX_COLS } from '../model.js'
 import { decode } from '../structure/area.js'
 import { FUNCTIONS } from '../functions.js'
 import { sheetKey, validate, walk as walkTree, type Ast } from '../syntax.js'
+import { tableNames } from '../tables/model.js'
 import { Areas, Rng, type V } from '../values.js'
 import { Arr } from '../arrays/value.js'
 import type { Arg } from '../args.js'
@@ -18,7 +19,7 @@ import type { Arg } from '../args.js'
 /** A formula checked against the book as a cell's on sheet `s` is: its tree, or null when it does not parse or names what the book lacks. */
 export function prepare(state: EngineState, s: number, text: string): Ast | null {
   const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
-  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: state.tables.list.map((t) => ({ name: t.name, columns: t.cols })) })
+  const r = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables) })
   return r.ok ? r.ast : null
 }
 

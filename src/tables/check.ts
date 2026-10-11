@@ -3,7 +3,7 @@
  * a rectangle with a data row, one column entry per column with unique names, header cells holding the names, no
  * table over another, no merged area or array area of several cells in a table.
  */
-import type { BookInput, CellInput, TableColumn, TableInput } from '../contract.js'
+import type { BookInput, CellInput, TableColumn, TableInput, TotalsFunction } from '../contract.js'
 import { InputError, isObject, onlyKeys } from '../input.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress } from '../model.js'
@@ -13,7 +13,8 @@ import { localeBooleans } from '../locale/registry.js'
 import { nameProblem } from '../syntax.js'
 import { tableKey } from './model.js'
 
-const TOTALS = ['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom']
+/** The functions of a totals row (`TotalsFunction`), as xlsx names them. */
+export const TOTALS: readonly TotalsFunction[] = ['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom']
 
 function column(v: unknown, path: string): TableColumn {
   if (!isObject(v)) throw new InputError(path, 'expected a column such as { name: "Amount" }')
@@ -22,7 +23,7 @@ function column(v: unknown, path: string): TableColumn {
   if (v.formula !== undefined && typeof v.formula !== 'string') throw new InputError(`${path}.formula`, 'expected formula text')
   if (v.totals !== undefined) {
     const t = v.totals
-    const ok = isObject(t) && Object.keys(t).length === 1 && (TOTALS.includes(t.function as string) || typeof t.label === 'string')
+    const ok = isObject(t) && Object.keys(t).length === 1 && (TOTALS.includes(t.function as TotalsFunction) || typeof t.label === 'string')
     if (!ok) throw new InputError(`${path}.totals`, `expected { function } with one of ${TOTALS.join(', ')}, or { label }`)
   }
   return v as unknown as TableColumn

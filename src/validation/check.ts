@@ -6,10 +6,13 @@ import { overlapping } from '../layout/merges.js'
 import { checkBoolean, checkOneOf, checkString, InputError, object, onlyKeys } from '../input.js'
 import type { Rect } from '../structure/area.js'
 import { areasOf, COMPARED, twoBounds } from './rules.js'
-import type { DataValidation } from '../contract.js'
+import type { DataValidation, ValidationOperator, ValidationType } from '../contract.js'
 
-const TYPES = ['any', 'whole', 'decimal', 'date', 'time', 'textLength', 'list', 'custom']
-const OPERATORS = ['between', 'notBetween', 'equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual']
+/** The types of rules with the names an xlsx file gives them: `any` is the file's `none`. */
+export const FILE_TYPES: Readonly<Record<ValidationType, string>> = { any: 'none', whole: 'whole', decimal: 'decimal', date: 'date', time: 'time', textLength: 'textLength', list: 'list', custom: 'custom' }
+const TYPES = Object.keys(FILE_TYPES)
+/** The operators of the compared types (`COMPARED`), `between` by default. */
+export const OPERATORS: readonly ValidationOperator[] = ['between', 'notBetween', 'equal', 'notEqual', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual']
 const FIELDS = ['range', 'type', 'operator', 'formula1', 'formula2', 'allowBlank', 'dropdown', 'promptTitle', 'prompt', 'showPrompt', 'errorStyle', 'errorTitle', 'error', 'showError']
 
 /** The rules of a sheet: each well formed, none meeting another. */

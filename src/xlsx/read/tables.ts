@@ -9,13 +9,11 @@ import type { CellInput, TableColumn, TableInput, TotalsFunction } from '../../c
 import { InputError } from '../../input.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
-import { checkTables } from '../../tables/check.js'
+import { checkTables, TOTALS } from '../../tables/check.js'
 import type { Issues } from '../issues.js'
 import { parseFormula, reportFormula, type ReadFormula } from './formulas.js'
 import { attributes, element, elements } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
-
-const FUNCTIONS = new Set<TotalsFunction>(['sum', 'average', 'count', 'countNums', 'max', 'min', 'stdDev', 'var', 'custom'])
 
 /** A table part's table with its calculated column formulas as read (by column), or null when it has no name or range. */
 function tableOf(xml: string): { t: TableInput; formulas: (ReadFormula | undefined)[] } | null {
@@ -34,7 +32,8 @@ function tableOf(xml: string): { t: TableInput; formulas: (ReadFormula | undefin
     formulas.push(f)
     if (f) col.formula = f.formula
     const fn = c.totalsRowFunction as TotalsFunction | undefined
-    if (fn && fn !== ('none' as TotalsFunction) && FUNCTIONS.has(fn)) col.totals = { function: fn }
+    // `none`, the file's default, is no function
+    if (fn !== undefined && TOTALS.includes(fn)) col.totals = { function: fn }
     else if (c.totalsRowLabel !== undefined) col.totals = { label: readText(c.totalsRowLabel) }
     return col
   })

@@ -7,7 +7,7 @@
 import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
-import { checkBook, InputError, what } from '../../input.js'
+import { checkBook, InputError, ITERATION, SHEET_STATES, what } from '../../input.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
@@ -55,7 +55,8 @@ interface SheetDecl {
   hidden?: true | 'very'
 }
 
-const STATES = new Map<string | undefined, true | 'very'>([['hidden', true], ['veryHidden', 'very']])
+/** A sheet's `hidden` by its state in the file. */
+const STATES = new Map<string | undefined, true | 'very'>([...SHEET_STATES].map(([hidden, state]) => [state, hidden]))
 
 function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: Issues): NameInput[] {
   const out: NameInput[] = []
@@ -89,10 +90,11 @@ function calculation(xml: string, issues: Issues): BookInput['iteration'] {
   if (!flag(calc.iterate)) return undefined
   const out: NonNullable<BookInput['iteration']> = {}
   const count = Number(calc.iterateCount)
-  if (calc.iterateCount !== undefined && Number.isInteger(count) && count >= 1 && count <= 32_767) out.maxIterations = count
+  const [least, most] = ITERATION.maxIterations
+  if (calc.iterateCount !== undefined && Number.isInteger(count) && count >= least && count <= most) out.maxIterations = count
   else if (calc.iterateCount !== undefined) issues.add('calculation', `the maximum of iterations ${JSON.stringify(calc.iterateCount)} is not one of 1 to 32,767: the default, 100, is read`)
   const change = Number(calc.iterateDelta)
-  if (calc.iterateDelta !== undefined && change >= 0 && change <= Number.MAX_VALUE) out.maxChange = change
+  if (calc.iterateDelta !== undefined && change >= ITERATION.maxChange[0] && change <= ITERATION.maxChange[1]) out.maxChange = change
   else if (calc.iterateDelta !== undefined) issues.add('calculation', `the maximum change of iterations ${JSON.stringify(calc.iterateDelta)} is not a number from 0: the default, 0.001, is read`)
   return out
 }

@@ -5,7 +5,7 @@
  */
 
 /** Attributes of a tag up to its end, quoted values skipped whole. */
-const ATTRS = `(?:\\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?`
+export const ATTRS = `(?:\\s(?:"[^"]*"|'[^']*'|[^>"'])*?)?`
 
 export interface Element {
   /** The attribute text of the opening tag. */

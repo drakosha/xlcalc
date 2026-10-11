@@ -9,6 +9,7 @@ import type { BookInput, ConditionalFormat, DataValidation } from '../src/contra
 import { editStructure, validateFormula } from '../src/index.js'
 import { buildCondCases as buildBoth } from '../bench/coverage/cond/both.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { withFormula } from '../src/xlsx/write/conditional.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, read } from './xlsx-fixtures.js'
 
@@ -86,6 +87,52 @@ describe('conditional formats in xlsx', () => {
     expect(back.issues).toEqual([])
     expect(back.book.sheets[0].conditionalFormats).toEqual(book.sheets[0].conditionalFormats)
     expect(back.book.sheets[0].validations).toEqual(book.sheets[0].validations)
+  })
+
+  it("the writer gives a rule without a formula Excel's own where Excel computes the rule by one, and no formula field to any other", () => {
+    const at = { ranges: ['C3:D9', 'B5'] }
+    const point = { value: { type: 'min' as const }, color: '#000000' }
+    const rules: ConditionalFormat[] = [
+      { ...at, type: 'cellIs', operator: 'equal', formulas: ['1'] },
+      { ...at, type: 'containsText', text: 'a' },
+      { ...at, type: 'notContainsText', text: 'a' },
+      { ...at, type: 'beginsWith', text: 'a' },
+      { ...at, type: 'endsWith', text: 'a' },
+      { ...at, type: 'containsBlanks' },
+      { ...at, type: 'notContainsBlanks' },
+      { ...at, type: 'containsErrors' },
+      { ...at, type: 'notContainsErrors' },
+      { ...at, type: 'timePeriod', period: 'yesterday' },
+      { ...at, type: 'top10', rank: 10 },
+      { ...at, type: 'aboveAverage' },
+      { ...at, type: 'duplicateValues' },
+      { ...at, type: 'uniqueValues' },
+      { ...at, type: 'colorScale', points: [point, point] },
+      { ...at, type: 'dataBar', min: point.value, max: point.value, color: '#000000' },
+      { ...at, type: 'iconSet', icons: '3Flags', points: [point, point, point] },
+    ]
+    const written = Object.fromEntries(rules.map((r) => withFormula(r)).map((r) => [r.type, 'formula' in r ? r.formula : 'none']))
+    expect(written).toEqual({
+      cellIs: 'none',
+      containsText: 'NOT(ISERROR(SEARCH("a",B3)))',
+      notContainsText: 'ISERROR(SEARCH("a",B3))',
+      beginsWith: 'LEFT(B3,LEN("a"))="a"',
+      endsWith: 'RIGHT(B3,LEN("a"))="a"',
+      containsBlanks: 'LEN(TRIM(B3))=0',
+      notContainsBlanks: 'LEN(TRIM(B3))>0',
+      containsErrors: 'ISERROR(B3)',
+      notContainsErrors: 'NOT(ISERROR(B3))',
+      timePeriod: 'FLOOR(B3,1)=TODAY()-1',
+      top10: 'none',
+      aboveAverage: 'none',
+      duplicateValues: 'none',
+      uniqueValues: 'none',
+      colorScale: 'none',
+      dataBar: 'none',
+      iconSet: 'none',
+    })
+    // a formula of its own stays
+    expect(withFormula({ ...at, type: 'containsText', text: 'a', formula: 'TRUE' })).toEqual({ ...at, type: 'containsText', text: 'a', formula: 'TRUE' })
   })
 
   it('a rule whose formula the file cannot hold is left out and reported', async () => {

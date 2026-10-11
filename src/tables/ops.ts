@@ -9,7 +9,7 @@ import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
 import { nameRule } from '../syntax.js'
-import { meets, parseRange } from '../structure/area.js'
+import { meets, parseRange, rectCells } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { parseMerge } from '../layout/merges.js'
 import { convertedText, rewriteBookTables } from './rewrite.js'
@@ -62,7 +62,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
     // the table goes with its cells
     const out = withTable(rewriteBookTables(book, (x) => (tableKey(x.name) === key ? 'lost' : undefined)), key, null)
     const cells = { ...out.sheets[t.s].cells }
-    for (let r = t.r1; r <= t.r2; r++) for (let c = t.c1; c <= t.c2; c++) delete cells[formatAddress(r, c)]
+    for (const a of rectCells(t)) delete cells[a]
     const sheets = [...out.sheets]
     sheets[t.s] = { ...sheets[t.s], cells }
     return { ok: true, book: { ...out, sheets }, geometry: [{ kind: 'clear', s: t.s, area: { r1: t.r1, r2: t.r2, c1: t.c1, c2: t.c2 } }] }
