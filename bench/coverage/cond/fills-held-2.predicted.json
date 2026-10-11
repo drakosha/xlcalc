@@ -1,0 +1,121 @@
+{
+ "day": "2026-10-11",
+ "fills": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 C1",
+     "formula": "TRUE",
+     "type": "expression"
+    },
+    {
+     "cells": "B2 C2",
+     "formula": "TRUE",
+     "type": "expression"
+    },
+    {
+     "cells": "B3 C3",
+     "formula": "TRUE",
+     "type": "expression"
+    },
+    {
+     "cells": "B4 C4",
+     "formula": "TRUE",
+     "type": "expression"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": "#FFFFFF",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": "#FFFFFF",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": "#FFFFFF",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S B1:C1 B2:C2 B3:C3: a conditional format's fill without its colour is not in the model",
+   "conditionalFormat S B4:C4: a conditional format's fill taken away is not in the model"
+  ]
+ }
+}

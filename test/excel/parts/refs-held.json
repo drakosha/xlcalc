@@ -1,0 +1,204 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 29.1
+ },
+ "books": {
+  "notes": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1,
+       "note": {
+        "author": "Ann",
+        "text": "on A1"
+       }
+      },
+      "B2": {
+       "value": 2
+      },
+      "D4": {
+       "value": 4,
+       "note": {
+        "author": "Ann",
+        "text": "on D4"
+       }
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "zero",
+   "book": "notes",
+   "raw": [
+    {
+     "part": "xl/comments1.xml",
+     "from": "<comment ref=\"A1\" ",
+     "to": "<comment ref=\"A01\" "
+    }
+   ]
+  },
+  {
+   "id": "one-cell-range",
+   "book": "notes",
+   "raw": [
+    {
+     "part": "xl/comments1.xml",
+     "from": "<comment ref=\"A1\" ",
+     "to": "<comment ref=\"A1:A1\" "
+    }
+   ]
+  },
+  {
+   "id": "lower",
+   "book": "notes",
+   "raw": [
+    {
+     "part": "xl/comments1.xml",
+     "from": "<comment ref=\"A1\" ",
+     "to": "<comment ref=\"a1\" "
+    }
+   ]
+  },
+  {
+   "id": "dollar",
+   "book": "notes",
+   "raw": [
+    {
+     "part": "xl/comments1.xml",
+     "from": "<comment ref=\"A1\" ",
+     "to": "<comment ref=\"$A$1\" "
+    }
+   ]
+  },
+  {
+   "id": "range",
+   "book": "notes",
+   "raw": [
+    {
+     "part": "xl/comments1.xml",
+     "from": "<comment ref=\"A1\" ",
+     "to": "<comment ref=\"A1:B2\" "
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "zero": "4db70775530ea0b983cb65dc91bba44787dcec4ac2f07459e9f46fafd4ff1ca6",
+  "one-cell-range": "3be505f166fb2648652584db312695859d1727f5cc3ed10509801dff49200f9c",
+  "lower": "1f48add76581331b1beac350777a9cefbff4a5b08b7c5410f50bc9eadd9eb570",
+  "dollar": "9d0140d70f198fa4156b765060dd0415eba57e12a7a4d801c484487b20ab3cad",
+  "range": "4e12ccdaed8ea963701281fef36cabd410912faa0021c3f39005bf1463b27806"
+ },
+ "answers": {
+  "zero": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {
+      "A1": {
+       "author": "Ann",
+       "text": "on A1"
+      },
+      "D4": {
+       "author": "Ann",
+       "text": "on D4"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "one-cell-range": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {
+      "A1": {
+       "author": "Ann",
+       "text": "on A1"
+      },
+      "D4": {
+       "author": "Ann",
+       "text": "on D4"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "lower": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {
+      "A1": {
+       "author": "Ann",
+       "text": "on A1"
+      },
+      "D4": {
+       "author": "Ann",
+       "text": "on D4"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  },
+  "dollar": {
+   "sheets": [
+    {
+     "name": "S",
+     "notes": {
+      "A1": {
+       "author": "Ann",
+       "text": "on A1"
+      },
+      "D4": {
+       "author": "Ann",
+       "text": "on D4"
+      }
+     },
+     "links": [],
+     "panes": {
+      "freeze": false,
+      "splitRow": 0,
+      "splitColumn": 0,
+      "scrollRow": 1,
+      "scrollColumn": 1
+     }
+    }
+   ]
+  }
+ },
+ "rejected": {
+  "range": "Excel did not accept the book (repair window declined)"
+ }
+}

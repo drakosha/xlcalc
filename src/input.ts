@@ -205,7 +205,7 @@ export const LINES: readonly BorderLine['style'][] = ['thin', 'medium', 'thick',
 export const HORIZONTAL: readonly NonNullable<AlignmentStyle['horizontal']>[] = ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed']
 export const VERTICAL: readonly NonNullable<AlignmentStyle['vertical']>[] = ['top', 'center', 'bottom', 'justify', 'distributed']
 
-/** Whether a field of a style is given: a cell's style and a conditional one take different fields as given (`checkStyle`). */
+/** Whether a field of a style is given: an undefined one never is, as no field of input is; in a patch a null one neither (`checkStyle`). */
 export type Given = (o: Record<string, unknown>, k: string) => boolean
 
 /** A font's fields: a cell's (`named`) has a name and a size too, which a conditional style (a dxf) has not. */

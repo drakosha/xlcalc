@@ -1,0 +1,1098 @@
+{
+ "day": "2026-10-11",
+ "lower": {
+  "rules": {
+   "S": [],
+   "L": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S a1:b2: a range of a conditional format outside the sheet is left out"
+  ]
+ },
+ "dollar": {
+  "rules": {
+   "S": [
+    {
+     "cells": "A1 A2 B1 B2",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#FFC7CE"
+      }
+     },
+     "type": "expression"
+    }
+   ],
+   "L": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": "#FFC7CE",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": []
+ },
+ "mixed": {
+  "rules": {
+   "S": [],
+   "L": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S a1:B2: a range of a conditional format outside the sheet is left out"
+  ]
+ },
+ "areas": {
+  "rules": {
+   "S": [],
+   "L": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S a1:A2 C4:d5: a range of a conditional format outside the sheet is left out"
+  ]
+ },
+ "column": {
+  "rules": {
+   "S": [],
+   "L": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S c:c: a range of a conditional format outside the sheet is left out"
+  ]
+ },
+ "x14": {
+  "rules": {
+   "S": [],
+   "L": []
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D4": {
+     "text": "4",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D5": {
+     "text": "5",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "D6": {
+     "text": "6",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S a1:b2: a range of a conditional format outside the sheet is left out"
+  ]
+ }
+}

@@ -1,19 +1,19 @@
 /**
  * Conditional formats against Excel for Mac: `npx tsx bench/coverage/run.ts cond <set>` writes each book of
- * `cond/<set>.ts` with `writeXlsx`, Excel opens it in the set's locale, applies the case's operation, computes the book,
- * reads what the listed cells show by their display format and saves the book (`excel-cond.applescript`). The answers go
- * to `test/excel/cond/<set>.json` (another locale's to `cond/<tag>/`) and the saved files beside them;
+ * `cond/<set>.ts` with `writeXlsx` (changed by hand for a raw case), Excel opens it in the set's locale, applies the
+ * case's operation, computes the book, reads what the listed cells show by their display format and saves the book
+ * (`excel-cond.applescript`). The answers go to `test/excel/cond/<set>.json` (another locale's to `cond/<tag>/`) and the
+ * saved files beside them;
  * `test/cond-excel.test.ts` compares them with the engine and the reader without Excel. Cases whose rules Excel makes
  * through its object model are Windows's alone (`bench/windows/cond.ts`): Excel for Mac's `make new format condition`
  * stopped Excel. `FCOND_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
  */
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { writeXlsx } from '../../src/xlsx.js'
-import { fromRgb, type CondAnswer, type CondCase, type CondCases, type CondSet, type Look } from './cond/cases.js'
+import { condFile, fromRgb, type CondAnswer, type CondCase, type CondCases, type CondSet, type Look } from './cond/cases.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
-import { fileAnswers, runFileCases, secondsSince, setModule, takenBook } from './stored.js'
+import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { opJson } from './struct.js'
 import { caseFiles } from './xlsx/sent.js'
 
@@ -33,7 +33,7 @@ export interface StoredCond extends CondCases {
 /** The set's cases and books, and where its answers go (`test/excel/<base>cond/[<tag>/]<set>`). */
 export async function condSet(set: string): Promise<{ built: CondCases; tag: string; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
   const built = (await setModule<CondSet>('cond', set)).buildCondCases()
-  return { built, tag: built.locale ?? 'en-US', ...(await caseFiles(built.cases, async (c) => (await writeXlsx({ book: takenBook(built.books[c.book]) })).data)) }
+  return { built, tag: built.locale ?? 'en-US', ...(await caseFiles(built.cases, (c) => condFile(built, c))) }
 }
 
 type RawLook = [address: string, text: string, fill: number[], colorIndex: string, font: number[], bold: boolean, italic: boolean]

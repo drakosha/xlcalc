@@ -1,0 +1,312 @@
+{
+ "day": "2026-10-11",
+ "fills": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 C1",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "B2 C2",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "B3 C3",
+     "formula": "TRUE",
+     "type": "expression"
+    },
+    {
+     "cells": "B4 C4",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "B5 C5",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "B6 C6",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#FF0000"
+      }
+     },
+     "type": "expression"
+    },
+    {
+     "cells": "B7 C7",
+     "formula": "TRUE",
+     "type": "expression"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A2": {
+     "text": "2",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B2": {
+     "text": "2",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C2": {
+     "text": "2",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A3": {
+     "text": "3",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B3": {
+     "text": "3",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C3": {
+     "text": "3",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A4": {
+     "text": "4",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B4": {
+     "text": "4",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C4": {
+     "text": "4",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A5": {
+     "text": "5",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B5": {
+     "text": "5",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C5": {
+     "text": "5",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A6": {
+     "text": "6",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B6": {
+     "text": "6",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C6": {
+     "text": "6",
+     "fill": "#FF0000",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "A7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B7": {
+     "text": "7",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C7": {
+     "text": "7",
+     "fill": "#FFFF00",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "style S A7: a style's gradient fill is not in the model",
+   "conditionalFormat S B7:C7: a conditional format's gradient fill is not in the model"
+  ]
+ },
+ "cell-gradient-pattern": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 C1",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#0A0A02"
+      }
+     },
+     "type": "expression"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": null,
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": "#0A0A02",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#0A0A02",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "style S A1: a style's gradient fill is not in the model"
+  ]
+ },
+ "dxf-gradient-pattern": {
+  "rules": {
+   "S": [
+    {
+     "cells": "B1 C1",
+     "formula": "TRUE",
+     "style": {
+      "fill": {
+       "color": "#00B050"
+      }
+     },
+     "type": "expression"
+    }
+   ]
+  },
+  "looks": {
+   "S": {
+    "A1": {
+     "text": "1",
+     "fill": "#0A0A01",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "B1": {
+     "text": "1",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    },
+    "C1": {
+     "text": "1",
+     "fill": "#00B050",
+     "font": "#000000",
+     "bold": false,
+     "italic": false
+    }
+   }
+  },
+  "issues": [
+   "conditionalFormat S B1:C1: a conditional format's gradient fill is not in the model"
+  ]
+ }
+}

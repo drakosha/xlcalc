@@ -7,10 +7,10 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { validFile, type StoredValid } from '../bench/coverage/valid.js'
-import { bookViews, excelView, made, viewDifferences, WINDOW, type SheetView, type ValidSet } from '../bench/coverage/valid/cases.js'
+import { bookViews, excelView, made, validCaseBook, validCaseFile, viewDifferences, WINDOW, type SheetView, type ValidSet } from '../bench/coverage/valid/cases.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { editStructure } from '../src/index.js'
-import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { readXlsx } from '../src/xlsx.js'
 import './locales.js'
 
 export type ValidSetFile = StoredValid & { name: string; tag: string; dir: URL }
@@ -46,10 +46,10 @@ function loosened(views: SheetView[], loose: Loose | undefined): SheetView[] {
   }))
 }
 
-/** The engine's book after a case: the book with what Excel made, the operation applied; or its refusal. */
-function engineAfter(set: ValidSetFile, id: string) {
+/** The engine's book after a case: the book (as the reader reads a file changed by hand) with what Excel made, the operation applied; or its refusal. */
+async function engineAfter(set: ValidSetFile, id: string) {
   const c = set.cases.find((x) => x.id === id)!
-  const book = made(set.books[c.book], c.make)
+  const book = made(await validCaseBook(set, c), c.make)
   return c.op ? editStructure(book, c.op) : { ok: true as const, book }
 }
 
@@ -83,7 +83,7 @@ export function checkValidSets(sets: ValidSetFile[], pins: ValidPins, from: (nam
         expect(set.cases).toEqual(built.cases)
         expect(set.books).toEqual(built.books)
         expect(built.cases.filter((c) => !set.answers[c.id] && !set.rejected?.[c.id])).toEqual([])
-        for (const c of built.cases) expect(set.sent[c.id], `${c.id}: the writer changed since Excel saw the file`).toBe(await partsHash((await writeXlsx({ book: built.books[c.book] })).data))
+        for (const c of built.cases) expect(set.sent[c.id], `${c.id}: the writer changed since Excel saw the file`).toBe(await partsHash(await validCaseFile(built, c)))
       })
       for (const c of set.cases) {
         const key = keyOf(set, c.id)
@@ -91,8 +91,8 @@ export function checkValidSets(sets: ValidSetFile[], pins: ValidPins, from: (nam
         const a = set.answers[c.id]
         if (!a) continue
         const excel = () => loosened(a.sheets.map((s) => excelView(s, set.tag)), loose)
-        it(`${c.id}: Excel read what the engine holds`, () => {
-          const r = engineAfter(set, c.id)
+        it(`${c.id}: Excel read what the engine holds`, async () => {
+          const r = await engineAfter(set, c.id)
           if (a.error && c.op && !a.error.startsWith('make')) return void expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           const lines = r.ok ? viewDifferences(excel(), loosened(bookViews(r.book, window), loose)) : [`engine refused (${r.code}): ${r.message}`]
           expect(lines).toEqual(pins.known[key] ?? [])
