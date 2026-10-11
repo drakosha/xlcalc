@@ -4,6 +4,7 @@
  * matches values that begin with it.
  */
 import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
+import { isArea } from '../arrays/lift.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
@@ -77,7 +78,7 @@ function selected(db: Grid, field: V | undefined, criteria: Grid, rules: Rules):
  */
 function fieldOf(cx: Cx, field: V | Rng | undefined): V | undefined {
   if (!(field instanceof Rng)) return field
-  if (field.r2 > field.r1 || field.c2 > field.c1) return E.VALUE
+  if (isArea(field)) return E.VALUE
   const v = cx.scalar(field)
   return isErr(v) ? E.VALUE : v
 }

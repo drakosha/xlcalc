@@ -2,6 +2,7 @@
  * How the lookups compare, as in Excel: within a type, text in any case by the book's locale (`Compare`,
  * `Rules.compare`), blanks and errors in the data never match.
  */
+import { isArea } from '../../arrays/lift.js'
 import { wildRe } from '../../criteria.js'
 import { E, isErr, Rng, sameType, type CErr, type V } from '../../values.js'
 import type { Cx } from '../../args.js'
@@ -107,7 +108,7 @@ export function find(line: Line, k: Key, mode: number, wild: boolean, compare: C
  */
 export function indexArg(cx: Cx, x: V | Rng, range: 'index' | 'type' = 'index'): number | CErr {
   if (!(x instanceof Rng)) return cx.rules.toNum(x)
-  if (x.r2 > x.r1 || x.c2 > x.c1) {
+  if (isArea(x)) {
     if (range === 'index') return E.REF
     x = new Rng(x.s, x.r1, x.c1, x.r1, x.c1)
   }
