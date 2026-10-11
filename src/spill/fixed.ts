@@ -10,6 +10,7 @@ import type { EngineState } from '../engine.js'
 import { allot } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
+import { cellCount, rectCells } from '../structure/area.js'
 import { sheetKey } from '../syntax.js'
 import { Areas, E, Rng, type V } from '../values.js'
 
@@ -40,8 +41,8 @@ function partOf(state: EngineState, edited: Map<string, CellInput | null>): { s:
     const x = f.area
     const top = formatAddress(f.r, f.c)
     const touched: string[] = []
-    for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) if (edited.has(`${f.s}:${formatAddress(r, c)}`)) touched.push(formatAddress(r, c))
-    const all = touched.length === (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
+    for (const a of rectCells(x)) if (edited.has(`${f.s}:${a}`)) touched.push(a)
+    const all = touched.length === cellCount(x)
     const area = state.input.sheets[f.s].cells[top].array!
     const again = touched.length === 1 && touched[0] === top && edited.get(`${f.s}:${top}`)?.array === area
     if (touched.length && !all && !again) return { s: f.s, top, cell: touched[0], area }

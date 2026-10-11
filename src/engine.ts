@@ -29,7 +29,7 @@ import { newSpills, type Area, type Spills } from './spill/state.js'
 import { meets, type Rect } from './structure/area.js'
 import { arrayArea, holds } from './array-areas.js'
 import { printFormula, quoteSheet, sheetKey, validate, type Ast } from './syntax.js'
-import { specRect, tableAt, tableKey, tablesOf, type Tables } from './tables/model.js'
+import { specRect, tableAt, tableKey, tableNames, tablesOf, type Tables } from './tables/model.js'
 import { CErr, E, isErr, type V } from './values.js'
 
 export interface Formula extends FormulaCode {
@@ -163,14 +163,6 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
 }
 
 type Prepared = { ok: true; text: string; ast: Ast } | { ok: false; invalid: Invalid }
-
-/** Tables as a formula's check sees them: names and columns, made once for a book's tables. */
-const named = new WeakMap<Tables, { name: string; columns: string[] }[]>()
-function tableNames(tables: Tables) {
-  let out = named.get(tables)
-  if (!out) named.set(tables, (out = tables.list.map((t) => ({ name: t.name, columns: t.cols }))))
-  return out
-}
 
 function prepare(state: EngineState, s: number, row: number, col: number, text: string): Prepared {
   const named = (name: string, sheet: string | undefined) => nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)

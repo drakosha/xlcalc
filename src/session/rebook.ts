@@ -10,7 +10,7 @@
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { formatAddress, readAddress } from '../model.js'
-import type { Rect } from '../structure/area.js'
+import { cellCount, type Rect } from '../structure/area.js'
 import { inverse, placer, vanishing, type Geometry, type Place } from '../structure/geometry.js'
 import { sheetKey } from '../syntax.js'
 
@@ -50,7 +50,7 @@ function* carried<T>(cells: Record<string, CellInput>, s: number, place: (p: Pla
 
 /** The cells at the places of rectangles, looked up one by one; null when they hold more places than `most`. */
 function cellsAt(cells: Record<string, CellInput>, xs: Rect[], most: number): [string, CellInput][] | null {
-  if (xs.reduce((n, x) => n + (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1), 0) > most) return null
+  if (xs.reduce((n, x) => n + cellCount(x), 0) > most) return null
   const out: [string, CellInput][] = []
   for (const x of xs)
     for (let r = x.r1; r <= x.r2; r++)

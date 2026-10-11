@@ -12,7 +12,7 @@ import { InputError } from '../input.js'
 import { sheetLines, type SheetLines } from '../layout/lines.js'
 import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
 import { formatAddress, parseAddress } from '../model.js'
-import { hasCell, type Rect } from '../structure/area.js'
+import { cellCount, hasCell, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
@@ -146,7 +146,7 @@ export class Draft {
 
   /** The cells of a rectangle that hold an input, as `[row, column, address]`. */
   *stored(i: number, x: Rect): Generator<[number, number, string]> {
-    const area = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
+    const area = cellCount(x)
     if (area <= 65_536) {
       for (let r = x.r1; r <= x.r2; r++)
         for (let c = x.c1; c <= x.c2; c++) {
@@ -223,7 +223,7 @@ function lookRect(d: Draft, t: Target, look: Look) {
   const looked = (map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: number, hi: number) => spansOf(map, axis).some(([a, b, e]) => b >= lo && a <= hi && (e.style !== undefined || e.numberFormat !== undefined))
   const lined = reset && (looked(sh.rows, 'r', x.r1, x.r2) || looked(sh.columns, 'c', x.c1, x.c2))
   if (gives(look) || lined) {
-    const area = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
+    const area = cellCount(x)
     if (area > MAX_CELLS) throw new InputError('range', `a rectangle of ${area} cells: a look goes to ${MAX_CELLS} cells of a rectangle at most, or to whole columns or rows (B:D, 2:9)`)
     for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) d.set(t.i, formatAddress(r, c), lookOver(d, d.input(t.i, formatAddress(r, c)), r, c, look, ls, ls, true))
     return
