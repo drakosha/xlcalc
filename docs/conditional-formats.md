@@ -81,6 +81,14 @@ A data bar gives `appearance.bar`: where the bar starts and ends as fractions of
 
 A rule with `stopIfTrue` that holds leaves out the rules after it for that cell. A number format of the appearance shows the cell's `text` by it, as Excel's `Range.Text` does. A built-in format given by number shows by its en-US code in every locale, as Excel reads a differential format by the code it holds: `{ numberFormat: 14 }` shows `3.15.2026` in ru-RU, where a cell's own format 14 shows `15.03.2026`. An empty cell with an appearance is listed with the value null, so a grid paints a highlighted empty row; in a rectangle of more than 65,536 cells only the cells the rectangle lists get one. `compute` and `getResult()` give none.
 
+### A saved version
+
+A result holds no appearance, so `viewportOf` gives a window over a saved book and its result without one, unless `appearance: true`: then the rules are computed as a session computes them, over a state of the book whose cells hold the result's values, its formulas not computed, on the result's clock, so a time period or TODAY in a rule goes by the day the version was computed. The window is then the one `getViewport` gives in a session of the book with that clock, the appearance and the text by a rule's number format included, but where the result holds less than a session:
+
+- A result rounds a number to 15 digits: `0.1+0.2` is 0.3 there, a duplicate of 0.3 and tied with it for a top rule, where a session's full number is neither, and a rule's formula that computes with it can go otherwise; a comparison of a cell value rule takes them as equal in both.
+- A cell of the state holds a value, not a formula: SUBTOTAL and AGGREGATE in a rule's formula count a cell that holds a SUBTOTAL of its own, which they leave out in a session.
+- A result holds no external functions' values: a rule's formula that calls one gives an error, and the rule formats no cell by it.
+
 A session's edits do not list cells whose appearance changed: an edit can recolour a whole colour scale. They give the rules' rectangles as `repaint` after a value or a rule changed, and a host reads its window again where it meets them, which costs what the window holds ([Editing a grid](edits.md#what-an-edit-answers)). The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
 
 On a sheet of 34,000 rows with a formula rule over 4 columns, a three-colour scale and a data bar, a window of 20,000 cells takes about 60 ms the first time and 25 ms after (15 ms without the rules), an edit of a cell under 1 ms with the rules or without them, and the window read again after an edit that changes the data bar's numbers 35 ms, on an Apple M5 Pro.
