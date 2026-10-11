@@ -86,7 +86,7 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
   if (m && m[6] !== undefined && (next(m[0].length) === '!' || next(m[0].length) === '#')) m = CELL_RANGE.exec(rest.slice(0, rest.indexOf(':')))
   // a cell's shape past the sheet, without `$`, is a name, as Excel reads `XFE1` and `A0` (the sets `entry/names-held`,
   // `tables/paste-names-held`)
-  if (m && !IDENT_CHAR.test(next(m[0].length)) && !(m[6] === undefined && !m[1] && !m[3] && !readsAsCell(m[0]))) {
+  if (m && !IDENT_CHAR.test(next(m[0].length)) && !(m[6] === undefined && !m[1] && !m[3] && !inSheet(m[2], m[4]))) {
     const r1 = rowNo(m[4], at)
     const c1 = colNo(m[2], at)
     const two = m[6] !== undefined
@@ -122,10 +122,13 @@ function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at
 
 const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@', ':']
 
-/** Whether a word reads as a cell within a sheet of `cols` columns and `rows` rows (`S1`, not `XFE1` or `A0`). */
-export function readsAsCell(word: string, cols = MAX_COLS, rows = MAX_ROWS): boolean {
+/** Whether a column's letters and a row's digits are a cell of the sheet. */
+const inSheet = (col: string, row: string) => colToIndex(col) < MAX_COLS && Number(row) >= 1 && Number(row) <= MAX_ROWS
+
+/** Whether a word reads as a cell of the sheet (`S1`, not `XFE1` or `A0`). */
+export function readsAsCell(word: string): boolean {
   const m = CELL_NAME.exec(word)
-  return !!m && colToIndex(m[1]) < cols && Number(m[2]) >= 1 && Number(m[2]) <= rows
+  return !!m && inSheet(m[1], m[2])
 }
 
 /** Tokens that end and begin a reference: whitespace between two of them is the intersection operator. */
