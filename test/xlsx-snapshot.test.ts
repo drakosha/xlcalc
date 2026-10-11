@@ -97,6 +97,11 @@ describe('writeXlsx with a snapshot', () => {
     await expect(writeXlsx({ book, result: compute(book) }, { result: compute(book) } as never)).rejects.toThrow(/the result goes in the snapshot: writeXlsx\(\{ book, result \}\)/)
     const read = await readXlsx((await writeXlsx({ book, result: compute(book) })).data)
     await expect(writeXlsx(read as never)).rejects.toThrow(/a file read: pass \{ book: read\.book, result: read\.cached \}/)
+    // a result alone, a computation's or a session's, is no book: it takes its book beside it
+    const alone = new InputError('snapshot', 'a result is not a snapshot: pass { book, result } with the book it was computed from')
+    await expect(writeXlsx(compute(book) as never)).rejects.toThrow(alone)
+    await expect(writeXlsx(createSession(book, { clock }).getResult() as never)).rejects.toThrow(alone)
+    await expect(writeXlsx(compute(book) as never, { values: 'omit' })).rejects.toThrow(alone)
     await expect(writeXlsx({ book }, { values: 'require' })).rejects.toThrow(new InputError('snapshot.result', 'values: "require" takes the values of formulas from the result: pass { book, result }'))
     await expect(writeXlsx({ book, result: compute(book) }, { mode: 'values', values: 'omit' })).rejects.toThrow(/the values mode writes values only/)
     await expect(writeXlsx({ book }, { mode: 'values' })).rejects.toThrow(new InputError('snapshot.result', 'the values mode takes the values from the result: pass { book, result }'))

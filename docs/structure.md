@@ -8,7 +8,7 @@ The rules below were measured in Excel 16 for Mac (en-US).
 
 ```ts
 editStructure(book: BookInput, op: StructureOp): StructureResult
-session.editStructure(op: StructureOp): SessionStructureResult   // the same, plus `changes`
+session.editStructure(op: StructureOp): SessionStructureResult   // `mapCell` and what an edit answers, without the book
 
 type StructureOp =
   | { op: 'insertRows' | 'deleteRows'; sheet: string; row: number; count?: number }          // 1-based row
@@ -34,7 +34,7 @@ An operation is plain data, so an interface can store it, send it to a server an
 
 The input book is not changed. Sheets, cells and names the operation does not touch are shared with it.
 
-`mapCell` tells where a cell of the old book is now: a new address and sheet name, or `null` if the cell was deleted or overwritten. A host uses it for anything it keeps by address, such as comments, the selection or links to source rows.
+`mapCell` tells where a cell of the old book is now: a new address and sheet name, or `null` if the cell was deleted or overwritten, or if its sheet is none of the old book's (a window can hold a sheet that is gone). A host uses it for anything it keeps by address, such as comments, the selection or links to source rows.
 
 Input of the wrong shape (an unknown sheet, row 0, a malformed range, unknown fields) throws `InputError`. An operation that Excel would refuse returns `ok: false` with a message for the user:
 
@@ -242,7 +242,7 @@ The values a copy pastes come from the computed book. `session.editStructure` ta
 
 ## Sessions
 
-`session.editStructure(op)` applies the operation to the session's book and recomputes. The result is that of `editStructure`, with `book` being the session's book after the operation, plus what every edit of a session answers ([Editing a grid](edits.md#what-an-edit-answers)): `moved`, how the addresses moved, and `changes`, every cell whose value or formula text differs from those of its old cell. An interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` has the new values and formulas. An insert into a block of data lists the formulas over it, which read one row more, and no value. A refused operation changes nothing.
+`session.editStructure(op)` applies the operation to the session's book and recomputes. It answers `mapCell`, as `editStructure` does, without the book, which `getBook()` gives, and what every edit of a session answers ([Editing a grid](edits.md#what-an-edit-answers)): `moved`, how the addresses moved, and `changes`, every cell whose value or formula text differs from those of its old cell. An interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` has the new values and formulas. An insert into a block of data lists the formulas over it, which read one row more, and no value. A refused operation changes nothing.
 
 The session rebuilds its state from the new book. On the synthetic book (3,400 rows, 3,907 formulas) inserting a row in the middle of the data takes 170 ms, about as long as a cold computation of the same book, well within the 1.5 s budget. On the book of 34,000 rows (506,594 cells on the data sheet) inserting or deleting a row takes 1.3 to 1.5 s, its undo and its redo 1.4 to 1.5 s, a row copied down 2,000 rows 1.2 s and a block of 100 by 20 cells moved 1.1 s; building the state is half of it, the operation itself 0.25 s.
 
@@ -266,7 +266,7 @@ Only two of these recompute values. A merged area added or removed over an array
 
 ## How it was checked
 
-`test/structure-geometry.test.ts` checks that every kind of operation puts the cells where its `mapCell` says: each cell it keeps is at the address `mapCell` gives and nowhere else, a cell it takes away is in no other place, and the way back takes each cell to the place it came from; `test/session-geometry.test.ts` checks `moved` and `mapCell` of a filtered delete and a deleted table done, undone and redone in every kind of session. The seeded undo sessions (`test/session-undo-fuzz.test.ts`) keep a host's screen, moved by `mapCell` and given the changes, equal to the session's values.
+`test/structure-geometry.test.ts` checks that every kind of operation puts the cells where its `mapCell` says: each cell it keeps is at the address `mapCell` gives and nowhere else, a cell it takes away is in no other place, and the way back takes each cell to the place it came from; `test/session-geometry.test.ts` checks `moved` and `mapCell` of a filtered delete and a deleted table done, undone and redone in every kind of session, and `null` for a sheet `mapCell` does not know. The seeded undo sessions (`test/session-undo-fuzz.test.ts`) keep a host's screen, moved by `mapCell` and given the changes, equal to the session's values.
 
 `test/copy-formula.test.ts` checks `copyFormula` against `copyRange` on every copy of the structure sets and the table sets: each formula of the source at each place the copy pastes it, 317 and 8 of them.
 

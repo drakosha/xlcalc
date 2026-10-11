@@ -131,6 +131,10 @@ describe('editStructure', () => {
     fails({ op: 'moveRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'S', cell: 'B1' }, withMeta: true }, 'op: unknown field "withMeta" (expected op, from, to)')
     const r = ok(book(), { op: 'insertRows', sheet: 'S', row: 1 })
     expect(() => r.mapCell({ sheet: 'S', cell: 'a1' })).toThrow(InputError)
-    expect(() => r.mapCell({ sheet: 'Нет', cell: 'A1' })).toThrow('ref.sheet: unknown sheet "Нет"')
+    expect(() => r.mapCell({ sheet: 1, cell: 'A1' } as never)).toThrow('ref.sheet: expected a string, got number 1')
+    // a sheet the book does not have holds no cell of it, as a deleted cell
+    expect(r.mapCell({ sheet: 'Нет', cell: 'A1' })).toBeNull()
+    const gone = ok({ sheets: [...book().sheets, { name: 'X', cells: {} }] }, { op: 'deleteSheet', sheet: 'x' })
+    expect([gone.mapCell({ sheet: 'X', cell: 'A1' }), gone.mapCell({ sheet: 's', cell: 'A1' })]).toEqual([null, { sheet: 'S', cell: 'A1' }])
   })
 })

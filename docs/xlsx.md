@@ -192,7 +192,7 @@ const values = await writeXlsx({ book, result }, { mode: 'values' })
 const later = await writeXlsx({ book }, { values: 'omit' })
 ```
 
-A session is no snapshot: an asynchronous session is a proxy of a thread, and its book and result are taken there by `await session.getSnapshot()`. Given one, or a result of another shape, `writeXlsx` throws `InputError` saying what to pass. `writeXlsx(book, { result, mode })`, the older form, is the same call and writes the same file.
+A session is no snapshot: an asynchronous session is a proxy of a thread, and its book and result are taken there by `await session.getSnapshot()`. Given one, a result alone (`writeXlsx(compute(book))`, told by its hashes) or a result of another shape, `writeXlsx` throws `InputError` saying what to pass. `writeXlsx(book, { result, mode })`, the older form, is the same call and writes the same file.
 
 ### Formulas
 

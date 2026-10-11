@@ -11,7 +11,7 @@
 import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
-import { explainCell, explainText } from './explain.js'
+import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
 import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
@@ -46,6 +46,7 @@ import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { withOldNames } from './old-names.js'
+import { strictMethods } from './strict-args.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -428,14 +429,14 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
         const next = new Map(r.book.sheets.flatMap((x, i): [number, SheetInput][] => (x === old.input.sheets[i] ? [] : [[i, x]])))
         const [out, before] = yield* relayout(old, next, null)
         keep(() => layoutStep('editStructure', before, next))
-        return { ok: true, book: old.input, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(old, out) }
+        return { ok: true, mapCell: checkedMapCell({ geometry: [], before: old.sheetNames, after: old.sheetNames }), ...answer(old, out) }
       }
       // the simple way: the state is built again from the new book
       const before = old.sheetNames
       const [next, out, diff] = yield* rebuild(old, r.book, r.geometry, true, diffTo(r.book, old.input, r.geometry))
       keep(() => diff && bookStep('editStructure', diff, r.book))
       const moved = movesOf(r.geometry, before, next.sheetNames)
-      return { ok: true, book: next.input, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, { ...out, moved }) }
+      return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, { ...out, moved }) }
     },
     setStyles(styles: CellStyle[], eo?: EditOptions) {
       const s = st()
@@ -468,9 +469,10 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       return sheetExtent(s, checkSheet(sheet, sheetIndex(s), 'sheet'))
     },
-    *explain(sheet: string, cell: string, o: ExplainOptions = {}) {
+    *explain(sheet: string, cell: string, eo?: ExplainOptions) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
+      const o = checkExplainOptions(eo)
       const e = explainCell(s, i, row, col, { depth: o.depth ?? 3, maxNodes: o.maxNodes ?? 200, expand: o.expand ?? false, errorDepth: o.errorDepth ?? 64 })
       return { ...e, text: explainText(e.root, s.input.locale) }
     },
@@ -546,7 +548,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
   const budget = limitsBudget(checkSessionOptions(opts).limits)
   const now = <T>(steps: () => Steps<T>): T => withBudget(budget, () => run(steps()))
   const core = now(() => openSteps(book, opts))
-  return withOldNames<Session>({
+  return withOldNames<Session>(strictMethods({
     get clock() {
       return core.clock
     },
@@ -582,5 +584,5 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
       return core.history
     },
     close: () => core.close(),
-  })
+  }))
 }

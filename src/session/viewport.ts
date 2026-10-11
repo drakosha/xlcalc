@@ -1,13 +1,14 @@
 /**
  * A window over a sheet for a grid (`Session.getViewport`): the cells of a rectangle as a result gives them, each with
- * its look resolved as it shows it (`layout/lines.ts`), styles as objects, the number format as a code and where it
- * comes from, an empty cell with a style of its row or column listed too; the widths and heights of the window's lines,
- * the merged areas that meet it and where the sheet's cells end. It reads the window's cells, never the whole sheet.
+ * its look resolved as it shows it (`layout/lines.ts`), styles by index with the objects of those it shows beside, the
+ * number format as a code and where it comes from, an empty cell with a style of its row or column listed too; the
+ * widths and heights of the window's lines, the merged areas and tables that meet it, the sheet's frozen panes and where
+ * its cells end. It reads the window's cells, never the whole sheet.
  */
 import type { CellStyle, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
-import { checkBoolean, checkNumber, object, onlyKeys } from '../input.js'
+import { checkBoolean, checkNumber, object, onlyOptions } from '../input.js'
 import { issueDetail, type Place } from '../issues.js'
 import { isHiddenRow } from '../layout/hidden.js'
 import { formatSource, lookOf, sheetLines } from '../layout/lines.js'
@@ -34,7 +35,7 @@ const DEFAULT_HEIGHT = 15
 export function checkViewportOptions(v: unknown, path = 'opts'): ViewportOptions {
   if (v === undefined) return {}
   const o = object(v, path, 'options such as { formulaLocal: true, maxCells: 20000 }')
-  onlyKeys(o, path, ['formulaLocal', 'diagnostics', 'maxCells'])
+  onlyOptions(o, path, ['formulaLocal', 'diagnostics', 'maxCells'])
   if (o.formulaLocal !== undefined) checkBoolean(o.formulaLocal, `${path}.formulaLocal`)
   if (o.diagnostics !== undefined) checkBoolean(o.diagnostics, `${path}.diagnostics`)
   if (o.maxCells !== undefined) checkNumber(o.maxCells, `${path}.maxCells`, 1, MAX_COLS * 1_048_576, true)
@@ -56,12 +57,11 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
   const look = display ? cellLooks(state) : null
   const spill = yield* spilled(state, s, x, true)
   const cond = yield* windowLooks(state, s, x)
-  // a style used in the window once, as one object of the answer's own
-  const copies = new Map<number, CellStyle>()
-  const style = (i: number) => {
-    let c = copies.get(i)
-    if (!c) copies.set(i, (c = JSON.parse(JSON.stringify(state.input.styles![i])) as CellStyle))
-    return c
+  // each style the window's cells show, copied once: the answer's own
+  const styles: Record<number, CellStyle> = {}
+  const shows = (i: number) => {
+    styles[i] ??= JSON.parse(JSON.stringify(state.input.styles![i])) as CellStyle
+    return i
   }
   const builtin = builtinIn(state.input.locale)
   // formulas in the book's locale, each text once per table it stands in (a table's column is one formula)
@@ -95,8 +95,8 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
       const out = cellResult(state, s, addr, look, from, false) as ViewportCell
       if (loc && out.formula !== undefined) out.formulaLocal = local(out.formula, r, c)
       if (own?.array !== undefined) out.array = own.array
-      if (own?.style !== undefined) out.style = style(own.style)
-      if (shown.style !== undefined) out.effectiveStyle = style(shown.style)
+      if (own?.style !== undefined) out.style = own.style
+      if (shown.style !== undefined) out.effectiveStyle = shows(shown.style)
       if (shown.numberFormat !== undefined) {
         out.numberFormat = typeof shown.numberFormat === 'number' ? builtin(shown.numberFormat) : shown.numberFormat
         out.numberFormatSource = formatSource(own, row, col)
@@ -126,9 +126,12 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
     range: single ? formatAddress(x.r1, x.c1) : cornersText(x),
     truncated: x !== asked,
     cells,
+    styles,
     columns,
     rows,
     merges: (sheet.merges ?? []).filter((m) => meets(parseMerge(m)!, x)),
+    tables: state.tables.list.filter((t) => t.s === s && meets(t, x)).map((t) => ({ name: t.name, range: t.input.range, headers: t.headers, totals: t.totals })),
+    frozen: { rows: sheet.frozen?.rows ?? 0, columns: sheet.frozen?.columns ?? 0 },
     usedRange: sheetExtent(state, s),
   }
 }

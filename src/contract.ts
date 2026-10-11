@@ -424,7 +424,7 @@ export interface IconSetFormat extends ConditionalBase {
  */
 export interface ConditionalAppearance {
   /** The styles of the rules that hold, merged in their order (the first rule's field wins); a colour scale's colour is `fill`. */
-  style?: ConditionalStyle
+  style?: Answered<ConditionalStyle>
   bar?: BarLook
   icon?: Icon
   /** A data bar or an icon set hides the value: the cell shows its bar or icon alone. */
@@ -606,6 +606,29 @@ export interface BookInput {
    */
   iteration?: { maxIterations?: number; maxChange?: number }
 }
+
+/**
+ * A part of a book as an answer gives it: the input's type without the deprecated field `format`, at any depth, since
+ * a book that answers names a number format `numberFormat` alone (`meta` is the host's own and stays as it is).
+ */
+type Answered<T> = T extends readonly (infer U)[]
+  ? Answered<U>[]
+  : T extends object
+    ? { [K in keyof T as K extends 'format' ? never : K]: K extends 'meta' ? T[K] : Answered<T[K]> }
+    : T
+
+/**
+ * A book as the calls that give one answer it (`Session.getBook`, `getSnapshot`, `getLayout`, `editStructure`,
+ * `readXlsx`): `BookInput` without the deprecated `format` of cells, rows, columns and conditional formats' styles, so
+ * that reading it does not compile where it would always be undefined. A `Book` is a `BookInput`: it goes back as one.
+ */
+export type Book = Answered<BookInput>
+
+/** A sheet of a `Book`: `SheetInput` without the deprecated `format`. */
+export type Sheet = Answered<SheetInput>
+
+/** A cell of a `Book`: `CellInput` without the deprecated `format`. */
+export type Cell = Answered<CellInput>
 
 /**
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
@@ -1129,10 +1152,14 @@ export interface ViewportCell extends Partial<CellDisplay> {
   /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`). */
   array?: string
   meta?: JsonValue
-  /** The cell's own style. */
-  style?: CellStyle
-  /** The style the cell shows: its own, else its row's, else its column's. Equal styles of one window are one object. */
-  effectiveStyle?: CellStyle
+  /** The cell's own style, an index of the book's `styles` as `CellView.style`; its object is in `Viewport.styles`. */
+  style?: number
+  /**
+   * The style the cell shows, an index of the book's `styles` (its object in `Viewport.styles`): its own, else its row's,
+   * else its column's. It is always one of the table's: a cell where a styled row crosses a styled column shows the row's,
+   * as Excel shows a file's empty cell there, and the two merged are a style of the cell's own (`Session.patchCells`).
+   */
+  effectiveStyle?: number
   /** The number format the cell shows by, as a code: its own, else its row's, else its column's, a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU). */
   numberFormat?: string
   /** Where `numberFormat` comes from. */
@@ -1157,6 +1184,17 @@ export interface ViewportRow {
   hidden?: true
 }
 
+/** A table that meets a window (`Viewport.tables`): its name, its range and which of its rows are a header and totals. */
+export interface ViewportTable {
+  name: string
+  /** The whole table, its header and totals rows included (`TableInput.range`). */
+  range: string
+  /** Its first row is a header row (`TableInput.headers`, true by default). */
+  headers: boolean
+  /** Its last row is a totals row (`TableInput.totals`, false by default). */
+  totals: boolean
+}
+
 /** What a grid needs to draw a window of a sheet (`Session.getViewport`). */
 export interface Viewport {
   /** The rectangle given (`B2:D9`): the one asked for, or its first rows when it holds more than `maxCells` cells. */
@@ -1165,12 +1203,18 @@ export interface Viewport {
   truncated: boolean
   /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, an appearance of a conditional format, a note or a link too. */
   cells: Record<string, ViewportCell>
+  /** The styles the window's cells have or show (`ViewportCell.style`, `effectiveStyle`), by their index in the book's `styles`: copies, the answer's own. */
+  styles: Record<number, CellStyle>
   /** The columns of `range`, left to right. */
   columns: ViewportColumn[]
   /** The rows of `range`, top to bottom. */
   rows: ViewportRow[]
   /** The merged areas that meet `range`, whole. */
   merges: string[]
+  /** The tables that meet `range`, whole, in the sheet's order. */
+  tables: ViewportTable[]
+  /** The sheet's frozen panes (`SheetInput.frozen`): its first `rows` rows and `columns` columns stay in view, 0 for none. */
+  frozen: { rows: number; columns: number }
   /** Where the sheet's cells end, as `Session.getUsedRange`. */
   usedRange: SheetExtent
   /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
@@ -1260,8 +1304,9 @@ export interface UndoResult extends EditResult {
   /** The calls that change cells: the cells whose input changed back, so a host can read their note and link again. */
   cells?: CellRef[]
   /**
-   * `editStructure`: where a cell of the book before this call is now, null when no cell of the book has it; an interface
-   * that moves its shown values by it and applies `changes` has the new values, as after `editStructure`.
+   * `editStructure`: where a cell of the book before this call is now, null when no cell of the book has it or its sheet
+   * is none of that book's; an interface that moves its shown values by it and applies `changes` has the new values, as
+   * after `editStructure`.
    */
   mapCell?(ref: CellRef): CellRef | null
 }
@@ -1360,8 +1405,8 @@ export type StructureResult =
   | {
       ok: true
       /** The new book; the input book is not changed, unchanged sheets and cells are shared. */
-      book: BookInput
-      /** Where a cell of the old book is now; null if it was deleted or overwritten. */
+      book: Book
+      /** Where a cell of the old book is now; null if it was deleted or overwritten, or its sheet is none of the old book's. */
       mapCell(ref: CellRef): CellRef | null
     }
   /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
@@ -1371,16 +1416,16 @@ export type StructureResult =
 export type RestructureResult = StructureResult
 
 /**
- * `Session.editStructure`: the operation's result and the edit's. `changes` are the cells whose value or formula differs
- * from those of the cell that was at their old place (`mapCell`), by new address, a cell no old cell came to counting as
- * empty before; with `display`, the cells whose shown text or colour differs too. An interface that moves its shown
- * cells by `moved` (or `mapCell`) and applies these has the new ones.
+ * `Session.editStructure`: the edit's result and where the cells went, without the book (`getBook()` gives it), in
+ * every kind of session. `changes` are the cells whose value or formula differs from those of the cell that was at
+ * their old place (`mapCell`), by new address, a cell no old cell came to counting as empty before; with `display`, the
+ * cells whose shown text or colour differs too. An interface that moves its shown cells by `moved` (or `mapCell`) and
+ * applies these has the new ones.
  */
 export type SessionStructureResult =
   | (EditResult & {
       ok: true
-      /** The session's book after the operation (as `getBook()` returns it). */
-      book: BookInput
+      /** Where a cell of the book before the operation is now; null if it was deleted or overwritten, or its sheet is none of that book's. */
       mapCell(ref: CellRef): CellRef | null
     })
   | Refusal<StructureRefusal>
@@ -1479,14 +1524,14 @@ export interface SheetExtent {
 }
 
 /** A sheet without its cells (`Session.getLayout`). */
-export type SheetLayout = Omit<SheetInput, 'cells'>
+export type SheetLayout = Omit<Sheet, 'cells'>
 
 /** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
-export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
+export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
 
 /** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
 export interface BookSnapshot {
-  book: BookInput
+  book: Book
   result: ComputeResult
 }
 
@@ -1558,7 +1603,7 @@ export interface Session {
    * The session's book with every change so far: what a host saves as a version. Its objects are the
    * session's own and later calls change them, so do not modify it; serialize or copy what must stay.
    */
-  getBook(): BookInput
+  getBook(): Book
   /**
    * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
    * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
@@ -1585,8 +1630,8 @@ export interface Session {
   getCells(sheet: string, range: string | string[]): Record<string, CellView>
   /**
    * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
-   * empty ones with a style of their row or column too, the widths and heights of its lines and the merged areas that meet
-   * it (`Viewport`). It costs what the window holds, as `getCells`, not the book.
+   * empty ones with a style of their row or column too, the widths and heights of its lines, the merged areas and tables
+   * that meet it and the sheet's frozen panes (`Viewport`). It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
   /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
@@ -1617,7 +1662,7 @@ export interface Session {
   /** @deprecated The name is `editStructure`. */
   restructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
   /** @deprecated The name is `getBook`. */
-  book(): BookInput
+  book(): Book
   /** @deprecated The name is `getLayout`. */
   layout(): BookLayout
   /** @deprecated The name is `getUsedRange`. */
@@ -1676,8 +1721,8 @@ export type AsyncComputeOptions = ComputeOptions & CalcOptions
 /** `signal` and `timeoutMs` bound the opening (the first computation of the book). */
 export type AsyncSessionOptions = SessionOptions & CalcOptions
 
-/** `AsyncSession.editStructure`: as `SessionStructureResult`, without the book (`AsyncSession.getBook()` gives it). */
-export type AsyncStructureResult = (EditResult & { ok: true; mapCell(ref: CellRef): CellRef | null }) | Refusal<StructureRefusal>
+/** `AsyncSession.editStructure`: the same answer as `Session.editStructure`'s. */
+export type AsyncStructureResult = SessionStructureResult
 
 /** @deprecated The name is `AsyncStructureResult`. */
 export type AsyncRestructureResult = AsyncStructureResult
@@ -1706,14 +1751,14 @@ export interface AsyncSession {
   setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
   setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
   /** The session's book; from a thread, a copy. */
-  getBook(): Promise<BookInput>
+  getBook(): Promise<Book>
   /** As `Session.getLayout`; from a thread, a copy, without the cells. */
   getLayout(): Promise<BookLayout>
   getUsedRange(sheet: string): Promise<SheetExtent>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
   /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
   getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
-  /** As `Session.getViewport`; from a thread the window comes back in one call, its equal styles still one object each. */
+  /** As `Session.getViewport`; from a thread the window comes back in one call. */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
   getCellIssue(sheet: string, cell: string): Promise<CellIssueDetail | null>
   getValidation(sheet: string, cell: string): Promise<CellValidation | null>
@@ -1731,7 +1776,7 @@ export interface AsyncSession {
   /** @deprecated The name is `editStructure`. */
   restructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
   /** @deprecated The name is `getBook`. */
-  book(): Promise<BookInput>
+  book(): Promise<Book>
   /** @deprecated The name is `getLayout`. */
   layout(): Promise<BookLayout>
   /** @deprecated The name is `getUsedRange`. */

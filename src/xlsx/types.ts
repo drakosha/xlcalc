@@ -1,5 +1,5 @@
 /** The types of the `./xlsx` subpath: reading an xlsx file into a book and writing a book with its values. */
-import type { BookInput, CellResult, ComputeResult } from '../contract.js'
+import type { Book, BookInput, CellResult, ComputeResult } from '../contract.js'
 
 /**
  * What the book cannot hold of a file, or what writing changed. The codes:
@@ -113,7 +113,7 @@ export type XlsxCachedCell = Pick<CellResult, 'value' | 'spill' | 'spillOf'>
 /** A file read into a book. */
 export interface XlsxRead {
   /** The book, as the engine takes it. */
-  book: BookInput
+  book: Book
   /** The values the file stores for formulas and the cells their arrays spilled into, to compare with the engine's result. */
   cached: XlsxCached
   issues: XlsxIssue[]

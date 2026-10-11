@@ -3,16 +3,39 @@
  * (cells, rows, columns, conditional formats' styles, edits of them, `displayValue`, `entryWidth`, `parseEntry`'s cell)
  * takes either name and answers by the new one alone; both given are one value, else an `InputError`. A book hashes as
  * before whichever name it gives (`inputHash`), on the synthetic book and on one with formats of cells, rows, columns
- * and conditional formats. In the three kinds of session, with closures and eval.
+ * and conditional formats. A book an answer gives (`Book`) has no old name, and its type none to read. In the three
+ * kinds of session, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createSession, displayValue, entryWidth, InputError, parseEntry, type BookInput } from '../src/index.js'
+import { compute, createSession, displayValue, editStructure, entryWidth, InputError, parseEntry, type Book, type BookInput, type BookLayout } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 afterAll(closeCalcs)
+
+/**
+ * A book an answer gave has no `format` on its cells, rows, columns or conditional formats' styles, and its type
+ * (`Book`) has none either: reading the old name does not compile (`npm run typecheck`), where it would be undefined.
+ */
+function noOldName(book: Book | BookLayout) {
+  const sheet = book.sheets[0]
+  const parts: object[] = [...Object.values('cells' in sheet ? sheet.cells : {}), ...Object.values(sheet.rows ?? {}), ...Object.values(sheet.columns ?? {})]
+  for (const cf of sheet.conditionalFormats ?? []) if ('style' in cf && cf.style) parts.push(cf.style)
+  expect(parts.filter((x) => 'format' in x)).toEqual([])
+  expect(sheet.rows?.[3]?.numberFormat).toBeDefined()
+  // @ts-expect-error a row names its number format numberFormat alone
+  expect(sheet.rows?.[3]?.format).toBeUndefined()
+  // @ts-expect-error so does a column
+  expect(sheet.columns?.B?.format).toBeUndefined()
+  const cf = sheet.conditionalFormats?.[0]
+  // @ts-expect-error and a conditional format's style
+  if (cf?.type === 'cellIs') expect(cf.style?.format).toBeUndefined()
+  if (!('cells' in sheet)) return
+  // @ts-expect-error and a cell
+  expect(sheet.cells.A1.format).toBeUndefined()
+}
 
 /** A book with number formats of cells, rows, columns and a conditional format, by the field's name `key`. */
 const formatted = (key: 'numberFormat' | 'format'): BookInput => ({
@@ -74,6 +97,16 @@ describe('the number format by either name outside a session', () => {
     expect(old).toEqual(now)
     expect([old.sheets[0].cells.A1, old.sheets[0].rows]).toEqual([{ value: 1, numberFormat: 2 }, { 3: { height: 20, numberFormat: 3 } }])
   })
+
+  it("the books readXlsx and editStructure answer are Books: no old name, in the type either; a Book goes back as a book's input", async () => {
+    const book = formatted('format')
+    const read = (await readXlsx((await writeXlsx({ book, result: compute(book, { clock: CLOCK }) })).data)).book
+    noOldName(read)
+    const moved = editStructure(book, { op: 'insertColumns', sheet: 'S', column: 'Z' })
+    if (!moved.ok) throw new Error(moved.message)
+    noOldName(moved.book)
+    expect(compute(moved.book, { clock: CLOCK }).inputHash).toBe(compute(book, { clock: CLOCK }).inputHash)
+  })
 })
 
 describe.each(['closures', 'eval'] as const)('the number format by either name in sessions, %s', (execution) => {
@@ -96,6 +129,18 @@ describe.each(['closures', 'eval'] as const)('the number format by either name i
       await expect(Promise.resolve().then(() => s.setCells([{ sheet: 'S', cell: 'C1', input: { numberFormat: '0', format: null } }]))).rejects.toThrow('edits[0].input.format: the number format is numberFormat, and format its old name: given both, they differ')
       await expect(Promise.resolve().then(() => s.setLayout([{ sheet: 'S', columns: 'B', set: { numberFormat: '0', format: '0.0' } }]))).rejects.toThrow(InputError)
       expect((await s.getResult()).inputHash).toBe(compute(await s.getBook(), { clock: CLOCK }).inputHash)
+      await s.close()
+    })
+
+    it('the books it answers are Books: getBook, getSnapshot and getLayout, a cell\'s appearance too', async () => {
+      const s = await (await opener(kind))(formatted('format'), { clock: CLOCK, execution })
+      noOldName(await s.getBook())
+      noOldName((await s.getSnapshot()).book)
+      noOldName(await s.getLayout())
+      const look = (await s.getCells('S', 'A2')).A2.appearance?.style
+      expect(look).toEqual({ font: { bold: true }, numberFormat: '0.0' })
+      // @ts-expect-error a conditional format's appearance names its number format numberFormat alone
+      expect(look?.format).toBeUndefined()
       await s.close()
     })
   })

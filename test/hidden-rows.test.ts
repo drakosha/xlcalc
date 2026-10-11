@@ -115,7 +115,7 @@ describe('structure operations on a filtered sheet', () => {
     const session = createSession(filtered(), { clock })
     session.setCells([{ sheet: 'S', cell: 'A3', input: { value: 7 } }])
     const s = session.editStructure(op)
-    expect(s.ok && s.book.sheets[1].cells.B2).toEqual({ value: 70 })
+    expect(s.ok && session.getBook().sheets[1].cells.B2).toEqual({ value: 70 })
     session.close()
   })
 

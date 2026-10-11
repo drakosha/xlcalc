@@ -10,6 +10,7 @@ import { callBudget, drive } from './drive.js'
 import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
 import { withOldNames } from '../old-names.js'
+import { strictMethods } from '../strict-args.js'
 
 /** What a calculator gives its sessions. */
 export interface InlineDefaults {
@@ -96,7 +97,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     }
   }
   const plain = <T>(f: () => T): Promise<T> => turn(async () => after(f()))
-  return withOldNames<InlineSession>({
+  return withOldNames<InlineSession>(strictMethods({
     get clock() {
       return { ...clock }
     },
@@ -114,13 +115,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
     previewCellText: (sheet, cell, text, co) => edit((eo) => core.previewCellText(sheet, cell, text, eo), co, ['widen']),
     setNames: (names, co) => edit((eo) => core.setNames(names, eo), co),
     setClock: (next, co) => edit((eo) => core.setClock(next, eo), co),
-    editStructure: (op, co) =>
-      edit(function* (eo) {
-        const r = yield* core.editStructure(op, eo)
-        if (!r.ok) return r
-        const { book: _, ...rest } = r
-        return rest
-      }, co),
+    editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co),
     // eslint-disable-next-line require-yield
     setStyles: (styles, co) => edit(function* (eo) {
       return core.setStyles(styles, eo)
@@ -154,5 +149,5 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       if (running) running.halted = why
       core.close()
     },
-  })
+  }, true))
 }

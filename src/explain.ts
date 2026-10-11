@@ -1,6 +1,7 @@
 /** `explain`: where a cell's value comes from, as a tree of its precedents and as indented text in the book's locale. */
-import type { CellValue } from './contract.js'
+import type { CellValue, ExplainOptions } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
+import { object, onlyOptions } from './input.js'
 import { errorOrigin, errorStep, placeText, type Place } from './issues.js'
 import { toLocal } from './locale/index.js'
 import { say, type Message } from './locale/messages.js'
@@ -9,6 +10,13 @@ import { formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { ownerOf } from './spill/place.js'
 import { quoteSheet } from './syntax.js'
 import { isErr, type Rng } from './values.js'
+
+/** `explain`'s options, checked: an unknown one is refused, as another call's with the call that takes it. */
+export function checkExplainOptions(v: unknown, path = 'opts'): ExplainOptions {
+  if (v === undefined) return {}
+  onlyOptions(object(v, path, 'options such as { depth: 3, maxNodes: 200 }'), path, ['depth', 'maxNodes', 'expand', 'errorDepth'])
+  return v as ExplainOptions
+}
 
 /** Reference text for `explain` and reasons: `'Sheet'!B3`, `'Sheet'!D:D`, `'Sheet'!A1:C9`. */
 export function rngText(sheetNames: string[], g: Rng): string {

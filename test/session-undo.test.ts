@@ -188,7 +188,8 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(u.mapCell!({ sheet: 'S', cell: 'A4' })).toEqual({ sheet: 'S', cell: 'A2' })
     expect(u.mapCell!({ sheet: 'S', cell: 'A3' })).toBeNull()
     expect(u.mapCell!({ sheet: 'r', cell: 'A3' })).toEqual({ sheet: 'R', cell: 'A3' })
-    expect(() => u.mapCell!({ sheet: 'Nope', cell: 'A1' })).toThrow(InputError)
+    expect(u.mapCell!({ sheet: 'Nope', cell: 'A1' })).toBeNull()
+    expect(() => u.mapCell!({ sheet: 'S', cell: 'A0' })).toThrow(InputError)
     // C2 of the inserted rows comes from no cell: the spill's value is listed, and the formulas over the rows with their text
     expect(u.changes).toEqual([
       { sheet: 'S', cell: 'B1', value: 12, text: '12', formula: 'SUM(A1:A3)*rate' },
