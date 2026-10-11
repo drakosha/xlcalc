@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.19.0 (2026-10-11)
+
+Internal release; not published to npm. The old names of the API are gone, so that what our applications forget to move fails at once; a paste and an entry into a selection as Excel takes them; a saved version's conditional formats; structure operations faster. Values and hashes are as in 0.18.0.
+
+Breaking changes (each a line of `docs/migration.md`, which now says what an old name gives):
+
+- The names 0.17 renamed are removed, no longer synonyms: `openSession`, `restructure` (the function and a session's method), a session's `book()`, `layout()`, `extent()`, `cells()`, `validation()`, `result()`, `hash()` (calling one is a `TypeError`; the names are `createSession`, `editStructure`, `getBook()` and the rest), a calculator's `openSession`, the object `engine`, `fromLegacy` from the root (it is in `xlcalc/xlsx`), `writeXlsx(book, { result })` (it takes `{ book, result }`), the types `RestructureResult` and its kin, `ConditionalLook`, `FormulaEngine`.
+- Input takes the number format as `numberFormat` alone: `format` in a cell, a row or a column, a patch, a layout edit, `parseEntry`'s cell, `displayValue` or `entryWidth` is an `InputError` that names `numberFormat`.
+- `viewportOf` takes a snapshot of the current shape (`BookSnapshot`); results saved under the old field names are not read.
+
+Added:
+
+- `Session.pasteText(sheet, cell, text)` and `previewPasteText`, with `parseClipboard(text)` (also in `xlcalc/text`): clipboard text pasted as Excel pastes it, measured in Excel for Mac and Windows. Each value reads as typed, but the paste widens no column, checks no rule of data validation, keeps an apostrophe in the text (`'007`), pastes a formula Excel does not read as text, has no percent editor in a percent cell (`5` is 500 %), and fills the clipboard's rectangle, a short row clearing its missing cells.
+- `Session.fillCellText(sheet, range, text)` and `previewFillCellText`, an entry into a selection (Control+Return in Excel): the text read once in the active cell, its formula moved into each cell as a copy moves it, the active cell's number format and rule of data validation, a column widened as typing widens it.
+- `viewportOf(snapshot, sheet, range, { appearance: true })`: what the version's conditional formats give its cells, computed over the saved values at the version's clock without computing the book's formulas, cached per snapshot (the first window of the 34,000-row book about 0.16 s more).
+
+Changed:
+
+- After a structure operation one pass over the cells serves the comparison with each cell's old place and the history: inserting or deleting a row on the 34,000-row book takes 1.05 s (1.29 s before), 0.24 to 0.33 s less with the values shown, undoing the deletion of a large sheet about 0.27 s less. Every answer is as before.
+
+Fixed:
+
+- The text an old-kind array formula's cell opens with for editing (`editText`) is the array's formula in every cell of its area, as Excel opens it (it was empty but in the top-left cell).
+- Many cells written into one column in one call were quadratic (each cell sorted the column again): 40,000 cells took 8 s, now 0.2 s.
+
+Known differences (README): a pasted or entered formula over a date takes the date's format in Excel; Excel for Mac's short date in en-US is `m/d/yy`. A saved version's appearance differs from a session's where a rule reads digits past the 15 a result keeps, a `SUBTOTAL` over a cell with its own `SUBTOTAL`, or a function the host adds.
+
+Excel harnesses: a step `ui` reads the formula bar and pastes and enters text on the keyboard; the Windows answers of `struct/edge-wide` are recorded again (the engine now matches them) and `probe.ps1` is gone.
+
 ## 0.18.0 (2026-10-11)
 
 Internal release; not published to npm. What our applications still wrote themselves over 0.17, added: a window over a saved version without a session, typing into many cells at once, helpers for styles, lines and formula text without a session, and `xlcalc/text` for a browser without the engine. Repeated logic of the engine and the Excel harnesses is in shared helpers. Values, hashes and the files written are as in 0.17.0; nothing that worked is called otherwise.
