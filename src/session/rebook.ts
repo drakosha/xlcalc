@@ -142,6 +142,8 @@ export function* bookDiff(pass: DiffPass, g: Geometry): Steps<BookDiff> {
   const back = placer(away)
   const movers = pass.moving.flatMap((m, i) => (m ? [i] : []))
   const moving = new Set(movers)
+  // the cells of `current`, which the session's state built from it takes as its own and changes
+  const live = new Set(current.sheets.map((s) => s.cells))
   const sheets: BookDiff['sheets'] = []
   for (let j = 0; j < other.sheets.length; j++) {
     const [o, d] = [other.sheets[j], pass.back[j]]
@@ -150,9 +152,9 @@ export function* bookDiff(pass: DiffPass, g: Geometry): Steps<BookDiff> {
       continue
     }
     const { cells: _, ...rest } = o
-    // a sheet no cell came to (a deleted one) keeps its cells as they are, shared
+    // a sheet no cell came to (a deleted one) keeps its cells as they are, shared; a copy of those `current` has too
     if (!d.kept && !d.held && !Object.keys(d.put).length) {
-      sheets.push({ rest, put: o.cells })
+      sheets.push({ rest, put: live.has(o.cells) ? { ...o.cells } : o.cells })
       continue
     }
     // its cells: those the pass met, and those at the places taken nowhere looked up; past `GONE` of these, counted
@@ -182,7 +184,8 @@ export function* bookDiff(pass: DiffPass, g: Geometry): Steps<BookDiff> {
 
 /**
  * The other book, from the current one (as it was when the diff was taken) and the diff. A sheet no cell comes back to
- * (a deleted one) takes the diff's cells as they are, not a copy: a session's state takes its own copy of a book.
+ * (a deleted one) takes the diff's cells as they are, not a copy: a session's state built from the book takes them as
+ * its own, unless a host was given them, and the step that held them is taken off the history.
  */
 export function* applyDiff(current: BookInput, d: BookDiff): Steps<BookInput> {
   const place = placer(d.geometry)

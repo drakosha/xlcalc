@@ -119,6 +119,19 @@ function invert(m: Move): Move {
 export const inverse = (g: Geometry): Geometry => g.map(invert).reverse()
 
 /**
+ * Whether no cell of the book before the geometry comes to sheet `s` of the book after it, a sheet it inserted (or put
+ * back): the way back deletes the sheet before a range takes any of its cells off it.
+ */
+export function newSheet(g: Geometry, s: number): boolean {
+  const p: Place = { s, r: 0, c: 0 }
+  for (const m of inverse(g)) {
+    if (m.kind === 'range' && m.from === p.s) return false
+    if ((m.kind === 'insertSheet' || m.kind === 'deleteSheet' || m.kind === 'moveSheet') && !mover(m)(p)) return true
+  }
+  return false
+}
+
+/**
  * The rectangles of sheet `s` whose cells the geometry takes nowhere (rows deleted, cells landed on or pasted over),
  * for a geometry of one move of cells; null for another (no move, sheets, several moves one after another).
  */

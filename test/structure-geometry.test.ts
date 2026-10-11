@@ -1,13 +1,13 @@
 /**
  * The geometry of structure operations (`structure/geometry.ts`) against where the operations put the cells: every cell
  * of the old book the operation keeps as it was is in the new book where `mapCell` says, and no other; the inverse takes
- * back every place the geometry brings a cell to and nothing else; how addresses moved (`movesOf`) for each kind of
- * move. And the cells of a sheet read once for an operation (`structure/grid.ts`).
+ * back every place the geometry brings a cell to and nothing else; a sheet no cell comes to (`newSheet`); how addresses
+ * moved (`movesOf`) for each kind of move. And the cells of a sheet read once for an operation (`structure/grid.ts`).
  */
 import { describe, expect, it } from 'vitest'
 import { editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { formatAddress, readAddress } from '../src/model.js'
-import { inverse, movesOf, placer, type Place } from '../src/structure/geometry.js'
+import { inverse, movesOf, newSheet, placer, type Geometry, type Place } from '../src/structure/geometry.js'
 import { cellsIn, gridOf, withGrids } from '../src/structure/grid.js'
 import { applyOp, namesOf } from '../src/structure/index.js'
 
@@ -103,6 +103,30 @@ describe('the geometry of each operation is where it puts the cells', () => {
           if (!back(p) || p.r >= 40 || p.c >= 10) continue
           expect(reached.has(key(q)), key(q)).toBe(true)
         }
+  })
+})
+
+describe('a sheet no cell comes to', () => {
+  it.each(OPS)('%s, and back: none of its places comes from a cell', (_, op, filtered) => {
+    const b = book(filtered)
+    const r = applyOp(b, op, () => [])
+    if (!r.ok) throw new Error(r.message)
+    for (const [g, after] of [[r.geometry, r.book], [inverse(r.geometry), b]] as const) {
+      const back = placer(inverse(g))
+      after.sheets.forEach((_, s) => {
+        let came = false
+        for (let row = 0; row < 40 && !came; row++) for (let col = 0; col < 10 && !came; col++) came = back({ s, r: row, c: col })
+        expect(newSheet(g, s), `${s}`).toBe(!came)
+      })
+    }
+  })
+
+  it('a sheet inserted, and one a range then lands on, which is not new', () => {
+    const inserted: Geometry = [{ kind: 'insertSheet', at: 1 }]
+    expect([0, 1, 2].map((s) => newSheet(inserted, s))).toEqual([false, true, false])
+    const landed: Geometry = [...inserted, { kind: 'range', from: 0, src: { r1: 0, c1: 0, r2: 1, c2: 1 }, to: 1, dr: 0, dc: 0 }]
+    expect(newSheet(landed, 1)).toBe(false)
+    expect(newSheet([{ kind: 'insertSheet', at: 0 }, { kind: 'moveSheet', s: 0, at: 2 }], 2)).toBe(true)
   })
 })
 
