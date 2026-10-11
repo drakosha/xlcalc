@@ -57,9 +57,10 @@ export function rewriteValidations(rules: DataValidation[] | undefined, host: st
 
 /**
  * The rules of `sheet` after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0) along `axis`; `t` the
- * operation's transform. A range follows the references' rules (`insertSpan`, `deleteSpan`): it grows with lines inserted
- * after its first line, moves with lines inserted at or before it, and leaves the sheet's end in place; and it takes in
- * the lines inserted right after it, which take the rules of the line before them (the set `struct-held`).
+ * operation's transform. A range follows the references' rules for ranges (`insertSpan`, `deleteSpan`): it grows with
+ * lines inserted after its first line, moves with lines inserted at or before it, and leaves the sheet's end in place, a
+ * range of one cell too (the set `edge-held`: B1048576 is B1048575:B1048576 after a row above is deleted); and it takes
+ * in the lines inserted right after it, which take the rules of the line before them (the set `struct-held`).
  */
 export function shiftValidations(rules: DataValidation[] | undefined, sheet: string, axis: Axis, at: number, n: number, t: Transform, sheets: Map<string, string>): DataValidation[] | undefined {
   if (!rules) return rules
@@ -73,7 +74,7 @@ export function shiftValidations(rules: DataValidation[] | undefined, sheet: str
       const hi = axis === 'r' ? x.r2 : x.c2
       const one = lo === hi && (axis === 'r' ? x.c1 === x.c2 : x.r1 === x.r2)
       // a range whose last line is the one before the inserted lines takes them in, as their cells take that line's look
-      const s = n > 0 && hi === at - 1 ? [lo, Math.min(hi + count, LIMIT[axis] - 1)] : (n > 0 ? insertSpan : deleteSpan)(lo, hi, at, count, LIMIT[axis], one)
+      const s = n > 0 ? (hi === at - 1 ? [lo, Math.min(hi + count, LIMIT[axis] - 1)] : insertSpan(lo, hi, at, count, LIMIT[axis], one)) : deleteSpan(lo, hi, at, count, LIMIT[axis], false)
       return s ? [axis === 'r' ? { ...x, r1: s[0], r2: s[1] } : { ...x, c1: s[0], c2: s[1] }] : []
     })
     const first = areas[0]

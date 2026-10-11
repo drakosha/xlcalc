@@ -101,7 +101,7 @@ export function fitColumns(book: BookInput, result: ComputeResult, sheet: string
 }
 
 /**
- * The width Excel gives a column as `value`, shown by `opts.format`, is typed into one of its cells (`test/excel/fit/`):
+ * The width Excel gives a column as `value`, shown by `opts.numberFormat`, is typed into one of its cells (`test/excel/fit/`):
  * a number AutoFit would give more room widens a column whose width is the default or one Excel fitted (`bestFit`), as
  * AutoFit fits it, though the default width (Excel keeps a fitted width that equals it); undefined when the column keeps
  * its width (text overflows, General drops decimals, a width set by hand stays, a column never narrows).

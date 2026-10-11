@@ -27,7 +27,6 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:fuzz:1#947': { reason: 'textDigits', engine: { t: 's', v: "0.00803735952120296" } },
   'en-US:fuzz:1#1327': { reason: 'textDigits', engine: { t: 's', v: "0.1963093102686" } },
   'en-US:fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: "2048.47532711546" } },
-  'en-US:let:let:file#1': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'en-US:let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'en-US:matheng:IMTAN#9': { reason: 'winMath', engine: { t: 's', v: "-3.38051500624658" } },
   'en-US:matheng:IMCOS#16': { reason: 'winMath', engine: { t: 's', v: "-0.293388403555673" } },

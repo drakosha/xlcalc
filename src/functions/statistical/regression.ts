@@ -36,23 +36,23 @@ function forecast(x: number, gy: Grid, gx: Grid): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  CORREL: { args: 'G G', fn: correl },
-  'COVARIANCE.P': { args: 'G G', fn: on((f) => covariance(f, f.n)) },
-  'COVARIANCE.S': { args: 'G G', fn: on((f) => (f.n < 2 ? E.DIV0 : covariance(f, f.n - 1))) },
-  FORECAST: { args: 'n G G', fn: forecast },
-  'FORECAST.LINEAR': { args: 'n G G', fn: forecast },
+  CORREL: { args: 'C C', fn: correl },
+  'COVARIANCE.P': { args: 'C C', fn: on((f) => covariance(f, f.n)) },
+  'COVARIANCE.S': { args: 'C C', fn: on((f) => (f.n < 2 ? E.DIV0 : covariance(f, f.n - 1))) },
+  FORECAST: { args: 'n C C', fn: forecast },
+  'FORECAST.LINEAR': { args: 'n C C', fn: forecast },
   INTERCEPT: {
-    args: 'G G',
+    args: 'C C',
     fn: on((f) => prediction(f, 0) ?? E.DIV0),
   },
-  PEARSON: { args: 'G G', fn: correl },
+  PEARSON: { args: 'C C', fn: correl },
   RSQ: {
-    args: 'G G',
+    args: 'C C',
     fn: (a: Grid, b: Grid) => {
       const r = correl(a, b)
       return typeof r === 'number' ? r * r : r
     },
   },
-  SLOPE: { args: 'G G', fn: on(slope) },
-  STEYX: { args: 'G G', fn: on((f) => (f.n < 3 ? E.DIV0 : residualDeviation(f) ?? E.DIV0)) },
+  SLOPE: { args: 'C C', fn: on(slope) },
+  STEYX: { args: 'C C', fn: on((f) => (f.n < 3 ? E.DIV0 : residualDeviation(f) ?? E.DIV0)) },
 }

@@ -1,0 +1,182 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.69,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "SUMX2MY2#1",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A1,D!A7)"
+  },
+  {
+   "id": "SUMX2MY2#2",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A7,D!A1)"
+  },
+  {
+   "id": "SUMX2MY2#3",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!K1:K2,D!A1)"
+  },
+  {
+   "id": "CORREL#1",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(D!A1,D!A8)"
+  },
+  {
+   "id": "SUMPRODUCT#1",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A1,D!A7)"
+  },
+  {
+   "id": "SUMPRODUCT#2",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A7,D!A1)"
+  },
+  {
+   "id": "SUMPRODUCT#3",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!B1:B2,D!B1:B3,D!A7)"
+  },
+  {
+   "id": "SUMPRODUCT#4",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!B1:B3,D!E1:E8)"
+  },
+  {
+   "id": "SUMPRODUCT#5",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!E1:E8,D!I13:I17)"
+  },
+  {
+   "id": "SUMPRODUCT#6",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A1)"
+  },
+  {
+   "id": "SUMPRODUCT#7",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A1,D!A1)"
+  },
+  {
+   "id": "SUMPRODUCT#8",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A1:A1,D!B1)"
+  },
+  {
+   "id": "SUMPRODUCT#9",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A1,{1})"
+  },
+  {
+   "id": "SUMPRODUCT#10",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT({1,2},D!A1)"
+  },
+  {
+   "id": "SUMPRODUCT#11",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!K1:K2,D!B1:B2)"
+  },
+  {
+   "id": "SUMPRODUCT#12",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A12,D!B1:B2)"
+  },
+  {
+   "id": "SUMPRODUCT#13",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A13,D!B1)"
+  }
+ ],
+ "values": {
+  "SUMX2MY2#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMX2MY2#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#3": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CORREL#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#1": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMPRODUCT#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMPRODUCT#4": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMPRODUCT#5": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMPRODUCT#6": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#7": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#8": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#9": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#10": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#11": {
+   "t": "n",
+   "v": 0
+  },
+  "SUMPRODUCT#12": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "SUMPRODUCT#13": {
+   "t": "n",
+   "v": 0
+  }
+ }
+}

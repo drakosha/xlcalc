@@ -13,7 +13,7 @@ names: [
 
 ## A name
 
-A name follows Excel's rules for names, which a table's name follows too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at most 255 characters. It must not read as something else in a formula: a cell address (`Q1`, `AB12`), an R1C1 reference (`R2C3`, and `R` or `C` alone), TRUE or FALSE. Cell addresses and R1C1 are in Latin letters, so the same shape in Cyrillic is a name. In a ru-RU book its booleans `ИСТИНА` and `ЛОЖЬ` are no names either, in any case: Excel ru-RU refuses them and does not open a file that holds such a name, while Excel en-US takes them.
+A name follows Excel's rules for names, which a table's name follows too: a letter of any script, `_` or `\` first, then letters, digits, `_`, `.`, `\` and `?`, at most 255 characters. It must not read as something else in a formula: a cell address of the sheet (`Q1`, `AB12`, `XFD1`), an R1C1 reference (`R2C3`, and `R` or `C` alone), TRUE or FALSE. A cell's shape past the sheet is a name, `XFE1` and `A0`, and a formula reads it as one. Cell addresses and R1C1 are in Latin letters, so the same shape in Cyrillic is a name. In a ru-RU book its booleans `ИСТИНА` and `ЛОЖЬ` are no names either, in any case: Excel ru-RU refuses them and does not open a file that holds such a name, while Excel en-US takes them.
 
 | name | |
 |---|---|
@@ -90,6 +90,8 @@ Names inside a name's formula are the global ones, as a file stores them. For a 
 
 A name that looks like a cell address (`nm2`, `col2`) is not a name. Excel reads such a word as the cell, and so does the engine; the name gets an issue.
 
+A LET name has rules of its own: any cell's word is one, written without `$` (`LET(A1,1,A1)` is 1, the calculation's `A1` the name), but one that reads as R1C1's row or column too (`R2`, `C5`, `RC5`) and TRUE and FALSE; R1C1's other shapes (`R`, `RC`, `R1C1`) are names here too.
+
 A function that takes only a reference (SUMIF's range) and gets an array through a name gives `#VALUE!` for each value of the array, as Excel does.
 
 ## Structure operations
@@ -110,8 +112,11 @@ The rules of a name were measured in Excel 16.113 for Mac and Excel 16.0.20430 f
 | `names-ru-more-held` (ru-RU) | 10 | 5 | `ИСТИНА` and `ЛОЖЬ` refused and TRUE and FALSE taken (TRUE known), `?` and `\` (fixed), files with `ИСТИНА`, `истина`, `ЛОЖЬ` not opened (3, fixed); one more the predictions held no text for: the word `ИСТИНА` shown as `'ИСТИНА'` (fixed) |
 | `names-tables-held` | 4 | 3 | a table renamed `?Продажи` (known) |
 | `names-ru-tables-held` (ru-RU) | 3 | 0 | tables renamed `ИСТИНА`, `ложь`, `TRUE`, where the two Excels part (known) |
+| `paste-names-held` (`add-cell-shapes`) | 1 | 0 | `XFE1` and `A0` taken and read by a formula (fixed); `R1`, `C5`, `XFD1`, `r1` and `R1C1` refused, as predicted |
 
-In all, 34 of the 54 cases came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`.
+In all, 34 of the 54 cases came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`.
+
+LET's names were measured as text typed into cells (the entry sets `names-held`, `let-grid-held` and `let-cells-held`, [Typed entry](entry.md)), predicted before Excel ran them: of the cells' words the engine refused all, and Excel takes every one but those that read as R1C1's row or column too (`R2`, `C100`, `RC5`), on the Mac and Windows alike; `?` and `\` inside, first and after a cell's shape (`A1?x`) are names, as predicted. The engine takes them so now (fixed).
 
 ## Known differences
 

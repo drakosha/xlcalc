@@ -106,6 +106,7 @@ function bound(state: EngineState, x: Arg): number | 'blank' | null {
 
 /** How a value compares with the bounds, by the order of Excel's comparison operators (`a`, `b`: the value against each bound). */
 const COMPARE: Record<string, (a: number, b: number) => boolean> = {
+  // bounds in the wrong order take nothing (the set `entry-held`, column C), where a conditional format's take both ways
   between: (a, b) => a >= 0 && b <= 0,
   notBetween: (a, b) => a < 0 || b > 0,
   equal: (a) => a === 0,

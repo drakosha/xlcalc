@@ -1,0 +1,407 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "date": "2026-10-11",
+  "seconds": 3.6
+ },
+ "cases": [
+  {
+   "id": "let-cell-1",
+   "text": "=LET(R1,1,R1)"
+  },
+  {
+   "id": "let-cell-2",
+   "text": "=LET(C5,1,C5)"
+  },
+  {
+   "id": "let-cell-3",
+   "text": "=LET(XFD1,1,XFD1)"
+  },
+  {
+   "id": "let-cell-4",
+   "text": "=LET(XFE1,1,XFE1)"
+  },
+  {
+   "id": "let-cell-5",
+   "text": "=LET(A0,1,A0)"
+  },
+  {
+   "id": "let-cell-6",
+   "text": "=LET(ZZZZ1,1,ZZZZ1)"
+  },
+  {
+   "id": "let-r1c1-1",
+   "text": "=LET(R,1,R)"
+  },
+  {
+   "id": "let-r1c1-2",
+   "text": "=LET(r,1,r)"
+  },
+  {
+   "id": "let-r1c1-3",
+   "text": "=LET(C,1,C)"
+  },
+  {
+   "id": "let-r1c1-4",
+   "text": "=LET(RC,1,RC)"
+  },
+  {
+   "id": "let-r1c1-5",
+   "text": "=LET(R1C1,1,R1C1)"
+  },
+  {
+   "id": "let-r1c1-6",
+   "text": "=LET(R1C,1,R1C)"
+  },
+  {
+   "id": "let-chars-1",
+   "text": "=LET(a?b,1,a?b)"
+  },
+  {
+   "id": "let-chars-2",
+   "text": "=LET(x?,1,x?)"
+  },
+  {
+   "id": "let-chars-3",
+   "text": "=LET(\\x,1,\\x)"
+  },
+  {
+   "id": "let-chars-4",
+   "text": "=LET(a\\b,1,a\\b)"
+  },
+  {
+   "id": "let-chars-5",
+   "text": "=LET(A1?x,1,A1?x)"
+  },
+  {
+   "id": "let-chars-6",
+   "text": "=LET(R1\\x,1,R1\\x)"
+  },
+  {
+   "id": "word-1",
+   "text": "=XFE1"
+  },
+  {
+   "id": "word-2",
+   "text": "=A0"
+  },
+  {
+   "id": "word-3",
+   "text": "=XFE1+1"
+  },
+  {
+   "id": "unknown-1",
+   "text": "=foo"
+  },
+  {
+   "id": "unknown-2",
+   "text": "=foo+1"
+  },
+  {
+   "id": "unknown-3",
+   "text": "=Foo*2"
+  },
+  {
+   "id": "unknown-4",
+   "text": "=SUM(foo,1)"
+  },
+  {
+   "id": "unknown-5",
+   "text": "=fooBar"
+  },
+  {
+   "id": "unknown-6",
+   "text": "=foo(1)"
+  },
+  {
+   "id": "unknown-7",
+   "text": "=sum(1,2)"
+  }
+ ],
+ "answers": {
+  "let-cell-1": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "let-cell-2": {
+   "refused": "not taken: the cell stayed blank",
+   "cell": null,
+   "text": "",
+   "code": "General",
+   "local": "General"
+  },
+  "let-cell-3": {
+   "cell": {
+    "formula": "LET(XFD1,1,XFD1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-cell-4": {
+   "cell": {
+    "formula": "LET(XFE1,1,XFE1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-cell-5": {
+   "cell": {
+    "formula": "LET(A0,1,A0)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-cell-6": {
+   "cell": {
+    "formula": "LET(ZZZZ1,1,ZZZZ1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-r1c1-1": {
+   "cell": {
+    "formula": "LET(R,1,R)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-r1c1-2": {
+   "cell": {
+    "formula": "LET(r,1,r)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-r1c1-3": {
+   "cell": {
+    "formula": "LET(C,1,C)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-r1c1-4": {
+   "cell": {
+    "formula": "LET(RC,1,RC)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-r1c1-5": {
+   "cell": {
+    "formula": "LET(R1C1,1,R1C1)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-r1c1-6": {
+   "cell": {
+    "formula": "LET(R1C,1,R1C)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-chars-1": {
+   "cell": {
+    "formula": "LET(a?b,1,a?b)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-chars-2": {
+   "cell": {
+    "formula": "LET(x?,1,x?)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-chars-3": {
+   "cell": {
+    "formula": "LET(\\x,1,\\x)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-chars-4": {
+   "cell": {
+    "formula": "LET(a\\b,1,a\\b)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-chars-5": {
+   "cell": {
+    "formula": "LET(A1?x,1,A1?x)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "let-chars-6": {
+   "cell": {
+    "formula": "LET(R1\\x,1,R1\\x)"
+   },
+   "computed": 1,
+   "text": "1",
+   "code": "General",
+   "local": "General",
+   "value2": 1
+  },
+  "word-1": {
+   "cell": {
+    "formula": "XFE1"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "word-2": {
+   "cell": {
+    "formula": "A0"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "word-3": {
+   "cell": {
+    "formula": "XFE1+1"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-1": {
+   "cell": {
+    "formula": "foo"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-2": {
+   "cell": {
+    "formula": "foo+1"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-3": {
+   "cell": {
+    "formula": "foo*2"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-4": {
+   "cell": {
+    "formula": "SUM(foo,1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-5": {
+   "cell": {
+    "formula": "fooBar"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-6": {
+   "cell": {
+    "formula": "foo(1)"
+   },
+   "computed": {
+    "error": "NAME"
+   },
+   "text": "#NAME?",
+   "code": "General",
+   "local": "General"
+  },
+  "unknown-7": {
+   "cell": {
+    "formula": "SUM(1,2)"
+   },
+   "computed": 3,
+   "text": "3",
+   "code": "General",
+   "local": "General",
+   "value2": 3
+  }
+ }
+}

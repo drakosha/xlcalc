@@ -23,7 +23,7 @@ const PINS = {
 }
 
 describe('data validation and outlines against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => `${s.tag} ${s.name}`)).toEqual(['en-US entry-held-2', 'en-US entry-held', 'en-US files', 'en-US held-3', 'en-US lists', 'en-US made', 'en-US struct-held-2', 'en-US struct-held', 'ru-RU ru']))
+  it('every set is answered', () => expect(SETS.map((s) => `${s.tag} ${s.name}`)).toEqual(['en-US edge-held', 'en-US entry-held-2', 'en-US entry-held', 'en-US files', 'en-US held-3', 'en-US lists', 'en-US made', 'en-US struct-held-2', 'en-US struct-held', 'ru-RU ru']))
 })
 
 checkValidSets(SETS, PINS, (name) => import(`../bench/coverage/valid/${name}.ts`))

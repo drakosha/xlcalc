@@ -24,8 +24,8 @@ const TABLES = { tables: [{ name: 'Т', columns: ['Кол'] }] }
 
 /** Text typed in ru-RU, the message it gives, and the check's context. */
 const TYPED: [string, Message, ValidateContext?][] = [
-  ['=A0', { key: 'rowOutOfRange', row: '0' }],
-  ['=XFE1', { key: 'columnOutOfRange', column: 'XFE' }],
+  ['=$A$0', { key: 'rowOutOfRange', row: '0' }],
+  ['=$XFE$1', { key: 'columnOutOfRange', column: 'XFE' }],
   ['=A:B#', { key: 'spillAfterRange' }],
   ['=Лист1:Лист3!A1#', { key: 'spillAcrossSheets' }],
   ['="abc', { key: 'unterminatedString' }],

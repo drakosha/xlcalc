@@ -87,4 +87,27 @@ describe('tables in xlsx', () => {
       ['table', 'the table Merged is left out'],
     ])
   })
+
+  it("a calculated column formula is reported as a cell's formula is, at the column's first cell; one that differs from its cells' is kept", async () => {
+    const f = (r: number) => `<c r="B${r}"><f>T[[#This Row],[a]]*3</f></c>`
+    const sheet = `<sheetData><row r="1"><c r="A1" t="inlineStr"><is><t>a</t></is></c><c r="B1" t="inlineStr"><is><t>b</t></is></c><c r="C1" t="inlineStr"><is><t>c</t></is></c><c r="D1" t="inlineStr"><is><t>d</t></is></c></row><row r="2"><c r="A2"><v>1</v></c>${f(2)}</row><row r="3"><c r="A3"><v>2</v></c>${f(3)}</row></sheetData><tableParts count="1"><tablePart r:id="rId1"/></tableParts>`
+    const calc = (name: string, formula: string) => `<tableColumn id="1" name="${name}"><calculatedColumnFormula>${formula}</calculatedColumnFormula></tableColumn>`
+    const table = `<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="T" displayName="T" ref="A1:D3"><tableColumns count="4"><tableColumn id="1" name="a"/>${calc('b', 'T[[#This Row],[a]]*2')}${calc('c', '_xludf.MYFN(T[[#This Row],[a]])')}${calc('d', 'T[[#This Row],[a]]+')}</tableColumns></table>`
+    const data = await pack(
+      fixture({
+        sheets: [{ name: 'S', body: sheet }],
+        parts: {
+          'xl/worksheets/_rels/sheet1.xml.rels': '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/></Relationships>',
+          'xl/tables/table1.xml': table,
+        },
+      }),
+    )
+    const r = await readXlsx(data)
+    expect(r.book.sheets[0].tables![0].columns.map((c) => c.formula)).toEqual([undefined, 'T[[#This Row],[a]]*2', 'MYFN(T[[#This Row],[a]])', 'T[[#This Row],[a]]+'])
+    expect(r.book.sheets[0].cells.B2.formula).toBe('T[[#This Row],[a]]*3')
+    expect(r.issues.map((i) => [i.code, i.cells])).toEqual([
+      ['userFunction', ['C1']],
+      ['formula', ['D1']],
+    ])
+  })
 })

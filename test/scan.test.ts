@@ -63,7 +63,9 @@ describe('scanReferences', () => {
   it('stops at the first place the text does not read', () => {
     expect(brief(scanReferences('=A1+"open B2'))).toEqual(['1-3 A1'])
     expect(brief(scanReferences("=A1+'Sheet 2'!"))).toEqual(['1-3 A1'])
-    expect(brief(scanReferences('=A1+XFE1+B2'))).toEqual(['1-3 A1'])
+    expect(brief(scanReferences('=A1+$XFE$1+B2'))).toEqual(['1-3 A1'])
+    // a cell's shape past the sheet is a name, as Excel reads it, and the text reads on
+    expect(brief(scanReferences('=A1+XFE1+B2'))).toEqual(['1-3 A1', '9-11 B2'])
     expect(scanReferences('')).toEqual([])
   })
 
