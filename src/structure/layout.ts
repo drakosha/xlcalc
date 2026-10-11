@@ -5,11 +5,11 @@
  * ranges do and are gone when one cell or none is left, frozen panes follow the lines above their split.
  */
 import type { CellInput, FrozenPanes, SheetInput } from '../contract.js'
-import { spend } from '../exec/budget.js'
 import { entryAt, lines, patchLines, toMap, type Line } from '../layout/spans.js'
-import { mergeText, parseMerge } from '../layout/merges.js'
-import { formatAddress, parseAddress } from '../model.js'
-import { LIMIT, type Axis, type Rect } from './area.js'
+import { parseMerge } from '../layout/merges.js'
+import { formatAddress } from '../model.js'
+import { cornersText, hi, LIMIT, lo, withBounds, type Axis } from './area.js'
+import { gridOf } from './grid.js'
 
 /** Index `i` after `n` lines inserted before `at` (n > 0) or deleted from `at` (n < 0); `gone` for a deleted one. */
 function moved(i: number, at: number, n: number, gone: number): number {
@@ -69,10 +69,6 @@ export function openedGroup<T extends Outlined>(map: Record<string, T> | undefin
   return k >= 0 && entryAt(ls, k)?.collapsed ? (patchLines(map, axis, k, k, { collapsed: null } as never) as Record<string, T>) : map
 }
 
-/** The axis's bounds of a rectangle, and the rectangle with them replaced. */
-const bounds = (x: Rect, axis: Axis): [number, number] => (axis === 'r' ? [x.r1, x.r2] : [x.c1, x.c2])
-const withBounds = (x: Rect, axis: Axis, lo: number, hi: number): Rect => (axis === 'r' ? { ...x, r1: lo, r2: hi } : { ...x, c1: lo, c2: hi })
-
 /**
  * Merged areas after the lines move, as ranges: one grows with lines inserted inside it and loses deleted
  * ones; it is gone when one cell or none is left; null when an inserted line pushes one past the sheet's end.
@@ -84,13 +80,13 @@ export function shiftMerges(merges: string[] | undefined, axis: Axis, at: number
   const out: string[] = []
   for (const m of merges) {
     const x = parseMerge(m)!
-    const [lo, hi] = bounds(x, axis)
-    if (n < 0 && lo >= at && hi < at - n) continue
-    const a = moved(lo, at, n, at)
-    const b = n < 0 && hi === LIMIT[axis] - 1 && at - n === LIMIT[axis] ? hi : moved(hi, at, n, at - 1)
+    const [i, j] = [lo(x, axis), hi(x, axis)]
+    if (n < 0 && i >= at && j < at - n) continue
+    const a = moved(i, at, n, at)
+    const b = n < 0 && j === LIMIT[axis] - 1 && at - n === LIMIT[axis] ? j : moved(j, at, n, at - 1)
     if (b >= LIMIT[axis]) return null
     const y = withBounds(x, axis, a, b)
-    if (a <= b && (y.r1 < y.r2 || y.c1 < y.c2)) out.push(mergeText(y))
+    if (a <= b && (y.r1 < y.r2 || y.c1 < y.c2)) out.push(cornersText(y))
   }
   return out
 }
@@ -115,13 +111,13 @@ export function shiftFrozen(frozen: FrozenPanes | undefined, axis: Axis, at: num
 export function formatBefore(sheet: SheetInput, axis: Axis, at: number, n: number): Record<string, CellInput> {
   const out: Record<string, CellInput> = {}
   if (at === 0) return out
-  for (const addr of Object.keys(sheet.cells)) {
-    const cell = sheet.cells[addr]
-    spend(1)
-    const p = parseAddress(addr)
-    if ((axis === 'r' ? p.row : p.col) !== at - 1 || (cell.style === undefined && cell.format === undefined)) continue
+  const g = gridOf(sheet)
+  const line = axis === 'r' ? g.row : g.col
+  for (let k = 0; k < line.length; k++) {
+    const cell = g.cell[k]
+    if (line[k] !== at - 1 || (cell.style === undefined && cell.format === undefined)) continue
     const copy: CellInput = { ...(cell.format !== undefined ? { format: cell.format } : {}), ...(cell.style !== undefined ? { style: cell.style } : {}) }
-    for (let i = at; i < at + n; i++) out[axis === 'r' ? formatAddress(i, p.col) : formatAddress(p.row, i)] = copy
+    for (let i = at; i < at + n; i++) out[axis === 'r' ? formatAddress(i, g.col[k]) : formatAddress(g.row[k], i)] = copy
   }
   return out
 }

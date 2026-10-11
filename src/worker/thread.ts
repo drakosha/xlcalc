@@ -12,14 +12,13 @@ import type { AbortSignalLike, BookInput, CalcOptions, Clock, StructureOp } from
 import { currentClock } from '../env.js'
 import { CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
-import { isHiddenRow } from '../layout/hidden.js'
 import { registerLocale } from '../locale/load.js'
 import { LOCALES } from '../locale/registry.js'
 import type { Locale } from '../locale/types.js'
 import { heapCaches } from '../range-cache.js'
-import { GEOMETRY } from '../session/rebook.js'
 import type { HistoryData } from '../session/undo.js'
-import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
+import { GEOMETRY } from '../structure/geometry.js'
+import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
 import { LOCALE_MODULES } from './locales.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackData } from './pack.js'
@@ -56,38 +55,20 @@ function load(list: Locale[]) {
     .catch(() => {})
 }
 
-/** What `applyOp` reads of a book for `mapCell`: the sheets' names and visibility, their hidden rows and filter mode, their tables (a table deleted takes its cells). */
-function outlineOf(book: BookInput): Outline {
-  return {
-    sheets: book.sheets.map((s) => {
-      const rows = Object.entries(s.rows ?? {}).filter(([, r]) => isHiddenRow(r))
-      return {
-        name: s.name,
-        cells: {},
-        ...(rows.length ? { rows: Object.fromEntries(rows.map(([k]) => [k, { hidden: true }])) } : {}),
-        ...(s.filtered ? { filtered: true } : {}),
-        ...(s.tables ? { tables: s.tables } : {}),
-        ...(s.hidden ? { hidden: s.hidden } : {}),
-      }
-    }),
-    ...(book.names ? { names: book.names } : {}),
-  }
-}
-
 /** A session call by name; `o` goes where the call takes options, with the edit options a changing call carries last (`EDITS`). */
 async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise<Answer> {
   const s = h.s
   const n = EDITS[op]
   const eo = n === undefined ? o : { ...o, ...(args[n] as object | undefined) }
   let value: unknown
-  let outline: Outline | undefined
   switch (op) {
-    case 'restructure': {
-      outline = outlineOf(await s.book())
-      const r = await s.restructure(args[0] as StructureOp, eo)
-      // the mapCell is made on the calling side, from the outline
-      const { mapCell: _, ...rest } = r as Extract<typeof r, { ok: true }>
-      value = rest
+    case 'restructure':
+    case 'undo':
+    case 'redo': {
+      // a structure operation's mapCell goes as its geometry, of which the calling side makes the same function
+      const r = op === 'restructure' ? await s.restructure(args[0] as StructureOp, eo) : await s[op](eo)
+      const { mapCell, ...rest } = (r ?? {}) as { mapCell?: object }
+      value = r && { ...rest, ...(mapCell ? { geometry: GEOMETRY.get(mapCell) } : {}) }
       break
     }
     case 'book':
@@ -128,18 +109,10 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'validateEntry':
       value = await s.validateEntry(args[0] as string, args[1] as string, args[2] as never, o)
       break
-    case 'undo':
-    case 'redo': {
-      // a structure operation's mapCell goes as its geometry
-      const r = await s[op](eo)
-      const { mapCell, ...rest } = r ?? {}
-      value = r && { ...rest, ...(mapCell ? { geometry: GEOMETRY.get(mapCell) } : {}) }
-      break
-    }
     default:
       value = await (s[op] as (...a: unknown[]) => Promise<unknown>)(...args.slice(0, n), eo)
   }
-  return { value, clock: s.clock, history: s.history, revision: s.revision, ...(outline ? { outline } : {}) }
+  return { value, clock: s.clock, history: s.history, revision: s.revision }
 }
 
 function heldOf(sid: number): Held {

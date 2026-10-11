@@ -9,12 +9,13 @@
 import type { BookInput, ColumnInput, RowInput, SheetInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { lookOf, type Look } from '../layout/lines.js'
-import { mergeText, parseMerge } from '../layout/merges.js'
+import { mergesOf, parseMerge } from '../layout/merges.js'
 import { cut, entryAt, lines, slice, toMap, type Line } from '../layout/spans.js'
 import type { Message } from '../locale/messages.js'
-import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
-import { sheetKey } from '../syntax.js'
-import { contains, hi, lo, meets, type Axis, type Rect } from './area.js'
+import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { contains, cornersText, hi, intersect, lo, meets, shiftRect, type Axis, type Rect } from './area.js'
+import { cellsIn, gridOf } from './grid.js'
+import { sheetOf } from './rewrite.js'
 
 export interface Paste {
   from: string
@@ -27,16 +28,12 @@ export interface Paste {
   move: boolean
 }
 
-const sheetOf = (book: BookInput, name: string) => book.sheets.find((s) => sheetKey(s.name) === sheetKey(name))!
-const mergesOf = (s: SheetInput) => (s.merges ?? []).map((m) => parseMerge(m)!)
-const shifted = (x: Rect, dr: number, dc: number): Rect => ({ r1: x.r1 + dr, r2: x.r2 + dr, c1: x.c1 + dc, c2: x.c2 + dc })
-
 /** Why Excel refuses the paste, or null: a move cutting a merged area at its source, a copy landing on part of one. */
 export function mergeRefusal(book: BookInput, p: Paste): Message | null {
   const [sheet, rect] = p.move ? [p.from, p.src] : [p.to, p.area]
   const m = mergesOf(sheetOf(book, sheet)).find((x) => meets(x, rect) && !contains(rect, x))
   if (!m) return null
-  return { key: p.move ? 'moveCutsMerge' : 'pasteOnMerge', sheet, area: mergeText(m) }
+  return { key: p.move ? 'moveCutsMerge' : 'pasteOnMerge', sheet, area: cornersText(m) }
 }
 
 /** A whole line's entries moved or copied: `taken` from the old source, pasted at each offset of `d`. */
@@ -74,14 +71,12 @@ interface Source {
 /** The cells of `src` on the old sheet `from`, found once for all the offsets of a paste (a fill pastes one row thousands of times). */
 function sourceOf(from: SheetInput, to: SheetInput, src: Rect): Source {
   const out: Source = { sr: lines(from.rows, 'r'), sc: lines(from.columns, 'c'), tr: lines(to.rows, 'r'), tc: lines(to.columns, 'c'), cells: [], own: new Set() }
-  for (const addr of Object.keys(from.cells)) {
-    spend(1)
-    const p = parseAddress(addr)
-    if (p.row < src.r1 || p.row > src.r2 || p.col < src.c1 || p.col > src.c2) continue
-    const cell = from.cells[addr]
-    const s = lineLook(out.sr, out.sc, p.row, p.col)
-    out.own.add(p.row * MAX_COLS + p.col)
-    out.cells.push({ row: p.row, col: p.col, look: { style: cell.style ?? s.style, format: cell.format ?? s.format } })
+  const g = gridOf(from)
+  for (const i of cellsIn(g, src)) {
+    const [row, col, cell] = [g.row[i], g.col[i], g.cell[i]]
+    const s = lineLook(out.sr, out.sc, row, col)
+    out.own.add(row * MAX_COLS + col)
+    out.cells.push({ row, col, look: { style: cell.style ?? s.style, format: cell.format ?? s.format } })
   }
   return out
 }
@@ -127,12 +122,12 @@ export function pasteLayout(old: BookInput, out: BookInput, p: Paste) {
   if (whole.c) pasteLines(from, to, lines<ColumnInput>(oldFrom.columns, 'c'), 'columns', 'c', [lo(p.src, 'c'), hi(p.src, 'c')], p.offsets.map(([, dc]) => dc), p.move)
   // merged areas: inside the source they go along (a copy takes the part it cuts), those landed on are gone
   const carried = mergesOf(oldFrom).flatMap((m) => {
-    const x: Rect = { r1: Math.max(m.r1, p.src.r1), r2: Math.min(m.r2, p.src.r2), c1: Math.max(m.c1, p.src.c1), c2: Math.min(m.c2, p.src.c2) }
-    return x.r1 <= x.r2 && x.c1 <= x.c2 && (x.r1 < x.r2 || x.c1 < x.c2) && (!p.move || contains(p.src, m)) ? [x] : []
+    const x = intersect(m, p.src)
+    return x && (x.r1 < x.r2 || x.c1 < x.c2) && (!p.move || contains(p.src, m)) ? [x] : []
   })
   if (p.move) from.merges = (from.merges ?? []).filter((m) => !contains(p.src, parseMerge(m)!))
   const kept = (to.merges ?? []).filter((m) => !meets(parseMerge(m)!, p.area))
-  to.merges = [...kept, ...p.offsets.flatMap(([dr, dc]) => carried.map((m) => mergeText(shifted(m, dr, dc))))]
+  to.merges = [...kept, ...p.offsets.flatMap(([dr, dc]) => carried.map((m) => cornersText(shiftRect(m, dr, dc))))]
   // a copy leaves its source sheet as it was
   for (const s of p.move ? [from, to] : [to]) for (const k of ['rows', 'columns', 'merges'] as const) if (s[k] && !Object.keys(s[k]).length) delete s[k]
   let plainStyle: number | undefined

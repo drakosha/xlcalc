@@ -2,7 +2,7 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { BookInput, CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
 import type { Locale } from '../locale/types.js'
@@ -40,9 +40,6 @@ export interface Snapshot {
   revision?: number
 }
 
-/** The book's outline before a structure operation: enough for `applyOp` to give the same `mapCell`. */
-export type Outline = BookInput
-
 /** To a thread. A thread runs one task at a time; `cancel` may come while it runs. */
 export type ToThread =
   /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those loaded but en-US. */
@@ -79,8 +76,6 @@ export interface Answer {
   clock: Clock
   history: SessionHistory
   revision: number
-  /** `restructure`: the book's outline before it. */
-  outline?: Outline
 }
 
 /** A loaded locale as a thread takes it: its data without the messages, which are functions (a thread imports a package's module of the tag itself). */

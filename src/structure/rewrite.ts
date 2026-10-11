@@ -34,6 +34,15 @@ export interface Transform {
 /** Sheet names of a book by key (sheet names compare case-insensitively). */
 export const sheetNames = (book: BookInput) => new Map(book.sheets.map((s) => [sheetKey(s.name), s.name]))
 
+/** A sheet's index in a book by its name in any case, -1 when it has none. */
+export function sheetIndex(book: { sheets: { name: string }[] }, name: string): number {
+  const k = sheetKey(name)
+  return book.sheets.findIndex((s) => sheetKey(s.name) === k)
+}
+
+/** A sheet of a book by its name in any case (one the book has). */
+export const sheetOf = <S extends { name: string }>(book: { sheets: S[] }, name: string): S => book.sheets[sheetIndex(book, name)]
+
 const same = (a: string | null, b: string | null) => a !== null && b !== null && sheetKey(a) === sheetKey(b)
 
 const SPACE = new Set([' ', '\t', '\n', '\r'])

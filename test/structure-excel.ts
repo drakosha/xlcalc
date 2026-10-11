@@ -8,11 +8,10 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { CellLook, ExcelStructAnswer, SheetLook, StoredStruct } from '../bench/coverage/struct.js'
 import type { BookInput, CellInput, SheetInput } from '../src/contract.js'
 import { isHiddenRow } from '../src/layout/hidden.js'
-import { mergeText, parseMerge } from '../src/layout/merges.js'
+import { parseMerge } from '../src/layout/merges.js'
 import { lineAt } from '../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
-import { meets } from '../src/structure/area.js'
-import { decode, encode } from '../src/structure/area.js'
+import { cornersText, decode, encode, meets } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
 
 const dir = new URL('./excel/struct/', import.meta.url)
@@ -103,7 +102,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
     else if (row?.height !== undefined) out.heights[String(r + 1)] = shownHeight(row.height)
   }
   const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
-  for (const m of merges) if (meets(m, window) && !out.merges.includes(mergeText(m))) out.merges.push(mergeText(m))
+  for (const m of merges) if (meets(m, window) && !out.merges.includes(cornersText(m))) out.merges.push(cornersText(m))
 }
 
 /** Differences of looks, as `place: Excel …, engine …` lines. */

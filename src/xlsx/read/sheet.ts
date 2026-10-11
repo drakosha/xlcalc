@@ -7,10 +7,10 @@
  * and what the sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
-import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
+import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
-import { parseRange, type Rect } from '../../structure/area.js'
+import { cornersText, parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
@@ -210,7 +210,7 @@ function merges(rest: string, sheet: string, issues: Issues): string[] | undefin
       issues.add('part', 'a merged area overlapping another is left out', { sheet, cell: ref })
     }
   }
-  return xs.length ? xs.map(mergeText) : undefined
+  return xs.length ? xs.map(cornersText) : undefined
 }
 
 /** Whether an autofilter, a sheet's or a table's, has criteria: a column with a filter of any kind. */
