@@ -40,6 +40,10 @@ A book hashes as before whichever name it gives the number format: `inputHash` w
 | `readXlsx`'s `cached` was a list of sheets with a value by address (`cached[0].cells.B1` is 200) | `cached` has the shape of a result: `cached.sheets[0].cells.B1` is `{ value: 200 }` |
 | ru-RU was built in and the root exported `ruRU` | `import { ruRU } from 'xlcalc/locales/ru-RU'`, and `registerLocale(ruRU)` once for books in ru-RU and for its tag; a locale object needs no loading where no book is needed |
 | `writeXlsx(book, { result })` | `writeXlsx({ book, result })`, or `writeXlsx(session.getSnapshot())`; the older form writes the same file |
+| `validateEntry` refused with `{ ok: false, rule }` | `{ ok: false, code: 'validation', message, rule, severity }`, as every check refuses |
+| after a structure operation `changes` listed the cells whose value changed | they also list the cells whose formula's text, own style or own number format differ from the cell that was at their old place, and `moved` says how addresses moved, so a window moves by `moved` and applies `changes` instead of reading itself again |
+| `patchCells` listed the cells whose shown text changed | it also lists the cells whose own style or number format it set, with `style` and `numberFormat` |
+| `explain`'s text wrote an error by its code (`#DIV0`) and an empty cell as `null` | the error as the cells show it in the book's locale (`#DIV/0!`, `#ДЕЛ/0!`) with the cell it began in (`(error from 'S'!A2)`), and an empty cell as `empty`; the tree's error nodes have `origin` |
 
 ## How it was checked
 
