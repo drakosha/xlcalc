@@ -14,6 +14,8 @@ import { parseRange } from '../../../src/structure/area.js'
 import { sheetKey } from '../../../src/syntax.js'
 import { anchorOf, areasOf } from '../../../src/validation/rules.js'
 import { formulaAt } from '../../../src/validation/structure.js'
+import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
+import { rawFile, type RawEdit } from '../xlsx/sent.js'
 
 /**
  * What Excel makes through its object model: a rule (with the range's first cell active; `excel`, its formulas as typed
@@ -31,6 +33,8 @@ export interface ValidCase {
   book: string
   make?: ValidMake[]
   op?: StructureOp
+  /** The file changed by hand after `writeXlsx`, as another writer leaves it: the engine holds what the reader reads from it. */
+  raw?: RawEdit[]
 }
 
 export interface ValidCases {
@@ -45,6 +49,14 @@ export interface ValidSet {
 }
 
 export const WINDOW = 'A1:J30'
+
+/** A case's file: its book as `writeXlsx` writes it, changed by hand for a raw case. */
+export async function validCaseFile(set: ValidCases, c: ValidCase): Promise<Uint8Array> {
+  return rawFile((await writeXlsx({ book: set.books[c.book] })).data, c.raw)
+}
+
+/** The book the engine holds for a case before what Excel makes: its book, or for a raw case the book the reader reads from its file. */
+export const validCaseBook = async (set: ValidCases, c: ValidCase): Promise<BookInput> => (c.raw ? (await readXlsx(await validCaseFile(set, c))).book : set.books[c.book])
 
 /**
  * A cell with a rule as Excel's object model gives it, with the cell selected: address, type, operator, formula1,

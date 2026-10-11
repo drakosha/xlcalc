@@ -244,6 +244,14 @@ end tell`)
   return true
 }
 
+/** The repair window declined where System Events does not list it, on another Space: Excel activated first, which brings it forward. */
+export async function declineElsewhere(): Promise<boolean> {
+  if (declineRepair()) return true
+  osa('tell application "Microsoft Excel" to activate')
+  await sleep(2000)
+  return declineRepair()
+}
+
 /** After the repair window was declined and its script stopped: a second one declined, a book Excel left open closed. */
 export async function settleRejected(): Promise<void> {
   await sleep(1500)
@@ -410,6 +418,13 @@ export async function runSavingScript(id: string, script: string, data: Uint8Arr
       await stop()
       await sleep(1500)
       declineRepair()
+      return { rejected: 'Excel did not accept the book (repair window declined)' }
+    },
+    // the book did not open (`wb` undefined): the repair window on another Space, which the watch does not see
+    failed: async (err, stop) => {
+      if (!/\bwb\b/.test(err) || !(await declineElsewhere())) return undefined
+      await stop()
+      await settleRejected()
       return { rejected: 'Excel did not accept the book (repair window declined)' }
     },
     done: (out, dir) => ({ out, saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }),

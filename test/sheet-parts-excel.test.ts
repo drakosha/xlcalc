@@ -10,7 +10,7 @@ import { checkSets, PARTS_KNOWN, PARTS_READ_KNOWN, partsSets, THREAD_ISSUES } fr
 const SETS = partsSets('parts/')
 
 describe('notes, hyperlinks and frozen panes against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name)).toEqual(['files', 'frozen-held', 'struct-held', 'threads']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name)).toEqual(['files', 'frozen-held', 'refs-held', 'struct-held', 'threads']))
   it('every pinned difference names a case', () => {
     const keys = new Set(SETS.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
     expect([...Object.keys(PARTS_KNOWN), ...Object.keys(PARTS_READ_KNOWN)].filter((k) => !keys.has(k))).toEqual([])

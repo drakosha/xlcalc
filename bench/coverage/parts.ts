@@ -1,6 +1,6 @@
 /**
  * Notes, hyperlinks and frozen panes against Excel en-US: `npx tsx bench/coverage/run.ts parts <set>` writes each book
- * of `parts/<set>.ts` with `writeXlsx`, Excel opens it, makes what the case makes, applies its operation, reads every
+ * of `parts/<set>.ts` with `writeXlsx` (changed by hand for a raw case), Excel opens it, makes what the case makes, applies its operation, reads every
  * sheet's parts and saves the book (`excel-parts.applescript`). The answers go to `test/excel/parts/<set>.json` and the
  * saved files to `test/excel/parts/<set>/<id>.xlsx`; `test/sheet-parts-excel.test.ts` compares them with the writer,
  * the reader and `editStructure` without Excel. `FPARTS_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` every case again.
@@ -14,7 +14,7 @@ import type { PartsAnswer, PartsCase, PartsCases, PartsMake, PartsSet } from './
 import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
 import { threadedFile } from './parts/threaded.js'
 import { opJson } from './struct.js'
-import { caseFiles } from './xlsx/sent.js'
+import { caseFiles, rawFile } from './xlsx/sent.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -38,10 +38,10 @@ export function makeArgs(make: PartsMake[] = []): (string | number)[][] {
   })
 }
 
-/** The file a case's book is written to, the same on both platforms: by `writeXlsx`, with the book's threads put in. */
+/** The file a case's book is written to, the same on both platforms: by `writeXlsx`, with the book's threads put in, changed by hand for a raw case. */
 export async function partsFile(c: PartsCase, set: PartsCases): Promise<Uint8Array> {
   const threads = set.threads?.[c.book]
-  return threads ? threadedFile(set.books[c.book], threads) : (await writeXlsx({ book: set.books[c.book] })).data
+  return rawFile(threads ? await threadedFile(set.books[c.book], threads) : (await writeXlsx({ book: set.books[c.book] })).data, c.raw)
 }
 
 /** The set's cases, the file of each case and what identifies it. */

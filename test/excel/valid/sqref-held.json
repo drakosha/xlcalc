@@ -1,0 +1,887 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US",
+  "seconds": 34
+ },
+ "books": {
+  "A1:B2": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "validations": [
+      {
+       "range": "A1:B2",
+       "type": "whole",
+       "operator": "greaterThan",
+       "formula1": "2"
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      }
+     }
+    }
+   ]
+  },
+  "A1:A2 C4:D5": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "validations": [
+      {
+       "range": "A1:A2 C4:D5",
+       "type": "whole",
+       "operator": "greaterThan",
+       "formula1": "2"
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      }
+     }
+    }
+   ]
+  },
+  "list": {
+   "sheets": [
+    {
+     "name": "S",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      },
+      "A4": {
+       "value": 4
+      },
+      "A5": {
+       "value": 5
+      },
+      "A6": {
+       "value": 6
+      },
+      "B1": {
+       "value": 1
+      },
+      "B2": {
+       "value": 2
+      },
+      "B3": {
+       "value": 3
+      },
+      "B4": {
+       "value": 4
+      },
+      "B5": {
+       "value": 5
+      },
+      "B6": {
+       "value": 6
+      },
+      "C1": {
+       "value": 1
+      },
+      "C2": {
+       "value": 2
+      },
+      "C3": {
+       "value": 3
+      },
+      "C4": {
+       "value": 4
+      },
+      "C5": {
+       "value": 5
+      },
+      "C6": {
+       "value": 6
+      },
+      "D1": {
+       "value": 1
+      },
+      "D2": {
+       "value": 2
+      },
+      "D3": {
+       "value": 3
+      },
+      "D4": {
+       "value": 4
+      },
+      "D5": {
+       "value": 5
+      },
+      "D6": {
+       "value": 6
+      }
+     },
+     "validations": [
+      {
+       "range": "A1:B2",
+       "type": "list",
+       "formula1": "'L'!$A$1:$A$3"
+      }
+     ]
+    },
+    {
+     "name": "L",
+     "cells": {
+      "A1": {
+       "value": 1
+      },
+      "A2": {
+       "value": 2
+      },
+      "A3": {
+       "value": 3
+      }
+     }
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "lower",
+   "book": "A1:B2",
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:B2\"",
+     "to": "sqref=\"a1:b2\""
+    }
+   ]
+  },
+  {
+   "id": "dollar",
+   "book": "A1:B2",
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:B2\"",
+     "to": "sqref=\"$A$1:$B$2\""
+    }
+   ]
+  },
+  {
+   "id": "mixed",
+   "book": "A1:B2",
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:B2\"",
+     "to": "sqref=\"$a$1:B$2\""
+    }
+   ]
+  },
+  {
+   "id": "areas",
+   "book": "A1:A2 C4:D5",
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "sqref=\"A1:A2 C4:D5\"",
+     "to": "sqref=\"a1:A2 $C$4:d5\""
+    }
+   ]
+  },
+  {
+   "id": "x14",
+   "book": "list",
+   "raw": [
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "<dataValidations count=\"1\"><dataValidation type=\"list\" allowBlank=\"1\" showInputMessage=\"1\" showErrorMessage=\"1\" sqref=\"A1:B2\"><formula1>'L'!$A$1:$A$3</formula1></dataValidation></dataValidations>",
+     "to": ""
+    },
+    {
+     "part": "xl/worksheets/sheet1.xml",
+     "from": "</worksheet>",
+     "to": "<extLst><ext uri=\"{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}\" xmlns:x14=\"http://schemas.microsoft.com/office/spreadsheetml/2009/9/main\"><x14:dataValidations count=\"1\" xmlns:xm=\"http://schemas.microsoft.com/office/excel/2006/main\"><x14:dataValidation type=\"list\" allowBlank=\"1\" showInputMessage=\"1\" showErrorMessage=\"1\"><x14:formula1><xm:f>'L'!$A$1:$A$3</xm:f></x14:formula1><xm:sqref>$a$1:b2</xm:sqref></x14:dataValidation></x14:dataValidations></ext></extLst></worksheet>"
+    }
+   ]
+  }
+ ],
+ "sent": {
+  "lower": "c5b6533298a321c7c0246a4c6c741aa75d55a9e1e70c9f97cae040fa7885992c",
+  "dollar": "e289f60aa189cf335bcd3f956a8597cc6625a3e7e54cf251b36c74bcd92df590",
+  "mixed": "4766d17c80d87436028eee2a3f11afa0e6fe88ef54561d5b6be5a08d78d1dcb0",
+  "areas": "ec8c250b2d77c8975863bfc1d5f5817ba4c5ec1a25ec2191e9fb12b3fc242252",
+  "x14": "83b019dcab91f8aeac51d6d4805b418cdcf16b8ea98b990b6a858dbe6e86ae34"
+ },
+ "answers": {
+  "lower": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "L",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "dollar": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "L",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "mixed": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$B$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "L",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "areas": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$1",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$A$2",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       false
+      ],
+      [
+       "$C$4",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$4",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$C$5",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$D$5",
+       "validate whole number",
+       "operator greater",
+       "2",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "L",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  },
+  "x14": {
+   "sheets": [
+    {
+     "name": "S",
+     "rules": [
+      [
+       "$A$1",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$1",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$A$2",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ],
+      [
+       "$B$2",
+       "validate list",
+       "operator between",
+       "=L!$A$1:$A$3",
+       "",
+       true,
+       true,
+       true,
+       true,
+       "valid alert stop",
+       "",
+       "",
+       "",
+       "",
+       true
+      ]
+     ],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    },
+    {
+     "name": "L",
+     "rules": [],
+     "rows": [],
+     "columns": [],
+     "summary": [
+      "summary below",
+      "summary on right"
+     ]
+    }
+   ]
+  }
+ }
+}

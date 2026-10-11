@@ -1,7 +1,7 @@
 /**
  * What identifies an xlsx file sent to Excel: sha256 of its parts' names and bytes, not of the archive. The platform's
  * deflate (`CompressionStream`) writes other bytes with another zlib (Linux, another Node), while the parts stay the same.
- * And a file changed by hand after `writeXlsx` wrote it (`editParts`).
+ * And a file changed by hand after `writeXlsx` wrote it (`editParts`, `rawFile`).
  */
 import { createHash } from 'node:crypto'
 import { openArchive } from '../../../src/xlsx/zip/read.js'
@@ -27,6 +27,30 @@ export async function editParts(data: Uint8Array, edit: (name: string, text: str
     files.push({ name, data: changed === undefined ? (await archive.bytes(name))! : enc.encode(changed) })
   }
   return zip(files)
+}
+
+/** A change by hand to a part of a written file, as another writer or a hand edit leaves it: every `from` in the part's text becomes `to`. */
+export interface RawEdit {
+  part: string
+  from: string
+  to: string
+}
+
+/** The file with a case's changes by hand made; a change whose text its part does not hold throws, so no case goes out unchanged. */
+export async function rawFile(data: Uint8Array, edits: readonly RawEdit[] = []): Promise<Uint8Array> {
+  if (!edits.length) return data
+  const done = new Set<RawEdit>()
+  const out = await editParts(data, (name, text) => {
+    let x = text
+    for (const e of edits.filter((e) => e.part === name && x.includes(e.from))) {
+      x = x.replaceAll(e.from, e.to)
+      done.add(e)
+    }
+    return x === text ? undefined : x
+  })
+  const missed = edits.filter((e) => !done.has(e))
+  if (missed.length) throw new Error(`no ${missed.map((e) => `${JSON.stringify(e.from)} in ${e.part}`).join(', ')}`)
+  return out
 }
 
 /** The file of each case, as `file` writes it, and what identifies each (`partsHash`). */

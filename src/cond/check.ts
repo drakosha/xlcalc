@@ -63,7 +63,7 @@ const FIELDS: Record<ConditionalFormat['type'], string[]> = {
 /** The types of rules with a style (a differential format): all but colour scales, data bars and icon sets. */
 export const STYLED: ReadonlySet<string> = new Set(Object.entries(FIELDS).flatMap(([t, fields]) => (fields.includes('style') ? [t] : [])))
 
-/** A field of a conditional style is given unless undefined. */
+/** A field of a conditional style is given unless undefined, as a cell style's is (`checkStyle` of `input.ts`). */
 const given: Given = (o, k) => o[k] !== undefined
 
 /** A rule's style: a cell's style's font, fill and border, without a font's name and size (a dxf has none) and with a number format. */
@@ -72,8 +72,7 @@ function checkStyle(v: unknown, p: string) {
   onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat'])
   if (given(s, 'font')) checkFont(s.font, `${p}.font`, given, false)
   if (given(s, 'fill')) checkFill(s.fill, `${p}.fill`, '#FFC7CE')
-  // every side the border names, one undefined too
-  if (given(s, 'border')) checkBorder(s.border, `${p}.border`, () => true)
+  if (given(s, 'border')) checkBorder(s.border, `${p}.border`, given)
   if (s.numberFormat !== undefined) checkFormat(s.numberFormat, `${p}.numberFormat`)
 }
 

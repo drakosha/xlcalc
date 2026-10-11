@@ -106,21 +106,28 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
   return Object.keys(out).length ? { border: out, lost } : { lost }
 }
 
-function fill(e: Element, p: Palette): { fill?: CellStyle['fill']; lost: string[] } {
+/**
+ * A fill (`<fill>`) of a cell format or, with `dxf`, of a conditional format, as Excel for Mac and for Windows show them
+ * (the sets `cond/fills-held`, `cond/fills-held-2`). Both read a pattern beside a gradient alone (Excel shows a cell so,
+ * and opens no file with a dxf so), name a gradient or a pattern other than solid lost, and take a colour that names
+ * none (`auto`, the system's) as Excel's automatic colour, white. They read a pattern fill otherwise, as Excel does:
+ * without a pattern type a cell's is none (Excel saves it so) and a dxf's solid (Excel writes its dxfs so); a cell's
+ * solid fill shows its `fgColor`, white without one, and a dxf's its `bgColor` alone, keeping the cell's own colour
+ * without one (white on a cell without a fill) and changing nothing when it is empty; a dxf's none takes the cell's fill
+ * away. The model cannot say a fill kept or taken away: those are named lost.
+ */
+export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyle['fill']; lost: string[] } {
   const b = e.body ?? ''
-  if (element(b, 'gradientFill')) return { lost: ['gradient fill'] }
   const pf = element(b, 'patternFill')
-  const type = pf ? (attributes(pf.attrs).patternType ?? (pf.body ? 'solid' : 'none')) : 'none'
-  if (type === 'none') return { lost: [] }
-  if (type !== 'solid') return { lost: ['pattern fill'] }
-  const color = solidColor(pf!, p, 'fgColor')
-  return color ? { fill: { color }, lost: [] } : { lost: [] }
-}
-
-/** A solid fill's colour (`<patternFill>`): its `first` colour, else the other; a cell's fill shows its `fgColor`, a dxf's its `bgColor`. */
-export function solidColor(pf: Element, p: Palette, first: 'fgColor' | 'bgColor'): string | undefined {
-  const b = pf.body ?? ''
-  return colorOf(element(b, first), p) ?? colorOf(element(b, first === 'fgColor' ? 'bgColor' : 'fgColor'), p)
+  const lost = element(b, 'gradientFill') ? [pf ? 'gradient fill beside its pattern' : 'gradient fill'] : []
+  if (!pf) return { lost }
+  const a = attributes(pf.attrs)
+  const type = a.patternType ?? (dxf ? 'solid' : 'none')
+  if (type === 'none') return { lost: dxf ? [...lost, 'fill taken away'] : lost }
+  if (type !== 'solid') return { lost: [...lost, 'pattern fill'] }
+  const shown = element(pf.body ?? '', dxf ? 'bgColor' : 'fgColor')
+  if (shown || !dxf) return { fill: { color: colorOf(shown, p) ?? '#FFFFFF' }, lost }
+  return a.patternType !== undefined || element(pf.body ?? '', 'fgColor') ? { lost: [...lost, 'fill without its colour'] } : { lost }
 }
 
 function alignment(e: Element | undefined): { alignment?: AlignmentStyle; lost: string[] } {
@@ -161,7 +168,7 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
   }
   const fonts = elements(element(xml, 'fonts')?.body ?? '', 'font').map((e) => font(e, p))
   const base = fonts[0]?.style ?? {}
-  const fills = elements(element(xml, 'fills')?.body ?? '', 'fill').map((e) => fill(e, p))
+  const fills = elements(element(xml, 'fills')?.body ?? '', 'fill').map((e) => readFill(e, p))
   const borders = elements(element(xml, 'borders')?.body ?? '', 'border').map((e) => border(e, p))
   const styles: CellStyle[] = []
   const byKey = new Map<string, number>()
