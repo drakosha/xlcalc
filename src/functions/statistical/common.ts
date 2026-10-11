@@ -6,6 +6,16 @@ import { momentValue, stableMean } from './moments.js'
 export const mean = stableMean
 export const sorted = (xs: readonly number[]) => [...xs].sort((a, b) => a - b)
 
+/** The mean of the numbers a function selected, #DIV/0! without any (AVERAGEIF, AVERAGEIFS, DAVERAGE). */
+export const meanOrDiv0 = (xs: readonly number[]) => (xs.length ? mean(xs) : E.DIV0)
+
+/** Interpolated order statistic at the 0-based rank h of sorted data (PERCENTILE, QUARTILE, a colour scale's percentile). */
+export function interpolate(s: readonly number[], h: number): number {
+  const i = Math.floor(h)
+  if (i >= s.length - 1) return s[s.length - 1]
+  return s[i] + (h - i) * (s[i + 1] - s[i])
+}
+
 /** Variance and standard deviation share the same degrees-of-freedom check across function families. */
 const varianceValue = (xs: readonly number[], ddof: number, root: boolean) =>
   xs.length - ddof < 1 ? E.DIV0 : momentValue(xs, xs.length - ddof, root)

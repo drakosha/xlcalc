@@ -8,7 +8,7 @@ import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { max, min, NEWER_MAX_ARGS, sum } from '../common.js'
-import { areaNumbers, devsq, mean, sorted, stdev, variance } from './common.js'
+import { areaNumbers, devsq, interpolate, mean, sorted, stdev, variance } from './common.js'
 
 function median(xs: number[]): number {
   const s = sorted(xs)
@@ -24,13 +24,6 @@ function moment(xs: number[], k: number, ddof: number): number | undefined {
   let acc = 0
   for (const x of xs) acc += ((x - m) / s) ** k
   return acc
-}
-
-/** Interpolated order statistic at the 0-based rank h of sorted data. */
-function interpolate(s: number[], h: number): number {
-  const i = Math.floor(h)
-  if (i >= s.length - 1) return s[s.length - 1]
-  return s[i] + (h - i) * (s[i + 1] - s[i])
 }
 
 function percentileInc(xs: number[], k: number): V {

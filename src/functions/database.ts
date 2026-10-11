@@ -8,7 +8,7 @@ import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
 import { max, min, product, sum } from './common.js'
-import { mean, numbersOf, stdev, variance } from './statistical/common.js'
+import { meanOrDiv0, numbersOf, stdev, variance } from './statistical/common.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V, rules: Rules): Crit | null {
@@ -100,7 +100,7 @@ const over = (f: (xs: number[]) => V) =>
   })
 
 export const functions: Record<string, FnDef> = {
-  DAVERAGE: over((xs) => (xs.length ? mean(xs) : E.DIV0)),
+  DAVERAGE: over(meanOrDiv0),
   // DCOUNT passes over errors, the other functions answer with them
   DCOUNT: dfn((vs) => vs.filter((v) => typeof v === 'number').length),
   DCOUNTA: dfn((vs) => vs.filter((v) => v !== null).length),
