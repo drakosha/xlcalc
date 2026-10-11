@@ -17,7 +17,7 @@ import { epochOf, ymd } from './dates.js'
 import { hiddenRows } from './layout/hidden.js'
 import { localeBooleans } from './locale/registry.js'
 import { rulesOf } from './locale/rules.js'
-import type { RulesClock } from './locale/rules/data.js'
+import { markingClock } from './locale/rules/data.js'
 import { bookScalar, formatAddress, MAX_COLS, parseAddress } from './model.js'
 import { makeRuntime, type Runtime, type RuntimeContext, type SheetData } from './runtime.js'
 import { heapCaches, RangeCache, type CacheBudget } from './range-cache.js'
@@ -200,13 +200,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   const { names, issues } = prepareNames(sheetIdx, input.names ?? [], externalFunctions, tableNames(tables), localeBooleans(book.locale))
   const epoch = epochOf(book.dateSystem)
   // the clock's year completes date text without a year (ru-RU `1.5`); reading it marks the formula being computed
-  const clock: RulesClock = {
-    read: false,
-    year: () => {
-      clock.read = true
-      return ymd(Math.floor(ctx.now) + epoch).y
-    },
-  }
+  const clock = markingClock(() => ymd(Math.floor(ctx.now) + epoch).y)
   const cache = opts.cache ?? heapCaches
   const ctx: RuntimeContext = {
     sheets: sheetNames.map(emptySheet),
