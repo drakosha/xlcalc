@@ -38,7 +38,7 @@ export const macOnly = (key: string) => key.startsWith('looks-ru:') || key.start
 const SETS = [...condSets('cond/'), ...condSets('cond/ru-RU/').map((s) => ({ ...s, name: s.name }))]
 
 describe('conditional formats against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'fills-held', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'sqref-held', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN)).toEqual([]))
 })
 
