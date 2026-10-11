@@ -17,7 +17,7 @@ import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, RowInput, S
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
-import { parseRange, type Rect } from '../../structure/area.js'
+import { meets, parseRange, rectCells } from '../../structure/area.js'
 import { ERROR_TEXT, FormulaError, type Ast } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { sheetKey, walk } from '../../syntax/print.js'
@@ -138,12 +138,6 @@ export function fileTree(formula: string, sheets: Set<string>, tables: { name: s
   return ok ? ast : null
 }
 
-/** The cells of a rectangle `A1:C9`, row by row. */
-function* rectCells(range: string): Generator<string> {
-  const r = parseRange(range)!
-  for (let row = r.r1; row <= r.r2; row++) for (let c = r.c1; c <= r.c2; c++) yield formatAddress(row, c)
-}
-
 export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext): SheetWritten {
   const { styles, issues, mode, result } = ctx
   const out = new Map<number, string>()
@@ -209,7 +203,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       const r = result[addr]
       if (r.spillOf !== undefined) put(addr, cellXml(addr, sheet.cells[addr], r.value))
       if (r.spill !== undefined && r.spillFill !== undefined && mode === 'values')
-        for (const a of rectCells(r.spill)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))
+        for (const a of rectCells(parseRange(r.spill)!)) if (!result[a]) put(a, cellXml(a, sheet.cells[a], r.spillFill))
     }
   const rowLines = lines(sheet.rows, 'r')
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
@@ -308,8 +302,6 @@ function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: St
     }
   }
 }
-
-const meets = (a: Rect, b: Rect) => a.r1 <= b.r2 && b.r1 <= a.r2 && a.c1 <= b.c2 && b.c1 <= a.c2
 
 /** A row's or a column's outline level and collapsed mark as attributes. */
 const outlineAttrs = (e: { outlineLevel?: number; collapsed?: boolean }) => (e.outlineLevel ? ` outlineLevel="${e.outlineLevel}"` : '') + (e.collapsed ? ' collapsed="1"' : '')

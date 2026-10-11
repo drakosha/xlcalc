@@ -9,8 +9,8 @@
 import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
 import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
-import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
-import { cornersText, hasCell, parseRange, type Rect } from '../../structure/area.js'
+import { parseAddress, sortAddresses } from '../../model.js'
+import { cellCount, cellsWithin, cornersText, parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
@@ -67,18 +67,6 @@ const LINKED: Record<string, [XlsxIssueCode, string]> = {
   pivotTable: ['pivotTable', 'pivot tables are not in the model: their cells are read as stored'],
 }
 
-/** The cells of a rectangle that the cells' count makes cheaper to list than the sheet's cells. */
-function* cellsOf(r: Rect, keys: () => string[]): Generator<string> {
-  if ((r.r2 - r.r1 + 1) * (r.c2 - r.c1 + 1) <= 4096) {
-    for (let row = r.r1; row <= r.r2; row++) for (let c = r.c1; c <= r.c2; c++) yield formatAddress(row, c)
-    return
-  }
-  for (const a of keys()) {
-    const { row, col } = parseAddress(a)
-    if (hasCell(r, row, col)) yield a
-  }
-}
-
 /** Shared formulas in each of their cells: the master's formula copied and pasted over them. */
 function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
   for (const s of read.shared.values()) {
@@ -96,7 +84,7 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
       box.c2 = Math.max(box.c2, a.col)
     }
     // copies spread thin over a large area are pasted one by one
-    const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [cornersText(box)]
+    const targets = cellCount(box) > 4 * at.length ? s.copies : [cornersText(box)]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
     for (const range of targets) {
       // the pure copy and paste, without editStructure's checks and values (a paste from a filtered sheet computes the book)
@@ -138,7 +126,7 @@ function arrays(read: SheetCells) {
     if (!a.dynamic && anchor?.formula !== undefined) anchor.array = a.ref
     const top = read.cached[a.anchor]
     if (top && (!a.dynamic || r.r2 > r.r1 || r.c2 > r.c1)) top.spill = cornersText(r)
-    for (const addr of cellsOf(r, keys)) {
+    for (const addr of cellsWithin(r, keys)) {
       const cell = read.cells[addr]
       // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
       const spilled = read.errors.delete(addr)

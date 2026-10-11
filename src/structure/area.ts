@@ -1,5 +1,5 @@
 /** References as rectangles with their `$` flags, and their text in the form Excel writes it. */
-import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from '../model.js'
+import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import type { RangeRef as SyntaxRef } from '../syntax.js'
 
 /** One bound: a zero-based index and whether it is absolute (`$`). */
@@ -100,6 +100,29 @@ export const meets = (x: Rect, y: Rect) => x.r1 <= y.r2 && y.r1 <= x.r2 && x.c1 
 
 /** Whether the cell at row `r`, column `c` lies in the rectangle. */
 export const hasCell = (x: Rect, r: number, c: number) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2
+
+/** The number of a rectangle's cells. */
+export const cellCount = (x: Rect) => (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
+
+/** A rectangle's cells, row by row. */
+export function* rectCells(x: Rect): Generator<string> {
+  for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) yield formatAddress(r, c)
+}
+
+/**
+ * A rectangle's cells among a sheet's (`cells`, its addresses): listed row by row up to `max` cells, those of the sheet
+ * within it past that, which is then cheaper. The listed ones need not be the sheet's.
+ */
+export function* cellsWithin(x: Rect, cells: () => Iterable<string>, max = 4096): Generator<string> {
+  if (cellCount(x) <= max) {
+    yield* rectCells(x)
+    return
+  }
+  for (const a of cells()) {
+    const { row, col } = parseAddress(a)
+    if (hasCell(x, row, col)) yield a
+  }
+}
 
 /** The cells two rectangles share, or null when they do not meet. */
 export function intersect(x: Rect, y: Rect): Rect | null {

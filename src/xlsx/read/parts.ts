@@ -5,7 +5,7 @@
  */
 import type { CellInput, CellLink, CellNote, FrozenPanes } from '../../contract.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
-import { hasCell, parseRange } from '../../structure/area.js'
+import { cellCount, cellsWithin, parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { attr, attributes, element, elements } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -47,14 +47,10 @@ export function readFrozen(head: string, sheet: string, issues: Issues): FrozenP
   return out.rows || out.columns ? out : undefined
 }
 
-/** The cells of a reference (`A1`, `A1:B3`), at most `max` of them listed; null when it is none. */
-function refCells(ref: string, max: number): string[] | null {
-  const r = parseRange(ref.toUpperCase())
-  if (!r) return null
-  if ((r.r2 - r.r1 + 1) * (r.c2 - r.c1 + 1) > max) return []
-  const out: string[] = []
-  for (let row = r.r1; row <= r.r2; row++) for (let c = r.c1; c <= r.c2; c++) out.push(formatAddress(row, c))
-  return out
+/** Whether an upper-case reference is one cell of the sheet (`A1`, `A1:A1`). */
+function oneCell(ref: string): boolean {
+  const r = parseRange(ref)
+  return !!r && r.r1 === r.r2 && r.c1 === r.c2
 }
 
 /** The person names of threaded comments by id (`persons/person.xml`). */
@@ -79,7 +75,7 @@ function comments(xml: string | undefined): Comment[] {
   return elements(element(xml, 'commentList')?.body ?? '', 'comment').flatMap((e) => {
     const a = attributes(e.attrs)
     const cell = a.ref?.toUpperCase()
-    if (!cell || !refCells(cell, 1)?.length) return []
+    if (!cell || !oneCell(cell)) return []
     const body = element(e.body ?? '', 'text')?.body ?? ''
     // runs of more than one look (the bold author's name of a note made in Excel's window); one look is the note's font
     return [{ cell, author: authors[Number(a.authorId)] ?? '', text: stringItem(body).text, formatted: new Set(elements(body, 'rPr').map((r) => r.body ?? '')).size > 1 }]
@@ -104,7 +100,7 @@ function threads(src: PartsSource, placed: Map<string, string>, issues: Issues):
     const text = readText(element(e.body ?? '', 'text')?.body ?? '')
     const author = who.get(a.personId ?? '')
     const cell = a.parentId !== undefined ? byId.get(a.parentId) : (placed.get(a.id ?? '') ?? a.ref?.toUpperCase())
-    if (!cell || !refCells(cell, 1)?.length) continue
+    if (!cell || !oneCell(cell)) continue
     if (a.id) byId.set(a.id, cell)
     const note = out.get(cell)
     if (!note) {
@@ -161,16 +157,10 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
     const where = { sheet: src.sheet, cell: a.ref ?? '' }
     if (id !== undefined && link.url === undefined) issues.add('hyperlink', "a hyperlink's address that is no external relationship of the sheet is left out", where)
     if (link.url === undefined && link.location === undefined) continue
-    let list = refCells(a.ref ?? '', LINK_CELLS)
-    if (list && !list.length) {
-      const r = parseRange(a.ref!.toUpperCase())!
-      list = Object.keys(cells).filter((c) => {
-        const p = parseAddress(c)
-        return hasCell(r, p.row, p.col)
-      })
-      issues.add('hyperlink', 'a hyperlink over more than 4,096 cells is read on the cells of its range that hold something', where)
-    }
-    for (const cell of list ?? []) if (!out.has(cell)) out.set(cell, link)
+    const r = parseRange((a.ref ?? '').toUpperCase())
+    if (!r) continue
+    if (cellCount(r) > LINK_CELLS) issues.add('hyperlink', 'a hyperlink over more than 4,096 cells is read on the cells of its range that hold something', where)
+    for (const cell of cellsWithin(r, () => Object.keys(cells), LINK_CELLS)) if (!out.has(cell)) out.set(cell, link)
   }
   return out
 }
