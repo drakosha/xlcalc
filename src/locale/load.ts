@@ -61,25 +61,42 @@ function checkLocaleObject(locale: unknown, path: string): Locale {
   return locale as Locale
 }
 
-/** How a package's locale is loaded: `import { ruRU } from 'xlcalc/locales/ru-RU'` and `registerLocale(ruRU)`. */
+/** A package's locale by name, as its module exports it (`ruRU`). */
+const nameOf = (tag: string) => tag.replace('-', '')
+
+/** How the root loads a package's locale: `import { ruRU } from 'xlcalc/locales/ru-RU'` and `registerLocale(ruRU)`. */
 function howToLoad(tag: string): string {
-  const name = tag.replace('-', '')
-  return `import { ${name} } from 'xlcalc/locales/${tag}' and call registerLocale(${name})`
+  return `import { ${nameOf(tag)} } from 'xlcalc/locales/${tag}' and call registerLocale(${nameOf(tag)})`
 }
 
-/** A loaded locale's tag; a package's locale not loaded names its module, another tag the loaded ones (tags are compared as written). */
-export function checkLocaleTag(v: unknown, path: string): string {
+/**
+ * What a refusal of a package's locale not loaded says to do: without the root, which alone has `registerLocale`, give
+ * the locale as an object; once the root is loaded (`rootLoaded`), import its module and load it. So the subpaths without
+ * the engine (`./text`) carry neither the root's hint nor the package's name, which a host looks for as the engine's sign.
+ */
+let toLoad = (tag: string) => `give the locale as an object, ${nameOf(tag)} of the package's module locales/${tag}`
+
+/** The root is loaded: a package's locale not loaded is refused with its module to import and `registerLocale`. */
+export function rootLoaded(): void {
+  toLoad = howToLoad
+}
+
+/** A loaded locale's tag; a package's locale not loaded says how to load it (`hint`), another tag names the loaded ones (tags are compared as written). */
+function checkTag(v: unknown, path: string, hint: (tag: string) => string): string {
   const tag = checkString(v, path)
   if (LOCALES.has(tag)) return tag
   const loaded = `loaded: ${[...LOCALES.keys()].join(', ')}`
-  if (PACKAGE_LOCALES.includes(tag)) throw new InputError(path, `the locale ${tag} is not loaded: ${howToLoad(tag)} (${loaded})`)
+  if (PACKAGE_LOCALES.includes(tag)) throw new InputError(path, `the locale ${tag} is not loaded: ${hint(tag)} (${loaded})`)
   const near = PACKAGE_LOCALES.find((t) => t.toLowerCase() === tag.toLowerCase())
   throw new InputError(path, `unknown locale ${JSON.stringify(tag)} (${loaded}${near ? `; tags are case-sensitive: ${near}` : `; the package's: ${PACKAGE_LOCALES.join(', ')}`})`)
 }
 
+/** A book's locale (`BookInput.locale`), the tag of a loaded one: a book takes no object, so a package's locale not loaded names its module and `registerLocale`, in the root, a thread or `xlsx`. */
+export const checkBookLocale = (v: unknown, path: string): string => checkTag(v, path, howToLoad)
+
 /** A locale given by the tag of a loaded one or as an object, loaded or not: the locale. */
 export function checkLocaleArg(v: unknown, path: string): Locale {
-  return typeof v === 'string' ? LOCALES.get(checkLocaleTag(v, path))! : checkLocaleObject(v, path)
+  return typeof v === 'string' ? LOCALES.get(checkTag(v, path, toLoad))! : checkLocaleObject(v, path)
 }
 
 /** The fields of a locale's rules of computation, every one of them required. */

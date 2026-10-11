@@ -1,8 +1,9 @@
 /**
  * The round trip: every formula of the coverage measurement, the Excel case sets and the probes, in the
- * engine's canonical form, shown in each of the package's locales (`LOCALES`) and read back, is the same text. A
- * formula the parser does not take goes round as it is written, or is refused by `toLocal` too (a name in an array
- * constant, `{falſe}`, which Excel for Mac reads as FALSE: the set `name-case-held`).
+ * engine's canonical form, shown in each of the package's locales (`LOCALES`) and read back, is the same formula: the
+ * same text but for the quotes of sheets, which the canonical text puts on every sheet and the text shown only where
+ * Excel does. A formula the parser does not take goes round as it is written, or is refused by `toLocal` too (a name in
+ * an array constant, `{falſe}`, which Excel for Mac reads as FALSE: the set `name-case-held`).
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -39,7 +40,7 @@ describe('round trip through a locale', () => {
         const shown = toLocal(f, loc)
         if (!shown.ok) return refused.has(f) ? [] : [`${f}: ${shown.message} at ${shown.at}`]
         const back = toInvariant(shown.formula, loc)
-        return back.ok && back.formula === f ? [] : [`${f} → ${shown.formula} → ${back.ok ? back.formula : back.message}`]
+        return back.ok && canonicalOf(back.formula) === f ? [] : [`${f} → ${shown.formula} → ${back.ok ? back.formula : back.message}`]
       })
       expect(off.slice(0, 10)).toEqual([])
     })

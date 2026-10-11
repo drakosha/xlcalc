@@ -9,7 +9,7 @@ import { cellsOf } from '../bench/coverage/case-book.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { TableAnswer, TableCase, TableShape } from '../bench/coverage/tables/cases.js'
 import { takenBook } from '../bench/coverage/stored.js'
-import { compute, enUS, InputError, LOCALES, createSession, quoteSheetIfNeeded, toInvariant, toLocal, type BookInput, type ComputeResult, type Locale } from '../src/index.js'
+import { compute, enUS, InputError, LOCALES, createSession, toInvariant, toLocal, type BookInput, type ComputeResult } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { sheetKey, validate } from '../src/syntax.js'
 import { tableAt, tablesOf } from '../src/tables/model.js'
@@ -149,15 +149,13 @@ export function differences(c: TableCase, x: TableAnswer, tag?: string): string[
     // the text Excel shows, en-US and in the user's language: toLocal with the table of the cell
     if (got.formulas[k] === undefined) continue
     const table = enclosingOf(got.book, sheet, addr)
-    // (the stored text quotes every sheet name, Excel only the names that need it; a reference across sheets stays quoted)
-    const unquoted = (f: string, locale: Locale) => f.replace(/'((?:[^':]|'')+)'!/g, (_, name: string) => `${quoteSheetIfNeeded(name.replaceAll("''", "'"), locale)}!`)
-    // nor the spaces typed between a reference's items (`[[#Data], [Price]]`)
+    // the spaces typed between a reference's items aside (`[[#Data], [Price]]`)
     shown = shown.replace(/([,;]) +\[/g, '$1[')
     const en = toLocal(got.formulas[k], enUS, { table })
-    if (en.ok && `=${unquoted(en.formula, enUS)}` !== shown) out.push(`${k}: Excel shows ${shown}, toLocal ${en.formula}`)
+    if (en.ok && `=${en.formula}` !== shown) out.push(`${k}: Excel shows ${shown}, toLocal ${en.formula}`)
     const local = x.local?.[k]
     const loc = local === undefined ? null : toLocal(got.formulas[k], localeOf(c, tag), { table })
-    if (loc?.ok && `=${unquoted(loc.formula, localeOf(c, tag))}` !== local?.replace(/([,;]) +\[/g, '$1[')) out.push(`${k}: Excel ${c.book.locale ?? tag} shows ${local}, toLocal ${loc.formula}`)
+    if (loc?.ok && `=${loc.formula}` !== local?.replace(/([,;]) +\[/g, '$1[')) out.push(`${k}: Excel ${c.book.locale ?? tag} shows ${local}, toLocal ${loc.formula}`)
   }
   return out
 }

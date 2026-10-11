@@ -61,7 +61,7 @@ A formula shows a sheet's name before its reference in quotes only where the nam
 - that is an R1C1 reference without numbers as a whole: `'R'`, `'C'`, `'RC'`, `'R1C'`; with more after it, it stays (`Region`, `Cost`, `RCx`, `R_`);
 - that is TRUE or FALSE in any case (`'TRUE'`, `'false'`) in the stored text (`Range.Formula`), and the locale's words in the text shown in a locale (`Range.FormulaLocal`): `'ИСТИНА'` and `'ЛОЖЬ'` in ru-RU, where `TRUE` stays as it is. `quoteSheetIfNeeded(name, locale)` takes a locale object for its words, en-US's without one.
 
-Letters of other scripts that look like R and C are no references (`Р1`, `С1`, `Ř1`, `К1С1`), and words that are no boolean stay as they are (`TRUEx`, `FALSE1`). The engine's canonical text quotes every sheet (`'Sales'!A1`), and its tokenizer reads a name without quotes by the first rule above, so both Excel's text and the canonical one read back.
+Letters of other scripts that look like R and C are no references (`Р1`, `С1`, `Ř1`, `К1С1`), and words that are no boolean stay as they are (`TRUEx`, `FALSE1`). The engine's canonical text quotes every sheet (`'Sales'!A1`), and its tokenizer reads a name without quotes by the first rule above, so both Excel's text and the canonical one read back. The text shown to a person quotes by these rules, as Excel shows it: `toLocal`, a window's `formulaLocal` and `editText` and the text of `explain` show `=Sales!A1`, and a reference across sheets without quotes when neither end needs them (`Jan:Mar!A1`, but `'S1:S3'!A1`).
 
 ## The intersection and the range operator
 

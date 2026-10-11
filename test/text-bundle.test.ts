@@ -2,7 +2,9 @@
  * The `./text` subpath takes none of the engine: bundled by esbuild for the browser from the build under test, it holds
  * the tokenizer, the translation of a locale's formula text and the check of its functions' arguments (no parser, number
  * format or computation), en-US's messages alone of the locales' data, stays under 50 KB, and runs in an empty `node:vm`
- * context with ru-RU given as an object, or the part of it a formula's text needs.
+ * context with ru-RU given as an object, or the part of it a formula's text needs. It holds no `xlcalc`, which a host
+ * looks for in its bundle as the sign of the engine: a tag not loaded asks for the locale as an object, and only the root
+ * names the module to import and `registerLocale`.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -23,6 +25,7 @@ describe('text without the engine', () => {
     // criteria, dates and numfmt/style: the lexer takes the escape of a regular expression's characters from criteria
     expect(used).toEqual(['a1', 'collate', 'criteria', 'dates', 'entry/clipboard', 'input', 'input-error', 'locale/english', 'locale/index', 'locale/lex', 'locale/load', 'locale/registry', 'locale/translate', 'locales/en-US', 'model', 'numfmt/style', 'scan', 'sheet-pattern', 'strict-args', 'syntax/ast', 'syntax/errors', 'syntax/scan', 'syntax/table', 'syntax/tokens', 'text'])
     expect(code.length).toBeLessThan(50 * 1024)
+    expect(code).not.toContain('xlcalc')
   }, 60_000)
 
   it('runs in an empty context, a locale given as an object or its formula text alone', async () => {
@@ -36,5 +39,8 @@ describe('text without the engine', () => {
     expect(out(`TEXT.scanReferences('=СУММ(A1:B2;{1;2:3})', { locale: part })${brief}`)).toEqual(['6-11 A1:B2'])
     expect(out(`TEXT.scanReferences('=SUM(A1:B2,{1,2;3})+)C3')${brief}`)).toEqual(['5-10 A1:B2', '21-23 C3'])
     expect(out(`[TEXT.quoteSheetIfNeeded('Q1 data'), TEXT.quoteSheetIfNeeded('ИСТИНА', part), TEXT.escapeColumn('@x#y')]`)).toEqual(["'Q1 data'", "'ИСТИНА'", "'@x'#y"])
+    expect(out(`(() => { try { TEXT.scanReferences('=A1', { locale: 'ru-RU' }) } catch (e) { return e.message } })()`)).toBe(
+      "opts.locale: the locale ru-RU is not loaded: give the locale as an object, ruRU of the package's module locales/ru-RU (loaded: en-US)",
+    )
   }, 60_000)
 })

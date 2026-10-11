@@ -1,10 +1,12 @@
 /**
  * Translation of formula text between the invariant syntax and a locale, piece by piece (`lex.ts`):
  * numbers change their decimal separator, function names, TRUE/FALSE and error literals their words,
- * separators their characters; strings, sheet names, defined names and references stay as they are, and so
- * does whitespace. The output is lexed again on the target side: a piece that would read differently there
+ * separators their characters; strings, defined names and references stay as they are, and so does whitespace. A
+ * sheet's name shown in the locale is in quotes only where Excel puts them (`'Data'!B2` is `Data!B2`); read back, it
+ * stays as typed. The output is lexed again on the target side: a piece that would read differently there
  * (`1.5` typed in ru-RU, where the decimal separator is `,`) is a syntax error at its place in the input.
  */
+import { quoteSheetIfNeeded } from '../a1.js'
 import { wordKey } from '../collate.js'
 import { LOCALE_ERRORS } from '../syntax/errors.js'
 import { INVARIANT, lex, numberRule, tableText, type Piece, type Syntax } from './lex.js'
@@ -26,6 +28,8 @@ interface Side {
   err: ReadonlyMap<string, string>
   /** The other side's specifier of a structured reference (upper-case keys of this side's, English ones too on the local side). */
   item: ReadonlyMap<string, string>
+  /** A sheet's name before a reference as this side shows it (the local side, by its booleans); none keeps the text's own. */
+  sheet?: (name: string) => string
 }
 
 /** A locale's two sides: the invariant one (`toLocal` reads it) and the local one. */
@@ -68,6 +72,7 @@ export function sides(loc: Locale): Sides {
       word: upperKeys([...same(['TRUE', 'FALSE']), ...swap(bools)]),
       err: upperKeys([...same(LOCALE_ERRORS), ...swap(errors)]),
       item: upperKeys([...same(TABLE_ITEMS), ...swap(items)]),
+      sheet: (name) => quoteSheetIfNeeded(name, loc),
     },
   }
 }
@@ -76,6 +81,23 @@ const fail = (at: number, msg: Message): Fail => ({ ok: false, msg, at })
 
 /** A name in quotes because it reads as a boolean of the side (`'ИСТИНА'`), which stands for the name where it is no boolean. */
 const quotedWord = (text: string, side: Side) => text.length > 2 && text.startsWith("'") && text.endsWith("'") && side.word.has(wordKey(text.slice(1, -1)))
+
+/**
+ * A sheet's prefix (`'Data'!`, `Data!`, `'Jan:Mar'!`) with its names as `sheet` shows them: a reference across sheets
+ * without quotes when neither end needs them, else as it is (Excel quotes the pair: `'S1:S3'!`).
+ */
+function sheetPrefix(text: string, sheet: (name: string) => string): string {
+  const names = (text.startsWith("'") ? text.slice(1, -2).replaceAll("''", "'") : text.slice(0, -1)).split(':')
+  if (names.length === 1) return `${sheet(names[0])}!`
+  return names.length === 2 && names.every((n) => sheet(n) === n) ? `${names.join(':')}!` : text
+}
+
+/** Whether piece `i` is a sheet's prefix, quoted or not: not the end of a reference across sheets written without quotes (`Jan:Mar!`), nor a sheet of another book (`[1]Sheet!`). */
+const isSheetPrefix = (pieces: Piece[], i: number) => {
+  const { k, text } = pieces[i]
+  const before = pieces[i - 1]?.text
+  return k === 'raw' && text.length > 1 && text.endsWith('!') && text[0] !== '"' && before !== ':' && !before?.endsWith(']')
+}
 
 /** A translated text; `back` maps a position in it to the input: the same character, or the start of a translated piece. */
 export interface Translated {
@@ -116,15 +138,18 @@ export function translate(src: string, from: Side, to: Side, offset = 0): Transl
     } else if (special[p.arr ? 1 : 0].has(text)) return fail(offset + p.at, { key: 'unexpectedText', text }) // `,` outside a number in ru-RU
     out.push({ ...p, text })
   }
-  const formula = out.map((p) => p.text).join('')
   // reading the output on the other side must give the same pieces
-  const again = lex(formula, to.syn, to.errors, to.num)
+  const again = lex(out.map((p) => p.text).join(''), to.syn, to.errors, to.num)
   const read = Array.isArray(again) ? again : []
   const bad = out.findIndex((p, i) => read[i]?.k !== p.k || read[i].text !== p.text)
   if (bad >= 0 || read.length !== out.length) {
     const p = pieces[bad >= 0 ? bad : out.length - 1]
     return fail(offset + p.at, { key: 'notWritable', text: p.text, ...(to.tag !== undefined ? { tag: to.tag } : {}) })
   }
+  // sheets as the side shows them, after the check: `quoteSheetIfNeeded` leaves out the quotes only where the lexer reads the name without them
+  const sheet = to.sheet
+  if (sheet) for (let i = 0; i < out.length; i++) if (isSheetPrefix(out, i)) out[i] = { ...out[i], text: sheetPrefix(out[i].text, sheet) }
+  const formula = out.map((p) => p.text).join('')
   const starts: number[] = []
   let pos = 0
   for (const p of out) {

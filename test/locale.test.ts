@@ -110,11 +110,12 @@ describe('validateLocalFormula', () => {
 })
 
 describe('locales as data', () => {
-  it('en-US is the invariant syntax', () => {
-    for (const f of ["SUMIFS('Data'!D:D,'Data'!B:B,\">=1.5\")", 'IF(TRUE,{1,2;3,4},#N/A)', 'ROUND(1.5,0)']) {
+  it('en-US is the invariant syntax, its sheets shown in quotes where Excel puts them', () => {
+    for (const f of ['SUMIFS(Data!D:D,Data!B:B,">=1.5")', "SUM('Q 1'!A1,'TRUE'!A1)", 'IF(TRUE,{1,2;3,4},#N/A)', 'ROUND(1.5,0)']) {
       expect(local(f, enUS)).toBe(f)
       expect(invariant(f, enUS)).toBe(f)
     }
+    expect(local("SUMIFS('Data'!D:D,'Data'!B:B,\">=1.5\")", enUS)).toBe('SUMIFS(Data!D:D,Data!B:B,">=1.5")')
   })
 
   it("a locale of one's own is an object of the same shape", () => {

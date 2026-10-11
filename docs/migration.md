@@ -47,7 +47,7 @@ A book hashes as before: `inputHash` writes the number format by its old name, s
 | `mapCell` threw `InputError` for a sheet the book before the operation does not have | it answers null, as for a deleted cell, in every place it is given: `editStructure`'s answer, a session's, and `undo`'s and `redo`'s |
 | the books of answers (`getBook()`, `getLayout()`, `getSnapshot().book`, `editStructure(book, op).book`, `readXlsx(…).book`) were typed `BookInput`, so reading `format` from one compiled and gave undefined | they are typed `Book` (its sheets `Sheet`, its cells `Cell`; `BookLayout` without the cells), which have no `format`: reading the old name does not compile; a `Book` is a `BookInput` and goes back into every call that takes a book |
 | `getViewport` gave a cell's `style` and `effectiveStyle` as style objects | as numbers of the book's `styles`, as `getCells`, the changes of edits and the book give a style; `Viewport.styles` has the objects of the styles the window shows, by number |
-| `explain`'s text wrote an error by its code (`#DIV0`) and an empty cell as `null` | the error as the cells show it in the book's locale (`#DIV/0!`, `#ДЕЛ/0!`) with the cell it began in (`(error from 'S'!A2)`), and an empty cell as `empty`; the tree's error nodes have `origin` |
+| `explain`'s text wrote an error by its code (`#DIV0`) and an empty cell as `null` | the error as the cells show it in the book's locale (`#DIV/0!`, `#ДЕЛ/0!`) with the cell it began in (`(error from S!A2)`), and an empty cell as `empty`; the tree's error nodes have `origin` |
 
 ## How it was checked
 

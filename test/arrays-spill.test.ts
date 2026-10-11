@@ -28,7 +28,7 @@ describe('spill references in the syntax', () => {
   })
 
   it('the locale translation passes # after a reference through', () => {
-    expect(toLocal("SUM(E2#,'Данные'!B1#)/ROWS(sp)", ruRU)).toEqual({ ok: true, formula: "СУММ(E2#;'Данные'!B1#)/ЧСТРОК(sp)" })
+    expect(toLocal("SUM(E2#,'Данные'!B1#)/ROWS(sp)", ruRU)).toEqual({ ok: true, formula: 'СУММ(E2#;Данные!B1#)/ЧСТРОК(sp)' })
     expect(toInvariant('=СУММ(E2#;1,5)*Лист1!A1#', ruRU)).toEqual({ ok: true, formula: 'SUM(E2#,1.5)*Лист1!A1#' })
   })
 })

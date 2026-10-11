@@ -35,10 +35,10 @@ describe('the syntax of @, unions and references across sheets', () => {
     expect(validateFormula("SUM('Jan:Mar'!A1)", { sheets: ['Jan', 'Mar'] })).toMatchObject({ ok: true, sheets: ['Jan', 'Mar'] })
   })
 
-  it('ru-RU text: a union joined by ";", @ and the sheets as they are', () => {
+  it('ru-RU text: a union joined by ";", @ and the sheets as Excel shows them', () => {
     const local = toLocal("SUM((A1:A3,C1))+@B1:B3+SUM('Jan:Mar'!A1)+1.5", ruRU)
-    expect(local).toEqual({ ok: true, formula: "СУММ((A1:A3;C1))+@B1:B3+СУММ('Jan:Mar'!A1)+1,5" })
-    expect(toInvariant(local.ok ? local.formula : '', ruRU)).toEqual({ ok: true, formula: "SUM((A1:A3,C1))+@B1:B3+SUM('Jan:Mar'!A1)+1.5" })
+    expect(local).toEqual({ ok: true, formula: 'СУММ((A1:A3;C1))+@B1:B3+СУММ(Jan:Mar!A1)+1,5' })
+    expect(toInvariant(local.ok ? local.formula : '', ruRU)).toEqual({ ok: true, formula: 'SUM((A1:A3,C1))+@B1:B3+SUM(Jan:Mar!A1)+1.5' })
   })
 
   it('a reference across sheets reads the sheets between its ends in the book\'s order, either way round', () => {

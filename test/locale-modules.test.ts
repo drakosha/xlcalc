@@ -128,7 +128,7 @@ describe('registerLocale', () => {
       expect([v.A1.value, v.A2.value, v.A3.text]).toEqual([1236, 'a1,5ИСТИНА', '15.03.2026'])
       const session = createSession(ruBook, { clock, execution })
       expect(session.getResult().hash).toBe(r.hash)
-      expect(session.explain('S', 'A1').text).toBe("'S'!A1 = 1236  ← ЗНАЧЕН(\"1,5\")+ЗНАЧЕН(\"1 234,5\")")
+      expect(session.explain('S', 'A1').text).toBe("S!A1 = 1236  ← ЗНАЧЕН(\"1,5\")+ЗНАЧЕН(\"1 234,5\")")
       expect(session.editStructure({ op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, message: 'В книге должен остаться хотя бы один лист' })
       const calc = createInlineCalc()
       expect((await calc.compute(ruBook, { clock, execution })).hash).toBe(r.hash)

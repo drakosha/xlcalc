@@ -8,7 +8,7 @@ import { overlapping, parseMerge } from './layout/merges.js'
 import { parseSpan } from './layout/spans.js'
 import { english } from './locale/english.js'
 import type { Message } from './locale/messages.js'
-import { checkLocaleArg, checkLocaleTag } from './locale/load.js'
+import { checkBookLocale, checkLocaleArg } from './locale/load.js'
 import { dateToSerial, MAX_COLS, MAX_ROWS } from './model.js'
 import { isBuiltin } from './numfmt/builtin.js'
 import type { Axis } from './structure/area.js'
@@ -337,7 +337,7 @@ export const SHEET_STATES = new Map<true | 'very', string>([
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
   onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration'])
-  if (book.locale !== undefined) checkLocaleTag(book.locale, `${path}.locale`)
+  if (book.locale !== undefined) checkBookLocale(book.locale, `${path}.locale`)
   if (book.dateSystem !== undefined) checkOneOf(book.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (book.iteration !== undefined) {
     const it = object(book.iteration, `${path}.iteration`, 'iteration settings such as { maxIterations: 100, maxChange: 0.001 }')

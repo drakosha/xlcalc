@@ -25,7 +25,7 @@ What counts in books of every locale stays in the core, so an en-US book shows t
 
 ## Formula text
 
-A locale is a plain object (`Locale`, `src/locale/types.ts`): its formula text, and for a locale a book computes in, its rules of computation (`regional`) and messages. en-US's is `enUS` of the root, ru-RU's `ruRU` of its module, and `LOCALES` has the loaded ones by tag (`LOCALES.get('ru-RU')`). `toLocal`, `toInvariant` and `validateLocalFormula` take a loaded locale's tag or a locale object, and translate a formula piece by piece: function names, TRUE and FALSE, error literals, the decimal separator, and the separators of arguments and array constants. Strings, sheet names, defined names, references and whitespace are copied as they are.
+A locale is a plain object (`Locale`, `src/locale/types.ts`): its formula text, and for a locale a book computes in, its rules of computation (`regional`) and messages. en-US's is `enUS` of the root, ru-RU's `ruRU` of its module, and `LOCALES` has the loaded ones by tag (`LOCALES.get('ru-RU')`). `toLocal`, `toInvariant` and `validateLocalFormula` take a loaded locale's tag or a locale object, and translate a formula piece by piece: function names, TRUE and FALSE, error literals, the decimal separator, and the separators of arguments and array constants. Strings, defined names, references and whitespace are copied as they are. A sheet's name is shown in quotes only where Excel puts them, by `quoteSheetIfNeeded` with the locale's booleans: the stored `'Data'!B2` is `Data!B2` in every locale, `'ИСТИНА'!A1` stays quoted in ru-RU and `'TRUE'!A1` is `TRUE!A1` there; read back, a name with quotes or without is kept as typed.
 
 The output is read again in the target locale, so text that would change its meaning in translation is a syntax error at its place: `1.5` typed in ru-RU, where `.` is not a decimal separator.
 
@@ -99,13 +99,13 @@ A person working in a book's locale reads the engine's messages in its language:
 | `validateLocalFormula('=СУММ(1.5)', ruRU)` | `Здесь не может стоять «.»` |
 | `editStructure` deleting rows through an old-kind array | `Нельзя изменить часть массива S!C1 (C1:C3)` |
 | `editStructure` renaming a sheet to a name taken | `Лист «Итоги» уже есть (имена листов не различают регистр)` |
-| `explain` | `'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)` |
+| `explain` | `План!B2 = 480  ← ОКРУГЛ(B1*1,2;0)` |
 
 ### Which locale
 
 - `parseEntry` writes in `opts.locale`, and `toLocal`, `toInvariant` and `validateLocalFormula` in the locale they are given. A locale object speaks by its own `messages`; without them, as the loaded locale of its tag, and in English for another tag.
 - `editStructure`, and a session's `editStructure` alike in the same thread, in a thread of the pool or synchronously, write in the book's `locale`.
-- `explain`'s `text` is written in the book's locale: its words (`(2 ячейки)`, `перенос из`, `(ошибка из 'План'!A2)`), numbers with the locale's decimal separator, formulas as `toLocal` shows them, booleans in the locale's words (`ИСТИНА`), errors as the book's cells show them (`#Н/Д`), and an empty cell as `пусто`. The tree's `ref`, `value`, `formula` and `origin` stay as the book stores them, for programs.
+- `explain`'s `text` is written in the book's locale: its words (`(2 ячейки)`, `перенос из`, `(ошибка из План!A2)`), numbers with the locale's decimal separator, formulas as `toLocal` shows them, references with a sheet in quotes only where Excel puts them, booleans in the locale's words (`ИСТИНА`), errors as the book's cells show them (`#Н/Д`), and an empty cell as `пусто`. The tree's `ref`, `value`, `formula` and `origin` stay as the book stores them, for programs.
 
 Codes (`code`) and positions (`at`) are the same in every language, so a host that chose its own words by the code may go on doing so, or show `message` as it is.
 
