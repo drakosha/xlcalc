@@ -34,10 +34,7 @@ function sameSize(line: string): boolean {
  */
 const WIN_STRUCT: Readonly<Record<string, string | string[]>> = {
   ...Object.fromEntries(
-    [
-      ...['delete-rows-3-4', 'delete-row-1048572', 'delete-row-1048576', 'delete-rows-1048575-2', 'delete-rows-1048568-4', 'delete-columns-B-C', 'delete-column-XFB', 'delete-column-XFD', 'delete-columns-XEZ-3'].map((id) => `edge-layout:${id}`),
-      ...['delete-column-A', 'delete-column-D', 'insert-column-B', 'delete-row-3'].map((id) => `edge-wide:${id}`),
-    ].map((k) => [k, EDGE]),
+    ['delete-rows-3-4', 'delete-row-1048572', 'delete-row-1048576', 'delete-rows-1048575-2', 'delete-rows-1048568-4', 'delete-columns-B-C', 'delete-column-XFB', 'delete-column-XFD', 'delete-columns-XEZ-3'].map((id) => [`edge-layout:${id}`, EDGE]),
   ),
   // whole columns copied onto part of a merged area: Excel pastes them, on Windows as on the Mac; the engine refuses
   'styles:copy-S!D:D-S!C1': ['engine refused (merged): the pasted cells land on part of the merged area S!B10:C11'],

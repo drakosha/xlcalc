@@ -1,0 +1,3754 @@
+{
+ "now": "2026-10-11",
+ "locales": {
+  "en-US": {
+   "numbers-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234.5
+       },
+       "value": 1234.5
+      },
+      "B2": {
+       "input": {
+        "value": 1234.5,
+        "numberFormat": 4
+       },
+       "value": 1234.5
+      },
+      "B3": {
+       "input": {
+        "value": "1234,5"
+       },
+       "value": "1234,5"
+      },
+      "B4": {
+       "input": {
+        "value": "1 234,5"
+       },
+       "value": "1 234,5"
+      },
+      "B5": {
+       "input": {
+        "value": -5
+       },
+       "value": -5
+      },
+      "B6": {
+       "input": {
+        "value": -5
+       },
+       "value": -5
+      },
+      "B7": {
+       "input": {
+        "value": 1000,
+        "numberFormat": 11
+       },
+       "value": 1000
+      },
+      "B8": {
+       "input": {
+        "value": 7
+       },
+       "value": 7
+      },
+      "B9": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      },
+      "B10": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      },
+      "B11": {
+       "input": {
+        "value": "5 abc"
+       },
+       "value": "5 abc"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234.5
+      },
+      "value": 1234.5
+     },
+     "B2": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 4
+      },
+      "value": 1234.5
+     },
+     "B3": {
+      "input": {
+       "value": "1234,5"
+      },
+      "value": "1234,5"
+     },
+     "B4": {
+      "input": {
+       "value": "1 234,5"
+      },
+      "value": "1 234,5"
+     },
+     "B5": {
+      "input": {
+       "value": -5
+      },
+      "value": -5
+     },
+     "B6": {
+      "input": {
+       "value": -5
+      },
+      "value": -5
+     },
+     "B7": {
+      "input": {
+       "value": 1000,
+       "numberFormat": 11
+      },
+      "value": 1000
+     },
+     "B8": {
+      "input": {
+       "value": 7
+      },
+      "value": 7
+     },
+     "B9": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B10": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B11": {
+      "input": {
+       "value": "5 abc"
+      },
+      "value": "5 abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "wide-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234567890123
+       },
+       "value": 1234567890123
+      },
+      "C1": {
+       "input": {
+        "value": 46022.75,
+        "numberFormat": 22
+       },
+       "value": 46022.75
+      },
+      "D1": {
+       "input": {
+        "value": "31.12.2025 18:00"
+       },
+       "value": "31.12.2025 18:00"
+      },
+      "E1": {
+       "input": {
+        "value": "abcdefghijklmnopqrstuvwxyz"
+       },
+       "value": "abcdefghijklmnopqrstuvwxyz"
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      },
+      {
+       "sheet": "S",
+       "column": "C",
+       "width": 15.33203125
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      },
+      {
+       "sheet": "S",
+       "column": "C",
+       "width": 15.33203125
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234567890123
+      },
+      "value": 1234567890123
+     },
+     "C1": {
+      "input": {
+       "value": 46022.75,
+       "numberFormat": 22
+      },
+      "value": 46022.75
+     },
+     "D1": {
+      "input": {
+       "value": "31.12.2025 18:00"
+      },
+      "value": "31.12.2025 18:00"
+     },
+     "E1": {
+      "input": {
+       "value": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "value": "abcdefghijklmnopqrstuvwxyz"
+     }
+    },
+    "widths": {
+     "B": 11.83203125,
+     "C": 15.33203125,
+     "D": null,
+     "E": null
+    }
+   },
+   "wide-2": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234567890123450000
+       },
+       "value": 1234567890123450000
+      },
+      "C1": {
+       "input": {
+        "value": 3.14159265358979
+       },
+       "value": 3.14159265358979
+      },
+      "D1": {
+       "input": {
+        "value": 314159265358979,
+        "numberFormat": 3
+       },
+       "value": 314159265358979
+      },
+      "E1": {
+       "input": {
+        "value": 12345678.9
+       },
+       "value": 12345678.9
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      },
+      {
+       "sheet": "S",
+       "column": "D",
+       "width": 18.33203125
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      },
+      {
+       "sheet": "S",
+       "column": "D",
+       "width": 18.33203125
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234567890123450000
+      },
+      "value": 1234567890123450000
+     },
+     "C1": {
+      "input": {
+       "value": 3.14159265358979
+      },
+      "value": 3.14159265358979
+     },
+     "D1": {
+      "input": {
+       "value": 314159265358979,
+       "numberFormat": 3
+      },
+      "value": 314159265358979
+     },
+     "E1": {
+      "input": {
+       "value": 12345678.9
+      },
+      "value": 12345678.9
+     }
+    },
+    "widths": {
+     "B": 11.83203125,
+     "C": null,
+     "D": 18.33203125,
+     "E": null
+    }
+   },
+   "fractions-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1.5,
+        "numberFormat": 12
+       },
+       "value": 1.5
+      },
+      "B2": {
+       "input": {
+        "value": 0.3333333333333333,
+        "numberFormat": 12
+       },
+       "value": 0.333333333333333
+      },
+      "B3": {
+       "input": {
+        "value": 46085,
+        "numberFormat": 16
+       },
+       "value": 46085
+      },
+      "B4": {
+       "input": {
+        "value": 1.0833333333333333,
+        "numberFormat": 13
+       },
+       "value": 1.08333333333333
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": 12
+      },
+      "value": 1.5
+     },
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": 12
+      },
+      "value": 0.333333333333333
+     },
+     "B3": {
+      "input": {
+       "value": 46085,
+       "numberFormat": 16
+      },
+      "value": 46085
+     },
+     "B4": {
+      "input": {
+       "value": 1.0833333333333333,
+       "numberFormat": 13
+      },
+      "value": 1.08333333333333
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "dates-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B2": {
+       "input": {
+        "value": "31.01.2025"
+       },
+       "value": "31.01.2025"
+      },
+      "B3": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B4": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 15
+       },
+       "value": 45688
+      },
+      "B5": {
+       "input": {
+        "value": 45658,
+        "numberFormat": 17
+       },
+       "value": 45658
+      },
+      "B6": {
+       "input": {
+        "value": 15.3
+       },
+       "value": 15.3
+      },
+      "B7": {
+       "input": {
+        "value": 46096,
+        "numberFormat": 16
+       },
+       "value": 46096
+      },
+      "B8": {
+       "input": {
+        "value": "31 янв 2025"
+       },
+       "value": "31 янв 2025"
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B2": {
+      "input": {
+       "value": "31.01.2025"
+      },
+      "value": "31.01.2025"
+     },
+     "B3": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B4": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 15
+      },
+      "value": 45688
+     },
+     "B5": {
+      "input": {
+       "value": 45658,
+       "numberFormat": 17
+      },
+      "value": 45658
+     },
+     "B6": {
+      "input": {
+       "value": 15.3
+      },
+      "value": 15.3
+     },
+     "B7": {
+      "input": {
+       "value": 46096,
+       "numberFormat": 16
+      },
+      "value": 46096
+     },
+     "B8": {
+      "input": {
+       "value": "31 янв 2025"
+      },
+      "value": "31 янв 2025"
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "times-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 0.7708333333333334,
+        "numberFormat": 20
+       },
+       "value": 0.770833333333333
+      },
+      "B2": {
+       "input": {
+        "value": 0.7708333333333334,
+        "numberFormat": 18
+       },
+       "value": 0.770833333333333
+      },
+      "B3": {
+       "input": {
+        "value": 0.7710069444444444,
+        "numberFormat": 21
+       },
+       "value": 0.771006944444444
+      },
+      "B4": {
+       "input": {
+        "value": 1.0625,
+        "numberFormat": 46
+       },
+       "value": 1.0625
+      },
+      "B5": {
+       "input": {
+        "value": "18:30:15,5"
+       },
+       "value": "18:30:15,5"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 0.7708333333333334,
+       "numberFormat": 20
+      },
+      "value": 0.770833333333333
+     },
+     "B2": {
+      "input": {
+       "value": 0.7708333333333334,
+       "numberFormat": 18
+      },
+      "value": 0.770833333333333
+     },
+     "B3": {
+      "input": {
+       "value": 0.7710069444444444,
+       "numberFormat": 21
+      },
+      "value": 0.771006944444444
+     },
+     "B4": {
+      "input": {
+       "value": 1.0625,
+       "numberFormat": 46
+      },
+      "value": 1.0625
+     },
+     "B5": {
+      "input": {
+       "value": "18:30:15,5"
+      },
+      "value": "18:30:15,5"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "percents-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 0.12,
+        "numberFormat": 9
+       },
+       "value": 0.12
+      },
+      "B2": {
+       "input": {
+        "value": 0.125,
+        "numberFormat": 10
+       },
+       "value": 0.125
+      },
+      "B3": {
+       "input": {
+        "value": "12,5%"
+       },
+       "value": "12,5%"
+      },
+      "B4": {
+       "input": {
+        "value": -0.05,
+        "numberFormat": 9
+       },
+       "value": -0.05
+      },
+      "B5": {
+       "input": {
+        "value": 0.055,
+        "numberFormat": 10
+       },
+       "value": 0.055
+      },
+      "B6": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": 9
+       },
+       "value": 0.05
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 0.12,
+       "numberFormat": 9
+      },
+      "value": 0.12
+     },
+     "B2": {
+      "input": {
+       "value": 0.125,
+       "numberFormat": 10
+      },
+      "value": 0.125
+     },
+     "B3": {
+      "input": {
+       "value": "12,5%"
+      },
+      "value": "12,5%"
+     },
+     "B4": {
+      "input": {
+       "value": -0.05,
+       "numberFormat": 9
+      },
+      "value": -0.05
+     },
+     "B5": {
+      "input": {
+       "value": 0.055,
+       "numberFormat": 10
+      },
+      "value": 0.055
+     },
+     "B6": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": 9
+      },
+      "value": 0.05
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "money-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234.5,
+        "numberFormat": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+       },
+       "value": 1234.5
+      },
+      "B2": {
+       "input": {
+        "value": 5,
+        "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+       },
+       "value": 5
+      },
+      "B3": {
+       "input": {
+        "value": -5,
+        "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+       },
+       "value": -5
+      },
+      "B4": {
+       "input": {
+        "value": "1 234,50 ₽"
+       },
+       "value": "1 234,50 ₽"
+      },
+      "B5": {
+       "input": {
+        "value": "5 ₽"
+       },
+       "value": "5 ₽"
+      },
+      "B6": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.6640625
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.6640625
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": "\"$\"#,##0.00_);[Red]\\(\"$\"#,##0.00\\)"
+      },
+      "value": 1234.5
+     },
+     "B2": {
+      "input": {
+       "value": 5,
+       "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+      },
+      "value": 5
+     },
+     "B3": {
+      "input": {
+       "value": -5,
+       "numberFormat": "\"$\"#,##0_);[Red]\\(\"$\"#,##0\\)"
+      },
+      "value": -5
+     },
+     "B4": {
+      "input": {
+       "value": "1 234,50 ₽"
+      },
+      "value": "1 234,50 ₽"
+     },
+     "B5": {
+      "input": {
+       "value": "5 ₽"
+      },
+      "value": "5 ₽"
+     },
+     "B6": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     }
+    },
+    "widths": {
+     "B": 9.6640625
+    }
+   },
+   "bools-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": true
+       },
+       "value": true
+      },
+      "B2": {
+       "input": {
+        "value": false
+       },
+       "value": false
+      },
+      "B3": {
+       "input": {
+        "value": "ИСТИНА"
+       },
+       "value": "ИСТИНА"
+      },
+      "B4": {
+       "input": {
+        "value": "ложь"
+       },
+       "value": "ложь"
+      },
+      "B5": {
+       "input": {
+        "formula": "#N/A"
+       },
+       "value": {
+        "error": "NA"
+       }
+      },
+      "B6": {
+       "input": {
+        "value": "#Н/Д"
+       },
+       "value": "#Н/Д"
+      },
+      "B7": {
+       "input": {
+        "formula": "#DIV/0!"
+       },
+       "value": {
+        "error": "DIV0"
+       }
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": true
+      },
+      "value": true
+     },
+     "B2": {
+      "input": {
+       "value": false
+      },
+      "value": false
+     },
+     "B3": {
+      "input": {
+       "value": "ИСТИНА"
+      },
+      "value": "ИСТИНА"
+     },
+     "B4": {
+      "input": {
+       "value": "ложь"
+      },
+      "value": "ложь"
+     },
+     "B5": {
+      "input": {
+       "formula": "#N/A"
+      },
+      "value": {
+       "error": "NA"
+      }
+     },
+     "B6": {
+      "input": {
+       "value": "#Н/Д"
+      },
+      "value": "#Н/Д"
+     },
+     "B7": {
+      "input": {
+       "formula": "#DIV/0!"
+      },
+      "value": {
+       "error": "DIV0"
+      }
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "apostrophe-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "007"
+       },
+       "value": "007"
+      },
+      "B2": {
+       "input": {
+        "value": "1.5"
+       },
+       "value": "1.5"
+      },
+      "B3": {
+       "input": {
+        "value": "=1+2"
+       },
+       "value": "=1+2"
+      },
+      "B4": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      },
+      "B5": {
+       "input": {
+        "value": "TRUE"
+       },
+       "value": "TRUE"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": "007"
+      },
+      "value": "007"
+     },
+     "B2": {
+      "input": {
+       "value": "1.5"
+      },
+      "value": "1.5"
+     },
+     "B3": {
+      "input": {
+       "value": "=1+2"
+      },
+      "value": "=1+2"
+     },
+     "B4": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     },
+     "B5": {
+      "input": {
+       "value": "TRUE"
+      },
+      "value": "TRUE"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "formulas-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1*2"
+       },
+       "value": 4
+      },
+      "B2": {
+       "input": {
+        "formula": "A1+A3"
+       },
+       "value": 5
+      },
+      "B3": {
+       "input": {
+        "formula": "-A1"
+       },
+       "value": -2
+      },
+      "B4": {
+       "input": {
+        "formula": "+A1"
+       },
+       "value": 2
+      },
+      "B5": {
+       "input": {
+        "formula": "A1&\"x\""
+       },
+       "value": "2x"
+      },
+      "B6": {
+       "input": {
+        "formula": "1/0"
+       },
+       "value": {
+        "error": "DIV0"
+       }
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1*2"
+      },
+      "value": 4
+     },
+     "B2": {
+      "input": {
+       "formula": "A1+A3"
+      },
+      "value": 5
+     },
+     "B3": {
+      "input": {
+       "formula": "-A1"
+      },
+      "value": -2
+     },
+     "B4": {
+      "input": {
+       "formula": "+A1"
+      },
+      "value": 2
+     },
+     "B5": {
+      "input": {
+       "formula": "A1&\"x\""
+      },
+      "value": "2x"
+     },
+     "B6": {
+      "input": {
+       "formula": "1/0"
+      },
+      "value": {
+       "error": "DIV0"
+      }
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "formula-en-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "SUM(A1:A3)"
+       },
+       "value": 46101
+      },
+      "B2": {
+       "input": {
+        "formula": "SUM(A1,1.5)"
+       },
+       "value": 3.5
+      },
+      "B3": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "SUM(A1:A3)"
+      },
+      "value": 46101
+     },
+     "B2": {
+      "input": {
+       "formula": "SUM(A1,1.5)"
+      },
+      "value": 3.5
+     },
+     "B3": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "formula-ru-1": {
+    "preview": {
+     "refused": {
+      "cell": "B2",
+      "code": "syntax",
+      "at": 8
+     }
+    },
+    "set": {
+     "refused": {
+      "cell": "B2",
+      "code": "syntax",
+      "at": 8
+     }
+    },
+    "after": {
+     "B1": {
+      "input": null,
+      "value": null
+     },
+     "B2": {
+      "input": null,
+      "value": null
+     },
+     "B3": {
+      "input": null,
+      "value": null
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "bad-1": {
+    "preview": {
+     "refused": {
+      "cell": "B1",
+      "code": "syntax",
+      "at": 3
+     }
+    },
+    "set": {
+     "refused": {
+      "cell": "B1",
+      "code": "syntax",
+      "at": 3
+     }
+    },
+    "after": {
+     "B1": {
+      "input": null,
+      "value": null
+     },
+     "B2": {
+      "input": null,
+      "value": null
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "grid-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      },
+      "D1": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B2": {
+       "input": {
+        "value": 2.5
+       },
+       "value": 2.5
+      },
+      "C2": {
+       "input": {
+        "formula": "A1*2"
+       },
+       "value": 4
+      },
+      "D2": {
+       "input": {
+        "value": true
+       },
+       "value": true
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "D",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "D",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     },
+     "D1": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B2": {
+      "input": {
+       "value": 2.5
+      },
+      "value": 2.5
+     },
+     "C2": {
+      "input": {
+       "formula": "A1*2"
+      },
+      "value": 4
+     },
+     "D2": {
+      "input": {
+       "value": true
+      },
+      "value": true
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null,
+     "D": 9.5
+    }
+   },
+   "empty-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": null,
+       "value": null
+      },
+      "D1": {
+       "input": {
+        "value": 3
+       },
+       "value": 3
+      },
+      "B2": {
+       "input": {
+        "value": 4
+       },
+       "value": 4
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": null,
+      "value": null
+     },
+     "D1": {
+      "input": {
+       "value": 3
+      },
+      "value": 3
+     },
+     "B2": {
+      "input": {
+       "value": 4
+      },
+      "value": 4
+     },
+     "C2": {
+      "input": {
+       "value": "old"
+      },
+      "value": "old"
+     },
+     "D2": {
+      "input": {
+       "value": "old"
+      },
+      "value": "old"
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null,
+     "D": null
+    }
+   },
+   "trailing-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B2": {
+      "input": {
+       "value": "old"
+      },
+      "value": "old"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "newline-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": {
+        "value": 2
+       },
+       "value": 2
+      },
+      "B2": {
+       "input": {
+        "value": 3
+       },
+       "value": 3
+      },
+      "C2": {
+       "input": {
+        "value": 4
+       },
+       "value": 4
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": {
+       "value": 2
+      },
+      "value": 2
+     },
+     "B2": {
+      "input": {
+       "value": 3
+      },
+      "value": 3
+     },
+     "C2": {
+      "input": {
+       "value": 4
+      },
+      "value": 4
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null
+    }
+   },
+   "newline-2": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": {
+        "value": 2
+       },
+       "value": 2
+      },
+      "B2": {
+       "input": {
+        "value": 3
+       },
+       "value": 3
+      },
+      "C2": {
+       "input": {
+        "value": 4
+       },
+       "value": 4
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": {
+       "value": 2
+      },
+      "value": 2
+     },
+     "B2": {
+      "input": {
+       "value": 3
+      },
+      "value": 3
+     },
+     "C2": {
+      "input": {
+       "value": 4
+      },
+      "value": 4
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null
+    }
+   },
+   "text-cell-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "007",
+        "numberFormat": "@"
+       },
+       "value": "007"
+      },
+      "B2": {
+       "input": {
+        "value": "1.5",
+        "numberFormat": "@"
+       },
+       "value": "1.5"
+      },
+      "B3": {
+       "input": {
+        "value": "=A1*2",
+        "numberFormat": "@"
+       },
+       "value": "=A1*2"
+      },
+      "B4": {
+       "input": {
+        "value": "1/31/2025",
+        "numberFormat": "@"
+       },
+       "value": "1/31/2025"
+      },
+      "B5": {
+       "input": {
+        "value": "12%",
+        "numberFormat": "@"
+       },
+       "value": "12%"
+      },
+      "B6": {
+       "input": {
+        "value": "TRUE",
+        "numberFormat": "@"
+       },
+       "value": "TRUE"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": "007",
+       "numberFormat": "@"
+      },
+      "value": "007"
+     },
+     "B2": {
+      "input": {
+       "value": "1.5",
+       "numberFormat": "@"
+      },
+      "value": "1.5"
+     },
+     "B3": {
+      "input": {
+       "value": "=A1*2",
+       "numberFormat": "@"
+      },
+      "value": "=A1*2"
+     },
+     "B4": {
+      "input": {
+       "value": "1/31/2025",
+       "numberFormat": "@"
+      },
+      "value": "1/31/2025"
+     },
+     "B5": {
+      "input": {
+       "value": "12%",
+       "numberFormat": "@"
+      },
+      "value": "12%"
+     },
+     "B6": {
+      "input": {
+       "value": "TRUE",
+       "numberFormat": "@"
+      },
+      "value": "TRUE"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "percent-cell-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": "0%"
+       },
+       "value": 0.05
+      },
+      "B2": {
+       "input": {
+        "value": 0.005,
+        "numberFormat": "0%"
+       },
+       "value": 0.005
+      },
+      "B3": {
+       "input": {
+        "value": "5%%",
+        "numberFormat": "0%"
+       },
+       "value": "5%%"
+      },
+      "B4": {
+       "input": {
+        "value": "abc",
+        "numberFormat": "0%"
+       },
+       "value": "abc"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": "0%"
+      },
+      "value": 0.05
+     },
+     "B2": {
+      "input": {
+       "value": 0.005,
+       "numberFormat": "0%"
+      },
+      "value": 0.005
+     },
+     "B3": {
+      "input": {
+       "value": "5%%",
+       "numberFormat": "0%"
+      },
+      "value": "5%%"
+     },
+     "B4": {
+      "input": {
+       "value": "abc",
+       "numberFormat": "0%"
+      },
+      "value": "abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "date-cell-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B2": {
+       "input": {
+        "value": 0.7708333333333334,
+        "numberFormat": 20
+       },
+       "value": 0.770833333333333
+      },
+      "B3": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": 9
+       },
+       "value": 0.05
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9.5
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B2": {
+      "input": {
+       "value": 0.7708333333333334,
+       "numberFormat": 20
+      },
+      "value": 0.770833333333333
+     },
+     "B3": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": 9
+      },
+      "value": 0.05
+     }
+    },
+    "widths": {
+     "B": 9.5
+    }
+   },
+   "hand-width-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234567890123
+       },
+       "value": 1234567890123
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234567890123
+      },
+      "value": 1234567890123
+     }
+    },
+    "widths": {
+     "B": 5
+    }
+   },
+   "valid-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": -2
+       },
+       "value": -2
+      },
+      "B2": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      },
+      "B3": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      }
+     },
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "The value does not meet the data validation rule of this cell"
+      },
+      {
+       "cell": "B3",
+       "severity": "stop",
+       "message": "The value does not meet the data validation rule of this cell"
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "The value does not meet the data validation rule of this cell"
+      },
+      {
+       "cell": "B3",
+       "severity": "stop",
+       "message": "The value does not meet the data validation rule of this cell"
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": -2
+      },
+      "value": -2
+     },
+     "B2": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B3": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "valid-2": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "c"
+       },
+       "value": "c"
+      },
+      "B2": {
+       "input": {
+        "value": "a"
+       },
+       "value": "a"
+      }
+     },
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "The value does not meet the data validation rule of this cell"
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "The value does not meet the data validation rule of this cell"
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": "c"
+      },
+      "value": "c"
+     },
+     "B2": {
+      "input": {
+       "value": "a"
+      },
+      "value": "a"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   }
+  },
+  "ru-RU": {
+   "numbers-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "1234.5"
+       },
+       "value": "1234.5"
+      },
+      "B2": {
+       "input": {
+        "value": "1,234.5"
+       },
+       "value": "1,234.5"
+      },
+      "B3": {
+       "input": {
+        "value": 1234.5
+       },
+       "value": 1234.5
+      },
+      "B4": {
+       "input": {
+        "value": 1234.5,
+        "numberFormat": 4
+       },
+       "value": 1234.5
+      },
+      "B5": {
+       "input": {
+        "value": -5
+       },
+       "value": -5
+      },
+      "B6": {
+       "input": {
+        "value": -5
+       },
+       "value": -5
+      },
+      "B7": {
+       "input": {
+        "value": 1000,
+        "numberFormat": 11
+       },
+       "value": 1000
+      },
+      "B8": {
+       "input": {
+        "value": 7
+       },
+       "value": 7
+      },
+      "B9": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      },
+      "B10": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      },
+      "B11": {
+       "input": {
+        "value": "5 abc"
+       },
+       "value": "5 abc"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": "1234.5"
+      },
+      "value": "1234.5"
+     },
+     "B2": {
+      "input": {
+       "value": "1,234.5"
+      },
+      "value": "1,234.5"
+     },
+     "B3": {
+      "input": {
+       "value": 1234.5
+      },
+      "value": 1234.5
+     },
+     "B4": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": 4
+      },
+      "value": 1234.5
+     },
+     "B5": {
+      "input": {
+       "value": -5
+      },
+      "value": -5
+     },
+     "B6": {
+      "input": {
+       "value": -5
+      },
+      "value": -5
+     },
+     "B7": {
+      "input": {
+       "value": 1000,
+       "numberFormat": 11
+      },
+      "value": 1000
+     },
+     "B8": {
+      "input": {
+       "value": 7
+      },
+      "value": 7
+     },
+     "B9": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B10": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B11": {
+      "input": {
+       "value": "5 abc"
+      },
+      "value": "5 abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "wide-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234567890123
+       },
+       "value": 1234567890123
+      },
+      "C1": {
+       "input": {
+        "value": "12/31/2025 18:00"
+       },
+       "value": "12/31/2025 18:00"
+      },
+      "D1": {
+       "input": {
+        "value": 46022.75,
+        "numberFormat": 22
+       },
+       "value": 46022.75
+      },
+      "E1": {
+       "input": {
+        "value": "abcdefghijklmnopqrstuvwxyz"
+       },
+       "value": "abcdefghijklmnopqrstuvwxyz"
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      },
+      {
+       "sheet": "S",
+       "column": "D",
+       "width": 15
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      },
+      {
+       "sheet": "S",
+       "column": "D",
+       "width": 15
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234567890123
+      },
+      "value": 1234567890123
+     },
+     "C1": {
+      "input": {
+       "value": "12/31/2025 18:00"
+      },
+      "value": "12/31/2025 18:00"
+     },
+     "D1": {
+      "input": {
+       "value": 46022.75,
+       "numberFormat": 22
+      },
+      "value": 46022.75
+     },
+     "E1": {
+      "input": {
+       "value": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "value": "abcdefghijklmnopqrstuvwxyz"
+     }
+    },
+    "widths": {
+     "B": 11.83203125,
+     "C": null,
+     "D": 15,
+     "E": null
+    }
+   },
+   "wide-2": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234567890123450000
+       },
+       "value": 1234567890123450000
+      },
+      "C1": {
+       "input": {
+        "value": "3.14159265358979"
+       },
+       "value": "3.14159265358979"
+      },
+      "D1": {
+       "input": {
+        "value": 3.14159265358979
+       },
+       "value": 3.14159265358979
+      },
+      "E1": {
+       "input": {
+        "value": "12345678.9"
+       },
+       "value": "12345678.9"
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 11.83203125
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234567890123450000
+      },
+      "value": 1234567890123450000
+     },
+     "C1": {
+      "input": {
+       "value": "3.14159265358979"
+      },
+      "value": "3.14159265358979"
+     },
+     "D1": {
+      "input": {
+       "value": 3.14159265358979
+      },
+      "value": 3.14159265358979
+     },
+     "E1": {
+      "input": {
+       "value": "12345678.9"
+      },
+      "value": "12345678.9"
+     }
+    },
+    "widths": {
+     "B": 11.83203125,
+     "C": null,
+     "D": null,
+     "E": null
+    }
+   },
+   "fractions-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1.5,
+        "numberFormat": 12
+       },
+       "value": 1.5
+      },
+      "B2": {
+       "input": {
+        "value": 0.3333333333333333,
+        "numberFormat": 12
+       },
+       "value": 0.333333333333333
+      },
+      "B3": {
+       "input": {
+        "value": 46115,
+        "numberFormat": 16
+       },
+       "value": 46115
+      },
+      "B4": {
+       "input": {
+        "value": 1.0833333333333333,
+        "numberFormat": 13
+       },
+       "value": 1.08333333333333
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1.5,
+       "numberFormat": 12
+      },
+      "value": 1.5
+     },
+     "B2": {
+      "input": {
+       "value": 0.3333333333333333,
+       "numberFormat": 12
+      },
+      "value": 0.333333333333333
+     },
+     "B3": {
+      "input": {
+       "value": 46115,
+       "numberFormat": 16
+      },
+      "value": 46115
+     },
+     "B4": {
+      "input": {
+       "value": 1.0833333333333333,
+       "numberFormat": 13
+      },
+      "value": 1.08333333333333
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "dates-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "1/31/2025"
+       },
+       "value": "1/31/2025"
+      },
+      "B2": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B3": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B4": {
+       "input": {
+        "value": "31-Jan-2025"
+       },
+       "value": "31-Jan-2025"
+      },
+      "B5": {
+       "input": {
+        "value": "Jan 2025"
+       },
+       "value": "Jan 2025"
+      },
+      "B6": {
+       "input": {
+        "value": 46096,
+        "numberFormat": 16
+       },
+       "value": 46096
+      },
+      "B7": {
+       "input": {
+        "value": 42064,
+        "numberFormat": 17
+       },
+       "value": 42064
+      },
+      "B8": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 15
+       },
+       "value": 45688
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10.1640625
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10.1640625
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": "1/31/2025"
+      },
+      "value": "1/31/2025"
+     },
+     "B2": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B3": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B4": {
+      "input": {
+       "value": "31-Jan-2025"
+      },
+      "value": "31-Jan-2025"
+     },
+     "B5": {
+      "input": {
+       "value": "Jan 2025"
+      },
+      "value": "Jan 2025"
+     },
+     "B6": {
+      "input": {
+       "value": 46096,
+       "numberFormat": 16
+      },
+      "value": 46096
+     },
+     "B7": {
+      "input": {
+       "value": 42064,
+       "numberFormat": 17
+      },
+      "value": 42064
+     },
+     "B8": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 15
+      },
+      "value": 45688
+     }
+    },
+    "widths": {
+     "B": 10.1640625
+    }
+   },
+   "times-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 0.7708333333333334,
+        "numberFormat": 20
+       },
+       "value": 0.770833333333333
+      },
+      "B2": {
+       "input": {
+        "value": 0.7708333333333334,
+        "numberFormat": 18
+       },
+       "value": 0.770833333333333
+      },
+      "B3": {
+       "input": {
+        "value": 0.7710069444444444,
+        "numberFormat": 21
+       },
+       "value": 0.771006944444444
+      },
+      "B4": {
+       "input": {
+        "value": 1.0625,
+        "numberFormat": 46
+       },
+       "value": 1.0625
+      },
+      "B5": {
+       "input": {
+        "value": 0.7710127314814815,
+        "numberFormat": 47
+       },
+       "value": 0.771012731481482
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 0.7708333333333334,
+       "numberFormat": 20
+      },
+      "value": 0.770833333333333
+     },
+     "B2": {
+      "input": {
+       "value": 0.7708333333333334,
+       "numberFormat": 18
+      },
+      "value": 0.770833333333333
+     },
+     "B3": {
+      "input": {
+       "value": 0.7710069444444444,
+       "numberFormat": 21
+      },
+      "value": 0.771006944444444
+     },
+     "B4": {
+      "input": {
+       "value": 1.0625,
+       "numberFormat": 46
+      },
+      "value": 1.0625
+     },
+     "B5": {
+      "input": {
+       "value": 0.7710127314814815,
+       "numberFormat": 47
+      },
+      "value": 0.771012731481482
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "percents-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 0.12,
+        "numberFormat": 9
+       },
+       "value": 0.12
+      },
+      "B2": {
+       "input": {
+        "value": "12.5%"
+       },
+       "value": "12.5%"
+      },
+      "B3": {
+       "input": {
+        "value": 0.125,
+        "numberFormat": 10
+       },
+       "value": 0.125
+      },
+      "B4": {
+       "input": {
+        "value": -0.05,
+        "numberFormat": 9
+       },
+       "value": -0.05
+      },
+      "B5": {
+       "input": {
+        "value": 0.055,
+        "numberFormat": 10
+       },
+       "value": 0.055
+      },
+      "B6": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": 9
+       },
+       "value": 0.05
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 0.12,
+       "numberFormat": 9
+      },
+      "value": 0.12
+     },
+     "B2": {
+      "input": {
+       "value": "12.5%"
+      },
+      "value": "12.5%"
+     },
+     "B3": {
+      "input": {
+       "value": 0.125,
+       "numberFormat": 10
+      },
+      "value": 0.125
+     },
+     "B4": {
+      "input": {
+       "value": -0.05,
+       "numberFormat": 9
+      },
+      "value": -0.05
+     },
+     "B5": {
+      "input": {
+       "value": 0.055,
+       "numberFormat": 10
+      },
+      "value": 0.055
+     },
+     "B6": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": 9
+      },
+      "value": 0.05
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "money-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "$1,234.50"
+       },
+       "value": "$1,234.50"
+      },
+      "B2": {
+       "input": {
+        "value": "$5"
+       },
+       "value": "$5"
+      },
+      "B3": {
+       "input": {
+        "value": "($5)"
+       },
+       "value": "($5)"
+      },
+      "B4": {
+       "input": {
+        "value": 1234.5,
+        "numberFormat": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+       },
+       "value": 1234.5
+      },
+      "B5": {
+       "input": {
+        "value": 5,
+        "numberFormat": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+       },
+       "value": 5
+      },
+      "B6": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 9
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": "$1,234.50"
+      },
+      "value": "$1,234.50"
+     },
+     "B2": {
+      "input": {
+       "value": "$5"
+      },
+      "value": "$5"
+     },
+     "B3": {
+      "input": {
+       "value": "($5)"
+      },
+      "value": "($5)"
+     },
+     "B4": {
+      "input": {
+       "value": 1234.5,
+       "numberFormat": "#,##0.00\\ \"₽\";[Red]\\-#,##0.00\\ \"₽\""
+      },
+      "value": 1234.5
+     },
+     "B5": {
+      "input": {
+       "value": 5,
+       "numberFormat": "#,##0\\ \"₽\";[Red]\\-#,##0\\ \"₽\""
+      },
+      "value": 5
+     },
+     "B6": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     }
+    },
+    "widths": {
+     "B": 9
+    }
+   },
+   "bools-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "TRUE"
+       },
+       "value": "TRUE"
+      },
+      "B2": {
+       "input": {
+        "value": "false"
+       },
+       "value": "false"
+      },
+      "B3": {
+       "input": {
+        "value": true
+       },
+       "value": true
+      },
+      "B4": {
+       "input": {
+        "value": false
+       },
+       "value": false
+      },
+      "B5": {
+       "input": {
+        "value": "#N/A"
+       },
+       "value": "#N/A"
+      },
+      "B6": {
+       "input": {
+        "formula": "#N/A"
+       },
+       "value": {
+        "error": "NA"
+       }
+      },
+      "B7": {
+       "input": {
+        "value": "#DIV/0!"
+       },
+       "value": "#DIV/0!"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": "TRUE"
+      },
+      "value": "TRUE"
+     },
+     "B2": {
+      "input": {
+       "value": "false"
+      },
+      "value": "false"
+     },
+     "B3": {
+      "input": {
+       "value": true
+      },
+      "value": true
+     },
+     "B4": {
+      "input": {
+       "value": false
+      },
+      "value": false
+     },
+     "B5": {
+      "input": {
+       "value": "#N/A"
+      },
+      "value": "#N/A"
+     },
+     "B6": {
+      "input": {
+       "formula": "#N/A"
+      },
+      "value": {
+       "error": "NA"
+      }
+     },
+     "B7": {
+      "input": {
+       "value": "#DIV/0!"
+      },
+      "value": "#DIV/0!"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "apostrophe-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "007"
+       },
+       "value": "007"
+      },
+      "B2": {
+       "input": {
+        "value": "1.5"
+       },
+       "value": "1.5"
+      },
+      "B3": {
+       "input": {
+        "value": "=1+2"
+       },
+       "value": "=1+2"
+      },
+      "B4": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      },
+      "B5": {
+       "input": {
+        "value": "TRUE"
+       },
+       "value": "TRUE"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": "007"
+      },
+      "value": "007"
+     },
+     "B2": {
+      "input": {
+       "value": "1.5"
+      },
+      "value": "1.5"
+     },
+     "B3": {
+      "input": {
+       "value": "=1+2"
+      },
+      "value": "=1+2"
+     },
+     "B4": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     },
+     "B5": {
+      "input": {
+       "value": "TRUE"
+      },
+      "value": "TRUE"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "formulas-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "A1*2"
+       },
+       "value": 4
+      },
+      "B2": {
+       "input": {
+        "formula": "A1+A3"
+       },
+       "value": 5
+      },
+      "B3": {
+       "input": {
+        "formula": "-A1"
+       },
+       "value": -2
+      },
+      "B4": {
+       "input": {
+        "formula": "+A1"
+       },
+       "value": 2
+      },
+      "B5": {
+       "input": {
+        "formula": "A1&\"x\""
+       },
+       "value": "2x"
+      },
+      "B6": {
+       "input": {
+        "formula": "1/0"
+       },
+       "value": {
+        "error": "DIV0"
+       }
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "A1*2"
+      },
+      "value": 4
+     },
+     "B2": {
+      "input": {
+       "formula": "A1+A3"
+      },
+      "value": 5
+     },
+     "B3": {
+      "input": {
+       "formula": "-A1"
+      },
+      "value": -2
+     },
+     "B4": {
+      "input": {
+       "formula": "+A1"
+      },
+      "value": 2
+     },
+     "B5": {
+      "input": {
+       "formula": "A1&\"x\""
+      },
+      "value": "2x"
+     },
+     "B6": {
+      "input": {
+       "formula": "1/0"
+      },
+      "value": {
+       "error": "DIV0"
+      }
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "formula-en-1": {
+    "preview": {
+     "refused": {
+      "cell": "B2",
+      "code": "syntax",
+      "at": 9
+     }
+    },
+    "set": {
+     "refused": {
+      "cell": "B2",
+      "code": "syntax",
+      "at": 9
+     }
+    },
+    "after": {
+     "B1": {
+      "input": null,
+      "value": null
+     },
+     "B2": {
+      "input": null,
+      "value": null
+     },
+     "B3": {
+      "input": null,
+      "value": null
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "formula-ru-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "formula": "SUM(A1:A3)"
+       },
+       "value": 46101
+      },
+      "B2": {
+       "input": {
+        "formula": "SUM(A1,1.5)"
+       },
+       "value": 3.5
+      },
+      "B3": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "formula": "SUM(A1:A3)"
+      },
+      "value": 46101
+     },
+     "B2": {
+      "input": {
+       "formula": "SUM(A1,1.5)"
+      },
+      "value": 3.5
+     },
+     "B3": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "bad-1": {
+    "preview": {
+     "refused": {
+      "cell": "B1",
+      "code": "syntax",
+      "at": 3
+     }
+    },
+    "set": {
+     "refused": {
+      "cell": "B1",
+      "code": "syntax",
+      "at": 3
+     }
+    },
+    "after": {
+     "B1": {
+      "input": null,
+      "value": null
+     },
+     "B2": {
+      "input": null,
+      "value": null
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "grid-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      },
+      "D1": {
+       "input": {
+        "value": "1/31/2025"
+       },
+       "value": "1/31/2025"
+      },
+      "B2": {
+       "input": {
+        "value": 46144,
+        "numberFormat": 16
+       },
+       "value": 46144
+      },
+      "C2": {
+       "input": {
+        "formula": "A1*2"
+       },
+       "value": 4
+      },
+      "D2": {
+       "input": {
+        "value": "TRUE"
+       },
+       "value": "TRUE"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     },
+     "D1": {
+      "input": {
+       "value": "1/31/2025"
+      },
+      "value": "1/31/2025"
+     },
+     "B2": {
+      "input": {
+       "value": 46144,
+       "numberFormat": 16
+      },
+      "value": 46144
+     },
+     "C2": {
+      "input": {
+       "formula": "A1*2"
+      },
+      "value": 4
+     },
+     "D2": {
+      "input": {
+       "value": "TRUE"
+      },
+      "value": "TRUE"
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null,
+     "D": null
+    }
+   },
+   "empty-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": null,
+       "value": null
+      },
+      "D1": {
+       "input": {
+        "value": 3
+       },
+       "value": 3
+      },
+      "B2": {
+       "input": {
+        "value": 4
+       },
+       "value": 4
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": null,
+      "value": null
+     },
+     "D1": {
+      "input": {
+       "value": 3
+      },
+      "value": 3
+     },
+     "B2": {
+      "input": {
+       "value": 4
+      },
+      "value": 4
+     },
+     "C2": {
+      "input": {
+       "value": "old"
+      },
+      "value": "old"
+     },
+     "D2": {
+      "input": {
+       "value": "old"
+      },
+      "value": "old"
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null,
+     "D": null
+    }
+   },
+   "trailing-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B2": {
+      "input": {
+       "value": "old"
+      },
+      "value": "old"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "newline-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": {
+        "value": 2
+       },
+       "value": 2
+      },
+      "B2": {
+       "input": {
+        "value": 3
+       },
+       "value": 3
+      },
+      "C2": {
+       "input": {
+        "value": 4
+       },
+       "value": 4
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": {
+       "value": 2
+      },
+      "value": 2
+     },
+     "B2": {
+      "input": {
+       "value": 3
+      },
+      "value": 3
+     },
+     "C2": {
+      "input": {
+       "value": 4
+      },
+      "value": 4
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null
+    }
+   },
+   "newline-2": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1
+       },
+       "value": 1
+      },
+      "C1": {
+       "input": {
+        "value": 2
+       },
+       "value": 2
+      },
+      "B2": {
+       "input": {
+        "value": 3
+       },
+       "value": 3
+      },
+      "C2": {
+       "input": {
+        "value": 4
+       },
+       "value": 4
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1
+      },
+      "value": 1
+     },
+     "C1": {
+      "input": {
+       "value": 2
+      },
+      "value": 2
+     },
+     "B2": {
+      "input": {
+       "value": 3
+      },
+      "value": 3
+     },
+     "C2": {
+      "input": {
+       "value": 4
+      },
+      "value": 4
+     }
+    },
+    "widths": {
+     "B": null,
+     "C": null
+    }
+   },
+   "text-cell-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "007",
+        "numberFormat": "@"
+       },
+       "value": "007"
+      },
+      "B2": {
+       "input": {
+        "value": "1.5",
+        "numberFormat": "@"
+       },
+       "value": "1.5"
+      },
+      "B3": {
+       "input": {
+        "value": "=A1*2",
+        "numberFormat": "@"
+       },
+       "value": "=A1*2"
+      },
+      "B4": {
+       "input": {
+        "value": "1/31/2025",
+        "numberFormat": "@"
+       },
+       "value": "1/31/2025"
+      },
+      "B5": {
+       "input": {
+        "value": "12%",
+        "numberFormat": "@"
+       },
+       "value": "12%"
+      },
+      "B6": {
+       "input": {
+        "value": "TRUE",
+        "numberFormat": "@"
+       },
+       "value": "TRUE"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": "007",
+       "numberFormat": "@"
+      },
+      "value": "007"
+     },
+     "B2": {
+      "input": {
+       "value": "1.5",
+       "numberFormat": "@"
+      },
+      "value": "1.5"
+     },
+     "B3": {
+      "input": {
+       "value": "=A1*2",
+       "numberFormat": "@"
+      },
+      "value": "=A1*2"
+     },
+     "B4": {
+      "input": {
+       "value": "1/31/2025",
+       "numberFormat": "@"
+      },
+      "value": "1/31/2025"
+     },
+     "B5": {
+      "input": {
+       "value": "12%",
+       "numberFormat": "@"
+      },
+      "value": "12%"
+     },
+     "B6": {
+      "input": {
+       "value": "TRUE",
+       "numberFormat": "@"
+      },
+      "value": "TRUE"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "percent-cell-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": "0%"
+       },
+       "value": 0.05
+      },
+      "B2": {
+       "input": {
+        "value": "0.5%",
+        "numberFormat": "0%"
+       },
+       "value": "0.5%"
+      },
+      "B3": {
+       "input": {
+        "value": "5%%",
+        "numberFormat": "0%"
+       },
+       "value": "5%%"
+      },
+      "B4": {
+       "input": {
+        "value": "abc",
+        "numberFormat": "0%"
+       },
+       "value": "abc"
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": "0%"
+      },
+      "value": 0.05
+     },
+     "B2": {
+      "input": {
+       "value": "0.5%",
+       "numberFormat": "0%"
+      },
+      "value": "0.5%"
+     },
+     "B3": {
+      "input": {
+       "value": "5%%",
+       "numberFormat": "0%"
+      },
+      "value": "5%%"
+     },
+     "B4": {
+      "input": {
+       "value": "abc",
+       "numberFormat": "0%"
+      },
+      "value": "abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "date-cell-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 45688,
+        "numberFormat": 14
+       },
+       "value": 45688
+      },
+      "B2": {
+       "input": {
+        "value": 0.7708333333333334,
+        "numberFormat": 20
+       },
+       "value": 0.770833333333333
+      },
+      "B3": {
+       "input": {
+        "value": 0.05,
+        "numberFormat": 9
+       },
+       "value": 0.05
+      }
+     },
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10.1640625
+      }
+     ]
+    },
+    "set": {
+     "widths": [
+      {
+       "sheet": "S",
+       "column": "B",
+       "width": 10.1640625
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": 45688,
+       "numberFormat": 14
+      },
+      "value": 45688
+     },
+     "B2": {
+      "input": {
+       "value": 0.7708333333333334,
+       "numberFormat": 20
+      },
+      "value": 0.770833333333333
+     },
+     "B3": {
+      "input": {
+       "value": 0.05,
+       "numberFormat": 9
+      },
+      "value": 0.05
+     }
+    },
+    "widths": {
+     "B": 10.1640625
+    }
+   },
+   "hand-width-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": 1234567890123
+       },
+       "value": 1234567890123
+      }
+     }
+    },
+    "set": {},
+    "after": {
+     "B1": {
+      "input": {
+       "value": 1234567890123
+      },
+      "value": 1234567890123
+     }
+    },
+    "widths": {
+     "B": 5
+    }
+   },
+   "valid-1": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": -2
+       },
+       "value": -2
+      },
+      "B2": {
+       "input": {
+        "value": 5
+       },
+       "value": 5
+      },
+      "B3": {
+       "input": {
+        "value": "abc"
+       },
+       "value": "abc"
+      }
+     },
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "Значение не соответствует правилу проверки данных этой ячейки"
+      },
+      {
+       "cell": "B3",
+       "severity": "stop",
+       "message": "Значение не соответствует правилу проверки данных этой ячейки"
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "Значение не соответствует правилу проверки данных этой ячейки"
+      },
+      {
+       "cell": "B3",
+       "severity": "stop",
+       "message": "Значение не соответствует правилу проверки данных этой ячейки"
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": -2
+      },
+      "value": -2
+     },
+     "B2": {
+      "input": {
+       "value": 5
+      },
+      "value": 5
+     },
+     "B3": {
+      "input": {
+       "value": "abc"
+      },
+      "value": "abc"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   },
+   "valid-2": {
+    "preview": {
+     "cells": {
+      "B1": {
+       "input": {
+        "value": "c"
+       },
+       "value": "c"
+      },
+      "B2": {
+       "input": {
+        "value": "a"
+       },
+       "value": "a"
+      }
+     },
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "Значение не соответствует правилу проверки данных этой ячейки"
+      }
+     ]
+    },
+    "set": {
+     "validations": [
+      {
+       "cell": "B1",
+       "severity": "stop",
+       "message": "Значение не соответствует правилу проверки данных этой ячейки"
+      }
+     ]
+    },
+    "after": {
+     "B1": {
+      "input": {
+       "value": "c"
+      },
+      "value": "c"
+     },
+     "B2": {
+      "input": {
+       "value": "a"
+      },
+      "value": "a"
+     }
+    },
+    "widths": {
+     "B": null
+    }
+   }
+  }
+ }
+}
