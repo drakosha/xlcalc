@@ -18,6 +18,7 @@ import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from
 import type { BookInput, CellStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
 import { lines } from '../../src/layout/spans.js'
 import { colToIndex, formatAddress, indexToCol, parseAddress } from '../../src/model.js'
+import { parseRange, rectCells } from '../../src/structure/area.js'
 import type { StructCase, StructCases, StructSet } from './struct/cases.js'
 import { fromRgb } from './cond/cases.js'
 
@@ -227,10 +228,10 @@ export function cellsOf(rows: unknown): Record<string, string> {
 export function lookArgs(look: string): [string, string, string] {
   const [cells, cols, rows] = [new Set<string>(), new Set<string>(), new Set<string>()]
   for (const rect of look.split(',')) {
-    const [a, b] = rect.split(':').map(parseAddress)
-    for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) cells.add(formatAddress(r, c))
-    for (let c = a.col; c <= b.col; c++) cols.add(indexToCol(c))
-    for (let r = a.row; r <= b.row; r++) rows.add(String(r + 1))
+    const x = parseRange(rect)!
+    for (const a of rectCells(x)) cells.add(a)
+    for (let c = x.c1; c <= x.c2; c++) cols.add(indexToCol(c))
+    for (let r = x.r1; r <= x.r2; r++) rows.add(String(r + 1))
   }
   return [[...cells].join('\n'), [...cols].join('\n'), [...rows].join('\n')]
 }

@@ -18,7 +18,8 @@ import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
 import type { BookInput, NumberFormat, RangeRef } from '../../src/contract.js'
 import { lines, parseSpan } from '../../src/layout/spans.js'
-import { formatAddress, parseAddress } from '../../src/model.js'
+import { formatAddress } from '../../src/model.js'
+import { parseRange, rectCells } from '../../src/structure/area.js'
 import { quoteSheet } from '../../src/syntax.js'
 import { numberFormatOf } from './stored.js'
 
@@ -130,10 +131,8 @@ export function formatCode(format: NumberFormat): string {
 
 /** A rectangle's cells row by row. */
 export function cellsOf(range: string): { rows: number; cols: number; addrs: string[] } {
-  const [a, b = a] = range.split(':').map(parseAddress)
-  const addrs: string[] = []
-  for (let r = a.row; r <= b.row; r++) for (let c = a.col; c <= b.col; c++) addrs.push(formatAddress(r, c))
-  return { rows: b.row - a.row + 1, cols: b.col - a.col + 1, addrs }
+  const x = parseRange(range)!
+  return { rows: x.r2 - x.r1 + 1, cols: x.c2 - x.c1 + 1, addrs: [...rectCells(x)] }
 }
 
 /** Where each rectangle's mirrors are: stacked from row 1 of the mirror sheets. */
