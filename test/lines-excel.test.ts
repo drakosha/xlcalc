@@ -9,7 +9,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLines } from '../bench/coverage/lines.js'
-import { caseBook, caseFile, engineCase, type LineLook, type LinesAnswer } from '../bench/coverage/lines/cases.js'
+import { caseBook, caseFile, engineCase, partsOf, sessionBook, sessionCase, type LineLook, type LinesAnswer } from '../bench/coverage/lines/cases.js'
 import { compareBooks, entries } from '../bench/coverage/xlsx/compare.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import type { BookInput, NumberFormat } from '../src/contract.js'
@@ -82,12 +82,20 @@ describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => 
       for (const c of set.cases) {
         const a = set.answers[c.id]
         const pinned = (cell: string) => LINES_KNOWN[`${set.name}:${c.id}:${cell}`]
-        it(`${c.id}: the cells show what Excel showed`, async () => {
+        // a set of a session's steps (clearing among them) has no answer of the model's
+        it.skipIf(set.session)(`${c.id}: the cells show what Excel showed`, async () => {
           expect(a.error).toBeUndefined()
           const got = differences(a.looks, engineCase(c, await caseBook(set, c)))
           expect([...got].filter(([cell]) => !pinned(cell)).map(([cell, d]) => `${cell}: ${d}`)).toEqual([])
           for (const k of Object.keys(LINES_KNOWN).filter((x) => x.startsWith(`${set.name}:${c.id}:`))) expect(got.has(k.split(':')[2]), `${k} pinned`).toBe(true)
         })
+        it(`${c.id}: the steps taken by a session (patchCells, setCells, clearCells), the cells show what Excel showed, the lines Excel formats across each other too`, async () => {
+          expect([...differences(a.looks, sessionCase(c, await caseBook(set, c)))].map(([cell, d]) => `${cell}: ${d}`)).toEqual([])
+        })
+        if (c.parts)
+          it(`${c.id}: the notes, hyperlinks, conditional formats and rules of data validation of Excel's file are the session's`, async () => {
+            expect(partsOf((await saved(set, c.id)).book)).toEqual(partsOf(sessionBook(c, await caseBook(set, c))))
+          })
         it(`${c.id}: on the book read from Excel's file the engine shows what Excel showed`, async () => {
           const r = await saved(set, c.id)
           expect(r.issues).toEqual([])

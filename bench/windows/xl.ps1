@@ -287,6 +287,18 @@ function Step($xl, $wb, $s) {
         'null'
       } catch { Err $_ }
     }
+    # a range cleared, as ClearContents, ClearFormats or Clear (bench/windows/lines.ts)
+    'clear' {
+      try {
+        $rg = Rg $wb $s.sheet $s.range
+        switch ($s.what) {
+          'contents' { [void]$rg.ClearContents() }
+          'formats' { [void]$rg.ClearFormats() }
+          'all' { [void]$rg.Clear() }
+        }
+        'null'
+      } catch { Err $_ }
+    }
     'hide' { (Rg $wb $s.sheet $s.range).EntireRow.Hidden = [bool]$s.hidden; 'null' }
     'hideColumns' { (Rg $wb $s.sheet $s.range).EntireColumn.Hidden = [bool]$s.hidden; 'null' }
     'filter' { [void](Rg $wb $s.sheet $s.range).AutoFilter([int]$s.field, [string]$s.criterion); 'null' }
