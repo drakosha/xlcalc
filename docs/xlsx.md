@@ -270,7 +270,7 @@ rows: { 6: { style: 0, format: 'General' } }
 
 ### Lines Excel formats
 
-Excel, formatting a line across a formatted one, merges their formats field by field: a row made bold across a filled column of dates gives the cells where they cross bold, filled and dates. A book's style is one whole, and `setLayout` sets a line's style alone: where a row with a style crosses a column with one, the book shows the row's. A host that formats lines as Excel does gives those cells a style of their own.
+Excel, formatting a line across a formatted one, merges their formats field by field: a row made bold across a filled column of dates gives the cells where they cross bold, filled and dates. A book's style is one whole, and `setLayout` sets a line's style alone: where a row with a style crosses a column with one, the book shows the row's. `patchCells` formats lines as Excel does and gives those cells a style of their own ([Editing a grid](edits.md#whole-rows-and-columns)).
 
 ### How it was checked
 

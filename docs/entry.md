@@ -1,6 +1,6 @@
 # Typed entry
 
-`parseEntry(text, opts)` reads what a user typed into a cell the way Excel reads it in the book's locale, and gives the cell's new input: a number, a date or a time with the format Excel sets for it, a boolean, an error, text, or a formula in the stored form. An interface that edits a sheet calls it on the text of its cell editor and passes the input to `setCells`. It needs no book, runs in the same thread whatever computes the book, and returns at once.
+`parseEntry(text, opts)` reads what a user typed into a cell the way Excel reads it in the book's locale, and gives the cell's new input: a number, a date or a time with the format Excel sets for it, a boolean, an error, text, or a formula in the stored form. An interface that edits a sheet calls it on the text of its cell editor and passes the input to `setCells`, or calls a session's `setCellText`, which does both. It needs no book, runs in the same thread whatever computes the book, and returns at once.
 
 ```js
 import { parseEntry } from 'xlcalc'
@@ -31,22 +31,24 @@ The options:
 
 ## In a session
 
+`session.setCellText(sheet, cell, text)` does it in a session: it reads the text in the book's locale and date system, by the session's clock and by the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and gives the rule of data validation the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` gives the same without writing.
+
 ```js
-import { openSession, parseEntry } from 'xlcalc'
+import { openSession } from 'xlcalc'
 
 const session = openSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1, format: '0.00', meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] })
-const r = parseEntry('1 234,5', { locale: 'ru-RU', cell: session.cells('S', 'A1').A1 })
-if (r.ok) console.log(session.setCells([{ sheet: 'S', cell: 'A1', input: r.input }]))
+console.log(session.setCellText('S', 'A1', '1 234,5').changes)
 // → [
 //     { sheet: 'S', cell: 'A1', value: 1234.5, text: '1234,50' },
 //     { sheet: 'S', cell: 'A2', value: 2469, text: '2469' }
 //   ]
+console.log(session.book().sheets[0].cells.A1) // → { meta: { id: 7 }, value: 1234.5, format: '0.00' }
 session.close()
 ```
 
-With `createCalcPool` or `createInlineCalc` the session's methods are asynchronous and `parseEntry` stays synchronous: the host reads the cell (its own copy, or `await session.cells(...)`), calls `parseEntry` and sends the input with `setCells`.
+Without a session, a host reads the cell (its own copy, or `cells`), calls `parseEntry` with the format the cell shows and sends the input with `setCells`, which keeps the fields the input leaves out.
 
-A number typed into a column too narrow for it widens the column in Excel when nobody set its width by hand. `entryWidth(value, { format, locale, width, bestFit })` gives that width for the value the entry computes (the cell's change from `setCells`) and the column as it was, and the host sets it with `setLayout([{ sheet, columns: 'B', set: { width, bestFit: true } }])`. Only typing widens a column, the object model does not; the rules are in [Fitting columns](formats.md#fitting-columns).
+A number typed into a column too narrow for it widens the column in Excel when nobody set its width by hand. `setCellText` sets it; without it, `entryWidth(value, { format, locale, width, bestFit })` gives that width for the value the entry computes (the cell's change from `setCells`) and the column as it was, and the host sets it with `setLayout([{ sheet, columns: 'B', set: { width, bestFit: true } }])`. Only typing widens a column, the object model does not; the rules are in [Fitting columns](formats.md#fitting-columns).
 
 ## The rules
 
