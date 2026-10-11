@@ -4,6 +4,7 @@
  * the times and the frame of date text are shared with the other locales (`DateSyntax`, `locale/rules/`).
  */
 import { DAY_MS, EPOCH_MS, fromUtcDays, NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
+import { EN_NAMES } from './numfmt/style.js'
 
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465
@@ -55,7 +56,8 @@ export function addMonths(y: number, m: number, months: number): { y: number; m:
 
 // ---------- date and time text (en-US) ----------
 
-const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+/** en-US month names in lower case, as date text is read. */
+const MONTHS = EN_NAMES.months.map((m) => m.toLowerCase())
 /** A month's name, or three letters or more of its beginning (`jan`, `sept`, `febr`). */
 const MONTH_RE = '([a-z]{3,})'
 
