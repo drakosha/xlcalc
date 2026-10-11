@@ -27,6 +27,7 @@
  *   npx tsx bench/coverage/run.ts hidden X   hidden sheets of hidden/X.ts into test/excel/hidden/X.json and X/ (test: test/hidden-sheets-excel.test.ts)
  *   npx tsx bench/coverage/run.ts fit X [ru|T]    column widths fitted and widened by typing, fit/X.ts, into test/excel/fit/[ru-RU/ or T/]X.json (test: test/fit-excel.test.ts)
  *   npx tsx bench/coverage/run.ts lines X   formats of rows and columns and the cells under them, lines/X.ts, into test/excel/lines/X.json and X/ (test: test/lines-excel.test.ts)
+ *   npx tsx bench/coverage/run.ts ui X [ru|T]    the formula bar, a paste and Control+Return in Excel's window (Excel in front), ui/X.ts, into test/excel/ui/[ru-RU/ or T/]X.json (test: test/ui-excel.test.ts)
  *
  * A locale is `en`, `ru` or a tag (`locales.ts`); en-US's answers are at the top of their directory, another locale's
  * in a directory of its tag.
@@ -59,6 +60,7 @@ import { stepCond } from './cond.js'
 import { stepValid } from './valid.js'
 import { stepFit } from './fit.js'
 import { stepLines } from './lines.js'
+import { stepUi } from './ui.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -302,6 +304,7 @@ else if (step === 'valid') await withExcelLock(() => stepValid(process.argv[3], 
 else if (step === 'hidden') await withExcelLock(() => stepHidden(process.argv[3]))
 else if (step === 'lines') await withExcelLock(() => stepLines(process.argv[3]))
 else if (step === 'fit') await withExcelLock(() => stepFit(process.argv[3], locale))
+else if (step === 'ui') await withExcelLock(() => stepUi(process.argv[3], locale))
 else if (step === 'all') {
   await stepCases()
   await stepFj()
@@ -312,7 +315,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | cond set | valid set [ru] | hidden set | fit set [ru|<tag>] | lines set | xlsx roundtrip|saved|colors|formats|intersect')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | entry set [ru|<tag>] | cond set | valid set [ru] | hidden set | fit set [ru|<tag>] | lines set | ui set [ru|<tag>] | xlsx roundtrip|saved|colors|formats|intersect')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
