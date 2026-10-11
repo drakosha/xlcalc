@@ -38,7 +38,7 @@ describe.each(['closures', 'eval'] as const)('the geometry of an operation done,
     it('rows deleted on a filtered sheet: the visible ones, run by run; undone and redone the same way', async () => {
       const s = await open()
       // rows 2 to 7 hold the visible rows 2, 4 and 7
-      const r = await s.restructure({ op: 'deleteRows', sheet: 'S', row: 2, count: 6 })
+      const r = await s.editStructure({ op: 'deleteRows', sheet: 'S', row: 2, count: 6 })
       if (!r.ok) throw new Error(r.message)
       const runs = [7, 4, 2].map((at) => ({ kind: 'lines', sheet: 'S', axis: 'rows', at, count: -1 }))
       expect(r.moved).toEqual(runs)
@@ -54,7 +54,7 @@ describe.each(['closures', 'eval'] as const)('the geometry of an operation done,
 
     it("a table deleted with its cells: a redo's mapCell takes them away as the operation's did", async () => {
       const s = await open()
-      const r = await s.restructure({ op: 'deleteTable', table: 'Tab' })
+      const r = await s.editStructure({ op: 'deleteTable', table: 'Tab' })
       if (!r.ok) throw new Error(r.message)
       expect(where(r.mapCell, ['A1', 'A3', 'C1'], 'T')).toEqual([null, null, 'C1'])
       // undone, the table's cells come from nowhere, as those of a paste undone

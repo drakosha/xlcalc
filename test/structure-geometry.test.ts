@@ -5,7 +5,7 @@
  * move. And the cells of a sheet read once for an operation (`structure/grid.ts`).
  */
 import { describe, expect, it } from 'vitest'
-import { restructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
+import { editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { formatAddress, readAddress } from '../src/model.js'
 import { inverse, movesOf, placer, type Place } from '../src/structure/geometry.js'
 import { cellsIn, gridOf, withGrids } from '../src/structure/grid.js'
@@ -57,7 +57,7 @@ const inputs = (b: BookInput) => b.sheets.flatMap((s) => Object.entries(s.cells)
 describe('the geometry of each operation is where it puts the cells', () => {
   it.each(OPS)('%s', (_, op, filtered) => {
     const before = book(filtered)
-    const r = restructure(before, op)
+    const r = editStructure(before, op)
     if (!r.ok) throw new Error(r.message)
     const [was, now] = [inputs(before), inputs(r.book)]
     const old = new Set(was.map((x) => x.input))
@@ -154,7 +154,7 @@ describe('how addresses moved', () => {
 
 describe('mapCell', () => {
   it('a cell pushed past the last row by inserted rows is nowhere', () => {
-    const r = restructure({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] }, { op: 'insertRows', sheet: 'S', row: 1, count: 2 })
+    const r = editStructure({ sheets: [{ name: 'S', cells: { A1: { value: 1 } } }] }, { op: 'insertRows', sheet: 'S', row: 1, count: 2 })
     if (!r.ok) throw new Error(r.message)
     expect([r.mapCell({ sheet: 's', cell: 'A1' }), r.mapCell({ sheet: 'S', cell: 'A1048575' }), r.mapCell({ sheet: 'S', cell: 'A1048574' })]).toEqual([{ sheet: 'S', cell: 'A3' }, null, { sheet: 'S', cell: 'A1048576' }])
   })
