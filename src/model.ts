@@ -82,7 +82,7 @@ export function readNumber(text: string, shift = 0): number {
 
 export const DAY_MS = 86_400_000
 /** Excel 1900 serial number: 1 = 1900-01-01, with the phantom 1900-02-29 (`leapYear1900`). */
-export const EPOCH_MS = Date.UTC(1899, 11, 30)
+export const EPOCH_MS = /* @__PURE__ */ Date.UTC(1899, 11, 30)
 
 /** Days from 1899-12-30 as Excel's serial number: before 1900-03-01 Excel is one day behind (the phantom 1900-02-29). */
 export const fromUtcDays = (days: number) => (days < 61 ? days - 1 : days)

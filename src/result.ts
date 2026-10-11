@@ -8,6 +8,7 @@ import { issues } from './issues.js'
 import { nowMs } from './env.js'
 import { formatAddress, MAX_COLS, msToSerial, parseAddress } from './model.js'
 import { windowLooks, withLook } from './cond/looks.js'
+import { formatCodeIn } from './locale/rules.js'
 import { cellLooks, type Looks } from './shown.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
@@ -111,15 +112,17 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
   }
   for (const k of cond.keys()) listed.add(formatAddress(Math.floor(k / MAX_COLS), k % MAX_COLS))
   const out: Record<string, CellView> = {}
+  const code = formatCodeIn(state.input.locale)
   for (const addr of yield* sortedSteps([...listed])) {
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const input = cells[addr]
-    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, and its conditional formats' appearance
+    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, its format's code, and its conditional formats' appearance
     if (input?.style !== undefined) view.style = input.style
     if (input?.note !== undefined) view.note = input.note
     if (input?.link !== undefined) view.link = input.link
     if (input?.array !== undefined) view.array = input.array
+    if (view.numberFormat !== undefined) view.numberFormatCode = code(view.numberFormat)
     const cf = cond.get(cellIndex(addr))
     if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, numberFormat: format })))
     out[addr] = view

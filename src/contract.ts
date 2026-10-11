@@ -950,6 +950,12 @@ export interface ValidateContext {
    * text spells tables and columns as they are named, and a bare table name is a table, not a name.
    */
   tables?: { name: string; columns: string[] }[]
+  /**
+   * The table of the formula's cell: a structured reference without a table name is to it (`[@Qty]`), as in a cell of
+   * the table, and the canonical text names it (`Sales[[#This Row],[Qty]]`). Without it such a reference is refused
+   * with `tables` (`unknown_name`) and stays without a name otherwise.
+   */
+  table?: string
 }
 
 export type ValidateResult =
@@ -1032,6 +1038,8 @@ export interface CellView extends CellResult {
   appearance?: ConditionalAppearance
   /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`); `spill` is that area too. */
   array?: string
+  /** `numberFormat` as a code, as `ViewportCell.numberFormat` gives one: a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU). */
+  numberFormatCode?: string
 }
 
 export interface CellChange extends CellRef, Partial<CellDisplay> {
@@ -1045,6 +1053,8 @@ export interface CellChange extends CellRef, Partial<CellDisplay> {
   style?: number | null
   /** The cell's own number format, when it changed; null when it has none now. */
   numberFormat?: NumberFormat | null
+  /** A changed `numberFormat` other than null as a code, as `CellView.numberFormatCode`. */
+  numberFormatCode?: string
 }
 
 /**
@@ -1100,7 +1110,7 @@ export interface EditOptions {
 /** What `Session.clearCells` clears: the content and hyperlinks (Excel's ClearContents), the look (ClearFormats), or both and the rest (Clear). */
 export type ClearKind = 'contents' | 'formats' | 'all'
 
-/** `Session.setCellText`'s options. */
+/** `Session.setCellText`'s and `Session.setCellTexts`' options. */
 export interface CellTextOptions extends EditOptions {
   /** False: the width a typed number widens its column to is given (`width`), not set; true by default, as Excel widens it. */
   widen?: boolean
@@ -1126,7 +1136,35 @@ export type CellTextResult = (EditResult & { ok: true; width?: number; validatio
 /** What `Session.setCellText` would do (`Session.previewCellText`): the cell's input, its value, the width and the alert, with nothing changed. */
 export type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | Refusal<CellTextRefusal>
 
-/** `Session.getViewport`'s options. */
+/** Text typed into a cell, one of several typed at once (`Session.setCellTexts`). */
+export interface CellTextEntry extends CellRef {
+  text: string
+}
+
+/** The width a column took (`Session.setCellTexts`): its sheet, its letters (`B`) and the width, as `ColumnInput.width`. */
+export interface ColumnWidth {
+  sheet: string
+  column: string
+  width: number
+}
+
+/** A cell whose value its rule of data validation does not take (`Session.setCellTexts`), with the rule's alert. */
+export type CellValidationAlert = CellRef & ValidationAlert
+
+/** Why `Session.setCellTexts` took none of the texts: the first one refused, as `setCellText` refuses it, with its cell. */
+export type CellTextsRefusal = Refusal<CellTextRefusal> & CellRef
+
+/**
+ * Texts typed into cells at once (`Session.setCellTexts`): the edit's result, with the widths the columns took
+ * (`widths`) and the cells whose values their rules of data validation do not take (`validations`); or the first text
+ * refused, with its cell, and nothing written.
+ */
+export type CellTextsResult = (EditResult & { ok: true; widths?: ColumnWidth[]; validations?: CellValidationAlert[] }) | CellTextsRefusal
+
+/** What `Session.setCellTexts` would do (`Session.previewCellTexts`): each cell's input and value, the widths and the alerts, with nothing changed. */
+export type CellTextsPreview = { ok: true; cells: (CellRef & { input: CellInput | null; value: CellValue })[]; widths?: ColumnWidth[]; validations?: CellValidationAlert[] } | CellTextsRefusal
+
+/** `Session.getViewport`'s and `viewportOf`'s options. */
 export interface ViewportOptions {
   /** Each formula also as the book's locale shows it (`ViewportCell.formulaLocal`); false by default. */
   formulaLocal?: boolean
@@ -1134,6 +1172,15 @@ export interface ViewportOptions {
   diagnostics?: boolean
   /** The most cells a window gives, 20,000 by default: of a larger one, its first rows that fit (`Viewport.truncated`). */
   maxCells?: number
+  /**
+   * Only these rows of `range` (the rows a filter shows, say): their numbers on the sheet, from 1, in ascending order,
+   * each once. The window gives them in this order, and only the merged areas and tables that meet its cells.
+   */
+  rows?: number[]
+  /** Only these columns of `range`, by number (A is 1), in ascending order, each once, as `rows`. */
+  columns?: number[]
+  /** Each cell also with the text it opens with for editing (`ViewportCell.editText`); false by default. */
+  editText?: boolean
 }
 
 /**
@@ -1170,16 +1217,24 @@ export interface ViewportCell extends Partial<CellDisplay> {
   link?: CellLink
   /** With `diagnostics`, on a cell with an error: as `Session.getCellIssue`. */
   issue?: CellIssueDetail
+  /**
+   * With `editText`: the text the cell opens with for editing, as Excel's formula bar shows it: a formula with `=` in the
+   * book's locale (`formulaLocal`), a value as `entryText` writes it by the cell's number format, and empty for a cell
+   * without a value or formula of its own (an empty one, one an array spilled into).
+   */
+  editText?: string
 }
 
-/** A column of a window: its width as `ColumnInput.width`, Excel's default where it has none. */
+/** A column of a window: its number (A is 1), its width as `ColumnInput.width`, Excel's default where it has none. */
 export interface ViewportColumn {
+  column: number
   width: number
   hidden?: true
 }
 
-/** A row of a window: its height in points, Excel's default (15) where it has none. */
+/** A row of a window: its number on the sheet, from 1, its height in points, Excel's default (15) where it has none. */
 export interface ViewportRow {
+  row: number
   height: number
   hidden?: true
 }
@@ -1197,7 +1252,10 @@ export interface ViewportTable {
 
 /** What a grid needs to draw a window of a sheet (`Session.getViewport`). */
 export interface Viewport {
-  /** The rectangle given (`B2:D9`): the one asked for, or its first rows when it holds more than `maxCells` cells. */
+  /**
+   * The rectangle given (`B2:D9`): the one asked for, or as far as its first rows (of `ViewportOptions.rows`, with them)
+   * that fit when it holds more than `maxCells` cells.
+   */
   range: string
   /** The window asked for held more than `maxCells` cells: `range` is the part given. */
   truncated: boolean
@@ -1205,13 +1263,13 @@ export interface Viewport {
   cells: Record<string, ViewportCell>
   /** The styles the window's cells have or show (`ViewportCell.style`, `effectiveStyle`), by their index in the book's `styles`: copies, the answer's own. */
   styles: Record<number, CellStyle>
-  /** The columns of `range`, left to right. */
+  /** The columns of `range` left to right, or those of `ViewportOptions.columns`. */
   columns: ViewportColumn[]
-  /** The rows of `range`, top to bottom. */
+  /** The rows of `range` top to bottom, or those of `ViewportOptions.rows`. */
   rows: ViewportRow[]
-  /** The merged areas that meet `range`, whole. */
+  /** The merged areas that meet the window's cells, whole. */
   merges: string[]
-  /** The tables that meet `range`, whole, in the sheet's order. */
+  /** The tables that meet the window's cells, whole, in the sheet's order. */
   tables: ViewportTable[]
   /** The sheet's frozen panes (`SheetInput.frozen`): its first `rows` rows and `columns` columns stay in view, 0 for none. */
   frozen: { rows: number; columns: number }
@@ -1219,6 +1277,44 @@ export interface Viewport {
   usedRange: SheetExtent
   /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
   revision: number
+}
+
+/** A cell of a saved result (`SavedResult`): a `CellResult`, or one with the old name of its number format. */
+export interface SavedCellResult extends CellResult {
+  /** @deprecated The name is `numberFormat`. */
+  format?: NumberFormat
+}
+
+/**
+ * A result a host saved (`compute`, `Session.getResult`, `getSnapshot`), as `viewportOf` reads it: its cells, the reasons
+ * of its errors and its clock. One with the old names of its reasons (`issues`, `nameIssues`) reads alike.
+ */
+export interface SavedResult {
+  sheets: { name: string; cells: Record<string, SavedCellResult> }[]
+  diagnostics?: Diagnostic[]
+  /** @deprecated The name is `diagnostics`, the cells' of kind `cell`. */
+  issues?: CellIssue[]
+  /** @deprecated The name is `diagnostics`, the names' of kind `name`; a window does not read them. */
+  nameIssues?: NameIssue[]
+  clock: Clock
+}
+
+/** A book and its computed result as a host saved them (a version of the book), which `viewportOf` reads. */
+export interface SavedBook {
+  book: BookInput
+  result: SavedResult
+}
+
+/**
+ * A cell of a window over a saved result (`viewportOf`): as `ViewportCell`, its value, `text` and `color` as the result
+ * has them, without the `appearance` of conditional formats, which a result does not hold (its `text` shows the value by
+ * the cell's own format, not a rule's); without `text` and `color` when the result was computed without the display.
+ */
+export type SavedViewportCell = Omit<ViewportCell, 'appearance'>
+
+/** A window over a saved result (`viewportOf`): as `Viewport`, without a session's revision, its cells `SavedViewportCell`. */
+export interface SavedViewport extends Omit<Viewport, 'revision' | 'cells'> {
+  cells: Record<string, SavedViewportCell>
 }
 
 /**
@@ -1295,7 +1391,7 @@ export interface UndoOptions {
 }
 
 /** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
+export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
 
 /** A step of a session undone or done again (`Session.undo`, `Session.redo`): the edit's result, as the call gave it. */
 export interface UndoResult extends EditResult {
@@ -1583,6 +1679,17 @@ export interface Session {
   setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextResult
   /** What `setCellText` would do, with nothing changed. */
   previewCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextPreview
+  /**
+   * Texts typed into cells at once (a paste of text, an entry into a selection), each read as `setCellText` reads it in
+   * its cell, written with one recomputation, one revision and one step of the undo; a cell given twice takes the later
+   * text, read by what the earlier one wrote. A column widens once, to the largest width a text typed alone into one of
+   * its cells gives it (`widths`), unless `widen` is false; the values the cells' rules of data validation do not take
+   * after all the texts are written, with the cells (`validations`). A text `setCellText` refuses refuses the whole
+   * call, with its cell, and nothing is written.
+   */
+  setCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsResult
+  /** What `setCellTexts` would do, with nothing changed. */
+  previewCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
   /** Non-live sessions only. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
@@ -1628,10 +1735,13 @@ export interface Session {
    * conditional appearance changed: they give the rules' cells as `repaint`, for a host to read again where its window meets them.
    */
   getCells(sheet: string, range: string | string[]): Record<string, CellView>
+  /** One cell as `getCells(sheet, cell)` gives it; undefined for a cell `getCells` leaves out. */
+  getCell(sheet: string, cell: string): CellView | undefined
   /**
    * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
    * empty ones with a style of their row or column too, the widths and heights of its lines, the merged areas and tables
-   * that meet it and the sheet's frozen panes (`Viewport`). It costs what the window holds, as `getCells`, not the book.
+   * that meet it and the sheet's frozen panes (`Viewport`); only some of its rows and columns with `opts.rows` and
+   * `opts.columns`. It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
   /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
@@ -1745,6 +1855,8 @@ export interface AsyncSession {
   patchCells(patches: CellPatch[], opts?: AsyncEditOptions): Promise<EditResult>
   setCellText(sheet: string, cell: string, text: string, opts?: CalcOptions & CellTextOptions): Promise<CellTextResult>
   previewCellText(sheet: string, cell: string, text: string, opts?: CalcOptions & CellTextOptions): Promise<CellTextPreview>
+  setCellTexts(entries: CellTextEntry[], opts?: CalcOptions & CellTextOptions): Promise<CellTextsResult>
+  previewCellTexts(entries: CellTextEntry[], opts?: CalcOptions & CellTextOptions): Promise<CellTextsPreview>
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
@@ -1758,6 +1870,7 @@ export interface AsyncSession {
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
   /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
   getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  getCell(sheet: string, cell: string): Promise<CellView | undefined>
   /** As `Session.getViewport`; from a thread the window comes back in one call. */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
   getCellIssue(sheet: string, cell: string): Promise<CellIssueDetail | null>

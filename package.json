@@ -42,6 +42,10 @@
       "types": "./dist/a1.d.ts",
       "default": "./dist/a1.js"
     },
+    "./text": {
+      "types": "./dist/text.d.ts",
+      "default": "./dist/text.js"
+    },
     "./unstable/internal": {
       "types": "./dist/internal.d.ts",
       "default": "./dist/internal.js"

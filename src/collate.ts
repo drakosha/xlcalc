@@ -8,7 +8,7 @@ export const textOrder = (tag: string): ((a: string, b: string) => number) =>
   typeof Intl !== 'undefined' ? new Intl.Collator(tag, { sensitivity: 'accent' }).compare : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0)
 
 /** en-US's order of text: Latin before Cyrillic, as Excel en-US sorts. */
-export const collator = { compare: textOrder('en-US') }
+export const collator = { compare: /* @__PURE__ */ textOrder('en-US') }
 
 /**
  * The key a name compares by in any case (sheets, tables, the words of typed formula text): Unicode's default upper

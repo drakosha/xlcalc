@@ -33,7 +33,7 @@ The options:
 
 ## In a session
 
-`session.setCellText(sheet, cell, text)` does it in a session: it reads the text in the book's locale and date system, by the session's clock and by the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and gives the rule of data validation the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` gives the same without writing.
+`session.setCellText(sheet, cell, text)` does it in a session: it reads the text in the book's locale and date system, by the session's clock and by the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and gives the rule of data validation the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` gives the same without writing, and `setCellTexts` takes several texts at once, a paste or an entry into a selection, in one step of the undo.
 
 ```js
 import { createSession, registerLocale } from 'xlcalc'
@@ -142,6 +142,8 @@ console.log(needsApostrophe('5', { numberFormat: '0%' }), needsApostrophe('5', {
 ```
 
 The options are the cell's `numberFormat` (the one it shows by: its row's or column's without its own), the book's `locale` and `dateSystem`, and `now`, the moment whose year completes text read as a date without one.
+
+A grid without the engine takes the text from its window: `getViewport` and `viewportOf` with `editText: true` give each cell's `editText`, its formula with `=` in the book's locale (`=СУММ(A1:A3)`, `=[@Qty]*2` inside its table), else `entryText` of its value by the format it shows, the session's clock or the result's as `now`, and empty text for a cell without a value or a formula of its own.
 
 - A number is written whole: its 15 significant digits with the locale's decimal separator and no groups, in positional notation up to 21 characters (`100000000000000000000`), in scientific notation past that (`1E+21`, `1E-20`). Money, fractions, scientific and number formats change nothing (`$1,234.50` opens as `1234.5`, `1 1/2` as `1.5`).
 - A number under a percent format is written as a percent: `12%`, `12.5%`, `-5%`.

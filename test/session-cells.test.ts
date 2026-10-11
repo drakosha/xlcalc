@@ -1,12 +1,12 @@
 /**
  * `Session.getCells(sheet, range)`: the cells of a rectangle are the slice of `getResult()` over it, with each cell's own
- * style, note and link and an old-kind array formula's area, in a synchronous session, in the same thread and in a thread, with
+ * style, note and link, an old-kind array formula's area and its format's code (`builtinFormatCode` in the book's locale), in a synchronous session, in the same thread and in a thread, with
  * closures and eval: the case books, the tables of the table sets, a book with styles, rectangles small (read cell by cell) and large (whole columns, whole
  * rows, the whole sheet), before and after edits.
  */
 import { afterAll, describe, expect, it } from 'vitest'
 import { buildTableCases } from '../bench/coverage/tables/ops.js'
-import { createInlineCalc, InputError, createSession, type BookInput, type CellView, type ComputeResult, type Execution } from '../src/index.js'
+import { builtinFormatCode, createInlineCalc, InputError, createSession, type BookInput, type CellView, type ComputeResult, type Execution } from '../src/index.js'
 import { parseAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
 import { synthBook } from '../src/synth.js'
@@ -15,7 +15,7 @@ import { pool } from './fixtures/pool.js'
 import { edits } from './session-edits.js'
 import './locales.js'
 
-/** The slice of a result over a rectangle, with the cells' own styles, notes, links and old-kind array areas from the book. */
+/** The slice of a result over a rectangle, with the cells' own styles, notes, links and old-kind array areas from the book, and their formats' codes. */
 function slice(r: ComputeResult, book: BookInput, sheet: string, range: string): Record<string, CellView> {
   const x = parseRange(range)!
   const input = book.sheets.find((s) => s.name === sheet)!.cells
@@ -24,7 +24,9 @@ function slice(r: ComputeResult, book: BookInput, sheet: string, range: string):
     const { row, col } = parseAddress(a)
     if (row < x.r1 || row > x.r2 || col < x.c1 || col > x.c2) continue
     const { style, note, link, array } = input[a] ?? {}
-    out[a] = { ...c, ...(style !== undefined ? { style } : {}), ...(note ? { note } : {}), ...(link ? { link } : {}), ...(array ? { array } : {}) }
+    const f = c.numberFormat
+    const code = f === undefined ? {} : { numberFormatCode: typeof f === 'number' ? builtinFormatCode(f, book.locale)! : f }
+    out[a] = { ...c, ...(style !== undefined ? { style } : {}), ...(note ? { note } : {}), ...(link ? { link } : {}), ...(array ? { array } : {}), ...code }
   }
   return out
 }

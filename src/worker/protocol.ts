@@ -12,11 +12,11 @@ import type { Sent } from './pack.js'
 export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
-export const CHANGING = ['setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setNames', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'explain' | 'getCells' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
+export const CHANGING = ['setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setCellTexts', 'setNames', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
+export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'previewCellTexts' | 'getBook' | 'getLayout' | 'getUsedRange' | 'explain' | 'getCells' | 'getCell' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
 
 /** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
-export const EDITS: Partial<Record<Op, number>> = { setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setNames: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
+export const EDITS: Partial<Record<Op, number>> = { setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setCellTexts: 1, previewCellTexts: 1, setNames: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {

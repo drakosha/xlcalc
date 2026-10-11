@@ -61,11 +61,12 @@ const orders = (locale?: string): BookInput => ({
   ],
 })
 
-/** A window cell as `Session.getCells` gives it: the conditional formats' look, the cell's own format. */
+/** A window cell as `Session.getCells` gives it: the conditional formats' look, the cell's own format and its code. */
 function asView(w: ViewportCell, own: CellView['numberFormat']): CellView {
-  const { effectiveStyle: _e, numberFormat: _n, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
+  const { effectiveStyle: _e, numberFormat: code, numberFormatSource: _s, appearance, formulaLocal: _f, issue: _i, ...rest } = w
   const out: CellView = { ...rest }
-  if (own !== undefined) out.numberFormat = own
+  // a cell's own format is the one it shows, by the same code
+  if (own !== undefined) Object.assign(out, { numberFormat: own, numberFormatCode: code })
   if (appearance) out.appearance = appearance
   return out
 }
@@ -89,8 +90,8 @@ describe.each(['closures', 'eval'] as const)('a window for a grid, execution %s'
       // nothing to show: no style, a column's format alone
       for (const a of ['B2', 'D5', 'E2', 'G2']) expect(v.cells[a], a).toBeUndefined()
       expect(Object.keys(v.cells).slice(0, 4)).toEqual(['A1', 'B1', 'C1', 'E1'])
-      expect(v.columns).toEqual([{ width: 8.83203125 }, { width: 8.83203125 }, { width: 8.83203125 }, { width: 8.83203125 }, { width: 20 }, { width: 5, hidden: true }, { width: 8.83203125 }])
-      expect(v.rows).toEqual([{ height: 15 }, { height: 15 }, { height: 15 }, { height: 15 }, { height: 15 }, { height: 30 }, { height: 15, hidden: true }, { height: 0, hidden: true }])
+      expect(v.columns).toEqual([{ column: 1, width: 8.83203125 }, { column: 2, width: 8.83203125 }, { column: 3, width: 8.83203125 }, { column: 4, width: 8.83203125 }, { column: 5, width: 20 }, { column: 6, width: 5, hidden: true }, { column: 7, width: 8.83203125 }])
+      expect(v.rows).toEqual([{ row: 1, height: 15 }, { row: 2, height: 15 }, { row: 3, height: 15 }, { row: 4, height: 15 }, { row: 5, height: 15 }, { row: 6, height: 30 }, { row: 7, height: 15, hidden: true }, { row: 8, height: 0, hidden: true }])
       expect(v.merges).toEqual(['C5:D6', 'F1:G1'])
       expect(v).toMatchObject({ range: 'A1:G8', truncated: false, usedRange: { rows: 11, columns: 9 } })
       // the styles the window shows by index, the answer's own copies; a window without a style has none of it

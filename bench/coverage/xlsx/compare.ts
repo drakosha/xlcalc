@@ -67,7 +67,7 @@ function stable(x: unknown): string {
  */
 function formulaText(f: string, union = false, tables?: Tables, enclosing?: string): string {
   if (tables) {
-    const r = validate(f, { union, tables: tables.list.map((t) => ({ name: t.name, columns: t.cols })), ...(enclosing ? { enclosing } : {}) })
+    const r = validate(f, { union, tables: tables.list.map((t) => ({ name: t.name, columns: t.cols })), ...(enclosing ? { table: enclosing } : {}) })
     if (r.ok) return r.canonical
   }
   try {

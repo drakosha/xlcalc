@@ -121,7 +121,7 @@ export function fileTree(formula: string, sheets: Set<string>, tables: { name: s
     if (e instanceof FormulaError) return null
     throw e
   }
-  const bound = bindTables(ast, formula, { tables, ...(enclosing ? { enclosing } : {}) })
+  const bound = bindTables(ast, formula, { tables, ...(enclosing ? { table: enclosing } : {}) })
   if (!bound.ok) return null
   ast = bound.ast
   let ok = true

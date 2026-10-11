@@ -13,7 +13,7 @@ import { CELL_ERRORS, ERROR_CODE, FORMULA_ERRORS } from '../../syntax/errors.js'
 import type { Issues, Where } from '../issues.js'
 import type { XlsxCachedCell } from '../types.js'
 import type { Xf } from '../styles/read.js'
-import { attributes, flag } from '../xml/scan.js'
+import { attributes, flag, ownEntry } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import type { CellMetadata } from './metadata.js'
 import { stringItem, type Strings } from './strings.js'
@@ -177,8 +177,9 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     // `<f ca="1"/>` with no text only flags a value Excel recalculates (a cell a volatile array spilled into)
     if (f && fa.t !== 'dataTable' && (text !== '' || fa.t === 'shared')) {
       if (errText !== undefined) {
-        out.cached[addr] = { value: { error: ERRORS[errText] ?? 'ERROR' } }
-        if (!ERRORS[errText]) issues.add('errorValue', 'a stored error the model has no code for, read as #ERROR!', { sheet, cell: addr })
+        const code = ownEntry(ERRORS, errText)
+        out.cached[addr] = { value: { error: code ?? 'ERROR' } }
+        if (!code) issues.add('errorValue', 'a stored error the model has no code for, read as #ERROR!', { sheet, cell: addr })
       } else if (value !== undefined) out.cached[addr] = { value }
       if (fa.t === 'shared' && fa.si !== undefined) {
         let s = out.shared.get(fa.si)

@@ -36,10 +36,11 @@ The package is split where hosts' needs part, so a bundle takes only what it use
 | reading and writing xlsx files | `readXlsx`, `writeXlsx` and `fromLegacy` from `xlcalc/xlsx` |
 | computing in threads | `createCalcPool` from `xlcalc/worker`, and `createInlineCalc` from `xlcalc` for portions in the same thread |
 | cell addresses in A1 style, without the engine | `xlcalc/a1` |
+| the references of formula text as it is typed, for colouring them, without the engine | `xlcalc/text` |
 | books and formulas in ru-RU | `ruRU` from `xlcalc/locales/ru-RU`, loaded once by `registerLocale(ruRU)` from `xlcalc` ([Localization](#localization)) |
 | types alone | `xlcalc/contract` |
 
-en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 358 KB (135 KB), the whole root 395 KB (148 KB), `xlcalc/xlsx` 169 KB (63 KB), `xlcalc/worker` 287 KB (110 KB) and the thread it starts 368 KB (138 KB), `xlcalc/a1` 6 KB (3 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
+en-US is built in. Bundled by esbuild for the browser and minified, `compute` alone takes 254 KB (97 KB gzip), `createSession` 387 KB (145 KB), the whole root 421 KB (158 KB), `xlcalc/xlsx` 168 KB (63 KB), `xlcalc/worker` 21 KB (8 KB) in the page and the thread it starts 450 KB (159 KB), `xlcalc/a1` 7 KB (3 KB), `xlcalc/text` 29 KB (12 KB), the ru-RU module 52 KB (10 KB); `test/bundle-size.test.ts` keeps `compute` under 300 KB.
 
 ## Quick start
 
@@ -64,7 +65,7 @@ A formula is stored without the leading `=` in `formula` (one given is dropped: 
 
 ## Recipes
 
-Ten common tasks, each with the calls it takes. The sections after them have the rules.
+Twelve common tasks, each with the calls it takes. The sections after them have the rules.
 
 ### Compute a book and read a cell
 
@@ -98,6 +99,23 @@ session.setCellText('S', 'A2', '1 234,5')
 console.log(Object.values(session.getCells('S', 'A1:A2')).map((c) => [c.value, c.text, c.numberFormat])) // → [ [ 46096, '15.03.2026', 14 ], [ 1234.5, '1 234,50', 4 ] ]
 ```
 
+### Paste several values
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: {} }] })
+const pasted = session.setCellTexts([
+  { sheet: 'S', cell: 'A1', text: '15.03.2026' },
+  { sheet: 'S', cell: 'B1', text: '1 234,5' },
+  { sheet: 'S', cell: 'C1', text: '=B1*2' },
+])
+console.log(pasted.revision, pasted.changes.map((c) => `${c.cell} ${c.text}`), session.getCell('S', 'A1').numberFormatCode) // → 1 [ 'A1 15.03.2026', 'B1 1 234,50', 'C1 2469' ] dd.mm.yyyy
+console.log(session.undo().call, session.getCell('S', 'A1')) // → setCellTexts undefined
+```
+
 ### Read a window for a grid
 
 ```js
@@ -106,6 +124,17 @@ import { createSession } from 'xlcalc'
 const session = createSession({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { A1: { value: 'Total', style: 0 }, B1: { value: 1234.5, numberFormat: '#,##0.00' } }, columns: { B: { width: 12 } } }] })
 const v = session.getViewport('S', 'A1:B2')
 console.log(v.cells.A1.effectiveStyle, v.styles[v.cells.A1.effectiveStyle], v.cells.B1.text, v.columns.map((c) => c.width), v.usedRange) // → 0 { font: { bold: true } } 1,234.50 [ 8.83203125, 12 ] { rows: 1, columns: 2 }
+```
+
+### Read a window over a saved version of a book
+
+```js
+import { compute, viewportOf } from 'xlcalc'
+
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 1234.5 }, A2: { formula: 'A1/0' } }, columns: { A: { numberFormat: '#,##0.00' } } }] }
+const saved = JSON.parse(JSON.stringify({ book, result: compute(book) })) // as a host stores a version
+const v = viewportOf(saved, 'S', 'A1:A2', { diagnostics: true, editText: true })
+console.log(v.cells.A1.text, v.cells.A1.editText, v.cells.A2.issue.reason) // → 1,234.50 1234.5 division by zero
 ```
 
 ### Make a range bold and set its number format
@@ -256,7 +285,7 @@ console.log(v.cells.C1, v.cells.B2)
 //     numberFormatSource: 'column'
 //   }
 console.log(v.styles, v.columns.map((c) => c.width), v.rows, v.merges, v.usedRange)
-// → { '0': { font: { bold: true } } } [ 8.83203125, 12, 8.83203125, 8.83203125, 8.83203125 ] [ { height: 15 }, { height: 15 } ] [ 'E1:F2' ] { rows: 3, columns: 6 }
+// → { '0': { font: { bold: true } } } [ 8.83203125, 12, 8.83203125, 8.83203125, 8.83203125 ] [ { row: 1, height: 15 }, { row: 2, height: 15 } ] [ 'E1:F2' ] { rows: 3, columns: 6 }
 console.log(v.tables, v.frozen) // → [ { name: 'T', range: 'A1:B3', headers: true, totals: false } ] { rows: 1, columns: 0 }
 console.log(session.getCellIssue('Plan', 'D2'))
 // → {
@@ -271,9 +300,22 @@ console.log(session.explain('Plan', 'D2').text)
 //         'Plan'!A3 = 0
 ```
 
-A cell of the window carries what `getCells` gives (the value, the shown `text` and `color`, the formula, the spill, `meta`, a note, a link, an old-kind array's area) and its look resolved: its own `style` and the `effectiveStyle` it shows, its own, else its row's, else its column's, as numbers of the book's styles, as `getCells` and the changes of edits give a style, with the objects of the styles the window shows in `styles`, copies by number; the `numberFormat` it shows by as a code, with `numberFormatSource` saying whether it is the cell's, the row's or the column's (a built-in format by the code of the book's locale: 14 is `dd.mm.yyyy` in ru-RU); and `appearance`, what its conditional formats give it. The style and the format are taken each on its own, so a cell of a bold row in a column formatted `0.00` is bold and shows `0.00`. An empty cell is listed when it shows something: a style of its row or column (`C1` above), an appearance, a note or a link; so are the cells of a spill, a large array's cells past its data too. A cell where a styled row crosses a styled column shows the row's style, as Excel shows a file's empty cell there. `columns` and `rows` give each line's width and height, Excel's default where it has none (8.83203125 and 15 points), with `hidden`; `merges` the merged areas that meet the window, whole; `tables` the tables that meet it, whole, each with whether its first row is a header row and its last a totals row; `frozen` the sheet's frozen rows and columns, 0 for none; `usedRange` is `getUsedRange(sheet)`. `formulaLocal: true` adds each formula as Excel shows it in the book's locale, inside its table as Excel shows it there (`[@Qty]`), and `diagnostics: true` adds to each cell with an error its `issue`, as `getCellIssue` gives it. A window holds at most `maxCells` cells, 20,000 by default: of a larger one it gives its first rows that fit, with `truncated: true` and the `range` it gave. It costs what the window holds, not the book: on the synthetic book of 34,000 rows a window of 20,000 cells takes 15 ms, as on the book of 3,400 rows and a little less than `getCells` and `getLayout()` together, and 26 ms from a thread.
+A cell of the window carries what `getCells` gives (the value, the shown `text` and `color`, the formula, the spill, `meta`, a note, a link, an old-kind array's area) and its look resolved: its own `style` and the `effectiveStyle` it shows, its own, else its row's, else its column's, as numbers of the book's styles, as `getCells` and the changes of edits give a style, with the objects of the styles the window shows in `styles`, copies by number; the `numberFormat` it shows by as a code, with `numberFormatSource` saying whether it is the cell's, the row's or the column's (a built-in format by the code of the book's locale: 14 is `dd.mm.yyyy` in ru-RU); and `appearance`, what its conditional formats give it. The style and the format are taken each on its own, so a cell of a bold row in a column formatted `0.00` is bold and shows `0.00`. An empty cell is listed when it shows something: a style of its row or column (`C1` above), an appearance, a note or a link; so are the cells of a spill, a large array's cells past its data too. A cell where a styled row crosses a styled column shows the row's style, as Excel shows a file's empty cell there. `columns` and `rows` give each line's number (`column`, `row`, from 1), width and height, Excel's default where it has none (8.83203125 and 15 points), with `hidden`; `merges` the merged areas that meet the window, whole; `tables` the tables that meet it, whole, each with whether its first row is a header row and its last a totals row; `frozen` the sheet's frozen rows and columns, 0 for none; `usedRange` is `getUsedRange(sheet)`. `formulaLocal: true` adds each formula as Excel shows it in the book's locale, inside its table as Excel shows it there (`[@Qty]`), and `diagnostics: true` adds to each cell with an error its `issue`, as `getCellIssue` gives it. A window holds at most `maxCells` cells, 20,000 by default: of a larger one it gives its first rows that fit, with `truncated: true` and the `range` it gave. It costs what the window holds, not the book: on the synthetic book of 34,000 rows a window of 20,000 cells takes 15 ms, as on the book of 3,400 rows and a little less than `getCells` and `getLayout()` together, and 26 ms from a thread.
 
 `getCellIssue(sheet, cell)` says why a cell holds an error without building the book's result: the error, the reason, the check code and position of a formula that does not read, as the result's `diagnostics` give them, and `origin`, the cell the error began in, found by following the cells the reasons name (in a cycle, the first cell of the cycle the way comes back to). `explain` marks each cell with an error by that cell and leads to it: through a range by the cell the error came from, and past `depth` for `errorDepth` cells more (64 by default), never round a cycle. Its text writes an error as the book's cells show it and an empty cell as `empty`.
+
+A grid under a filter draws rows that are not next to each other, and a form some columns of a table. `rows` and `columns` give only those lines of `range`, by their numbers on the sheet (from 1, in ascending order, each once), in that order: `cells` has the cells of the lines given, `merges` and `tables` those that meet them, whole, a merged area that reaches a row left out too, and `maxCells` counts the cells given. `editText: true` adds to each cell the text it opens with for editing, as Excel's formula bar shows it: a formula with `=` in the book's locale, a value as `entryText` writes it by the format the cell shows, with an apostrophe before text that would read as something else, and nothing for a cell without a value or a formula of its own (an empty one, one an array spilled into).
+
+```js
+import { createSession } from 'xlcalc'
+
+const session = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 'Code' }, A2: { value: '007' }, A3: { value: 5 }, A4: { formula: 'SUM(A3,1)' } }, merges: ['B1:B2'] }] })
+const v = session.getViewport('S', 'A1:B4', { rows: [2, 4], editText: true })
+console.log(v.rows, Object.keys(v.cells), v.cells.A2.editText, v.cells.A4.editText, v.merges)
+// → [ { row: 2, height: 15 }, { row: 4, height: 15 } ] [ 'A2', 'A4' ] '007 =SUM(A3,1) [ 'B1:B2' ]
+```
+
+`viewportOf(saved, sheet, range, opts?)` gives the same window over a book and its result as a host saved them, `{ book, result }` (what `getSnapshot()` gives), without a session and without computing anything: a server shows a saved version of a book, or the book with a change not yet taken, in the grid that shows the live one. The values, the text, the colour and the reasons of errors come from the result, the formats, styles and layout from the book, and the options are `getViewport`'s. The window has no `revision`, and no `appearance` of conditional formats, which a result does not hold: a cell's `text` is the result's, by the cell's own format, not by a rule's. A cycle's reasons name no cell, so an error of a cycle begins, for `issue`, at the cell itself. A result with the old names of its fields (`issues`, a cell's `format`) reads alike. The first window over a book and a result checks the book and finds where each sheet ends, a pass over its cells (0.24 s on the synthetic book of 34,000 rows); the later ones over the same two objects cost what the window holds (5 ms for 20,000 cells, 11 ms with `editText`), so a host keeps the objects of a version while it serves its windows, and changes neither.
 
 A grid needs a few things beside its window, and the session gives them without the whole book:
 
@@ -292,12 +334,18 @@ console.log(session.getUsedRange('Plan')) // → { rows: 3, columns: 7 }
 console.log(session.getCells('Plan', ['B3', 'D2']))
 // → {
 //     D2: { value: 30, text: '30', spillOf: 'D1', style: 0 },
-//     B3: { value: 3, text: '3.0', numberFormat: '0.0', spillOf: 'B1' }
+//     B3: {
+//       value: 3,
+//       text: '3.0',
+//       numberFormat: '0.0',
+//       spillOf: 'B1',
+//       numberFormatCode: '0.0'
+//     }
 //   }
 console.log(session.getCells('Plan', 'D1').D1.array, session.getLayout().sheets) // → D1:D2 [ { name: 'Plan', merges: [ 'F1:G2' ] } ]
 ```
 
-`getUsedRange(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `getLayout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings, whether it is hidden), at a cost that does not depend on the cells. `getCells(sheet, ranges)` reads several rectangles at once, each cell once. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`.
+`getUsedRange(sheet)` says where the sheet's cells end: the last row and column reached by a cell of its input (a value, a formula, or a style, a format, meta, a note or a link alone), a spilled array (its whole range, so `B1` above reaches row 3), a merged area or a table. Settings of whole rows and columns, conditional formats and data validation do not count, as they usually cover whole lines. It costs the sheet's columns, spills and cells without a value, not a pass over all its cells. `getLayout()` is the book without its cells: the styles, names and settings, and every field of each sheet but `cells` (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation, outline settings, whether it is hidden), at a cost that does not depend on the cells. `getCells(sheet, ranges)` reads several rectangles at once, each cell once, and `getCell(sheet, cell)` one cell, undefined where `getCells` leaves it out. A view of an old-kind array formula's top-left cell has its `array`, beside its `spill`. A view with a number format of its own, and a change whose format changed to one, have the format as a code too (`numberFormatCode`), as the window gives it: a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU), a code as it is.
 
 ### Editing a grid
 
@@ -310,11 +358,22 @@ A grid edits cells as Excel does: a value typed over a cell keeps the cell's loo
 | set the look, a note or a link of cells, a range, whole rows or columns, without their values (Bold, Fill, a number format) | `patchCells([{ sheet, range, set: { style, numberFormat } }])` |
 | clear the content, the look or both (Delete, Clear Formats, Clear All) | `clearCells([{ sheet, range }], 'contents')`, `'formats'` or `'all'` |
 | take text a person typed into a cell, as Excel reads it in the book's locale | `setCellText(sheet, cell, text)` |
+| take texts pasted or typed into a selection, each read as typed into its cell, in one step | `setCellTexts([{ sheet, cell, text }])` |
 | change widths, heights, hidden lines, a line's style, merged areas, frozen panes, conditional formats, data validation, or AutoFit columns | `setLayout([{ sheet, columns, set: { width } }])` ([Layout](#layout)) |
 | replace the book's table of styles | `setStyles(styles)` |
 | insert or delete rows and columns, move or copy a range, insert, rename, move, hide or delete a sheet, add, rename, convert or delete a table | `editStructure(op)` ([Structure operations](#structure-operations)) |
 
-A style by its fields, `{ font: { bold: true } }`, is what `patchCells` takes: it goes over the style each cell shows, and the session finds or adds the style in the book's `styles`. `setCells` and `replaceCells` take a cell's input as the book stores it, a style by its number in `styles`, as `getCells`, `getViewport` and the changes give it.
+A style by its fields, `{ font: { bold: true } }`, is what `patchCells` takes: it goes over the style each cell shows, and the session finds or adds the style in the book's `styles`. `setCells` and `replaceCells` take a cell's input as the book stores it, a style by its number in `styles`, as `getCells`, `getViewport` and the changes give it. A host that keeps a book's styles itself finds a style's number by the same rule: `internStyle(styles, style)` gives the first equal style's number and the same array, or a new array with a copy of the style at the end; styles are equal when their fields are, in any order.
+
+```js
+import { internStyle } from 'xlcalc'
+
+const styles = [{ font: { bold: true } }, { fill: { color: '#FFEE99' }, font: { italic: true } }]
+const found = internStyle(styles, { font: { italic: true }, fill: { color: '#FFEE99' } })
+console.log(found.index, found.styles === styles) // → 1 true
+const added = internStyle(styles, { font: { bold: true, italic: true } })
+console.log(added.index, added.styles.length, styles.length) // → 2 3 2
+```
 
 ```js
 import { createSession } from 'xlcalc'
@@ -385,6 +444,21 @@ console.log(session.getLayout().sheets[0].columns)
 
 It recomputes what the layout changes and nothing else: hidden rows and the filter mode the `SUBTOTAL` and `AGGREGATE` formulas over them (`B1` above leaves out the hidden rows), a merged area added or removed the arrays whose spill range it meets. With the display on, the answer lists the cells whose shown text or colour changed with them: by a width (`A1` above shows `#` across a column too narrow for it), a row's or a column's format, a merged area; `layout` names the sheets whose layout changed, for a grid to read `getLayout()` again. AutoFit gives each column with something to show the width of its widest cell, as Excel for Mac fits it, and marks it `bestFit` ([Showing values](#showing-values) has how). The look of cells and the style table change through `patchCells` and `setStyles` ([Editing a grid](#editing-a-grid)), and recompute nothing.
 
+A host that keeps a sheet's `columns` or `rows` itself, beside a session or without one, patches them as `setLayout` does with `patchLines(map, span, patch)` (from `xlcalc` and `xlcalc/a1`): the span is `C`, `B:D`, `5` or `5:9`, the axis by its shape; the patch goes over each line's entry, null removing a field, and the answer is the new map `setLayout` would write, spans the patch cuts split and lines left without a field dropped.
+
+```js
+import { patchLines } from 'xlcalc/a1'
+
+console.log(patchLines({ 'B:F': { width: 10 } }, 'D', { hidden: true }))
+// → {
+//     'B:C': { width: 10 },
+//     D: { width: 10, hidden: true },
+//     'E:F': { width: 10 }
+//   }
+console.log(patchLines({ '5:9': { height: 20, outlineLevel: 1 } }, '7:12', { height: null }))
+// → { '5:6': { height: 20, outlineLevel: 1 }, '7:9': { outlineLevel: 1 } }
+```
+
 ### Undo and redo
 
 A session undoes and redoes its changes, as Excel's Undo and Redo do:
@@ -414,7 +488,7 @@ console.log(session.undo(), session.history) // → null { undo: 0, redo: 2 }
 console.log(session.redo().changes.length, session.getBook().sheets[0].cells.A1) // → 2 { value: 120 }
 ```
 
-`undo()` takes back the last call that changed the book, whole however many cells it changed: `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText` (with the width it gave the column), `setNames`, `setStyles`, `setLayout` or `editStructure`. Its answer says which call it was and is that call's answer (`EditResult`), its revision one more: the cells whose value, text, formula or look changed, the `layout`, the `styles`, the `moved` addresses. For the calls that change cells it also lists the cells whose input came back (`cells`), whose note or link a host reads again. For a structure operation it has `mapCell`, where a cell of the book before the undo is now (`A4` above is `A3` again once the inserted row is gone): a host moves its values by it and applies the changes, as after `editStructure`, and reads `getLayout()`, `getUsedRange(sheet)` and its window again, as it does after a change of the layout, the names or the styles. `redo()` does the last undone step again; a new change forgets what `redo` could do. With nothing to take back or do again they answer null, and `history` counts the steps each way, for a toolbar's buttons. `setClock` and a live session's new clock are no steps, and neither is a call that fails: an undo stopped by a deadline or an abort changes nothing.
+`undo()` takes back the last call that changed the book, whole however many cells it changed: `setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText` and `setCellTexts` (with the widths they gave the columns), `setNames`, `setStyles`, `setLayout` or `editStructure`. Its answer says which call it was and is that call's answer (`EditResult`), its revision one more: the cells whose value, text, formula or look changed, the `layout`, the `styles`, the `moved` addresses. For the calls that change cells it also lists the cells whose input came back (`cells`), whose note or link a host reads again. For a structure operation it has `mapCell`, where a cell of the book before the undo is now (`A4` above is `A3` again once the inserted row is gone): a host moves its values by it and applies the changes, as after `editStructure`, and reads `getLayout()`, `getUsedRange(sheet)` and its window again, as it does after a change of the layout, the names or the styles. `redo()` does the last undone step again; a new change forgets what `redo` could do. With nothing to take back or do again they answer null, and `history` counts the steps each way, for a toolbar's buttons. `setClock` and a live session's new clock are no steps, and neither is a call that fails: an undo stopped by a deadline or an abort changes nothing.
 
 A session keeps 100 steps, as Excel does, in 64 MB at most by the engine's estimate, or in a pool with `maxHeapMb` its share of an eighth of a thread's heap (8 MB for 384 MB and `maxSessionsPerThread: 6`): the option `undo: { depth, maxMb }` sets both, and `depth: 0` keeps none. A step keeps what its call replaced and no more: the inputs of the cells it changed, the layout of the sheets it changed (the widths, `bestFit` and hidden columns of an AutoFit too), the style table or the names. A structure operation keeps the cells it does not carry back as they were (the rows it deleted, the formulas it rewrote) and the layout of the sheets it changed, not a copy of the book, and undoing it builds the book's state again, as the operation did. A deleted sheet comes back with its cells, which Excel cannot do; a step larger than `maxMb` alone is not kept and the steps before it go, as Excel forgets what it cannot undo. On the synthetic book of 34,000 rows, an edit and its undo cost what the edit costs (107 ms for an amount on the data sheet, which its 2,800 SUMIFS read), `insertRows` keeps 0.4 MB and takes 1.5 s where it takes 1.3 s without a history, its undo and its redo 1.4 to 1.5 s each; `deleteRows` takes 1.5 s where it takes 1.4 s. Deleting the sheet of 506,594 cells would keep 59 MB, over the default, so the session forgets its history then; with `maxMb: 100` it is undone in 1.4 to 1.7 s.
 
@@ -552,14 +626,41 @@ console.log(session.previewCellText('S', 'C1', '-2').validation.severity, refuse
 
 A value the cell's rule of data validation does not take is written, with `validation`, the rule, its alert's style (`severity`) and message, for the host to show Excel's window and call `undo()` if the person cancels; Excel does not take the value of a rule of the style `stop`, which the host refuses itself. A formula that does not read, a change of part of an old-kind array and a formula in a table's header cell are refused (`{ ok: false, code, message, at? }`, the message in the book's locale); text typed into a header cell renames its column, as `setCells` does.
 
+`setCellTexts(entries, opts?)` takes several texts at once, a paste of text or an entry into a selection: each `{ sheet, cell, text }` is read as `setCellText` reads it in its cell, in order, and all are written with one recomputation, one revision and one step of the undo. A cell given twice keeps the later text, read by the format the earlier one gave it. A column widens once, to the largest width a text typed alone into one of its cells would give it (`widths`, unless `widen: false`), and the cells whose values their rules do not take come back with their alerts (`validations`). A text `setCellText` refuses refuses the whole call, with its `sheet` and `cell`, and nothing is written. `previewCellTexts` answers each cell's input and value, the widths and the alerts, and changes nothing.
+
+```js
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
+const session = createSession({
+  locale: 'ru-RU',
+  sheets: [{ name: 'S', cells: { A1: { value: 'Item' } }, validations: [{ range: 'C1:C9', type: 'whole', operator: 'greaterThan', formula1: '0', errorStyle: 'warning' }] }],
+}, { clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+const typed = session.setCellTexts([
+  { sheet: 'S', cell: 'B1', text: '15.03.2026' },
+  { sheet: 'S', cell: 'B2', text: '1234567890' },
+  { sheet: 'S', cell: 'C1', text: '-2' },
+])
+console.log(typed.widths, typed.validations.map((v) => `${v.cell} ${v.severity}`)) // → [ { sheet: 'S', column: 'B', width: 11.1640625 } ] [ 'C1 warning' ]
+const refused = session.setCellTexts([{ sheet: 'S', cell: 'A2', text: '7' }, { sheet: 'S', cell: 'A3', text: '=СУММ(A1;1.5)' }])
+console.log(refused.code, refused.cell, refused.at, session.revision) // → syntax A3 10 1
+console.log(session.previewCellTexts([{ sheet: 'S', cell: 'A2', text: '5%' }, { sheet: 'S', cell: 'A3', text: '=A2*2' }]).cells.map((c) => [c.cell, c.input, c.value]))
+// → [
+//     [ 'A2', { value: 0.05, numberFormat: 9 }, 0.05 ],
+//     [ 'A3', { formula: 'A2*2' }, 0.1 ]
+//   ]
+```
+
 ### Addresses and helpers
 
-A grid, a dialog or a server that keeps versions of a book needs Excel's rules for addresses, names and values without computing anything. The package gives them by the engine's own code: `xlcalc/a1` holds the addresses and names in a few kilobytes and none of the engine, and `xlcalc` exports the same functions with the helpers that need a locale. These take a loaded locale's tag or a locale object, which needs no loading; `quoteSheetIfNeeded` takes the object alone, so `xlcalc/a1` carries no list of locales.
+A grid, a dialog or a server that keeps versions of a book needs Excel's rules for addresses, names and values without computing anything. The package gives them by the engine's own code: `xlcalc/a1` holds the addresses and names in a few kilobytes and none of the engine, `xlcalc/text` the references of formula text and the names a reference writes, for a browser that colours a formula as it is typed without the engine, and `xlcalc` exports the same functions with the helpers that need a locale. These take a loaded locale's tag or a locale object, which needs no loading; `quoteSheetIfNeeded` takes the object alone, so `xlcalc/a1` carries no list of locales.
 
 ```js
 import { cellAddress, linesKey, parseLines, parseRange, quoteSheetIfNeeded, rangeAddress, sameName } from 'xlcalc/a1'
-import { entryText, errorText, needsApostrophe, sameValue, scanReferences, validateSheetName } from 'xlcalc'
+import { entryText, errorText, needsApostrophe, sameValue, validateSheetName } from 'xlcalc'
 import { ruRU } from 'xlcalc/locales/ru-RU'
+import { scanReferences } from 'xlcalc/text'
 
 console.log(parseRange('$d$9:B2'), parseRange('ZZZ1'), rangeAddress({ top: 1, left: 2, bottom: 1048576, right: 4 }))
 // → { kind: 'cells', top: 2, left: 2, bottom: 9, right: 4 } null B:D
@@ -572,14 +673,15 @@ console.log(errorText('DIV0', ruRU), entryText(0.125, { numberFormat: '0.0%' }),
 // → #ДЕЛ/0! 12.5% 31.01.2025  18:00:00 '007 true
 console.log(scanReferences('=СУММ(B2:B9;\'Q1 data\'!C1;"D4")', { locale: ruRU }).map((r) => `${r.at}-${r.end} ${r.text} ${r.sheet ?? ''}`))
 // → [ '6-11 B2:B9 ', "12-24 'Q1 data'!C1 Q1 data" ]
+console.log(scanReferences('=A1+)B2*"C3').map((r) => r.text)) // → [ 'A1', 'B2' ]
 console.log(sameValue(0.1 + 0.2, 0.3), sameValue(1, true)) // → true false
 ```
 
-Rows and columns are numbered from 1, as A1 numbers them. `parseCell` and `parseRange` take `$` and letters in either case and give null past `XFD1048576` or for anything else; a range given corner to corner the other way round is put in order, as Excel orders a typed reference, and its `kind` says whether it named cells, whole columns (`B:D`) or whole rows (`2:9`). `cellAddress`, `colLetters`, `colNumber` and `rangeAddress` write them back, `rangeAddress` as Excel writes a range: `B2` for one cell, `B:D` for a range over every row. `parseLines` and `linesKey` read and write the keys of `SheetInput.columns` and `rows` (`C`, `B:D`, `5`, `5:9`), null for a key a book does not take; `rectsMeet` and `rectContains` compare rectangles; `MAX_ROWS` and `MAX_COLS` are the sheet's size.
+Rows and columns are numbered from 1, as A1 numbers them. `parseCell` and `parseRange` take `$` and letters in either case and give null past `XFD1048576` or for anything else; a range given corner to corner the other way round is put in order, as Excel orders a typed reference, and its `kind` says whether it named cells, whole columns (`B:D`) or whole rows (`2:9`). `cellAddress`, `colLetters`, `colNumber` and `rangeAddress` write them back, `rangeAddress` as Excel writes a range: `B2` for one cell, `B:D` for a range over every row. `parseLines` and `linesKey` read and write the keys of `SheetInput.columns` and `rows` (`C`, `B:D`, `5`, `5:9`), null for a key a book does not take, and `patchLines` patches such a map as `setLayout` does ([Layout](#layout)); `rectsMeet` and `rectContains` compare rectangles; `MAX_ROWS` and `MAX_COLS` are the sheet's size.
 
 `nameKey` and `sameName` are the rule by which the engine compares names of sheets, tables and defined names: in any case, by Unicode's upper case in every locale. `quoteSheetIfNeeded` writes a sheet's name in a reference as Excel writes it, measured in Excel for Mac and for Windows: in quotes (an apostrophe inside doubled) when the name is anything but letters, digits, `_` and `.` after a letter or `_`, when it is a cell of the sheet (`A1`; not `XFE1`), when it begins with an R1C1 reference with a number (`R2D2`, `C3PO`; not `Region`, nor `C1.x`, where a `.` follows), or when it is `R`, `C`, `RC` or one of the locale's booleans (`TRUE`, `'ИСТИНА'` in ru-RU's formula text). Stored formulas keep every sheet in quotes, as their canonical text. `validateSheetName` checks a sheet's name as a book's sheets are checked (31 characters at most, none of `: \ / ? * [ ]`, no apostrophe at either end, not `History`): `{ ok: true }`, or a refusal with the code `empty`, `too_long`, `character`, `apostrophe` or `reserved`, a message in `opts.locale`'s language and, for a character, its place.
 
-`errorText` writes an error as a cell shows it in a locale; any other value without a book is `displayValue(value, { locale })`. `entryText` is the text a cell opens with for editing, as Excel's formula bar shows its value: a number whole (15 digits, positional up to 21 characters), a percent cell's number as a percent, a date or a time by the locale's short date and long time, booleans and errors in the locale's words, and text with an apostrophe where typing it would read as something else, which `needsApostrophe` tells by `parseEntry`. `sameValue` compares two values as the values hash does (numbers to 15 significant digits, `-0` as 0, errors by code), and `canonValue` is a value's text in the hash. `scanReferences` finds the references in formula text as it is typed, stored or in a locale, with their places for colouring them: cells, whole columns and rows, sheets, references across sheets and spills, and structured references with their table, columns and specifiers. It reads the text with the engine's tokenizer as far as the text reads, so a formula half typed gives the references before the place it stops. How the rules were measured is in [docs/references.md](docs/references.md#sheet-names-in-references) and [docs/entry.md](docs/entry.md#the-text-a-cell-opens-with).
+`errorText` writes an error as a cell shows it in a locale; any other value without a book is `displayValue(value, { locale })`. `entryText` is the text a cell opens with for editing, as Excel's formula bar shows its value: a number whole (15 digits, positional up to 21 characters), a percent cell's number as a percent, a date or a time by the locale's short date and long time, booleans and errors in the locale's words, and text with an apostrophe where typing it would read as something else, which `needsApostrophe` tells by `parseEntry`. `sameValue` compares two values as the values hash does (numbers to 15 significant digits, `-0` as 0, errors by code), and `canonValue` is a value's text in the hash. `scanReferences` finds the references in formula text as it is typed, stored or in a locale, with their places for colouring them: cells, whole columns and rows, sheets, references across sheets and spills, and structured references with their table, columns and specifiers. It reads the text with the engine's tokenizer: a token that does not read (a character a formula does not take, an error literal half typed, a sheet with nothing after it) is skipped and the text read on past it, and an open string, quoted sheet name or bracket takes the rest of the text, so a formula half typed or broken in the middle gives the references around the place (the package's own rule, not one measured in Excel). How the rules were measured is in [docs/references.md](docs/references.md#sheet-names-in-references) and [docs/entry.md](docs/entry.md#the-text-a-cell-opens-with).
 
 ### Errors
 
@@ -632,6 +734,17 @@ console.log(out.D2.formula) // → Orders[[#This Row],[Qty]]*Orders[[#This Row],
 ```
 
 A formula stores its references as an xlsx file does (`Orders[[#This Row],[Qty]]` for `[@Qty]`), and `toLocal` shows them as Excel does, in Russian too (`#Данные`). Structure operations grow, shrink and move tables as Excel does, an edit of a header cell renames its column, and `editStructure` adds, renames, deletes and converts tables. [docs/tables.md](docs/tables.md) has the rules.
+
+A formula typed in a cell of a table refers to it without its name, `[@Qty]`. Without the book, the table of the cell is an option: `toLocal(formula, locale, { table })` drops the name as Excel shows such a formula, `toInvariant(text, locale, { table })` puts it back, and `validateFormula` and `validateLocalFormula` with `ctx.table` check the formula as in the table and give the text the book stores. `escapeColumn` writes a column's name in a reference, `'` before the characters that mean something there (`[`, `]`, `#`, `'`, a leading `@`).
+
+```js
+import { escapeColumn, toInvariant, validateFormula } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(toInvariant('=[@Qty]*1,5', ruRU, { table: 'Orders' }).formula) // → Orders[@Qty]*1.5
+console.log(validateFormula('[@Qty]*[@Price]', { table: 'Orders' }).canonical) // → Orders[[#This Row],[Qty]]*Orders[[#This Row],[Price]]
+console.log(`Orders[${escapeColumn('Price #2')}]`) // → Orders[Price '#2]
+```
 
 ### External functions
 
@@ -1019,23 +1132,26 @@ From `xlcalc`:
 | export | |
 |---|---|
 | `compute(book, opts?)` | computes the whole book; `opts.clock`, `opts.externals`, `opts.execution` (`'closures'`, the default, or `'eval'`), `opts.display` (`true`, the default, or `false`), `opts.limits` (`formulas`, `cells`, `spill`; over them `CalcError`). Returns `ComputeResult`: `sheets` (values, shown `text` and `color` with the display on, canonical formulas, `numberFormat`, `meta`), `diagnostics` (each cell with an error, `kind: 'cell'`, then each name with a problem, `kind: 'name'`), `volatile`, `clock`, `hash`, `inputHash`, `configVersion`, `ms` |
-| `createSession(book, opts?)` | a `Session`; each call that changes the book answers an `EditResult` (`{ revision, changes, layout?, styles?, moved?, repaint? }`) and takes `{ baseRevision }`: `setCells(edits)` (the fields given, the cell's look kept), `replaceCells(edits)` (cells whole), `clearCells(ranges, 'contents' \| 'formats' \| 'all')`, `patchCells(patches)` (the `style`, by number or by its fields, `numberFormat`, `meta`, `note`, `link` of a cell or a range, whole rows and columns too, without values), `setCellText(sheet, cell, text, { widen })` and `previewCellText` (typed text, `{ ok, …, width?, validation? }` or a refusal), `setNames(names)`, `setClock(clock)`, `editStructure(op)`, `setStyles(styles)`, `setLayout(edits)` (columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `revision`, `getBook()`, `getLayout()` (the book without its cells), `getUsedRange(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand, errorDepth })` (an error's `origin` marked and the way to it), `getCells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array` and conditional formats' `appearance`), `getViewport(sheet, range, { formulaLocal, diagnostics, maxCells })` (a window for a grid: cells with their style, by number, and number format resolved, empty ones with a line's style, the styles they show, the lines' sizes, merged areas, tables, frozen panes, the used range), `getCellIssue(sheet, cell)` (an error's reason and `origin`, or null), `getValidation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok: true }` or `{ ok: false, code, message, rule, severity }`), `getResult()`, `getSnapshot()` (`{ book, result }` in one call, what `writeXlsx` takes), `getHash()` (the values hash without the result), `undo()` and `redo()` (the call's `EditResult` with `call`, `cells?`, `mapCell?`, or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode. The old names of the methods (`book`, `layout`, `extent`, `cells`, `validation`, `result`, `hash`, `restructure`) are deprecated synonyms ([docs/migration.md](docs/migration.md)) |
+| `createSession(book, opts?)` | a `Session`; each call that changes the book answers an `EditResult` (`{ revision, changes, layout?, styles?, moved?, repaint? }`) and takes `{ baseRevision }`: `setCells(edits)` (the fields given, the cell's look kept), `replaceCells(edits)` (cells whole), `clearCells(ranges, 'contents' \| 'formats' \| 'all')`, `patchCells(patches)` (the `style`, by number or by its fields, `numberFormat`, `meta`, `note`, `link` of a cell or a range, whole rows and columns too, without values), `setCellText(sheet, cell, text, { widen })` and `previewCellText` (typed text, `{ ok, …, width?, validation? }` or a refusal), `setCellTexts(entries, { widen })` and `previewCellTexts` (texts `{ sheet, cell, text }` typed at once, in one step: `{ ok, …, widths?, validations? }` or a refusal with its `sheet` and `cell`), `setNames(names)`, `setClock(clock)`, `editStructure(op)`, `setStyles(styles)`, `setLayout(edits)` (columns, rows, merged areas, the filter mode, frozen panes, conditional formats, rules of data validation, outline settings; columns AutoFit with `{ columns, fit: true }`), `revision`, `getBook()`, `getLayout()` (the book without its cells), `getUsedRange(sheet)` (`{ rows, columns }`, where its cells end, spills too), `explain(sheet, cell, { depth, maxNodes, expand, errorDepth })` (an error's `origin` marked and the way to it), `getCells(sheet, range or ranges)` (with each cell's `style`, `note`, `link`, an old-kind array formula's `array`, conditional formats' `appearance` and its own format's `numberFormatCode`), `getCell(sheet, cell)` (one cell of `getCells`, or undefined), `getViewport(sheet, range, { formulaLocal, diagnostics, maxCells, rows, columns, editText })` (a window for a grid: cells with their style, by number, and number format resolved, empty ones with a line's style, the styles they show, the lines' numbers and sizes, merged areas, tables, frozen panes, the used range; only some rows and columns, the text each cell opens with for editing), `getCellIssue(sheet, cell)` (an error's reason and `origin`, or null), `getValidation(sheet, cell)` (a cell's rule, its formulas as at the cell, a list's items), `validateEntry(sheet, cell, input)` (`{ ok: true }` or `{ ok: false, code, message, rule, severity }`), `getResult()`, `getSnapshot()` (`{ book, result }` in one call, what `writeXlsx` takes), `getHash()` (the values hash without the result), `undo()` and `redo()` (the call's `EditResult` with `call`, `cells?`, `mapCell?`, or null), `history` (`{ undo, redo }`, the steps each way), `close()`, `clock`. Options: `clock`, or `live: true`, `externals`, `execution`, `display`, `limits` and `undo` (`{ depth, maxMb }`, 100 steps and 64 MB by default); edits are compiled in the session's execution mode. The old names of the methods (`book`, `layout`, `extent`, `cells`, `validation`, `result`, `hash`, `restructure`) are deprecated synonyms ([docs/migration.md](docs/migration.md)) |
+| `viewportOf(saved, sheet, range, opts?)` | the window `getViewport` gives, over a book and its result as a host saved them (`{ book, result }`), without a session and without computing; no `revision`, no conditional `appearance` ([A window for a grid](#a-window-for-a-grid)) |
 | `displayValue(value, opts?)` | a value as a cell shows it, `{ text, color? }`; `opts`: `numberFormat`, `locale` (a loaded locale's tag or a locale object, as every function's `locale` below), `width` (no limit without it), `dateSystem` ([Showing values](#showing-values)) |
 | `builtinFormatCode(id, locale?)` | the code a built-in number format (0 to 49) shows by in the locale, undefined for a number that is none ([Showing values](#showing-values)) |
 | `dateToSerial(text, opts?)`, `serialToDate(serial, opts?)` | a date as `{ date }` takes it and its serial number, in `opts.dateSystem` ([Date systems](#date-systems)) |
-| `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked) |
+| `validateFormula(text, ctx?)` | `{ ok: true, canonical, functions, sheets, names, externals }` or `{ ok: false, code, message, at }`; `ctx`: `sheets`, `names`, `externalFunctions` (without them sheets and names are not checked), `tables`, and `table`, the table of the formula's cell ([Tables](#tables)) |
 | `validateName(name, opts?)` | `{ ok: true }` or `{ ok: false, code, message }` (`chars`, `reference`, `boolean`) by the rules of a book of `opts.locale` |
 | `validateNames(names, ctx)` | the name issues of a book with `ctx.sheets`, `ctx.tables`, `ctx.externalFunctions` and `ctx.locale`, as `compute` gives them, each with `dropped` |
 | `parseEntry(text, opts?)` | text typed into a cell as Excel takes it: `{ ok: true, input }` (the cell's new `CellInput`, or `null`) or `{ ok: false, code, message, at }`; `opts`: `locale`, `cell`, `now`, `dateSystem` ([Typed entry](#typed-entry)) |
 | `entryText(value, opts?)`, `needsApostrophe(text, opts?)` | the text a cell opens with for editing, as the formula bar shows its value; whether typed text would read as something else than itself; `opts`: `numberFormat`, `locale`, `dateSystem`, `now` ([Addresses and helpers](#addresses-and-helpers)) |
 | `validateSheetName(name, opts?)` | `{ ok: true }` or `{ ok: false, code, message, at? }` by Excel's rules for sheet names; `opts.locale` gives the message's language |
 | `errorText(code, locale?)` | an error as a cell shows it (`#DIV/0!`, `#ДЕЛ/0!` in ru-RU) |
-| `scanReferences(formula, opts?)` | the references of formula text as it is typed, with their places, rectangles, sheets and tables; `opts.locale` for text typed in a locale |
+| `scanReferences(formula, opts?)` | the references of formula text as it is typed, with their places, rectangles, sheets and tables, a token that does not read skipped; `opts.locale` for text typed in a locale; also from `xlcalc/text` |
+| `escapeColumn(name)` | a column's name in a structured reference, `'` before `[`, `]`, `#`, `'` and a leading `@`; also from `xlcalc/text` ([Tables](#tables)) |
+| `internStyle(styles, style)` | a style's number in a style table, found as `patchCells` finds it: `{ index, styles }`, the same array when an equal style is there, else a new one with the style added ([Editing a grid](#editing-a-grid)) |
 | `sameValue(a, b)`, `canonValue(value)` | values compared as the values hash compares them, and a value's text in the hash |
-| `parseCell`, `cellAddress`, `colLetters`, `colNumber`, `parseRange`, `rangeAddress`, `parseLines`, `linesKey`, `rectsMeet`, `rectContains`, `MAX_ROWS`, `MAX_COLS`, `quoteSheetIfNeeded`, `nameKey`, `sameName` | addresses and names without the engine, also from `xlcalc/a1` ([Addresses and helpers](#addresses-and-helpers)) |
+| `parseCell`, `cellAddress`, `colLetters`, `colNumber`, `parseRange`, `rangeAddress`, `parseLines`, `linesKey`, `patchLines`, `rectsMeet`, `rectContains`, `MAX_ROWS`, `MAX_COLS`, `quoteSheetIfNeeded`, `nameKey`, `sameName` | addresses and names without the engine, also from `xlcalc/a1` ([Addresses and helpers](#addresses-and-helpers)) |
 | `fitColumns(book, result, sheet, columns)` | the widths AutoFit gives columns `C` or `B:D` of a computed book, by letter (null for the default width; a column with nothing to show left out) ([Showing values](#showing-values)) |
 | `entryWidth(value, opts?)` | the width a column takes as a typed value widens it, or undefined; `opts`: `numberFormat`, `locale`, `dateSystem`, the column's `width` and `bestFit` ([Showing values](#showing-values)) |
-| `toLocal(formula, locale, opts?)`, `toInvariant(text, locale)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)); `opts.table`, the table of the formula's cell, shows its references as Excel does inside it (`[@Qty]`, [docs/tables.md](docs/tables.md)) |
+| `toLocal(formula, locale, opts?)`, `toInvariant(text, locale, opts?)` | a stored formula as the locale shows it, typed text as a stored formula: `{ ok: true, formula }` or `{ ok: false, code, message, at }` ([Localization](#localization)); `opts.table`, the table of the formula's cell, shows its references as Excel does inside it (`[@Qty]`) and names it again (`Sales[@Qty]`, [docs/tables.md](docs/tables.md)) |
 | `validateLocalFormula(text, locale, ctx?)` | `validateFormula` for text typed in the locale, positions in `text` |
 | `registerLocale(locale)` | loads a locale module of the package (`ruRU` of `xlcalc/locales/ru-RU`) for books in it and for its tag ([Localization](#localization)) |
 | `LOCALES` | the loaded locales by tag, en-US and those registered, each a `Locale` (`LOCALES.get('ru-RU')`): the tags `BookInput.locale` takes |
@@ -1051,7 +1167,9 @@ From `xlcalc`:
 
 `xlcalc/contract` exports the types and two constants (`MAX_FORMULA_LENGTH`, `MAX_FORMULA_DEPTH`) without any engine code, for code that only builds books or reads results.
 
-`xlcalc/a1` exports the addresses and names of [Addresses and helpers](#addresses-and-helpers) (`parseCell`, `parseRange`, `rangeAddress`, `parseLines`, `quoteSheetIfNeeded`, `sameName` and the rest), the same functions as the root's, without any engine code.
+`xlcalc/a1` exports the addresses and names of [Addresses and helpers](#addresses-and-helpers) (`parseCell`, `parseRange`, `rangeAddress`, `parseLines`, `patchLines`, `quoteSheetIfNeeded`, `sameName` and the rest), the same functions as the root's, without any engine code.
+
+`xlcalc/text` exports `scanReferences`, `quoteSheetIfNeeded` and `escapeColumn`, the root's functions of formula text, for a browser that colours a formula as it is typed without the engine: 29 KB (12 KB gzip) bundled and minified, the engine's tokenizer and the translation of a locale's formula text without the parser or any computation. Of the locales' data it carries en-US's messages alone, which the tokenizer's errors take: text typed in another locale takes the locale as an object (`ruRU` of `xlcalc/locales/ru-RU`, or its formula text alone). `entryText` and `needsApostrophe` stay in the root: they read text as `parseEntry` does, with the parser and number formats.
 
 `xlcalc/worker` exports `createCalcPool(opts?)`, a `Calc` over a pool of threads (`opts`: `threads`, `maxHeapMb`, `hardTimeoutMs`, `timeoutMs`, `maxQueue`, `maxSessions`, `maxSessionsPerThread`, `limits`, `snapshotEvery`, `sliceMs`, `spawn`), and `CalcError`.
 

@@ -1,7 +1,7 @@
 /**
  * `scanReferences`: the references of formula text with their places, read by the engine's tokenizer, stored text and
- * text typed in ru-RU alike; a formula half typed never throws and gives the references before the place it stops
- * reading, the same ones the whole formula gives.
+ * text typed in ru-RU alike; a formula half typed never throws and gives the references the whole formula gives before
+ * the place it is typed to, and a token that does not read is skipped, the text read on past it.
  */
 import { describe, expect, it } from 'vitest'
 import type { FormulaReference } from '../src/contract.js'
@@ -60,13 +60,42 @@ describe('scanReferences', () => {
     }
   })
 
-  it('stops at the first place the text does not read', () => {
-    expect(brief(scanReferences('=A1+"open B2'))).toEqual(['1-3 A1'])
-    expect(brief(scanReferences("=A1+'Sheet 2'!"))).toEqual(['1-3 A1'])
-    expect(brief(scanReferences('=A1+$XFE$1+B2'))).toEqual(['1-3 A1'])
-    // a cell's shape past the sheet is a name, as Excel reads it, and the text reads on
+  it('skips a token that does not read and reads on past it', () => {
+    expect(brief(scanReferences('=A1+)B2'))).toEqual(['1-3 A1', '5-7 B2'])
+    expect(brief(scanReferences('=SUM(A1,'))).toEqual(['5-7 A1'])
+    // a character the formula does not take, alone
+    expect(brief(scanReferences('=A1~B2'))).toEqual(['1-3 A1', '4-6 B2'])
+    // a word: a reference off the sheet, an error literal half typed, a quoted name that is no sheet
+    expect(brief(scanReferences('=A1+$XFE$1+B2'))).toEqual(['1-3 A1', '11-13 B2'])
+    expect(brief(scanReferences('=$A$0:B2+C1'))).toEqual(['9-11 C1'])
+    expect(brief(scanReferences('=SUM(A1:B2,#N/+C1)'))).toEqual(['5-10 A1:B2', '15-17 C1'])
+    expect(brief(scanReferences("='Q1 data'+B2"))).toEqual(['11-13 B2'])
+    // a sheet with nothing after it, a structured reference Excel does not take, a reference to another book
+    expect(brief(scanReferences('=SUM(Sheet1!)+B2'))).toEqual(['14-16 B2'])
+    expect(brief(scanReferences('=Sales[#Foo]+B2'))).toEqual(['13-15 B2'])
+    expect(brief(scanReferences('=[1]S!A1+B2'))).toEqual(['9-11 B2'])
+    // a cell's shape past the sheet is a name, as Excel reads it
     expect(brief(scanReferences('=A1+XFE1+B2'))).toEqual(['1-3 A1', '9-11 B2'])
+  })
+
+  it('an open string, quoted name or bracket takes the rest of the text; a reference after a closed string reads', () => {
+    expect(scanReferences('="A1')).toEqual([])
+    expect(brief(scanReferences('=A1+"open B2'))).toEqual(['1-3 A1'])
+    expect(brief(scanReferences("=A1+'Q1 data!B2"))).toEqual(['1-3 A1'])
+    expect(brief(scanReferences("=A1+'Sheet 2'!"))).toEqual(['1-3 A1'])
+    expect(brief(scanReferences('=A1+Sales[Qty+B2'))).toEqual(['1-3 A1'])
+    expect(brief(scanReferences('="x"&A1+)B2'))).toEqual(['5-7 A1', '9-11 B2'])
+    expect(brief(scanReferences('=A1+#X"B2" C3'))).toEqual(['1-3 A1', '11-13 C3'])
     expect(scanReferences('')).toEqual([])
+  })
+
+  it('in a locale: a piece that does not translate is skipped, positions and array constants kept', () => {
+    expect(brief(scanReferences('=СУММ(A1;1.5)+B2', { locale: ruRU }))).toEqual(['6-8 A1', '14-16 B2'])
+    expect(brief(scanReferences('=A1+~B2', { locale: ruRU }))).toEqual(['1-3 A1', '5-7 B2'])
+    // `2:3` stays an array's rows after the piece skipped in it, not rows of the sheet
+    expect(brief(scanReferences('={1.5;2:3}+B2', { locale: ruRU }))).toEqual(['11-13 B2'])
+    expect(brief(scanReferences('=СУММ(A1;"x)+B2', { locale: ruRU }))).toEqual(['6-8 A1'])
+    expect(brief(scanReferences('=ЕСЛИ(A1>0;B2;C3', { locale: ruRU }))).toEqual(['6-8 A1', '11-13 B2', '14-16 C3'])
   })
 
   it('wrong input is an InputError', () => {

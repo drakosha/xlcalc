@@ -8,25 +8,26 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellReplace, CellStyle, CellTextEntry, CellTextOptions, CellTextPreview, CellTextResult, CellTextsPreview, CellTextsResult, CellValidation, CellView, ClearKind, Clock, ColumnWidth, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionStructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { checkExplainOptions, explainCell, explainText } from './explain.js'
 import { currentClock, nowMs } from './env.js'
-import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles, InputError } from './input.js'
+import { checkAddress, checkBook, checkCell, checkClock, checkEdits, checkLayoutEdits, checkNames, checkSessionOptions, checkSheet, checkString, checkStyles } from './input.js'
 import { checkBase, editFields, inOrder, joined, layoutChanged, nothing, repaintOf, ruleRanges, sortedKeys, type FieldChange, type Outcome } from './session/answer.js'
 import { applyLayout, bookLayout, checkStylesUsed, contentEdits, inputsOf } from './session/book.js'
 import { checkFieldEdits, resolveEdits } from './session/cells.js'
 import { clearPlan } from './session/clear.js'
 import { checkArrayEdits } from './spill/fixed.js'
 import { sheetExtent } from './session/extent.js'
-import { checkViewportOptions, viewport } from './session/viewport.js'
+import { checkRange, checkViewportOptions, viewport } from './session/viewport.js'
 import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './session/looks.js'
 import { movedChanges } from './session/moved.js'
 import { checkPatches } from './session/patch.js'
 import { patchPlan, type Plan } from './session/styles.js'
 import { bookDiff, type BookDiff } from './session/rebook.js'
-import { cellText, columnWidening, entryCheck, textRefusal, validationAlert } from './session/text.js'
+import { columnWidening, entryCheck, validationAlert } from './session/text.js'
+import { checkTextEntries, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
 import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
 import { headerEdits } from './tables/headers.js'
 import { checkTables } from './tables/check.js'
@@ -37,13 +38,13 @@ import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
+import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
-import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
 import { inverse, movesOf, type Geometry } from './structure/geometry.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
-import { cellValidation, hasRule, withInput } from './validation/session.js'
+import { cellValidation, hasRule, withInput, withInputs } from './validation/session.js'
 import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { withOldNames } from './old-names.js'
 import { strictMethods } from './strict-args.js'
@@ -68,6 +69,8 @@ export interface SessionSteps {
   patchCells(patches: CellPatch[], opts?: EditOptions): Steps<EditResult>
   setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): Steps<CellTextResult>
   previewCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): Steps<CellTextPreview>
+  setCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): Steps<CellTextsResult>
+  previewCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): Steps<CellTextsPreview>
   setNames(names: NameInput[], opts?: EditOptions): Steps<EditResult>
   setClock(clock: Clock, opts?: EditOptions): Steps<EditResult>
   editStructure(op: StructureOp, opts?: EditOptions): Steps<SessionStructureResult>
@@ -83,6 +86,7 @@ export interface SessionSteps {
   historyData(): HistoryData
   explain(sheet: string, cell: string, opts?: ExplainOptions): Steps<Explanation>
   getCells(sheet: string, range: string | string[]): Steps<Record<string, CellView>>
+  getCell(sheet: string, cell: string): Steps<CellView | undefined>
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Steps<Viewport>
   getCellIssue(sheet: string, cell: string): Steps<CellIssueDetail | null>
   getValidation(sheet: string, cell: string): Steps<CellValidation | null>
@@ -103,13 +107,6 @@ function headerText(s: EngineState, v: Scalar, format: NumberFormat | undefined)
   if (format === undefined || typeof v !== 'number') return plain
   const shown = s.ctx.rules.display(v, format, Infinity).text
   return shown === s.ctx.rules.display(v, undefined, Infinity).text ? plain : shown
-}
-
-/** A rectangle of a sheet given as text (`B2`, `B2:D9`, `B:D`, `2:9`). */
-function rect(text: unknown, path: string) {
-  const x = parseRange(checkString(text, path))
-  if (!x) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(text)}`)
-  return x
 }
 
 /** Opens a session in steps: the book checked, then computed. */
@@ -141,15 +138,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const sheetIndex = (s: EngineState) => (name: string) => s.sheetIdx.get(sheetKey(name))
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
-  /** The changes of cells `keys` as a host gets them, with the fields that changed of some. */
+  /** The changes of cells `keys` as a host gets them, with the fields that changed of some and a new format's code. */
   const changes = (s: EngineState, keys: string[], fields: Map<string, FieldChange>) => {
     // the statistics of conditional formats over changed cells are taken again
     dropStats(s, keys)
     const look = display ? cellLooks(s) : null
+    const code = formatCodeIn(s.input.locale)
     return keys.map((k) => {
       const [i, r, c] = k.split(':').map(Number)
       const value = cellValue(s, i, r, c)
-      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...fields.get(k) }
+      const f = fields.get(k)
+      const format = f?.numberFormat
+      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...f, ...(format !== undefined && format !== null ? { numberFormatCode: code(format) } : {}) }
     })
   }
   /** A call that changed the book answered: the revision one more, and what changed. */
@@ -294,6 +294,37 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     const [out, was] = yield* putCells(s, edits)
     return [s, out, () => (was.length ? cellsStep('patchCells', was) : null)]
   }
+  /**
+   * Typed cells written as `call`, in one step of the undo with the widths their columns take (`textWidths`), set unless
+   * `widen` is false: the state after, what changed and the widths.
+   */
+  function* writeTexts(s: EngineState, cells: Typed[], call: Step['call'], widen: boolean): Steps<[EngineState, Outcome, ColumnWidth[]]> {
+    const [next, out, back] = yield* writeCells(s, cells.map((x) => x.edit), call)
+    let o = out
+    const steps = [back]
+    // a number that does not fit its column widens it, as Excel does, in the same step
+    const widths = textWidths(next, cells)
+    if (widths.length && widen) {
+      const edits = widths.map((w) => ({ sheet: w.sheet, columns: w.column, set: { width: w.width, bestFit: true } }))
+      const shown = display ? snapshot(next, layoutCells(next, edits)) : null
+      const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, edits, (name) => sheetIndex(next)(name)!)
+      const [lo, before] = yield* relayout(next, sheets, shown)
+      o = joined(o, lo)
+      steps.push(() => layoutStep(call, before, sheets))
+    }
+    if (cells.length) keep(() => manyStep(call, steps.map((f) => f())))
+    return [next, o, widths]
+  }
+  /** What `read` gives with the typed cells written, which are taken back after it. */
+  function* previewed<T>(s: EngineState, cells: Typed[], read: () => T): Steps<T> {
+    try {
+      return yield* withInputs(s, cells.map((x) => x.edit), read)
+    } catch (e) {
+      // the inputs put in for the preview may still be there: the state is built again on the next call
+      stale = true
+      throw e
+    }
+  }
   /** A step taken by undo or redo, answered as its call answered. */
   const taken = (t: Taken | null): UndoResult | null => {
     if (!t) return null
@@ -349,47 +380,41 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const opts = checkBase<CellTextOptions>(eo, revision, ['widen'])
       const [i, r, c] = at(s, sheet, cell)
-      const typed = cellText(s, i, r, c, checkString(text, 'text'), clock.now)
-      if (!typed.ok) return typed
-      const edit: CellReplace = { sheet: s.sheetNames[i], cell, input: typed.input }
-      const refused = textRefusal(s, edit)
-      if (refused) return refused
-      const [next, out, back] = yield* writeCells(s, [edit], 'setCellText')
-      let o = out
-      const steps = [back]
-      // a number that does not fit its column widens it, as Excel does, in the same step
-      const width = next === s ? columnWidening(next, i, r, c) : undefined
-      if (width !== undefined && opts.widen !== false) {
-        const sheets = applyLayout({ ...next.input, sheets: next.input.sheets.slice() }, [{ sheet: next.sheetNames[i], columns: formatAddress(0, c).replace(/\d+$/, ''), set: { width, bestFit: true } }], () => i)
-        const touched: LayoutEdit[] = [{ sheet: next.sheetNames[i], columns: formatAddress(0, c).replace(/\d+$/, ''), set: {} }]
-        const [lo, before] = yield* relayout(next, sheets, display ? snapshot(next, layoutCells(next, touched)) : null)
-        o = joined(o, lo)
-        steps.push(() => layoutStep('setCellText', before, sheets))
-      }
-      keep(() => manyStep('setCellText', steps.map((f) => f())))
+      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now)
+      if (!typed.ok) return typed.refusal
+      const [next, out, widths] = yield* writeTexts(s, typed.cells, 'setCellText', opts.widen !== false)
       const alert = validationAlert(next, i, r, c)
-      return { ok: true, ...answer(next, o), ...(width !== undefined ? { width } : {}), ...(alert ? { validation: alert } : {}) }
+      return { ok: true, ...answer(next, out), ...(widths.length ? { width: widths[0].width } : {}), ...(alert ? { validation: alert } : {}) }
     },
     *previewCellText(sheet: string, cell: string, text: string, eo?: CellTextOptions): Steps<CellTextPreview> {
       const s = yield* ready()
       checkBase<CellTextOptions>(eo, revision, ['widen'])
       const [i, r, c] = at(s, sheet, cell)
-      const typed = cellText(s, i, r, c, checkString(text, 'text'), clock.now)
-      if (!typed.ok) return typed
-      const edit: CellReplace = { sheet: s.sheetNames[i], cell, input: typed.input }
-      const refused = textRefusal(s, edit)
-      if (refused) return refused
-      try {
-        return yield* withInput(s, i, r, c, typed.input, () => {
-          const width = columnWidening(s, i, r, c)
-          const alert = validationAlert(s, i, r, c)
-          return { ok: true as const, input: typed.input, value: cellValue(s, i, r, c), ...(width !== undefined ? { width } : {}), ...(alert ? { validation: alert } : {}) }
-        })
-      } catch (e) {
-        // the input put in for the preview may still be there: the state is built again on the next call
-        stale = true
-        throw e
-      }
+      const typed = typedTexts(s, [{ i, r, c, text: checkString(text, 'text') }], clock.now)
+      if (!typed.ok) return typed.refusal
+      return yield* previewed(s, typed.cells, () => {
+        const width = columnWidening(s, i, r, c)
+        const alert = validationAlert(s, i, r, c)
+        return { ok: true as const, input: typed.cells[0].edit.input, value: cellValue(s, i, r, c), ...(width !== undefined ? { width } : {}), ...(alert ? { validation: alert } : {}) }
+      })
+    },
+    *setCellTexts(entries: CellTextEntry[], eo?: CellTextOptions) {
+      const s = yield* ready()
+      const opts = checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
+      if (!typed.ok) return { ...typed.refusal, ...typed.ref }
+      const [next, out, widths] = yield* writeTexts(s, typed.cells, 'setCellTexts', opts.widen !== false)
+      return { ok: true, ...answer(next, out), ...textsFound(widths, textAlerts(next, typed.cells)) }
+    },
+    *previewCellTexts(entries: CellTextEntry[], eo?: CellTextOptions): Steps<CellTextsPreview> {
+      const s = yield* ready()
+      checkBase<CellTextOptions>(eo, revision, ['widen'])
+      const typed = typedTexts(s, checkTextEntries(entries, sheetIndex(s)), clock.now)
+      if (!typed.ok) return { ...typed.refusal, ...typed.ref }
+      return yield* previewed(s, typed.cells, () => {
+        const cells = typed.cells.map(({ i, r, c, edit }) => ({ sheet: edit.sheet, cell: edit.cell, input: edit.input, value: cellValue(s, i, r, c) }))
+        return { ok: true as const, cells, ...textsFound(textWidths(s, typed.cells), textAlerts(s, typed.cells)) }
+      })
     },
     *setNames(names: NameInput[], eo?: EditOptions) {
       const old = yield* ready()
@@ -480,13 +505,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       const many = Array.isArray(range)
-      return yield* cellsIn(s, i, (many ? range : [range]).map((text, k) => rect(text, many ? `range[${k}]` : 'range')), display)
+      return yield* cellsIn(s, i, (many ? range : [range]).map((text, k) => checkRange(text, many ? `range[${k}]` : 'range')), display)
+    },
+    *getCell(sheet: string, cell: string) {
+      const s = yield* ready()
+      const [i, r, c] = at(s, sheet, cell)
+      return (yield* cellsIn(s, i, [{ r1: r, c1: c, r2: r, c2: c }], display))[cell]
     },
     *getViewport(sheet: string, range: string, o?: ViewportOptions) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
       // the window of the revision it was read at, for a host to take later edits' changes over
-      return { ...(yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)), revision }
+      return { ...(yield* viewport(s, i, checkRange(range, 'range'), checkViewportOptions(o), display, clock.now)), revision }
     },
     *getCellIssue(sheet: string, cell: string) {
       const s = yield* ready()
@@ -561,6 +591,8 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     patchCells: (patches, o) => now(() => core.patchCells(patches, o)),
     setCellText: (sheet, cell, text, o) => now(() => core.setCellText(sheet, cell, text, o)),
     previewCellText: (sheet, cell, text, o) => now(() => core.previewCellText(sheet, cell, text, o)),
+    setCellTexts: (entries, o) => now(() => core.setCellTexts(entries, o)),
+    previewCellTexts: (entries, o) => now(() => core.previewCellTexts(entries, o)),
     setNames: (names, o) => now(() => core.setNames(names, o)),
     setClock: (clock, o) => now(() => core.setClock(clock, o)),
     editStructure: (op, o) => now(() => core.editStructure(op, o)),
@@ -571,6 +603,7 @@ export function createSession(book: BookInput, opts?: SessionOptions): Session {
     getUsedRange: (sheet) => now(() => core.getUsedRange(sheet)),
     explain: (sheet, cell, o) => now(() => core.explain(sheet, cell, o)),
     getCells: (sheet, range) => now(() => core.getCells(sheet, range)),
+    getCell: (sheet, cell) => now(() => core.getCell(sheet, cell)),
     getViewport: (sheet, range, o) => now(() => core.getViewport(sheet, range, o)),
     getCellIssue: (sheet, cell) => now(() => core.getCellIssue(sheet, cell)),
     getValidation: (sheet, cell) => now(() => core.getValidation(sheet, cell)),

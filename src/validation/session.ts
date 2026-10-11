@@ -3,7 +3,7 @@
  * its formulas as at the cell, a list's items, and whether a value meets the rule as Excel's `Validation.Value` checks
  * it. A rule's formulas are computed at the cell as a formula of the cell would be, a reference staying a reference.
  */
-import type { CellInput, CellValidation, DataValidation, NumberFormat } from '../contract.js'
+import type { CellInput, CellReplace, CellValidation, DataValidation, NumberFormat } from '../contract.js'
 import type { Arg } from '../args.js'
 import { applyEdits, codegenContext, invalidError, toCellValue, valueAt, type EngineState } from '../engine.js'
 import { closureBackend } from '../exec/closures.js'
@@ -25,7 +25,7 @@ import { formulaAt } from './structure.js'
 function computeAt(state: EngineState, s: number, r: number, c: number, text: string): Arg {
   const known = (name: string, sheet: string | undefined) => !!nameFor(state.names, sheet === undefined ? s : state.sheetIdx.get(sheetKey(sheet))!, name)
   const enclosing = tableAt(state.tables, s, r, c)?.name
-  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { enclosing } : {}) })
+  const v = validate(text, { sheets: state.sheetNames, known, externalFunctions: state.externalFunctions, tables: tableNames(state.tables), ...(enclosing ? { table: enclosing } : {}) })
   if (!v.ok) return E[invalidError(v.code)]
   return walk(codegenContext(state, s), v.ast, s, r, c, closureBackend(state.rt)).code()
 }
@@ -212,16 +212,23 @@ export const hasRule = (state: EngineState, s: number, r: number, c: number): bo
  * What `read` gives with the cell holding `input`: the input put into the book, read, and taken back (both recompute
  * what depends on the cell).
  */
-export function* withInput<T>(state: EngineState, s: number, r: number, c: number, input: CellInput | null, read: () => T): Steps<T> {
-  const cells = state.input.sheets[s].cells
-  const addr = formatAddress(r, c)
-  const old = cells[addr]
-  const same = old === input || JSON.stringify(old ?? null) === JSON.stringify(input)
-  const sheet = state.sheetNames[s]
-  if (!same) yield* applyEdits(state, [{ sheet, cell: addr, input }])
+export const withInput = <T>(state: EngineState, s: number, r: number, c: number, input: CellInput | null, read: () => T): Steps<T> =>
+  withInputs(state, [{ sheet: state.sheetNames[s], cell: formatAddress(r, c), input }], read)
+
+/** What `read` gives with the cells holding the inputs of `edits` (each cell once), as `withInput`. */
+export function* withInputs<T>(state: EngineState, edits: CellReplace[], read: () => T): Steps<T> {
+  const put: CellReplace[] = []
+  const back: CellReplace[] = []
+  for (const e of edits) {
+    const old = state.input.sheets[state.sheetIdx.get(sheetKey(e.sheet))!].cells[e.cell]
+    if (old === e.input || JSON.stringify(old ?? null) === JSON.stringify(e.input)) continue
+    put.push(e)
+    back.push({ ...e, input: old ?? null })
+  }
+  if (put.length) yield* applyEdits(state, put)
   try {
     return read()
   } finally {
-    if (!same) yield* applyEdits(state, [{ sheet, cell: addr, input: old ?? null }])
+    if (back.length) yield* applyEdits(state, back)
   }
 }

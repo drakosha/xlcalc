@@ -6,6 +6,7 @@
  */
 import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, NameInput, NameIssue, NameOptions, NamesContext, ValidateContext, ValidateResult } from './contract.js'
 import * as sessions from './session.js'
+import * as saved from './session/saved.js'
 import * as structure from './structure/index.js'
 import * as copy from './structure/copy.js'
 import * as inline from './async/inline.js'
@@ -15,7 +16,7 @@ import * as entry from './entry/index.js'
 import * as entryTexts from './entry/text.js'
 import * as fit from './layout/fit.js'
 import * as helpers from './helpers.js'
-import * as scan from './scan.js'
+import * as styleTable from './style-table.js'
 import * as builtin from './builtin-format.js'
 import * as serials from './date-serial.js'
 import { strict } from './strict-args.js'
@@ -43,11 +44,13 @@ export { enUS, type Locale, type Translation } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export type { CopyContext } from './structure/copy.js'
 export * from './a1.js'
+export { escapeColumn, scanReferences } from './text.js'
 export type { DateSystemOptions } from './date-serial.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
 export const createSession = /* @__PURE__ */ strict(sessions.createSession)
 export const createInlineCalc = /* @__PURE__ */ strict(inline.createInlineCalc)
+export const viewportOf = /* @__PURE__ */ strict(saved.viewportOf)
 export const toLocal = /* @__PURE__ */ strict(locales.toLocal)
 export const toInvariant = /* @__PURE__ */ strict(locales.toInvariant)
 export const validateLocalFormula = /* @__PURE__ */ strict(locales.validateLocalFormula)
@@ -63,10 +66,10 @@ export const canonValue = /* @__PURE__ */ strict(helpers.canonValue)
 export const errorText = /* @__PURE__ */ strict(helpers.errorText)
 export const sameValue = /* @__PURE__ */ strict(helpers.sameValue)
 export const validateSheetName = /* @__PURE__ */ strict(helpers.validateSheetName)
-export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const builtinFormatCode = /* @__PURE__ */ strict(builtin.builtinFormatCode)
 export const dateToSerial = /* @__PURE__ */ strict(serials.dateToSerial)
 export const serialToDate = /* @__PURE__ */ strict(serials.serialToDate)
+export const internStyle = /* @__PURE__ */ strict(styleTable.internStyle)
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
