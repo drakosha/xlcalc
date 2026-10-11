@@ -1,5 +1,5 @@
 /** References as rectangles with their `$` flags, and their text in the form Excel writes it. */
-import { colToIndex, indexToCol, MAX_COLS, MAX_ROWS } from '../model.js'
+import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from '../model.js'
 import type { RangeRef as SyntaxRef } from '../syntax.js'
 
 /** One bound: a zero-based index and whether it is absolute (`$`). */
@@ -91,9 +91,51 @@ export const rectOf = (a: Area): Rect => ({ r1: a.r.lo.i, r2: a.r.hi.i, c1: a.c.
 export const lo = (x: Rect, axis: Axis) => (axis === 'r' ? x.r1 : x.c1)
 export const hi = (x: Rect, axis: Axis) => (axis === 'r' ? x.r2 : x.c2)
 
+/** The rectangle with its bounds along `axis` replaced. */
+export const withBounds = (x: Rect, axis: Axis, a: number, b: number): Rect => (axis === 'r' ? { ...x, r1: a, r2: b } : { ...x, c1: a, c2: b })
+
 export const contains = (outer: Rect, inner: Rect) => inner.r1 >= outer.r1 && inner.r2 <= outer.r2 && inner.c1 >= outer.c1 && inner.c2 <= outer.c2
 
 export const meets = (x: Rect, y: Rect) => x.r1 <= y.r2 && y.r1 <= x.r2 && x.c1 <= y.c2 && y.c1 <= x.c2
+
+/** Whether the cell at row `r`, column `c` lies in the rectangle. */
+export const hasCell = (x: Rect, r: number, c: number) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2
+
+/** The cells two rectangles share, or null when they do not meet. */
+export function intersect(x: Rect, y: Rect): Rect | null {
+  const z = { r1: Math.max(x.r1, y.r1), r2: Math.min(x.r2, y.r2), c1: Math.max(x.c1, y.c1), c2: Math.min(x.c2, y.c2) }
+  return z.r1 <= z.r2 && z.c1 <= z.c2 ? z : null
+}
+
+export const shiftRect = (x: Rect, dr: number, dc: number): Rect => ({ r1: x.r1 + dr, r2: x.r2 + dr, c1: x.c1 + dc, c2: x.c2 + dc })
+
+/** `x` without the cells of `y`: up to four rectangles, above, below, left and right of it. */
+export function minus(x: Rect, y: Rect): Rect[] {
+  if (!meets(x, y)) return [x]
+  const out: Rect[] = []
+  if (x.r1 < y.r1) out.push({ ...x, r2: y.r1 - 1 })
+  if (x.r2 > y.r2) out.push({ ...x, r1: y.r2 + 1 })
+  const [r1, r2] = [Math.max(x.r1, y.r1), Math.min(x.r2, y.r2)]
+  if (x.c1 < y.c1) out.push({ r1, r2, c1: x.c1, c2: y.c1 - 1 })
+  if (x.c2 > y.c2) out.push({ r1, r2, c1: y.c2 + 1, c2: x.c2 })
+  return out
+}
+
+/** Rectangles without the cells of `cut`. */
+export const subtract = (rects: Rect[], cut: Rect): Rect[] => rects.flatMap((x) => minus(x, cut))
+
+/** A rectangle's text from corner to corner, `B2:D9`, one cell too (`B2:B2`): a merged area, a table, a spill. */
+export const cornersText = (x: Rect) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`
+
+/** A rectangle's text: `B2:D9`, or `B2` for one cell. */
+export const rectText = (x: Rect) => (x.r1 === x.r2 && x.c1 === x.c2 ? formatAddress(x.r1, x.c1) : cornersText(x))
+
+/** A rectangle as a part of a range: a cell, a range, whole columns (`C:D`) or whole rows (`2:5`), as Excel writes references. */
+export function areaText(x: Rect): string {
+  if (x.r1 === 0 && x.r2 === MAX_ROWS - 1) return `${indexToCol(x.c1)}:${indexToCol(x.c2)}`
+  if (x.c1 === 0 && x.c2 === MAX_COLS - 1) return `${x.r1 + 1}:${x.r2 + 1}`
+  return rectText(x)
+}
 
 const RANGE_ARG = /^(?:([A-Z]{1,3})(\d+)(?::([A-Z]{1,3})(\d+))?|([A-Z]{1,3}):([A-Z]{1,3})|(\d+):(\d+))$/
 

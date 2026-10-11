@@ -34,17 +34,18 @@ function sci(a: number, m: number): string {
 
 /**
  * A number as text the way Excel converts one (`&`, CONCAT, text arguments): rounded to 15 significant
- * digits, in positional notation unless that takes more than 20 characters (the sign aside), else in
- * scientific notation with an exponent of two digits at least (`1E+20`, `7.4500104300146E-06`).
+ * digits, in positional notation unless that takes more than `max` characters (the sign aside), else in
+ * scientific notation with an exponent of two digits at least (`1E+20`, `7.4500104300146E-06`). The formula bar
+ * takes 21 characters (`100000000000000000000`), `&` 20.
  */
-export function generalText(n: number): string {
+export function generalText(n: number, max = 20): string {
   if (n === 0) return '0'
   const [m, e] = Math.abs(n).toExponential(14).split('e')
   const exp = Number(e)
   const digits = m.replace('.', '').replace(/0+$/, '')
   const fixed =
     exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
-  const text = fixed.length <= 20 ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
+  const text = fixed.length <= max ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
   return n < 0 ? '-' + text : text
 }
 

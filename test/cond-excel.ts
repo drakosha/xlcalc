@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredCond } from '../bench/coverage/cond.js'
 import { engineCase, rulesOf, type CondCase, type CondSet, type Look } from '../bench/coverage/cond/cases.js'
 import { readXlsx } from '../src/xlsx.js'
+import './locales.js'
 
 export type CondSetFile = StoredCond & { name: string; dir: URL }
 
@@ -53,11 +54,15 @@ export function checkCondSets(sets: CondSetFile[], known: Known, load: (name: st
         const a = set.answers[c.id]
         if (!a) continue
         const key = `${set.name}:${c.id}`
+        // an operation Excel refused leaves the book as it was: the engine refuses it too, and the book shows as before
+        const refused = c.op !== undefined && a.error?.startsWith('op') === true
+        const after = refused ? { ...c, op: undefined } : c
+        if (refused) it(`${c.id}: the engine refuses the operation Excel refused`, () => expect(engineCase(set, c, clock).refused, a.error).toBeDefined())
         it(`${c.id}: the cells show what Excel showed`, async () => {
           const mod = await load(set.name)
           const book = c.make && mod.expectedBook ? undefined : set.books[c.book]
           if (!book) return
-          const got = lookDifferences(a.looks, engineCase(set, c, clock, book).looks, alike)
+          const got = lookDifferences(a.looks, engineCase(set, after, clock, book).looks, alike)
           const pinned = [...got].filter(([cell]) => known[`${key}:${cell}`])
           expect([...got].filter(([cell]) => !known[`${key}:${cell}`]).map(([cell, d]) => `${cell}: ${d}`)).toEqual([])
           for (const [cell] of pinned) expect(got.has(cell), `${key}:${cell} pinned`).toBe(true)
@@ -65,7 +70,7 @@ export function checkCondSets(sets: CondSetFile[], known: Known, load: (name: st
         it(`${c.id}: the reader reads from Excel's file the rules the engine holds after the case`, async () => {
           const saved = await readXlsx(new Uint8Array(readFileSync(new URL(`${c.id}.xlsx`, set.dir))))
           if (c.make) return
-          const same = JSON.stringify(rulesOf(saved.book)) === JSON.stringify(engineCase(set, c, clock, set.books[c.book]).rules)
+          const same = JSON.stringify(rulesOf(saved.book)) === JSON.stringify(engineCase(set, after, clock, set.books[c.book]).rules)
           expect(same, known[key] ?? 'the rules differ').toBe(!known[key])
         })
         it(`${c.id}: on the book read from Excel's file the engine shows what Excel showed`, async () => {

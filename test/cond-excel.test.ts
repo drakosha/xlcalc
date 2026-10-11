@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CondSet } from '../bench/coverage/cond/cases.js'
 import { checkCondSets, condSets, pinnedCases, type Known } from './cond-excel.js'
+import './locales.js'
 
 /** Excel drops the lengths of an Excel 2010 bar of 5 and 95 percent, which then read as the format's defaults, 10 and 90. */
 const LENGTHS = 'Excel saves the Excel 2010 bar of lengths 5 and 95 without them: they read as 10 and 90'
@@ -24,12 +25,20 @@ export const COND_KNOWN: Known = {
   'struct-held:delete-rows-2-4': 'Excel puts a rule whose reference a deletion of rows lost after the others; the engine keeps its place',
   // Excel for Mac orders Cyrillic before Latin in ru-RU; the engine follows Windows (Latin first)
   'looks-ru:ru:Лист!D10': 'Excel for Mac ru-RU: "b" > "в"; Windows and the engine: Latin before Cyrillic',
+  // Excel for Mac's short month names in ru-RU; the engine follows Windows (three letters)
+  'formats-ru-held:formats:Лист!A5': 'Excel for Mac ru-RU writes the short month name март; Windows and the engine мар',
+  'formats-ru-held:formats:Лист!A6': 'Excel for Mac ru-RU writes the short month name март; Windows and the engine мар',
+  // both Excels save two rules alike but for a format given by number and by its code as one rule over both cells
+  'formats-ru-held:formats': "Excel saves a rule of format 14 and one of m/d/yyyy over the cell below as one rule over both, as it reads a rule's format by its code",
 }
+
+/** The pins of what only Excel for Mac does: its order of text and month names in ru-RU. */
+export const macOnly = (key: string) => key.startsWith('looks-ru:') || key.startsWith('formats-ru-held:formats:')
 
 const SETS = [...condSets('cond/'), ...condSets('cond/ru-RU/').map((s) => ({ ...s, name: s.name }))]
 
 describe('conditional formats against Excel for Mac', () => {
-  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'files', 'held', 'held-2', 'looks', 'looks-ru', 'struct-held']))
+  it('every set is answered', () => expect(SETS.map((s) => s.name).sort()).toEqual(['both', 'edge-held', 'files', 'formats-ru-held', 'held', 'held-2', 'looks', 'looks-ru', 'struct-held']))
   it('every pinned difference names a case', () => expect(pinnedCases(SETS, COND_KNOWN)).toEqual([]))
 })
 

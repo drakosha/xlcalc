@@ -3,9 +3,9 @@
 A sheet can hold Excel's conditional formatting rules: a fill for numbers over a limit, a bold row where a formula holds, a colour scale, data bars, icon sets. The book keeps the rules, a session tells a grid what each cell of a window shows by them, the xlsx subpath reads and writes them, and structure operations move them as Excel does.
 
 ```js
-import { openSession } from 'xlcalc'
+import { createSession } from 'xlcalc'
 
-const session = openSession({
+const session = createSession({
   sheets: [{
     name: 'Sales',
     cells: { A1: { value: 120 }, A2: { value: 80 }, A3: { value: 45 } },
@@ -15,8 +15,8 @@ const session = openSession({
     ],
   }],
 })
-const cells = session.cells('Sales', 'A1:A3')
-console.log(cells.A1.look, cells.A2.look, cells.A3.look)
+const cells = session.getCells('Sales', 'A1:A3')
+console.log(cells.A1.appearance, cells.A2.appearance, cells.A3.appearance)
 // → { style: { font: { color: '#9C0006' }, fill: { color: '#FFC7CE' } } } { style: { fill: { color: '#B39072' } } } { style: { fill: { color: '#F8696B' } } }
 ```
 
@@ -24,7 +24,7 @@ The rules are `SheetInput.conditionalFormats`, in priority order: the first one 
 
 ## The rules
 
-Each rule has `type`, `ranges` (the cells it applies to: `B2:B20`, `D2`, whole columns `F:F`, whole rows `3:5`, one or several, as Excel's "Applies to" lists them) and may have `stopIfTrue`. A rule that holds for a cell gives it its `style`, Excel's differential format: a fill, a font's colour, bold, italic, underline and strike (`bold: false` takes away a bold the cell has), borders and a number format. Formulas are written as cells hold them, without `=`.
+Each rule has `type`, `ranges` (the cells it applies to: `B2:B20`, `D2`, whole columns `F:F`, whole rows `3:5`, one or several, as Excel's "Applies to" lists them) and may have `stopIfTrue`. A rule that holds for a cell gives it its `style`, Excel's differential format: a fill, a font's colour, bold, italic, underline and strike (`bold: false` takes away a bold the cell has), borders and a number format. Formulas are written as cells hold them, without `=`; a leading one is dropped.
 
 | type | the cell holds when | example |
 |---|---|---|
@@ -70,18 +70,18 @@ A number gets the colour of the points around it, each channel moving from the l
 
 ### Data bars and icon sets
 
-A data bar gives `look.bar`: where the bar starts and ends as fractions of the cell's width, its colour, fill and border, and for numbers on both sides of 0 the axis. An Excel 2010 bar (the default) starts at its axis, by default at the numbers' zero, and is from `minLength` to `maxLength` percent long, 0 and 100 by default; an Excel 2007 bar (`excel2007`) starts at the cell's left edge and is from 10 to 90 percent long. An icon set gives `look.icon`, the set and the icon's number in it in Excel's order (for `3Arrows` 0 is the red arrow down, 2 the green arrow up), the last one for the highest numbers, reversed by `reverse`; a threshold's own `icon` replaces it, `null` shows none. `showValue: false` gives `look.hideValue`.
+A data bar gives `appearance.bar`: where the bar starts and ends as fractions of the cell's width, its colour, fill and border, and for numbers on both sides of 0 the axis. An Excel 2010 bar (the default) starts at its axis, by default at the numbers' zero, and is from `minLength` to `maxLength` percent long, 0 and 100 by default; an Excel 2007 bar (`excel2007`) starts at the cell's left edge and is from 10 to 90 percent long. An icon set gives `appearance.icon`, the set and the icon's number in it in Excel's order (for `3Arrows` 0 is the red arrow down, 2 the green arrow up), the last one for the highest numbers, reversed by `reverse`; a threshold's own `icon` replaces it, `null` shows none. `showValue: false` gives `appearance.hideValue`.
 
 ## What a cell shows
 
-`Session.cells(sheet, range)` gives each cell its `look` by the current values:
+`Session.getCells(sheet, range)` gives each cell its `appearance` by the current values (`getViewport` gives the same):
 
 - `style`: the styles of the rules that hold, merged in priority order: a field an earlier rule sets wins (a red fill from the first rule and an italic from the second make a red italic cell); a colour scale's colour is a fill.
 - `bar`, `icon` and `hideValue`, from the first data bar and icon set.
 
-A rule with `stopIfTrue` that holds leaves out the rules after it for that cell. A number format of the look shows the cell's `text` by it, as Excel's `Range.Text` does. An empty cell with a look is listed with the value null, so a grid paints a highlighted empty row; in a rectangle of more than 65,536 cells only the cells the rectangle lists get looks. `compute` and `result()` give no looks.
+A rule with `stopIfTrue` that holds leaves out the rules after it for that cell. A number format of the appearance shows the cell's `text` by it, as Excel's `Range.Text` does. A built-in format given by number shows by its en-US code in every locale, as Excel reads a differential format by the code it holds: `{ numberFormat: 14 }` shows `3.15.2026` in ru-RU, where a cell's own format 14 shows `15.03.2026`. An empty cell with an appearance is listed with the value null, so a grid paints a highlighted empty row; in a rectangle of more than 65,536 cells only the cells the rectangle lists get one. `compute` and `getResult()` give none.
 
-A session's edits do not list cells whose look changed: an edit can recolour a whole colour scale. A host with rules on a sheet reads its window again after an edit, which costs what the window holds. The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
+A session's edits do not list cells whose appearance changed: an edit can recolour a whole colour scale. They give the rules' rectangles as `repaint` after a value or a rule changed, and a host reads its window again where it meets them, which costs what the window holds ([Editing a grid](edits.md#what-an-edit-answers)). The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
 
 On a sheet of 34,000 rows with a formula rule over 4 columns, a three-colour scale and a data bar, a window of 20,000 cells takes about 60 ms the first time and 25 ms after (15 ms without the rules), an edit of a cell under 1 ms with the rules or without them, and the window read again after an edit that changes the data bar's numbers 35 ms, on an Apple M5 Pro.
 
@@ -100,7 +100,7 @@ Every kind of rule is computed and kept. What a data bar and an icon set give a 
 The operations change rules as Excel changes them:
 
 - Inserted lines that follow a line of a rule join it, as they take the format of the line before them; a rule after them moves.
-- Deleted lines leave its ranges, and a rule with nothing left is gone. A rule over statistics (a colour scale, a data bar, an icon set, top, average and duplicate rules) that loses lines goes after the others, as Excel takes it out and puts it back.
+- Deleted lines leave its ranges, and a rule with nothing left is gone; a range ending on the sheet's last row or column keeps ending there, one cell too (`B1048576` is `B1048575:B1048576` after a row above is deleted). A rule over statistics (a colour scale, a data bar, an icon set, top, average and duplicate rules) that loses lines goes after the others, as Excel takes it out and puts it back.
 - A move takes the rules of its cells along; the cells it lands on keep their own rules too. On another sheet the moved part is a rule of that sheet, first in its order. A rule whose formula the move rewrote goes after the others.
 - A copy pastes its cells' rules as new rules over the pasted cells, first in the target's order, and the pasted cells lose the target's rules; a paste that goes on down a rule's own columns (a fill down) grows the rule instead.
 - Formulas change as the formula of a cell at the rule's first cell would, and are made for a new first cell as a copy would make them. A reference to a deleted sheet is `#REF!`.
@@ -118,8 +118,10 @@ The operations change rules as Excel changes them:
 | `held`, `held-2` | 9, 4 | held out after the sets above: the rules they gave on other cases |
 | `both` | 3 | a sheet with conditional formats, data validation and grouped rows, written, with a row inserted and one deleted |
 | `made` | 1 | 15 rules Excel for Windows made through COM (`FormatConditions.Add`, `AddTop10`, `AddAboveAverage`, `AddUniqueValues`, `AddColorScale`, `AddDatabar`, `AddIconSetCondition`), over two ranges too |
+| `edge-held` | 8 | rules at the sheet's last row and column, one cell and two, under lines deleted and inserted far before them and the last line deleted |
+| `formats-ru-held` | 1 | built-in number formats of rules given by number and by their codes, in ru-RU |
 
-Both Excels loaded every book. The engine's answers were committed before each run. Excel for Mac showed the looks as predicted in 594 of 676 cells of `looks`, 191 of 200 of `files`, 1,699 of 1,885 of `struct-held` and 79 of 80 of `looks-ru`, and saved the rules of 12 of the 24 cases of `struct-held` as predicted; the misses gave the rules above (how a colour scale cuts its channels, errors left out of statistics, the cell a formula is written for, IF's reading of an answer, a blank operand, blank rules, duplicates, and how operations grow, keep and order rules), and the held-out sets, made after them, showed 708 of 708 and 336 of 336 cells as predicted and the rules of 11 of 13 cases, whose misses gave the order rules of top rules and where a paste grows a rule; `both`, 132 of 132 cells and its rules and data validation. Now the engine shows what Excel for Mac showed in 4,015 of 4,017 cells, the two pinned below. Excel for Windows, predicted after the Mac's answers, showed `looks`, `struct-held`, `held`, `held-2` and `both` as predicted in every cell, and agreed with Excel for Mac in 3,988 of the 4,017 cells both read (the others `#` counted in pixels, and the order of Latin and Cyrillic); the rules Excel for Windows made itself, read from its file, showed as Excel showed them in 203 of 204 cells. Of the rules each Excel saved, the reader reads what the engine holds after the case in every case, but the bar lengths and the order of one rule pinned below.
+Both Excels loaded every book. The engine's answers were committed before each run. Excel for Mac showed the looks as predicted in 594 of 676 cells of `looks`, 191 of 200 of `files`, 1,699 of 1,885 of `struct-held` and 79 of 80 of `looks-ru`, and saved the rules of 12 of the 24 cases of `struct-held` as predicted; the misses gave the rules above (how a colour scale cuts its channels, errors left out of statistics, the cell a formula is written for, IF's reading of an answer, a blank operand, blank rules, duplicates, and how operations grow, keep and order rules), and the held-out sets, made after them, showed 708 of 708 and 336 of 336 cells as predicted and the rules of 11 of 13 cases, whose misses gave the order rules of top rules and where a paste grows a rule; `both`, 132 of 132 cells and its rules and data validation. Now the engine shows what Excel for Mac showed in 4,015 of 4,017 cells, the two pinned below. Excel for Windows, predicted after the Mac's answers, showed `looks`, `struct-held`, `held`, `held-2` and `both` as predicted in every cell, and agreed with Excel for Mac in 3,988 of the 4,017 cells both read (the others `#` counted in pixels, and the order of Latin and Cyrillic); the rules Excel for Windows made itself, read from its file, showed as Excel showed them in 203 of 204 cells. Of the rules each Excel saved, the reader reads what the engine holds after the case in every case, but the bar lengths and the order of one rule pinned below. `edge-held` came out as predicted in both Excels, both refusing lines inserted that push the corner's cells off the sheet; `formats-ru-held` showed 5 of 9 cells as predicted in Excel for Windows and 4 in Excel for Mac, whose short month names differ: the rules given a built-in format by number are shown by its code (fixed), and Excel saved the two rules of each pair, by number and by code, as one.
 
 Not measured: a data bar's length and an icon, which no object model reports (the rules' parameters were checked, the bar and the icon follow Excel's documented rules); borders, underline and strike of a style (written and read back, not read from the display format); rules made through Excel for Mac's AppleScript, whose `make new format condition` stopped Excel; a copy across sheets of a rule with relative references beyond the cases above.
 
@@ -131,3 +133,4 @@ Not measured: a data bar's length and an icon, which no object model reports (th
 - Excel for Mac orders Cyrillic before Latin in ru-RU; the engine follows Excel for Windows, Latin first, in rules as in formulas.
 - Excel for Windows lays text out in pixels, so `#` across a column can count otherwise ([docs/formats.md](formats.md)).
 - A dxf's number format that is a built-in one comes back from Excel as its code (`0.00%` for 10).
+- Excel for Mac writes the short month names of ru-RU otherwise (`15-март-26`); the engine follows Excel for Windows (`15-мар-26`).

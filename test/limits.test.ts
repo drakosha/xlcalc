@@ -5,7 +5,7 @@
  * limits nothing changes.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, compute, createInlineCalc, openSession, type BookInput } from '../src/index.js'
+import { CalcError, compute, createInlineCalc, createSession, type BookInput } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const book = (cells: BookInput['sheets'][0]['cells']): BookInput => ({ sheets: [{ name: 'S', cells }] })
@@ -73,11 +73,11 @@ describe('limits', () => {
   })
 
   it('cells without spill bounds a spill too, spill without cells leaves arrays unbounded', () => {
-    const s = openSession(book({ A1: { value: 1 } }), { clock, limits: { cells: 2_000 } })
+    const s = createSession(book({ A1: { value: 1 } }), { clock, limits: { cells: 2_000 } })
     expect(stopped(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SEQUENCE(1000,3)' } }])).max).toBe(2_000)
     expect(stopped(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,3))' } }])).limit).toBe('cells')
-    const t = openSession(book({ A1: { value: 1 } }), { clock, limits: { spill: 2_000 } })
-    expect(t.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,3))' } }])[0].value).toBe(4_501_500)
+    const t = createSession(book({ A1: { value: 1 } }), { clock, limits: { spill: 2_000 } })
+    expect(t.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,3))' } }]).changes[0].value).toBe(4_501_500)
     expect(stopped(() => t.setCells([{ sheet: 'S', cell: 'B2', input: { formula: 'SEQUENCE(1000,3)' } }])).limit).toBe('spill')
   })
 
@@ -97,7 +97,7 @@ describe('limits', () => {
     const b = book({ A1: { formula: 'SUM(SEQUENCE(2000))' } })
     const e = (await calc.compute(b, { clock, limits: { formulas: 10 } }).catch((x: unknown) => x)) as CalcError
     expect([e.code, e.limit, e.max]).toEqual(['limit', 'cells', 1_000])
-    const s = await calc.openSession(book({ A1: { value: 1 } }), { clock, limits: { formulas: 10 } })
+    const s = await calc.createSession(book({ A1: { value: 1 } }), { clock, limits: { formulas: 10 } })
     const f = (await s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(2000))' } }]).catch((x: unknown) => x)) as CalcError
     expect([f.code, f.limit, f.max]).toEqual(['limit', 'cells', 1_000])
     await calc.close()
@@ -105,22 +105,22 @@ describe('limits', () => {
 
   it('a session call over the limits changes nothing, and the session goes on', () => {
     const b = book({ A1: { value: 2 }, A2: { formula: 'A1*10' }, A3: { formula: 'SUM(A1:A2)' } })
-    const s = openSession(b, { clock, limits: { formulas: 3, cells: 10_000 } })
-    const hash = s.result().hash
+    const s = createSession(b, { clock, limits: { formulas: 3, cells: 10_000 } })
+    const hash = s.getResult().hash
     const big = stopped(() => s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }, { sheet: 'S', cell: 'B1', input: { formula: 'SUM(SEQUENCE(1000,1000))' } }]))
     expect(big.limit).toBe('cells')
-    expect(s.book().sheets[0].cells).toEqual(b.sheets[0].cells)
-    expect(s.result().hash).toBe(hash)
+    expect(s.getBook().sheets[0].cells).toEqual(b.sheets[0].cells)
+    expect(s.getResult().hash).toBe(hash)
     const many = stopped(() => s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'A1+1' } }, { sheet: 'S', cell: 'B2', input: { formula: 'A1+2' } }]))
     expect(many.limit).toBe('formulas')
-    expect(s.result().hash).toBe(hash)
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }]).map((c) => [c.cell, c.value])).toEqual([
+    expect(s.getResult().hash).toBe(hash)
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }]).changes.map((c) => [c.cell, c.value])).toEqual([
       ['A1', 3],
       ['A2', 30],
       ['A3', 33],
     ])
-    expect(s.result().hash).toBe(compute(book({ A1: { value: 3 }, A2: { formula: 'A1*10' }, A3: { formula: 'SUM(A1:A2)' } }), { clock }).hash)
-    expect(() => openSession(b, { clock, limits: { formulas: 1 } })).toThrow(CalcError)
+    expect(s.getResult().hash).toBe(compute(book({ A1: { value: 3 }, A2: { formula: 'A1*10' }, A3: { formula: 'SUM(A1:A2)' } }), { clock }).hash)
+    expect(() => createSession(b, { clock, limits: { formulas: 1 } })).toThrow(CalcError)
   })
 
   it('limits are checked as input', () => {

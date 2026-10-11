@@ -9,8 +9,9 @@ import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { winFiles } from './excel-win-cases.js'
 import { differences } from './tables-cases.js'
+import './locales.js'
 
-const SETS = TAGS.flatMap((tag) => winFiles<StoredTables>(`tables/${localeDir(tag)}`).map((s) => ({ ...s, sub: localeDir(tag) })))
+const SETS = TAGS.flatMap((tag) => winFiles<StoredTables>(`tables/${localeDir(tag)}`).map((s) => ({ ...s, sub: localeDir(tag), tag })))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel for Windows's. */
 const WIN_TABLES: Readonly<Record<string, string>> = {
@@ -18,6 +19,8 @@ const WIN_TABLES: Readonly<Record<string, string>> = {
   'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1), as on the Mac; renameTable refuses with table_name",
   'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row, as on the Mac; setCells leaves the table as it is",
   'more:type-calc': "a formula typed into an empty column of a table: Excel's AutoCorrect fills the column with it, as on the Mac; setCells puts it in its cell",
+  'paste-names-held:paste-not-multiple': "formulas pasted into part of a table's calculated column: Excel fills the whole column with them, its calculated column following the paste, as on the Mac; copyRange pastes the cells alone",
+  'paste-names-held:paste-multiple': "formulas pasted into part of a table's calculated column: Excel fills the whole column with them, its calculated column following the paste, as on the Mac; copyRange pastes the cells alone",
   'names-held:rename-digit': "a table renamed to a name Excel does not take (1Ставка): Excel's object model makes it one (_1Ставка), as on the Mac; renameTable refuses with table_name",
   'names-held:rename-name-case': "a table renamed to a defined name in another case (СТАВКА beside Ставка): Excel's object model makes the name free (СТАВКА_1), as on the Mac; renameTable refuses with table_name",
   'names-tables-held:rename-question-first': "a table renamed to a name Excel does not take (?Продажи): Excel's object model makes it one (_?Продажи), as on the Mac; renameTable refuses with table_name",
@@ -33,7 +36,7 @@ describe.each(SETS)('tables $name ($sub) against Excel for Windows', (set) => {
   const mod = import(`../bench/coverage/tables/${set.name}.ts`) as Promise<TableSet>
   it.each(set.cases.map((c) => [c.id, c] as const))('%s', async (id, c) => {
     expect((await mod).buildTableCases().find((x) => x.id === id), "the stored case is the generator's current one").toEqual(c)
-    const diff = differences(c, set.answers[id])
+    const diff = differences(c, set.answers[id], set.tag)
     const known = WIN_TABLES[`${set.name}:${id}`]
     if (known) expect(diff.length, `${id} is known to differ: ${known}`).toBeGreaterThan(0)
     else expect(diff).toEqual([])

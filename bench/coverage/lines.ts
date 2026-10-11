@@ -37,7 +37,7 @@ export async function linesSet(set: string): Promise<{ built: LinesCases; files:
   return { built, files, sent }
 }
 
-/** A step as the AppleScript takes it: sheet, range, number format, bold, italic, the fill's [r, g, b], the value's kind and text. */
+/** A step as the AppleScript takes it: sheet, range, number format, bold, italic, the fill's [r, g, b], the value's kind and text, what it clears. */
 export const stepArgs = (c: LinesCase) =>
   (c.steps ?? []).map((s) => [
     s.sheet,
@@ -48,6 +48,7 @@ export const stepArgs = (c: LinesCase) =>
     s.fill ? [1, 3, 5].map((i) => parseInt(s.fill!.slice(i, i + 2), 16)) : [],
     s.value === undefined ? '' : typeof s.value === 'number' ? 'n' : 's',
     s.value === undefined ? '' : String(s.value),
+    s.clear ?? '',
   ])
 
 type RawLook = [address: string, text: string, format: string, fill: number[], colorIndex: string, font: number[], bold: boolean, italic: boolean]

@@ -4,7 +4,7 @@
  * and active tab, in the synchronous session, in the same thread and in the pool.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, InputError, openSession, restructure, type BookInput, type Calc, type StructureOp } from '../src/index.js'
+import { compute, createInlineCalc, InputError, createSession, editStructure, type BookInput, type Calc, type StructureOp } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { pool } from './fixtures/pool.js'
@@ -45,7 +45,7 @@ describe('hidden sheets in the book', () => {
 
 describe('hideSheet and unhideSheet', () => {
   const op = (b: BookInput, o: StructureOp) => {
-    const r = restructure(b, o)
+    const r = editStructure(b, o)
     return r.ok ? r.book.sheets.map((s) => `${s.name}${s.hidden === 'very' ? '!!' : s.hidden ? '!' : ''}`).join(' ') : r.code
   }
 
@@ -56,11 +56,11 @@ describe('hideSheet and unhideSheet', () => {
     expect(op(book('very'), { op: 'unhideSheet', sheet: 'Feb' })).toBe('Jan Feb Mar Sum')
     expect(op(book(), { op: 'unhideSheet', sheet: 'Feb' })).toBe('Jan Feb Mar Sum')
     const one: BookInput = { sheets: [{ name: 'A', cells: {}, hidden: true }, { name: 'B', cells: {} }, { name: 'C', cells: {}, hidden: 'very' }] }
-    expect(restructure(one, { op: 'hideSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet' })
-    expect(restructure(one, { op: 'deleteSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet, and "B" is its last' })
+    expect(editStructure(one, { op: 'hideSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet' })
+    expect(editStructure(one, { op: 'deleteSheet', sheet: 'B' })).toMatchObject({ ok: false, code: 'last_sheet', message: 'a book keeps at least one visible sheet, and "B" is its last' })
     expect(op(one, { op: 'hideSheet', sheet: 'A', very: true })).toBe('A!! B C!!')
     expect(op(one, { op: 'deleteSheet', sheet: 'A' })).toBe('B C!!')
-    expect(() => restructure(book(), { op: 'hideSheet', sheet: 'Feb', very: 1 } as never)).toThrow(new InputError('op.very', 'expected a boolean, got 1'))
+    expect(() => editStructure(book(), { op: 'hideSheet', sheet: 'Feb', very: 1 } as never)).toThrow(new InputError('op.very', 'expected a boolean, got 1'))
   })
 
   it('a hidden sheet is renamed, moved and deleted as any other and keeps its state; a very hidden one is renamed alone', () => {
@@ -69,9 +69,9 @@ describe('hideSheet and unhideSheet', () => {
     expect(op(book(true), { op: 'insertSheet', name: 'New', before: 'Feb' })).toBe('Jan New Feb! Mar Sum')
     expect(op(book(true), { op: 'deleteSheet', sheet: 'Feb' })).toBe('Jan Mar Sum')
     expect(op(book('very'), { op: 'renameSheet', sheet: 'Feb', name: 'February' })).toBe('Jan February!! Mar Sum')
-    expect(restructure(book('very'), { op: 'moveSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'very_hidden' })
-    expect(restructure(book('very'), { op: 'deleteSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'very_hidden' })
-    const r = restructure(book(true), { op: 'renameSheet', sheet: 'Feb', name: 'February' })
+    expect(editStructure(book('very'), { op: 'moveSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'very_hidden' })
+    expect(editStructure(book('very'), { op: 'deleteSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'very_hidden' })
+    const r = editStructure(book(true), { op: 'renameSheet', sheet: 'Feb', name: 'February' })
     expect(r.ok && r.book.sheets[3].cells.A4.formula).toBe("'February'!B2*2")
   })
 
@@ -92,7 +92,7 @@ describe('hideSheet and unhideSheet', () => {
   it('an end of a reference across sheets that moves stays its end until it passes the other end', () => {
     const b: BookInput = { sheets: [...['Jan', 'Feb', 'Mar', 'Apr'].map((name, i) => ({ name, cells: { B2: { value: 10 ** i } } })), { name: 'Sum', cells: { A1: { formula: "SUM('Jan:Mar'!B2)" }, A2: { formula: "SUM('Jan:Apr'!B2)" } } }] }
     const after = (o: StructureOp) => {
-      const r = restructure(b, o)
+      const r = editStructure(b, o)
       return r.ok ? [r.book.sheets.at(-1)!.cells.A1.formula, r.book.sheets.at(-1)!.cells.A2.formula, ...Object.values(compute(r.book).sheets.at(-1)!.cells).map((c) => c.value)] : r.code
     }
     // Jan moved after Mar passes the end of Jan:Mar, not of Jan:Apr
@@ -103,23 +103,23 @@ describe('hideSheet and unhideSheet', () => {
 
 describe.each(['closures', 'eval'] as const)('a session hides and shows sheets (%s)', (execution) => {
   it('recomputes nothing, keeps the hash and refuses the last visible sheet', () => {
-    const s = openSession(book(), { clock: CLOCK, execution })
-    const hash = s.hash()
-    const r = s.restructure({ op: 'hideSheet', sheet: 'Feb', very: true })
+    const s = createSession(book(), { clock: CLOCK, execution })
+    const hash = s.getHash()
+    const r = s.editStructure({ op: 'hideSheet', sheet: 'Feb', very: true })
     expect(r.ok && r.changes).toEqual([])
     expect(r.ok && r.mapCell({ sheet: 'Feb', cell: 'B2' })).toEqual({ sheet: 'Feb', cell: 'B2' })
-    expect(s.book().sheets[1].hidden).toBe('very')
-    expect(s.layout().sheets.map((x) => x.hidden)).toEqual([undefined, 'very', undefined, undefined])
-    expect(s.hash()).toBe(hash)
-    expect(s.result().inputHash).toBe(compute(s.book(), { clock: CLOCK }).inputHash)
+    expect(s.getBook().sheets[1].hidden).toBe('very')
+    expect(s.getLayout().sheets.map((x) => x.hidden)).toEqual([undefined, 'very', undefined, undefined])
+    expect(s.getHash()).toBe(hash)
+    expect(s.getResult().inputHash).toBe(compute(s.getBook(), { clock: CLOCK }).inputHash)
     // later edits reach the hidden sheet and the formulas over it
-    expect(s.setCells([{ sheet: 'Feb', cell: 'B2', input: { value: 1 } }]).map((c) => `${c.sheet}!${c.cell} ${c.value}`).sort()).toEqual(['Feb!B2 1', 'Sum!A1 203', 'Sum!A2 121', 'Sum!A3 91', 'Sum!A4 2'])
-    expect(s.restructure({ op: 'unhideSheet', sheet: 'Feb' }).ok).toBe(true)
-    expect('hidden' in s.book().sheets[1]).toBe(false)
-    for (const sheet of ['Jan', 'Mar', 'Sum']) expect(s.restructure({ op: 'hideSheet', sheet }).ok).toBe(true)
-    expect(s.restructure({ op: 'hideSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'last_sheet' })
-    expect(s.restructure({ op: 'deleteSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'last_sheet' })
-    expect(s.result().hash).toBe(compute(s.book(), { clock: CLOCK }).hash)
+    expect(s.setCells([{ sheet: 'Feb', cell: 'B2', input: { value: 1 } }]).changes.map((c) => `${c.sheet}!${c.cell} ${c.value}`).sort()).toEqual(['Feb!B2 1', 'Sum!A1 203', 'Sum!A2 121', 'Sum!A3 91', 'Sum!A4 2'])
+    expect(s.editStructure({ op: 'unhideSheet', sheet: 'Feb' }).ok).toBe(true)
+    expect('hidden' in s.getBook().sheets[1]).toBe(false)
+    for (const sheet of ['Jan', 'Mar', 'Sum']) expect(s.editStructure({ op: 'hideSheet', sheet }).ok).toBe(true)
+    expect(s.editStructure({ op: 'hideSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'last_sheet' })
+    expect(s.editStructure({ op: 'deleteSheet', sheet: 'Feb' })).toMatchObject({ ok: false, code: 'last_sheet' })
+    expect(s.getResult().hash).toBe(compute(s.getBook(), { clock: CLOCK }).hash)
     s.close()
   })
 })
@@ -141,17 +141,17 @@ describe('in the same thread and in the pool', () => {
   it.each([['inline', () => createInlineCalc()], ['pool', () => pool({ threads: 1 })]] as const)('%s: the synchronous session\'s answers and book', async (_, make) => {
     const calc = await make()
     open.push(calc)
-    const a = await calc.openSession(book(), { clock: CLOCK })
-    const y = openSession(book(), { clock: CLOCK })
+    const a = await calc.createSession(book(), { clock: CLOCK })
+    const y = createSession(book(), { clock: CLOCK })
     for (const o of steps) {
-      const [r, w] = [await a.restructure(o), y.restructure(o)]
+      const [r, w] = [await a.editStructure(o), y.editStructure(o)]
       expect(r.ok ? { ok: true, changes: r.changes } : r, JSON.stringify(o)).toEqual(w.ok ? { ok: true, changes: w.changes } : w)
       if (r.ok) expect(r.mapCell({ sheet: 'Sum', cell: 'A1' })).toEqual({ sheet: 'Sum', cell: 'A1' })
     }
-    expect(await a.book()).toEqual(y.book())
-    expect((await a.layout()).sheets.map((x) => x.hidden)).toEqual([undefined, 'very', true])
-    expect(y.book().sheets.map((s) => [s.name, s.hidden])).toEqual([['Jan', undefined], ['March', 'very'], ['Sum', true]])
-    expect(await a.hash()).toBe(y.hash())
+    expect(await a.getBook()).toEqual(y.getBook())
+    expect((await a.getLayout()).sheets.map((x) => x.hidden)).toEqual([undefined, 'very', true])
+    expect(y.getBook().sheets.map((s) => [s.name, s.hidden])).toEqual([['Jan', undefined], ['March', 'very'], ['Sum', true]])
+    expect(await a.getHash()).toBe(y.getHash())
   }, 60_000)
 })
 

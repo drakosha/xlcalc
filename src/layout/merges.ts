@@ -1,5 +1,6 @@
 /** Merged areas of a sheet: `B2:D3`, top-left to bottom-right, two cells or more, none overlapping another. */
-import { colToIndex, formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import type { SheetInput } from '../contract.js'
+import { colToIndex, MAX_COLS, MAX_ROWS } from '../model.js'
 import { meets, type Rect } from '../structure/area.js'
 
 const MERGE = /^([A-Z]{1,3})([1-9][0-9]{0,6}):([A-Z]{1,3})([1-9][0-9]{0,6})$/
@@ -13,7 +14,8 @@ export function parseMerge(text: string): Rect | null {
   return ok ? x : null
 }
 
-export const mergeText = (x: Rect) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`
+/** A sheet's merged areas. */
+export const mergesOf = (s: Pick<SheetInput, 'merges'>): Rect[] => (s.merges ?? []).map((m) => parseMerge(m)!)
 
 /** The first two merges that overlap, by index, or null (sorted by top row, each meets only those above it that reach down). */
 export function overlapping(xs: Rect[]): [number, number] | null {

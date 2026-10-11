@@ -4,7 +4,7 @@
  * does, and the new fields are checked and hashed like the rest of the input.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, restructure, type BookInput, type CellInput, type LayoutEdit } from '../src/index.js'
+import { compute, InputError, createSession, editStructure, type BookInput, type CellInput, type LayoutEdit } from '../src/index.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -39,28 +39,28 @@ describe('hidden rows and filtered sheets', () => {
 
   it('a session that hides and shows rows and changes the filter mode gives the values of a full computation', () => {
     const rnd = mulberry32(5)
-    const session = openSession(book(), { clock })
+    const session = createSession(book(), { clock })
     for (let i = 0; i < 120; i++) {
       const lo = 1 + Math.floor(rnd() * 12)
       const hi = Math.min(12, lo + Math.floor(rnd() * 3))
       const edit: LayoutEdit = rnd() < 0.2 ? { sheet: 'S', filtered: rnd() < 0.5 } : { sheet: 'S', rows: lo === hi ? `${lo}` : `${lo}:${hi}`, set: { hidden: rnd() < 0.6 ? true : null } }
-      const changes = session.setLayout([edit])
-      const full = compute(session.book(), { clock })
-      expect(session.result().sheets[0].cells, `edit ${i}: ${JSON.stringify(edit)}`).toEqual(full.sheets[0].cells)
-      expect(session.result().hash).toBe(full.hash)
+      const { changes } = session.setLayout([edit])
+      const full = compute(session.getBook(), { clock })
+      expect(session.getResult().sheets[0].cells, `edit ${i}: ${JSON.stringify(edit)}`).toEqual(full.sheets[0].cells)
+      expect(session.getResult().hash).toBe(full.hash)
       for (const c of changes) expect(c.value).toEqual(full.sheets[0].cells[c.cell].value)
     }
     session.close()
   })
 
   it('setLayout returns the formulas whose count changed and their dependents', () => {
-    const session = openSession(book(), { clock })
-    const changes = session.setLayout([{ sheet: 'S', rows: '1', set: { hidden: true } }])
+    const session = createSession(book(), { clock })
+    const { changes } = session.setLayout([{ sheet: 'S', rows: '1', set: { hidden: true } }])
     expect(changes.map((c) => `${c.cell}=${c.value}`).sort()).toEqual(['C2=4094', 'C3=4094', 'C5=11', 'D1=8188'])
-    expect(session.setLayout([{ sheet: 'S', filtered: true }]).map((c) => `${c.cell}=${c.value}`)).toEqual(['C1=4094'])
-    expect(session.book().sheets[0].filtered).toBe(true)
+    expect(session.setLayout([{ sheet: 'S', filtered: true }]).changes.map((c) => `${c.cell}=${c.value}`)).toEqual(['C1=4094'])
+    expect(session.getBook().sheets[0].filtered).toBe(true)
     session.setLayout([{ sheet: 'S', filtered: false }])
-    expect(session.book().sheets[0].filtered).toBeUndefined()
+    expect(session.getBook().sheets[0].filtered).toBeUndefined()
     session.close()
   })
 
@@ -68,15 +68,15 @@ describe('hidden rows and filtered sheets', () => {
     const b = book()
     const zero = values({ sheets: [{ ...b.sheets[0], rows: { 2: { height: 0 }, '3:4': { height: 15 } }, columns: { A: { width: 0 } } }] })
     expect([zero.C1.value, zero.C2.value, zero.C3.value, zero.C4.value, zero.C5.value]).toEqual([4095, 4093, 4093, 4095, 11])
-    const byHeight = openSession(book(), { clock })
-    const byFlag = openSession(book(), { clock })
+    const byHeight = createSession(book(), { clock })
+    const byFlag = createSession(book(), { clock })
     const edits: [LayoutEdit, LayoutEdit][] = [
       [{ sheet: 'S', rows: '2:3', set: { height: 0 } }, { sheet: 'S', rows: '2:3', set: { hidden: true } }],
       [{ sheet: 'S', filtered: true }, { sheet: 'S', filtered: true }],
       [{ sheet: 'S', rows: '3', set: { height: 20 } }, { sheet: 'S', rows: '3', set: { hidden: null } }],
     ]
     for (const [h, f] of edits) expect(byHeight.setLayout([h])).toEqual(byFlag.setLayout([f]))
-    expect(byHeight.result().sheets[0].cells.C1.value).toBe(4093)
+    expect(byHeight.getResult().sheets[0].cells.C1.value).toBe(4093)
     byHeight.close()
     byFlag.close()
   })
@@ -91,7 +91,7 @@ describe('hidden rows and filtered sheets', () => {
     const b = book()
     expect(() => compute({ sheets: [{ ...b.sheets[0], filtered: 1 as unknown as boolean }] })).toThrow(InputError)
     expect(() => compute({ sheets: [{ ...b.sheets[0], rows: { '2': { hidden: 'yes' as unknown as boolean } } }] })).toThrow(/rows\["2"\]\.hidden: expected a boolean/)
-    const session = openSession(b, { clock })
+    const session = createSession(b, { clock })
     expect(() => session.setLayout([{ sheet: 'S', filtered: 'no' as unknown as boolean }])).toThrow(/edits\[0\]\.filtered: expected a boolean/)
     session.close()
     const h0 = compute(b, { clock }).inputHash
@@ -108,19 +108,19 @@ describe('structure operations on a filtered sheet', () => {
     return { sheets: [{ name: 'S', cells, rows: { '2': { hidden: true }, '4': { hidden: true } }, filtered: true }, { name: 'T', cells: {} }] }
   }
 
-  it('a copy over hidden rows pastes the visible rows as values, in a session as in restructure', () => {
+  it('a copy over hidden rows pastes the visible rows as values, in a session as in editStructure', () => {
     const op = { op: 'copyRange', from: { sheet: 'S', range: 'A1:B6' }, to: { sheet: 'T', range: 'A1' } } as const
-    const r = restructure(filtered(), op)
+    const r = editStructure(filtered(), op)
     expect(r.ok && r.book.sheets[1].cells).toEqual({ A1: { value: 1 }, B1: { value: 10 }, A2: { value: 3 }, B2: { value: 30 }, A3: { value: 5 }, B3: { value: 50 }, A4: { value: 6 }, B4: { value: 60 } })
-    const session = openSession(filtered(), { clock })
+    const session = createSession(filtered(), { clock })
     session.setCells([{ sheet: 'S', cell: 'A3', input: { value: 7 } }])
-    const s = session.restructure(op)
-    expect(s.ok && s.book.sheets[1].cells.B2).toEqual({ value: 70 })
+    const s = session.editStructure(op)
+    expect(s.ok && session.getBook().sheets[1].cells.B2).toEqual({ value: 70 })
     session.close()
   })
 
   it('deleting rows deletes the visible ones, and mapCell follows them', () => {
-    const r = restructure(filtered(), { op: 'deleteRows', sheet: 'S', row: 1, count: 3 })
+    const r = editStructure(filtered(), { op: 'deleteRows', sheet: 'S', row: 1, count: 3 })
     if (!r.ok) throw new Error(r.message)
     expect(Object.keys(r.book.sheets[0].cells).filter((a) => a.startsWith('A')).map((a) => `${a}=${r.book.sheets[0].cells[a].value}`)).toEqual(['A1=2', 'A2=4', 'A3=5', 'A4=6'])
     expect(r.book.sheets[0].rows).toEqual({ '1': { hidden: true }, '2': { hidden: true } })
@@ -128,7 +128,7 @@ describe('structure operations on a filtered sheet', () => {
   })
 
   it('a copy that left rows out is refused over several runs of visible rows, as Excel refuses it', () => {
-    const r = restructure(filtered(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B6' }, to: { sheet: 'S', range: 'D1:E6' } })
+    const r = editStructure(filtered(), { op: 'copyRange', from: { sheet: 'S', range: 'A1:B6' }, to: { sheet: 'S', range: 'D1:E6' } })
     expect(r.ok || r.code).toBe('filtered')
   })
 })

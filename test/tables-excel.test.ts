@@ -11,13 +11,14 @@ import type { StoredTables } from '../bench/coverage/tables.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { differences } from './tables-cases.js'
+import './locales.js'
 
 const dir = new URL('./excel/tables/', import.meta.url)
 const sets = (sub: string) => {
   const d = new URL(sub, dir)
   return existsSync(d) ? readdirSync(d).filter((f) => f.endsWith('.json')).map((f) => ({ name: f.slice(0, -5), sub, ...(JSON.parse(readFileSync(new URL(f, d), 'utf8')) as StoredTables) })) : []
 }
-const SETS = TAGS.flatMap((tag) => sets(localeDir(tag)))
+const SETS = TAGS.flatMap((tag) => sets(localeDir(tag)).map((s) => ({ ...s, tag })))
 
 /** `<set>:<case>` → why the engine's answer differs from Excel's (each has a line in the README's Known differences). */
 const KNOWN: Readonly<Record<string, string>> = {
@@ -25,6 +26,8 @@ const KNOWN: Readonly<Record<string, string>> = {
   'ops-held:rename-name': "a table renamed to a defined name (Rate): Excel's object model makes the name free (Rate_1); renameTable refuses with table_name",
   'more:type-below': "a value typed right below a table: Excel's AutoCorrect extends the table by a row; setCells leaves the table as it is",
   'more:type-calc': "a formula typed into an empty column of a table: Excel's AutoCorrect fills the column with it; setCells puts it in its cell",
+  'paste-names-held:paste-not-multiple': "formulas pasted into part of a table's calculated column: Excel fills the whole column with them, its calculated column following the paste; copyRange pastes the cells alone",
+  'paste-names-held:paste-multiple': "formulas pasted into part of a table's calculated column: Excel fills the whole column with them, its calculated column following the paste; copyRange pastes the cells alone",
   'names-held:rename-digit': "a table renamed to a name Excel does not take (1Ставка): Excel's object model makes it one (_1Ставка); renameTable refuses with table_name",
   'names-held:rename-name-case': "a table renamed to a defined name in another case (СТАВКА beside Ставка): Excel's object model makes the name free (СТАВКА_1); renameTable refuses with table_name",
   'names-tables-held:rename-question-first': "a table renamed to a name Excel does not take (?Продажи): Excel's object model makes it one (_?Продажи); renameTable refuses with table_name",
@@ -41,7 +44,7 @@ describe.each(SETS)('tables $sub$name', (set) => {
   it.each(set.cases.map((c) => [c.id, c] as const))('%s', async (id, c) => {
     const now = (await mod).buildTableCases().find((x) => x.id === id)
     expect(now, 'the stored case is the generator\'s current one').toEqual(c)
-    const diff = differences(c, set.answers[id])
+    const diff = differences(c, set.answers[id], set.tag)
     const known = KNOWN[`${set.name}:${id}`]
     if (known) expect(diff.length, `${id} is known to differ: ${known}`).toBeGreaterThan(0)
     else expect(diff).toEqual([])

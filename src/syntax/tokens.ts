@@ -3,6 +3,7 @@
  * tables, numbers, strings, error literals, identifiers (names with a sheet too), operators. Whitespace between two
  * references (or names, calls, parentheses) is the intersection operator, `' '`; elsewhere it is skipped.
  */
+import { PLAIN_SHEET } from '../sheet-pattern.js'
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'
@@ -41,9 +42,9 @@ export type Tok =
 export const IDENT_RULE = '[\\p{L}_\\\\][\\p{L}\\p{N}_.\\\\?]*'
 const IDENT = new RegExp(`^${IDENT_RULE}`, 'u')
 const QUOTED_SHEET = /^'((?:[^']|'')+)'!/
-const UNQUOTED_SHEET = /^([\p{L}_][\p{L}\p{N}_.]*)!/u
+const UNQUOTED_SHEET = new RegExp(`^(${PLAIN_SHEET})!`, 'u')
 /** Two sheets, the last quoted or not: Excel saves `Jan:'Mar'!A1` too. */
-const UNQUOTED_SHEETS = /^([\p{L}_][\p{L}\p{N}_.]*):(?:([\p{L}_][\p{L}\p{N}_.]*)|'((?:[^']|'')+)')!/u
+const UNQUOTED_SHEETS = new RegExp(`^(${PLAIN_SHEET}):(?:(${PLAIN_SHEET})|'((?:[^']|'')+)')!`, 'u')
 /** A name that reads as a cell (`S1`, `Q4`): Excel does not take it for the first of two sheets, `S1:S3!A1` is `S1:'S3'!A1`. */
 const CELL_NAME = /^([A-Za-z]{1,3})([0-9]+)$/
 const CELL_RANGE = /^(\$?)([A-Za-z]{1,3})(\$?)([0-9]+)(?::(\$?)([A-Za-z]{1,3})(\$?)([0-9]+))?/
@@ -83,7 +84,9 @@ function readRef(rest: string, at: number): { ref: RangeRef; len: number } | nul
   let m = CELL_RANGE.exec(rest)
   // the second cell of `S1:S3!A1` is a sheet's name, of `A1:E2#` a spill reference: the first is a cell alone, before the range operator
   if (m && m[6] !== undefined && (next(m[0].length) === '!' || next(m[0].length) === '#')) m = CELL_RANGE.exec(rest.slice(0, rest.indexOf(':')))
-  if (m && !IDENT_CHAR.test(next(m[0].length))) {
+  // a cell's shape past the sheet, without `$`, is a name, as Excel reads `XFE1` and `A0` (the sets `entry/names-held`,
+  // `tables/paste-names-held`)
+  if (m && !IDENT_CHAR.test(next(m[0].length)) && !(m[6] === undefined && !m[1] && !m[3] && !inSheet(m[2], m[4]))) {
     const r1 = rowNo(m[4], at)
     const c1 = colNo(m[2], at)
     const two = m[6] !== undefined
@@ -119,10 +122,13 @@ function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at
 
 const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@', ':']
 
-/** Whether a name reads as a cell within the sheet (`S1`, not `XFE1` or `A0`). */
-function cellName(name: string): boolean {
-  const m = CELL_NAME.exec(name)
-  return !!m && colToIndex(m[1]) < MAX_COLS && Number(m[2]) >= 1 && Number(m[2]) <= MAX_ROWS
+/** Whether a column's letters and a row's digits are a cell of the sheet. */
+const inSheet = (col: string, row: string) => colToIndex(col) < MAX_COLS && Number(row) >= 1 && Number(row) <= MAX_ROWS
+
+/** Whether a word reads as a cell of the sheet (`S1`, not `XFE1` or `A0`). */
+export function readsAsCell(word: string): boolean {
+  const m = CELL_NAME.exec(word)
+  return !!m && inSheet(m[1], m[2])
 }
 
 /** Tokens that end and begin a reference: whitespace between two of them is the intersection operator. */
@@ -197,7 +203,7 @@ export function tokenize(src: string): Tok[] {
       sheet = sm[1].replaceAll("''", "'")
       const k = sheet.indexOf(':')
       if (k >= 0) [sheet, last] = [sheet.slice(0, k), sheet.slice(k + 1)]
-    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest)) && !cellName(sm[1])) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
+    } else if (rest.includes('!') && (sm = UNQUOTED_SHEETS.exec(rest)) && !readsAsCell(sm[1])) [sheet, last] = [sm[1], sm[2] ?? sm[3].replaceAll("''", "'")]
     else if ((sm = UNQUOTED_SHEET.exec(rest))) sheet = sm[1]
     if (sm && last === undefined && src.slice(i + sm[0].length, i + sm[0].length + 5).toUpperCase() === '#REF!') {
       // a reference Excel lost on a sheet that is still there: `'S'!#REF!`, `'S'!#REF!#`

@@ -2,17 +2,21 @@
  * The messages between the pool and its threads (`docs/async.md`). Everything goes by structured clone; an error
  * travels as plain data and is made a `CalcError` or an `InputError` again on the other side.
  */
-import type { BookInput, CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
+import type { CalcLimits, CellRef, Clock, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
+import type { Locale } from '../locale/types.js'
 import type { HistoryData } from '../session/undo.js'
 import type { Sent } from './pack.js'
 
 export type { Sent }
 
 /** The session calls that change the session: they go into its journal. */
-export const CHANGING = ['setCells', 'patchCells', 'setNames', 'setClock', 'restructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
-export type Op = (typeof CHANGING)[number] | 'book' | 'layout' | 'extent' | 'explain' | 'cells' | 'validation' | 'validateEntry' | 'result' | 'hash'
+export const CHANGING = ['setCells', 'replaceCells', 'clearCells', 'patchCells', 'setCellText', 'setNames', 'setClock', 'editStructure', 'setStyles', 'setLayout', 'undo', 'redo'] as const
+export type Op = (typeof CHANGING)[number] | 'previewCellText' | 'getBook' | 'getLayout' | 'getUsedRange' | 'explain' | 'getCells' | 'getViewport' | 'getCellIssue' | 'getValidation' | 'validateEntry' | 'getResult' | 'getSnapshot' | 'getHash'
+
+/** The calls that take edit options (`EditOptions`), by the number of arguments before them: their messages carry the options last. */
+export const EDITS: Partial<Record<Op, number>> = { setCells: 1, replaceCells: 1, clearCells: 2, patchCells: 1, setCellText: 3, previewCellText: 3, setNames: 1, setClock: 1, editStructure: 1, setStyles: 1, setLayout: 1, undo: 0, redo: 0 }
 
 /** A call the session answered, as its journal keeps it: replayed with the clock the session had after it. */
 export interface Entry {
@@ -32,15 +36,16 @@ export interface Snapshot {
   seq: number
   /** The session's history then (as text when JSON holds it): the replayed `undo` and `redo` calls take its steps. */
   history?: HistoryData | { json: string }
+  /** The session's revision then. */
+  revision?: number
 }
-
-/** The book's outline before a structure operation: enough for `applyOp` to give the same `mapCell`. */
-export type Outline = BookInput
 
 /** To a thread. A thread runs one task at a time; `cancel` may come while it runs. */
 export type ToThread =
-  /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`). */
-  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number }
+  /** `cacheBytes`: what the range caches of the thread's books may hold together (`docs/cache.md`); `locales`: those loaded but en-US. */
+  | { t: 'init'; sliceMs: number; limits?: CalcLimits; cacheBytes?: number; locales?: Locale[] }
+  /** Locales loaded since, each without its messages (`sentLocale`). */
+  | { t: 'locales'; locales: Locale[] }
   | { t: 'compute'; task: number; book: Sent; opts: object; timeoutMs?: number }
   | { t: 'open'; task: number; sid: number; book: Sent; opts: SessionOptions; timeoutMs?: number }
   | { t: 'call'; task: number; sid: number; seq?: number; op: Op; args: unknown[]; timeoutMs?: number }
@@ -65,13 +70,18 @@ export interface ErrorData {
 /** From a thread: a task's answer. */
 export type FromThread = { task: number; ok: true; value: unknown } | { task: number; ok: false; error: ErrorData }
 
-/** A call's value and the session's clock and history after it. */
+/** A call's value and the session's clock, history and revision after it. */
 export interface Answer {
   value: unknown
   clock: Clock
   history: SessionHistory
-  /** `restructure`: the book's outline before it. */
-  outline?: Outline
+  revision: number
+}
+
+/** A loaded locale as a thread takes it: its data without the messages, which are functions (a thread imports a package's module of the tag itself). */
+export function sentLocale(locale: Locale): Locale {
+  const { messages: _, ...data } = locale
+  return data
 }
 
 const plain = (v: unknown): unknown => {

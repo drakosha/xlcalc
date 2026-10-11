@@ -4,11 +4,15 @@
 -- number only, not read from a cell that shows an error); save the book as xlsx under another name and close it.
 -- With a fifth argument "keys" the texts are typed on the keyboard instead (System Events, Excel in front, checked
 -- before each text; an empty text is not typed), each followed by Return; the window Excel shows for a formula it does
--- not take is answered (`answerDialog`) and its text is the text's refusal.
+-- not take is answered (`answerDialog`) and its text is the text's refusal. With a last argument "edit" each cell's
+-- `formula` and `formula local` are read too, and with Excel in front each cell is selected in turn and its formula bar
+-- read (System Events: the description of the window's text area, "Formula Bar. A,1 <text>"), as the object model
+-- gives a date's or a percent's number there.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the texts as
--- a JSON array of strings, "keys" and the path of excel-keys.applescript, or nothing.
--- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix, value], ...]},
--- the value "" for a cell whose value is no number (or a date), or that shows an error.
+-- a JSON array of strings, "keys" and the path of excel-keys.applescript, or nothing; then "edit", or nothing.
+-- Output: JSON {"refused": [Excel's error for each text, "" when it took it], "cells": [[text, code, local, prefix, value(,
+-- formula, formula local, formula bar)], ...]}, the value "" for a cell whose value is no number (or a date), or that
+-- shows an error.
 use AppleScript version "2.4"
 use framework "Foundation"
 use scripting additions
@@ -25,6 +29,7 @@ on run argv
 	set cellsOut to {}
 	set n to count of texts
 	set byKeys to (count of argv) > 4 and item 5 of argv is "keys"
+	set withEdit to (count of argv) > 4 and item -1 of argv is "edit"
 	if byKeys then set kb to my keysLib(item 6 of argv)
 	tell application "Microsoft Excel"
 		with timeout of 150 seconds
@@ -69,8 +74,24 @@ on run argv
 					-- a number alone: a date comes as a date object, which JSON has no place for
 					if class of vv is not real and class of vv is not integer then set vv to ""
 				end if
-				set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv}
+				if withEdit then
+					set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv, formula of rg, formula local of rg}
+				else
+					set end of cellsOut to {tx as text, number format of rg, number format local of rg, pc as text, vv}
+				end if
 			end repeat
+			if withEdit then
+				-- a bar not read (Excel's window on another desktop) leaves no book open
+				try
+					set bars to my formulaBars(ws, n, name of wb)
+				on error msg number k
+					close wb saving no
+					error msg number k
+				end try
+				repeat with i from 1 to n
+					set end of item i of cellsOut to item i of bars
+				end repeat
+			end if
 			save workbook as wb filename out file format Excel XML file format
 			close workbook savedName saving no
 		end timeout
@@ -80,6 +101,57 @@ on run argv
 	if d is missing value then error "JSON: " & (e's localizedDescription() as text)
 	return (current application's NSString's alloc()'s initWithData:d encoding:4) as text
 end run
+
+-- what the formula bar shows for each of the cells A1 to An of the sheet `ws` of the book `bookName`, each selected in
+-- turn with Excel in front: the description of the text area of the book's window ("Formula Bar. A,1 <text>")
+on formulaBars(ws, n, bookName)
+	-- the window lists its formula bar only with Excel in front, its desktop shown: tried again until it does
+	set bar to missing value
+	set seen to ""
+	repeat 10 times
+		tell application "System Events" to set frontmost of process "Microsoft Excel" to true
+		tell application "Microsoft Excel" to activate
+		delay 1.5
+		try
+			tell application "System Events" to tell process "Microsoft Excel"
+				set seen to ""
+				repeat with w in windows
+					set wn to name of w
+					set seen to seen & wn & "; "
+					if wn is bookName or bookName starts with wn then
+						set els to entire contents of w
+						repeat with e in els
+							try
+								if role of e is "AXTextArea" then
+									set bar to contents of e
+									exit repeat
+								end if
+							end try
+						end repeat
+					end if
+					if bar is not missing value then exit repeat
+				end repeat
+			end tell
+		end try
+		if bar is not missing value then exit repeat
+	end repeat
+	if bar is missing value then error "no formula bar in the window of " & bookName & " among " & seen
+	set out to {}
+	repeat with i from 1 to n
+		tell application "Microsoft Excel" to select range ("A" & i) of ws
+		delay 0.3
+		-- the bar follows the selection with a lag: read until two reads agree
+		tell application "System Events" to set d to description of bar
+		repeat 10 times
+			delay 0.3
+			tell application "System Events" to set again to description of bar
+			if again is d then exit repeat
+			set d to again
+		end repeat
+		set end of out to d
+	end repeat
+	return out
+end formulaBars
 
 -- the handlers of excel-keys.applescript (its path `p`) as a script object
 on keysLib(p)

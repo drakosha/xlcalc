@@ -1,29 +1,31 @@
 /**
  * Every way a message reaches a person gives it in the language of the book or of the locale called with: a formula that
  * does not read (`validateLocalFormula`, `toInvariant`, `toLocal`, `parseEntry`), a refused structure operation
- * (`restructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
+ * (`editStructure`, and a session's, synchronous, in the same thread and in threads, in both execution modes), and the
  * text of `explain`. Each case names the message of the catalog it gives: in ru-RU its Russian text, in a locale
  * without messages of its own (and in an en-US book) the English one, at the same place. Together the cases reach
  * every message of the catalog but the rules of names, which only `validateName` gives, in English.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { createInlineCalc, openSession, parseEntry, restructure, ruRU, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { createInlineCalc, createSession, parseEntry, editStructure, toInvariant, toLocal, validateLocalFormula, type BookInput, type Calc, type Locale, type SheetInput, type StructureOp, type ValidateContext } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { say, type Message, type MessageKey } from '../src/locale/messages.js'
 import { pool } from './fixtures/pool.js'
+import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 const reached = new Set<MessageKey>()
 const ru = (m: Message) => say('ru-RU', m)
 const en = (m: Message) => say('en-US', m)
 /** ru-RU's formula text without messages of its own: English messages, the same places. */
-const english: Locale = { ...ruRU, tag: 'xx-YY' }
+const english: Locale = { ...ruRU, tag: 'xx-YY', messages: undefined }
 
 const TABLES = { tables: [{ name: 'Т', columns: ['Кол'] }] }
 
 /** Text typed in ru-RU, the message it gives, and the check's context. */
 const TYPED: [string, Message, ValidateContext?][] = [
-  ['=A0', { key: 'rowOutOfRange', row: '0' }],
-  ['=XFE1', { key: 'columnOutOfRange', column: 'XFE' }],
+  ['=$A$0', { key: 'rowOutOfRange', row: '0' }],
+  ['=$XFE$1', { key: 'columnOutOfRange', column: 'XFE' }],
   ['=A:B#', { key: 'spillAfterRange' }],
   ['=Лист1:Лист3!A1#', { key: 'spillAcrossSheets' }],
   ['="abc', { key: 'unterminatedString' }],
@@ -158,15 +160,15 @@ const REFUSED: [string, () => Pick<BookInput, 'sheets' | 'names'>, StructureOp, 
 const message = (r: { ok: boolean; message?: string }) => (r.ok ? 'done' : r.message)
 
 describe('a refused structure operation', () => {
-  it("restructure gives the message in the book's locale", () => {
+  it("editStructure gives the message in the book's locale", () => {
     for (const [what, book, op, m] of REFUSED) {
       reached.add(m.key)
-      expect(message(restructure({ locale: 'ru-RU', ...book() }, op)), what).toBe(ru(m))
-      expect(message(restructure({ ...book() }, op)), what).toBe(en(m))
-      expect(message(restructure({ locale: 'en-US', ...book() }, op)), what).toBe(en(m))
+      expect(message(editStructure({ locale: 'ru-RU', ...book() }, op)), what).toBe(ru(m))
+      expect(message(editStructure({ ...book() }, op)), what).toBe(en(m))
+      expect(message(editStructure({ locale: 'en-US', ...book() }, op)), what).toBe(en(m))
     }
     // ИСТИНА is the boolean of a ru-RU book, a name in en-US
-    const named = (locale: string) => message(restructure({ locale, sheets: [tables()] }, { op: 'renameTable', table: 'Т1', name: 'истина' }))
+    const named = (locale: string) => message(editStructure({ locale, sheets: [tables()] }, { op: 'renameTable', table: 'Т1', name: 'истина' }))
     expect([named('ru-RU'), named('en-US')]).toEqual([ru({ key: 'tableName', name: 'истина', rule: 'boolean' }), 'done'])
   })
 
@@ -176,8 +178,8 @@ describe('a refused structure operation', () => {
 
     it('a synchronous session', () => {
       for (const [what, book, op, m] of REFUSED) {
-        const s = openSession({ locale: 'ru-RU', ...book() }, { execution })
-        expect(message(s.restructure(op)), what).toBe(ru(m))
+        const s = createSession({ locale: 'ru-RU', ...book() }, { execution })
+        expect(message(s.editStructure(op)), what).toBe(ru(m))
         s.close()
       }
     })
@@ -189,18 +191,56 @@ describe('a refused structure operation', () => {
       const calc = await make()
       calcs.push(calc)
       for (const [what, book, op, m] of REFUSED) {
-        const s = await calc.openSession({ locale: 'ru-RU', ...book() }, { execution })
-        expect(message(await s.restructure(op)), what).toBe(ru(m))
+        const s = await calc.createSession({ locale: 'ru-RU', ...book() }, { execution })
+        expect(message(await s.editStructure(op)), what).toBe(ru(m))
         await s.close()
       }
     }, 60_000)
   })
 })
 
-/** A book whose explanation holds every piece: a value, a formula, a range, a spilled cell, an error, a boolean, an empty cell. */
+/** A ru-RU book or another where text typed into a cell is refused: a table's header cell, part of an old-kind array, and a rule of data validation. */
+const typedBook = (locale?: string): BookInput => ({
+  ...(locale ? { locale } : {}),
+  sheets: [
+    {
+      name: 'Лист',
+      cells: { A1: { value: 'Кол' }, A2: { value: 1 }, C1: { formula: 'A2:A3*2', array: 'C1:C2' } },
+      tables: [{ name: 'Т', range: 'A1:A2', columns: [{ name: 'Кол' }] }],
+      validations: [{ range: 'E1', type: 'whole', operator: 'greaterThan', formula1: '0' }],
+    },
+  ],
+})
+
+/** Text typed into a cell, refused with the message. */
+const REFUSED_TEXT: [string, string, Message][] = [
+  ['A1', '=1+1', { key: 'headerFormula', sheet: 'Лист', cell: 'A1', table: 'Т' }],
+  ['C2', '5', { key: 'arrayPart', sheet: 'Лист', cell: 'C1', area: 'C1:C2' }],
+]
+
+describe('text typed into a cell of a session', () => {
+  afterAll(closeCalcs)
+  it.each(KINDS)("refused, and a value the cell's rule does not take, in the book's locale: %s", async (kind) => {
+    const open = await opener(kind)
+    for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+      const s = await open(typedBook(locale), {})
+      for (const [cell, text, m] of REFUSED_TEXT) {
+        reached.add(m.key)
+        expect(await s.setCellText('Лист', cell, text), `${cell} ${text}`).toEqual({ ok: false, code: m.key === 'headerFormula' ? 'header' : 'array', message: say(m) })
+      }
+      reached.add('validationError')
+      const r = await s.setCellText('Лист', 'E1', '-1')
+      expect(r.ok && r.validation?.message).toBe(say({ key: 'validationError' }))
+      expect(await s.validateEntry('Лист', 'E1', { value: 0 })).toMatchObject({ ok: false, message: say({ key: 'validationError' }) })
+      await s.close()
+    }
+  }, 60_000)
+})
+
+/** A book whose explanation holds every piece: a value, a formula, a range, a spilled cell, an error and the cell it came from, a boolean, an empty cell. */
 const explained = (locale?: string): BookInput => ({
   ...(locale ? { locale } : {}),
-  sheets: [{ name: 'План', cells: { A1: { value: 100 }, A2: { value: 250.5 }, B1: { formula: 'ROUND(SUM(A1:A2)*1.2,0)+C2' }, C1: { formula: 'SEQUENCE(2)' }, D1: { formula: 'IF(E1,1.5,NA())' } } }],
+  sheets: [{ name: 'План', cells: { A1: { value: 100 }, A2: { value: 250.5 }, B1: { formula: 'ROUND(SUM(A1:A2)*1.2,0)+C2' }, C1: { formula: 'SEQUENCE(2)' }, D1: { formula: 'IF(E1,1.5,NA())' }, F1: { formula: 'D1*2' } } }],
 })
 const RU_TEXT = [
   "'План'!B1 = 423  ← ОКРУГЛ(СУММ(A1:A2)*1,2;0)+C2",
@@ -217,12 +257,12 @@ const EN_TEXT = [
 
 describe('explain', () => {
   it("writes the text in the book's locale: words, numbers, formulas, errors and booleans; the tree as stored", () => {
-    for (const key of ['explainCells', 'explainSpill', 'explainValue', 'explainFormula'] as const) reached.add(key)
-    const [r, e] = [openSession(explained('ru-RU')), openSession(explained())]
+    for (const key of ['explainCells', 'explainSpill', 'explainValue', 'explainFormula', 'explainErrorFrom', 'explainErrorHere'] as const) reached.add(key)
+    const [r, e] = [createSession(explained('ru-RU')), createSession(explained())]
     expect(r.explain('План', 'B1').text).toBe(RU_TEXT)
     expect(e.explain('План', 'B1').text).toBe(EN_TEXT)
-    expect(r.explain('План', 'D1').text).toBe("'План'!D1 = #Н/Д  ← ЕСЛИ(E1;1,5;НД())\n  'План'!E1 = пусто")
-    expect(e.explain('План', 'D1').text).toBe("'План'!D1 = #NA  ← IF(E1,1.5,NA())\n  'План'!E1 = null")
+    expect(r.explain('План', 'F1').text).toBe("'План'!F1 = #Н/Д  ← D1*2  (ошибка из 'План'!D1)\n  'План'!D1 = #Н/Д  ← ЕСЛИ(E1;1,5;НД())  (ошибка возникает здесь)\n    'План'!E1 = пусто")
+    expect(e.explain('План', 'F1').text).toBe("'План'!F1 = #N/A  ← D1*2  (error from 'План'!D1)\n  'План'!D1 = #N/A  ← IF(E1,1.5,NA())  (the error begins here)\n    'План'!E1 = empty")
     r.setCells([{ sheet: 'План', cell: 'E1', input: { value: true } }])
     expect(r.explain('План', 'D1').text).toBe("'План'!D1 = 1,5  ← ЕСЛИ(E1;1,5;НД())\n  'План'!E1 = ИСТИНА")
     const { text: _, ...tree } = r.explain('План', 'B1')
@@ -231,7 +271,7 @@ describe('explain', () => {
 
   it('the same text in the same thread and in threads', async () => {
     for (const calc of [createInlineCalc(), await pool({ threads: 1 })]) {
-      const s = await calc.openSession(explained('ru-RU'))
+      const s = await calc.createSession(explained('ru-RU'))
       expect((await s.explain('План', 'B1')).text).toBe(RU_TEXT)
       await calc.close()
     }

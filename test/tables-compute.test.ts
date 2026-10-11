@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, InputError, type BookInput, type CellInput, type TableInput } from '../src/index.js'
+import { cellIssues } from './diagnostics.js'
 
 /** Sales A1:D5 (Region, Qty, Price, Total = Qty*Price as a calculated column) and the formulas given on S and Other. */
 export function salesBook(formulas: Record<string, string>, other: Record<string, string> = {}, table: Partial<TableInput> = {}): BookInput {
@@ -70,8 +71,8 @@ describe('tables', () => {
     book.sheets[0].tables!.push({ name: 'Small', range: 'G3:G4', columns: [{ name: 'h' }] })
     const r = values(book)
     expect([v(r, 0, 'J1'), v(r, 0, 'J3'), v(r, 0, 'B2'), v(r, 0, 'G1')]).toEqual([1, 3, { error: 'SPILL' }, { error: 'SPILL' }])
-    expect(r.issues.find((i) => i.cell === 'B2')?.reason).toMatch(/its cell is in the table Sales/)
-    expect(r.issues.find((i) => i.cell === 'G1')?.reason).toMatch(/it meets the table Small/)
+    expect(cellIssues(r).find((i) => i.cell === 'B2')?.reason).toMatch(/its cell is in the table Sales/)
+    expect(cellIssues(r).find((i) => i.cell === 'G1')?.reason).toMatch(/it meets the table Small/)
   })
 
   it('without a header row or with a totals row', () => {

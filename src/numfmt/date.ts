@@ -15,7 +15,7 @@ const END = 2_958_466
 const two = (n: number) => String(n).padStart(2, '0')
 
 /** Whether the `m` at `i` means minutes: after hours or before seconds, across other tokens. */
-function minutes(toks: Tok[], i: number): boolean {
+export function minutes(toks: Tok[], i: number): boolean {
   const unit = (t: Tok | undefined) => (t?.t === 'date' || t?.t === 'elapsed' ? t.s[0] : undefined)
   const prev = unit(toks.slice(0, i).findLast((t) => t.t === 'date' || t.t === 'elapsed'))
   const next = unit(toks.slice(i + 1).find((t) => t.t === 'date' || t.t === 'elapsed'))

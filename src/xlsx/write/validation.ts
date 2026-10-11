@@ -6,7 +6,7 @@
  */
 import type { DataValidation } from '../../contract.js'
 import { areasOf } from '../../validation/rules.js'
-import { formatAddress } from '../../model.js'
+import { rectText } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
@@ -17,8 +17,8 @@ const LIMITS = { promptTitle: 32, prompt: 255, errorTitle: 32, error: 225 } as c
 
 const TYPE: Record<DataValidation['type'], string> = { any: 'none', whole: 'whole', decimal: 'decimal', date: 'date', time: 'time', textLength: 'textLength', list: 'list', custom: 'custom' }
 
-/** `sqref`: each range from its first cell to its last, whole columns and rows too. */
-const sqref = (range: string) => areasOf(range)!.map((x) => (x.r1 === x.r2 && x.c1 === x.c2 ? formatAddress(x.r1, x.c1) : `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`)).join(' ')
+/** `sqref`: each range from its first cell to its last, whole columns and rows too, as Excel saves them (`O1:O1048576`, the set `valid/files`). */
+const sqref = (range: string) => areasOf(range)!.map(rectText).join(' ')
 
 export interface ValidationContext {
   sheet: string

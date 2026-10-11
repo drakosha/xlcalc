@@ -1,9 +1,11 @@
 /**
  * `validateName` in a book's locale and `validateNames`, which gives a book's name issues without the book: the
- * same issues as `ComputeResult.nameIssues`, each telling a name left out of the book from one kept with an error.
+ * same issues as `ComputeResult.diagnostics` of kind `name`, each telling a name left out of the book from one kept with an error.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, engine, InputError, openSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
+import { compute, engine, InputError, createSession, validateName, validateNames, type BookInput, type NameInput } from '../src/index.js'
+import './locales.js'
+import { nameIssues } from './diagnostics.js'
 
 const NAMES: NameInput[] = [
   { name: 'Ставка', ref: '0.2' },
@@ -48,6 +50,18 @@ describe('validateName in a book\'s locale', () => {
       for (const name of ['TRUE', 'false', 'R', 'c', 'R2C3', 'Q1', '1x']) expect(validateName(name, { locale }).ok, `${locale} ${name}`).toBe(false)
   })
 
+  it('refuses with a code by the rule a name breaks, and a message in English', () => {
+    const code = (name: string, locale?: string) => {
+      const r = validateName(name, locale ? { locale } : undefined)
+      return r.ok ? 'ok' : r.code
+    }
+    expect(['1x', 'Став ка', '', 'a'.repeat(256), '?x'].map((n) => code(n))).toEqual(['chars', 'chars', 'chars', 'chars', 'chars'])
+    expect(['Q1', 'R', 'c', 'R2C3', 'XFD1'].map((n) => code(n))).toEqual(['reference', 'reference', 'reference', 'reference', 'reference'])
+    expect([code('TRUE'), code('false', 'ru-RU'), code('ИСТИНА', 'ru-RU'), code('ИСТИНА')]).toEqual(['boolean', 'boolean', 'boolean', 'ok'])
+    expect(validateName('Q1')).toEqual({ ok: false, code: 'reference', message: 'a name must not look like a cell address or an R1C1 reference' })
+    expect(validateName('ложь', { locale: 'ru-RU' })).toEqual({ ok: false, code: 'boolean', message: "ложь is a boolean in the book's locale" })
+  })
+
   it('takes a tag of the package\'s locales only', () => {
     expect(() => validateName('x', { locale: 'de-DE' })).toThrow(InputError)
     expect(() => validateName('x', { lang: 'ru-RU' } as never)).toThrow(InputError)
@@ -68,11 +82,11 @@ describe('validateNames', () => {
   it('gives the issues a book of these sheets, tables and locale gives, in compute and in a session', () => {
     for (const locale of [undefined, 'en-US', 'ru-RU']) {
       const issues = validateNames(NAMES, ctx(locale))
-      expect(compute(book(locale), { display: false }).nameIssues, locale).toEqual(issues)
-      const s = openSession(book(locale), { display: false })
+      expect(nameIssues(compute(book(locale), { display: false })), locale).toEqual(issues)
+      const s = createSession(book(locale), { display: false })
       try {
         s.setNames(NAMES.slice(0, 7))
-        expect(s.result().nameIssues).toEqual(validateNames(NAMES.slice(0, 7), ctx(locale)))
+        expect(nameIssues(s.getResult())).toEqual(validateNames(NAMES.slice(0, 7), ctx(locale)))
       } finally { s.close() }
     }
   })

@@ -38,6 +38,10 @@
       "types": "./dist/contract.d.ts",
       "default": "./dist/contract.js"
     },
+    "./a1": {
+      "types": "./dist/a1.d.ts",
+      "default": "./dist/a1.js"
+    },
     "./unstable/internal": {
       "types": "./dist/internal.d.ts",
       "default": "./dist/internal.js"
@@ -54,12 +58,17 @@
       "types": "./dist/worker/index.d.ts",
       "default": "./dist/worker/index.js"
     },
+    "./locales/ru-RU": {
+      "types": "./dist/locales/ru-RU.d.ts",
+      "default": "./dist/locales/ru-RU.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "docs/*.md",
     "CHANGELOG.md",
     "THIRD_PARTY.md"
   ],

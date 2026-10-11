@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { compute, parseEntry, type BookInput } from '../src/index.js'
+import './locales.js'
 
 const value = (text: string, locale?: string) => {
   const r = parseEntry(text, { locale })

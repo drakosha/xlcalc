@@ -12,11 +12,14 @@ import type { AbortSignalLike, BookInput, CalcOptions, Clock, StructureOp } from
 import { currentClock } from '../env.js'
 import { CalcError } from '../exec/budget.js'
 import { checkComputeOptions } from '../input.js'
-import { isHiddenRow } from '../layout/hidden.js'
+import { registerLocale } from '../locale/load.js'
+import { LOCALES } from '../locale/registry.js'
+import type { Locale } from '../locale/types.js'
 import { heapCaches } from '../range-cache.js'
-import { GEOMETRY } from '../session/rebook.js'
 import type { HistoryData } from '../session/undo.js'
-import { CHANGING, toData, type Answer, type Entry, type Op, type Outline, type ToThread } from './protocol.js'
+import { GEOMETRY } from '../structure/geometry.js'
+import { CHANGING, EDITS, toData, type Answer, type Entry, type Op, type ToThread } from './protocol.js'
+import { LOCALE_MODULES } from './locales.js'
 import { workerThreads } from './platform.js'
 import { pack, packData, unpack, unpackData } from './pack.js'
 
@@ -38,81 +41,78 @@ interface Held {
 const port = ((workerThreads() as { parentPort?: Port } | undefined)?.parentPort ?? globalThis) as Port
 let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
-const waiting: Exclude<ToThread, { t: 'init' | 'cancel' }>[] = []
+const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'cancel' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
+/** The locales the pool sent, loaded before the next task. */
+let loading: Promise<void> = Promise.resolve()
 
-/** What `applyOp` reads of a book for `mapCell`: the sheets' names and visibility, their hidden rows and filter mode, their tables (a table deleted takes its cells). */
-function outlineOf(book: BookInput): Outline {
-  return {
-    sheets: book.sheets.map((s) => {
-      const rows = Object.entries(s.rows ?? {}).filter(([, r]) => isHiddenRow(r))
-      return {
-        name: s.name,
-        cells: {},
-        ...(rows.length ? { rows: Object.fromEntries(rows.map(([k]) => [k, { hidden: true }])) } : {}),
-        ...(s.filtered ? { filtered: true } : {}),
-        ...(s.tables ? { tables: s.tables } : {}),
-        ...(s.hidden ? { hidden: s.hidden } : {}),
-      }
-    }),
-    ...(book.names ? { names: book.names } : {}),
-  }
+/** Loads locales the pool sent: a package's from its own module, with its messages; another, or one whose module did not load, as sent. */
+function load(list: Locale[]) {
+  loading = loading
+    .then(async () => {
+      for (const sent of list) if (!LOCALES.has(sent.tag)) registerLocale((await LOCALE_MODULES[sent.tag]?.().catch(() => undefined)) ?? sent)
+    })
+    .catch(() => {})
 }
 
-/** A session call by name; `o` goes where the call takes options. */
+/** A session call by name; `o` goes where the call takes options, with the edit options a changing call carries last (`EDITS`). */
 async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise<Answer> {
   const s = h.s
+  const n = EDITS[op]
+  const eo = n === undefined ? o : { ...o, ...(args[n] as object | undefined) }
   let value: unknown
-  let outline: Outline | undefined
   switch (op) {
-    case 'restructure': {
-      outline = outlineOf(await s.book())
-      const r = await s.restructure(args[0] as StructureOp, o)
-      value = r.ok ? { ok: true, changes: r.changes } : r
+    case 'editStructure':
+    case 'undo':
+    case 'redo': {
+      // a structure operation's mapCell goes as its geometry, of which the calling side makes the same function
+      const r = op === 'editStructure' ? await s.editStructure(args[0] as StructureOp, eo) : await s[op](eo)
+      const { mapCell, ...rest } = (r ?? {}) as { mapCell?: object }
+      value = r && { ...rest, ...(mapCell ? { geometry: GEOMETRY.get(mapCell) } : {}) }
       break
     }
-    case 'setStyles':
-      value = await s.setStyles(args[0] as never)
+    case 'getBook':
+      value = await pack(await s.getBook())
       break
-    case 'book':
-      value = await pack(await s.book())
+    case 'getLayout':
+      value = await s.getLayout()
       break
-    case 'layout':
-      value = await s.layout()
-      break
-    case 'extent':
-      value = await s.extent(args[0] as string)
+    case 'getUsedRange':
+      value = await s.getUsedRange(args[0] as string)
       break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, args[2] as never)
       break
-    case 'result':
-      value = await s.result(o)
+    case 'getResult':
+      value = await s.getResult(o)
       break
-    case 'hash':
-      value = await s.hash(o)
+    case 'getSnapshot': {
+      const r = await s.getSnapshot(o)
+      value = { book: await pack(r.book), result: r.result }
       break
-    case 'cells':
-      value = await s.cells(args[0] as string, args[1] as string | string[])
+    }
+    case 'getHash':
+      value = await s.getHash(o)
       break
-    case 'validation':
-      value = await s.validation(args[0] as string, args[1] as string)
+    case 'getCells':
+      value = await s.getCells(args[0] as string, args[1] as string | string[])
+      break
+    case 'getViewport':
+      value = await s.getViewport(args[0] as string, args[1] as string, args[2] as never)
+      break
+    case 'getCellIssue':
+      value = await s.getCellIssue(args[0] as string, args[1] as string)
+      break
+    case 'getValidation':
+      value = await s.getValidation(args[0] as string, args[1] as string)
       break
     case 'validateEntry':
       value = await s.validateEntry(args[0] as string, args[1] as string, args[2] as never, o)
       break
-    case 'undo':
-    case 'redo': {
-      // a structure operation's mapCell goes as its geometry
-      const r = await s[op](o)
-      const { mapCell, ...rest } = r ?? {}
-      value = r && { ...rest, ...(mapCell ? { geometry: GEOMETRY.get(mapCell) } : {}) }
-      break
-    }
     default:
-      value = await (s[op] as (a: unknown, o: CalcOptions) => Promise<unknown>)(args[0], o)
+      value = await (s[op] as (...a: unknown[]) => Promise<unknown>)(...args.slice(0, n), eo)
   }
-  return { value, clock: s.clock, history: s.history, ...(outline ? { outline } : {}) }
+  return { value, clock: s.clock, history: s.history, revision: s.revision }
 }
 
 function heldOf(sid: number): Held {
@@ -121,15 +121,15 @@ function heldOf(sid: number): Held {
   return h
 }
 
-async function open(sid: number, book: BookInput, opts: object, planned: Clock | null, history?: HistoryData): Promise<Held> {
+async function open(sid: number, book: BookInput, opts: object, planned: Clock | null, history?: HistoryData, revision?: number): Promise<Held> {
   const h = { planned, seq: 0 } as Held
-  h.s = await openInlineSession(book, opts, d, { clock: () => h.planned ?? currentClock(), history })
+  h.s = await openInlineSession(book, opts, d, { clock: () => h.planned ?? currentClock(), history, revision })
   held.set(sid, h)
   return h
 }
 
-/** A session as a snapshot takes it: its book and history as text, its clock and its last changing call. */
-const taken = async (h: Held) => ({ book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()) })
+/** A session as a snapshot takes it: its book and history as text, its clock, its revision and its last changing call. */
+const taken = async (h: Held) => ({ book: await pack(await h.s.getBook()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()), revision: h.s.revision })
 
 async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promise<unknown> {
   switch (m.t) {
@@ -139,7 +139,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     }
     case 'open': {
       const h = await open(m.sid, unpack(m.book), { ...m.opts, signal, timeoutMs: m.timeoutMs }, null)
-      return { value: null, clock: h.s.clock, history: h.s.history } satisfies Answer
+      return { value: null, clock: h.s.clock, history: h.s.history, revision: h.s.revision } satisfies Answer
     }
     case 'call': {
       const h = heldOf(m.sid)
@@ -157,7 +157,7 @@ async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promis
     case 'restore': {
       const { snapshot, journal } = m
       held.get(m.sid)?.s.kill(new CalcError('closed', 'the session is restored'))
-      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock, snapshot.history && unpackData(snapshot.history))
+      const h = await open(m.sid, unpack(snapshot.book), { ...snapshot.opts, signal }, snapshot.clock, snapshot.history && unpackData(snapshot.history), snapshot.revision)
       h.seq = snapshot.seq
       try {
         for (const e of journal as Entry[]) {
@@ -196,6 +196,7 @@ async function next() {
   const ac = abortable()
   current = { task: m.task, abort: ac.abort }
   try {
+    await loading
     const value = await run(m, ac.signal)
     try {
       port.postMessage({ task: m.task, ok: true, value })
@@ -215,6 +216,9 @@ function receive(m: ToThread) {
     d = { sliceMs: m.sliceMs, limits: m.limits }
     // the thread's sessions and computations share its heap, and so one budget of their caches
     if (m.cacheBytes) heapCaches.cap = m.cacheBytes
+    if (m.locales) load(m.locales)
+  } else if (m.t === 'locales') {
+    load(m.locales)
   } else if (m.t === 'cancel') {
     if (current?.task === m.task) current.abort('cancelled by the pool')
   } else {

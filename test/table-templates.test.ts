@@ -4,7 +4,7 @@
  * with its table and follows a renamed, moved or deleted sheet. Expectations come from that agreement, not from Excel.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, copyFormula, openSession, restructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
+import { compute, copyFormula, createSession, editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 
 const clock = { now: '2026-10-09T12:00:00Z', seed: 1 }
@@ -46,7 +46,7 @@ function salesBook(tpl: string, more: string[] = []): BookInput {
 }
 
 function apply(book: BookInput, op: StructureOp): BookInput {
-  const r = restructure(book, op)
+  const r = editStructure(book, op)
   if (!r.ok) throw new Error(`${op.op}: ${r.message}`)
   return r.book
 }
@@ -75,16 +75,16 @@ function expectAgreed(book: BookInput) {
  */
 function expectInsertedRows(book: BookInput, execution: (typeof EXECUTIONS)[number]) {
   for (const c of calculated(book)) {
-    const s = openSession(book, { execution, clock })
-    const r = s.restructure({ op: 'insertRows', sheet: c.sheet, row: c.row + 2, count: 1 })
+    const s = createSession(book, { execution, clock })
+    const r = s.editStructure({ op: 'insertRows', sheet: c.sheet, row: c.row + 2, count: 1 })
     if (!r.ok) throw new Error(r.message)
-    const after = s.book()
+    const after = s.getBook()
     const sheet = after.sheets.find((x) => x.name === c.sheet)!
     const first = sheet.cells[formatAddress(c.row, c.col)].formula!
     const at = formatAddress(c.row + 1, c.col)
     expect(sheet.cells[at]?.formula, `${c.table}: the inserted ${c.sheet}!${at}`).toBe(copyFormula(first, { sheet: c.sheet, cell: formatAddress(c.row, c.col) }, { sheet: c.sheet, cell: at }, after))
     s.setCells([{ sheet: c.sheet, cell: formatAddress(c.row + 1, c.col - 1), input: { value: 5 } }])
-    expect(s.result().hash).toBe(compute(s.book(), { execution, clock }).hash)
+    expect(s.getResult().hash).toBe(compute(s.getBook(), { execution, clock }).hash)
     s.close()
   }
 }
@@ -96,13 +96,13 @@ describe.each(EXECUTIONS)('calculated column templates from the review, %s', (ex
   ] as [string, StructureOp, string][])('a table %s to another sheet gives an inserted row its own formula', (_, op, table) => {
     const book = apply(reviewBook(), op)
     expect(book.sheets[1].cells.E6.formula).toBe('D6*2')
-    const s = openSession(book, { execution, clock })
-    const r = s.restructure({ op: 'insertRows', sheet: 'T', row: 7, count: 1 })
+    const s = createSession(book, { execution, clock })
+    const r = s.editStructure({ op: 'insertRows', sheet: 'T', row: 7, count: 1 })
     if (!r.ok) throw new Error(r.message)
     s.setCells([{ sheet: 'T', cell: 'D7', input: { value: 5 } }])
-    expect(s.cells('T', 'E7').E7).toMatchObject({ formula: 'D7*2', value: 10 })
-    expect(s.result().hash).toBe(compute(s.book(), { execution, clock }).hash)
-    expect(templateOf(s.book(), table)).toBe('D6*2')
+    expect(s.getCells('T', 'E7').E7).toMatchObject({ formula: 'D7*2', value: 10 })
+    expect(s.getResult().hash).toBe(compute(s.getBook(), { execution, clock }).hash)
+    expect(templateOf(s.getBook(), table)).toBe('D6*2')
     s.close()
   })
 
@@ -112,13 +112,13 @@ describe.each(EXECUTIONS)('calculated column templates from the review, %s', (ex
     for (const r of [2, 3, 4]) S.cells[`B${r}`] = { formula: `'S'!A${r}*2` }
     S.tables![0].columns[1].formula = "'S'!A2*2"
     const renamed = apply(book, { op: 'renameSheet', sheet: 'S', name: 'Renamed' })
-    const s = openSession(renamed, { execution, clock })
-    const r = s.restructure({ op: 'insertRows', sheet: 'Renamed', row: 3, count: 1 })
+    const s = createSession(renamed, { execution, clock })
+    const r = s.editStructure({ op: 'insertRows', sheet: 'Renamed', row: 3, count: 1 })
     if (!r.ok) throw new Error(r.message)
     s.setCells([{ sheet: 'Renamed', cell: 'A3', input: { value: 5 } }])
-    expect(s.cells('Renamed', 'B3').B3).toMatchObject({ formula: "'Renamed'!A3*2", value: 10 })
-    expect(s.result().hash).toBe(compute(s.book(), { execution, clock }).hash)
-    expect(templateOf(s.book(), 'Sales')).toBe("'Renamed'!A2*2")
+    expect(s.getCells('Renamed', 'B3').B3).toMatchObject({ formula: "'Renamed'!A3*2", value: 10 })
+    expect(s.getResult().hash).toBe(compute(s.getBook(), { execution, clock }).hash)
+    expect(templateOf(s.getBook(), 'Sales')).toBe("'Renamed'!A2*2")
     s.close()
   })
 })

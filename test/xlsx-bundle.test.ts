@@ -9,9 +9,12 @@ import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
 import { libUrl } from './fixtures/target.js'
 
-async function bundle() {
+/** The subpath, and with `locale` the root's `registerLocale` and the ru-RU module beside it, as a host of ru-RU books takes them. */
+async function bundle(locale = false) {
+  const lib = (f: string) => JSON.stringify(fileURLToPath(libUrl(f)))
+  const contents = [`export * from ${lib('xlsx.js')}`, ...(locale ? [`export { registerLocale } from ${lib('index.js')}`, `export { ruRU } from ${lib('locales/ru-RU.js')}`] : [])].join('\n')
   const r = await build({
-    entryPoints: [fileURLToPath(libUrl('xlsx.js'))],
+    stdin: { contents, loader: 'js', resolveDir: fileURLToPath(new URL('..', import.meta.url)) },
     bundle: true,
     platform: 'browser',
     format: 'iife',
@@ -28,19 +31,22 @@ async function bundle() {
 describe('xlsx outside Node', () => {
   it('the bundle takes no Node built-ins and no part of the engine that computes', async () => {
     const { code, used } = await bundle()
-    expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\b|["']node:/)
+    // Buffer in use, not named in a message (readXlsx takes a Uint8Array, an ArrayBuffer or a Buffer)
+    expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\s*[.(]|\b(typeof|instanceof)\s+Buffer\b|["']node:/)
     // the budget's check (`spend`, a few bytes) comes with copyRange, which pastes shared formulas: a session's copy stops at its deadline
     const engine = used.filter((f) => /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f) && !/\/exec\/budget\.(ts|js)$/.test(f))
     expect(engine).toEqual([])
   }, 60_000)
 
   it('runs in an empty context given the web codecs: writes a book and reads it back', async () => {
-    const { code } = await bundle()
+    const { code, used } = await bundle(true)
+    expect(used.filter((f) => /\/(functions|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f))).toEqual([])
     const ctx = createContext({ CompressionStream, DecompressionStream, TextEncoder, TextDecoder })
     expect(runInContext('[typeof process, typeof require, typeof Buffer]', ctx)).toEqual(['undefined', 'undefined', 'undefined'])
     runInContext(code, ctx)
     const out = (await runInContext(
       `(async () => {
+        Xlsx.registerLocale(Xlsx.ruRU)
         const book = { sheets: [{ name: 'Лист', cells: { A1: { value: 2 }, B1: { formula: 'A1*2' } } }], locale: 'ru-RU' }
         const { data } = await Xlsx.writeXlsx(book)
         const r = await Xlsx.readXlsx(data)

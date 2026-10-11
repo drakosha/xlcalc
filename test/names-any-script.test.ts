@@ -4,8 +4,10 @@
  * any case, one namespace with tables, and a name kept through structure operations and an xlsx file.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, restructure, ruRU, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
+import { compute, InputError, createSession, editStructure, toInvariant, toLocal, validateFormula, validateLocalFormula, validateName, type BookInput, type NameInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { nameIssues } from './diagnostics.js'
 
 /** Sheet S with A1 = 100 and the formulas given, and the names. */
 const book = (formulas: Record<string, string>, names: NameInput[]): BookInput => ({
@@ -15,7 +17,7 @@ const book = (formulas: Record<string, string>, names: NameInput[]): BookInput =
 
 const values = (b: BookInput) => {
   const r = compute(b, { display: false })
-  return { issues: r.nameIssues, cells: Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value])) }
+  return { issues: nameIssues(r), cells: Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.value])) }
 }
 
 describe('defined names in letters of any script', () => {
@@ -32,9 +34,9 @@ describe('defined names in letters of any script', () => {
   })
 
   it('a session takes a name of any script through setNames', () => {
-    const s = openSession(book({ B1: 'Ставка*2' }, []))
-    expect(s.result().sheets[0].cells.B1.value).toEqual({ error: 'NAME' })
-    expect(s.setNames([{ name: 'Ставка', ref: '0.2' }]).map((c) => [c.cell, c.value])).toEqual([['B1', 0.4]])
+    const s = createSession(book({ B1: 'Ставка*2' }, []))
+    expect(s.getResult().sheets[0].cells.B1.value).toEqual({ error: 'NAME' })
+    expect(s.setNames([{ name: 'Ставка', ref: '0.2' }]).changes.map((c) => [c.cell, c.value])).toEqual([['B1', 0.4]])
     s.close()
   })
 
@@ -47,7 +49,7 @@ describe('defined names in letters of any script', () => {
       names: [{ name: 'Ставка', ref: '0.2' }, { name: 'Ставка', ref: '0.3', scope: 'Лист' }],
     }
     const r = compute(b, { display: false })
-    expect(r.nameIssues).toEqual([])
+    expect(nameIssues(r)).toEqual([])
     expect([r.sheets[0].cells.A1.value, r.sheets[0].cells.A2.value, r.sheets[1].cells.A1.value]).toEqual([0.6, 0.2, 0.3])
   })
 
@@ -61,9 +63,9 @@ describe('defined names in letters of any script', () => {
     }
     const r = compute(b, { display: false })
     expect([r.sheets[0].cells.A1.formula, r.sheets[0].cells.A2.formula, r.sheets[1].cells.A1.formula]).toEqual(['Ставка*2', "SUM('Лист'!Ставка,1)", 'Ставка'])
-    const s = openSession(b)
+    const s = createSession(b)
     s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'сТаВкА*10' } }])
-    expect(s.result().sheets[0].cells.B1).toMatchObject({ value: 2, formula: 'Ставка*10' })
+    expect(s.getResult().sheets[0].cells.B1).toMatchObject({ value: 2, formula: 'Ставка*10' })
     s.close()
   })
 
@@ -88,9 +90,9 @@ describe('defined names in letters of any script', () => {
     const withTable = (name: string, names: NameInput[]): BookInput => ({ sheets: [{ name: 'S', cells, tables: [{ name, range: 'A1:A2', columns: [{ name: 'Кол' }] }] }], names })
     expect(() => compute(withTable('Ставка', [{ name: 'СТАВКА', ref: '1' }]))).toThrow(InputError)
     expect(() => compute(withTable('Ставка', [{ name: 'СТАВКА', ref: '1' }]))).toThrow(/also a defined name/)
-    const r = restructure(withTable('Продажи', [{ name: 'Ставка', ref: '1' }]), { op: 'renameTable', table: 'Продажи', name: 'ставка' })
+    const r = editStructure(withTable('Продажи', [{ name: 'Ставка', ref: '1' }]), { op: 'renameTable', table: 'Продажи', name: 'ставка' })
     expect(r).toMatchObject({ ok: false, code: 'table_name' })
-    expect(restructure(withTable('Продажи', []), { op: 'renameTable', table: 'Продажи', name: 'АБ12' })).toMatchObject({ ok: true })
+    expect(editStructure(withTable('Продажи', []), { op: 'renameTable', table: 'Продажи', name: 'АБ12' })).toMatchObject({ ok: true })
   })
 
   it('a sheet\'s own name follows a copy to another sheet, and a file keeps the names as they are', async () => {
@@ -101,9 +103,9 @@ describe('defined names in letters of any script', () => {
       ],
       names: [{ name: 'Ставка', ref: '0.5', scope: 'S' }],
     }
-    const copied = restructure(b, { op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'T', range: 'B1' } })
+    const copied = editStructure(b, { op: 'copyRange', from: { sheet: 'S', range: 'A1' }, to: { sheet: 'T', range: 'B1' } })
     expect(copied.ok && copied.book.names).toEqual([{ name: 'Ставка', ref: '0.5', scope: 'S' }, { name: 'Ставка', ref: '0.5', scope: 'T' }])
-    const { data, issues } = await writeXlsx({ ...b, names: [...b.names!, { name: 'НДС_2025', ref: "'S'!$A$1" }] })
+    const { data, issues } = await writeXlsx({ book: { ...b, names: [...b.names!, { name: 'НДС_2025', ref: "'S'!$A$1" }] } }, { values: 'omit' })
     expect(issues).toEqual([])
     const read = await readXlsx(data)
     expect(read.book.names).toEqual([{ name: 'Ставка', ref: '0.5', scope: 'S' }, { name: 'НДС_2025', ref: "'S'!$A$1" }])
@@ -121,7 +123,7 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     expect([v.cells.B1, v.cells.B2, v.cells.B3]).toEqual([10, 12, 14])
     expect(validateLocalFormula('=Став?ка*2+0,5', ruRU, { names: ['Став?ка'] })).toMatchObject({ ok: true, canonical: 'Став?ка*2+0.5' })
     expect(toLocal('Став\\ка*2+1.5', ruRU)).toEqual({ ok: true, formula: 'Став\\ка*2+1,5' })
-    const { data, issues } = await writeXlsx(b)
+    const { data, issues } = await writeXlsx({ book: b }, { values: 'omit' })
     expect(issues).toEqual([])
     expect((await readXlsx(data)).book.names).toEqual(b.names)
   })
@@ -130,26 +132,26 @@ describe("Excel's rules for names where it was measured (tables/names-more-held,
     const names = [{ name: 'ИСТИНА', ref: '11' }, { name: 'ложь', ref: '12' }, { name: 'ИСТИНА_1', ref: '1' }]
     const ru: BookInput = { ...book({ B1: 'ИСТИНА_1+1' }, names), locale: 'ru-RU' }
     const r = compute(ru, { display: false })
-    expect(r.nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
+    expect(nameIssues(r).map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
     expect(r.sheets[0].cells.B1.value).toBe(2)
-    expect(compute({ ...ru, locale: 'en-US' }, { display: false }).nameIssues).toEqual([])
-    const s = openSession(ru)
+    expect(compute({ ...ru, locale: 'en-US' }, { display: false }).diagnostics).toEqual([])
+    const s = createSession(ru)
     s.setNames([...names, { name: 'Ложь', ref: '3' }])
-    expect(s.result().nameIssues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
+    expect(nameIssues(s.getResult()).map((x) => x.name)).toEqual(['ИСТИНА', 'ложь', 'Ложь'])
     s.close()
-    const file = await writeXlsx(ru)
+    const file = await writeXlsx({ book: ru }, { values: 'omit' })
     expect(file.issues.map((x) => x.name)).toEqual(['ИСТИНА', 'ложь'])
     expect((await readXlsx(file.data)).book.names).toEqual([{ name: 'ИСТИНА_1', ref: '1' }])
-    expect((await writeXlsx({ ...ru, locale: 'en-US' })).issues).toEqual([])
+    expect((await writeXlsx({ book: { ...ru, locale: 'en-US' } }, { values: 'omit' })).issues).toEqual([])
   })
 
   it('a table takes ? and \\ inside its name, and in a ru-RU book not the name ИСТИНА, as Excel for Windows (tables/names-tables-held, names-ru-tables-held)', () => {
     const cells = { A1: { value: 'Кол' }, A2: { value: 1 }, B1: { formula: 'SUM(T[Кол])' } }
     const withTable = (locale?: string): BookInput => ({ sheets: [{ name: 'S', cells, tables: [{ name: 'T', range: 'A1:A2', columns: [{ name: 'Кол' }] }] }], ...(locale ? { locale } : {}) })
-    for (const name of ['Прод?ажи', 'Прод\\ажи']) expect(restructure(withTable(), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: true })
-    expect(restructure(withTable(), { op: 'renameTable', table: 'T', name: '?Продажи' })).toMatchObject({ ok: false, code: 'table_name' })
-    for (const name of ['ИСТИНА', 'ложь', 'TRUE']) expect(restructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: false, code: 'table_name' })
-    expect(restructure(withTable(), { op: 'renameTable', table: 'T', name: 'ИСТИНА' })).toMatchObject({ ok: true })
+    for (const name of ['Прод?ажи', 'Прод\\ажи']) expect(editStructure(withTable(), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: true })
+    expect(editStructure(withTable(), { op: 'renameTable', table: 'T', name: '?Продажи' })).toMatchObject({ ok: false, code: 'table_name' })
+    for (const name of ['ИСТИНА', 'ложь', 'TRUE']) expect(editStructure(withTable('ru-RU'), { op: 'renameTable', table: 'T', name })).toMatchObject({ ok: false, code: 'table_name' })
+    expect(editStructure(withTable(), { op: 'renameTable', table: 'T', name: 'ИСТИНА' })).toMatchObject({ ok: true })
     expect(toLocal('SUM(ИСТИНА[Кол])', ruRU)).toEqual({ ok: true, formula: 'СУММ(ИСТИНА[Кол])' })
   })
 

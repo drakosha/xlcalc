@@ -8,27 +8,24 @@
  * Excel refuses lines inserted into two tables at once (a line inside both), deleted from two tables when one of them
  * keeps some of its lines, and a table's header row deleted without the rest.
  */
-import type { BookInput, CellInput, SheetInput, TableInput } from '../contract.js'
+import type { BookInput, SheetInput, TableInput } from '../contract.js'
 import type { Message } from '../locale/messages.js'
-import { REGIONAL } from '../locale/rules.js'
+import { localeOf } from '../locale/registry.js'
 import { formatAddress } from '../model.js'
-import { sheetKey } from '../syntax.js'
-import { rectOf, type Area, type Axis } from '../structure/area.js'
+import { cornersText, hi, lo, rectOf, type Area, type Axis } from '../structure/area.js'
 import { copyTransform } from '../structure/copy.js'
-import { rewriteFormula, sheetNames } from '../structure/rewrite.js'
+import { rewriteFormula, sheetIndex, sheetNames } from '../structure/rewrite.js'
 import { rewriteBookTables } from './rewrite.js'
-import { tableKey, tablesOf } from './model.js'
+import { rowsOf, tableKey, tablesOf } from './model.js'
 
 /** The first free name `Column<n>` (n from 1) among `taken`, case-insensitively, with the word of the book's locale (`columnWord`). */
 export function freeColumnName(taken: string[], locale: string | undefined): string {
-  const word = REGIONAL.get(locale ?? '')?.columnWord ?? 'Column'
+  const word = localeOf(locale).regional?.columnWord ?? 'Column'
   const keys = new Set(taken.map(tableKey))
   let n = 1
   while (keys.has(tableKey(`${word}${n}`))) n++
   return `${word}${n}`
 }
-
-const bounds = (t: { r1: number; r2: number; c1: number; c2: number }, axis: Axis): [number, number] => (axis === 'r' ? [t.r1, t.r2] : [t.c1, t.c2])
 
 /** The effect of a shift on the tables of `sheet`: a refusal, or the book prepared before the shift and finished after it. */
 export interface TableShift {
@@ -46,7 +43,7 @@ export interface TableShift {
 
 /** Lines inserted (`n` > 0) or deleted (`n` < 0) at index `at` of `axis` on `sheet`. */
 export function tableShift(book: BookInput, sheet: string, axis: Axis, at: number, n: number): TableShift {
-  const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
+  const s = sheetIndex(book, sheet)
   const tables = tablesOf(book).list.filter((t) => t.s === s)
   const none: TableShift = { before: (b) => b, after: (b) => b }
   if (!tables.length) return none
@@ -54,17 +51,11 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
   const last = at + count - 1
   const lines = axis === 'r' ? 'rows' : 'columns'
   if (n > 0) {
-    const inside = tables.filter((t) => bounds(t, axis)[0] <= at && at <= bounds(t, axis)[1])
+    const inside = tables.filter((t) => lo(t, axis) <= at && at <= hi(t, axis))
     if (inside.length > 1) return { ...none, refuse: { key: 'tableInsertTwo', lines, tables: inside.map((t) => t.name) } }
   } else {
-    const met = tables.filter((t) => {
-      const [lo, hi] = bounds(t, axis)
-      return lo <= last && hi >= at
-    })
-    const cut = met.filter((t) => {
-      const [lo, hi] = bounds(t, axis)
-      return !(at <= lo && last >= hi)
-    })
+    const met = tables.filter((t) => lo(t, axis) <= last && hi(t, axis) >= at)
+    const cut = met.filter((t) => !(at <= lo(t, axis) && last >= hi(t, axis)))
     // lines that meet two tables go only with both whole (the sets ops and delete-held)
     if (cut.length && met.length > 1) return { ...none, refuse: { key: 'tableDeleteTwo', lines, tables: met.map((t) => t.name) } }
     const head = cut.find((t) => axis === 'r' && t.headers && t.r1 >= at && t.r1 <= last)
@@ -73,39 +64,38 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
   // what each table becomes: its new range along the axis and its columns, or null when it is deleted
   const plan = new Map<string, { lo: number; hi: number; columns: TableInput['columns']; totals: boolean; grown: number[] } | null>()
   for (const t of tables) {
-    const [lo, hi] = bounds(t, axis)
+    const [a, b] = [lo(t, axis), hi(t, axis)]
     const cols = t.input.columns
     if (n > 0) {
-      if (at <= lo) plan.set(t.name, { lo: lo + count, hi: hi + count, columns: cols, totals: t.totals, grown: [] })
-      else if (at <= hi) {
+      if (at <= a) plan.set(t.name, { lo: a + count, hi: b + count, columns: cols, totals: t.totals, grown: [] })
+      else if (at <= b) {
         const grown = Array.from({ length: count }, (_, i) => at + i)
         const columns = axis === 'c' ? [...cols.slice(0, at - t.c1), ...grown.map(() => ({ name: '' })), ...cols.slice(at - t.c1)] : cols
-        plan.set(t.name, { lo, hi: hi + count, columns, totals: t.totals, grown })
+        plan.set(t.name, { lo: a, hi: b + count, columns, totals: t.totals, grown })
       }
       continue
     }
-    if (hi < at) continue
-    if (lo > last) {
-      plan.set(t.name, { lo: lo - count, hi: hi - count, columns: cols, totals: t.totals, grown: [] })
+    if (b < at) continue
+    if (a > last) {
+      plan.set(t.name, { lo: a - count, hi: b - count, columns: cols, totals: t.totals, grown: [] })
       continue
     }
-    if (at <= lo && last >= hi) {
+    if (at <= a && last >= b) {
       plan.set(t.name, null)
       continue
     }
     const kept = (i: number) => i < at || i > last
     if (axis === 'c') {
       const columns = cols.filter((_, i) => kept(t.c1 + i))
-      const nlo = lo < at ? lo : at
+      const nlo = a < at ? a : at
       plan.set(t.name, { lo: nlo, hi: nlo + columns.length - 1, columns, totals: t.totals, grown: [] })
       continue
     }
-    const first = t.r1 + (t.headers ? 1 : 0)
-    const lastData = t.r2 - (t.totals ? 1 : 0)
+    const { first, last: lastData } = rowsOf(t)
     let data = 0
     for (let r = first; r <= lastData; r++) if (kept(r)) data++
     const totals = t.totals && kept(t.r2)
-    const nlo = lo < at ? lo : at
+    const nlo = a < at ? a : at
     plan.set(t.name, { lo: nlo, hi: nlo + (t.headers ? 1 : 0) + Math.max(1, data) + (totals ? 1 : 0) - 1, columns: cols, totals, grown: [] })
   }
   if (!plan.size) return none
@@ -113,8 +103,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
   const edge = (area: Area): [number, number] | undefined => {
     const x = rectOf(area)
     for (const t of growing) {
-      const first = t.r1 + (t.headers ? 1 : 0)
-      const last = t.r2 - (t.totals ? 1 : 0)
+      const { first, last } = rowsOf(t)
       if (area.kind === 'cell' || x.c1 < t.c1 || x.c2 > t.c2 || x.r1 < first || x.r2 > last) continue
       if (at === first && x.r1 === first) return [x.r1, x.r2 + count]
       if (at === last + 1 && x.r2 === last) return [x.r1, x.r2 + count]
@@ -173,7 +162,7 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
             const addr = formatAddress(row, r.c1 + i)
             cells[addr] = { ...cells[addr], formula: rewriteFormula(c.formula, sh.name, sh.name, copyTransform(row - first, 0), names) }
           })
-      const next: TableInput = { ...ti, range: `${formatAddress(r.r1, r.c1)}:${formatAddress(r.r2, r.c2)}`, columns }
+      const next: TableInput = { ...ti, range: cornersText(r), columns }
       if (p.totals) next.totals = true
       else delete next.totals
       list.push(next)
@@ -193,11 +182,10 @@ export function tableShift(book: BookInput, sheet: string, axis: Axis, at: numbe
  * keeps the first data row, cleared, and deletes the rows after it (the set `tables/ops`, del-all-data).
  */
 export function emptiedTable(book: BookInput, sheet: string, at: number, count: number): { c1: number; c2: number } | null {
-  const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
+  const s = sheetIndex(book, sheet)
   for (const t of tablesOf(book).list) {
     if (t.s !== s || !t.headers) continue
-    const first = t.r1 + 1
-    const last = t.r2 - (t.totals ? 1 : 0)
+    const { first, last } = rowsOf(t)
     if (at === first && at + count - 1 >= last) return { c1: t.c1, c2: t.c2 }
   }
   return null

@@ -6,7 +6,8 @@
 import { compare } from '../bench/coverage/compare.js'
 import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
-import { compute, fromLegacy, InputError, openSession, type BookInput, type ComputeResult } from '../src/index.js'
+import { compute, InputError, createSession, type BookInput, type ComputeResult } from '../src/index.js'
+import { fromLegacy } from '../src/xlsx.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
 
@@ -31,7 +32,7 @@ function loaded(c: SpillCase): BookInput {
  */
 export function computed(c: SpillCase): ComputeResult {
   if (!c.edits) return compute(loaded(c), { clock: CLOCK })
-  const s = openSession(loaded(c), { clock: CLOCK })
+  const s = createSession(loaded(c), { clock: CLOCK })
   for (const e of c.edits) {
     const [p, q = p] = e.cell.split(':').map(parseAddress)
     const input = e.value === null ? null : typeof e.value === 'object' ? e.value : { value: e.value }
@@ -43,7 +44,7 @@ export function computed(c: SpillCase): ComputeResult {
       if (!(err instanceof InputError)) throw err
     }
   }
-  return s.result()
+  return s.getResult()
 }
 
 /** Cells of the case's rectangles where the engine does not show Excel's answer. */

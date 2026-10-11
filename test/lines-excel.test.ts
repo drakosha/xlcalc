@@ -9,10 +9,11 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { StoredLines } from '../bench/coverage/lines.js'
-import { caseBook, caseFile, engineCase, type LineLook, type LinesAnswer } from '../bench/coverage/lines/cases.js'
+import { caseBook, caseFile, engineCase, partsOf, sessionBook, sessionCase, type LineLook, type LinesAnswer } from '../bench/coverage/lines/cases.js'
 import { compareBooks, entries } from '../bench/coverage/xlsx/compare.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import type { BookInput, NumberFormat } from '../src/contract.js'
+import { checkBook } from '../src/input.js'
 import { readXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 
@@ -47,7 +48,7 @@ const key = (l: LineLook | undefined) => l && JSON.stringify([l.text, plainCode(
 
 /** A book with its format codes without Excel's escapes. */
 function unescaped(book: BookInput): BookInput {
-  const lines = <T extends { format?: NumberFormat }>(m: Record<string, T> | undefined) => m && Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.format === undefined ? v : { ...v, format: plainCode(v.format) }]))
+  const lines = <T extends { numberFormat?: NumberFormat }>(m: Record<string, T> | undefined) => m && Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.numberFormat === undefined ? v : { ...v, numberFormat: plainCode(v.numberFormat) }]))
   return { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: lines(s.cells)!, columns: lines(s.columns), rows: lines(s.rows) })) }
 }
 
@@ -67,7 +68,7 @@ const PLATFORMS: [string, LinesSetFile[]][] = [
 ]
 
 describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => {
-  it('every set is answered', () => expect(sets.map((s) => s.name)).toEqual(['files', 'held']))
+  it('every set is answered', () => expect(sets.map((s) => s.name).filter((n) => n !== 'clear' && n !== 'patch')).toEqual(['files', 'held']))
   it('every pinned difference names a case', () => {
     const ids = new Set(sets.flatMap((s) => s.cases.map((c) => `${s.name}:${c.id}`)))
     expect(Object.keys(LINES_KNOWN).filter((k) => !ids.has(k.split(':').slice(0, 2).join(':')))).toEqual([])
@@ -82,12 +83,20 @@ describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => 
       for (const c of set.cases) {
         const a = set.answers[c.id]
         const pinned = (cell: string) => LINES_KNOWN[`${set.name}:${c.id}:${cell}`]
-        it(`${c.id}: the cells show what Excel showed`, async () => {
+        // a set of a session's steps (clearing among them) has no answer of the model's
+        it.skipIf(set.session)(`${c.id}: the cells show what Excel showed`, async () => {
           expect(a.error).toBeUndefined()
           const got = differences(a.looks, engineCase(c, await caseBook(set, c)))
           expect([...got].filter(([cell]) => !pinned(cell)).map(([cell, d]) => `${cell}: ${d}`)).toEqual([])
           for (const k of Object.keys(LINES_KNOWN).filter((x) => x.startsWith(`${set.name}:${c.id}:`))) expect(got.has(k.split(':')[2]), `${k} pinned`).toBe(true)
         })
+        it(`${c.id}: the steps taken by a session (patchCells, setCells, clearCells), the cells show what Excel showed, the lines Excel formats across each other too`, async () => {
+          expect([...differences(a.looks, sessionCase(c, await caseBook(set, c)))].map(([cell, d]) => `${cell}: ${d}`)).toEqual([])
+        })
+        if (c.parts)
+          it(`${c.id}: the notes, hyperlinks, conditional formats and rules of data validation of Excel's file are the session's`, async () => {
+            expect(partsOf((await saved(set, c.id)).book)).toEqual(partsOf(sessionBook(c, await caseBook(set, c))))
+          })
         it(`${c.id}: on the book read from Excel's file the engine shows what Excel showed`, async () => {
           const r = await saved(set, c.id)
           expect(r.issues).toEqual([])
@@ -95,7 +104,7 @@ describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => 
         })
         if (!c.steps && !c.bare)
           it(`${c.id}: Excel's file reads back as the book written`, async () => {
-            expect(compareBooks(entries(set.books[c.book]), entries(unescaped((await saved(set, c.id)).book)))).toEqual([])
+            expect(compareBooks(entries(checkBook(set.books[c.book])), entries(unescaped((await saved(set, c.id)).book)))).toEqual([])
           })
       }
     })

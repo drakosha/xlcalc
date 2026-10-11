@@ -294,18 +294,26 @@ export function enNumber(text: string): number | null {
   if (sign[1] && sign[3]) return null
   const negative = (sign[1] || sign[3]) === '-'
   if ((paren && negative) || (sign[2] && percent)) return null
-  const body = sign[4]
+  return bodyNumber(sign[4], GROUPED, (mant) => mant.replace(/,/g, ''), percent, !sign[2] && !paren, negative || paren)
+}
+
+/**
+ * The number of a number's text past its sign, currency and parentheses: digits `grouped` takes, with an exponent, as
+ * `plain` writes them for `readNumber`; else, where `fraction`, a fraction such as `1 1/2`; negated with `negative`.
+ * Null when it is none.
+ */
+export function bodyNumber(body: string, grouped: RegExp, plain: (mant: string) => string, percent: boolean, fraction: boolean, negative: boolean): number | null {
   const exp = /^(.*?)([eE][+-]?\d+)$/.exec(body)
   const mant = exp ? exp[1] : body
   let n: number | null = null
   // percent moves the decimal point of the text (`1.1%` is 0.011); a fraction is divided
-  if (GROUPED.test(mant) && /\d/.test(mant)) n = readNumber(mant.replace(/,/g, '') + (exp ? exp[2] : ''), percent ? -2 : 0)
-  else if (!sign[2] && !paren) {
+  if (grouped.test(mant) && /\d/.test(mant)) n = readNumber(plain(mant) + (exp ? exp[2] : ''), percent ? -2 : 0)
+  else if (fraction) {
     const frac = /^(\d+) (\d+)\/(\d+)$/.exec(body)
     if (frac && Number(frac[3]) > 0) n = (Number(frac[1]) + Number(frac[2]) / Number(frac[3])) / (percent ? 100 : 1)
   }
   if (n === null || !Number.isFinite(n)) return null
-  return negative || paren ? -n : n
+  return negative ? -n : n
 }
 
 /** en-US text as a number outside a book, as operators and arguments read it: date text without a year is no date. */

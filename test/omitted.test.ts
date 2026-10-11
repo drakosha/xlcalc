@@ -6,7 +6,8 @@
 import { describe, expect, it } from 'vitest'
 import { REFUSED as HELD_REFUSED } from '../bench/coverage/sets/omit-held.js'
 import { REFUSED } from '../bench/coverage/sets/omit.js'
-import { compute, restructure, ruRU, toInvariant, toLocal, validateFormula, validateLocalFormula } from '../src/index.js'
+import { compute, editStructure, toInvariant, toLocal, validateFormula, validateLocalFormula } from '../src/index.js'
+import { ruRU } from './locales.js'
 import { FUNCTIONS } from '../src/functions.js'
 import { canonical, parse } from '../src/syntax.js'
 import { E } from '../src/values.js'
@@ -68,7 +69,7 @@ describe('arguments left out', () => {
 
   it('structure operations move the references around them', () => {
     const book = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'IF(A1,,A1)' } } }] }
-    const r = restructure(book, { op: 'insertRows', sheet: 'S', row: 1 })
+    const r = editStructure(book, { op: 'insertRows', sheet: 'S', row: 1 })
     expect(r.ok && r.book.sheets[0].cells.B2.formula).toBe('IF(A2,,A2)')
   })
 })

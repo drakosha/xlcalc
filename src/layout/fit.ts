@@ -16,6 +16,7 @@ import { applyLayout } from '../session/book.js'
 import { sheetKey } from '../syntax.js'
 import { sheetLines } from './lines.js'
 import { parseMerge } from './merges.js'
+import { hasCell } from '../structure/area.js'
 import { parseSpan, spanKey } from './spans.js'
 
 /** A cell of a sheet and its value: zero-based row and column. */
@@ -36,7 +37,7 @@ export function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Place
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
   for (const [r, c, v] of cells) {
-    if (c < lo || c > hi || v === null || across.some((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)) continue
+    if (c < lo || c > hi || v === null || across.some((x) => hasCell(x, r, c))) continue
     const points = rules.fitPoints(v, formats.format(r, c))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
@@ -83,7 +84,7 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): Exclude<LayoutEdi
  * (`compute(book)`), by column letter: null for the default width; a column with nothing to show is left out.
  */
 export function fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null> {
-  checkBook(book)
+  book = checkBook(book)
   const index = (name: string) => {
     const i = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(name))
     return i < 0 ? undefined : i
@@ -101,7 +102,7 @@ export function fitColumns(book: BookInput, result: ComputeResult, sheet: string
 }
 
 /**
- * The width Excel gives a column as `value`, shown by `opts.format`, is typed into one of its cells (`test/excel/fit/`):
+ * The width Excel gives a column as `value`, shown by `opts.numberFormat`, is typed into one of its cells (`test/excel/fit/`):
  * a number AutoFit would give more room widens a column whose width is the default or one Excel fitted (`bestFit`), as
  * AutoFit fits it, though the default width (Excel keeps a fitted width that equals it); undefined when the column keeps
  * its width (text overflows, General drops decimals, a width set by hand stays, a column never narrows).
@@ -110,6 +111,6 @@ export function entryWidth(value: CellValue, opts?: EntryWidthOptions): number |
   const o = checkEntryWidthOptions(opts)
   checkCellValue(value, 'value')
   if (o.width !== undefined && !o.bestFit) return undefined
-  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.format, columnPoints(o.width))
+  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width))
   return points === null ? undefined : Math.min(MAX_WIDTH, widthOf(points))
 }

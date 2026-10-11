@@ -2,13 +2,15 @@
  * The asynchronous session in the same thread (`docs/async.md`): the steps of `session.ts` run in portions, its calls
  * one after another. A thread of the pool holds its sessions the same way.
  */
-import type { AsyncRestructureResult, AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, SessionHistory, SessionOptions } from '../contract.js'
+import type { AsyncSession, AsyncSessionOptions, CalcLimits, CalcOptions, Clock, EditOptions, SessionHistory, SessionOptions } from '../contract.js'
 import { CalcError, type Budget, type Steps } from '../exec/budget.js'
 import { openSteps, type SessionHooks } from '../session.js'
 import type { HistoryData } from '../session/undo.js'
 import { callBudget, drive } from './drive.js'
-import { callLimits, checkCall, splitCall } from './options.js'
+import { callLimits, checkCall, checkEditCall, splitCall } from './options.js'
 import { Serial } from './queue.js'
+import { withOldNames } from '../old-names.js'
+import { strictMethods } from '../strict-args.js'
 
 /** What a calculator gives its sessions. */
 export interface InlineDefaults {
@@ -47,6 +49,7 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
   const queue = new Serial()
   let clock: Clock = core.clock
   let history: SessionHistory = core.history
+  let revision = core.revision
   // close() called: new calls are refused; kill(): the waiting ones too, and the running one stops
   let ended: CalcError | null = null
   let killed: CalcError | null = null
@@ -58,63 +61,80 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       return task()
     }, signal)
   }
-  const call = <T>(steps: () => Steps<T>, co?: CalcOptions): Promise<T> => {
-    let c: CalcOptions
-    try {
-      c = checkCall(co)
-    } catch (e) {
-      return Promise.reject(e)
-    }
-    return turn(async () => {
+  /** What the session is after a call: its clock, history and revision. */
+  const after = <T>(r: T): T => {
+    clock = core.clock
+    history = core.history
+    revision = core.revision
+    return r
+  }
+  const steps = <T>(f: () => Steps<T>, c: CalcOptions): Promise<T> =>
+    turn(async () => {
       const b = callBudget(o.limits, c.signal, d.sliceMs)
       running = b
       d.running?.add(b)
       try {
-        const r = await drive(steps(), b, c.timeoutMs ?? d.timeoutMs)
-        clock = core.clock
-        history = core.history
-        return r
+        return after(await drive(f(), b, c.timeoutMs ?? d.timeoutMs))
       } finally {
         running = null
         d.running?.delete(b)
       }
     }, c.signal)
+  const call = <T>(f: () => Steps<T>, co?: CalcOptions): Promise<T> => {
+    try {
+      return steps(f, checkCall(co))
+    } catch (e) {
+      return Promise.reject(e)
+    }
   }
-  const plain = <T>(f: () => T): Promise<T> =>
-    turn(async () => {
-      const r = f()
-      history = core.history
-      return r
-    })
-  return {
+  /** A call that changes the book: its edit options (`extra` beside `baseRevision`) go to the session. */
+  const edit = <T>(f: (eo: EditOptions | undefined) => Steps<T>, co: unknown, extra?: readonly string[]): Promise<T> => {
+    try {
+      const [c, eo] = checkEditCall(co, extra)
+      return steps(() => f(eo), c)
+    } catch (e) {
+      return Promise.reject(e)
+    }
+  }
+  const plain = <T>(f: () => T): Promise<T> => turn(async () => after(f()))
+  return withOldNames<InlineSession>(strictMethods({
     get clock() {
       return { ...clock }
     },
     get history() {
       return { ...history }
     },
-    setCells: (edits, co) => call(() => core.setCells(edits), co),
-    patchCells: (patches, co) => call(() => core.patchCells(patches), co),
-    setNames: (names, co) => call(() => core.setNames(names), co),
-    setClock: (next, co) => call(() => core.setClock(next), co),
-    restructure: (op, co) =>
-      call(function* (): Steps<AsyncRestructureResult> {
-        const r = yield* core.restructure(op)
-        return r.ok ? { ok: true, mapCell: r.mapCell, changes: r.changes } : r
-      }, co),
-    setStyles: (styles) => plain(() => core.setStyles(styles)),
-    setLayout: (edits, co) => call(() => core.setLayout(edits), co),
-    book: () => plain(() => core.book()),
-    layout: () => plain(() => core.layout()),
-    extent: (sheet) => call(() => core.extent(sheet)),
+    get revision() {
+      return revision
+    },
+    setCells: (edits, co) => edit((eo) => core.setCells(edits, eo), co),
+    replaceCells: (edits, co) => edit((eo) => core.replaceCells(edits, eo), co),
+    clearCells: (ranges, what, co) => edit((eo) => core.clearCells(ranges, what, eo), co),
+    patchCells: (patches, co) => edit((eo) => core.patchCells(patches, eo), co),
+    setCellText: (sheet, cell, text, co) => edit((eo) => core.setCellText(sheet, cell, text, eo), co, ['widen']),
+    previewCellText: (sheet, cell, text, co) => edit((eo) => core.previewCellText(sheet, cell, text, eo), co, ['widen']),
+    setNames: (names, co) => edit((eo) => core.setNames(names, eo), co),
+    setClock: (next, co) => edit((eo) => core.setClock(next, eo), co),
+    editStructure: (op, co) => edit((eo) => core.editStructure(op, eo), co),
+    // eslint-disable-next-line require-yield
+    setStyles: (styles, co) => edit(function* (eo) {
+      return core.setStyles(styles, eo)
+    }, co),
+    setLayout: (edits, co) => edit((eo) => core.setLayout(edits, eo), co),
+    getBook: () => plain(() => core.getBook()),
+    getLayout: () => plain(() => core.getLayout()),
+    getUsedRange: (sheet) => call(() => core.getUsedRange(sheet)),
     explain: (sheet, cell, eo) => call(() => core.explain(sheet, cell, eo)),
-    cells: (sheet, range) => call(() => core.cells(sheet, range)),
-    validation: (sheet, cell) => call(() => core.validation(sheet, cell)),
+    getCells: (sheet, range) => call(() => core.getCells(sheet, range)),
+    getViewport: (sheet, range, vo) => call(() => core.getViewport(sheet, range, vo)),
+    getCellIssue: (sheet, cell) => call(() => core.getCellIssue(sheet, cell)),
+    getValidation: (sheet, cell) => call(() => core.getValidation(sheet, cell)),
     validateEntry: (sheet, cell, input, co) => call(() => core.validateEntry(sheet, cell, input), co),
-    result: (co) => call(() => core.result(), co),
-    hash: (co) => call(() => core.hash(), co),
-    undo: (co) => call(() => core.undo(), co),
-    redo: (co) => call(() => core.redo(), co),
+    getResult: (co) => call(() => core.getResult(), co),
+    getSnapshot: (co) => call(() => core.getSnapshot(), co),
+    getHash: (co) => call(() => core.getHash(), co),
+    undo: (co) => edit((eo) => core.undo(eo), co),
+    redo: (co) => edit((eo) => core.redo(eo), co),
     historyData: () => core.historyData(),
     close() {
       if (ended) return Promise.resolve()
@@ -129,5 +149,5 @@ export async function openInlineSession(book: Parameters<typeof openSteps>[0], o
       if (running) running.halted = why
       core.close()
     },
-  }
+  }, true))
 }

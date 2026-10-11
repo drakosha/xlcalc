@@ -68,14 +68,15 @@ export function readDxf(e: Element, p: Palette): Dxf {
   }
   const nf = element(b, 'numFmt')
   if (nf) {
-    // a dxf's code is what it shows: Excel saves `0.00%` with the id 14 (the set `cond/files`); the id counts only
-    // where the code is that built-in format's own
+    // a dxf's code is what it shows, in every locale: Excel saves `0.00%` with the id 14 (the set `cond/files`) and
+    // shows 14 with `m/d/yyyy` as that code in ru-RU (`cond/formats-ru-held`); the id counts only where the code is that
+    // built-in format's own, which a rule's look shows by its en-US code (`lookShown`), so a rule written by number reads back so
     const a = attributes(nf.attrs)
     const id = Number(a.numFmtId)
     const code = a.formatCode === undefined ? undefined : decodeXml(a.formatCode)
     if (code === undefined) {
-      if (isBuiltin(id)) style.format = id
-    } else style.format = isBuiltin(id) && id !== 0 && BUILTIN[id] === code ? id : code
+      if (isBuiltin(id)) style.numberFormat = id
+    } else style.numberFormat = isBuiltin(id) && id !== 0 && BUILTIN[id] === code ? id : code
   }
   if (element(b, 'alignment')) lost.push('alignment')
   if (element(b, 'protection')) lost.push('protection')

@@ -1,0 +1,345 @@
+{
+ "now": "2026-10-11",
+ "locales": {
+  "en-US": {
+   "let-cell-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "let-cell-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "let-cell-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "LET takes a name as its argument 1",
+    "at": 5
+   },
+   "let-cell-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "column XFE out of range",
+    "at": 5
+   },
+   "let-cell-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "row 0 out of range",
+    "at": 5
+   },
+   "let-cell-6": {
+    "ok": true,
+    "input": {
+     "formula": "LET(ZZZZ1,1,ZZZZ1)"
+    }
+   },
+   "let-r1c1-1": {
+    "ok": true,
+    "input": {
+     "formula": "LET(R,1,R)"
+    }
+   },
+   "let-r1c1-2": {
+    "ok": true,
+    "input": {
+     "formula": "LET(r,1,r)"
+    }
+   },
+   "let-r1c1-3": {
+    "ok": true,
+    "input": {
+     "formula": "LET(C,1,C)"
+    }
+   },
+   "let-r1c1-4": {
+    "ok": true,
+    "input": {
+     "formula": "LET(RC,1,RC)"
+    }
+   },
+   "let-r1c1-5": {
+    "ok": true,
+    "input": {
+     "formula": "LET(R1C1,1,R1C1)"
+    }
+   },
+   "let-r1c1-6": {
+    "ok": true,
+    "input": {
+     "formula": "LET(R1C,1,R1C)"
+    }
+   },
+   "let-chars-1": {
+    "ok": true,
+    "input": {
+     "formula": "LET(a?b,1,a?b)"
+    }
+   },
+   "let-chars-2": {
+    "ok": true,
+    "input": {
+     "formula": "LET(x?,1,x?)"
+    }
+   },
+   "let-chars-3": {
+    "ok": true,
+    "input": {
+     "formula": "LET(\\x,1,\\x)"
+    }
+   },
+   "let-chars-4": {
+    "ok": true,
+    "input": {
+     "formula": "LET(a\\b,1,a\\b)"
+    }
+   },
+   "let-chars-5": {
+    "ok": true,
+    "input": {
+     "formula": "LET(A1?x,1,A1?x)"
+    }
+   },
+   "let-chars-6": {
+    "ok": true,
+    "input": {
+     "formula": "LET(R1\\x,1,R1\\x)"
+    }
+   },
+   "word-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "column XFE out of range",
+    "at": 1
+   },
+   "word-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "row 0 out of range",
+    "at": 1
+   },
+   "word-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "column XFE out of range",
+    "at": 1
+   },
+   "unknown-1": {
+    "ok": true,
+    "input": {
+     "formula": "foo"
+    }
+   },
+   "unknown-2": {
+    "ok": true,
+    "input": {
+     "formula": "foo+1"
+    }
+   },
+   "unknown-3": {
+    "ok": true,
+    "input": {
+     "formula": "Foo*2"
+    }
+   },
+   "unknown-4": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(foo,1)"
+    }
+   },
+   "unknown-5": {
+    "ok": true,
+    "input": {
+     "formula": "fooBar"
+    }
+   },
+   "unknown-6": {
+    "ok": true,
+    "input": {
+     "formula": "foo(1)"
+    }
+   },
+   "unknown-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1,2)"
+    }
+   }
+  },
+  "ru-RU": {
+   "let-cell-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-cell-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-cell-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   },
+   "let-cell-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   },
+   "let-cell-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-cell-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 12
+   },
+   "let-r1c1-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-r1c1-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-r1c1-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 8
+   },
+   "let-r1c1-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-r1c1-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   },
+   "let-r1c1-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "let-chars-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "let-chars-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-chars-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 9
+   },
+   "let-chars-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 10
+   },
+   "let-chars-5": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   },
+   "let-chars-6": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Здесь не может стоять «,»",
+    "at": 11
+   },
+   "word-1": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Столбца XFE нет на листе",
+    "at": 1
+   },
+   "word-2": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Строки 0 нет на листе",
+    "at": 1
+   },
+   "word-3": {
+    "ok": false,
+    "code": "syntax",
+    "message": "Столбца XFE нет на листе",
+    "at": 1
+   },
+   "unknown-1": {
+    "ok": true,
+    "input": {
+     "formula": "foo"
+    }
+   },
+   "unknown-2": {
+    "ok": true,
+    "input": {
+     "formula": "foo+1"
+    }
+   },
+   "unknown-3": {
+    "ok": true,
+    "input": {
+     "formula": "Foo*2"
+    }
+   },
+   "unknown-4": {
+    "ok": false,
+    "code": "syntax",
+    "message": "В хранимой формуле «foo» читается иначе",
+    "at": 5
+   },
+   "unknown-5": {
+    "ok": true,
+    "input": {
+     "formula": "fooBar"
+    }
+   },
+   "unknown-6": {
+    "ok": true,
+    "input": {
+     "formula": "foo(1)"
+    }
+   },
+   "unknown-7": {
+    "ok": true,
+    "input": {
+     "formula": "SUM(1.2)"
+    }
+   }
+  }
+ }
+}

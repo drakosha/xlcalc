@@ -12,7 +12,7 @@
 import type { ErrorCode } from '../../contract.js'
 import { colorNames } from '../../numfmt/palette.js'
 import { builtinCodes, generalFormat, type Codes, type Dialect, type Names, type Style } from '../../numfmt.js'
-import { ERROR_TEXT } from '../../syntax.js'
+import { errorIn } from '../../syntax/errors.js'
 import type { Locale } from '../types.js'
 import type { RegionalData } from './data.js'
 
@@ -58,7 +58,7 @@ export function formatDialects(locale: Locale, data: RegionalData, number: (text
     dateSeparator: '/',
     general: (n) => generalFormat(n).replace('.', decimal),
     bool: (b) => locale.booleans[b ? 'TRUE' : 'FALSE'],
-    error: (code) => locale.errors[ERROR_TEXT[code as ErrorCode]] ?? ERROR_TEXT[code as ErrorCode],
+    error: (code) => errorIn(code as ErrorCode, locale.errors),
     names,
     longDate: data.longDate,
     longTime: data.longTime,

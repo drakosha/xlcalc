@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput, type CellInput } from '../src/index.js'
+import { compute, createSession, type BookInput, type CellInput } from '../src/index.js'
 import { createState } from '../src/engine.js'
 import { CalcError } from '../src/exec/budget.js'
 import { Rng } from '../src/values.js'
@@ -43,14 +43,14 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
     const cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 1000; r++) { cells[`A${r}`] = { value: r }; cells[`B${r}`] = { formula: `SUM($A$1:A${r})` } }
     cells.D1 = { formula: 'SUM(A:A)' }; cells.D2 = { formula: 'COUNT(A:A)' }; cells.D3 = { formula: 'MIN(A:A)' }; cells.D4 = { formula: 'MAX(A:A)' }
-    const s = openSession({ sheets: [{ name: 'S', cells }] }, { clock, execution, display: false })
+    const s = createSession({ sheets: [{ name: 'S', cells }] }, { clock, execution, display: false })
     try {
       for (const [cell, input] of [['A500', { value: -10 }], ['A1', { value: 'text' }], ['A1500', { value: 42 }], ['A500', null]] as const) {
         s.setCells([{ sheet: 'S', cell, input }])
-        expect(s.hash()).toBe(compute(s.book(), { clock, execution, display: false }).hash)
+        expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution, display: false }).hash)
       }
-      expect(s.restructure({ op: 'insertRows', sheet: 'S', row: 2, count: 2 }).ok).toBe(true)
-      expect(s.hash()).toBe(compute(s.book(), { clock, execution, display: false }).hash)
+      expect(s.editStructure({ op: 'insertRows', sheet: 'S', row: 2, count: 2 }).ok).toBe(true)
+      expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution, display: false }).hash)
     } finally { s.close() }
   })
 
@@ -60,10 +60,10 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
     const book: BookInput = { sheets: [{ name: 'S', cells }] }
     const limits = { cells: 1000 }
     expect(compute(book, { clock, execution, limits }).hash).toBe(compute(book, { clock, execution }).hash)
-    const s = openSession(book, { clock, execution, display: false, limits })
+    const s = createSession(book, { clock, execution, display: false, limits })
     try {
       s.setCells([{ sheet: 'S', cell: 'A1500', input: { value: 100 } }])
-      expect(s.hash()).toBe(compute(s.book(), { clock, execution, display: false }).hash)
+      expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution, display: false }).hash)
     } finally { s.close() }
     for (const formula of ['AVERAGE(A1:A3000,1)', 'SUM(A1:A3000,1)', 'SUM(A1:A3000*1)']) {
       const e = (() => { try { compute({ sheets: [{ name: 'S', cells: { ...cells, D1: { formula } } }] }, { clock, execution, limits }) } catch (x) { return x } })()
@@ -88,7 +88,7 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
   })
 
   it('invalidates aggregate checkpoints when a spill grows, shrinks, is blocked and recovers', () => {
-    const s = openSession({ sheets: [{ name: 'S', cells: {
+    const s = createSession({ sheets: [{ name: 'S', cells: {
       D1: { value: 512 }, A1: { formula: 'SEQUENCE(D1)' },
       B1: { formula: 'SUM(A1:A256)' }, B2: { formula: 'SUM(A1:A512)' },
       B3: { formula: 'COUNT(A:A)' }, B4: { formula: 'MIN(A:A)' }, B5: { formula: 'MAX(A:A)' },
@@ -96,9 +96,9 @@ describe.each(['closures', 'eval'] as const)('range aggregates, %s', (execution)
     try {
       for (const [cell, input] of [['D1', { value: 600 }], ['D1', { value: 300 }], ['A257', { value: 'blocked' }], ['A257', null]] as const) {
         s.setCells([{ sheet: 'S', cell, input }])
-        expect(s.hash()).toBe(compute(s.book(), { clock, execution, display: false }).hash)
+        expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution, display: false }).hash)
       }
-      expect(s.result().sheets[0].cells.B3.value).toBe(300)
+      expect(s.getResult().sheets[0].cells.B3.value).toBe(300)
     } finally { s.close() }
   })
 })

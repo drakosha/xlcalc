@@ -4,10 +4,12 @@
  * `CalcError`, calls taken in order with their own changes, a stopped call that changes nothing, limits, closing.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, compute, createInlineCalc, openSession, type BookInput } from '../src/index.js'
+import { CalcError, compute, createInlineCalc, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1 } from './async-books.js'
 import { apply, edits } from './session-edits.js'
+import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   try {
@@ -40,18 +42,18 @@ describe.each(['closures', 'eval'] as const)('in the same thread, execution %s',
       const r = await calc.compute(book, { clock: CLOCK, execution })
       expect(r.hash, name).toBe(sync.hash)
       expect(r.sheets, name).toEqual(sync.sheets)
-      expect(r.issues, name).toEqual(sync.issues)
+      expect(cellIssues(r), name).toEqual(cellIssues(sync))
     }
   }, 120_000)
 
   it('a session over 40 edits: the same changes and hash after each as a synchronous session', async () => {
     const synth = synthBook({ seed: 1, rows: 340 })
     const calc = createInlineCalc({ sliceMs: 0 })
-    const s = await calc.openSession(synth.book, { clock: CLOCK, execution })
-    const sync = openSession(synth.book, { clock: CLOCK, execution })
+    const s = await calc.createSession(synth.book, { clock: CLOCK, execution })
+    const sync = createSession(synth.book, { clock: CLOCK, execution })
     for (const batch of edits(5, 40, synth)) {
       expect(await s.setCells(batch)).toEqual(sync.setCells(batch))
-      expect((await s.result()).hash).toBe(sync.result().hash)
+      expect((await s.getResult()).hash).toBe(sync.getResult().hash)
     }
     await s.close()
   }, 120_000)
@@ -115,21 +117,21 @@ describe('in the same thread', () => {
   it('the call after a stopped one: computing the book again does not count in its soft deadline', async () => {
     const calc = createInlineCalc({ sliceMs: 5 })
     // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
-    const s = await calc.openSession(heavyBook(), { clock: CLOCK })
+    const s = await calc.createSession(heavyBook(), { clock: CLOCK })
     const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
     expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
-    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
-    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
-    expect((await s.result({ timeoutMs })).hash).toBe(compute(await s.book(), { clock: CLOCK }).hash)
+    expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 12 })
+    expect((await s.getResult({ timeoutMs })).hash).toBe(compute(await s.getBook(), { clock: CLOCK }).hash)
     // a signal still stops it, between the formulas of the book
-    const t = await calc.openSession(chainBook(20_000), { clock: CLOCK })
+    const t = await calc.createSession(chainBook(20_000), { clock: CLOCK })
     expect((await fails(t.setCells(setA1(2), { signal: AbortSignal.abort() }))).code).toBe('aborted')
     const stop = new AbortController()
     const first = t.setCells(setA1(3), { signal: stop.signal })
     setImmediate(() => stop.abort())
     expect((await fails(first)).code).toBe('aborted')
     const again = new AbortController()
-    const next = t.result({ signal: again.signal })
+    const next = t.getResult({ signal: again.signal })
     setImmediate(() => again.abort())
     expect((await fails(next)).code).toBe('aborted')
   }, 60_000)
@@ -137,19 +139,19 @@ describe('in the same thread', () => {
   it('calls made without waiting are taken in order, each with its own changes', async () => {
     const book = chainBook(300)
     const calc = createInlineCalc({ sliceMs: 0 })
-    const s = await calc.openSession(book, { clock: CLOCK, display: false })
-    const sync = openSession(book, { clock: CLOCK, display: false })
+    const s = await calc.createSession(book, { clock: CLOCK, display: false })
+    const sync = createSession(book, { clock: CLOCK, display: false })
     const values = [5, 6, 7, 8, 9, 10]
     const all = await Promise.all(values.map((v) => s.setCells(setA1(v))))
     for (const [i, v] of values.entries()) expect(all[i]).toEqual(sync.setCells(setA1(v)))
-    expect((await s.result()).hash).toBe(sync.result().hash)
+    expect((await s.getResult()).hash).toBe(sync.getResult().hash)
   })
 
   it('two sessions with their calls mixed, without waiting: each has its own changes and hash', async () => {
     const calc = createInlineCalc({ sliceMs: 0 })
     const [a, b] = [chainBook(400), synthBook({ seed: 2, rows: 200 }).book]
-    const [sa, sb] = await Promise.all([calc.openSession(a, { clock: CLOCK }), calc.openSession(b, { clock: CLOCK })])
-    const [ya, yb] = [openSession(a, { clock: CLOCK }), openSession(b, { clock: CLOCK })]
+    const [sa, sb] = await Promise.all([calc.createSession(a, { clock: CLOCK }), calc.createSession(b, { clock: CLOCK })])
+    const [ya, yb] = [createSession(a, { clock: CLOCK }), createSession(b, { clock: CLOCK })]
     const eb = edits(9, 6, synthBook({ seed: 2, rows: 200 }))
     const pending: Promise<unknown>[] = []
     const expected: unknown[] = []
@@ -158,47 +160,47 @@ describe('in the same thread', () => {
       expected.push(ya.setCells(setA1(i + 2)), yb.setCells(eb[i]))
     }
     expect(await Promise.all(pending)).toEqual(expected)
-    expect([(await sa.result()).hash, (await sb.result()).hash]).toEqual([ya.result().hash, yb.result().hash])
+    expect([(await sa.getResult()).hash, (await sb.getResult()).hash]).toEqual([ya.getResult().hash, yb.getResult().hash])
   })
 
   it('a call stopped in the middle changes nothing; the session goes on as if it had not been made', async () => {
     const book = chainBook(5000)
     const calc = createInlineCalc({ sliceMs: 0 })
-    const s = await calc.openSession(book, { clock: CLOCK })
-    const before = await s.result()
+    const s = await calc.createSession(book, { clock: CLOCK })
+    const before = await s.getResult()
     // stopped at its first yield
     const ac = new AbortController()
     const p = s.setCells(setA1(42), { signal: ac.signal })
     setImmediate(() => ac.abort())
     expect((await fails(p)).code).toBe('aborted')
-    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 1 })
-    expect((await s.result()).hash).toBe(before.hash)
+    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 1 })
+    expect((await s.getResult()).hash).toBe(before.hash)
     // a deadline too; a layout and a clock call put back what they changed
     expect((await fails(s.setCells(setA1(43), { timeoutMs: 0 }))).code).toBe('soft_timeout')
     expect((await fails(s.setLayout([{ sheet: 'S', rows: '3', set: { hidden: true } }, { sheet: 'S', columns: 'B', set: { width: 3 } }], { signal: AbortSignal.abort() }))).code).toBe('aborted')
-    expect((await s.book()).sheets[0].columns).toBeUndefined()
-    const sync = openSession(book, { clock: CLOCK })
+    expect((await s.getBook()).sheets[0].columns).toBeUndefined()
+    const sync = createSession(book, { clock: CLOCK })
     expect(await s.setCells(setA1(7))).toEqual(sync.setCells(setA1(7)))
-    expect((await s.result()).hash).toBe(sync.result().hash)
-    expect((await s.result()).hash).toBe(compute(apply(book, setA1(7)), { clock: CLOCK }).hash)
+    expect((await s.getResult()).hash).toBe(sync.getResult().hash)
+    expect((await s.getResult()).hash).toBe(compute(apply(book, setA1(7)), { clock: CLOCK }).hash)
   }, 60_000)
 
-  it('a stopped setNames or restructure keeps the old state; restructure answers mapCell and changes', async () => {
+  it('a stopped setNames or editStructure keeps the old state; editStructure answers mapCell and changes', async () => {
     const book = chainBook(3000)
     const calc = createInlineCalc({ sliceMs: 0 })
-    const s = await calc.openSession(book, { live: true })
+    const s = await calc.createSession(book, { live: true })
     const clock = s.clock
     const ac = new AbortController()
-    const p = s.restructure({ op: 'insertRows', sheet: 'S', row: 1 }, { signal: ac.signal })
+    const p = s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 }, { signal: ac.signal })
     setImmediate(() => ac.abort())
     expect((await fails(p)).code).toBe('aborted')
     expect(s.clock).toEqual(clock)
-    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 1 })
-    const r = await s.restructure({ op: 'insertRows', sheet: 'S', row: 1 })
+    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 1 })
+    const r = await s.editStructure({ op: 'insertRows', sheet: 'S', row: 1 })
     if (!r.ok) throw new Error(r.message)
     expect(r.mapCell({ sheet: 'S', cell: 'A1' })).toEqual({ sheet: 'S', cell: 'A2' })
     expect('book' in r).toBe(false)
-    expect((await s.result()).hash).toBe(compute(await s.book(), { clock: s.clock }).hash)
+    expect((await s.getResult()).hash).toBe(compute(await s.getBook(), { clock: s.clock }).hash)
   }, 60_000)
 
   it('limits give CalcError, from the calculator or from the call', async () => {
@@ -207,19 +209,19 @@ describe('in the same thread', () => {
     const e = await fails(calc.compute(book))
     expect([e.code, e.limit, e.cell]).toEqual(['limit', 'cells', { sheet: 'S', cell: 'A1' }])
     expect((await calc.compute(book, { limits: { cells: 10_000 } })).sheets[0].cells.A1.value).toBe(50_005_000)
-    const s = await calc.openSession({ sheets: [{ name: 'S', cells: {} }] })
+    const s = await calc.createSession({ sheets: [{ name: 'S', cells: {} }] })
     expect((await fails(s.setCells([{ sheet: 'S', cell: 'A1', input: { formula: 'SUM(SEQUENCE(100,100))' } }]))).limit).toBe('cells')
   })
 
   it('closing: the session refuses calls after close; the calculator stops what runs and waits', async () => {
     const calc = createInlineCalc({ sliceMs: 0 })
-    const s = await calc.openSession(chainBook(100), { clock: CLOCK })
+    const s = await calc.createSession(chainBook(100), { clock: CLOCK })
     const last = s.setCells(setA1(2))
     const closed = s.close()
     expect((await fails(s.setCells(setA1(3)))).code).toBe('closed')
     await last
     await closed
-    const t = await calc.openSession(chainBook(3000), { clock: CLOCK })
+    const t = await calc.createSession(chainBook(3000), { clock: CLOCK })
     const running = t.setCells(setA1(5))
     const waiting = t.setCells(setA1(6))
     const job = calc.compute(synthBook({ seed: 1, rows: 1700 }).book)
@@ -230,7 +232,7 @@ describe('in the same thread', () => {
 
   it('a session closed before its calculator closes is closed; its running call is stopped', async () => {
     const calc = createInlineCalc({ sliceMs: 0 })
-    const s = await calc.openSession(chainBook(3000), { clock: CLOCK })
+    const s = await calc.createSession(chainBook(3000), { clock: CLOCK })
     const running = s.setCells(setA1(2)).catch((e) => e)
     const closing = s.close().then(() => 'resolved', (e) => e)
     await calc.close()
@@ -242,7 +244,7 @@ describe('in the same thread', () => {
     expect(() => createInlineCalc({ sliceMs: -1 })).toThrow('opts.sliceMs: expected a number of at least 0')
     await expect(createInlineCalc().compute(chainBook(2), { timeoutMs: 'x' } as never)).rejects.toThrow('opts.timeoutMs')
     await expect(createInlineCalc().compute(chainBook(2), { signal: {} } as never)).rejects.toThrow('opts.signal: expected an AbortSignal')
-    const s = await createInlineCalc().openSession(chainBook(2))
+    const s = await createInlineCalc().createSession(chainBook(2))
     await expect(s.setCells(setA1(1), { deadline: 1 } as never)).rejects.toThrow('opts: unknown field "deadline"')
   })
 })

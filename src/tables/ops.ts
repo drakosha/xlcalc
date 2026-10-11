@@ -1,22 +1,22 @@
 /**
- * Operations on a book's tables (`restructure`): a table added over cells, renamed, deleted with its cells, or turned
+ * Operations on a book's tables (`editStructure`): a table added over cells, renamed, deleted with its cells, or turned
  * into plain cells, with the structured references to it rewritten as Excel rewrites them (the set `tables/ops`).
  */
-import type { BookInput, RestructureResult, StructureOp, TableInput } from '../contract.js'
+import type { BookInput, StructureOp, TableInput } from '../contract.js'
 import { checkTables } from './check.js'
 import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
-import { nameRule, sheetKey } from '../syntax.js'
+import { nameRule } from '../syntax.js'
 import { meets, parseRange } from '../structure/area.js'
+import type { Applied } from '../structure/geometry.js'
 import { parseMerge } from '../layout/merges.js'
 import { convertedText, rewriteBookTables } from './rewrite.js'
+import { sheetIndex } from '../structure/rewrite.js'
 import { tableKey, tablesOf } from './model.js'
 
 type TableOp = Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>
-
-const same = (ref: { sheet: string; cell: string }) => ref
 
 /** The book with the table of key `key` replaced by `next` (or removed when null) on its sheet. */
 function withTable(book: BookInput, key: string, next: TableInput | null): BookInput {
@@ -44,7 +44,7 @@ function nameRefusal(book: BookInput, name: string, own?: string): Message | nul
   return null
 }
 
-export function tableOp(book: BookInput, op: TableOp): RestructureResult {
+export function tableOp(book: BookInput, op: TableOp): Applied {
   if (op.op === 'addTable') return addTable(book, op.sheet, op.table)
   const t = tablesOf(book).byName.get(tableKey(op.table))
   if (!t) throw new InputError('op.table', `unknown table ${JSON.stringify(op.table)}`)
@@ -54,9 +54,9 @@ export function tableOp(book: BookInput, op: TableOp): RestructureResult {
     const why = nameRefusal(book, op.name, t.name)
     if (why) return { ok: false, code: 'table_name', message: say(book.locale, why) }
     // Excel keeps the name when only its case changes (the set `tables/ops`, rename-case)
-    if (tableKey(op.name) === key) return { ok: true, book, mapCell: same }
+    if (tableKey(op.name) === key) return { ok: true, book, geometry: [] }
     const renamed = rewriteBookTables(book, (x) => (tableKey(x.name) === key ? { table: op.name } : undefined))
-    return { ok: true, book: withTable(renamed, key, { ...t.input, name: op.name }), mapCell: same }
+    return { ok: true, book: withTable(renamed, key, { ...t.input, name: op.name }), geometry: [] }
   }
   if (op.op === 'deleteTable') {
     // the table goes with its cells
@@ -65,24 +65,17 @@ export function tableOp(book: BookInput, op: TableOp): RestructureResult {
     for (let r = t.r1; r <= t.r2; r++) for (let c = t.c1; c <= t.c2; c++) delete cells[formatAddress(r, c)]
     const sheets = [...out.sheets]
     sheets[t.s] = { ...sheets[t.s], cells }
-    return { ok: true, book: { ...out, sheets }, mapCell: (ref) => (sheetKey(ref.sheet) === sheetKey(book.sheets[t.s].name) && within(t, ref.cell) ? null : ref) }
+    return { ok: true, book: { ...out, sheets }, geometry: [{ kind: 'clear', s: t.s, area: { r1: t.r1, r2: t.r2, c1: t.c1, c2: t.c2 } }] }
   }
   // convertTable: references become the cells they meant
   const sheet = book.sheets[t.s].name
   const out = rewriteBookTables(book, (x, spec, at) => (tableKey(x.name) === key ? { text: convertedText(x, spec, at ? at.r : null, sheet) } : undefined))
-  return { ok: true, book: withTable(out, key, null), mapCell: same }
-}
-
-const within = (x: { r1: number; r2: number; c1: number; c2: number }, addr: string) => {
-  const m = /^([A-Z]+)(\d+)$/.exec(addr)!
-  const col = m[1].split('').reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1
-  const row = Number(m[2]) - 1
-  return row >= x.r1 && row <= x.r2 && col >= x.c1 && col <= x.c2
+  return { ok: true, book: withTable(out, key, null), geometry: [] }
 }
 
 /** A table over cells of `sheet`: its header cells take the columns' names; refused over another table or a merged area. */
-function addTable(book: BookInput, sheet: string, table: TableInput): RestructureResult {
-  const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
+function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
+  const s = sheetIndex(book, sheet)
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
   if (typeof table !== 'object' || table === null || typeof table.name !== 'string') throw new InputError('op.table', 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   const why = nameRefusal(book, table.name)
@@ -103,5 +96,5 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Restructur
   checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...book.sheets[s], cells, tables: [table] }] }, 'op')
   const sheets = [...book.sheets]
   sheets[s] = { ...sheets[s], cells, tables: [...(sheets[s].tables ?? []), table] }
-  return { ok: true, book: { ...book, sheets }, mapCell: same }
+  return { ok: true, book: { ...book, sheets }, geometry: [] }
 }

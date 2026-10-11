@@ -1,6 +1,6 @@
 /**
  * What a locale other than en-US gives its rules of computation (`regional.ts`), beside its formula text for TRUE,
- * FALSE and error texts (`LocaleFile`): number separators, the currency format, month and day names, TEXT's format
+ * FALSE and error texts (`Locale.regional`): number separators, the currency format, month and day names, TEXT's format
  * codes, the text order, the code page of CHAR and CODE, the word of new table columns' names; and the clock that
  * completes a date written without a year, whose reads make a formula depend on the clock.
  */

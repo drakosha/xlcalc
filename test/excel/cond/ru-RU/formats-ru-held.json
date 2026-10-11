@@ -1,0 +1,258 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "ru-RU (the system language and locale)",
+  "day": "2026-10-11",
+  "seconds": 5
+ },
+ "books": {
+  "formats": {
+   "locale": "ru-RU",
+   "sheets": [
+    {
+     "name": "Лист",
+     "cells": {
+      "A1": {
+       "value": 46096.75
+      },
+      "A2": {
+       "value": 46096.75
+      },
+      "A3": {
+       "value": 46096.75
+      },
+      "A4": {
+       "value": 46096.75
+      },
+      "A5": {
+       "value": 46096.75
+      },
+      "A6": {
+       "value": 46096.75
+      },
+      "A7": {
+       "value": 1234.5
+      },
+      "A8": {
+       "value": 1234.5
+      },
+      "A9": {
+       "value": 0.5
+      }
+     },
+     "columns": {
+      "A": {
+       "width": 30
+      }
+     },
+     "conditionalFormats": [
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A1"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": 14
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A2"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": "m/d/yyyy"
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A3"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": 22
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A4"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": "m/d/yyyy h:mm"
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A5"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": 15
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A6"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": "d-mmm-yy"
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A7"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": 5
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A8"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": "$#,##0_);($#,##0)"
+       }
+      },
+      {
+       "type": "cellIs",
+       "ranges": [
+        "A9"
+       ],
+       "operator": "greaterThan",
+       "formulas": [
+        "0"
+       ],
+       "style": {
+        "format": 10
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "formats",
+   "book": "formats",
+   "read": [
+    [
+     "Лист",
+     "A1:A9"
+    ]
+   ]
+  }
+ ],
+ "locale": "ru-RU",
+ "sent": {
+  "formats": "285e02a08c19fa50c0a4f1675d0a805fa94fc8fc998255064d65d4a1ddcde1dd"
+ },
+ "answers": {
+  "formats": {
+   "looks": {
+    "Лист": {
+     "A1": {
+      "text": "3.15.2026",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A2": {
+      "text": "3.15.2026",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A3": {
+      "text": "3.15.2026 18:00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A4": {
+      "text": "3.15.2026 18:00",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A5": {
+      "text": "15-март-26",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A6": {
+      "text": "15-март-26",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A7": {
+      "text": "$1 235 ",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A8": {
+      "text": "$1 235 ",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     },
+     "A9": {
+      "text": "50,00%",
+      "fill": null,
+      "font": "#000000",
+      "bold": false,
+      "italic": false
+     }
+    }
+   }
+  }
+ }
+}

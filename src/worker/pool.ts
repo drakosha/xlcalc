@@ -5,15 +5,18 @@
  * (`maxSessionsPerThread`), is restored on its next call. A task past `hardTimeoutMs` terminates its thread.
  */
 import { abortError } from '../async/queue.js'
-import type { AbortSignalLike, AsyncRestructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcPoolOptions, Clock, SessionHistory, SessionOptions, StructureOp, UndoResult } from '../contract.js'
+import type { AbortSignalLike, AsyncStructureResult, AsyncSession, BookInput, Calc, CalcLimits, CalcOptions, CalcPoolOptions, Clock, ComputeResult, SessionHistory, SessionOptions, UndoResult } from '../contract.js'
 import { CalcError } from '../exec/budget.js'
 import { InputError } from '../input.js'
-import { splitCall, checkCall } from '../async/options.js'
-import { applyOp, checkedMapCell } from '../structure/index.js'
-import { mapCellOf, type Geometry } from '../session/rebook.js'
+import { DEFAULT_LOCALE, LOCALES, onLocale } from '../locale/registry.js'
+import { splitCall, checkCall, checkEditCall } from '../async/options.js'
+import { checkedMapCell } from '../structure/index.js'
+import type { SentGeometry } from '../structure/geometry.js'
+import { calcWithOldNames, withOldNames } from '../old-names.js'
+import { strictMethods } from '../strict-args.js'
 import type { Spawn, Thread, ThreadLoss } from './platform.js'
 import { pack, unpackSlowly } from './pack.js'
-import { CHANGING, fromData, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
+import { CHANGING, fromData, sentLocale, type Answer, type Entry, type FromThread, type Op, type Sent, type Snapshot, type ToThread } from './protocol.js'
 
 interface Timers {
   setTimeout(f: () => void, ms: number): unknown
@@ -59,6 +62,7 @@ interface Rec {
   seq: number
   clock: Clock
   history: SessionHistory
+  revision: number
   /** When it was last called, for leaving a full thread. */
   used: number
   /** Closed, or its restore failed: every call is refused with it. */
@@ -67,7 +71,7 @@ interface Rec {
 }
 
 /** The argument a task carries to its thread, as an `InputError` names it. */
-const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', patchCells: 'patches', setLayout: 'edits', setNames: 'names', setClock: 'clock', restructure: 'op', setStyles: 'styles', explain: 'opts', result: 'opts' }
+const ARGUMENT: Record<string, string> = { compute: 'book', open: 'book', setCells: 'edits', replaceCells: 'edits', clearCells: 'ranges', patchCells: 'patches', setCellText: 'text', setLayout: 'edits', setNames: 'names', setClock: 'clock', editStructure: 'op', setStyles: 'styles', explain: 'opts', getViewport: 'opts', getResult: 'opts', getSnapshot: 'opts' }
 
 /** What a structured clone refused: input outside the contract (a function in `meta`, say), refused as the synchronous engine would refuse a wrong type. */
 const unsendable = (what: string, e: unknown): InputError => new InputError(ARGUMENT[what] ?? what, `cannot be sent to a thread: ${e instanceof Error ? e.message : String(e)} (values and meta must survive a structured clone)`)
@@ -125,13 +129,18 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       (m) => slot.thread === t && answered(slot, m),
       (l) => slot.thread === t && lose(slot, l),
     )
-    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}) })
+    // a thread computes in the locales loaded here, those loaded later as they are
+    const locales = [...LOCALES.values()].filter((l) => l.tag !== DEFAULT_LOCALE).map(sentLocale)
+    t.post({ t: 'init', sliceMs: o.sliceMs ?? 50, ...(limits ? { limits } : {}), ...(o.maxHeapMb ? { cacheBytes: o.maxHeapMb * 2 ** 20 * CACHE_SHARE } : {}), ...(locales.length ? { locales } : {}) })
     return t
   }
   const slots: Slot[] = Array.from({ length: o.threads ?? 2 }, () => {
     const slot = { busy: null, timer: undefined, queue: [], sessions: new Set(), resident: new Set() } as unknown as Slot
     slot.thread = start(slot)
     return slot
+  })
+  const unlisten = onLocale((l) => {
+    for (const s of slots) s.thread?.post({ t: 'locales', locales: [sentLocale(l)] })
   })
 
   peek?.({ slots, recs })
@@ -243,13 +252,14 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         if (msg.t === 'open') {
           r.snapshot.clock = r.clock = (value as Answer).clock
           r.history = (value as Answer).history
+          r.revision = (value as Answer).revision
         }
         return task.resolve(value)
       case 'snapshot':
       case 'drop': {
-        const s = value as { book: Sent; clock: Clock; seq: number; history: Snapshot['history'] } | null
+        const s = value as { book: Sent; clock: Clock; seq: number; history: Snapshot['history']; revision: number } | null
         if (s) {
-          r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq, history: s.history }
+          r.snapshot = { book: s.book, opts: r.snapshot.opts, clock: s.clock, seq: s.seq, history: s.history, revision: s.revision }
           r.journal = r.journal.filter((e) => e.seq > s.seq)
         }
         if (msg.t === 'snapshot') r.snapshotting = false
@@ -259,6 +269,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         const a = value as Answer
         r.clock = a.clock
         r.history = a.history
+        r.revision = a.revision
         if (msg.seq !== undefined && msg.seq > r.seq) {
           r.seq = msg.seq
           r.journal.push({ seq: msg.seq, op: msg.op, args: msg.args, clock: a.clock })
@@ -336,63 +347,78 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
   }
 
   function session(r: Rec): AsyncSession {
+    /** A call to the session's thread; a changing call's arguments, its edit options among them, go into its journal as a copy. */
+    const send = (op: Op, args: unknown[], c: CalcOptions): Promise<Answer> => {
+      r.used = ++clock
+      const changing = (CHANGING as readonly string[]).includes(op)
+      let kept = args
+      try {
+        if (changing) kept = g.structuredClone(args)
+      } catch (e) {
+        throw unsendable(op, e)
+      }
+      const msg: Message = { t: 'call', sid: r.sid, op, args: kept, timeoutMs: c.timeoutMs ?? o.timeoutMs }
+      return submit(msg, { slot: r.slot, session: r }, c.signal) as Promise<Answer>
+    }
     const call = (op: Op, args: unknown[], co?: unknown): Promise<Answer> => {
       try {
-        const c = checkCall(co)
-        r.used = ++clock
-        // the journal keeps its own copy of what a changing call was given
-        const changing = (CHANGING as readonly string[]).includes(op)
-        let kept = args
-        try {
-          if (changing) kept = g.structuredClone(args)
-        } catch (e) {
-          throw unsendable(op, e)
-        }
-        const msg: Message = { t: 'call', sid: r.sid, op, args: kept, timeoutMs: c.timeoutMs ?? o.timeoutMs }
-        return submit(msg, { slot: r.slot, session: r }, c.signal) as Promise<Answer>
+        return send(op, args, checkCall(co))
+      } catch (e) {
+        return Promise.reject(e)
+      }
+    }
+    /** A call that takes edit options (`EDITS`): they go to the thread after its arguments. */
+    const edit = (op: Op, args: unknown[], co?: unknown, extra?: readonly string[]): Promise<Answer> => {
+      try {
+        const [c, eo] = checkEditCall(co, extra)
+        return send(op, eo ? [...args, eo] : args, c)
       } catch (e) {
         return Promise.reject(e)
       }
     }
     const value = <T>(p: Promise<Answer>) => p.then((a) => a.value as T)
-    // a structure operation undone or redone: its mapCell made here from the geometry the thread sent
-    const step = (op: 'undo' | 'redo', co: unknown) =>
-      value<(Omit<UndoResult, 'mapCell'> & { geometry?: Geometry }) | null>(call(op, [], co)).then((v): UndoResult | null => {
+    /** A structure operation's answer, done, undone or redone: its mapCell made here from the geometry the thread sent. */
+    const mapped = <T>(p: Promise<Answer>) =>
+      value<(T & { geometry?: SentGeometry }) | null>(p).then((v): T | null => {
         if (!v?.geometry) return v
         const { geometry: g, ...rest } = v
-        return { ...rest, mapCell: checkedMapCell({ sheets: g.before.map((name) => ({ name, cells: {} })) }, mapCellOf(g.op, g.way, g.after)) }
+        return { ...rest, mapCell: checkedMapCell(g) } as T
       })
-    return {
+    const step = (op: 'undo' | 'redo', co: unknown) => mapped<UndoResult>(edit(op, [], co))
+    return withOldNames<AsyncSession>(strictMethods({
       get clock() {
         return { ...r.clock }
       },
       get history() {
         return { ...r.history }
       },
-      setCells: (edits, co) => value(call('setCells', [edits], co)),
-      patchCells: (patches, co) => value(call('patchCells', [patches], co)),
-      setNames: (names, co) => value(call('setNames', [names], co)),
-      setClock: (next, co) => value(call('setClock', [next], co)),
-      async restructure(op, co): Promise<AsyncRestructureResult> {
-        const a = await call('restructure', [op], co)
-        const v = a.value as AsyncRestructureResult
-        if (!v.ok) return v
-        const outline = a.outline!
-        const m = applyOp(outline, op as StructureOp, () => [])
-        if (!m.ok) throw new Error(`the operation applies to the session's book but not to its outline: ${m.message}`)
-        return { ok: true, changes: v.changes, mapCell: checkedMapCell(outline, m.mapCell) }
+      get revision() {
+        return r.revision
       },
-      setStyles: (styles) => value(call('setStyles', [styles])),
-      setLayout: (edits, co) => value(call('setLayout', [edits], co)),
-      book: () => value<Sent>(call('book', [])).then(unpackSlowly),
-      layout: () => value(call('layout', [])),
-      extent: (sheet) => value(call('extent', [sheet])),
+      setCells: (edits, co) => value(edit('setCells', [edits], co)),
+      replaceCells: (edits, co) => value(edit('replaceCells', [edits], co)),
+      clearCells: (ranges, what, co) => value(edit('clearCells', [ranges, what], co)),
+      patchCells: (patches, co) => value(edit('patchCells', [patches], co)),
+      setCellText: (sheet, cell, text, co) => value(edit('setCellText', [sheet, cell, text], co, ['widen'])),
+      previewCellText: (sheet, cell, text, co) => value(edit('previewCellText', [sheet, cell, text], co, ['widen'])),
+      setNames: (names, co) => value(edit('setNames', [names], co)),
+      setClock: (next, co) => value(edit('setClock', [next], co)),
+      editStructure: (op, co) => mapped<AsyncStructureResult>(edit('editStructure', [op], co)) as Promise<AsyncStructureResult>,
+      setStyles: (styles, co) => value(edit('setStyles', [styles], co)),
+      setLayout: (edits, co) => value(edit('setLayout', [edits], co)),
+      getBook: () => value<Sent>(call('getBook', [])).then(unpackSlowly),
+      getLayout: () => value(call('getLayout', [])),
+      getUsedRange: (sheet) => value(call('getUsedRange', [sheet])),
       explain: (sheet, cell, eo) => value(call('explain', [sheet, cell, eo])),
-      cells: (sheet, range) => value(call('cells', [sheet, range])),
-      validation: (sheet, cell) => value(call('validation', [sheet, cell])),
+      getCells: (sheet, range) => value(call('getCells', [sheet, range])),
+      getViewport: (sheet, range, vo) => value(call('getViewport', [sheet, range, vo])),
+      getCellIssue: (sheet, cell) => value(call('getCellIssue', [sheet, cell])),
+      getValidation: (sheet, cell) => value(call('getValidation', [sheet, cell])),
       validateEntry: (sheet, cell, input, co) => value(call('validateEntry', [sheet, cell, input], co)),
-      result: (co) => value(call('result', [], co)),
-      hash: (co) => value(call('hash', [], co)),
+      getResult: (co) => value(call('getResult', [], co)),
+      // the book comes as text, read a chunk at a time as `getBook()` reads it
+      getSnapshot: (co) => value<{ book: Sent; result: ComputeResult }>(call('getSnapshot', [], co)).then(async (v) => ({ book: await unpackSlowly(v.book), result: v.result })),
+      getHash: (co) => value(call('getHash', [], co)),
       undo: (co) => step('undo', co),
       redo: (co) => step('redo', co),
       async close() {
@@ -404,17 +430,17 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
         await done
         r.slot.resident.delete(r)
       },
-    }
+    }, true))
   }
 
-  return {
+  return calcWithOldNames(strictMethods({
     async compute(book, copts) {
       const { signal, timeoutMs, rest } = splitCall<object>(copts)
       const sent = pack(book)
       const later = sent instanceof Promise ? sent : undefined
       return (await submit({ t: 'compute', book: later ? book : (sent as Sent), opts: rest ?? {}, timeoutMs: timeoutMs ?? o.timeoutMs }, undefined, signal, false, later)) as never
     },
-    async openSession(book, sopts) {
+    async createSession(book, sopts) {
       if (closed) throw closed
       if (o.maxSessions !== undefined && recs.size >= o.maxSessions) throw new CalcError('too_many_sessions', `the pool holds ${o.maxSessions} sessions already`)
       const { signal, timeoutMs, rest } = splitCall<SessionOptions>(sopts)
@@ -428,7 +454,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       // the book is taken now and written as text, between turns of the event loop when it is large; the text is the first snapshot
       const sent = pack(book)
       const later = sent instanceof Promise ? sent.then((x) => (r.snapshot.book = x)) : undefined
-      const r: Rec = { sid: ++ids, slot, snapshot: { book: later ? book : (sent as Sent), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, used: ++clock, gone: null, snapshotting: false }
+      const r: Rec = { sid: ++ids, slot, snapshot: { book: later ? book : (sent as Sent), opts, clock: given!, seq: 0 }, journal: [], seq: 0, clock: given!, history: { undo: 0, redo: 0 }, revision: 0, used: ++clock, gone: null, snapshotting: false }
       recs.add(r)
       slot.sessions.add(r)
       await submit({ t: 'open', sid: r.sid, book: r.snapshot.book, opts: { ...opts, ...(given ? { clock: given } : {}) }, timeoutMs: timeoutMs ?? o.timeoutMs }, { slot, session: r }, signal, false, later).catch((e) => {
@@ -440,6 +466,7 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
     async close() {
       if (closed) return
       closed = new CalcError('closed', 'the pool is closed')
+      unlisten()
       for (const t of jobs.splice(0)) fail(t, closed)
       for (const s of slots) {
         // a session closing is closed with the pool; the pool's own tasks end
@@ -452,5 +479,5 @@ export function createPool(o: CalcPoolOptions, spawn: Spawn, peek?: (inside: Poo
       for (const r of recs) r.gone = closed
       recs.clear()
     },
-  }
+  }))
 }

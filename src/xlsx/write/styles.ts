@@ -2,7 +2,7 @@
  * styles.xml from the book's styles: a cell format (`<xf>`) for each pair of a style and a number format that
  * cells, rows and columns use, fonts, fills and borders shared between them. Format 0 is the default (Calibri 11,
  * General). Number formats Excel shows by the regional settings are written as codes of their own, so the file
- * shows what `format` says in every locale.
+ * shows what `numberFormat` says in every locale.
  */
 import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
@@ -96,8 +96,8 @@ export class StyleWriter {
     const font = f
       ? `<font>${flag('b', f.bold)}${flag('i', f.italic)}${flag('strike', f.strike)}${f.underline ? (f.underline === 'double' ? '<u val="double"/>' : '<u/>') : ''}${f.color ? `<color rgb="${rgb(f.color)}"/>` : ''}</font>`
       : ''
-    const code = typeof s.format === 'number' ? (s.format === 0 ? 'General' : BUILTIN[s.format]) : s.format
-    const numFmt = s.format === undefined ? '' : `<numFmt numFmtId="${this.numFmt(s.format)}" formatCode="${escapeAttr(code!)}"/>`
+    const code = typeof s.numberFormat === 'number' ? (s.numberFormat === 0 ? 'General' : BUILTIN[s.numberFormat]) : s.numberFormat
+    const numFmt = s.numberFormat === undefined ? '' : `<numFmt numFmtId="${this.numFmt(s.numberFormat)}" formatCode="${escapeAttr(code!)}"/>`
     // a dxf's solid fill is its background colour
     const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
     const border = s.border ? borderXml(s.border) : ''

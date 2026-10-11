@@ -1,15 +1,13 @@
 /** Checks of the asynchronous calls' and the calculators' options, as `input.ts` checks the rest (`InputError`). */
 import type { AbortSignalLike, CalcLimits, CalcOptions, CalcPoolOptions, InlineCalcOptions } from '../contract.js'
-import { checkLimits, InputError } from '../input.js'
+import { checkLimits, InputError, isObject, onlyOptions } from '../input.js'
 
 /** A call's limits over the calculator's, field by field: a field the call does not give keeps the calculator's (a pool's bounds by its heap too). */
 export const callLimits = (calc: CalcLimits | undefined, call: CalcLimits | undefined): CalcLimits | undefined => (calc && call ? { ...calc, ...call } : (call ?? calc))
 
-const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
-
 function options(v: unknown, path: string, allowed: readonly string[]): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an options object, got ${v === null ? 'null' : typeof v}`)
-  for (const k of Object.keys(v)) if (!allowed.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})`)
+  onlyOptions(v, path, allowed)
   return v
 }
 
@@ -37,6 +35,18 @@ export function checkCall(v: unknown, path = 'opts'): CalcOptions {
   if (v === undefined) return {}
   const o = options(v, path, ['signal', 'timeoutMs'])
   return splitCall(o, path)
+}
+
+/**
+ * The options of a session call that changes the book: `signal` and `timeoutMs` for the call, checked here, and the
+ * edit's (`baseRevision`, and `extra`), which the session checks when the call runs; undefined when there are none.
+ */
+export function checkEditCall(v: unknown, extra: readonly string[] = [], path = 'opts'): [CalcOptions, Record<string, unknown> | undefined] {
+  if (v === undefined) return [{}, undefined]
+  const o = options(v, path, ['signal', 'timeoutMs', 'baseRevision', ...extra])
+  const { signal: _, timeoutMs: __, ...edit } = o
+  const { rest: ___, ...call } = splitCall(o, path)
+  return [call, Object.keys(edit).length ? edit : undefined]
 }
 
 export function checkInlineOptions(v: unknown, path = 'opts'): InlineCalcOptions {

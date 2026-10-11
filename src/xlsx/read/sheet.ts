@@ -1,21 +1,21 @@
 /**
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
- * cells as a copy and paste spreads them (`restructure`'s copyRange), array formulas of the old kind over their area,
+ * cells as a copy and paste spreads them (`editStructure`'s copyRange), array formulas of the old kind over their area,
  * the cells an array spilled into left to the stored values, columns and rows with their outline levels, merged areas,
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
  */
 import type { CellValue, ColumnInput, OutlineSettings, RowInput, SheetInput } from '../../contract.js'
-import { mergeText, overlapping, parseMerge } from '../../layout/merges.js'
+import { overlapping, parseMerge } from '../../layout/merges.js'
 import { lines, spanKey } from '../../layout/spans.js'
 import { formatAddress, parseAddress, sortAddresses } from '../../model.js'
-import { parseRange, type Rect } from '../../structure/area.js'
+import { cornersText, hasCell, parseRange, type Rect } from '../../structure/area.js'
 import { copyRange } from '../../structure/copy.js'
 import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues } from '../issues.js'
-import type { XlsxIssueCode } from '../types.js'
+import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
 import { attributes, element, elements, flag, has, type Element } from '../xml/scan.js'
 import { look, outlineOf, readCells, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type ReadFormula } from './formulas.js'
@@ -45,7 +45,7 @@ export interface SheetSource {
 
 export interface SheetRead {
   sheet: SheetInput
-  cached: Record<string, CellValue>
+  cached: Record<string, XlsxCachedCell>
 }
 
 /** Elements of a worksheet the model has no place for, outside `<sheetData>`. */
@@ -75,7 +75,7 @@ function* cellsOf(r: Rect, keys: () => string[]): Generator<string> {
   }
   for (const a of keys()) {
     const { row, col } = parseAddress(a)
-    if (row >= r.r1 && row <= r.r2 && col >= r.c1 && col <= r.c2) yield a
+    if (hasCell(r, row, col)) yield a
   }
 }
 
@@ -96,10 +96,10 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
       box.c2 = Math.max(box.c2, a.col)
     }
     // copies spread thin over a large area are pasted one by one
-    const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [`${formatAddress(box.r1, box.c1)}:${formatAddress(box.r2, box.c2)}`]
+    const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [cornersText(box)]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
     for (const range of targets) {
-      // the pure copy and paste, without restructure's checks and values (a paste from a filtered sheet computes the book)
+      // the pure copy and paste, without editStructure's checks and values (a paste from a filtered sheet computes the book)
       const r = copyRange(book, src.name, parseRange(s.master)!, src.name, parseRange(range)!, false)
       const pasted = r.ok ? r.book.sheets.find((x) => x.name === src.name)!.cells : {}
       for (const c of s.copies) {
@@ -124,7 +124,11 @@ function convert(src: SheetSource, read: SheetCells, issues: Issues): Map<string
   return out
 }
 
-/** The cells an array formula spilled into hold stored values: they go to `cached`, keeping their look. */
+/**
+ * The cells an array formula spilled into hold stored values: they go to `cached` with the formula's address, keeping
+ * their look; the formula's value gets the range, as a result has them (an old kind's area always, a dynamic array's
+ * when it spilled).
+ */
 function arrays(read: SheetCells) {
   const keys = () => Object.keys(read.cells)
   for (const a of read.arrays) {
@@ -132,12 +136,15 @@ function arrays(read: SheetCells) {
     if (!r) continue
     const anchor = read.cells[a.anchor]
     if (!a.dynamic && anchor?.formula !== undefined) anchor.array = a.ref
+    const top = read.cached[a.anchor]
+    if (top && (!a.dynamic || r.r2 > r.r1 || r.c2 > r.c1)) top.spill = cornersText(r)
     for (const addr of cellsOf(r, keys)) {
       const cell = read.cells[addr]
       // an error the array spilled is stored as the cell's value, which the reader took for a formula of it
       const spilled = read.errors.delete(addr)
       if (addr === a.anchor || !cell || (cell.formula !== undefined && !spilled)) continue
-      if (cell.value !== undefined) read.cached[addr] = cell.value as CellValue
+      const stored = cell.value !== undefined ? { value: cell.value as CellValue } : read.cached[addr]
+      if (stored) read.cached[addr] = { value: stored.value, spillOf: a.anchor }
       const { value: _, formula: __, ...rest } = cell
       if (Object.keys(rest).length) read.cells[addr] = rest
       else delete read.cells[addr]
@@ -203,7 +210,7 @@ function merges(rest: string, sheet: string, issues: Issues): string[] | undefin
       issues.add('part', 'a merged area overlapping another is left out', { sheet, cell: ref })
     }
   }
-  return xs.length ? xs.map(mergeText) : undefined
+  return xs.length ? xs.map(cornersText) : undefined
 }
 
 /** Whether an autofilter, a sheet's or a table's, has criteria: a column with a filter of any kind. */

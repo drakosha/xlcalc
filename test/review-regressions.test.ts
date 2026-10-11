@@ -1,12 +1,13 @@
 /** Reproductions from the dependency, session, table and xlsx review, without driving Excel. */
 import { describe, expect, it, vi } from 'vitest'
-import { compute, openSession, restructure, validateFormula, type BookInput } from '../src/index.js'
+import { compute, createSession, editStructure, validateFormula, type BookInput } from '../src/index.js'
 import { writeXlsx } from '../src/xlsx.js'
 import { applyEdits, createState } from '../src/engine.js'
 import { run } from '../src/exec/budget.js'
 import { buildResult } from '../src/result.js'
 import { inputScalar } from '../src/internal.js'
 import { read, sheet } from './xlsx-fixtures.js'
+import './locales.js'
 
 const book = (cells: BookInput['sheets'][number]['cells']): BookInput => ({ sheets: [{ name: 'S', cells }] })
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -52,24 +53,24 @@ it('a settled spill is not recomputed on an unrelated edit, but blockers and rel
 
 describe.each(['closures', 'eval'] as const)('review regressions, %s', (execution) => {
   it('changing a serial into a typed date uses the book epoch for content equality', () => {
-    const s = openSession({ ...book({ A1: { value: 1462 }, B1: { formula: 'A1*2' } }), dateSystem: 1904 }, { execution, clock })
+    const s = createSession({ ...book({ A1: { value: 1462 }, B1: { formula: 'A1*2' } }), dateSystem: 1904 }, { execution, clock })
     for (const input of [{ value: { date: '1904-01-01' } }, { value: 1462 }]) {
       s.setCells([{ sheet: 'S', cell: 'A1', input }])
-      const full = compute(s.book(), { execution, clock })
-      expect(s.result().hash).toBe(full.hash)
-      expect(s.result().sheets).toEqual(full.sheets)
+      const full = compute(s.getBook(), { execution, clock })
+      expect(s.getResult().hash).toBe(full.hash)
+      expect(s.getResult().sheets).toEqual(full.sheets)
     }
     s.close()
   })
 
   it('changing only the fixed array area releases and restores spill cells', () => {
-    const s = openSession(book({ A1: { formula: 'SEQUENCE(2)' }, C1: { formula: 'SUM(A1:A2)' } }), { execution, clock })
+    const s = createSession(book({ A1: { formula: 'SEQUENCE(2)' }, C1: { formula: 'SUM(A1:A2)' } }), { execution, clock })
     for (const input of [{ formula: 'SEQUENCE(2)', array: 'A1' }, { formula: 'SEQUENCE(2)' }]) {
       s.setCells([{ sheet: 'S', cell: 'A1', input }])
-      const full = compute(s.book(), { execution, clock })
-      expect(s.result().hash).toBe(full.hash)
-      const fresh = openSession(s.book(), { execution, clock })
-      expect(s.cells('S', 'A1:C2')).toEqual(fresh.cells('S', 'A1:C2'))
+      const full = compute(s.getBook(), { execution, clock })
+      expect(s.getResult().hash).toBe(full.hash)
+      const fresh = createSession(s.getBook(), { execution, clock })
+      expect(s.getCells('S', 'A1:C2')).toEqual(fresh.getCells('S', 'A1:C2'))
       fresh.close()
     }
     s.close()
@@ -78,10 +79,10 @@ describe.each(['closures', 'eval'] as const)('review regressions, %s', (executio
   it('a range through unary plus orders formulas in its interior and listens to their edits', () => {
     const b = book({ A1: { value: 1 }, A2: { value: 2 }, B1: { formula: '10' }, C1: { value: 3 }, D1: { formula: 'SUM((+A1:A2):C1)' } })
     expect(compute(b, { execution }).sheets[0].cells.D1.value).toBe(16)
-    const s = openSession(b, { execution, clock })
+    const s = createSession(b, { execution, clock })
     for (const input of [{ value: 20 }, { formula: '30' }]) {
       s.setCells([{ sheet: 'S', cell: 'B1', input }])
-      expect(s.result().hash).toBe(compute(s.book(), { execution, clock }).hash)
+      expect(s.getResult().hash).toBe(compute(s.getBook(), { execution, clock }).hash)
     }
     s.close()
   })
@@ -104,10 +105,10 @@ describe.each(['closures', 'eval'] as const)('review regressions, %s', (executio
     const b = book({ A1: { value: 1 }, B1: { formula: sum }, C1: { formula: `IF(FALSE,${sum},42)` }, D1: { formula: `LET(x,2,${Array(2000).fill('x').join('+')})` } })
     const r = compute(b, { execution })
     expect([r.sheets[0].cells.B1.value, r.sheets[0].cells.C1.value, r.sheets[0].cells.D1.value]).toEqual([2000, 42, 4000])
-    const s = openSession(book({ A1: { value: 2 } }), { execution, clock })
+    const s = createSession(book({ A1: { value: 2 } }), { execution, clock })
     s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: sum } }])
-    expect(s.result().sheets[0].cells.B1.value).toBe(4000)
-    expect(s.result().hash).toBe(compute(s.book(), { execution, clock }).hash)
+    expect(s.getResult().sheets[0].cells.B1.value).toBe(4000)
+    expect(s.getResult().hash).toBe(compute(s.getBook(), { execution, clock }).hash)
     s.close()
   })
 })
@@ -115,21 +116,21 @@ describe.each(['closures', 'eval'] as const)('review regressions, %s', (executio
 it('calculated column formulas follow moved tables and are copied relative to new rows', () => {
   const b = book({ A1: { value: 'Qty' }, B1: { value: 'Double' }, A2: { value: 3 }, B2: { formula: 'A2*2+$A$2' }, A3: { value: 7 }, B3: { formula: 'A3*2+$A$2' }, A4: { value: 11 }, B4: { formula: 'A4*2+$A$2' } })
   b.sheets[0].tables = [{ name: 'Sales', range: 'A1:B4', columns: [{ name: 'Qty' }, { name: 'Double', formula: 'A2*2+$A$2' }] }]
-  const inside = restructure(b, { op: 'insertRows', sheet: 'S', row: 3, count: 2 })
+  const inside = editStructure(b, { op: 'insertRows', sheet: 'S', row: 3, count: 2 })
   if (!inside.ok) throw new Error(inside.message)
   expect(inside.book.sheets[0].cells.B3.formula).toBe('A3*2+$A$2')
   expect(inside.book.sheets[0].cells.B4.formula).toBe('A4*2+$A$2')
-  const moved = restructure(b, { op: 'insertRows', sheet: 'S', row: 1, count: 1 })
+  const moved = editStructure(b, { op: 'insertRows', sheet: 'S', row: 1, count: 1 })
   if (!moved.ok) throw new Error(moved.message)
   expect(moved.book.sheets[0].tables![0].columns[1].formula).toBe('A3*2+$A$3')
-  const grown = restructure(moved.book, { op: 'insertRows', sheet: 'S', row: 4, count: 1 })
+  const grown = editStructure(moved.book, { op: 'insertRows', sheet: 'S', row: 4, count: 1 })
   if (!grown.ok) throw new Error(grown.message)
   expect(grown.book.sheets[0].cells.B4.formula).toBe('A4*2+$A$3')
-  const first = restructure(b, { op: 'insertRows', sheet: 'S', row: 2, count: 2 })
+  const first = editStructure(b, { op: 'insertRows', sheet: 'S', row: 2, count: 2 })
   if (!first.ok) throw new Error(first.message)
   expect(first.book.sheets[0].tables![0].columns[1].formula).toBe('A2*2+$A$4')
   expect(first.book.sheets[0].cells.B3.formula).toBe('A3*2+$A$4')
-  const deleted = restructure(b, { op: 'deleteRows', sheet: 'S', row: 2, count: 1 })
+  const deleted = editStructure(b, { op: 'deleteRows', sheet: 'S', row: 2, count: 1 })
   if (!deleted.ok) throw new Error(deleted.message)
   expect(deleted.book.sheets[0].tables![0].columns[1].formula).toBe('A2*2+#REF!')
 })

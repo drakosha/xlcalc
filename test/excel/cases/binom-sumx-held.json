@@ -1,0 +1,452 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.037,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "BINOM.DIST.RANGE#1",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(60,0.75,48)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#2",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(170,0.5,85)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#3",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(171,0.5,85)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#4",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(200,0.5,100)"
+  },
+  {
+   "id": "BINOM.DIST#1",
+   "group": "BINOM.DIST",
+   "fn": "BINOM.DIST",
+   "formula": "_xlfn.BINOM.DIST(100,200,0.5,FALSE)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#5",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(200,0.5,90,110)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#6",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(200.7,0.5,100.9)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#7",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1000,0.5,500)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#8",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1000,0.3,0,300)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#9",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1030,0.5,515)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#10",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(2000,0.5,1000)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#11",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(10000,0.5,4900,5100)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#12",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(100000,0.01,1000)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#13",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1000,0.5,0,1000)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#14",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1000,0.001,0)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#15",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(200,0.5,0)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#16",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(2000,0.5,0)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#17",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(300,0.2,250,300)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#18",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1000000,0.5,499000,501000)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#19",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(1000000,0.5,500000)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#20",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(2147483646,0.5,1073741823)"
+  },
+  {
+   "id": "BINOM.DIST.RANGE#21",
+   "group": "BINOM.DIST.RANGE",
+   "fn": "BINOM.DIST.RANGE",
+   "formula": "_xlfn.BINOM.DIST.RANGE(2147483647,0.5,1)"
+  },
+  {
+   "id": "SUMX2MY2#1",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A7,D!B1:B2)"
+  },
+  {
+   "id": "SUMX2MY2#2",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!B1:B2,D!A7)"
+  },
+  {
+   "id": "SUMXMY2#1",
+   "group": "SUMXMY2",
+   "fn": "SUMXMY2",
+   "formula": "SUMXMY2(D!A7,D!B1:B2)"
+  },
+  {
+   "id": "SUMXMY2#2",
+   "group": "SUMXMY2",
+   "fn": "SUMXMY2",
+   "formula": "SUMXMY2(D!B1:B3,D!A8)"
+  },
+  {
+   "id": "SUMX2PY2#1",
+   "group": "SUMX2PY2",
+   "fn": "SUMX2PY2",
+   "formula": "SUMX2PY2(D!A8,D!B1:B2)"
+  },
+  {
+   "id": "SUMX2PY2#2",
+   "group": "SUMX2PY2",
+   "fn": "SUMX2PY2",
+   "formula": "SUMX2PY2(D!B1:B2,D!A7)"
+  },
+  {
+   "id": "SUMX2MY2#3",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A7:A7,D!B1:B2)"
+  },
+  {
+   "id": "SUMX2MY2#4",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2({#DIV/0!},{1,2})"
+  },
+  {
+   "id": "SUMX2MY2#5",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(1/0,D!B1:B2)"
+  },
+  {
+   "id": "SUMX2MY2#6",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(IF(TRUE,D!A7),D!B1:B2)"
+  },
+  {
+   "id": "SUMX2MY2#7",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2({1,2,3},D!A7)"
+  },
+  {
+   "id": "SUMX2MY2#8",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A7,{1,2,3})"
+  },
+  {
+   "id": "SUMX2MY2#9",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A7,D!B1)"
+  },
+  {
+   "id": "SUMX2MY2#10",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A7,D!A8)"
+  },
+  {
+   "id": "SUMX2MY2#11",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A8,D!A7)"
+  },
+  {
+   "id": "SUMX2MY2#12",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!E1:E8,D!B1:B7)"
+  },
+  {
+   "id": "SUMX2MY2#13",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!E1:E8,D!B1:B8)"
+  },
+  {
+   "id": "SUMX2MY2#14",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A3,D!B1:B2)"
+  },
+  {
+   "id": "SUMX2MY2#15",
+   "group": "SUMX2MY2",
+   "fn": "SUMX2MY2",
+   "formula": "SUMX2MY2(D!A1,D!B1:B2)"
+  },
+  {
+   "id": "CORREL#1",
+   "group": "CORREL",
+   "fn": "CORREL",
+   "formula": "CORREL(D!A7,D!B1:B2)"
+  },
+  {
+   "id": "PEARSON#1",
+   "group": "PEARSON",
+   "fn": "PEARSON",
+   "formula": "PEARSON(D!B1:B2,D!A7)"
+  },
+  {
+   "id": "SUMPRODUCT#1",
+   "group": "SUMPRODUCT",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(D!A7,D!B1:B2)"
+  }
+ ],
+ "values": {
+  "BINOM.DIST.RANGE#1": {
+   "t": "n",
+   "v": 0.0839749674290475
+  },
+  "BINOM.DIST.RANGE#2": {
+   "t": "n",
+   "v": 0.06110502640760504
+  },
+  "BINOM.DIST.RANGE#3": {
+   "t": "n",
+   "v": 0.06074976462616549
+  },
+  "BINOM.DIST.RANGE#4": {
+   "t": "n",
+   "v": 0.05634847900925639
+  },
+  "BINOM.DIST#1": {
+   "t": "n",
+   "v": 0.05634847900925639
+  },
+  "BINOM.DIST.RANGE#5": {
+   "t": "n",
+   "v": 0.8626333491313694
+  },
+  "BINOM.DIST.RANGE#6": {
+   "t": "n",
+   "v": 0.05634847900925639
+  },
+  "BINOM.DIST.RANGE#7": {
+   "t": "n",
+   "v": 0.025225018178360807
+  },
+  "BINOM.DIST.RANGE#8": {
+   "t": "n",
+   "v": 0.5155935198141198
+  },
+  "BINOM.DIST.RANGE#9": {
+   "t": "n",
+   "v": 0.024855129936574464
+  },
+  "BINOM.DIST.RANGE#10": {
+   "t": "n",
+   "v": 0.01783901114585432
+  },
+  "BINOM.DIST.RANGE#11": {
+   "t": "n",
+   "v": 0.9555742009539191
+  },
+  "BINOM.DIST.RANGE#12": {
+   "t": "n",
+   "v": 0.012678161323544587
+  },
+  "BINOM.DIST.RANGE#13": {
+   "t": "n",
+   "v": 1
+  },
+  "BINOM.DIST.RANGE#14": {
+   "t": "n",
+   "v": 0.36769542477096406
+  },
+  "BINOM.DIST.RANGE#15": {
+   "t": "n",
+   "v": 6.223015277861121e-61
+  },
+  "BINOM.DIST.RANGE#16": {
+   "t": "n",
+   "v": 0
+  },
+  "BINOM.DIST.RANGE#17": {
+   "t": "n",
+   "v": 8.458570395952759e-123
+  },
+  "BINOM.DIST.RANGE#18": {
+   "t": "n",
+   "v": 0.9546076640906558
+  },
+  "BINOM.DIST.RANGE#19": {
+   "t": "n",
+   "v": 0.0007978843613317504
+  },
+  "BINOM.DIST.RANGE#20": {
+   "t": "n",
+   "v": 0.000017217699699243103
+  },
+  "BINOM.DIST.RANGE#21": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "SUMX2MY2#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMXMY2#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMXMY2#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUMX2PY2#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUMX2PY2#2": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#3": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#4": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUMX2MY2#5": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#6": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#7": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#8": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#9": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#10": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#11": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUMX2MY2#12": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUMX2MY2#13": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMX2MY2#14": {
+   "t": "e",
+   "v": "NA"
+  },
+  "SUMX2MY2#15": {
+   "t": "e",
+   "v": "VALUE"
+  },
+  "CORREL#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "PEARSON#1": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "SUMPRODUCT#1": {
+   "t": "e",
+   "v": "DIV0"
+  }
+ }
+}

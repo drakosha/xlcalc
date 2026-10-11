@@ -4,7 +4,8 @@
  * reads the sheets between its ends in the book's order.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, restructure, ruRU, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { compute, editStructure, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { ruRU } from './locales.js'
 
 const canon = (f: string) => {
   const r = validateFormula(f)
@@ -46,16 +47,16 @@ describe('the syntax of @, unions and references across sheets', () => {
     const cells = (b: BookInput) => compute(b, { display: false }).sheets.find((s) => s.name === 'S')!.cells
     expect([cells(book).A1.value, cells(book).A2.value]).toEqual([111, 110])
     // a sheet moved out from between the ends is not read
-    const moved = restructure(book, { op: 'moveSheet', sheet: 'Feb', before: 'S' })
+    const moved = editStructure(book, { op: 'moveSheet', sheet: 'Feb', before: 'S' })
     expect(moved.ok && cells(moved.book).A1.value).toBe(101)
-    const inserted = restructure(book, { op: 'insertSheet', name: 'New', before: 'Feb' })
+    const inserted = editStructure(book, { op: 'insertSheet', name: 'New', before: 'Feb' })
     expect(inserted.ok && inserted.book.sheets.map((s) => s.name)).toEqual(['Jan', 'New', 'Feb', 'Mar', 'S'])
   })
 
   it('refuses a new or moved sheet whose name is taken or breaks Excel\'s rules', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: {} }, { name: 'T', cells: {} }] }
-    expect(restructure(book, { op: 'insertSheet', name: 't' })).toMatchObject({ ok: false, code: 'sheet_name' })
-    expect(restructure(book, { op: 'insertSheet', name: 'a/b' })).toMatchObject({ ok: false, code: 'sheet_name' })
-    expect(restructure(book, { op: 'moveSheet', sheet: 'S' })).toMatchObject({ ok: true, book: { sheets: [{ name: 'T' }, { name: 'S' }] } })
+    expect(editStructure(book, { op: 'insertSheet', name: 't' })).toMatchObject({ ok: false, code: 'sheet_name' })
+    expect(editStructure(book, { op: 'insertSheet', name: 'a/b' })).toMatchObject({ ok: false, code: 'sheet_name' })
+    expect(editStructure(book, { op: 'moveSheet', sheet: 'S' })).toMatchObject({ ok: true, book: { sheets: [{ name: 'T' }, { name: 'S' }] } })
   })
 })

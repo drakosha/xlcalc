@@ -50,8 +50,8 @@ function stepLine(s: Step): string {
  */
 export function checkCycles(c: WorkbookCase) {
   if (c.file?.iterate) return
-  const cycle = compute(c.book, { display: false }).issues.find((i) => i.error === 'CYCLE')
-  if (cycle) throw new Error(`${c.id}: ${cycle.sheet}!${cycle.cell} is in a circular reference and the case has no iterative calculation (Excel would show a warning window)`)
+  const cycle = compute(c.book, { display: false }).diagnostics.find((i) => i.kind === 'cell' && i.error === 'CYCLE')
+  if (cycle?.kind === 'cell') throw new Error(`${c.id}: ${cycle.sheet}!${cycle.cell} is in a circular reference and the case has no iterative calculation (Excel would show a warning window)`)
 }
 
 /** One case in Excel: its book opened, its steps taken. */

@@ -6,20 +6,20 @@ The subpath `xlcalc/xlsx` reads an xlsx file into a book the engine computes, an
 import { compute } from 'xlcalc'
 import { readXlsx, writeXlsx } from 'xlcalc/xlsx'
 
-const { book, cached, issues } = await readXlsx(bytes)
+const { book, cached, issues } = await readXlsx(await readFile('book.xlsx'))
 const result = compute(book)
-const { data } = await writeXlsx(book, { result })
+const { data } = await writeXlsx({ book, result })
 ```
 
 ## Reading
 
-`readXlsx(data)` takes the file's bytes, a `Uint8Array` or an `ArrayBuffer`, and resolves to three things.
+`readXlsx(data)` takes the file's bytes, a `Uint8Array` (a Node `Buffer` is one, as `readFile` gives it), another view of bytes or an `ArrayBuffer` (`await file.arrayBuffer()` in a browser), and resolves to three things.
 
 - `book` is a `BookInput`: sheets with their cells (notes and hyperlinks among them) and whether they are hidden, columns and rows (their outline levels among them), merged areas, filter mode, frozen panes, conditional formats, rules of data validation and outline settings, names, the style table, the locale, the date system and iterative calculation.
-- `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order. These are what Excel computed when it saved the file, so you can compare them with the engine's result.
+- `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the book's order, in the shape of a result: `cached.sheets[0].cells.B1.value` as `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range `spillOf`, the formula's address, as in a result. These are what Excel computed when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`).
 - `issues` lists everything the book cannot hold, with the sheet and the cells or the name it is about. Nothing is dropped without an issue.
 
-A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file without a workbook part are errors.
+A file that is not a zip archive, an encrypted one, a ZIP64 archive and a file without a workbook part are errors. Data that is no bytes, such as the file's path, is an `InputError` that says to pass the bytes.
 
 ### Cells
 
@@ -134,7 +134,7 @@ The manual calculation mode, "automatic except for data tables" and precision as
 
 ### Tables
 
-A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, each column with its calculated column formula and its totals function or label. Structured references come in the stored spelling, which is a file's but for a column name that starts with `@` (`Sales[@at]` in a file is `Sales['@at]`). A header cell that does not hold its column's name as text is given it, and a table the model cannot hold, over another or over a merged area, is left out; both are reported. [docs/tables.md](tables.md) has the rules.
+A sheet's table parts become its `tables`: the name formulas use, the range, the header and totals rows, each column with its calculated column formula and its totals function or label. Structured references come in the stored spelling, which is a file's but for a column name that starts with `@` (`Sales[@at]` in a file is `Sales['@at]`). A header cell that does not hold its column's name as text is given it, and a table the model cannot hold, over another or over a merged area, is left out; both are reported, and so is what the engine cannot take of a calculated column formula, as of a cell's (at the column's first cell). A calculated column formula that differs from its cells' formulas is kept as Excel keeps it: a row inserted into the table gets it. [docs/tables.md](tables.md) has the rules.
 
 ### The locale
 
@@ -176,17 +176,23 @@ View settings such as zoom, gridlines and the selection are not reported. A page
 
 ## Writing
 
-`writeXlsx(book, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot hold. The same book and result give the same bytes.
+`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot hold. The same book and result give the same bytes. The snapshot is `{ book, result }`: the book and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` gives both in one call, so no edit comes between them) or from the `cached` of a file read.
 
 | option | |
 |---|---|
-| `result` | the book's `ComputeResult`, from `compute` or `Session.result()`: the values of formulas and of the cells their arrays spilled into |
-| `mode: 'formulas'` | the default: formulas with their values from `result`. Without `result` the file has no values, and Excel computes them when it opens the file |
-| `mode: 'values'` | values only: a formula's cell gets its value from `result`, which is then required |
+| `values: 'require'` | the default with a result: every formula and every cell of an array has its value in the result, else the result is not the book's and the call throws `InputError` |
+| `values: 'preserve'` | the values the result has; a formula without one is written without it and reported (`noCachedValues`) |
+| `values: 'omit'` | the default without a result: no values of formulas, and Excel computes them when it opens the file; reported (`noCachedValues`) when the book has formulas and `values` was not given |
+| `mode: 'formulas'` | the default: formulas, with the values `values` asks for |
+| `mode: 'values'` | values only: a formula's cell gets its value from the result, which is then required |
 
 ```js
-const values = await writeXlsx(book, { result, mode: 'values' })
+const file = await writeXlsx(session.getSnapshot())
+const values = await writeXlsx({ book, result }, { mode: 'values' })
+const later = await writeXlsx({ book }, { values: 'omit' })
 ```
+
+A session is no snapshot: an asynchronous session is a proxy of a thread, and its book and result are taken there by `await session.getSnapshot()`. Given one, a result alone (`writeXlsx(compute(book))`, told by its hashes) or a result of another shape, `writeXlsx` throws `InputError` saying what to pass. `writeXlsx(book, { result, mode })`, the older form, is the same call and writes the same file.
 
 ### Formulas
 
@@ -198,7 +204,7 @@ Functions newer than Excel 2007 get their prefix (`_xlfn.XLOOKUP`, `_xlfn._xlws.
 
 A cell with `array` is written as an array formula of the old kind over its range, without the cell metadata, as Excel writes a formula entered with Ctrl+Shift+Enter. A formula in a table's totals row is written as a plain formula, the only kind Excel opens there. A name's formula is written as the book has it: a constant, a formula or a union. The list of prefixes covers every function Microsoft lists as newer than 2007, not only the whitelist.
 
-A file with formulas asks Excel to compute the book when it opens it, so Excel shows its own values over the stored ones.
+A file with formulas asks Excel to compute the book when it opens it, so Excel shows its own values over the stored ones, whichever values the file stores. The stored values are what a reader that does not compute shows, such as a preview or a spreadsheet library, and what `readXlsx` gives as `cached`.
 
 ### Tables
 
@@ -231,6 +237,7 @@ A filtered sheet is written so that Excel takes it as filtered. Its first table 
 | `textLength` | text over 32,767 characters is cut, a note's too, a hyperlink's tooltip over 255, a rule's titles over 32, its input message over 255 and its alert's text over 225 |
 | `dataValidation` | a rule whose formula does not parse, or names a sheet, a table or a column the book does not have, is left out |
 | `formula` | a formula that does not parse, or names a sheet, a table or a column the book does not have, is written as its value |
+| `noCachedValues` | the file stores no values of formulas, as no result was given, or a formula has no value in the result (`values: 'preserve'`) |
 | `name` | a name Excel does not take, given twice, of a missing sheet, or whose reference does not parse or names a table or a column the book does not have, is left out |
 | `autoFilter` | the filter mode of a sheet whose tables have no header row and meet its cells is left out |
 | `conditionalFormat` | a rule with a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is left out |
@@ -244,7 +251,7 @@ A book gives a cell without a style or a format of its own its row's, else its c
 Excel shows a cell the file stores (a `<c>` element) by the cell's own cell format alone, whatever its row and column have. So the writer writes each cell with the whole look it shows. A value in that column of dates is written with the column's cell format, the one Excel gives a value typed there, and a cell with a bold style of its own in a filled column of dates is written bold, a date and without the fill, as the book shows it.
 
 ```js
-// columns: { B: { format: 'dddd, mmmm d, yyyy', style: 1 } }, cells: { B2: { value: 46096 } }
+// columns: { B: { numberFormat: 'dddd, mmmm d, yyyy', style: 1 } }, cells: { B2: { value: 46096 } }
 // <col min="2" max="2" … style="1"/> and <c r="B2" s="1"><v>46096</v></c>
 ```
 
@@ -258,12 +265,12 @@ Excel never leaves such a crossing empty itself: formatting a column across a fo
 
 ```js
 // <row r="6" s="1" customFormat="1"> (bold), <col min="7" max="7" style="3"/> (0.00%), no <c r="G6">
-rows: { 6: { style: 0, format: 'General' } }
+rows: { 6: { style: 0, numberFormat: 'General' } }
 ```
 
 ### Lines Excel formats
 
-Excel, formatting a line across a formatted one, merges their formats field by field: a row made bold across a filled column of dates gives the cells where they cross bold, filled and dates. A book's style is one whole, and `setLayout` sets a line's style alone: where a row with a style crosses a column with one, the book shows the row's. A host that formats lines as Excel does gives those cells a style of their own.
+Excel, formatting a line across a formatted one, merges their formats field by field: a row made bold across a filled column of dates gives the cells where they cross bold, filled and dates. A book's style is one whole, and `setLayout` sets a line's style alone: where a row with a style crosses a column with one, the book shows the row's. `patchCells` formats lines as Excel does and gives those cells a style of their own ([Editing a grid](edits.md#whole-rows-and-columns)).
 
 ### How it was checked
 
@@ -278,7 +285,7 @@ The engine's answers were committed before each run. The first run of `files`, o
 
 ## Conditional formats
 
-A sheet's conditional formats (`conditionalFormats`) go both ways. The reader reads the rules of `<conditionalFormatting>` with their differential formats (`<dxfs>` of styles.xml) and Excel 2010's rules of the sheet's extension list (`x14:conditionalFormatting`), and gives them in priority order; the writer writes them so, each rule's priority by its place in the list. Excel 2010's part of a data bar (its fill, border, direction, negative bars and axis) is joined to its 2007 rule by their id; the icon sets `3Stars`, `3Triangles` and `5Boxes`, custom icons and formulas over other sheets are Excel 2010's rules alone, with their style inline. A text, blank or period rule always has its formula in a file; the reader leaves out the one Excel writes for it, which the model makes itself. Ranges come as the model writes them: Excel's `A1:A1048576` is `A:A`. A dxf's number format is read by its code, as Excel saves `0.00%` under another id. [docs/conditional-formats.md](conditional-formats.md) has the rules, what a cell shows by them and how it was checked.
+A sheet's conditional formats (`conditionalFormats`) go both ways. The reader reads the rules of `<conditionalFormatting>` with their differential formats (`<dxfs>` of styles.xml) and Excel 2010's rules of the sheet's extension list (`x14:conditionalFormatting`), and gives them in priority order; the writer writes them so, each rule's priority by its place in the list. Excel 2010's part of a data bar (its fill, border, direction, negative bars and axis) is joined to its 2007 rule by their id; the icon sets `3Stars`, `3Triangles` and `5Boxes`, custom icons and formulas over other sheets are Excel 2010's rules alone, with their style inline. A text, blank or period rule always has its formula in a file; the reader leaves out the one Excel writes for it, which the model makes itself. Ranges come as the model writes them: Excel's `A1:A1048576` is `A:A`. A dxf's number format is read by its code, as Excel saves `0.00%` under another id and shows a dxf by its code in every locale (`m/d/yyyy` under the id 14 is `3.15.2026` in ru-RU). [docs/conditional-formats.md](conditional-formats.md) has the rules, what a cell shows by them and how it was checked.
 
 ## Notes, hyperlinks and frozen panes
 
@@ -411,6 +418,8 @@ Reading uses the parser and copy and paste of the structure operations. It does 
 | `intersect` | 75 formulas of the old kind | read with `@` where Excel puts it, every formula computes the value Excel stored, but the two with `OFFSET` |
 | `colors` | 233 fills: theme colours with Excel's tints and the legacy palette | 212 equal to Excel's colour, the rest within 3 of 255 per channel |
 | `formats` | the built-in number formats 1 to 58 | the codes Excel en-US shows equal the engine's for 1 to 49 and the reader's for 50 to 58 |
+
+Without Excel, `test/xlsx-snapshot.test.ts` checks the three kinds of `values`, the refusals, `cached` in the shape of a result and the files written again from it, a file Excel saved among them, and `test/session-snapshot.test.ts` writes the snapshot of a synchronous session, one in the same thread and one in a thread, and reads it back with the session's values.
 
 The round trip compares books by what they mean: a style by its fields, a formula by its canonical text, spans of rows and columns line by line, a line of size 0 as hidden, a code that every locale shows as a built-in format as that format's number.
 

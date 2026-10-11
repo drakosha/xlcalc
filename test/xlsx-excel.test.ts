@@ -25,6 +25,7 @@ import { compute } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { BUILTIN } from '../src/xlsx/styles/numfmt.js'
 import { CLOCK, matches, show, toVal } from './excel-cases.js'
+import './locales.js'
 
 const dir = new URL('./excel/xlsx/', import.meta.url)
 const json = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, dir), 'utf8')) as T
@@ -77,7 +78,7 @@ describe.skipIf(!existsSync(new URL('roundtrip.json', dir)))('xlsx round trip th
       // a book predicted before Excel ran: Excel stored the values predicted; the book came back as predicted, but where Excel saves otherwise
       const p = predicted.roundtrip[c.id]
       if (p) {
-        expect(Object.fromEntries(Object.keys(p.values).map((k) => [k, read.cached[read.book.sheets.findIndex((x) => x.name === k.split('!')[0])].cells[k.split('!')[1]]]))).toEqual(p.values)
+        expect(Object.fromEntries(Object.keys(p.values).map((k) => [k, read.cached.sheets[read.book.sheets.findIndex((x) => x.name === k.split('!')[0])].cells[k.split('!')[1]]?.value]))).toEqual(p.values)
         expect(differences.map((d) => d.place).filter((x) => !KNOWN_BOOK[c.id]?.places.includes(x))).toEqual(p.differences)
       }
     })
@@ -99,7 +100,7 @@ describe.skipIf(!existsSync(new URL('filters.json', dir)))('xlsx filters as Exce
       // the filter mode Excel took, as predicted: the engine computes the values Excel stored, which are the ones predicted
       expect(!!read.book.sheets[0].filtered).toBe(predicted.filters[c.id].filtered)
       expect(compareCached(compute(read.book, { clock: XLSX_CLOCK }), read.cached)).toEqual([])
-      expect(Object.fromEntries(Object.entries(read.cached[1].cells).map(([a, v]) => [`F!${a}`, v]))).toEqual(predicted.filters[c.id].values)
+      expect(Object.fromEntries(Object.entries(read.cached.sheets[1].cells).map(([a, v]) => [`F!${a}`, v.value]))).toEqual(predicted.filters[c.id].values)
     })
 })
 
@@ -166,7 +167,7 @@ describe.skipIf(!existsSync(new URL('saved.json', dir)))('xlsx case books saved 
         const key = `${name}:${p.id}`
         const [engine, fromFile] = [toVal(sent[`A${i + 1}`].value), toVal(got[`A${i + 1}`].value)]
         if (show(engine) !== show(fromFile) && !SAVED_KNOWN[key]) off.push(`${key} ${p.formula}: sent ${show(engine)}, read ${show(fromFile)}`)
-        const stored = read.cached[c].cells[`A${i + 1}`]
+        const stored = read.cached.sheets[c].cells[`A${i + 1}`]?.value
         if ((stored === undefined || !matches(p.fn, s.answers[p.id], toVal(stored))) && !SAVED_UNSTABLE[key]) off.push(`${key}: Excel's answer ${show(s.answers[p.id])}, stored in the file ${stored === undefined ? 'nothing' : show(toVal(stored))}`)
       })
       expect(off).toEqual([])
@@ -181,7 +182,7 @@ describe.skipIf(!existsSync(new URL('intersect.json', dir)))('xlsx formulas of t
     const engine = compute(read.book, { clock: CLOCK }).sheets[0].cells
     const off = OLD_FORMULAS.flatMap((f, i) => {
       const a = formulaCell(i)
-      const [mine, excel] = [toVal(engine[a].value), toVal(read.cached[0].cells[a] ?? null)]
+      const [mine, excel] = [toVal(engine[a].value), toVal(read.cached.sheets[0].cells[a]?.value ?? null)]
       return show(mine) !== show(excel) && !unread.has(a) && !(mine.t === 'e' && mine.v === 'NAME') ? [`${a} ${f} read as ${read.book.sheets[0].cells[a].formula}: engine ${show(mine)}, Excel ${show(excel)}`] : []
     })
     expect(off).toEqual([])

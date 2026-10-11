@@ -7,7 +7,7 @@ The rules below were measured in Excel 16.113 for Mac (en-US).
 ## fromLegacy
 
 ```js
-import { fromLegacy } from 'xlcalc'
+import { fromLegacy } from 'xlcalc/xlsx'
 
 fromLegacy('A1:A10*2')                // → '@A1:A10*2'
 fromLegacy('SUM(A1:A10*2)')           // → 'SUM(@A1:A10*2)'
@@ -62,7 +62,7 @@ The area never spills and never gives `#SPILL!`. A dynamic array that meets it g
 
 The other cells of the area hold no input. A session refuses edits that change some cells of an area without the rest: `setCells` throws `InputError` and changes nothing, as Excel does. Clearing every cell of the area removes the formula. An edit of the formula's cell that keeps an array over the same area changes the whole array.
 
-`restructure` moves an area with its cell. It refuses with `array` to insert lines inside an area, to delete part of one, to move part of one and to paste over part of one. A copy of a whole area copies the array; a copy of part of an area pastes each cell as an array formula of its own, the area's formula shifted from the area's cell.
+`editStructure` moves an area with its cell. It refuses with `array` to insert lines inside an area, to delete part of one, to move part of one and to paste over part of one. A copy of a whole area copies the array; a copy of part of an area pastes each cell as an array formula of its own, the area's formula shifted from the area's cell.
 
 ## How it was checked
 

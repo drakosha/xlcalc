@@ -1,12 +1,12 @@
 /**
- * Acceptance of `restructure` against Excel en-US (`test/excel/struct/`, see `test/structure-excel.ts`):
+ * Acceptance of `editStructure` against Excel en-US (`test/excel/struct/`, see `test/structure-excel.ts`):
  * each stored case is the generator's current case, and the engine's book after the operation shows what
  * Excel showed, or Excel refused and so does the engine. Known differences are listed in STRUCT_KNOWN
  * with their lines.
  */
 import { describe, expect, it } from 'vitest'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
-import { restructure } from '../src/index.js'
+import { editStructure } from '../src/index.js'
 import { differences, STRUCT_SETS } from './structure-excel.js'
 
 /** `<set>:<case id>` → the difference lines pinned for that case, each with its reason in a comment. */
@@ -56,7 +56,7 @@ for (const set of STRUCT_SETS) {
     for (const c of set.cases) {
       it(`${c.id}: as Excel`, () => {
         const a = set.answers[c.id]
-        const r = restructure(set.books[c.book], c.op)
+        const r = editStructure(set.books[c.book], c.op)
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)
           // Excel left the book as it was

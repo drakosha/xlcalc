@@ -1,7 +1,7 @@
 /**
  * Formats of rows and columns in Excel for Windows: each case of `bench/coverage/lines/<set>.ts` in the file the Mac step
  * sends (`writeXlsx`), its steps through COM (`NumberFormat`, `Font.Bold`, `Font.Italic`, `Interior.Color` of a range, `Value2` of a
- * cell), the book computed, the read cells' `Range.Text`, number format and display format (`DisplayFormat`: fill and font
+ * cell, `ClearContents`, `ClearFormats` and `Clear` of a range), the book computed, the read cells' `Range.Text`, number format and display format (`DisplayFormat`: fill and font
  * colours, bold, italic), and the book saved. Answers go to `test/excel/win/lines/<set>.json` in the Mac's shape, the
  * saved files beside them; `test/lines-excel.test.ts` reads them.
  */
@@ -23,9 +23,11 @@ const NO_FILL = -4142
 /** `#RRGGBB` as COM's BGR. */
 const bgr = (c: string) => parseInt(c.slice(5, 7) + c.slice(3, 5) + c.slice(1, 3), 16)
 
-/** A step through COM: the range's formats, or a value typed into a cell. */
+/** A step through COM: the range's formats, a value typed into a cell, or the range cleared. */
 const comStep = (s: LineStep): Step =>
-  s.value !== undefined
+  s.clear
+    ? { do: 'clear', sheet: s.sheet, range: s.range, what: s.clear }
+    : s.value !== undefined
     ? { do: 'set', sheet: s.sheet, cell: s.range, kind: typeof s.value === 'number' ? 'n' : 's', value: String(s.value) }
     : { do: 'format', sheet: s.sheet, range: s.range, ...(s.format !== undefined ? { numberFormat: s.format } : {}), ...(s.bold ? { bold: true } : {}), ...(s.italic ? { italic: true } : {}), ...(s.fill ? { fill: bgr(s.fill) } : {}) }
 

@@ -3,7 +3,8 @@
  * text in ru-RU, hashes, `displayValue`, input checks.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, displayValue, InputError, openSession, type BookInput, type CellInput } from '../src/index.js'
+import { compute, displayValue, InputError, createSession, type BookInput, type CellInput } from '../src/index.js'
+import './locales.js'
 
 const clock = { now: '2026-10-07T18:00:00Z', seed: 1 }
 
@@ -25,12 +26,12 @@ describe('the 1904 date system', () => {
   })
 
   it('a session with a new clock and edits gives the values of a full computation', () => {
-    const s = openSession(book(1904), { clock })
+    const s = createSession(book(1904), { clock })
     s.setClock({ now: '2027-03-01T06:00:00Z', seed: 2 })
     s.setCells([{ sheet: 'S', cell: 'B1', input: { value: { date: '1904-01-02' } } }, { sheet: 'S', cell: 'B2', input: { formula: 'B1-DATE(1904,1,1)' } }])
-    const full = compute(s.book(), { clock: s.clock })
-    expect(s.result().sheets).toEqual(full.sheets)
-    expect(s.result().hash).toBe(full.hash)
+    const full = compute(s.getBook(), { clock: s.clock })
+    expect(s.getResult().sheets).toEqual(full.sheets)
+    expect(s.getResult().hash).toBe(full.hash)
     expect(full.sheets[0].cells.B2.value).toBe(1)
     s.close()
   })
@@ -50,9 +51,9 @@ describe('the 1904 date system', () => {
   })
 
   it('displayValue shows a value by it', () => {
-    expect(displayValue(0, { format: 'm/d/yyyy', dateSystem: 1904 })).toEqual({ text: '1/1/1904' })
-    expect(displayValue(-0.5, { format: 'h:mm', dateSystem: 1904 })).toEqual({ text: '-12:00' })
-    expect(displayValue(-0.5, { format: 'h:mm', width: 5 }).text).toBe('#####')
+    expect(displayValue(0, { numberFormat: 'm/d/yyyy', dateSystem: 1904 })).toEqual({ text: '1/1/1904' })
+    expect(displayValue(-0.5, { numberFormat: 'h:mm', dateSystem: 1904 })).toEqual({ text: '-12:00' })
+    expect(displayValue(-0.5, { numberFormat: 'h:mm', width: 5 }).text).toBe('#####')
   })
 
   it('is 1900 or 1904', () => {

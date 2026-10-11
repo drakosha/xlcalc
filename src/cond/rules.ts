@@ -5,8 +5,7 @@
  */
 import type { ConditionalFormat } from '../contract.js'
 import { formatAddress } from '../model.js'
-import { areaText } from '../validation/rules.js'
-import { parseRange, type Rect } from '../structure/area.js'
+import { areaText, parseRange, type Rect } from '../structure/area.js'
 
 /** The rectangles of a rule's ranges. */
 export const rectsOf = (f: ConditionalFormat): Rect[] => f.ranges.map((x) => parseRange(x)!)

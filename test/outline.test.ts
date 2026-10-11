@@ -5,7 +5,7 @@
  * written and read in xlsx, in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, restructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
+import { compute, InputError, createSession, editStructure, type BookInput, type Execution, type StructureOp } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 
@@ -25,7 +25,7 @@ const book = (): BookInput => ({
 
 const rows = (b: BookInput) => b.sheets[0].rows
 const after = (op: StructureOp, b = book()) => {
-  const r = restructure(b, op)
+  const r = editStructure(b, op)
   if (!r.ok) throw new Error(r.message)
   return r.book
 }
@@ -73,19 +73,19 @@ describe('outlines under structure operations', () => {
 
 describe.each(['closures', 'eval'] as Execution[])('outlines in a session (%s)', (execution) => {
   it('expanding a group through setLayout shows its rows and recomputes SUBTOTAL 109', () => {
-    const s = openSession(book(), { clock, execution })
-    const changes = s.setLayout([
+    const s = createSession(book(), { clock, execution })
+    const { changes } = s.setLayout([
       { sheet: 'S', rows: '2:4', set: { hidden: null } },
       { sheet: 'S', rows: '5', set: { collapsed: null } },
     ])
     expect(changes.map((c) => [c.cell, c.value])).toEqual([['A5', 7]])
-    expect(rows(s.book())).toEqual({ 2: { outlineLevel: 1 }, 3: { outlineLevel: 2 }, 4: { outlineLevel: 1 } })
-    expect(s.setLayout([{ sheet: 'S', outline: { summaryBelow: false } }])).toEqual([])
-    expect(s.book().sheets[0].outline).toEqual({ summaryBelow: false })
+    expect(rows(s.getBook())).toEqual({ 2: { outlineLevel: 1 }, 3: { outlineLevel: 2 }, 4: { outlineLevel: 1 } })
+    expect(s.setLayout([{ sheet: 'S', outline: { summaryBelow: false } }]).changes).toEqual([])
+    expect(s.getBook().sheets[0].outline).toEqual({ summaryBelow: false })
     s.setLayout([{ sheet: 'S', outline: null }])
-    expect(s.book().sheets[0].outline).toBeUndefined()
+    expect(s.getBook().sheets[0].outline).toBeUndefined()
     expect(() => s.setLayout([{ sheet: 'S', rows: '2', set: { outlineLevel: 9 } }])).toThrow(InputError)
-    expect(compute(s.book(), { clock, execution }).hash).toBe(s.hash())
+    expect(compute(s.getBook(), { clock, execution }).hash).toBe(s.getHash())
   })
 })
 
@@ -94,7 +94,7 @@ describe('outlines in xlsx', () => {
     const b = book()
     b.sheets[0].outline = { summaryBelow: false, summaryRight: true }
     b.sheets.push({ name: 'T', cells: {}, columns: { 'C:E': { outlineLevel: 3, hidden: true, width: 5 }, F: { collapsed: true } } })
-    const w = await writeXlsx(b)
+    const w = await writeXlsx({ book: b }, { values: 'omit' })
     expect(w.issues).toEqual([])
     const r = await readXlsx(w.data)
     expect(r.issues).toEqual([])
@@ -109,7 +109,7 @@ describe('outlines in xlsx', () => {
     const b = book()
     b.sheets[0].filtered = true
     b.sheets[0].outline = { summaryRight: false }
-    const w = await writeXlsx(b)
+    const w = await writeXlsx({ book: b }, { values: 'omit' })
     expect((await openArchive(w.data).text('xl/worksheets/sheet1.xml'))!).toContain('<sheetPr filterMode="1"><outlinePr summaryRight="0"/></sheetPr>')
     const r = await readXlsx(w.data)
     expect([r.book.sheets[0].filtered, r.book.sheets[0].outline]).toEqual([true, { summaryRight: false }])

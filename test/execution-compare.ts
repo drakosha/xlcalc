@@ -5,7 +5,7 @@
  */
 import { createContext, runInContext } from 'node:vm'
 import { expect } from 'vitest'
-import { compute, openSession, type BookInput, type CellValue, type ComputeOptions, type ComputeResult, type Execution } from '../src/index.js'
+import { compute, createSession, type BookInput, type CellValue, type ComputeOptions, type ComputeResult, type Execution } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { bundle } from './fixtures/bundle.js'
 import { apply, edits } from './session-edits.js'
@@ -16,6 +16,8 @@ export const ctx = createContext({}, { codeGeneration: { strings: false } })
 runInContext((await bundle()).code, ctx)
 /** The library inside the context without code generation from strings; its results are cloned out of it. */
 export const strict = runInContext('FormulaEngine', ctx) as typeof import('../src/index.js')
+// the context's own registry of locales, loaded as the tests' (`locales.ts`)
+runInContext('FormulaEngine.registerLocale(FormulaEngine.ruRU)', ctx)
 
 export const byEval = (book: BookInput, opts: ComputeOptions = {}) => compute(book, { clock, ...opts, execution: 'eval' })
 export const byClosures = (book: BookInput, opts: ComputeOptions = {}) => structuredClone(strict.compute(book, { clock, ...opts, execution: 'closures' }))
@@ -42,12 +44,12 @@ export function expectSame(evalResult: ComputeResult, closuresResult: ComputeRes
 /** 200 seeded session edits in the mode `session`; after each one the session equals a full computation in the other mode. */
 export function sessionAgainstFull(session: Execution) {
   const synth = synthBook({ seed: 1, rows: 340 })
-  const s = session === 'closures' ? strict.openSession(synth.book, { clock, execution: 'closures' }) : openSession(synth.book, { clock, execution: 'eval' })
+  const s = session === 'closures' ? strict.createSession(synth.book, { clock, execution: 'closures' }) : createSession(synth.book, { clock, execution: 'eval' })
   let book = synth.book
   for (const batch of edits(3, 200, synth)) {
     s.setCells(batch)
     book = apply(book, batch)
-    const r = structuredClone(s.result())
+    const r = structuredClone(s.getResult())
     if (session === 'closures') expectSame(byEval(book), r)
     else expectSame(r, byClosures(book))
   }

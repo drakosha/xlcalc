@@ -249,10 +249,16 @@ function Step($xl, $wb, $s) {
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
     'settings' { List @((Cell $xl.Iteration), (Cell ([double]$xl.MaxIterations)), (Cell $xl.MaxChange)) }
-    # cells typed into: what each shows, its format codes and its prefix character; and Excel's automatic percent entry
+    # cells typed into: what each shows, its format codes and its prefix character (with `edit` its Formula and
+    # FormulaLocal too, the text the formula bar opens it with); and Excel's automatic percent entry
     'entry' {
       $ws = $wb.Worksheets.Item($s.sheet)
-      List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Str ([string]$c.Text)), (Str $c.NumberFormat), (Str $c.NumberFormatLocal), (Str ([string]$c.PrefixCharacter))) })
+      List ($s.cells | ForEach-Object {
+        $c = $ws.Range($_)
+        $read = @((Str ([string]$c.Text)), (Str $c.NumberFormat), (Str $c.NumberFormatLocal), (Str ([string]$c.PrefixCharacter)))
+        if ($s.edit) { $read += @((Str ([string]$c.Formula)), (Str ([string]$c.FormulaLocal))) }
+        List $read
+      })
     }
     'autoPercent' { Cell $xl.AutoPercentEntry }
     # AutoFit of a range's whole columns; each column's ColumnWidth, Width (points) and UseStandardWidth (bench/windows/fit.ts)
@@ -284,6 +290,18 @@ function Step($xl, $wb, $s) {
         if ($s.bold) { $rg.Font.Bold = $true }
         if ($s.italic) { $rg.Font.Italic = $true }
         if ($null -ne $s.fill) { $rg.Interior.Color = [double]$s.fill }
+        'null'
+      } catch { Err $_ }
+    }
+    # a range cleared, as ClearContents, ClearFormats or Clear (bench/windows/lines.ts)
+    'clear' {
+      try {
+        $rg = Rg $wb $s.sheet $s.range
+        switch ($s.what) {
+          'contents' { [void]$rg.ClearContents() }
+          'formats' { [void]$rg.ClearFormats() }
+          'all' { [void]$rg.Clear() }
+        }
         'null'
       } catch { Err $_ }
     }

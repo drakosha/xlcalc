@@ -1,9 +1,10 @@
 /**
- * `restructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
+ * `editStructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
-import type { BookInput, CellRef, RestructureResult, StructureOp } from '../contract.js'
-import { checkAddress, checkBook, checkString, InputError } from '../input.js'
+import type { BookInput, CellRef, StructureResult, StructureOp } from '../contract.js'
+import { checkAddress, checkBook, checkString, InputError, onlyKeys } from '../input.js'
+import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
@@ -11,6 +12,8 @@ import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { clockSerial } from '../result.js'
 import { parseRange } from './area.js'
+import { GEOMETRY, mapCellOf, type Applied, type SentGeometry } from './geometry.js'
+import { withGrids } from './grid.js'
 import { copyRows, deleteRows, insertRows } from './filtered.js'
 import { moveRange } from './move.js'
 import { shift } from './shift.js'
@@ -45,10 +48,6 @@ const FIELDS: Record<string, string[]> = {
   convertTable: ['table'],
 }
 
-function fields(o: Record<string, unknown>, path: string, allowed: string[]) {
-  for (const k of Object.keys(o)) if (!allowed.includes(k)) throw new InputError(path, `unknown field ${JSON.stringify(k)} (expected ${allowed.join(', ')})`)
-}
-
 function integer(v: unknown, path: string, min: number, max: number): number {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < min || v > max) throw new InputError(path, `expected an integer from ${min} to ${max}, got ${JSON.stringify(v)}`)
   return v
@@ -58,26 +57,38 @@ function integer(v: unknown, path: string, min: number, max: number): number {
  * Restructures a book; the input book is not changed. A copy that pastes values (from a filtered sheet) computes
  * the book at the current moment.
  */
-export function restructure(book: BookInput, op: StructureOp): RestructureResult {
-  checkBook(book)
+export function editStructure(book: BookInput, op: StructureOp): StructureResult {
+  book = checkBook(book)
+  op = opTaken(op)
   const r = applyOp(book, op, lazyValues(book))
-  return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell(book, r.mapCell) } : r
+  return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(r.book) }) } : r
 }
 
-/** The mapCell callers get: it takes cells of the old book, a sheet of it in any case and an address, and checks them. */
-export function checkedMapCell(book: BookInput, inner: (ref: CellRef) => CellRef | null): (ref: CellRef) => CellRef | null {
-  return (ref) => {
+/** The names of a book's sheets, in order. */
+export const namesOf = (book: { sheets: { name: string }[] }) => book.sheets.map((s) => s.name)
+
+/**
+ * The mapCell callers get, made from a geometry: it takes cells of the book before (a sheet's name, in any case, and an
+ * address) and checks their shape; a sheet the book before does not have holds no cell of it, so its cells are null, as
+ * a host's window can hold a sheet that is gone. It is kept with its geometry, which a pool's thread sends instead of
+ * the function (`GEOMETRY`).
+ */
+export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | null {
+  const inner = mapCellOf(g.geometry, g.before, g.after)
+  const mapCell = (ref: CellRef) => {
     const x = object(ref, 'ref')
-    return inner({ sheet: sheetOf(book, x.sheet, 'ref.sheet'), cell: checkAddress(x.cell, 'ref.cell') })
+    return inner({ sheet: checkString(x.sheet, 'ref.sheet'), cell: checkAddress(x.cell, 'ref.cell') })
   }
+  GEOMETRY.set(mapCell, g)
+  return mapCell
 }
 
-/** A sheet of the book by name in any case, as the book spells it. */
-function sheetOf(book: BookInput, v: unknown, path: string): string {
+/** A sheet by name in any case, as the book whose sheets are `sheets` spells it. */
+function sheetOf(sheets: string[], v: unknown, path: string): string {
   const k = sheetKey(checkString(v, path))
-  const sheet = book.sheets.find((s) => sheetKey(s.name) === k)
+  const sheet = sheets.find((s) => sheetKey(s) === k)
   if (!sheet) throw new InputError(path, `unknown sheet ${JSON.stringify(v)}`)
-  return sheet.name
+  return sheet
 }
 
 /** The values of a book computed when first asked for, at the current moment. */
@@ -93,22 +104,25 @@ function lazyValues(book: BookInput): ValuesIn {
 }
 
 /**
- * The operation on a book already checked; its mapCell takes a sheet as the book spells it and a valid address.
- * `values` gives the computed values a paste of values takes.
+ * The operation on a book already checked, with its geometry. `values` gives the computed values a paste of values takes.
+ * Its steps read each sheet's cells once (`withGrids`).
  */
-export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): RestructureResult {
+export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn): Applied => withGrids(() => applied(book, op, values))
+
+function applied(book: BookInput, op: StructureOp, values: ValuesIn): Applied {
   const o = object(op, 'op')
   const allowed = FIELDS[o.op as string]
   if (typeof o.op !== 'string' || !allowed) throw new InputError('op.op', `expected one of ${Object.keys(FIELDS).join(', ')}, got ${JSON.stringify(o.op)}`)
-  fields(o, 'op', ['op', ...allowed])
-  const named = (v: unknown, path: string) => sheetOf(book, v, path)
+  onlyKeys(o, 'op', ['op', ...allowed])
+  const sheets = namesOf(book)
+  const named = (v: unknown, path: string) => sheetOf(sheets, v, path)
   const rangeOf = (v: unknown, path: string) => {
     const r = parseRange(checkString(v, path))
     if (!r) throw new InputError(path, `expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got ${JSON.stringify(v)}`)
     return r
   }
   const count = (max: number) => (o.count === undefined ? 1 : integer(o.count, 'op.count', 1, max))
-  let r: RestructureResult
+  let r: Applied
   switch (o.op as StructureOp['op']) {
     case 'insertRows':
     case 'deleteRows': {
@@ -132,8 +146,8 @@ export function applyOp(book: BookInput, op: StructureOp, values: ValuesIn): Res
     case 'copyRange': {
       const from = object(o.from, 'op.from')
       const to = object(o.to, 'op.to')
-      fields(from, 'op.from', ['sheet', 'range'])
-      fields(to, 'op.to', ['sheet', o.op === 'copyRange' ? 'range' : 'cell'])
+      onlyKeys(from, 'op.from', ['sheet', 'range'])
+      onlyKeys(to, 'op.to', ['sheet', o.op === 'copyRange' ? 'range' : 'cell'])
       const fromSheet = named(from.sheet, 'op.from.sheet')
       const src = rangeOf(from.range, 'op.from.range')
       const toSheet = named(to.sheet, 'op.to.sheet')

@@ -1,6 +1,6 @@
 /**
  * Excel's answers to structure operations (`test/excel/struct/<set>.json`, from `run.ts struct <set>`)
- * and the comparison with `restructure`: what each cell shows (`=formula` or the value) in the read
+ * and the comparison with `editStructure`: what each cell shows (`=formula` or the value) in the read
  * rectangle of every sheet, the extra cells, the sheets and the names. Formulas are compared in the form
  * Excel writes references (`A1:A1048576` is `A:A`), with sheet names quoted.
  */
@@ -8,12 +8,12 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import type { CellLook, ExcelStructAnswer, SheetLook, StoredStruct } from '../bench/coverage/struct.js'
 import type { BookInput, CellInput, SheetInput } from '../src/contract.js'
 import { isHiddenRow } from '../src/layout/hidden.js'
-import { mergeText, parseMerge } from '../src/layout/merges.js'
+import { parseMerge } from '../src/layout/merges.js'
 import { lineAt } from '../src/layout/spans.js'
 import { formatAddress, indexToCol, parseAddress } from '../src/model.js'
-import { meets } from '../src/structure/area.js'
-import { decode, encode } from '../src/structure/area.js'
+import { cornersText, decode, encode, meets } from '../src/structure/area.js'
 import { canonical, parse, sheetKey, walk } from '../src/syntax.js'
+import { numberFormatOf } from '../bench/coverage/stored.js'
 
 const dir = new URL('./excel/struct/', import.meta.url)
 
@@ -86,7 +86,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
       const [tr, tc] = m ? [m.r1, m.c1] : [r, c]
       const [cell, row, col] = [sheet.cells[formatAddress(tr, tc)], lineAt(sheet.rows, 'r', tr), lineAt(sheet.columns, 'c', tc)]
       const style = book.styles?.[cell?.style ?? row?.style ?? col?.style ?? -1]
-      const format = cell?.format ?? row?.format ?? col?.format
+      const format = numberFormatOf(cell) ?? numberFormatOf(row) ?? numberFormatOf(col)
       const l: CellLook = { ...(style?.font?.bold ? { bold: true } : {}), ...(style?.fill ? { fill: style.fill.color.toUpperCase() } : {}), ...(format !== undefined && format !== 'General' ? { format: String(format) } : {}) }
       if (Object.keys(l).length) out.cells[addr] = l
     }
@@ -103,7 +103,7 @@ function lookIn(book: BookInput, sheet: SheetInput, rect: string, out: SheetLook
     else if (row?.height !== undefined) out.heights[String(r + 1)] = shownHeight(row.height)
   }
   const window = { r1: a.row, c1: a.col, r2: b.row, c2: b.col }
-  for (const m of merges) if (meets(m, window) && !out.merges.includes(mergeText(m))) out.merges.push(mergeText(m))
+  for (const m of merges) if (meets(m, window) && !out.merges.includes(cornersText(m))) out.merges.push(cornersText(m))
 }
 
 /** Differences of looks, as `place: Excel …, engine …` lines. */

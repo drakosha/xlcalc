@@ -10,6 +10,7 @@ import { lookOf, type Look } from '../../layout/lines.js'
 import { entryAt, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { Issues, Where } from '../issues.js'
+import type { XlsxCachedCell } from '../types.js'
 import type { Xf } from '../styles/read.js'
 import { attributes, flag } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -44,7 +45,7 @@ export interface ArrayFormula {
 
 export interface SheetCells {
   cells: Record<string, CellInput>
-  cached: Record<string, CellValue>
+  cached: Record<string, XlsxCachedCell>
   rows: Map<number, RowInput>
   shared: Map<string, Shared>
   arrays: ArrayFormula[]
@@ -90,7 +91,7 @@ const colOf = (letters: string) => {
 export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInput>[] = []): SheetCells {
   const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
   const { issues, sheet } = ctx
-  const looked = cols.filter(([, , e]) => e.style !== undefined || e.format !== undefined)
+  const looked = cols.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
   const column = (c: number) => (looked.length ? entryAt(looked, c) : undefined)
   let row = -1
   let col = -1
@@ -103,7 +104,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const at = new Set(formatted.map((x) => x.col))
     const missing = (lo: number, hi: number) => [...at].filter((c) => c >= lo && c <= hi).length < hi - lo + 1
     if (line.style === undefined && looked.some(([lo, hi, e]) => e.style !== undefined && missing(lo, hi))) line.style = ctx.plain()
-    if (line.format === undefined && looked.some(([lo, hi, e]) => e.format !== undefined && missing(lo, hi))) line.format = 'General'
+    if (line.numberFormat === undefined && looked.some(([lo, hi, e]) => e.numberFormat !== undefined && missing(lo, hi))) line.numberFormat = 'General'
     if (Object.keys(line).length) out.rows.set(lineRow + 1, line)
     for (const x of formatted) {
       const cell = { ...ownLook(x.own, lookOf(undefined, line, column(x.col)), ctx), ...out.cells[x.addr] }
@@ -190,9 +191,9 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     // `<f ca="1"/>` with no text only flags a value Excel recalculates (a cell a volatile array spilled into)
     if (f && fa.t !== 'dataTable' && (text !== '' || fa.t === 'shared')) {
       if (errText !== undefined) {
-        out.cached[addr] = { error: ERRORS[errText] ?? 'ERROR' }
+        out.cached[addr] = { value: { error: ERRORS[errText] ?? 'ERROR' } }
         if (!ERRORS[errText]) issues.add('errorValue', 'a stored error the model has no code for, read as #ERROR!', { sheet, cell: addr })
-      } else if (value !== undefined) out.cached[addr] = value
+      } else if (value !== undefined) out.cached[addr] = { value }
       if (fa.t === 'shared' && fa.si !== undefined) {
         let s = out.shared.get(fa.si)
         if (!s) out.shared.set(fa.si, (s = { copies: [] }))
@@ -212,12 +213,12 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
       if (errText !== undefined) {
         if (LITERAL.has(errText)) {
           cell.formula = errText
-          out.cached[addr] = { error: ERRORS[errText] }
+          out.cached[addr] = { value: { error: ERRORS[errText] } }
           out.errors.add(addr)
         } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
-    if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.format !== undefined) out.cells[addr] = cell
+    if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.numberFormat !== undefined) out.cells[addr] = cell
   }
   endRow()
   return out
@@ -236,21 +237,21 @@ export function outlineOf(a: Record<string, string>): { outlineLevel?: number; c
  */
 function ownLook(own: Look, line: Look, ctx: Pick<CellsContext, 'plain' | 'isPlain'>): CellInput {
   const style = line.style !== undefined && ctx.isPlain(line.style) ? undefined : line.style
-  const format = line.format === 'General' || line.format === 0 ? undefined : line.format
+  const format = line.numberFormat === 'General' || line.numberFormat === 0 ? undefined : line.numberFormat
   const out: CellInput = {}
   if (own.style !== style) out.style = own.style ?? ctx.plain()
-  if (own.format !== format) out.format = own.format ?? 'General'
+  if (own.numberFormat !== format) out.numberFormat = own.numberFormat ?? 'General'
   return out
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
-export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; format?: NumberFormat } {
+export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; numberFormat?: NumberFormat } {
   if (!xf) return {}
   for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, where)
   if (xf.eastAsian !== undefined) issues.add('numberFormat', 'a built-in East Asian date format the model does not have (50 to 58), read as the code Excel for Mac en-US shows', where)
   if (xf.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', where)
-  const out: { style?: number; format?: NumberFormat } = {}
+  const out: { style?: number; numberFormat?: NumberFormat } = {}
   if (xf.style !== undefined) out.style = xf.style
-  if (xf.format !== undefined) out.format = xf.format
+  if (xf.format !== undefined) out.numberFormat = xf.format
   return out
 }

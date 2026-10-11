@@ -5,7 +5,7 @@
  * closes that session only; admission (`maxQueue`, `maxSessions`) and the order in which a thread takes its tasks.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, compute, openSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
+import { CalcError, compute, createSession, type BookInput, type Calc, type CellEdit } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { nodeSpawn, workerThreads } from '../src/worker/platform.js'
 import { createPool } from '../src/worker/pool.js'
@@ -36,76 +36,76 @@ describe('a thread lost', () => {
     // the deadline is eight openings of the book, the heaviest task but one, as fast as the machine runs them now; the
     // heavy edit, a product of 1500 × 1500 matrices, takes thousands of them
     const cal = await pool({ threads: 1 })
-    const opening = await medianMs(3, async () => (await cal.openSession(book, { clock: CLOCK })).close())
+    const opening = await medianMs(3, async () => (await cal.createSession(book, { clock: CLOCK })).close())
     await cal.close()
     const p = kept(await pool({ threads: 1, hardTimeoutMs: Math.ceil(8 * opening) }))
-    const s = await p.openSession(book, { clock: CLOCK })
-    const y = openSession(book, { clock: CLOCK })
+    const s = await p.createSession(book, { clock: CLOCK })
+    const y = createSession(book, { clock: CLOCK })
     const list = edits(4, 12, synth)
     for (const batch of list.slice(0, 6)) expect(await s.setCells(batch)).toEqual(y.setCells(batch))
     const e = await fails(s.setCells(heavy))
     expect(e.code).toBe('hard_timeout')
     for (const batch of list.slice(6)) expect(await s.setCells(batch)).toEqual(y.setCells(batch))
-    expect((await s.result()).hash).toBe(y.result().hash)
+    expect((await s.getResult()).hash).toBe(y.getResult().hash)
     // a one-off computation runs on the new thread
     expect((await p.compute(chainBook(3), { clock: CLOCK })).hash).toBe(compute(chainBook(3), { clock: CLOCK }).hash)
   }, 60_000)
 
   it("past the thread's heap (maxHeapMb): out_of_memory, and the process goes on", async () => {
     const p = kept(await pool({ threads: 1, maxHeapMb: 64, limits: { cells: 2_000_000, spill: 2_000_000 } }))
-    const s = await p.openSession(chainBook(50), { clock: CLOCK })
+    const s = await p.createSession(chainBook(50), { clock: CLOCK })
     await s.setCells(setA1(5))
     // twenty arrays of a million values, each spilled down its column: far more than 64 MB, each well under it
     const cells: BookInput['sheets'][0]['cells'] = {}
     for (let c = 0; c < 20; c++) cells[String.fromCharCode(65 + c) + '1'] = { formula: 'SEQUENCE(1000000)' }
     expect((await fails(p.compute({ sheets: [{ name: 'S', cells }] }))).code).toBe('out_of_memory')
-    expect((await s.result()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...chainBook(50).sheets[0].cells, A1: { value: 5 } } }] }, { clock: CLOCK }).hash)
+    expect((await s.getResult()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...chainBook(50).sheets[0].cells, A1: { value: 5 } } }] }, { clock: CLOCK }).hash)
   }, 60_000)
 
   it('a crash: the waiting calls of every session of the thread go on; sessions come back only when called', async () => {
     const { calc, inside: x, crash } = await inside({ threads: 1 })
     kept(calc)
     const [a, b] = [chainBook(30), chainBook(40)]
-    const [sa, sb] = [await calc.openSession(a, { clock: CLOCK }), await calc.openSession(b, { clock: CLOCK })]
+    const [sa, sb] = [await calc.createSession(a, { clock: CLOCK }), await calc.createSession(b, { clock: CLOCK })]
     await sa.setCells(setA1(3))
     await sb.setCells(setA1(4))
     expect(x.slots[0].resident.size).toBe(2)
     crash(0)
     expect(x.slots[0].resident.size).toBe(0)
-    expect((await sa.result()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...a.sheets[0].cells, A1: { value: 3 } } }] }, { clock: CLOCK }).hash)
+    expect((await sa.getResult()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...a.sheets[0].cells, A1: { value: 3 } } }] }, { clock: CLOCK }).hash)
     expect(x.slots[0].resident.size).toBe(1)
     // a crash while a call runs: that call fails, the next one waiting is answered
-    await sb.result()
+    await sb.getResult()
     const p1 = sb.setCells(setA1(7))
     const p2 = sb.setCells(setA1(8))
     crash(0)
     expect((await fails(p1)).code).toBe('thread_failed')
     await p2
-    expect((await sb.result()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...b.sheets[0].cells, A1: { value: 8 } } }] }, { clock: CLOCK }).hash)
+    expect((await sb.getResult()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...b.sheets[0].cells, A1: { value: 8 } } }] }, { clock: CLOCK }).hash)
   }, 60_000)
 
   it('a session restored from a snapshot and a journal cut at it', async () => {
     const synth = synthBook({ seed: 1, rows: 200 })
     const { calc, inside: x, crash } = await inside({ threads: 1, snapshotEvery: 4 })
     kept(calc)
-    const s = await calc.openSession(synth.book, { live: true })
+    const s = await calc.createSession(synth.book, { live: true })
     const list = edits(6, 10, synth)
     for (const batch of list) await s.setCells(batch)
-    await s.result()
+    await s.getResult()
     const r = [...x.recs][0]
     expect(r.snapshot.seq).toBeGreaterThanOrEqual(8)
     expect(r.journal.length).toBeLessThan(4)
-    const book = await s.book()
+    const book = await s.getBook()
     const clock = s.clock
     crash(0)
-    expect((await s.result()).hash).toBe(compute(book, { clock }).hash)
-    expect(await s.book()).toEqual(book)
+    expect((await s.getResult()).hash).toBe(compute(book, { clock }).hash)
+    expect(await s.getBook()).toEqual(book)
   }, 60_000)
 
   it('a restore that fails closes that session only', async () => {
     const { calc, inside: x, crash } = await inside({ threads: 1 })
     kept(calc)
-    const [sa, sb] = [await calc.openSession(chainBook(5), { clock: CLOCK }), await calc.openSession(chainBook(6), { clock: CLOCK })]
+    const [sa, sb] = [await calc.createSession(chainBook(5), { clock: CLOCK }), await calc.createSession(chainBook(6), { clock: CLOCK })]
     await sa.setCells(setA1(2))
     await sb.setCells(setA1(2))
     // the journal of a no longer replays: its edit names a sheet the book lacks
@@ -116,8 +116,8 @@ describe('a thread lost', () => {
     const e = await fails(sa.setCells(setA1(3)))
     expect(e.code).toBe('restore_failed')
     expect((e.cause as Error).message).toMatch(/unknown sheet "Gone"/)
-    expect((await fails(sa.result())).code).toBe('restore_failed')
-    expect((await sb.setCells(setA1(9))).map((c) => c.cell)).toContain('B6')
+    expect((await fails(sa.getResult())).code).toBe('restore_failed')
+    expect((await sb.setCells(setA1(9))).changes.map((c) => c.cell)).toContain('B6')
   }, 60_000)
 
   it('a thread that exits by itself is reported as thread_failed; one that cannot start fails one task at a time', async () => {
@@ -137,7 +137,7 @@ describe('a thread lost', () => {
 async function heavyCallMs(): Promise<number> {
   const p = await pool({ threads: 1 })
   try {
-    const s = await p.openSession(heavyBook(), { clock: CLOCK })
+    const s = await p.createSession(heavyBook(), { clock: CLOCK })
     return await medianMs(5, (i) => s.setCells(setA1(100 + i)))
   } finally {
     await p.close()
@@ -152,26 +152,26 @@ const JOURNAL = 12
 describe('a restore and the hard deadline', () => {
   it('a session that left a full thread comes back within the deadline however long its journal was', async () => {
     const p = kept(await pool({ threads: 1, hardTimeoutMs: Math.ceil(CALLS * (await heavyCallMs())), maxSessionsPerThread: 1 }))
-    const a = await p.openSession(heavyBook(), { clock: CLOCK })
-    const y = openSession(heavyBook(), { clock: CLOCK })
+    const a = await p.createSession(heavyBook(), { clock: CLOCK })
+    const y = createSession(heavyBook(), { clock: CLOCK })
     for (let i = 2; i < 2 + JOURNAL; i++) expect(await a.setCells(setA1(i))).toEqual(y.setCells(setA1(i)))
-    await p.openSession(chainBook(3), { clock: CLOCK })
+    await p.createSession(chainBook(3), { clock: CLOCK })
     expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
-    expect((await a.result()).hash).toBe(y.result().hash)
+    expect((await a.getResult()).hash).toBe(y.getResult().hash)
   }, 60_000)
 
   it('after a crash the replay of a long journal has a deadline of every call it replays', async () => {
     const { calc, crash } = await inside({ threads: 1, hardTimeoutMs: Math.ceil(CALLS * (await heavyCallMs())) })
     kept(calc)
-    const a = await calc.openSession(heavyBook(), { clock: CLOCK })
-    const y = openSession(heavyBook(), { clock: CLOCK })
+    const a = await calc.createSession(heavyBook(), { clock: CLOCK })
+    const y = createSession(heavyBook(), { clock: CLOCK })
     for (let i = 2; i < 2 + JOURNAL; i++) {
       await a.setCells(setA1(i))
       y.setCells(setA1(i))
     }
     crash(0)
     expect(await a.setCells(setA1(20))).toEqual(y.setCells(setA1(20)))
-    expect((await a.result()).hash).toBe(y.result().hash)
+    expect((await a.getResult()).hash).toBe(y.getResult().hash)
   }, 60_000)
 })
 
@@ -185,9 +185,9 @@ describe('a restore that fails', () => {
     }
     const { calc, inside: x } = await inside({ threads: 1, maxHeapMb: 96, maxSessionsPerThread: 1 })
     kept(calc)
-    const other = await calc.openSession(chainBook(3), { clock: CLOCK })
+    const other = await calc.createSession(chainBook(3), { clock: CLOCK })
     for (let k = 0; k < 10; k++) {
-      const s = await calc.openSession(big(k), { clock: CLOCK })
+      const s = await calc.createSession(big(k), { clock: CLOCK })
       const r = [...x.recs].at(-1)!
       // the other session comes back and sends this one off the thread with its snapshot
       await other.setCells(setA1(k))
@@ -195,7 +195,7 @@ describe('a restore that fails', () => {
       const e = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 1 } }]))
       expect([e.code, (e.cause as Error).message], `session ${k}`).toEqual(['restore_failed', expect.stringMatching(/unknown sheet "Gone"/)])
     }
-    expect((await other.result()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...chainBook(3).sheets[0].cells, A1: { value: 9 } } }] }, { clock: CLOCK }).hash)
+    expect((await other.getResult()).hash).toBe(compute({ sheets: [{ name: 'S', cells: { ...chainBook(3).sheets[0].cells, A1: { value: 9 } } }] }, { clock: CLOCK }).hash)
   }, 120_000)
 })
 
@@ -204,25 +204,25 @@ describe('a full pool', () => {
     const { calc, inside: x } = await inside({ threads: 1, maxSessionsPerThread: 2 })
     kept(calc)
     const books = [chainBook(10), chainBook(20), chainBook(30)]
-    const ss = [] as Awaited<ReturnType<Calc['openSession']>>[]
-    for (const b of books) ss.push(await calc.openSession(b, { clock: CLOCK }))
+    const ss = [] as Awaited<ReturnType<Calc['createSession']>>[]
+    for (const b of books) ss.push(await calc.createSession(b, { clock: CLOCK }))
     expect(x.slots[0].resident.size).toBe(2)
-    const ys = books.map((b) => openSession(b, { clock: CLOCK }))
+    const ys = books.map((b) => createSession(b, { clock: CLOCK }))
     for (let k = 0; k < 9; k++) {
       const i = (k * 2) % 3
       expect(await ss[i].setCells(setA1(k + 2))).toEqual(ys[i].setCells(setA1(k + 2)))
       expect(x.slots[0].resident.size).toBe(2)
     }
-    for (const [i, s] of ss.entries()) expect((await s.result()).hash).toBe(ys[i].result().hash)
+    for (const [i, s] of ss.entries()) expect((await s.getResult()).hash).toBe(ys[i].getResult().hash)
   }, 60_000)
 
   it('maxSessions refuses another session; maxQueue another waiting task', async () => {
     const p = kept(await pool({ threads: 1, maxSessions: 2, maxQueue: 1 }))
-    const s1 = await p.openSession(chainBook(2))
-    await p.openSession(chainBook(2))
-    expect((await fails(p.openSession(chainBook(2)))).code).toBe('too_many_sessions')
+    const s1 = await p.createSession(chainBook(2))
+    await p.createSession(chainBook(2))
+    expect((await fails(p.createSession(chainBook(2)))).code).toBe('too_many_sessions')
     await s1.close()
-    await p.openSession(chainBook(2))
+    await p.createSession(chainBook(2))
     // a book of one chunk of text goes at once and computes long
     const running = p.compute(heavyBook())
     const waiting = p.compute(chainBook(3))
@@ -232,7 +232,7 @@ describe('a full pool', () => {
 
   it("an idle thread takes its sessions' next call before a waiting one-off computation", async () => {
     const p = kept(await pool({ threads: 1 }))
-    const s = await p.openSession(chainBook(3), { clock: CLOCK })
+    const s = await p.createSession(chainBook(3), { clock: CLOCK })
     const order: string[] = []
     const first = p.compute(heavyBook()).then(() => order.push('first job'))
     const job = p.compute(chainBook(3)).then(() => order.push('job'))
@@ -243,10 +243,10 @@ describe('a full pool', () => {
 
   it('closing the pool refuses what waits and runs', async () => {
     const p = await pool({ threads: 1 })
-    const s = await p.openSession(chainBook(3))
+    const s = await p.createSession(chainBook(3))
     const running = p.compute(synthBook({ seed: 1, rows: 1700 }).book)
     const waiting = s.setCells(setA1(2))
     await p.close()
-    for (const q of [running, waiting, s.result(), p.compute(chainBook(2))]) expect((await fails(q)).code).toBe('closed')
+    for (const q of [running, waiting, s.getResult(), p.compute(chainBook(2))]) expect((await fails(q)).code).toBe('closed')
   })
 })

@@ -4,7 +4,7 @@
  * the app reader's regressions: a self-closing cell between values, cells without `r`, prefixed tags.
  */
 import { describe, expect, it } from 'vitest'
-import { codes, read, sheet } from './xlsx-fixtures.js'
+import { codes, read, sheet, storedValues } from './xlsx-fixtures.js'
 
 const DATE_STYLES = '<numFmts count="2"><numFmt numFmtId="164" formatCode="0 m"/><numFmt numFmtId="165" formatCode="dd.mm.yyyy"/></numFmts><cellXfs count="4"><xf numFmtId="0"/><xf numFmtId="14"/><xf numFmtId="164"/><xf numFmtId="165"/></cellXfs>'
 
@@ -42,7 +42,7 @@ describe('xlsx reader: cells', () => {
   it('tags with a namespace prefix', async () => {
     const r = await read({ sheets: [{ name: 'S', body: '<x:sheetData><x:row r="1"><x:c r="A1"><x:v>99</x:v></x:c><x:c r="B1" t="s"><x:v>0</x:v></x:c><x:c r="C1"><x:f>A1*2</x:f><x:v>198</x:v></x:c></x:row></x:sheetData>' }], strings: ['нс'] })
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 99 }, B1: { value: 'нс' }, C1: { formula: 'A1*2' } })
-    expect(r.cached[0].cells).toEqual({ C1: 198 })
+    expect(storedValues(r)).toEqual({ C1: 198 })
   })
 
   it('value types: inline and formula strings, booleans, errors, numbers in exponent form', async () => {
@@ -51,7 +51,7 @@ describe('xlsx reader: cells', () => {
         '<row r="2"><c r="A2" t="str"><f>"a"&amp;"b"</f><v>ab</v></c><c r="B2" t="e"><f>1/0</f><v>#DIV/0!</v></c><c r="C2" t="b"><f>TRUE</f><v>1</v></c><c r="D2" t="e"><f>NA()</f><v>#N/A</v></c></row>',
     )
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 'Вася' }, B1: { value: 'plain' }, C1: { value: true }, D1: { value: false }, E1: { value: 0.0015 }, A2: { formula: '"a"&"b"' }, B2: { formula: '1/0' }, C2: { formula: 'TRUE' }, D2: { formula: 'NA()' } })
-    expect(r.cached[0].cells).toEqual({ A2: 'ab', B2: { error: 'DIV0' }, C2: true, D2: { error: 'NA' } })
+    expect(storedValues(r)).toEqual({ A2: 'ab', B2: { error: 'DIV0' }, C2: true, D2: { error: 'NA' } })
     expect(r.issues).toEqual([])
   })
 
@@ -74,13 +74,13 @@ describe('xlsx reader: cells', () => {
   it('an error typed into a cell is read as a formula of that error; an error the model has no code for is reported', async () => {
     const r = await sheet('<row r="1"><c r="A1" t="e"><v>#N/A</v></c><c r="B1" t="e"><v>#NULL!</v></c><c r="C1" t="e"><v>#GETTING_DATA</v></c><c r="D1" t="e"><f>X()</f><v>#BLOCKED!</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '#N/A' }, B1: { formula: '#NULL!' }, D1: { formula: 'X()' } })
-    expect(r.cached[0].cells).toEqual({ A1: { error: 'NA' }, B1: { error: 'NULL' }, D1: { error: 'ERROR' } })
+    expect(storedValues(r)).toEqual({ A1: { error: 'NA' }, B1: { error: 'NULL' }, D1: { error: 'ERROR' } })
     expect(codes(r.issues)).toEqual(['errorValue C1', 'errorValue D1', 'errorConstant A1 B1'])
   })
 
   it('numbers stay numbers whatever their format; a built-in format is read by its number', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"><v>45000</v></c><c r="B1" s="2"><v>5</v></c><c r="C1" s="3"><v>45000.5</v></c></row>', { styles: DATE_STYLES })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, format: 14 }, B1: { value: 5, format: '0 m' }, C1: { value: 45000.5, format: 'dd.mm.yyyy' } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 45000, numberFormat: 14 }, B1: { value: 5, numberFormat: '0 m' }, C1: { value: 45000.5, numberFormat: 'dd.mm.yyyy' } })
     expect(r.issues).toEqual([])
   })
 
@@ -91,8 +91,8 @@ describe('xlsx reader: cells', () => {
       workbook: { before: '<workbookPr date1904="1"/>' },
     })
     expect(r.book.dateSystem).toBe(1904)
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 0, format: 14 }, B1: { value: 45000, format: 'dd.mm.yyyy' }, C1: { value: 5, format: '0 m' }, D1: { value: 7 }, E1: { formula: 'A1+1', format: 14 }, F1: { value: 1.5 } })
-    expect(r.cached[0].cells).toEqual({ E1: 1 })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 0, numberFormat: 14 }, B1: { value: 45000, numberFormat: 'dd.mm.yyyy' }, C1: { value: 5, numberFormat: '0 m' }, D1: { value: 7 }, E1: { formula: 'A1+1', numberFormat: 14 }, F1: { value: 1.5 } })
+    expect(storedValues(r)).toEqual({ E1: 1 })
     expect(r.issues).toEqual([])
     expect((await sheet('<row r="1"><c r="A1"><v>1</v></c></row>')).book.dateSystem).toBeUndefined()
   })
@@ -110,6 +110,6 @@ describe('xlsx reader: cells', () => {
 
   it('an empty cell with a style keeps its look; one with the default look is no cell', async () => {
     const r = await sheet('<row r="1"><c r="A1" s="1"/><c r="B1" s="0"/><c r="C1"/></row>', { styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="2"/></cellXfs>' })
-    expect(r.book.sheets[0].cells).toEqual({ A1: { format: 2 } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { numberFormat: 2 } })
   })
 })

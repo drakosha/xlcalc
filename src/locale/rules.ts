@@ -8,17 +8,21 @@
 import type { CellDisplay, CellValue, ErrorCode, NumberFormat } from '../contract.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enDates, enNumber, inSystem, parseDateWith, textReaders, type DateSyntax } from '../dates.js'
-import { displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
+import { builtinCodes, displayWith, EN_BUILTIN, EN_CODES, EN_NAMES, fitPoints, formatWith, generalFormat, generalText, styleIn, typedPoints, type Dialect, type Names, type Style } from '../numfmt.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
-import { LOCALE_FILES } from './registry.js'
-import type { CodePage, RegionalData, RulesClock } from './rules/data.js'
+import { RU_NAMES } from './lcid.js'
+import { localeOf } from './registry.js'
+import type { CodePage, RulesClock } from './rules/data.js'
 import { regionalRules } from './rules/regional.js'
 import type { Locale } from './types.js'
 
-/** The rules of computation of the locales whose file has them (all but en-US), by tag. */
-export const REGIONAL: ReadonlyMap<string, RegionalData> = new Map([...LOCALE_FILES].flatMap(([tag, f]) => (f.regional ? [[tag, f.regional] as const] : [])))
+/** The codes a locale (a loaded locale's tag or an object; en-US without one) shows the built-in formats by, by number: its own, en-US's for the rest (`numfmt/builtin.ts`). */
+export function builtinIn(where: string | Locale | undefined): (id: number) => string {
+  const own = localeOf(where).regional?.builtin
+  return own ? builtinCodes(own) : (id) => EN_BUILTIN[id]
+}
 
 export interface Rules extends CritRules {
   /** The locale of formula text: the words for TRUE and FALSE, error texts, the separators ARRAYTOTEXT writes. */
@@ -74,8 +78,8 @@ const WINDOWS_1252: CodePage = {
   ),
 }
 
-/** The month and day names of a locale code (`[$-409]`): en-US's, or a regional locale's. */
-const namesOf = (lcid: string): Names | undefined => (lcid === '409' ? EN_NAMES : [...REGIONAL.values()].find((d) => d.lcid === lcid))
+/** The month and day names of a locale code (`[$-409]`, `[$-419]`), the same in a book of any locale (`lcid.ts`). */
+const namesOf = (lcid: string): Names | undefined => (lcid === '409' ? EN_NAMES : lcid === '419' ? RU_NAMES : undefined)
 
 /** en-US's style: the measured long date and time, `/` for dates in TEXT and in cells alike. */
 const EN_STYLE: Style = {
@@ -102,11 +106,11 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
   return {
     epoch,
     ...EN_CRIT,
-    ...coercions(number, EN_US.text.booleans, generalText),
+    ...coercions(number, EN_US.booleans, generalText),
     clock,
     critNumber: argument,
     cellNumber: (s) => (/\d/.test(s) ? argument(s) : null),
-    locale: EN_US.text,
+    locale: EN_US,
     decimal: '.',
     group: ',',
     currency: { symbol: '$', before: true, space: '', negative: '()' },
@@ -126,22 +130,24 @@ function englishRules(clock: RulesClock, epoch: number): Rules {
   }
 }
 
-/** The rules of each locale and date system for showing values outside a book (the clock is not read there). */
-const DISPLAY = new Map<string, Rules>()
+/** The rules of each locale object and date system for showing values outside a book (the clock is not read there). */
+const DISPLAY = new WeakMap<Locale, Map<number, Rules>>()
 
-/** Rules that show values in the locale `tag` (one of `LOCALES`; en-US without one) and a date system, kept for later calls. */
-export function displayRules(tag: string | undefined, epoch = 0): Rules {
-  const k = `${tag ?? ''}|${epoch}`
-  let r = DISPLAY.get(k)
-  if (!r) DISPLAY.set(k, (r = rulesOf(tag, { year: () => 1900, read: false }, epoch)))
+/** Rules that show values in a locale (a loaded locale's tag or an object; en-US without one) and a date system, kept for later calls. */
+export function displayRules(where: string | Locale | undefined, epoch = 0): Rules {
+  const locale = localeOf(where)
+  let byEpoch = DISPLAY.get(locale)
+  if (!byEpoch) DISPLAY.set(locale, (byEpoch = new Map()))
+  let r = byEpoch.get(epoch)
+  if (!r) byEpoch.set(epoch, (r = rulesOf(locale, { year: () => 1900, read: false }, epoch)))
   return r
 }
 
 /**
- * The rules of a book in the locale `tag` (one of `LOCALES`; en-US without one) and the date system whose day 0 is
- * `epoch` of the 1900 one, reading `clock` for dates without a year.
+ * The rules of a book in a locale (a loaded locale's tag or an object; en-US without one, and for a locale without
+ * rules of its own) and the date system whose day 0 is `epoch` of the 1900 one, reading `clock` for dates without a year.
  */
-export function rulesOf(tag: string | undefined, clock: RulesClock, epoch = 0): Rules {
-  const file = tag === undefined ? undefined : LOCALE_FILES.get(tag)
-  return file?.regional ? regionalRules(file.text, file.regional, clock, namesOf, epoch) : englishRules(clock, epoch)
+export function rulesOf(where: string | Locale | undefined, clock: RulesClock, epoch = 0): Rules {
+  const locale = localeOf(where)
+  return locale.regional ? regionalRules(locale, locale.regional, clock, namesOf, epoch) : englishRules(clock, epoch)
 }

@@ -319,6 +319,18 @@
   },
   "sortby-one-held-1": {
    "sent": "e064c5b73550383ed32efb42a88d830866795476b806047bd00374cb599550f8"
+  },
+  "binom-sumx-held-1": {
+   "sent": "c6ba20d334ae6c19a3fb78819604aafcfc1fd45f9356ebc89f4169066d28cc9e"
+  },
+  "sumproduct-held-1": {
+   "sent": "813647129e1bea6cb437759d6fdea186be996c29f6311c700c26e351d29bbc87"
+  },
+  "sumx-cell-held-1": {
+   "sent": "2d4bcb10c5e064360ff326577c60ad39e8e3b03317cd49d2ae72ac982d96b8fa"
+  },
+  "tests-cell-held-1": {
+   "sent": "70d7fc3487542ce88bec92d0f89787a1d4b8b00a6ebdd50b4f1f5d9e1f20bec9"
   }
  }
 }

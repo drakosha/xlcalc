@@ -24,10 +24,10 @@ const book = (): BookInput => ({
         D4: { value: 1234.5 },
         B4: { value: 5 },
         E4: { value: 'text' },
-        B9: { value: 46096, format: 'General' },
+        B9: { value: 46096, numberFormat: 'General' },
       },
-      columns: { B: { format: DATE, style: 1, width: 30 } },
-      rows: { 4: { format: '#,##0.00' } },
+      columns: { B: { numberFormat: DATE, style: 1, width: 30 } },
+      rows: { 4: { numberFormat: '#,##0.00' } },
     },
   ],
 })
@@ -66,7 +66,7 @@ describe.each(['closures', 'eval'] as const)('cells in formatted rows and column
     expect(cells.D4).toEqual({ value: 1234.5 })
     expect(cells.B4).toEqual({ value: 5 })
     expect(styles[cells.B3.style!]).toEqual({ font: { bold: true } })
-    expect(cells.B9).toEqual({ value: 46096, format: 'General' })
+    expect(cells.B9).toEqual({ value: 46096, numberFormat: 'General' })
     const texts = (r: ReturnType<typeof compute>) => Object.fromEntries(Object.entries(r.sheets[0].cells).map(([a, c]) => [a, c.text]))
     expect(texts(compute(back, { execution }))).toEqual(texts(result))
     expect(texts(result)).toMatchObject({ B2: 'Sunday, March 15, 2026', B9: '46096', D4: '1,234.50', B6: 'Monday, March 16, 2026' })
@@ -93,7 +93,7 @@ describe('reading a stored cell over its row and column', () => {
     const s = r.book.sheets[0]
     const plain = r.book.styles!.findIndex((x) => Object.keys(x).length === 0)
     expect(plain).toBeGreaterThanOrEqual(0)
-    expect(s.cells).toEqual({ B1: { value: 46096 }, C1: { value: 1 }, B2: { value: 46096, style: plain, format: 'General' }, B3: { value: 46096, style: plain, format: 4 }, B4: { style: plain, format: 'General' } })
+    expect(s.cells).toEqual({ B1: { value: 46096 }, C1: { value: 1 }, B2: { value: 46096, style: plain, numberFormat: 'General' }, B3: { value: 46096, style: plain, numberFormat: 4 }, B4: { style: plain, numberFormat: 'General' } })
     const shown = compute(r.book).sheets[0].cells
     expect([shown.B1.text, shown.B2.text, shown.B3.text]).toEqual(['15 March 2026', '46096', '46,096.00'])
   })
@@ -101,8 +101,8 @@ describe('reading a stored cell over its row and column', () => {
   it("a row's format comes before the column's, and the column's fill where the row has none", async () => {
     const r = await read({ sheets: [{ name: 'S', body: `${COLS}<sheetData><row r="1" s="2" customFormat="1"><c r="B1" s="2"><v>5</v></c><c r="C1" s="2"><v>5</v></c><c r="D1" s="1"><v>5</v></c></row></sheetData>` }], styles: STYLES })
     const plain = r.book.styles!.findIndex((x) => Object.keys(x).length === 0)
-    expect(r.book.sheets[0].rows).toEqual({ 1: { format: 4 } })
-    expect(r.book.sheets[0].cells).toEqual({ B1: { value: 5, style: plain }, C1: { value: 5 }, D1: { value: 5, style: 0, format: 'd mmmm yyyy' } })
+    expect(r.book.sheets[0].rows).toEqual({ 1: { numberFormat: 4 } })
+    expect(r.book.sheets[0].cells).toEqual({ B1: { value: 5, style: plain }, C1: { value: 5 }, D1: { value: 5, style: 0, numberFormat: 'd mmmm yyyy' } })
   })
 })
 
@@ -110,7 +110,7 @@ describe('where a row crosses a column', () => {
   // row 6 bold alone, row 8 a format alone; columns E a fill alone, G a percent alone (as the set lines/files measures)
   const crossing = (): BookInput => ({
     styles: [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }],
-    sheets: [{ name: 'S', cells: { A1: { value: 1 } }, columns: { E: { style: 1 }, G: { format: '0.00%' } }, rows: { 6: { style: 0 }, 8: { format: '0.000' } } }],
+    sheets: [{ name: 'S', cells: { A1: { value: 1 } }, columns: { E: { style: 1 }, G: { numberFormat: '0.00%' } }, rows: { 6: { style: 0 }, 8: { numberFormat: '0.000' } } }],
   })
 
   it("the writer writes the empty cells Excel would show by the row's whole format, with the model's", async () => {
@@ -119,7 +119,7 @@ describe('where a row crosses a column', () => {
     expect([...xml.matchAll(/<c r="([A-Z]+\d+)" s="\d+"\/>/g)].map((m) => m[1])).toEqual(['G6', 'E8'])
     const back = await readXlsx(data)
     expect(back.book.sheets[0].cells).toEqual({ A1: { value: 1 } })
-    expect(back.book.sheets[0].rows).toEqual({ 6: { style: 0 }, 8: { format: '0.000' } })
+    expect(back.book.sheets[0].rows).toEqual({ 6: { style: 0 }, 8: { numberFormat: '0.000' } })
   })
 
   it("a file without those cells reads with the row's look spelled out, as Excel shows them", async () => {
@@ -129,7 +129,7 @@ describe('where a row crosses a column', () => {
     const plain = r.book.styles!.findIndex((x) => Object.keys(x).length === 0)
     // row 6: column G has a format and no cell in it, the row none: General; E6 holds its row's look
     // row 8: no cell under the filled column E: the plain style; row 9 has its cell there, with the row's look
-    expect(r.book.sheets[0].rows).toEqual({ 6: { style: 0, format: 'General' }, 8: { format: 2, style: plain }, 9: { format: 2 } })
+    expect(r.book.sheets[0].rows).toEqual({ 6: { style: 0, numberFormat: 'General' }, 8: { numberFormat: 2, style: plain }, 9: { numberFormat: 2 } })
     expect(r.book.sheets[0].cells).toEqual({ E6: { value: 5 }, E9: { style: plain } })
     const shown = compute({ ...r.book, sheets: [{ ...r.book.sheets[0], cells: { ...r.book.sheets[0].cells, G6: { value: 46096 } } }] }).sheets[0].cells
     expect(shown.G6.text).toBe('46096')

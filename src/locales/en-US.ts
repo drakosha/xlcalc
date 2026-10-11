@@ -3,8 +3,9 @@
  * computation are the engine's own code (`src/locale/rules.ts`), so the file has no regional data. Its messages are
  * every message the engine gives, the text a locale without its own falls back to.
  */
-import type { LocaleFile } from '../locale/file.js'
 import type { Counts, EnglishMessages, Found, NameRule } from '../locale/messages.js'
+import type { Locale } from '../locale/types.js'
+import { ERROR_TEXT } from '../syntax/errors.js'
 
 const found = (f: Found) => (f.t === 'op' || f.t === 'ident' || f.t === 'fn' ? JSON.stringify(f.v) : f.t === 'eof' ? 'end of formula' : f.t)
 
@@ -94,23 +95,25 @@ export const EN_MESSAGES: EnglishMessages = {
   tableNameDefined: (p) => `${JSON.stringify(p.name)} is a defined name (tables and names share one namespace)`,
   tableOverTable: (p) => `${p.range} meets the table ${p.table}`,
   tableOverMerge: (p) => `${p.range} meets the merged area ${p.area}`,
+  headerFormula: (p) => `${p.sheet}!${p.cell} is a header cell of the table ${p.table}: it holds its column's name, not a formula`,
+  validationError: () => 'The value does not meet the data validation rule of this cell',
   explainCells: (p) => `${p.count} cells`,
   explainSpill: (p) => `spilled from ${p.ref}`,
-  // the value as JSON, an error by its code (`#DIV0`)
-  explainValue: ({ value: v }) => (v === undefined ? '' : v !== null && typeof v === 'object' ? `#${v.error}` : JSON.stringify(v)),
+  // the value as JSON, an error as a cell shows it (`#DIV/0!`)
+  explainValue: ({ value: v }) => (v === undefined ? '' : v === null ? 'empty' : typeof v === 'object' ? ERROR_TEXT[v.error] : JSON.stringify(v)),
   explainFormula: (p) => p.formula,
+  explainErrorFrom: (p) => `(error from ${p.ref})`,
+  explainErrorHere: () => '(the error begins here)',
 }
 
-export const EN_US: LocaleFile = {
-  text: {
-    tag: 'en-US',
-    decimalSeparator: '.',
-    listSeparator: ',',
-    arrayColumnSeparator: ',',
-    arrayRowSeparator: ';',
-    booleans: { TRUE: 'TRUE', FALSE: 'FALSE' },
-    errors: {},
-    functions: {},
-  },
-  messages: EN_MESSAGES,
+/** en-US's formula text, the invariant syntax; its messages are `EN_MESSAGES`, which every locale falls back to. */
+export const EN_US: Locale = {
+  tag: 'en-US',
+  decimalSeparator: '.',
+  listSeparator: ',',
+  arrayColumnSeparator: ',',
+  arrayRowSeparator: ';',
+  booleans: { TRUE: 'TRUE', FALSE: 'FALSE' },
+  errors: {},
+  functions: {},
 }

@@ -82,7 +82,8 @@ A formula stores its structured references as an xlsx file does, whatever form w
 `toLocal` shows a formula as Excel shows it: `Sales[@Qty]`, `Sales[@[Unit Price]]`, `Sales[@]`, `Sales` for the table alone. Given the table of the formula's cell, `toLocal(formula, locale, { table: 'Sales' })` drops the name where Excel drops it in a cell of that table: before one column or a span of columns of the data or of the formula's row (`[@Qty]`, `SUM([Qty])`). A reference with another specifier keeps it (`Sales[#Headers]`, `Sales[[#Totals],[Qty]]`).
 
 ```js
-import { toLocal, enUS, ruRU } from 'xlcalc'
+import { toLocal, enUS } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
 const f = 'Sales[[#This Row],[Qty]]*SUM(Sales[[#Totals],[Price]])'
 console.log(toLocal(f, enUS).formula) // → Sales[@Qty]*SUM(Sales[[#Totals],[Price]])
@@ -129,7 +130,7 @@ A reference written by address into a table's data grows at its edges as the tab
 | the totals row | loses it |
 | the whole table | is deleted; references to it become `#REF!` |
 
-Excel refuses some, and `restructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows that meet two tables deleted unless both go whole (one table gone with a single row of another is refused too), a header row deleted without the rest of its table.
+Excel refuses some, and `editStructure` returns `{ ok: false, code: 'table' }`: rows inserted at a row inside two tables at once (side by side), rows that meet two tables deleted unless both go whole (one table gone with a single row of another is refused too), a header row deleted without the rest of its table.
 
 ### Columns
 
@@ -146,12 +147,12 @@ In a ru-RU book a new column is named `Столбец1`.
 Typing over a header cell renames its column, and `Session.setCells` does this: every reference to the column follows, calculated columns too.
 
 ```js
-import { openSession } from 'xlcalc'
+import { createSession } from 'xlcalc'
 
 const book = { sheets: [{ name: 'S', cells: { A1: { value: 'Qty' }, A2: { value: 5 }, C1: { formula: 'SUM(T[Qty])' } }, tables: [{ name: 'T', range: 'A1:A2', columns: [{ name: 'Qty' }] }] }] }
-const s = openSession(book)
+const s = createSession(book)
 s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 'Quantity' } }])
-console.log(s.book().sheets[0].cells.C1.formula, s.book().sheets[0].tables[0].columns[0].name) // → SUM(T[Quantity]) Quantity
+console.log(s.getBook().sheets[0].cells.C1.formula, s.getBook().sheets[0].tables[0].columns[0].name) // → SUM(T[Quantity]) Quantity
 ```
 
 A number or a boolean typed into a header cell becomes its text (`2024`, `1,5` in ru-RU), as the cell's own number format shows it when it has one, whatever the column's width (`1,50` by `0.00`, `31.01.2025` by the short date in ru-RU); where that format shows it as General does, the text is the one `&` writes (`0,000000001`, not `1E-09`). A cleared header cell names the column `Column1`, the first free number. A name another column already has gives a number to the column further right: typing `Price` over `Qty` when the next column is `Price` leaves `Price` and `Price2`. A formula in a header cell is an `InputError`.
@@ -160,7 +161,7 @@ A number or a boolean typed into a header cell becomes its text (`2024`, `1,5` i
 
 A formula copied or moved out of its table gets the table's name in its references: `[@Qty]*[@Price]` pasted outside is `Sales[@Qty]*Sales[@Price]`. A copy of a whole table is a new table, named after it with a number (`Sales3` from a book of one table, as Excel numbers it), whose formulas refer to the new table. A whole table cut and pasted moves, to another sheet too. The formula of a calculated column, which a row inserted into the table gets, is copied and moved with the table as the formulas of its cells are: `A2*2` in a table pasted ten rows down becomes `A12*2`, and a reference to a cell left behind gets its sheet when the table moves to another sheet.
 
-A paste over header cells renames their columns to what lands there: the text of a value, or of a formula's value (a copy of `=SUM(Sales[Qty])` over a header gives the column the name `11`). Header cells cut away leave their columns named `Column1` and on.
+A paste over header cells renames their columns to what lands there: the text of a value, or of a formula's value (a copy of `=SUM(Sales[Qty])` over a header gives the column the name `11`). Header cells cut away leave their columns named `Column1` and on. A target that is no multiple of the copied cells gets one copy at its top-left cell, as any copy does ([Structure operations](structure.md)), and its other cells keep their formulas, one in another table's calculated column too.
 
 ### Tables themselves
 
@@ -201,14 +202,15 @@ Deleting a sheet takes the references to its tables: they become `#REF!`. Renami
 | `names-ru-tables-held` (ru-RU) | 3 | predicted before Excel took them: tables renamed `ИСТИНА`, `ложь` and `TRUE` |
 | `delete-held` | 13 | predicted before Excel took them: rows and columns deleted that take one table whole and part of another, or both whole |
 | `headers-ru-held` (ru-RU) | 13 | predicted before Excel took them: numbers, dates and text typed into a header cell, the formulas over the column in English and in Russian |
+| `paste-names-held` | 5 | predicted before Excel took them: a table's cells pasted onto a target that is no multiple of them, a row inserted where a calculated column's formula differs from its cells', defined names shaped like cells |
 
-The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`); `delete-held` on 5 of 13 cases, as Excel for Mac and Excel for Windows both refuse a deletion that takes one table whole and part of another, which the engine took (fixed); `headers-ru-held` on 3 of 13 cases: the column's name and the stored formulas on 10, where a header cell's own number format (`0.00`, the short date) names the column as it shows the number and the engine named it by General (fixed), and Excel read typed text as a date (a known difference); `toLocal` in ru-RU split a column named `1,5` at its comma and put it in brackets after `@` (fixed). The sets of names came out as predicted on 34 of 54 cases in Excel for Mac; [Defined names](names.md) has the misses and what was fixed.
+The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`); `delete-held` on 5 of 13 cases, as Excel for Mac and Excel for Windows both refuse a deletion that takes one table whole and part of another, which the engine took (fixed); `headers-ru-held` on 3 of 13 cases: the column's name and the stored formulas on 10, where a header cell's own number format (`0.00`, the short date) names the column as it shows the number and the engine named it by General (fixed), and Excel read typed text as a date (a known difference); `toLocal` in ru-RU split a column named `1,5` at its comma and put it in brackets after `@` (fixed). The sets of names came out as predicted on 34 of 54 cases in Excel for Mac; [Defined names](names.md) has the misses and what was fixed. `paste-names-held` came out as predicted on 1 of 5 cases in both Excels: a copy of formulas onto a target that is no multiple of them took the target's other cells too, and a formula there in another table's calculated column got the copied table's name (fixed); formulas pasted into part of a calculated column fill the whole column in Excel (known); defined names past the sheet (`XFE1`, `A0`) are names (fixed); and a row inserted where a calculated column's formula differs from its cells' takes the column's formula, as predicted.
 
 The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the sets `refs`, `refs-held`, `ops` and `ops-held`: Excel opens each file `writeXlsx` writes and saves it, the files it saved read back to the books written, and the values Excel stored in them equal the engine's.
 
 ## Known differences
 
-- Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `restructure` (`insertRows` inside it fills the calculated columns).
+- Excel's AutoCorrect extends a table when a value is typed right below it or right of it, and fills a calculated column when a formula is typed into an empty column of a table. `setCells` leaves the table and the other cells as they are; a host extends a table with `editStructure` (`insertRows` inside it fills the calculated columns). Formulas pasted into part of a calculated column fill the whole column in Excel too; `copyRange` pastes the cells alone.
 - A table renamed to a name Excel does not take (`AB12`, `1Ставка`, `?Продажи`) or to a defined name: Excel's object model makes the name one it takes (`AB12_`, `_1Ставка`, `_?Продажи`, `Rate_1`), as its name box refuses it; `renameTable` refuses with `table_name`.
 - In ru-RU Excel for Mac keeps a table renamed `ИСТИНА` or `ложь` and makes `TRUE_` of `TRUE`; Excel for Windows makes `ИСТИНА_` and keeps `TRUE`, as both do with a defined name. `renameTable` refuses all three: it follows Windows for `ИСТИНА`, and keeps formulas in en-US text, where `TRUE` is the boolean.
 - Text typed into a cell is read by Excel as a number, a date or a boolean where it can be (`2025-01-31` in ru-RU is a date, shown `31.01.2025`), and a header cell typed so names its column by what it shows; `setCells` takes a value as given, so the column is named `2025-01-31`.

@@ -5,53 +5,38 @@
  * its own.
  */
 import type { BookInput, CellInput, SheetInput } from '../contract.js'
-import { spend } from '../exec/budget.js'
 import type { Message } from '../locale/messages.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
-import { contains, meets, parseRange, type Axis, type Rect } from './area.js'
+import { contains, hi, intersect, lo, meets, parseRange, rectText, shiftRect, type Axis, type Rect } from './area.js'
+import { arraysOf } from './grid.js'
 import type { Paste } from './paste.js'
-
-/** The array formulas of a sheet: their cell and area. */
-export function areasOf(sheet: SheetInput): [string, Rect][] {
-  const out: [string, Rect][] = []
-  for (const addr of Object.keys(sheet.cells)) {
-    const c = sheet.cells[addr]
-    spend(1)
-    if (c.array !== undefined && c.formula !== undefined) out.push([addr, parseRange(c.array)!])
-  }
-  return out
-}
-
-const text = (x: Rect) => (x.r1 === x.r2 && x.c1 === x.c2 ? formatAddress(x.r1, x.c1) : `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`)
+import { sheetOf } from './rewrite.js'
 
 /** A cell moved from `from` to `to`: an array formula's area goes along. */
 export function relocated(cell: CellInput, from: string, to: string): CellInput {
   if (cell.array === undefined || from === to) return cell
   const [a, b] = [parseAddress(from), parseAddress(to)]
-  const x = parseRange(cell.array)!
-  const [dr, dc] = [b.row - a.row, b.col - a.col]
-  return { ...cell, array: text({ r1: x.r1 + dr, r2: x.r2 + dr, c1: x.c1 + dc, c2: x.c2 + dc }) }
+  return { ...cell, array: rectText(shiftRect(parseRange(cell.array)!, b.row - a.row, b.col - a.col)) }
 }
 
 /** Why Excel refuses to insert (`n` > 0) or delete lines of `sheet` at `at`, or null: lines inside an area, part of an area deleted. */
 export function shiftRefusal(sheet: SheetInput, axis: Axis, at: number, n: number): Message | null {
-  const [lo, hi] = axis === 'r' ? (['r1', 'r2'] as const) : (['c1', 'c2'] as const)
-  for (const [addr, x] of areasOf(sheet)) {
-    const cut = n > 0 ? at > x[lo] && at <= x[hi] : at <= x[hi] && at - n - 1 >= x[lo] && !(at <= x[lo] && at - n - 1 >= x[hi])
+  for (const [addr, x] of arraysOf(sheet)) {
+    const [a, b] = [lo(x, axis), hi(x, axis)]
+    const cut = n > 0 ? at > a && at <= b : at <= b && at - n - 1 >= a && !(at <= a && at - n - 1 >= b)
     if (cut) return refuse(sheet.name, addr, x)
   }
   return null
 }
 
-const sheetOf = (book: BookInput, name: string) => book.sheets.find((s) => sheetKey(s.name) === sheetKey(name))!
-const refuse = (sheet: string, cell: string, x: Rect): Message => ({ key: 'arrayPart', sheet, cell, area: text(x) })
+const refuse = (sheet: string, cell: string, x: Rect): Message => ({ key: 'arrayPart', sheet, cell, area: rectText(x) })
 
 /** Why Excel refuses a move or a paste, or null: a move taking part of an area, cells landing on part of one that stays. */
 export function arrayRefusal(book: BookInput, p: Paste): Message | null {
-  if (p.move) for (const [addr, x] of areasOf(sheetOf(book, p.from))) if (meets(x, p.src) && !contains(p.src, x)) return refuse(p.from, addr, x)
+  if (p.move) for (const [addr, x] of arraysOf(sheetOf(book, p.from))) if (meets(x, p.src) && !contains(p.src, x)) return refuse(p.from, addr, x)
   const moving = (x: Rect) => p.move && sheetKey(p.from) === sheetKey(p.to) && contains(p.src, x)
-  for (const [addr, x] of areasOf(sheetOf(book, p.to))) if (meets(x, p.area) && !contains(p.area, x) && !moving(x)) return refuse(p.to, addr, x)
+  for (const [addr, x] of arraysOf(sheetOf(book, p.to))) if (meets(x, p.area) && !contains(p.area, x) && !moving(x)) return refuse(p.to, addr, x)
   return null
 }
 
@@ -61,11 +46,12 @@ export function arrayRefusal(book: BookInput, p: Paste): Message | null {
  */
 export function copiedCells(sheet: SheetInput, src: Rect, shift: (formula: string, dr: number, dc: number) => string): [string, CellInput][] {
   const out: [string, CellInput][] = []
-  for (const [addr, x] of areasOf(sheet)) {
-    if (!meets(x, src) || contains(src, x)) continue
+  for (const [addr, x] of arraysOf(sheet)) {
+    const part = contains(src, x) ? null : intersect(x, src)
+    if (!part) continue
     const top = sheet.cells[addr]
-    for (let r = Math.max(x.r1, src.r1); r <= Math.min(x.r2, src.r2); r++)
-      for (let c = Math.max(x.c1, src.c1); c <= Math.min(x.c2, src.c2); c++) out.push([formatAddress(r, c), { ...top, formula: shift(top.formula!, r - x.r1, c - x.c1), array: formatAddress(r, c) }])
+    for (let r = part.r1; r <= part.r2; r++)
+      for (let c = part.c1; c <= part.c2; c++) out.push([formatAddress(r, c), { ...top, formula: shift(top.formula!, r - x.r1, c - x.c1), array: formatAddress(r, c) }])
   }
   return out
 }

@@ -13,7 +13,7 @@
  * Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows and columns
  * carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellResult, CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
+import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, RowInput, SheetInput } from '../../contract.js'
 import { lookOf, sheetLines, type Look } from '../../layout/lines.js'
 import { lines, type Line } from '../../layout/spans.js'
 import { dateToSerial, formatAddress, indexToCol, MAX_COLS, parseAddress } from '../../model.js'
@@ -29,6 +29,7 @@ import { commentsXml, hyperlinksXml, paneXml, vmlXml } from './parts.js'
 import { conditionalXml } from './conditional.js'
 import { validationsXml } from './validation.js'
 import type { StyleWriter } from './styles.js'
+import type { ResultCell } from './snapshot.js'
 
 /** Excel's limit on a cell's text. */
 export const MAX_TEXT = 32_767
@@ -53,8 +54,8 @@ export interface SheetContext {
   /** Upper-case names (`sheetKey`) of the book's sheets. */
   sheets: Set<string>
   mode: 'formulas' | 'values'
-  /** The sheet's cells of the result, when there is one. */
-  result?: Record<string, CellResult>
+  /** The sheet's cells of the result, when the file stores values of formulas. */
+  result?: Record<string, ResultCell>
   /** The value metadata index (`vm`, 1-based) of an error Excel stores as a rich value: #SPILL!, #CALC!. */
   richError(code: 'SPILL' | 'CALC'): number
   /** The book's tables with their columns, and the one holding a cell of this sheet. */
@@ -156,14 +157,14 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const where = (cell: string) => ({ sheet: sheet.name, cell })
   const sheetLook = sheetLines(sheet)
   // a sheet whose rows and columns have no look writes each cell's own
-  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.format !== undefined))
+  const lined = [sheet.rows, sheet.columns].some((m) => m && Object.values(m).some((e) => e.style !== undefined || e.numberFormat !== undefined))
   const sAttr = (addr: string, c: CellInput | undefined) => {
     let look: Look | undefined = c
     if (lined) {
       const { row, col } = parseAddress(addr)
       look = sheetLook.look(row, col, c)
     }
-    const xf = look ? styles.xf(look.style, look.format) : 0
+    const xf = look ? styles.xf(look.style, look.numberFormat) : 0
     return xf ? ` s="${xf}"` : ''
   }
   // `cm` marks a dynamic array formula
@@ -186,6 +187,8 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
       put(addr, cellXml(addr, c, v))
       continue
     }
+    // a result without the formula's value (`values: 'preserve'`)
+    if (result && !res) issues.add('noCachedValues', mode === 'formulas' ? 'a formula without a value in the result is written without one: Excel computes it when it opens the file' : 'a formula without a value in the result is written as an empty cell', where(addr))
     const tree = mode === 'formulas' ? fileTree(c.formula, ctx.sheets, ctx.tables, ctx.tableAt(addr)) : null
     if (mode === 'formulas' && !tree) issues.add('formula', 'a formula the file cannot hold (it does not parse, or names a sheet, a table or a column the book does not have) is written as its value', where(addr))
     if (!tree) {
@@ -212,7 +215,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   for (const [lo, hi] of rowLines) for (let r = lo; r <= hi; r++) rowsUsed.add(r)
   const rowAttrs = new Map<number, string>()
   for (const [lo, hi, e] of rowLines) {
-    const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
+    const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
     const attrs = (e.height !== undefined ? ` ht="${e.height}" customHeight="1"` : '') + (e.hidden ? ' hidden="1"' : '') + (xf ? ` s="${xf}" customFormat="1"` : '') + outlineAttrs(e)
     for (let r = lo; r <= hi; r++) rowAttrs.set(r, attrs)
   }
@@ -233,7 +236,7 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
   const maxCol = keys.reduce((m, x) => Math.max(m, x % MAX_COLS), 0)
   const dim = keys.length ? `${indexToCol(minCol)}${Math.floor(first / MAX_COLS) + 1}:${indexToCol(maxCol)}${Math.floor(last / MAX_COLS) + 1}` : 'A1'
   const cols = lines(sheet.columns, 'c').map(([lo, hi, e]) => {
-    const xf = e.style !== undefined || e.format !== undefined ? styles.xf(e.style, e.format) : 0
+    const xf = e.style !== undefined || e.numberFormat !== undefined ? styles.xf(e.style, e.numberFormat) : 0
     const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
@@ -292,15 +295,15 @@ export function writeSheet(sheet: SheetInput, index: number, ctx: SheetContext):
  * cells itself where lines it formats cross; `put` gets each with the model's cell format.
  */
 function crossings(rows: Line<RowInput>[], cols: Line<ColumnInput>[], styles: StyleWriter, put: (r: number, c: number, xf: number) => void) {
-  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => e.style !== undefined || e.format !== undefined)
+  const looked = <T extends Look>(ls: Line<T>[]) => ls.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
   const withCols = looked(cols)
   if (!withCols.length) return
   for (const [rlo, rhi, row] of looked(rows)) {
-    const rowXf = styles.xf(row.style, row.format)
+    const rowXf = styles.xf(row.style, row.numberFormat)
     for (const [clo, chi, col] of withCols) {
       const look = lookOf(undefined, row, col)
-      const xf = styles.xf(look.style, look.format)
-      if (xf === (rowXf || styles.xf(col.style, col.format))) continue
+      const xf = styles.xf(look.style, look.numberFormat)
+      if (xf === (rowXf || styles.xf(col.style, col.numberFormat))) continue
       for (let r = rlo; r <= rhi; r++) for (let c = clo; c <= chi; c++) put(r, c, xf)
     }
   }

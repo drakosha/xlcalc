@@ -6,13 +6,14 @@
  * columns line by line (a line of size 0 hidden), iterative calculation with Excel's defaults filled in.
  */
 import type { BookInput, CellInput, CellResult, CellStyle, CellValue, ComputeResult, NumberFormat, TableInput } from '../../../src/contract.js'
-import { lookOf as lineLook } from '../../../src/layout/lines.js'
 import { entryAt, lines } from '../../../src/layout/spans.js'
 import { epochOf } from '../../../src/dates.js'
 import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
 import { canonical, parse, validate } from '../../../src/syntax.js'
 import { tableAt, tablesOf, type Tables } from '../../../src/tables/model.js'
 import { BUILTIN_ID } from '../../../src/xlsx/styles/numfmt.js'
+import { numberFormatOf } from '../stored.js'
+import type { XlsxCached } from '../../../src/xlsx/types.js'
 
 export interface Difference {
   place: string
@@ -80,12 +81,13 @@ const ERROR_FORMULA: Partial<Record<string, string>> = { DIV0: '#DIV/0!', NA: '#
 
 type Look = { style?: CellStyle; format?: NumberFormat }
 
-function lookOf(book: BookInput, x: { style?: number; format?: NumberFormat }): Look {
+function lookOf(book: BookInput, x: { style?: number; numberFormat?: NumberFormat; format?: NumberFormat }): Look {
   const out: Look = {}
   const style = normStyle(x.style === undefined ? undefined : book.styles?.[x.style])
   if (style) out.style = style
   // a file stores a code that every locale shows as a built-in format by that format's number
-  if (x.format !== undefined && x.format !== 'General' && x.format !== 0) out.format = typeof x.format === 'string' ? (BUILTIN_ID.get(x.format) ?? x.format) : x.format
+  const f = numberFormatOf(x)
+  if (f !== undefined && f !== 'General' && f !== 0) out.format = typeof f === 'string' ? (BUILTIN_ID.get(f) ?? f) : f
   return out
 }
 
@@ -106,12 +108,13 @@ export function entries(book: BookInput, values?: ComputeResult): Map<string, st
     // #CALC! has no formula spelling: the reader leaves it out
     const fromValue = (v: CellValue): Record<string, unknown> =>
       v === null ? { value: 0 } : typeof v === 'object' ? (v.error === 'CYCLE' ? { value: 0 } : ERROR_FORMULA[v.error] ? { formula: ERROR_FORMULA[v.error] } : {}) : { value: v }
-    // a look a cell repeats from its row or column (`lineLook`) is not its own
+    // a look a cell repeats from its row, else its column, is not its own
     const rowLines = lines(s.rows, 'r')
     const colLines = lines(s.columns, 'c')
     const inherited = (addr: string): Look => {
       const { row, col } = parseAddress(addr)
-      return lookOf(book, lineLook(undefined, entryAt(rowLines, row), entryAt(colLines, col)))
+      const [r, k] = [entryAt(rowLines, row), entryAt(colLines, col)]
+      return lookOf(book, { style: r?.style ?? k?.style, numberFormat: numberFormatOf(r) ?? numberFormatOf(k) })
     }
     for (const [addr, c] of Object.entries(s.cells) as [string, CellInput][]) {
       const own = lookOf(book, c)
@@ -169,13 +172,13 @@ export function compareBooks(written: Map<string, string>, read: Map<string, str
 const plain = (v: CellValue | undefined): string => (v === undefined ? 'none' : v === null ? '0' : typeof v === 'number' ? String(Number(v.toPrecision(15))) : stable(v))
 
 /** Cells where the values Excel stored differ from the engine's: formulas and the cells their arrays spilled into. */
-export function compareCached(result: ComputeResult, cached: { name: string; cells: Record<string, CellValue> }[]): Difference[] {
+export function compareCached(result: ComputeResult, cached: XlsxCached): Difference[] {
   const out: Difference[] = []
   result.sheets.forEach((s, i) => {
-    const stored = cached[i]?.cells ?? {}
+    const stored = cached.sheets[i]?.cells ?? {}
     const places = new Set([...Object.keys(stored), ...Object.entries(s.cells).flatMap(([a, c]) => (c.formula !== undefined || c.spillOf !== undefined ? [a] : []))])
     for (const addr of places) {
-      const [engine, excel] = [plain(s.cells[addr]?.value), plain(stored[addr])]
+      const [engine, excel] = [plain(s.cells[addr]?.value), plain(stored[addr]?.value)]
       if (engine !== excel) out.push({ place: `${s.name}!${addr}`, written: engine, read: excel })
     }
   })

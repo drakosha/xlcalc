@@ -6,7 +6,7 @@
  * fraction of what a structured clone of it takes.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput } from '../src/index.js'
+import { compute, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { pack, unpack, unpackSlowly, type Sent } from '../src/worker/pack.js'
 import { BOOKS, chainBook, CLOCK } from './async-books.js'
@@ -20,7 +20,7 @@ const isText = (s: Sent) => (s as { packed?: number }).packed === 1
 const withMeta: BookInput = {
   styles: [{ font: { bold: true } }],
   names: [{ name: 'rate', ref: '0.2' }],
-  sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { ids: [1, 2], note: 'x', nested: { ok: true } } }, A2: { formula: 'A1*rate', style: 0, format: undefined }, B1: { value: { date: '2025-01-31' } } }, rows: { '2': { hidden: true } }, columns: { B: { width: 12 } } }],
+  sheets: [{ name: 'S', cells: { A1: { value: 1, meta: { ids: [1, 2], note: 'x', nested: { ok: true } } }, A2: { formula: 'A1*rate', style: 0, numberFormat: undefined }, B1: { value: { date: '2025-01-31' } } }, rows: { '2': { hidden: true } }, columns: { B: { width: 12 } } }],
 }
 
 describe('a book as text', () => {
@@ -57,7 +57,7 @@ describe('a book as text', () => {
     const before = structuredClone(book)
     const p = await pool({ threads: 1 })
     pools.push(p)
-    const opening = p.openSession(book, { clock: CLOCK })
+    const opening = p.createSession(book, { clock: CLOCK })
     // the large book is written between turns: change it right away
     const data = book.sheets[0]
     const [first, second] = Object.keys(data.cells)
@@ -66,8 +66,8 @@ describe('a book as text', () => {
     data.cells.ZZ9 = { value: 1 }
     book.sheets[1] = { name: 'Other', cells: {} }
     const s = await opening
-    expect(await s.book()).toEqual(before)
-    expect(await s.hash()).toBe(compute(before, { clock: CLOCK }).hash)
+    expect(await s.getBook()).toEqual(before)
+    expect(await s.getHash()).toBe(compute(before, { clock: CLOCK }).hash)
   }, 60_000)
 
   // more cells than one chunk, so the book is written between turns; -0 sends it as objects once a chunk finds it
@@ -85,20 +85,20 @@ describe('a book as text', () => {
   }
 
   describe.each(['closures', 'eval'] as const)('is taken at once in each form, %s', (execution) => {
-    it.each([['as text', false], ['as objects', true]] as const)('%s: openSession and compute', async (_, negZero) => {
+    it.each([['as text', false], ['as objects', true]] as const)('%s: createSession and compute', async (_, negZero) => {
       const before = large(negZero)
       const expected = compute(before, { clock: CLOCK, execution }).hash
       const p = await pool({ threads: 1 })
       pools.push(p)
       const book = large(negZero)
-      const opening = p.openSession(book, { clock: CLOCK, execution })
+      const opening = p.createSession(book, { clock: CLOCK, execution })
       const computing = p.compute(book, { clock: CLOCK, execution })
       change(book)
       const s = await opening
       const r = await computing
       expect([r.sheets[0].name, r.sheets[0].cells.B1.value, r.sheets[0].cells.B2.value, r.hash]).toEqual(['S', 2, 6, expected])
-      expect(await s.hash()).toBe(expected)
-      expect((await s.book()).sheets[0].name).toBe('S')
+      expect(await s.getHash()).toBe(expected)
+      expect((await s.getBook()).sheets[0].name).toBe('S')
     }, 60_000)
 
     it('as objects: a session comes back as it was taken after its thread is lost and after it left a full thread', async () => {
@@ -106,19 +106,19 @@ describe('a book as text', () => {
       const lost = await inside({ threads: 1 })
       pools.push(lost.calc)
       const book = large(true)
-      const opening = lost.calc.openSession(book, { clock: CLOCK, execution })
+      const opening = lost.calc.createSession(book, { clock: CLOCK, execution })
       change(book)
       const s = await opening
       lost.crash(0)
-      expect(await s.hash()).toBe(expected)
+      expect(await s.getHash()).toBe(expected)
       const full = await pool({ threads: 1, maxSessionsPerThread: 1 })
       pools.push(full)
       const other = large(true)
-      const first = full.openSession(other, { clock: CLOCK, execution })
+      const first = full.createSession(other, { clock: CLOCK, execution })
       change(other)
       const left = await first
-      await full.openSession(chainBook(2), { clock: CLOCK, execution })
-      expect(await left.hash()).toBe(expected)
+      await full.createSession(chainBook(2), { clock: CLOCK, execution })
+      expect(await left.getHash()).toBe(expected)
     }, 60_000)
   })
 
@@ -150,10 +150,10 @@ describe('a book as text', () => {
       if (!done) setImmediate(tick)
     }
     setImmediate(tick)
-    const s = await p.openSession(book, { clock: CLOCK })
+    const s = await p.createSession(book, { clock: CLOCK })
     done = true
     // the pool copied the book and cloned it to the thread in one stretch: more than half a clone
     expect(worst).toBeLessThan(clone / 3)
-    expect(await s.hash()).toBe(openSession(book, { clock: CLOCK }).hash())
+    expect(await s.getHash()).toBe(createSession(book, { clock: CLOCK }).getHash())
   }, 60_000)
 })

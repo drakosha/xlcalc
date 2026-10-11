@@ -6,14 +6,15 @@ The rules below were measured in Excel 16.113 for Mac, en-US and ru-RU.
 
 ## API
 
-- `compute(book, { display })` and `openSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `format` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `restructure`.
+- `compute(book, { display })` and `createSession(book, { display })`. `display` is `true` by default, and then every cell in `sheets[].cells` has `text` (spilled cells too) and `color` when its section has one. Session edits return these fields for the cells they list, and also list cells whose text or colour changed while their value did not: a new `format` through `setCells`, a width, a row or column format or a merged area through `setLayout`, a moved cell through `editStructure`.
 - `display: false` returns values only and spends nothing on formatting.
-- `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`.
+- `displayValue(value, { format, locale, width, dateSystem })` formats one value without a book, for example a cell being edited. It takes a value as results give it: a number, text, a boolean, `null` or `{ error }`. Without `width` the width is not limited: General keeps the digits it shows in a wide column, no number turns into `#`, and a fill (`*x`) has no column to fill and drops out, as in `TEXT`. With a width it shows what a cell of that column shows; Excel's default column is `width: 8.83203125`.
+- `builtinFormatCode(id, locale)` gives the code a built-in format shows by in a locale, from the tables below (`builtinFormatCode(14, 'ru-RU')` is `dd.mm.yyyy`), and undefined for a number that is none: `builtinFormatCode(id) !== undefined` tells whether a number is a built-in format.
 - `fitColumns(book, result, sheet, columns)`, the layout edit `{ sheet, columns, fit: true }` and `entryWidth(value, opts)` give the widths Excel gives columns by AutoFit and as numbers are typed ([Fitting columns](#fitting-columns)).
 
 The number always stays in `value`. The text depends on the value, the format, the locale and the column width, so it is not part of the values hash, and a hash does not change when a column gets wider.
 
-A cell's format is its own `format`, else its row's, else its column's. A format is a code, or the number of a built-in format. Its width is its column's `width` (in xlsx units), or the width of all columns of the merged area it starts.
+A cell's format is its own `numberFormat`, else its row's, else its column's. A format is a code, or the number of a built-in format. Its width is its column's `width` (in xlsx units), or the width of all columns of the merged area it starts.
 
 ## Width
 
@@ -33,7 +34,7 @@ Character widths were measured by fills (`0*x` repeats `x` across the column, an
 | 9 | `m M Ж М` |
 | 10 | `W Ш Щ Ю` |
 
-Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and the letters of another script in its locale's file (`glyphWidths`: the Cyrillic letters and `₽` in ru-RU's). They count in books of every locale. A character that no table has counts as a digit.
+Latin letters, digits and signs are in `src/numfmt/glyphs.ts`, and so are the Cyrillic letters and `₽`. They count in books of every locale, whatever locales are loaded. A character that no table has counts as a digit.
 
 A merged area is as wide as its columns together.
 
@@ -82,7 +83,7 @@ A section writes the minus of a negative number unless it can only take negative
 
 ## Built-in formats
 
-An xlsx file stores some formats by number alone, without a code. A format here can be such a number, from 0 to 49: `{ value: 45688.75, format: 14 }`. Excel shows some of them by the locale, so the same number shows differently in en-US and ru-RU.
+An xlsx file stores some formats by number alone, without a code. A format here can be such a number, from 0 to 49: `{ value: 45688.75, numberFormat: 14 }`. Excel shows some of them by the locale, so the same number shows differently in en-US and ru-RU.
 
 | number | en-US | ru-RU |
 |---|---|---|
@@ -99,11 +100,11 @@ An xlsx file stores some formats by number alone, without a code. A format here 
 | 41 to 44 | the accounting formats with `$` | the accounting formats with `₽` after the amount |
 | 45 to 49 | `mm:ss`, `[h]:mm:ss`, `mm:ss.0`, `##0.0E+0`, `@` | the same |
 
-In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `format`. `src/numfmt/builtin.ts` has the en-US codes, ru-RU's locale file (`src/locales/ru-RU.ts`) the ru-RU ones.
+In en-US, 14 shows 2025-01-31 as `1/31/2025` and 38 shows −1234.5 as `(1,235)` in red. In ru-RU they show `31.01.2025` and `-1 235`, and 20 shows 6 in the morning as `6:00`. A result keeps the number in `numberFormat`. `src/numfmt/builtin.ts` has the en-US codes, ru-RU's locale file (`src/locales/ru-RU.ts`) the ru-RU ones, and `builtinFormatCode` gives them; a value shows by the code as by the number in both locales (`test/builtin-format-code.test.ts`).
 
 The codes are those Excel for Windows shows. Excel for Mac shows the short date of en-US as `m/d/yy` (`1/31/25`) and the times of ru-RU with a leading zero (`06:00`); the engine follows Windows there.
 
-A format written as a code always shows as written. `format: 'm/d/yy'` shows `1/31/25` in ru-RU too.
+A format written as a code always shows as written. `numberFormat: 'm/d/yy'` shows `1/31/25` in ru-RU too.
 
 ## Locales
 
@@ -135,14 +136,14 @@ Excel widens columns by itself in two places, and a host that shows a book as Ex
 ```js
 import { compute, entryWidth, fitColumns } from 'xlcalc'
 
-const book = { sheets: [{ name: 'S', cells: { A1: { value: 'abc' }, B1: { value: 46096, format: 'd mmmm yyyy' }, C1: { value: 'Итого' } } }] }
+const book = { sheets: [{ name: 'S', cells: { A1: { value: 'abc' }, B1: { value: 46096, numberFormat: 'd mmmm yyyy' }, C1: { value: 'Итого' } } }] }
 console.log(fitColumns(book, compute(book), 'S', 'A:C')) // → { A: 3.83203125, B: 12.6640625, C: 5.6640625 }
-console.log(entryWidth(1234567890), entryWidth(46096, { format: 'd mmmm yyyy', width: 20 })) // → 11.1640625 undefined
+console.log(entryWidth(1234567890), entryWidth(46096, { numberFormat: 'd mmmm yyyy', width: 20 })) // → 11.1640625 undefined
 ```
 
 ### AutoFit
 
-`fitColumns(book, result, sheet, columns)` gives the widths for a computed book, and the layout edit `{ sheet, columns: 'B:D', fit: true }` sets them in a session (`setLayout` returns the cells that show otherwise, `layout()` the widths). A column gets the width of its widest cell, each value by its format in the book's locale, laid out as Excel lays it out for AutoFit, which is not quite how it shows it:
+`fitColumns(book, result, sheet, columns)` gives the widths for a computed book, and the layout edit `{ sheet, columns: 'B:D', fit: true }` sets them in a session (`setLayout` returns the cells that show otherwise, `getLayout()` the widths). A column gets the width of its widest cell, each value by its format in the book's locale, laid out as Excel lays it out for AutoFit, which is not quite how it shows it:
 
 - Text of ASCII characters alone is measured by the widths of the table above. Of `w` points of text, the column gets `w + 7` points, two more than the padding needs; from about 90 points of text Excel counts a thirtieth more of it, and the column gets `floor(w · 31/30) + 5`. `abc` (16 points) gets 23, a text of 300 points 315.
 - Text with any other character (Cyrillic, `₽`, `é`) is measured, all its characters, by the font's advance widths, which `src/numfmt/advances.ts` takes from Carlito, a font metrically compatible with Calibri (in 1/2048 of 11 points): of `r` points, the column gets the larger of `round(r) + 7` and `floor(r · 31/30) + 5`. `Итого` is 26.7 points and gets 34.
@@ -161,11 +162,11 @@ Every cell of the column counts, spilled ones and those of hidden rows too; a ce
 - A number, a date or a formula's number widens a column of the default width or one Excel fitted (`bestFit`) to the width AutoFit gives it, when that is more: `15.03.2026` in ru-RU needs 54 points of the default 48 and widens the column to 61. A number that shows already widens it too when AutoFit gives it more: `15-Mar-26` fills 48 points exactly and gets 55.
 - A number in General widens the column when it would show in scientific form or whole (`1234567890` to 67 points, `12345678` to 55), but not when it shows with fewer decimals: `3.14159265358979` shows `3.141593` and the column stays.
 - Text, booleans and errors widen nothing (text runs over the next cells), nor does a width set by hand, and a column never narrows. A fitted width equal to the default stays a width (8.83203125 with `bestFit`).
-- Only typing widens a column: text set through the object model (`Value`, `Formula2Local`) widens nothing, in Excel for Mac and Excel for Windows. So a host calls `entryWidth` for text a user typed, with the value it computed (from `setCells`) and the cell's format after the entry.
+- Only typing widens a column: text set through the object model (`Value`, `Formula2Local`) widens nothing, in Excel for Mac and Excel for Windows. So a host calls `entryWidth` for text a user typed, with the value it computed (from `setCells`) and the cell's format after the entry; `setCellText` does this itself, in the same step of the undo ([Editing a grid](edits.md#typing-text)).
 
 ## How the engine does it
 
-`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (with the letters of the locale files), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
+`src/numfmt/` holds the engine, assembled in `src/numfmt.ts`. `parse.ts` reads a format into sections (colour, condition, locale tag, tokens) and caches it per dialect and format, so a column with one format is parsed once. `select.ts` picks the section. `number.ts`, `date.ts` and `general.ts` format numbers, dates and General. `glyphs.ts` has the character widths (Cyrillic too), `palette.ts` the colours, `style.ts` what a locale writes. `formatWith` is `TEXT` and `displayWith` a cell.
 
 `src/shown.ts` finds a cell's format and width. `src/layout/fit.ts` fits columns and widens them on entry, by `fitPoints` and `typedPoints` of `src/numfmt.ts`, which lay a value out with `Style.layout` (paddings and blanks marked) and measure it by `fitText` (`glyphs.ts`, `advances.ts`). Sessions compare what cells show before and after an edit that recomputes nothing (`src/session/looks.ts`) and after a structure operation (`src/session/moved.ts`).
 

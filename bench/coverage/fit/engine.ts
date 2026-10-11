@@ -6,6 +6,7 @@
  */
 import type { BookInput, CellInput, CellValue, ColumnInput, ComputeResult, EntryOptions, EntryResult, EntryWidthOptions } from '../../../src/contract.js'
 import { caseRows, fitBook, type FitCase } from './cases.js'
+import { numberFormatOf } from '../stored.js'
 
 export interface FitEngine {
   compute(book: BookInput): ComputeResult
@@ -49,8 +50,8 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
     if (!widen) continue
     const value = e.compute(book).sheets[0].cells[addr]?.value ?? null
     const col = columns[COL] ?? {}
-    const format = sheet.cells[addr]?.format ?? col.format
-    setWidth(e.entryWidth(value, { locale: tag, ...(format !== undefined ? { format } : {}), ...(col.width !== undefined ? { width: col.width } : {}), ...(col.bestFit ? { bestFit: true } : {}) }), col)
+    const numberFormat = numberFormatOf(sheet.cells[addr]) ?? numberFormatOf(col)
+    setWidth(e.entryWidth(value, { locale: tag, ...(numberFormat !== undefined ? { numberFormat } : {}), ...(col.width !== undefined ? { width: col.width } : {}), ...(col.bestFit ? { bestFit: true } : {}) }), col)
   }
   const cells = e.compute(book).sheets[0].cells
   return { width: columns[COL]?.width ?? null, ...(fitted ? { fitted } : {}), texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }

@@ -32,8 +32,22 @@ export function parseAddress(addr: string): { row: number; col: number } {
   return { row: Number(m[2]) - 1, col: colToIndex(m[1]) }
 }
 
+/** Column letters by index, made once each: loops over a sheet's cells write the same columns over and over. */
+const LETTERS: string[] = []
+
 export function formatAddress(row: number, col: number): string {
-  return `${indexToCol(col)}${row + 1}`
+  return (LETTERS[col] ??= indexToCol(col)) + (row + 1)
+}
+
+/** A valid address's zero-based row and column, read into `out` without a pattern or an allocation: for loops over a book's cells. */
+export function readAddress(addr: string, out: { r: number; c: number }): void {
+  let i = 0
+  let col = 0
+  for (let ch = addr.charCodeAt(0); ch >= 65; ch = addr.charCodeAt(++i)) col = col * 26 + ch - 64
+  let row = 0
+  for (; i < addr.length; i++) row = row * 10 + addr.charCodeAt(i) - 48
+  out.r = row - 1
+  out.c = col - 1
 }
 
 /** Cell order by address: row, then column. */
@@ -73,8 +87,8 @@ export function dateToSerial(iso: string): number {
   if (!m) throw new Error(`bad date: ${iso}`)
   const ms = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0), 0) + Number(m[6] ?? 0) * 1000
   const serial = (ms - EPOCH_MS) / DAY_MS
-  // before 1900-03-01 Excel is one day behind (the phantom 1900-02-29)
-  return serial < 61 ? serial - 1 : serial
+  // before 1900-03-01 Excel is one day behind; its phantom 1900-02-29 is serial 60 (Date.UTC rolls it to 1900-03-01)
+  return serial < 61 || (m[1] === '1900' && m[2] === '02' && m[3] === '29') ? serial - 1 : serial
 }
 
 export function serialToUtcMs(serial: number): number {

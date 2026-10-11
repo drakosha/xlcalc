@@ -1,13 +1,12 @@
 /**
- * Distribution functions (densities, mass functions and their cumulative forms). BINOM.DIST.RANGE, GAUSS,
- * GAMMALN, PHI and PROB, and the parameter names of the rest, follow formula.js 4.6.1
+ * Distribution functions (densities, mass functions and their cumulative forms). GAUSS, GAMMALN, PHI and PROB,
+ * and the parameter names of the rest, follow formula.js 4.6.1
  * (https://github.com/formulajs/formulajs), src/statistical.js: Copyright (c) 2014 Sutoiku, Inc., MIT License
  * (THIRD_PARTY.md); the numerics are `./special.ts`, the domains Excel's.
  */
 import { gammaln, gammafn } from '../jstat.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, type V } from '../../values.js'
-import { combin } from '../common.js'
 import { betaPrefix, dbinom, dgamma, dpois, gammaPQ, ibeta, lbeta, normCdf, normPdf } from './special.js'
 
 /** Excel's ceiling on degrees of freedom of the chi-squared, t and F distributions. */
@@ -124,6 +123,20 @@ function binomDist(k: number, n: number, p: number, cumulative: boolean): V {
   return p === 1 ? 0 : ibeta(1 - p, p, n - k, k + 1)[0]
 }
 
+/**
+ * P(s ≤ X ≤ s2) for X ~ B(n, p): the densities summed outward from the one nearest the mode, where they are largest,
+ * until they no longer count (the set `binom-sumx-held`: past 170 trials, as BINOM.DIST computes them).
+ */
+function binomRange(n: number, p: number, s: number, s2: number): V {
+  if (n < 0 || n >= MAX_COUNT || p < 0 || p > 1 || s < 0 || s > n || s2 < s || s2 > n) return E.NUM
+  const q = 1 - p
+  const mode = Math.min(s2, Math.max(s, Math.floor((n + 1) * p)))
+  let acc = dbinom(mode, n, p, q)
+  for (let k = mode - 1, t = acc; k >= s && t > acc * 1e-17; k--) acc += t = dbinom(k, n, p, q)
+  for (let k = mode + 1, t = acc; k <= s2 && t > acc * 1e-17; k++) acc += t = dbinom(k, n, p, q)
+  return acc
+}
+
 export function negbinomDist(f: number, s: number, p: number, cumulative: boolean): V {
   if (f < 0 || s < 1 || p <= 0 || p >= 1) return E.NUM
   return cumulative ? ibeta(p, 1 - p, s, f + 1)[0] : (s / (s + f)) * dbinom(s, s + f, p, 1 - p)
@@ -181,15 +194,7 @@ const permutationA = (n: number, k: number): V => (n < 0 || k < 0 || n >= MAX_CO
 export const functions: Record<string, FnDef> = {
   'BETA.DIST': { args: 'n n n b n? n?', fn: betaDist },
   'BINOM.DIST': { args: 'i i n b', fn: binomDist },
-  'BINOM.DIST.RANGE': {
-    args: 'i n i i?',
-    fn: (n: number, p: number, s: number, s2 = s) => {
-      if (n < 0 || p < 0 || p > 1 || s < 0 || s > n || s2 < s || s2 > n) return E.NUM
-      let r = 0
-      for (let k = s; k <= s2; k++) r += combin(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k)
-      return r
-    },
-  },
+  'BINOM.DIST.RANGE': { args: 'i n i i?', fn: (n: number, p: number, s: number, s2 = s) => binomRange(n, p, s, s2) },
   'CHISQ.DIST': { args: 'n i b', fn: chisqDist },
   'CHISQ.DIST.RT': { args: 'n i', fn: chisqDistRt },
   'EXPON.DIST': { args: 'n n b', fn: exponDist },

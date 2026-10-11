@@ -15,6 +15,9 @@
  */
 import type { NameInput } from '../contract.js'
 import { canonical, FormulaError, isRefOp, parse, sheetKey, type Ast } from '../syntax.js'
+import { caseKey } from '../collate.js'
+import { object, onlyKeys } from '../input.js'
+import { strict } from '../strict-args.js'
 import { PARAMS } from './params.js'
 
 type Where = 'V' | 'R' | 'A'
@@ -218,7 +221,7 @@ function converter(names: Names) {
   const nameKind = (n: Extract<Ast, { k: 'name' }>, scope: string | undefined): Kind => {
     const sheet = n.sheet ?? scope
     const def = names(n.name, sheet)
-    const key = `${sheet ?? ''}!${n.name.toUpperCase()}`
+    const key = `${sheet ?? ''}!${caseKey(n.name)}`
     if (!def || reading.has(key)) return 'one'
     reading.add(key)
     const outer = locals
@@ -258,9 +261,9 @@ export function legacyConverter(names: readonly NameInput[] = []): (ast: Ast, sh
     return parsed.get(n)!
   }
   const lookup: Names = (name, sheet) => {
-    const up = name.toUpperCase()
-    const local = sheet === undefined ? undefined : names.find((n) => n.scope !== undefined && sheetKey(n.scope) === sheetKey(sheet) && n.name.toUpperCase() === up)
-    const found = local ?? names.find((n) => n.scope === undefined && n.name.toUpperCase() === up)
+    const up = caseKey(name)
+    const local = sheet === undefined ? undefined : names.find((n) => n.scope !== undefined && sheetKey(n.scope) === sheetKey(sheet) && caseKey(n.name) === up)
+    const found = local ?? names.find((n) => n.scope === undefined && caseKey(n.name) === up)
     const ast = found && formulaOf(found)
     return found && ast ? { ast } : undefined
   }
@@ -271,9 +274,11 @@ export function legacyConverter(names: readonly NameInput[] = []): (ast: Ast, sh
  * A formula of the old kind (text without `=`, as a file stores it, after the prefixes of newer functions) as the
  * dynamic formula Excel 365 shows for it, in canonical text: `A1:A10*2` is `@A1:A10*2`, `INDEX(A1:C3,0,1)` is
  * `@INDEX(A1:C3,0,1)`, `SUM(A1:A10)` stays. Excel puts `@` before a name by what the name's formula gives, so the
- * book's names are needed for formulas that use names. A formula the engine does not parse is returned as it is.
+ * book's names are needed for formulas that use names. A formula the engine does not parse is returned as it is. The
+ * function of the API (`strict-args.ts`), from `xlcalc/xlsx` and the root alike.
  */
-export function fromLegacy(formula: string, ctx: LegacyContext = {}): string {
+export const fromLegacy = /* @__PURE__ */ strict(function fromLegacy(formula: string, ctx?: LegacyContext): string {
+  if (ctx !== undefined) onlyKeys(object(ctx, 'ctx', "the book's names and the formula's sheet, such as { names, sheet: 'Sales' }"), 'ctx', ['names', 'sheet'])
   let ast: Ast
   try {
     ast = parse(formula)
@@ -281,5 +286,5 @@ export function fromLegacy(formula: string, ctx: LegacyContext = {}): string {
     if (e instanceof FormulaError) return formula
     throw e
   }
-  return canonical(legacyConverter(ctx.names)(ast, ctx.sheet) ?? ast)
-}
+  return canonical(legacyConverter(ctx?.names)(ast, ctx?.sheet) ?? ast)
+})

@@ -3,10 +3,13 @@
  * implementation (currently formulas compiled to closures or to JS text) sits behind this contract; the
  * package's behaviour tests are its acceptance suite.
  *
- * A formula is stored in the `formula` field without the leading `=`, separately from the value:
+ * A formula is stored in the `formula` field without the leading `=` (one given is dropped), separately from the value:
  * a string from data never becomes a formula. Function names are English, arguments are separated
  * by commas, the decimal separator is a dot.
  */
+import type { Locale } from './locale/types.js'
+
+export type { Locale } from './locale/types.js'
 
 export type Scalar = number | string | boolean | null
 
@@ -15,13 +18,18 @@ export type JsonValue = Scalar | JsonValue[] | { [key: string]: JsonValue }
 /** An input cell. A date is passed explicitly (`{ date: '2025-01-31' }`) and becomes an Excel serial number. */
 export interface CellInput {
   value?: Scalar | { date: string }
-  /** Formula text without `=`. When present, `value` is ignored. */
+  /**
+   * Formula text without `=`; a single leading `=` is dropped as the book is taken (`=SUM(A1:A2)` is `SUM(A1:A2)`, the
+   * same input and `inputHash`; `==1` stays an error). When present, `value` is ignored.
+   */
   formula?: string
   /**
    * Number format, an Excel format code as an xlsx file stores it (en-US syntax: `#,##0.00`, `dd.mm.yyyy`, `[Red]`),
    * shown in the book's locale (`CellResult.text`), or a built-in format by its number (`NumberFormat`). Without it
    * a cell shows its row's format, else its column's.
    */
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /** A style of the book's `styles`, by index. Without it a cell shows its row's style, else its column's. */
   style?: number
@@ -100,7 +108,7 @@ export interface AlignmentStyle {
 
 /**
  * A cell style of the book's table (`BookInput.styles`), as an xlsx cell format without its number format
- * (that is the cell's `format`). Styles do not take part in computation or in the values hash.
+ * (that is the cell's `numberFormat`). Styles do not take part in computation or in the values hash.
  */
 export interface CellStyle {
   font?: FontStyle
@@ -123,6 +131,8 @@ export interface ColumnInput {
    */
   bestFit?: boolean
   style?: number
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /** Hidden (xlsx `hidden`); a column of width 0 is hidden too. SUBTOTAL and AGGREGATE count the cells of hidden columns all the same, as Excel does. */
   hidden?: boolean
@@ -137,6 +147,8 @@ export interface RowInput {
   /** Points, 0 to 409. */
   height?: number
   style?: number
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
   /**
    * Hidden (xlsx `hidden`), by hand or by a filter: SUBTOTAL with codes 101–111 and AGGREGATE with options 1, 3, 5
@@ -175,12 +187,12 @@ export interface SheetInput {
   frozen?: FrozenPanes
   /**
    * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, the first one first. They
-   * do not change values: a session gives what they show in `CellView.look` (`docs/conditional-formats.md`).
+   * do not change values: a session gives what they show in `CellView.appearance` (`docs/conditional-formats.md`).
    */
   conditionalFormats?: ConditionalFormat[]
   /**
    * Data validation (Excel's Data Validation): the rules of the sheet's cells, at most one rule over a cell. Not part of
-   * computation: a session gives a cell's rule and its list (`Session.validation`) and checks a value against it
+   * computation: a session gives a cell's rule and its list (`Session.getValidation`) and checks a value against it
    * (`Session.validateEntry`).
    */
   validations?: DataValidation[]
@@ -197,7 +209,7 @@ export interface SheetInput {
 /**
  * A conditional format: the cells it applies to, a condition and what a cell that meets it shows. The rules that hold
  * for a cell apply in the sheet's order: a field of a style an earlier rule sets wins, and `stopIfTrue` leaves out
- * the rules after one that holds.
+ * the rules after one that holds. Its formulas are stored text, as a cell's: a leading `=` is dropped.
  */
 export type ConditionalFormat =
   | CellIsFormat
@@ -230,6 +242,8 @@ export interface ConditionalStyle {
   fill?: { color: Color }
   border?: CellStyle['border']
   /** The number format the cell shows its value by. */
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
 }
 
@@ -405,17 +419,20 @@ export interface IconSetFormat extends ConditionalBase {
 }
 
 /**
- * What a sheet's conditional formats give a cell (`CellView.look`), by the values the cells hold now. A field the cell
- * shows otherwise than by its own style and value is set.
+ * What a sheet's conditional formats give a cell (`CellView.appearance`), by the values the cells hold now. A field the
+ * cell shows otherwise than by its own style and value is set.
  */
-export interface ConditionalLook {
+export interface ConditionalAppearance {
   /** The styles of the rules that hold, merged in their order (the first rule's field wins); a colour scale's colour is `fill`. */
-  style?: ConditionalStyle
+  style?: Answered<ConditionalStyle>
   bar?: BarLook
   icon?: Icon
   /** A data bar or an icon set hides the value: the cell shows its bar or icon alone. */
   hideValue?: true
 }
+
+/** @deprecated The name is `ConditionalAppearance`. */
+export type ConditionalLook = ConditionalAppearance
 
 /** A data bar in a cell: where it is drawn, as fractions of the cell's width from the side its direction starts at. */
 export interface BarLook {
@@ -457,8 +474,8 @@ export type ValidationOperator = 'between' | 'notBetween' | 'equal' | 'notEqual'
 
 /**
  * A rule of data validation, as xlsx `<dataValidation>`. Its formulas are stored formula text without `=` (en-US, as a
- * cell's), relative to the rule's first cell, the top-left cell of the first range of `range`: a rule over `B2:B9` with
- * `formula1: 'A2>0'` checks `A5>0` for B5. A literal list is a text constant of items separated by commas
+ * cell's; a leading `=` is dropped), relative to the rule's first cell, the top-left cell of the first range of `range`:
+ * a rule over `B2:B9` with `formula1: 'A2>0'` checks `A5>0` for B5. A literal list is a text constant of items separated by commas
  * (`'"Yes,No,Maybe"'`), as a file stores it in every locale; a list from cells is a reference (`'$D$2:$D$9'`,
  * `"'Lists'!$A$1:$A$20"`), a defined name or a formula giving one.
  */
@@ -520,8 +537,8 @@ export interface TableColumn {
   /** 1 to 255 characters, unique in the table in any case; the header cell's text. */
   name: string
   /**
-   * The formula of a calculated column (stored text, `Sales[[#This Row],[Qty]]*2`), which a row inserted into the table
-   * gets in this column, as Excel fills it. The column's cells hold their own formulas.
+   * The formula of a calculated column (stored text, `Sales[[#This Row],[Qty]]*2`; a leading `=` is dropped), which a row
+   * inserted into the table gets in this column, as Excel fills it. The column's cells hold their own formulas.
    */
   formula?: string
   /**
@@ -544,14 +561,14 @@ export interface NameInput {
    */
   name: string
   /**
-   * What the name refers to: a formula without `=`, as Excel's "Refers to" and xlsx `<definedName>` hold it. A
-   * reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`, `"text"`, `{1,2,3}`), a
-   * formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a reference), a union of
-   * references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet. A reference
-   * without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from A1,
-   * wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
-   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula
-   * is computed where the name is used, as part of that formula.
+   * What the name refers to: a formula without `=` (a leading one is dropped), as Excel's "Refers to" and xlsx
+   * `<definedName>` hold it. A reference with a sheet (`'Data'!$D$2:$D$3401`, `'Data'!$D:$D`), a constant (`0.2`,
+   * `"text"`, `{1,2,3}`), a formula (`'Data'!$A$1*2`, `SUM('Data'!$A:$A)`, `INDEX('Data'!$A$1:$C$9,2,0)`, which is a
+   * reference), a union of references on one sheet (`'Data'!$A$1:$A$3,'Data'!$C$1:$C$3`). Every reference has its sheet.
+   * A reference without `$` is relative to A1, as a file stores it: used in a cell it moves by that cell's offset from
+   * A1, wrapping round the sheet's edges (`'Data'!B1` used in C5 is `'Data'!D5`, `'Data'!A1048576` is the row above).
+   * Names in it are the global ones (a sheet's own as `'Sheet'!name`), as a file stores a name's formula. The formula is
+   * computed where the name is used, as part of that formula.
    */
   ref: string
   /** The sheet where the name is visible; a local name shadows a global one. Without it the name is global. */
@@ -565,10 +582,11 @@ export interface BookInput {
   /** The cell styles that cells, rows and columns refer to by index. */
   styles?: CellStyle[]
   /**
-   * The locale the book is computed in, a BCP 47 tag of one of the package's locales, `LOCALES` (`'en-US'` by
-   * default). It changes computed values as Excel's regional settings do (text read as a number or a date, numbers
-   * and booleans turned into text, `TEXT` format codes, currency), not the formula text: formulas stay invariant, and
-   * `toLocal` shows them in a locale. An unknown tag is an `InputError`.
+   * The locale the book is computed in, the BCP 47 tag of a loaded locale, `LOCALES` (`'en-US'` by default; another
+   * of the package's locales is loaded by `registerLocale`). It changes computed values as Excel's regional settings do
+   * (text read as a number or a date, numbers and booleans turned into text, `TEXT` format codes, currency), not the
+   * formula text: formulas stay invariant, and `toLocal` shows them in a locale. A tag that is not loaded is an
+   * `InputError` that names the module to import.
    */
   locale?: string
   /**
@@ -588,6 +606,29 @@ export interface BookInput {
    */
   iteration?: { maxIterations?: number; maxChange?: number }
 }
+
+/**
+ * A part of a book as an answer gives it: the input's type without the deprecated field `format`, at any depth, since
+ * a book that answers names a number format `numberFormat` alone (`meta` is the host's own and stays as it is).
+ */
+type Answered<T> = T extends readonly (infer U)[]
+  ? Answered<U>[]
+  : T extends object
+    ? { [K in keyof T as K extends 'format' ? never : K]: K extends 'meta' ? T[K] : Answered<T[K]> }
+    : T
+
+/**
+ * A book as the calls that give one answer it (`Session.getBook`, `getSnapshot`, `getLayout`, `editStructure`,
+ * `readXlsx`): `BookInput` without the deprecated `format` of cells, rows, columns and conditional formats' styles, so
+ * that reading it does not compile where it would always be undefined. A `Book` is a `BookInput`: it goes back as one.
+ */
+export type Book = Answered<BookInput>
+
+/** A sheet of a `Book`: `SheetInput` without the deprecated `format`. */
+export type Sheet = Answered<SheetInput>
+
+/** A cell of a `Book`: `CellInput` without the deprecated `format`. */
+export type Cell = Answered<CellInput>
 
 /**
  * `CALC`: Excel's #CALC!, an empty array (`FILTER` that keeps nothing) or a text over 32,767 characters (`CONCAT`).
@@ -660,10 +701,15 @@ export interface CellDisplay {
 /** `displayValue`'s options: where the value is shown. */
 export interface DisplayOptions {
   /** The number format; General without it. */
+  numberFormat?: NumberFormat
+  /** @deprecated The name is `numberFormat`. */
   format?: NumberFormat
-  /** A tag of the package's locales, `LOCALES` (`'en-US'` by default). */
-  locale?: string
-  /** The column's width as `ColumnInput.width` (several columns' widths added for a merged area); the default width without it. */
+  /** A loaded locale's tag (`LOCALES`), or a locale object, loaded or not; en-US without one. */
+  locale?: string | Locale
+  /**
+   * The column's width as `ColumnInput.width` (several columns' widths added for a merged area). Without it the width
+   * is not limited: General shows all the digits it would in a wide column and no number turns into `#`.
+   */
   width?: number
   /** The date system a date shows by, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
@@ -680,16 +726,19 @@ export interface EntryWidthOptions extends DisplayOptions {
 
 /** `parseEntry`'s options: the book text is typed into and the cell it goes to. */
 export interface EntryOptions {
-  /** The book's locale, a tag of `LOCALES` (`'en-US'` by default): numbers, dates, booleans, errors and formulas are read as Excel reads them there. */
-  locale?: string
+  /**
+   * The book's locale, a loaded locale's tag (`LOCALES`) or a locale object, loaded or not; en-US without one: numbers,
+   * dates, booleans, errors and formulas are read as Excel reads them there.
+   */
+  locale?: string | Locale
   /** The book's date system, as `BookInput.dateSystem`; 1900 without it. */
   dateSystem?: 1900 | 1904
   /**
-   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.cells`): its `format` (the one
-   * it shows by: its row's or column's without its own), `style` and `meta`; other fields are not read. The new input
-   * keeps its style and meta, and its format where Excel keeps it.
+   * The cell typed into, as the book holds it (a `CellInput`, or a `CellView` of `Session.getCells`): its `numberFormat` (the one
+   * it shows by: its row's or column's without its own), `style`, `meta`, `note` and `link`; other fields are not read.
+   * The new input keeps its style, meta, note and link, and its format where Excel keeps it.
    */
-  cell?: { format?: NumberFormat; style?: number; meta?: JsonValue } | null
+  cell?: { numberFormat?: NumberFormat; /** @deprecated The name is `numberFormat`. */ format?: NumberFormat; style?: number; meta?: JsonValue; note?: CellNote; link?: CellLink } | null
   /** The moment whose year completes a date typed without one (`15.3` in ru-RU, `3/15` in en-US), ISO as `Clock.now`; the current moment without it. */
   now?: string
 }
@@ -699,7 +748,92 @@ export interface EntryOptions {
  * cell; or a formula Excel does not take, with a check code (`syntax`, `too_long`, `too_deep`), a message in the
  * language of `opts.locale` (English for en-US) and the position in the typed text.
  */
-export type EntryResult = { ok: true; input: CellInput | null } | { ok: false; code: CheckCode; message: string; at: number }
+export type EntryResult = { ok: true; input: CellInput | null } | (Refusal<CheckCode> & { at: number })
+
+/**
+ * `entryText`'s and `needsApostrophe`'s options: the cell's number format (its row's or column's without its own), the
+ * book's locale and date system, and for text the moment whose year completes a date typed without one, as `parseEntry`
+ * reads it.
+ */
+export interface EntryTextOptions {
+  numberFormat?: NumberFormat
+  /** A loaded locale's tag (`LOCALES`) or a locale object; en-US without one. */
+  locale?: string | Locale
+  dateSystem?: 1900 | 1904
+  /** ISO, as `Clock.now`; the current moment without it. */
+  now?: string
+}
+
+/** A cell's row and column, numbered from 1 as A1 numbers them: `B12` is row 12, column 2. */
+export interface CellPosition {
+  row: number
+  col: number
+}
+
+/** A rectangle of a sheet: rows and columns numbered from 1, bounds inclusive; a whole column runs from row 1 to `MAX_ROWS`. */
+export interface CellRect {
+  top: number
+  left: number
+  bottom: number
+  right: number
+}
+
+/** A range's rectangle and what its text names: cells (`B2:D9`, `B2`), whole columns (`B:D`) or whole rows (`2:9`). */
+export interface RangeRect extends CellRect {
+  kind: 'cells' | 'columns' | 'rows'
+}
+
+/** The lines a key of `SheetInput.columns` or `rows` names (`C`, `B:D`, `5`, `5:9`), numbered from 1. */
+export interface LineSpan {
+  first: number
+  last: number
+}
+
+/** Why Excel does not take a sheet name: empty, over 31 characters, one of `: \ / ? * [ ]`, an apostrophe at either end, `History`. */
+export type SheetNameCode = 'empty' | 'too_long' | 'character' | 'apostrophe' | 'reserved'
+
+/** `validateSheetName`'s answer; `at` is the position of the character Excel does not take. */
+export type SheetNameCheck = { ok: true } | Refusal<SheetNameCode>
+
+/** Where a reference stands in formula text (`scanReferences`): from `at` to `end` (exclusive), with its text as written. */
+interface ReferenceSpan {
+  at: number
+  end: number
+  text: string
+}
+
+/**
+ * A reference to cells, whole columns or whole rows, with its rectangle (`CellRect`) and its sheet as written (unquoted):
+ * `sheet` alone for one sheet, `sheet` and `sheetLast` for a reference across sheets (`Jan:Mar!A1`), neither for the
+ * formula's own sheet. `spill`: a spill reference (`E2#`), whose rectangle is the formula's cell.
+ */
+export interface GridReference extends ReferenceSpan, CellRect {
+  kind: 'cells' | 'columns' | 'rows'
+  sheet?: string
+  sheetLast?: string
+  spill?: true
+}
+
+/**
+ * A structured reference (`Sales[Qty]`, `[@Qty]`): the table as written (absent inside a table, `[@Qty]`), the column or
+ * the first and last of a span, and the specifiers in stored words (`#Headers`, `#This Row` for `@`); a host lays it on
+ * the table's range.
+ */
+export interface TableReference extends ReferenceSpan {
+  kind: 'table'
+  table?: string
+  columns?: [string] | [string, string]
+  items?: ('#All' | '#Data' | '#Headers' | '#Totals' | '#This Row')[]
+}
+
+/** A reference found in formula text: to cells or lines of a sheet, or to a table. */
+export type FormulaReference = GridReference | TableReference
+
+/** `scanReferences`'s options. */
+export interface ScanOptions {
+  /** The locale the text is typed in, a loaded locale's tag (`LOCALES`) or a locale object; without it the text is a stored formula. */
+  locale?: string | Locale
+}
 
 /**
  * Size limits of a computation. A book over them is not computed: the call throws `CalcError` with code `limit`, so a
@@ -741,7 +875,8 @@ export interface CellResult extends Partial<CellDisplay> {
    * spelled as the book names them, as Excel shows them (`ставка*2` with the name `Ставка` is `Ставка*2`).
    */
   formula?: string
-  format?: NumberFormat
+  /** The cell's own number format, as its input has it. */
+  numberFormat?: NumberFormat
   meta?: JsonValue
   /**
    * A formula whose array spilled: the range it fills on its sheet (`B2:D9`, this cell at the top-left); for an array
@@ -782,10 +917,16 @@ export interface NameIssue {
   dropped: boolean
 }
 
+/**
+ * What a result reports about its book, by `kind`: a cell with an error and its reason (`cell`, a `CellIssue`), or a
+ * name the book left out or keeps with an error (`name`, a `NameIssue`).
+ */
+export type Diagnostic = ({ kind: 'cell' } & CellIssue) | ({ kind: 'name' } & NameIssue)
+
 export interface ComputeResult {
   sheets: { name: string; cells: Record<string, CellResult> }[]
-  issues: CellIssue[]
-  nameIssues: NameIssue[]
+  /** Every cell with an error, sheet by sheet in the book's order and row by row, then every name with a problem, in the order of the book's names. */
+  diagnostics: Diagnostic[]
   /** Cells that depend on volatile functions (directly or through other cells). */
   volatile: CellRef[]
   /** The clock the book was computed with (for a live session, the latest one). */
@@ -814,14 +955,34 @@ export interface ValidateContext {
 export type ValidateResult =
   /** `tables`: the tables the formula's structured references name (and bare table names, with `ctx.tables`). */
   | { ok: true; canonical: string; functions: string[]; sheets: string[]; names: string[]; externals: string[]; tables: string[] }
-  | { ok: false; code: CheckCode; message: string; at: number }
+  | (Refusal<CheckCode> & { at: number })
 
-export type NameCheck = { ok: true } | { ok: false; message: string }
+/**
+ * A check or an edit that did not pass: a code a program reads, a message for people (in the book's locale where the
+ * call has one, English otherwise) and, for typed text, the position in it. Every check answers `{ ok: true, … }` or
+ * a `Refusal` with its own codes.
+ */
+export interface Refusal<Code extends string = string> {
+  ok: false
+  code: Code
+  message: string
+  at?: number
+}
+
+/**
+ * Why Excel would not take a name (`validateName`). `chars`: it does not start with a letter of any script, `_` or `\`,
+ * holds a character other than letters, digits, `_`, `.`, `\` and `?`, or is empty or longer than 255 characters.
+ * `reference`: it reads as a cell address or an R1C1 reference (`Q1`, `R`, `R2C3`). `boolean`: TRUE or FALSE, or the
+ * book's locale's word for one, in any case (`ИСТИНА` in ru-RU).
+ */
+export type NameRefusal = 'chars' | 'reference' | 'boolean'
+
+export type NameCheck = { ok: true } | Refusal<NameRefusal>
 
 /** The book whose rules `validateName` checks a name by. */
 export interface NameOptions {
-  /** A tag of the package's locales (`BookInput.locale`); en-US without one. */
-  locale?: string
+  /** The book's locale (`BookInput.locale`): a loaded locale's tag, or a locale object; en-US without one. */
+  locale?: string | Locale
 }
 
 /** The parts of a book `validateNames` checks names against. */
@@ -831,12 +992,25 @@ export interface NamesContext {
   /** Tables of the book with their columns, for the structured references of names' formulas. */
   tables?: { name: string; columns: string[] }[]
   externalFunctions?: string[]
-  /** The book's locale (`BookInput.locale`); en-US without one. */
-  locale?: string
+  /** The book's locale (`BookInput.locale`): a loaded locale's tag, or a locale object; en-US without one. */
+  locale?: string | Locale
 }
 
-/** A cell edit; `input: null` clears the cell. */
+/** Fields of a cell to set (`Session.setCells`): a value sets the field, null removes it, a field left out stays. */
+export type CellFields = { [K in keyof CellInput]?: CellInput[K] | null }
+
+/**
+ * A cell edit (`Session.setCells`): the fields given set the cell's, null removes one, and the fields left out stay, as
+ * Excel keeps a cell's look when a value is typed over it. The content is one: a new `value` removes the formula and its
+ * `array`, a new `formula` the value. `input: null` clears the content and the hyperlink and keeps the rest, as Excel's
+ * Delete key.
+ */
 export interface CellEdit extends CellRef {
+  input: CellFields | null
+}
+
+/** A cell replaced whole (`Session.replaceCells`): its new input, or null to remove the cell. */
+export interface CellReplace extends CellRef {
   input: CellInput | null
 }
 
@@ -847,15 +1021,15 @@ export interface CellEdit extends CellRef {
  * changed is listed too (a new format, a column's width), with its value.
  */
 /**
- * A cell of `Session.cells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`), `note` and
- * `link`, and the `look` its sheet's conditional formats give it (with a number format of theirs, `text` and `color`
- * show the value by it).
+ * A cell of `Session.getCells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`), `note` and
+ * `link`, and the `appearance` its sheet's conditional formats give it (with a number format of theirs, `text` and
+ * `color` show the value by it).
  */
 export interface CellView extends CellResult {
   style?: number
   note?: CellNote
   link?: CellLink
-  look?: ConditionalLook
+  appearance?: ConditionalAppearance
   /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`); `spill` is that area too. */
   array?: string
 }
@@ -865,6 +1039,199 @@ export interface CellChange extends CellRef, Partial<CellDisplay> {
   spill?: string
   spillFill?: CellValue
   spillOf?: string
+  /** The cell's formula, when it changed: canonical text, as `CellResult.formula`; null when the cell has none now. */
+  formula?: string | null
+  /** The cell's own style, when it changed, as `CellView.style`; null when it has none now (it shows its row's or column's). */
+  style?: number | null
+  /** The cell's own number format, when it changed; null when it has none now. */
+  numberFormat?: NumberFormat | null
+}
+
+/**
+ * What a call that changes a session's book answers: the session's revision after it, the cells it changed, and what
+ * else a host showing the book reads again.
+ */
+export interface EditResult {
+  /** The session's revision after the call: every call that changes the book adds one, `undo` and `redo` too. */
+  revision: number
+  /**
+   * The cells whose value, shown text, formula or look changed, by `CellChange`; a cell another cell's value changed
+   * is listed with its value alone. After a structure operation, the cells whose value or formula differ from those of
+   * the cell that was at their old place (`moved`).
+   */
+  changes: CellChange[]
+  /** The sheets whose layout changed (rows, columns, merged areas, tables, conditional formats, validation…): a host reads `getLayout()` again. */
+  layout?: string[]
+  /** The book's style table, when the call changed it. */
+  styles?: CellStyle[]
+  /** How addresses moved, in order, after a structure operation or its undo: a host moves its window by them. */
+  moved?: AddressMove[]
+  /**
+   * Rectangles where cells may look otherwise without being in `changes`: the cells of the book's conditional formats,
+   * after a call that changed a value or the rules (a rule's look reads values anywhere its formulas point).
+   */
+  repaint?: RangeRef[]
+}
+
+/**
+ * How a structure operation moved a book's addresses (`EditResult.moved`). `lines`: the lines from `at` (a row's number,
+ * or a column's, A being 1) on move by `count`: down or right by the lines inserted before `at`, up or left when
+ * `-count` lines from `at` on were deleted. `range`: the cells of `from` moved so that its top-left cell is at `to`,
+ * what was there gone. A sheet renamed, deleted, inserted or moved: `index`, its place among the sheets, from 0.
+ */
+export type AddressMove =
+  | { kind: 'lines'; sheet: string; axis: 'rows' | 'columns'; at: number; count: number }
+  | { kind: 'range'; from: RangeRef; to: CellRef }
+  | { kind: 'renameSheet'; sheet: string; name: string }
+  | { kind: 'deleteSheet'; sheet: string }
+  | { kind: 'insertSheet'; sheet: string; index: number }
+  | { kind: 'moveSheet'; sheet: string; index: number }
+
+/** Options of a call that changes a session's book. */
+export interface EditOptions {
+  /**
+   * The revision the caller's view of the book is of (`EditResult.revision`, `Session.revision`): when the session's is
+   * another, the call changes nothing and throws `CalcError` with code `stale_revision`, so that a host does not apply
+   * an edit over one it has not seen.
+   */
+  baseRevision?: number
+}
+
+/** What `Session.clearCells` clears: the content and hyperlinks (Excel's ClearContents), the look (ClearFormats), or both and the rest (Clear). */
+export type ClearKind = 'contents' | 'formats' | 'all'
+
+/** `Session.setCellText`'s options. */
+export interface CellTextOptions extends EditOptions {
+  /** False: the width a typed number widens its column to is given (`width`), not set; true by default, as Excel widens it. */
+  widen?: boolean
+}
+
+/** Why `Session.setCellText` did not take the text: a formula Excel does not take (`CheckCode`), part of an array formula, a formula in a table's header cell. */
+export type CellTextRefusal = 'syntax' | 'empty' | 'too_long' | 'too_deep' | 'array' | 'header'
+
+/** A value a cell's rule of data validation does not take (`Session.setCellText`): the rule, its alert's style and message. */
+export interface ValidationAlert {
+  valid: false
+  rule: DataValidation
+  severity: 'stop' | 'warning' | 'information'
+  message: string
+}
+
+/**
+ * Text typed into a cell (`Session.setCellText`): the edit's result, with the width the column took (`width`) and the
+ * rule of data validation the value breaks (`validation`); or why the text was not taken, with its position in the text.
+ */
+export type CellTextResult = (EditResult & { ok: true; width?: number; validation?: ValidationAlert }) | Refusal<CellTextRefusal>
+
+/** What `Session.setCellText` would do (`Session.previewCellText`): the cell's input, its value, the width and the alert, with nothing changed. */
+export type CellTextPreview = { ok: true; input: CellInput | null; value: CellValue; width?: number; validation?: ValidationAlert } | Refusal<CellTextRefusal>
+
+/** `Session.getViewport`'s options. */
+export interface ViewportOptions {
+  /** Each formula also as the book's locale shows it (`ViewportCell.formulaLocal`); false by default. */
+  formulaLocal?: boolean
+  /** Each cell with an error also with its reason and the cell it began in (`ViewportCell.issue`); false by default. */
+  diagnostics?: boolean
+  /** The most cells a window gives, 20,000 by default: of a larger one, its first rows that fit (`Viewport.truncated`). */
+  maxCells?: number
+}
+
+/**
+ * A cell of a window (`Session.getViewport`): its value as `getResult()` gives it, with the cell's whole look resolved, its
+ * style and number format as rows and columns give them, what its conditional formats show, its note and link.
+ */
+export interface ViewportCell extends Partial<CellDisplay> {
+  value: CellValue
+  /** The canonical formula text, as `CellResult.formula`. */
+  formula?: string
+  /** With `formulaLocal`: the formula as Excel shows it in the book's locale (`Range.FormulaLocal` without `=`), inside its table as Excel shows it there (`[@Qty]`). */
+  formulaLocal?: string
+  spill?: string
+  spillFill?: CellValue
+  spillOf?: string
+  /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`). */
+  array?: string
+  meta?: JsonValue
+  /** The cell's own style, an index of the book's `styles` as `CellView.style`; its object is in `Viewport.styles`. */
+  style?: number
+  /**
+   * The style the cell shows, an index of the book's `styles` (its object in `Viewport.styles`): its own, else its row's,
+   * else its column's. It is always one of the table's: a cell where a styled row crosses a styled column shows the row's,
+   * as Excel shows a file's empty cell there, and the two merged are a style of the cell's own (`Session.patchCells`).
+   */
+  effectiveStyle?: number
+  /** The number format the cell shows by, as a code: its own, else its row's, else its column's, a built-in format by the code of the book's locale (14 is `dd.mm.yyyy` in ru-RU). */
+  numberFormat?: string
+  /** Where `numberFormat` comes from. */
+  numberFormatSource?: 'cell' | 'row' | 'column'
+  /** What the sheet's conditional formats give the cell by the current values; with a number format of theirs, `text` and `color` show the value by it. */
+  appearance?: ConditionalAppearance
+  note?: CellNote
+  link?: CellLink
+  /** With `diagnostics`, on a cell with an error: as `Session.getCellIssue`. */
+  issue?: CellIssueDetail
+}
+
+/** A column of a window: its width as `ColumnInput.width`, Excel's default where it has none. */
+export interface ViewportColumn {
+  width: number
+  hidden?: true
+}
+
+/** A row of a window: its height in points, Excel's default (15) where it has none. */
+export interface ViewportRow {
+  height: number
+  hidden?: true
+}
+
+/** A table that meets a window (`Viewport.tables`): its name, its range and which of its rows are a header and totals. */
+export interface ViewportTable {
+  name: string
+  /** The whole table, its header and totals rows included (`TableInput.range`). */
+  range: string
+  /** Its first row is a header row (`TableInput.headers`, true by default). */
+  headers: boolean
+  /** Its last row is a totals row (`TableInput.totals`, false by default). */
+  totals: boolean
+}
+
+/** What a grid needs to draw a window of a sheet (`Session.getViewport`). */
+export interface Viewport {
+  /** The rectangle given (`B2:D9`): the one asked for, or its first rows when it holds more than `maxCells` cells. */
+  range: string
+  /** The window asked for held more than `maxCells` cells: `range` is the part given. */
+  truncated: boolean
+  /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, an appearance of a conditional format, a note or a link too. */
+  cells: Record<string, ViewportCell>
+  /** The styles the window's cells have or show (`ViewportCell.style`, `effectiveStyle`), by their index in the book's `styles`: copies, the answer's own. */
+  styles: Record<number, CellStyle>
+  /** The columns of `range`, left to right. */
+  columns: ViewportColumn[]
+  /** The rows of `range`, top to bottom. */
+  rows: ViewportRow[]
+  /** The merged areas that meet `range`, whole. */
+  merges: string[]
+  /** The tables that meet `range`, whole, in the sheet's order. */
+  tables: ViewportTable[]
+  /** The sheet's frozen panes (`SheetInput.frozen`): its first `rows` rows and `columns` columns stay in view, 0 for none. */
+  frozen: { rows: number; columns: number }
+  /** Where the sheet's cells end, as `Session.getUsedRange`. */
+  usedRange: SheetExtent
+  /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
+  revision: number
+}
+
+/**
+ * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as the result's `diagnostics`
+ * gives them, and `origin`, the cell where the error began, following the cells its reason names (`from 'S'!A2`) to one
+ * whose error is its own; in a cycle, the first cell of the cycle the way reaches.
+ */
+export interface CellIssueDetail {
+  error: ErrorCode
+  reason: string
+  check?: CheckCode
+  at?: number
+  origin: CellRef
 }
 
 export interface ExplainOptions {
@@ -874,6 +1241,8 @@ export interface ExplainOptions {
   maxNodes?: number
   /** Expand ranges into their non-empty cells (by default a range is a single node). */
   expand?: boolean
+  /** How many cells past `depth` the way from an error to the cell it began in goes on, 64 by default. */
+  errorDepth?: number
 }
 
 export interface ExplainNode {
@@ -885,6 +1254,11 @@ export interface ExplainNode {
   spillOf?: string
   /** For a range: the number of non-empty cells. */
   cells?: number
+  /**
+   * A cell with an error: the cell the error began in (`'Sheet'!A2`, the node's own `ref` when it began there), as
+   * `CellIssueDetail.origin`. The way there is in the tree past `depth` too, and through a range by the cell it came from.
+   */
+  origin?: string
   children: ExplainNode[]
 }
 
@@ -895,6 +1269,7 @@ export interface Explanation {
   /**
    * The tree as indented text (for logs, an LLM agent or a person) in the book's locale: in ru-RU its words, numbers,
    * formulas, booleans and errors are Russian (`'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)`); the nodes keep the stored text.
+   * An error is written as the book's cells show it (`#DIV/0!`), with the cell it began in (`(error from 'S'!A2)`).
    */
   text: string
 }
@@ -920,19 +1295,18 @@ export interface UndoOptions {
 }
 
 /** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'setCells' | 'patchCells' | 'setNames' | 'setStyles' | 'setLayout' | 'restructure'
+export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
 
-/** A step of a session undone or done again (`Session.undo`, `Session.redo`). */
-export interface UndoResult {
+/** A step of a session undone or done again (`Session.undo`, `Session.redo`): the edit's result, as the call gave it. */
+export interface UndoResult extends EditResult {
   /** The call whose change it was. */
   call: UndoCall
-  /** Cells whose value or shown text changed, as `setCells` lists them. */
-  changes: CellChange[]
-  /** `setCells` and `patchCells`: the cells whose input changed back, so a host can read their style, note and link again. */
+  /** The calls that change cells: the cells whose input changed back, so a host can read their note and link again. */
   cells?: CellRef[]
   /**
-   * `restructure`: where a cell of the book before this call is now, null when no cell of the book has it; an interface
-   * that moves its shown values by it and applies `changes` has the new values, as after `restructure`.
+   * `editStructure`: where a cell of the book before this call is now, null when no cell of the book has it or its sheet
+   * is none of that book's; an interface that moves its shown values by it and applies `changes` has the new values, as
+   * after `editStructure`.
    */
   mapCell?(ref: CellRef): CellRef | null
 }
@@ -950,7 +1324,7 @@ export interface RangeRef {
 }
 
 /**
- * One structure operation (`restructure`). Rows are 1-based numbers and columns are letters, as in A1
+ * One structure operation (`editStructure`). Rows are 1-based numbers and columns are letters, as in A1
  * addresses; `count` is 1 by default; sheets and tables are matched case-insensitively. Tables move with their cells
  * and grow and shrink with the rows and columns inserted and deleted inside them; an inserted row gets the formulas of
  * the calculated columns, an inserted column a name (`Column1`), and references to a deleted column become #REF!.
@@ -1026,32 +1400,38 @@ export type StructureRefusal =
   /** A table name that breaks the rules of `TableInput.name` or that a table or a defined name of the book has. */
   | 'table_name'
 
-export type RestructureResult =
+/** `editStructure`'s answer. */
+export type StructureResult =
   | {
       ok: true
       /** The new book; the input book is not changed, unchanged sheets and cells are shared. */
-      book: BookInput
-      /** Where a cell of the old book is now; null if it was deleted or overwritten. */
+      book: Book
+      /** Where a cell of the old book is now; null if it was deleted or overwritten, or its sheet is none of the old book's. */
       mapCell(ref: CellRef): CellRef | null
     }
   /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
-  | { ok: false; code: StructureRefusal; message: string }
+  | Refusal<StructureRefusal>
 
-/** `Session.restructure`: the operation's result and the values it changed. */
-export type SessionRestructureResult =
-  | {
+/** @deprecated The name is `StructureResult`. */
+export type RestructureResult = StructureResult
+
+/**
+ * `Session.editStructure`: the edit's result and where the cells went, without the book (`getBook()` gives it), in
+ * every kind of session. `changes` are the cells whose value or formula differs from those of the cell that was at
+ * their old place (`mapCell`), by new address, a cell no old cell came to counting as empty before; with `display`, the
+ * cells whose shown text or colour differs too. An interface that moves its shown cells by `moved` (or `mapCell`) and
+ * applies these has the new ones.
+ */
+export type SessionStructureResult =
+  | (EditResult & {
       ok: true
-      /** The session's book after the operation (as `book()` returns it). */
-      book: BookInput
+      /** Where a cell of the book before the operation is now; null if it was deleted or overwritten, or its sheet is none of that book's. */
       mapCell(ref: CellRef): CellRef | null
-      /**
-       * Cells whose value differs from the one their old cell (`mapCell`) had, by new address; a cell no old
-       * cell came to counts as empty before. An interface that moves its shown values by `mapCell` and applies
-       * these has the new values. With `display`, cells whose shown text or colour differs are listed too.
-       */
-      changes: CellChange[]
-    }
-  | { ok: false; code: StructureRefusal; message: string }
+    })
+  | Refusal<StructureRefusal>
+
+/** @deprecated The name is `SessionStructureResult`. */
+export type SessionRestructureResult = SessionStructureResult
 
 /** Fields to change on columns or rows: a value sets the field, null removes it, a field left out stays. */
 export type LinePatch<T> = { [K in keyof T]?: T[K] | null }
@@ -1089,7 +1469,7 @@ export interface ColumnsFit {
 }
 
 /**
- * A cell's data validation (`Session.validation`): the rule over it, the rule's formulas as at the cell (relative
+ * A cell's data validation (`Session.getValidation`): the rule over it, the rule's formulas as at the cell (relative
  * references moved from the rule's first cell), and for a list the items its dropdown offers.
  */
 export interface CellValidation {
@@ -1104,28 +1484,56 @@ export interface CellValidation {
   list?: { value: CellValue; text: string }[] | { error: ErrorCode }
 }
 
-/** Whether a value meets a cell's rule (`Session.validateEntry`); when it does not, the rule, whose alert Excel shows. */
-export type EntryCheck = { ok: true } | { ok: false; rule: DataValidation }
-
 /**
- * A change of a cell's look (`Session.patchCells`): each field given sets the cell's own, null removes it, a field left
- * out stays. The cell's value and formula stay as they are.
+ * Whether a value meets a cell's rule (`Session.validateEntry`); when it does not, the rule, whose alert Excel shows,
+ * its style (`errorStyle`, stop by default) and its message: the rule's `error`, else the library's English text.
  */
-export interface CellPatch extends CellRef {
-  set: { style?: number | null; format?: NumberFormat | null; meta?: JsonValue | null; note?: CellNote | null; link?: CellLink | null }
+export type EntryCheck = { ok: true } | (Refusal<'validation'> & { rule: DataValidation; severity: 'stop' | 'warning' | 'information' })
+
+/** Fields of a style to change (`CellPatch.set.style`): a value sets a field, null removes it, a field left out stays. */
+export interface StylePatch {
+  font?: { [K in keyof FontStyle]?: FontStyle[K] | null } | null
+  fill?: { color: Color } | null
+  border?: { [K in keyof NonNullable<CellStyle['border']>]?: BorderLine | null } | null
+  alignment?: { [K in keyof AlignmentStyle]?: AlignmentStyle[K] | null } | null
 }
 
-/** Where a sheet's cells end (`Session.extent`): everything lies in its first `rows` rows and `columns` columns; 0 and 0 for an empty sheet. */
+/**
+ * A change of the look of a cell (`cell`) or a range (`range`: `B2:D9`, whole columns `B:D`, whole rows `2:5`)
+ * (`Session.patchCells`): each field given sets the cells' own, null removes it, a field left out stays; values and
+ * formulas stay as they are. A style by its fields (`StylePatch`) goes over the style each cell shows, its own or else
+ * its row's or column's, as Excel formats a cell; a style by its number of the book's `styles` replaces it.
+ */
+export type CellPatch = { sheet: string; set: PatchFields } & ({ cell: string; range?: never } | { range: string; cell?: never })
+
+/** The fields `CellPatch` sets; on whole rows and columns, `meta`, `note` and `link` can only be removed. */
+export interface PatchFields {
+  style?: number | StylePatch | null
+  numberFormat?: NumberFormat | null
+  /** @deprecated The name is `numberFormat`. */
+  format?: NumberFormat | null
+  meta?: JsonValue | null
+  note?: CellNote | null
+  link?: CellLink | null
+}
+
+/** Where a sheet's cells end (`Session.getUsedRange`): everything lies in its first `rows` rows and `columns` columns; 0 and 0 for an empty sheet. */
 export interface SheetExtent {
   rows: number
   columns: number
 }
 
-/** A sheet without its cells (`Session.layout`). */
-export type SheetLayout = Omit<SheetInput, 'cells'>
+/** A sheet without its cells (`Session.getLayout`). */
+export type SheetLayout = Omit<Sheet, 'cells'>
 
-/** A book without the cells of its sheets (`Session.layout`): its styles, names and settings, and each sheet's layout. */
-export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
+/** A book without the cells of its sheets (`Session.getLayout`): its styles, names and settings, and each sheet's layout. */
+export type BookLayout = Omit<Book, 'sheets'> & { sheets: SheetLayout[] }
+
+/** A session's book and its result taken at one moment (`Session.getSnapshot`), as `writeXlsx` takes them. */
+export interface BookSnapshot {
+  book: Book
+  result: ComputeResult
+}
 
 /**
  * A session over a book: edits recompute only the cells that depend on them. The current clock of the
@@ -1133,93 +1541,140 @@ export type BookLayout = Omit<BookInput, 'sheets'> & { sheets: SheetLayout[] }
  */
 export interface Session {
   readonly clock: Clock
+  /** The book's revision: 0 when opened, one more after each call that changed the book (`EditResult.revision`). */
+  readonly revision: number
   /**
-   * Applied atomically with one recomputation; returns the changed values. An edit that keeps the cell's
-   * value and formula (a new `style`, `format`, `meta`, `note` or `link`) recomputes nothing; with `display` a new format returns
-   * the cell when its shown text changed. A value or formula put into a spill range stops the array spilling
-   * (#SPILL!); clearing it lets the array spill again. Edits that change some cells of an old-kind array formula's
-   * area (`CellInput.array`) but not all of them throw `InputError` and change nothing, as Excel refuses to change
-   * part of an array; an edit of its top-left cell that keeps an array formula over the same area changes all of it.
-   * An edit of a table's header cell renames its column, as Excel does: the structured references to it follow, a number
-   * or a boolean becomes its text, a cleared cell names the column `Column1` (the first such name free, in the word of
-   * the book's locale: `Столбец1` in ru-RU), and a name another column has already gives the column further right a
-   * number (`Price2`). A formula in a header cell throws `InputError`.
+   * Edits of cells, applied atomically with one recomputation (`CellEdit`): each sets the fields it gives and keeps the
+   * cell's others, as Excel keeps a cell's look when a value is typed over it; null clears the content, as Delete. An
+   * edit that keeps the cell's value and formula (a new `style`, `numberFormat`, `meta`, `note` or `link`) recomputes nothing.
+   * A value or formula put into a spill range stops the array spilling (#SPILL!); clearing it lets the array spill
+   * again. Edits that change some cells of an old-kind array formula's area (`CellInput.array`) but not all of them
+   * throw `InputError` and change nothing, as Excel refuses to change part of an array; an edit of its top-left cell that
+   * keeps an array formula over the same area changes all of it. An edit of a table's header cell renames its column, as
+   * Excel does: the structured references to it follow, a number or a boolean becomes its text, a cleared cell names the
+   * column `Column1` (the first such name free, in the word of the book's locale: `Столбец1` in ru-RU), and a name
+   * another column has already gives the column further right a number (`Price2`). A formula in a header cell throws
+   * `InputError`.
    */
-  setCells(edits: CellEdit[]): CellChange[]
+  setCells(edits: CellEdit[], opts?: EditOptions): EditResult
+  /** Cells replaced whole, as `setCells` applies edits otherwise: what an input leaves out the cell loses, null removes the cell. */
+  replaceCells(edits: CellReplace[], opts?: EditOptions): EditResult
   /**
-   * The style, format, meta, note or link of cells changed, applied in order and atomically, without the cells' values
-   * and formulas, which stay: an empty cell gets a cell with these alone, a cell left with nothing is removed, a cell of
-   * an old-kind array formula's area or of a spill takes them and the array stays. Recomputes nothing; with `display`,
-   * returns the cells whose shown text or colour changed (a new format).
+   * The cells of rectangles cleared, as Excel's ClearContents (`contents`: values, formulas and hyperlinks), ClearFormats
+   * (`formats`: styles and number formats, the conditional formats over them) and Clear (`all`: both, notes, meta, the
+   * rules of data validation over them); whole rows and columns lose their own style and format too (`docs/edits.md`).
    */
-  patchCells(patches: CellPatch[]): CellChange[]
-  setNames(names: NameInput[]): CellChange[]
+  clearCells(ranges: RangeRef[], what: ClearKind, opts?: EditOptions): EditResult
+  /**
+   * The look of cells and ranges (`CellPatch`), applied in order and atomically, without the cells' values and
+   * formulas, which stay: an empty cell of a rectangle gets a cell with the look, a cell left with nothing is removed, a
+   * cell of an old-kind array formula's area or of a spill takes it and the array stays. A style by its fields goes over
+   * each cell's (`docs/edits.md`); equal styles share one entry of the book's `styles`. Recomputes nothing.
+   */
+  patchCells(patches: CellPatch[], opts?: EditOptions): EditResult
+  /**
+   * Text typed into a cell, as Excel takes it in the book's locale, date system and clock, by the format the cell shows
+   * (`parseEntry`): the cell keeps its style, meta, note and link, and a format it shows from its row or column is not
+   * written into it. A number that does not fit a column of the default width widens it in the same step (`width`), as
+   * Excel does, unless `widen` is false; a value the cell's rule of data validation does not take is written, with the
+   * rule (`validation`). A formula Excel does not take, or a change of part of an array, is refused, with a message in
+   * the book's locale.
+   */
+  setCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextResult
+  /** What `setCellText` would do, with nothing changed. */
+  previewCellText(sheet: string, cell: string, text: string, opts?: CellTextOptions): CellTextPreview
+  setNames(names: NameInput[], opts?: EditOptions): EditResult
   /** Non-live sessions only. */
-  setClock(clock: Clock): CellChange[]
-  /** A structure operation on the session's book, recomputed; refused as `restructure` refuses it. A sheet hidden or shown recomputes nothing. */
-  restructure(op: StructureOp): SessionRestructureResult
+  setClock(clock: Clock, opts?: EditOptions): EditResult
+  /** A structure operation on the session's book, recomputed; refused as `editStructure` refuses it. A sheet hidden or shown recomputes nothing. */
+  editStructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
   /** Replaces the book's style table; every style that cells, rows and columns use must stay in it. Recomputes nothing; the shown text does not depend on styles. */
-  setStyles(styles: CellStyle[]): void
+  setStyles(styles: CellStyle[], opts?: EditOptions): EditResult
   /**
    * Column widths, row heights, row and column styles and formats, hidden rows and columns, outline levels, merged
-   * areas, the filter mode, frozen panes, conditional formats, rules of data validation and outline settings; applied atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added
-   * or removed area meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count:
-   * their formulas over the rows concerned are recomputed. Nothing else is recomputed; the changed values are
-   * returned. With `display`, the cells whose shown text or colour a width, a format or a merged area changed are
-   * returned too.
+   * areas, the filter mode, frozen panes, conditional formats, rules of data validation and outline settings; applied
+   * atomically. Merged areas stop arrays spilling over them: the formulas whose spill range an added or removed area
+   * meets are recomputed. Hidden rows and the filter mode change what SUBTOTAL and AGGREGATE count: their formulas over
+   * the rows concerned are recomputed. Nothing else is recomputed. With `display`, the cells whose shown text or colour
+   * a width, a format or a merged area changed are listed too.
    */
-  setLayout(edits: LayoutEdit[]): CellChange[]
+  setLayout(edits: LayoutEdit[], opts?: EditOptions): EditResult
   /**
    * The session's book with every change so far: what a host saves as a version. Its objects are the
    * session's own and later calls change them, so do not modify it; serialize or copy what must stay.
    */
-  book(): BookInput
+  getBook(): Book
   /**
    * The session's book without its cells: the styles, names and settings, and every field of each sheet but `cells`
    * (columns, rows, merged areas, tables, frozen panes, conditional formats, data validation and the rest). It costs
-   * what the layout holds, not the cells; its objects are the session's own, as `book()`'s are.
+   * what the layout holds, not the cells; its objects are the session's own, as `getBook()`'s are.
    */
-  layout(): BookLayout
+  getLayout(): BookLayout
   /**
    * Where a sheet's cells end: the last row and column that a cell of its input (a value, a formula, or a style, a
    * format, meta, a note or a link alone), a spilled value (the whole spill range), a merged area or a table reaches.
    * Settings of whole rows and columns, conditional formats and data validation do not count. It costs the sheet's
    * columns, spills and cells without a value, not a pass over all its cells.
    */
-  extent(sheet: string): SheetExtent
+  getUsedRange(sheet: string): SheetExtent
   explain(sheet: string, cell: string, opts?: ExplainOptions): Explanation
   /**
    * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`), or of several (a cell in
-   * two of them is listed once), as `result()` gives them, by address: the same cells (spilled ones too, empty ones
+   * two of them is listed once), as `getResult()` gives them, by address: the same cells (spilled ones too, empty ones
    * left out) with the same fields, and each cell's own `style`, `note` and `link`, an old-kind array formula's `array`,
-   * and the `look` the sheet's conditional formats give it by the current values (an empty cell with a look is listed
+   * and the `appearance` the sheet's conditional formats give it by the current values (an empty cell with one is listed
    * with the value null). For a window over a sheet: it costs what the rectangles hold, not the book; the statistics of
    * a rule's cells (lowest, highest, percentiles) are kept until an edit changes them. Edits do not list cells whose
-   * look changed: a host reads its window again after an edit to a sheet with rules.
+   * conditional appearance changed: they give the rules' cells as `repaint`, for a host to read again where its window meets them.
    */
-  cells(sheet: string, range: string | string[]): Record<string, CellView>
+  getCells(sheet: string, range: string | string[]): Record<string, CellView>
+  /**
+   * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
+   * empty ones with a style of their row or column too, the widths and heights of its lines, the merged areas and tables
+   * that meet it and the sheet's frozen panes (`Viewport`). It costs what the window holds, as `getCells`, not the book.
+   */
+  getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
+  /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
+  getCellIssue(sheet: string, cell: string): CellIssueDetail | null
   /** The data validation of a cell (`CellValidation`), its list computed now; null when no rule is over the cell. */
-  validation(sheet: string, cell: string): CellValidation | null
+  getValidation(sheet: string, cell: string): CellValidation | null
   /**
    * Whether the cell holding `input` (null: cleared) would meet its rule, as Excel checks a cell's value
    * (`Range.Validation.Value`): the value the input computes to, in the book with it. Changes nothing; a cell without a
    * rule takes anything. Text typed into the cell is `parseEntry`'s input first.
    */
   validateEntry(sheet: string, cell: string, input: CellInput | null): EntryCheck
-  result(): ComputeResult
-  /** The values hash `result()` gives, without building the result. */
-  hash(): string
+  getResult(): ComputeResult
+  /** The book (as `getBook()`, the session's own objects) and its result (as `getResult()`) in one call. */
+  getSnapshot(): BookSnapshot
+  /** The values hash `getResult()` gives, without building the result. */
+  getHash(): string
   /**
-   * Takes back the last change of the book, as Excel's Undo: the whole of one call of `setCells`, `patchCells`,
-   * `setNames`, `setStyles`, `setLayout` or `restructure`, recomputed; null when there is nothing to undo. A change
-   * after an undo forgets what `redo` could do again.
+   * Takes back the last change of the book, as Excel's Undo: the whole of one call that changed it (`UndoCall`),
+   * recomputed; null when there is nothing to undo. A change after an undo forgets what `redo` could do again.
    */
-  undo(): UndoResult | null
+  undo(opts?: EditOptions): UndoResult | null
   /** Does again the last change `undo` took back; null when there is none. */
-  redo(): UndoResult | null
+  redo(opts?: EditOptions): UndoResult | null
   /** The steps `undo` and `redo` can take now. */
   readonly history: SessionHistory
   close(): void
+  /** @deprecated The name is `editStructure`. */
+  restructure(op: StructureOp, opts?: EditOptions): SessionStructureResult
+  /** @deprecated The name is `getBook`. */
+  book(): Book
+  /** @deprecated The name is `getLayout`. */
+  layout(): BookLayout
+  /** @deprecated The name is `getUsedRange`. */
+  extent(sheet: string): SheetExtent
+  /** @deprecated The name is `getCells`. */
+  cells(sheet: string, range: string | string[]): Record<string, CellView>
+  /** @deprecated The name is `getValidation`. */
+  validation(sheet: string, cell: string): CellValidation | null
+  /** @deprecated The name is `getResult`. */
+  result(): ComputeResult
+  /** @deprecated The name is `getHash`. */
+  hash(): string
 }
 
 // ---------- asynchronous and threaded computation (`docs/async.md`) ----------
@@ -1238,7 +1693,8 @@ export interface AbortSignalLike {
  * thread was terminated. `out_of_memory`: its thread reached `maxHeapMb`. `thread_failed`: its thread exited or threw
  * outside the computation. `restore_failed`: the session could not be restored on a thread and is closed. `limit`:
  * the book is over `CalcLimits`. `queue_full`: `maxQueue` tasks already wait. `too_many_sessions`: the pool holds
- * `maxSessions` sessions. `closed`: the calculator or the session is closed.
+ * `maxSessions` sessions. `closed`: the calculator or the session is closed. `stale_revision`: an edit's `baseRevision`
+ * is not the session's revision (`EditOptions`); it changed nothing.
  */
 export type CalcErrorCode =
   | 'soft_timeout'
@@ -1251,6 +1707,7 @@ export type CalcErrorCode =
   | 'queue_full'
   | 'too_many_sessions'
   | 'closed'
+  | 'stale_revision'
 
 /** Options of one asynchronous call. */
 export interface CalcOptions {
@@ -1264,10 +1721,14 @@ export type AsyncComputeOptions = ComputeOptions & CalcOptions
 /** `signal` and `timeoutMs` bound the opening (the first computation of the book). */
 export type AsyncSessionOptions = SessionOptions & CalcOptions
 
-/** `AsyncSession.restructure`: as `SessionRestructureResult`, without the book (`AsyncSession.book()` gives it). */
-export type AsyncRestructureResult =
-  | { ok: true; mapCell(ref: CellRef): CellRef | null; changes: CellChange[] }
-  | { ok: false; code: StructureRefusal; message: string }
+/** `AsyncSession.editStructure`: the same answer as `Session.editStructure`'s. */
+export type AsyncStructureResult = SessionStructureResult
+
+/** @deprecated The name is `AsyncStructureResult`. */
+export type AsyncRestructureResult = AsyncStructureResult
+
+/** The options of an asynchronous call that changes a session's book. */
+export type AsyncEditOptions = CalcOptions & EditOptions
 
 /**
  * A session computed in portions or in a thread: the methods of `Session`, as promises. Calls are taken in order,
@@ -1276,36 +1737,65 @@ export type AsyncRestructureResult =
 export interface AsyncSession {
   /** The session's clock as of its last finished call. */
   readonly clock: Clock
-  setCells(edits: CellEdit[], opts?: CalcOptions): Promise<CellChange[]>
-  patchCells(patches: CellPatch[], opts?: CalcOptions): Promise<CellChange[]>
-  setNames(names: NameInput[], opts?: CalcOptions): Promise<CellChange[]>
-  setClock(clock: Clock, opts?: CalcOptions): Promise<CellChange[]>
-  restructure(op: StructureOp, opts?: CalcOptions): Promise<AsyncRestructureResult>
-  setStyles(styles: CellStyle[]): Promise<void>
-  setLayout(edits: LayoutEdit[], opts?: CalcOptions): Promise<CellChange[]>
+  /** The session's revision as of its last finished call. */
+  readonly revision: number
+  setCells(edits: CellEdit[], opts?: AsyncEditOptions): Promise<EditResult>
+  replaceCells(edits: CellReplace[], opts?: AsyncEditOptions): Promise<EditResult>
+  clearCells(ranges: RangeRef[], what: ClearKind, opts?: AsyncEditOptions): Promise<EditResult>
+  patchCells(patches: CellPatch[], opts?: AsyncEditOptions): Promise<EditResult>
+  setCellText(sheet: string, cell: string, text: string, opts?: CalcOptions & CellTextOptions): Promise<CellTextResult>
+  previewCellText(sheet: string, cell: string, text: string, opts?: CalcOptions & CellTextOptions): Promise<CellTextPreview>
+  setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
+  setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
+  editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
+  setStyles(styles: CellStyle[], opts?: AsyncEditOptions): Promise<EditResult>
+  setLayout(edits: LayoutEdit[], opts?: AsyncEditOptions): Promise<EditResult>
   /** The session's book; from a thread, a copy. */
-  book(): Promise<BookInput>
-  /** As `Session.layout`; from a thread, a copy, without the cells. */
-  layout(): Promise<BookLayout>
-  extent(sheet: string): Promise<SheetExtent>
+  getBook(): Promise<Book>
+  /** As `Session.getLayout`; from a thread, a copy, without the cells. */
+  getLayout(): Promise<BookLayout>
+  getUsedRange(sheet: string): Promise<SheetExtent>
   explain(sheet: string, cell: string, opts?: ExplainOptions): Promise<Explanation>
-  /** As `Session.cells`; from a thread only the rectangles come back, in one call. */
-  cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
-  validation(sheet: string, cell: string): Promise<CellValidation | null>
+  /** As `Session.getCells`; from a thread only the rectangles come back, in one call. */
+  getCells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** As `Session.getViewport`; from a thread the window comes back in one call. */
+  getViewport(sheet: string, range: string, opts?: ViewportOptions): Promise<Viewport>
+  getCellIssue(sheet: string, cell: string): Promise<CellIssueDetail | null>
+  getValidation(sheet: string, cell: string): Promise<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null, opts?: CalcOptions): Promise<EntryCheck>
-  result(opts?: CalcOptions): Promise<ComputeResult>
-  /** As `Session.hash`: from a thread only the hash comes back. */
-  hash(opts?: CalcOptions): Promise<string>
-  undo(opts?: CalcOptions): Promise<UndoResult | null>
-  redo(opts?: CalcOptions): Promise<UndoResult | null>
+  getResult(opts?: CalcOptions): Promise<ComputeResult>
+  /** As `Session.getSnapshot`, in one call, so no edit comes between the book and its result; from a thread, a copy. */
+  getSnapshot(opts?: CalcOptions): Promise<BookSnapshot>
+  /** As `Session.getHash`: from a thread only the hash comes back. */
+  getHash(opts?: CalcOptions): Promise<string>
+  undo(opts?: AsyncEditOptions): Promise<UndoResult | null>
+  redo(opts?: AsyncEditOptions): Promise<UndoResult | null>
   /** The session's history as of its last finished call. */
   readonly history: SessionHistory
   close(): Promise<void>
+  /** @deprecated The name is `editStructure`. */
+  restructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
+  /** @deprecated The name is `getBook`. */
+  book(): Promise<Book>
+  /** @deprecated The name is `getLayout`. */
+  layout(): Promise<BookLayout>
+  /** @deprecated The name is `getUsedRange`. */
+  extent(sheet: string): Promise<SheetExtent>
+  /** @deprecated The name is `getCells`. */
+  cells(sheet: string, range: string | string[]): Promise<Record<string, CellView>>
+  /** @deprecated The name is `getValidation`. */
+  validation(sheet: string, cell: string): Promise<CellValidation | null>
+  /** @deprecated The name is `getResult`. */
+  result(opts?: CalcOptions): Promise<ComputeResult>
+  /** @deprecated The name is `getHash`. */
+  hash(opts?: CalcOptions): Promise<string>
 }
 
 /** A calculator: `createInlineCalc` (the same thread, in portions) or `createCalcPool` (threads). */
 export interface Calc {
   compute(book: BookInput, opts?: AsyncComputeOptions): Promise<ComputeResult>
+  createSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
+  /** @deprecated The name is `createSession`. */
   openSession(book: BookInput, opts?: AsyncSessionOptions): Promise<AsyncSession>
   /** Refuses further calls (`closed`), the waiting and running ones too, and closes the sessions. */
   close(): Promise<void>
@@ -1357,15 +1847,20 @@ export interface CalcPoolOptions {
   spawn?: () => WorkerLike
 }
 
+/** @deprecated The package's named exports are these functions (`compute`, `createSession` and the rest): import them. */
 export interface FormulaEngine {
   compute(book: BookInput, opts?: ComputeOptions): ComputeResult
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
   /** Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; a locale's words for TRUE and FALSE are refused too, ИСТИНА and ЛОЖЬ in ru-RU). */
   validateName(name: string, opts?: NameOptions): NameCheck
-  /** The issues of a book's names, as `ComputeResult.nameIssues` gives them for a book with these sheets, tables and locale. */
+  /** The issues of a book's names, as `ComputeResult.diagnostics` of kind `name` give them for a book with these sheets, tables and locale. */
   validateNames(names: NameInput[], ctx: NamesContext): NameIssue[]
+  createSession(book: BookInput, opts?: SessionOptions): Session
+  editStructure(book: BookInput, op: StructureOp): StructureResult
+  /** @deprecated The name is `createSession`. */
   openSession(book: BookInput, opts?: SessionOptions): Session
-  restructure(book: BookInput, op: StructureOp): RestructureResult
+  /** @deprecated The name is `editStructure`. */
+  restructure(book: BookInput, op: StructureOp): StructureResult
   /** A value as a cell shows it, without a book: by a format, in a locale and a column's width. */
   displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay
   /** Text typed into a cell as Excel takes it, without a book: by the book's locale and the cell's format, style and meta. */

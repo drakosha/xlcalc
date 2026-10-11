@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { fromFile } from '../src/xlsx/formulas/from-file.js'
-import { codes, read, sheet } from './xlsx-fixtures.js'
+import { codes, read, sheet, storedValues } from './xlsx-fixtures.js'
 
 const META_REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/sheetMetadata'
 const METADATA =
@@ -50,7 +50,11 @@ describe("xlsx reader: formulas in the engine's spelling", () => {
     expect(fromFile('[1]Sheet1!A1+\'[2]My sheet\'!B2').found).toEqual(['externalLink'])
     expect(fromFile('[0]!rate*2')).toEqual({ formula: 'rate*2', found: [] })
     expect(fromFile("SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)")).toEqual({ formula: "SUM(Sheet1:Sheet3!A1)+SUM('Jan 1:Mar 2'!A1)", found: [] })
-    expect(fromFile('LET(_xlpm.a1,1,_xlpm.a1)').found).toEqual(['letName'])
+    // LET takes a cell's word as a name but one that reads as R1C1's row or column too, and a boolean (entry/let-cells-held)
+    expect(fromFile('LET(_xlpm.r2,1,_xlpm.r2)').found).toEqual(['letName'])
+    expect(fromFile('LET(_xlpm.TRUE,1,_xlpm.TRUE)').found).toEqual(['letName'])
+    expect(fromFile('LET(_xlpm.a1,1,_xlpm.a1)').found).toEqual([])
+    expect(fromFile('LET(_xlpm.R1?x,1,_xlpm.R1?x)')).toEqual({ formula: 'LET(R1?x,1,R1?x)', found: [] })
     expect(fromFile('SUM(Sheet1!A1:B2)+"Sheet1:Sheet3!"').found).toEqual([])
   })
 })
@@ -76,28 +80,28 @@ describe('xlsx reader: formulas of the file', () => {
   it('a dynamic array formula: the cells it spilled into hold stored values, keeping their own look', async () => {
     const r = await dynamic('<row r="1"><c r="A1" cm="1"><f t="array" ref="A1:A3">_xlfn.SEQUENCE(3)</f><v>1</v></c></row><row r="2"><c r="A2"><v>2</v></c></row><row r="3"><c r="A3" s="0"><v>3</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: 'SEQUENCE(3)' } })
-    expect(r.cached[0].cells).toEqual({ A1: 1, A2: 2, A3: 3 })
+    expect(storedValues(r)).toEqual({ A1: 1, A2: 2, A3: 3 })
     expect(r.issues).toEqual([])
   })
 
   it('an error an array spilled is a stored value, not an error typed into the cell', async () => {
     const r = await dynamic('<row r="1"><c r="A1" cm="1"><f t="array" ref="A1:B1">{1,#N/A}</f><v>1</v></c><c r="B1" t="e"><v>#N/A</v></c><c r="C1" t="e"><v>#N/A</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: '{1,#N/A}' }, C1: { formula: '#N/A' } })
-    expect(r.cached[0].cells).toEqual({ A1: 1, B1: { error: 'NA' }, C1: { error: 'NA' } })
+    expect(storedValues(r)).toEqual({ A1: 1, B1: { error: 'NA' }, C1: { error: 'NA' } })
     expect(codes(r.issues)).toEqual(['errorConstant C1'])
   })
 
   it('the cells a volatile array spilled into carry an empty formula that only flags them (<f ca="1"/>): stored values', async () => {
     const r = await dynamic('<row r="1"><c r="A1" cm="1"><f t="array" aca="1" ref="A1:A2" ca="1">_xlfn.RANDARRAY(2)</f><v>0.5</v></c></row><row r="2"><c r="A2"><f ca="1"/><v>0.25</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ A1: { formula: 'RANDARRAY(2)' } })
-    expect(r.cached[0].cells).toEqual({ A1: 0.5, A2: 0.25 })
+    expect(storedValues(r)).toEqual({ A1: 0.5, A2: 0.25 })
     expect(r.issues).toEqual([])
   })
 
   it('an array formula of the old kind is read over its area, without @', async () => {
     const r = await sheet('<row r="1"><c r="B1"><f t="array" ref="B1:B2">A1:A2*2</f><v>2</v></c><c r="C1"><f t="array" ref="C1">SUM(A1:A2*2)</f><v>6</v></c></row><row r="2"><c r="B2"><v>4</v></c></row>')
     expect(r.book.sheets[0].cells).toEqual({ B1: { formula: 'A1:A2*2', array: 'B1:B2' }, C1: { formula: 'SUM(A1:A2*2)', array: 'C1' } })
-    expect(r.cached[0].cells).toEqual({ B1: 2, B2: 4, C1: 6 })
+    expect(storedValues(r)).toEqual({ B1: 2, B2: 4, C1: 6 })
     expect(r.issues).toEqual([])
   })
 

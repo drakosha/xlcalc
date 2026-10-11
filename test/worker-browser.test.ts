@@ -2,8 +2,9 @@
  * The built package in real browsers (headless Chromium, Firefox and WebKit through `playwright-core`, each skipped
  * when its engine is not found: `CHROME_PATH` or Playwright's own for Chromium, Playwright's own for the others): the
  * pool on Web Workers computes the synthetic book and a session's edits with the hashes of Node's synchronous engine,
- * a hard deadline terminates a worker and the session comes back on a new one, `maxHeapMb` is refused; the
- * same-thread calculator lets timers run while it computes.
+ * a hard deadline terminates a worker and the session comes back on a new one, `maxHeapMb` is refused; ru-RU, loaded
+ * after the pool started, reaches its workers, which import its module for its messages; the same-thread calculator
+ * lets timers run while it computes.
  */
 import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { createServer, type Server } from 'node:http'
@@ -12,7 +13,7 @@ import { join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium, firefox, webkit, type BrowserType } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { compute, openSession } from '../src/index.js'
+import { compute, createSession } from '../src/index.js'
 import { classAEdits, synthBook } from '../src/synth.js'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -25,8 +26,9 @@ const engines: [string, BrowserType, string | undefined][] = [
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 
 const page = `<!doctype html><meta charset="utf-8"><script type="module">
-const { compute, createInlineCalc } = await import('/dist/index.js')
+const { compute, createInlineCalc, registerLocale } = await import('/dist/index.js')
 const { createCalcPool } = await import('/dist/worker/index.js')
+const { ruRU } = await import('/dist/locales/ru-RU.js')
 const { synthBook, classAEdits } = await import('/dist/synth.js')
 const clock = ${JSON.stringify(clock)}
 const synth = synthBook({ seed: 1, rows: 340 })
@@ -35,14 +37,17 @@ try {
   const pool = createCalcPool({ threads: 2, hardTimeoutMs: 2000 })
   out.pool = (await pool.compute(synth.book, { clock })).hash
   out.eval = (await pool.compute(synth.book, { clock, execution: 'eval' })).hash
-  const s = await pool.openSession(synth.book, { clock })
+  const s = await pool.createSession(synth.book, { clock })
   for (const e of classAEdits(synth, 3, 10)) await s.setCells([e])
-  out.edited = (await s.result()).hash
+  out.edited = (await s.getResult()).hash
+  registerLocale(ruRU)
+  const ru = await pool.createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { formula: 'ROUND(1.25*2,1)' } } }] }, { clock })
+  out.ru = (await ru.explain('S', 'A1')).text
   const slow = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1500,1500),SEQUENCE(1500,1500))),A1)' } } }] }
-  const t = await pool.openSession(slow, { clock })
+  const t = await pool.createSession(slow, { clock })
   out.killed = await t.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).then(() => 'answered', (e) => e.code)
   await t.setCells([{ sheet: 'S', cell: 'A1', input: { value: 0.5 } }])
-  out.restored = (await t.result()).hash
+  out.restored = (await t.getResult()).hash
   try { createCalcPool({ maxHeapMb: 64 }); out.heap = 'accepted' } catch (e) { out.heap = e.message }
   await pool.close()
   let ticks = 0, done = false
@@ -85,11 +90,12 @@ describe.each(engines)('in %s', (_, engine, executablePath) => {
       const out = (await tab.evaluate(() => (globalThis as unknown as { __out: Record<string, unknown> }).__out)) as Record<string, unknown>
       const synth = synthBook({ seed: 1, rows: 340 })
       const hash = compute(synth.book, { clock }).hash
-      const session = openSession(synth.book, { clock })
+      const session = createSession(synth.book, { clock })
       for (const e of classAEdits(synth, 3, 10)) session.setCells([e])
       const slow = compute({ sheets: [{ name: 'S', cells: { A1: { value: 0.5 }, B1: { formula: 'IF(A1>1,SUM(MMULT(SEQUENCE(1500,1500),SEQUENCE(1500,1500))),A1)' } } }] }, { clock }).hash
       expect(out.error).toBeUndefined()
-      expect(out).toMatchObject({ worker: 'function', pool: hash, eval: hash, edited: session.result().hash, killed: 'hard_timeout', restored: slow, inline: compute(synthBook({ seed: 1, rows: 1700 }).book, { clock }).hash })
+      expect(out).toMatchObject({ worker: 'function', pool: hash, eval: hash, edited: session.getResult().hash, killed: 'hard_timeout', restored: slow, inline: compute(synthBook({ seed: 1, rows: 1700 }).book, { clock }).hash })
+      expect(out.ru).toBe("'S'!A1 = 2,5  ← ОКРУГЛ(1,25*2;1)")
       expect(out.heap).toMatch(/^opts\.maxHeapMb: a thread's memory limit needs the pool's own Node worker_threads/)
       expect(out.ticks).toBeGreaterThan(5)
     } finally {

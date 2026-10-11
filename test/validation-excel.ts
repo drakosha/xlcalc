@@ -9,8 +9,9 @@ import { describe, expect, it } from 'vitest'
 import { validFile, type StoredValid } from '../bench/coverage/valid.js'
 import { bookViews, excelView, made, viewDifferences, WINDOW, type SheetView, type ValidSet } from '../bench/coverage/valid/cases.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
-import { restructure } from '../src/index.js'
+import { editStructure } from '../src/index.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import './locales.js'
 
 export type ValidSetFile = StoredValid & { name: string; tag: string; dir: URL }
 
@@ -49,7 +50,7 @@ function loosened(views: SheetView[], loose: Loose | undefined): SheetView[] {
 function engineAfter(set: ValidSetFile, id: string) {
   const c = set.cases.find((x) => x.id === id)!
   const book = made(set.books[c.book], c.make)
-  return c.op ? restructure(book, c.op) : { ok: true as const, book }
+  return c.op ? editStructure(book, c.op) : { ok: true as const, book }
 }
 
 /** `<set>:<case id>` (a locale's with its tag first, `ru-RU/ru:typed`) → lines pinned, with their reasons where they are made. */
