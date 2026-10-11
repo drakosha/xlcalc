@@ -1137,8 +1137,42 @@ export type CellTextsRefusal = Refusal<CellTextRefusal> & CellRef
  */
 export type CellTextsResult = (EditResult & { ok: true; widths?: ColumnWidth[]; validations?: CellValidationAlert[] }) | CellTextsRefusal
 
+/** A cell of a preview of text written into cells (`Session.previewCellTexts`, `previewPasteText`, `previewFillCellText`): its input and its value as the call would leave them. */
+export interface PreviewCell extends CellRef {
+  input: CellInput | null
+  value: CellValue
+}
+
 /** What `Session.setCellTexts` would do (`Session.previewCellTexts`): each cell's input and value, the widths and the alerts, with nothing changed. */
-export type CellTextsPreview = { ok: true; cells: (CellRef & { input: CellInput | null; value: CellValue })[]; widths?: ColumnWidth[]; validations?: CellValidationAlert[] } | CellTextsRefusal
+export type CellTextsPreview = { ok: true; cells: PreviewCell[]; widths?: ColumnWidth[]; validations?: CellValidationAlert[] } | CellTextsRefusal
+
+/**
+ * Why `Session.pasteText` pasted nothing, with the cell: part of an array formula, a formula into a table's header cell
+ * (as `setCellText` refuses them), or a rectangle that runs past the sheet's last row or column (`off_sheet`).
+ */
+export type PasteTextRefusal = Refusal<'array' | 'header' | 'off_sheet'> & CellRef
+
+/** Text pasted from the clipboard (`Session.pasteText`): the edit's result with the range the clipboard's rectangle filled (`B1:D2`); or why nothing was pasted. */
+export type PasteTextResult = (EditResult & { ok: true; range: string }) | PasteTextRefusal
+
+/** What `Session.pasteText` would do (`Session.previewPasteText`): the range and each of its cells' input and value, with nothing changed. */
+export type PasteTextPreview = { ok: true; range: string; cells: PreviewCell[] } | PasteTextRefusal
+
+/** `Session.fillCellText`'s options. */
+export interface FillTextOptions extends CellTextOptions {
+  /** The selection's active cell, which the text is typed into: a cell of the range (`B2`); its top-left cell by default. */
+  active?: string
+}
+
+/**
+ * A text entered into every cell of a range at once (`Session.fillCellText`, Excel's Control+Return): the edit's result,
+ * with the widths the columns took (`widths`) and the alert of the active cell's rule of data validation
+ * (`validation`); or why it was not taken, with the cell, and nothing written.
+ */
+export type FillTextResult = (EditResult & { ok: true; widths?: ColumnWidth[]; validation?: ValidationAlert }) | CellTextsRefusal
+
+/** What `Session.fillCellText` would do (`Session.previewFillCellText`): each cell's input and value, the widths and the alert, with nothing changed. */
+export type FillTextPreview = { ok: true; cells: PreviewCell[]; widths?: ColumnWidth[]; validation?: ValidationAlert } | CellTextsRefusal
 
 /** `Session.getViewport`'s and `viewportOf`'s options. */
 export interface ViewportOptions {
@@ -1195,8 +1229,9 @@ export interface ViewportCell extends Partial<CellDisplay> {
   issue?: CellIssueDetail
   /**
    * With `editText`: the text the cell opens with for editing, as Excel's formula bar shows it: a formula with `=` in the
-   * book's locale (`formulaLocal`), a value as `entryText` writes it by the cell's number format, and empty for a cell
-   * without a value or formula of its own (an empty one, one an array spilled into).
+   * book's locale (`formulaLocal`), in every cell of an old-kind array formula's area its formula (without the braces
+   * the bar shows around it), a value as `entryText` writes it by the cell's number format, and empty for a cell
+   * without a value or formula of its own (an empty one, one a dynamic array spilled into).
    */
   editText?: string
 }
@@ -1341,7 +1376,7 @@ export interface UndoOptions {
 }
 
 /** The calls a session can undo: those that change its book. `setClock` and a live session's new clock are not steps. */
-export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
+export type UndoCall = 'setCells' | 'replaceCells' | 'clearCells' | 'patchCells' | 'setCellText' | 'setCellTexts' | 'pasteText' | 'fillCellText' | 'setNames' | 'setStyles' | 'setLayout' | 'editStructure'
 
 /** A step of a session undone or done again (`Session.undo`, `Session.redo`): the edit's result, as the call gave it. */
 export interface UndoResult extends EditResult {
@@ -1635,6 +1670,31 @@ export interface Session {
   setCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsResult
   /** What `setCellTexts` would do, with nothing changed. */
   previewCellTexts(entries: CellTextEntry[], opts?: CellTextOptions): CellTextsPreview
+  /**
+   * Text pasted from the clipboard at a cell, as Excel pastes it: the rows at its line breaks and the fields at its tabs
+   * (`parseClipboard`) fill a rectangle from the cell, a short row's missing fields and a line break after the last row
+   * clearing their cells. Each field is read as `setCellText` reads it, but an apostrophe stays part of the text, a
+   * formula Excel does not take is pasted as text, a percent cell has no percent editor (`5` is 500%) and `€5` takes the
+   * euro format; no column widens and no rule of data validation is checked. One recomputation, one revision and one
+   * step of the undo. Refused, with the cell, where Excel does not paste: part of an array formula, a formula into a
+   * table's header cell; and a rectangle past the sheet's edge.
+   */
+  pasteText(sheet: string, cell: string, text: string, opts?: EditOptions): PasteTextResult
+  /** What `pasteText` would do, with nothing changed. */
+  previewPasteText(sheet: string, cell: string, text: string, opts?: EditOptions): PasteTextPreview
+  /**
+   * A text entered into every cell of a range at once, as Excel's Control+Return enters it from the selection's active
+   * cell (`active`, the range's top-left cell by default): read once, as `setCellText` reads it in the active cell, it
+   * gives every cell what the active cell holds after it, a formula with its relative references moved as a copy from
+   * the active cell (`copyFormula`), and the active cell's number format, where it has one. The columns widen as typing
+   * widens them (`widths`), unless `widen` is false; a value the active cell's rule of data validation does not take is
+   * written, with that rule's alert (`validation`), the only rule checked. One recomputation, one revision and one step
+   * of the undo. A formula Excel does not take, part of an array formula and a formula into a table's header cell are
+   * refused, with the cell, and nothing is written.
+   */
+  fillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextResult
+  /** What `fillCellText` would do, with nothing changed. */
+  previewFillCellText(sheet: string, range: string, text: string, opts?: FillTextOptions): FillTextPreview
   setNames(names: NameInput[], opts?: EditOptions): EditResult
   /** Non-live sessions only. */
   setClock(clock: Clock, opts?: EditOptions): EditResult
@@ -1783,6 +1843,10 @@ export interface AsyncSession {
   previewCellText(sheet: string, cell: string, text: string, opts?: CalcOptions & CellTextOptions): Promise<CellTextPreview>
   setCellTexts(entries: CellTextEntry[], opts?: CalcOptions & CellTextOptions): Promise<CellTextsResult>
   previewCellTexts(entries: CellTextEntry[], opts?: CalcOptions & CellTextOptions): Promise<CellTextsPreview>
+  pasteText(sheet: string, cell: string, text: string, opts?: AsyncEditOptions): Promise<PasteTextResult>
+  previewPasteText(sheet: string, cell: string, text: string, opts?: AsyncEditOptions): Promise<PasteTextPreview>
+  fillCellText(sheet: string, range: string, text: string, opts?: CalcOptions & FillTextOptions): Promise<FillTextResult>
+  previewFillCellText(sheet: string, range: string, text: string, opts?: CalcOptions & FillTextOptions): Promise<FillTextPreview>
   setNames(names: NameInput[], opts?: AsyncEditOptions): Promise<EditResult>
   setClock(clock: Clock, opts?: AsyncEditOptions): Promise<EditResult>
   editStructure(op: StructureOp, opts?: AsyncEditOptions): Promise<AsyncStructureResult>
