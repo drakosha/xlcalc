@@ -35,7 +35,7 @@ export function undoBook(seed: number): BookInput {
   })
   t.tables = [{ name: 'Tab', range: 'C1:D3', columns: [{ name: 'Qty' }, { name: 'Price' }] }]
   // lines from the start: a change of them changes some of their entries
-  Object.assign(b.sheets[0], { rows: { '2:4': { height: 20 }, '10': { hidden: true }, '30:40': { format: '0.0' } }, columns: { 'A:B': { width: 12 }, H: { format: '0.00' } } })
+  Object.assign(b.sheets[0], { rows: { '2:4': { height: 20 }, '10': { hidden: true }, '30:40': { numberFormat: '0.0' } }, columns: { 'A:B': { width: 12 }, H: { numberFormat: '0.00' } } })
   return { ...b, styles: STYLES.slice(), names: [{ name: 'n1', ref: 'S!$A$1:$A$10' }, { name: 'n2', ref: '7' }] }
 }
 
@@ -57,9 +57,9 @@ export function undoMoves(seed: number): () => Move {
     const s = sheet()
     switch (int(9)) {
       case 0:
-        return { sheet: s, rows: span('r'), set: pick([{ height: 10 + int(30) }, { hidden: true }, { hidden: null }, { style: int(3) }, { format: '0.0' }, { height: null, format: null }]) }
+        return { sheet: s, rows: span('r'), set: pick([{ height: 10 + int(30) }, { hidden: true }, { hidden: null }, { style: int(3) }, { numberFormat: '0.0' }, { height: null, numberFormat: null }]) }
       case 1:
-        return { sheet: s, columns: span('c'), set: pick([{ width: 2 + int(20) }, { format: '0.000' }, { style: int(3), hidden: true }, { width: null, hidden: null }]) }
+        return { sheet: s, columns: span('c'), set: pick([{ width: 2 + int(20) }, { numberFormat: '0.000' }, { style: int(3), hidden: true }, { width: null, hidden: null }]) }
       case 2:
         // merged areas over spills (S!E, F, G, I) stop them spilling
         return { sheet: 'S', merges: rnd() < 0.3 ? [] : [`${pick(['E', 'F', 'G', 'I', 'K'])}${2 + int(40)}:${pick(['F', 'G', 'K'])}${45 + int(5)}`] }

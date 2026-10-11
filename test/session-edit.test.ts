@@ -18,7 +18,7 @@ const book = (): BookInput => ({
     {
       name: 'S',
       cells: {
-        A1: { value: 2, style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } },
+        A1: { value: 2, style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } },
         A2: { formula: 'A1*2', style: 1 },
         A3: { formula: 'SUM(A1:A2)' },
         C1: { value: 'Qty' },
@@ -41,29 +41,29 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       const r = await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }])
       expect(r.revision).toBe(1)
       expect(r.changes.map((c) => `${c.sheet}!${c.cell}=${JSON.stringify(c.value)} ${c.text}`)).toEqual(['S!A1=5 5.00', 'S!A2=10 10', 'S!A3=15 15', 'R!A1=30 30'])
-      expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 5, style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } })
+      expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 5, style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' }, link: { url: 'https://example.com/' } })
       // a value over a formula: the formula goes, the style stays; the change carries the formula's end
       const f = await s.setCells([{ sheet: 'S', cell: 'A2', input: { value: 1, style: null } }])
       expect(f.changes[0]).toEqual({ sheet: 'S', cell: 'A2', value: 1, text: '1', formula: null, style: null })
-      expect((await s.book()).sheets[0].cells.A2).toEqual({ value: 1 })
+      expect((await s.getBook()).sheets[0].cells.A2).toEqual({ value: 1 })
       // a formula over a value: its canonical text in the change
       expect((await s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: '=a1*3' } }])).changes[0]).toMatchObject({ cell: 'A2', value: 15, formula: 'A1*3' })
       // Delete: the value and the hyperlink go, the style, format, meta and note stay
       await s.setCells([{ sheet: 'S', cell: 'A1', input: null }])
-      expect((await s.book()).sheets[0].cells.A1).toEqual({ style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' } })
+      expect((await s.getBook()).sheets[0].cells.A1).toEqual({ style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' } })
       expect(s.revision).toBe(4)
-      expect((await s.hash())).toBe(compute(await s.book(), opts).hash)
+      expect((await s.getHash())).toBe(compute(await s.getBook(), opts).hash)
       await s.close()
     })
 
     it('replaceCells replaces a cell whole and removes it with null; the header of a table renames its column either way', async () => {
       const s = await (await opener(kind))(book(), opts)
       await s.replaceCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }, { sheet: 'S', cell: 'A2', input: null }])
-      const cells = (await s.book()).sheets[0].cells
+      const cells = (await s.getBook()).sheets[0].cells
       expect([cells.A1, cells.A2]).toEqual([{ value: 5 }, undefined])
       const r = await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 'Count' } }])
       expect(r.layout).toEqual(['S'])
-      expect((await s.book()).sheets[0].tables![0].columns[0].name).toBe('Count')
+      expect((await s.getBook()).sheets[0].tables![0].columns[0].name).toBe('Count')
       await s.close()
     })
 
@@ -72,21 +72,21 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       const contents = await open(book(), opts)
       const c = await contents.clearCells([{ sheet: 'S', range: 'A1:A2' }], 'contents')
       expect(c.changes.map((x) => `${x.sheet}!${x.cell}=${JSON.stringify(x.value)}${'formula' in x ? ` ${x.formula}` : ''}`)).toEqual(['S!A1=null', 'S!A2=null null', 'S!A3=0', 'R!A1=0'])
-      expect((await contents.book()).sheets[0].cells.A1).toEqual({ style: 0, format: '0.00', meta: { id: 7 }, note: { text: 'n' } })
+      expect((await contents.getBook()).sheets[0].cells.A1).toEqual({ style: 0, numberFormat: '0.00', meta: { id: 7 }, note: { text: 'n' } })
       const formats = await open(book(), opts)
       const f = await formats.clearCells([{ sheet: 'S', range: 'A1:A3' }], 'formats')
       expect(f.changes.map((x) => [x.cell, x.text, x.style, x.numberFormat])).toEqual([['A1', '2', null, null], ['A2', '4', null, undefined]])
       // the rule over the cells cleared is gone, and the window paints them again
       expect(f.layout).toEqual(['S'])
       expect(f.repaint).toEqual([{ sheet: 'S', range: 'A1:A3' }])
-      expect((await formats.layout()).sheets[0].conditionalFormats).toBeUndefined()
+      expect((await formats.getLayout()).sheets[0].conditionalFormats).toBeUndefined()
       const all = await open(book(), opts)
       await all.clearCells([{ sheet: 'S', range: 'A1' }, { sheet: 'S', range: 'E:E' }], 'all')
-      const b = await all.book()
+      const b = await all.getBook()
       expect([b.sheets[0].cells.A1, b.sheets[0].columns]).toEqual([undefined, undefined])
       expect(b.sheets[0].conditionalFormats).toEqual([{ type: 'cellIs', ranges: ['A2:A3'], operator: 'greaterThan', formulas: ['3'], style: { font: { bold: true } } }])
       for (const s of [contents, formats, all]) {
-        expect(await s.hash()).toBe(compute(await s.book(), opts).hash)
+        expect(await s.getHash()).toBe(compute(await s.getBook(), opts).hash)
         await s.close()
       }
     })
@@ -95,11 +95,11 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       const s = await (await opener(kind))(book(), opts)
       expect(s.revision).toBe(0)
       await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }], { baseRevision: 0 })
-      const before = JSON.stringify(await s.book())
+      const before = JSON.stringify(await s.getBook())
       const e = await Promise.resolve(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 4 } }], { baseRevision: 0 })).catch((x) => x)
       expect(e).toBeInstanceOf(CalcError)
       expect((e as CalcError).code).toBe('stale_revision')
-      expect(JSON.stringify(await s.book())).toBe(before)
+      expect(JSON.stringify(await s.getBook())).toBe(before)
       expect([s.revision, s.history]).toEqual([1, { undo: 1, redo: 0 }])
       // a window says the revision it is of
       expect((await s.getViewport('S', 'A1:A2')).revision).toBe(1)
@@ -115,13 +115,13 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
 
     it('a structure operation answers how addresses moved, the layout and the formulas whose text changed; undo moves them back', async () => {
       const s = await (await opener(kind))(book(), opts)
-      const r = await s.restructure({ op: 'insertRows', sheet: 'S', row: 2 })
+      const r = await s.editStructure({ op: 'insertRows', sheet: 'S', row: 2 })
       if (!r.ok) throw new Error(r.message)
       expect(r.moved).toEqual([{ kind: 'lines', sheet: 'S', axis: 'rows', at: 2, count: 1 }])
       expect(r.layout).toEqual(['S'])
       // A2's formula moves down unchanged; the sum over the rows reads one more
       expect(r.changes.filter((c) => c.formula !== undefined).map((c) => `${c.cell} ${c.formula}`)).toEqual(['A4 SUM(A1:A3)'])
-      const renamed = await s.restructure({ op: 'renameSheet', sheet: 'R', name: 'Q' })
+      const renamed = await s.editStructure({ op: 'renameSheet', sheet: 'R', name: 'Q' })
       expect(renamed.ok && renamed.moved).toEqual([{ kind: 'renameSheet', sheet: 'R', name: 'Q' }])
       expect((await s.undo())!.moved).toEqual([{ kind: 'renameSheet', sheet: 'Q', name: 'R' }])
       expect((await s.undo())!.moved).toEqual([{ kind: 'lines', sheet: 'S', axis: 'rows', at: 2, count: -1 }])
@@ -132,13 +132,13 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
       const s = await (await opener(kind))(book(), opts)
       const styles = [{ font: { bold: true } }, { fill: { color: '#FFFF00' } }, { font: { italic: true } }]
       expect(await s.setStyles(styles)).toEqual({ revision: 1, changes: [], styles })
-      const before = await s.book()
+      const before = await s.getBook()
       await s.clearCells([{ sheet: 'S', range: 'A1:A3' }, { sheet: 'S', range: 'E:E' }], 'all')
       await s.patchCells([{ sheet: 'S', range: 'B1:B2', set: { style: { font: { italic: true } } } }])
       await s.replaceCells([{ sheet: 'S', cell: 'D9', input: { value: 1 } }])
       expect(s.history.undo).toBe(4)
       for (const call of ['replaceCells', 'patchCells', 'clearCells']) expect((await s.undo())!.call).toBe(call)
-      expect(await s.book()).toEqual(before)
+      expect(await s.getBook()).toEqual(before)
       await s.close()
     })
   })
@@ -146,20 +146,20 @@ describe.each(['closures', 'eval'] as const)('edits of a grid, execution %s', (e
   it('a thread lost: the session comes back at its revision, from the journal and from a snapshot, and refuses an edit over another', async () => {
     for (const snapshotEvery of [64, 2]) {
       const { calc, crash } = await inside({ threads: 1, snapshotEvery })
-      const s = await calc.openSession(book(), opts)
+      const s = await calc.createSession(book(), opts)
       await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3 } }])
       await s.clearCells([{ sheet: 'S', range: 'A2' }], 'formats')
       await s.setCellText('S', 'B9', '1234567890')
       await s.patchCells([{ sheet: 'S', range: 'B1:B2', set: { style: { font: { italic: true } } } }])
-      const [book4, revision] = [await s.book(), s.revision]
+      const [book4, revision] = [await s.getBook(), s.revision]
       expect(revision).toBe(4)
       crash(0)
-      expect(await s.book()).toEqual(book4)
+      expect(await s.getBook()).toEqual(book4)
       await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }], { baseRevision: 3 })).rejects.toMatchObject({ code: 'stale_revision' })
       expect((await s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }], { baseRevision: 4 })).revision).toBe(5)
       // the history came back too: the five calls undone, one step each
       for (const call of ['setCells', 'patchCells', 'setCellText', 'clearCells', 'setCells']) expect((await s.undo())!.call).toBe(call)
-      expect(await s.book()).toEqual(book())
+      expect(await s.getBook()).toEqual(book())
       await calc.close()
     }
   }, 60_000)

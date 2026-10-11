@@ -5,7 +5,7 @@
  * are zero-based. A geometry never brings two cells to one place, and its inverse takes back every cell it brings
  * somewhere, so a cell of the book after it that no cell came to is new.
  */
-import type { AddressMove, BookInput, CellRef, RestructureResult } from '../contract.js'
+import type { AddressMove, BookInput, CellRef, StructureResult } from '../contract.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { areaText, hasCell, LIMIT, minus, shiftRect, type Axis, type Rect } from './area.js'
@@ -26,7 +26,7 @@ export type Move =
 export type Geometry = Move[]
 
 /** An operation's result inside the library: the new book and where its cells went, or Excel's refusal. */
-export type Applied = { ok: true; book: BookInput; geometry: Geometry } | Exclude<RestructureResult, { ok: true }>
+export type Applied = { ok: true; book: BookInput; geometry: Geometry } | Exclude<StructureResult, { ok: true }>
 
 /** A cell's place: its sheet's index, its row and its column. */
 export interface Place {

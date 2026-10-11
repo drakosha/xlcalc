@@ -1,5 +1,5 @@
 /**
- * A cell's data validation in a computed book (`Session.validation`, `Session.validateEntry`): the rule over the cell,
+ * A cell's data validation in a computed book (`Session.getValidation`, `Session.validateEntry`): the rule over the cell,
  * its formulas as at the cell, a list's items, and whether a value meets the rule as Excel's `Validation.Value` checks
  * it. A rule's formulas are computed at the cell as a formula of the cell would be, a reference staying a reference.
  */

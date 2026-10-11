@@ -5,7 +5,7 @@
  * of the edited book.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, openSession, type BookInput } from '../src/index.js'
+import { compute, debugGeneratedCode, createSession, type BookInput } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { apply, edits } from './session-edits.js'
 
@@ -14,13 +14,13 @@ const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 describe('session', () => {
   it('200 edits: after each one the session hash equals the full computation hash', () => {
     const synth = synthBook({ seed: 1, rows: 340 })
-    const session = openSession(synth.book, { clock })
+    const session = createSession(synth.book, { clock })
     let book = synth.book
     for (const batch of edits(3, 200, synth)) {
       const { changes } = session.setCells(batch)
       book = apply(book, batch)
       const full = compute(book, { clock })
-      const r = session.result()
+      const r = session.getResult()
       expect(r.hash).toBe(full.hash)
       // the reported changes agree with the values
       for (const ch of changes) expect(r.sheets.find((s) => s.name === ch.sheet)!.cells[ch.cell]?.value ?? null).toEqual(ch.value)
@@ -30,22 +30,22 @@ describe('session', () => {
 
   it('setClock recomputes volatile cells; setNames rebuilds', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'A1+1' }, A3: { value: 5 }, B1: { formula: 'x*2' } } }], names: [{ name: 'x', ref: "'S'!$A$3" }] }
-    const s = openSession(book, { clock, display: false })
+    const s = createSession(book, { clock, display: false })
     expect(s.setClock({ now: '2026-10-05T00:00:00Z', seed: 1 }).changes.map((c) => c.cell).sort()).toEqual(['A1', 'A2'])
-    expect(s.result().hash).toBe(compute(book, { clock: { now: '2026-10-05T00:00:00Z', seed: 1 } }).hash)
+    expect(s.getResult().hash).toBe(compute(book, { clock: { now: '2026-10-05T00:00:00Z', seed: 1 } }).hash)
     expect(s.setNames([{ name: 'x', ref: "'S'!$A$2" }]).changes).toEqual([{ sheet: 'S', cell: 'B1', value: 2 * (46300 + 1) }])
   })
 
   it('a live session takes a clock on every recomputation; a full computation with its clock gives the same hash', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'NOW()' }, A2: { formula: 'RAND()' }, A3: { value: 1 }, A4: { formula: 'A3*2' } } }] }
-    const s = openSession(book, { live: true })
+    const s = createSession(book, { live: true })
     const c1 = s.clock
     expect(Math.abs(Date.parse(c1.now) - Date.now())).toBeLessThan(60_000)
     const { changes: ch } = s.setCells([{ sheet: 'S', cell: 'A3', input: { value: 2 } }])
     const c2 = s.clock
     expect(c2.seed).not.toBe(c1.seed)
     expect(ch.map((c) => c.cell).sort()).toEqual(['A1', 'A2', 'A3', 'A4'].filter((c) => c !== 'A1' || c1.now !== c2.now))
-    const saved = s.result()
+    const saved = s.getResult()
     expect(saved.clock).toEqual(c2)
     expect(compute(apply(book, [{ sheet: 'S', cell: 'A3', input: { value: 2 } }]), { clock: c2 }).hash).toBe(saved.hash)
     expect(() => s.setClock(c1)).toThrow()
@@ -53,7 +53,7 @@ describe('session', () => {
 
   it('explain: the precedents tree with depth, node limit and text', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { formula: 'SUM(A1:A2)' }, A4: { formula: 'A3*2+A1' } } }] }
-    const s = openSession(book, { clock })
+    const s = createSession(book, { clock })
     const e = s.explain('S', 'A4')
     expect(e.root).toMatchObject({ ref: "'S'!A4", value: 7, formula: "A3*2+A1" })
     expect(e.root.children.map((c) => c.ref)).toEqual(["'S'!A3", "'S'!A1"])

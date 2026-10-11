@@ -99,7 +99,7 @@ A function that does not take several areas gives an error, which depends on the
 | an end moved | as if deleted from its place: the next sheet inward is the end |
 | a copy | moves by the copy's offset where it is relative |
 
-`insertSheet` and `moveSheet` of `restructure` do this.
+`insertSheet` and `moveSheet` of `editStructure` do this.
 
 ## How it was checked
 

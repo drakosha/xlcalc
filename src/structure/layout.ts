@@ -115,8 +115,8 @@ export function formatBefore(sheet: SheetInput, axis: Axis, at: number, n: numbe
   const line = axis === 'r' ? g.row : g.col
   for (let k = 0; k < line.length; k++) {
     const cell = g.cell[k]
-    if (line[k] !== at - 1 || (cell.style === undefined && cell.format === undefined)) continue
-    const copy: CellInput = { ...(cell.format !== undefined ? { format: cell.format } : {}), ...(cell.style !== undefined ? { style: cell.style } : {}) }
+    if (line[k] !== at - 1 || (cell.style === undefined && cell.numberFormat === undefined)) continue
+    const copy: CellInput = { ...(cell.numberFormat !== undefined ? { numberFormat: cell.numberFormat } : {}), ...(cell.style !== undefined ? { style: cell.style } : {}) }
     for (let i = at; i < at + n; i++) out[axis === 'r' ? formatAddress(i, g.col[k]) : formatAddress(g.row[k], i)] = copy
   }
   return out

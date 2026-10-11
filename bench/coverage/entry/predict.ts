@@ -12,8 +12,8 @@ import type { EntrySet } from './cases.js'
 const set = process.argv[2]
 const { buildEntryCases, edit } = (await import(`./${set}.js`)) as EntrySet
 const now = new Date().toISOString().slice(0, 10)
-const typed = (tag: string) => buildEntryCases().map((c) => [c.id, parseEntry(c.text, { locale: tag, now, ...(c.format !== undefined ? { cell: { format: c.format } } : {}) })] as const)
+const typed = (tag: string) => buildEntryCases().map((c) => [c.id, parseEntry(c.text, { locale: tag, now, ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })] as const)
 const locales = Object.fromEntries(TAGS.map((tag) => [tag, Object.fromEntries(typed(tag))]))
 const shown = (tag: string) =>
-  Object.fromEntries(typed(tag).map(([id, r]) => [id, r.ok && r.input ? (r.input.value !== undefined ? entryText(r.input.value as string | number | boolean, { locale: tag, now, ...(r.input.format !== undefined ? { numberFormat: r.input.format } : {}) }) : `=${r.input.formula}`) : null]))
+  Object.fromEntries(typed(tag).map(([id, r]) => [id, r.ok && r.input ? (r.input.value !== undefined ? entryText(r.input.value as string | number | boolean, { locale: tag, now, ...(r.input.numberFormat !== undefined ? { numberFormat: r.input.numberFormat } : {}) }) : `=${r.input.formula}`) : null]))
 writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify({ now, locales, ...(edit ? { edit: Object.fromEntries(TAGS.map((tag) => [tag, shown(tag)])) } : {}) }, null, 1) + '\n')

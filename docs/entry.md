@@ -3,29 +3,31 @@
 `parseEntry(text, opts)` reads what a user typed into a cell the way Excel reads it in the book's locale, and gives the cell's new input: a number, a date or a time with the format Excel sets for it, a boolean, an error, text, or a formula in the stored form. An interface that edits a sheet calls it on the text of its cell editor and passes the input to `setCells`, or calls a session's `setCellText`, which does both. It needs no book, runs in the same thread whatever computes the book, and returns at once.
 
 ```js
-import { parseEntry } from 'xlcalc'
+import { parseEntry, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
+registerLocale(ruRU)
 const now = '2026-10-10T12:00:00Z'
-console.log(parseEntry('1 234,5', { locale: 'ru-RU' }).input) // → { value: 1234.5, format: 4 }
-console.log(parseEntry('15.3', { locale: 'ru-RU', now }).input) // → { value: 46096, format: 16 }
-console.log(parseEntry('$1,234.50').input) // → { value: 1234.5, format: '"$"#,##0.00_);[Red]\\("$"#,##0.00\\)' }
-console.log(parseEntry('5', { cell: { format: '0%', style: 3 } }).input) // → { value: 0.05, format: '0%', style: 3 }
+console.log(parseEntry('1 234,5', { locale: 'ru-RU' }).input) // → { value: 1234.5, numberFormat: 4 }
+console.log(parseEntry('15.3', { locale: 'ru-RU', now }).input) // → { value: 46096, numberFormat: 16 }
+console.log(parseEntry('$1,234.50').input) // → { value: 1234.5, numberFormat: '"$"#,##0.00_);[Red]\\("$"#,##0.00\\)' }
+console.log(parseEntry('5', { cell: { numberFormat: '0%', style: 3 } }).input) // → { value: 0.05, numberFormat: '0%', style: 3 }
 console.log(parseEntry('=СУММ(A1:A3;1,5)', { locale: 'ru-RU' }).input) // → { formula: 'SUM(A1:A3,1.5)' }
 const bad = parseEntry('=СУММ(A1;', { locale: 'ru-RU' })
-console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax unexpected end of formula 9
+console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax Формула не закончена 9
 ```
 
 ## API
 
 `parseEntry(text, opts?)` returns `{ ok: true, input }` or `{ ok: false, code, message, at }`.
 
-- `input` is a `CellInput`: `value` or `formula`, `format` where the cell has one after the entry, and the `style`, `meta`, `note` and `link` of the cell typed into, which Excel keeps whatever is typed. It is `null` when nothing is left of the cell: empty text typed into a cell with none of these.
+- `input` is a `CellInput`: `value` or `formula`, `numberFormat` where the cell has one after the entry, and the `style`, `meta`, `note` and `link` of the cell typed into, which Excel keeps whatever is typed. It is `null` when nothing is left of the cell: empty text typed into a cell with none of these.
 - `ok: false` is a formula Excel does not take as typed (its window says "There's a problem with this formula"): the check code `syntax`, `empty`, `too_long` or `too_deep`, a message and the position in `text`. Nothing else stops an entry.
 
 The options:
 
 - `locale`: the book's locale, the tag of a loaded locale (`LOCALES`) or a locale object such as `ruRU` of `xlcalc/locales/ru-RU`, which needs no loading here; en-US without it.
-- `cell`: the cell typed into, as the book holds it: its `format`, `style`, `meta`, `note` and `link` (a `CellInput`, or a `CellView` from `Session.cells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
+- `cell`: the cell typed into, as the book holds it: its `numberFormat`, `style`, `meta`, `note` and `link` (a `CellInput`, or a `CellView` from `Session.getCells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
 - `now`: the moment whose year completes a date typed without one, ISO as `Clock.now`; the current moment without it.
 - `dateSystem`: the book's date system, 1900 or 1904, for the serial numbers of dates.
 
@@ -34,15 +36,17 @@ The options:
 `session.setCellText(sheet, cell, text)` does it in a session: it reads the text in the book's locale and date system, by the session's clock and by the format the cell shows (its own, else its row's or column's, which the cell does not take as its own), keeps the rest of the cell, widens the column as Excel does and gives the rule of data validation the value breaks ([Editing a grid](edits.md#typing-text)). `previewCellText` gives the same without writing.
 
 ```js
-import { openSession } from 'xlcalc'
+import { createSession, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
 
-const session = openSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1, format: '0.00', meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] })
+registerLocale(ruRU)
+const session = createSession({ locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 1, numberFormat: '0.00', meta: { id: 7 } }, A2: { formula: 'A1*2' } } }] })
 console.log(session.setCellText('S', 'A1', '1 234,5').changes)
 // → [
 //     { sheet: 'S', cell: 'A1', value: 1234.5, text: '1234,50' },
 //     { sheet: 'S', cell: 'A2', value: 2469, text: '2469' }
 //   ]
-console.log(session.book().sheets[0].cells.A1) // → { meta: { id: 7 }, value: 1234.5, format: '0.00' }
+console.log(session.getBook().sheets[0].cells.A1) // → { meta: { id: 7 }, value: 1234.5, numberFormat: '0.00' }
 session.close()
 ```
 
@@ -118,14 +122,17 @@ As a number is typed into a cell whose format shows percent, Excel's editor adds
 
 ### Empty text
 
-Empty text clears the value or formula and keeps the format, style, meta, note and link: `{ format: '0.00', meta: 1 }`, or `null` when nothing is left.
+Empty text clears the value or formula and keeps the format, style, meta, note and link: `{ numberFormat: '0.00', meta: 1 }`, or `null` when nothing is left.
 
 ## The text a cell opens with
 
 `entryText(value, opts)` is the other way round: the text a cell opens with for editing, as Excel's formula bar shows the value it holds, so that the editor shows what Excel shows and the value reads back from it. `needsApostrophe(text, opts)` tells whether text typed into the cell would read as something else than itself.
 
 ```js
-import { entryText, needsApostrophe } from 'xlcalc'
+import { entryText, needsApostrophe, registerLocale } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+registerLocale(ruRU)
 
 console.log(entryText(1234.5), entryText(1e20), entryText(1e21), entryText(0.0000001)) // → 1234.5 100000000000000000000 1E+21 0.0000001
 console.log(entryText(0.125, { numberFormat: '0.0%' }), entryText(45688.75, { numberFormat: 22 }), entryText(0.75, { numberFormat: 'h:mm', locale: 'ru-RU' }))

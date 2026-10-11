@@ -5,13 +5,14 @@
  * and running.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { CalcError, compute, openSession, type BookInput, type Calc, type CellInput, type StructureOp } from '../src/index.js'
+import { CalcError, compute, createSession, type BookInput, type Calc, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { BOOKS, chainBook, CLOCK, heavyBook, medianMs, setA1, slowBook } from './async-books.js'
 import { pool } from './fixtures/pool.js'
 import { randomBook } from './seeded-books.js'
 import { edits } from './session-edits.js'
 import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const fails = async (p: Promise<unknown>): Promise<CalcError> => {
   try {
@@ -41,23 +42,23 @@ describe.each(['closures', 'eval'] as const)('in threads, execution %s', (execut
       const sync = compute(book, { clock: CLOCK, execution })
       expect(results[i].hash, name).toBe(sync.hash)
       expect(results[i].sheets, name).toEqual(sync.sheets)
-      expect(results[i].issues, name).toEqual(sync.issues)
+      expect(cellIssues(results[i]), name).toEqual(cellIssues(sync))
     }
   }, 120_000)
 
   it('a session over 40 edits: the same changes and hash after each as a synchronous session', async () => {
     const synth = synthBook({ seed: 1, rows: 340 })
     const p = await made({ threads: 1 })
-    const s = await p.openSession(synth.book, { clock: CLOCK, execution })
-    const sync = openSession(synth.book, { clock: CLOCK, execution })
+    const s = await p.createSession(synth.book, { clock: CLOCK, execution })
+    const sync = createSession(synth.book, { clock: CLOCK, execution })
     for (const batch of edits(5, 40, synth)) {
       expect(await s.setCells(batch)).toEqual(sync.setCells(batch))
-      expect((await s.result()).hash).toBe(sync.result().hash)
+      expect((await s.getResult()).hash).toBe(sync.getResult().hash)
     }
     const report = synth.book.sheets.at(-1)!
     const cell = Object.keys(report.cells).find((k) => report.cells[k].formula)!
     expect(await s.explain(report.name, cell)).toEqual(sync.explain(report.name, cell))
-    expect(await s.book()).toEqual(sync.book())
+    expect(await s.getBook()).toEqual(sync.getBook())
     await s.close()
   }, 120_000)
 })
@@ -66,24 +67,24 @@ describe('in threads', () => {
   it('two sessions on one thread, their calls mixed without waiting: each has its own changes and hash', async () => {
     const p = await made({ threads: 1 })
     const [a, b] = [chainBook(400), synthBook({ seed: 2, rows: 200 }).book]
-    const [sa, sb] = await Promise.all([p.openSession(a, { clock: CLOCK }), p.openSession(b, { clock: CLOCK })])
-    const [ya, yb] = [openSession(a, { clock: CLOCK }), openSession(b, { clock: CLOCK })]
+    const [sa, sb] = await Promise.all([p.createSession(a, { clock: CLOCK }), p.createSession(b, { clock: CLOCK })])
+    const [ya, yb] = [createSession(a, { clock: CLOCK }), createSession(b, { clock: CLOCK })]
     const eb = edits(9, 8, synthBook({ seed: 2, rows: 200 }))
     const pending: Promise<unknown>[] = []
     const expected: unknown[] = []
     for (let i = 0; i < 8; i++) {
-      pending.push(sa.setCells(setA1(i + 2)), sb.setCells(eb[i]), sa.result().then((r) => r.hash))
-      expected.push(ya.setCells(setA1(i + 2)), yb.setCells(eb[i]), ya.result().hash)
+      pending.push(sa.setCells(setA1(i + 2)), sb.setCells(eb[i]), sa.getResult().then((r) => r.hash))
+      expected.push(ya.setCells(setA1(i + 2)), yb.setCells(eb[i]), ya.getResult().hash)
     }
     expect(await Promise.all(pending)).toEqual(expected)
-    expect([(await sa.result()).hash, (await sb.result()).hash]).toEqual([ya.result().hash, yb.result().hash])
+    expect([(await sa.getResult()).hash, (await sb.getResult()).hash]).toEqual([ya.getResult().hash, yb.getResult().hash])
   }, 60_000)
 
   it('names, the clock, layout, styles and a live session as in the same thread', async () => {
     const p = await made({ threads: 1 })
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TODAY()' }, A2: { formula: 'A1+1' }, A3: { value: 5 }, B1: { formula: 'x*2' }, B2: { formula: 'SUBTOTAL(109,A3:A4)' }, A4: { value: 7 } } }], names: [{ name: 'x', ref: "'S'!$A$3" }] }
-    const s = await p.openSession(book, { clock: CLOCK })
-    const y = openSession(book, { clock: CLOCK })
+    const s = await p.createSession(book, { clock: CLOCK })
+    const y = createSession(book, { clock: CLOCK })
     const next = { now: '2026-10-05T00:00:00Z', seed: 1 }
     expect(await s.setClock(next)).toEqual(y.setClock(next))
     expect(s.clock).toEqual(next)
@@ -91,14 +92,14 @@ describe('in threads', () => {
     expect(await s.setLayout([{ sheet: 'S', rows: '4', set: { hidden: true } }])).toEqual(y.setLayout([{ sheet: 'S', rows: '4', set: { hidden: true } }]))
     await s.setStyles([{ font: { bold: true } }])
     y.setStyles([{ font: { bold: true } }])
-    expect((await s.result()).hash).toBe(y.result().hash)
-    expect(await s.book()).toEqual(y.book())
-    const live = await p.openSession(chainBook(5), { live: true })
+    expect((await s.getResult()).hash).toBe(y.getResult().hash)
+    expect(await s.getBook()).toEqual(y.getBook())
+    const live = await p.createSession(chainBook(5), { live: true })
     await live.setCells(setA1(3))
-    expect((await live.result()).hash).toBe(compute(await live.book(), { clock: live.clock }).hash)
+    expect((await live.getResult()).hash).toBe(compute(await live.getBook(), { clock: live.clock }).hash)
   })
 
-  it('restructure: the changes and mapCell of the synchronous session, the book from book()', async () => {
+  it('editStructure: the changes and mapCell of the synchronous session, the book from book()', async () => {
     const p = await made({ threads: 1 })
     const book = randomBook(5)
     book.sheets[1] = { ...book.sheets[1], rows: { '3': { hidden: true }, '7:9': { hidden: true, height: 20 } }, filtered: true }
@@ -115,20 +116,20 @@ describe('in threads', () => {
       { op: 'deleteSheet', sheet: 'New' },
       { op: 'insertRows', sheet: 'S 3', row: 1048576, count: 1 },
     ]
-    const s = await p.openSession(book, { clock: CLOCK })
-    const y = openSession(book, { clock: CLOCK })
+    const s = await p.createSession(book, { clock: CLOCK })
+    const y = createSession(book, { clock: CLOCK })
     for (const op of ops) {
-      const names = y.book().sheets.map((x) => x.name)
-      const [a, b] = [await s.restructure(op), y.restructure(op)]
+      const names = y.getBook().sheets.map((x) => x.name)
+      const [a, b] = [await s.editStructure(op), y.editStructure(op)]
       expect(a.ok, JSON.stringify(op)).toBe(b.ok)
       if (!a.ok || !b.ok) continue
       expect(a.changes).toEqual(b.changes)
       for (const sheet of names) for (const cell of ['A1', 'B2', 'C5', 'D9', 'A12', 'F3', 'G10', 'H20']) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
     }
-    expect(await s.book()).toEqual(y.book())
+    expect(await s.getBook()).toEqual(y.getBook())
   }, 60_000)
 
-  it('restructure over tables: mapCell and changes of the synchronous session, refusals as its', async () => {
+  it('editStructure over tables: mapCell and changes of the synchronous session, refusals as its', async () => {
     const p = await made({ threads: 1 })
     const head = { A1: { value: 'Region' }, B1: { value: 'Qty' }, C1: { value: 'Price' } }
     const rows = Object.fromEntries([2, 3, 4, 5].flatMap((r) => [[`A${r}`, { value: `r${r}` }], [`B${r}`, { value: r }], [`C${r}`, { formula: 'Sales[[#This Row],[Qty]]*2' }]]))
@@ -151,17 +152,17 @@ describe('in threads', () => {
       { op: 'convertTable', table: 'Sales' },
       { op: 'deleteTable', table: 'Deux' },
     ]
-    const s = await p.openSession(book, { clock: CLOCK })
-    const y = openSession(book, { clock: CLOCK })
+    const s = await p.createSession(book, { clock: CLOCK })
+    const y = createSession(book, { clock: CLOCK })
     for (const op of ops) {
-      const names = y.book().sheets.map((x) => x.name)
-      const [a, b] = [await s.restructure(op), y.restructure(op)]
+      const names = y.getBook().sheets.map((x) => x.name)
+      const [a, b] = [await s.editStructure(op), y.editStructure(op)]
       expect(a.ok, JSON.stringify(op)).toBe(b.ok)
       if (!a.ok || !b.ok) continue
       expect(a.changes).toEqual(b.changes)
       for (const sheet of names) for (const cell of ['A1', 'A2', 'B1', 'B2', 'C3', 'D4', 'F2', 'J1', 'J2']) expect(a.mapCell({ sheet, cell }), `${JSON.stringify(op)} ${sheet}!${cell}`).toEqual(b.mapCell({ sheet, cell }))
     }
-    expect(await s.book()).toEqual(y.book())
+    expect(await s.getBook()).toEqual(y.getBook())
   }, 60_000)
 
   it('soft deadlines and aborts, waiting and running; input errors come back as InputError', async () => {
@@ -181,7 +182,7 @@ describe('in threads', () => {
     expect([r.code, r.cause]).toEqual(['aborted', 'stop'])
     // the thread goes on
     expect((await p.compute(chainBook(3), { clock: CLOCK })).hash).toBe(compute(chainBook(3), { clock: CLOCK }).hash)
-    const s = await p.openSession(chainBook(3))
+    const s = await p.createSession(chainBook(3))
     await expect(s.setCells([{ sheet: 'Nope', cell: 'A1', input: { value: 1 } }])).rejects.toThrow(/^edits\[0\]\.sheet: unknown sheet/)
     await expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }], { deadline: 1 } as never)).rejects.toThrow('opts: unknown field "deadline"')
     await expect(p.compute(chainBook(3), { clok: 1 } as never)).rejects.toThrow('opts: unknown field "clok"')
@@ -189,23 +190,23 @@ describe('in threads', () => {
 
   it('a session call past its soft deadline in a thread changes nothing', async () => {
     const p = await made({ threads: 1 })
-    const s = await p.openSession(slowBook(), { clock: CLOCK })
-    const before = (await s.result()).hash
+    const s = await p.createSession(slowBook(), { clock: CLOCK })
+    const before = (await s.getResult()).hash
     expect((await fails(s.setCells(setA1(2), { timeoutMs: 50 }))).code).toBe('soft_timeout')
-    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 1 })
-    expect((await s.result()).hash).toBe(before)
-    const y = openSession(slowBook(), { clock: CLOCK })
+    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 1 })
+    expect((await s.getResult()).hash).toBe(before)
+    const y = createSession(slowBook(), { clock: CLOCK })
     expect(await s.setCells(setA1(0.5))).toEqual(y.setCells(setA1(0.5)))
   }, 60_000)
 
   it('the call after a stopped one: computing the book again in the thread does not count in its soft deadline', async () => {
     const p = await made({ threads: 1 })
-    const s = await p.openSession(heavyBook(), { clock: CLOCK })
+    const s = await p.createSession(heavyBook(), { clock: CLOCK })
     // the calls' deadline is a quarter of a cold computation of the book (as fast as the machine runs it now)
     const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
     expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
     expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
-    expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
+    expect((await s.getBook()).sheets[0].cells.A1).toEqual({ value: 12 })
   }, 60_000)
 
   it('maxHeapMb without limits: arrays of more values than the heap has 64 bytes, spills of more than it has KB give CalcError', async () => {
@@ -221,7 +222,7 @@ describe('in threads', () => {
     const p = await made({ threads: 1, maxHeapMb: 64 })
     const array = await fails(p.compute(one('SUM(SEQUENCE(2000000))'), { limits: { formulas: 1_000 } }))
     expect([array.code, array.limit, array.max]).toEqual(['limit', 'cells', 1_048_576])
-    const s = await p.openSession(one('1'), { clock: CLOCK, limits: { formulas: 1_000 } })
+    const s = await p.createSession(one('1'), { clock: CLOCK, limits: { formulas: 1_000 } })
     const spill = await fails(s.setCells([{ sheet: 'S', cell: 'B1', input: { formula: 'SEQUENCE(40000,2)' } }]))
     expect([spill.code, spill.limit, spill.max]).toEqual(['limit', 'spill', 65_536])
   }, 30_000)
@@ -249,8 +250,8 @@ describe('in threads', () => {
     const cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 10_000; r++) { cells[`A${r}`] = { value: 1 }; cells[`B${r}`] = { formula: `SUM($A$1:A${r})` } }
     const b: BookInput = { sheets: [{ name: 'S', cells }] }
-    const s = await p.openSession(b, { clock: CLOCK })
-    expect(await s.hash()).toBe(compute(b, { clock: CLOCK }).hash)
+    const s = await p.createSession(b, { clock: CLOCK })
+    expect(await s.getHash()).toBe(compute(b, { clock: CLOCK }).hash)
   }, 30_000)
 
   it("a pool of 384 MB opens and edits running AVERAGE, COUNTIF and AVERAGE with COUNTA over 10,000 rows: the ranges' caches stay within a quarter of the heap", async () => {
@@ -259,9 +260,9 @@ describe('in threads', () => {
       for (const formula of ['AVERAGE($A$1:A<r>)', 'COUNTIF($A$1:A<r>,">0")', 'AVERAGE($A$1:A<r>)+COUNTA($A$1:A<r>)']) {
         const cells: Record<string, CellInput> = {}
         for (let r = 1; r <= 10_000; r++) { cells[`A${r}`] = { value: 1 }; cells[`B${r}`] = { formula: formula.replaceAll('<r>', String(r)) } }
-        const s = await p.openSession({ sheets: [{ name: 'S', cells }] }, { clock: CLOCK, execution })
+        const s = await p.createSession({ sheets: [{ name: 'S', cells }] }, { clock: CLOCK, execution })
         await s.setCells([{ sheet: 'S', cell: 'A5000', input: { value: 2 } }])
-        expect(await s.hash(), `${formula}, ${execution}`).toBe(compute(await s.book(), { clock: CLOCK, execution }).hash)
+        expect(await s.getHash(), `${formula}, ${execution}`).toBe(compute(await s.getBook(), { clock: CLOCK, execution }).hash)
         await s.close()
       }
   }, 120_000)

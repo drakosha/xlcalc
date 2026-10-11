@@ -1,5 +1,5 @@
 /**
- * Where a sheet's cells end (`Session.extent`): found from what the engine holds, the sheet's columns of values, its
+ * Where a sheet's cells end (`Session.getUsedRange`): found from what the engine holds, the sheet's columns of values, its
  * spills, its input cells without a value and its merged areas and tables, never by reading every cell.
  */
 import type { SheetExtent } from '../contract.js'

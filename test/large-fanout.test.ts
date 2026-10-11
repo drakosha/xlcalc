@@ -3,7 +3,7 @@
  * numbers. Spreading such a list into one call overflows the stack; the engine must compute them as any other book.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput } from '../src/index.js'
+import { compute, createSession, type BookInput } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const later = { now: '2026-10-05T12:00:00Z', seed: 7 }
@@ -23,10 +23,10 @@ describe.each(['closures', 'eval'] as const)('lists past the argument limit, %s'
     expect(v.A1.value).toBe(46299.5)
     expect(v[`A${ROWS}`].value).toBe(46299.5)
     expect(r.volatile).toHaveLength(ROWS)
-    const s = openSession(book, { clock, execution, display: false })
+    const s = createSession(book, { clock, execution, display: false })
     expect(s.setClock(later).changes).toHaveLength(ROWS)
-    expect(s.result().sheets[0].cells[`A${ROWS}`].value).toBe(46300.5)
-    expect(s.hash()).toBe(compute(book, { clock: later, execution, display: false }).hash)
+    expect(s.getResult().sheets[0].cells[`A${ROWS}`].value).toBe(46300.5)
+    expect(s.getHash()).toBe(compute(book, { clock: later, execution, display: false }).hash)
     s.close()
   }, 120_000)
 

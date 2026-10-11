@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { partsFile, type StoredParts } from '../bench/coverage/parts.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import { bookParts, made, type PartsAnswer, type PartsCase, type PartsCases, type PartsMake, type PartsSet, type PartsSheetAnswer, type SheetParts } from '../bench/coverage/parts/cases.js'
-import { restructure } from '../src/index.js'
+import { editStructure } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
 import type { BookInput, CellLink, FrozenPanes } from '../src/contract.js'
 import { formatAddress } from '../src/model.js'
@@ -95,7 +95,7 @@ export const excelSheets = (a: PartsAnswer) => a.sheets.map((s) => ({ name: s.na
 function engineAfter(set: PartsSetFile, id: string) {
   const c = set.cases.find((x) => x.id === id)!
   const book = madeBook(set, c, set.answers[id])
-  return c.op ? restructure(book, c.op) : { ok: true as const, book }
+  return c.op ? editStructure(book, c.op) : { ok: true as const, book }
 }
 
 /**

@@ -62,40 +62,40 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
   const eo = n === undefined ? o : { ...o, ...(args[n] as object | undefined) }
   let value: unknown
   switch (op) {
-    case 'restructure':
+    case 'editStructure':
     case 'undo':
     case 'redo': {
       // a structure operation's mapCell goes as its geometry, of which the calling side makes the same function
-      const r = op === 'restructure' ? await s.restructure(args[0] as StructureOp, eo) : await s[op](eo)
+      const r = op === 'editStructure' ? await s.editStructure(args[0] as StructureOp, eo) : await s[op](eo)
       const { mapCell, ...rest } = (r ?? {}) as { mapCell?: object }
       value = r && { ...rest, ...(mapCell ? { geometry: GEOMETRY.get(mapCell) } : {}) }
       break
     }
-    case 'book':
-      value = await pack(await s.book())
+    case 'getBook':
+      value = await pack(await s.getBook())
       break
-    case 'layout':
-      value = await s.layout()
+    case 'getLayout':
+      value = await s.getLayout()
       break
-    case 'extent':
-      value = await s.extent(args[0] as string)
+    case 'getUsedRange':
+      value = await s.getUsedRange(args[0] as string)
       break
     case 'explain':
       value = await s.explain(args[0] as string, args[1] as string, args[2] as never)
       break
-    case 'result':
-      value = await s.result(o)
+    case 'getResult':
+      value = await s.getResult(o)
       break
     case 'getSnapshot': {
       const r = await s.getSnapshot(o)
       value = { book: await pack(r.book), result: r.result }
       break
     }
-    case 'hash':
-      value = await s.hash(o)
+    case 'getHash':
+      value = await s.getHash(o)
       break
-    case 'cells':
-      value = await s.cells(args[0] as string, args[1] as string | string[])
+    case 'getCells':
+      value = await s.getCells(args[0] as string, args[1] as string | string[])
       break
     case 'getViewport':
       value = await s.getViewport(args[0] as string, args[1] as string, args[2] as never)
@@ -103,8 +103,8 @@ async function invoke(h: Held, op: Op, args: unknown[], o: CalcOptions): Promise
     case 'getCellIssue':
       value = await s.getCellIssue(args[0] as string, args[1] as string)
       break
-    case 'validation':
-      value = await s.validation(args[0] as string, args[1] as string)
+    case 'getValidation':
+      value = await s.getValidation(args[0] as string, args[1] as string)
       break
     case 'validateEntry':
       value = await s.validateEntry(args[0] as string, args[1] as string, args[2] as never, o)
@@ -129,7 +129,7 @@ async function open(sid: number, book: BookInput, opts: object, planned: Clock |
 }
 
 /** A session as a snapshot takes it: its book and history as text, its clock, its revision and its last changing call. */
-const taken = async (h: Held) => ({ book: await pack(await h.s.book()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()), revision: h.s.revision })
+const taken = async (h: Held) => ({ book: await pack(await h.s.getBook()), clock: h.s.clock, seq: h.seq, history: packData(h.s.historyData()), revision: h.s.revision })
 
 async function run(m: (typeof waiting)[number], signal: AbortSignalLike): Promise<unknown> {
   switch (m.t) {

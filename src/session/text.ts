@@ -20,7 +20,7 @@ import { brokenRule } from '../validation/session.js'
 import { cellValue } from './looks.js'
 
 /** The fields an entry replaces: the content and the number format. */
-const TYPED = ['value', 'formula', 'array', 'format'] as const
+const TYPED = ['value', 'formula', 'array', 'numberFormat'] as const
 
 /** The cell's input after `text` is typed into it at the moment `now` (the year of a date typed without one), or why Excel stops the entry. */
 export function cellText(s: EngineState, i: number, r: number, c: number, text: string, now: string): { ok: true; input: CellInput | null } | Refusal<CellTextRefusal> {
@@ -28,8 +28,8 @@ export function cellText(s: EngineState, i: number, r: number, c: number, text: 
   const own = sh.cells[formatAddress(r, c)]
   const lines = sheetLines(sh, s)
   const inherited = formatOf(undefined, lines.row(r), lines.column(c))
-  const shown = own?.format ?? inherited
-  const p = parseEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { format: shown } })
+  const shown = own?.numberFormat ?? inherited
+  const p = parseEntry(text, { locale: s.input.locale, dateSystem: s.input.dateSystem, now, cell: shown === undefined ? null : { numberFormat: shown } })
   if (!p.ok) return p as Refusal<CellTextRefusal>
   const typed = p.input ?? {}
   const out: Record<string, unknown> = { ...own }
@@ -37,8 +37,8 @@ export function cellText(s: EngineState, i: number, r: number, c: number, text: 
   if (typed.formula !== undefined) out.formula = typed.formula
   else if (typed.value !== undefined) out.value = typed.value
   // a cell in General keeps its own General; a format its row or column gives it stays theirs
-  const format = typed.format ?? own?.format
-  if (format !== undefined && (own?.format !== undefined || format !== inherited)) out.format = format
+  const format = typed.numberFormat ?? own?.numberFormat
+  if (format !== undefined && (own?.numberFormat !== undefined || format !== inherited)) out.numberFormat = format
   for (const k in out) if (out[k] !== undefined) return { ok: true, input: out as CellInput }
   return { ok: true, input: null }
 }
@@ -69,7 +69,7 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number):
     return x.c2 > x.c1 && hasCell(x, r, c)
   })) return undefined
   const { locale, dateSystem } = s.input
-  return entryWidth(cellValue(s, i, r, c), { format: lines.format(r, c), locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
+  return entryWidth(cellValue(s, i, r, c), { numberFormat: lines.format(r, c), locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
 }
 
 /** A rule's alert: its style (stop by default) and its message, the rule's own or else the library's in the book's locale. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput, type CellInput } from '../src/index.js'
+import { compute, createSession, type BookInput, type CellInput } from '../src/index.js'
 import { applyEdits, createState } from '../src/engine.js'
 import { run } from '../src/exec/budget.js'
 import { formatAddress } from '../src/model.js'
@@ -59,12 +59,12 @@ describe.each(['closures', 'eval'] as const)('compressed graph, %s', (execution)
     const cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 64; r++) cells[`A${r}`] = { formula: '1' }
     cells.A32 = { formula: 'B1' }; cells.B1 = { formula: 'SUM(A1:A64)' }; cells.B2 = { formula: 'SUM(A1:A16)' }
-    const opts = { clock, execution, display: false }, s = openSession({ sheets: [{ name: 'S', cells }] }, opts)
+    const opts = { clock, execution, display: false }, s = createSession({ sheets: [{ name: 'S', cells }] }, opts)
     try {
-      expect(s.cells('S', 'B1:B2')).toMatchObject({ B1: { value: { error: 'CYCLE' } }, B2: { value: 16 } })
+      expect(s.getCells('S', 'B1:B2')).toMatchObject({ B1: { value: { error: 'CYCLE' } }, B2: { value: 16 } })
       s.setCells([{ sheet: 'S', cell: 'A32', input: { value: 2 } }])
-      expect(s.cells('S', 'B1').B1.value).toBe(65)
-      expect(s.hash()).toBe(compute(s.book(), opts).hash)
+      expect(s.getCells('S', 'B1').B1.value).toBe(65)
+      expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
     } finally { s.close() }
   })
 
@@ -72,11 +72,11 @@ describe.each(['closures', 'eval'] as const)('compressed graph, %s', (execution)
     const cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 64; r++) cells[`A${r}`] = { formula: 'RAND()' }
     cells.B1 = { formula: 'SUM(A1:A64)' }; cells.B2 = { formula: 'B1*2' }
-    const book: BookInput = { sheets: [{ name: 'S', cells }] }, s = openSession(book, { clock, execution, display: false })
+    const book: BookInput = { sheets: [{ name: 'S', cells }] }, s = createSession(book, { clock, execution, display: false })
     try {
       const next = { ...clock, seed: 11 }
       s.setClock(next)
-      expect(s.hash()).toBe(compute(s.book(), { clock: next, execution, display: false }).hash)
+      expect(s.getHash()).toBe(compute(s.getBook(), { clock: next, execution, display: false }).hash)
     } finally { s.close() }
   })
 })

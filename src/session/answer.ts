@@ -71,7 +71,7 @@ export function fieldsBetween(was: CellInput | undefined, wasText: string | unde
   const out: FieldChange = {}
   if (wasText !== nowText) out.formula = nowText ?? null
   if (was?.style !== now?.style) out.style = now?.style ?? null
-  if (was?.format !== now?.format) out.numberFormat = now?.format ?? null
+  if (was?.numberFormat !== now?.numberFormat) out.numberFormat = now?.numberFormat ?? null
   return 'formula' in out || 'style' in out || 'numberFormat' in out ? out : null
 }
 

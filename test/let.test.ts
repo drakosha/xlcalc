@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { REFUSED as HELD_REFUSED } from '../bench/coverage/sets/let-held.js'
 import { REFUSED } from '../bench/coverage/sets/let.js'
-import { compute, openSession, restructure, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
+import { compute, createSession, editStructure, toInvariant, toLocal, validateFormula, type BookInput } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { canonical, parse, type Ast } from '../src/syntax.js'
 import { engineFormula } from './excel-cases.js'
@@ -72,7 +72,7 @@ describe('LET', () => {
   })
 
   it('the references in its values are the formula’s: an edit recomputes it', () => {
-    const s = openSession(sheet({ A1: 1, B1: '=LET(x,A1*10,x+1)' }))
+    const s = createSession(sheet({ A1: 1, B1: '=LET(x,A1*10,x+1)' }))
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).changes.map((c) => [c.cell, c.value])).toContainEqual(['B1', 21])
     s.close()
   })
@@ -89,9 +89,9 @@ describe('LET', () => {
 
   it('structure operations move the references in its values, not its names', () => {
     const book = sheet({ A1: 1, B1: '=LET(A,A1,b,A+1,b*$A$1)' })
-    const r = restructure(book, { op: 'insertRows', sheet: 'S', row: 1 })
+    const r = editStructure(book, { op: 'insertRows', sheet: 'S', row: 1 })
     expect(r.ok && r.book.sheets[0].cells.B2.formula).toBe('LET(A,A2,b,A+1,b*$A$2)')
-    const renamed = restructure({ sheets: [...book.sheets, { name: 'T', cells: { A1: { formula: 'LET(x,S!A1,x)' } } }] }, { op: 'renameSheet', sheet: 'S', name: 'R' })
+    const renamed = editStructure({ sheets: [...book.sheets, { name: 'T', cells: { A1: { formula: 'LET(x,S!A1,x)' } } }] }, { op: 'renameSheet', sheet: 'S', name: 'R' })
     expect(renamed.ok && renamed.book.sheets[1].cells.A1.formula).toBe("LET(x,'R'!A1,x)")
   })
 })

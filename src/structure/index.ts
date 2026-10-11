@@ -1,10 +1,10 @@
 /**
- * `restructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
+ * `editStructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
  */
-import type { BookInput, CellRef, RestructureResult, StructureOp } from '../contract.js'
+import type { BookInput, CellRef, StructureResult, StructureOp } from '../contract.js'
 import { checkAddress, checkBook, checkString, InputError, onlyKeys } from '../input.js'
-import { opWithoutEquals } from '../equals.js'
+import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
@@ -57,9 +57,9 @@ function integer(v: unknown, path: string, min: number, max: number): number {
  * Restructures a book; the input book is not changed. A copy that pastes values (from a filtered sheet) computes
  * the book at the current moment.
  */
-export function restructure(book: BookInput, op: StructureOp): RestructureResult {
+export function editStructure(book: BookInput, op: StructureOp): StructureResult {
   book = checkBook(book)
-  op = opWithoutEquals(op)
+  op = opTaken(op)
   const r = applyOp(book, op, lazyValues(book))
   return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell({ geometry: r.geometry, before: namesOf(book), after: namesOf(r.book) }) } : r
 }

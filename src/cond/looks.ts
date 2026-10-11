@@ -1,11 +1,11 @@
 /**
- * What a sheet's conditional formats give the cells of a window (`Session.cells`), by the values the cells hold now.
+ * What a sheet's conditional formats give the cells of a window (`Session.getCells`), by the values the cells hold now.
  * The rules apply in the sheet's order: a field of a style an earlier rule set stays, the first colour (a style's fill
  * or a colour scale's), bar and icon win, and a rule with `stopIfTrue` that holds leaves out the rules after it.
  * Rules over the numbers of their cells (colour scales, data bars, icon sets, top and bottom, average, duplicates) read
  * the rule's statistics (`stats.ts`); rules with formulas compute them at each cell (`formulas.ts`).
  */
-import type { BarLook, Color, ConditionalFormat, ConditionalLook, ConditionalStyle, ConditionalValue, DataBarFormat } from '../contract.js'
+import type { BarLook, Color, ConditionalFormat, ConditionalAppearance, ConditionalStyle, ConditionalValue, DataBarFormat } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
@@ -114,7 +114,7 @@ export function barOf(rule: DataBarFormat, v: number, lo: number, hi: number): B
 }
 
 /** A rule's style fields merged under the fields set already (an earlier rule's win). */
-function mergeStyle(into: ConditionalLook, s: ConditionalStyle) {
+function mergeStyle(into: ConditionalAppearance, s: ConditionalStyle) {
   const out = (into.style ??= {})
   if (s.font) {
     const font: Record<string, unknown> = (out.font ??= {})
@@ -125,7 +125,7 @@ function mergeStyle(into: ConditionalLook, s: ConditionalStyle) {
     const border: Record<string, unknown> = (out.border ??= {})
     for (const [k, v] of Object.entries(s.border)) if (v && !border[k]) border[k] = v
   }
-  if (s.format !== undefined && out.format === undefined) out.format = s.format
+  if (s.numberFormat !== undefined && out.numberFormat === undefined) out.numberFormat = s.numberFormat
 }
 
 /** Whether a rule of a style holds for `v` at (r, c). */
@@ -206,7 +206,7 @@ function* styleTest(state: EngineState, s: number, rule: ConditionalFormat): Ste
 }
 
 /** What a rule over numbers gives a number, built once per window; null when it gives nothing. */
-type Shade = (v: number, into: ConditionalLook) => void
+type Shade = (v: number, into: ConditionalAppearance) => void
 
 function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, { type: 'colorScale' | 'dataBar' | 'iconSet' }>): Steps<Shade | null> {
   const st = yield* statsOf(state, s, rule)
@@ -260,8 +260,8 @@ function clipped(rule: ConditionalFormat, x: Rect): Rect[] {
  * The looks of the cells of rectangle `x` of sheet `s`, by `r * MAX_COLS + c`; `only`, the cells to look at when the
  * window is too large to look at every one (the cells it lists). The steps yield between cells.
  */
-export function* windowLooks(state: EngineState, s: number, x: Rect, only?: Set<number>): Steps<Map<number, ConditionalLook>> {
-  const out = new Map<number, ConditionalLook>()
+export function* windowLooks(state: EngineState, s: number, x: Rect, only?: Set<number>): Steps<Map<number, ConditionalAppearance>> {
+  const out = new Map<number, ConditionalAppearance>()
   const rules = state.input.sheets[s].conditionalFormats
   if (!rules?.length) return out
   const stopped = new Set<number>()
@@ -302,15 +302,15 @@ export function* windowLooks(state: EngineState, s: number, x: Rect, only?: Set<
 }
 
 /** What shows a value by a format: the view's text and colour by it. */
-type ShownBy = ((format: NonNullable<ConditionalStyle['format']>) => { text: string; color?: Color }) | null | undefined
+type ShownBy = ((format: NonNullable<ConditionalStyle['numberFormat']>) => { text: string; color?: Color }) | null | undefined
 
 /**
  * A view's text and colour by its look's number format, when it has one (`display`, the view's text by a format). A
  * built-in format given by number shows by its en-US code in every locale, as Excel reads a differential format by the
  * code it holds (the set `cond/formats-ru-held`: 14 shows `m/d/yyyy` in ru-RU too, `3.15.2026`).
  */
-export function lookShown(view: { text?: string; color?: Color }, look: ConditionalLook, display: ShownBy) {
-  const format = look.style?.format
+export function lookShown(view: { text?: string; color?: Color }, look: ConditionalAppearance, display: ShownBy) {
+  const format = look.style?.numberFormat
   if (format === undefined || !display) return
   const d = display(typeof format === 'number' ? (EN_BUILTIN[format] ?? format) : format)
   view.text = d.text
@@ -318,8 +318,8 @@ export function lookShown(view: { text?: string; color?: Color }, look: Conditio
   else view.color = d.color
 }
 
-/** A cell's view with its look; a number format of the look shows its value by it. */
-export function withLook(view: { text?: string; color?: Color; look?: ConditionalLook }, look: ConditionalLook, display?: ShownBy) {
-  view.look = look
+/** A cell's view with its conditional formats' appearance; a number format of theirs shows its value by it. */
+export function withLook(view: { text?: string; color?: Color; appearance?: ConditionalAppearance }, look: ConditionalAppearance, display?: ShownBy) {
+  view.appearance = look
   lookShown(view, look, display)
 }

@@ -1,5 +1,5 @@
 /**
- * Operations on a book's tables (`restructure`): a table added over cells, renamed, deleted with its cells, or turned
+ * Operations on a book's tables (`editStructure`): a table added over cells, renamed, deleted with its cells, or turned
  * into plain cells, with the structured references to it rewritten as Excel rewrites them (the set `tables/ops`).
  */
 import type { BookInput, StructureOp, TableInput } from '../contract.js'

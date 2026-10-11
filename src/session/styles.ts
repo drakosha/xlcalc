@@ -198,10 +198,10 @@ function lookOver(d: Draft, input: CellInput | undefined, r: number, c: number, 
   }
   const ft = look.format
   if (ft) {
-    const shown = after.row(r)?.format ?? after.column(c)?.format
+    const shown = after.row(r)?.numberFormat ?? after.column(c)?.numberFormat
     const want = 'set' in ft ? ft.set : 'reset' in ft && shown !== undefined && shown !== 0 && shown !== 'General' ? 'General' : undefined
-    if (want === undefined) delete out.format
-    else if (input?.format !== undefined || own || want !== shown) out.format = want
+    if (want === undefined) delete out.numberFormat
+    else if (input?.numberFormat !== undefined || own || want !== shown) out.numberFormat = want
   }
   for (const k of ['meta', 'note', 'link'] as const) {
     if (look[k] === null) delete out[k]
@@ -220,7 +220,7 @@ function lookRect(d: Draft, t: Target, look: Look) {
   const ls = d.lines(t.i)
   const sh = d.sheet(t.i)
   const reset = 'reset' in (look.style ?? {}) || 'reset' in (look.format ?? {})
-  const looked = (map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: number, hi: number) => spansOf(map, axis).some(([a, b, e]) => b >= lo && a <= hi && (e.style !== undefined || e.format !== undefined))
+  const looked = (map: Record<string, Line> | undefined, axis: 'r' | 'c', lo: number, hi: number) => spansOf(map, axis).some(([a, b, e]) => b >= lo && a <= hi && (e.style !== undefined || e.numberFormat !== undefined))
   const lined = reset && (looked(sh.rows, 'r', x.r1, x.r2) || looked(sh.columns, 'c', x.c1, x.c2))
   if (gives(look) || lined) {
     const area = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
@@ -268,7 +268,7 @@ function lookLines(d: Draft, t: Target, look: Look) {
     for (const [a, b, e] of spans(map, axis, lo, hi)) {
       const patch: LinePatch<Line> = {}
       if (look.style) patch.style = lineStyle(d, e?.style, look.style)
-      if (look.format) patch.format = 'set' in look.format ? look.format.set : null
+      if (look.format) patch.numberFormat = 'set' in look.format ? look.format.set : null
       map = patchLines(map, axis, a, b, patch)
     }
     const next: SheetInput = { ...sh, [field]: map }
@@ -283,7 +283,7 @@ function lookLines(d: Draft, t: Target, look: Look) {
   const st = look.style && !('remove' in look.style)
   const ft = look.format && !('remove' in look.format)
   if (st || ft) {
-    const crossing = spansOf((axis === 'r' ? sh.columns : sh.rows) as Record<string, Line> | undefined, axis === 'r' ? 'c' : 'r').filter(([, , e]) => (st && e.style !== undefined) || (ft && e.format !== undefined))
+    const crossing = spansOf((axis === 'r' ? sh.columns : sh.rows) as Record<string, Line> | undefined, axis === 'r' ? 'c' : 'r').filter(([, , e]) => (st && e.style !== undefined) || (ft && e.numberFormat !== undefined))
     const count = crossing.reduce((n, [a, b]) => n + (b - a + 1) * (hi - lo + 1), 0)
     if (count > MAX_CELLS) throw new InputError('range', `the lines cross formatted lines in ${count} cells, past ${MAX_CELLS}`)
     for (const [a, b] of crossing)

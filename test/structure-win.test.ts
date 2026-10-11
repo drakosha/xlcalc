@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import type { StoredStruct } from '../bench/coverage/struct.js'
 import type { StructCases } from '../bench/coverage/struct/cases.js'
-import { restructure, type BookInput } from '../src/index.js'
+import { editStructure, type BookInput } from '../src/index.js'
 import { winFiles } from './excel-win-cases.js'
 import { differences } from './structure-excel.js'
 
@@ -63,7 +63,7 @@ for (const set of SETS) {
     for (const c of set.cases)
       it(`${c.id}: as Excel for Windows`, () => {
         const a = set.answers[c.id]
-        const r = restructure(set.books[c.book], c.op)
+        const r = editStructure(set.books[c.book], c.op)
         const same = (book: BookInput) => differences(book, a, String(set.meta.read), look, set.widths !== false).filter((l) => !sameSize(l))
         if (a.error) {
           expect(r.ok, `Excel refused: ${a.error}`).toBe(false)

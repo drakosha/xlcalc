@@ -7,8 +7,8 @@ The rules below were measured in Excel 16 for Mac (en-US).
 ## API
 
 ```ts
-restructure(book: BookInput, op: StructureOp): RestructureResult
-session.restructure(op: StructureOp): SessionRestructureResult   // the same, plus `changes`
+editStructure(book: BookInput, op: StructureOp): StructureResult
+session.editStructure(op: StructureOp): SessionStructureResult   // the same, plus `changes`
 
 type StructureOp =
   | { op: 'insertRows' | 'deleteRows'; sheet: string; row: number; count?: number }          // 1-based row
@@ -23,12 +23,12 @@ type StructureOp =
   | { op: 'unhideSheet'; sheet: string }
 
 type RangeRef = { sheet: string; range: string }       // B2, B2:D9, B:D, 2:9
-type RestructureResult =
+type StructureResult =
   | { ok: true; book: BookInput; mapCell(ref: CellRef): CellRef | null }
   | { ok: false; code: 'off_sheet' | 'sheet_name' | 'last_sheet' | 'very_hidden' | 'merged' | 'filtered' | 'array'; message: string }
 ```
 
-The types are in `xlcalc/contract`, and `FormulaEngine` has `restructure`.
+The types are in `xlcalc/contract`.
 
 An operation is plain data, so an interface can store it, send it to a server and replay it. Rows are numbers and columns are letters, as in A1 addresses. Sheet names are matched without regard to case.
 
@@ -71,7 +71,7 @@ The parser reads all these forms, which also occur in xlsx files, as `#REF!` err
 
 ## Inserting rows and columns
 
-Cells from the inserted row on move down, with their `format`, `style` and `meta`. The inserted rows copy the row above, as Excel does by default: its height, style and format, and the style and format of each of its cells, without values. Rows inserted above row 1 are plain. Columns work the same way with the column on the left.
+Cells from the inserted row on move down, with their `numberFormat`, `style` and `meta`. The inserted rows copy the row above, as Excel does by default: its height, style and format, and the style and format of each of its cells, without values. Rows inserted above row 1 are plain. Columns work the same way with the column on the left.
 
 Every reference to the sheet moves, absolute references included, from any sheet and from global and local names.
 
@@ -85,7 +85,7 @@ The cells in the deleted rows are removed and the cells below move up. A referen
 
 ## Moving a range (cut and paste)
 
-The cells move with their `format`, `style` and `meta`, and replace the cells they land on; an empty source cell clears its target. A reference that lies entirely inside the moved cells follows them, to another sheet too, absolute or not. A reference entirely inside the overwritten cells becomes `#REF!`.
+The cells move with their `numberFormat`, `style` and `meta`, and replace the cells they land on; an empty source cell clears its target. A reference that lies entirely inside the moved cells follows them, to another sheet too, absolute or not. A reference entirely inside the overwritten cells becomes `#REF!`.
 
 A range with one end among the moved or overwritten cells changes along that end's axis, when the cells cover the range's other axis and move along it:
 
@@ -101,7 +101,7 @@ A moved formula's references to cells that did not move keep pointing at them; a
 
 ## Copying a range (copy and paste, fill)
 
-The copied cells replace the target's, with `format` and `style`. They do not take `meta` unless the operation has `withMeta: true`: a copy is a new cell, and what a host keeps in `meta`, such as the ids of source rows, belongs to the original. Empty source cells clear the cells they land on.
+The copied cells replace the target's, with `numberFormat` and `style`. They do not take `meta` unless the operation has `withMeta: true`: a copy is a new cell, and what a host keeps in `meta`, such as the ids of source rows, belongs to the original. Empty source cells clear the cells they land on.
 
 Relative parts of references move with the copy and absolute ones (`$`) stay. A whole column keeps its rows and a whole row its columns. A reference pushed past the sheet's edge becomes `#REF!`, or `'S'!#REF!` when it names its sheet; a range is not clamped.
 
@@ -137,13 +137,13 @@ A book keeps one visible sheet at least, as Excel does: hiding or deleting the l
 Excel moves a sheet by the visible sheets. Moved before a hidden sheet, it goes before the next visible sheet; with none after it, and moved to the end past hidden sheets, it goes after the last visible sheet. With Jan, Feb (hidden) and Mar, Mar moved before Feb stays where it is, and with Mar hidden at the end, Jan moved to the end goes between Feb and Mar. An inserted sheet goes where it is asked, before a hidden sheet too.
 
 ```js
-import { restructure } from 'xlcalc'
+import { editStructure } from 'xlcalc'
 
 const book = { sheets: [{ name: 'Data', cells: {} }, { name: 'Keys', cells: {}, hidden: 'very' }, { name: 'Report', cells: {} }] }
-const r = restructure(book, { op: 'hideSheet', sheet: 'Data' })
+const r = editStructure(book, { op: 'hideSheet', sheet: 'Data' })
 console.log(r.ok && r.book.sheets.map((s) => s.hidden)) // → [ true, 'very', undefined ]
-console.log(r.ok && restructure(r.book, { op: 'hideSheet', sheet: 'Report' }).code) // → last_sheet
-console.log(restructure(book, { op: 'deleteSheet', sheet: 'Keys' }).code) // → very_hidden
+console.log(r.ok && editStructure(r.book, { op: 'hideSheet', sheet: 'Report' }).code) // → last_sheet
+console.log(editStructure(book, { op: 'deleteSheet', sheet: 'Keys' }).code) // → very_hidden
 ```
 
 ## Tables
@@ -236,19 +236,19 @@ On a filtered sheet Excel acts on the visible rows:
 - A copy that left rows out cannot be pasted over hidden rows. The operation is refused with `filtered`, as Excel refuses it.
 - A selection of hidden rows only is taken whole.
 
-The values a copy pastes come from the computed book. `session.restructure` takes the session's values. `restructure` computes the book first, at the current moment, which matters only for volatile formulas.
+The values a copy pastes come from the computed book. `session.editStructure` takes the session's values. `editStructure` computes the book first, at the current moment, which matters only for volatile formulas.
 
 `copyRange` over a filtered sheet fills its visible rows, as Excel's Fill Down does. Excel's fill handle fills the hidden rows too.
 
 ## Sessions
 
-`session.restructure(op)` applies the operation to the session's book and recomputes. The result is that of `restructure`, with `book` being the session's book after the operation, plus what every edit of a session answers ([Editing a grid](edits.md#what-an-edit-answers)): `moved`, how the addresses moved, and `changes`, every cell whose value or formula text differs from those of its old cell. An interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` has the new values and formulas. An insert into a block of data lists the formulas over it, which read one row more, and no value. A refused operation changes nothing.
+`session.editStructure(op)` applies the operation to the session's book and recomputes. The result is that of `editStructure`, with `book` being the session's book after the operation, plus what every edit of a session answers ([Editing a grid](edits.md#what-an-edit-answers)): `moved`, how the addresses moved, and `changes`, every cell whose value or formula text differs from those of its old cell. An interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` has the new values and formulas. An insert into a block of data lists the formulas over it, which read one row more, and no value. A refused operation changes nothing.
 
 The session rebuilds its state from the new book. On the synthetic book (3,400 rows, 3,907 formulas) inserting a row in the middle of the data takes 170 ms, about as long as a cold computation of the same book, well within the 1.5 s budget. On the book of 34,000 rows (506,594 cells on the data sheet) inserting or deleting a row takes 1.3 to 1.5 s, its undo and its redo 1.4 to 1.5 s, a row copied down 2,000 rows 1.2 s and a block of 100 by 20 cells moved 1.1 s; building the state is half of it, the operation itself 0.25 s.
 
 `mapCell`, `moved`, the way an undo and a redo take the operation back and again and the comparison of each cell with its old cell all follow one description of where the operation took the cells: lines inserted or deleted, a range moved, cells pasted over, a sheet renamed, inserted, deleted or moved. Rows deleted on a filtered sheet are one `lines` move for each run of visible rows, from the bottom up, and their undo puts each run back; an undo's `mapCell` is the operation's taken back, a redo's the operation's own.
 
-`book()` returns the session's book with all changes so far, which is what a host saves as a version. Its objects belong to the session and change with later edits, so serialize it right away.
+`getBook()` returns the session's book with all changes so far, which is what a host saves as a version. Its objects belong to the session and change with later edits, so serialize it right away.
 
 Styles and layout change through the session so that its book stays the host's book:
 
@@ -256,7 +256,7 @@ Styles and layout change through the session so that its book stays the host's b
 - the style table through `setStyles(styles)`; every style in use must stay in it;
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;
-- hidden sheets through `restructure`: `hideSheet` and `unhideSheet` recompute nothing and do not build the state again;
+- hidden sheets through `editStructure`: `hideSheet` and `unhideSheet` recompute nothing and do not build the state again;
 - frozen panes through `setLayout`: `{ sheet, frozen: { rows: 1 } }`, and `{ sheet, frozen: null }` unfreezes them;
 - conditional formats through `setLayout`: `{ sheet, conditionalFormats: [...] }` replaces the sheet's rules;
 - rules of data validation through `setLayout`: `{ sheet, validations: [...] }` replaces the sheet's rules;
@@ -270,7 +270,7 @@ Only two of these recompute values. A merged area added or removed over an array
 
 `test/copy-formula.test.ts` checks `copyFormula` against `copyRange` on every copy of the structure sets and the table sets: each formula of the source at each place the copy pastes it, 317 and 8 of them.
 
-`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel through AppleScript and stores what every sheet shows in `A1:Z60`, with the defined names, in `test/excel/struct/<set>.json`. For books with styles it also reads the look of `A1:J24`: bold, fill colour and number format of each cell, widths and heights that are not standard, and the merged areas. `test/structure-excel.test.ts` compares `restructure` with the stored answers without Excel.
+`npx tsx bench/coverage/run.ts struct <set>` applies each case's operation to its book in Excel through AppleScript and stores what every sheet shows in `A1:Z60`, with the defined names, in `test/excel/struct/<set>.json`. For books with styles it also reads the look of `A1:J24`: bold, fill colour and number format of each cell, widths and heights that are not standard, and the merged areas. `test/structure-excel.test.ts` compares `editStructure` with the stored answers without Excel.
 
 | set | cases | what |
 |---|---|---|

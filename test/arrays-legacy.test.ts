@@ -3,7 +3,7 @@
  * the input checks, the result's fields, a session's edits of an area, a spill reference to it, and both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, type BookInput, type CellInput } from '../src/index.js'
+import { compute, InputError, createSession, type BookInput, type CellInput } from '../src/index.js'
 
 const arr = (formula: string, area: string): CellInput => ({ formula, array: area })
 const book = (cells: Record<string, CellInput>): BookInput => ({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, ...cells } }] })
@@ -14,7 +14,7 @@ describe('array formulas of the old kind', () => {
     expect(() => compute(book({ C2: arr('A1', 'C1:C3') }))).toThrow(InputError)
     expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C2: { value: 5 } }))).toThrow(/cells\["C2"\]: the cell is in the area of the array formula at C1/)
     expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C3: arr('1', 'C3') }))).toThrow(InputError)
-    expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C2: { format: '0.0' } }))).not.toThrow()
+    expect(() => compute(book({ C1: arr('A1:A3', 'C1:C3'), C2: { numberFormat: '0.0' } }))).not.toThrow()
   })
 
   it('the result lists the area on its cell and the cells of the area as spilled from it', () => {
@@ -26,13 +26,13 @@ describe('array formulas of the old kind', () => {
   })
 
   it('a session refuses to change part of an area and changes nothing; the whole area, or its formula again, it takes', () => {
-    const s = openSession(book({ C1: arr('A1:A3*2', 'C1:C3') }))
+    const s = createSession(book({ C1: arr('A1:A3*2', 'C1:C3') }))
     expect(() => s.setCells([{ sheet: 'S', cell: 'C2', input: { value: 9 } }])).toThrow(/C2 is part of the array formula at S!C1/)
     expect(() => s.setCells([{ sheet: 'S', cell: 'C1', input: null }])).toThrow(InputError)
-    expect(s.result().sheets[0].cells.C2.value).toBe(4)
+    expect(s.getResult().sheets[0].cells.C2.value).toBe(4)
     expect(s.setCells([{ sheet: 'S', cell: 'C1', input: arr('A1:A3*10', 'C1:C3') }]).changes.map((x) => [x.cell, x.value])).toEqual(expect.arrayContaining([['C2', 20]]))
     s.setCells(['C1', 'C2', 'C3'].map((cell) => ({ sheet: 'S', cell, input: null })))
-    expect(s.result().sheets[0].cells.C2).toBeUndefined()
+    expect(s.getResult().sheets[0].cells.C2).toBeUndefined()
     // a new array formula over cells that hold input is refused
     expect(() => s.setCells([{ sheet: 'S', cell: 'A1', input: arr('5', 'A1:A2') }])).toThrow(/A2/)
   })

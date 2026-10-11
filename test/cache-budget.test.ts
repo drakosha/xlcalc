@@ -5,7 +5,7 @@
  * full computation through edits, sheet growth and structure operations, in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput, type CellInput, type Session } from '../src/index.js'
+import { compute, createSession, type BookInput, type CellInput, type Session } from '../src/index.js'
 import { createState } from '../src/engine.js'
 import { CacheBudget, heapCaches, RangeCache } from '../src/range-cache.js'
 
@@ -77,7 +77,7 @@ it('a range read once fills no cache, a range read twice is kept', () => {
 
 describe.each(['closures', 'eval'] as const)('cache budget, %s', (execution) => {
   const opts = { clock, execution, display: false }
-  const same = (s: Session) => expect(s.hash()).toBe(compute(s.book(), opts).hash)
+  const same = (s: Session) => expect(s.getHash()).toBe(compute(s.getBook(), opts).hash)
 
   it('a book whose caches hold many times the cap computes as without it', () => {
     const b = book(600, 0, true)
@@ -90,7 +90,7 @@ describe.each(['closures', 'eval'] as const)('cache budget, %s', (execution) => 
 
   it('a session under a small budget gives the full computation’s hash through edits, growth and structure operations', () => {
     const n = 600
-    const s = tight(() => openSession(book(n), opts))
+    const s = tight(() => createSession(book(n), opts))
     try {
       expect(heapCaches.held).toBeLessThanOrEqual(SMALL)
       same(s)
@@ -100,7 +100,7 @@ describe.each(['closures', 'eval'] as const)('cache budget, %s', (execution) => 
         () => s.setCells([{ sheet: 'S', cell: `I${n + 500}`, input: { value: 1 } }]),
         () => s.setCells([{ sheet: 'S', cell: 'D1', input: { value: 0 } }, { sheet: 'S', cell: 'D1', input: { formula: `COUNTIF(A:A,3)+SUMIFS($A$1:$A$${n},$A$1:$A$${n},3)` } }]),
         () => s.setCells([{ sheet: 'S', cell: `A${n / 2}`, input: { value: 't1' } }]),
-        () => s.restructure({ op: 'insertRows', sheet: 'S', row: 10, count: 2 }),
+        () => s.editStructure({ op: 'insertRows', sheet: 'S', row: 10, count: 2 }),
         () => s.setCells([{ sheet: 'S', cell: `A${n + 1}`, input: { value: 3 } }]),
         () => s.setCells([{ sheet: 'S', cell: 'A1', input: null }]),
       ]
@@ -114,7 +114,7 @@ describe.each(['closures', 'eval'] as const)('cache budget, %s', (execution) => 
   })
 
   it('books share the budget: a session’s formulas drop the entries of another, which reads them again', () => {
-    const [s, t] = tight(() => [openSession(book(400), opts), openSession(book(400, 3), opts)])
+    const [s, t] = tight(() => [createSession(book(400), opts), createSession(book(400, 3), opts)])
     try {
       for (let i = 0; i < 6; i++) {
         const x = i % 2 ? s : t

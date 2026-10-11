@@ -3,7 +3,7 @@
  * Excel applies the operation to the book and the formulas of every sheet and the defined names are read
  * back (`excel-struct.applescript`). `npx tsx bench/coverage/run.ts struct <set>` runs the cases of
  * `struct/<set>.ts` and stores the answers in `test/excel/struct/<set>.json`;
- * `test/structure-excel.test.ts` compares `restructure` with them without Excel. A book with styles, columns,
+ * `test/structure-excel.test.ts` compares `editStructure` with them without Excel. A book with styles, columns,
  * rows, merged areas or number formats is written with them, and the look of `LOOK` (and of the set's `look` rectangles) is read back too.
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */

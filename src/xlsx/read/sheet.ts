@@ -1,7 +1,7 @@
 /**
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
- * cells as a copy and paste spreads them (`restructure`'s copyRange), array formulas of the old kind over their area,
+ * cells as a copy and paste spreads them (`editStructure`'s copyRange), array formulas of the old kind over their area,
  * the cells an array spilled into left to the stored values, columns and rows with their outline levels, merged areas,
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
@@ -99,7 +99,7 @@ function spreadShared(src: SheetSource, read: SheetCells, issues: Issues) {
     const targets = (box.r2 - box.r1 + 1) * (box.c2 - box.c1 + 1) > 4 * at.length ? s.copies : [cornersText(box)]
     const book = { sheets: src.sheets.map((name) => ({ name, cells: name === src.name ? { [s.master!]: { formula } } : {} })) }
     for (const range of targets) {
-      // the pure copy and paste, without restructure's checks and values (a paste from a filtered sheet computes the book)
+      // the pure copy and paste, without editStructure's checks and values (a paste from a filtered sheet computes the book)
       const r = copyRange(book, src.name, parseRange(s.master)!, src.name, parseRange(range)!, false)
       const pasted = r.ok ? r.book.sheets.find((x) => x.name === src.name)!.cells : {}
       for (const c of s.copies) {

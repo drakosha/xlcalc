@@ -37,7 +37,7 @@ describe('entryText', () => {
     it.each(values.map(([v, f]) => [JSON.stringify(v), JSON.stringify(f ?? null), v, f] as const))('%s by %s', (_, __, v, numberFormat) => {
       const text = entryText(v, { locale, ...(numberFormat === undefined ? {} : { numberFormat }) })
       // a percent cell's editor adds `%` to a number typed into it: the bar's text reads back in General
-      const cell = numberFormat === undefined || typeof v === 'number' ? undefined : { format: numberFormat }
+      const cell = numberFormat === undefined || typeof v === 'number' ? undefined : { numberFormat }
       const r = parseEntry(text, { locale, now: NOW, ...(cell ? { cell } : {}) })
       if (!r.ok || !r.input) throw new Error(`${text} does not read back`)
       const back = r.input.value ?? null

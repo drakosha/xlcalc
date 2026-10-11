@@ -3,7 +3,7 @@
  * computation gives after every edit, both execution modes agree, the settings are checked and hashed.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, type BookInput, type CellReplace, type CellInput } from '../src/index.js'
+import { compute, InputError, createSession, type BookInput, type CellReplace, type CellInput } from '../src/index.js'
 import { mulberry32 } from '../src/synth.js'
 
 const clock = { now: '2026-10-07T12:00:00Z', seed: 1 }
@@ -49,7 +49,7 @@ describe('iterative calculation', () => {
     const at = ['B1', 'B2', 'G1', 'D1', 'B4']
     for (const execution of ['closures', 'eval'] as const) {
       let b = book()
-      const s = openSession(b, { clock, execution })
+      const s = createSession(b, { clock, execution })
       for (let i = 0; i < 150; i++) {
         const e: CellReplace = { sheet: 'S', cell: at[Math.floor(rnd() * at.length)], input: inputs[Math.floor(rnd() * inputs.length)] }
         s.setCells([e])
@@ -58,8 +58,8 @@ describe('iterative calculation', () => {
         else cells[e.cell] = e.input
         b = { ...b, sheets: [{ ...b.sheets[0], cells }, b.sheets[1]] }
         const full = compute(b, { clock, execution: 'closures' })
-        expect(s.result().sheets, `${execution} edit ${i}: ${JSON.stringify(e)}`).toEqual(full.sheets)
-        expect(s.result().hash).toBe(full.hash)
+        expect(s.getResult().sheets, `${execution} edit ${i}: ${JSON.stringify(e)}`).toEqual(full.sheets)
+        expect(s.getResult().hash).toBe(full.hash)
       }
       s.close()
     }

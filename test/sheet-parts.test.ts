@@ -4,7 +4,7 @@
  * and changed through a session without recomputing, in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, restructure, type BookInput, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
+import { compute, InputError, createSession, editStructure, type BookInput, type Execution, type SheetInput, type StructureOp } from '../src/index.js'
 
 const clock = { now: '2026-10-10T12:00:00Z', seed: 1 }
 
@@ -45,7 +45,7 @@ const parts = (b: BookInput, sheet = 'S') => {
 }
 
 const after = (op: StructureOp) => {
-  const r = restructure(book(), op)
+  const r = editStructure(book(), op)
   if (!r.ok) throw new Error(r.message)
   return r.book
 }
@@ -116,23 +116,23 @@ describe('notes, links and frozen panes under structure operations', () => {
 
 describe.each(['closures', 'eval'] as const)('notes, links and frozen panes in a session, execution %s', (execution: Execution) => {
   it('setCells changes them without recomputing; cells() gives them; the hash stays a full computation of the book', () => {
-    const s = openSession(book(), { clock, execution })
-    const before = s.hash()
+    const s = createSession(book(), { clock, execution })
+    const before = s.getHash()
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1, link: { url: 'mailto:a@example.com' } } }, { sheet: 'S', cell: 'D9', input: { note: { text: 'new' } } }]).changes).toEqual([])
-    expect(s.cells('S', 'A1:D9')).toMatchObject({ A1: { value: 1, link: { url: 'mailto:a@example.com' } }, C3: { value: null, note: { text: 'alone' }, link: { location: 'S!A1' } }, D9: { value: null, note: { text: 'new' } } })
+    expect(s.getCells('S', 'A1:D9')).toMatchObject({ A1: { value: 1, link: { url: 'mailto:a@example.com' } }, C3: { value: null, note: { text: 'alone' }, link: { location: 'S!A1' } }, D9: { value: null, note: { text: 'new' } } })
     // the edit keeps the note it does not name
-    expect(s.cells('S', 'A1').A1.note).toEqual({ author: 'Ann', text: 'first' })
-    expect(s.hash()).toBe(before)
-    expect(compute(s.book(), { clock: s.clock, execution }).hash).toBe(before)
+    expect(s.getCells('S', 'A1').A1.note).toEqual({ author: 'Ann', text: 'first' })
+    expect(s.getHash()).toBe(before)
+    expect(compute(s.getBook(), { clock: s.clock, execution }).hash).toBe(before)
     s.close()
   })
 
-  it('setLayout freezes and unfreezes panes; a restructure moves them; nothing is recomputed', () => {
-    const s = openSession(book(), { clock, execution })
+  it('setLayout freezes and unfreezes panes; a editStructure moves them; nothing is recomputed', () => {
+    const s = createSession(book(), { clock, execution })
     expect(s.setLayout([{ sheet: 'T', frozen: { columns: 2 } }, { sheet: 'S', frozen: null }]).changes).toEqual([])
-    expect(s.book().sheets.map((x) => x.frozen)).toEqual([undefined, { columns: 2 }])
-    expect('frozen' in s.book().sheets[0]).toBe(false)
-    const r = s.restructure({ op: 'insertColumns', sheet: 'T', column: 'A' })
+    expect(s.getBook().sheets.map((x) => x.frozen)).toEqual([undefined, { columns: 2 }])
+    expect('frozen' in s.getBook().sheets[0]).toBe(false)
+    const r = s.editStructure({ op: 'insertColumns', sheet: 'T', column: 'A' })
     expect(r.ok && r.book.sheets[1].frozen).toEqual({ columns: 3 })
     expect(() => s.setLayout([{ sheet: 'S', frozen: { rows: -1 } }])).toThrow(InputError)
     s.close()

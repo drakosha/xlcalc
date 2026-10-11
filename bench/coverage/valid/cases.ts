@@ -6,7 +6,7 @@
  * sheet's summary settings, and saves the book. The answer is what Excel read, and the file it saved goes beside it.
  */
 import type { BookInput, DataValidation, OutlineSettings, StructureOp, ValidationOperator, ValidationType } from '../../../src/contract.js'
-import { LOCALES, openSession, parseEntry, toInvariant, validateFormula } from '../../../src/index.js'
+import { LOCALES, createSession, parseEntry, toInvariant, validateFormula } from '../../../src/index.js'
 import { isHiddenRow } from '../../../src/layout/hidden.js'
 import { lines, parseSpan, patchLines } from '../../../src/layout/spans.js'
 import { formatAddress, indexToCol } from '../../../src/model.js'
@@ -195,7 +195,7 @@ const within = (w: Rect, r: number, c: number) => r >= w.r1 && r <= w.r2 && c >=
  */
 export function bookViews(book: BookInput, window = WINDOW): SheetView[] {
   const w = parseRange(window)!
-  const session = openSession(book, { display: false, clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
+  const session = createSession(book, { display: false, clock: { now: '2026-10-10T12:00:00Z', seed: 1 } })
   const names = new Map(book.sheets.map((s) => [sheetKey(s.name), s.name]))
   try {
     return book.sheets.map((s) => {

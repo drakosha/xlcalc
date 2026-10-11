@@ -6,7 +6,7 @@
  * the reader to read the rules Excel kept.
  */
 import type { BookInput, CellStyle, CellView, Clock, ConditionalFormat, StructureOp } from '../../../src/contract.js'
-import { openSession, restructure, validateFormula } from '../../../src/index.js'
+import { createSession, editStructure, validateFormula } from '../../../src/index.js'
 import { formatAddress, MAX_COLS, MAX_ROWS } from '../../../src/model.js'
 import { parseRange } from '../../../src/structure/area.js'
 import { BUILTIN } from '../../../src/xlsx/styles/numfmt.js'
@@ -96,7 +96,7 @@ export function cellsOf(range: string): string[] {
 /** What a cell of a session window shows by its own style and its conditional formats' look, as Excel's display format gives it. */
 export function viewLook(v: CellView | undefined, styles: CellStyle[] = []): Look {
   const own = v?.style !== undefined ? styles[v.style] : undefined
-  const cf = v?.look?.style
+  const cf = v?.appearance?.style
   return {
     text: v?.text ?? '',
     fill: cf?.fill?.color ?? own?.fill?.color ?? null,
@@ -135,7 +135,7 @@ function canonicalText(f: string): string {
 export function ruleKey(rule: ConditionalFormat): unknown {
   const { ranges: _, ...rest } = rule
   const canon = JSON.parse(JSON.stringify(rest), (k, v) =>
-    (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
+    (k === 'formula' || k === 'value') && typeof v === 'string' ? canonicalText(v) : k === 'formulas' ? (v as string[]).map(canonicalText) : k === 'numberFormat' || k === 'format' ? (typeof v === 'number' ? (v === 0 ? 'General' : BUILTIN[v]) : (v as string).replaceAll('\\ ', ' ')) : v,
   )
   return sorted({ cells: cellSet(rule.ranges).join(' '), ...canon })
 }
@@ -149,16 +149,18 @@ export interface CondPrediction {
 
 /** The engine's answer to a case at the moment `clock` (TODAY of time periods): the book after its operation, in a session. */
 export function engineCase(set: CondCases, c: CondCase, clock: Clock, book: BookInput = set.books[c.book]): CondPrediction {
-  const r = c.op ? restructure(book, c.op) : { ok: true as const, book }
+  const r = c.op ? editStructure(book, c.op) : { ok: true as const, book }
   if (!r.ok) return { refused: r.code, rules: {}, looks: {} }
-  const s = openSession(r.book, { clock })
+  const s = createSession(r.book, { clock })
   const looks: CondPrediction['looks'] = {}
   for (const [sheet, range] of c.read) {
-    const views = s.cells(sheet, range)
+    const views = s.getCells(sheet, range)
     looks[sheet] = Object.fromEntries(cellsOf(range).map((a) => [a, viewLook(views[a], r.book.styles)]))
   }
+  // the rules as the session holds them, by the new names of their fields
+  const rules = rulesOf(s.getBook())
   s.close()
-  return { rules: rulesOf(r.book), looks }
+  return { rules, looks }
 }
 
 /** Each sheet's rules as `ruleKey` gives them. */

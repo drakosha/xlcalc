@@ -6,7 +6,7 @@
  * answer is what Excel read; the file it saved goes beside it.
  */
 import type { BookInput, CellValue, StructureOp } from '../../../src/contract.js'
-import { compute, restructure } from '../../../src/index.js'
+import { compute, editStructure } from '../../../src/index.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { editParts } from '../xlsx/sent.js'
 
@@ -83,7 +83,7 @@ export function engineAnswer(set: HiddenCases, c: HiddenCase): { refused?: strin
   let book = set.books[c.book]
   let refused: string | undefined
   for (const op of [...(c.make ?? []).map(makeOp), ...(c.op ? [c.op] : [])]) {
-    const r = restructure(book, op)
+    const r = editStructure(book, op)
     if (!r.ok) {
       refused = r.code
       break

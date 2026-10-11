@@ -42,14 +42,14 @@ describe('the pool at its edges', () => {
     const worse = p.compute(bad)
     await good
     expect(await settled(worse)).toMatchObject(['rejected', expect.any(InputError)])
-    const s = await p.openSession(chainBook(2))
+    const s = await p.createSession(chainBook(2))
     await expect(s.setCells([{ sheet: 'S', cell: 'B9', input: unsendable }])).rejects.toThrow(/^edits: cannot be sent to a thread/)
     expect((await s.setCells(setA1(3))).changes.map((c) => c.cell)).toEqual(['A1', 'B1', 'B2'])
   }, 30_000)
 
   it('a session closed while the pool closes is closed, not left waiting', async () => {
     const p = await pool({ threads: 1 })
-    const s = await p.openSession(chainBook(3))
+    const s = await p.createSession(chainBook(3))
     const busy = p.compute(synthBook({ seed: 1, rows: 1700 }).book).catch(() => undefined)
     const closing = s.close()
     await p.close()
@@ -60,7 +60,7 @@ describe('the pool at its edges', () => {
   it('a session closed while its thread is lost is closed', async () => {
     const { calc, crash } = await inside({ threads: 1 })
     open.push(calc)
-    const s = await calc.openSession(chainBook(3))
+    const s = await calc.createSession(chainBook(3))
     const closing = s.close()
     crash(0)
     expect(await settled(closing)).toEqual(['resolved', undefined])
@@ -73,7 +73,7 @@ describe('the pool at its edges', () => {
     const running = p.compute(synthBook({ seed: 1, rows: 900 }).book)
     await expect(p.compute(chainBook(2))).rejects.toMatchObject({ code: 'queue_full' })
     await running
-    const s = await p.openSession(chainBook(2))
+    const s = await p.createSession(chainBook(2))
     expect(await outcome(s.setCells(setA1(4)))).toBe('resolved')
   }, 30_000)
 

@@ -13,6 +13,7 @@ import { caseBook, caseFile, engineCase, partsOf, sessionBook, sessionCase, type
 import { compareBooks, entries } from '../bench/coverage/xlsx/compare.js'
 import { partsHash } from '../bench/coverage/xlsx/sent.js'
 import type { BookInput, NumberFormat } from '../src/contract.js'
+import { checkBook } from '../src/input.js'
 import { readXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 
@@ -47,7 +48,7 @@ const key = (l: LineLook | undefined) => l && JSON.stringify([l.text, plainCode(
 
 /** A book with its format codes without Excel's escapes. */
 function unescaped(book: BookInput): BookInput {
-  const lines = <T extends { format?: NumberFormat }>(m: Record<string, T> | undefined) => m && Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.format === undefined ? v : { ...v, format: plainCode(v.format) }]))
+  const lines = <T extends { numberFormat?: NumberFormat }>(m: Record<string, T> | undefined) => m && Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.numberFormat === undefined ? v : { ...v, numberFormat: plainCode(v.numberFormat) }]))
   return { ...book, sheets: book.sheets.map((s) => ({ ...s, cells: lines(s.cells)!, columns: lines(s.columns), rows: lines(s.rows) })) }
 }
 
@@ -103,7 +104,7 @@ describe.each(PLATFORMS)('formats of rows and columns against %s', (_, sets) => 
         })
         if (!c.steps && !c.bare)
           it(`${c.id}: Excel's file reads back as the book written`, async () => {
-            expect(compareBooks(entries(set.books[c.book]), entries(unescaped((await saved(set, c.id)).book)))).toEqual([])
+            expect(compareBooks(entries(checkBook(set.books[c.book])), entries(unescaped((await saved(set, c.id)).book)))).toEqual([])
           })
       }
     })

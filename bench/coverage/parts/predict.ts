@@ -5,7 +5,7 @@
  * author unknown: `?`).
  */
 import { writeFileSync } from 'node:fs'
-import { restructure } from '../../../src/index.js'
+import { editStructure } from '../../../src/index.js'
 import { bookParts, made, type PartsSet } from './cases.js'
 
 const set = process.argv[2]
@@ -14,7 +14,7 @@ const { books, cases, threads } = ((await import(`./${set}.js`)) as PartsSet).bu
 const out: Record<string, unknown> = {}
 for (const c of cases) {
   const book = made(books[c.book], c.make, '?', threads?.[c.book])
-  const r = c.op ? restructure(book, c.op) : { ok: true as const, book }
+  const r = c.op ? editStructure(book, c.op) : { ok: true as const, book }
   out[c.id] = r.ok ? Object.fromEntries(r.book.sheets.map((s) => [s.name, bookParts(s)])) : { refused: r.code }
 }
 writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')

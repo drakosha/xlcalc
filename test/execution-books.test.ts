@@ -22,6 +22,7 @@ import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import type { TableSet } from '../bench/coverage/tables/cases.js'
 import { engineAnswer } from './tables-cases.js'
 import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const BOOKS: [string, BookInput][] = [
   ['the coverage measurement', excelBook(CASES)],
@@ -124,8 +125,8 @@ describe('execution modes against each other', () => {
     const r = byEval(NODES, { externals: EXTERNALS })
     expectSame(r, byClosures(NODES, { externals: EXTERNALS }))
     // the book reaches what it is for: a cycle, an array result, a missing external value, an invalid formula
-    expect(r.issues.map((i) => `${i.cell} ${i.error}`)).toEqual(expect.arrayContaining(['B24 NA', 'B25 SPILL', 'B26 NAME', 'C1 CYCLE']))
+    expect(cellIssues(r).map((i) => `${i.cell} ${i.error}`)).toEqual(expect.arrayContaining(['B24 NA', 'B25 SPILL', 'B26 NAME', 'C1 CYCLE']))
     expect([r.sheets[0].cells.D4.spill, r.sheets[0].cells.D7.value]).toEqual(['D4:E5', 10 + 2 + (2 + 8 + 6 + 16)])
-    expect(r.issues.find((i) => i.cell === 'B24')?.reason).toBe('value not found (or no value for an external call)')
+    expect(cellIssues(r).find((i) => i.cell === 'B24')?.reason).toBe('value not found (or no value for an external call)')
   })
 })

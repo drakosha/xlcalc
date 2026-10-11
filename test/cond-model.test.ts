@@ -1,10 +1,10 @@
 /**
  * Conditional formats in the model: checked as input, in the input hash, kept by a session's book, replaced through
- * setLayout, outside the values hash; Session.cells gives each cell its look, in both execution modes.
+ * setLayout, outside the values hash; Session.getCells gives each cell its look, in both execution modes.
  */
 import { describe, expect, it } from 'vitest'
 import type { BookInput, ConditionalFormat } from '../src/contract.js'
-import { compute, InputError, openSession } from '../src/index.js'
+import { compute, InputError, createSession } from '../src/index.js'
 import { inputHash } from '../src/canon.js'
 
 const CLOCK = { now: '2026-10-10T12:00:00Z', seed: 1 }
@@ -24,7 +24,7 @@ describe('conditional formats as input', () => {
   it('a book with every kind of rule is taken', () => {
     const rules: ConditionalFormat[] = [
       GT2,
-      { type: 'expression', ranges: ['B:B', '3:4'], formula: 'ISODD(ROW())', stopIfTrue: true, style: { font: { bold: false, underline: 'double' }, border: { top: { style: 'thin' } }, format: 14 } },
+      { type: 'expression', ranges: ['B:B', '3:4'], formula: 'ISODD(ROW())', stopIfTrue: true, style: { font: { bold: false, underline: 'double' }, border: { top: { style: 'thin' } }, numberFormat: 14 } },
       { type: 'containsText', ranges: ['C1'], text: 'x' },
       { type: 'containsBlanks', ranges: ['C1'], formula: 'LEN(C1)=0' },
       { type: 'timePeriod', ranges: ['C1'], period: 'nextWeek' },
@@ -63,44 +63,44 @@ describe('conditional formats as input', () => {
 })
 
 describe.each(['closures', 'eval'] as const)('conditional formats in a session (%s)', (execution) => {
-  it('Session.cells gives the look, an empty cell with one too; result() gives none', () => {
-    const s = openSession(book([GT2, { type: 'expression', ranges: ['B1:B2'], formula: '$A1=1', style: { font: { italic: true } } }]), { clock: CLOCK, execution })
-    const w = s.cells('S', 'A1:B5')
+  it('Session.getCells gives the look, an empty cell with one too; result() gives none', () => {
+    const s = createSession(book([GT2, { type: 'expression', ranges: ['B1:B2'], formula: '$A1=1', style: { font: { italic: true } } }]), { clock: CLOCK, execution })
+    const w = s.getCells('S', 'A1:B5')
     expect(w.A1).toEqual({ value: 1, text: '1' })
-    expect(w.A3).toEqual({ value: 3, text: '3', look: { style: RED } })
-    expect(w.B1).toEqual({ value: null, text: '', look: { style: { font: { italic: true } } } })
+    expect(w.A3).toEqual({ value: 3, text: '3', appearance: { style: RED } })
+    expect(w.B1).toEqual({ value: null, text: '', appearance: { style: { font: { italic: true } } } })
     expect(w.B2).toBeUndefined()
-    expect(s.result().sheets[0].cells.A3).toEqual({ value: 3, text: '3' })
+    expect(s.getResult().sheets[0].cells.A3).toEqual({ value: 3, text: '3' })
   })
 
   it('setLayout replaces the rules; the book keeps them; an empty list removes them', () => {
-    const s = openSession(book([GT2]), { clock: CLOCK, execution })
+    const s = createSession(book([GT2]), { clock: CLOCK, execution })
     expect(s.setLayout([{ sheet: 'S', conditionalFormats: [{ ...GT2, formulas: ['4'] }] }]).changes).toEqual([])
-    expect(s.cells('S', 'A3').A3.look).toBeUndefined()
-    expect(s.cells('S', 'A5').A5.look).toEqual({ style: RED })
-    expect(s.book().sheets[0].conditionalFormats).toEqual([{ ...GT2, formulas: ['4'] }])
+    expect(s.getCells('S', 'A3').A3.appearance).toBeUndefined()
+    expect(s.getCells('S', 'A5').A5.appearance).toEqual({ style: RED })
+    expect(s.getBook().sheets[0].conditionalFormats).toEqual([{ ...GT2, formulas: ['4'] }])
     s.setLayout([{ sheet: 'S', conditionalFormats: [] }])
-    expect(s.book().sheets[0].conditionalFormats).toBeUndefined()
+    expect(s.getBook().sheets[0].conditionalFormats).toBeUndefined()
     expect(() => s.setLayout([{ sheet: 'S', conditionalFormats: [{ type: 'top10', ranges: ['A1'], rank: 0 }] } as never])).toThrow(InputError)
   })
 
   it('an edit changes the looks the next read gives: statistics over the edited cells are taken again', () => {
     const scale: ConditionalFormat = { type: 'colorScale', ranges: ['A1:A5'], points: [{ value: { type: 'min' }, color: '#000000' }, { value: { type: 'max' }, color: '#FF0000' }] }
-    const s = openSession(book([scale, { type: 'expression', ranges: ['B1:B5'], formula: '$A1>3', style: RED }]), { clock: CLOCK, execution })
-    expect(s.cells('S', 'A5').A5.look).toEqual({ style: { fill: { color: '#FF0000' } } })
+    const s = createSession(book([scale, { type: 'expression', ranges: ['B1:B5'], formula: '$A1>3', style: RED }]), { clock: CLOCK, execution })
+    expect(s.getCells('S', 'A5').A5.appearance).toEqual({ style: { fill: { color: '#FF0000' } } })
     s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 9 } }])
-    const w = s.cells('S', 'A1:B5')
-    expect(w.A1.look).toEqual({ style: { fill: { color: '#FF0000' } } })
-    expect(w.A5.look).toEqual({ style: { fill: { color: '#6D0000' } } })
-    expect(w.B1.look).toEqual({ style: RED })
+    const w = s.getCells('S', 'A1:B5')
+    expect(w.A1.appearance).toEqual({ style: { fill: { color: '#FF0000' } } })
+    expect(w.A5.appearance).toEqual({ style: { fill: { color: '#6D0000' } } })
+    expect(w.B1.appearance).toEqual({ style: RED })
   })
 
   it('a rule over another sheet and a name computes there', () => {
     const b: BookInput = { ...book([{ type: 'expression', ranges: ['A1:A5'], formula: "$A1>'T'!$A$1+lim", style: RED }]), names: [{ name: 'lim', ref: '1' }] }
     b.sheets.push({ name: 'T', cells: { A1: { value: 2 } } })
-    const s = openSession(b, { clock: CLOCK, execution })
-    expect(Object.entries(s.cells('S', 'A1:A5')).filter(([, v]) => v.look).map(([a]) => a)).toEqual(['A4', 'A5'])
+    const s = createSession(b, { clock: CLOCK, execution })
+    expect(Object.entries(s.getCells('S', 'A1:A5')).filter(([, v]) => v.appearance).map(([a]) => a)).toEqual(['A4', 'A5'])
     s.setCells([{ sheet: 'T', cell: 'A1', input: { value: 0 } }])
-    expect(Object.entries(s.cells('S', 'A1:A5')).filter(([, v]) => v.look).map(([a]) => a)).toEqual(['A2', 'A3', 'A4', 'A5'])
+    expect(Object.entries(s.getCells('S', 'A1:A5')).filter(([, v]) => v.appearance).map(([a]) => a)).toEqual(['A2', 'A3', 'A4', 'A5'])
   })
 })

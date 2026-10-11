@@ -26,14 +26,14 @@ describe('outside Node', () => {
     runInContext(code, ctx)
     const out = runInContext(
       `const s = FormulaEngine.synthBook({ seed: 1, rows: 340 })
-       const session = FormulaEngine.openSession(s.book, { clock: ${JSON.stringify(clock)} })
-       const evalSession = FormulaEngine.openSession(s.book, { clock: ${JSON.stringify(clock)}, execution: 'eval' })
+       const session = FormulaEngine.createSession(s.book, { clock: ${JSON.stringify(clock)} })
+       const evalSession = FormulaEngine.createSession(s.book, { clock: ${JSON.stringify(clock)}, execution: 'eval' })
        JSON.stringify({
          hash: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)} }).hash,
          eval: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)}, execution: 'eval' }).hash,
-         session: session.result().hash,
-         evalSession: evalSession.result().hash,
-         seed: typeof FormulaEngine.openSession(s.book, { live: true }).clock.seed,
+         session: session.getResult().hash,
+         evalSession: evalSession.getResult().hash,
+         seed: typeof FormulaEngine.createSession(s.book, { live: true }).clock.seed,
        })`,
       ctx,
     ) as string
@@ -50,8 +50,8 @@ describe('outside Node', () => {
     expect(runInContext('FormulaEngine.toLocal("SUM(A1:A3,1.5)", FormulaEngine.ruRU).formula', ctx)).toBe('СУММ(A1:A3;1,5)')
     const out = runInContext(
       `const s = FormulaEngine.synthBook({ seed: 1, rows: 340 })
-       const session = FormulaEngine.openSession(s.book, { clock: ${JSON.stringify(clock)} })
-       JSON.stringify({ hash: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)} }).hash, session: session.result().hash })`,
+       const session = FormulaEngine.createSession(s.book, { clock: ${JSON.stringify(clock)} })
+       JSON.stringify({ hash: FormulaEngine.compute(s.book, { clock: ${JSON.stringify(clock)} }).hash, session: session.getResult().hash })`,
       ctx,
     ) as string
     const expected = compute(synthBook({ seed: 1, rows: 340 }).book, { clock }).hash

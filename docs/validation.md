@@ -3,9 +3,9 @@
 A sheet's rules of data validation (Excel's Data Validation) are part of a book: what a cell takes, the message shown while it is selected, the alert for a value it does not take. The engine keeps them, reads and writes them in xlsx files, moves them with structure operations as Excel moves them, gives a cell's rule and the items of its list, and checks a value against a rule as Excel checks it. Computation does not read them.
 
 ```js
-import { openSession } from 'xlcalc'
+import { createSession } from 'xlcalc'
 
-const session = openSession({
+const session = createSession({
   sheets: [
     {
       name: 'Orders',
@@ -17,7 +17,7 @@ const session = openSession({
     },
   ],
 })
-console.log(session.validation('Orders', 'A5').list.map((i) => i.text).join(' | ')) // → Open | Shipped | Closed
+console.log(session.getValidation('Orders', 'A5').list.map((i) => i.text).join(' | ')) // → Open | Shipped | Closed
 console.log(session.validateEntry('Orders', 'B5', { value: 120 }).ok, session.validateEntry('Orders', 'A5', { value: 'Done' }).ok) // → false false
 ```
 
@@ -44,7 +44,7 @@ A literal list is a text constant of items separated by commas, `'"Open,Shipped,
 
 ## In a session
 
-`session.validation(sheet, cell)` gives the rule over a cell, or null: the rule, its formulas as at the cell, and for a list the items its dropdown offers, computed in the book as it is now. A literal list's items are its texts; a list of cells gives each cell's value and the text it shows by its number format (`1.50`, `01.01.2025`), without the blank cells past the last value. A list whose formula gives no reference has its error (`{ error: 'REF' }` for a name lost with its sheet).
+`session.getValidation(sheet, cell)` gives the rule over a cell, or null: the rule, its formulas as at the cell, and for a list the items its dropdown offers, computed in the book as it is now. A literal list's items are its texts; a list of cells gives each cell's value and the text it shows by its number format (`1.50`, `01.01.2025`), without the blank cells past the last value. A list whose formula gives no reference has its error (`{ error: 'REF' }` for a name lost with its sheet).
 
 `session.validateEntry(sheet, cell, input)` tells whether the cell holding `input` (a `CellInput`, or null for a cleared cell) meets its rule, as Excel's `Validation.Value` checks a cell: `{ ok: true }`, or `{ ok: false, code: 'validation', message, rule, severity }`, the message the rule's `error` or the library's text in the book's locale and the severity its `errorStyle` (stop by default). The input goes into the book for the check, so a custom formula that counts the column sees it, and comes out again: nothing changes. Text a user types is `parseEntry`'s input first, or goes through `setCellText`, which writes the value and gives the rule it breaks as `validation` ([Editing a grid](edits.md#typing-text)). A grid takes it from there as Excel does:
 
@@ -52,7 +52,7 @@ A literal list is a text constant of items separated by commas, `'"Open,Shipped,
 - with `showError: false` Excel shows no alert and keeps any value;
 - a value pasted, or put in by a formula's change, is not checked by Excel; Circle Invalid Data checks it later, which is `validateEntry` with the cell's own input.
 
-`setLayout([{ sheet, validations: [...] }])` replaces a sheet's rules and recomputes nothing. Rules go with a session's book: `book()` has them, and `restructure` moves them.
+`setLayout([{ sheet, validations: [...] }])` replaces a sheet's rules and recomputes nothing. Rules go with a session's book: `getBook()` has them, and `editStructure` moves them.
 
 ## How a value is checked
 

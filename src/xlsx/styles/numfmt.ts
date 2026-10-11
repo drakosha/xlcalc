@@ -4,7 +4,7 @@
  * does not have: the reader gives the code Excel for Mac en-US shows for them (measured: `test/excel/xlsx/formats.json`).
  * The writer stores a code equal to a built-in format that every locale shows alike by that format's number, as Excel
  * does, and the codes of the formats a locale shows otherwise as codes of their own (ids from 164), so the file shows
- * what `format` says in every locale.
+ * what `numberFormat` says in every locale.
  */
 import { EN_BUILTIN, isBuiltin } from '../../numfmt/builtin.js'
 

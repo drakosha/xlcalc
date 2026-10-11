@@ -163,8 +163,8 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
       styles: '<cellXfs count="2"><xf numFmtId="0"/><xf numFmtId="10"/></cellXfs>',
     })
     const s = r.book.sheets[0]
-    expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, format: 10 }, D: { format: 10 }, E: { width: 9, hidden: true }, F: { outlineLevel: 1 }, G: { hidden: true }, H: { width: 0, hidden: true } })
-    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { hidden: true }, 6: { format: 10, outlineLevel: 1 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true } })
+    expect(s.columns).toEqual({ A: { width: 20 }, 'B:C': { width: 12.5, numberFormat: 10 }, D: { numberFormat: 10 }, E: { width: 9, hidden: true }, F: { outlineLevel: 1 }, G: { hidden: true }, H: { width: 0, hidden: true } })
+    expect(s.rows).toEqual({ '2:3': { height: 30 }, 5: { hidden: true }, 6: { numberFormat: 10, outlineLevel: 1 }, 7: { height: 25, hidden: true }, 8: { height: 0, hidden: true } })
     expect(s.merges).toEqual(['A1:B2'])
     expect(codes(r.issues)).toEqual(['part B2:C3'])
   })

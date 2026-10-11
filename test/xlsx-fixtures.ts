@@ -1,5 +1,5 @@
 /**
- * Hand-made xlsx packages for the reader's tests: parts as text, zipped by the package's own writer. `book()` makes
+ * Hand-made xlsx packages for the reader's tests: parts as text, zipped by the package's own writer. `getBook()` makes
  * a minimal workbook around sheet bodies; any part can be replaced or left out to test what a file may lack.
  */
 import type { CellValue, ComputeResult } from '../src/contract.js'

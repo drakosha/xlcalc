@@ -84,7 +84,7 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): Exclude<LayoutEdi
  * (`compute(book)`), by column letter: null for the default width; a column with nothing to show is left out.
  */
 export function fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null> {
-  checkBook(book)
+  book = checkBook(book)
   const index = (name: string) => {
     const i = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(name))
     return i < 0 ? undefined : i
@@ -102,7 +102,7 @@ export function fitColumns(book: BookInput, result: ComputeResult, sheet: string
 }
 
 /**
- * The width Excel gives a column as `value`, shown by `opts.format`, is typed into one of its cells (`test/excel/fit/`):
+ * The width Excel gives a column as `value`, shown by `opts.numberFormat`, is typed into one of its cells (`test/excel/fit/`):
  * a number AutoFit would give more room widens a column whose width is the default or one Excel fitted (`bestFit`), as
  * AutoFit fits it, though the default width (Excel keeps a fitted width that equals it); undefined when the column keeps
  * its width (text overflows, General drops decimals, a width set by hand stays, a column never narrows).
@@ -111,6 +111,6 @@ export function entryWidth(value: CellValue, opts?: EntryWidthOptions): number |
   const o = checkEntryWidthOptions(opts)
   checkCellValue(value, 'value')
   if (o.width !== undefined && !o.bestFit) return undefined
-  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.format, columnPoints(o.width))
+  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width))
   return points === null ? undefined : Math.min(MAX_WIDTH, widthOf(points))
 }

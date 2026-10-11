@@ -29,7 +29,7 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
     if (!t) return
     if (e.input?.formula !== undefined) throw new InputError(`edits[${i}].input.formula`, `${e.sheet}!${e.cell} is a header cell of the table ${t.name}: it holds its column's name, not a formula`)
     const v = inputScalar(e.input?.value)
-    const name = v === null || v === '' ? null : typeof v === 'string' ? v : text(v, e.input?.format)
+    const name = v === null || v === '' ? null : typeof v === 'string' ? v : text(v, e.input?.numberFormat)
     if (!typed.has(t.name)) typed.set(t.name, new Map())
     typed.get(t.name)!.set(col - t.c1, name)
   })

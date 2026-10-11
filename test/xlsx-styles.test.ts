@@ -66,7 +66,7 @@ describe('xlsx styles: reading', () => {
       { font: { underline: 'double', strike: true, size: 12 } },
       { border: { left: { style: 'thin', color: '#00B050' }, right: { style: 'medium' }, bottom: { style: 'double' } }, alignment: { horizontal: 'center', vertical: 'top', wrap: true, indent: 2 } },
     ])
-    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, format: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, format: 3 }, C1: { value: 1, style: 0, format: 49 }, D1: { value: 1, style: 1, format: 14 } })
+    expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, numberFormat: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, numberFormat: 3 }, C1: { value: 1, style: 0, numberFormat: 49 }, D1: { value: 1, style: 1, numberFormat: 14 } })
     expect(codes(r.issues)).toEqual(['defaultFont'])
   })
 
@@ -80,7 +80,7 @@ describe('xlsx styles: reading', () => {
         '<cellXfs count="5"><xf/><xf fontId="1" fillId="2"><alignment textRotation="45" shrinkToFit="1"/><protection locked="0"/></xf><xf fillId="3" borderId="1"/><xf numFmtId="55"/><xf numFmtId="81"/></cellXfs>',
     })
     expect(r.book.styles).toBeUndefined()
-    expect(r.book.sheets[0].cells.D1).toEqual({ value: 1, format: 'm/d/yy' })
+    expect(r.book.sheets[0].cells.D1).toEqual({ value: 1, numberFormat: 'm/d/yy' })
     expect(r.book.sheets[0].cells.E1).toEqual({ value: 1 })
     expect(codes(r.issues)).toEqual([
       'style A1 C1',
@@ -111,10 +111,10 @@ describe('xlsx styles: writing and reading back', () => {
       {
         name: 'S',
         cells: {
-          A1: { value: 1, style: 0, format: '0.00' }, A2: { value: 2, style: 1 }, A3: { value: 3, format: 'dd.mm.yyyy' }, A4: { value: 4, format: 'm/d/yyyy' }, A5: { value: 5, format: '0%' }, A6: { style: 2 },
-          A7: { value: 7, format: 14 }, A8: { value: -8, format: 38 }, A9: { value: -9, format: '#,##0_);(#,##0)' }, A10: { value: 10, format: 'm/d/yy' },
+          A1: { value: 1, style: 0, numberFormat: '0.00' }, A2: { value: 2, style: 1 }, A3: { value: 3, numberFormat: 'dd.mm.yyyy' }, A4: { value: 4, numberFormat: 'm/d/yyyy' }, A5: { value: 5, numberFormat: '0%' }, A6: { style: 2 },
+          A7: { value: 7, numberFormat: 14 }, A8: { value: -8, numberFormat: 38 }, A9: { value: -9, numberFormat: '#,##0_);(#,##0)' }, A10: { value: 10, numberFormat: 'm/d/yy' },
         },
-        columns: { B: { width: 15.5, style: 1 }, 'C:E': { format: '0.0' } },
+        columns: { B: { width: 15.5, style: 1 }, 'C:E': { numberFormat: '0.0' } },
         rows: { 2: { height: 25 }, '7:8': { style: 0 } },
       },
     ],
@@ -129,7 +129,7 @@ describe('xlsx styles: writing and reading back', () => {
     const { data, issues } = await writeXlsx(book)
     expect(issues).toEqual([])
     const r = await readXlsx(data)
-    const cells = { ...book.sheets[0].cells, A1: { ...book.sheets[0].cells.A1, format: 2 }, A5: { value: 5, format: 9 } }
+    const cells = { ...book.sheets[0].cells, A1: { ...book.sheets[0].cells.A1, numberFormat: 2 }, A5: { value: 5, numberFormat: 9 } }
     expect(r.book).toEqual({ ...book, sheets: [{ ...book.sheets[0], cells }] })
     expect(r.issues).toEqual([])
   })

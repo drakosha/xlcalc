@@ -15,7 +15,7 @@ describe('builtinFormatCode', () => {
     expect(builtinFormatCode(9, 'ru-RU')).toBe('0%')
   })
 
-  it('undefined for a number that is no built-in format: a built-in format is one it has a code for', () => {
+  it('undefined for a number that is no built-in numberFormat: a built-in format is one it has a code for', () => {
     for (const id of [-1, 50, 164, 1.5, Number.NaN, Infinity]) expect(builtinFormatCode(id), String(id)).toBeUndefined()
     expect(Array.from({ length: 60 }, (_, id) => builtinFormatCode(id) !== undefined).lastIndexOf(true)).toBe(49)
   })
@@ -25,7 +25,7 @@ describe('builtinFormatCode', () => {
     for (const locale of LOCALES.keys())
       for (let id = 0; id < 50; id++)
         for (const v of VALUES) {
-          const [byId, byCode] = [displayValue(v, { format: id, locale }), displayValue(v, { format: builtinFormatCode(id, locale), locale })]
+          const [byId, byCode] = [displayValue(v, { numberFormat: id, locale }), displayValue(v, { numberFormat: builtinFormatCode(id, locale), locale })]
           if (JSON.stringify(byId) !== JSON.stringify(byCode)) off.push(`${locale} ${id} ${v}: ${JSON.stringify(byId)} by the number, ${JSON.stringify(byCode)} by the code`)
         }
     expect(off).toEqual([])
