@@ -103,3 +103,11 @@ export function buildProbes(): Probe[] {
 
 /** The predicted answers by case id. */
 export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(buildProbes().map((p, i) => [p.id, CASES[i][2]]))
+
+/**
+ * The predictions Excel did not confirm, the Mac and Windows alike: Excel's intercept and regression sum of squares on
+ * the large-mean data follow the mean it sums plainly (1E12 − 0.0096, 1.598), and so its TREND there (known
+ * differences, `linestMean`); its TREND is b + m·x, not taken about the means, which the engine now follows (TREND#3,
+ * TREND#4); its GROWTH far from 0 in x is #NUM! (`growthRange`). Its coefficients are the engine's in every case.
+ */
+export const MISSED: readonly string[] = ['LINEST#1', 'LINEST#4', 'LINEST#11', 'TREND#1', 'TREND#2', 'TREND#3', 'TREND#4', 'GROWTH#2', 'GROWTH#3']

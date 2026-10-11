@@ -59,10 +59,6 @@ interface Fit {
   /** Coefficients of the variables (0 for one left out), then the intercept. */
   m: number[]
   b: number
-  /** The means of the variables and of y the fit was taken about (0 without a constant), and its intercept there. */
-  mx: number[]
-  my: number
-  b0: number
   /** (XᵀX)⁻¹ diagonal for the variables (0 for one left out; the intercept last, with a constant). */
   diag: number[]
   ssresid: number
@@ -135,7 +131,7 @@ function solve(d: Data, constant: boolean): Fit {
   const b = constant ? my + b0 - keep.reduce((s, j) => s + m[j] * mx[j], 0) : 0
   const sstot = constant ? devsq(d.y) : sumSquares(d.y)
   // Excel counts at least one fitted parameter: no constant and every variable left out keeps n − 1
-  return { m, b, mx, my, b0, diag: [...diag, ...intercept], ssresid, sstot, df: n - Math.max(1, lead + keep.length), used: keep.length }
+  return { m, b, diag: [...diag, ...intercept], ssresid, sstot, df: n - Math.max(1, lead + keep.length), used: keep.length }
 }
 
 /** Least squares by Householder QR on the design matrix (a column of ones first when `constant`) of independent columns: the coefficients, R⁻¹ and the residual sum of squares. */
@@ -240,9 +236,9 @@ function trend(log: boolean) {
         ;[rows, cols] = vertical ? [n, 1] : [1, n]
       }
     }
-    // about the means the fit was taken about, as the intercept far from the data loses digits
+    // b + m·x as Excel evaluates it (fit-offset-held), not about the means
     const out = points.map((p) => {
-      const z = f.my + f.b0 + p.reduce((s, x, j) => s + (x - f.mx[j]) * f.m[j], 0)
+      const z = f.b + p.reduce((s, x, j) => s + x * f.m[j], 0)
       return log ? Math.exp(z) : z
     })
     return new Arr(rows, cols, rows, cols, out)
