@@ -44,6 +44,8 @@ Formulas come in the engine's spelling.
 | `Jan:Mar!A1`, `'Jan 1:Mar 2'!A1` | the same reference across sheets |
 | `_xludf.MYFN(1)` | `MYFN(1)`, reported |
 
+A prefix is one only at a word's start: a name or a table's name goes on through `?` as through letters, so `a?_xlfn.b` is the name `a?_xlfn.b` and `T?[Qty]` the table `T?`, as Excel loads them.
+
 A shared formula is written once in a file and taken by a block of cells. Each of these cells gets its own formula, made as a copy and paste would make it: `A1*2` in B1 becomes `A2*2` in B2. A master cell below or right of its copies works too, and a reference pushed past the sheet's edge becomes `#REF!`.
 
 An array formula spills from its top-left cell. The other cells of its range hold only stored values in the file, so they go to `cached`, and they keep their own style in the book. Excel 365 marks its dynamic array formulas with cell metadata. An array formula without that mark is of the old kind, entered with Ctrl+Shift+Enter. Its cell gets the formula and `array`, the range it covers, and the formula is computed over that range as Excel computes it ([docs/legacy.md](legacy.md)).

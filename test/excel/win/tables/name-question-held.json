@@ -1,0 +1,173 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 15.6
+ },
+ "cases": [
+  {
+   "id": "names",
+   "about": "names with ? before a prefix of a newer function, a LET name and a user function, in formulas",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "C1": {
+        "formula": "a?_xlfn.b+1"
+       },
+       "C2": {
+        "formula": "x?_xlpm.y*2"
+       },
+       "C3": {
+        "formula": "u?_xludf.v+a?_xlfn.b"
+       }
+      }
+     }
+    ],
+    "names": [
+     {
+      "name": "a?_xlfn.b",
+      "ref": "5"
+     },
+     {
+      "name": "x?_xlpm.y",
+      "ref": "7"
+     },
+     {
+      "name": "u?_xludf.v",
+      "ref": "11"
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "C1:C3"
+    }
+   ]
+  },
+  {
+   "id": "table",
+   "about": "a table named T? and structured references to it",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": "x"
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 3
+       },
+       "C1": {
+        "formula": "SUM(T?[x])"
+       },
+       "C2": {
+        "formula": "ROWS(T?[#Data])"
+       },
+       "C3": {
+        "formula": "SUM(T?[[#Data],[x]])*10"
+       }
+      },
+      "tables": [
+       {
+        "name": "T?",
+        "range": "A1:A3",
+        "columns": [
+         {
+          "name": "x"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "A1:C3"
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "names": {
+   "values": {
+    "S!C1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 14
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 16
+    }
+   },
+   "formulas": {
+    "S!C1": "=a?_xlfn.b+1",
+    "S!C2": "=x?_xlpm.y*2",
+    "S!C3": "=u?_xludf.v+a?_xlfn.b"
+   },
+   "tables": []
+  },
+  "table": {
+   "values": {
+    "S!A1": {
+     "t": "s",
+     "v": "x"
+    },
+    "S!C1": {
+     "t": "n",
+     "v": 5
+    },
+    "S!A2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!C2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!A3": {
+     "t": "n",
+     "v": 3
+    },
+    "S!C3": {
+     "t": "n",
+     "v": 50
+    }
+   },
+   "formulas": {
+    "S!C1": "=SUM(T?[x])",
+    "S!C2": "=ROWS(T?[#Data])",
+    "S!C3": "=SUM(T?[[#Data],[x]])*10"
+   },
+   "tables": [
+    {
+     "sheet": "S",
+     "name": "T?",
+     "range": "A1:A3",
+     "headers": true,
+     "totals": false,
+     "columns": [
+      "x"
+     ]
+    }
+   ]
+  }
+ }
+}

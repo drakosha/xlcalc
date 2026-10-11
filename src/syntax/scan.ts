@@ -57,9 +57,8 @@ export const IDENT_RULE = `${IDENT_FIRST}${IDENT_NEXT}*`
 export const IDENT_CHAR = /[\p{L}\p{N}_.(\\?]/u
 
 /**
- * A character of a word just before `[` or `_` in a file's formula: before `[` it makes the run a table's (`Sales[Qty]`),
- * before `_` the word goes on and holds no prefix of a newer function (`ab_xlfn.c`). It is older than `?` in names and
- * was left without it: `a?_xlfn.b` loses `_xlfn.` and `T?[x]` is a link to another book, where the tokenizer reads a
- * name and a table.
+ * A character of a word just before `[` or `_` in a file's formula, an identifier's (`?` too, as Excel loads a name
+ * `a?_xlfn.b` and a table `T?`: the set `tables/name-question-held`): before `[` it makes the run a table's (`T?[Qty]`),
+ * before `_` the word goes on and holds no prefix of a newer function (`a?_xlfn.b`).
  */
-export const FILE_WORD_CHAR = /[\p{L}\p{N}_.\\]/u
+export const FILE_WORD_CHAR = new RegExp(IDENT_NEXT, 'u')
