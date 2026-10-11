@@ -244,7 +244,9 @@ The values a copy pastes come from the computed book. `session.restructure` take
 
 `session.restructure(op)` applies the operation to the session's book and recomputes. The result is that of `restructure`, with `book` being the session's book after the operation, plus what every edit of a session answers ([Editing a grid](edits.md#what-an-edit-answers)): `moved`, how the addresses moved, and `changes`, every cell whose value or formula text differs from those of its old cell. An interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` has the new values and formulas. An insert into a block of data lists the formulas over it, which read one row more, and no value. A refused operation changes nothing.
 
-The session rebuilds its state from the new book. On the synthetic book (3,400 rows, 3,907 formulas) inserting a row in the middle of the data takes 190 ms, about as long as a cold computation of the same book, well within the 1.5 s budget.
+The session rebuilds its state from the new book. On the synthetic book (3,400 rows, 3,907 formulas) inserting a row in the middle of the data takes 170 ms, about as long as a cold computation of the same book, well within the 1.5 s budget. On the book of 34,000 rows (506,594 cells on the data sheet) inserting or deleting a row takes 1.3 to 1.5 s, its undo and its redo 1.4 to 1.5 s, a row copied down 2,000 rows 1.2 s and a block of 100 by 20 cells moved 1.1 s; building the state is half of it, the operation itself 0.25 s.
+
+`mapCell`, `moved`, the way an undo and a redo take the operation back and again and the comparison of each cell with its old cell all follow one description of where the operation took the cells: lines inserted or deleted, a range moved, cells pasted over, a sheet renamed, inserted, deleted or moved. Rows deleted on a filtered sheet are one `lines` move for each run of visible rows, from the bottom up, and their undo puts each run back; an undo's `mapCell` is the operation's taken back, a redo's the operation's own.
 
 `book()` returns the session's book with all changes so far, which is what a host saves as a version. Its objects belong to the session and change with later edits, so serialize it right away.
 
@@ -263,6 +265,8 @@ Styles and layout change through the session so that its book stays the host's b
 Only two of these recompute values. A merged area added or removed over an array's spill range recomputes that array. Rows hidden or shown, and a new filter mode, recompute the `SUBTOTAL` and `AGGREGATE` formulas over the rows concerned and what depends on them.
 
 ## How it was checked
+
+`test/structure-geometry.test.ts` checks that every kind of operation puts the cells where its `mapCell` says: each cell it keeps is at the address `mapCell` gives and nowhere else, a cell it takes away is in no other place, and the way back takes each cell to the place it came from; `test/session-geometry.test.ts` checks `moved` and `mapCell` of a filtered delete and a deleted table done, undone and redone in every kind of session. The seeded undo sessions (`test/session-undo-fuzz.test.ts`) keep a host's screen, moved by `mapCell` and given the changes, equal to the session's values.
 
 `test/copy-formula.test.ts` checks `copyFormula` against `copyRange` on every copy of the structure sets and the table sets: each formula of the source at each place the copy pastes it, 317 and 8 of them.
 

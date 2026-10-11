@@ -93,7 +93,7 @@ Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `pat
 - `changes`: the cells whose value or shown text changed, and those whose formula, own style or own number format changed, with `formula`, `style` and `numberFormat` then (null when the cell has none now). After a structure operation, the cells whose value or formula text differ from those of the cell that was at their old place: after a row is inserted, `SUM(A1:A4)` that became `SUM(A1:A5)` is listed with its new text.
 - `layout`: the sheets whose layout changed (lines, merged areas, tables, rules): a host reads `layout()` again.
 - `styles`: the book's style table, when the call changed it.
-- `moved`: after a structure operation and its undo, how the addresses moved, in order: `{ kind: 'lines', sheet, axis, at, count }` (the lines from `at` on move by `count`, up or left when it is negative), `{ kind: 'range', from, to }`, and a sheet renamed, deleted, inserted or moved. A host moves its window by them rather than each cell by `mapCell`.
+- `moved`: after a structure operation and its undo, how the addresses moved, in order: `{ kind: 'lines', sheet, axis, at, count }` (the lines from `at` on move by `count`, up or left when it is negative), `{ kind: 'range', from, to }`, and a sheet renamed, deleted, inserted or moved. Rows deleted on a filtered sheet are one `lines` move for each run of visible rows, from the bottom up. A host moves its window by them rather than each cell by `mapCell`.
 - `repaint`: the rectangles of the book's conditional formats after a call that changed a value or a rule. A rule's look reads values anywhere its formulas point, so a host reads its window again where it meets them.
 
 ## Revisions
