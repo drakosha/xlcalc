@@ -3,10 +3,11 @@
  * points at a rich value. Excel 365 stores #SPILL! and #CALC! that way: the cell holds `#VALUE!` for older readers
  * and a rich value of the `_error` structure gives the error's type.
  */
+import { ERROR_TEXT, TYPED_ERRORS } from '../../syntax/errors.js'
 import { attributes, element, elements, flag } from '../xml/scan.js'
 
-/** The errors of rich values by their `errorType`. */
-export const RICH_ERRORS = ['#NULL!', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#N/A', '#GETTING_DATA', '#SPILL!', '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', '#CALC!']
+/** The errors of rich values by their `errorType`, in ERROR.TYPE's order: the typed ones first. */
+export const RICH_ERRORS = [...TYPED_ERRORS, '#GETTING_DATA', ERROR_TEXT.SPILL, '#CONNECT!', '#BLOCKED!', '#UNKNOWN!', '#FIELD!', ERROR_TEXT.CALC]
 
 export interface CellMetadata {
   /** Whether a cell metadata index (`cm`, 1-based) marks a dynamic array formula. */
