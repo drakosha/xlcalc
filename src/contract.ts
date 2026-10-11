@@ -1281,8 +1281,9 @@ export interface UndoResult extends EditResult {
   /** The calls that change cells: the cells whose input changed back, so a host can read their note and link again. */
   cells?: CellRef[]
   /**
-   * `editStructure`: where a cell of the book before this call is now, null when no cell of the book has it; an interface
-   * that moves its shown values by it and applies `changes` has the new values, as after `editStructure`.
+   * `editStructure`: where a cell of the book before this call is now, null when no cell of the book has it or its sheet
+   * is none of that book's; an interface that moves its shown values by it and applies `changes` has the new values, as
+   * after `editStructure`.
    */
   mapCell?(ref: CellRef): CellRef | null
 }
@@ -1382,7 +1383,7 @@ export type StructureResult =
       ok: true
       /** The new book; the input book is not changed, unchanged sheets and cells are shared. */
       book: BookInput
-      /** Where a cell of the old book is now; null if it was deleted or overwritten. */
+      /** Where a cell of the old book is now; null if it was deleted or overwritten, or its sheet is none of the old book's. */
       mapCell(ref: CellRef): CellRef | null
     }
   /** A refusal: its code, and a message in the language of the book's locale (English for en-US). */
@@ -1401,7 +1402,7 @@ export type RestructureResult = StructureResult
 export type SessionStructureResult =
   | (EditResult & {
       ok: true
-      /** Where a cell of the book before the operation is now; null if it was deleted or overwritten. */
+      /** Where a cell of the book before the operation is now; null if it was deleted or overwritten, or its sheet is none of that book's. */
       mapCell(ref: CellRef): CellRef | null
     })
   | Refusal<StructureRefusal>
