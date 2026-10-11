@@ -13,14 +13,24 @@ import { formulaBar, type EntryAnswer } from '../bench/coverage/entry/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
 import { entryText, parseEntry, sameValue, type CellInput } from '../src/index.js'
 
+/** Excel for Mac's own regional data: its ru-RU long time has a leading zero, where Windows's has none and the engine follows it. */
+const MAC_TIME = "Excel for Mac writes a ru-RU time in the formula bar with a leading zero (01:30:00, 00:00:00); entryText writes the locale's long time without it, as Excel for Windows's regional data have it and the engine follows"
+
 /** Why a case's text differs from Excel's formula bar, by `<tag>:<set>:<id>`. */
-const KNOWN: Readonly<Record<string, string>> = {}
+const KNOWN: Readonly<Record<string, string>> = Object.fromEntries(['time-4', 'time-5', 'time-6', 'time-cell-3'].map((id) => [`ru-RU:edit-held:${id}`, MAC_TIME]))
 
 /** The reason of a text typed with an apostrophe it did not need: Excel keeps it as the cell's prefix, a book holds no such mark. */
 const KEPT = "Excel's formula bar keeps the apostrophe a person typed before text that needed none; a book holds no such mark, and entryText puts one only before text that would read as something else"
 
-/** Cases whose predicted formula bar Excel for Mac did not show, by `<tag>:<set>:<id>`. */
-const MISSED: readonly string[] = []
+/**
+ * Cases whose predicted formula bar Excel for Mac did not show, by `<tag>:<set>:<id>`: numbers of 21 characters written
+ * whole and two spaces between a date and its time (the rules were fixed after the run, `edit-numbers-held` then came out
+ * as predicted), the apostrophe Excel keeps, and ru-RU's times with a leading zero (known).
+ */
+const MISSED: readonly string[] = [
+  ...['num-9', 'num-10', 'date-2', 'date-3', 'time-4', 'text-3', 'text-6', 'text-7', 'text-11', 'date-cell-2', 'time-cell-3', 'elapsed-cell-1', 'month-cell-1'].map((id) => `en-US:edit-held:${id}`),
+  ...['num-9', 'num-10', 'date-ru-2', 'time-4', 'time-5', 'time-6', 'text-5', 'text-7', 'text-10', 'date-cell-3', 'time-cell-3'].map((id) => `ru-RU:edit-held:${id}`),
+]
 
 interface Run {
   excel: 'Mac' | 'Windows'
