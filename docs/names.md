@@ -113,6 +113,7 @@ The rules of a name were measured in Excel 16.113 for Mac and Excel 16.0.20430 f
 | `names-tables-held` | 4 | 3 | a table renamed `?Продажи` (known) |
 | `names-ru-tables-held` (ru-RU) | 3 | 0 | tables renamed `ИСТИНА`, `ложь`, `TRUE`, where the two Excels part (known) |
 | `name-case-held`, `name-case-sheets-held` | 11 and 10 | 8 and 6 (Windows: 6 and 8; the rule the first set gave predicted the second) | the dotless `ı` is no `I`, the long `ſ` no `S` in Excel for Windows, which the engine follows (fixed; Excel for Mac takes `ſ` for `S`, known); `ß` is `SS` and `ﬁ` is `FI` in names and tables, as predicted; sheets compare letter by letter in both Excels, `ß` beside `SS` (known) |
+| `name-case-ru-held` (ru-RU) | 10 | 8 (Windows: 10) | the long `ſ` taken for `S` by Excel for Mac (known); the rest as in en-US |
 | `paste-names-held` (`add-cell-shapes`) | 1 | 0 | `XFE1` and `A0` taken and read by a formula (fixed); `R1`, `C5`, `XFD1`, `r1` and `R1C1` refused, as predicted |
 
 In all, 34 of the 54 cases came out as predicted on the Mac and 35 on Windows, which agreed with the Mac on every case but the 255-letter name and the tables of `names-ru-tables-held`. The two Excels agree on `add-cell-shapes`.
