@@ -1,0 +1,442 @@
+{
+ "meta": {
+  "version": "16.113.4",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 2.505,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "LINEST#1",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001),1,2)-1E12"
+  },
+  {
+   "id": "LINEST#2",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Fit!A2:B10001),1,1)"
+  },
+  {
+   "id": "LINEST#3",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Fit!A2:B10001),1,2)"
+  },
+  {
+   "id": "LINEST#4",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Fit!A2:B10001),1,3)-1E12"
+  },
+  {
+   "id": "LINEST#5",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001,FALSE),1,1)"
+  },
+  {
+   "id": "LINEST#6",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Fit!A2:B10001,FALSE),1,1)"
+  },
+  {
+   "id": "LINEST#7",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Fit!A2:B10001,FALSE),1,2)"
+  },
+  {
+   "id": "LINEST#8",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001,TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LINEST#9",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001,TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#10",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001,TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "LINEST#11",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001,TRUE,TRUE),5,1)"
+  },
+  {
+   "id": "LINEST#12",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Edge!A2:A10001,Edge!B2:B10001,TRUE,TRUE),5,2)"
+  },
+  {
+   "id": "TREND#1",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(Edge!A2:A10001,Edge!B2:B10001,3)-1E12"
+  },
+  {
+   "id": "TREND#2",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(Edge!A2:A10001,Fit!A2:B10001,{3,5})-1E12"
+  },
+  {
+   "id": "LOGEST#1",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(Edge!A2:A10001,Edge!B2:B10001),1,1)"
+  },
+  {
+   "id": "LOGEST#2",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(Edge!A2:A10001,Edge!B2:B10001),1,2)"
+  },
+  {
+   "id": "GROWTH#1",
+   "group": "GROWTH",
+   "fn": "GROWTH",
+   "formula": "GROWTH(Edge!A2:A10001,Edge!B2:B10001,3)"
+  },
+  {
+   "id": "LINEST#13",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13),1,1)"
+  },
+  {
+   "id": "LINEST#14",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13),1,2)"
+  },
+  {
+   "id": "LINEST#15",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13,TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LINEST#16",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13,TRUE,TRUE),2,2)"
+  },
+  {
+   "id": "LINEST#17",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13,TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#18",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13,TRUE,TRUE),5,2)"
+  },
+  {
+   "id": "LINEST#19",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!E2:E13,Fit!D2:D13,FALSE),1,1)"
+  },
+  {
+   "id": "TREND#3",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(Fit!E2:E13,Fit!D2:D13,1E10+12)"
+  },
+  {
+   "id": "TREND#4",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "INDEX(TREND(Fit!E2:E13,Fit!D2:D13),1)"
+  },
+  {
+   "id": "LOGEST#3",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(Fit!F2:F13,Fit!D2:D13),1,1)"
+  },
+  {
+   "id": "LOGEST#4",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(Fit!F2:F13,Fit!D2:D13,TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LOGEST#5",
+   "group": "LOGEST",
+   "fn": "LOGEST",
+   "formula": "INDEX(LOGEST(Fit!F2:F13,Fit!D2:D13,TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "GROWTH#2",
+   "group": "GROWTH",
+   "fn": "GROWTH",
+   "formula": "GROWTH(Fit!F2:F13,Fit!D2:D13,1E10+12)"
+  },
+  {
+   "id": "GROWTH#3",
+   "group": "GROWTH",
+   "fn": "GROWTH",
+   "formula": "INDEX(GROWTH(Fit!F2:F13,Fit!D2:D13),12)"
+  },
+  {
+   "id": "LINEST#20",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13),1,1)"
+  },
+  {
+   "id": "LINEST#21",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13),1,2)"
+  },
+  {
+   "id": "LINEST#22",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13),1,3)-1E9"
+  },
+  {
+   "id": "LINEST#23",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,TRUE,TRUE),2,1)"
+  },
+  {
+   "id": "LINEST#24",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,TRUE,TRUE),2,3)"
+  },
+  {
+   "id": "LINEST#25",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,TRUE,TRUE),3,1)"
+  },
+  {
+   "id": "LINEST#26",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,TRUE,TRUE),3,2)"
+  },
+  {
+   "id": "LINEST#27",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,TRUE,TRUE),4,1)"
+  },
+  {
+   "id": "LINEST#28",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,FALSE,TRUE),1,1)"
+  },
+  {
+   "id": "LINEST#29",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,FALSE,TRUE),1,2)"
+  },
+  {
+   "id": "LINEST#30",
+   "group": "LINEST",
+   "fn": "LINEST",
+   "formula": "INDEX(LINEST(Fit!J2:J13,Fit!H2:I13,FALSE,TRUE),3,1)"
+  },
+  {
+   "id": "TREND#5",
+   "group": "TREND",
+   "fn": "TREND",
+   "formula": "TREND(Fit!J2:J13,Fit!H2:I13,{1000012,1000003})"
+  }
+ ],
+ "values": {
+  "LINEST#1": {
+   "t": "n",
+   "v": -0.0096435546875
+  },
+  "LINEST#2": {
+   "t": "n",
+   "v": 1.631765137660325e-19
+  },
+  "LINEST#3": {
+   "t": "n",
+   "v": 0.010009765625000262
+  },
+  "LINEST#4": {
+   "t": "n",
+   "v": -0.0096435546875
+  },
+  "LINEST#5": {
+   "t": "n",
+   "v": 600000000000.0007
+  },
+  "LINEST#6": {
+   "t": "n",
+   "v": 157908869645.19974
+  },
+  "LINEST#7": {
+   "t": "n",
+   "v": 315801936557.549
+  },
+  "LINEST#8": {
+   "t": "n",
+   "v": 1.5395874588662521e-18
+  },
+  "LINEST#9": {
+   "t": "n",
+   "v": 1
+  },
+  "LINEST#10": {
+   "t": "n",
+   "v": 1.2570993130803247e-16
+  },
+  "LINEST#11": {
+   "t": "n",
+   "v": 1.5977911949157715
+  },
+  "LINEST#12": {
+   "t": "n",
+   "v": 1.5799826232104347e-28
+  },
+  "TREND#1": {
+   "t": "n",
+   "v": 0.0203857421875
+  },
+  "TREND#2": {
+   "t": "n",
+   "v": 0.0203857421875
+  },
+  "LOGEST#1": {
+   "t": "n",
+   "v": 1.0000000000000107
+  },
+  "LOGEST#2": {
+   "t": "n",
+   "v": 1000000000000.3224
+  },
+  "GROWTH#1": {
+   "t": "n",
+   "v": 1000000000000.3544
+  },
+  "LINEST#13": {
+   "t": "n",
+   "v": 1.9632867132867133
+  },
+  "LINEST#14": {
+   "t": "n",
+   "v": -19632867129.66521
+  },
+  "LINEST#15": {
+   "t": "n",
+   "v": 0.03906472345620739
+  },
+  "LINEST#16": {
+   "t": "n",
+   "v": 390647234.77692986
+  },
+  "LINEST#17": {
+   "t": "n",
+   "v": 0.9960564621734715
+  },
+  "LINEST#18": {
+   "t": "n",
+   "v": 2.1822552447552424
+  },
+  "LINEST#19": {
+   "t": "n",
+   "v": 1.399999999463959e-9
+  },
+  "TREND#3": {
+   "t": "n",
+   "v": 26.761363983154297
+  },
+  "TREND#4": {
+   "t": "n",
+   "v": 3.201923370361328
+  },
+  "LOGEST#3": {
+   "t": "n",
+   "v": 1.0999987487542413
+  },
+  "LOGEST#4": {
+   "t": "n",
+   "v": 8.681440058096209e-7
+  },
+  "LOGEST#5": {
+   "t": "n",
+   "v": 0.999999999170311
+  },
+  "GROWTH#2": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "GROWTH#3": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "LINEST#20": {
+   "t": "n",
+   "v": -0.24686508658796616
+  },
+  "LINEST#21": {
+   "t": "n",
+   "v": 0.49522449815383024
+  },
+  "LINEST#22": {
+   "t": "n",
+   "v": -248359.3913091421
+  },
+  "LINEST#23": {
+   "t": "n",
+   "v": 0.012959839583659998
+  },
+  "LINEST#24": {
+   "t": "n",
+   "v": 13225.260752283228
+  },
+  "LINEST#25": {
+   "t": "n",
+   "v": 0.9990158338226451
+  },
+  "LINEST#26": {
+   "t": "n",
+   "v": 0.061352792084726326
+  },
+  "LINEST#27": {
+   "t": "n",
+   "v": 4567.89854766669
+  },
+  "LINEST#28": {
+   "t": "n",
+   "v": 902.715961040426
+  },
+  "LINEST#29": {
+   "t": "n",
+   "v": 97.28177597325458
+  },
+  "LINEST#30": {
+   "t": "n",
+   "v": 0.9999999999982074
+  },
+  "TREND#5": {
+   "t": "n",
+   "v": 1000000005.2223555
+  }
+ }
+}

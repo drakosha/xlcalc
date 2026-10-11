@@ -91,8 +91,9 @@ function sortby(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
 }
 
 /**
- * SORTBY with one value in each order: by-arrays of one column (row) as long as the array's rows (columns), or one
- * value that keeps the order. The array and the by-arrays are read as the grid kind reads them (`args.ts`): a
+ * SORTBY with one value in each order: by-arrays of one column (row) as long as the array's rows (columns), the
+ * first by-array deciding which, as Excel answers (the set `sortby-one-held`); a by-array of one value fits an array
+ * of one row or one column. The array and the by-arrays are read as the grid kind reads them (`args.ts`): a
  * reference across sheets first (#REF!), then an error given as a value, then a union (#VALUE!).
  */
 function sortOnce(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
@@ -125,10 +126,11 @@ function sortKeys(cx: Cx, array: Arg, rest: (Arg | undefined)[], grid = (x: Arg)
     if (isErr(d)) return d
     desc.push(d)
   }
-  const one = (b: Arr) => b.rows === 1 && b.cols === 1
-  const byCol = by[0].rows === 1 && by[0].cols > 1
-  for (const b of by) if (!one(b) && (byCol ? b.rows !== 1 || b.cols !== a.cols : b.cols !== 1 || b.rows !== a.rows)) return E.VALUE
-  return { a, byCol, key: (line, k) => (one(by[k]) ? by[k].at(0, 0) : byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc }
+  // one value is one row and one column: it fits the rows of an array of one row, the columns of one of one column
+  const fits = (b: Arr, byCol: boolean) => (byCol ? b.rows === 1 && b.cols === a.cols : b.cols === 1 && b.rows === a.rows)
+  const byCol = !fits(by[0], false)
+  if (!by.every((b) => fits(b, byCol))) return E.VALUE
+  return { a, byCol, key: (line, k) => (byCol ? by[k].at(0, line) : by[k].at(line, 0)), desc }
 }
 
 /**

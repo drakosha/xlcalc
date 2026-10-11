@@ -190,8 +190,8 @@ export const PREDICTED: Readonly<Record<string, Val>> = Object.fromEntries(build
 /**
  * The predictions Excel did not confirm, the Mac and Windows alike, all known differences (`KNOWN`): Excel computes the
  * moments in double precision, so the spread of the large-mean data is lost, the squares of 1E-200 underflow (CORREL
- * and SLOPE #DIV/0!), sums past 1.8E+308 are #NUM!, STEYX next to a line is 0; and the engine's LINEST loses digits
- * on the large mean that Excel keeps (LINEST#1).
+ * and SLOPE #DIV/0!), sums past 1.8E+308 are #NUM!, STEYX next to a line is 0; and the engine's LINEST lost digits
+ * on the large mean that Excel keeps (LINEST#1), which it keeps now (`fit-offset-held`).
  */
 export const MISSED: readonly string[] = [
   'VAR.P#1', 'VAR.P#2', 'VAR.S#1', 'STDEV.P#1', 'STDEV.P#2', 'STDEV.S#1', 'DEVSQ#1', 'DEVSQ#2', 'CORREL#1',

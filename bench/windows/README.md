@@ -100,7 +100,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 
 | what | locale | cases | as Excel for Mac | the engine as Windows, or for a pinned reason |
 |---|---|---:|---:|---|
-| formulas: measurement, probes, 41 case sets | en-US | 34,578 | 34,545 | 34,467, the 111 others in `WIN_KNOWN` |
+| formulas: measurement, probes, 43 case sets | en-US | 34,677 | 34,644 | 34,581, the 96 others in `WIN_KNOWN` |
 | formulas: measurement, 9 case sets | ru-RU | 7,373 | 7,212 | 7,367, the 6 others in `WIN_KNOWN` |
 | the order of text, the set `collation-more` (Windows alone) | ru-RU | 62 | | 62 |
 | formulas of the old kind, 4 sets | en-US | 6,999 | 6,998 (the one other is `NOW()`) | through the Mac's answers |
@@ -120,7 +120,7 @@ Every set the Mac has answers for was computed by Excel 16.0.20430 in its locale
 | column widths, 4 sets and 3 | en-US, ru-RU | 622 and 290 | the same columns fitted, kept and shown, none widened through the object model; the width of 117 and 83, as Windows fits to its pixels | as the Mac: what becomes of each column, not its width (`test/fit-win.test.ts`) |
 | xlsx built-in formats 1 to 58 | en-US, ru-RU | 58 and 58 | 50 to 58 the short date (14), as the Mac en-US shows them by its own | 1 to 49; 50 to 58 pinned (read as `m/d/yy`) |
 
-The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets, the lines sets and the fit sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
+The entry sets (`typed`, `typed-held`, `typed-held-2`, `typed-pct-held`) and the set `pct-text` ran with `XLWIN_CODEPAGE=any` in both locales, the hidden sets, the lines sets and the fit sets in en-US. The sets `known-held` and `legacy/ifs-text` (45 formulas), `lookup-held`, `lookup-rules`, `lookup-own-held` and `stat-edges-held` (153) ran with `XLWIN_CODEPAGE=any`, in en-US with the system locale left in ru-RU; all their answers are the Mac's, the statistics on edge data bit for bit. So did `fit-offset-held` and `sortby-one-held` (62), their answers the Mac's bit for bit. The parts sets (`files`, `struct-held`, `frozen-held`, `threads`) and the valid sets in en-US ran the same way.
 
 What Excel for Windows does otherwise than Excel for Mac, by reason, and which of the two the engine follows:
 
@@ -130,4 +130,4 @@ What Excel for Windows does otherwise than Excel for Mac, by reason, and which o
 - A table's name in ru-RU: Excel for Windows makes `ИСТИНА_` of a table renamed `ИСТИНА`, as both Excels refuse such a defined name, and keeps a table renamed `TRUE`; Excel for Mac keeps `ИСТИНА` and makes `TRUE_`. The engine refuses both, following Windows for `ИСТИНА`.
 - Layout in pixels: where a value meets the column's edge, the cell shows what the engine shows at another width; row heights in points (3/4 of the Mac's) and widths rounded to whole pixels. The engine lays cells out as the Mac does.
 
-Both Excels agree and the engine does not in 80 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
+Both Excels agree and the engine does not in 86 formula cases, all of them known differences the Mac's tests pin already (`KNOWN`, `RU_KNOWN`); `bench/windows/differences.md` lists them.
