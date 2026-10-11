@@ -97,13 +97,13 @@ export function* viewport(state: EngineState, s: number, asked: Rect, o: Viewpor
       if (own?.array !== undefined) out.array = own.array
       if (own?.style !== undefined) out.style = style(own.style)
       if (shown.style !== undefined) out.effectiveStyle = style(shown.style)
-      if (shown.format !== undefined) {
-        out.numberFormat = typeof shown.format === 'number' ? builtin(shown.format) : shown.format
+      if (shown.numberFormat !== undefined) {
+        out.numberFormat = typeof shown.numberFormat === 'number' ? builtin(shown.numberFormat) : shown.numberFormat
         out.numberFormatSource = formatSource(own, row, col)
       }
       if (cf) {
         out.appearance = cf
-        lookShown(out, cf, look && ((format) => look(s, r, c, out.value, { ...own, format })))
+        lookShown(out, cf, look && ((format) => look(s, r, c, out.value, { ...own, numberFormat: format })))
       }
       if (own?.note !== undefined) out.note = own.note
       if (own?.link !== undefined) out.link = own.link

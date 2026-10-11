@@ -70,7 +70,7 @@ function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: 
   const spell = (addr: string, s: Look, t: Look) => {
     const cell = to.cells[addr] ?? {}
     const style = (cell.style ?? t.style) !== s.style ? { style: s.style ?? plain() } : {}
-    const format = (cell.format ?? t.format) !== s.format ? { format: s.format ?? 'General' } : {}
+    const format = (cell.numberFormat ?? t.numberFormat) !== s.numberFormat ? { numberFormat: s.numberFormat ?? 'General' } : {}
     if (Object.keys(style).length || Object.keys(format).length) to.cells[addr] = { ...cell, ...style, ...format }
   }
   const own = new Set<string>()
@@ -81,12 +81,12 @@ function keepLooks(from: SheetInput, to: SheetInput, src: Rect, dr: number, dc: 
     if (p.row < src.r1 || p.row > src.r2 || p.col < src.c1 || p.col > src.c2) continue
     own.add(addr)
     const s = lineLook(sr, sc, p.row, p.col)
-    spell(formatAddress(p.row + dr, p.col + dc), { style: cell.style ?? s.style, format: cell.format ?? s.format }, lineLook(tr, tc, p.row + dr, p.col + dc))
+    spell(formatAddress(p.row + dr, p.col + dc), { style: cell.style ?? s.style, numberFormat: cell.numberFormat ?? s.numberFormat }, lineLook(tr, tc, p.row + dr, p.col + dc))
   }
   for (const [ra, rb] of segments(sr, tr, src.r1, src.r2, dr))
     for (const [ca, cb] of segments(sc, tc, src.c1, src.c2, dc)) {
       const [s, t] = [lineLook(sr, sc, ra, ca), lineLook(tr, tc, ra + dr, ca + dc)]
-      if (s.style === t.style && s.format === t.format) continue
+      if (s.style === t.style && s.numberFormat === t.numberFormat) continue
       for (let r = ra; r <= rb; r++)
         for (let c = ca; c <= cb; c++) {
           spend(1)

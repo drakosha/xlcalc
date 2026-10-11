@@ -51,7 +51,7 @@ function numberText(n: number, format: NumberFormat | undefined, r: Rules): stri
 
 /** Whether text typed into a cell with these options would read as something else than that text (`parseEntry`). */
 function readsOtherwise(text: string, o: EntryTextOptions): boolean {
-  const r = parseEntry(text, { ...(o.locale ? { locale: o.locale } : {}), ...(o.dateSystem ? { dateSystem: o.dateSystem } : {}), ...(o.now ? { now: o.now } : {}), ...(o.numberFormat === undefined ? {} : { cell: { format: o.numberFormat } }) })
+  const r = parseEntry(text, { ...(o.locale ? { locale: o.locale } : {}), ...(o.dateSystem ? { dateSystem: o.dateSystem } : {}), ...(o.now ? { now: o.now } : {}), ...(o.numberFormat === undefined ? {} : { cell: { numberFormat: o.numberFormat } }) })
   return !(r.ok && r.input?.value === text && r.input.formula === undefined)
 }
 

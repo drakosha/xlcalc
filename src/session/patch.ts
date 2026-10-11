@@ -1,10 +1,10 @@
 /**
  * Patches of looks (`Session.patchCells`) checked: a sheet of the book and a cell or a range of it, and the fields to
  * set: a style by its number of the book's table or by its fields (`StylePatch`), the number format by `numberFormat` or
- * its old name `format`, meta, a note, a link. On whole rows and columns meta, notes and links can only be removed.
+ * its old name `format` (`checkFormatNames`), meta, a note, a link. On whole rows and columns meta, notes and links can only be removed.
  */
 import type { CellLink, CellNote, JsonValue, NumberFormat, StylePatch } from '../contract.js'
-import { array, checkAddress, checkCell, checkFormat, checkSheet, checkString, checkStyle, checkStyleIndex, InputError, object, onlyKeys } from '../input.js'
+import { array, checkAddress, checkCell, checkFormat, checkFormatNames, checkSheet, checkString, checkStyle, checkStyleIndex, InputError, object, onlyKeys } from '../input.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { parseRange, type Rect } from '../structure/area.js'
 
@@ -58,7 +58,7 @@ export function checkPatches(v: unknown, sheetIndex: (name: string) => number | 
     const rect = o.cell !== undefined ? parseRange(checkAddress(o.cell, `${p}.cell`))! : checkRange(o.range, `${p}.range`)
     const set = object(o.set, `${p}.set`, 'the fields to change, such as { style: { font: { bold: true } }, numberFormat: "0.00", note: null }')
     onlyKeys(set, `${p}.set`, FIELDS)
-    if (set.numberFormat !== undefined && set.format !== undefined) throw new InputError(`${p}.set.format`, 'the number format is numberFormat, and format its old name: give one of them')
+    checkFormatNames(set, `${p}.set`)
     const lines = linesOf(rect)
     const look: Look = {}
     const style = set.style

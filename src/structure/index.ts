@@ -4,7 +4,7 @@
  */
 import type { BookInput, CellRef, StructureResult, StructureOp } from '../contract.js'
 import { checkAddress, checkBook, checkString, InputError } from '../input.js'
-import { opWithoutEquals } from '../equals.js'
+import { opTaken } from '../taken.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { say } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
@@ -61,7 +61,7 @@ function integer(v: unknown, path: string, min: number, max: number): number {
  */
 export function editStructure(book: BookInput, op: StructureOp): StructureResult {
   book = checkBook(book)
-  op = opWithoutEquals(op)
+  op = opTaken(op)
   const r = applyOp(book, op, lazyValues(book))
   return r.ok ? { ok: true, book: r.book, mapCell: checkedMapCell(book, r.mapCell) } : r
 }

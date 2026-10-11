@@ -1,9 +1,10 @@
 /**
- * A formula's leading `=` dropped as input is taken. Excel shows a formula with one in its formula bar and in its boxes
- * of names, conditional formats and data validation, and a host passes what it shows: one `=` goes (`=SUM(A1:A2)` is
- * `SUM(A1:A2)`, the same input and the same `inputHash`), a second stays and is an error of the formula (`==1`). What
- * has no leading `=` is given back as it is, what has one as a copy: the caller's input is not changed, and input
- * without one costs no copy.
+ * Input as the engine takes it. A formula's leading `=` is dropped: Excel shows a formula with one in its formula bar
+ * and in its boxes of names, conditional formats and data validation, and a host passes what it shows: one `=` goes
+ * (`=SUM(A1:A2)` is `SUM(A1:A2)`, the same input and the same `inputHash`), a second stays and is an error of the
+ * formula (`==1`). And a field given by its old name takes its new one: a number format `format` is `numberFormat`
+ * (of cells, rows, columns and conditional formats' styles). What needs neither is given back as it is, what needs one
+ * as a copy: the caller's input is not changed, and input without one costs no copy.
  */
 import type { BookInput, CellEdit, CellFields, CellInput, CellReplace, ConditionalFormat, ConditionalValue, DataValidation, LayoutEdit, NameInput, SheetInput, StructureOp, TableInput } from './contract.js'
 
@@ -20,6 +21,16 @@ function fields<T extends object>(o: T, keys: readonly (keyof T)[]): T {
   return out
 }
 
+/**
+ * A cell, a line, a conditional style or a patch of one with its number format by its name `numberFormat`, where it
+ * has the old name `format` (checked: both given are equal); itself without `format`.
+ */
+export function numberFormatTaken<T extends object>(o: T): T {
+  if (typeof o !== 'object' || o === null || !('format' in o)) return o
+  const { format, ...rest } = o as { format?: unknown; numberFormat?: unknown }
+  return (format === undefined || rest.numberFormat !== undefined ? rest : { ...rest, numberFormat: format }) as T
+}
+
 /** The items each given by `f`; the list itself when none changed. */
 function each<T>(list: T[], f: (x: T, i: number) => T): T[] {
   let out: T[] | null = null
@@ -30,22 +41,33 @@ function each<T>(list: T[], f: (x: T, i: number) => T): T[] {
   return out ?? list
 }
 
-export const cellWithoutEquals = <C extends Pick<CellInput, 'formula'> | CellFields>(c: C): C => fields(c, ['formula'] as (keyof C)[])
+/** Rows or columns by key, each entry as taken; the map itself when none changed. */
+function linesTaken<T extends object>(map: Record<string, T>): Record<string, T> {
+  let out: Record<string, T> | null = null
+  for (const [k, e] of Object.entries(map)) {
+    const x = numberFormatTaken(e)
+    if (x !== e) (out ??= { ...map })[k] = x
+  }
+  return out ?? map
+}
 
-export const namesWithoutEquals = (names: NameInput[]): NameInput[] => each(names, (n) => fields(n, ['ref']))
+export const cellTaken = <C extends Pick<CellInput, 'formula'> | CellFields>(c: C): C => numberFormatTaken(fields(c, ['formula'] as (keyof C)[]))
 
-function tableWithoutEquals(t: TableInput): TableInput {
+export const namesTaken = (names: NameInput[]): NameInput[] => each(names, (n) => fields(n, ['ref']))
+
+function tableTaken(t: TableInput): TableInput {
   const columns = each(t.columns, (c) => fields(c, ['formula']))
   return columns === t.columns ? t : { ...t, columns }
 }
 
-const validationsWithoutEquals = (rules: DataValidation[]): DataValidation[] => each(rules, (r) => fields(r, ['formula1', 'formula2']))
+const validationsTaken = (rules: DataValidation[]): DataValidation[] => each(rules, (r) => fields(r, ['formula1', 'formula2']))
 
 const threshold = (v: ConditionalValue): ConditionalValue => fields(v, ['value'])
 
-/** A conditional format's formulas and thresholds without a leading `=`. */
-function formatWithoutEquals(f: ConditionalFormat): ConditionalFormat {
+/** A conditional format's formulas and thresholds without a leading `=`, its style's number format by its new name. */
+function formatTaken(f: ConditionalFormat): ConditionalFormat {
   let out = 'formula' in f ? fields(f, ['formula']) : f
+  if ('style' in out && out.style && 'format' in out.style) out = { ...out, style: numberFormatTaken(out.style) }
   if (out.type === 'cellIs' && out.formulas.some(leadingEquals)) out = { ...out, formulas: out.formulas.map(drop) }
   if (out.type === 'dataBar' && (leadingEquals(out.min.value) || leadingEquals(out.max.value))) out = { ...out, min: threshold(out.min), max: threshold(out.max) }
   if (out.type === 'colorScale' || out.type === 'iconSet') {
@@ -55,55 +77,63 @@ function formatWithoutEquals(f: ConditionalFormat): ConditionalFormat {
   return out
 }
 
-const formatsWithoutEquals = (formats: ConditionalFormat[]): ConditionalFormat[] => each(formats, formatWithoutEquals)
+const formatsTaken = (formats: ConditionalFormat[]): ConditionalFormat[] => each(formats, formatTaken)
 
-/** A sheet without a leading `=` in the formulas of `cells` (the addresses of those that have one) and of its other parts. */
-function sheetWithoutEquals(s: SheetInput, cells: string[] | undefined): SheetInput {
+/** A sheet as taken: `cells`, the addresses of the cells that need it, and its other parts. */
+function sheetTaken(s: SheetInput, cells: string[] | undefined): SheetInput {
   const out: Partial<SheetInput> = {}
   if (cells?.length) {
     out.cells = { ...s.cells }
-    for (const a of cells) out.cells[a] = cellWithoutEquals(s.cells[a])
+    for (const a of cells) out.cells[a] = cellTaken(s.cells[a])
   }
-  const tables = s.tables && each(s.tables, tableWithoutEquals)
+  const columns = s.columns && linesTaken(s.columns)
+  if (columns !== s.columns) out.columns = columns
+  const rows = s.rows && linesTaken(s.rows)
+  if (rows !== s.rows) out.rows = rows
+  const tables = s.tables && each(s.tables, tableTaken)
   if (tables !== s.tables) out.tables = tables
-  const formats = s.conditionalFormats && formatsWithoutEquals(s.conditionalFormats)
+  const formats = s.conditionalFormats && formatsTaken(s.conditionalFormats)
   if (formats !== s.conditionalFormats) out.conditionalFormats = formats
-  const rules = s.validations && validationsWithoutEquals(s.validations)
+  const rules = s.validations && validationsTaken(s.validations)
   if (rules !== s.validations) out.validations = rules
   return Object.keys(out).length ? { ...s, ...out } : s
 }
 
-/** A checked book without a leading `=` in its formulas; `cells`, by sheet, the addresses of the cells whose formula has one. */
-export function bookWithoutEquals(book: BookInput, cells: (string[] | undefined)[]): BookInput {
-  const sheets = each(book.sheets, (s, i) => sheetWithoutEquals(s, cells[i]))
-  const names = book.names && namesWithoutEquals(book.names)
+/** A checked book as taken; `cells`, by sheet, the addresses of the cells that need it (a formula with `=`, a `format`). */
+export function bookTaken(book: BookInput, cells: (string[] | undefined)[]): BookInput {
+  const sheets = each(book.sheets, (s, i) => sheetTaken(s, cells[i]))
+  const names = book.names && namesTaken(book.names)
   return sheets === book.sheets && names === book.names ? book : { ...book, sheets, ...(names ? { names } : {}) }
 }
 
-/** Edits of cells (`setCells`'s by fields, `replaceCells`' whole inputs) without a leading `=` in their formulas. */
-export const editsWithoutEquals = <E extends CellEdit | CellReplace>(edits: E[]): E[] =>
+/** Edits of cells (`setCells`'s by fields, `replaceCells`' whole inputs) as taken. */
+export const editsTaken = <E extends CellEdit | CellReplace>(edits: E[]): E[] =>
   each(edits, (e) => {
-    const input = e.input && cellWithoutEquals(e.input)
+    const input = e.input && cellTaken(e.input)
     return input === e.input ? e : { ...e, input }
   })
 
-/** Layout edits without a leading `=` in the conditional formats and rules of data validation they set. */
-export const layoutWithoutEquals = (edits: LayoutEdit[]): LayoutEdit[] =>
+/** Layout edits as taken: the fields of lines they set, the conditional formats and the rules of data validation. */
+export const layoutTaken = (edits: LayoutEdit[]): LayoutEdit[] =>
   each(edits, (e) => {
+    if ('set' in e) {
+      const set = numberFormatTaken(e.set)
+      return set === e.set ? e : { ...e, set }
+    }
     if ('conditionalFormats' in e) {
-      const conditionalFormats = formatsWithoutEquals(e.conditionalFormats)
+      const conditionalFormats = formatsTaken(e.conditionalFormats)
       return conditionalFormats === e.conditionalFormats ? e : { ...e, conditionalFormats }
     }
     if ('validations' in e) {
-      const validations = validationsWithoutEquals(e.validations)
+      const validations = validationsTaken(e.validations)
       return validations === e.validations ? e : { ...e, validations }
     }
     return e
   })
 
 /** A structure operation without a leading `=` in the formulas of a table it adds; anything else as it is (checked later). */
-export function opWithoutEquals(op: StructureOp): StructureOp {
+export function opTaken(op: StructureOp): StructureOp {
   if (op?.op !== 'addTable' || !Array.isArray(op.table?.columns)) return op
-  const table = tableWithoutEquals(op.table)
+  const table = tableTaken(op.table)
   return table === op.table ? op : { ...op, table }
 }

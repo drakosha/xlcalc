@@ -83,7 +83,7 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): Exclude<LayoutEdi
  * (`compute(book)`), by column letter: null for the default width; a column with nothing to show is left out.
  */
 export function fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null> {
-  checkBook(book)
+  book = checkBook(book)
   const index = (name: string) => {
     const i = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(name))
     return i < 0 ? undefined : i
@@ -110,6 +110,6 @@ export function entryWidth(value: CellValue, opts?: EntryWidthOptions): number |
   const o = checkEntryWidthOptions(opts)
   checkCellValue(value, 'value')
   if (o.width !== undefined && !o.bestFit) return undefined
-  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.format, columnPoints(o.width))
+  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width))
   return points === null ? undefined : Math.min(MAX_WIDTH, widthOf(points))
 }

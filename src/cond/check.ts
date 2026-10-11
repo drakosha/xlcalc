@@ -4,7 +4,7 @@
  * parse never holds, as a cell's formula computes an error.
  */
 import type { ConditionalFormat, IconSetName } from '../contract.js'
-import { array, checkBoolean, checkColor, checkFormat, checkNumber, checkOneOf, checkString, InputError, LINES, object, onlyKeys } from '../input.js'
+import { array, checkBoolean, checkColor, checkFormat, checkFormatNames, checkNumber, checkOneOf, checkString, InputError, LINES, object, onlyKeys } from '../input.js'
 import { parseRange } from '../structure/area.js'
 
 /** The icon sets by name, with their number of icons. */
@@ -62,7 +62,7 @@ const FIELDS: Record<ConditionalFormat['type'], string[]> = {
 
 function checkStyle(v: unknown, p: string) {
   const s = object(v, p, 'a style such as { fill: { color: "#FFC7CE" }, font: { color: "#9C0006" } }')
-  onlyKeys(s, p, ['font', 'fill', 'border', 'format'])
+  onlyKeys(s, p, ['font', 'fill', 'border', 'numberFormat', 'format'])
   if (s.font !== undefined) {
     const f = object(s.font, `${p}.font`, 'a font such as { bold: true }')
     onlyKeys(f, `${p}.font`, ['bold', 'italic', 'underline', 'strike', 'color'])
@@ -85,7 +85,8 @@ function checkStyle(v: unknown, p: string) {
       if (line.color !== undefined) checkColor(line.color, `${p}.border.${side}.color`)
     }
   }
-  if (s.format !== undefined) checkFormat(s.format, `${p}.format`)
+  for (const k of ['numberFormat', 'format']) if (s[k] !== undefined) checkFormat(s[k], `${p}.${k}`)
+  checkFormatNames(s, p)
 }
 
 function checkValue(v: unknown, p: string) {

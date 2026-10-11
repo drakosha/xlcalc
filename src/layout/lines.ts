@@ -11,18 +11,18 @@ import { entryAt, lines, type Line } from './spans.js'
 /** A style (by index) and a number format, of a cell or a line. */
 export interface Look {
   style?: number
-  format?: NumberFormat
+  numberFormat?: NumberFormat
 }
 
 /** The format a cell shows by: its own, else its row's, else its column's. */
-export const formatOf = (own: Look | undefined, row: Look | undefined, col: Look | undefined): NumberFormat | undefined => own?.format ?? row?.format ?? col?.format
+export const formatOf = (own: Look | undefined, row: Look | undefined, col: Look | undefined): NumberFormat | undefined => own?.numberFormat ?? row?.numberFormat ?? col?.numberFormat
 
 /** Where the format a cell shows by comes from (`formatOf`); undefined for none (General). */
 export const formatSource = (own: Look | undefined, row: Look | undefined, col: Look | undefined): 'cell' | 'row' | 'column' | undefined =>
-  own?.format !== undefined ? 'cell' : row?.format !== undefined ? 'row' : col?.format !== undefined ? 'column' : undefined
+  own?.numberFormat !== undefined ? 'cell' : row?.numberFormat !== undefined ? 'row' : col?.numberFormat !== undefined ? 'column' : undefined
 
 /** The look a cell shows: its own style and format, each else its row's, else its column's (`formatOf`). */
-export const lookOf = (own: Look | undefined, row: Look | undefined, col: Look | undefined): Look => ({ style: own?.style ?? row?.style ?? col?.style, format: formatOf(own, row, col) })
+export const lookOf = (own: Look | undefined, row: Look | undefined, col: Look | undefined): Look => ({ style: own?.style ?? row?.style ?? col?.style, numberFormat: formatOf(own, row, col) })
 
 /** A sheet's rows and columns, each line looked up once. */
 export interface SheetLines {

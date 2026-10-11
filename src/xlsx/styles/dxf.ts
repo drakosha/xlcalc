@@ -74,8 +74,8 @@ export function readDxf(e: Element, p: Palette): Dxf {
     const id = Number(a.numFmtId)
     const code = a.formatCode === undefined ? undefined : decodeXml(a.formatCode)
     if (code === undefined) {
-      if (isBuiltin(id)) style.format = id
-    } else style.format = isBuiltin(id) && id !== 0 && BUILTIN[id] === code ? id : code
+      if (isBuiltin(id)) style.numberFormat = id
+    } else style.numberFormat = isBuiltin(id) && id !== 0 && BUILTIN[id] === code ? id : code
   }
   if (element(b, 'alignment')) lost.push('alignment')
   if (element(b, 'protection')) lost.push('protection')

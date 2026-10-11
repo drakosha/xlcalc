@@ -57,7 +57,7 @@ export function* spilled(state: EngineState, s: number, within?: Rect, whole = f
   return out
 }
 
-/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own format. */
+/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own number format. */
 export function cellResult(state: EngineState, s: number, addr: string, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const { row, col } = parseAddress(addr)
   const inCell = state.input.sheets[s].cells[addr] ?? {}
@@ -66,7 +66,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
   const text = id === undefined ? inCell.formula : state.formulas[id]!.text
   if (text !== undefined) out.formula = text
-  if (format && inCell.format !== undefined) out.format = inCell.format
+  if (format && inCell.numberFormat !== undefined) out.numberFormat = inCell.numberFormat
   if (inCell.meta !== undefined) out.meta = inCell.meta
   const x = id === undefined ? undefined : state.spills.on.get(id)
   if (x) Object.assign(out, anchorFields(x))
@@ -123,7 +123,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     if (input?.link !== undefined) view.link = input.link
     if (input?.array !== undefined) view.array = input.array
     const cf = cond.get(cellIndex(addr))
-    if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, format })))
+    if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, numberFormat: format })))
     out[addr] = view
   }
   return out

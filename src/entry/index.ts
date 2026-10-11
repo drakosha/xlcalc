@@ -79,7 +79,7 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
   // what goes with the cell, as Excel keeps it whatever is typed
   const kept: CellInput = {}
   for (const k of KEPT) if (cell[k] !== undefined) (kept as Record<string, unknown>)[k] = cell[k]
-  const input = (body: CellInput, format: NumberFormat | undefined = cell.format): EntryResult => ({ ok: true, input: { ...body, ...(format !== undefined ? { format } : {}), ...kept } })
+  const input = (body: CellInput, format: NumberFormat | undefined = cell.numberFormat): EntryResult => ({ ok: true, input: { ...body, ...(format !== undefined ? { numberFormat: format } : {}), ...kept } })
   const epoch = epochOf(o.dateSystem)
   const year = ymd(Math.floor(msToSerial(o.now === undefined ? Date.now() : Date.parse(o.now)))).y
   const { rules, clock } = rulesFor(locale, epoch, year)
@@ -89,22 +89,22 @@ export function parseEntry(text: string, opts?: EntryOptions): EntryResult {
     if (!('formula' in f)) return f
     if (f.sets === undefined) return input({ formula: f.formula })
     const sets = f.sets === 'money' ? moneyFormat(rules.currency, true) : f.sets
-    return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.format, locale))
+    return input({ formula: f.formula }, formatAfter(f.sets === 'money' ? 'currency' : f.sets === 18 ? 'time' : 'date', sets, cell.numberFormat, locale))
   }
-  if (text === '') return cell.format !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
+  if (text === '') return cell.numberFormat !== undefined || Object.keys(kept).length ? input({}) : { ok: true, input: null }
   if (text.startsWith("'")) return input({ value: text.slice(1) })
-  if (shows(cell.format, 'text') || text === '=') return input({ value: text })
+  if (shows(cell.numberFormat, 'text') || text === '=') return input({ value: text })
   if (text.startsWith('=')) return formula(text, 0)
-  const typed = readTyped(text, rules, clock, shows(cell.format, 'pct'))
+  const typed = readTyped(text, rules, clock, shows(cell.numberFormat, 'pct'))
   // `+` or `-` before what is no constant begins a formula (alone they are text); Excel drops a `+` before a number
   if (/^[-+]./s.test(text) && typed.t === 'text' && typed.format === undefined) return plusNumber(text, rules.decimal) ? formula(text.slice(1), 1) : formula(text, 0)
   switch (typed.t) {
     case 'number':
-      return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.format, locale))
+      return input({ value: typed.v }, formatAfter(typed.form, typed.format, cell.numberFormat, locale))
     case 'boolean':
       return input({ value: typed.v })
     case 'text':
-      return input({ value: typed.v }, typed.format === undefined ? cell.format : formatAfter('scientific', typed.format, cell.format, locale))
+      return input({ value: typed.v }, typed.format === undefined ? cell.numberFormat : formatAfter('scientific', typed.format, cell.numberFormat, locale))
     case 'error':
       return input({ formula: typed.literal })
   }

@@ -18,7 +18,7 @@ import { checkTables } from './tables/check.js'
 import { InputError, what } from './input-error.js'
 import { checkConditionalFormats } from './cond/check.js'
 import { checkOutline, checkValidations } from './validation/check.js'
-import { bookWithoutEquals, editsWithoutEquals, layoutWithoutEquals, leadingEquals, namesWithoutEquals } from './equals.js'
+import { bookTaken, editsTaken, layoutTaken, leadingEquals, namesTaken, numberFormatTaken } from './taken.js'
 
 export { InputError, what } from './input-error.js'
 
@@ -66,6 +66,15 @@ export function checkFormat(v: unknown, path: string) {
   if (typeof v !== 'string' && !(typeof v === 'number' && isBuiltin(v))) throw new InputError(path, `expected a format code or the number of a built-in format, 0 to 49, got ${what(v)}`)
 }
 
+/**
+ * The number format by its name `numberFormat` and by its old name `format`, which a cell, a line, a conditional style
+ * and an edit of one take: given both, they are one value.
+ */
+export function checkFormatNames(o: Record<string, unknown>, path: string) {
+  if (o.format !== undefined && o.numberFormat !== undefined && o.format !== o.numberFormat)
+    throw new InputError(`${path}.format`, `the number format is numberFormat, and format its old name: given both, they differ (${what(o.numberFormat)} and ${what(o.format)})`)
+}
+
 /** A style number of a book with `styles` styles. */
 export function checkStyleIndex(v: unknown, path: string, styles: number) {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles)
@@ -87,7 +96,8 @@ export function checkCell(v: unknown, path: string, styles: number): CellInput {
     }
   }
   if (c.formula !== undefined && typeof c.formula !== 'string') checkString(c.formula, `${path}.formula`)
-  if (c.format !== undefined && typeof c.format !== 'string') checkFormat(c.format, `${path}.format`)
+  for (const k of ['numberFormat', 'format']) if (c[k] !== undefined && typeof c[k] !== 'string') checkFormat(c[k], `${path}.${k}`)
+  checkFormatNames(c, path)
   if (c.style !== undefined) checkStyleIndex(c.style, `${path}.style`, styles)
   if (c.array !== undefined) checkString(c.array, `${path}.array`)
   if (c.note !== undefined) checkNote(c.note, `${path}.note`)
@@ -122,15 +132,15 @@ export function checkNames(v: unknown, path: string): NameInput[] {
     checkString(o.ref, `${p}.ref`)
     if (o.scope !== undefined) checkString(o.scope, `${p}.scope`)
   })
-  return namesWithoutEquals(names as NameInput[])
+  return namesTaken(names as NameInput[])
 }
 
 /** Within the grid for sure (up to ZZ999999); anything else takes the full check. */
 const SURE_ADDRESS = /^[A-Z]{1,2}[1-9][0-9]{0,5}$/
 
-const CELL_FIELDS = ['value', 'formula', 'format', 'style', 'meta', 'array', 'note', 'link']
+const CELL_FIELDS = ['value', 'formula', 'numberFormat', 'format', 'style', 'meta', 'array', 'note', 'link']
 
-/** The common cell, checked without building paths (the cell loop is hot); anything else takes the full check. */
+/** The common cell, checked without building paths (the cell loop is hot); anything else (`format`, the old name, too) takes the full check. */
 function plainCell(c: unknown, styles: number): boolean {
   if (!isObject(c)) return false
   for (const k in c) {
@@ -139,7 +149,7 @@ function plainCell(c: unknown, styles: number): boolean {
     if (k === 'value' && (v === null || v === undefined || typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean')) continue
     // a formula with a leading `=` takes the full check, which marks it
     if (k === 'formula' && (v === undefined || (typeof v === 'string' && !leadingEquals(v)))) continue
-    if (k === 'format' && (v === undefined || typeof v === 'string')) continue
+    if (k === 'numberFormat' && (v === undefined || typeof v === 'string')) continue
     if (k === 'style' && Number.isInteger(v) && (v as number) >= 0 && (v as number) < styles) continue
     return false
   }
@@ -234,11 +244,13 @@ const LINE = { c: { size: 'width', max: 255, what: 'columns', key: 'letters such
 function checkLine(v: unknown, p: string, axis: Axis, styles: number, patch: boolean) {
   const { size, max } = LINE[axis]
   const o = object(v, p, `an object such as { ${size}: 20 }`)
-  onlyKeys(o, p, [size, ...(axis === 'c' ? ['bestFit'] : []), 'style', 'format', 'hidden', 'outlineLevel', 'collapsed'])
+  onlyKeys(o, p, [size, ...(axis === 'c' ? ['bestFit'] : []), 'style', 'numberFormat', 'format', 'hidden', 'outlineLevel', 'collapsed'])
   const field = (k: string, check: (x: unknown, path: string) => void) => o[k] !== undefined && !(patch && o[k] === null) && check(o[k], `${p}.${k}`)
   field(size, (x, path) => checkNumber(x, path, 0, max))
   field('style', (x, path) => checkStyleIndex(x, path, styles))
+  field('numberFormat', checkFormat)
   field('format', checkFormat)
+  checkFormatNames(o, p)
   field('hidden', checkBoolean)
   field('outlineLevel', (x, path) => checkNumber(x, path, 1, 7, true))
   field('collapsed', checkBoolean)
@@ -286,7 +298,8 @@ function checkFrozen(v: unknown, path: string) {
 /**
  * The book: sheets with unique names by Excel's rules (compared case-insensitively), one of them visible at least, cells
  * by A1 address, columns, rows, merged areas, frozen panes, data validation and outline settings, names, styles. It is
- * returned as the engine takes it: its formulas without a leading `=` (a copy of what had one, `equals.ts`).
+ * returned as the engine takes it: its formulas without a leading `=`, its number formats by the name `numberFormat` (a
+ * copy of what needs it, `taken.ts`).
  */
 export function checkBook(v: unknown, path = 'book'): BookInput {
   const book = object(v, path, 'a book such as { sheets: [{ name: "Sheet1", cells: {} }] }')
@@ -301,8 +314,8 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   }
   const styles = book.styles === undefined ? 0 : checkStyles(book.styles, `${path}.styles`).length
   const seen = new Map<string, { name: string; i: number }>()
-  // the cells of each sheet whose formula has a leading `=`
-  const equals: string[][] = []
+  // the cells of each sheet that the engine takes otherwise: a formula with a leading `=`, a number format by its old name
+  const taken: string[][] = []
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
@@ -323,7 +336,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
       checkAddress(addr, cp)
       const c = checkCell(cell, cp, styles)
       if (c.array !== undefined) arrays.push(addr)
-      if (leadingEquals(c.formula)) (equals[i] ??= []).push(addr)
+      if (leadingEquals(c.formula) || c.format !== undefined) (taken[i] ??= []).push(addr)
     }
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
     if (sheet.columns !== undefined) checkLines(sheet.columns, `${p}.columns`, 'c', styles)
@@ -341,7 +354,7 @@ export function checkBook(v: unknown, path = 'book'): BookInput {
   if (sheets.length && sheets.every((s) => s.hidden !== undefined && s.hidden !== false)) throw new InputError(`${path}.sheets`, 'a book keeps one visible sheet at least: every sheet is hidden')
   if (book.names !== undefined) checkNames(book.names, `${path}.names`)
   checkTables(book as unknown as BookInput, path)
-  return bookWithoutEquals(book as unknown as BookInput, equals)
+  return bookTaken(book as unknown as BookInput, taken)
 }
 
 export function checkClock(v: unknown, path: string): Clock {
@@ -410,7 +423,7 @@ export function checkSessionOptions(v: unknown, path = 'opts'): SessionOptions {
 }
 
 /** Edits: each names a sheet of the book (`sheetIndex` resolves it) and a valid address; the book has `styles` styles. */
-/** Edits of cells, their formulas without a leading `=`. */
+/** Edits of cells as the engine takes them (`taken.ts`). */
 export function checkEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): CellEdit[] {
   const edits = array(v, path, 'an array of edits such as [{ sheet: "Sheet1", cell: "A1", input: { value: 1 } }]').map((e, i) => {
     const p = `${path}[${i}]`
@@ -422,12 +435,12 @@ export function checkEdits(v: unknown, sheetIndex: (name: string) => number | un
     if (o.input !== null) checkCell(o.input, `${p}.input`, styles)
     return o as unknown as CellEdit
   })
-  return editsWithoutEquals(edits)
+  return editsTaken(edits)
 }
 
 /**
  * Layout edits of a book with `styles` styles: a sheet of the book, and columns, rows, merged areas, the filter mode, frozen
- * panes, rules of data validation or outline settings; the formulas of rules without a leading `=`.
+ * panes, rules of data validation or outline settings; as the engine takes them (`taken.ts`).
  */
 export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => number | undefined, styles: number, path = 'edits'): LayoutEdit[] {
   const edits = array(v, path, 'an array of layout edits such as [{ sheet: "Sheet1", columns: "C", set: { width: 20 } }]').map((e, i) => {
@@ -474,7 +487,7 @@ export function checkLayoutEdits(v: unknown, sheetIndex: (name: string) => numbe
     checkLine(o.set, `${p}.set`, axis, styles, true)
     return o as unknown as LayoutEdit
   })
-  return layoutWithoutEquals(edits)
+  return layoutTaken(edits)
 }
 
 /** A sheet name known to the book; returns its index. */
@@ -528,21 +541,23 @@ export function checkCellValue(v: unknown, path: string): CellValue {
   throw new InputError(path, `expected a number, text, a boolean, null or { error: code }, got ${what(v)}`)
 }
 
+/** `displayValue`'s options, the number format by its name `numberFormat` (its old name `format` taken too). */
 export function checkDisplayOptions(v: unknown, path = 'opts'): DisplayOptions {
   if (v === undefined) return {}
-  const o = object(v, path, "options such as { format: '#,##0.00', locale: 'ru-RU', width: 12 }")
-  onlyKeys(o, path, ['format', 'locale', 'width', 'dateSystem'])
-  if (o.format !== undefined) checkFormat(o.format, `${path}.format`)
+  const o = object(v, path, "options such as { numberFormat: '#,##0.00', locale: 'ru-RU', width: 12 }")
+  onlyKeys(o, path, ['numberFormat', 'format', 'locale', 'width', 'dateSystem'])
+  for (const k of ['numberFormat', 'format']) if (o[k] !== undefined) checkFormat(o[k], `${path}.${k}`)
+  checkFormatNames(o, path)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
   if (o.width !== undefined) checkNumber(o.width, `${path}.width`, 0, 255 * MAX_COLS)
-  return o as DisplayOptions
+  return numberFormatTaken(o) as DisplayOptions
 }
 
 /** `entryWidth`'s options: `displayValue`'s and the column's `bestFit`. */
 export function checkEntryWidthOptions(v: unknown, path = 'opts'): EntryWidthOptions {
   if (v === undefined) return {}
-  const { bestFit, ...rest } = object(v, path, "options such as { format: 14, locale: 'ru-RU', width: 9.5, bestFit: true }")
+  const { bestFit, ...rest } = object(v, path, "options such as { numberFormat: 14, locale: 'ru-RU', width: 9.5, bestFit: true }")
   if (bestFit !== undefined) checkBoolean(bestFit, `${path}.bestFit`)
   return { ...checkDisplayOptions(rest, path), ...(bestFit !== undefined ? { bestFit: bestFit as boolean } : {}) }
 }
@@ -557,20 +572,25 @@ export function checkEntryTextOptions(v: unknown, path = 'opts'): EntryTextOptio
   return o as EntryTextOptions
 }
 
-/** `parseEntry`'s options; of the cell only its format, style, meta, note and link are read (it may be a `CellView`). */
+/**
+ * `parseEntry`'s options; of the cell only its number format (by its name `numberFormat` or its old name `format`), style,
+ * meta, note and link are read (it may be a `CellView`).
+ */
 export function checkEntryOptions(v: unknown, path = 'opts'): EntryOptions {
   if (v === undefined) return {}
-  const o = object(v, path, "options such as { locale: 'ru-RU', cell: { format: '0.00' } }")
+  const o = object(v, path, "options such as { locale: 'ru-RU', cell: { numberFormat: '0.00' } }")
   onlyKeys(o, path, ['locale', 'dateSystem', 'cell', 'now'])
   if (o.locale !== undefined) checkLocaleArg(o.locale, `${path}.locale`)
   if (o.dateSystem !== undefined) checkOneOf(o.dateSystem, `${path}.dateSystem`, DATE_SYSTEMS)
   if (o.now !== undefined && Number.isNaN(Date.parse(checkString(o.now, `${path}.now`)))) throw new InputError(`${path}.now`, `invalid moment ${JSON.stringify(o.now)}: expected ISO 8601 such as "2026-01-31T12:00:00Z"`)
   if (o.cell !== undefined && o.cell !== null) {
-    const c = object(o.cell, `${path}.cell`, 'a cell such as { format: "0.00", style: 1 }')
-    if (c.format !== undefined) checkFormat(c.format, `${path}.cell.format`)
+    const c = object(o.cell, `${path}.cell`, 'a cell such as { numberFormat: "0.00", style: 1 }')
+    for (const k of ['numberFormat', 'format']) if (c[k] !== undefined) checkFormat(c[k], `${path}.cell.${k}`)
+    checkFormatNames(c, `${path}.cell`)
     if (c.style !== undefined && !(Number.isInteger(c.style) && (c.style as number) >= 0)) throw new InputError(`${path}.cell.style`, `expected the index of a style, got ${what(c.style)}`)
     if (c.note !== undefined) checkNote(c.note, `${path}.cell.note`)
     if (c.link !== undefined) checkLink(c.link, `${path}.cell.link`)
+    if (c.format !== undefined) return { ...o, cell: numberFormatTaken(c) } as EntryOptions
   }
   return o as EntryOptions
 }

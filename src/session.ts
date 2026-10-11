@@ -44,7 +44,7 @@ import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput } from './validation/session.js'
-import { cellWithoutEquals, editsWithoutEquals, opWithoutEquals } from './equals.js'
+import { cellTaken, editsTaken, opTaken } from './taken.js'
 import { withOldNames } from './old-names.js'
 
 /** How a session is run by its host. */
@@ -316,7 +316,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCells(edits: CellEdit[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsWithoutEquals(checkFieldEdits(edits, sheetIndex(s), styleCount(s)))), 'setCells')
+      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsTaken(checkFieldEdits(edits, sheetIndex(s), styleCount(s)))), 'setCells')
       keep(back)
       return answer(next, out)
     },
@@ -420,7 +420,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *editStructure(op: StructureOp, eo?: EditOptions) {
       const old = yield* ready()
       checkBase(eo, revision)
-      op = opWithoutEquals(op)
+      op = opTaken(op)
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
@@ -498,7 +498,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *validateEntry(sheet: string, cell: string, input: CellInput | null) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
-      if (input !== null) input = cellWithoutEquals(checkCell(input, 'input', styleCount(s)))
+      if (input !== null) input = cellTaken(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
       if (!hasRule(s, i, row, col)) return { ok: true }
       try {

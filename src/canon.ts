@@ -120,9 +120,20 @@ function stableJson(v: unknown): string {
     .join(',')}}`
 }
 
+/**
+ * A cell, a line or a conditional style as the input hash writes it: its number format by the field's old name
+ * `format`, so a book hashes as it did before the field was named `numberFormat` (a copy only where it has one).
+ */
+function hashed<T extends object>(o: T): T {
+  const format = (o as { numberFormat?: unknown }).numberFormat
+  if (format === undefined) return o
+  const { numberFormat: _, ...rest } = o as { numberFormat?: unknown }
+  return { ...rest, format } as T
+}
+
 /** Lines of a sheet's columns or rows in order (`C 2 {...}`, `R 5 {...}`); none without them. */
-function lineEntries(tag: string, map: Record<string, unknown> | undefined, axis: Axis): string[] {
-  return lines(map, axis).map(([lo, hi, v]) => `${tag} ${spanKey(lo, hi, axis)} ${stableJson(v)}\n`)
+function lineEntries(tag: string, map: Record<string, object> | undefined, axis: Axis): string[] {
+  return lines(map, axis).map(([lo, hi, v]) => `${tag} ${spanKey(lo, hi, axis)} ${stableJson(hashed(v))}\n`)
 }
 
 /**
@@ -141,14 +152,14 @@ export function* inputHashSteps(book: BookInput): Steps<string> {
     h.update(`S ${JSON.stringify(s.name)}\n`)
     for (const addr of yield* sortedSteps(Object.keys(s.cells))) {
       if (paced(1)) yield
-      h.update(`${addr} ${stableJson(s.cells[addr])}\n`)
+      h.update(`${addr} ${stableJson(hashed(s.cells[addr]))}\n`)
     }
     for (const line of [...lineEntries('C', s.columns, 'c'), ...lineEntries('R', s.rows, 'r')]) h.update(line)
     for (const m of [...(s.merges ?? [])].sort(compareMerges)) h.update(`M ${m}\n`)
     if (s.filtered) h.update('F\n')
     for (const t of s.tables ?? []) h.update(`T ${stableJson(t)}\n`)
     if (s.frozen) h.update(`P ${stableJson(s.frozen)}\n`)
-    if (s.conditionalFormats?.length) h.update(`K ${stableJson(s.conditionalFormats)}\n`)
+    if (s.conditionalFormats?.length) h.update(`K ${stableJson(s.conditionalFormats.map((f) => ('style' in f && f.style?.numberFormat !== undefined ? { ...f, style: hashed(f.style) } : f)))}\n`)
     // rules of data validation in any order: no two meet
     for (const v of (s.validations ?? []).map(stableJson).sort(byText)) h.update(`V ${v}\n`)
     if (s.outline) h.update(`O ${stableJson(s.outline)}\n`)
