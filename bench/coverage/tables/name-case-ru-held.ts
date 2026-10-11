@@ -5,21 +5,13 @@
  * (`name-case-ru-held.predicted.json`).
  */
 import type { BookInput } from '../../../src/contract.js'
+import { PAIRS } from './name-case-held.js'
 import { book, on, type TableCase, type TableStep } from './cases.js'
 
 export const local = true
 
 const typed = (cell: string, text: string): TableStep => ({ edit: { sheet: 'S', cell, value: { local: text } } })
 const ru = (b: BookInput): BookInput => ({ ...b, locale: 'ru-RU' })
-
-/** The pairs: the spelling JavaScript's upper case changes, the one it gives. */
-const PAIRS: [id: string, word: string, upper: string][] = [
-  ['long-s', 'ſ', 'S'],
-  ['sharp-s', 'ß', 'SS'],
-  ['dotless-i', 'ı', 'I'],
-  ['dotted-i', 'İ', 'i'],
-  ['ligature-fi', 'ﬁ', 'FI'],
-]
 
 export function buildTableCases(): TableCase[] {
   return PAIRS.flatMap(([id, word, upper]) =>

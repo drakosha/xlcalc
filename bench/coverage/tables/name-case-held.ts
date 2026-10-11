@@ -10,8 +10,8 @@ import { book, on, type TableCase, type TableStep } from './cases.js'
 const typed = (cell: string, formula: string): TableStep => ({ edit: { sheet: 'S', cell, value: { formula } } })
 const added = (name: string, ref: string): TableStep => ({ name: { name, ref } })
 
-/** The pairs: the spelling JavaScript's upper case changes, the one it gives. */
-const PAIRS: [id: string, word: string, upper: string][] = [
+/** The pairs: the spelling JavaScript's upper case changes, the one it gives (the sets `name-case-*` take them too). */
+export const PAIRS: [id: string, word: string, upper: string][] = [
   ['long-s', 'ſ', 'S'],
   ['sharp-s', 'ß', 'SS'],
   ['dotless-i', 'ı', 'I'],

@@ -6,18 +6,10 @@
  * #NAME? if it is another. Predicted by the engine with the rule of `name-case-held` (`caseKey`) before Excel ran it
  * (`name-case-sheets-held.predicted.json`).
  */
+import { PAIRS } from './name-case-held.js'
 import { book, on, table, type TableCase, type TableStep } from './cases.js'
 
 const typed = (cell: string, formula: string): TableStep => ({ edit: { sheet: 'S', cell, value: { formula } } })
-
-/** The pairs: the spelling JavaScript's upper case changes, the one it gives. */
-const PAIRS: [id: string, word: string, upper: string][] = [
-  ['long-s', 'ſ', 'S'],
-  ['sharp-s', 'ß', 'SS'],
-  ['dotless-i', 'ı', 'I'],
-  ['dotted-i', 'İ', 'i'],
-  ['ligature-fi', 'ﬁ', 'FI'],
-]
 
 export function buildTableCases(): TableCase[] {
   const cases: TableCase[] = []
