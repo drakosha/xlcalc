@@ -30,6 +30,11 @@ export const COND_KNOWN: Known = {
   'formats-ru-held:formats:Лист!A6': 'Excel for Mac ru-RU writes the short month name март; Windows and the engine мар',
   // both Excels save two rules alike but for a format given by number and by its code as one rule over both cells
   'formats-ru-held:formats': "Excel saves a rule of format 14 and one of m/d/yyyy over the cell below as one rule over both, as it reads a rule's format by its code",
+  // what the model has no fill for, each reported by the reader: a gradient (Excel's display format gives it black), a
+  // dxf's none, which takes the cell's own fill away, and a dxf's solid fill without its colour, white on a cell without one
+  ...Object.fromEntries(['A7', 'B7', 'C7'].map((a) => [`fills-held:fills:S!${a}`, 'a gradient fill is not in the model'])),
+  ...Object.fromEntries(['C1', 'C2', 'C3'].map((a) => [`fills-held:fills:S!${a}`, "a conditional format's fill taken away (patternType none) is not in the model"])),
+  ...Object.fromEntries(['B4', 'B6'].map((a) => [`fills-held:fills:S!${a}`, "a conditional format's solid fill without its colour, Excel's white on a cell without a fill, is not in the model"])),
 }
 
 /** The pins of what only Excel for Mac does: its order of text and month names in ru-RU. */

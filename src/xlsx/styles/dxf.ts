@@ -1,7 +1,7 @@
 /**
  * The differential formats of styles.xml (`<dxfs>`), which conditional formats point at, as the model's
  * `ConditionalStyle`: a font's bold, italic, underline, strike and colour (`<b val="0"/>` takes bold away), a solid
- * fill (a dxf keeps its colour in `bgColor`), borders and a number format. What it cannot hold is named for the reader
+ * fill (`readFill`: a dxf keeps its colour in `bgColor`), borders and a number format. What it cannot hold is named for the reader
  * to report on the rules that use it.
  */
 import type { ConditionalStyle } from '../../contract.js'
@@ -10,7 +10,7 @@ import { attributes, element, elements, flag, type Element } from '../xml/scan.j
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
 import { BUILTIN } from './numfmt.js'
-import { border, solidColor, underlineOf } from './read.js'
+import { border, readFill, underlineOf } from './read.js'
 
 export interface Dxf {
   style: ConditionalStyle
@@ -44,16 +44,10 @@ export function readDxf(e: Element, p: Palette): Dxf {
     if (Object.keys(font).length) style.font = font
   }
   const fill = element(b, 'fill')
-  if (fill?.body) {
-    if (element(fill.body, 'gradientFill')) lost.push('gradient fill')
-    const pf = element(fill.body, 'patternFill')
-    const type = pf && attributes(pf.attrs).patternType
-    if (pf && type !== undefined && type !== 'solid' && type !== 'none') lost.push('pattern fill')
-    else if (pf?.body) {
-      // a dxf's solid fill is its background colour
-      const color = solidColor(pf, p, 'bgColor')
-      if (color) style.fill = { color }
-    }
+  if (fill) {
+    const x = readFill(fill, p, true)
+    if (x.fill) style.fill = x.fill
+    lost.push(...x.lost)
   }
   const bo = element(b, 'border')
   if (bo) {

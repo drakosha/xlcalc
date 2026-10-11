@@ -52,11 +52,16 @@ export function checkCondSets(sets: CondSetFile[], known: Known, load: (name: st
   for (const set of sets)
     describe(`${set.name}`, () => {
       const clock = { now: `${set.meta.day}T12:00:00Z`, seed: 1 }
-      it('Excel loaded every book', () => expect(set.rejected ?? {}).toEqual({}))
+      it('Excel loaded every book but those it repairs', () => expect(Object.keys(set.rejected ?? {})).toEqual(set.cases.filter((c) => COND_REPAIRED[`${set.name}:${c.id}`]).map((c) => c.id)))
       for (const c of set.cases as CondCase[]) {
+        const key = `${set.name}:${c.id}`
+        if (COND_REPAIRED[key])
+          it(`${c.id}: the reader reads the file Excel does not load and reports what it leaves out`, async () => {
+            const read = await readXlsx(await condFile(set, c))
+            expect(read.issues.map((i) => `${i.code} ${i.sheet ?? ''} ${(i.cells ?? []).join(' ')}: ${i.message}`)).toEqual(COND_REPAIRED[key])
+          })
         const a = set.answers[c.id]
         if (!a) continue
-        const key = `${set.name}:${c.id}`
         // an operation Excel refused leaves the book as it was: the engine refuses it too, and the book shows as before
         const refused = c.op !== undefined && a.error?.startsWith('op') === true
         const after = refused ? { ...c, op: undefined } : c
@@ -83,6 +88,14 @@ export function checkCondSets(sets: CondSetFile[], known: Known, load: (name: st
         })
       }
     })
+}
+
+/**
+ * `<set>:<case id>` → what the reader reports of a file changed by hand that neither Excel loads (the repair window on
+ * the Mac, `Workbooks.Open` failing on Windows): a dxf with a gradient beside its pattern, read as its pattern.
+ */
+export const COND_REPAIRED: Readonly<Record<string, string[]>> = {
+  'fills-held:dxf-gradient-pattern': ["conditionalFormat S B1:C1: a conditional format's gradient fill beside its pattern is not in the model"],
 }
 
 /** Every pinned difference names a case of the sets. */
