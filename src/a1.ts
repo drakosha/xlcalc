@@ -1,16 +1,17 @@
 /**
  * A1 addresses without the engine (the `./a1` subpath, the same functions in the root): cells, ranges, the keys of layout
- * lines, rectangles, a sheet's name in a reference as Excel writes it and the rule names compare by. Rows and columns are
- * numbered from 1, as A1 numbers them; the parts reused are the engine's own (`model.ts`, `structure/area.ts`,
- * `layout/spans.ts`, `collate.ts`), which compute nothing. Each function refuses options it does not take (`strict-args.ts`).
+ * lines and their maps patched, rectangles, a sheet's name in a reference as Excel writes it and the rule names compare
+ * by. Rows and columns are numbered from 1, as A1 numbers them; the parts reused are the engine's own (`model.ts`,
+ * `structure/area.ts`, `layout/spans.ts`, `collate.ts`), which compute nothing. Each function refuses options it does not
+ * take (`strict-args.ts`).
  */
-import type { CellPosition, CellRect, LineSpan, RangeRect } from './contract.js'
+import type { CellPosition, CellRect, LinePatch, LineSpan, RangeRect } from './contract.js'
 import { caseKey } from './collate.js'
 import { InputError, what } from './input-error.js'
-import { parseSpan, spanKey } from './layout/spans.js'
+import { lines, parseSpan, patchLines as patchSpans, spanKey } from './layout/spans.js'
 import type { Locale } from './locale/types.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
-import { contains, encode, meets, parseRange as rangeArg, span, type Area, type Rect } from './structure/area.js'
+import { contains, encode, meets, parseRange as rangeArg, span, type Area, type Axis, type Rect } from './structure/area.js'
 import { PLAIN_SHEET } from './sheet-pattern.js'
 import { strict } from './strict-args.js'
 
@@ -116,6 +117,25 @@ export const linesKey = /* @__PURE__ */ strict(function linesKey(first: number, 
   const max = ax === 'c' ? MAX_COLS : MAX_ROWS
   const [a, b] = [line(first, max, 'first'), line(last, max, 'last')]
   return spanKey(Math.min(a, b) - 1, Math.max(a, b) - 1, ax)
+})
+
+const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+
+/**
+ * A map of `SheetInput.columns` or `rows` with `patch` applied to lines `span` (`C`, `B:D`; `5`, `5:9`, the axis by the
+ * key's shape), as `setLayout` applies it: a value sets a field, null removes it, a field left out stays; spans the patch
+ * cuts are split, lines left without a field are dropped. A new map; the one given is not changed. The map is checked as
+ * a book's: an object under each span of the axis, no two spans overlapping.
+ */
+export const patchLines = /* @__PURE__ */ strict(function patchLines<T extends object>(map: Record<string, T> | undefined, span: string, patch: LinePatch<T>): Record<string, T> {
+  const axis: Axis = /^[A-Z]/.test(text(span, 'span')) ? 'c' : 'r'
+  const s = parseSpan(span, axis)
+  if (!s) throw new InputError('span', `expected columns or rows ("B:D", "5:9"), got ${what(span)}`)
+  if (map !== undefined && !isObject(map)) throw new InputError('map', `expected lines by span, got ${what(map)}`)
+  for (const [k, v] of Object.entries(map ?? {})) if (!parseSpan(k, axis) || !isObject(v)) throw new InputError(`map[${JSON.stringify(k)}]`, `expected an object under a span of the axis of "${span}"`)
+  if (lines(map, axis).some(([lo], i, ls) => i > 0 && lo <= ls[i - 1][1])) throw new InputError('map', 'two spans overlap')
+  if (!isObject(patch)) throw new InputError('patch', `expected fields, got ${what(patch)}`)
+  return patchSpans(map, axis, s[0], s[1], patch)
 })
 
 const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')

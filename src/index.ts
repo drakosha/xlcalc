@@ -16,6 +16,7 @@ import * as entryTexts from './entry/text.js'
 import * as fit from './layout/fit.js'
 import * as helpers from './helpers.js'
 import * as scan from './scan.js'
+import * as styleTable from './style-table.js'
 import * as builtin from './builtin-format.js'
 import * as serials from './date-serial.js'
 import { strict } from './strict-args.js'
@@ -67,6 +68,7 @@ export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const builtinFormatCode = /* @__PURE__ */ strict(builtin.builtinFormatCode)
 export const dateToSerial = /* @__PURE__ */ strict(serials.dateToSerial)
 export const serialToDate = /* @__PURE__ */ strict(serials.serialToDate)
+export const internStyle = /* @__PURE__ */ strict(styleTable.internStyle)
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
