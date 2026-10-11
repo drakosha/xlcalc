@@ -73,6 +73,9 @@ export const validFreq = (f: number) => f === 1 || f === 2 || f === 4
 /** Excel reads the basis first in YEARFRAC and most securities: an invalid one is #NUM! whatever the other arguments. */
 export const basisFirst = (i: number): AtpOrder => ({ first: [i], check: { [i]: need(validBasis) } })
 
+/** The frequency of a security is checked as it is read, before the basis (DURATION, ACCRINT, ODDFPRICE). */
+export const freqAt = (i: number): AtpOrder => ({ check: { [i]: need(validFreq) } })
+
 export const functions: Record<string, FnDef> = {
   DAYS360: { args: 'd d b?', fn: (start: number, end: number, european = false) => days360(start, end, european) },
   YEARFRAC: atp('e e j?', (start: number, end: number, basis = 0) => yearFrac(start, end, basis), basisFirst(2)),
