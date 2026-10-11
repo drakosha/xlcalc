@@ -3,14 +3,10 @@
  * A format or a style alone does not count, as in Excel. Rows are kept sorted by column, so a range of a
  * million rows is checked by binary search.
  */
-import type { CellInput } from '../contract.js'
 import type { Rect } from '../structure/area.js'
 import { lowerBound } from '../sorted.js'
 
 const rowOf = (row: number) => row
-
-/** An input cell that blocks a spill. */
-export const blocks = (c: CellInput | undefined): boolean => c !== undefined && (c.formula !== undefined || (c.value !== undefined && c.value !== null))
 
 export class Occupied {
   /** sheet → column → rows; a column is sorted before it is searched. */

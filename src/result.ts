@@ -11,7 +11,7 @@ import { windowLooks, withLook } from './cond/looks.js'
 import { cellLooks, type Looks } from './shown.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
-import { meets, type Rect } from './structure/area.js'
+import { cornersText, meets, type Rect } from './structure/area.js'
 
 
 /** The clock moment as a serial number (UTC); an invalid moment is a caller error. */
@@ -25,10 +25,8 @@ export function outValue(v: CellValue): CellValue {
   return typeof v === 'number' ? outNumber(v) : v
 }
 
-const rangeText = (x: { r1: number; c1: number; r2: number; c2: number }) => `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`
-
 /** A spilled formula's range and the value of its unstored cells. */
-const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: rangeText(x), spillFill: outValue(toCellValue(x.fills[0].v)) } : { spill: rangeText(x) })
+const anchorFields = (x: Spill): Pick<CellResult, 'spill' | 'spillFill'> => (x.fills.length ? { spill: cornersText(x), spillFill: outValue(toCellValue(x.fills[0].v)) } : { spill: cornersText(x) })
 
 /** A formula's spill (`spill`, `spillFill`) or a spilled cell's formula (`spillOf`), as results and changes show them. */
 export function spillFields(state: EngineState, s: number, r: number, c: number): Pick<CellResult, 'spill' | 'spillFill' | 'spillOf'> {
@@ -159,7 +157,7 @@ function* eachCell(state: EngineState, s: number, f: (addr: string, spillOf: str
 function fillLines(state: EngineState, s: number, addr: string, value: CellValue | undefined, out: FillLine[]) {
   if (value === undefined) return
   const { row, col } = parseAddress(addr)
-  for (const f of state.spills.on.get(state.at.get(key(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: rangeText(f), value })
+  for (const f of state.spills.on.get(state.at.get(key(s, row, col))!)!.fills) out.push({ sheet: state.sheetNames[s], range: cornersText(f), value })
 }
 
 /** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */

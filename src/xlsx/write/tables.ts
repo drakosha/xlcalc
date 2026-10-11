@@ -8,7 +8,7 @@
  */
 import type { SheetInput, TableInput } from '../../contract.js'
 import { formatAddress } from '../../model.js'
-import { parseRange } from '../../structure/area.js'
+import { cornersText, parseRange } from '../../structure/area.js'
 import { toFile } from '../formulas/to-file.js'
 import type { Issues } from '../issues.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
@@ -46,7 +46,7 @@ export function tableXml(t: TableInput, sheet: SheetInput, id: number, sheets: S
   const filter = headers ? (filtered ? `<autoFilter ref="${filterRef}">${KEEP_ALL}</autoFilter>` : `<autoFilter ref="${filterRef}"/>`) : ''
   const counts = (headers ? '' : ' headerRowCount="0"') + (totals ? ' totalsRowCount="1"' : '')
   const name = escapeAttr(t.name)
-  const ref = `${formatAddress(x.r1, x.c1)}:${formatAddress(x.r2, x.c2)}`
+  const ref = cornersText(x)
   return (
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<table xmlns="${MAIN}" id="${id}" name="${name}" displayName="${name}" ref="${ref}"${counts}>` +
     `${filter}<tableColumns count="${cols.length}">${cols.join('')}</tableColumns>` +

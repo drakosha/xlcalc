@@ -5,7 +5,7 @@
  */
 import type { CellInput, CellLink, CellNote, FrozenPanes } from '../../contract.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../../model.js'
-import { parseRange } from '../../structure/area.js'
+import { hasCell, parseRange } from '../../structure/area.js'
 import type { Issues } from '../issues.js'
 import { attr, attributes, element, elements } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
@@ -166,7 +166,7 @@ function links(src: PartsSource, cells: Record<string, CellInput>, issues: Issue
       const r = parseRange(a.ref!.toUpperCase())!
       list = Object.keys(cells).filter((c) => {
         const p = parseAddress(c)
-        return p.row >= r.r1 && p.row <= r.r2 && p.col >= r.c1 && p.col <= r.c2
+        return hasCell(r, p.row, p.col)
       })
       issues.add('hyperlink', 'a hyperlink over more than 4,096 cells is read on the cells of its range that hold something', where)
     }

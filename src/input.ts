@@ -22,7 +22,8 @@ import { bookWithoutEquals, editsWithoutEquals, layoutWithoutEquals, leadingEqua
 
 export { InputError, what } from './input-error.js'
 
-const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+/** A plain object: not null, not an array. */
+export const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
 export function object(v: unknown, path: string, expected: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected ${expected}, got ${what(v)}`)

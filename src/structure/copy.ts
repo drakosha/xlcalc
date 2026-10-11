@@ -143,7 +143,7 @@ function place(ref: unknown, path: string, book: CopyContext | undefined): { she
   if (typeof ref !== 'object' || ref === null) throw new InputError(path, 'expected a cell such as { sheet: "Sheet1", cell: "B2" }')
   const { sheet, cell } = ref as CellRef
   const name = checkString(sheet, `${path}.sheet`)
-  const known = book?.sheets.find((s) => sheetKey(s.name) === sheetKey(name))
+  const known = book && sheetOf(book, name)
   if (book && !known) throw new InputError(`${path}.sheet`, `unknown sheet ${JSON.stringify(name)}`)
   return { sheet: known?.name ?? name, ...parseAddress(checkAddress(cell, `${path}.cell`)) }
 }
@@ -161,8 +161,7 @@ export function copyFormula(text: string, from: CellRef, to: CellRef, book?: Cop
   const out = rewriteFormula(formula, b.sheet, b.sheet, copyTransform(b.row - a.row, b.col - a.col), names)
   if (!book) return out
   const tables = tablesOf(book as BookInput)
-  const index = (name: string) => book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))
-  const t = tableAt(tables, index(a.sheet), a.row, a.col)
+  const t = tableAt(tables, sheetIndex(book, a.sheet), a.row, a.col)
   // out of its table, as copyRange pastes it (`tables/moves.ts`): the references to the table without a name get its name
-  return t && tableAt(tables, index(b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
+  return t && tableAt(tables, sheetIndex(book, b.sheet), b.row, b.col) !== t ? rewriteTableRefs(out, tables, t, null, () => undefined, true) : out
 }

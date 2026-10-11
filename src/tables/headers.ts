@@ -9,6 +9,7 @@ import { InputError } from '../input.js'
 import { formatAddress, inputScalar, parseAddress } from '../model.js'
 import { sheetKey } from '../syntax.js'
 import { rewriteBookTables } from './rewrite.js'
+import { sheetIndex } from '../structure/rewrite.js'
 import { freeColumnName } from './shift.js'
 import { tableKey, tablesOf } from './model.js'
 
@@ -22,7 +23,7 @@ export function headerEdits(book: BookInput, edits: CellReplace[], text: (v: Sca
   if (!tables.length) return null
   const typed = new Map<string, Map<number, string | null>>()
   edits.forEach((e, i) => {
-    const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(e.sheet))
+    const s = sheetIndex(book, e.sheet)
     const { row, col } = parseAddress(e.cell)
     const t = tables.find((x) => x.s === s && x.r1 === row && col >= x.c1 && col <= x.c2)
     if (!t) return

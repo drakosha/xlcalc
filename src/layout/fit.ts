@@ -16,6 +16,7 @@ import { applyLayout } from '../session/book.js'
 import { sheetKey } from '../syntax.js'
 import { sheetLines } from './lines.js'
 import { parseMerge } from './merges.js'
+import { hasCell } from '../structure/area.js'
 import { parseSpan, spanKey } from './spans.js'
 
 /** A cell of a sheet and its value: zero-based row and column. */
@@ -36,7 +37,7 @@ export function fitWidths(rules: Rules, sheet: SheetInput, cells: Iterable<Place
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
   for (const [r, c, v] of cells) {
-    if (c < lo || c > hi || v === null || across.some((x) => r >= x.r1 && r <= x.r2 && c >= x.c1 && c <= x.c2)) continue
+    if (c < lo || c > hi || v === null || across.some((x) => hasCell(x, r, c))) continue
     const points = rules.fitPoints(v, formats.format(r, c))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }

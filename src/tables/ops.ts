@@ -8,11 +8,12 @@ import { InputError } from '../input.js'
 import { formatAddress } from '../model.js'
 import { say, type Message } from '../locale/messages.js'
 import { localeBooleans } from '../locale/registry.js'
-import { nameRule, sheetKey } from '../syntax.js'
+import { nameRule } from '../syntax.js'
 import { meets, parseRange } from '../structure/area.js'
 import type { Applied } from '../structure/geometry.js'
 import { parseMerge } from '../layout/merges.js'
 import { convertedText, rewriteBookTables } from './rewrite.js'
+import { sheetIndex } from '../structure/rewrite.js'
 import { tableKey, tablesOf } from './model.js'
 
 type TableOp = Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>
@@ -74,7 +75,7 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
 
 /** A table over cells of `sheet`: its header cells take the columns' names; refused over another table or a merged area. */
 function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
-  const s = book.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet))
+  const s = sheetIndex(book, sheet)
   if (s < 0) throw new InputError('op.sheet', `unknown sheet ${JSON.stringify(sheet)}`)
   if (typeof table !== 'object' || table === null || typeof table.name !== 'string') throw new InputError('op.table', 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   const why = nameRefusal(book, table.name)

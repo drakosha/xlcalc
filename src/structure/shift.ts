@@ -147,8 +147,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
 function keepFirstRow(book: BookInput, sheet: string, at: number, count: number, cols: { c1: number; c2: number }): Applied {
   const r: Applied = count > 1 ? shift(book, sheet, 'r', at + 1, 1 - count) : { ok: true, book, geometry: [] }
   if (!r.ok) return r
-  const key = sheetKey(sheet)
-  const i = r.book.sheets.findIndex((s) => sheetKey(s.name) === key)
+  const i = sheetIndex(r.book, sheet)
   const sheets = r.book.sheets.map((s, j) => {
     if (j !== i) return s
     const cells = { ...s.cells }

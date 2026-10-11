@@ -10,7 +10,7 @@ import type { EngineState } from '../engine.js'
 import { paced, type Steps } from '../exec/budget.js'
 import { MAX_COLS } from '../model.js'
 import { EN_BUILTIN } from '../numfmt/builtin.js'
-import type { Rect } from '../structure/area.js'
+import { intersect, type Rect } from '../structure/area.js'
 import type { Ast } from '../syntax.js'
 import { E, isErr, type V } from '../values.js'
 import { evaluator, holds, prepare } from './formulas.js'
@@ -253,12 +253,7 @@ function* shade(state: EngineState, s: number, rule: Extract<ConditionalFormat, 
 
 /** The part of a rule's ranges inside the window, each cell once. */
 function clipped(rule: ConditionalFormat, x: Rect): Rect[] {
-  const out: Rect[] = []
-  for (const y of rectsOf(rule)) {
-    const z = { r1: Math.max(x.r1, y.r1), r2: Math.min(x.r2, y.r2), c1: Math.max(x.c1, y.c1), c2: Math.min(x.c2, y.c2) }
-    if (z.r1 <= z.r2 && z.c1 <= z.c2) out.push(z)
-  }
-  return out
+  return rectsOf(rule).flatMap((y) => intersect(x, y) ?? [])
 }
 
 /**

@@ -12,7 +12,7 @@ import { sheetNameProblem } from '../input.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import type { Applied } from './geometry.js'
-import { rewriteBook, sheetNames, type Transform } from './rewrite.js'
+import { rewriteBook, sheetIndex, sheetNames, type Transform } from './rewrite.js'
 
 export function renameSheet(book: BookInput, sheet: string, name: string): Applied {
   const key = sheetKey(sheet)
@@ -26,7 +26,7 @@ export function renameSheet(book: BookInput, sheet: string, name: string): Appli
   }
   const out = rewriteBook(book, t, sheetNames(book), (s) => (sheetKey(s) === key ? name : s))
   if (out.names) out.names = out.names.map((n) => (n.scope !== undefined && sheetKey(n.scope) === key ? { ...n, scope: name } : n))
-  return { ok: true, book: out, geometry: [{ kind: 'renameSheet', s: book.sheets.findIndex((s) => sheetKey(s.name) === key) }] }
+  return { ok: true, book: out, geometry: [{ kind: 'renameSheet', s: sheetIndex(book, sheet) }] }
 }
 
 /**
@@ -55,7 +55,7 @@ function nameProblem(book: BookInput, name: string, own?: string): Message | nul
 export function insertSheet(book: BookInput, name: string, before: string | undefined): Applied {
   const problem = nameProblem(book, name)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
-  const at = before === undefined ? book.sheets.length : book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
+  const at = before === undefined ? book.sheets.length : sheetIndex(book, before)
   const sheets = [...book.sheets]
   sheets.splice(at, 0, { name, cells: {} })
   return { ok: true, book: { ...book, sheets }, geometry: [{ kind: 'insertSheet', at }] }
@@ -70,7 +70,7 @@ export function insertSheet(book: BookInput, name: string, before: string | unde
  */
 export function moveSheet(book: BookInput, sheet: string, before: string | undefined): Applied {
   const key = sheetKey(sheet)
-  const s = book.sheets.findIndex((x) => sheetKey(x.name) === key)
+  const s = sheetIndex(book, sheet)
   const moving = book.sheets[s]
   if (moving.hidden === 'very') return veryHidden(book, moving.name)
   if (before !== undefined && sheetKey(before) === key) return { ok: true, book, geometry: [{ kind: 'moveSheet', s, at: s }] }
@@ -86,7 +86,7 @@ export function moveSheet(book: BookInput, sheet: string, before: string | undef
 
 /** Where a sheet moved before `before` (else to the end) goes among the other sheets: by the visible ones, as Excel places it. */
 function movedTo(sheets: BookInput['sheets'], before: string | undefined): number {
-  const at = before === undefined ? sheets.length : sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
+  const at = before === undefined ? sheets.length : sheetIndex({ sheets }, before)
   const next = sheets.findIndex((s, i) => i >= at && !s.hidden)
   if (next >= 0) return next
   const last = sheets.findLastIndex((s) => !s.hidden)
@@ -96,7 +96,7 @@ function movedTo(sheets: BookInput['sheets'], before: string | undefined): numbe
 export function deleteSheet(book: BookInput, sheet: string): Applied {
   if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastSheet' }) }
   const key = sheetKey(sheet)
-  const s = book.sheets.findIndex((x) => sheetKey(x.name) === key)
+  const s = sheetIndex(book, sheet)
   if (book.sheets[s].hidden === 'very') return veryHidden(book, sheet)
   if (lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const t: Transform = { ref: ({ sheet: s }) => (sheetKey(s) === key ? 'gone' : undefined), sheet: (s) => (sheetKey(s) === key ? null : undefined), ends: endsWithout(book, key) }

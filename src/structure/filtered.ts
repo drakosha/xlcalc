@@ -8,18 +8,17 @@
 import type { BookInput } from '../contract.js'
 import { hiddenRows } from '../layout/hidden.js'
 import { say } from '../locale/messages.js'
-import { formatAddress } from '../model.js'
-import { sheetKey } from '../syntax.js'
-import type { Rect } from './area.js'
+import { cornersText, type Rect } from './area.js'
 import { clipped, CLIP } from './clip.js'
 import { copyRange } from './copy.js'
 import type { Applied, Geometry } from './geometry.js'
 import { shift } from './shift.js'
+import { sheetOf } from './rewrite.js'
 import type { ValuesIn } from './values.js'
 
 /** The rows of [lo, hi] a filter leaves visible on `sheet`, or null when the sheet is not filtered or none of them is hidden. */
 export function visibleRows(book: BookInput, sheet: string, lo: number, hi: number): number[] | null {
-  const s = book.sheets.find((x) => sheetKey(x.name) === sheetKey(sheet))!
+  const s = sheetOf(book, sheet)
   const h = s.filtered ? hiddenRows(s) : undefined
   if (!h?.spans.some(([a, b]) => a <= hi && b >= lo)) return null
   const out: number[] = []
@@ -78,6 +77,6 @@ export function copyRows(book: BookInput, from: string, src: Rect, to: string, t
   if (!visible?.length) return copyRange(book, at, rect, to, target, withMeta, source)
   const parts = runs(visible)
   if (clip && parts.length > 1)
-    return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: `${formatAddress(target.r1, target.c1)}:${formatAddress(target.r2, target.c2)}` }) }
+    return { ok: false, code: 'filtered', message: say(book.locale, { key: 'filteredPaste', sheet: to, area: cornersText(target) }) }
   return chain(book, parts.map(([lo, hi]) => (b: BookInput) => copyRange(b, at, rect, to, { ...target, r1: lo, r2: hi }, withMeta, source)))
 }
