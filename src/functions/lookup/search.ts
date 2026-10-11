@@ -16,7 +16,8 @@ export type Compare = (a: V, b: V) => number
 /** The lookup value: an error is the answer, a blank is looked up as 0. */
 export const keyOf = (key: V): Key | CErr => (key === null ? 0 : key)
 
-const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
+/** A value of the data that can match the key: of its type, no blank and no error. */
+export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(v, k)
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
 export function exactMatch(line: Line, k: Key, wild: boolean, compare: Compare, last = false): number {
