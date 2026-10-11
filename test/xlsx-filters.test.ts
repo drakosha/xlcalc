@@ -87,7 +87,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
   it('hidden rows and columns keep their sizes and looks', async () => {
     const book = sheet({ rows: { 3: { hidden: true }, 5: { height: 30, hidden: true, format: '0.0' }, 9: { hidden: true } }, columns: { C: { width: 12, hidden: true }, 'E:F': { hidden: true, style: 0 } } })
     book.styles = [{ fill: { color: '#FFFF00' } }]
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
     expect(issues).toEqual([])
     const xml = await text(data, 'xl/worksheets/sheet1.xml')
     expect(xml).toContain('<row r="5" ht="30" customHeight="1" hidden="1" s="1" customFormat="1">')
@@ -110,7 +110,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
 
   it("a filtered sheet gets Excel's mark and an autofilter over its cells and hidden rows whose criteria every row meets", async () => {
     const book = sheet({ rows: { 3: { hidden: true }, '11:12': { hidden: true } }, filtered: true })
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
     expect(issues).toEqual([])
     const xml = await text(data, 'xl/worksheets/sheet1.xml')
     expect(xml).toMatch(/^<\?xml[^>]*>\n<worksheet [^>]*><sheetPr filterMode="1"\/><dimension /)
@@ -129,7 +129,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
     ]
     const book = sheet({ rows: { 3: { hidden: true } }, filtered: true, tables })
     book.sheets[0].cells.B1 = { value: 'n' }
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
     expect(issues).toEqual([])
     expect(await text(data, 'xl/worksheets/sheet1.xml')).not.toMatch(/filterMode|autoFilter/)
     expect(await text(data, 'xl/tables/table2.xml')).toContain(`<autoFilter ref="B1:B7">${KEEP_ALL}</autoFilter>`)
@@ -140,7 +140,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
 
   it('a filtered sheet whose tables have no header row and meet its cells loses its filter mode, reported', async () => {
     const book = sheet({ rows: { 3: { hidden: true } }, filtered: true, tables: [{ name: 'Bare', range: 'B2:B7', headers: false, columns: [{ name: 'n' }] }] })
-    const { data, issues } = await writeXlsx(book)
+    const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
     expect(codes(issues)).toEqual(['autoFilter'])
     expect(await text(data, 'xl/worksheets/sheet1.xml')).not.toMatch(/filterMode|autoFilter/)
     expect((await readXlsx(data)).book.sheets[0].filtered).toBeUndefined()

@@ -5,6 +5,7 @@
  * `docs/structure.md`). Across sheets a range only sheds the moved cells at its end.
  */
 import type { BookInput, CellInput, CellRef, NameInput, RestructureResult } from '../contract.js'
+import { caseKey } from '../collate.js'
 import { say } from '../locale/messages.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, parseAddress } from '../model.js'
 import { parse, sheetKey, walk } from '../syntax.js'
@@ -113,7 +114,7 @@ function moveTransform(from: string, src: Rect, to: string, dr: number, dc: numb
  */
 export function carryNames(names: NameInput[], formulas: string[], from: string, to: string, repoint: (ref: string) => string): NameInput[] {
   const [fk, tk] = [sheetKey(from), sheetKey(to)]
-  const named = (k: string | null, name: string) => names.find((n) => (n.scope === undefined ? k === null : sheetKey(n.scope) === k) && n.name.toUpperCase() === name.toUpperCase())
+  const named = (k: string | null, name: string) => names.find((n) => (n.scope === undefined ? k === null : sheetKey(n.scope) === k) && caseKey(n.name) === caseKey(name))
   const added: NameInput[] = []
   for (const f of formulas) {
     let ast
@@ -125,7 +126,7 @@ export function carryNames(names: NameInput[], formulas: string[], from: string,
     walk(ast, (n) => {
       if (n.k !== 'name') return
       const own = named(fk, n.name)
-      if (own && !named(tk, n.name) && !named(null, n.name) && !added.some((a) => a.name.toUpperCase() === n.name.toUpperCase())) added.push({ name: own.name, ref: repoint(own.ref), scope: to })
+      if (own && !named(tk, n.name) && !named(null, n.name) && !added.some((a) => caseKey(a.name) === caseKey(n.name))) added.push({ name: own.name, ref: repoint(own.ref), scope: to })
     })
   }
   return added

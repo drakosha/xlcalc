@@ -3,11 +3,11 @@
  * `.d.ts`, plain node imports them by package name, the synthetic hash, the session and the synthetic book through
  * xlsx match the sources,
  * `dist` cannot be reached around `exports`, ported code keeps its attribution, and the tarball holds only
- * `dist` and the documents.
+ * `dist` and the documents, every link between which leads to a file it holds.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, posix } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { compute, FUNCTION_NAMES, openSession } from '../src/index.js'
@@ -24,7 +24,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './unstable/internal', './unstable/synth', './xlsx', './worker'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './contract', './a1', './unstable/internal', './unstable/synth', './xlsx', './worker'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {
@@ -79,11 +79,35 @@ describe('built package', () => {
   })
 
   it('the tarball holds dist, the documents and package.json only', () => {
-    const [packed] = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: root, encoding: 'utf8' })) as { files: { path: string }[] }[]
-    const files = packed.files.map((f) => f.path).sort()
-    expect(files.filter((f) => !f.startsWith('dist/'))).toEqual(['CHANGELOG.md', 'LICENSE', 'README.md', 'THIRD_PARTY.md', 'package.json'])
+    const files = packed()
+    const docs = readdirSync(join(root, 'docs')).filter((f) => f.endsWith('.md')).map((f) => `docs/${f}`)
+    expect(files.filter((f) => !f.startsWith('dist/'))).toEqual(['CHANGELOG.md', 'LICENSE', 'README.md', 'THIRD_PARTY.md', ...docs, 'package.json'].sort())
     expect(files.filter((f) => f.startsWith('dist/') && !/\.(js|d\.ts)$/.test(f))).toEqual([])
     expect(files).toContain('dist/index.js')
     expect(files).toContain('dist/index.d.ts')
   }, 60_000)
+
+  it("every relative link of the README and the docs, and every docs/ file they name, is a file of the tarball", () => {
+    const files = new Set(packed())
+    const broken: string[] = []
+    for (const doc of [...files].filter((f) => f === 'README.md' || /^docs\/[^/]+\.md$/.test(f))) {
+      const text = readFileSync(join(root, doc), 'utf8')
+      const dir = posix.dirname(doc)
+      // links `[text](path#anchor)`, but to the web and to a place in the same file; and docs files named in code
+      const links = [...text.matchAll(/\]\(([^)\s#]+)(?:#[^)]*)?\)/g)].map((m) => m[1]).filter((t) => !/^[a-z]+:/i.test(t)).map((t) => posix.normalize(posix.join(dir, t)))
+      const named = [...text.matchAll(/`(docs\/[\w.-]+\.md)(?:#[^`]*)?`/g)].map((m) => m[1])
+      for (const target of [...links, ...named]) if (!files.has(target)) broken.push(`${doc}: ${target}`)
+    }
+    expect(broken).toEqual([])
+  }, 60_000)
 })
+
+let files: string[] | undefined
+/** The files `npm pack` puts into the tarball, sorted. */
+function packed(): string[] {
+  if (!files) {
+    const [pack] = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: root, encoding: 'utf8' })) as { files: { path: string }[] }[]
+    files = pack.files.map((f) => f.path).sort()
+  }
+  return files
+}

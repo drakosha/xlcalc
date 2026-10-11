@@ -73,8 +73,8 @@ export function dateToSerial(iso: string): number {
   if (!m) throw new Error(`bad date: ${iso}`)
   const ms = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0), 0) + Number(m[6] ?? 0) * 1000
   const serial = (ms - EPOCH_MS) / DAY_MS
-  // before 1900-03-01 Excel is one day behind (the phantom 1900-02-29)
-  return serial < 61 ? serial - 1 : serial
+  // before 1900-03-01 Excel is one day behind; its phantom 1900-02-29 is serial 60 (Date.UTC rolls it to 1900-03-01)
+  return serial < 61 || (m[1] === '1900' && m[2] === '02' && m[3] === '29') ? serial - 1 : serial
 }
 
 export function serialToUtcMs(serial: number): number {

@@ -19,13 +19,13 @@ console.log(bad.ok, bad.code, bad.message, bad.at) // → false syntax unexpecte
 
 `parseEntry(text, opts?)` returns `{ ok: true, input }` or `{ ok: false, code, message, at }`.
 
-- `input` is a `CellInput`: `value` or `formula`, `format` where the cell has one after the entry, and the `style` and `meta` of the cell typed into. It is `null` when nothing is left of the cell: empty text typed into a cell with no format, style or meta.
+- `input` is a `CellInput`: `value` or `formula`, `format` where the cell has one after the entry, and the `style`, `meta`, `note` and `link` of the cell typed into, which Excel keeps whatever is typed. It is `null` when nothing is left of the cell: empty text typed into a cell with none of these.
 - `ok: false` is a formula Excel does not take as typed (its window says "There's a problem with this formula"): the check code `syntax`, `empty`, `too_long` or `too_deep`, a message and the position in `text`. Nothing else stops an entry.
 
 The options:
 
 - `locale`: the book's locale, a tag of `LOCALES`; en-US without it.
-- `cell`: the cell typed into, as the book holds it: its `format`, `style` and `meta` (a `CellInput`, or a `CellView` from `Session.cells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
+- `cell`: the cell typed into, as the book holds it: its `format`, `style`, `meta`, `note` and `link` (a `CellInput`, or a `CellView` from `Session.cells`; other fields are not read). Pass the format the cell shows by: its row's or column's when it has none of its own.
 - `now`: the moment whose year completes a date typed without one, ISO as `Clock.now`; the current moment without it.
 - `dateSystem`: the book's date system, 1900 or 1904, for the serial numbers of dates.
 
@@ -116,7 +116,29 @@ As a number is typed into a cell whose format shows percent, Excel's editor adds
 
 ### Empty text
 
-Empty text clears the value or formula and keeps the format, style and meta: `{ format: '0.00', meta: 1 }`, or `null` when nothing is left.
+Empty text clears the value or formula and keeps the format, style, meta, note and link: `{ format: '0.00', meta: 1 }`, or `null` when nothing is left.
+
+## The text a cell opens with
+
+`entryText(value, opts)` is the other way round: the text a cell opens with for editing, as Excel's formula bar shows the value it holds, so that the editor shows what Excel shows and the value reads back from it. `needsApostrophe(text, opts)` tells whether text typed into the cell would read as something else than itself.
+
+```js
+import { entryText, needsApostrophe } from 'xlcalc'
+
+console.log(entryText(1234.5), entryText(1e20), entryText(1e21), entryText(0.0000001)) // → 1234.5 100000000000000000000 1E+21 0.0000001
+console.log(entryText(0.125, { numberFormat: '0.0%' }), entryText(45688.75, { numberFormat: 22 }), entryText(0.75, { numberFormat: 'h:mm', locale: 'ru-RU' }))
+// → 12.5% 1/31/2025  6:00:00 PM 18:00:00
+console.log(entryText('007'), entryText('abc'), entryText('1.5', { locale: 'ru-RU' }), entryText(true, { locale: 'ru-RU' })) // → '007 abc '1.5 ИСТИНА
+console.log(needsApostrophe('5', { numberFormat: '0%' }), needsApostrophe('5', { numberFormat: '@' })) // → true false
+```
+
+The options are the cell's `numberFormat` (the one it shows by: its row's or column's without its own), the book's `locale` and `dateSystem`, and `now`, the moment whose year completes text read as a date without one.
+
+- A number is written whole: its 15 significant digits with the locale's decimal separator and no groups, in positional notation up to 21 characters (`100000000000000000000`), in scientific notation past that (`1E+21`, `1E-20`). Money, fractions, scientific and number formats change nothing (`$1,234.50` opens as `1234.5`, `1 1/2` as `1.5`).
+- A number under a percent format is written as a percent: `12%`, `12.5%`, `-5%`.
+- A number under a date or time format is written by the locale's short date (the built-in format 14: `1/31/2025`, `31.01.2025`) and long time (`6:00:00 PM`, `18:00:00`), two spaces between them, as the formula bar writes them: a date alone when its time is midnight, a time alone under a format with no day when it is under one day (`6:30:00 PM`), the date and the time otherwise (`1/1/1900  6:00:00 PM` for 1.75 under `h:mm`). Day 0 is `1/0/1900`; a negative number or one past 9999-12-31 is written as a number.
+- A boolean and an error are written in the locale's words: `TRUE`, `ЛОЖЬ`, `#DIV/0!`, `#Н/Д`.
+- Text is written as it is, with an apostrophe before it when typing it would read as something else (`needsApostrophe`, by `parseEntry`): a number, a date, a time, a boolean, an error or a formula in the locale (`'007`, `'1.5` in ru-RU where it is a date, `'=1+2`), text a percent cell's editor would make a number (`'5`), text that begins with an apostrophe (`''x`), empty text. Under the text format nothing reads otherwise (`007`).
 
 ## How it was checked
 
@@ -138,6 +160,8 @@ Values are compared exactly, as the saved file holds every digit. `typed-pct-hel
 
 Excel for Windows and Excel for Mac answer alike, but where their own built-in codes part: the Mac's en-US short date is `m/d/yy` and its ru-RU short time `hh:mm`, so it keeps the codes `m/d/yyyy` (en-US) and `h:mm` (ru-RU) as formats of the book's own, where Windows takes them as the formats 14 and 20. The engine follows Windows.
 
+The text a cell opens with was measured by the same step on the sets `edit-held` (85 texts) and `edit-numbers-held` (38 numbers around a length of 21 characters), which read each cell's `Formula` and `FormulaLocal` and, on the Mac, its formula bar itself: each cell selected in turn with Excel in front, the bar's text read through the window's accessibility (`Formula Bar. A,1 1/31/2025  6:00:00 PM`). The bar is needed: both Excels' object model gives a date's, a time's and a percent's number there (`45688`, `0.12`), and under other formats the text the bar shows, the apostrophe being the cell's prefix character. `entryText`'s predictions were committed before Excel ran each set: `edit-held` came out as predicted on 72 of 85 cells in en-US and 74 in ru-RU, the misses being numbers of 21 characters written whole, the two spaces before a time, the apostrophe Excel keeps and ru-RU's times, and with the rules fixed `edit-numbers-held` came out as predicted on all 38 numbers in both locales, in Excel for Mac's formula bar and Excel for Windows's `FormulaLocal` alike. `test/entry-text-excel.test.ts` compares `entryText` with the formula bar and with the object model under the other formats, and reads every text back with `parseEntry` to the value Excel saved.
+
 The object model takes some text otherwise than typing, and the keyboard sets settle these: through `Formula2Local` a text begun by `+` or `-` that is no number is text (`-C1`, `+1+2`), a number goes into a percent cell as it is (`5` is 500%), and empty text makes a cell formatted as text hold empty text. Excel for Windows has `AutoPercentEntry` on, as the answers' `meta` records, but takes `Formula2Local` as the Mac does.
 
 ## Known differences
@@ -146,4 +170,6 @@ The object model takes some text otherwise than typing, and the keyboard sets se
 - A formula's format from a reference: Excel gives `=C2`, `=C2+1`, `=SUM(C2,1)`, `=MAX(C2,C1)` and `=C1+C2` the date format of C2; `parseEntry` has no book, and a reference gives no format.
 - `#GETTING_DATA` (`#ОЖИДАНИЕ_ДАННЫХ` in ru-RU) typed is an error in Excel; the engine has no such error and keeps the text.
 - Typed on the keyboard, `+5%+1` takes the percent format of its first number, and Excel drops a `+` before a number further into a formula begun by `+` (`+-+5` is `+-5`); `parseEntry` gives `+5%+1` no format and drops only the first `+`.
-- Not measured: typing on the keyboard on Windows (Excel over SSH has no screen), so the percent cell's editor and a leading `+` or `-` follow the Mac's keyboard; the ruble sign typed on the keyboard (the layout used has none); the order of entries (Excel's AutoComplete of text from the column above, AutoCorrect); the edit text Excel shows for a cell again (`'007` for text that would read as a number), which a host writes itself.
+- Not measured: typing on the keyboard on Windows (Excel over SSH has no screen), so the percent cell's editor and a leading `+` or `-` follow the Mac's keyboard; the ruble sign typed on the keyboard (the layout used has none); the order of entries (Excel's AutoComplete of text from the column above, AutoCorrect).
+- Excel's formula bar keeps the apostrophe a person typed before text that needed none (`'abc`, `'TRUE` in ru-RU); a book holds no such mark, and `entryText` puts the apostrophe only before text that would read as something else.
+- Excel for Mac's formula bar writes a ru-RU time with a leading zero (`01:30:00`, `00:00:00`), as its own regional data have it; `entryText` writes the locale's long time without it (`1:30:00`), as Excel for Windows's regional data have it and the engine follows. Excel for Windows's formula bar was not read (it has no screen over SSH).

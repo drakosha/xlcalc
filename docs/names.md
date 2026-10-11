@@ -35,7 +35,7 @@ Names are compared in any case, Cyrillic too: `ставка` and `СТАВКА` 
 
 A name is written as it is in every locale. In ru-RU a Russian function name followed by `(` is the function and the same word alone is a name: `=СУММ(Сумма;1)` sums the name `Сумма`. A stored formula can hold the word `ИСТИНА` as a name only from an en-US book; `toLocal` shows it in ru-RU in quotes, `'ИСТИНА'`, as Excel ru-RU does, and `toInvariant` reads `'ИСТИНА'` back as the name, while `ИСТИНА` typed in Russian is TRUE. A table named `ИСТИНА` keeps no quotes before its brackets (`ИСТИНА[Qty]`).
 
-These are the rules of Microsoft's pages on defined names and on table names, with what Excel was measured to do beyond them: `\` and `?` inside a name, and the booleans of ru-RU. `validateName(name, { locale })` checks them for a book of that locale, en-US without one.
+These are the rules of Microsoft's pages on defined names and on table names, with what Excel was measured to do beyond them: `\` and `?` inside a name, and the booleans of ru-RU. `validateName(name, { locale })` checks them for a book of that locale, en-US without one, and refuses a name with the code of the rule it breaks: `chars` (its first character, a character inside or its length), `reference` (it reads as a cell or R1C1: `AB12`, `R2C3`, `R`) or `boolean` (`TRUE`, `FALSE`, and `ИСТИНА` and `ЛОЖЬ` in ru-RU).
 
 The rules below were measured in Excel 16.113 for Mac (en-US).
 
@@ -51,7 +51,7 @@ The rules below were measured in Excel 16.113 for Mac (en-US).
 | `'Data'!$A$1:$A$3,'Data'!$C$1:$C$3` | `=SUM(both)` | a union: see [References](references.md) |
 | `'Data'!$B$1#` | `=SUM(sp)` | the spill range of B1 |
 
-A name's formula is written as a file stores it, without `=`, and `readXlsx` reads it so. Every reference in it has its sheet. A name whose formula does not parse, or has a reference without a sheet, is left out with a name issue.
+A name's formula is written as a file stores it, without `=` (a leading one is dropped, as Excel's "Refers to" shows one), and `readXlsx` reads it so. Every reference in it has its sheet. A name whose formula does not parse, or has a reference without a sheet, is left out with a name issue.
 
 ## Names left out and names with errors
 

@@ -4,6 +4,8 @@
  * separator); a locale changes how formulas are typed and shown. A locale is plain data: a new locale is a
  * new object of this shape, no engine code.
  */
+import type { Refusal } from '../contract.js'
+
 export interface Locale {
   /** BCP 47 tag: `en-US`, `ru-RU`. A package locale's tag also gives the language of messages (English for another tag). */
   readonly tag: string
@@ -32,4 +34,4 @@ export interface Locale {
 export type TableItem = '#All' | '#Data' | '#Headers' | '#Totals' | '#This Row'
 
 /** The result of translating formula text: the text, or a check code with a message in the locale's language and the position in the given text. */
-export type Translation = { ok: true; formula: string } | { ok: false; code: 'syntax'; message: string; at: number }
+export type Translation = { ok: true; formula: string } | (Refusal<'syntax'> & { at: number })

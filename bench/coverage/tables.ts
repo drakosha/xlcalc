@@ -117,7 +117,7 @@ async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
-    const { data, issues } = await writeXlsx(withMirrors(c.book))
+    const { data, issues } = await writeXlsx({ book: withMirrors(c.book) }, { values: 'omit' })
     if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
     const at = mirrorRanges(c.read)

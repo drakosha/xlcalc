@@ -14,3 +14,6 @@ export const ERROR_TEXT: Record<ErrorCode, string> = {
   CALC: '#CALC!',
   ERROR: '#ERROR!',
 }
+
+/** An error's text in a locale's words (`errors`, by stored text: `#DIV/0!` is `#ДЕЛ/0!` in ru-RU), the stored text where it has none. */
+export const errorIn = (code: ErrorCode, errors?: Readonly<Record<string, string>>): string => errors?.[ERROR_TEXT[code]] ?? ERROR_TEXT[code]

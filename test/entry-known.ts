@@ -71,5 +71,6 @@ export const ENTRY_MAC_KNOWN: ReadonlyMap<string, EntryReason> = new Map(
   cases('macCode', {
     'en-US:typed-held': ['in-code-mdy-4', 'in-code-mdy-5', 'in-code-mdy-6', 'in-code-mdy-8', 'in-code-mdy-10'],
     'ru-RU:typed': ['in-time-6', 'in-time-8', 'in-time-15', 'in-time-16', 'in-time-18'],
+    'ru-RU:edit-held': ['time-cell-3'],
   }),
 )

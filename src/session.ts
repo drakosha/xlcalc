@@ -8,7 +8,7 @@
  * and the state is built again from the book on the next call. Each call that changes the book answers an
  * `EditResult` (`session/answer.ts`) and adds one to the session's revision.
  */
-import type { BookInput, BookLayout, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
+import type { BookInput, BookLayout, BookSnapshot, CellEdit, CellInput, CellIssueDetail, CellPatch, CellRef, CellReplace, CellStyle, CellTextOptions, CellTextPreview, CellTextResult, CellValidation, CellView, ClearKind, Clock, ComputeResult, EditOptions, EditResult, EntryCheck, Explanation, ExplainOptions, LayoutEdit, NameInput, NumberFormat, RangeRef, Scalar, Session, SessionHistory, SessionOptions, SessionRestructureResult, SheetExtent, SheetInput, StructureOp, UndoResult, Viewport, ViewportOptions } from './contract.js'
 import { applyClock, applyEdits, applyHidden, applyMerges, buildState, setNow, type EngineState } from './engine.js'
 import { limitsBudget, run, untimed, withBudget, type Steps } from './exec/budget.js'
 import { explainCell, explainText } from './explain.js'
@@ -44,6 +44,7 @@ import { applyOp, checkedMapCell } from './structure/index.js'
 import { stateValues } from './structure/values.js'
 import { sheetKey } from './syntax.js'
 import { cellValidation, hasRule, withInput } from './validation/session.js'
+import { cellWithoutEquals, editsWithoutEquals, opWithoutEquals } from './equals.js'
 
 /** How a session is run by its host. */
 export interface SessionHooks {
@@ -85,6 +86,7 @@ export interface SessionSteps {
   validation(sheet: string, cell: string): Steps<CellValidation | null>
   validateEntry(sheet: string, cell: string, input: CellInput | null): Steps<EntryCheck>
   result(): Steps<ComputeResult>
+  getSnapshot(): Steps<BookSnapshot>
   hash(): Steps<string>
   close(): void
 }
@@ -111,7 +113,7 @@ function rect(text: unknown, path: string) {
 /** Opens a session in steps: the book checked, then computed. */
 export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: SessionHooks = {}): Steps<SessionSteps> {
   const o = checkSessionOptions(opts)
-  checkBook(book)
+  book = checkBook(book)
   const live = o.live === true
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
@@ -313,7 +315,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setCells(edits: CellEdit[], eo?: EditOptions) {
       const s = yield* ready()
       checkBase(eo, revision)
-      const [next, out, back] = yield* writeCells(s, resolveEdits(s, checkFieldEdits(edits, sheetIndex(s), styleCount(s))), 'setCells')
+      const [next, out, back] = yield* writeCells(s, resolveEdits(s, editsWithoutEquals(checkFieldEdits(edits, sheetIndex(s), styleCount(s)))), 'setCells')
       keep(back)
       return answer(next, out)
     },
@@ -390,7 +392,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *setNames(names: NameInput[], eo?: EditOptions) {
       const old = yield* ready()
       checkBase(eo, revision)
-      checkNames(names, 'names')
+      names = checkNames(names, 'names')
       // tables and names share one namespace
       checkTables({ ...old.input, names }, 'book')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
@@ -417,6 +419,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *restructure(op: StructureOp, eo?: EditOptions) {
       const old = yield* ready()
       checkBase(eo, revision)
+      op = opWithoutEquals(op)
       const r = applyOp(old.input, op, stateValues(old))
       if (!r.ok) return r
       // a sheet hidden or shown changes no value: the book takes its sheets, nothing is built again
@@ -494,7 +497,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *validateEntry(sheet: string, cell: string, input: CellInput | null) {
       const s = yield* ready()
       const [i, row, col] = at(s, sheet, cell)
-      if (input !== null) checkCell(input, 'input', styleCount(s))
+      if (input !== null) input = cellWithoutEquals(checkCell(input, 'input', styleCount(s)))
       checkArrayEdits(s, [{ sheet, cell, input }])
       if (!hasRule(s, i, row, col)) return { ok: true }
       try {
@@ -511,6 +514,11 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *result() {
       const t0 = nowMs()
       return yield* buildResult(yield* ready(), clock, t0, display)
+    },
+    *getSnapshot() {
+      const t0 = nowMs()
+      const s = yield* ready()
+      return { book: s.input, result: yield* buildResult(s, clock, t0, display) }
     },
     *undo(eo?: EditOptions) {
       checkBase(eo, revision)
@@ -566,6 +574,7 @@ export function openSession(book: BookInput, opts?: SessionOptions): Session {
     validation: (sheet, cell) => now(() => core.validation(sheet, cell)),
     validateEntry: (sheet, cell, input) => now(() => core.validateEntry(sheet, cell, input)),
     result: () => now(() => core.result()),
+    getSnapshot: () => now(() => core.getSnapshot()),
     hash: () => now(() => core.hash()),
     undo: (o) => now(() => core.undo(o)),
     redo: (o) => now(() => core.redo(o)),

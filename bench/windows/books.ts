@@ -250,7 +250,7 @@ export async function stepTables(set: string, tag: Tag, e: WinEnv): Promise<void
     `tables-${set}`,
     todo,
     async (c, f) => {
-      const { data, issues } = await writeXlsx(withMirrors(c.book))
+      const { data, issues } = await writeXlsx({ book: withMirrors(c.book) }, { values: 'omit' })
       if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
       writeFileSync(f, data)
       const names: Step[] = addsNames(c) ? [{ do: 'names', visible: true }] : []

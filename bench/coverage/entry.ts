@@ -44,24 +44,24 @@ export const heldOf = (c: CellInput | undefined): CellInput | null => {
 }
 
 /** The answers of a part from Excel's reading of its cells and the file it saved. */
-export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?, unknown?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
+export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?, unknown?, string?, string?, string?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
   const read = await readXlsx(saved)
   const cells = read.book.sheets.find((s) => s.name === 'S')!.cells
-  const cached = read.cached.find((s) => s.name === 'S')!.cells
+  const cached = read.cached.sheets.find((s) => s.name === 'S')!.cells
   const out: Record<string, EntryAnswer> = {}
   part.forEach((c, i) => {
     const at = `A${i + 1}`
-    const [text, code, local, prefix, value2] = shown[i]
+    const [text, code, local, prefix, value2, formula, formulaLocal, bar] = shown[i]
     const cell = heldOf(cells[at])
     // a formula Excel does not take leaves the cell as it was, blank, with no error from AppleScript
     const why = refused[i] || (c.text !== '' && cell?.value === undefined && cell?.formula === undefined && !prefix ? 'not taken: the cell stayed blank' : '')
-    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}) }
+    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at].value } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}), ...(formula === undefined ? {} : { formula, formulaLocal }), ...(bar === undefined ? {} : { bar }) }
   })
   return out
 }
 
 /** One part in Excel. A window that is not a book stops the run (nothing is clicked); a book Excel repairs stops it too. */
-async function runPart(part: EntryCase[], label: string, keys: boolean): Promise<Record<string, EntryAnswer>> {
+async function runPart(part: EntryCase[], label: string, keys: boolean, edit: boolean): Promise<Record<string, EntryAnswer>> {
   if (declineRepair()) console.log('closed a leftover book repair window')
   const before = dialogText()
   if (before) throw new Error(`entry ${label}: Excel has a window that is not a book: ${before}`)
@@ -71,10 +71,10 @@ async function runPart(part: EntryCase[], label: string, keys: boolean): Promise
     const file = join(dir, 'book.xlsx')
     const savedName = 'saved.xlsx'
     const savedFile = join(dir, savedName)
-    const { data, issues } = await writeXlsx(entryBook(part))
+    const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
-    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys', join(HERE, 'excel-keys.applescript')] : [])])
+    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys', join(HERE, 'excel-keys.applescript')] : []), ...(edit ? ['edit'] : [])])
     let out = ''
     let err = ''
     child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
@@ -87,7 +87,7 @@ async function runPart(part: EntryCase[], label: string, keys: boolean): Promise
         const after = dialogText()
         if (after) throw new Error(`entry ${label}: Excel window after the part: ${after}`)
         if (code !== 0) throw new Error(`entry ${label}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?][] }
+        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?, string?, string?, string?][] }
         return await partAnswers(part, raw.refused, raw.cells, new Uint8Array(readFileSync(savedFile)))
       }
       if (declineRepair()) {
@@ -133,7 +133,7 @@ export async function stepEntry(set: string, tag: string): Promise<void> {
   try {
     for (let k = 0; k * PART < todo.length; k++) {
       const part = todo.slice(k * PART, (k + 1) * PART)
-      Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`, mod.keys === true))
+      Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`, mod.keys === true, mod.edit === true))
       save()
       console.log(`entry ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
     }

@@ -3,25 +3,26 @@
  * workbook, its sheets (hidden ones with their state, the first visible one active) with their tables, notes and
  * hyperlinks, styles, shared strings, the dynamic array metadata when there are formulas, the date system and iterative
  * calculation, and the book's locale as a custom document property (xlsx has no place for it). A formula file asks Excel
- * to compute the book on opening, so Excel shows its own values over the ones written.
+ * to compute the book on opening, so Excel shows its own values over the ones written, whichever values it stores.
  */
 import type { BookInput, ComputeResult } from '../../contract.js'
 import { epochOf } from '../../dates.js'
-import { checkBook, InputError } from '../../input.js'
 import { FormulaError } from '../../syntax/ast.js'
 import { parse } from '../../syntax/parse.js'
 import { bindTables, nameProblem } from '../../syntax/check.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { sheetKey } from '../../syntax/print.js'
+import { caseKey } from '../../collate.js'
 import { toFile } from '../formulas/to-file.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
-import type { WriteXlsxOptions, XlsxWritten } from '../types.js'
+import type { WriteXlsxOptions, XlsxCached, XlsxSnapshot, XlsxWritten } from '../types.js'
 import { escapeAttr, escapeText, needsPreserve } from '../xml/text.js'
 import { utf8 } from '../zip/platform.js'
 import { zip } from '../zip/write.js'
 import { nextBlock } from './parts.js'
 import { writeSheet } from './sheet.js'
+import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
 import { tableAt, tablesOf } from '../../tables/model.js'
@@ -70,7 +71,7 @@ function definedNames(book: BookInput, issues: Issues, tables: { name: string; c
   const out: string[] = []
   for (const n of book.names ?? []) {
     const scope = n.scope === undefined ? undefined : index.get(sheetKey(n.scope))
-    const key = `${scope ?? ''}\n${n.name.toUpperCase()}`
+    const key = `${scope ?? ''}\n${caseKey(n.name)}`
     let text: string | undefined
     try {
       // a table's name alone is its data, which a file writes `Sales[]`
@@ -105,21 +106,15 @@ function iterationAttrs(it: BookInput['iteration']): string {
   return ' iterate="1"' + (it.maxIterations !== undefined ? ` iterateCount="${it.maxIterations}"` : '') + (it.maxChange !== undefined ? ` iterateDelta="${it.maxChange}"` : '')
 }
 
-/** The result's cells by sheet of the book; the result must be the book's (same sheets, in order). */
-function resultCells(book: BookInput, result: ComputeResult | undefined) {
-  if (!result) return undefined
-  if (result.sheets.length !== book.sheets.length || result.sheets.some((s, i) => sheetKey(s.name) !== sheetKey(book.sheets[i].name)))
-    throw new InputError('opts.result', "expected the book's result: its sheets differ from the book's")
-  return result.sheets.map((s) => s.cells)
-}
-
-/** Writes a book as an xlsx file: with formulas and the values of `result`, or with values only. */
-export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): Promise<XlsxWritten> {
-  checkBook(book)
-  const mode = opts.mode ?? 'formulas'
-  if (mode !== 'formulas' && mode !== 'values') throw new InputError('opts.mode', `expected "formulas" or "values", got ${JSON.stringify(mode)}`)
-  if (mode === 'values' && !opts.result) throw new InputError('opts.result', 'the values mode takes the values from the result: pass the result of compute')
-  const cells = resultCells(book, opts.result)
+/**
+ * Writes a book as an xlsx file: its formulas with the values of `snapshot.result` that `opts.values` asks for, or its
+ * values alone (`opts.mode: 'values'`).
+ */
+export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten>
+/** @deprecated The book and its result go as one snapshot: `writeXlsx({ book, result }, { mode, values })`. */
+export async function writeXlsx(book: BookInput, opts?: WriteXlsxOptions & { result?: ComputeResult | XlsxCached }): Promise<XlsxWritten>
+export async function writeXlsx(first: XlsxSnapshot | BookInput, opts?: WriteXlsxOptions & { result?: ComputeResult | XlsxCached }): Promise<XlsxWritten> {
+  const { book, cells, mode, unasked } = writeArgs(first, opts)
   const issues = new Issues()
   const styles = new StyleWriter(book.styles)
   const strings = new Map<string, number>()
@@ -173,6 +168,7 @@ export async function writeXlsx(book: BookInput, opts: WriteXlsxOptions = {}): P
     return w
   })
   const dynamic = sheets.some((s) => s.formulas)
+  if (dynamic && unasked) issues.add('noCachedValues', 'no result was given: the file stores no values of formulas, and Excel computes them when it opens the file')
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
