@@ -25,7 +25,7 @@ import { cellValue, editedCells, layoutCells, shownChanges, snapshot } from './s
 import { movedChanges } from './session/moved.js'
 import { checkPatches } from './session/patch.js'
 import { patchPlan, type Plan } from './session/styles.js'
-import { bookDiff, type BookDiff } from './session/rebook.js'
+import { bookDiff, DiffPass, type BookDiff } from './session/rebook.js'
 import { columnWidening, entryCheck, validationAlert } from './session/text.js'
 import { checkTextEntries, textAlerts, textsFound, textWidths, typedTexts, type Typed } from './session/texts.js'
 import { applyStep, bookStep, cellsStep, History, layoutStep, manyStep, stylesStep, type HistoryData, type SessionCore, type Step, type Taken } from './session/undo.js'
@@ -203,17 +203,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   /**
    * The state built again from `book`, the session's book changed, with its changes against the old one by the geometry
-   * `g` (where the old cells went; the looks of both with `looks`) and the way back from the book before (`back`);
-   * nothing changes if it stops.
+   * `g` (where the old cells went; the looks of both with `looks`) and, with `back`, the way back to the old book, taken
+   * in the same pass over the cells; nothing changes if it stops.
    */
-  function* rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: () => Steps<BookDiff | null>): Steps<[EngineState, Outcome, BookDiff | null]> {
+  function* rebuild(old: EngineState, book: BookInput, g: Geometry, looks: boolean, back: boolean): Steps<[EngineState, Outcome, BookDiff | null]> {
     const at = clock
     if (live) tick(old)
     try {
       const next = yield* build(book)
       const fields = new Map<string, FieldChange>()
-      const keys = movedChanges(old, next, g, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, fields)
-      const diff = yield* back()
+      const pass = back ? new DiffPass(book, old.input) : undefined
+      const keys = movedChanges(old, next, g, fields, display && looks ? [cellLooks(old), cellLooks(next)] : undefined, pass)
+      const diff = pass ? yield* bookDiff(pass, inverse(g)) : null
       state = next
       return [next, { ...nothing(), keys: sortedKeys([...keys, ...fields.keys()]), fields, valued: true, layout: new Set(layoutChanged(old.input, next.input)) }, diff]
     } catch (e) {
@@ -221,11 +222,6 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       throw e
     }
   }
-  /** The way back to `before` from `book`, which the geometry `g` made of it (given to `rebuild`), when the history keeps steps. */
-  const diffTo = (book: BookInput, before: BookInput, g: Geometry) =>
-    function* (): Steps<BookDiff | null> {
-      return history.on ? yield* bookDiff(book, before, inverse(g)) : null
-    }
   /**
    * Sheets of the book replaced by new ones of another layout: the arrays and SUBTOTALs it concerns computed again; the
    * changes and the sheets before, which are put back if the call stops.
@@ -261,7 +257,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     checkArrayEdits(s, edits)
     const renamed = headerEdits(s.input, edits, (v, format) => headerText(s, v, format))
     if (renamed) {
-      const [next, out, diff] = yield* rebuild(s, renamed, [], true, diffTo(renamed, s.input, []))
+      const [next, out, diff] = yield* rebuild(s, renamed, [], true, history.on)
       return [next, out, () => diff && bookStep(call, diff, renamed)]
     }
     const [out, was] = yield* putCells(s, edits)
@@ -424,7 +420,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       checkTables({ ...old.input, names }, 'book')
       // names change the whole graph: the book is rebuilt, changes are collected over all cells (none moved)
       const book = { ...old.input, names }
-      const [next, out, diff] = yield* rebuild(old, book, [], false, diffTo(book, old.input, []))
+      const [next, out, diff] = yield* rebuild(old, book, [], false, history.on)
       keep(() => diff && bookStep('setNames', diff, book))
       return answer(next, out)
     },
@@ -458,7 +454,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
       }
       // the simple way: the state is built again from the new book
       const before = old.sheetNames
-      const [next, out, diff] = yield* rebuild(old, r.book, r.geometry, true, diffTo(r.book, old.input, r.geometry))
+      const [next, out, diff] = yield* rebuild(old, r.book, r.geometry, true, history.on)
       keep(() => diff && bookStep('editStructure', diff, r.book))
       const moved = movesOf(r.geometry, before, next.sheetNames)
       return { ok: true, mapCell: checkedMapCell({ geometry: r.geometry, before, after: next.sheetNames }), ...answer(next, { ...out, moved }) }
