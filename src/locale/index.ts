@@ -7,6 +7,7 @@
 import type { ValidateContext, ValidateResult } from '../contract.js'
 import { checkString, checkValidateContext, object, onlyOptions } from '../input.js'
 import { FormulaError, parse, sheetKey, tokenize, validate, type Tok } from '../syntax.js'
+import { isSpace } from '../syntax/scan.js'
 import { shownSpec, unnamedInTable } from '../syntax/table.js'
 import { EN_US } from '../locales/en-US.js'
 import { checkLocaleArg } from './load.js'
@@ -58,8 +59,6 @@ function checkTranslateOptions(v: unknown): string | undefined {
   return o.table === undefined ? undefined : checkString(o.table, 'opts.table')
 }
 
-const SPACE = new Set([' ', '\t', '\n', '\r'])
-
 /** The structured references of a formula as Excel shows them in a locale with the list separator `list` (`toLocal`); a formula that does not parse as it is. */
 function shownTables(formula: string, table: string | undefined, list: string): string {
   if (!formula.includes('[')) return formula
@@ -77,7 +76,7 @@ function shownTables(formula: string, table: string | undefined, list: string): 
     const tok = toks[k]
     if (tok.t !== 'table') continue
     let end = toks[k + 1].at
-    while (end > tok.at && SPACE.has(formula[end - 1])) end--
+    while (end > tok.at && isSpace(formula[end - 1])) end--
     const own = table !== undefined && (tok.table === null || sheetKey(tok.table) === sheetKey(table))
     const name = own && unnamedInTable(tok.spec) ? '' : (tok.table ?? table ?? '')
     const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec, {}, list)}]`
