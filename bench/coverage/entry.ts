@@ -47,7 +47,7 @@ export const heldOf = (c: CellInput | undefined): CellInput | null => {
 export async function partAnswers(part: EntryCase[], refused: string[], shown: [string, string, string, string?, unknown?, string?, string?, string?][], saved: Uint8Array): Promise<Record<string, EntryAnswer>> {
   const read = await readXlsx(saved)
   const cells = read.book.sheets.find((s) => s.name === 'S')!.cells
-  const cached = read.cached.find((s) => s.name === 'S')!.cells
+  const cached = read.cached.sheets.find((s) => s.name === 'S')!.cells
   const out: Record<string, EntryAnswer> = {}
   part.forEach((c, i) => {
     const at = `A${i + 1}`
@@ -55,7 +55,7 @@ export async function partAnswers(part: EntryCase[], refused: string[], shown: [
     const cell = heldOf(cells[at])
     // a formula Excel does not take leaves the cell as it was, blank, with no error from AppleScript
     const why = refused[i] || (c.text !== '' && cell?.value === undefined && cell?.formula === undefined && !prefix ? 'not taken: the cell stayed blank' : '')
-    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at] } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}), ...(formula === undefined ? {} : { formula, formulaLocal }), ...(bar === undefined ? {} : { bar }) }
+    out[c.id] = { ...(why ? { refused: why } : {}), cell, ...(at in cached ? { computed: cached[at].value } : {}), text, code, local, ...(prefix ? { prefix } : {}), ...(typeof value2 === 'number' ? { value2 } : {}), ...(formula === undefined ? {} : { formula, formulaLocal }), ...(bar === undefined ? {} : { bar }) }
   })
   return out
 }
@@ -71,7 +71,7 @@ async function runPart(part: EntryCase[], label: string, keys: boolean, edit: bo
     const file = join(dir, 'book.xlsx')
     const savedName = 'saved.xlsx'
     const savedFile = join(dir, savedName)
-    const { data, issues } = await writeXlsx(entryBook(part))
+    const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(file, data)
     const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys', join(HERE, 'excel-keys.applescript')] : []), ...(edit ? ['edit'] : [])])

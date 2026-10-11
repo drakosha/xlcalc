@@ -1,5 +1,5 @@
 /** Checks of a formula with codes: functions and their argument counts, sheets, names; valid range names. */
-import type { CheckCode, NameCheck, ValidateContext, ValidateResult } from '../contract.js'
+import type { CheckCode, NameCheck, NameRefusal, ValidateContext, ValidateResult } from '../contract.js'
 import { caseKey } from '../collate.js'
 import { FUNCTIONS, isFunction } from '../functions.js'
 import { english } from '../locale/english.js'
@@ -191,8 +191,11 @@ export function nameProblem(name: string, booleans: readonly string[] = []): str
   return rule && english({ key: 'nameRule', name, rule })
 }
 
-/** A valid defined name by Excel's rules (`nameProblem`) in a book whose locale's booleans are `booleans`. */
+/** The code of `validateName`'s refusal for each rule a name breaks: TRUE and FALSE are booleans in every locale. */
+const NAME_REFUSAL: Record<NameRule, NameRefusal> = { chars: 'chars', cell: 'reference', true: 'boolean', boolean: 'boolean' }
+
+/** A valid defined name by Excel's rules (`nameRule`) in a book whose locale's booleans are `booleans`. */
 export function validateName(name: string, booleans: readonly string[] = []): NameCheck {
-  const problem = nameProblem(name, booleans)
-  return problem === null ? { ok: true } : { ok: false, message: problem }
+  const rule = nameRule(name, booleans)
+  return rule === null ? { ok: true } : { ok: false, code: NAME_REFUSAL[rule], message: english({ key: 'nameRule', name, rule }) }
 }

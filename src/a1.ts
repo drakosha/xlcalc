@@ -11,6 +11,7 @@ import { parseSpan, spanKey } from './layout/spans.js'
 import type { Locale } from './locale/types.js'
 import { colToIndex, formatAddress, indexToCol, MAX_COLS, MAX_ROWS } from './model.js'
 import { contains, encode, meets, parseRange as rangeArg, span, type Area, type Rect } from './structure/area.js'
+import { PLAIN_SHEET } from './sheet-pattern.js'
 
 export { MAX_COLS, MAX_ROWS }
 
@@ -106,8 +107,6 @@ export function linesKey(first: number, last: number, axis: 'columns' | 'rows'):
   return spanKey(Math.min(a, b) - 1, Math.max(a, b) - 1, ax)
 }
 
-/** A sheet name a reference holds without quotes (the tokenizer reads the same): a letter or `_`, then letters, digits, `_` and `.`. */
-export const PLAIN_SHEET = '[\\p{L}_][\\p{L}\\p{N}_.]*'
 const PLAIN = new RegExp(`^${PLAIN_SHEET}$`, 'u')
 const CELL = /^([A-Za-z]{1,3})(\d+)$/
 /** An R1C1 reference at the start of a name: `R` and its number, then `C` and its number; or `C` and its number. */

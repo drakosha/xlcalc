@@ -7,7 +7,7 @@
 import { caseKey } from '../../collate.js'
 import type { BookInput, NameInput, SheetInput } from '../../contract.js'
 import { epochOf } from '../../dates.js'
-import { checkBook, InputError } from '../../input.js'
+import { checkBook, InputError, what } from '../../input.js'
 import { LOCALE_FILES } from '../../locale/registry.js'
 import { Issues } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
@@ -103,9 +103,18 @@ function workbookIssues(xml: string, rels: Rel[], issues: Issues) {
   for (const r of rels) if (LINKED[r.kind]) issues.add(...LINKED[r.kind])
 }
 
+/** The file's bytes: a `Uint8Array` (a Node `Buffer` is one), another view of bytes, or an `ArrayBuffer`. */
+function fileBytes(data: unknown): Uint8Array {
+  if (data instanceof Uint8Array) return data
+  if (ArrayBuffer.isView(data)) return new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
+  if (data instanceof ArrayBuffer || Object.prototype.toString.call(data) === '[object ArrayBuffer]') return new Uint8Array(data as ArrayBuffer)
+  const hint = typeof (data as { arrayBuffer?: unknown } | null)?.arrayBuffer === 'function' ? 'await blob.arrayBuffer()' : 'await readFile(path)'
+  throw new InputError('data', `expected the file's bytes, got ${what(data)}: pass the file's bytes: Uint8Array, ArrayBuffer or Buffer, e.g. ${hint}`)
+}
+
 /** Reads an xlsx file (bytes of the file) into a book, the values Excel stored and what the book could not hold. */
 export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead> {
-  const archive = openArchive(data instanceof Uint8Array ? data : new Uint8Array(data))
+  const archive = openArchive(fileBytes(data))
   const issues = new Issues()
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'
@@ -143,7 +152,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
   const names = readNames(wb, decls, new Set(all), issues)
   const legacy = legacyConverter(names)
   const sheets: SheetInput[] = []
-  const cached: XlsxRead['cached'] = []
+  const cached: XlsxRead['cached'] = { sheets: [] }
   for (const d of decls) {
     if (d.kind !== 'worksheet') {
       issues.add('sheetKind', 'a chart, dialog or macro sheet is left out', { sheet: d.name })
@@ -168,7 +177,7 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer): Promise<XlsxRead
       { sheet: d.name, strings, xfs: table.xfs, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
-    cached.push({ name: d.name, cells: read.cached })
+    cached.sheets.push({ name: d.name, cells: read.cached })
   }
   // a book keeps one visible sheet: a file whose visible sheets are all charts shows its first worksheet
   if (sheets.length && sheets.every((s) => s.hidden)) {

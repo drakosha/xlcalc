@@ -24,7 +24,7 @@ The rules are `SheetInput.conditionalFormats`, in priority order: the first one 
 
 ## The rules
 
-Each rule has `type`, `ranges` (the cells it applies to: `B2:B20`, `D2`, whole columns `F:F`, whole rows `3:5`, one or several, as Excel's "Applies to" lists them) and may have `stopIfTrue`. A rule that holds for a cell gives it its `style`, Excel's differential format: a fill, a font's colour, bold, italic, underline and strike (`bold: false` takes away a bold the cell has), borders and a number format. Formulas are written as cells hold them, without `=`.
+Each rule has `type`, `ranges` (the cells it applies to: `B2:B20`, `D2`, whole columns `F:F`, whole rows `3:5`, one or several, as Excel's "Applies to" lists them) and may have `stopIfTrue`. A rule that holds for a cell gives it its `style`, Excel's differential format: a fill, a font's colour, bold, italic, underline and strike (`bold: false` takes away a bold the cell has), borders and a number format. Formulas are written as cells hold them, without `=`; a leading one is dropped.
 
 | type | the cell holds when | example |
 |---|---|---|

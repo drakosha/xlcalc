@@ -18,7 +18,7 @@ async function bundle() {
 describe('a1 without the engine', () => {
   it('the bundle holds the address modules alone, in a few kilobytes', async () => {
     const { code, used } = await bundle()
-    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/spans', 'model', 'structure/area'])
+    expect(used.map((f) => f.replace(/\.(ts|js)$/, '')).sort()).toEqual(['a1', 'collate', 'input-error', 'layout/spans', 'model', 'sheet-pattern', 'structure/area'])
     expect(code.length).toBeLessThan(8_000)
   }, 60_000)
 

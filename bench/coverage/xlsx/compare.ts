@@ -13,6 +13,7 @@ import { dateToSerial, indexToCol, parseAddress } from '../../../src/model.js'
 import { canonical, parse, validate } from '../../../src/syntax.js'
 import { tableAt, tablesOf, type Tables } from '../../../src/tables/model.js'
 import { BUILTIN_ID } from '../../../src/xlsx/styles/numfmt.js'
+import type { XlsxCached } from '../../../src/xlsx/types.js'
 
 export interface Difference {
   place: string
@@ -169,13 +170,13 @@ export function compareBooks(written: Map<string, string>, read: Map<string, str
 const plain = (v: CellValue | undefined): string => (v === undefined ? 'none' : v === null ? '0' : typeof v === 'number' ? String(Number(v.toPrecision(15))) : stable(v))
 
 /** Cells where the values Excel stored differ from the engine's: formulas and the cells their arrays spilled into. */
-export function compareCached(result: ComputeResult, cached: { name: string; cells: Record<string, CellValue> }[]): Difference[] {
+export function compareCached(result: ComputeResult, cached: XlsxCached): Difference[] {
   const out: Difference[] = []
   result.sheets.forEach((s, i) => {
-    const stored = cached[i]?.cells ?? {}
+    const stored = cached.sheets[i]?.cells ?? {}
     const places = new Set([...Object.keys(stored), ...Object.entries(s.cells).flatMap(([a, c]) => (c.formula !== undefined || c.spillOf !== undefined ? [a] : []))])
     for (const addr of places) {
-      const [engine, excel] = [plain(s.cells[addr]?.value), plain(stored[addr])]
+      const [engine, excel] = [plain(s.cells[addr]?.value), plain(stored[addr]?.value)]
       if (engine !== excel) out.push({ place: `${s.name}!${addr}`, written: engine, read: excel })
     }
   })

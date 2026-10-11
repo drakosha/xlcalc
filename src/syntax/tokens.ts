@@ -3,7 +3,7 @@
  * tables, numbers, strings, error literals, identifiers (names with a sheet too), operators. Whitespace between two
  * references (or names, calls, parentheses) is the intersection operator, `' '`; elsewhere it is skipped.
  */
-import { PLAIN_SHEET } from '../a1.js'
+import { PLAIN_SHEET } from '../sheet-pattern.js'
 import type { ErrorCode } from '../contract.js'
 import { colToIndex, MAX_COLS, MAX_ROWS, readNumber } from '../model.js'
 import { bad, type RangeRef } from './ast.js'

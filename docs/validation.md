@@ -38,7 +38,7 @@ A rule is `DataValidation`, as an xlsx file holds it:
 
 The defaults are those of a rule Excel makes, so a rule made in Excel reads back short. Excel takes titles of 32 characters, an input message of 255 and an alert's text of 225; the writer cuts longer ones.
 
-Formulas are stored text without `=`, as a cell's: English function names, a comma between arguments. A rule's formulas are written for its first cell, the top-left cell of the first range of `range`, and a relative reference moves to each other cell as a copy would move it: `{ range: 'B2:B9', type: 'custom', formula1: 'B2>A2' }` checks `B5>A5` for B5.
+Formulas are stored text without `=` (a leading one is dropped), as a cell's: English function names, a comma between arguments. A rule's formulas are written for its first cell, the top-left cell of the first range of `range`, and a relative reference moves to each other cell as a copy would move it: `{ range: 'B2:B9', type: 'custom', formula1: 'B2>A2' }` checks `B5>A5` for B5.
 
 A literal list is a text constant of items separated by commas, `'"Open,Shipped,Closed"'`, as a file stores it in every locale. Excel ru-RU shows and takes the same list as `Open;Shipped;Closed` in its window, and a file's `"a;b;c"` is one item in both locales. A list of cells is a reference to one row or column (`'$E$2:$E$9'`, `"'Lists'!$A$1:$A$20"`), a defined name, a spill reference (`'$G$2#'`) or a formula giving a reference.
 
