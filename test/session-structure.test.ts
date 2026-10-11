@@ -83,6 +83,18 @@ describe('session.editStructure', () => {
     expect(session.getResult().hash).toBe(compute(session.getBook(), { clock }).hash)
   }, 60_000)
 
+  it('a fill pastes its source once per offset, not the sheet: one row filled down 2,000 rows of the synthetic book is within the cold budget', () => {
+    // the looks of a paste once walked every cell of the source sheet for each of the 1,998 offsets (11 s here)
+    const { book } = synthBook({ seed: 1, rows: 3400 })
+    const session = createSession(book, { clock })
+    const t0 = performance.now()
+    const r = session.editStructure({ op: 'copyRange', from: { sheet: S.data, range: 'A2:T2' }, to: { sheet: S.data, range: 'A3:T2000' } })
+    const ms = performance.now() - t0
+    expect(r.ok).toBe(true)
+    expect(ms).toBeLessThan(1500)
+    expect(session.getResult().hash).toBe(compute(session.getBook(), { clock }).hash)
+  }, 60_000)
+
   it('a refused operation changes nothing; a live session takes a new clock', () => {
     const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'RAND()' }, A2: { value: 1 } } }] }
     const s = createSession(book, { clock })
