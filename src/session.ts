@@ -480,7 +480,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
     *getViewport(sheet: string, range: string, o?: ViewportOptions) {
       const s = yield* ready()
       const i = checkSheet(sheet, sheetIndex(s), 'sheet')
-      return yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)
+      // the window of the revision it was read at, for a host to take later edits' changes over
+      return { ...(yield* viewport(s, i, rect(range, 'range'), checkViewportOptions(o), display)), revision }
     },
     *getCellIssue(sheet: string, cell: string) {
       const s = yield* ready()

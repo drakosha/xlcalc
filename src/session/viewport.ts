@@ -49,7 +49,7 @@ function fitted(x: Rect, max: number): Rect {
 }
 
 /** The window `asked` of sheet `s` (options checked); `display`, the session's: the cells' text and colour. The steps yield between cells. */
-export function* viewport(state: EngineState, s: number, asked: Rect, o: ViewportOptions, display: boolean): Steps<Viewport> {
+export function* viewport(state: EngineState, s: number, asked: Rect, o: ViewportOptions, display: boolean): Steps<Omit<Viewport, 'revision'>> {
   const x = fitted(asked, o.maxCells ?? MAX_CELLS)
   const sheet = state.input.sheets[s]
   const lines = sheetLines(sheet, state)
