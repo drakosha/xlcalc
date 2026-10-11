@@ -47,18 +47,24 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
   it("the look changes, the value and formula stay, whatever the cell; nothing else is computed", () => {
     const s = openSession(book(), opts)
     const hash = s.hash()
-    const changes = PATCHES.map((p) => s.patchCells(p))
-    expect(changes).toEqual([
-      [],
-      [{ sheet: 'S', cell: 'A1', value: 0.25, text: '25%' }],
-      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', color: '#FF0000' }],
+    const answers = PATCHES.map((p) => s.patchCells(p))
+    // each patch one revision more; the cells whose own style or format changed, with the text they show by them
+    expect(answers.map((a) => a.revision)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(answers.map((a) => a.changes)).toEqual([
+      [{ sheet: 'S', cell: 'B5', value: null, text: '', style: 1 }],
+      [{ sheet: 'S', cell: 'A1', value: 0.25, text: '25%', numberFormat: '0%' }],
+      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', color: '#FF0000', numberFormat: '[Red]0.0;[Blue]-0.0' }],
       [
-        { sheet: 'S', cell: 'C1', value: 2.5, text: '2.500', spill: 'C1:C3' },
-        { sheet: 'S', cell: 'C2', value: 20, text: '20.00', spillOf: 'C1' },
+        { sheet: 'S', cell: 'C1', value: 2.5, text: '2.500', spill: 'C1:C3', style: 0, numberFormat: '0.000' },
+        { sheet: 'S', cell: 'C2', value: 20, text: '20.00', spillOf: 'C1', numberFormat: '0.00' },
+        { sheet: 'S', cell: 'C3', value: { error: 'NA' }, text: '#N/A', spillOf: 'C1', style: 1 },
       ],
-      [{ sheet: 'S', cell: 'E2', value: 2, text: '2.000', spillOf: 'E1' }],
-      [],
-      [{ sheet: 'S', cell: 'A3', value: 0.5, text: '0.5' }],
+      [{ sheet: 'S', cell: 'E2', value: 2, text: '2.000', spillOf: 'E1', numberFormat: '0.000' }],
+      [{ sheet: 'S', cell: 'G1', value: 'Qty', text: 'Qty', style: 0 }],
+      [
+        { sheet: 'S', cell: 'A3', value: 0.5, text: '0.5', numberFormat: null },
+        { sheet: 'S', cell: 'B5', value: null, text: '', style: null },
+      ],
     ])
     const cells = s.book().sheets[0].cells
     expect(cells).toEqual({
@@ -79,7 +85,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect(s.book().sheets[0].tables![0].columns[0].name).toBe('Qty')
     // the arrays answer as before and change as before: the area edited whole, the spill blocked
     expect(s.cells('S', 'C1:C3')).toMatchObject({ C1: { value: 2.5, text: '2.500', array: 'C1:C3', style: 0 }, C3: { value: { error: 'NA' }, style: 1 } })
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }]).map((c) => c.cell).sort()).toEqual(['A1', 'A3', 'C1'])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1 } }]).changes.map((c) => c.cell).sort()).toEqual(['A1', 'A3', 'C1'])
     expect(() => s.setCells([{ sheet: 'S', cell: 'C2', input: { value: 1 } }])).toThrow(InputError)
     s.setCells([{ sheet: 'S', cell: 'E3', input: { value: 'x' } }])
     expect(s.cells('S', 'E1:E2')).toEqual({ E1: { value: { error: 'SPILL' }, text: '#SPILL!', formula: 'SEQUENCE(3)', meta: [1, 2] }, E2: { value: null, text: '', format: '0.000', link: { url: 'https://example.com/' } } })
@@ -89,17 +95,17 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
   it('a live session keeps its clock and its volatile values: a patch computes nothing', () => {
     const s = openSession({ sheets: [{ name: 'S', cells: { A1: { formula: 'RAND()' }, A2: { formula: 'NOW()' } } }] }, { live: true, execution })
     const [clock, before] = [s.clock, s.cells('S', 'A1:A2')]
-    expect(s.patchCells([{ sheet: 'S', cell: 'B1', set: { note: { text: 'n' } } }])).toEqual([])
+    expect(s.patchCells([{ sheet: 'S', cell: 'B1', set: { note: { text: 'n' } } }]).changes).toEqual([])
     // a format whose text no General text has: the cell is listed, with the value it had
-    expect(s.patchCells([{ sheet: 'S', cell: 'A1', set: { format: '0.0000" u"' } }])[0].value).toEqual(before.A1.value)
+    expect(s.patchCells([{ sheet: 'S', cell: 'A1', set: { format: '0.0000" u"' } }]).changes[0].value).toEqual(before.A1.value)
     expect(s.clock).toEqual(clock)
     expect(s.cells('S', 'A2').A2.value).toEqual(before.A2.value)
   })
 
-  it('without the display a patch lists no cells; patches of one cell apply in order; nothing left removes the cell', () => {
+  it('without the display a patch lists the cells whose look changed, without their text; patches of one cell apply in order; nothing left removes the cell', () => {
     const s = openSession(book(), { ...opts, display: false })
-    expect(s.patchCells(PATCHES[1])).toEqual([])
-    expect(s.patchCells([{ sheet: 'S', cell: 'K9', set: { style: 0 } }, { sheet: 'S', cell: 'K9', set: { format: '0.0', style: null } }, { sheet: 'S', cell: 'K9', set: { meta: 'm' } }])).toEqual([])
+    expect(s.patchCells(PATCHES[1]).changes).toEqual([{ sheet: 'S', cell: 'A1', value: 0.25, numberFormat: '0%' }])
+    expect(s.patchCells([{ sheet: 'S', cell: 'K9', set: { style: 0 } }, { sheet: 'S', cell: 'K9', set: { format: '0.0', style: null } }, { sheet: 'S', cell: 'K9', set: { meta: 'm' } }]).changes).toEqual([{ sheet: 'S', cell: 'K9', value: null, numberFormat: '0.0' }])
     expect(s.book().sheets[0].cells.K9).toEqual({ format: '0.0', meta: 'm' })
     s.patchCells([{ sheet: 'S', cell: 'K9', set: { format: null, meta: null } }, { sheet: 'S', cell: 'K10', set: { style: null } }])
     expect('K9' in s.book().sheets[0].cells || 'K10' in s.book().sheets[0].cells).toBe(false)
@@ -140,6 +146,7 @@ describe.each(['closures', 'eval'] as const)('patches of cells, execution %s', (
     expect(await b.cells('S', 'A1:G5')).toEqual(y.cells('S', 'A1:G5'))
     expect(await b.hash()).toBe(y.hash())
     await expect(b.patchCells([{ sheet: 'S', cell: 'A1', set: { style: 9 } }])).rejects.toThrow(InputError)
+    expect([a.revision, b.revision]).toEqual([7, 7])
   })
 
   it('a thread lost: the session comes back with its patches, from the journal and from a snapshot taken after them', async () => {

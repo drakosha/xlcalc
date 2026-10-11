@@ -53,10 +53,11 @@ const STEPS: [string, (s: AsyncSession) => Promise<unknown>, SheetExtent?][] = [
     await s.setCells([{ sheet: 'S', cell: 'Q900', input: null }])
   }, { rows: 6, columns: 14 }],
   ['no merged area', (s) => s.setLayout([{ sheet: 'S', merges: [] }]), { rows: 5, columns: 14 }],
-  ['the bottom value cleared', (s) => s.setCells([{ sheet: 'S', cell: 'A5', input: null }]), { rows: 4, columns: 14 }],
+  ['the bottom value cleared: its style stays', (s) => s.setCells([{ sheet: 'S', cell: 'A5', input: null }]), { rows: 5, columns: 14 }],
+  ['the bottom cell removed', (s) => s.replaceCells([{ sheet: 'S', cell: 'A5', input: null }]), { rows: 4, columns: 14 }],
   ['rows inserted above', (s) => s.restructure({ op: 'insertRows', sheet: 'S', row: 1, count: 3 }), { rows: 7, columns: 14 }],
   ['the table deleted', (s) => s.restructure({ op: 'deleteTable', table: 'T' } satisfies StructureOp), { rows: 7, columns: 5 }],
-  ['the far cell of the other sheet cleared, a spill blocked there', (s) => s.setCells([{ sheet: 'Far', cell: 'Z500', input: null }, { sheet: 'Far', cell: 'B9', input: { value: 0 } }])],
+  ['the far cell of the other sheet removed, a spill blocked there', (s) => s.replaceCells([{ sheet: 'Far', cell: 'Z500', input: null }, { sheet: 'Far', cell: 'B9', input: { value: 0 } }])],
   ['merged areas of the other sheet', (s) => s.setLayout([{ sheet: 'Far', merges: ['C2000:D2001'] } satisfies LayoutEdit])],
 ]
 

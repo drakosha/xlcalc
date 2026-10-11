@@ -67,7 +67,7 @@ export function checkFormat(v: unknown, path: string) {
 }
 
 /** A style number of a book with `styles` styles. */
-function checkStyleIndex(v: unknown, path: string, styles: number) {
+export function checkStyleIndex(v: unknown, path: string, styles: number) {
   if (typeof v !== 'number' || !Number.isInteger(v) || v < 0 || v >= styles)
     throw new InputError(path, styles ? `expected the index of a style of the book, 0 to ${styles - 1}, got ${what(v)}` : `the book has no styles, got ${what(v)}`)
 }
@@ -181,27 +181,31 @@ export function checkNumber(v: unknown, path: string, min: number, max: number, 
 
 export const LINES = ['thin', 'medium', 'thick', 'dotted', 'dashed', 'double', 'hair', 'mediumDashed', 'dashDot', 'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot']
 
-function checkStyle(v: unknown, p: string): CellStyle {
+/** A style, or with `patch` the fields of one to change (`StylePatch`), where null removes a field. */
+export function checkStyle(v: unknown, p: string, patch = false): CellStyle {
   const s = object(v, p, 'a style such as { font: { bold: true } }')
   onlyKeys(s, p, ['font', 'fill', 'border', 'alignment'])
-  if (s.font !== undefined) {
+  // a field given: in a patch, null is a field removed
+  const given = (o: Record<string, unknown>, k: string) => o[k] !== undefined && !(patch && o[k] === null)
+  if (given(s, 'font')) {
     const f = object(s.font, `${p}.font`, 'a font such as { bold: true }')
     onlyKeys(f, `${p}.font`, ['name', 'size', 'bold', 'italic', 'underline', 'strike', 'color'])
-    if (f.name !== undefined) checkString(f.name, `${p}.font.name`)
-    if (f.size !== undefined) checkNumber(f.size, `${p}.font.size`, 1, 409)
-    for (const k of ['bold', 'italic', 'strike']) if (f[k] !== undefined) checkBoolean(f[k], `${p}.font.${k}`)
-    if (f.underline !== undefined) checkOneOf(f.underline, `${p}.font.underline`, ['single', 'double'])
-    if (f.color !== undefined) checkColor(f.color, `${p}.font.color`)
+    if (given(f, 'name')) checkString(f.name, `${p}.font.name`)
+    if (given(f, 'size')) checkNumber(f.size, `${p}.font.size`, 1, 409)
+    for (const k of ['bold', 'italic', 'strike']) if (given(f, k)) checkBoolean(f[k], `${p}.font.${k}`)
+    if (given(f, 'underline')) checkOneOf(f.underline, `${p}.font.underline`, ['single', 'double'])
+    if (given(f, 'color')) checkColor(f.color, `${p}.font.color`)
   }
-  if (s.fill !== undefined) {
+  if (given(s, 'fill')) {
     const f = object(s.fill, `${p}.fill`, 'a fill such as { color: "#FFC000" }')
     onlyKeys(f, `${p}.fill`, ['color'])
     checkColor(f.color, `${p}.fill.color`)
   }
-  if (s.border !== undefined) {
+  if (given(s, 'border')) {
     const b = object(s.border, `${p}.border`, 'a border such as { bottom: { style: "thin" } }')
     onlyKeys(b, `${p}.border`, ['top', 'right', 'bottom', 'left'])
     for (const [side, l] of Object.entries(b)) {
+      if (!given(b, side)) continue
       const lp = `${p}.border.${side}`
       const line = object(l, lp, 'a line such as { style: "thin", color: "#000000" }')
       onlyKeys(line, lp, ['style', 'color'])
@@ -209,13 +213,13 @@ function checkStyle(v: unknown, p: string): CellStyle {
       if (line.color !== undefined) checkColor(line.color, `${lp}.color`)
     }
   }
-  if (s.alignment !== undefined) {
+  if (given(s, 'alignment')) {
     const a = object(s.alignment, `${p}.alignment`, 'an alignment such as { horizontal: "center" }')
     onlyKeys(a, `${p}.alignment`, ['horizontal', 'vertical', 'wrap', 'indent'])
-    if (a.horizontal !== undefined) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed'])
-    if (a.vertical !== undefined) checkOneOf(a.vertical, `${p}.alignment.vertical`, ['top', 'center', 'bottom', 'justify', 'distributed'])
-    if (a.wrap !== undefined) checkBoolean(a.wrap, `${p}.alignment.wrap`)
-    if (a.indent !== undefined) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
+    if (given(a, 'horizontal')) checkOneOf(a.horizontal, `${p}.alignment.horizontal`, ['general', 'left', 'center', 'right', 'fill', 'justify', 'centerContinuous', 'distributed'])
+    if (given(a, 'vertical')) checkOneOf(a.vertical, `${p}.alignment.vertical`, ['top', 'center', 'bottom', 'justify', 'distributed'])
+    if (given(a, 'wrap')) checkBoolean(a.wrap, `${p}.alignment.wrap`)
+    if (given(a, 'indent')) checkNumber(a.indent, `${p}.alignment.indent`, 0, 250, true)
   }
   return s as CellStyle
 }

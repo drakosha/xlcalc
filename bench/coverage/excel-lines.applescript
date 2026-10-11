@@ -1,8 +1,9 @@
--- Open a book, take the steps (a number format, bold, italic or a fill set on a range, a value typed into a cell), compute the
+-- Open a book, take the steps (a number format, bold, italic or a fill set on a range, a value typed into a cell, the range cleared), compute the
 -- book, read what the listed cells show (Range.Text, the number format, the display format's fill and font colours, bold
 -- and italic), save the book as xlsx under another name and close it. A step Excel refuses comes back as `error`.
 -- Arguments: the book's path and the path to save to (both inside Excel's sandbox), the saved file's name, the steps as
--- JSON ([[sheet, range, number format or "", bold, italic, [r, g, b] of a fill or [], value kind "n", "s" or "", value]]), the
+-- JSON ([[sheet, range, number format or "", bold, italic, [r, g, b] of a fill or [], value kind "n", "s" or "", value, clear "contents",
+-- "formats", "all" or ""]]), the
 -- cells to read as JSON ([[sheet, range]]).
 -- Output: JSON {"error": text, "looks": [[sheet, [[address, text, number format, [r, g, b] of the fill, its colour index,
 -- [r, g, b] of the font, bold, italic]]]]}.
@@ -51,6 +52,16 @@ on run argv
 						set value of rg to (my num((item 8 of stepItem) as text))
 					else if (item 7 of stepItem) as text is "s" then
 						set value of rg to ((item 8 of stepItem) as text)
+					end if
+					-- ClearContents, ClearFormats and Clear
+					if (count of stepItem) > 8 then
+						if (item 9 of stepItem) as text is "contents" then
+							clear contents rg
+						else if (item 9 of stepItem) as text is "formats" then
+							clear range formats rg
+						else if (item 9 of stepItem) as text is "all" then
+							clear range rg
+						end if
 					end if
 				on error msg number k
 					set stepError to stepError & (item 2 of stepItem) & ": " & (k as text) & " " & msg & "; "

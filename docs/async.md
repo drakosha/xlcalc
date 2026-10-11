@@ -78,6 +78,7 @@ A spill costs more than its array, because each of its cells gets entries in the
 | `queue_full` | `maxQueue` tasks already wait for a thread |
 | `too_many_sessions` | the pool holds `maxSessions` sessions |
 | `closed` | the calculator or the session is closed |
+| `stale_revision` | an edit's `baseRevision` is not the session's revision; it changed nothing ([Editing a grid](edits.md#revisions)) |
 
 Wrong input still throws `InputError`, from a thread too. A book or an argument that a structured clone cannot carry to a thread (a function in a cell's `meta`, which the contract types as JSON) is refused by the pool with `InputError` naming the argument (`book`, `edits`); the synchronous and the same-thread calls pass `meta` through untouched, as before.
 
@@ -104,7 +105,7 @@ Live sessions and heavy one-off computations (building versions of a book, say) 
 
 ### When a thread is lost
 
-The pool keeps, for each session, a snapshot of its book and a journal of the calls that changed it since the snapshot, with the clock the session had after each. The first snapshot is the book given to `openSession`; when the journal reaches `snapshotEvery` calls (64 by default), the pool takes a new one from the thread and drops the journal up to it.
+The pool keeps, for each session, a snapshot of its book and a journal of the calls that changed it since the snapshot, with the clock the session had after each; the snapshot carries the session's revision, and the journal each call's edit options, so a session brought back has its revision and checks a `baseRevision` as it would have. The first snapshot is the book given to `openSession`; when the journal reaches `snapshotEvery` calls (64 by default), the pool takes a new one from the thread and drops the journal up to it.
 
 When a thread is terminated or fails, its task fails, and a new thread starts in its place when a task needs one; a thread that cannot start fails one task at a time. The sessions it held come back on their next call: the new thread opens the snapshot and replays the journal, with the recorded clocks (a live session too), and then takes the call. The call that was running is not in the journal, so the session is as it was before that call, with the hash of a session that never lost its thread. Each changing call carries a sequence number; a thread answers the last one again rather than applying it twice, and refuses one out of order. A session whose restore fails is closed with `restore_failed`, and the thread forgets what it had of it; the other sessions of the thread go on. A session closed while its thread is lost is closed all the same, and so is one whose `close()` waits when the pool closes.
 

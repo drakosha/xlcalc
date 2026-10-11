@@ -8,11 +8,11 @@ import { pool } from './fixtures/pool.js'
 export const KINDS = ['a synchronous session', 'the same thread', 'a thread'] as const
 export type Kind = (typeof KINDS)[number]
 
-/** A synchronous session behind the asynchronous API: each of its methods as a promise, its clock and history as they are. */
+/** A synchronous session behind the asynchronous API: each of its methods as a promise, its clock, history and revision as they are. */
 export function wrapped(s: Session): AsyncSession {
   const out: Record<string, unknown> = {}
   for (const k of Object.keys(s) as (keyof Session)[]) {
-    if (k === 'clock' || k === 'history') Object.defineProperty(out, k, { get: () => s[k] })
+    if (k === 'clock' || k === 'history' || k === 'revision') Object.defineProperty(out, k, { get: () => s[k] })
     else out[k] = async (...a: unknown[]) => (s[k] as (...a: unknown[]) => unknown)(...a)
   }
   return out as unknown as AsyncSession

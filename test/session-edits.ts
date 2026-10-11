@@ -2,11 +2,11 @@
  * Seeded session edits over the synthetic book: values of the lookup table, criteria and data, formulas with
  * and without arrays, invalid formulas, clearing, a cycle and breaking it, several edits at once.
  */
-import type { BookInput, CellEdit, CellInput } from '../src/contract.js'
+import type { BookInput, CellReplace, CellInput } from '../src/contract.js'
 import { classAEdits, classBEdit, mulberry32, S, type SynthBook } from '../src/synth.js'
 
 /** The book with the edits applied, as a full computation reads it. */
-export function apply(book: BookInput, edits: CellEdit[]): BookInput {
+export function apply(book: BookInput, edits: CellReplace[]): BookInput {
   return {
     names: book.names,
     sheets: book.sheets.map((s) => {
@@ -23,7 +23,7 @@ export function apply(book: BookInput, edits: CellEdit[]): BookInput {
 }
 
 /** Seeded edits: a mix of values and formulas. */
-export function edits(seed: number, count: number, synth: SynthBook): CellEdit[][] {
+export function edits(seed: number, count: number, synth: SynthBook): CellReplace[][] {
   const rnd = mulberry32(seed)
   const a = classAEdits(synth, seed, count)
   const formulas: CellInput[] = [
@@ -39,7 +39,7 @@ export function edits(seed: number, count: number, synth: SynthBook): CellEdit[]
     { formula: `SUM(FILTER('${S.data}'!D2:D40,'${S.data}'!D2:D40>0,0))` },
     { formula: 'B4:M4*2' },
   ]
-  const out: CellEdit[][] = []
+  const out: CellReplace[][] = []
   for (let i = 0; i < count; i++) {
     const x = rnd()
     if (x < 0.4) out.push([a[i]])

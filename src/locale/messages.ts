@@ -110,6 +110,9 @@ export interface MessageParams {
   tableNameDefined: { name: string }
   tableOverTable: { range: string; table: string }
   tableOverMerge: { range: string; area: string }
+  // typing into a cell
+  headerFormula: { sheet: string; cell: string; table: string }
+  validationError: object
   // explain
   explainCells: { count: number }
   explainSpill: { ref: string }

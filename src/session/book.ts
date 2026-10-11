@@ -1,5 +1,5 @@
 /** Changes of a session's book that recompute nothing: styles, formats, meta, notes and links of cells, the layout of sheets, their data validation. */
-import type { BookInput, BookLayout, CellEdit, CellInput, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
+import type { BookInput, BookLayout, CellInput, CellReplace, ColumnsFit, LayoutEdit, SheetInput } from '../contract.js'
 import { setInput, type EngineState } from '../engine.js'
 import { InputError } from '../input.js'
 import { parseSpan, patchLines } from '../layout/spans.js'
@@ -13,13 +13,13 @@ const content = (c: CellInput | null | undefined, epoch: number) => (c?.formula 
  * The edits that change a cell's value or formula, the last one per cell; the others (a new style, format or
  * meta) are applied to the book's input here.
  */
-export function contentEdits(s: EngineState, edits: CellEdit[]): CellEdit[] {
-  const last = new Map<string, [CellEdit, number]>()
+export function contentEdits(s: EngineState, edits: CellReplace[]): CellReplace[] {
+  const last = new Map<string, [CellReplace, number]>()
   for (const e of edits) {
     const i = s.sheetIdx.get(sheetKey(e.sheet))!
     last.set(`${i}:${e.cell}`, [e, i])
   }
-  const out: CellEdit[] = []
+  const out: CellReplace[] = []
   for (const [e, i] of last.values()) {
     if (content(s.input.sheets[i].cells[e.cell], s.ctx.rules.epoch) !== content(e.input, s.ctx.rules.epoch)) out.push(e)
     else {
@@ -31,8 +31,8 @@ export function contentEdits(s: EngineState, edits: CellEdit[]): CellEdit[] {
 }
 
 /** The inputs of cells now (null: none), once per cell: the edits that put them back. */
-export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]): CellEdit[] {
-  const out = new Map<string, CellEdit>()
+export function inputsOf(s: EngineState, refs: { sheet: string; cell: string }[]): CellReplace[] {
+  const out = new Map<string, CellReplace>()
   for (const { sheet, cell } of refs) {
     const k = `${sheetKey(sheet)}!${cell}`
     if (!out.has(k)) out.set(k, { sheet, cell, input: s.input.sheets[s.sheetIdx.get(sheetKey(sheet))!].cells[cell] ?? null })

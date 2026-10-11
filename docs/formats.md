@@ -162,7 +162,7 @@ Every cell of the column counts, spilled ones and those of hidden rows too; a ce
 - A number, a date or a formula's number widens a column of the default width or one Excel fitted (`bestFit`) to the width AutoFit gives it, when that is more: `15.03.2026` in ru-RU needs 54 points of the default 48 and widens the column to 61. A number that shows already widens it too when AutoFit gives it more: `15-Mar-26` fills 48 points exactly and gets 55.
 - A number in General widens the column when it would show in scientific form or whole (`1234567890` to 67 points, `12345678` to 55), but not when it shows with fewer decimals: `3.14159265358979` shows `3.141593` and the column stays.
 - Text, booleans and errors widen nothing (text runs over the next cells), nor does a width set by hand, and a column never narrows. A fitted width equal to the default stays a width (8.83203125 with `bestFit`).
-- Only typing widens a column: text set through the object model (`Value`, `Formula2Local`) widens nothing, in Excel for Mac and Excel for Windows. So a host calls `entryWidth` for text a user typed, with the value it computed (from `setCells`) and the cell's format after the entry.
+- Only typing widens a column: text set through the object model (`Value`, `Formula2Local`) widens nothing, in Excel for Mac and Excel for Windows. So a host calls `entryWidth` for text a user typed, with the value it computed (from `setCells`) and the cell's format after the entry; `setCellText` does this itself, in the same step of the undo ([Editing a grid](edits.md#typing-text)).
 
 ## How the engine does it
 

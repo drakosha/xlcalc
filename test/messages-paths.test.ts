@@ -12,6 +12,7 @@ import { ruRU } from './locales.js'
 import { EN_MESSAGES } from '../src/locales/en-US.js'
 import { say, type Message, type MessageKey } from '../src/locale/messages.js'
 import { pool } from './fixtures/pool.js'
+import { closeCalcs, KINDS, opener } from './session-kinds.js'
 
 const reached = new Set<MessageKey>()
 const ru = (m: Message) => say('ru-RU', m)
@@ -196,6 +197,44 @@ describe('a refused structure operation', () => {
       }
     }, 60_000)
   })
+})
+
+/** A ru-RU book or another where text typed into a cell is refused: a table's header cell, part of an old-kind array, and a rule of data validation. */
+const typedBook = (locale?: string): BookInput => ({
+  ...(locale ? { locale } : {}),
+  sheets: [
+    {
+      name: 'Лист',
+      cells: { A1: { value: 'Кол' }, A2: { value: 1 }, C1: { formula: 'A2:A3*2', array: 'C1:C2' } },
+      tables: [{ name: 'Т', range: 'A1:A2', columns: [{ name: 'Кол' }] }],
+      validations: [{ range: 'E1', type: 'whole', operator: 'greaterThan', formula1: '0' }],
+    },
+  ],
+})
+
+/** Text typed into a cell, refused with the message. */
+const REFUSED_TEXT: [string, string, Message][] = [
+  ['A1', '=1+1', { key: 'headerFormula', sheet: 'Лист', cell: 'A1', table: 'Т' }],
+  ['C2', '5', { key: 'arrayPart', sheet: 'Лист', cell: 'C1', area: 'C1:C2' }],
+]
+
+describe('text typed into a cell of a session', () => {
+  afterAll(closeCalcs)
+  it.each(KINDS)("refused, and a value the cell's rule does not take, in the book's locale: %s", async (kind) => {
+    const open = await opener(kind)
+    for (const [locale, say] of [['ru-RU', ru], [undefined, en]] as const) {
+      const s = await open(typedBook(locale), {})
+      for (const [cell, text, m] of REFUSED_TEXT) {
+        reached.add(m.key)
+        expect(await s.setCellText('Лист', cell, text), `${cell} ${text}`).toEqual({ ok: false, code: m.key === 'headerFormula' ? 'header' : 'array', message: say(m) })
+      }
+      reached.add('validationError')
+      const r = await s.setCellText('Лист', 'E1', '-1')
+      expect(r.ok && r.validation?.message).toBe(say({ key: 'validationError' }))
+      expect(await s.validateEntry('Лист', 'E1', { value: 0 })).toMatchObject({ ok: false, message: say({ key: 'validationError' }) })
+      await s.close()
+    }
+  }, 60_000)
 })
 
 /** A book whose explanation holds every piece: a value, a formula, a range, a spilled cell, an error and the cell it came from, a boolean, an empty cell. */

@@ -7,7 +7,7 @@
  * case's file is left without the cells the writer writes where a row with a look crosses a column with one, as other
  * writers leave it: the engine's book of it is the one the reader reads.
  */
-import type { BookInput, CellStyle, ColumnInput, RowInput, SheetInput } from '../../../src/contract.js'
+import type { BookInput, CellStyle, ClearKind, ColumnInput, ConditionalFormat, RowInput, Session, SheetInput } from '../../../src/contract.js'
 import { openSession } from '../../../src/index.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { sheetLines } from '../../../src/layout/lines.js'
@@ -29,6 +29,8 @@ export interface LineStep {
   fill?: string
   /** A value typed into a cell. */
   value?: number | string
+  /** The range cleared, as Excel's ClearContents, ClearFormats and Clear (`Session.clearCells`); a set of `session` alone takes it. */
+  clear?: ClearKind
 }
 
 export interface LinesCase {
@@ -40,11 +42,15 @@ export interface LinesCase {
   steps?: LineStep[]
   /** The cells read: a sheet and a range of it. */
   read: [sheet: string, range: string][]
+  /** The notes, hyperlinks, conditional formats and rules of data validation of Excel's saved file are compared with the session's book (`partsOf`). */
+  parts?: true
 }
 
 export interface LinesCases {
   books: Record<string, BookInput>
   cases: LinesCase[]
+  /** The engine's answers are those of the steps taken by a session (`sessionCase`), as a host formats a sheet. */
+  session?: true
 }
 
 export interface LinesSet {
@@ -143,4 +149,54 @@ export const caseBook = async (set: LinesCases, c: LinesCase): Promise<BookInput
 export function engineCase(c: LinesCase, book: BookInput): LinesAnswer['looks'] {
   const after = applySteps(book, c.steps)
   return Object.fromEntries(c.read.map(([sheet, range]) => [sheet, sheetLooks(after, sheet, range)]))
+}
+
+/** A step as a session takes it: its format and its bold, italic and fill as a patch of the range (`patchCells`), its value as an edit of the cell, a clear by `clearCells`. */
+export function sessionStep(s: Session, step: LineStep) {
+  if (step.clear) s.clearCells([{ sheet: step.sheet, range: step.range }], step.clear)
+  const font = { ...(step.bold ? { bold: true } : {}), ...(step.italic ? { italic: true } : {}) }
+  const style = { ...(Object.keys(font).length ? { font } : {}), ...(step.fill ? { fill: { color: step.fill } } : {}) }
+  const set = { ...(Object.keys(style).length ? { style } : {}), ...(step.format !== undefined ? { numberFormat: step.format } : {}) }
+  if (Object.keys(set).length) s.patchCells([{ sheet: step.sheet, range: step.range, set }])
+  if (step.value !== undefined) s.setCells([{ sheet: step.sheet, cell: step.range, input: { value: step.value } }])
+}
+
+/** The book after a case's steps taken by a session as a host formats a sheet (`sessionStep`). */
+export function sessionBook(c: LinesCase, book: BookInput): BookInput {
+  const s = openSession(book)
+  for (const step of c.steps ?? []) sessionStep(s, step)
+  const after = structuredClone(s.book())
+  s.close()
+  return after
+}
+
+/** The engine's answer to a case whose steps a session takes (`sessionBook`): what the read cells show after them. */
+export function sessionCase(c: LinesCase, book: BookInput): LinesAnswer['looks'] {
+  const after = sessionBook(c, book)
+  return Object.fromEntries(c.read.map(([sheet, range]) => [sheet, sheetLooks(after, sheet, range)]))
+}
+
+/** What a book holds beside its cells' looks, by sheet: notes and hyperlinks by cell, conditional formats (type, ranges, formulas) and rules of data validation (range, first formula) in order. */
+export interface SheetParts {
+  notes: Record<string, string>
+  links: Record<string, string>
+  rules: string[]
+  validations: string[]
+}
+
+/** A rule's formulas as written: its formula, a cell rule's formulas. */
+const ruleText = (f: ConditionalFormat) => `${f.type} ${f.ranges.join(' ')} ${'formulas' in f ? f.formulas.join(';') : 'formula' in f ? (f.formula ?? '') : ''}`
+
+export function partsOf(book: BookInput): Record<string, SheetParts> {
+  return Object.fromEntries(
+    book.sheets.map((sh) => {
+      const notes: Record<string, string> = {}
+      const links: Record<string, string> = {}
+      for (const [a, c] of Object.entries(sh.cells)) {
+        if (c.note) notes[a] = c.note.text
+        if (c.link) links[a] = c.link.url ?? c.link.location ?? ''
+      }
+      return [sh.name, { notes, links, rules: (sh.conditionalFormats ?? []).map(ruleText), validations: (sh.validations ?? []).map((v) => `${v.range} ${v.formula1 ?? ''}`) }]
+    }),
+  )
 }

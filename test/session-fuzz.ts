@@ -4,7 +4,7 @@
  * columns, by formulas that also count cells edited often, so that cached ranges are read again after a write past
  * the sheet's edge grew it; spills that grow, shrink and are blocked; formulas replaced; rows inserted and deleted.
  */
-import type { BookInput, CellEdit, CellInput, CellPatch, ComputeResult, Scalar, StructureOp } from '../src/contract.js'
+import type { BookInput, CellEdit, CellInput, CellPatch, CellReplace, ClearKind, ComputeResult, RangeRef, Scalar, StructureOp } from '../src/contract.js'
 import { indexToCol } from '../src/model.js'
 import { mulberry32 } from '../src/synth.js'
 
@@ -117,6 +117,41 @@ export function patches(seed: number): () => CellPatch[] {
     return { ...far.splice(int(far.length), 1)[0], set: { format: null, meta: null, note: null, link: null } }
   }
   return () => Array.from({ length: rnd() < 0.8 ? 1 : 2 + int(3) }, one)
+}
+
+/** An edit of the calls that keep a cell's look or set it: cells replaced whole, cleared, formatted by a style's fields, text typed. */
+export type LookEdit =
+  | { replace: CellReplace[] }
+  | { clear: RangeRef[]; what: ClearKind }
+  | { patch: CellPatch[] }
+  | { text: [sheet: string, cell: string, text: string] }
+
+/**
+ * Seeded edits of the calls that keep or set a cell's look (`replaceCells`, `clearCells`, `patchCells` over ranges with a
+ * style by its fields, `setCellText`), from a stream of their own: over the data, spills and formulas of `S` and `D`,
+ * rectangles and whole columns and rows, text read as numbers, dates, percents and formulas, some of them refused.
+ */
+export function lookEdits(seed: number): () => LookEdit {
+  const rnd = mulberry32(seed * 4093 + 5)
+  const int = (n: number) => Math.floor(rnd() * n)
+  const pick = <T>(xs: readonly T[]): T => xs[int(xs.length)]
+  const cell = () => `${pick(['A', 'B', 'E', 'H', 'I', 'K'])}${1 + int(N + 20)}`
+  const rect = () => {
+    const [c, r] = [int(10), 1 + int(N)]
+    return `${indexToCol(c)}${r}:${indexToCol(c + int(3))}${r + int(5)}`
+  }
+  const lines = () => pick([`${indexToCol(9 + int(5))}:${indexToCol(9 + int(8))}`, `${N + 10 + int(20)}:${N + 30 + int(20)}`, 'B:B', `${1 + int(N)}:${1 + int(N)}`])
+  const style = () => pick([{ font: { bold: true } }, { font: { italic: pick([true, null]) } }, { fill: { color: '#FFEE99' } }, { fill: null, font: { bold: null } }, { border: { bottom: { style: 'thin' as const } } }])
+  return () => {
+    const x = rnd()
+    if (x < 0.2) return { replace: [{ sheet: pick(['S', 'D']), cell: cell(), input: rnd() < 0.3 ? null : { value: int(50), ...(rnd() < 0.5 ? { format: pick(['0.00', '0%']) } : {}) } }] }
+    if (x < 0.4) return { clear: [{ sheet: pick(['S', 'D']), range: rnd() < 0.7 ? rect() : lines() }], what: pick(['contents', 'formats', 'all'] as const) }
+    if (x < 0.7) {
+      const range = rnd() < 0.6 ? rect() : lines()
+      return { patch: [{ sheet: pick(['S', 'D']), range, set: { ...(rnd() < 0.8 ? { style: style() } : {}), ...(rnd() < 0.4 ? { numberFormat: pick(['0.0', '#,##0', 'yyyy-mm-dd', null]) } : {}) } }] }
+    }
+    return { text: [pick(['S', 'D']), cell(), pick([String(int(50)), '-3,5', '1/2/2026', '15%', '=A1*2', `=SUM(A1:A${1 + int(N)})`, '', 'text', '=SUM(A1', '1e3'])] }
+  }
 }
 
 /** The cells whose values differ between a session's result and a full computation's, with their formulas. */

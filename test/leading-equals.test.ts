@@ -96,7 +96,7 @@ describe.each(KINDS)("a session's edits, %s", (kind) => {
     expect(y).toEqual(x)
     expect(y.sheets[0].cells.C3).toEqual({ formula: 'C1*10' })
     expect((await b.result()).hash).toBe((await a.result()).hash)
-    expect((await b.setCells([{ sheet: 'S', cell: 'C3', input: { formula: '==1' } }]))[0].value).toEqual({ error: 'ERROR' })
+    expect((await b.setCells([{ sheet: 'S', cell: 'C3', input: { formula: '==1' } }])).changes[0].value).toEqual({ error: 'ERROR' })
     await Promise.all([a.close(), b.close()])
   })
 })

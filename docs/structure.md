@@ -242,7 +242,7 @@ The values a copy pastes come from the computed book. `session.restructure` take
 
 ## Sessions
 
-`session.restructure(op)` applies the operation to the session's book and recomputes. The result is that of `restructure`, with `book` being the session's book after the operation, plus `changes`: every cell whose value differs from the value its old cell had. An interface that moves the values it shows by `mapCell` and applies `changes` has the new values. An insert into a block of data without position-dependent formulas reports no changes. A refused operation changes nothing.
+`session.restructure(op)` applies the operation to the session's book and recomputes. The result is that of `restructure`, with `book` being the session's book after the operation, plus what every edit of a session answers ([Editing a grid](edits.md#what-an-edit-answers)): `moved`, how the addresses moved, and `changes`, every cell whose value or formula text differs from those of its old cell. An interface that moves its window by `moved` (or each cell by `mapCell`) and applies `changes` has the new values and formulas. An insert into a block of data lists the formulas over it, which read one row more, and no value. A refused operation changes nothing.
 
 The session rebuilds its state from the new book. On the synthetic book (3,400 rows, 3,907 formulas) inserting a row in the middle of the data takes 190 ms, about as long as a cold computation of the same book, well within the 1.5 s budget.
 
@@ -250,7 +250,7 @@ The session rebuilds its state from the new book. On the synthetic book (3,400 r
 
 Styles and layout change through the session so that its book stays the host's book:
 
-- a cell's style, note and hyperlink through `setCells`; an edit that keeps a cell's value and formula recomputes nothing and returns no changes;
+- a cell's style, note and hyperlink through `setCells` or `patchCells`; an edit that keeps a cell's value and formula recomputes nothing and lists the cell with its new style or number format;
 - the style table through `setStyles(styles)`; every style in use must stay in it;
 - columns, rows and merged areas through `setLayout(edits)`: `{ sheet, columns: 'B:D', set: { width: 20 } }` patches each of the lines (`null` removes a field, spans are split where an edit cuts them), and `{ sheet, merges: [...] }` replaces the sheet's merged areas;
 - the filter mode through `setLayout`: `{ sheet, filtered: true }`;

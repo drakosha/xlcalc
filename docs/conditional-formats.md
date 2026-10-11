@@ -81,7 +81,7 @@ A data bar gives `look.bar`: where the bar starts and ends as fractions of the c
 
 A rule with `stopIfTrue` that holds leaves out the rules after it for that cell. A number format of the look shows the cell's `text` by it, as Excel's `Range.Text` does. An empty cell with a look is listed with the value null, so a grid paints a highlighted empty row; in a rectangle of more than 65,536 cells only the cells the rectangle lists get looks. `compute` and `result()` give no looks.
 
-A session's edits do not list cells whose look changed: an edit can recolour a whole colour scale. A host with rules on a sheet reads its window again after an edit, which costs what the window holds. The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
+A session's edits do not list cells whose look changed: an edit can recolour a whole colour scale. They give the rules' rectangles as `repaint` after a value or a rule changed, and a host reads its window again where it meets them, which costs what the window holds ([Editing a grid](edits.md#what-an-edit-answers)). The statistics of a rule's cells are kept until an edit changes a cell among them, and the code of a rule's formula is made once per cell along the axes it moves and kept with the session.
 
 On a sheet of 34,000 rows with a formula rule over 4 columns, a three-colour scale and a data bar, a window of 20,000 cells takes about 60 ms the first time and 25 ms after (15 ms without the rules), an edit of a cell under 1 ms with the rules or without them, and the window read again after an edit that changes the data bar's numbers 35 ms, on an Apple M5 Pro.
 

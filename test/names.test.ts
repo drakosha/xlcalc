@@ -59,7 +59,7 @@ describe('names of any formula', () => {
   it('a session takes new names of formulas and returns the cells they change', () => {
     const s = openSession(book({ B1: 'rate*100' }, [{ name: 'rate', ref: '0.2' }]))
     expect(s.result().sheets[0].cells.B1.value).toBe(20)
-    expect(s.setNames([{ name: 'rate', ref: "'S'!$A$3/10" }]).map((c) => [c.cell, c.value])).toEqual([['B1', 30]])
+    expect(s.setNames([{ name: 'rate', ref: "'S'!$A$3/10" }]).changes.map((c) => [c.cell, c.value])).toEqual([['B1', 30]])
   })
 
   it('both execution modes give the same values over names of formulas', () => {

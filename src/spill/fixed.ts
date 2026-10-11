@@ -5,7 +5,7 @@
 import type { Arg } from '../args.js'
 import { Arr, broadcastAt } from '../arrays/value.js'
 import { arrayArea, holds } from '../array-areas.js'
-import type { CellEdit } from '../contract.js'
+import type { CellInput, CellReplace } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { allot } from '../exec/budget.js'
 import { InputError } from '../input.js'
@@ -30,25 +30,45 @@ export function fit(x: Arg, rows: number, cols: number, view: (x: Arg) => V | Ar
 }
 
 /**
- * Edits of a session that change part of an array formula's area throw `InputError`: every cell of the area must be
- * edited, unless only its top-left cell is, keeping an array formula over the same area. A new array formula's area
- * must hold nothing else after the edits. A book without such formulas, and edits that make none, are not looked at.
+ * The first array formula of the old kind whose area edits of a session change in part, as Excel refuses it: every cell
+ * of the area must be edited, unless only its top-left cell is, keeping an array formula over the same area; null when
+ * none is. `edited`: the edits' inputs by `s:addr`.
  */
-export function checkArrayEdits(state: EngineState, edits: CellEdit[]) {
-  const made = edits.filter((e) => e.input?.array !== undefined)
-  const areas = state.formulas.filter((f) => f?.area)
-  if (!areas.length && !made.length) return
-  const at = (s: number, addr: string) => `${s}:${addr}`
-  const edited = new Map(edits.map((e) => [at(state.sheetIdx.get(sheetKey(e.sheet))!, e.cell), e.input]))
-  for (const f of areas) {
-    const x = f!.area!
-    const top = formatAddress(f!.r, f!.c)
+function partOf(state: EngineState, edited: Map<string, CellInput | null>): { s: number; top: string; cell: string; area: string } | null {
+  for (const f of state.formulas) {
+    if (!f?.area) continue
+    const x = f.area
+    const top = formatAddress(f.r, f.c)
     const touched: string[] = []
-    for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) if (edited.has(at(f!.s, formatAddress(r, c)))) touched.push(formatAddress(r, c))
+    for (let r = x.r1; r <= x.r2; r++) for (let c = x.c1; c <= x.c2; c++) if (edited.has(`${f.s}:${formatAddress(r, c)}`)) touched.push(formatAddress(r, c))
     const all = touched.length === (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1)
-    const again = touched.length === 1 && touched[0] === top && edited.get(at(f!.s, top))?.array === state.input.sheets[f!.s].cells[top].array
-    if (touched.length && !all && !again) throw new InputError('edits', `${touched[0]} is part of the array formula at ${state.sheetNames[f!.s]}!${top} (${state.input.sheets[f!.s].cells[top].array}): Excel changes all of an array or none of it`)
+    const area = state.input.sheets[f.s].cells[top].array!
+    const again = touched.length === 1 && touched[0] === top && edited.get(`${f.s}:${top}`)?.array === area
+    if (touched.length && !all && !again) return { s: f.s, top, cell: touched[0], area }
   }
+  return null
+}
+
+const editedOf = (state: EngineState, edits: CellReplace[]) => new Map(edits.map((e) => [`${state.sheetIdx.get(sheetKey(e.sheet))!}:${e.cell}`, e.input]))
+
+/** The array formula of the old kind whose area the edits change in part (`partOf`): its sheet, its cell and its area; null when none. */
+export function arrayPart(state: EngineState, edits: CellReplace[]): { sheet: string; cell: string; area: string } | null {
+  if (!state.formulas.some((f) => f?.area)) return null
+  const p = partOf(state, editedOf(state, edits))
+  return p && { sheet: state.sheetNames[p.s], cell: p.top, area: p.area }
+}
+
+/**
+ * Edits of a session that change part of an array formula's area throw `InputError` (`partOf`). A new array formula's
+ * area must hold nothing else after the edits. A book without such formulas, and edits that make none, are not looked at.
+ */
+export function checkArrayEdits(state: EngineState, edits: CellReplace[]) {
+  const made = edits.filter((e) => e.input?.array !== undefined)
+  if (!made.length && !state.formulas.some((f) => f?.area)) return
+  const at = (s: number, addr: string) => `${s}:${addr}`
+  const edited = editedOf(state, edits)
+  const p = partOf(state, edited)
+  if (p) throw new InputError('edits', `${p.cell} is part of the array formula at ${state.sheetNames[p.s]}!${p.top} (${p.area}): Excel changes all of an array or none of it`)
   // a new area holds nothing else once the edits are applied
   for (const e of made) {
     const s = state.sheetIdx.get(sheetKey(e.sheet))!

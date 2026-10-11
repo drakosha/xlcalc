@@ -119,7 +119,7 @@ describe('in the same thread', () => {
     const s = await calc.openSession(heavyBook(), { clock: CLOCK })
     const timeoutMs = (await medianMs(3, (i) => s.setCells(setA1(10 + i)))) / 4
     expect((await fails(s.setCells(setA1(2), { timeoutMs }))).code).toBe('soft_timeout')
-    expect(await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
+    expect((await s.setCells([{ sheet: 'S', cell: 'C1', input: { value: 5 } }], { timeoutMs })).changes).toEqual([{ sheet: 'S', cell: 'C1', value: 5, text: '5' }])
     expect((await s.book()).sheets[0].cells.A1).toEqual({ value: 12 })
     expect((await s.result({ timeoutMs })).hash).toBe(compute(await s.book(), { clock: CLOCK }).hash)
     // a signal still stops it, between the formulas of the book

@@ -89,7 +89,13 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     const before = structuredClone(s.book())
     s.setCells([{ sheet: 'S', cell: 'F1', input: { value: 'Count' } }])
     expect(s.book().sheets[0].cells.G1.formula).toBe('SUM(T[Count])')
-    expect(s.undo()).toEqual({ call: 'setCells', changes: [{ sheet: 'S', cell: 'F1', value: 'Qty', text: 'Qty' }] })
+    // the column's name and the formula over it come back; the table is the sheet's layout
+    expect(s.undo()).toEqual({
+      call: 'setCells',
+      revision: 2,
+      changes: [{ sheet: 'S', cell: 'F1', value: 'Qty', text: 'Qty' }, { sheet: 'S', cell: 'G1', value: 4, text: '4', formula: 'SUM(T[Qty])' }],
+      layout: ['S'],
+    })
     same(s, before, o)
     s.redo()
     expect(s.book().sheets[0].tables![0].columns[0].name).toBe('Count')
@@ -98,10 +104,10 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
   it('patches: the style, format, note and link back, the shown text in the changes; a cell the patch made goes', () => {
     const s = openSession(book(), o)
     const before = structuredClone(s.book())
-    expect(s.patchCells([{ sheet: 'S', cell: 'A3', set: { format: null, style: 0, note: { text: 'n' } } }, { sheet: 'S', cell: 'H5', set: { link: { url: 'https://example.com/' } } }])).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3' }])
-    expect(s.undo()).toEqual({ call: 'patchCells', changes: [{ sheet: 'S', cell: 'A3', value: 3, text: '3.0' }], cells: [{ sheet: 'S', cell: 'A3' }, { sheet: 'S', cell: 'H5' }] })
+    expect(s.patchCells([{ sheet: 'S', cell: 'A3', set: { format: null, style: 0, note: { text: 'n' } } }, { sheet: 'S', cell: 'H5', set: { link: { url: 'https://example.com/' } } }]).changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
+    expect(s.undo()).toEqual({ call: 'patchCells', revision: 2, changes: [{ sheet: 'S', cell: 'A3', value: 3, text: '3.0', style: null, numberFormat: '0.0' }], cells: [{ sheet: 'S', cell: 'A3' }, { sheet: 'S', cell: 'H5' }] })
     same(s, before, o)
-    expect(s.redo()!.changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3' }])
+    expect(s.redo()!.changes).toEqual([{ sheet: 'S', cell: 'A3', value: 3, text: '3', style: 0, numberFormat: null }])
     expect(s.book().sheets[0].cells.H5).toEqual({ link: { url: 'https://example.com/' } })
   })
 
@@ -110,9 +116,9 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     const before = structuredClone(s.book())
     s.setNames([{ name: 'rate', ref: '3' }, { name: 'other', ref: 'S!$A$1' }])
     s.setStyles([{ font: { bold: true } }, { font: { italic: true } }])
-    expect(s.undo()).toEqual({ call: 'setStyles', changes: [] })
+    expect(s.undo()).toEqual({ call: 'setStyles', revision: 3, changes: [], styles: [{ font: { bold: true } }] })
     expect(s.book().styles).toEqual(before.styles)
-    expect(s.undo()).toEqual({ call: 'setNames', changes: [{ sheet: 'S', cell: 'B1', value: 12, text: '12' }, { sheet: 'R', cell: 'A1', value: 13, text: '13' }] })
+    expect(s.undo()).toEqual({ call: 'setNames', revision: 4, changes: [{ sheet: 'S', cell: 'B1', value: 12, text: '12' }, { sheet: 'R', cell: 'A1', value: 13, text: '13' }] })
     same(s, before, o)
     s.redo()
     s.redo()
@@ -127,13 +133,13 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     s.setLayout([{ sheet: 'S', merges: ['C2:D3'] }])
     s.setLayout([{ sheet: 'S', rows: '2', set: { hidden: true } }])
     expect(s.cells('S', 'C1:D1')).toMatchObject({ C1: { value: { error: 'SPILL' } }, D1: { value: 4 } })
-    expect(s.undo()).toEqual({ call: 'setLayout', changes: [{ sheet: 'S', cell: 'D1', value: 6, text: '6' }] })
+    expect(s.undo()).toEqual({ call: 'setLayout', revision: 4, changes: [{ sheet: 'S', cell: 'D1', value: 6, text: '6' }], layout: ['S'] })
     expect(listed(s.undo()!.changes)).toEqual(['S!C1=1 1 C1:C2', 'S!C2=2 2'])
     // a width that shows numbers as ### shows them again
     expect(s.undo()!.changes.map((c) => `${c.cell} ${c.text}`)).toEqual(['A3 3.0'])
     same(s, before, o)
-    expect(s.redo()!.changes).toEqual(narrow)
-    expect(narrow.map((c) => c.cell)).toEqual(['A3'])
+    expect(s.redo()!.changes).toEqual(narrow.changes)
+    expect(narrow.changes.map((c) => c.cell)).toEqual(['A3'])
     expect(s.book().sheets[0].rows).toEqual({ '1:3': { height: 30 } })
     // a span cut in three by a change of its middle line, and whole again
     s.setLayout([{ sheet: 'S', rows: '2', set: { height: 40, format: '0' } }])
@@ -183,8 +189,14 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     expect(u.mapCell!({ sheet: 'S', cell: 'A3' })).toBeNull()
     expect(u.mapCell!({ sheet: 'r', cell: 'A3' })).toEqual({ sheet: 'R', cell: 'A3' })
     expect(() => u.mapCell!({ sheet: 'Nope', cell: 'A1' })).toThrow(InputError)
-    // C2 of the inserted rows comes from no cell: the spill's value is listed
-    expect(u.changes).toEqual([{ sheet: 'S', cell: 'C2', value: 2, text: '2', spillOf: 'C1' }])
+    // C2 of the inserted rows comes from no cell: the spill's value is listed, and the formulas over the rows with their text
+    expect(u.changes).toEqual([
+      { sheet: 'S', cell: 'B1', value: 12, text: '12', formula: 'SUM(A1:A3)*rate' },
+      { sheet: 'S', cell: 'C1', value: 1, text: '1', formula: 'SEQUENCE(A2)', spill: 'C1:C2' },
+      { sheet: 'S', cell: 'D1', value: 6, text: '6', formula: 'SUBTOTAL(109,A1:A3)' },
+      { sheet: 'S', cell: 'C2', value: 2, text: '2', spillOf: 'C1' },
+    ])
+    expect(u.moved).toEqual([{ kind: 'lines', sheet: 'S', axis: 'rows', at: 2, count: -2 }])
     same(s, before, o)
     const r = s.redo()!
     expect(r.mapCell!({ sheet: 'S', cell: 'A2' })).toEqual({ sheet: 'S', cell: 'A4' })

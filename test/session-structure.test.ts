@@ -69,14 +69,28 @@ describe('session.restructure', () => {
     }
   })
 
-  it('an insert into the data sheet of the synthetic book changes no value; rebuilding is within the cold budget', () => {
+  it('an insert into the data sheet of the synthetic book changes no value, only the text of the formulas over it; rebuilding is within the cold budget', () => {
     const { book } = synthBook({ seed: 1, rows: process.env.FORMULA_BENCH === '1' ? 3400 : 340 })
     const session = openSession(book, { clock })
     const t0 = performance.now()
     const r = session.restructure({ op: 'insertRows', sheet: S.data, row: 170, count: 1 })
     const ms = performance.now() - t0
     if (process.env.FORMULA_BENCH === '1') console.log(`session.restructure, insert a row into ${S.data}: ${ms.toFixed(0)} ms`)
-    expect(r.ok && r.changes).toEqual([])
+    // the formulas over the data sheet read one row more: listed with their text, none with another value
+    expect(r.ok && r.changes.filter((c) => c.formula === undefined)).toEqual([])
+    expect(r.ok && r.changes.length).toBeGreaterThan(0)
+    expect(ms).toBeLessThan(1500)
+    expect(session.result().hash).toBe(compute(session.book(), { clock }).hash)
+  }, 60_000)
+
+  it('a fill pastes its source once per offset, not the sheet: one row filled down 2,000 rows of the synthetic book is within the cold budget', () => {
+    // the looks of a paste once walked every cell of the source sheet for each of the 1,998 offsets (11 s here)
+    const { book } = synthBook({ seed: 1, rows: 3400 })
+    const session = openSession(book, { clock })
+    const t0 = performance.now()
+    const r = session.restructure({ op: 'copyRange', from: { sheet: S.data, range: 'A2:T2' }, to: { sheet: S.data, range: 'A3:T2000' } })
+    const ms = performance.now() - t0
+    expect(r.ok).toBe(true)
     expect(ms).toBeLessThan(1500)
     expect(session.result().hash).toBe(compute(session.book(), { clock }).hash)
   }, 60_000)
@@ -103,13 +117,19 @@ describe('styles and layout in a session', () => {
     styles: [{ font: { bold: true } }],
   })
 
-  it('a cell edit that keeps the value and formula recomputes nothing and returns no changes', () => {
+  it('a cell edit that keeps the value and formula recomputes nothing and returns the cells with their new look', () => {
     const s = openSession(book(), { live: true, display: false })
     const c = s.clock
-    expect(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', format: '0.0' } }, { sheet: 'S', cell: 'B9', input: { style: 0 } }])).toEqual([])
+    expect(s.setCells([{ sheet: 'S', cell: 'A2', input: { formula: 'A1*2', format: '0.0', style: null } }, { sheet: 'S', cell: 'B9', input: { style: 0 } }]).changes).toEqual([
+      { sheet: 'S', cell: 'A2', value: 4, style: null, numberFormat: '0.0' },
+      { sheet: 'S', cell: 'B9', value: null, style: 0 },
+    ])
     expect(s.clock).toEqual(c)
     expect(s.book().sheets[0].cells).toEqual({ A1: { value: 2 }, A2: { formula: 'A1*2', format: '0.0' }, B9: { style: 0 } })
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3, style: 0 } }, { sheet: 'S', cell: 'B9', input: null }]).map((x) => x.cell)).toEqual(['A1', 'A2'])
+    // a cell cleared keeps its look; replaced by nothing, it is gone
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 3, style: 0 } }, { sheet: 'S', cell: 'B9', input: null }]).changes.map((x) => x.cell)).toEqual(['A1', 'A2'])
+    expect(s.book().sheets[0].cells.B9).toEqual({ style: 0 })
+    s.replaceCells([{ sheet: 'S', cell: 'B9', input: null }])
     expect(s.book().sheets[0].cells.B9).toBeUndefined()
   })
 

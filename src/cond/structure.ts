@@ -155,6 +155,22 @@ export function shiftConditional(sheets: SheetInput[], target: string, axis: Axi
 /** Rectangles without the cells of `cut`. */
 const subtract = (rects: Rect[], cut: Rect): Rect[] => rects.flatMap((x) => minus(x, cut))
 
+/** A transform that rewrites no reference. */
+const KEEP: Transform = { ref: () => undefined }
+
+/**
+ * A sheet's rules without the cells of `holes` (Excel's ClearFormats over them): a rule left without cells goes, and one
+ * whose first cell goes has its formulas made for its new first cell; the same list when no rule meets them.
+ */
+export function clearConditional(list: ConditionalFormat[] | undefined, holes: Rect[], host: string, names: Map<string, string>): ConditionalFormat[] | undefined {
+  if (!list?.some((rule) => rectsOf(rule).some((x) => holes.some((h) => meets(x, h))))) return list
+  const out = list.flatMap((rule) => {
+    const stay = holes.reduce((xs, h) => subtract(xs, h), rectsOf(rule))
+    return stay.length ? [placed(rule, stay, corner(stay), host, host, KEEP, names).rule] : []
+  })
+  return out.length ? out : undefined
+}
+
 const inside = (x: Rect, y: Rect): Rect | null => {
   const z = { r1: Math.max(x.r1, y.r1), r2: Math.min(x.r2, y.r2), c1: Math.max(x.c1, y.c1), c2: Math.min(x.c2, y.c2) }
   return z.r1 <= z.r2 && z.c1 <= z.c2 ? z : null

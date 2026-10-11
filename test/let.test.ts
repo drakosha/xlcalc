@@ -69,7 +69,7 @@ describe('LET', () => {
 
   it('the references in its values are the formula’s: an edit recomputes it', () => {
     const s = openSession(sheet({ A1: 1, B1: '=LET(x,A1*10,x+1)' }))
-    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).map((c) => [c.cell, c.value])).toContainEqual(['B1', 21])
+    expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).changes.map((c) => [c.cell, c.value])).toContainEqual(['B1', 21])
     s.close()
   })
 

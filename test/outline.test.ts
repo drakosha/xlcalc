@@ -74,13 +74,13 @@ describe('outlines under structure operations', () => {
 describe.each(['closures', 'eval'] as Execution[])('outlines in a session (%s)', (execution) => {
   it('expanding a group through setLayout shows its rows and recomputes SUBTOTAL 109', () => {
     const s = openSession(book(), { clock, execution })
-    const changes = s.setLayout([
+    const { changes } = s.setLayout([
       { sheet: 'S', rows: '2:4', set: { hidden: null } },
       { sheet: 'S', rows: '5', set: { collapsed: null } },
     ])
     expect(changes.map((c) => [c.cell, c.value])).toEqual([['A5', 7]])
     expect(rows(s.book())).toEqual({ 2: { outlineLevel: 1 }, 3: { outlineLevel: 2 }, 4: { outlineLevel: 1 } })
-    expect(s.setLayout([{ sheet: 'S', outline: { summaryBelow: false } }])).toEqual([])
+    expect(s.setLayout([{ sheet: 'S', outline: { summaryBelow: false } }]).changes).toEqual([])
     expect(s.book().sheets[0].outline).toEqual({ summaryBelow: false })
     s.setLayout([{ sheet: 'S', outline: null }])
     expect(s.book().sheets[0].outline).toBeUndefined()
