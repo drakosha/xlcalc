@@ -20,9 +20,12 @@ export class Occupied {
     if (!sheet) this.cols.set(s, (sheet = new Map()))
     let rows = sheet.get(c)
     if (!rows) sheet.set(c, (rows = []))
-    if (on) {
+    if (on && fresh) {
       rows.push(r)
       this.unsorted.add(rows)
+    } else if (on) {
+      // an edit puts the row in its place: sorting the column again for each cell made a column of edits quadratic
+      rows.splice(lowerBound(this.sorted(rows), r, rowOf), 0, r)
     } else rows.splice(lowerBound(this.sorted(rows), r, rowOf), 1)
   }
 
