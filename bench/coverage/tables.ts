@@ -6,14 +6,14 @@
  * `test/tables-excel.test.ts` compares the engine with them without Excel.
  * `FTABLES_ONLY=id,id` runs only those cases, `FTABLES_AGAIN=id,id` runs those again, `FCOV_FRESH=1` runs every case again.
  */
-import { execFileSync, spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
+import { execFileSync } from 'node:child_process'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inCaseOrder } from './stored.js'
 import { answerOf, MIRRORS, mirrorRanges } from './case-book.js'
-import { declineRepair, dialogText, ensureExcel, excelDialogs, excelVersion, settleRejected } from './excel.js'
+import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
+import { sleep } from './proc.js'
 import { localeDir, localeMeta } from './locales.js'
 import type { TableAnswer, TableCase, TableSet, TableShape, TableStep } from './tables/cases.js'
 import type { BookInput } from '../../src/contract.js'
@@ -24,8 +24,6 @@ import { writeXlsx } from '../../src/xlsx.js'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-tables.applescript')
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export interface StoredTables {
   meta: Record<string, string | number>
@@ -94,16 +92,15 @@ export const withMirrors = (b: BookInput): BookInput => ({ ...b, sheets: [...b.s
  * A book Excel did not open: the repair window, declined (activating Excel first: on another Space it is not listed),
  * or, with `refused`, an error from `open workbook` with no window at all.
  */
-async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unknown>, id: string, refused = false): Promise<TableAnswer | null> {
+async function rejectedBook(stop: () => Promise<void>, id: string, refused = false): Promise<TableAnswer | undefined> {
   let declined = declineRepair()
   if (!declined) {
     execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to activate'])
     await sleep(2000)
     declined = declineRepair()
-    if (!declined && !refused) return null
+    if (!declined && !refused) return undefined
   }
-  child.kill()
-  await exited
+  await stop()
   await settleRejected()
   console.log(`${id}: Excel did not load the book (${declined ? 'repair window declined' : 'open workbook refused it, no window'})`)
   return { values: {}, formulas: {}, tables: [], rejected: true }
@@ -111,58 +108,36 @@ async function rejectedBook(child: ReturnType<typeof spawn>, exited: Promise<unk
 
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: TableCase, local: boolean): Promise<TableAnswer> {
-  const before = dialogText()
-  if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `ftables-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    const { data, issues } = await writeXlsx({ book: withMirrors(c.book) }, { values: 'omit' })
-    if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
-    writeFileSync(file, data)
-    const at = mirrorRanges(c.read)
-    const rects = c.read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n')
-    const child = spawn('osascript', [SCRIPT, file, stepLines(c).join('\n'), rects, local ? '1' : ''])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
-    child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 120_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
-        if (code !== 0) {
-          // the book did not open (`wb` undefined, an error from `open workbook`, a timeout): a repair window on another Space
-          const r = await rejectedBook(child, exited, c.id, /the book did not open/.test(err))
-          if (r) return r
-          throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        }
-        const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: [string, string, string, boolean, boolean, string[]][]; names: string[] }
-        const read = answerOf(c.read, raw.rects, local)
-        const answer: TableAnswer = { values: read.values, formulas: read.formulas, ...(local ? { local: read.formulas2 } : {}), tables: raw.tables.map(([sheet, name, range, headers, totals, columns]): TableShape => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns })) }
-        if (addsNames(c)) answer.names = raw.names
-        raw.steps.forEach((e, i) => e && ((answer.refused ??= {})[i] = e))
-        return answer
-      }
-      const r = declineRepair() ? await rejectedBook(child, exited, c.id) : null
-      if (r) return r
-      if (excelDialogs().length) {
-        child.kill()
-        throw new Error(`${c.id}: Excel shows a window, stopped without clicking: ${dialogText()}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        const hidden = await rejectedBook(child, exited, c.id)
-        if (hidden) return hidden
-        throw new Error(`${c.id}: Excel did not answer in 120 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+  const at = mirrorRanges(c.read)
+  const rects = c.read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n')
+  return runWatched<TableAnswer>({
+    script: SCRIPT,
+    label: c.id,
+    folder: 'ftables',
+    book: async (file) => {
+      const { data, issues } = await writeXlsx({ book: withMirrors(c.book) }, { values: 'omit' })
+      if (issues.length) throw new Error(`${c.id}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
+      writeFileSync(file, data)
+    },
+    args: () => [stepLines(c).join('\n'), rects, local ? '1' : ''],
+    timeout: 120_000,
+    poll: 1000,
+    after: 'case',
+    fatal: true,
+    // declined already, the window is looked for once more after Excel is activated; the script then fails on the book
+    repair: (stop) => rejectedBook(stop, c.id),
+    // the book did not open (`wb` undefined, an error from `open workbook`, a timeout): a repair window on another Space
+    failed: (err, stop) => rejectedBook(stop, c.id, /the book did not open/.test(err)),
+    late: (stop) => rejectedBook(stop, c.id),
+    done: (out) => {
+      const raw = JSON.parse(out) as { steps: string[]; rects: [unknown, unknown, unknown, unknown, unknown][]; tables: [string, string, string, boolean, boolean, string[]][]; names: string[] }
+      const read = answerOf(c.read, raw.rects, local)
+      const answer: TableAnswer = { values: read.values, formulas: read.formulas, ...(local ? { local: read.formulas2 } : {}), tables: raw.tables.map(([sheet, name, range, headers, totals, columns]): TableShape => ({ sheet, name, range: range.replaceAll('$', ''), headers, totals, columns })) }
+      if (addsNames(c)) answer.names = raw.names
+      raw.steps.forEach((e, i) => e && ((answer.refused ??= {})[i] = e))
+      return answer
+    },
+  })
 }
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */

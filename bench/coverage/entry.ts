@@ -7,14 +7,12 @@
  * `test/entry-excel.test.ts` compares `parseEntry` with them without Excel. `FENTRY_ONLY=id,id` runs only those cases,
  * `FCOV_FRESH=1` every case again.
  */
-import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { CellInput } from '../../src/contract.js'
 import { readXlsx, writeXlsx } from '../../src/xlsx.js'
-import { declineRepair, dialogText, ensureExcel, excelDialogs, excelVersion, settleRejected } from './excel.js'
+import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inCaseOrder } from './stored.js'
 import { entryBook, type EntryAnswer, type EntryCase, type EntrySet } from './entry/cases.js'
@@ -22,9 +20,7 @@ import { entryBook, type EntryAnswer, type EntryCase, type EntrySet } from './en
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-entry.applescript')
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const PART = 100
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export interface StoredEntry {
   meta: Record<string, string | number>
@@ -63,52 +59,31 @@ export async function partAnswers(part: EntryCase[], refused: string[], shown: [
 /** One part in Excel. A window that is not a book stops the run (nothing is clicked); a book Excel repairs stops it too. */
 async function runPart(part: EntryCase[], label: string, keys: boolean, edit: boolean): Promise<Record<string, EntryAnswer>> {
   if (declineRepair()) console.log('closed a leftover book repair window')
-  const before = dialogText()
-  if (before) throw new Error(`entry ${label}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `fentry-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    const savedName = 'saved.xlsx'
-    const savedFile = join(dir, savedName)
-    const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
-    if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
-    writeFileSync(file, data)
-    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys', join(HERE, 'excel-keys.applescript')] : []), ...(edit ? ['edit'] : [])])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
-    child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 170_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`entry ${label}: Excel window after the part: ${after}`)
-        if (code !== 0) throw new Error(`entry ${label}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?, string?, string?, string?][] }
-        return await partAnswers(part, raw.refused, raw.cells, new Uint8Array(readFileSync(savedFile)))
-      }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        await settleRejected()
-        throw new Error(`entry ${label}: Excel would repair the book`)
-      }
-      // typed on the keyboard, the script answers the window a refused formula brings itself
-      if (!keys && excelDialogs().length) {
-        child.kill()
-        throw new Error(`entry ${label}: Excel shows a window, stopped without clicking: ${dialogText()}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`entry ${label}: Excel did not answer in 170 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+  return runWatched<Record<string, EntryAnswer>>({
+    script: SCRIPT,
+    label: `entry ${label}`,
+    folder: 'fentry',
+    book: async (file) => {
+      const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
+      if (issues.length) throw new Error(`entry ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
+      writeFileSync(file, data)
+    },
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify(part.map((c) => c.text)), ...(keys ? ['keys', join(HERE, 'excel-keys.applescript')] : []), ...(edit ? ['edit'] : [])],
+    timeout: 170_000,
+    poll: 1000,
+    after: 'part',
+    // typed on the keyboard, the script answers the window a refused formula brings itself
+    fatal: !keys,
+    repair: async (stop) => {
+      await stop()
+      await settleRejected()
+      throw new Error(`entry ${label}: Excel would repair the book`)
+    },
+    done: (out, dir) => {
+      const raw = JSON.parse(out) as { refused: string[]; cells: [string, string, string, string?, unknown?, string?, string?, string?][] }
+      return partAnswers(part, raw.refused, raw.cells, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
+    },
+  })
 }
 
 /** Runs the set's cases without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */

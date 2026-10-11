@@ -7,14 +7,12 @@
  * cases, `FFIT_AGAIN=id,id` those again, `FCOV_FRESH=1` every case again.
  */
 import JSZip from 'jszip'
-import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
-import { declineRepair, dialogText, ensureExcel, excelDialogs, excelVersion, settleRejected } from './excel.js'
+import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inCaseOrder } from './stored.js'
 import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSet } from './fit/cases.js'
@@ -23,9 +21,7 @@ const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-fit.applescript')
 const KEYS = join(HERE, 'excel-keys.applescript')
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const PART = 60
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export interface StoredFit {
   meta: Record<string, string | number>
@@ -89,53 +85,32 @@ export async function partAnswers(part: FitCase[], refused: string[][], read: [n
 /** One part in Excel. A window that is not a book stops the run (nothing is clicked); a book Excel repairs stops it too. */
 async function runPart(part: FitCase[], label: string): Promise<Record<string, FitAnswer>> {
   if (declineRepair()) console.log('closed a leftover book repair window')
-  const before = dialogText()
-  if (before) throw new Error(`fit ${label}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `ffit-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
   const keys = part.some((c) => c.via === 'keys')
-  try {
-    const file = join(dir, 'book.xlsx')
-    const savedName = 'saved.xlsx'
-    const savedFile = join(dir, savedName)
-    const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
-    if (issues.length) throw new Error(`fit ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
-    writeFileSync(file, data)
-    const child = spawn('osascript', [SCRIPT, file, savedFile, savedName, JSON.stringify(partSpec(part)), KEYS])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
-    child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 290_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`fit ${label}: Excel window after the part: ${after}`)
-        if (code !== 0) throw new Error(`fit ${label}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { refused: string[][]; cases: [number, number, boolean, string[]][] }
-        return await partAnswers(part, raw.refused, raw.cases, new Uint8Array(readFileSync(savedFile)))
-      }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        await settleRejected()
-        throw new Error(`fit ${label}: Excel would repair the book`)
-      }
-      // typed on the keyboard, the script answers the window a refused formula brings itself
-      if (!keys && excelDialogs().length) {
-        child.kill()
-        throw new Error(`fit ${label}: Excel shows a window, stopped without clicking: ${dialogText()}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`fit ${label}: Excel did not answer in 290 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+  return runWatched<Record<string, FitAnswer>>({
+    script: SCRIPT,
+    label: `fit ${label}`,
+    folder: 'ffit',
+    book: async (file) => {
+      const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
+      if (issues.length) throw new Error(`fit ${label}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
+      writeFileSync(file, data)
+    },
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', JSON.stringify(partSpec(part)), KEYS],
+    timeout: 290_000,
+    poll: 1000,
+    after: 'part',
+    // typed on the keyboard, the script answers the window a refused formula brings itself
+    fatal: !keys,
+    repair: async (stop) => {
+      await stop()
+      await settleRejected()
+      throw new Error(`fit ${label}: Excel would repair the book`)
+    },
+    done: (out, dir) => {
+      const raw = JSON.parse(out) as { refused: string[][]; cases: [number, number, boolean, string[]][] }
+      return partAnswers(part, raw.refused, raw.cases, new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))))
+    },
+  })
 }
 
 /** Runs the set's cases in a locale without a stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */

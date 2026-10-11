@@ -10,12 +10,9 @@
  */
 import ExcelJS from 'exceljs'
 import JSZip from 'jszip'
-import { spawn } from 'node:child_process'
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { anchorArray, markDynamic, READ_COLUMNS } from './book.js'
-import { declineRepair, dialogText, excelDialogs, settleRejected, typedValue } from './excel.js'
+import { runWatched, settleRejected, typedValue } from './excel.js'
 import type { Val } from './formulajs.js'
 import { xl } from './sets/arrays/common.js'
 import { xlpm } from './sets/let/xlpm.js'
@@ -255,9 +252,6 @@ function markRows(xml: string, rows: Set<number>, attrs: string): string {
   return out
 }
 
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
 /** Excel did not load a case's book: it showed "We found a problem with some content", which was declined. */
 export class BookRejected extends Error {}
 
@@ -268,47 +262,24 @@ export class BookRejected extends Error {}
  * answering in 120 s.
  */
 export async function runOnBook(id: string, script: string, book: BookInput, read: RangeRef[], more: string[], parts?: FileParts): Promise<string> {
-  const before = dialogText()
-  if (before) throw new Error(`${id}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `fcase-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    await writeCaseBook(book, read, file, parts)
-    const at = mirrorRanges(read)
-    const child = spawn('osascript', [script, file, read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n'), ...more])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (d: Buffer) => (out += d.toString('utf8')))
-    child.stderr.on('data', (d: Buffer) => (err += d.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 120_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${id}: Excel window after the case: ${after}`)
-        if (code !== 0) throw new Error(`${id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        return out
-      }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        await settleRejected()
-        throw new BookRejected(`${id}: Excel did not load the book (repair window declined)`)
-      }
-      if (excelDialogs().length) {
-        child.kill()
-        throw new Error(`${id}: Excel shows a window, stopped without clicking: ${dialogText()}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`${id}: Excel did not answer in 120 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+  const at = mirrorRanges(read)
+  return runWatched<string>({
+    script,
+    label: id,
+    folder: 'fcase',
+    book: (file) => writeCaseBook(book, read, file, parts),
+    args: () => [read.map((g, i) => `${g.sheet}\t${g.range}\t${at[i]}`).join('\n'), ...more],
+    timeout: 120_000,
+    poll: 1000,
+    after: 'case',
+    fatal: true,
+    repair: async (stop) => {
+      await stop()
+      await settleRejected()
+      throw new BookRejected(`${id}: Excel did not load the book (repair window declined)`)
+    },
+    done: (out) => out,
+  })
 }
 
 /** A range's `value` or `formula` as AppleScript returns it (a cell alone is not a list) as rows. */

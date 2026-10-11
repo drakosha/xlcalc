@@ -13,7 +13,9 @@ import { fileURLToPath } from 'node:url'
 import type { ErrCode } from './data.js'
 import type { Val } from './formulajs.js'
 import { launchArgs } from './locales.js'
+import { alive, sleep } from './proc.js'
 
+/** Excel's sandbox: Excel opens a book from there without asking for access. */
 const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 const SCRIPT = fileURLToPath(new URL('./excel-read.applescript', import.meta.url))
 
@@ -30,18 +32,7 @@ export function typedValue(type: number, num: unknown, text: unknown): Val {
   return { t: 'other', v: `type ${type}` }
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
 const LOCK = join(homedir(), '.cache/xlcalc-excel.lock')
-
-const alive = (pid: number) => {
-  try {
-    process.kill(pid, 0)
-    return true
-  } catch {
-    return false
-  }
-}
 
 /**
  * One Excel per machine, while runs from different worktrees go in parallel: a restart for another locale in
@@ -273,42 +264,117 @@ export async function runExcelWatched(book: string, n: number, formula2 = false)
   return { values, formulas: f.map(([x]) => String(x)) }
 }
 
-/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`, `more`): its output, or 'rejected' as in runExcelWatched. */
-export async function runScriptWatched(script: string, book: string, n: number, more: string[] = []): Promise<string | 'rejected'> {
-  if (countWorkbooks() !== 0) throw new Error('Excel has open books')
-  const dir = join(SANDBOX, `fcov-${process.pid}`)
+/** How `runWatched` runs an AppleScript over a book in Excel's sandbox and what it does with the windows Excel shows meanwhile. */
+export interface Watch<T> {
+  script: string
+  /** Begins the errors: a case's id, a part's label; none for a bare message. */
+  label?: string
+  /** The book's folder in the sandbox, before the pid: each step has its own (`fsave`). */
+  folder: string
+  /** Writes the book at the path given. */
+  book: (file: string) => void | Promise<void>
+  /** The script's arguments after the book's path; `dir` is the folder, for a file the script saves. */
+  args: (dir: string) => string[]
+  /** No answer in `timeout` ms stops the run; Excel's windows are looked at every `poll` ms. */
+  timeout: number
+  poll: number
+  /** Before the run: no window that is not a book (unless false), and with `empty` no open book. */
+  before?: false
+  empty?: true
+  /** After the script ends a window stops the run, named by what ran (`case`, `part`, `script`); unchecked when left out. */
+  after?: string
+  /** A window that is not the repair window stops the run (false: the script answers the windows it brings itself). */
+  fatal: boolean
+  /** The repair window, declined: the step's answer, or undefined to go on; `stop` kills the script and waits for it, `text` is what Excel's windows said. */
+  repair: (stop: () => Promise<void>, text: string) => Promise<T | undefined>
+  /** The answer from the script's output, taken before the folder goes. */
+  done: (out: string, dir: string) => T | Promise<T>
+  /** The script failed (`err` its error output): the step's answer, or undefined for the error. */
+  failed?: (err: string, stop: () => Promise<void>) => Promise<T | undefined>
+  /** No answer in time, the script killed: the step's answer, or undefined for the error. */
+  late?: (stop: () => Promise<void>) => Promise<T | undefined>
+}
+
+/**
+ * An AppleScript over a book in Excel's sandbox (the folder is removed after), watched while it runs: the repair window
+ * ("We found a problem with some content") is declined and the step's `repair` answers; another window that is not a
+ * book stops the run when `fatal`, nothing clicked; so does Excel not answering in time.
+ */
+export async function runWatched<T>(w: Watch<T>): Promise<T> {
+  const at = (m: string) => (w.label === undefined ? m : `${w.label}: ${m}`)
+  if (w.before !== false) {
+    const before = dialogText()
+    if (before) throw new Error(at(`Excel has a window that is not a book: ${before}`))
+  }
+  if (w.empty && countWorkbooks() !== 0) throw new Error('Excel has open books')
+  const dir = join(SANDBOX, `${w.folder}-${process.pid}`)
   mkdirSync(dir, { recursive: true })
   try {
     const file = join(dir, 'book.xlsx')
-    copyFileSync(book, file)
-    const child = spawn('osascript', [script, file, String(n), ...more])
+    await w.book(file)
+    const child = spawn('osascript', [w.script, file, ...w.args(dir)])
     let out = ''
     let err = ''
     child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
     child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
     const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 180_000
+    const stop = async () => {
+      child.kill()
+      await exited
+    }
+    const until = Date.now() + w.timeout
     for (;;) {
-      const code = await Promise.race([exited, sleep(2000).then(() => undefined)])
+      const code = await Promise.race([exited, sleep(w.poll).then(() => undefined)])
       if (code !== undefined) {
-        if (code !== 0) throw new Error(`osascript ${code}: ${err.trim().split('\n')[0]}`)
-        return out
+        const after = w.after === undefined ? '' : dialogText()
+        if (after) throw new Error(at(`Excel window after the ${w.after}: ${after}`))
+        if (code !== 0) {
+          const r = await w.failed?.(err, stop)
+          if (r !== undefined) return r
+          throw new Error(at(`osascript ${code}: ${err.trim().split('\n')[0]}`))
+        }
+        return await w.done(out, dir)
       }
-      if (declineRepair()) {
+      const open = dialogText()
+      if (open && declineRepair()) {
+        const r = await w.repair(stop, open)
+        if (r !== undefined) return r
+      } else if (open && w.fatal) {
         child.kill()
-        await exited
-        await settleRejected()
-        return 'rejected'
+        throw new Error(at(`Excel shows a window, stopped without clicking: ${open}`))
       }
       if (Date.now() > until) {
         child.kill()
-        await exited
-        throw new Error('Excel did not answer in 180 s')
+        const r = await w.late?.(stop)
+        if (r !== undefined) return r
+        throw new Error(at(`Excel did not answer in ${w.timeout / 1000} s`))
       }
     }
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
+}
+
+/** The AppleScript `script` over a copy of the book in the sandbox (arguments: the path, `n`, `more`): its output, or 'rejected' as in runExcelWatched. */
+export async function runScriptWatched(script: string, book: string, n: number, more: string[] = []): Promise<string | 'rejected'> {
+  return runWatched<string>({
+    script,
+    folder: 'fcov',
+    before: false,
+    empty: true,
+    book: (file) => copyFileSync(book, file),
+    args: () => [String(n), ...more],
+    timeout: 180_000,
+    poll: 2000,
+    fatal: false,
+    repair: async (stop) => {
+      await stop()
+      await settleRejected()
+      return 'rejected'
+    },
+    done: (out) => out,
+    late: async (stop) => void (await stop()),
+  })
 }
 
 /**
@@ -317,46 +383,23 @@ export async function runScriptWatched(script: string, book: string, n: number, 
  * (declined). A window that is not a book stops the run, as does no answer in `timeoutMs`.
  */
 export async function runSavingScript(id: string, script: string, data: Uint8Array, args: string[], timeoutMs = 180_000): Promise<{ out: string; saved: Uint8Array } | { rejected: string }> {
-  const before = dialogText()
-  if (before) throw new Error(`${id}: Excel has a window that is not a book: ${before}`)
-  const dir = join(SANDBOX, `fsave-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    writeFileSync(file, data)
-    const child = spawn('osascript', [script, file, join(dir, 'saved.xlsx'), 'saved.xlsx', ...args])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
-    child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + timeoutMs
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${id}: Excel window after the case: ${after}`)
-        if (code !== 0) throw new Error(`${id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        return { out, saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }
-      }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        await sleep(1500)
-        declineRepair()
-        return { rejected: 'Excel did not accept the book (repair window declined)' }
-      }
-      const open = dialogText()
-      if (open) {
-        child.kill()
-        throw new Error(`${id}: Excel shows a window, stopped without clicking: ${open}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`${id}: Excel did not answer in ${timeoutMs / 1000} s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+  return runWatched<{ out: string; saved: Uint8Array } | { rejected: string }>({
+    script,
+    label: id,
+    folder: 'fsave',
+    book: (file) => writeFileSync(file, data),
+    args: (dir) => [join(dir, 'saved.xlsx'), 'saved.xlsx', ...args],
+    timeout: timeoutMs,
+    poll: 1000,
+    after: 'case',
+    fatal: true,
+    // the window declined once more, no book closed
+    repair: async (stop) => {
+      await stop()
+      await sleep(1500)
+      declineRepair()
+      return { rejected: 'Excel did not accept the book (repair window declined)' }
+    },
+    done: (out, dir) => ({ out, saved: new Uint8Array(readFileSync(join(dir, 'saved.xlsx'))) }),
+  })
 }

@@ -10,6 +10,7 @@ import { homedir, hostname } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { windowsLocale } from '../coverage/locales.js'
+import { alive, sleep } from '../coverage/proc.js'
 
 /** A locale's tag, one of the package's: the machine's language, regional format and code page are set by it. */
 export type Tag = string
@@ -22,8 +23,6 @@ export const OUT = join(HERE, 'out')
 /** One SSH connection shared by the calls of a run: a logon on the machine costs seconds. */
 const OPTS = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15', '-o', 'ControlMaster=auto', '-o', `ControlPath=${join(homedir(), '.cache/xlwin-%C')}`, '-o', 'ControlPersist=120']
 const OWNER = `${hostname()}:${process.pid}`
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 const exec = (cmd: string, args: string[], timeout: number) => execFileSync(cmd, args, { encoding: 'utf8', timeout, maxBuffer: 1 << 26 }).trim()
 
@@ -119,15 +118,6 @@ async function lock() {
     if (Date.now() > until) throw new Error(`windows-host has been busy for over 60 minutes: ${r}`)
     if (!said) console.log(`windows-host: ${r}, waiting`)
     await sleep(10_000)
-  }
-}
-
-const alive = (pid: number) => {
-  try {
-    process.kill(pid, 0)
-    return true
-  } catch {
-    return false
   }
 }
 

@@ -7,14 +7,12 @@
  * rows, merged areas or number formats is written with them, and the look of `LOOK` (and of the set's `look` rectangles) is read back too.
  * `FSTRUCT_ONLY=id,id` runs only those cases, `FCOV_FRESH=1` runs every case again.
  */
-import { execFileSync, spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
 import { inCaseOrder } from './stored.js'
-import { declineRepair, dialogText, ensureExcel, excelVersion } from './excel.js'
+import { ensureExcel, excelVersion, runWatched } from './excel.js'
 import { markDynamic } from './book.js'
 import { formatCode, formulaValue, writeNames, writeParts, type FileParts } from './case-book.js'
 import type { BookInput, CellStyle, NumberFormat, RowInput, SheetInput } from '../../src/contract.js'
@@ -25,7 +23,6 @@ import type { StructCase, StructCases, StructSet } from './struct/cases.js'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-struct.applescript')
-const SANDBOX = join(homedir(), 'Library/Containers/com.microsoft.Excel/Data/tmp')
 
 /** The rectangle read on every sheet after the operation; a case keeps its cells inside it or lists them in `extra`. */
 export const READ = 'A1:Z60'
@@ -258,59 +255,36 @@ export function lookOf([cells, widths, heights]: RawLook): SheetLook {
   return hidden.length ? { ...out, hidden } : out
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
 /** One case in Excel. A window that is not a book stops the run (nothing is clicked); the repair window is declined. */
 async function runCase(c: StructCase, book: BookInput, dynamic: boolean, lookRects: string, files?: FileParts): Promise<ExcelStructAnswer> {
-  const before = dialogText()
-  if (before) throw new Error(`${c.id}: Excel has a window that is not a book: ${before}`)
-  if (Number(execFileSync('osascript', ['-e', 'tell application "Microsoft Excel" to count workbooks'], { encoding: 'utf8' }).trim()) !== 0) throw new Error('Excel has open books')
-  const dir = join(SANDBOX, `fstruct-${process.pid}`)
-  mkdirSync(dir, { recursive: true })
-  try {
-    const file = join(dir, 'book.xlsx')
-    await writeBook(c, book, file, dynamic, files)
-    const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
-    const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
-    const child = spawn('osascript', [SCRIPT, file, c.via ?? c.op.op, ...opArgs(c), READ, extra, ...look])
-    let out = ''
-    let err = ''
-    child.stdout.on('data', (b: Buffer) => (out += b.toString('utf8')))
-    child.stderr.on('data', (b: Buffer) => (err += b.toString('utf8')))
-    const exited = new Promise<number | null>((res) => child.on('close', res))
-    const until = Date.now() + 90_000
-    for (;;) {
-      const code = await Promise.race([exited, sleep(1000).then(() => undefined)])
-      if (code !== undefined) {
-        const after = dialogText()
-        if (after) throw new Error(`${c.id}: Excel window after the case: ${after}`)
-        if (code !== 0) throw new Error(`${c.id}: osascript ${code}: ${err.trim().split('\n')[0]}`)
-        const raw = JSON.parse(out) as { error: string; sheets: [string, string, unknown, RawLook | ''][]; extra: [string, string, string][]; names: [string, string][] }
-        return {
-          ...(raw.error ? { error: raw.error } : {}),
-          sheets: raw.sheets.map(([name, used, f, look]) => ({ name, used, cells: cellsOf(f), ...(look ? { look: lookOf(look) } : {}) })),
-          extra: raw.extra.map(([sheet, cell, text]) => ({ sheet, cell, text })),
-          names: raw.names.map(([name, ref]) => ({ name, ref })),
-        }
+  const extra = (c.extra ?? []).map((e) => `${e.sheet}\t${e.cell}`).join('\n')
+  const look = styled(book) ? lookArgs(lookRects) : ['', '', '']
+  return runWatched<ExcelStructAnswer>({
+    script: SCRIPT,
+    label: c.id,
+    folder: 'fstruct',
+    empty: true,
+    book: (file) => writeBook(c, book, file, dynamic, files),
+    args: () => [c.via ?? c.op.op, ...opArgs(c), READ, extra, ...look],
+    timeout: 90_000,
+    poll: 1000,
+    after: 'case',
+    fatal: true,
+    // the run stops on a book Excel does not load
+    repair: async (stop) => {
+      await stop()
+      throw new Error(`${c.id}: Excel did not accept the book (repair window declined)`)
+    },
+    done: (out) => {
+      const raw = JSON.parse(out) as { error: string; sheets: [string, string, unknown, RawLook | ''][]; extra: [string, string, string][]; names: [string, string][] }
+      return {
+        ...(raw.error ? { error: raw.error } : {}),
+        sheets: raw.sheets.map(([name, used, f, look]) => ({ name, used, cells: cellsOf(f), ...(look ? { look: lookOf(look) } : {}) })),
+        extra: raw.extra.map(([sheet, cell, text]) => ({ sheet, cell, text })),
+        names: raw.names.map(([name, ref]) => ({ name, ref })),
       }
-      if (declineRepair()) {
-        child.kill()
-        await exited
-        throw new Error(`${c.id}: Excel did not accept the book (repair window declined)`)
-      }
-      const open = dialogText()
-      if (open) {
-        child.kill()
-        throw new Error(`${c.id}: Excel shows a window, stopped without clicking: ${open}`)
-      }
-      if (Date.now() > until) {
-        child.kill()
-        throw new Error(`${c.id}: Excel did not answer in 90 s`)
-      }
-    }
-  } finally {
-    rmSync(dir, { recursive: true, force: true })
-  }
+    },
+  })
 }
 
 /** Runs the set's cases that have no stored answer for the same case (FCOV_FRESH=1 runs all) and stores the answers. */
