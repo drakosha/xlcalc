@@ -1,0 +1,187 @@
+{
+ "lower": {
+  "views": [
+   {
+    "name": "S",
+    "rules": {
+     "A1": {
+      "type": "whole",
+      "allowBlank": true,
+      "showPrompt": true,
+      "showError": true,
+      "errorStyle": "stop",
+      "operator": "greaterThan",
+      "formula1": "2"
+     },
+     "B1": {
+      "type": "whole",
+      "allowBlank": true,
+      "showPrompt": true,
+      "showError": true,
+      "errorStyle": "stop",
+      "operator": "greaterThan",
+      "formula1": "2"
+     },
+     "A2": {
+      "type": "whole",
+      "allowBlank": true,
+      "showPrompt": true,
+      "showError": true,
+      "errorStyle": "stop",
+      "operator": "greaterThan",
+      "formula1": "2"
+     },
+     "B2": {
+      "type": "whole",
+      "allowBlank": true,
+      "showPrompt": true,
+      "showError": true,
+      "errorStyle": "stop",
+      "operator": "greaterThan",
+      "formula1": "2"
+     }
+    },
+    "meets": {
+     "A1": false,
+     "B1": false,
+     "A2": false,
+     "B2": false
+    },
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   },
+   {
+    "name": "L",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   }
+  ],
+  "issues": []
+ },
+ "dollar": {
+  "views": [
+   {
+    "name": "S",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   },
+   {
+    "name": "L",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   }
+  ],
+  "issues": [
+   "dataValidation S $A$1:$B$2: a rule without a range of the sheet is left out"
+  ]
+ },
+ "mixed": {
+  "views": [
+   {
+    "name": "S",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   },
+   {
+    "name": "L",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   }
+  ],
+  "issues": [
+   "dataValidation S $a$1:B$2: a rule without a range of the sheet is left out"
+  ]
+ },
+ "areas": {
+  "views": [
+   {
+    "name": "S",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   },
+   {
+    "name": "L",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   }
+  ],
+  "issues": [
+   "dataValidation S a1:A2 $C$4:d5: a rule without a range of the sheet is left out"
+  ]
+ },
+ "x14": {
+  "views": [
+   {
+    "name": "S",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   },
+   {
+    "name": "L",
+    "rules": {},
+    "meets": {},
+    "rows": {},
+    "columns": {},
+    "summary": {
+     "below": true,
+     "right": true
+    }
+   }
+  ],
+  "issues": [
+   "dataValidation S $a$1:b2: a rule without a range of the sheet is left out"
+  ]
+ }
+}
