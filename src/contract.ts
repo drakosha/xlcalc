@@ -1161,6 +1161,17 @@ export interface ViewportRow {
   hidden?: true
 }
 
+/** A table that meets a window (`Viewport.tables`): its name, its range and which of its rows are a header and totals. */
+export interface ViewportTable {
+  name: string
+  /** The whole table, its header and totals rows included (`TableInput.range`). */
+  range: string
+  /** Its first row is a header row (`TableInput.headers`, true by default). */
+  headers: boolean
+  /** Its last row is a totals row (`TableInput.totals`, false by default). */
+  totals: boolean
+}
+
 /** What a grid needs to draw a window of a sheet (`Session.getViewport`). */
 export interface Viewport {
   /** The rectangle given (`B2:D9`): the one asked for, or its first rows when it holds more than `maxCells` cells. */
@@ -1177,6 +1188,10 @@ export interface Viewport {
   rows: ViewportRow[]
   /** The merged areas that meet `range`, whole. */
   merges: string[]
+  /** The tables that meet `range`, whole, in the sheet's order. */
+  tables: ViewportTable[]
+  /** The sheet's frozen panes (`SheetInput.frozen`): its first `rows` rows and `columns` columns stay in view, 0 for none. */
+  frozen: { rows: number; columns: number }
   /** Where the sheet's cells end, as `Session.getUsedRange`. */
   usedRange: SheetExtent
   /** The session's revision the window is of (`Session.revision`): a host takes the changes of later edits over it (`EditResult.revision`). */
@@ -1591,8 +1606,8 @@ export interface Session {
   getCells(sheet: string, range: string | string[]): Record<string, CellView>
   /**
    * A window over a sheet for a grid (`B2:D9`, `B:D`, `2:9`): its cells with their styles and number formats resolved,
-   * empty ones with a style of their row or column too, the widths and heights of its lines and the merged areas that meet
-   * it (`Viewport`). It costs what the window holds, as `getCells`, not the book.
+   * empty ones with a style of their row or column too, the widths and heights of its lines, the merged areas and tables
+   * that meet it and the sheet's frozen panes (`Viewport`). It costs what the window holds, as `getCells`, not the book.
    */
   getViewport(sheet: string, range: string, opts?: ViewportOptions): Viewport
   /** Why a cell holds an error and the cell it began in (`CellIssueDetail`), without the book's result; null for a cell without one. */
