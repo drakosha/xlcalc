@@ -16,7 +16,7 @@ import * as entry from './entry/index.js'
 import * as entryTexts from './entry/text.js'
 import * as fit from './layout/fit.js'
 import * as helpers from './helpers.js'
-import * as scan from './scan.js'
+import * as styleTable from './style-table.js'
 import * as builtin from './builtin-format.js'
 import * as serials from './date-serial.js'
 import { strict } from './strict-args.js'
@@ -44,6 +44,7 @@ export { enUS, type Locale, type Translation } from './locale/index.js'
 export { LOCALES } from './locale/registry.js'
 export type { CopyContext } from './structure/copy.js'
 export * from './a1.js'
+export { escapeColumn, scanReferences } from './text.js'
 export type { DateSystemOptions } from './date-serial.js'
 
 // the functions of the modules, each refusing options it does not take (`strict-args.ts`); a bundle keeps those it uses
@@ -65,10 +66,10 @@ export const canonValue = /* @__PURE__ */ strict(helpers.canonValue)
 export const errorText = /* @__PURE__ */ strict(helpers.errorText)
 export const sameValue = /* @__PURE__ */ strict(helpers.sameValue)
 export const validateSheetName = /* @__PURE__ */ strict(helpers.validateSheetName)
-export const scanReferences = /* @__PURE__ */ strict(scan.scanReferences)
 export const builtinFormatCode = /* @__PURE__ */ strict(builtin.builtinFormatCode)
 export const dateToSerial = /* @__PURE__ */ strict(serials.dateToSerial)
 export const serialToDate = /* @__PURE__ */ strict(serials.serialToDate)
+export const internStyle = /* @__PURE__ */ strict(styleTable.internStyle)
 
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the

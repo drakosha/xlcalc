@@ -65,12 +65,11 @@ export function checkCalls(ast: Ast, src: string, external: (fn: string) => bool
 
 /**
  * What the engine adds to a check: a name's formula (`union`), which names a book has as a sheet sees them (`known`), the
- * table of the formula's cell (`enclosing`), the language of messages (`say`, English without it).
+ * language of messages (`say`, English without it).
  */
 interface BookCheck {
   union?: boolean
   known?: (name: string, sheet: string | undefined) => boolean
-  enclosing?: string
   say?: (m: Message) => string
 }
 
@@ -78,8 +77,8 @@ type Fail = Extract<ValidateResult, { ok: false }>
 
 /**
  * Structured references bound to the tables of `ctx.tables`: a reference without a table name takes the formula's
- * table, tables and columns are spelled as named, a bare table name is the table's data (`Sales[]`, as a file stores
- * it). An unknown table or column, or a reference without a table name outside one, fails with `unknown_name`.
+ * table (`ctx.table`), tables and columns are spelled as named, a bare table name is the table's data (`Sales[]`, as a
+ * file stores it). An unknown table or column, or a reference without a table name outside one, fails with `unknown_name`.
  */
 export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCheck): { ok: true; ast: Ast; tables: string[] } | Fail {
   const known = ctx.tables ? new Map(ctx.tables.map((t) => [sheetKey(t.name), t])) : null
@@ -94,16 +93,20 @@ export function bindTables(ast: Ast, text: string, ctx: ValidateContext & BookCh
       return { k: 'table', table: t.name, spec: { areas: [] } }
     }
     if (n.k !== 'table') return undefined
-    const name = n.table ?? ctx.enclosing
+    const name = n.table ?? ctx.table
     if (name === undefined) {
       if (ctx.tables) fail = unknown({ key: 'tableRefOutside' }, '[')
       return undefined
     }
     const t = known?.get(sheetKey(name))
     if (!t) {
-      if (known) fail = unknown({ key: 'unknownTable', table: name }, name)
-      else used.add(name)
-      return undefined
+      if (known) {
+        fail = unknown({ key: 'unknownTable', table: name }, name)
+        return undefined
+      }
+      used.add(name)
+      // without the book's tables, a reference in the formula's table takes its name as given
+      return n.table === null ? { ...n, table: name } : undefined
     }
     used.add(t.name)
     const cols = n.spec.cols?.map((c) => t.columns.find((x) => sheetKey(x) === sheetKey(c)))

@@ -23,7 +23,7 @@ const CALLS: [string, (locale: string | Locale) => unknown][] = [
   ['errorText', (l) => [errorText('DIV0', l), errorText('NA', l)]],
   ['entryText', (l) => [entryText(45688.75, { numberFormat: 14, locale: l }), entryText(1.5, { locale: l }), entryText(true, { locale: l })]],
   ['needsApostrophe', (l) => [needsApostrophe('1.5', { locale: l }), needsApostrophe('1,5', { locale: l }), needsApostrophe('ИСТИНА', { locale: l })]],
-  ['scanReferences', (l) => scanReferences('=СУММ(B2:B9;C1)+SUM(D1,E1)', { locale: l })],
+  ['scanReferences', (l) => scanReferences('=СУММ(B2:B9;C1;{1;2:3})', { locale: l })],
   ['validateSheetName', (l) => validateSheetName('Итоги/2025', { locale: l })],
   ['validateNames', (l) => validateNames([{ name: 'ИСТИНА', ref: '1' }, { name: 'rate', ref: '0.2' }], { sheets: ['S'], locale: l })],
 ]

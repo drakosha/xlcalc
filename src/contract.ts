@@ -950,6 +950,12 @@ export interface ValidateContext {
    * text spells tables and columns as they are named, and a bare table name is a table, not a name.
    */
   tables?: { name: string; columns: string[] }[]
+  /**
+   * The table of the formula's cell: a structured reference without a table name is to it (`[@Qty]`), as in a cell of
+   * the table, and the canonical text names it (`Sales[[#This Row],[Qty]]`). Without it such a reference is refused
+   * with `tables` (`unknown_name`) and stays without a name otherwise.
+   */
+  table?: string
 }
 
 export type ValidateResult =

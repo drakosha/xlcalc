@@ -4,8 +4,10 @@
 import { readFileSync } from 'node:fs'
 
 const { name } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'))
-const { compute, CONFIG_VERSION, engine, FUNCTION_NAMES, InputError, openSession, validateFormula } = await import(name)
+const root = await import(name)
+const { compute, CONFIG_VERSION, engine, FUNCTION_NAMES, InputError, openSession, validateFormula } = root
 const contract = await import(`${name}/contract`)
+const text = await import(`${name}/text`)
 const { createState, parse, valuesHash } = await import(`${name}/unstable/internal`)
 const { classAEdits, synthBook } = await import(`${name}/unstable/synth`)
 const { readXlsx, writeXlsx } = await import(`${name}/xlsx`)
@@ -44,6 +46,7 @@ console.log(
     validate: validateFormula('SUM(A1:A3)').ok,
     contract: Object.keys(contract).sort(),
     internal: [typeof createState, typeof parse, typeof valuesHash],
+    text: { keys: Object.keys(text).sort(), same: Object.entries(text).every(([k, f]) => root[k] === f) },
     xlsx: compute(xlsx.book, { clock }).hash,
     threads,
     closed: await Promise.all([`${name}/dist/engine.js`, `${name}/internal`, `${name}/synth`].map(closed)),

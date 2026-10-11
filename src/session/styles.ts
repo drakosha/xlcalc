@@ -14,21 +14,11 @@ import { lines as spansOf, patchLines, spanKey } from '../layout/spans.js'
 import { formatAddress, parseAddress } from '../model.js'
 import { cellCount, hasCell, type Rect } from '../structure/area.js'
 import { cellsIn, gridOf, type Grid } from '../structure/grid.js'
+import { StyleTable } from '../style-table.js'
 import type { CheckedPatch, Look, StyleChange, Target } from './patch.js'
 
 /** The cells a rectangle may give a look to: as many as a whole column has. Past them, whole columns or rows cost what their cells hold. */
 export const MAX_CELLS = 1_048_576
-
-/** A key of a value independent of the order of its fields. */
-function keyOf(v: unknown): string {
-  if (v === null || typeof v !== 'object') return JSON.stringify(v)
-  const o = v as Record<string, unknown>
-  return `{${Object.keys(o)
-    .filter((k) => o[k] !== undefined)
-    .sort()
-    .map((k) => `${JSON.stringify(k)}:${keyOf(o[k])}`)
-    .join(',')}}`
-}
 
 /** An object's fields with a patch over them: null removes a field; undefined when nothing is left. */
 function over<T extends object>(base: T | undefined, patch: { [K in keyof T]?: T[K] | null } | null | undefined): T | undefined {
@@ -55,47 +45,6 @@ export function patchStyle(base: CellStyle, p: StylePatch): CellStyle {
   if (border) out.border = border
   if (alignment) out.alignment = alignment
   return out
-}
-
-/** The book's styles, found by their fields: an equal style's number, or a new one added at the end. */
-export class StyleTable {
-  private keys: Map<string, number> | null = null
-  private list: CellStyle[]
-  added = false
-
-  constructor(private readonly base: CellStyle[] | undefined) {
-    this.list = base ?? []
-  }
-
-  /** The style of a number; the plain style for none. */
-  at(i: number | undefined): CellStyle {
-    return i === undefined ? {} : this.list[i]
-  }
-
-  isPlain(i: number | undefined): boolean {
-    return i === undefined || keyOf(this.list[i]) === '{}'
-  }
-
-  indexOf(style: CellStyle): number {
-    if (!this.keys) {
-      this.keys = new Map()
-      this.list.forEach((s, i) => this.keys!.has(keyOf(s)) || this.keys!.set(keyOf(s), i))
-    }
-    const k = keyOf(style)
-    let i = this.keys.get(k)
-    if (i === undefined) {
-      if (!this.added) this.list = [...this.list]
-      this.added = true
-      i = this.list.push(style) - 1
-      this.keys.set(k, i)
-    }
-    return i
-  }
-
-  /** The new table, when styles were added. */
-  get table(): CellStyle[] | undefined {
-    return this.added ? this.list : undefined
-  }
 }
 
 /** A plan of looks: the cells' new inputs, the sheets with new lines or rules, the lines whose cells may show otherwise, the style table when it grew. */

@@ -69,7 +69,7 @@ A name can hold a structured reference (`Sales[Qty]`). `Sales[[#This Row],[Price
 
 Names of tables, columns and specifiers are read in any case and stored as the table spells them. Spaces may stand inside the outer brackets and after the commas between items (`Sales[ [Qty]:[Price] ]`, `Sales[[#Data], [Qty]]`), not around `:`. A column written alone is all the text up to `]`, so `Sales[ Qty ]` is a column named ` Qty `.
 
-A column name with `[`, `]`, `#` or `'` in it takes `'` before each: the column `x#y` is `Sales[x'#y]`, `[br]` is `Sales['[br']]`, `it's` is `Sales[it''s]`. A name that starts with `@` takes one before it too, `Sales['@at]`, since `@` there means the formula's row. Spaces, digits, `$` and letters of any script need nothing: `Sales[Total $]`, `Sales[2024]`.
+A column name with `[`, `]`, `#` or `'` in it takes `'` before each: the column `x#y` is `Sales[x'#y]`, `[br]` is `Sales['[br']]`, `it's` is `Sales[it''s]`. A name that starts with `@` takes one before it too, `Sales['@at]`, since `@` there means the formula's row. Spaces, digits, `$` and letters of any script need nothing: `Sales[Total $]`, `Sales[2024]`. `escapeColumn(name)` (from `xlcalc` and `xlcalc/text`) writes a name so.
 
 Excel refuses some forms, and so does the engine, with the check code `syntax`: two specifiers it does not combine (`[#Headers],[#Totals]`, `#All` or `#This Row` with another), two columns that are not a span (`[[Qty],[Price]]`), an unknown specifier. An unknown table or column, or `[@Qty]` outside a table, is the check code `unknown_name`, `#NAME?`.
 
@@ -89,6 +89,16 @@ const f = 'Sales[[#This Row],[Qty]]*SUM(Sales[[#Totals],[Price]])'
 console.log(toLocal(f, enUS).formula) // → Sales[@Qty]*SUM(Sales[[#Totals],[Price]])
 console.log(toLocal(f, enUS, { table: 'Sales' }).formula) // → [@Qty]*SUM(Sales[[#Totals],[Price]])
 console.log(toLocal(f, ruRU, { table: 'Sales' }).formula) // → [@Qty]*СУММ(Sales[[#Итоги];[Price]])
+```
+
+The way back takes the table too. `toInvariant(text, locale, { table: 'Sales' })` puts the name before each structured reference without one, so the formula reads outside the table (`[@Qty]` is `Sales[@Qty]`), and `validateFormula` and `validateLocalFormula` with `ctx.table` check a formula as in a cell of the table: a reference without a table name is to it, and the canonical text is the one the book stores. With `ctx.tables` the columns are checked as well; without `ctx.table` such a reference is refused with `ctx.tables`, as outside a table.
+
+```js
+import { toInvariant, validateLocalFormula } from 'xlcalc'
+import { ruRU } from 'xlcalc/locales/ru-RU'
+
+console.log(toInvariant('=[@Qty]*СУММ(Sales[[#Итоги];[Price]])', ruRU, { table: 'Sales' }).formula) // → Sales[@Qty]*SUM(Sales[[#Totals],[Price]])
+console.log(validateLocalFormula('=[@Qty]*1,5', ruRU, { table: 'Sales', tables: [{ name: 'Sales', columns: ['Qty', 'Price'] }] }).canonical) // → Sales[[#This Row],[Qty]]*1.5
 ```
 
 ### In ru-RU
@@ -205,6 +215,8 @@ Deleting a sheet takes the references to its tables: they become `#REF!`. Renami
 | `paste-names-held` | 5 | predicted before Excel took them: a table's cells pasted onto a target that is no multiple of them, a row inserted where a calculated column's formula differs from its cells', defined names shaped like cells |
 
 The predicted sets came out as predicted on 81 of 81 cells (`refs-held`), 424 of 433 (`ops-held`: two pastes over header cells, which Excel renames, and a conversion seen through a name were found there and fixed) and 69 of 69 (`locale`); `delete-held` on 5 of 13 cases, as Excel for Mac and Excel for Windows both refuse a deletion that takes one table whole and part of another, which the engine took (fixed); `headers-ru-held` on 3 of 13 cases: the column's name and the stored formulas on 10, where a header cell's own number format (`0.00`, the short date) names the column as it shows the number and the engine named it by General (fixed), and Excel read typed text as a date (a known difference); `toLocal` in ru-RU split a column named `1,5` at its comma and put it in brackets after `@` (fixed). The sets of names came out as predicted on 34 of 54 cases in Excel for Mac; [Defined names](names.md) has the misses and what was fixed. `paste-names-held` came out as predicted on 1 of 5 cases in both Excels: a copy of formulas onto a target that is no multiple of them took the target's other cells too, and a formula there in another table's calculated column got the copied table's name (fixed); formulas pasted into part of a calculated column fill the whole column in Excel (known); defined names past the sheet (`XFE1`, `A0`) are names (fixed); and a row inserted where a calculated column's formula differs from its cells' takes the column's formula, as predicted.
+
+`test/tables-text.test.ts` shows formulas of a table's cell with `toLocal` and the table, in en-US and ru-RU, reads them back with `toInvariant` and checks the typed text with `validateLocalFormula`, each with the table, and both give the stored text again; the canonical text `validateFormula` gives with the table is the one `compute` stores for the cell.
 
 The xlsx round trip (`run.ts xlsx roundtrip`) sends the 29 distinct books of the sets `refs`, `refs-held`, `ops` and `ops-held`: Excel opens each file `writeXlsx` writes and saves it, the files it saved read back to the books written, and the values Excel stored in them equal the engine's.
 

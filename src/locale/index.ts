@@ -52,7 +52,7 @@ export function toLocal(formula: string, where: string | Locale, opts?: { table?
   return result(translate(shownTables(checkString(formula, 'formula'), table, s.local.syn.list), s.invariant, s.local), locale)
 }
 
-/** `toLocal`'s options: `table`, a table's name, alone; the table it gives. */
+/** `toLocal`'s and `toInvariant`'s options: `table`, a table's name, alone; the table it gives. */
 function checkTranslateOptions(v: unknown): string | undefined {
   const o = object(v, 'opts', "options such as { table: 'Sales' }")
   onlyOptions(o, 'opts', ['table'])
@@ -62,9 +62,24 @@ function checkTranslateOptions(v: unknown): string | undefined {
 /** The structured references of a formula as Excel shows them in a locale with the list separator `list` (`toLocal`); a formula that does not parse as it is. */
 function shownTables(formula: string, table: string | undefined, list: string): string {
   if (!formula.includes('[')) return formula
-  let toks: Tok[]
   try {
     parse(formula)
+  } catch (e) {
+    if (e instanceof FormulaError) return formula
+    throw e
+  }
+  return eachTable(formula, (tok) => {
+    const own = table !== undefined && (tok.table === null || sheetKey(tok.table) === sheetKey(table))
+    const name = own && unnamedInTable(tok.spec) ? '' : (tok.table ?? table ?? '')
+    return !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec, list)}]`
+  })
+}
+
+/** `formula` with the text of each structured reference as `f` writes it; a formula that does not read as it is. */
+function eachTable(formula: string, f: (tok: Extract<Tok, { t: 'table' }>, text: string) => string): string {
+  if (!formula.includes('[')) return formula
+  let toks: Tok[]
+  try {
     toks = tokenize(formula)
   } catch (e) {
     if (e instanceof FormulaError) return formula
@@ -77,10 +92,7 @@ function shownTables(formula: string, table: string | undefined, list: string): 
     if (tok.t !== 'table') continue
     let end = toks[k + 1].at
     while (end > tok.at && isSpace(formula[end - 1])) end--
-    const own = table !== undefined && (tok.table === null || sheetKey(tok.table) === sheetKey(table))
-    const name = own && unnamedInTable(tok.spec) ? '' : (tok.table ?? table ?? '')
-    const text = !tok.spec.areas.length && !tok.spec.cols && name ? name : `${name}[${shownSpec(tok.spec, list)}]`
-    out += formula.slice(pos, tok.at) + text
+    out += formula.slice(pos, tok.at) + f(tok, formula.slice(tok.at, end))
     pos = end
   }
   return pos === 0 ? formula : out + formula.slice(pos)
@@ -89,12 +101,16 @@ function shownTables(formula: string, table: string | undefined, list: string): 
 /**
  * Text typed in a locale (a loaded locale's tag, or a locale object) as a stored formula: `=СУММ(A1:A3;1,5)` is
  * `SUM(A1:A3,1.5)`. A leading `=` is dropped, as stored formulas have none; English function names, TRUE/FALSE and
- * error texts are read too. Positions of errors are in `text`, their messages in the locale's language.
+ * error texts are read too. Positions of errors are in `text`, their messages in the locale's language. `opts.table`, the
+ * table of the formula's cell, names it before a structured reference without a table name (`[@Qty]` is `Sales[@Qty]`),
+ * as `toLocal` drops it, so the formula reads outside the table too.
  */
-export function toInvariant(text: string, where: string | Locale): Translation {
+export function toInvariant(text: string, where: string | Locale, opts?: { table?: string }): Translation {
   const [locale, s] = localeSides(where)
+  const table = opts === undefined ? undefined : checkTranslateOptions(opts)
   const eq = checkString(text, 'text').startsWith('=') ? 1 : 0
-  return result(translate(text.slice(eq), s.local, s.invariant, eq), locale)
+  const r = result(translate(text.slice(eq), s.local, s.invariant, eq), locale)
+  return r.ok && table !== undefined ? { ok: true, formula: eachTable(r.formula, (tok, t) => (tok.table === null ? table + t : t)) } : r
 }
 
 /**
