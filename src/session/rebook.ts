@@ -180,15 +180,24 @@ export function* bookDiff(pass: DiffPass, g: Geometry): Steps<BookDiff> {
   return { head, geometry: g, moved: movers, sheets }
 }
 
-/** The other book, from the current one (as it was when the diff was taken) and the diff. */
+/**
+ * The other book, from the current one (as it was when the diff was taken) and the diff. A sheet no cell comes back to
+ * (a deleted one) takes the diff's cells as they are, not a copy: a session's state takes its own copy of a book.
+ */
 export function* applyDiff(current: BookInput, d: BookDiff): Steps<BookInput> {
   const place = placer(d.geometry)
-  const got = d.sheets.map((x) => ('rest' in x ? ({} as Record<string, CellInput>) : undefined))
-  for (const i of d.moved) yield* carried(current.sheets[i].cells, i, place, (j) => got[j], (cells, at, input) => (cells[at] = input))
+  const got = d.sheets.map((x) => ('rest' in x ? { cells: {} as Record<string, CellInput>, n: 0 } : undefined))
+  for (const i of d.moved)
+    yield* carried(current.sheets[i].cells, i, place, (j) => got[j], (t, at, input) => {
+      t.cells[at] = input
+      t.n++
+    })
   const byKey = new Map(current.sheets.map((s) => [sheetKey(s.name), s]))
   const sheets = d.sheets.map((x, j): SheetInput => {
     if ('same' in x) return byKey.get(sheetKey(x.same))!
-    const cells = got[j]!
+    const { cells, n } = got[j]!
+    // the diff keeps such a sheet's cells whole (`bookDiff`), none of them null
+    if (!n) return { ...x.rest, cells: x.put as Record<string, CellInput> }
     for (const addr in x.put) {
       const input = x.put[addr]
       if (input) cells[addr] = input

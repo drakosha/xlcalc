@@ -238,6 +238,30 @@ describe.each(['closures', 'eval'] as const)('undo and redo, %s', (execution) =>
     }
   })
 
+  it('a deleted sheet given back as the history keeps it, edited, deleted and given back again: each book as it was', () => {
+    const s = createSession(book(), o)
+    const before = structuredClone(s.getBook())
+    s.editStructure({ op: 'deleteSheet', sheet: 'S' })
+    const deleted = structuredClone(s.getBook())
+    s.undo()
+    same(s, before, o)
+    s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }])
+    const edited = structuredClone(s.getBook())
+    s.editStructure({ op: 'deleteSheet', sheet: 'S' })
+    same(s, deleted, o)
+    s.undo()
+    same(s, edited, o)
+    s.undo()
+    same(s, before, o)
+    expect(s.undo()).toBeNull()
+    s.redo()
+    same(s, edited, o)
+    s.redo()
+    same(s, deleted, o)
+    s.undo()
+    same(s, edited, o)
+  })
+
   it('structure operations over cells of a look alone under a spill and beside it, new ones from empty cells: each back, and again', () => {
     const cells = { A1: { formula: 'SEQUENCE(4)' }, A2: { style: 0 }, A3: { style: 0, numberFormat: '0.0' }, B5: { style: 0 }, C1: { value: 7 }, C3: { formula: 'A3*2' } }
     const s = createSession({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells, columns: { F: { style: 0 } } }] }, o)
