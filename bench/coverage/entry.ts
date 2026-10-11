@@ -15,7 +15,7 @@ import { readXlsx, writeXlsx } from '../../src/xlsx.js'
 import { declineRepair, ensureExcel, excelVersion, runWatched, settleRejected } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
 import { inParts } from './book.js'
-import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, writeAnswers } from './stored.js'
+import { answeredLine, chosen, inCaseOrder, keptSame, loadStored, numberFormatOf, secondsSince, setModule, took, writeAnswers } from './stored.js'
 import { entryBook, type EntryAnswer, type EntryCase, type EntrySet } from './entry/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -33,10 +33,14 @@ export interface StoredEntry {
 /** The stored answers of a set: `test/excel/entry/<set>.json`, in a directory of its tag for a locale other than en-US. */
 export const entryFile = (set: string, tag = 'en-US', win = false) => join(ROOT, 'test/excel', win ? 'win' : '', 'entry', localeDir(tag), `${set}.json`)
 
-/** What a saved cell holds, as the engine takes it: its value or formula and its format (styles are not compared). */
+/**
+ * What a saved cell holds, as the engine takes it: its value or formula and its format (styles are not compared), the
+ * format under the name the stored answers give it (`format`) whichever name the reader gives it.
+ */
 export const heldOf = (c: CellInput | undefined): CellInput | null => {
   if (!c) return null
-  const { value, formula, format } = c
+  const { value, formula } = c
+  const format = numberFormatOf(c)
   const held = { ...(formula !== undefined ? { formula } : value !== undefined && value !== null ? { value } : {}), ...(format !== undefined ? { format } : {}) }
   return Object.keys(held).length ? held : null
 }

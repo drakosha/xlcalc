@@ -1,7 +1,7 @@
 -- Open a ui case's book (sheet "S"), compute it fully and take the case's action with Excel in front, on the keyboard
 -- (System Events, the handlers of excel-keys.applescript): "bars" selects each cell in turn and reads the formula bar,
 -- then presses F2 and reads the bar and the element in focus, and Escape; "paste" puts the text on the clipboard as plain
--- text and presses Cmd+V with the cell selected; "fill" selects the range, types the text and presses Control+Return.
+-- text and presses Cmd+V (the V key: any layout) with the cell selected; "fill" selects the range, types the text and presses Control+Return.
 -- Windows Excel shows for a paste or a fill are answered (`answerDialog`). Then read each cell: what it shows (`string
 -- value`), its format codes, prefix character, value (a number only, not read from a cell that shows an error), formula
 -- (`formula`, `formula local`, `formula2`, `formula2 local`) and whether it is part of a formula of the old kind (`has
@@ -48,7 +48,8 @@ on run argv
 			my toClipboard((act's objectForKey:"text") as text)
 			tell application "Microsoft Excel" to select range ((act's objectForKey:"at") as text) of ws
 			kb's toFront()
-			tell application "System Events" to keystroke "v" using command down
+			-- the V key, whatever the layout types on it, as a person pastes
+			tell application "System Events" to key code 9 using command down
 			delay 1.5
 			set said to kb's answerDialog()
 		else if todo is "fill" then

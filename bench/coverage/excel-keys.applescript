@@ -108,7 +108,9 @@ on formulaBar(bookName)
 					set wn to name of w
 					set seen to seen & wn & "; "
 					if wn is bookName or bookName starts with wn then
-						repeat with e in (entire contents of w)
+						-- a list: a repeat over the reference itself fails
+						set els to entire contents of w
+						repeat with e in els
 							try
 								if role of e is "AXTextArea" then
 									set bar to contents of e
