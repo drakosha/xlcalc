@@ -12,21 +12,23 @@ export function* snapshotBook(book: BookInput): Steps<BookInput> {
   for (const sheet of sheets) {
     const { cells, ...rest } = sheet
     const copied = { ...clone(rest), cells: {} as Record<string, CellInput> }
-    let chunk: Record<string, CellInput> = {}
-    let count = 0
+    let addresses: string[] = []
+    let chunk: CellInput[] = []
+    // Clone cell arrays, keeping address keys out of the structured clone's intermediate objects.
+    const flush = () => {
+      const values = clone(chunk)
+      const count = addresses.length
+      for (let i = 0; i < count; i++) copied.cells[addresses[i]] = values[i]
+      addresses = []
+      chunk = []
+      return paced(count)
+    }
     for (const addr in cells) {
-      chunk[addr] = cells[addr]
-      if (++count === CHUNK) {
-        Object.assign(copied.cells, clone(chunk))
-        chunk = {}
-        count = 0
-        if (paced(CHUNK)) yield
-      }
+      addresses.push(addr)
+      chunk.push(cells[addr])
+      if (chunk.length === CHUNK && flush()) yield
     }
-    if (count) {
-      Object.assign(copied.cells, clone(chunk))
-      if (paced(count)) yield
-    }
+    if (chunk.length && flush()) yield
     out.sheets.push(copied)
   }
   return out
