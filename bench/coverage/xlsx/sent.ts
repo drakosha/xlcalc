@@ -28,3 +28,10 @@ export async function editParts(data: Uint8Array, edit: (name: string, text: str
   }
   return zip(files)
 }
+
+/** The file of each case, as `file` writes it, and what identifies each (`partsHash`). */
+export async function caseFiles<C extends { id: string }>(cases: C[], file: (c: C) => Promise<Uint8Array>): Promise<{ files: Map<string, Uint8Array>; sent: Record<string, string> }> {
+  const files = new Map(await Promise.all(cases.map(async (c) => [c.id, await file(c)] as const)))
+  const sent = Object.fromEntries(await Promise.all(cases.map(async (c) => [c.id, await partsHash(files.get(c.id)!)] as const)))
+  return { files, sent }
+}

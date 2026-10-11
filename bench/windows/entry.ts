@@ -5,33 +5,28 @@
  * `FormulaLocal` too), and the book is saved, its file read back for what each cell holds. The answers go to `test/excel/win/entry/[<tag>/]<set>.json`, with Excel's automatic percent
  * entry in `meta`.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname } from 'node:path'
-import { entryFile, partAnswers, type StoredEntry } from '../coverage/entry.js'
-import { entryBook, type EntryAnswer, type EntryCase, type EntrySet } from '../coverage/entry/cases.js'
-import { inCaseOrder } from '../coverage/stored.js'
+import { writeFileSync } from 'node:fs'
+import { inParts } from '../coverage/book.js'
+import { ENTRY_PART, entryFile, partAnswers, type StoredEntry } from '../coverage/entry.js'
+import { entryBook, type EntryCase, type EntrySet } from '../coverage/entry/cases.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
 import { writeXlsx } from '../../src/xlsx.js'
 import { inJobs, metaOf, type Tag, type WinEnv } from './remote.js'
 
-const PART = 100
-
 export async function stepEntry(set: string, tag: Tag, e: WinEnv): Promise<void> {
-  const mod = (await import(`../coverage/entry/${set}.js`)) as EntrySet
+  const mod = await setModule<EntrySet>('entry', set)
   const cases = mod.buildEntryCases()
   const file = entryFile(set, tag, true)
-  const prev = existsSync(file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(file, 'utf8')) as StoredEntry) : null
-  const was = new Map(prev?.cases.map((c) => [c.id, JSON.stringify(c)]) ?? [])
-  const answers: Record<string, EntryAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === JSON.stringify(c)) answers[c.id] = prev.answers[c.id]
+  const prev = loadStored<StoredEntry>(file)
+  const answers = keptSame({ cases }, prev)
   let autoPercent: unknown = prev?.meta.autoPercentEntry
   const t0 = Date.now()
   const save = () => {
-    mkdirSync(dirname(file), { recursive: true })
-    const meta = { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), autoPercentEntry: String(autoPercent), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(file, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
+    const meta = { ...metaOf(e, tag), date: new Date().toISOString().slice(0, 10), autoPercentEntry: String(autoPercent), seconds: secondsSince(t0) }
+    writeAnswers(file, { meta, cases, answers: inCaseOrder(cases, answers) })
   }
   const todo = cases.filter((c) => !answers[c.id])
-  const parts = Array.from({ length: Math.ceil(todo.length / PART) }, (_, k) => todo.slice(k * PART, (k + 1) * PART))
+  const parts = inParts(todo, ENTRY_PART)
   const book = async (part: EntryCase[], f: string) => {
     const { data, issues } = await writeXlsx({ book: entryBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`entry ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
@@ -55,5 +50,5 @@ export async function stepEntry(set: string, tag: Tag, e: WinEnv): Promise<void>
   }, save)
   for (const [part, refused, shown, saved] of results) Object.assign(answers, await partAnswers(part, refused, shown, saved))
   save()
-  console.log(`entry ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered`)
+  console.log(answeredLine(`entry ${set} ${tag}`, todo.length, answers, cases))
 }

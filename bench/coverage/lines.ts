@@ -6,14 +6,14 @@
  * compares them with the engine and the reader without Excel. `FLINES_ONLY=id,id` runs only those cases,
  * `FCOV_FRESH=1` every case again.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { fromRgb } from './cond/cases.js'
 import { ensureExcel, excelVersion, runSavingScript } from './excel.js'
 import { caseFile, type LineLook, type LinesAnswer, type LinesCase, type LinesCases, type LinesSet } from './lines/cases.js'
-import { inCaseOrder, keptAnswers } from './stored.js'
-import { partsHash } from './xlsx/sent.js'
+import { localeMeta } from './locales.js'
+import { fileAnswers, runFileCases, secondsSince, setModule } from './stored.js'
+import { caseFiles } from './xlsx/sent.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
@@ -30,11 +30,8 @@ export interface StoredLines extends LinesCases {
 
 /** The set's cases, the file of each case and what identifies it. */
 export async function linesSet(set: string): Promise<{ built: LinesCases; files: Map<string, Uint8Array>; sent: Record<string, string> }> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const built = ((await import(`./lines/${set}.js`)) as LinesSet).buildLinesCases()
-  const files = new Map(await Promise.all(built.cases.map(async (c) => [c.id, await caseFile(built, c)] as const)))
-  const sent = Object.fromEntries(await Promise.all(built.cases.map(async (c) => [c.id, await partsHash(files.get(c.id)!)] as const)))
-  return { built, files, sent }
+  const built = (await setModule<LinesSet>('lines', set)).buildLinesCases()
+  return { built, ...(await caseFiles(built.cases, (c) => caseFile(built, c))) }
 }
 
 /** A step as the AppleScript takes it: sheet, range, number format, bold, italic, the fill's [r, g, b], the value's kind and text, what it clears. */
@@ -69,36 +66,9 @@ async function runCase(c: LinesCase, data: Uint8Array): Promise<{ answer: LinesA
 /** Runs the set's cases that have no stored answer for the same case and file (FCOV_FRESH=1 runs all) and stores the answers. */
 export async function stepLines(set: string): Promise<void> {
   const { built, files, sent } = await linesSet(set)
-  const target = join(ROOT, `test/excel/lines/${set}.json`)
-  const dir = join(ROOT, `test/excel/lines/${set}`)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredLines) : null
-  const { answers, rejected } = keptAnswers(built.cases, sent, prev, (id) => existsSync(join(dir, `${id}.xlsx`)))
-  mkdirSync(dir, { recursive: true })
+  const store = fileAnswers<LinesCase, LinesAnswer>(join(ROOT, `test/excel/lines/${set}.json`), built.cases, sent)
   const t0 = Date.now()
-  const save = () => {
-    const meta = { version: excelVersion(), locale: 'en-US (-AppleLanguages (en) -AppleLocale en_US)', seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    const refused = inCaseOrder(built.cases, rejected)
-    writeFileSync(target, JSON.stringify({ meta, ...built, sent: inCaseOrder(built.cases, sent), answers: inCaseOrder(built.cases, answers), ...(Object.keys(refused).length ? { rejected: refused } : {}) }, null, 1) + '\n')
-  }
+  const save = () => store.save({ version: excelVersion(), locale: localeMeta('en-US'), seconds: secondsSince(t0) }, built)
   await ensureExcel('en-US')
-  let done = 0
-  try {
-    const only = process.env.FLINES_ONLY?.split(',')
-    for (const c of built.cases) {
-      if (answers[c.id] || rejected[c.id] || (only && !only.includes(c.id))) continue
-      const r = await runCase(c, files.get(c.id)!)
-      if ('rejected' in r) {
-        rejected[c.id] = r.rejected
-        console.log(`${c.id}: ${r.rejected}`)
-      } else {
-        answers[c.id] = r.answer
-        writeFileSync(join(dir, `${c.id}.xlsx`), r.saved)
-      }
-      done++
-      save()
-    }
-  } finally {
-    save()
-    console.log(`lines ${set}: ${done} cases run, ${Object.keys(answers).length} of ${built.cases.length} answered, ${Object.keys(rejected).length} not loaded, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
-  }
+  await runFileCases(`lines ${set}`, store, store.todo, 'FLINES_ONLY', (c) => runCase(c, files.get(c.id)!), save, t0)
 }

@@ -4,9 +4,10 @@
  * case moves a block of S along the column, across it or to another sheet.
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
+import { indexToCol } from '../../../src/model.js'
 import type { StructCase, StructCases } from './cases.js'
 
-const col = (i: number) => String.fromCharCode(64 + i)
+const col = (i: number) => indexToCol(i - 1)
 
 function windowBook(): BookInput {
   const s: Record<string, CellInput> = {}

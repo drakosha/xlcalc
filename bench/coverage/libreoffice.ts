@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process'
 import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { CELL_ERRORS, ERROR_CODE } from '../../src/syntax/errors.js'
 import type { ErrCode } from './data.js'
 import type { Val } from './formulajs.js'
 
@@ -16,17 +17,8 @@ const PROFILE = `<?xml version="1.0" encoding="UTF-8"?>
 <item oor:path="/org.openoffice.Setup/L10N"><prop oor:name="ooLocale" oor:op="fuse"><value>en-US</value></prop></item>
 </oor:items>`
 
-export const ERROR_TEXT: Record<string, ErrCode> = {
-  '#NULL!': 'NULL',
-  '#DIV/0!': 'DIV0',
-  '#VALUE!': 'VALUE',
-  '#REF!': 'REF',
-  '#NAME?': 'NAME',
-  '#NUM!': 'NUM',
-  '#N/A': 'NA',
-  '#SPILL!': 'SPILL',
-  '#CALC!': 'CALC',
-}
+/** An error of a cell LibreOffice saved, by its text: those a file's cell holds, else `ERROR`. */
+const errorOf = (text: string): ErrCode => (CELL_ERRORS.includes(text) ? (ERROR_CODE[text] as ErrCode) : 'ERROR')
 
 const unxml = (t: string) =>
   t
@@ -64,7 +56,7 @@ export function runLibreOffice(book: string, n: number): Val[] {
       if (v === undefined || row >= n) continue
       const text = unxml(v)
       out[row] =
-        t === 'b' ? { t: 'b', v: text === '1' } : t === 'e' ? { t: 'e', v: ERROR_TEXT[text] ?? 'ERROR' } : t === 'str' || t === 'inlineStr' ? { t: 's', v: text } : t === 's' ? { t: 's', v: shared[Number(text)] } : { t: 'n', v: Number(text) }
+        t === 'b' ? { t: 'b', v: text === '1' } : t === 'e' ? { t: 'e', v: errorOf(text) } : t === 'str' || t === 'inlineStr' ? { t: 's', v: text } : t === 's' ? { t: 's', v: shared[Number(text)] } : { t: 'n', v: Number(text) }
     }
     return out
   } finally {

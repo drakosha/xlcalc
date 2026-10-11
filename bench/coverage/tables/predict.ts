@@ -3,16 +3,17 @@
  * `npx tsx bench/coverage/tables/predict.ts <set>` writes `tables/<set>.predicted.json` (values by `Sheet!A1`, formulas as
  * stored text, the tables, the steps refused, the names of a case that adds them).
  */
-import { writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { setModule, writeAnswers } from '../stored.js'
 import type { TableSet } from './cases.js'
 import { addsNames } from '../tables.js'
 import { engineAnswer } from '../../../test/tables-cases.js'
 
 const set = process.argv[2]
-const { buildTableCases } = (await import(`./${set}.js`)) as TableSet
+const { buildTableCases } = await setModule<TableSet>('tables', set)
 const out: Record<string, unknown> = {}
 for (const c of buildTableCases()) {
   const { values, formulas, tables, refused, names } = engineAnswer(c)
   out[c.id] = { values, formulas, tables, refused: Object.keys(refused).map(Number), ...(addsNames(c) ? { names } : {}) }
 }
-writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')
+writeAnswers(fileURLToPath(new URL(`./${set}.predicted.json`, import.meta.url)), out)

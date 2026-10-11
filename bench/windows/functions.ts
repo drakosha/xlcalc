@@ -6,20 +6,19 @@
  * cases, up to 40 books to a job; a book Excel does not open, opens repaired (its case formulas gone) or hangs on is halved
  * down to the formulas at fault, which are stored as `rejected`. A rerun keeps the answers of unchanged formulas.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { writeBook } from '../coverage/book.js'
+import { functionParts, inParts, writeBook } from '../coverage/book.js'
 import type { CaseSet } from '../coverage/cases.js'
 import type { ErrCode } from '../coverage/data.js'
 import type { Val } from '../coverage/formulajs.js'
 import { buildProbes, PROBE_SHEETS, type Probe, type SheetCells } from '../coverage/probes.js'
 import { localeDir, measurementFile } from '../coverage/locales.js'
-import { inCaseOrder } from '../coverage/stored.js'
-import { inJobs, metaOf, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
+import { inCaseOrder, loadStored, secondsSince, setModule, writeAnswers } from '../coverage/stored.js'
+import { again, inJobs, metaOf, type Answer, type Book, type Tag, type WinEnv } from './remote.js'
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../..')
-const PART = 400
 
 /** Where the Windows answers are stored, beside the Mac's in `test/excel/`. */
 export const winFile = (rel: string) => join(ROOT, 'test/excel/win', rel)
@@ -61,25 +60,6 @@ function macBooks(cases: Probe[], set: string): Probe[][] | null {
   return out
 }
 
-/** The books of a run as the Mac harness makes them: the measurement's of whole functions, up to PART cases, the others' runs of PART. */
-function parts(cases: Probe[], byFunction: boolean): Probe[][] {
-  if (!byFunction) return Array.from({ length: Math.ceil(cases.length / PART) }, (_, k) => cases.slice(k * PART, (k + 1) * PART))
-  const out: Probe[][] = []
-  let cur: Probe[] = []
-  for (let i = 0; i < cases.length; ) {
-    let j = i + 1
-    while (j < cases.length && cases[j].fn === cases[i].fn) j++
-    if (cur.length && cur.length + (j - i) > PART) {
-      out.push(cur)
-      cur = []
-    }
-    cur.push(...cases.slice(i, j))
-    i = j
-  }
-  if (cur.length) out.push(cur)
-  return out
-}
-
 /** What a run of formula cases stores. */
 export interface FormulaAnswers {
   values: Record<string, Val>
@@ -113,9 +93,8 @@ export async function target(name: string, tag: Tag): Promise<Target> {
     return { cases: buildProbes(), sheets: PROBE_SHEETS, file: winFile('probes.json') }
   }
   const [dir, set] = name.startsWith('legacy/') ? ['legacy', name.slice(7)] : ['sets', name]
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   if (dir === 'legacy' && !en) throw new Error('the legacy sets are computed in en-US only, as on the Mac')
-  const mod = (await import(`../coverage/${dir}/${set}.js`)) as { buildProbes: () => Probe[]; SHEETS?: SheetCells }
+  const mod = await setModule<{ buildProbes: () => Probe[]; SHEETS?: SheetCells }>(dir, set)
   return { cases: mod.buildProbes(), sheets: mod.SHEETS ?? {}, file: winFile(`${dir === 'legacy' ? 'legacy' : 'cases'}/${localeDir(tag)}${set}.json`), ...(dir === 'legacy' ? { legacy: true as const } : {}) }
 }
 
@@ -132,7 +111,7 @@ interface Run {
 
 /** A target's stored answers that still hold: those of unchanged formulas (FCOV_FRESH=1 keeps none). */
 function storedOf(t: Target): FormulaAnswers {
-  const prev = existsSync(t.file) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(t.file, 'utf8')) as Partial<FormulaAnswers> & { cases?: Probe[] }) : null
+  const prev = loadStored<Partial<FormulaAnswers> & { cases?: Probe[] }>(t.file)
   const got: FormulaAnswers = { values: {}, formulas: {}, rows: {}, rejected: [] }
   if (!prev) return got
   // the measurement's file has no cases: its formulas are those of cases.json, so an answer stays while that file does
@@ -163,11 +142,10 @@ function take(r: Run, part: Probe[], a: Answer, cutShort: boolean): Probe[][] {
     })
     return []
   }
-  if (!a && cutShort) return [part]
-  if (part.length > 1) return [part.slice(0, part.length >> 1), part.slice(part.length >> 1)]
-  r.got.rejected.push(part[0].id)
-  console.log(`${r.name}: Excel does not take ${part[0].id} ${part[0].formula}: ${a ? ('rejected' in a ? a.rejected : 'the book was repaired') : 'it hangs'}`)
-  return []
+  return again(part, a, cutShort, (p) => {
+    r.got.rejected.push(p.id)
+    console.log(`${r.name}: Excel does not take ${p.id} ${p.formula}: ${a ? ('rejected' in a ? a.rejected : 'the book was repaired') : 'it hangs'}`)
+  })
 }
 
 /**
@@ -186,12 +164,11 @@ export async function stepFunctions(names: string[], tag: Tag, e: WinEnv): Promi
       t,
       got,
       save: () => {
-        const meta = { ...metaOf(e, tag), seconds: Math.round((Date.now() - t0) / 100) / 10, ...(t.legacy ? { legacy: true } : { dynamic: true }) }
+        const meta = { ...metaOf(e, tag), seconds: secondsSince(t0), ...(t.legacy ? { legacy: true } : { dynamic: true }) }
         const rejected = t.cases.filter((c) => got.rejected.includes(c.id)).map((c) => c.id)
         const values = inCaseOrder(t.cases, got.values)
         const body = t.valuesOnly ? { meta, values } : { meta, cases: t.cases, values, ...(t.legacy ? { formulas: inCaseOrder(t.cases, got.formulas), rows: inCaseOrder(t.cases, got.rows) } : {}) }
-        mkdirSync(dirname(t.file), { recursive: true })
-        writeFileSync(t.file, JSON.stringify({ ...body, ...(rejected.length ? { rejected } : {}) }, null, 1) + '\n')
+        writeAnswers(t.file, { ...body, ...(rejected.length ? { rejected } : {}) })
       },
     }
     runs.push(r)
@@ -199,7 +176,8 @@ export async function stepFunctions(names: string[], tag: Tag, e: WinEnv): Promi
     // a legacy set run whole goes into the Mac's books, so each formula intersects at its Mac row
     const books = t.legacy && todo.length === t.cases.length ? macBooks(todo, name.slice('legacy/'.length)) : null
     if (t.legacy && !books) console.log(`${name}: not in the Mac's books (some answers kept, or the Mac's rows do not fit)`)
-    queue.push(...(books ?? parts(todo, !!t.valuesOnly)).map((part) => ({ r, part })))
+    // the books the Mac harness makes: the measurement's of whole functions, the others' parts in order
+    queue.push(...(books ?? (t.valuesOnly ? functionParts(todo) : inParts(todo))).map((part) => ({ r, part })))
   }
   await inJobs(
     `functions-${tag}`,

@@ -1,11 +1,12 @@
 -- Open a spill case's book, compute it fully, apply the case's edits (a value typed into a cell, a formula
 -- entered as Excel 365 enters it, or the cells cleared, Excel recalculating after each), read its rectangles and
 -- close without saving. An edit Excel refuses (part of an old-kind array) leaves its error and changes nothing.
--- For every rectangle: the values of its mirrors on the sheets WT, WN and WX (formulas that never give an
--- error), the formulas of the rectangle itself as Excel shows them, and with `withF2` as Excel 365 shows them.
+-- For every rectangle: the values of its mirrors on the mirror sheets (formulas that never give an error), the
+-- formulas of the rectangle itself as Excel shows them, and with `withF2` as Excel 365 shows them.
 -- Arguments: book path (inside Excel's sandbox), rectangles as lines "sheet<TAB>range<TAB>mirror range",
 -- edits as lines "sheet<TAB>range<TAB>kind<TAB>value" (kind n a number, s a text, f a formula, x clear; empty for
--- none), "1" to read formula2 too (else empty).
+-- none), "1" to read formula2 too (else empty), the names of the mirror sheets of the types, the numbers and the
+-- texts, separated by tabs.
 -- Output: JSON {"rects": [[types, numbers, texts, formulas, formula2 or ""], ...] in the order of the rectangles,
 -- "edits": [the error of each edit, "" when Excel took it]}.
 use AppleScript version "2.4"
@@ -17,6 +18,9 @@ on run argv
 	set rects to paragraphs of item 2 of argv
 	set edits to paragraphs of item 3 of argv
 	set withF2 to item 4 of argv is "1"
+	set AppleScript's text item delimiters to (character id 9)
+	set mirrors to text items of item 5 of argv
+	set AppleScript's text item delimiters to ""
 	set hfs to (POSIX file p) as text
 	set out to {}
 	set editsOut to {}
@@ -55,9 +59,9 @@ on run argv
 				set parts to text items of ln
 				set AppleScript's text item delimiters to ""
 				set mr to item 3 of parts
-				set t to value of range mr of worksheet "WT" of wb
-				set nums to value of range mr of worksheet "WN" of wb
-				set strs to value of range mr of worksheet "WX" of wb
+				set t to value of range mr of worksheet (item 1 of mirrors) of wb
+				set nums to value of range mr of worksheet (item 2 of mirrors) of wb
+				set strs to value of range mr of worksheet (item 3 of mirrors) of wb
 				set rg to range (item 2 of parts) of worksheet (item 1 of parts) of wb
 				set f to formula of rg
 				set f2 to ""

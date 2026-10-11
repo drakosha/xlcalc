@@ -4,6 +4,7 @@
  */
 import type { Val } from '../formulajs.js'
 import type { BookInput, CellInput, NameInput, RangeRef, StructureOp, TableColumn, TableInput } from '../../../src/contract.js'
+import { colToIndex, indexToCol } from '../../../src/model.js'
 
 /** A step after the computation, Excel recalculating after each: a cell typed or cleared, an operation, a name added. */
 export type TableStep =
@@ -79,17 +80,9 @@ export function table(
   opts: { headers?: false; totals?: CellSpec[]; columns?: Partial<TableColumn>[] } = {},
 ): { cells: Record<string, CellInput>; table: TableInput } {
   const m = /^([A-Z]+)(\d+)$/.exec(at)!
-  const col0 = m[1].split('').reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1
+  const col0 = colToIndex(m[1])
   const row0 = Number(m[2])
-  const letter = (i: number) => {
-    let n = col0 + i + 1
-    let s = ''
-    while (n > 0) {
-      s = String.fromCharCode(65 + ((n - 1) % 26)) + s
-      n = Math.floor((n - 1) / 26)
-    }
-    return s
-  }
+  const letter = (i: number) => indexToCol(col0 + i)
   const cells: Record<string, CellInput> = {}
   let r = row0
   if (opts.headers !== false) {

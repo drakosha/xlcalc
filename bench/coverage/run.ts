@@ -34,13 +34,13 @@
  * Excel computes in parts of up to 400 cases; after each part Excel is checked for a modal window.
  */
 import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inCaseOrder } from './stored.js'
-import { writeBook } from './book.js'
+import { inCaseOrder, loadStored, setModule, took, writeAnswers } from './stored.js'
+import { functionParts, inParts, writeBook } from './book.js'
 import { buildCases, type Case, type CaseSet } from './cases.js'
-import { declineRepair, dialogText, ensureExcel, excelVersion, runExcel, runExcelWatched, withExcelLock } from './excel.js'
+import { declineRepair, dialogText, ensureExcel, excelVersion, halving, runExcel, runExcelWatched, withExcelLock } from './excel.js'
 import type { FjResult, Val } from './formulajs.js'
 import { libreOfficeVersion, runLibreOffice } from './libreoffice.js'
 import { localeDir, localeMeta, measurementFile, parseTag } from './locales.js'
@@ -76,10 +76,7 @@ export interface Column<T = Val> {
   values: Record<string, T>
 }
 
-const save = (name: string, data: unknown) => {
-  mkdirSync(dirname(resultFile(name)), { recursive: true })
-  writeFileSync(resultFile(name), JSON.stringify(data, null, 1) + '\n')
-}
+const save = (name: string, data: unknown) => writeAnswers(resultFile(name), data)
 const load = <T>(name: string): T => JSON.parse(readFileSync(resultFile(name), 'utf8')) as T
 
 function caseSet(): CaseSet {
@@ -158,26 +155,6 @@ async function stepLo() {
   console.log(`LibreOffice: ${((Date.now() - t0) / 1000).toFixed(1)} s`)
 }
 
-/** The parts of an Excel run: whole functions in order, at most PART cases per book. */
-const PART = 400
-
-function parts(cs: Case[]): Case[][] {
-  const out: Case[][] = []
-  let cur: Case[] = []
-  for (let i = 0; i < cs.length; ) {
-    let j = i
-    while (j < cs.length && cs[j].fn === cs[i].fn) j++
-    if (cur.length && cur.length + (j - i) > PART) {
-      out.push(cur)
-      cur = []
-    }
-    cur.push(...cs.slice(i, j))
-    i = j
-  }
-  if (cur.length) out.push(cur)
-  return out
-}
-
 /** What a legacy set stores besides the values: each case's formula as Excel 365 shows it (`formula2`) and its row. */
 export interface LegacyAnswers {
   formulas: Record<string, string>
@@ -198,8 +175,8 @@ async function stepExcel(tag: string) {
   const name = measurementFile(tag)
   const file = resultFile(name)
   await ensureExcel(tag)
-  const ps = parts(cs)
-  const stored = existsSync(file) && !process.env.FCOV_FRESH ? load<ExcelColumn>(name) : null
+  const ps = functionParts(cs)
+  const stored = loadStored<ExcelColumn>(file)
   const col: ExcelColumn = stored ?? { meta: { version: excelVersion(), locale: localeMeta(tag), seconds: 0, parts: ps.length, done: 0, dynamic: true }, values: {} }
   delete col.meta.stopped
   const stop = (k: number, why: string) => {
@@ -230,7 +207,7 @@ async function stepExcel(tag: string) {
     col.meta.seconds = Math.round((Number(col.meta.seconds) + (Date.now() - t0) / 1000) * 10) / 10
     col.meta.done = ps.filter((p) => p.every((c) => c.id in col.values)).length
     save(name, col)
-    console.log(`Excel ${tag}: part ${k + 1}/${ps.length}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    console.log(`Excel ${tag}: part ${k + 1}/${ps.length}, ${part.length} cases, ${took(t0)} s`)
   }
 }
 
@@ -242,15 +219,14 @@ async function stepExcel(tag: string) {
  * per set lets parallel branches add their cases without touching shared files.
  */
 async function stepProbes(set: string | undefined, tag: string, legacy = false) {
-  if (set !== undefined && !/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
   if (set === undefined && tag !== 'en-US') throw new Error('the probes of probes.ts are computed in en-US only; a set in another locale: probes <set> <locale>')
-  const mod: { buildProbes: () => Probe[]; SHEETS?: SheetCells } = set ? await import(`./${legacy ? 'legacy' : 'sets'}/${set}.js`) : { buildProbes, SHEETS: PROBE_SHEETS }
+  const mod = set ? await setModule<{ buildProbes: () => Probe[]; SHEETS?: SheetCells }>(legacy ? 'legacy' : 'sets', set) : { buildProbes, SHEETS: PROBE_SHEETS }
   const ps = mod.buildProbes()
   const sheets = mod.SHEETS ?? {}
   const stem = `${set ?? 'probes'}-${tag}`
   const target = !set ? join(ROOT, 'test/excel/probes.json') : join(ROOT, `test/excel/${legacy ? 'legacy' : 'cases'}/${localeDir(tag)}${set}.json`)
   // going on: answers whose formula is unchanged are taken from the file (FCOV_FRESH=1 starts over)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as LegacyAnswers & { cases: Probe[]; values: Record<string, Val> }) : null
+  const prev = loadStored<LegacyAnswers & { cases: Probe[]; values: Record<string, Val> }>(target)
   const was = new Map(prev?.cases.map((c) => [c.id, c.formula]) ?? [])
   const values: Record<string, Val> = {}
   // a legacy set: each case's formula as Excel 365 shows it and its row (implicit intersection takes the row)
@@ -266,10 +242,10 @@ async function stepProbes(set: string | undefined, tag: string, legacy = false) 
   const save = () => {
     const meta = { version: excelVersion(), locale: localeMeta(tag), seconds: (Date.now() - t0) / 1000, ...(legacy ? { legacy: true } : { dynamic: true }) }
     const more = legacy ? { formulas: inCaseOrder(ps, formulas), rows: inCaseOrder(ps, rows) } : {}
-    writeFileSync(target, JSON.stringify({ meta, cases: ps, values: inCaseOrder(ps, values), ...more, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) }, null, 1) + '\n')
+    writeAnswers(target, { meta, cases: ps, values: inCaseOrder(ps, values), ...more, ...(rejected.length ? { rejected: rejected.map((p) => p.id) } : {}) })
   }
   // a book Excel does not read is halved down to the formula at fault
-  const run = async (cases: Probe[], label: string): Promise<void> => {
+  const run = async (cases: Probe[], label: string): Promise<boolean> => {
     if (declineRepair()) console.log('closed a leftover book repair window')
     const before = dialogText()
     if (before) throw new Error(`probes ${label}: Excel has a window that is not a book: ${before}`)
@@ -278,28 +254,25 @@ async function stepProbes(set: string | undefined, tag: string, legacy = false) 
     const sent = cases.length === 1 ? [...cases, { id: 'pad', group: 'pad', formula: '0' }] : cases
     await writeBook(sent, book, sheets, legacy)
     const got = await runExcelWatched(book, sent.length, legacy)
-    if (got !== 'rejected')
-      return void cases.forEach((p, i) => {
-        values[p.id] = got.values[i]
-        if (legacy) [formulas[p.id], rows[p.id]] = [got.formulas![i], i + 1]
-      })
-    if (cases.length === 1) {
-      rejected.push(cases[0])
-      return void console.log(`Excel does not load the formula: ${cases[0].id} ${cases[0].formula}`)
-    }
-    const mid = cases.length >> 1
-    await run(cases.slice(0, mid), `${label}a`)
-    await run(cases.slice(mid), `${label}b`)
+    if (got === 'rejected') return false
+    cases.forEach((p, i) => {
+      values[p.id] = got.values[i]
+      if (legacy) [formulas[p.id], rows[p.id]] = [got.formulas![i], i + 1]
+    })
+    return true
+  }
+  const refused = (p: Probe) => {
+    rejected.push(p)
+    console.log(`Excel does not load the formula: ${p.id} ${p.formula}`)
   }
   await ensureExcel(tag)
   mkdirSync(OUT, { recursive: true })
-  mkdirSync(dirname(target), { recursive: true })
-  for (let k = 0; k * PART < ps.length; k++) {
-    const part = ps.slice(k * PART, (k + 1) * PART).filter((p) => !values[p.id])
+  for (const [k, all] of inParts(ps).entries()) {
+    const part = all.filter((p) => !values[p.id])
     if (!part.length) continue
-    await run(part, String(k + 1))
+    await halving(part, String(k + 1), run, refused)
     save()
-    console.log(`probes ${stem}: part ${k + 1}, ${part.length} cases, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    console.log(`probes ${stem}: part ${k + 1}, ${part.length} cases, ${took(t0)} s`)
   }
   save()
   if (rejected.length) throw new Error(`Excel does not load ${rejected.length} formulas, remove them from the generator: ${rejected.map((p) => `${p.id} ${p.formula}`).join('; ')}`)

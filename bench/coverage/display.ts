@@ -10,24 +10,25 @@
  * the `probes` step does) is halved down to the refused cases, which the step names.
  */
 import JSZip from 'jszip'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ExcelJS from 'exceljs'
-import { inCaseOrder } from './stored.js'
-import { dialogText, ensureExcel, excelVersion, runScriptWatched } from './excel.js'
+import { answeredLine, inCaseOrder, keptSame, loadStored, secondsSince, setModule, took, unpredicted, writeAnswers } from './stored.js'
+import { dialogText, ensureExcel, excelVersion, halving, runScriptWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
+import { inParts } from './book.js'
 import { formatCode } from './case-book.js'
 import { xl } from './sets/arrays/common.js'
 import { formatAddress, inputScalar } from '../../src/model.js'
 import type { DisplayAnswer, DisplayCase, DisplaySet } from './display/cases.js'
+import { fromRgb } from './cond/cases.js'
 
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const ROOT = join(HERE, '../..')
 const SCRIPT = join(HERE, 'excel-display.applescript')
 const OUT = join(HERE, 'out')
-const PART = 400
 
 /**
  * ExcelJS writes a format that equals one of Excel's built-in formats by its number, and Excel shows some built-in
@@ -126,7 +127,7 @@ async function runPart(cases: DisplayCase[], label: string): Promise<DisplayAnsw
   if (raw.length !== cases.length) throw new Error(`${label}: Excel gave ${raw.length} cells of ${cases.length}`)
   return raw.map(([text, rgb, code, local], i) => {
     if (!Array.isArray(rgb)) throw new Error(`${label}: no colour for ${text}`)
-    const color = '#' + rgb.map((x) => x.toString(16).padStart(2, '0').toUpperCase()).join('')
+    const color = fromRgb(rgb)
     const codesOf = cases[i].numFmtId !== undefined ? { code, local } : {}
     return color === BLACK ? { text, ...codesOf } : { text, color, ...codesOf }
   })
@@ -134,40 +135,29 @@ async function runPart(cases: DisplayCase[], label: string): Promise<DisplayAnsw
 
 /** Runs the set's cases without a stored answer for the same case and stores the answers after each part. */
 export async function stepDisplay(set: string, tag: string): Promise<void> {
-  if (!/^[a-z0-9-]+$/.test(set)) throw new Error(`set name: [a-z0-9-], not ${set}`)
-  const mod = (await import(`./display/${set}.js`)) as DisplaySet
-  const cases = mod.buildDisplayCases()
+  const cases = (await setModule<DisplaySet>('display', set)).buildDisplayCases()
   const target = displayFile(set, tag)
-  const prev = existsSync(target) && !process.env.FCOV_FRESH ? (JSON.parse(readFileSync(target, 'utf8')) as StoredDisplay) : null
-  const same = (c: DisplayCase) => JSON.stringify({ ...c, predicted: undefined })
-  const was = new Map(prev?.cases.map((c) => [c.id, same(c)]) ?? [])
-  const answers: Record<string, DisplayAnswer> = {}
-  for (const c of cases) if (prev?.answers[c.id] && was.get(c.id) === same(c)) answers[c.id] = prev.answers[c.id]
+  const answers = keptSame({ cases }, loadStored<StoredDisplay>(target), unpredicted)
   const t0 = Date.now()
-  mkdirSync(join(target, '..'), { recursive: true })
-  const save = () => {
-    const meta = { version: excelVersion(), locale: localeMeta(tag), seconds: Math.round((Date.now() - t0) / 100) / 10 }
-    writeFileSync(target, JSON.stringify({ meta, cases, answers: inCaseOrder(cases, answers) }, null, 1) + '\n')
-  }
+  const save = () => writeAnswers(target, { meta: { version: excelVersion(), locale: localeMeta(tag), seconds: secondsSince(t0) }, cases, answers: inCaseOrder(cases, answers) })
   await ensureExcel(tag)
   const todo = cases.filter((c) => !answers[c.id])
   const rejected: string[] = []
   try {
     // a book Excel does not load is halved down to the cases it refuses
-    const run = async (part: DisplayCase[], label: string): Promise<void> => {
+    const run = async (part: DisplayCase[], label: string): Promise<boolean> => {
       const got = await runPart(part, label)
-      if (got !== 'rejected') return void part.forEach((c, i) => (answers[c.id] = got[i]))
-      if (part.length === 1) return void rejected.push(part[0].id)
-      await run(part.slice(0, part.length >> 1), `${label}a`)
-      await run(part.slice(part.length >> 1), `${label}b`)
+      if (got === 'rejected') return false
+      part.forEach((c, i) => (answers[c.id] = got[i]))
+      return true
     }
-    for (let k = 0; k * PART < todo.length; k++) {
-      await run(todo.slice(k * PART, (k + 1) * PART), `${set} ${tag} part ${k + 1}`)
+    for (const [k, part] of inParts(todo).entries()) {
+      await halving(part, `${set} ${tag} part ${k + 1}`, run, (c) => rejected.push(c.id))
       save()
     }
   } finally {
     save()
-    console.log(`display ${set} ${tag}: ${todo.length} cases run, ${Object.keys(answers).length} of ${cases.length} answered, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    console.log(`${answeredLine(`display ${set} ${tag}`, todo.length, answers, cases)}, ${took(t0)} s`)
   }
   if (rejected.length) throw new Error(`Excel does not load the cases ${rejected.join(', ')}: remove them from the set`)
 }

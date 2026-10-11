@@ -2,7 +2,8 @@
  * The data sheet of the measurement's synthetic book (sheet `D`): single cells for edge arguments and ranges for
  * the functions over arrays. The data are made up; there are no real data here.
  */
-import { dateToSerial } from '../../src/model.js'
+import { dateToSerial, formatAddress } from '../../src/model.js'
+import { parseRange } from '../../src/structure/area.js'
 
 export type ErrCode = 'NULL' | 'DIV0' | 'VALUE' | 'REF' | 'NAME' | 'NUM' | 'NA' | 'GETTING_DATA' | 'SPILL' | 'CALC' | 'ERROR'
 
@@ -138,11 +139,11 @@ export const REGIONS: Record<string, Region> = {
 export function dataCells(): Map<string, Cell> {
   const out = new Map<string, Cell>()
   for (const [name, r] of Object.entries(REGIONS)) {
-    const { r1, c1 } = parseRef(r.ref)
+    const { r1, c1 } = parseRange(r.ref)!
     r.rows.forEach((row, i) =>
       row.forEach((v, j) => {
         if (v === null) return
-        const addr = addrOf(r1 + i, c1 + j)
+        const addr = formatAddress(r1 + i, c1 + j)
         const prev = out.get(addr)
         if (prev !== undefined && JSON.stringify(prev) !== JSON.stringify(v)) throw new Error(`data overlap at ${addr} (${name})`)
         out.set(addr, v)
@@ -152,25 +153,3 @@ export function dataCells(): Map<string, Cell> {
   return out
 }
 
-export function parseRef(ref: string): { r1: number; c1: number; r2: number; c2: number } {
-  const [a, b = a] = ref.split(':')
-  const p = (x: string) => {
-    const m = /^([A-Z]+)(\d+)$/.exec(x)!
-    let c = 0
-    for (const ch of m[1]) c = c * 26 + ch.charCodeAt(0) - 64
-    return { r: Number(m[2]) - 1, c: c - 1 }
-  }
-  const x = p(a)
-  const y = p(b)
-  return { r1: x.r, c1: x.c, r2: y.r, c2: y.c }
-}
-
-export function addrOf(r: number, c: number): string {
-  let s = ''
-  let n = c + 1
-  while (n > 0) {
-    s = String.fromCharCode(65 + ((n - 1) % 26)) + s
-    n = Math.floor((n - 1) / 26)
-  }
-  return `${s}${r + 1}`
-}
