@@ -3,13 +3,13 @@ import type { CellInput } from '../contract.js'
 import { key, type EngineState } from '../engine.js'
 import { same } from '../evaluate.js'
 import { spend } from '../exec/budget.js'
-import { formatAddress, MAX_COLS, MAX_ROWS } from '../model.js'
+import { formatAddress, MAX_COLS, MAX_ROWS, readAddress } from '../model.js'
 import { fieldsBetween, formulaText, type FieldChange } from './answer.js'
 import type { Looks } from '../shown.js'
 import { shownKey } from './looks.js'
 import type { DiffPass } from './rebook.js'
 import { describeAt } from '../spill/place.js'
-import { inverse, placer, type Geometry, type Place } from '../structure/geometry.js'
+import { inverse, newSheet, placer, type Geometry, type Place } from '../structure/geometry.js'
 
 /** A cell's place as one number, which orders places as addresses: by sheet, row, then column. */
 const placeOf = (s: number, r: number, c: number) => (s * MAX_ROWS + r) * MAX_COLS + c
@@ -37,7 +37,8 @@ function keysOf(places: number[]): string[] {
  * show something else than their old cell showed. Into `fields`, the cells whose formula (as each state shows it), own
  * style or own number format differ from their old cell's, by key, found in the same pass. All of them as `s:r:c` keys
  * of the new state in address order, once each. Each cell is found by its numbers both ways: where its old cell went,
- * and where a new cell came from (the geometry's inverse), so no cell is looked up by its key.
+ * and where a new cell came from (the geometry's inverse), so no cell is looked up by its key; the cells of a sheet no
+ * old cell comes to (a deleted sheet an undo puts back), by the addresses of its inputs.
  *
  * A cell is here one with a value (a spilled one too) or of a look alone (`EngineState.bare`); the book's diff
  * (`rebook.ts`, with `diff`) counts inputs, which a spilled cell is not. The pass gives the diff each pair of inputs it
@@ -109,11 +110,17 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       if (place(at(p, s, r, c))) compare(p.s, p.r, p.c, at(from, s, r, c), own)
       else if (own) diff?.gone(s, r, c)
     }
+  // a new sheet (one an undo puts back): no old cell comes to it, so its cells are compared with none by their inputs below
+  const fresh = next.sheetNames.map((_, s) => newSheet(g, s))
   // the new values no old value came to, against an empty cell
   next.ctx.sheets.forEach((sh, s) =>
     sh.cols.forEach((col, c) =>
       col?.forEach((v, r) => {
         spend(1)
+        if (fresh[s]) {
+          if (v !== null) out.push(placeOf(s, r, c))
+          return
+        }
         const came = back(at(p, s, r, c))
         if (came && valued()) return
         // an old cell of a look alone that came to it was compared above
@@ -125,7 +132,8 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       }),
     ),
   )
-  for (const [s, cells] of next.bare)
+  for (const [s, cells] of next.bare) {
+    if (fresh[s]) continue
     for (const n of cells) {
       const [r, c] = [Math.floor(n / MAX_COLS), n % MAX_COLS]
       const came = back(at(p, s, r, c))
@@ -135,6 +143,19 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
       if (came && (bare(old, p.s, p.r, p.c) || (valued() && valueAt(next, s, r, c) === undefined))) continue
       compare(s, r, c)
     }
+  }
+  // the cells of a new sheet met above (with a value or of a look alone) whose input has a formula or a look of its own:
+  // found by the addresses of its inputs, not each cell looked up, as an input of a value alone differs from none in nothing else
+  fresh.forEach((yes, s) => {
+    if (!yes) return
+    const [cells, cols] = [next.input.sheets[s].cells, next.ctx.sheets[s].cols]
+    for (const addr in cells) {
+      const x = cells[addr]
+      if (x.formula === undefined && x.style === undefined && x.numberFormat === undefined) continue
+      readAddress(addr, p)
+      if ((cols[p.c] !== undefined && p.r in cols[p.c]) || bare(next, s, p.r, p.c)) compare(s, p.r, p.c)
+    }
+  })
   const spills = new Map<string, string>()
   for (const x of old.spills.on.values()) {
     at(p, x.s, x.r1, x.c1)
