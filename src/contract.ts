@@ -1392,16 +1392,16 @@ export type StructureResult =
 export type RestructureResult = StructureResult
 
 /**
- * `Session.editStructure`: the operation's result and the edit's. `changes` are the cells whose value or formula differs
- * from those of the cell that was at their old place (`mapCell`), by new address, a cell no old cell came to counting as
- * empty before; with `display`, the cells whose shown text or colour differs too. An interface that moves its shown
- * cells by `moved` (or `mapCell`) and applies these has the new ones.
+ * `Session.editStructure`: the edit's result and where the cells went, without the book (`getBook()` gives it), in
+ * every kind of session. `changes` are the cells whose value or formula differs from those of the cell that was at
+ * their old place (`mapCell`), by new address, a cell no old cell came to counting as empty before; with `display`, the
+ * cells whose shown text or colour differs too. An interface that moves its shown cells by `moved` (or `mapCell`) and
+ * applies these has the new ones.
  */
 export type SessionStructureResult =
   | (EditResult & {
       ok: true
-      /** The session's book after the operation (as `getBook()` returns it). */
-      book: BookInput
+      /** Where a cell of the book before the operation is now; null if it was deleted or overwritten. */
       mapCell(ref: CellRef): CellRef | null
     })
   | Refusal<StructureRefusal>
@@ -1697,8 +1697,8 @@ export type AsyncComputeOptions = ComputeOptions & CalcOptions
 /** `signal` and `timeoutMs` bound the opening (the first computation of the book). */
 export type AsyncSessionOptions = SessionOptions & CalcOptions
 
-/** `AsyncSession.editStructure`: as `SessionStructureResult`, without the book (`AsyncSession.getBook()` gives it). */
-export type AsyncStructureResult = (EditResult & { ok: true; mapCell(ref: CellRef): CellRef | null }) | Refusal<StructureRefusal>
+/** `AsyncSession.editStructure`: the same answer as `Session.editStructure`'s. */
+export type AsyncStructureResult = SessionStructureResult
 
 /** @deprecated The name is `AsyncStructureResult`. */
 export type AsyncRestructureResult = AsyncStructureResult
