@@ -8,7 +8,8 @@
  * writers leave it: the engine's book of it is the one the reader reads.
  */
 import type { BookInput, CellStyle, ClearKind, ColumnInput, ConditionalFormat, RowInput, Session, SheetInput } from '../../../src/contract.js'
-import { openSession } from '../../../src/index.js'
+import { createSession } from '../../../src/index.js'
+import { checkBook } from '../../../src/input.js'
 import { readXlsx, writeXlsx } from '../../../src/xlsx.js'
 import { sheetLines } from '../../../src/layout/lines.js'
 import { lineAt, patchLines, parseSpan } from '../../../src/layout/spans.js'
@@ -99,13 +100,13 @@ export function applySteps(book: BookInput, steps: LineStep[] = []): BookInput {
       const [lo, hi] = parseSpan(line[1] === line[2] ? line[1] : step.range, axis)!
       const map = sh[key] as Record<string, LineInput> | undefined
       const style = withStep(out, lineAt(map, axis, lo)?.style, step)
-      Object.assign(sh, { [key]: patchLines(map, axis, lo, hi, { ...(style !== undefined ? { style } : {}), ...(step.format !== undefined ? { format: step.format } : {}) }) })
+      Object.assign(sh, { [key]: patchLines(map, axis, lo, hi, { ...(style !== undefined ? { style } : {}), ...(step.format !== undefined ? { numberFormat: step.format } : {}) }) })
       continue
     }
     const cell = (sh.cells[step.range] ??= {})
     const style = withStep(out, cell.style, step)
     if (style !== undefined) cell.style = style
-    if (step.format !== undefined) cell.format = step.format
+    if (step.format !== undefined) cell.numberFormat = step.format
     if (step.value !== undefined) cell.value = step.value
   }
   return out
@@ -116,16 +117,18 @@ export const formatName = (f: string | number | undefined): string => (f === und
 
 /** What the cells of `range` on a sheet show in a computed session's book, each by the whole look its row or column gives it. */
 export function sheetLooks(book: BookInput, sheet: string, range: string): Record<string, LineLook> {
+  // a stored book names the number format by its old name: taken as the engine takes it, for the lines read here
+  book = checkBook(book)
   const sh: SheetInput = book.sheets.find((s) => s.name === sheet)!
-  const s = openSession(book)
-  const views = s.cells(sheet, range)
+  const s = createSession(book)
+  const views = s.getCells(sheet, range)
   s.close()
   const at = sheetLines(sh)
   return Object.fromEntries(
     cellsOf(range).map((a) => {
       const { row, col } = parseAddress(a)
       const look = at.look(row, col)
-      return [a, { ...viewLook({ ...(views[a] ?? { value: null }), style: look.style }, book.styles), format: formatName(look.format) }]
+      return [a, { ...viewLook({ ...(views[a] ?? { value: null }), style: look.style }, book.styles), format: formatName(look.numberFormat) }]
     }),
   )
 }
@@ -163,9 +166,9 @@ export function sessionStep(s: Session, step: LineStep) {
 
 /** The book after a case's steps taken by a session as a host formats a sheet (`sessionStep`). */
 export function sessionBook(c: LinesCase, book: BookInput): BookInput {
-  const s = openSession(book)
+  const s = createSession(book)
   for (const step of c.steps ?? []) sessionStep(s, step)
-  const after = structuredClone(s.book())
+  const after = structuredClone(s.getBook())
   s.close()
   return after
 }

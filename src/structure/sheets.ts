@@ -7,13 +7,13 @@
  * and moved as any other, a very hidden one renamed alone; the book's last visible sheet is neither deleted nor hidden, as
  * Excel refuses all these (`hidden/sheets-held`).
  */
-import type { BookInput, CellRef, RestructureResult } from '../contract.js'
+import type { BookInput, CellRef, StructureResult } from '../contract.js'
 import { sheetNameProblem } from '../input.js'
 import { say, type Message } from '../locale/messages.js'
 import { sheetKey } from '../syntax.js'
 import { rewriteBook, sheetNames, type Transform } from './rewrite.js'
 
-export function renameSheet(book: BookInput, sheet: string, name: string): RestructureResult {
+export function renameSheet(book: BookInput, sheet: string, name: string): StructureResult {
   const key = sheetKey(sheet)
   const problem = nameProblem(book, name, sheet)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
@@ -52,7 +52,7 @@ function nameProblem(book: BookInput, name: string, own?: string): Message | nul
 }
 
 /** A new empty sheet before `before`, else at the end; references across sheets take it in between their ends. */
-export function insertSheet(book: BookInput, name: string, before: string | undefined): RestructureResult {
+export function insertSheet(book: BookInput, name: string, before: string | undefined): StructureResult {
   const problem = nameProblem(book, name)
   if (problem) return { ok: false, code: 'sheet_name', message: say(book.locale, problem) }
   const at = before === undefined ? book.sheets.length : book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(before))
@@ -68,7 +68,7 @@ export function insertSheet(book: BookInput, name: string, before: string | unde
  * end of a reference across sheets that moves stays its end while it does not pass the other end; one that passes it
  * gives way to the next sheet inward.
  */
-export function moveSheet(book: BookInput, sheet: string, before: string | undefined): RestructureResult {
+export function moveSheet(book: BookInput, sheet: string, before: string | undefined): StructureResult {
   const key = sheetKey(sheet)
   const moving = book.sheets.find((s) => sheetKey(s.name) === key)!
   if (moving.hidden === 'very') return veryHidden(book, moving.name)
@@ -91,7 +91,7 @@ function movedTo(sheets: BookInput['sheets'], before: string | undefined): numbe
   return last >= 0 ? last + 1 : at
 }
 
-export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
+export function deleteSheet(book: BookInput, sheet: string): StructureResult {
   if (book.sheets.length === 1) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastSheet' }) }
   const key = sheetKey(sheet)
   if (book.sheets.find((s) => sheetKey(s.name) === key)!.hidden === 'very') return veryHidden(book, sheet)
@@ -104,7 +104,7 @@ export function deleteSheet(book: BookInput, sheet: string): RestructureResult {
 }
 
 /** Excel deletes and moves no very hidden sheet: its object model answers an error, Excel for Mac at times nothing. */
-const veryHidden = (book: BookInput, sheet: string): RestructureResult => ({ ok: false, code: 'very_hidden', message: say(book.locale, { key: 'veryHidden', sheet }) })
+const veryHidden = (book: BookInput, sheet: string): StructureResult => ({ ok: false, code: 'very_hidden', message: say(book.locale, { key: 'veryHidden', sheet }) })
 
 /** Whether the sheet `key` is the book's only visible sheet. */
 const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (sheetKey(s.name) === key) === !s.hidden)
@@ -113,7 +113,7 @@ const lastVisible = (book: BookInput, key: string) => book.sheets.every((s) => (
  * The sheet hidden (very hidden with `very`) or shown again (`hidden` false); no formula changes, as formulas read a
  * hidden sheet as any other. The book's last visible sheet is not hidden, as Excel refuses.
  */
-export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): RestructureResult {
+export function hideSheet(book: BookInput, sheet: string, hidden: boolean | 'very'): StructureResult {
   const key = sheetKey(sheet)
   if (hidden && lastVisible(book, key)) return { ok: false, code: 'last_sheet', message: say(book.locale, { key: 'lastVisibleSheet', sheet }) }
   const sheets = book.sheets.map((s) => {

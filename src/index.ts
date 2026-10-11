@@ -5,8 +5,8 @@
  * The `./unstable/*` subpaths (internals, the synthetic book) are outside semver.
  */
 import type { BookInput, CellDisplay, CellValue, ComputeOptions, ComputeResult, DisplayOptions, FormulaEngine, NameCheck, NameInput, NameIssue, NameOptions, NamesContext, ValidateContext, ValidateResult } from './contract.js'
-import { openSession } from './session.js'
-import { restructure } from './structure/index.js'
+import { createSession } from './session.js'
+import { editStructure } from './structure/index.js'
 import { epochOf } from './dates.js'
 import { createState, debugSource } from './engine.js'
 import { limitsBudget, run, withBudget } from './exec/budget.js'
@@ -27,14 +27,14 @@ import { fromLegacy as legacyFormula, type LegacyContext as LegacyFormulaContext
 export * from './contract.js'
 export { FUNCTION_NAMES } from './functions.js'
 export { CONFIG_VERSION } from './config.js'
-export { openSession } from './session.js'
+export { createSession } from './session.js'
 export { InputError } from './input.js'
 export { CalcError } from './exec/budget.js'
 export { createInlineCalc } from './async/inline.js'
 export { enUS, toInvariant, toLocal, validateLocalFormula, type Locale, type Translation } from './locale/index.js'
 export { registerLocale } from './locale/load.js'
 export { LOCALES } from './locale/registry.js'
-export { restructure } from './structure/index.js'
+export { editStructure } from './structure/index.js'
 export { copyFormula, type CopyContext } from './structure/copy.js'
 export { parseEntry } from './entry/index.js'
 export { entryText, needsApostrophe } from './entry/text.js'
@@ -48,7 +48,7 @@ export { dateToSerial, serialToDate, type DateSystemOptions } from './date-seria
 /**
  * Computes the whole book. Without `opts.clock` the clock is the current moment and a random seed; the
  * result records it in `clock`, and passing that clock again reproduces the result. Input of the wrong
- * shape throws `InputError`; invalid formulas do not throw, they give error values with reasons in `issues`.
+ * shape throws `InputError`; invalid formulas do not throw, they give error values with reasons in `diagnostics`.
  */
 export function compute(book: BookInput, opts?: ComputeOptions): ComputeResult {
   const o = checkComputeOptions(opts)
@@ -83,13 +83,13 @@ export function debugGeneratedCode(book: BookInput, opts?: ComputeOptions): stri
 }
 
 /**
- * A value as a cell shows it without a book (a cell being edited, say): by `format` (General without one), in
+ * A value as a cell shows it without a book (a cell being edited, say): by `numberFormat` (General without one), in
  * `locale` and `dateSystem`, in a column of `width` (no limit without one: a value is not narrowed to a column it was
  * not given), as `CellResult.text` and `color` show it.
  */
 export function displayValue(value: CellValue, opts?: DisplayOptions): CellDisplay {
   const o = checkDisplayOptions(opts)
-  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.format, o.width === undefined ? Infinity : room(columnPoints(o.width)))
+  return displayRules(o.locale, epochOf(o.dateSystem)).display(checkCellValue(value, 'value'), o.numberFormat, o.width === undefined ? Infinity : room(columnPoints(o.width)))
 }
 
 /** @deprecated `fromLegacy` reads formulas of files: `import { fromLegacy } from 'xlcalc/xlsx'`. */
@@ -97,5 +97,10 @@ export const fromLegacy: typeof legacyFormula = legacyFormula
 /** @deprecated `import type { LegacyContext } from 'xlcalc/xlsx'`. */
 export type LegacyContext = LegacyFormulaContext
 
-/** The contract implementation as one object. */
-export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, openSession, restructure, displayValue, parseEntry, fitColumns, entryWidth }
+/** @deprecated The name is `createSession`. */
+export const openSession: typeof createSession = createSession
+/** @deprecated The name is `editStructure`. */
+export const restructure: typeof editStructure = editStructure
+
+/** @deprecated The package's named exports are these functions: `import { compute, createSession } from 'xlcalc'`. */
+export const engine: FormulaEngine = { compute, validateFormula, validateName, validateNames, createSession, editStructure, openSession, restructure, displayValue, parseEntry, fitColumns, entryWidth }

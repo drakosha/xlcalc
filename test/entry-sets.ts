@@ -43,7 +43,7 @@ const current = (name: string) => {
 /** One stored case against `parseEntry`: Excel's answer, or a difference where `known` names a reason. */
 export async function checkCase(set: EntrySetFile, c: EntryCase, known: (key: string) => EntryReason | undefined): Promise<void> {
   expect((await current(set.name)).find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
-  const got = parseEntry(c.text, { locale: set.tag, now: String(set.meta.date), ...(c.format !== undefined ? { cell: { format: c.format } } : {}) })
+  const got = parseEntry(c.text, { locale: set.tag, now: String(set.meta.date), ...(c.format !== undefined ? { cell: { numberFormat: c.format } } : {}) })
   const want = set.answers[c.id]
   if (want.value2 !== undefined && typeof want.cell?.value === 'number') expect(want.value2, "the object model's value is the number the file holds").toBe(want.cell.value)
   const diff = entryDifferences(got, want, set.tag)

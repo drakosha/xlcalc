@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { valuesHash } from '../src/canon.js'
 import type { BookInput, CellValue, ComputeResult } from '../src/contract.js'
-import { compute, CONFIG_VERSION, enUS, InputError, LOCALES as PUBLIC_LOCALES, openSession } from '../src/index.js'
+import { compute, CONFIG_VERSION, enUS, InputError, LOCALES as PUBLIC_LOCALES, createSession } from '../src/index.js'
 import { ruRU } from './locales.js'
 import { LOCALES } from '../src/locale/registry.js'
 import { displayRules } from '../src/locale/rules.js'
@@ -25,7 +25,7 @@ describe('the book locale', () => {
     }
     expect(() => compute(book('ru-ru'), { clock })).toThrow('tags are case-sensitive: ru-RU')
     expect(() => compute({ ...book(), locale: 7 } as unknown as BookInput, { clock })).toThrow('book.locale: expected a string, got number 7')
-    expect(() => openSession(book('xx-XX'), { clock })).toThrow(InputError)
+    expect(() => createSession(book('xx-XX'), { clock })).toThrow(InputError)
   })
 
   it('en-US hashes as a book without a locale; another locale changes both hashes', () => {
@@ -59,11 +59,11 @@ describe('the book locale', () => {
   })
 
   it('a session keeps the locale through edits and structure operations', () => {
-    const s = openSession(book('ru-RU'), { clock })
+    const s = createSession(book('ru-RU'), { clock })
     s.setCells([{ sheet: 'S', cell: 'B1', input: { value: 1 } }])
-    expect(s.book().locale).toBe('ru-RU')
-    const r = s.restructure({ op: 'insertRows', sheet: 'S', row: 1, count: 1 })
+    expect(s.getBook().locale).toBe('ru-RU')
+    const r = s.editStructure({ op: 'insertRows', sheet: 'S', row: 1, count: 1 })
     expect(r.ok && r.book.locale).toBe('ru-RU')
-    expect(s.result().hash).toBe(compute(s.book(), { clock: s.clock }).hash)
+    expect(s.getResult().hash).toBe(compute(s.getBook(), { clock: s.clock }).hash)
   })
 })

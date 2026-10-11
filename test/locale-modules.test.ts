@@ -8,7 +8,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, openSession, parseEntry, registerLocale, restructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
+import { builtinFormatCode, compute, createInlineCalc, displayValue, entryText, entryWidth, enUS, errorText, fitColumns, InputError, needsApostrophe, scanReferences, validateSheetName, LOCALES, createSession, parseEntry, registerLocale, editStructure, toInvariant, toLocal, validateLocalFormula, validateName, validateNames, type BookInput, type Locale } from '../src/index.js'
 import { PACKAGE_LOCALES } from '../src/locale/registry.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { LOCALE_MODULES } from '../src/worker/locales.js'
@@ -17,7 +17,7 @@ import { read } from './xlsx-fixtures.js'
 
 const clock = { now: '2026-10-05T12:00:00Z', seed: 1 }
 const HINT = "the locale ru-RU is not loaded: import { ruRU } from 'xlcalc/locales/ru-RU' and call registerLocale(ruRU) (loaded: en-US)"
-const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { value: 46096, format: 14 }, B1: { value: 'Итого' } }
+const cells = { A1: { formula: 'VALUE("1,5")+VALUE("1 234,5")' }, A2: { formula: '"a"&1.5&TRUE' }, A3: { value: 46096, numberFormat: 14 }, B1: { value: 'Итого' } }
 const ruBook: BookInput = { locale: 'ru-RU', sheets: [{ name: 'S', cells, columns: { A: { width: 12 } } }] }
 const enBook: BookInput = { sheets: [{ name: 'S', cells }] }
 
@@ -43,14 +43,14 @@ describe('without ru-RU loaded', () => {
     const result = compute(enBook, { clock })
     const calls: [string, () => unknown][] = [
       ['compute', () => compute(ruBook, { clock })],
-      ['openSession', () => openSession(ruBook, { clock })],
-      ['restructure', () => restructure(ruBook, { op: 'insertRows', sheet: 'S', row: 1 })],
+      ['createSession', () => createSession(ruBook, { clock })],
+      ['editStructure', () => editStructure(ruBook, { op: 'insertRows', sheet: 'S', row: 1 })],
       ['fitColumns', () => fitColumns(ruBook, result, 'S', 'A:B')],
     ]
     for (const [name, call] of calls) expect(refusal(call).message, name).toBe(`book.locale: ${HINT}`)
     const calc = createInlineCalc()
     await expect(calc.compute(ruBook, { clock })).rejects.toThrow(`book.locale: ${HINT}`)
-    await expect(calc.openSession(ruBook, { clock })).rejects.toBeInstanceOf(InputError)
+    await expect(calc.createSession(ruBook, { clock })).rejects.toBeInstanceOf(InputError)
     await calc.close()
     await expect(writeXlsx({ book: ruBook })).rejects.toThrow(`book.locale: ${HINT}`)
   })
@@ -79,10 +79,10 @@ describe('without ru-RU loaded', () => {
     expect(toLocal('IF(B1>0.5,SUM({1,2;3,4}),#N/A)', ruRU)).toEqual({ ok: true, formula: 'ЕСЛИ(B1>0,5;СУММ({1;2:3;4});#Н/Д)' })
     expect(toInvariant('=СУММ(A1:A3;1,5)', ruRU)).toEqual({ ok: true, formula: 'SUM(A1:A3,1.5)' })
     expect(validateLocalFormula('=СУММ(A1;1.5)', ruRU)).toEqual({ ok: false, code: 'syntax', message: 'Здесь не может стоять «.»', at: 10 })
-    expect(parseEntry('1 234,5', { locale: ruRU })).toEqual({ ok: true, input: { value: 1234.5, format: 4 } })
+    expect(parseEntry('1 234,5', { locale: ruRU })).toEqual({ ok: true, input: { value: 1234.5, numberFormat: 4 } })
     expect(parseEntry('=ОКРУГЛ(A1;2;3)', { locale: ruRU })).toMatchObject({ ok: false, message: 'Функция ОКРУГЛ принимает 2 аргумента, а указано 3' })
-    expect(displayValue(0.4567, { format: '0.0%', locale: ruRU })).toEqual({ text: '45,7%' })
-    expect(displayValue(46096, { format: 14, locale: ruRU, width: 12 })).toEqual({ text: '15.03.2026' })
+    expect(displayValue(0.4567, { numberFormat: '0.0%', locale: ruRU })).toEqual({ text: '45,7%' })
+    expect(displayValue(46096, { numberFormat: 14, locale: ruRU, width: 12 })).toEqual({ text: '15.03.2026' })
     expect(entryWidth(1234567890, { locale: ruRU })).toBe(11.1640625)
     expect(builtinFormatCode(14, ruRU)).toBe('dd.mm.yyyy')
     expect([errorText('DIV0', ruRU), entryText(1.5, { locale: ruRU }), needsApostrophe('1,5', { locale: ruRU })]).toEqual(['#ДЕЛ/0!', '1,5', true])
@@ -94,7 +94,7 @@ describe('without ru-RU loaded', () => {
   })
 
   it("an en-US book shows what it showed: ru-RU's month names under [$-419], the widths of Cyrillic letters", () => {
-    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TEXT(45688,"[$-419]mmmm")' }, A2: { value: 45688, format: '[$-419]d mmm yyyy' }, B1: { value: 'Итого' }, C1: { value: 'Ж' } }, columns: { A: { width: 16 } } }] }
+    const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'TEXT(45688,"[$-419]mmmm")' }, A2: { value: 45688, numberFormat: '[$-419]d mmm yyyy' }, B1: { value: 'Итого' }, C1: { value: 'Ж' } }, columns: { A: { width: 16 } } }] }
     const r = compute(book, { clock })
     expect([r.sheets[0].cells.A1.value, r.sheets[0].cells.A2.text]).toEqual(['Январь', '31 янв 2025'])
     // the widths Excel for Mac gives these letters, as in a ru-RU book (test/excel/display/widths.json)
@@ -118,7 +118,7 @@ describe('registerLocale', () => {
     expect([...LOCALES.keys()]).toEqual(['en-US', 'ru-RU'])
     expect(LOCALES.get('ru-RU')).toBe(ruRU)
     expect(toLocal('SUM(A1,1.5)', 'ru-RU')).toEqual({ ok: true, formula: 'СУММ(A1;1,5)' })
-    expect(parseEntry('1 234,5', { locale: 'ru-RU' })).toEqual({ ok: true, input: { value: 1234.5, format: 4 } })
+    expect(parseEntry('1 234,5', { locale: 'ru-RU' })).toEqual({ ok: true, input: { value: 1234.5, numberFormat: 4 } })
   })
 
   describe.each(['closures', 'eval'] as const)('a ru-RU book computes as before, execution %s', (execution) => {
@@ -126,14 +126,14 @@ describe('registerLocale', () => {
       const r = compute(ruBook, { clock, execution })
       const v = r.sheets[0].cells
       expect([v.A1.value, v.A2.value, v.A3.text]).toEqual([1236, 'a1,5ИСТИНА', '15.03.2026'])
-      const session = openSession(ruBook, { clock, execution })
-      expect(session.result().hash).toBe(r.hash)
+      const session = createSession(ruBook, { clock, execution })
+      expect(session.getResult().hash).toBe(r.hash)
       expect(session.explain('S', 'A1').text).toBe("'S'!A1 = 1236  ← ЗНАЧЕН(\"1,5\")+ЗНАЧЕН(\"1 234,5\")")
-      expect(session.restructure({ op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, message: 'В книге должен остаться хотя бы один лист' })
+      expect(session.editStructure({ op: 'deleteSheet', sheet: 'S' })).toMatchObject({ ok: false, message: 'В книге должен остаться хотя бы один лист' })
       const calc = createInlineCalc()
       expect((await calc.compute(ruBook, { clock, execution })).hash).toBe(r.hash)
-      const inline = await calc.openSession(ruBook, { clock, execution })
-      expect([(await inline.result()).hash, (await inline.explain('S', 'A1')).text]).toEqual([r.hash, session.explain('S', 'A1').text])
+      const inline = await calc.createSession(ruBook, { clock, execution })
+      expect([(await inline.getResult()).hash, (await inline.explain('S', 'A1')).text]).toEqual([r.hash, session.explain('S', 'A1').text])
       await calc.close()
     })
   })

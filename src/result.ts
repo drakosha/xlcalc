@@ -1,7 +1,7 @@
 /** The computation result per the contract: values by sheet (spilled cells too), error reasons, volatile cells, hashes. */
 import { inputHashSteps, outNumber, sheetOrder, sortedSteps, ValuesHasher, type FillLine } from './canon.js'
 import { CONFIG_VERSION } from './config.js'
-import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalLook } from './contract.js'
+import type { CellResult, CellValue, CellView, Clock, ComputeResult, ConditionalAppearance, Diagnostic } from './contract.js'
 import { key, toCellValue, valueAt, type EngineState } from './engine.js'
 import { paced, type Steps } from './exec/budget.js'
 import { issues } from './issues.js'
@@ -57,7 +57,7 @@ export function* spilled(state: EngineState, s: number, within?: Rect, whole = f
   return out
 }
 
-/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own format. */
+/** A cell of sheet `s` as a result gives it; `spillOf`, the formula of a spilled cell; `format`, with the cell's own number format. */
 export function cellResult(state: EngineState, s: number, addr: string, look: Looks | null, spillOf: string | undefined, format = true): CellResult {
   const { row, col } = parseAddress(addr)
   const inCell = state.input.sheets[s].cells[addr] ?? {}
@@ -66,7 +66,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
   const out: CellResult = look ? { value, ...look(s, row, col, value, inCell) } : { value }
   const text = id === undefined ? inCell.formula : state.formulas[id]!.text
   if (text !== undefined) out.formula = text
-  if (format && inCell.format !== undefined) out.format = inCell.format
+  if (format && inCell.numberFormat !== undefined) out.numberFormat = inCell.numberFormat
   if (inCell.meta !== undefined) out.meta = inCell.meta
   const x = id === undefined ? undefined : state.spills.on.get(id)
   if (x) Object.assign(out, anchorFields(x))
@@ -78,7 +78,7 @@ export function cellResult(state: EngineState, s: number, addr: string, look: Lo
 const BY_CELL = 65_536
 
 /**
- * The cells of rectangles `xs` of sheet `s` as the result gives them (`Session.cells`), with each cell's own style, once
+ * The cells of rectangles `xs` of sheet `s` as the result gives them (`Session.getCells`), with each cell's own style, once
  * each: a rectangle's cells looked up one by one, or a larger one's found among the sheet's. The steps yield between cells.
  */
 export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boolean): Steps<Record<string, CellView>> {
@@ -86,7 +86,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
   const look = display ? cellLooks(state) : null
   const spill = new Map<string, string>()
   const listed = new Set<string>()
-  const cond = new Map<number, ConditionalLook>()
+  const cond = new Map<number, ConditionalAppearance>()
   for (const x of xs) {
     const small = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL
     const mine: string[] = []
@@ -117,13 +117,13 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
     if (paced(1)) yield
     const view: CellView = cellResult(state, s, addr, look, spill.get(addr))
     const input = cells[addr]
-    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, and its conditional formats' look
+    // what the cell shows beside its value: its own style, note and link, an old-kind array's area, and its conditional formats' appearance
     if (input?.style !== undefined) view.style = input.style
     if (input?.note !== undefined) view.note = input.note
     if (input?.link !== undefined) view.link = input.link
     if (input?.array !== undefined) view.array = input.array
     const cf = cond.get(cellIndex(addr))
-    if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, format })))
+    if (cf) withLook(view, cf, look && ((format) => look(s, ...rowCol(addr), view.value, { ...input, numberFormat: format })))
     out[addr] = view
   }
   return out
@@ -165,7 +165,7 @@ function fillLines(state: EngineState, s: number, addr: string, value: CellValue
 /** The values hasher of a state's configuration, locale and date system; cells are written to it as they are read. */
 const hasher = (state: EngineState) => new ValuesHasher(CONFIG_VERSION, state.input.locale, state.input.dateSystem)
 
-/** The values hash of a state, as its result gives it, without the cells' results (`Session.hash`). */
+/** The values hash of a state, as its result gives it, without the cells' results (`Session.getHash`). */
 export function* stateHash(state: EngineState): Steps<string> {
   const w = hasher(state)
   const fills: FillLine[] = []
@@ -208,8 +208,10 @@ export function* buildResult(state: EngineState, clock: Clock, t0: number, displ
     .map((f) => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
   return {
     sheets,
-    issues: issues(state).map((i) => ({ sheet: state.sheetNames[i.s], cell: formatAddress(i.r, i.c), error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}) })),
-    nameIssues: state.nameIssues,
+    diagnostics: [
+      ...issues(state).map((i): Diagnostic => ({ kind: 'cell', sheet: state.sheetNames[i.s], cell: formatAddress(i.r, i.c), error: i.error, reason: i.reason, ...(i.check ? { check: i.check, at: i.at } : {}) })),
+      ...state.nameIssues.map((n): Diagnostic => ({ kind: 'name', ...n })),
+    ],
     volatile,
     clock: { ...clock },
     hash: w.hex(fills),

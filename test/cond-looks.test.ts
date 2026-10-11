@@ -5,8 +5,8 @@
  * duplicates by Excel's comparison, colour channels cut toward the start colour, data bar geometry, icons, priorities.
  */
 import { describe, expect, it } from 'vitest'
-import type { BookInput, CellInput, ConditionalFormat, ConditionalLook } from '../src/contract.js'
-import { openSession } from '../src/index.js'
+import type { BookInput, CellInput, ConditionalFormat, ConditionalAppearance } from '../src/contract.js'
+import { createSession } from '../src/index.js'
 import { barOf, between } from '../src/cond/looks.js'
 import './locales.js'
 
@@ -14,14 +14,14 @@ const CLOCK = { now: '2026-10-10T12:00:00Z', seed: 1 }
 const RED = { fill: { color: '#FFC7CE' } }
 
 /** The looks of a column of values under rules, by address (cells without a look left out). */
-function looks(values: (CellInput | undefined)[], rules: ConditionalFormat[], execution: 'closures' | 'eval', more: BookInput['sheets'][number]['cells'] = {}, locale?: string): Record<string, ConditionalLook> {
+function looks(values: (CellInput | undefined)[], rules: ConditionalFormat[], execution: 'closures' | 'eval', more: BookInput['sheets'][number]['cells'] = {}, locale?: string): Record<string, ConditionalAppearance> {
   const cells: Record<string, CellInput> = { ...more }
   values.forEach((v, i) => v && (cells[`A${i + 1}`] = v))
-  const s = openSession({ sheets: [{ name: 'S', cells, conditionalFormats: rules }], ...(locale ? { locale } : {}) }, { clock: CLOCK, execution })
-  const w = s.cells('S', `A1:C${values.length}`)
-  return Object.fromEntries(Object.entries(w).flatMap(([a, v]) => (v.look ? [[a, v.look]] : [])))
+  const s = createSession({ sheets: [{ name: 'S', cells, conditionalFormats: rules }], ...(locale ? { locale } : {}) }, { clock: CLOCK, execution })
+  const w = s.getCells('S', `A1:C${values.length}`)
+  return Object.fromEntries(Object.entries(w).flatMap(([a, v]) => (v.appearance ? [[a, v.appearance]] : [])))
 }
-const held = (l: Record<string, ConditionalLook>) => Object.keys(l)
+const held = (l: Record<string, ConditionalAppearance>) => Object.keys(l)
 const v = (value: CellInput['value']): CellInput => ({ value })
 const col = (n: number) => [`A1:A${n}`]
 
@@ -115,18 +115,18 @@ describe.each(['closures', 'eval'] as const)('looks (%s)', (execution) => {
     expect(looks(vals, [gt(5, { fill: { color: '#FF0000' } }, true), gt(3, { font: { italic: true } })], execution)).toEqual({ A2: { style: { font: { italic: true } } }, A3: { style: { fill: { color: '#FF0000' } } } })
     const scale: ConditionalFormat = { type: 'colorScale', ranges: col(3), points: [{ value: { type: 'min' }, color: '#000000' }, { value: { type: 'max' }, color: '#FFFFFF' }] }
     expect(looks(vals, [gt(5, { fill: { color: '#FF0000' } }), scale], execution).A3).toEqual({ style: { fill: { color: '#FF0000' } } })
-    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 6 } }, conditionalFormats: [gt(5, { format: '0.00%' })] }] }, { clock: CLOCK, execution })
-    expect(s.cells('S', 'A1').A1).toEqual({ value: 6, text: '600.00%', look: { style: { format: '0.00%' } } })
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 6 } }, conditionalFormats: [gt(5, { numberFormat: '0.00%' })] }] }, { clock: CLOCK, execution })
+    expect(s.getCells('S', 'A1').A1).toEqual({ value: 6, text: '600.00%', appearance: { style: { numberFormat: '0.00%' } } })
   })
 
   it("a rule's built-in number format shows by its en-US code in every locale, as Excel reads a differential format by its code (the set formats-ru-held)", () => {
-    const rule = (cell: string, format: number): ConditionalFormat => ({ type: 'cellIs', ranges: [cell], operator: 'greaterThan', formulas: ['0'], style: { format } })
+    const rule = (cell: string, format: number): ConditionalFormat => ({ type: 'cellIs', ranges: [cell], operator: 'greaterThan', formulas: ['0'], style: { numberFormat: format } })
     const book = { locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 46096.75 }, A2: { value: 46096.75 } }, columns: { A: { width: 30 } }, conditionalFormats: [rule('A1', 14), rule('A2', 22)] }] }
-    const s = openSession(book, { clock: CLOCK, execution })
-    const cells = s.cells('S', 'A1:A2')
+    const s = createSession(book, { clock: CLOCK, execution })
+    const cells = s.getCells('S', 'A1:A2')
     expect([cells.A1.text, cells.A2.text]).toEqual(['3.15.2026', '3.15.2026 18:00'])
     // a cell's own built-in format still shows by the locale
-    expect(openSession({ ...book, sheets: [{ name: 'S', cells: { A1: { value: 46096.75, format: 14 } }, columns: { A: { width: 30 } } }] }, { clock: CLOCK, execution }).cells('S', 'A1').A1.text).toBe('15.03.2026')
+    expect(createSession({ ...book, sheets: [{ name: 'S', cells: { A1: { value: 46096.75, numberFormat: 14 } }, columns: { A: { width: 30 } } }] }, { clock: CLOCK, execution }).getCells('S', 'A1').A1.text).toBe('15.03.2026')
   })
 
   it('data bars and icon sets', () => {
@@ -148,9 +148,9 @@ describe.each(['closures', 'eval'] as const)('looks (%s)', (execution) => {
   })
 
   it('a rectangle larger than 65,536 cells gives the looks of the cells it lists only', () => {
-    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B5: { value: 2 } }, conditionalFormats: [{ type: 'containsBlanks', ranges: ['A:C'], style: RED }] }] }, { clock: CLOCK, execution })
-    expect(Object.keys(s.cells('S', 'A:C'))).toEqual(['A1', 'B5'])
-    expect(Object.keys(s.cells('S', 'A1:C2'))).toEqual(['A1', 'B1', 'C1', 'A2', 'B2', 'C2'])
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B5: { value: 2 } }, conditionalFormats: [{ type: 'containsBlanks', ranges: ['A:C'], style: RED }] }] }, { clock: CLOCK, execution })
+    expect(Object.keys(s.getCells('S', 'A:C'))).toEqual(['A1', 'B5'])
+    expect(Object.keys(s.getCells('S', 'A1:C2'))).toEqual(['A1', 'B1', 'C1', 'A2', 'B2', 'C2'])
   })
 })
 

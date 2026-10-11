@@ -9,7 +9,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
-import { compute, InputError, openSession } from '../src/index.js'
+import { compute, InputError, createSession } from '../src/index.js'
 import { readXlsx, writeXlsx, type XlsxCached } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { codes, storedOf, storedValues } from './xlsx-fixtures.js'
@@ -84,7 +84,7 @@ describe('writeXlsx with a snapshot', () => {
   })
 
   it('refuses what it cannot take, saying what to pass instead', async () => {
-    const session = openSession(book, { clock })
+    const session = createSession(book, { clock })
     await expect(writeXlsx(session as never)).rejects.toThrow(new InputError('snapshot', 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'))
     await expect(writeXlsx(book, { result: session as never })).rejects.toThrow(new InputError('opts.result', 'a session is not a snapshot: pass session.getSnapshot() (awaited for an asynchronous session)'))
     await expect(writeXlsx({ book, result: session as never })).rejects.toThrow(InputError)

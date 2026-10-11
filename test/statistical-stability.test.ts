@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compute, openSession, type BookInput, type CellValue } from '../src/index.js'
+import { compute, createSession, type BookInput, type CellValue } from '../src/index.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
 const close = (actual: CellValue, expected: number) => {
@@ -23,9 +23,9 @@ describe.each(['closures', 'eval'] as const)('stable statistics, %s', (execution
     const variance = Number(n * squares - sum * sum) / Number(n * n * 8192n ** 2n)
     expect(v.D1.value).toBe(1e12 + 0.01)
     close(v.D2.value, variance); close(v.D3.value, Math.sqrt(variance)); close(v.D4.value, variance * 10000)
-    const s = openSession(book, { clock, execution })
+    const s = createSession(book, { clock, execution })
     s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 1e12 + 0.02 } }])
-    expect(s.hash()).toBe(compute(s.book(), { clock, execution }).hash)
+    expect(s.getHash()).toBe(compute(s.getBook(), { clock, execution }).hash)
     s.close()
   })
 

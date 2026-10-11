@@ -1,4 +1,4 @@
-/** Where a sheet's cells end as a result and its book give it, for the tests of `Session.extent`. */
+/** Where a sheet's cells end as a result and its book give it, for the tests of `Session.getUsedRange`. */
 import type { BookInput, ComputeResult, SheetExtent } from '../src/contract.js'
 import { parseAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'

@@ -3,7 +3,7 @@
  * between portions, and a structure operation stops at its soft deadline, leaving the session as it was.
  */
 import { describe, expect, it } from 'vitest'
-import { CalcError, createInlineCalc, openSession, restructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
+import { CalcError, createInlineCalc, createSession, editStructure, type BookInput, type CellInput, type StructureOp } from '../src/index.js'
 import { synthBook } from '../src/synth.js'
 import { CLOCK, medianMs } from './async-books.js'
 
@@ -47,13 +47,13 @@ function tableBook(n: number): BookInput {
 describe('long steps in the same thread', () => {
   it("a large book's result, hash and cells give way to the event loop, with the synchronous values", async () => {
     const book = synthBook({ seed: 1, rows: 8500 }).book
-    const sync = openSession(book, { clock: CLOCK })
+    const sync = createSession(book, { clock: CLOCK })
     const calc = createInlineCalc({ sliceMs: SLICE_MS })
-    const s = await calc.openSession(book, { clock: CLOCK })
+    const s = await calc.createSession(book, { clock: CLOCK })
     const calls: [string, () => unknown, () => Promise<unknown>, (v: unknown) => unknown][] = [
-      ['result', () => sync.result(), () => s.result(), (v) => JSON.stringify({ ...(v as object), ms: 0 })],
-      ['hash', () => sync.hash(), () => s.hash(), (v) => v],
-      ['cells', () => sync.cells('Данные', 'A1:Z99999'), () => s.cells('Данные', 'A1:Z99999'), (v) => JSON.stringify(v)],
+      ['result', () => sync.getResult(), () => s.getResult(), (v) => JSON.stringify({ ...(v as object), ms: 0 })],
+      ['hash', () => sync.getHash(), () => s.getHash(), (v) => v],
+      ['cells', () => sync.getCells('Данные', 'A1:Z99999'), () => s.getCells('Данные', 'A1:Z99999'), (v) => JSON.stringify(v)],
     ]
     for (const [name, once, call, shown] of calls) {
       // the call's time in one stretch, as fast as the machine runs it now
@@ -79,23 +79,23 @@ describe('long steps in the same thread', () => {
     const calc = createInlineCalc({ sliceMs: SLICE_MS })
     const timeoutMs = 20
     for (const [book, op] of ops) {
-      const s = await calc.openSession(book, { clock: CLOCK })
-      const before = await s.hash()
+      const s = await calc.createSession(book, { clock: CLOCK })
+      const before = await s.getHash()
       // the operation's time without a deadline, as fast as the machine runs it now
-      const whole = await medianMs(3, () => restructure(book, op))
+      const whole = await medianMs(3, () => editStructure(book, op))
       const t0 = performance.now()
-      const e = await fails(s.restructure(op, { timeoutMs }))
+      const e = await fails(s.editStructure(op, { timeoutMs }))
       const took = performance.now() - t0
       expect(e.code, op.op).toBe('soft_timeout')
       // without checks inside the operation the deadline was seen after it, when the new book was computed
       expect(took, op.op).toBeLessThan(timeoutMs + whole / 4)
-      expect(await s.hash(), op.op).toBe(before)
-      const sync = openSession(book, { clock: CLOCK })
-      const r = await s.restructure(op)
-      const y = sync.restructure(op)
+      expect(await s.getHash(), op.op).toBe(before)
+      const sync = createSession(book, { clock: CLOCK })
+      const r = await s.editStructure(op)
+      const y = sync.editStructure(op)
       if (!r.ok || !y.ok) throw new Error(`${op.op} refused`)
       expect(r.changes, op.op).toEqual(y.changes)
-      expect(await s.hash(), op.op).toBe(sync.hash())
+      expect(await s.getHash(), op.op).toBe(sync.getHash())
       await s.close()
     }
     await calc.close()

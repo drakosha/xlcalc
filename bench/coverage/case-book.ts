@@ -23,6 +23,7 @@ import type { BookInput, NumberFormat, RangeRef } from '../../src/contract.js'
 import { lines, parseSpan } from '../../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../../src/model.js'
 import { quoteSheet } from '../../src/syntax.js'
+import { numberFormatOf } from './stored.js'
 
 export const MIRRORS = ['WT', 'WN', 'WX'] as const
 
@@ -181,7 +182,8 @@ export async function writeCaseBook(book: BookInput, read: RangeRef[], file: str
       if (cell.formula !== undefined) x.value = { ...formulaValue(cell.formula, array ? (cell.array ?? addr) : undefined), ...(result === undefined ? {} : { result }) } as ExcelJS.CellValue
       else if (cell.value !== null && typeof cell.value === 'object') x.value = new Date(Date.parse(`${cell.value.date}${cell.value.date.includes('T') ? '' : 'T00:00:00'}Z`))
       else if (cell.value !== undefined) x.value = cell.value
-      if (cell.format !== undefined) x.numFmt = formatCode(cell.format)
+      const numberFormat = numberFormatOf(cell)
+      if (numberFormat !== undefined) x.numFmt = formatCode(numberFormat)
       const fill = cell.style === undefined ? undefined : book.styles![cell.style].fill
       if (fill) x.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${fill.color.slice(1)}` } }
     }

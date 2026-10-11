@@ -1,6 +1,6 @@
-/** API conveniences: the default clock of `compute` and `openSession`, clear errors on wrong input. */
+/** API conveniences: the default clock of `compute` and `createSession`, clear errors on wrong input. */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, validateFormula, validateName, type BookInput } from '../src/index.js'
+import { compute, InputError, createSession, validateFormula, validateName, type BookInput } from '../src/index.js'
 
 const book: BookInput = { sheets: [{ name: 'S', cells: { A1: { formula: 'NOW()' }, A2: { formula: 'RAND()' }, A3: { value: 1 }, A4: { formula: 'A3*2' } } }] }
 
@@ -15,13 +15,13 @@ describe('default clock', () => {
     expect(compute(book).clock.seed).not.toBe(r.clock.seed)
   })
 
-  it('openSession without options keeps the clock of opening; a full computation with it gives the same hash', () => {
-    const s = openSession(book)
+  it('createSession without options keeps the clock of opening; a full computation with it gives the same hash', () => {
+    const s = createSession(book)
     const clock = s.clock
     s.setCells([{ sheet: 'S', cell: 'A3', input: { value: 5 } }])
     expect(s.clock).toEqual(clock)
     const edited: BookInput = { sheets: [{ name: 'S', cells: { ...book.sheets[0].cells, A3: { value: 5 } } }] }
-    expect(s.result().hash).toBe(compute(edited, { clock }).hash)
+    expect(s.getResult().hash).toBe(compute(edited, { clock }).hash)
     expect(s.setClock({ now: '2026-01-01T00:00:00Z', seed: 1 }).changes.length).toBeGreaterThan(0)
   })
 })
@@ -49,7 +49,7 @@ describe('input errors', () => {
     fails(() => compute(sheet({ A0: { value: 1 } })), 'invalid cell address "A0"')
     fails(() => compute(sheet({ XFE1: { value: 1 } })), 'cell address "XFE1" is outside the sheet (the last cell is XFD1048576)')
     fails(() => compute(sheet({ A1048577: { value: 1 } })), 'is outside the sheet')
-    fails(() => compute(sheet({ A1: { val: 1 } })), 'book.sheets[0].cells["A1"]: unknown field "val" (expected value, formula, format, style, meta, array, note, link)')
+    fails(() => compute(sheet({ A1: { val: 1 } })), 'book.sheets[0].cells["A1"]: unknown field "val" (expected value, formula, numberFormat, format, style, meta, array, note, link)')
     fails(() => compute(sheet({ A1: { value: { date: '31.01.2025' } } })), 'book.sheets[0].cells["A1"].value.date: invalid date "31.01.2025"')
     fails(() => compute(sheet({ A1: { value: [1] } })), 'book.sheets[0].cells["A1"].value: expected a number, string, boolean, null or { date: "YYYY-MM-DD" }, got an array')
     fails(() => compute(sheet({ A1: { formula: 1 } })), 'book.sheets[0].cells["A1"].formula: expected a string, got number 1')
@@ -62,13 +62,13 @@ describe('input errors', () => {
     fails(() => compute(book, { now: '2026-01-01T00:00:00Z', seed: 1 } as never), 'opts: unknown field "now" (expected clock, externals, execution, display, limits) (pass the clock as { clock: { now, seed } })')
     fails(() => compute(book, { clock: { now: 'yesterday', seed: 1 } }), 'opts.clock.now: invalid moment "yesterday"')
     fails(() => compute(book, { clock: { now: '2026-01-01T00:00:00Z', seed: '1' } as never }), 'opts.clock.seed: expected a finite number, got the string "1"')
-    fails(() => openSession(book, { live: true, clock: { now: '2026-01-01T00:00:00Z', seed: 1 } } as never), 'opts: a live session takes its clock from the system')
+    fails(() => createSession(book, { live: true, clock: { now: '2026-01-01T00:00:00Z', seed: 1 } } as never), 'opts: a live session takes its clock from the system')
     fails(() => compute(book, { execution: 'fast' } as never), 'opts.execution: expected "closures" or "eval", got the string "fast"')
-    fails(() => openSession(book, { execution: 'Eval' } as never), 'opts.execution: expected "closures" or "eval", got the string "Eval"')
+    fails(() => createSession(book, { execution: 'Eval' } as never), 'opts.execution: expected "closures" or "eval", got the string "Eval"')
   })
 
   it('session calls and validation', () => {
-    const s = openSession(sheet({ A1: { value: 1 } }), { display: false })
+    const s = createSession(sheet({ A1: { value: 1 } }), { display: false })
     fails(() => s.setCells([{ sheet: 'T', cell: 'A1', input: { value: 1 } }]), 'edits[0].sheet: unknown sheet "T"')
     fails(() => s.setCells([{ sheet: 's', cell: 'A1', input: { value: 1 } }, { sheet: 'S', cell: '1A', input: null }]), 'edits[1].cell: invalid cell address "1A"')
     fails(() => s.setCells([{ sheet: 'S', cell: 'A1' } as never]), 'edits[0].input: expected the fields of a cell, or null to clear its content')

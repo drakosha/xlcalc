@@ -10,7 +10,7 @@ The rules of formatting and clearing below were measured in Excel 16.113 for Mac
 
 ```js
 session.setCells([{ sheet: 'S', cell: 'A1', input: { value: 5 } }])
-// A1 was { value: 2, style: 0, format: '0.00', note: { text: 'n' } }, now { value: 5, style: 0, format: '0.00', note: { text: 'n' } }
+// A1 was { value: 2, style: 0, numberFormat: '0.00', note: { text: 'n' } }, now { value: 5, style: 0, numberFormat: '0.00', note: { text: 'n' } }
 ```
 
 - A field set to null is removed: `{ style: null }` leaves the cell the look of its row or column.
@@ -40,7 +40,7 @@ A host's `meta` is the cell's identity rather than its content or its look, so i
 
 ## Formatting
 
-`patchCells(patches)` sets the look of a `cell` or a `range`: a rectangle, whole columns or whole rows. A patch sets `style`, `numberFormat` (or its old name `format`), `meta`, `note` and `link`; null removes a field; values and formulas stay.
+`patchCells(patches)` sets the look of a `cell` or a `range`: a rectangle, whole columns or whole rows. A patch sets `style`, `numberFormat`, `meta`, `note` and `link`; null removes a field; values and formulas stay.
 
 ### A style by its fields
 
@@ -87,11 +87,11 @@ A cell that shows its lines' look without a look of its own takes none: the line
 
 ## What an edit answers
 
-Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setNames`, `setClock`, `setStyles`, `setLayout`, `restructure`, `undo`, `redo`) answers an `EditResult`:
+Every call that changes the book (`setCells`, `replaceCells`, `clearCells`, `patchCells`, `setCellText`, `setNames`, `setClock`, `setStyles`, `setLayout`, `editStructure`, `undo`, `redo`) answers an `EditResult`:
 
 - `revision`: the session's revision after the call. Each such call adds one, `undo` and `redo` too; a refusal, a failure and an undo with nothing to undo add none.
 - `changes`: the cells whose value or shown text changed, and those whose formula, own style or own number format changed, with `formula`, `style` and `numberFormat` then (null when the cell has none now). After a structure operation, the cells whose value or formula text differ from those of the cell that was at their old place: after a row is inserted, `SUM(A1:A4)` that became `SUM(A1:A5)` is listed with its new text.
-- `layout`: the sheets whose layout changed (lines, merged areas, tables, rules): a host reads `layout()` again.
+- `layout`: the sheets whose layout changed (lines, merged areas, tables, rules): a host reads `getLayout()` again.
 - `styles`: the book's style table, when the call changed it.
 - `moved`: after a structure operation and its undo, how the addresses moved, in order: `{ kind: 'lines', sheet, axis, at, count }` (the lines from `at` on move by `count`, up or left when it is negative), `{ kind: 'range', from, to }`, and a sheet renamed, deleted, inserted or moved. A host moves its window by them rather than each cell by `mapCell`.
 - `repaint`: the rectangles of the book's conditional formats after a call that changed a value or a rule. A rule's look reads values anywhere its formulas point, so a host reads its window again where it meets them.

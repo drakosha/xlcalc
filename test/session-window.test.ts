@@ -1,12 +1,12 @@
 /**
- * What a sheet's window needs beside its cells: `Session.extent` (where a sheet's cells end, spills too) against the
+ * What a sheet's window needs beside its cells: `Session.getUsedRange` (where a sheet's cells end, spills too) against the
  * cells of the session's own result and the merged areas and tables of its book, while edits grow and shrink it;
- * `Session.layout` (the book without its cells); `Session.cells` over several rectangles, each cell once, as the
+ * `Session.getLayout` (the book without its cells); `Session.getCells` over several rectangles, each cell once, as the
  * rectangles read one by one; an old-kind array formula's area on its view. In a synchronous session, in the same
  * thread and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { InputError, openSession, type AsyncSession, type BookInput, type CellView, type Execution, type LayoutEdit, type SheetExtent, type StructureOp } from '../src/index.js'
+import { InputError, createSession, type AsyncSession, type BookInput, type CellView, type Execution, type LayoutEdit, type SheetExtent, type StructureOp } from '../src/index.js'
 import { compareAddress } from '../src/model.js'
 import { synthBook } from '../src/synth.js'
 import { CLOCK } from './async-books.js'
@@ -49,44 +49,44 @@ const STEPS: [string, (s: AsyncSession) => Promise<unknown>, SheetExtent?][] = [
   ['the style removed: no cell is left', (s) => s.patchCells([{ sheet: 'S', cell: 'P40', set: { style: null } }]), { rows: 6, columns: 14 }],
   ['a value further down, then cleared', async (s) => {
     await s.setCells([{ sheet: 'S', cell: 'Q900', input: { value: 1 } }])
-    expect(await s.extent('S')).toEqual({ rows: 900, columns: 17 })
+    expect(await s.getUsedRange('S')).toEqual({ rows: 900, columns: 17 })
     await s.setCells([{ sheet: 'S', cell: 'Q900', input: null }])
   }, { rows: 6, columns: 14 }],
   ['no merged area', (s) => s.setLayout([{ sheet: 'S', merges: [] }]), { rows: 5, columns: 14 }],
   ['the bottom value cleared: its style stays', (s) => s.setCells([{ sheet: 'S', cell: 'A5', input: null }]), { rows: 5, columns: 14 }],
   ['the bottom cell removed', (s) => s.replaceCells([{ sheet: 'S', cell: 'A5', input: null }]), { rows: 4, columns: 14 }],
-  ['rows inserted above', (s) => s.restructure({ op: 'insertRows', sheet: 'S', row: 1, count: 3 }), { rows: 7, columns: 14 }],
-  ['the table deleted', (s) => s.restructure({ op: 'deleteTable', table: 'T' } satisfies StructureOp), { rows: 7, columns: 5 }],
+  ['rows inserted above', (s) => s.editStructure({ op: 'insertRows', sheet: 'S', row: 1, count: 3 }), { rows: 7, columns: 14 }],
+  ['the table deleted', (s) => s.editStructure({ op: 'deleteTable', table: 'T' } satisfies StructureOp), { rows: 7, columns: 5 }],
   ['the far cell of the other sheet removed, a spill blocked there', (s) => s.replaceCells([{ sheet: 'Far', cell: 'Z500', input: null }, { sheet: 'Far', cell: 'B9', input: { value: 0 } }])],
   ['merged areas of the other sheet', (s) => s.setLayout([{ sheet: 'Far', merges: ['C2000:D2001'] } satisfies LayoutEdit])],
 ]
 
 describe.each(['closures', 'eval'] as const)('a window beside the cells, execution %s', (execution: Execution) => {
   describe.each(KINDS)('%s', (kind) => {
-    it('extent: books of the tests, against their results', async () => {
+    it('getUsedRange: books of the tests, against their results', async () => {
       const open = await opener(kind)
       const books: [string, BookInput][] = [['the synthetic book', synthBook({ seed: 1, rows: 340 }).book], ['the spill book', spillBook()], ['a seeded book', randomBook(11)], ['a crafted book', crafted()]]
       for (const [name, book] of books) {
         const s = await open(book, { clock: CLOCK, execution })
-        const [r, b] = [await s.result(), await s.book()]
-        for (const sheet of b.sheets) expect(await s.extent(sheet.name), `${name}: ${sheet.name}`).toEqual(extentOf(r, b, sheet.name))
+        const [r, b] = [await s.getResult(), await s.getBook()]
+        for (const sheet of b.sheets) expect(await s.getUsedRange(sheet.name), `${name}: ${sheet.name}`).toEqual(extentOf(r, b, sheet.name))
         await s.close()
       }
     }, 120_000)
 
-    it('extent: edits that grow it and shrink it, without the display too', async () => {
+    it('getUsedRange: edits that grow it and shrink it, without the display too', async () => {
       const open = await opener(kind)
       for (const display of [true, false]) {
         const s = await open(crafted(), { clock: CLOCK, execution, display })
-        expect(await s.extent('Empty')).toEqual({ rows: 0, columns: 0 })
-        expect(await s.extent('Far')).toEqual({ rows: 1_048_576, columns: 26 })
+        expect(await s.getUsedRange('Empty')).toEqual({ rows: 0, columns: 0 })
+        expect(await s.getUsedRange('Far')).toEqual({ rows: 1_048_576, columns: 26 })
         for (const [step, apply, known] of STEPS) {
           await apply(s)
-          const [r, b] = [await s.result(), await s.book()]
-          if (known) expect(await s.extent('S'), step).toEqual(known)
-          for (const sheet of b.sheets) expect(await s.extent(sheet.name), `${step}: ${sheet.name}`).toEqual(extentOf(r, b, sheet.name))
+          const [r, b] = [await s.getResult(), await s.getBook()]
+          if (known) expect(await s.getUsedRange('S'), step).toEqual(known)
+          for (const sheet of b.sheets) expect(await s.getUsedRange(sheet.name), `${step}: ${sheet.name}`).toEqual(extentOf(r, b, sheet.name))
         }
-        expect(await s.extent('Far')).toEqual({ rows: 2001, columns: 4 })
+        expect(await s.getUsedRange('Far')).toEqual({ rows: 2001, columns: 4 })
         await s.close()
       }
     }, 60_000)
@@ -103,7 +103,7 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
       const S = book.sheets[0]
       Object.assign(S, {
         columns: { B: { width: 14, style: 1 }, 'D:F': { hidden: true, outlineLevel: 1 } },
-        rows: { '2': { height: 30 }, '7:9': { format: '0.00' } },
+        rows: { '2': { height: 30 }, '7:9': { numberFormat: '0.00' } },
         filtered: true,
         frozen: { rows: 1, columns: 2 },
         conditionalFormats: [{ type: 'cellIs', ranges: ['A1:A5'], operator: 'greaterThan', formulas: ['3'], style: { fill: { color: '#FFC7CE' } } }],
@@ -112,12 +112,12 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
       })
       const s = await open(book, { clock: CLOCK, execution })
       const without = (b: BookInput) => JSON.parse(JSON.stringify({ ...b, sheets: b.sheets.map(({ cells: _, ...rest }) => rest) }))
-      expect(await s.layout()).toEqual(without(book))
+      expect(await s.getLayout()).toEqual(without(book))
       await s.setLayout([{ sheet: 'S', columns: 'B', set: { width: 20 } }, { sheet: 'Far', frozen: { rows: 2 } }])
-      expect((await s.restructure({ op: 'insertRows', sheet: 'S', row: 5 })).ok).toBe(true)
+      expect((await s.editStructure({ op: 'insertRows', sheet: 'S', row: 5 })).ok).toBe(true)
       await s.setStyles([...book.styles!, { font: { italic: true } }])
-      const now = await s.layout()
-      expect(now).toEqual(without(await s.book()))
+      const now = await s.getLayout()
+      expect(now).toEqual(without(await s.getBook()))
       expect(now.sheets[0].columns!.B.width).toBe(20)
       expect(now.sheets[0].merges).toEqual(['J6:K7'])
       expect(now.sheets.every((x) => !('cells' in x))).toBe(true)
@@ -127,15 +127,15 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
     it('cells of several rectangles: each cell once, in the order of addresses, as the rectangles one by one', async () => {
       const open = await opener(kind)
       const book = crafted()
-      book.sheets[0].conditionalFormats = [{ type: 'expression', ranges: ['A1:F8'], formula: 'ISNUMBER(A1)', style: { font: { bold: true }, format: '0.0' } }]
+      book.sheets[0].conditionalFormats = [{ type: 'expression', ranges: ['A1:F8'], formula: 'ISNUMBER(A1)', style: { font: { bold: true }, numberFormat: '0.0' } }]
       const sets = [['A1:C2', 'B2:F4'], ['E:E', 'A3:E3', 'E2'], ['1:2', 'C1', 'C1'], ['A1:XFD1048576', 'M1:N3'], ['J4:K7', 'A10'], []]
       for (const [name, b] of [['a crafted book', book], ['the spill book', spillBook()]] as [string, BookInput][]) {
         const s = await open(b, { clock: CLOCK, execution })
-        for (const sheet of (await s.book()).sheets)
+        for (const sheet of (await s.getBook()).sheets)
           for (const ranges of sets) {
-            const got = await s.cells(sheet.name, ranges)
+            const got = await s.getCells(sheet.name, ranges)
             const one: Record<string, CellView> = {}
-            for (const r of ranges) Object.assign(one, await s.cells(sheet.name, r))
+            for (const r of ranges) Object.assign(one, await s.getCells(sheet.name, r))
             expect(got, `${name}: ${sheet.name}!${ranges}`).toEqual(one)
             expect(Object.keys(got)).toEqual(Object.keys(one).sort(compareAddress))
           }
@@ -146,7 +146,7 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
     it("an old-kind array formula's area on its top-left cell, as its spill", async () => {
       const open = await opener(kind)
       const s = await open(crafted(), { clock: CLOCK, execution })
-      const w = await s.cells('S', ['C1:C3', 'E1'])
+      const w = await s.getCells('S', ['C1:C3', 'E1'])
       expect(w.C1).toEqual({ value: 40, text: '40', formula: 'A1:A3*10', spill: 'C1:C3', array: 'C1:C3' })
       expect(w.C2).toEqual({ value: 20, text: '20', spillOf: 'C1' })
       expect(w.E1).toEqual({ value: 1, text: '1', formula: 'SEQUENCE(A1)', spill: 'E1:E4' })
@@ -157,22 +157,22 @@ describe.each(['closures', 'eval'] as const)('a window beside the cells, executi
 
 describe('a window beside the cells', () => {
   it('the sheet and the ranges are checked as input', () => {
-    const s = openSession(crafted(), { clock: CLOCK })
-    expect(() => s.extent('Nope')).toThrow(InputError)
-    expect(() => s.cells('S', ['A1', 'A0'])).toThrow('range[1]: expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got "A0"')
-    expect(() => s.cells('S', [7 as unknown as string])).toThrow('range[0]: expected a string')
-    expect(s.cells('S', [])).toEqual({})
-    expect(s.extent('far')).toEqual({ rows: 1_048_576, columns: 26 })
+    const s = createSession(crafted(), { clock: CLOCK })
+    expect(() => s.getUsedRange('Nope')).toThrow(InputError)
+    expect(() => s.getCells('S', ['A1', 'A0'])).toThrow('range[1]: expected a range such as "B2", "B2:D9", "B:D" or "2:9" within the sheet, got "A0"')
+    expect(() => s.getCells('S', [7 as unknown as string])).toThrow('range[0]: expected a string')
+    expect(s.getCells('S', [])).toEqual({})
+    expect(s.getUsedRange('far')).toEqual({ rows: 1_048_576, columns: 26 })
   })
 
   it("a synchronous session's layout is made of its book's objects; a thread's is a copy", async () => {
-    const s = openSession(crafted(), { clock: CLOCK })
-    const l = s.layout()
-    expect(l.sheets[0].merges).toBe(s.book().sheets[0].merges)
-    expect(l.styles).toBe(s.book().styles)
-    const t = await (await keptPool()).openSession(crafted(), { clock: CLOCK })
-    const a = await t.layout()
+    const s = createSession(crafted(), { clock: CLOCK })
+    const l = s.getLayout()
+    expect(l.sheets[0].merges).toBe(s.getBook().sheets[0].merges)
+    expect(l.styles).toBe(s.getBook().styles)
+    const t = await (await keptPool()).createSession(crafted(), { clock: CLOCK })
+    const a = await t.getLayout()
     a.sheets[0].merges!.push('A20:B20')
-    expect((await t.layout()).sheets[0].merges).toEqual(['J5:K6'])
+    expect((await t.getLayout()).sheets[0].merges).toEqual(['J5:K6'])
   })
 })

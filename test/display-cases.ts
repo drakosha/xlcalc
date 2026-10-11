@@ -7,7 +7,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { place, type StoredDisplay } from '../bench/coverage/display.js'
 import type { DisplayAnswer, DisplayCase } from '../bench/coverage/display/cases.js'
 import { localeDir, TAGS } from '../bench/coverage/locales.js'
-import type { BookInput, CellDisplay, CellValue, SheetInput } from '../src/contract.js'
+import type { BookInput, CellDisplay, CellInput, CellValue, SheetInput } from '../src/contract.js'
 import { formatAddress, indexToCol } from '../src/model.js'
 import './locales.js'
 
@@ -33,7 +33,12 @@ const read = (sub: string, locale: DisplaySetFile['locale']): DisplaySetFile[] =
 export const DISPLAY_SETS: DisplaySetFile[] = TAGS.flatMap((tag) => read(`./${localeDir(tag)}`, tag))
 
 /** A case's cell as the engine takes it: a built-in format by its number. */
-export const formatted = (c: DisplayCase) => (c.numFmtId === undefined ? c.cell : { ...c.cell, format: c.numFmtId })
+export function formatted(c: DisplayCase): CellInput {
+  // a stored case names the cell's number format `format`, as the engine's input did when it was stored
+  const { format, ...cell } = c.cell
+  const numberFormat = c.numFmtId ?? format
+  return numberFormat === undefined ? cell : { ...cell, numberFormat }
+}
 
 /** The book of a set's cases, as the harness lays them out, and each case's address. */
 export function displayBook(cases: DisplayCase[], locale: string): { book: BookInput; at: Map<string, string> } {

@@ -1,15 +1,16 @@
 /**
  * Why a cell holds an error, without the book's result: `Session.getCellIssue` gives each cell's issue as
- * `result().issues` does and the cell the error began in, through ranges, spills, sheets and cycles; `explain` marks
+ * `getResult().diagnostics` does and the cell the error began in, through ranges, spills, sheets and cycles; `explain` marks
  * each error with that cell and leads to it, through a range by the cell the error came from and past its depth, as far
  * as `errorDepth` and never round a cycle. In a synchronous session, in the same thread and in a thread, with closures
  * and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { InputError, openSession, type BookInput, type Execution } from '../src/index.js'
+import { InputError, createSession, type BookInput, type Execution } from '../src/index.js'
 import { CLOCK } from './async-books.js'
 import { closeCalcs, KINDS, opener } from './session-kinds.js'
 import './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 afterAll(closeCalcs)
 
@@ -43,7 +44,7 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
   describe.each(KINDS)('%s', (kind) => {
     it("each cell's issue as the result's, with the cell its error began in; null without an error", async () => {
       const s = await (await opener(kind))(errors(), { clock: CLOCK, execution })
-      const { issues } = await s.result()
+      const issues = cellIssues(await s.getResult())
       expect(issues.map((i) => `${i.sheet}!${i.cell}`).sort()).toEqual(Object.keys(ORIGINS).sort())
       for (const { sheet, cell, ...rest } of issues) {
         const got = await s.getCellIssue(sheet, cell)
@@ -93,13 +94,13 @@ describe.each(['closures', 'eval'] as const)('the reason and origin of an error,
 
 describe('the reason and origin of an error', () => {
   it("in ru-RU, explain writes errors as the book's cells show them", () => {
-    const s = openSession({ ...errors(), locale: 'ru-RU' }, { clock: CLOCK })
+    const s = createSession({ ...errors(), locale: 'ru-RU' }, { clock: CLOCK })
     expect(s.explain('S', 'A2').text).toBe("'S'!A2 = #ДЕЛ/0!  ← A1*2  (ошибка из 'S'!A1)\n  'S'!A1 = #ДЕЛ/0!  ← 1/0  (ошибка возникает здесь)")
     expect(s.getViewport('S', 'A2').cells.A2.text).toBe('#ДЕЛ/0!')
   })
 
   it('the sheet and the cell are checked as input', () => {
-    const s = openSession(errors(), { clock: CLOCK })
+    const s = createSession(errors(), { clock: CLOCK })
     expect(() => s.getCellIssue('Nope', 'A1')).toThrow(InputError)
     expect(() => s.getCellIssue('S', 'a1')).toThrow(InputError)
     expect(s.getCellIssue('other', 'A1')?.origin).toEqual({ sheet: 'Other', cell: 'A1' })

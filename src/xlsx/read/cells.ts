@@ -91,7 +91,7 @@ const colOf = (letters: string) => {
 export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInput>[] = []): SheetCells {
   const out: SheetCells = { cells: {}, cached: {}, rows: new Map(), shared: new Map(), arrays: [], old: new Set(), errors: new Set() }
   const { issues, sheet } = ctx
-  const looked = cols.filter(([, , e]) => e.style !== undefined || e.format !== undefined)
+  const looked = cols.filter(([, , e]) => e.style !== undefined || e.numberFormat !== undefined)
   const column = (c: number) => (looked.length ? entryAt(looked, c) : undefined)
   let row = -1
   let col = -1
@@ -104,7 +104,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
     const at = new Set(formatted.map((x) => x.col))
     const missing = (lo: number, hi: number) => [...at].filter((c) => c >= lo && c <= hi).length < hi - lo + 1
     if (line.style === undefined && looked.some(([lo, hi, e]) => e.style !== undefined && missing(lo, hi))) line.style = ctx.plain()
-    if (line.format === undefined && looked.some(([lo, hi, e]) => e.format !== undefined && missing(lo, hi))) line.format = 'General'
+    if (line.numberFormat === undefined && looked.some(([lo, hi, e]) => e.numberFormat !== undefined && missing(lo, hi))) line.numberFormat = 'General'
     if (Object.keys(line).length) out.rows.set(lineRow + 1, line)
     for (const x of formatted) {
       const cell = { ...ownLook(x.own, lookOf(undefined, line, column(x.col)), ctx), ...out.cells[x.addr] }
@@ -218,7 +218,7 @@ export function readCells(data: string, ctx: CellsContext, cols: Line<ColumnInpu
         } else issues.add('errorValue', 'an error stored as a value that a formula cannot spell (#CALC!, #GETTING_DATA and the like), left out', { sheet, cell: addr })
       } else if (value !== undefined) cell.value = value
     }
-    if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.format !== undefined) out.cells[addr] = cell
+    if (formatted || cell.value !== undefined || cell.formula !== undefined || cell.style !== undefined || cell.numberFormat !== undefined) out.cells[addr] = cell
   }
   endRow()
   return out
@@ -237,21 +237,21 @@ export function outlineOf(a: Record<string, string>): { outlineLevel?: number; c
  */
 function ownLook(own: Look, line: Look, ctx: Pick<CellsContext, 'plain' | 'isPlain'>): CellInput {
   const style = line.style !== undefined && ctx.isPlain(line.style) ? undefined : line.style
-  const format = line.format === 'General' || line.format === 0 ? undefined : line.format
+  const format = line.numberFormat === 'General' || line.numberFormat === 0 ? undefined : line.numberFormat
   const out: CellInput = {}
   if (own.style !== style) out.style = own.style ?? ctx.plain()
-  if (own.format !== format) out.format = own.format ?? 'General'
+  if (own.numberFormat !== format) out.numberFormat = own.numberFormat ?? 'General'
   return out
 }
 
 /** The style and number format of a cell format, as fields of a cell, a row or a column. */
-export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; format?: NumberFormat } {
+export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?: number; numberFormat?: NumberFormat } {
   if (!xf) return {}
   for (const lost of xf.lost) issues.add('style', `a style's ${lost} is not in the model`, where)
   if (xf.eastAsian !== undefined) issues.add('numberFormat', 'a built-in East Asian date format the model does not have (50 to 58), read as the code Excel for Mac en-US shows', where)
   if (xf.unknownFormat !== undefined) issues.add('numberFormat', 'a built-in number format this reader does not know, left out', where)
-  const out: { style?: number; format?: NumberFormat } = {}
+  const out: { style?: number; numberFormat?: NumberFormat } = {}
   if (xf.style !== undefined) out.style = xf.style
-  if (xf.format !== undefined) out.format = xf.format
+  if (xf.format !== undefined) out.numberFormat = xf.format
   return out
 }

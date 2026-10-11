@@ -1,6 +1,6 @@
 /**
  * `getSnapshot`: a session's book and its result in one call, in a synchronous session, in the same thread and in a
- * thread, with closures and eval: what `book()` and `result()` give, with no edit between the two (a call made before
+ * thread, with closures and eval: what `getBook()` and `getResult()` give, with no edit between the two (a call made before
  * it is in it, one made after it is not); written to xlsx as it is and read back with the session's values, and Excel's
  * values read from a file written again from the snapshot of a session over that file. Text typed into a cell of the
  * session's window keeps the cell's note and link (`parseEntry` with the cell's view).
@@ -43,10 +43,10 @@ describe.each(KINDS)('getSnapshot, %s', (kind) => {
       expect(result.sheets[0].cells.B1.spill).toBe('B1:B3')
       // from a thread the book is a copy; elsewhere the session's own objects, as book() gives them, which later calls change
       if (kind === 'a thread') expect([b.sheets[0].cells.A1.value, b.sheets[0].cells.A2]).toEqual([3, { value: 3 }])
-      else expect(b).toBe(await s.book())
+      else expect(b).toBe(await s.getBook())
       const now = await s.getSnapshot()
-      expect(now.result).toEqual({ ...(await s.result()), ms: now.result.ms })
-      expect(now.book).toEqual(await s.book())
+      expect(now.result).toEqual({ ...(await s.getResult()), ms: now.result.ms })
+      expect(now.book).toEqual(await s.getBook())
       expect(now.result.sheets[0].cells.C1.value).toBe(60)
       await s.close()
     })
@@ -70,11 +70,11 @@ describe.each(KINDS)('getSnapshot, %s', (kind) => {
     it("text typed into a cell of its window keeps the cell's note, link and style", async () => {
       const open = await opener(kind)
       const s = await open(book(), { clock: CLOCK, execution })
-      const view = (await s.cells('S', 'A1')).A1
+      const view = (await s.getCells('S', 'A1')).A1
       const typed = parseEntry('5', { cell: view })
       expect(typed).toEqual({ ok: true, input: { value: 5, style: 0, note: { author: 'Ann', text: 'From the CRM' }, link: { url: 'https://example.com/' } } })
       if (typed.ok) await s.setCells([{ sheet: 'S', cell: 'A1', input: typed.input }])
-      expect((await s.cells('S', 'A1')).A1).toMatchObject({ value: 5, note: { author: 'Ann', text: 'From the CRM' }, link: { url: 'https://example.com/' } })
+      expect((await s.getCells('S', 'A1')).A1).toMatchObject({ value: 5, note: { author: 'Ann', text: 'From the CRM' }, link: { url: 'https://example.com/' } })
       await s.close()
     })
   })

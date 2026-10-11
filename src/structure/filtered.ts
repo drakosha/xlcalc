@@ -5,7 +5,7 @@
  * as into a target alone. A selection of hidden rows only is taken whole. Every hidden row of a filtered sheet
  * counts, whatever hid it.
  */
-import type { BookInput, CellRef, RestructureResult } from '../contract.js'
+import type { BookInput, CellRef, StructureResult } from '../contract.js'
 import { hiddenRows } from '../layout/hidden.js'
 import { say } from '../locale/messages.js'
 import { formatAddress } from '../model.js'
@@ -38,7 +38,7 @@ function runs(rows: number[]): [number, number][] {
 }
 
 /** Applies the steps in turn, each to the book the last one gave; mapCell follows them all. */
-function chain(book: BookInput, steps: ((b: BookInput) => RestructureResult)[]): RestructureResult {
+function chain(book: BookInput, steps: ((b: BookInput) => StructureResult)[]): StructureResult {
   let out = book
   const maps: ((ref: CellRef) => CellRef | null)[] = []
   for (const step of steps) {
@@ -51,13 +51,13 @@ function chain(book: BookInput, steps: ((b: BookInput) => RestructureResult)[]):
 }
 
 /** `n` rows inserted before `at` (zero-based) on `sheet`: on a filtered sheet as many as are visible among them. */
-export function insertRows(book: BookInput, sheet: string, at: number, n: number): RestructureResult {
+export function insertRows(book: BookInput, sheet: string, at: number, n: number): StructureResult {
   const visible = visibleRows(book, sheet, at, at + n - 1)
   return shift(book, sheet, 'r', at, visible?.length || n)
 }
 
 /** Rows `at` … `at + n - 1` deleted from `sheet`: on a filtered sheet the visible ones, each run of them from the bottom up. */
-export function deleteRows(book: BookInput, sheet: string, at: number, n: number): RestructureResult {
+export function deleteRows(book: BookInput, sheet: string, at: number, n: number): StructureResult {
   const visible = visibleRows(book, sheet, at, at + n - 1)
   if (!visible?.length) return shift(book, sheet, 'r', at, -n)
   return chain(book, runs(visible).reverse().map(([lo, hi]) => (b: BookInput) => shift(b, sheet, 'r', lo, lo - hi - 1)))
@@ -69,7 +69,7 @@ export function deleteRows(book: BookInput, sheet: string, at: number, n: number
  * the copy in each run of its visible rows, as a target alone; a copy that left rows out cannot be pasted over
  * several runs (Excel refuses a selection of several areas pasted onto several areas).
  */
-export function copyRows(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, values: ValuesIn): RestructureResult {
+export function copyRows(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, values: ValuesIn): StructureResult {
   const clip = clipped(book, from, src, values)
   const [source, at, rect] = clip ? [clip.book, CLIP, clip.src] : [book, from, src]
   const one = target.r1 === target.r2 && target.c1 === target.c2

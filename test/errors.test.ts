@@ -1,12 +1,13 @@
-/** Errors as values: the code in the cell, the reason in `issues`; an invalid formula does not break the computation. */
+/** Errors as values: the code in the cell, the reason in `diagnostics`; an invalid formula does not break the computation. */
 import { describe, expect, it } from 'vitest'
 import { compute, type BookInput, type CellInput } from '../src/index.js'
+import { cellIssues } from './diagnostics.js'
 
 const clock = { now: '2026-10-04T12:00:00Z', seed: 1 }
 function run(cells: Record<string, CellInput>, extra: BookInput['sheets'] = []) {
   const r = compute({ sheets: [{ name: 'S', cells }, ...extra] }, { clock })
   const v = (a: string) => r.sheets[0].cells[a].value
-  const issue = (a: string) => r.issues.find((i) => i.sheet === 'S' && i.cell === a)
+  const issue = (a: string) => cellIssues(r).find((i) => i.sheet === 'S' && i.cell === a)
   return { r, v, issue }
 }
 
@@ -56,7 +57,7 @@ describe('errors', () => {
     expect(issue('A2')!.check).toBe('empty')
     expect(v('A3')).toEqual({ error: 'ERROR' })
     expect(v('A4')).toBe(4)
-    expect(r.issues.map((i) => i.cell)).toEqual(['A1', 'A2', 'A3'])
+    expect(cellIssues(r).map((i) => i.cell)).toEqual(['A1', 'A2', 'A3'])
   })
 
   it('external functions: the value comes from externals, a missing value is #N/A', () => {

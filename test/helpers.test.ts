@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { CellValue, ErrorCode, Scalar } from '../src/contract.js'
-import { canonValue, compute, displayValue, errorText, InputError, restructure, sameValue, validateSheetName } from '../src/index.js'
+import { canonValue, compute, displayValue, errorText, InputError, editStructure, sameValue, validateSheetName } from '../src/index.js'
 import './locales.js'
 
 describe('validateSheetName', () => {
@@ -26,7 +26,7 @@ describe('validateSheetName', () => {
   it('gives the message renameSheet refuses with, and the book check throws', () => {
     const book = { locale: 'ru-RU', sheets: [{ name: 'S', cells: {} }] }
     for (const name of ['', 'x'.repeat(40), 'a[b]', "'x'", 'history']) {
-      const r = restructure(book, { op: 'renameSheet', sheet: 'S', name })
+      const r = editStructure(book, { op: 'renameSheet', sheet: 'S', name })
       const v = validateSheetName(name, { locale: 'ru-RU' })
       expect(!r.ok && !v.ok && r.message === v.message, name).toBe(true)
       expect(() => compute({ sheets: [{ name, cells: {} }] }), name).toThrow(InputError)

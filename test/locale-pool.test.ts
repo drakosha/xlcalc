@@ -7,7 +7,7 @@
  * ru-RU is loaded a pool refuses a ru-RU book as the same thread does. The file does not import `locales.ts`.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, registerLocale, type BookInput, type Calc } from '../src/index.js'
+import { compute, InputError, createSession, registerLocale, type BookInput, type Calc } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
 import { sentLocale } from '../src/worker/protocol.js'
 import { inside, pool } from './fixtures/pool.js'
@@ -27,16 +27,16 @@ afterAll(() => Promise.all(open.map((p) => p.close())))
 
 /** What a synchronous session answers: its values, its explanation, a window's formula in the locale and its refusal of deleting the last sheet. */
 function sync(b: BookInput, execution: 'closures' | 'eval') {
-  const s = openSession(b, { clock, execution })
+  const s = createSession(b, { clock, execution })
   const local = s.getViewport('S', 'A1:A3', { formulaLocal: true }).cells.A1.formulaLocal
-  return { hash: s.result().hash, explain: s.explain('S', 'A1').text, local, refusal: s.restructure({ op: 'deleteSheet', sheet: 'S' }) }
+  return { hash: s.getResult().hash, explain: s.explain('S', 'A1').text, local, refusal: s.editStructure({ op: 'deleteSheet', sheet: 'S' }) }
 }
 
 /** The same of a session in a pool. */
 async function threaded(calc: Calc, b: BookInput, execution: 'closures' | 'eval') {
-  const s = await calc.openSession(b, { clock, execution })
+  const s = await calc.createSession(b, { clock, execution })
   const local = (await s.getViewport('S', 'A1:A3', { formulaLocal: true })).cells.A1.formulaLocal
-  return { hash: (await s.result()).hash, explain: (await s.explain('S', 'A1')).text, local, refusal: await s.restructure({ op: 'deleteSheet', sheet: 'S' }) }
+  return { hash: (await s.getResult()).hash, explain: (await s.explain('S', 'A1')).text, local, refusal: await s.editStructure({ op: 'deleteSheet', sheet: 'S' }) }
 }
 
 describe('locales in a pool', () => {
@@ -52,7 +52,7 @@ describe('locales in a pool', () => {
     const e = await calc.compute(book('ru-RU'), { clock }).catch((x: unknown) => x)
     expect(e).toBeInstanceOf(InputError)
     expect((e as InputError).message).toBe(HINT)
-    await expect(calc.openSession(book('ru-RU'), { clock })).rejects.toThrow(HINT)
+    await expect(calc.createSession(book('ru-RU'), { clock })).rejects.toThrow(HINT)
   })
 
   describe.each(['closures', 'eval'] as const)('execution %s', (execution) => {
@@ -71,7 +71,7 @@ describe('locales in a pool', () => {
       expect(await threaded(calc, book('ru-RU'), execution)).toEqual(sync(book('ru-RU'), execution))
       const { calc: lost, crash } = await inside({ threads: 1 })
       open.push(lost)
-      const s = await lost.openSession(book('ru-RU'), { clock, execution })
+      const s = await lost.createSession(book('ru-RU'), { clock, execution })
       crash(0)
       expect((await s.explain('S', 'A1')).text).toBe(sync(book('ru-RU'), execution).explain)
       expect((await lost.compute(book('ru-RU'), { clock, execution })).hash).toBe(compute(book('ru-RU'), { clock, execution }).hash)

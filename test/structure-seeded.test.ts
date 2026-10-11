@@ -6,7 +6,7 @@
  * was overwritten); a copy copied back restores the source.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, restructure, type BookInput, type CellValue, type StructureOp } from '../src/index.js'
+import { compute, editStructure, type BookInput, type CellValue, type StructureOp } from '../src/index.js'
 import { indexToCol, parseAddress } from '../src/model.js'
 import { decode } from '../src/structure/area.js'
 import { parse, walk } from '../src/syntax.js'
@@ -31,7 +31,7 @@ function tied(formula: string): boolean {
 const values = (b: BookInput) => new Map(compute(b, { clock }).sheets.map((s) => [s.name, new Map(Object.entries(s.cells).map(([a, c]) => [a, c.value]))]))
 
 function apply(b: BookInput, op: StructureOp) {
-  const r = restructure(b, op)
+  const r = editStructure(b, op)
   if (!r.ok) throw new Error(r.message)
   return r
 }

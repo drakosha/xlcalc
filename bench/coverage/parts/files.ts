@@ -5,7 +5,7 @@
  * saved file must read back as Excel read it. Predicted before Excel ran it (`files.predicted.json`).
  */
 import type { BookInput, CellInput } from '../../../src/contract.js'
-import { restructure } from '../../../src/index.js'
+import { editStructure } from '../../../src/index.js'
 import type { PartsCase, PartsCases } from './cases.js'
 
 /** Notes with an author, without one, of several lines and Cyrillic; links outside the book, into it, both, with tooltips; frozen panes of each kind. */
@@ -52,8 +52,8 @@ function manyNotes(): BookInput {
   return { sheets: [{ name: 'S', cells }, { name: 'T', cells: { A1: { note: { text: 'a' } }, B2: { note: { text: 'b' } }, C3: { note: { text: 'c' } } } }] }
 }
 
-const after = (book: BookInput, op: Parameters<typeof restructure>[1]): BookInput => {
-  const r = restructure(book, op)
+const after = (book: BookInput, op: Parameters<typeof editStructure>[1]): BookInput => {
+  const r = editStructure(book, op)
   if (!r.ok) throw new Error(`files: ${r.message}`)
   return r.book
 }

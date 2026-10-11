@@ -1,13 +1,13 @@
 /**
  * Seeded random sessions against full computations: after each edit or structure operation the session's hash is the
- * hash of `compute(session.book())` with the same clock. The books and edits (`session-fuzz.ts`) aim at the range
+ * hash of `compute(session.getBook())` with the same clock. The books and edits (`session-fuzz.ts`) aim at the range
  * caches: a data sheet of one column read through rectangles wider than it and whole columns, written past its edge,
  * then read again through its cached ranges; spills that appear and are blocked; rows inserted and deleted; cells
  * replaced, cleared, formatted over ranges and typed into. Undoing every step gives the book opened. Once under the
  * default budget, where cached ranges live through the edits, and once under one that drops them at each step.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, InputError, openSession, type Execution, type Session } from '../src/index.js'
+import { compute, InputError, createSession, type Execution, type Session } from '../src/index.js'
 import * as rangeCache from '../src/range-cache.js'
 import { differences, fuzz, lookEdits, patches, type LookEdit } from './session-fuzz.js'
 import { extentOf } from './sheet-extent.js'
@@ -52,7 +52,7 @@ function run(seed: number, execution: Execution, around: <T>(f: () => T) => T = 
   const { book, step } = fuzz(seed)
   const patch = patches(seed)
   const look = lookEdits(seed)
-  const s = around(() => openSession(book, { ...opts, undo: { depth: 10_000, maxMb: 1024 } }))
+  const s = around(() => createSession(book, { ...opts, undo: { depth: 10_000, maxMb: 1024 } }))
   // absent before patches and extents (0.12.0), and before the calls that keep a look (EditResult): the calibration on older code runs the steps alone
   const looks = 'patchCells' in s
   const kept = 'replaceCells' in s
@@ -60,26 +60,26 @@ function run(seed: number, execution: Execution, around: <T>(f: () => T) => T = 
     for (let k = 0; k <= STEPS; k++) {
       const st = k ? step() : undefined
       if (st && 'op' in st) {
-        if (!around(() => s.restructure(st.op)).ok) continue
+        if (!around(() => s.editStructure(st.op)).ok) continue
       } else if (st) around(() => s.setCells(st.edits))
       const p = looks && k ? patch() : []
       // a patch lists the cells whose own number format it changed, and no value
       if (p.length) expect(around(() => (kept ? s.patchCells(p).changes.filter((c) => !('numberFormat' in c)) : (s as Session).patchCells(p)))).toEqual([])
       const e = kept && k ? look() : undefined
       if (e) around(() => lookEdit(s, e))
-      const hash = around(() => s.hash())
-      const full = compute(s.book(), opts)
+      const hash = around(() => s.getHash())
+      const full = compute(s.getBook(), opts)
       const at = `seed ${seed}, step ${k}: ${JSON.stringify(st ?? 'open')}, patches ${JSON.stringify(p)}, then ${JSON.stringify(e)}`
-      if (looks) for (const sheet of full.sheets) expect(around(() => s.extent(sheet.name)), `${at}: ${sheet.name}`).toEqual(extentOf(full, s.book(), sheet.name))
+      if (looks) for (const sheet of full.sheets) expect(around(() => s.getUsedRange(sheet.name)), `${at}: ${sheet.name}`).toEqual(extentOf(full, s.getBook(), sheet.name))
       if (hash === full.hash) continue
-      expect(around(() => differences(s.result(), full)), at).toEqual([])
+      expect(around(() => differences(s.getResult(), full)), at).toEqual([])
       expect(hash, at).toBe(full.hash)
     }
     if (kept) {
       // every step undone: the book opened, and its hash
       while (around(() => s.undo()));
-      expect(s.book(), `seed ${seed}: every step undone`).toEqual(fuzz(seed).book)
-      expect(around(() => s.hash())).toBe(compute(fuzz(seed).book, opts).hash)
+      expect(s.getBook(), `seed ${seed}: every step undone`).toEqual(fuzz(seed).book)
+      expect(around(() => s.getHash())).toBe(compute(fuzz(seed).book, opts).hash)
     }
   } finally {
     s.close()

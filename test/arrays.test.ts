@@ -4,8 +4,9 @@
  * that are arrays in a session, array constants in the canonical form.
  */
 import { describe, expect, it } from 'vitest'
-import { compute, debugGeneratedCode, openSession, restructure, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
+import { compute, debugGeneratedCode, createSession, editStructure, validateFormula, validateLocalFormula, type CellInput, type CellValue } from '../src/index.js'
 import { ruRU } from './locales.js'
+import { cellIssues } from './diagnostics.js'
 
 const clock = { now: '2026-10-06T12:00:00Z', seed: 1 }
 
@@ -37,15 +38,15 @@ describe('arrays beyond the Excel cases', () => {
   })
 
   it('a session moves a cell between one value and an array as its data change', () => {
-    const s = openSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 5 }, B2: { value: 6 }, C1: { formula: 'INDEX(B1:B2,A1)' }, C2: { formula: 'C1*2' } } }] }, { clock, display: false })
+    const s = createSession({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, B1: { value: 5 }, B2: { value: 6 }, C1: { formula: 'INDEX(B1:B2,A1)' }, C2: { formula: 'C1*2' } } }] }, { clock, display: false })
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 0 } }]).changes).toEqual([
       { sheet: 'S', cell: 'A1', value: 0 },
       { sheet: 'S', cell: 'C1', value: { error: 'SPILL' } },
       { sheet: 'S', cell: 'C2', value: { error: 'SPILL' } },
     ])
-    expect(s.result().issues.find((i) => i.cell === 'C1')).toMatchObject({ error: 'SPILL', reason: "the array of 2×1 values cannot spill: 'S'!C2 is not empty" })
+    expect(cellIssues(s.getResult()).find((i) => i.cell === 'C1')).toMatchObject({ error: 'SPILL', reason: "the array of 2×1 values cannot spill: 'S'!C2 is not empty" })
     expect(s.setCells([{ sheet: 'S', cell: 'A1', input: { value: 2 } }]).changes.map((c) => [c.cell, c.value])).toEqual([['A1', 2], ['C1', 6], ['C2', 12]])
-    expect(s.result().issues).toEqual([])
+    expect(cellIssues(s.getResult())).toEqual([])
   })
 
   it('array constants: the canonical form, names and validation', () => {
@@ -56,7 +57,7 @@ describe('arrays beyond the Excel cases', () => {
     const r = compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SUM(x*{1;2})' }, B1: { value: 3 }, B2: { value: 4 } } }], names: [{ name: 'x', ref: "'S'!$B$1:$B$2" }] }, { clock })
     expect(r.sheets[0].cells.A1.value).toBe(11)
     // a formula with a constant parses, so a structure operation moves its references
-    const moved = restructure({ sheets: [{ name: 'S', cells: { B1: { formula: 'SUM(A1:A2*{1;2})' } } }] }, { op: 'insertRows', sheet: 'S', row: 1 })
+    const moved = editStructure({ sheets: [{ name: 'S', cells: { B1: { formula: 'SUM(A1:A2*{1;2})' } } }] }, { op: 'insertRows', sheet: 'S', row: 1 })
     expect(moved.ok && moved.book.sheets[0].cells.B2).toEqual({ formula: 'SUM(A2:A3*{1;2})' })
   })
 })

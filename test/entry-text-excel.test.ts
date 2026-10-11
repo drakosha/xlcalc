@@ -50,7 +50,10 @@ const RUNS: Run[] = (['Mac', 'Windows'] as const).flatMap((excel) =>
   }),
 )
 
-/** The text a cell opens with by `entryText`, for a cell that holds a value (a formula has its own text). */
+/**
+ * The text a cell opens with by `entryText`, for a cell that holds a value (a formula has its own text). A stored cell
+ * names its number format `format`, as the engine's input did when it was stored.
+ */
 function opened(cell: CellInput | null, tag: string, date: string): string | null {
   if (!cell || cell.value === undefined || cell.formula !== undefined) return null
   return entryText(cell.value as string | number | boolean, { locale: tag, now: date, ...(cell.format !== undefined ? { numberFormat: cell.format } : {}) })
@@ -97,7 +100,7 @@ for (const run of RUNS) {
       for (const c of cases) {
         const { cell } = stored.answers[c.id]
         if (cell!.value === 0 && datedOrPercent(cell!, tag, date)) continue
-        const r = parseEntry(opened(cell, tag, date)!, { locale: tag, now: date, ...(typeof cell!.value === 'string' && cell!.format !== undefined ? { cell: { format: cell!.format } } : {}) })
+        const r = parseEntry(opened(cell, tag, date)!, { locale: tag, now: date, ...(typeof cell!.value === 'string' && cell!.format !== undefined ? { cell: { numberFormat: cell!.format } } : {}) })
         const back = r.ok ? r.input?.value : undefined
         // numbers to the 15 digits the value keeps (`0.333333333333333`)
         expect(typeof back === 'number' && typeof cell!.value === 'number' ? sameValue(back, cell!.value) : back === cell!.value, `${c.id}: ${JSON.stringify(back)}`).toBe(true)

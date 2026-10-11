@@ -85,7 +85,7 @@ describe('xlsx filters: hidden lines and the filter mode written and read back',
   })
 
   it('hidden rows and columns keep their sizes and looks', async () => {
-    const book = sheet({ rows: { 3: { hidden: true }, 5: { height: 30, hidden: true, format: '0.0' }, 9: { hidden: true } }, columns: { C: { width: 12, hidden: true }, 'E:F': { hidden: true, style: 0 } } })
+    const book = sheet({ rows: { 3: { hidden: true }, 5: { height: 30, hidden: true, numberFormat: '0.0' }, 9: { hidden: true } }, columns: { C: { width: 12, hidden: true }, 'E:F': { hidden: true, style: 0 } } })
     book.styles = [{ fill: { color: '#FFFF00' } }]
     const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
     expect(issues).toEqual([])

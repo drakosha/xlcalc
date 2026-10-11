@@ -1,5 +1,5 @@
 /**
- * `copyFormula(text, from, to, book?)`: the text of a copied formula. Against `restructure`'s `copyRange` on every copy
+ * `copyFormula(text, from, to, book?)`: the text of a copied formula. Against `editStructure`'s `copyRange` on every copy
  * of the structure sets and of the table sets: each formula of the source, at each place the copy pastes it, is the
  * text `copyFormula` gives (but where `copyRange` does what one formula cannot: rows a filter hid, part of an
  * old-kind array, a table copied whole with its references to the copy, a formula pasted on a table's header, which
@@ -10,7 +10,7 @@ import { buildTableCases as moreTables } from '../bench/coverage/tables/more.js'
 import { buildTableCases as heldTables } from '../bench/coverage/tables/ops-held.js'
 import { buildTableCases as opsTables } from '../bench/coverage/tables/ops.js'
 import type { TableCase } from '../bench/coverage/tables/cases.js'
-import { copyFormula, InputError, openSession, restructure, type BookInput, type StructureOp } from '../src/index.js'
+import { copyFormula, InputError, createSession, editStructure, type BookInput, type StructureOp } from '../src/index.js'
 import { hiddenRows } from '../src/layout/hidden.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { parseRange } from '../src/structure/area.js'
@@ -22,7 +22,7 @@ type Copy = Extract<StructureOp, { op: 'copyRange' }>
 
 /** The cells a copy compares, each source formula at each place it lands: [source, target, formula there]. */
 function compared(book: BookInput, op: Copy): [string, string, string, string][] | null {
-  const r = restructure(book, op)
+  const r = editStructure(book, op)
   if (!r.ok) return null
   const sheet = (b: BookInput, name: string) => b.sheets.find((s) => sheetKey(s.name) === sheetKey(name))!
   const from = sheet(book, op.from.sheet)
@@ -76,11 +76,11 @@ describe('copyFormula against copyRange', () => {
     let n = 0
     const cases: TableCase[] = [...opsTables(), ...moreTables(), ...heldTables()]
     for (const c of cases) {
-      const s = openSession(c.book)
+      const s = createSession(c.book)
       for (const step of c.steps ?? []) {
         if ('op' in step) {
-          if (step.op.op === 'copyRange') n += check(c.id, s.book(), step.op)
-          s.restructure(step.op)
+          if (step.op.op === 'copyRange') n += check(c.id, s.getBook(), step.op)
+          s.editStructure(step.op)
         } else if ('edit' in step) {
           const v = step.edit.value
           if (v !== null && typeof v === 'object' && 'local' in v) break
@@ -132,6 +132,6 @@ describe('copyFormula', () => {
 
 /** What copyRange pastes in `to` from `from` on sheet S. */
 function copyRangeAt(book: BookInput, from: string, to: string): string | undefined {
-  const r = restructure(book, { op: 'copyRange', from: { sheet: 'S', range: from }, to: { sheet: 'S', range: to } })
+  const r = editStructure(book, { op: 'copyRange', from: { sheet: 'S', range: from }, to: { sheet: 'S', range: to } })
   return r.ok ? r.book.sheets[0].cells[to]?.formula : undefined
 }

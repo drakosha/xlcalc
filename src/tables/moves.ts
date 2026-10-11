@@ -4,7 +4,7 @@
  * pasted outside reads `Sales[@Qty]`). A paste over a table's header cells renames their columns to what lands there,
  * the text of a value or of a formula's value; header cells cut away leave their columns named `Column1` and so on.
  */
-import type { BookInput, CellInput, RestructureResult, SheetInput, TableInput } from '../contract.js'
+import type { BookInput, CellInput, StructureResult, SheetInput, TableInput } from '../contract.js'
 import { createState } from '../engine.js'
 import { currentClock } from '../env.js'
 import { spend } from '../exec/budget.js'
@@ -115,14 +115,14 @@ export function moveTables(book: BookInput, from: string, src: Rect, to: string,
  * references to the table taken to the new one; the other pasted formulas that leave their source's table name it, and header cells pasted over rename their
  * columns.
  */
-export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: RestructureResult): RestructureResult } {
+export function copyTables(book: BookInput, from: string, src: Rect, to: string, target: Rect): { after(r: StructureResult): StructureResult } {
   const tables = tablesOf(book)
   const [fs, ts] = [book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(from)), book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(to))]
   const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
   // the tiles of the paste and the area they cover, as copyRange lays them (the set `paste-names-held`: one copy at the
   // top-left cell of a target that is no multiple of the source, the target's other cells left as they were)
   const { offsets, area: pasted } = tiles(src, target)
-  const renamed = (r: RestructureResult): RestructureResult => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
+  const renamed = (r: StructureResult): StructureResult => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
   if (!tables.list.some((t) => t.s === fs && meets(t, src))) return { after: renamed }
   // the tables copied whole onto each tile
   const whole = tables.list.filter((t) => t.s === fs && contains(src, t))

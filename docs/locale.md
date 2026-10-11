@@ -97,14 +97,14 @@ A person working in a book's locale reads the engine's messages in its language:
 | `parseEntry('=СУММ(1', { locale: 'ru-RU' })` | `Ожидалась ), а формула закончилась` |
 | `parseEntry('=ОКРУГЛ(1;2;3)', { locale: 'ru-RU' })` | `Функция ОКРУГЛ принимает 2 аргумента, а указано 3` |
 | `validateLocalFormula('=СУММ(1.5)', ruRU)` | `Здесь не может стоять «.»` |
-| `restructure` deleting rows through an old-kind array | `Нельзя изменить часть массива S!C1 (C1:C3)` |
-| `restructure` renaming a sheet to a name taken | `Лист «Итоги» уже есть (имена листов не различают регистр)` |
+| `editStructure` deleting rows through an old-kind array | `Нельзя изменить часть массива S!C1 (C1:C3)` |
+| `editStructure` renaming a sheet to a name taken | `Лист «Итоги» уже есть (имена листов не различают регистр)` |
 | `explain` | `'План'!B2 = 480  ← ОКРУГЛ(B1*1,2;0)` |
 
 ### Which locale
 
 - `parseEntry` writes in `opts.locale`, and `toLocal`, `toInvariant` and `validateLocalFormula` in the locale they are given. A locale object speaks by its own `messages`; without them, as the loaded locale of its tag, and in English for another tag.
-- `restructure`, and a session's `restructure` alike in the same thread, in a thread of the pool or synchronously, write in the book's `locale`.
+- `editStructure`, and a session's `editStructure` alike in the same thread, in a thread of the pool or synchronously, write in the book's `locale`.
 - `explain`'s `text` is written in the book's locale: its words (`(2 ячейки)`, `перенос из`, `(ошибка из 'План'!A2)`), numbers with the locale's decimal separator, formulas as `toLocal` shows them, booleans in the locale's words (`ИСТИНА`), errors as the book's cells show them (`#Н/Д`), and an empty cell as `пусто`. The tree's `ref`, `value`, `formula` and `origin` stay as the book stores them, for programs.
 
 Codes (`code`) and positions (`at`) are the same in every language, so a host that chose its own words by the code may go on doing so, or show `message` as it is.
@@ -112,7 +112,7 @@ Codes (`code`) and positions (`at`) are the same in every language, so a host th
 ### What stays in English
 
 - `validateFormula`, which has no locale, and every message of an en-US book or call.
-- The reasons of cell errors (`issues[].reason`), the issues of names and `validateName`'s message.
+- The reasons of cell errors and the issues of names (`diagnostics[].reason`) and `validateName`'s message.
 - `InputError`, a program's mistake rather than a person's.
 
 ### How the Russian is written
@@ -284,6 +284,6 @@ A new locale needs the same: the measurement and the sets computed in its Excel,
 
 `test/locale-excel.test.ts` checks that both translations reproduce Excel's own text of all 6,381 formulas in ru-RU, and `test/locale-roundtrip.test.ts` that 15,266 formulas of the case sets come back unchanged from every locale.
 
-`test/locale-modules.test.ts` loads nothing until its last part: a ru-RU book is the `InputError` that names the module in `compute`, a session, `restructure`, `fitColumns`, the same thread and `writeXlsx`, and so is the tag in every function that takes a locale; `ruRU` as an object gives these functions their answers without loading; an en-US book gives Excel's `Январь` for `[$-419]mmmm` and Excel for Mac's widths of Cyrillic letters; `readXlsx` keeps a file's ru-RU; once loaded, a ru-RU book computes as before in a session and in the same thread, with closures and eval; `registerLocale` refuses another object with a loaded tag, en-US, and a locale without rules or with wrong messages; the files of `src/locales/`, `PACKAGE_LOCALES`, `LOCALE_MODULES` and the subpaths agree. `test/locale-args.test.ts` gives every function with a locale the tag and the object and gets the same answer, and `test/locale-pool.test.ts` checks the threads of a pool. `test/bundle-size.test.ts` bundles `compute` alone with esbuild: 253 KB minified, with en-US alone of the locales, under its budget of 300 KB.
+`test/locale-modules.test.ts` loads nothing until its last part: a ru-RU book is the `InputError` that names the module in `compute`, a session, `editStructure`, `fitColumns`, the same thread and `writeXlsx`, and so is the tag in every function that takes a locale; `ruRU` as an object gives these functions their answers without loading; an en-US book gives Excel's `Январь` for `[$-419]mmmm` and Excel for Mac's widths of Cyrillic letters; `readXlsx` keeps a file's ru-RU; once loaded, a ru-RU book computes as before in a session and in the same thread, with closures and eval; `registerLocale` refuses another object with a loaded tag, en-US, and a locale without rules or with wrong messages; the files of `src/locales/`, `PACKAGE_LOCALES`, `LOCALE_MODULES` and the subpaths agree. `test/locale-args.test.ts` gives every function with a locale the tag and the object and gets the same answer, and `test/locale-pool.test.ts` checks the threads of a pool. `test/bundle-size.test.ts` bundles `compute` alone with esbuild: 253 KB minified, with en-US alone of the locales, under its budget of 300 KB.
 
 Excel for Mac and Excel for Windows (16.0.20430) compute ru-RU alike but for their regional data. Where those part, the engine follows Windows: the order of text, month names, the times of built-in formats, `CHAR` and `CODE`. It keeps the Mac's long date `[$-F800]` (`пятница, 31 января 2025 г.`; Windows's has no weekday). Formula text in ru-RU (array constants and the like) was not compared with Windows.

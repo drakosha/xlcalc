@@ -7,7 +7,7 @@
 import { writeFileSync } from 'node:fs'
 import type { StructSet } from './cases.js'
 import { LOOK } from '../struct.js'
-import { restructure } from '../../../src/index.js'
+import { editStructure } from '../../../src/index.js'
 import { lookOf } from '../../../test/structure-excel.js'
 
 const set = process.argv[2]
@@ -16,7 +16,7 @@ const { books, cases, look = [] } = ((await import(`./${set}.js`)) as StructSet)
 const rects = [LOOK, ...look].join(',')
 const out: Record<string, unknown> = {}
 for (const c of cases) {
-  const r = restructure(books[c.book], c.op)
+  const r = editStructure(books[c.book], c.op)
   out[c.id] = r.ok ? { sheets: Object.fromEntries(r.book.sheets.map((s) => [s.name, { look: lookOf(r.book, s, rects), cells: Object.fromEntries(Object.entries(s.cells).map(([a, x]) => [a, x.formula !== undefined ? `=${x.formula}` : String(x.value)])) }])) } : { refused: r.code }
 }
 writeFileSync(new URL(`./${set}.predicted.json`, import.meta.url), JSON.stringify(out, null, 1) + '\n')

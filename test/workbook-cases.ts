@@ -7,7 +7,7 @@ import type { Val } from '../bench/coverage/formulajs.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { FileParts } from '../bench/coverage/case-book.js'
 import type { Step, WorkbookAnswer, WorkbookCase } from '../bench/coverage/workbook/cases.js'
-import { openSession, type BookInput, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
+import { createSession, type BookInput, type ComputeResult, type Session, type SheetInput } from '../src/index.js'
 import { patchLines, parseSpan } from '../src/layout/spans.js'
 import { formatAddress, parseAddress } from '../src/model.js'
 import { shownValue } from './spill-shown.js'
@@ -34,7 +34,7 @@ export function bookOf(c: WorkbookCase): BookInput {
 /** Excel's autofilter as a host applies it: the rows of `range` below its header shown where `field` is `criterion`, else hidden; the sheet filtered. */
 function filterRows(session: Session, sheet: string, range: string, field: number, criterion: string) {
   const [a, b] = range.split(':').map(parseAddress)
-  const cells = session.book().sheets.find((s) => s.name === sheet)!.cells
+  const cells = session.getBook().sheets.find((s) => s.name === sheet)!.cells
   const rows = []
   for (let r = a.row + 1; r <= b.row; r++) rows.push({ sheet, rows: String(r + 1), set: { hidden: String(cells[formatAddress(r, a.col + field - 1)]?.value ?? '') !== criterion } })
   session.setLayout([{ sheet, filtered: true }, ...rows])
@@ -42,7 +42,7 @@ function filterRows(session: Session, sheet: string, range: string, field: numbe
 
 /** A step in the session; `read` takes the result. */
 function apply(session: Session, s: Step, reads: ComputeResult[]) {
-  if (s === 'read') reads.push(session.result())
+  if (s === 'read') reads.push(session.getResult())
   else if (s === 'full' || s === 'calc') return
   else if ('set' in s) session.setCells([{ sheet: s.set.sheet, cell: s.set.cell, input: s.set.value === null ? null : { value: s.set.value } }])
   else if ('formula' in s) session.setCells([{ sheet: s.formula.sheet, cell: s.formula.cell, input: { formula: s.formula.formula } }])
@@ -54,7 +54,7 @@ function apply(session: Session, s: Step, reads: ComputeResult[]) {
 
 /** The engine's result at each `read` step of the case. */
 export function engineReads(c: WorkbookCase): ComputeResult[] {
-  const session = openSession(bookOf(c), { clock: CLOCK })
+  const session = createSession(bookOf(c), { clock: CLOCK })
   const reads: ComputeResult[] = []
   for (const s of c.steps ?? ['full', 'read']) apply(session, s, reads)
   session.close()

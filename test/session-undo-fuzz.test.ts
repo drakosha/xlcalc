@@ -7,7 +7,7 @@
  * and in a thread, with closures and eval.
  */
 import { afterAll, describe, expect, it } from 'vitest'
-import { compute, createInlineCalc, InputError, openSession, type BookInput, type Calc, type CellChange, type CellRef, type ComputeResult, type Execution, type SessionHistory, type SessionOptions, type UndoResult } from '../src/index.js'
+import { compute, createInlineCalc, InputError, createSession, type BookInput, type Calc, type CellChange, type CellRef, type ComputeResult, type Execution, type SessionHistory, type SessionOptions, type UndoResult } from '../src/index.js'
 import { inside, pool } from './fixtures/pool.js'
 import { undoBook, undoMoves, type Change } from './undo-fuzz.js'
 
@@ -19,9 +19,9 @@ export interface Undoable {
   history: SessionHistory
   undo(): Promise<UndoResult | null> | UndoResult | null
   redo(): Promise<UndoResult | null> | UndoResult | null
-  book(): Promise<BookInput> | BookInput
-  hash(): Promise<string> | string
-  result(): Promise<ComputeResult> | ComputeResult
+  getBook(): Promise<BookInput> | BookInput
+  getHash(): Promise<string> | string
+  getResult(): Promise<ComputeResult> | ComputeResult
   close(): unknown
 }
 
@@ -31,7 +31,7 @@ type Answer = { ok?: boolean; changes?: CellChange[]; mapCell?: (ref: CellRef) =
 function call(s: Undoable, c: Change): Promise<Answer> | Answer {
   const x = s as unknown as Record<string, (a: unknown) => Promise<Answer> | Answer>
   if ('edits' in c) return x.setCells(c.edits)
-  if ('op' in c) return x.restructure(c.op)
+  if ('op' in c) return x.editStructure(c.op)
   if ('patches' in c) return x.patchCells(c.patches)
   if ('names' in c) return x.setNames(c.names)
   if ('styles' in c) return x.setStyles(c.styles)
@@ -82,7 +82,7 @@ export async function undoRun(seed: number, moves: number, open: (book: BookInpu
   const undone: Saved[] = []
   const s = await open(book, o)
   const next = undoMoves(seed)
-  let screen = screenOf(await s.result())
+  let screen = screenOf(await s.getResult())
   let steps = 0
   try {
     for (let k = 0; k < moves; k++) {
@@ -90,7 +90,7 @@ export async function undoRun(seed: number, moves: number, open: (book: BookInpu
       const m = next()
       const at = `seed ${seed}, move ${k}: ${JSON.stringify(m)}`
       if ('change' in m) {
-        const [before, history] = [JSON.stringify(await s.book()), s.history]
+        const [before, history] = [JSON.stringify(await s.getBook()), s.history]
         let r: Answer
         try {
           r = await call(s, m.change)
@@ -100,12 +100,12 @@ export async function undoRun(seed: number, moves: number, open: (book: BookInpu
         }
         if (r && 'ok' in r && !r.ok) {
           // refused: nothing changes
-          expect(JSON.stringify(await s.book()), at).toBe(before)
+          expect(JSON.stringify(await s.getBook()), at).toBe(before)
           expect(s.history, at).toEqual(history)
           continue
         }
         steps++
-        done.push(saved(await s.book()))
+        done.push(saved(await s.getBook()))
         if (done.length > depth + 1) done.shift()
         undone.length = 0
         screen = Array.isArray(r) ? moved(screen, r) : r ? moved(screen, r.changes!, r.mapCell) : screen
@@ -125,9 +125,9 @@ export async function undoRun(seed: number, moves: number, open: (book: BookInpu
       }
       const want = done[done.length - 1]
       expect(s.history, at).toEqual({ undo: done.length - 1, redo: undone.length })
-      expect(await s.book(), at).toEqual(want.book)
-      expect(await s.hash(), at).toBe(want.hash)
-      expect(screen, at).toEqual(screenOf(await s.result()))
+      expect(await s.getBook(), at).toEqual(want.book)
+      expect(await s.getHash(), at).toBe(want.hash)
+      expect(screen, at).toEqual(screenOf(await s.getResult()))
     }
   } finally {
     await s.close()
@@ -135,7 +135,7 @@ export async function undoRun(seed: number, moves: number, open: (book: BookInpu
   return steps
 }
 
-const sync = async (book: BookInput, o: SessionOptions) => openSession(book, o) as unknown as Undoable
+const sync = async (book: BookInput, o: SessionOptions) => createSession(book, o) as unknown as Undoable
 
 const calcs: Calc[] = []
 afterAll(() => Promise.all(calcs.map((c) => c.close())))
@@ -152,18 +152,18 @@ describe.each(['closures', 'eval'] as const)('undo and redo against the books of
   it('seed 8, in the same thread', async () => {
     const calc = createInlineCalc({ sliceMs: 1 })
     calcs.push(calc)
-    await undoRun(8, 60, (b, o) => calc.openSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution })
+    await undoRun(8, 60, (b, o) => calc.createSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution })
   })
 
   it('seed 9, in a thread', async () => {
     const calc = await pool({ threads: 1 })
     calcs.push(calc)
-    await undoRun(9, 60, (b, o) => calc.openSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution })
+    await undoRun(9, 60, (b, o) => calc.createSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution })
   }, 120_000)
 
   it('seed 10, in a thread lost now and then, its snapshots taken every 3 calls', async () => {
     const { calc, crash } = await inside({ threads: 1, snapshotEvery: 3 })
     calcs.push(calc)
-    await undoRun(10, 60, (b, o) => calc.openSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution }, (k) => k % 9 === 8 && crash(0))
+    await undoRun(10, 60, (b, o) => calc.createSession(b, o) as Promise<unknown> as Promise<Undoable>, { clock, execution }, (k) => k % 9 === 8 && crash(0))
   }, 120_000)
 })

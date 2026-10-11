@@ -4,7 +4,7 @@
  * is a whole multiple of the source's size is tiled with copies, any other is pasted once at its top-left
  * cell, as Excel's Range.Copy does. Empty source cells clear the cells they land on.
  */
-import type { BookInput, CellInput, CellRef, RestructureResult, TableInput } from '../contract.js'
+import type { BookInput, CellInput, CellRef, StructureResult, TableInput } from '../contract.js'
 import { spend } from '../exec/budget.js'
 import { checkAddress, checkString, InputError } from '../input.js'
 import { say } from '../locale/messages.js'
@@ -62,7 +62,7 @@ const withoutMeta = (cell: CellInput): CellInput => {
  * Copy `src` of sheet `from` to `target` of sheet `to`; the copies keep `meta` only `withMeta`. The source is read
  * from `source`, the book as it was copied (the clipboard), when pastes follow one another.
  */
-export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): RestructureResult {
+export function copyRange(book: BookInput, from: string, src: Rect, to: string, target: Rect, withMeta: boolean, source = book): StructureResult {
   const { offsets, area: pasted } = tiles(src, target)
   const [dr, dc] = offsets[0]
   if (src.r2 + dr >= LIMIT.r || src.c2 + dc >= LIMIT.c) return { ok: false, code: 'off_sheet', message: say(book.locale, { key: 'copyOffSheet', sheet: to, cell: formatAddress(target.r1, target.c1) }) }
