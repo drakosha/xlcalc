@@ -38,6 +38,7 @@ import { hiddenRows } from './layout/hidden.js'
 import { parseMerge } from './layout/merges.js'
 import { formatAddress, parseAddress } from './model.js'
 import { buildResult, cellsIn, clockSerial, spillFields, stateHash } from './result.js'
+import { formatCodeIn } from './locale/rules.js'
 import { cellLooks } from './shown.js'
 import { parseRange } from './structure/area.js'
 import { applyOp, checkedMapCell } from './structure/index.js'
@@ -145,15 +146,18 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const sheetIndex = (s: EngineState) => (name: string) => s.sheetIdx.get(sheetKey(name))
   const styleCount = (s: EngineState) => s.input.styles?.length ?? 0
-  /** The changes of cells `keys` as a host gets them, with the fields that changed of some. */
+  /** The changes of cells `keys` as a host gets them, with the fields that changed of some and a new format's code. */
   const changes = (s: EngineState, keys: string[], fields: Map<string, FieldChange>) => {
     // the statistics of conditional formats over changed cells are taken again
     dropStats(s, keys)
     const look = display ? cellLooks(s) : null
+    const code = formatCodeIn(s.input.locale)
     return keys.map((k) => {
       const [i, r, c] = k.split(':').map(Number)
       const value = cellValue(s, i, r, c)
-      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...fields.get(k) }
+      const f = fields.get(k)
+      const format = f?.numberFormat
+      return { sheet: s.sheetNames[i], cell: formatAddress(r, c), value, ...look?.(i, r, c, value), ...spillFields(s, i, r, c), ...f, ...(format !== undefined && format !== null ? { numberFormatCode: code(format) } : {}) }
     })
   }
   /** A call that changed the book answered: the revision one more, and what changed. */
