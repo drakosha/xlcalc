@@ -187,7 +187,7 @@ export interface SheetInput {
   frozen?: FrozenPanes
   /**
    * The sheet's conditional formats (Excel's conditional formatting rules) in priority order, the first one first. They
-   * do not change values: a session gives what they show in `CellView.look` (`docs/conditional-formats.md`).
+   * do not change values: a session gives what they show in `CellView.appearance` (`docs/conditional-formats.md`).
    */
   conditionalFormats?: ConditionalFormat[]
   /**
@@ -419,10 +419,10 @@ export interface IconSetFormat extends ConditionalBase {
 }
 
 /**
- * What a sheet's conditional formats give a cell (`CellView.look`), by the values the cells hold now. A field the cell
- * shows otherwise than by its own style and value is set.
+ * What a sheet's conditional formats give a cell (`CellView.appearance`), by the values the cells hold now. A field the
+ * cell shows otherwise than by its own style and value is set.
  */
-export interface ConditionalLook {
+export interface ConditionalAppearance {
   /** The styles of the rules that hold, merged in their order (the first rule's field wins); a colour scale's colour is `fill`. */
   style?: ConditionalStyle
   bar?: BarLook
@@ -430,6 +430,9 @@ export interface ConditionalLook {
   /** A data bar or an icon set hides the value: the cell shows its bar or icon alone. */
   hideValue?: true
 }
+
+/** @deprecated The name is `ConditionalAppearance`. */
+export type ConditionalLook = ConditionalAppearance
 
 /** A data bar in a cell: where it is drawn, as fractions of the cell's width from the side its direction starts at. */
 export interface BarLook {
@@ -891,10 +894,16 @@ export interface NameIssue {
   dropped: boolean
 }
 
+/**
+ * What a result reports about its book, by `kind`: a cell with an error and its reason (`cell`, a `CellIssue`), or a
+ * name the book left out or keeps with an error (`name`, a `NameIssue`).
+ */
+export type Diagnostic = ({ kind: 'cell' } & CellIssue) | ({ kind: 'name' } & NameIssue)
+
 export interface ComputeResult {
   sheets: { name: string; cells: Record<string, CellResult> }[]
-  issues: CellIssue[]
-  nameIssues: NameIssue[]
+  /** Every cell with an error, sheet by sheet in the book's order and row by row, then every name with a problem, in the order of the book's names. */
+  diagnostics: Diagnostic[]
   /** Cells that depend on volatile functions (directly or through other cells). */
   volatile: CellRef[]
   /** The clock the book was computed with (for a live session, the latest one). */
@@ -990,14 +999,14 @@ export interface CellReplace extends CellRef {
  */
 /**
  * A cell of `Session.getCells`: as `CellResult`, and the cell's own `style` (an index of the book's `styles`), `note` and
- * `link`, and the `look` its sheet's conditional formats give it (with a number format of theirs, `text` and `color`
- * show the value by it).
+ * `link`, and the `appearance` its sheet's conditional formats give it (with a number format of theirs, `text` and
+ * `color` show the value by it).
  */
 export interface CellView extends CellResult {
   style?: number
   note?: CellNote
   link?: CellLink
-  look?: ConditionalLook
+  appearance?: ConditionalAppearance
   /** On the top-left cell of an array formula of the old kind, its area (`CellInput.array`); `spill` is that area too. */
   array?: string
 }
@@ -1129,7 +1138,7 @@ export interface ViewportCell extends Partial<CellDisplay> {
   /** Where `numberFormat` comes from. */
   numberFormatSource?: 'cell' | 'row' | 'column'
   /** What the sheet's conditional formats give the cell by the current values; with a number format of theirs, `text` and `color` show the value by it. */
-  appearance?: ConditionalLook
+  appearance?: ConditionalAppearance
   note?: CellNote
   link?: CellLink
   /** With `diagnostics`, on a cell with an error: as `Session.getCellIssue`. */
@@ -1154,7 +1163,7 @@ export interface Viewport {
   range: string
   /** The window asked for held more than `maxCells` cells: `range` is the part given. */
   truncated: boolean
-  /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, a look of a conditional format, a note or a link too. */
+  /** By address, row by row: every cell with something to show, an empty one with its row's or column's style, an appearance of a conditional format, a note or a link too. */
   cells: Record<string, ViewportCell>
   /** The columns of `range`, left to right. */
   columns: ViewportColumn[]
@@ -1169,7 +1178,7 @@ export interface Viewport {
 }
 
 /**
- * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as `getResult().issues`
+ * Why a cell holds an error (`Session.getCellIssue`): its code, reason, check code and position as the result's `diagnostics`
  * gives them, and `origin`, the cell where the error began, following the cells its reason names (`from 'S'!A2`) to one
  * whose error is its own; in a cycle, the first cell of the cycle the way reaches.
  */
@@ -1568,10 +1577,10 @@ export interface Session {
    * The cells of a rectangle of a sheet (`B2:D9`, `B2`, whole columns `B:D`, whole rows `2:9`), or of several (a cell in
    * two of them is listed once), as `getResult()` gives them, by address: the same cells (spilled ones too, empty ones
    * left out) with the same fields, and each cell's own `style`, `note` and `link`, an old-kind array formula's `array`,
-   * and the `look` the sheet's conditional formats give it by the current values (an empty cell with a look is listed
+   * and the `appearance` the sheet's conditional formats give it by the current values (an empty cell with one is listed
    * with the value null). For a window over a sheet: it costs what the rectangles hold, not the book; the statistics of
    * a rule's cells (lowest, highest, percentiles) are kept until an edit changes them. Edits do not list cells whose
-   * conditional look changed: they give the rules' cells as `repaint`, for a host to read again where its window meets them.
+   * conditional appearance changed: they give the rules' cells as `repaint`, for a host to read again where its window meets them.
    */
   getCells(sheet: string, range: string | string[]): Record<string, CellView>
   /**
@@ -1799,7 +1808,7 @@ export interface FormulaEngine {
   validateFormula(text: string, ctx?: ValidateContext): ValidateResult
   /** Excel's rules for a name (`NameInput.name`) in a book of `opts.locale` (en-US without one; a locale's words for TRUE and FALSE are refused too, ИСТИНА and ЛОЖЬ in ru-RU). */
   validateName(name: string, opts?: NameOptions): NameCheck
-  /** The issues of a book's names, as `ComputeResult.nameIssues` gives them for a book with these sheets, tables and locale. */
+  /** The issues of a book's names, as `ComputeResult.diagnostics` of kind `name` give them for a book with these sheets, tables and locale. */
   validateNames(names: NameInput[], ctx: NamesContext): NameIssue[]
   createSession(book: BookInput, opts?: SessionOptions): Session
   editStructure(book: BookInput, op: StructureOp): StructureResult
