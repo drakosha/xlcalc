@@ -26,6 +26,12 @@ function mround(n: number, m: number): number | CErr {
   return (q - k >= 0.5 - HALF_SLACK ? k + 1 : k) * m
 }
 
+/** CEILING.PRECISE and ISO.CEILING, one definition. */
+const CEILING_PRECISE: FnDef = { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, true) }
+
+/** ROUNDDOWN and TRUNC, whose digits may be left out (0). */
+const roundDown = (x: number, d = 0) => roundDigits(to15(x), d, Math.floor)
+
 export const functions: Record<string, FnDef> = {
   CEILING: {
     args: 'n n',
@@ -36,7 +42,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   'CEILING.MATH': { args: 'n n? w?', fn: (n: number, s?: number, mode?: number) => roundMath(n, s, mode, true) },
-  'CEILING.PRECISE': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, true) },
+  'CEILING.PRECISE': CEILING_PRECISE,
   // the next even number away from zero, exactly (EVEN(2+2^-51) is 4)
   EVEN: { args: 'n', fn: (x: number) => (x < 0 ? -2 : 2) * Math.ceil(Math.abs(x) / 2) },
   FLOOR: {
@@ -51,7 +57,7 @@ export const functions: Record<string, FnDef> = {
   'FLOOR.PRECISE': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, false) },
   // INT, ROUNDDOWN, ROUNDUP and TRUNC read the number to 15 significant digits (INT(1-2^-52) is 1)
   INT: { args: 'n', fn: (x: number) => Math.floor(to15(x)) },
-  'ISO.CEILING': { args: 'n n?', fn: (n: number, s?: number) => roundMath(n, s, 0, true) },
+  'ISO.CEILING': CEILING_PRECISE,
   MROUND: { args: 'x x', fn: mround },
   ODD: {
     args: 'n',
@@ -62,7 +68,7 @@ export const functions: Record<string, FnDef> = {
     },
   },
   ROUND: { args: 'n w', fn: (x: number, d: number) => roundDigits(x, d, Math.round) },
-  ROUNDDOWN: { args: 'n i', fn: (x: number, d: number) => roundDigits(to15(x), d, Math.floor) },
+  ROUNDDOWN: { args: 'n i', fn: roundDown },
   ROUNDUP: { args: 'n i', fn: (x: number, d: number) => roundDigits(to15(x), d, Math.ceil) },
-  TRUNC: { args: 'n i?', fn: (x: number, d = 0) => roundDigits(to15(x), d, Math.floor) },
+  TRUNC: { args: 'n i?', fn: roundDown },
 }

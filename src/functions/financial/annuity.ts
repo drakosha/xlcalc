@@ -6,14 +6,14 @@ import { E, isErr, type CErr } from '../../values.js'
 import { coerce, type Arg, type Cx, type FnDef } from '../../args.js'
 import { atp } from '../date/atp.js'
 
-export function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number {
+function fv(rate: number, nper: number, pmt: number, pv: number, type: number): number {
   if (rate === 0) return -(pv + pmt * nper)
   const term = Math.pow(1 + rate, nper)
   return -(pv * term + (pmt * (1 + rate * type) * (term - 1)) / rate)
 }
 
 /** Excel's PMT is #NUM! for a rate of −1 or less (FV and PV are not). */
-export function pmt(rate: number, nper: number, pv: number, fv: number, type: number): number {
+function pmt(rate: number, nper: number, pv: number, fv: number, type: number): number {
   if (rate <= -1) return NaN
   if (rate === 0) return -(pv + fv) / nper
   const term = Math.pow(1 + rate, nper)

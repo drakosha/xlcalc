@@ -4,24 +4,22 @@
  * occupied rows: past them every row is blank.
  */
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
+import { lifts } from '../../arrays/lift.js'
 import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
 import { allot } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
-import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
+import { Areas, E, isErr, type CErr, type V } from '../../values.js'
 import { NEWER_MAX_ARGS } from '../common.js'
 
 /** Sort rank of a type: numbers, text, booleans, errors, then blanks. */
 const rank = (v: V) => (typeof v === 'number' ? 0 : typeof v === 'string' ? 1 : typeof v === 'boolean' ? 2 : v === null ? 4 : 3)
 
-/** Excel's sort order of two values, text by the book's locale; `desc` reverses it, blanks stay last. */
+/** Excel's sort order of two values, one type by the book's (`Rules.compare`), errors equal; `desc` reverses it, blanks stay last. */
 function order(a: V, b: V, desc: boolean, rules: Rules): number {
   const ra = rank(a)
   const rb = rank(b)
   if (ra === 4 || rb === 4) return ra - rb
-  let c = ra - rb
-  if (!c && ra === 0) c = (a as number) - (b as number)
-  else if (!c && ra === 1) c = rules.compareText(a as string, b as string)
-  else if (!c && ra === 2) c = Number(a) - Number(b)
+  const c = ra !== rb ? ra - rb : ra === 3 ? 0 : rules.compare(a, b)
   return desc ? -c : c
 }
 
@@ -75,9 +73,6 @@ function sort(cx: Cx, g: Grid, idx?: Grid, ord?: Grid, byCol = false): V | Arr {
   return sortLines(a, byCol, (line, j) => (byCol ? a.at(k.at[j], line) : a.at(line, k.at[j])), k.desc, cx.rules)
 }
 
-/** An array, one value too, or a range of several cells: as a sort order it makes SORTBY answer by position. */
-const several = (x: Arg | undefined): x is Rng | Arr => x instanceof Arr || (x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1))
-
 /** A sort order: −1 descending, 1 (TRUE too) or not given ascending, an error itself, anything else #VALUE!. */
 function descending(cx: Cx, o: V | undefined): boolean | CErr {
   if (o === undefined) return false
@@ -85,9 +80,12 @@ function descending(cx: Cx, o: V | undefined): boolean | CErr {
   return isErr(n) ? n : n === 1 || n === -1 ? n === -1 : E.VALUE
 }
 
-/** SORTBY: the array, then by-arrays each with its order; the orders one value each, or by position (`byPosition`). */
+/**
+ * SORTBY: the array, then by-arrays each with its order; the orders one value each, or by position (`byPosition`) where
+ * an order is an array, one value too, or a range of several cells (what `lifts`).
+ */
 function sortby(cx: Cx, array: Arg, rest: (Arg | undefined)[]): V | Arr {
-  return rest.some((x, i) => i % 2 === 1 && several(x)) ? byPosition(cx, array, rest) : sortOnce(cx, array, rest)
+  return rest.some((x, i) => i % 2 === 1 && lifts(x)) ? byPosition(cx, array, rest) : sortOnce(cx, array, rest)
 }
 
 /**
@@ -140,7 +138,7 @@ function sortKeys(cx: Cx, array: Arg, rest: (Arg | undefined)[], grid = (x: Arg)
  * there; the first that sorts gives its first sorted value, the others a blank, or #VALUE! with more than one by-array.
  */
 function byPosition(cx: Cx, array: Arg, rest: (Arg | undefined)[]): Arr {
-  const orders = rest.map((x, i) => (i % 2 === 1 && several(x) ? (cx.view(x) as Arr) : x))
+  const orders = rest.map((x, i) => (i % 2 === 1 && lifts(x) ? (cx.view(x) as Arr) : x))
   const arrays = orders.filter((x, i): x is Arr => i % 2 === 1 && x instanceof Arr)
   const rows = Math.max(...arrays.map((o) => o.rows))
   const cols = Math.max(...arrays.map((o) => o.cols))

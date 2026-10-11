@@ -72,12 +72,12 @@ const normSInv = (p: number): V => (unit(p) ? normInv(p) : E.NUM)
 const normInvExcel = (p: number, m: number, sd: number): V => (unit(p) && sd > 0 ? m + sd * normInv(p) : E.NUM)
 const lognormInv = (p: number, m: number, sd: number): V => (unit(p) && sd > 0 ? Math.exp(m + sd * normInv(p)) : E.NUM)
 
-export function gammaInvExcel(p: number, a: number, b: number): V {
+function gammaInvExcel(p: number, a: number, b: number): V {
   if (p < 0 || p >= 1 || a <= 0 || b <= 0) return E.NUM
   return p === 0 ? 0 : gammaInv(p, 1 - p, a) * b
 }
 
-export const chisqInv = (p: number, df: number): V => (p < 0 || p >= 1 || badDf(df) ? E.NUM : p === 0 ? 0 : 2 * gammaInv(p, 1 - p, df / 2))
+const chisqInv = (p: number, df: number): V => (p < 0 || p >= 1 || badDf(df) ? E.NUM : p === 0 ? 0 : 2 * gammaInv(p, 1 - p, df / 2))
 export function chisqInvRt(q: number, df: number): V {
   if (q <= 0 || q > 1 || badDf(df)) return E.NUM
   if (q === 1) return 0

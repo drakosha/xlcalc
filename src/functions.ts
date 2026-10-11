@@ -42,11 +42,9 @@ const ANALYSIS = new Set([
 /** Analysis ToolPak functions that lift a range like an array: those over lists of numbers (RANDBETWEEN, volatile, is not measured). */
 const LIFTING = ['GCD', 'IMPRODUCT', 'IMSUM', 'LCM', 'MULTINOMIAL', 'RANDBETWEEN', 'XIRR']
 
-/** The database functions refuse a range of several cells as their field, as the `lift` cases measured. */
-const DATABASE = ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']
-
+// the database functions refuse a range of several cells as their field, as the `lift` cases measured
 const REFUSE_RANGES: Record<string, FnDef['ranges']> = {
-  ...Object.fromEntries([...[...ANALYSIS].filter((n) => !LIFTING.includes(n)), ...DATABASE].map((n) => [n, 'error' as const])),
+  ...Object.fromEntries([...[...ANALYSIS].filter((n) => !LIFTING.includes(n)), ...Object.keys(database)].map((n) => [n, 'error' as const])),
   'WORKDAY.INTL': [0, 1],
 }
 

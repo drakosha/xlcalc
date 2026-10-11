@@ -4,11 +4,12 @@
  * matches values that begin with it.
  */
 import { gridAt, type Cx, type FnDef, type Grid } from '../args.js'
+import { isArea } from '../arrays/lift.js'
 import { errorCrit, matches, parseCrit, type Crit } from '../criteria.js'
 import type { Rules } from '../locale/rules.js'
 import { E, isErr, Rng, whole, type CErr, type V } from '../values.js'
 import { max, min, product, sum } from './common.js'
-import { mean, stdev, variance } from './statistical/common.js'
+import { meanOrDiv0, numbersOf, stdev, variance } from './statistical/common.js'
 
 /** A criteria cell as a SUMIFS condition; bare text matches as a prefix (`App` selects `Apple`). */
 function condition(v: V, rules: Rules): Crit | null {
@@ -71,43 +72,41 @@ function selected(db: Grid, field: V | undefined, criteria: Grid, rules: Rules):
   return out
 }
 
-const numbers = (vs: V[]) => vs.filter((v): v is number => typeof v === 'number')
-
 /**
  * The field as Excel reads it: a value as it is (an error is the answer), a reference to one cell by its value
  * (an error there is #VALUE!), a reference to several cells #VALUE!; an array is lifted.
  */
 function fieldOf(cx: Cx, field: V | Rng | undefined): V | undefined {
   if (!(field instanceof Rng)) return field
-  if (field.r2 > field.r1 || field.c2 > field.c1) return E.VALUE
+  if (isArea(field)) return E.VALUE
   const v = cx.scalar(field)
   return isErr(v) ? E.VALUE : v
 }
 
-/** A database function of the selected values; with `errors`, an error among them is the answer. */
-const dfn = (f: (vs: V[]) => V, errors = true): FnDef => ({
+/** A database function of the selected values. */
+const dfn = (f: (vs: V[]) => V): FnDef => ({
   args: 'G r G',
   cx: true,
   fn: (cx: Cx, db: Grid, field: V | Rng | undefined, criteria: Grid) => {
     const vs = selected(db, fieldOf(cx, field), criteria, cx.rules)
-    if (isErr(vs)) return vs
-    if (errors) {
-      const e = vs.find(isErr)
-      if (e) return e
-    }
-    return f(vs)
+    return isErr(vs) ? vs : f(vs)
   },
 })
 
-const over = (f: (xs: number[]) => V) => dfn((vs) => f(numbers(vs)))
+/** A database function of the selected numbers; an error among the values is the answer. */
+const over = (f: (xs: number[]) => V) =>
+  dfn((vs) => {
+    const xs = numbersOf(vs)
+    return isErr(xs) ? xs : f(xs)
+  })
 
 export const functions: Record<string, FnDef> = {
-  DAVERAGE: over((xs) => (xs.length ? mean(xs) : E.DIV0)),
+  DAVERAGE: over(meanOrDiv0),
   // DCOUNT passes over errors, the other functions answer with them
-  DCOUNT: dfn((vs) => numbers(vs).length, false),
-  DCOUNTA: dfn((vs) => vs.filter((v) => v !== null).length, false),
+  DCOUNT: dfn((vs) => vs.filter((v) => typeof v === 'number').length),
+  DCOUNTA: dfn((vs) => vs.filter((v) => v !== null).length),
   // one record, else #VALUE! (none or a blank field) or #NUM! (several)
-  DGET: dfn((vs) => (vs.length > 1 ? E.NUM : vs.length === 0 || vs[0] === null ? E.VALUE : vs[0]), false),
+  DGET: dfn((vs) => (vs.length > 1 ? E.NUM : vs.length === 0 || vs[0] === null ? E.VALUE : vs[0])),
   DMAX: over(max),
   DMIN: over(min),
   DPRODUCT: over(product),

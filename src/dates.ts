@@ -3,7 +3,8 @@
  * (1900-01-00) and its phantom 1900-02-29 (serial 60), and date, time and number text as Excel en-US reads it;
  * the times and the frame of date text are shared with the other locales (`DateSyntax`, `locale/rules/`).
  */
-import { NUMBER_TEXT, readNumber } from './model.js'
+import { DAY_MS, EPOCH_MS, fromUtcDays, NUMBER_TEXT, readNumber, serialToUtcMs } from './model.js'
+import { EN_NAMES } from './numfmt/style.js'
 
 /** The last serial number Excel accepts: 9999-12-31. */
 export const MAX_SERIAL = 2_958_465
@@ -14,31 +15,35 @@ export const EPOCH_1904 = 1462
 /** The day 0 of a book's date system in the 1900 system: 0, or 1462 for 1904. */
 export const epochOf = (system: 1900 | 1904 | undefined) => (system === 1904 ? EPOCH_1904 : 0)
 
-const DAY_MS = 86_400_000
-const EPOCH_MS = Date.UTC(1899, 11, 30)
-
-/** The serial number of a real calendar date (month and day overflow roll over, as in `Date.UTC`). */
-export function serialOf(y: number, m: number, d: number): number {
+/** Days from 1899-12-30 to a date of the real calendar (month and day overflow roll over, as in `Date.UTC`). */
+export function utcDays(y: number, m: number, d: number): number {
   const t = new Date(0)
   t.setUTCFullYear(y, m - 1, d)
-  const serial = Math.round((t.getTime() - EPOCH_MS) / DAY_MS)
-  // before 1900-03-01 Excel is one day behind (the phantom 1900-02-29)
-  return serial < 61 ? serial - 1 : serial
+  return Math.round((t.getTime() - EPOCH_MS) / DAY_MS)
 }
+
+/** The serial number of a real calendar date (month and day overflow roll over, as in `Date.UTC`). */
+export const serialOf = (y: number, m: number, d: number): number => fromUtcDays(utcDays(y, m, d))
+
+/** Excel's serial number of a calendar date, its phantom 1900-02-29 (60) included. */
+export const serialExcel = (y: number, m: number, d: number) => (y === 1900 && m === 2 && d === 29 ? 60 : serialOf(y, m, d))
 
 export const isLeap = (y: number) => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0
 
 export const daysInMonth = (y: number, m: number) => [31, isLeap(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1]
 
-/** Year, month and day of a serial number in Excel's calendar: 0 is 1900-01-00, 60 is 1900-02-29. */
+/** The last day of a month in Excel's calendar, which has 1900-02-29. */
+export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 29 : daysInMonth(y, m))
+
 /** The day of a date-time serial as DAY, MONTH, YEAR and WEEKDAY read it: to the nearest second first (0.4 s before midnight is the next day). */
 export const dayAt = (t: number): number => Math.floor(Math.round(t * 86_400) / 86_400)
 
+/** Year, month and day of a serial number in Excel's calendar: 0 is 1900-01-00, 60 is 1900-02-29. */
 export function ymd(serial: number): { y: number; m: number; d: number } {
   const s = Math.floor(serial)
   if (s === 0) return { y: 1900, m: 1, d: 0 }
   if (s === 60) return { y: 1900, m: 2, d: 29 }
-  const t = new Date(EPOCH_MS + (s < 61 ? s + 1 : s) * DAY_MS)
+  const t = new Date(serialToUtcMs(s))
   return { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() }
 }
 
@@ -51,7 +56,8 @@ export function addMonths(y: number, m: number, months: number): { y: number; m:
 
 // ---------- date and time text (en-US) ----------
 
-const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+/** en-US month names in lower case, as date text is read. */
+const MONTHS = EN_NAMES.months.map((m) => m.toLowerCase())
 /** A month's name, or three letters or more of its beginning (`jan`, `sept`, `febr`). */
 const MONTH_RE = '([a-z]{3,})'
 
@@ -130,8 +136,7 @@ export const fullYear = (s: string) => (s.length > 2 ? Number(s) : Number(s) + (
 /** The serial number of a calendar date from 1900 to 9999, the phantom 1900-02-29 too; null if there is no such date. */
 export function calendarDate(y: number, mo: number, d: number): number | null {
   if (y < 1900 || y > 9999 || mo < 1 || mo > 12 || d < 1) return null
-  if (y === 1900 && mo === 2 && d === 29) return 60
-  return d > daysInMonth(y, mo) ? null : serialOf(y, mo, d)
+  return d > lastDayExcel(y, mo) ? null : serialExcel(y, mo, d)
 }
 
 /** Whether `d` is a day of month `mo` in some year (February 29 in a leap year). */

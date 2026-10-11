@@ -5,6 +5,7 @@
  * #VALUE! for a union and #REF! across sheets, any other argument #VALUE!. `at` gives an argument its own errors.
  */
 import type { AreaErrors } from '../args.js'
+import { functions as database } from './database.js'
 
 type Areas = AreaErrors & { at?: Readonly<Record<number, AreaErrors>> }
 
@@ -17,10 +18,9 @@ const SHAPE: Areas = { union: 'REF', cube: 'VALUE' }
 /** Lists that do not take several areas, the same error either way. */
 const VALUE: Areas = { union: 'VALUE', cube: 'VALUE' }
 
-const DATABASE = ['DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP']
-
 export const AREAS: Readonly<Record<string, Areas>> = {
-  ...Object.fromEntries(DATABASE.map((f) => [f, VALUE])),
+  // the database functions
+  ...Object.fromEntries(Object.keys(database).map((f) => [f, VALUE])),
   CHOOSECOLS: SHAPE,
   CHOOSEROWS: SHAPE,
   COLUMN: SHAPE,

@@ -2,7 +2,7 @@
  * Information functions. Ported from formula.js 4.6.1 (src/information.js), Copyright (c) 2014 Sutoiku,
  * Inc., MIT License (THIRD_PARTY.md); TYPE is this engine's own.
  */
-import { Arr } from '../arrays/value.js'
+import { lifts } from '../arrays/lift.js'
 import { Areas, E, isErr, Rng, whole, type V } from '../values.js'
 import type { Arg, Cx, FnDef } from '../args.js'
 import type { ErrorCode } from '../contract.js'
@@ -34,5 +34,5 @@ export const functions: Record<string, FnDef> = {
   N: { args: 'a', ranges: 'first', fn: (v: V) => (typeof v === 'number' || isErr(v) ? v : v === true ? 1 : 0) },
   NA: { args: '', fn: () => E.NA },
   // an array, even of one value, or a range of several cells is type 64
-  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (x instanceof Arr || (x instanceof Rng && (x.r2 > x.r1 || x.c2 > x.c1)) ? 64 : typeOf(cx.scalar(x))) },
+  TYPE: { args: 'R', cx: true, fn: (cx: Cx, x: Arg) => (lifts(x) ? 64 : typeOf(cx.scalar(x))) },
 }

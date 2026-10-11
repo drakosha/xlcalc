@@ -33,6 +33,10 @@ function values(g: Grid): number[] | CErr {
   return out
 }
 
+/** A flat list of n·k numbers as n observations of k variables: row by row when `vertical`, else column by column. */
+const observations = (xs: readonly number[], n: number, k: number, vertical: boolean): number[][] =>
+  Array.from({ length: n }, (_, i) => Array.from({ length: k }, (_, j) => (vertical ? xs[i * k + j] : xs[j * n + i])))
+
 /**
  * y and x as observations: y one column (row), x as many rows (columns) as y has values; x defaults to 1…n.
  * One y value takes a row of x as its variables, else a column. Sizes are checked before values.
@@ -51,7 +55,7 @@ function data(gy: Grid, gx: Grid | undefined, log: boolean): Data | CErr {
   const y = log ? ys.map(Math.log) : ys
   if (!gx) return { x: xs.map((x) => [x]), y, byRow }
   const k = vertical ? gx.cols : gx.rows
-  const x = Array.from({ length: n }, (_, i) => Array.from({ length: k }, (_, j) => (vertical ? xs[i * k + j] : xs[j * n + i])))
+  const x = observations(xs, n, k, vertical)
   return { x, y, byRow }
 }
 
@@ -232,7 +236,7 @@ function trend(log: boolean) {
         const vertical = !d.byRow
         if ((vertical ? gnew.cols : gnew.rows) !== k) return E.REF
         const n = xs.length / k
-        points = Array.from({ length: n }, (_, i) => Array.from({ length: k }, (_, j) => (vertical ? xs[i * k + j] : xs[j * n + i])))
+        points = observations(xs, n, k, vertical)
         ;[rows, cols] = vertical ? [n, 1] : [1, n]
       }
     }

@@ -191,6 +191,9 @@ function permut(n: number, k: number): V {
 
 const permutationA = (n: number, k: number): V => (n < 0 || k < 0 || n >= MAX_COUNT ? E.NUM : n ** k)
 
+/** GAMMALN and GAMMALN.PRECISE, one definition. */
+const GAMMALN: FnDef = { args: 'n', fn: (x: number) => (x <= 0 ? E.NUM : gammaln(x)) }
+
 export const functions: Record<string, FnDef> = {
   'BETA.DIST': { args: 'n n n b n? n?', fn: betaDist },
   'BINOM.DIST': { args: 'i i n b', fn: binomDist },
@@ -202,8 +205,8 @@ export const functions: Record<string, FnDef> = {
   'F.DIST.RT': { args: 'n i i', fn: fDistRt },
   GAMMA: { args: 'n', fn: (x: number) => (x <= 0 && Number.isInteger(x) ? E.NUM : gammafn(x)) },
   'GAMMA.DIST': { args: 'n n n b', fn: gammaDist },
-  GAMMALN: { args: 'n', fn: (x: number) => (x <= 0 ? E.NUM : gammaln(x)) },
-  'GAMMALN.PRECISE': { args: 'n', fn: (x: number) => (x <= 0 ? E.NUM : gammaln(x)) },
+  GAMMALN,
+  'GAMMALN.PRECISE': GAMMALN,
   GAUSS: { args: 'n', fn: (z: number) => normCdf(z)[0] - 0.5 },
   'HYPGEOM.DIST': { args: 'i i i i b', fn: hypgeomDist },
   'LOGNORM.DIST': { args: 'n n n b', fn: lognormDist },

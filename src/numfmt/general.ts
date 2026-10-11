@@ -20,6 +20,9 @@ export function positional(abs: number, k: number): string {
 /** Trailing zeros of the decimals dropped, and the point when none is left. */
 const strip = (s: string) => (s.includes('.') ? s.replace(/\.?0+$/, '') : s)
 
+/** The exponent of scientific notation as Excel writes it: its sign and two digits at least (`E+20`, `E-06`). */
+const power = (e: number) => `E${e < 0 ? '-' : '+'}${String(Math.abs(e)).padStart(2, '0')}`
+
 /** The decimal exponent of a positive number rounded to 15 significant digits. */
 const exponent = (a: number) => Number(a.toExponential(14).split('e')[1])
 
@@ -29,7 +32,7 @@ function sci(a: number, m: number): string {
   let e = Number(ex)
   let mant = roundHalfUp(Number(digits), m)
   if (Number(mant) >= 10) [e, mant] = [e + 1, roundHalfUp(Number(mant) / 10, m)]
-  return `${strip(mant)}E${e < 0 ? '-' : '+'}${String(Math.abs(e)).padStart(2, '0')}`
+  return strip(mant) + power(e)
 }
 
 /**
@@ -45,7 +48,7 @@ export function generalText(n: number, max = 20): string {
   const digits = m.replace('.', '').replace(/0+$/, '')
   const fixed =
     exp < 0 ? `0.${'0'.repeat(-exp - 1)}${digits}` : digits.length <= exp + 1 ? digits.padEnd(exp + 1, '0') : `${digits.slice(0, exp + 1)}.${digits.slice(exp + 1)}`
-  const text = fixed.length <= max ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}E${exp < 0 ? '-' : '+'}${String(Math.abs(exp)).padStart(2, '0')}`
+  const text = fixed.length <= max ? fixed : `${digits[0]}${digits.length > 1 ? '.' + digits.slice(1) : ''}${power(exp)}`
   return n < 0 ? '-' + text : text
 }
 
@@ -68,12 +71,12 @@ export function generalFormat(n: number): string {
   const fixedCap = e >= 0 ? (e < 11 ? Math.max(10, e + 1) : 0) : 10 + e
   let text: string | null = null
   if (fixedCap > 0 && (need <= fixedCap || fixedCap >= sciCap)) {
-    const fixed = roundHalfUp(a, e >= 0 ? Math.max(0, 9 - e) : 9).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')
+    const fixed = strip(roundHalfUp(a, e >= 0 ? Math.max(0, 9 - e) : 9))
     if (fixed.length <= 11) text = fixed
   }
   if (text === null) {
     const [sm, se] = a.toExponential(sciCap - 1).split('e')
-    text = `${sm.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')}E${se[0]}${se.slice(1).padStart(2, '0')}`
+    text = strip(sm) + power(Number(se))
   }
   return n < 0 ? '-' + text : text
 }

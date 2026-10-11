@@ -2,7 +2,7 @@
  * Sums and products. SUM and PRODUCT ported from formula.js 4.6.1 (src/math-trig.js), Copyright (c) 2014
  * Sutoiku, Inc., MIT License (THIRD_PARTY.md); the rest this engine's own.
  */
-import { oneCell, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
+import { occupied, oneCell, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr, asArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
@@ -20,9 +20,6 @@ function sumAt(values: readonly V[], sel: number[]): V {
   }
   return acc
 }
-
-/** Positions of a grid that hold cells, row by row in the referenced width; past them everything is blank. */
-const filled = (g: Grid) => (g.h === 0 ? 0 : (g.h - 1) * g.cols + g.w)
 
 /**
  * SUMPRODUCT: arrays of one shape; anything but a number counts as 0. Each array in turn answers a blank cell given
@@ -42,7 +39,7 @@ function sumproduct(cx: Cx, xs: Arg[]): V {
   const [first] = arrs
   if (arrs.some((a) => a.rows !== first.rows || a.cols !== first.cols)) return E.VALUE
   const num = (v: V) => (typeof v === 'number' ? v : 0)
-  const end = Math.max(...arrs.map(filled))
+  const end = Math.max(...arrs.map(occupied))
   let acc = 0
   for (let i = 0; i < end; i++) {
     const r = Math.floor(i / first.cols)

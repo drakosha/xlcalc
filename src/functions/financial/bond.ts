@@ -3,7 +3,7 @@ import type { FnDef } from '../../args.js'
 import { ymd } from '../../dates.js'
 import { E } from '../../values.js'
 import { atp, need } from '../date/atp.js'
-import { basisFirst, validBasis, validFreq } from '../date/daycount.js'
+import { freqAt, validBasis, validFreq } from '../date/daycount.js'
 import { badCoupon, bondDays, cmp, couponDate, coupons, daysBetween, normalDays, periodOf, serialOfYmd, type Ymd } from './coupon.js'
 
 /** Price per 100 at yield `yld`: cash flows discounted from settlement, less accrued interest. */
@@ -60,7 +60,7 @@ export function solveDecreasing(f: (x: number) => number, guess: number, lo: num
 }
 
 /** DURATION and MDURATION check the frequency as they read it; PRICE and YIELD read the basis first. */
-const FREQ_READ = { check: { 4: need(validFreq) } }
+const FREQ_READ = freqAt(4)
 const PRICE_READ = { first: [6], check: { 6: need(validBasis), 5: need(validFreq) } }
 
 export const functions: Record<string, FnDef> = {
@@ -92,7 +92,7 @@ export const functions: Record<string, FnDef> = {
       sum += lo === q0 && hi === q1 && cmp(end, q1) > 0 ? 1 : daysBetween(lo, hi, basis) / nl(k, q0, q1)
     }
     return (par * rate * sum) / freq
-  }, { check: { 5: need(validFreq) } }),
+  }, freqAt(5)),
   DURATION: atp('e e x x j j?', (settlement: number, maturity: number, rate: number, yld: number, freq: number, basis = 0) =>
     badCoupon(settlement, maturity, freq, basis) || rate < 0 || yld < 0 ? E.NUM : duration(settlement, maturity, rate, yld, freq, basis),
   FREQ_READ),

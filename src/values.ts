@@ -57,7 +57,7 @@ export class Areas {
 export const isErr = (x: unknown): x is CErr => x instanceof CErr
 
 /** The smallest positive normal double: Excel has no smaller numbers (subnormal results are 0). */
-const MIN_NORMAL = 2.2250738585072014e-308
+export const MIN_NORMAL = 2.2250738585072014e-308
 
 /** A computed number as Excel keeps it: a non-finite one is #NUM!, one below the smallest normal number is 0. */
 export const fitNumber = (x: number): number | CErr => (!Number.isFinite(x) ? E.NUM : Math.abs(x) < MIN_NORMAL ? 0 : x)
@@ -134,6 +134,9 @@ export const operatorOrder =
 
 /** The comparison operators' order in en-US. */
 export const compareOp = operatorOrder(compareValues)
+
+/** Whether a comparison operator (`=`, `<>`, `<`, `>`, `<=`, `>=`) holds for `c`, the order of its operands. */
+export const holds = (op: string, c: number) => (op === '=' ? c === 0 : op === '<>' ? c !== 0 : op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0)
 
 /** Excel's tolerance of a whole-number argument: a number less than 2^-22 short of an integer is that integer. */
 export const WHOLE = 2 ** -22
