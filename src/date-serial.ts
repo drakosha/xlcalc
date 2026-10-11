@@ -7,14 +7,13 @@
  */
 import { EPOCH_1904, epochOf, MAX_SERIAL, ymd } from './dates.js'
 import { checkOneOf, checkString, InputError, object, onlyKeys, what } from './input.js'
-import { dateToSerial as serialOfText } from './model.js'
+import { DAY_MS, dateToSerial as serialOfText } from './model.js'
 
 /** The book's date system, as `BookInput.dateSystem`: 1900 without one. */
 export interface DateSystemOptions {
   dateSystem?: 1900 | 1904
 }
 
-const DAY_MS = 86_400_000
 
 /** The day 0 of the options' date system in the 1900 system. */
 function epoch(opts: unknown): number {

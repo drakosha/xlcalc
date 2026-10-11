@@ -11,7 +11,7 @@ import { windowLooks, withLook } from './cond/looks.js'
 import { cellLooks, type Looks } from './shown.js'
 import { ownerOf } from './spill/place.js'
 import type { Spill } from './spill/state.js'
-import { cornersText, meets, type Rect } from './structure/area.js'
+import { cellCount, cornersText, meets, type Rect } from './structure/area.js'
 
 
 /** The clock moment as a serial number (UTC); an invalid moment is a caller error. */
@@ -86,7 +86,7 @@ export function* cellsIn(state: EngineState, s: number, xs: Rect[], display: boo
   const listed = new Set<string>()
   const cond = new Map<number, ConditionalAppearance>()
   for (const x of xs) {
-    const small = (x.r2 - x.r1 + 1) * (x.c2 - x.c1 + 1) <= BY_CELL
+    const small = cellCount(x) <= BY_CELL
     const mine: string[] = []
     for (const [a, from] of yield* spilled(state, s, x)) {
       spill.set(a, from)

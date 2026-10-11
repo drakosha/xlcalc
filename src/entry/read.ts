@@ -13,6 +13,7 @@ import { dateTimeParts, trimSpaces, type DateTimeParts } from '../dates.js'
 import { readsClock, type RulesClock } from '../locale/rules/data.js'
 import type { Rules } from '../locale/rules.js'
 import { TYPED_ERRORS } from '../syntax/errors.js'
+import { MIN_NORMAL } from '../values.js'
 
 /** What a typed number is by its form: a cell's format follows it (`forms.ts`). */
 export type Form = 'plain' | 'grouped' | 'percent' | 'currency' | 'scientific' | 'fraction' | 'date' | 'time'
@@ -93,7 +94,6 @@ function outOfRange(text: string, n: number | null, r: Rules): boolean {
 }
 
 /** The smallest normal number: Excel takes a smaller one typed as 0 (`1E-309`). */
-const MIN_NORMAL = 2.2250738585072014e-308
 
 /**
  * Typed text read as a constant by the book's rules; `clock` is the rules' clock, to know a date without a year. In a

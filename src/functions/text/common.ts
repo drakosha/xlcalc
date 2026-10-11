@@ -1,10 +1,10 @@
 /** Helpers shared by the text functions. */
 import type { Segment } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
+import { MAX_TEXT } from '../../model.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 
-/** Excel's limit on the length of a text value. */
-export const MAX_TEXT = 32_767
+export { MAX_TEXT }
 
 export const capped = (s: string): V => (s.length > MAX_TEXT ? E.VALUE : s)
 

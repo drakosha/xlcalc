@@ -7,6 +7,7 @@ import { readsClock } from './locale/rules/data.js'
 import { KEY_BYTES, POSITION_BYTES, RangeCache, VALUE_BYTES, type CacheBudget } from './range-cache.js'
 import { RangePrefixes } from './range-prefix.js'
 import type { Area } from './spill/state.js'
+import { cellCount } from './structure/area.js'
 import { E, fitNumber, isErr, type Rng, type CErr, type V } from './values.js'
 
 export type AggregateName = 'SUM' | 'COUNT' | 'COUNTA' | 'MIN' | 'MAX' | 'AVERAGE'
@@ -133,7 +134,7 @@ export class RangeAggregates {
       this.criteria.set(key, prefix)
       const test = criterionMatcher(crit, rules)
       const result = prefix.read(range, bounds, cell, (p, v) => { p.seen++; if (test(v)) p.count++ })
-      const size = (range.r2 - range.r1 + 1) * (range.c2 - range.c1 + 1)
+      const size = cellCount(range)
       return result.count + (matches(null, crit, rules) ? size - result.seen : 0)
     })
     // Both criterion text and matched cell text can read the current year; every caller must keep that dependency.
