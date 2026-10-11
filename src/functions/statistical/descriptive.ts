@@ -8,6 +8,7 @@ import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, type CErr, type V } from '../../values.js'
 import { max, min, NEWER_MAX_ARGS, sum } from '../common.js'
+import { functions as trig } from '../math/trig.js'
 import { areaNumbers, devsq, interpolate, mean, sorted, stdev, variance } from './common.js'
 
 function median(xs: number[]): number {
@@ -185,8 +186,9 @@ export const functions: Record<string, FnDef> = {
     },
   },
   DEVSQ: { args: 'N', rep: 1, empty: 'NUM', fn: devsq },
-  FISHER: { args: 'n', fn: (x: number) => Math.log((1 + x) / (1 - x)) / 2 },
-  FISHERINV: { args: 'n', fn: Math.tanh },
+  // the inverse hyperbolic tangent and the tangent itself
+  FISHER: trig.ATANH,
+  FISHERINV: trig.TANH,
   // through logarithms: the product of the data would overflow
   GEOMEAN: { args: 'N', rep: 1, empty: 'NUM', fn: (xs: number[]) => (xs.some((x) => x <= 0) ? E.NUM : Math.exp(mean(xs.map(Math.log)))) },
   HARMEAN: { args: 'N', rep: 1, empty: 'NA', fn: (xs: number[]) => (xs.some((x) => x <= 0) ? E.NUM : xs.length / sum(xs.map((x) => 1 / x))) },
