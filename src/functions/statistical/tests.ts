@@ -8,12 +8,12 @@ import { gammaPQ, normCdf } from './special.js'
 import { fCdf, tCdf } from './distributions.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, isErr, type V } from '../../values.js'
-import { cellError, devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
+import { devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
 
 function chisqTest(actual: Grid, expected: Grid): V {
   const n = actual.rows * actual.cols
-  // Excel's order: a one-cell error, the sizes, then errors inside
-  const err = cellError(actual) ?? cellError(expected) ?? (n !== expected.rows * expected.cols || n === 1 ? E.NA : (gridError(actual) ?? gridError(expected)))
+  // Excel's order after a one-cell reference's own error (kind `C`): the sizes, then errors inside
+  const err = n !== expected.rows * expected.cols || n === 1 ? E.NA : (gridError(actual) ?? gridError(expected))
   if (err) return err
   let x2 = 0
   let pairs = 0
@@ -42,8 +42,6 @@ function fTest(ga: Grid, gb: Grid): V {
 }
 
 function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
-  const e = cellError(ga) ?? cellError(gb)
-  if (e) return e
   if ((tails !== 1 && tails !== 2) || type < 1 || type > 3) return E.NUM
   let t: number
   let df: number
@@ -93,8 +91,8 @@ function zTest(xs: number[], x: number, sigma?: number): V {
 }
 
 export const functions: Record<string, FnDef> = {
-  'CHISQ.TEST': { args: 'G G', fn: chisqTest },
+  'CHISQ.TEST': { args: 'C C', fn: chisqTest },
   'F.TEST': { args: 'M M', fn: fTest },
-  'T.TEST': { args: 'G G w w', fn: tTest },
+  'T.TEST': { args: 'C C w w', fn: tTest },
   'Z.TEST': { args: 'N n n?', fn: zTest },
 }

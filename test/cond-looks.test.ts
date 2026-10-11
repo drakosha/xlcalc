@@ -119,6 +119,16 @@ describe.each(['closures', 'eval'] as const)('looks (%s)', (execution) => {
     expect(s.cells('S', 'A1').A1).toEqual({ value: 6, text: '600.00%', look: { style: { format: '0.00%' } } })
   })
 
+  it("a rule's built-in number format shows by its en-US code in every locale, as Excel reads a differential format by its code (the set formats-ru-held)", () => {
+    const rule = (cell: string, format: number): ConditionalFormat => ({ type: 'cellIs', ranges: [cell], operator: 'greaterThan', formulas: ['0'], style: { format } })
+    const book = { locale: 'ru-RU', sheets: [{ name: 'S', cells: { A1: { value: 46096.75 }, A2: { value: 46096.75 } }, columns: { A: { width: 30 } }, conditionalFormats: [rule('A1', 14), rule('A2', 22)] }] }
+    const s = openSession(book, { clock: CLOCK, execution })
+    const cells = s.cells('S', 'A1:A2')
+    expect([cells.A1.text, cells.A2.text]).toEqual(['3.15.2026', '3.15.2026 18:00'])
+    // a cell's own built-in format still shows by the locale
+    expect(openSession({ ...book, sheets: [{ name: 'S', cells: { A1: { value: 46096.75, format: 14 } }, columns: { A: { width: 30 } } }] }, { clock: CLOCK, execution }).cells('S', 'A1').A1.text).toBe('15.03.2026')
+  })
+
   it('data bars and icon sets', () => {
     const vals = [0, 5, 10].map(v)
     const bars = looks(vals, [{ type: 'dataBar', ranges: col(3), min: { type: 'autoMin' }, max: { type: 'autoMax' }, color: '#638EC6', showValue: false }], execution)

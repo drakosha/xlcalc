@@ -6,6 +6,7 @@ import { english } from '../locale/english.js'
 import type { Message, NameRule } from '../locale/messages.js'
 import { FormulaError, type Ast } from './ast.js'
 import { parse } from './parse.js'
+import { readsAsCell } from './tokens.js'
 import { canonical, mapAst, sheetKey, walk } from './print.js'
 
 /** Argument counts of each function and the arguments it cannot leave out; literal arguments of external functions. */
@@ -172,8 +173,9 @@ const NAME = /^[\p{L}_\\][\p{L}\p{N}_.\\?]{0,254}$/u
  * are the book's locale's words for TRUE and FALSE (ИСТИНА and ЛОЖЬ in ru-RU, which Excel ru-RU refuses).
  */
 export function reservedName(name: string, booleans: readonly string[] = []): NameRule | null {
-  // a cell address in Latin letters only (`АБ12` is a name), R1C1 with `R` and `C` alone too
-  if (/^[A-Za-z]{1,3}[0-9]+$/.test(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'cell'
+  // a cell of the sheet in Latin letters only (`АБ12`, `XFE1` and `A0` are names: the set `tables/paste-names-held`), R1C1
+  // with `R` and `C` alone too
+  if (readsAsCell(name) || /^[RrCc]$|^[Rr][0-9]*[Cc][0-9]*$/.test(name)) return 'cell'
   if (/^(TRUE|FALSE)$/i.test(name)) return 'true'
   const up = name.toUpperCase()
   if (booleans.some((b) => b.toUpperCase() === up)) return 'boolean'

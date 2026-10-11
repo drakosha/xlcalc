@@ -15,7 +15,7 @@ import { ERROR_TEXT, sheetKey } from '../syntax.js'
 import { isErr } from '../values.js'
 import { headerEdits } from './headers.js'
 import { contains, meets, type Rect } from '../structure/area.js'
-import { copyTransform } from '../structure/copy.js'
+import { copyTransform, tiles } from '../structure/copy.js'
 import { rewriteFormula, sheetNames } from '../structure/rewrite.js'
 import { rewriteTableRefs } from './rewrite.js'
 import { tableAt, tableKey, tablesOf, type Table, type Tables } from './model.js'
@@ -119,14 +119,12 @@ export function copyTables(book: BookInput, from: string, src: Rect, to: string,
   const tables = tablesOf(book)
   const [fs, ts] = [book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(from)), book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(to))]
   const [h, w] = [src.r2 - src.r1 + 1, src.c2 - src.c1 + 1]
-  const pasted: Rect = { r1: target.r1, c1: target.c1, r2: Math.max(target.r2, target.r1 + h - 1), c2: Math.max(target.c2, target.c1 + w - 1) }
+  // the tiles of the paste and the area they cover, as copyRange lays them (the set `paste-names-held`: one copy at the
+  // top-left cell of a target that is no multiple of the source, the target's other cells left as they were)
+  const { offsets, area: pasted } = tiles(src, target)
   const renamed = (r: RestructureResult): RestructureResult => (r.ok ? { ...r, book: renamedByPaste(tables, r.book, [[ts, pasted]], () => true) } : r)
   if (!tables.list.some((t) => t.s === fs && meets(t, src))) return { after: renamed }
-  // the tiles of the paste, as copyRange lays them, and the tables copied whole onto each
-  const tiled = (target.r2 - target.r1 + 1) % h === 0 && (target.c2 - target.c1 + 1) % w === 0
-  const offsets: [number, number][] = []
-  if (tiled) for (let r = target.r1; r <= target.r2; r += h) for (let c = target.c1; c <= target.c2; c += w) offsets.push([r - src.r1, c - src.c1])
-  else offsets.push([target.r1 - src.r1, target.c1 - src.c1])
+  // the tables copied whole onto each tile
   const whole = tables.list.filter((t) => t.s === fs && contains(src, t))
   const taken = tables.list.map((t) => t.name)
   const copies: { t: Table; x: Rect; name: string }[] = []

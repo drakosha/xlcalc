@@ -1,8 +1,8 @@
 /**
  * Numeric helpers shared by the function categories.
  *
- * `fact`, `combin` and `roundDigits` are ported from formula.js 4.6.1 (https://github.com/formulajs/formulajs),
- * src/math-trig.js (FACT, COMBIN, roundBase): Copyright (c) 2014 Sutoiku, Inc., MIT License (full text in
+ * `fact` and `roundDigits` are ported from formula.js 4.6.1 (https://github.com/formulajs/formulajs),
+ * src/math-trig.js (FACT, roundBase): Copyright (c) 2014 Sutoiku, Inc., MIT License (full text in
  * THIRD_PARTY.md). Changed: `roundDigits` shifts the decimal point on the shortest decimal
  * representation of any magnitude (formula.js lost the shift for numbers written with an exponent) and
  * leaves a number that is already whole at that many digits unchanged (Excel: ROUND(2.15, 45688) is 2.15).
@@ -27,9 +27,6 @@ export function fact(n: number): number {
   for (let k = FACTS.length; k <= n && k <= 171; k++) FACTS[k] = FACTS[k - 1] * k
   return n > 171 ? Infinity : FACTS[n]
 }
-
-/** The binomial coefficient by factorials, as formula.js COMBIN computes it. */
-export const combin = (n: number, k: number) => fact(n) / (fact(k) * fact(n - k))
 
 /** x with the decimal point moved by k places, computed on its shortest decimal representation (1.005 → 100.5). */
 function shift(x: number, k: number): number {

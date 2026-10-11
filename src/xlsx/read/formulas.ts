@@ -28,16 +28,20 @@ export function reportFormula(f: ReadFormula, issues: Issues, where: Where): voi
   if (!f.ast && !f.found.some((x) => EXPLAINED.has(x))) issues.add('formula', 'a formula the engine does not parse is read as written (its cell computes to an error)', where)
 }
 
-/** A formula read at `where`; `union` for a name's formula, which may be a union of references without parentheses. */
-export function readFormula(text: string, issues: Issues, where: Where, union = false): ReadFormula {
+/** A formula of a file in the engine's spelling, parsed when the engine parses it, with nothing reported yet. */
+export function parseFormula(text: string, union = false): ReadFormula {
   const c = fromFile(text)
-  let ast: Ast | undefined
   try {
-    ast = parse(c.formula, { union })
+    return { ...c, ast: parse(c.formula, { union }) }
   } catch (e) {
     if (!(e instanceof FormulaError)) throw e
+    return c
   }
-  const f = ast ? { ...c, ast } : c
+}
+
+/** A formula read at `where`; `union` for a name's formula, which may be a union of references without parentheses. */
+export function readFormula(text: string, issues: Issues, where: Where, union = false): ReadFormula {
+  const f = parseFormula(text, union)
   reportFormula(f, issues, where)
   return f
 }
