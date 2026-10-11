@@ -8,7 +8,7 @@ import { gammaPQ, normCdf } from './special.js'
 import { fCdf, tCdf } from './distributions.js'
 import { gridAt, type FnDef, type Grid } from '../../args.js'
 import { E, isErr, type V } from '../../values.js'
-import { devsq, gridError, gridNumbers, mean, numberPairs } from './common.js'
+import { devsq, gridError, mean, numberPairs, numbersOf } from './common.js'
 
 function chisqTest(actual: Grid, expected: Grid): V {
   const n = actual.rows * actual.cols
@@ -55,9 +55,9 @@ function tTest(ga: Grid, gb: Grid, tails: number, type: number): V {
     t = mean(d) / (sd / Math.sqrt(n))
     df = n - 1
   } else {
-    const a = gridNumbers(ga)
+    const a = numbersOf(ga.v)
     if (isErr(a)) return a
-    const b = gridNumbers(gb)
+    const b = numbersOf(gb.v)
     if (isErr(b)) return b
     const na = a.length
     const nb = b.length

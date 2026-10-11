@@ -6,9 +6,9 @@
 import { eachValue, type Arg, type Cx, type FnDef, type Grid, type Segment } from '../../args.js'
 import { Arr } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
-import { Areas, E, isErr, type CErr, type V } from '../../values.js'
+import { E, isErr, type CErr, type V } from '../../values.js'
 import { max, min, NEWER_MAX_ARGS, sum } from '../common.js'
-import { devsq, gridNumbers, mean, sorted, stdev, variance } from './common.js'
+import { areaNumbers, devsq, mean, sorted, stdev, variance } from './common.js'
 
 function median(xs: number[]): number {
   const s = sorted(xs)
@@ -125,20 +125,9 @@ function mode(grids: Grid[]): V {
  * without numbers are one bin at 0, as in Excel. A union or a reference across sheets gives the numbers of each area.
  */
 function frequency(cx: Cx, data: Arg, bins: Arg): V | Arr {
-  const numbers = (x: Arg): number[] | CErr => {
-    if (isErr(x)) return x
-    const out: number[] = []
-    for (const g of x instanceof Areas ? x.list : [x]) {
-      const xs = gridNumbers(cx.grid(g))
-      if (isErr(xs)) return xs
-      // one push per number: a whole column would overflow the call stack
-      for (const n of xs) out.push(n)
-    }
-    return out
-  }
-  const xs = numbers(data)
+  const xs = areaNumbers(cx, data)
   if (isErr(xs)) return xs
-  const found = numbers(bins)
+  const found = areaNumbers(cx, bins)
   if (isErr(found)) return found
   const bs = found.length ? found : [0]
   const order = bs.map((_, i) => i).sort((a, b) => bs[a] - bs[b] || a - b)
